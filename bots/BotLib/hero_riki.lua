@@ -14,7 +14,7 @@ local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
 local Minion = dofile( GetScriptDirectory()..'/FunLib/aba_minion' )
 local sTalentList = J.Skill.GetTalentList( bot )
 local sAbilityList = J.Skill.GetAbilityList( bot )
-local sOutfitType = J.Item.GetOutfitType( bot )
+local sRole = J.Item.GetRoleItemsBuyList( bot )
 
 local tTalentTreeList = {
 						['t25'] = {0, 10},
@@ -24,42 +24,55 @@ local tTalentTreeList = {
 }
 
 local tAllAbilityBuildList = {
-						{2,3,2,1,2,6,2,3,3,3,6,1,1,1,6},
-						--{3,2,1,3,2,6,3,3,2,2,6,1,1,1,6},
+						{2,3,2,1,2,6,2,3,3,3,6,1,1,1,6},--pos1
 }
 
 local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
 
 local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 
-X['sBuyList'] = {
-				"item_melee_carry_outfit",
-				"item_yasha",
-				"item_diffusal_blade",
-				"item_aghanims_shard",
-				"item_manta",
-				"item_basher",
-				"item_disperser",
-				"item_black_king_bar",
-				"item_travel_boots",
-				"item_abyssal_blade",
-				"item_ultimate_scepter",
-				"item_moon_shard",
-				"item_travel_boots_2", 
-				"item_eagle",
-				"item_ultimate_scepter_2",
-				"item_butterfly", 
+local sRoleItemsBuyList = {}
 
+sRoleItemsBuyList['pos_1'] = {
+	"item_tango",
+	"item_double_branches",
+	"item_quelling_blade",
+	"item_slippers",
+	"item_circlet",
+
+	"item_wraith_band",
+	"item_power_treads",
+	"item_magic_wand",
+	"item_diffusal_blade",
+	"item_manta",--
+	"item_ultimate_scepter",
+	"item_greater_crit",--
+	"item_basher",
+	"item_sphere",--
+	"item_disperser",--
+	"item_abyssal_blade",--
+	"item_ultimate_scepter_2",
+	"item_monkey_king_bar",--
+	"item_moon_shard",
+	"item_aghanims_shard",
 }
 
+sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
+
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_1']
+
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_1']
+
+sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_1']
+
+
+X['sBuyList'] = sRoleItemsBuyList[sRole]
+
 X['sSellList'] = {
-
-	"item_power_treads",
 	"item_quelling_blade",
-
-	"item_travel_boots",
+	"item_wraith_band",
+	"item_power_treads",
 	"item_magic_wand",
-
 }
 
 if J.Role.IsPvNMode() then X['sBuyList'], X['sSellList'] = { 'PvN_BH' }, {{"item_power_treads", 'item_quelling_blade'}, 'item_quelling_blade'} end

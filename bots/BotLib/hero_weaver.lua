@@ -336,19 +336,34 @@ function X.ConsiderShukuchi()
 	end
 
     if J.IsPushing(bot)
+    and nMana > 0.5
     then
-        local nInRangeAlly = bot:GetNearbyHeroes(1000, false, BOT_MODE_NONE)
-        local nInRangeEnemy = bot:GetNearbyHeroes(1000, true, BOT_MODE_NONE)
-        local eta = (GetUnitToLocationDistance(bot, GetLaneFrontLocation(GetTeam(), bot.laneToPush, 0)) / nSpeed)
+        local tableNearbyEnemyTowers = bot:GetNearbyTowers(800, true)
 
-        if  J.GetMP(bot) > 0.33
-        and nInRangeAlly ~= nil and #nInRangeAlly == 0
-        and nInRangeEnemy ~= nil and #nInRangeEnemy == 0
-        and eta > nDuration + 1
+        if tableNearbyEnemyTowers ~= nil
+        and #tableNearbyEnemyTowers >= 1
+        and tableNearbyEnemyTowers[1] ~= nil
+        and
+           J.IsInRange(tableNearbyEnemyTowers[1], bot, nAttackRange)
         then
-            return  BOT_ACTION_DESIRE_HIGH
+            return BOT_ACTION_DESIRE_HIGH
         end
     end
+
+    -- if J.IsPushing(bot)
+    -- then
+    --     local nInRangeAlly = bot:GetNearbyHeroes(1000, false, BOT_MODE_NONE)
+    --     local nInRangeEnemy = bot:GetNearbyHeroes(1000, true, BOT_MODE_NONE)
+    --     local eta = (GetUnitToLocationDistance(bot, GetLaneFrontLocation(GetTeam(), bot.laneToPush, 0)) / nSpeed)
+
+    --     if  J.GetMP(bot) > 0.33
+    --     and nInRangeAlly ~= nil and #nInRangeAlly == 0
+    --     and nInRangeEnemy ~= nil and #nInRangeEnemy == 0
+    --     and eta > nDuration + 1
+    --     then
+    --         return  BOT_ACTION_DESIRE_HIGH
+    --     end
+    -- end
 
     if J.IsDefending(bot)
     then
@@ -365,46 +380,58 @@ function X.ConsiderShukuchi()
         end
     end
 
+    
     if J.IsFarming(bot)
-	then
-        local eta = (GetUnitToLocationDistance(bot, bot.farmLocation) / nSpeed)
-        local nCreeps = bot:GetNearbyCreeps(1000, true)
+    and J.GetHP(bot) > 0.25 and J.GetMP(bot) > 0.25
+    then
+        local npcTarget = bot:GetAttackTarget()
 
-		if  nCreeps ~= nil and #nCreeps == 0
-        and J.GetMP(bot) > 0.3
-        and eta > nDuration
-		then
-			return BOT_ACTION_DESIRE_HIGH
-		end
-
-        if  J.IsAttacking(bot)
-        and J.IsValid(botTarget)
-        and botTarget:IsCreep()
-        and J.GetMP(bot) > 0.3
-        and nCreeps ~= nil and #nCreeps >= 2
+        if npcTarget ~= nil
         then
-            return BOT_ACTION_DESIRE_HIGH
+            return BOT_ACTION_DESIRE_MODERATE
         end
-	end
+    end
 
-    if J.IsLaning(bot)
-	then
-		if  ((bot:GetMana() - Shukuchi:GetManaCost()) / bot:GetMaxMana()) > 0.8
-		and bot:DistanceFromFountain() > 100
-		and bot:DistanceFromFountain() < 6000
-		and J.IsInLaningPhase()
-		and #nEnemyHeroes == 0
-		then
-			local nLane = bot:GetAssignedLane()
-			local nLaneFrontLocation = GetLaneFrontLocation(GetTeam(), nLane, 0)
-			local nDistFromLane = GetUnitToLocationDistance(bot, nLaneFrontLocation)
+ --    if J.IsFarming(bot)
+	-- then
+ --        local eta = (GetUnitToLocationDistance(bot, bot.farmLocation) / nSpeed)
+ --        local nCreeps = bot:GetNearbyCreeps(1000, true)
 
-			if nDistFromLane > 800
-			then
-                return BOT_ACTION_DESIRE_HIGH
-			end
-		end
-	end
+	-- 	if  nCreeps ~= nil and #nCreeps == 0
+ --        and J.GetMP(bot) > 0.3
+ --        and eta > nDuration
+	-- 	then
+	-- 		return BOT_ACTION_DESIRE_HIGH
+	-- 	end
+
+ --        if  J.IsAttacking(bot)
+ --        and J.IsValid(botTarget)
+ --        and botTarget:IsCreep()
+ --        and J.GetMP(bot) > 0.3
+ --        and nCreeps ~= nil and #nCreeps >= 2
+ --        then
+ --            return BOT_ACTION_DESIRE_HIGH
+ --        end
+	-- end
+
+ --    if J.IsLaning(bot)
+	-- then
+	-- 	if  ((bot:GetMana() - Shukuchi:GetManaCost()) / bot:GetMaxMana()) > 0.8
+	-- 	and bot:DistanceFromFountain() > 100
+	-- 	and bot:DistanceFromFountain() < 6000
+	-- 	and J.IsInLaningPhase()
+	-- 	and #nEnemyHeroes == 0
+	-- 	then
+	-- 		local nLane = bot:GetAssignedLane()
+	-- 		local nLaneFrontLocation = GetLaneFrontLocation(GetTeam(), nLane, 0)
+	-- 		local nDistFromLane = GetUnitToLocationDistance(bot, nLaneFrontLocation)
+
+	-- 		if nDistFromLane > 800
+	-- 		then
+ --                return BOT_ACTION_DESIRE_HIGH
+	-- 		end
+	-- 	end
+	-- end
 
     if  J.IsDoingRoshan(bot)
     and J.GetMP(bot) > 0.4

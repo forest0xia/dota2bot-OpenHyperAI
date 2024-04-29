@@ -14,63 +14,63 @@ local J = require( GetScriptDirectory()..'/FunLib/jmz_func')
 local Minion = dofile( GetScriptDirectory()..'/FunLib/aba_minion')
 local sTalentList = J.Skill.GetTalentList(bot)
 local sAbilityList = J.Skill.GetAbilityList(bot)
-local sOutfitType = J.Item.GetOutfitType(bot)
+local sRole = J.Item.GetRoleItemsBuyList(bot)
 
 local tTalentTreeList = {
-						['t25'] = {10, 0},
+						['t25'] = {0, 10},
 						['t20'] = {10, 0},
 						['t15'] = {0, 10},
 						['t10'] = {10, 0},
 }
 
 local tAllAbilityBuildList = {
-						{1,2,1,3,1,6,1,3,3,3,6,2,2,2,6},
+						{1,3,2,1,1,3,1,3,3,6,6,2,2,2,6},--pos1
 }
 
 local nAbilityBuildList = J.Skill.GetRandomBuild(tAllAbilityBuildList)
 
 local nTalentBuildList = J.Skill.GetTalentBuild(tTalentTreeList)
 
-local tOutFitList = {}
+local sRoleItemsBuyList = {}
 
-tOutFitList['outfit_carry'] = {
+sRoleItemsBuyList['pos_1'] = {
+	"item_tango",
+	"item_double_branches",
+	"item_quelling_blade",
+	"item_slippers",
+	"item_circlet",
 
-	"item_melee_carry_outfit",
-	"item_yasha",
-	"item_diffusal_blade",
-	"item_manta",
-	"item_heart",
-	"item_travel_boots",
-	"item_disperser",
+	"item_wraith_band",
+	"item_power_treads",
+	"item_magic_wand",
+	"item_manta",--
+	"item_orchid",
+	"item_heart",--
+	"item_butterfly",--
+	"item_bloodthorn",--
 	"item_aghanims_shard",
-	"item_abyssal_blade",
---	"item_ultimate_scepter",
-	"item_butterfly",
+	"item_travel_boots",
+	"item_skadi",--
+	"item_travel_boots_2",--
 	"item_moon_shard",
-	"item_travel_boots_2",
---	"item_ogre_axe",
---	"item_ultimate_scepter_2",
+	"item_ultimate_scepter_2",
 	
 }
 
-tOutFitList['outfit_mid'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
 
-tOutFitList['outfit_priest'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_1']
 
-tOutFitList['outfit_mage'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_1']
 
-tOutFitList['outfit_tank'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_1']
 
-X['sBuyList'] = tOutFitList[sOutfitType]
+X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 X['sSellList'] = {
-	
-	"item_manta",
 	"item_quelling_blade",
-	
-	"item_abyssal_blade",
+	"item_wraith_band",
 	"item_magic_wand",
-	
 }
 
 
@@ -129,16 +129,17 @@ local abilityW = bot:GetAbilityByName( sAbilityList[2] )
 local abilityE = bot:GetAbilityByName( sAbilityList[3] )
 local abilityR = bot:GetAbilityByName( sAbilityList[6] )
 local abilitySR = bot:GetAbilityByName( 'naga_siren_song_of_the_siren_cancel' )
+local ReelIn = bot:GetAbilityByName( 'naga_siren_reel_in' )
 
 local castQDesire, castQTarget
 local castWDesire, castWTarget
 local castEDesire, castETarget
 local castRDesire, castRTarget
 local castSRDesire, castSRTarget
+local ReelInDesire
 
 local nKeepMana,nMP,nHP,nLV,hEnemyList,hAllyList,botTarget,sMotive;
 local aetherRange = 0
-
 
 function X.SkillsComplement()
 
@@ -179,6 +180,14 @@ function X.SkillsComplement()
 		J.SetQueuePtToINT(bot, true)
 	
 		bot:ActionQueue_UseAbilityOnEntity( abilityW, castWTarget )
+		return;
+	end
+
+	ReelInDesire = X.ConsiderReelIn()
+	if (ReelInDesire > 0)
+	then
+		J.SetQueuePtToINT(bot, true)
+		bot:Action_UseAbility(ReelIn)
 		return;
 	end
 	
@@ -372,7 +381,7 @@ function X.ConsiderW()
 	for _,npcEnemy in pairs( nInBonusEnemyList )
 	do
 		if J.IsValid(npcEnemy)
-		   and J.CanCastOnNonMagicImmune(npcEnemy)
+		   and (J.CanCastOnNonMagicImmune(npcEnemy) or (J.CanCastOnMagicImmune(npcEnemy) and bot:HasScepter()))
 		   and npcEnemy:IsChanneling()
 		   and npcEnemy:HasModifier( 'modifier_teleporting' )
 	   then			
@@ -389,7 +398,7 @@ function X.ConsiderW()
 	then
 		if J.IsValidHero( botTarget )
 			and J.IsInRange( botTarget, bot, nCastRange )
-			and J.CanCastOnNonMagicImmune( botTarget )			
+			and (J.CanCastOnNonMagicImmune( botTarget ) or (J.CanCastOnMagicImmune(botTarget) and bot:HasScepter()))
 			and J.CanCastOnTargetAdvanced( botTarget )
 			and not J.IsDisabled( botTarget )
 			and J.IsRunning( botTarget ) 
@@ -410,7 +419,7 @@ function X.ConsiderW()
 					or npcEnemy:HasModifier( 'modifier_invisible' )
 					or npcEnemy:HasModifier( 'modifier_item_shadow_amulet_fade' )
 				then
-					if J.CanCastOnNonMagicImmune( npcEnemy )
+					if ((J.CanCastOnNonMagicImmune( npcEnemy )) or (J.CanCastOnMagicImmune(npcEnemy) and bot:HasScepter()))
 						and J.CanCastOnTargetAdvanced( npcEnemy )
 						and not npcEnemy:HasModifier( 'modifier_item_dustofappearance' )
 						and not npcEnemy:HasModifier( 'modifier_slardar_amplify_damage' )
@@ -437,7 +446,7 @@ function X.ConsiderW()
 		for _, npcEnemy in pairs( nInRangeEnemyList )
 		do
 			if J.IsValid( npcEnemy )				
-				and J.CanCastOnNonMagicImmune( npcEnemy )
+				and (J.CanCastOnNonMagicImmune( npcEnemy ) or (J.CanCastOnMagicImmune(npcEnemy) and bot:HasScepter()))
 				and J.CanCastOnTargetAdvanced( npcEnemy )
 				and not J.IsDisabled( npcEnemy )
 				and not npcEnemy:IsDisarmed()
@@ -549,7 +558,44 @@ function X.ConsiderSR()
 	
 end
 
+function X.ConsiderReelIn()
+	if not bot:HasScepter()
+	or not ReelIn:IsFullyCastable()
+	or J.IsInTeamFight(bot, 1400)
+	then
+		return BOT_ACTION_DESIRE_NONE
+	end
+
+	local nRange = 1400
+	local nInRangeAllyList = bot:GetNearbyHeroes(nRange, false, BOT_MODE_NONE)
+	local nInRangeEnemyList = bot:GetNearbyHeroes(nRange, true, BOT_MODE_NONE)
+
+	for _, npcEnemy in pairs(nInRangeEnemyList)
+	do
+		if J.IsValidHero(npcEnemy)
+		and J.IsInRange(bot, npcEnemy, nRange)
+		and not J.IsInRange(bot, npcEnemy, bot:GetAttackRange() * 2)
+		and npcEnemy:HasModifier('modifier_naga_siren_ensnare')
+		and #nInRangeAllyList >= #nInRangeEnemyList
+		then
+			return BOT_ACTION_DESIRE_HIGH
+		end
+	end
+
+	if J.IsGoingOnSomeone(bot)
+	then
+		if J.IsValidHero(botTarget)
+		and J.IsInRange(bot, botTarget, nRange)
+		and not J.IsInRange( bot, botTarget, bot:GetAttackRange() * 2)
+		and bot:IsFacingLocation(botTarget:GetLocation(), 30)
+		and botTarget:HasModifier('modifier_naga_siren_ensnare')
+		and #nInRangeAllyList >= #nInRangeEnemyList
+		then
+			return BOT_ACTION_DESIRE_HIGH
+		end
+	end
+
+	return BOT_ACTION_DESIRE_NONE
+end
 
 return X
--- dota2jmz@163.com QQ:2462331592
-

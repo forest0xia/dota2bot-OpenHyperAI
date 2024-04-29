@@ -5,7 +5,7 @@ local J             = require( GetScriptDirectory()..'/FunLib/jmz_func' )
 local Minion        = dofile( GetScriptDirectory()..'/FunLib/aba_minion' )
 local sTalentList   = J.Skill.GetTalentList( bot )
 local sAbilityList  = J.Skill.GetAbilityList( bot )
-local sRole   = J.Item.GetOutfitType( bot )
+local sRole   = J.Item.GetRoleItemsBuyList( bot )
 
 local tTalentTreeList = {--pos4,5
                         ['t25'] = {0, 10},
@@ -24,13 +24,13 @@ local nTalentBuildList = J.Skill.GetTalentBuild(tTalentTreeList)
 
 local sRoleItemsBuyList = {}
 
-sRoleItemsBuyList['outfit_carry'] = sRoleItemsBuyList['outfit_carry']
+sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_1']
 
-sRoleItemsBuyList['outfit_mid'] = sRoleItemsBuyList['outfit_carry']
+sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
 
-sRoleItemsBuyList['outfit_tank'] = sRoleItemsBuyList['outfit_carry']
+sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_1']
 
-sRoleItemsBuyList['outfit_priest'] = {
+sRoleItemsBuyList['pos_4'] = {
     "item_double_tango",
     "item_double_branches",
     "item_faerie_fire",
@@ -48,7 +48,7 @@ sRoleItemsBuyList['outfit_priest'] = {
     "item_ultimate_scepter_2",
 }
 
-sRoleItemsBuyList['outfit_mage'] = {
+sRoleItemsBuyList['pos_5'] = {
     "item_double_tango",
     "item_double_branches",
     "item_faerie_fire",
@@ -78,10 +78,10 @@ Pos5SellList = {
 
 X['sSellList'] = {}
 
-if sRole == "outfit_priest"
+if sRole == "pos_4"
 then
     X['sSellList'] = Pos4SellList
-elseif sRole == "outfit_mage"
+elseif sRole == "pos_5"
 then
     X['sSellList'] = Pos5SellList
 end
@@ -165,11 +165,10 @@ function X.ConsiderImpetus()
 
     if J.IsGoingOnSomeone(bot)
     then
-        local nInRangeAlly = bot:GetNearbyHeroes(nAttackRange + 100, false, BOT_MODE_NONE)
-        local nInRangeEnemy = bot:GetNearbyHeroes(nAttackRange, true, BOT_MODE_NONE)
+        local nInRangeAlly = bot:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+        local nInRangeEnemy = bot:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
 
         if  J.IsValidTarget(botTarget)
-        and J.IsInRange(bot, botTarget, nAttackRange)
         and J.CanCastOnNonMagicImmune(botTarget)
         and not J.IsSuspiciousIllusion(botTarget)
         and not botTarget:HasModifier('modifier_abaddon_borrowed_time')
@@ -180,6 +179,8 @@ function X.ConsiderImpetus()
             then
                 Impetus:ToggleAutoCast()
                 return BOT_ACTION_DESIRE_HIGH
+            else
+                return BOT_ACTION_DESIRE_NONE
             end
         end
     end
@@ -196,6 +197,61 @@ function X.ConsiderImpetus()
             then
                 Impetus:ToggleAutoCast()
                 return BOT_ACTION_DESIRE_HIGH
+            else
+                if  Impetus:GetAutoCastState()
+                and J.GetMP(bot) < 0.25
+                then
+                    Impetus:ToggleAutoCast()
+                    return BOT_ACTION_DESIRE_HIGH
+                end
+
+                return BOT_ACTION_DESIRE_NONE
+            end
+        end
+    end
+
+    if J.IsDoingRoshan(bot)
+    then
+        if  J.IsRoshan(botTarget)
+        and J.IsInRange(bot, botTarget, 500)
+        and J.IsAttacking(bot)
+        then
+            if not Impetus:GetAutoCastState()
+            then
+                Impetus:ToggleAutoCast()
+                return BOT_ACTION_DESIRE_HIGH
+            else
+                if  Impetus:GetAutoCastState()
+                and J.GetMP(bot) < 0.25
+                then
+                    Impetus:ToggleAutoCast()
+                    return BOT_ACTION_DESIRE_HIGH
+                end
+
+                return BOT_ACTION_DESIRE_NONE
+            end
+        end
+    end
+
+    if J.IsDoingTormentor(bot)
+    then
+        if  J.IsTormentor(botTarget)
+        and J.IsInRange(bot, botTarget, 400)
+        and J.IsAttacking(bot)
+        then
+            if not Impetus:GetAutoCastState()
+            then
+                Impetus:ToggleAutoCast()
+                return BOT_ACTION_DESIRE_HIGH
+            else
+                if  Impetus:GetAutoCastState()
+                and J.GetMP(bot) < 0.25
+                then
+                    Impetus:ToggleAutoCast()
+                    return BOT_ACTION_DESIRE_HIGH
+                end
+
+                return BOT_ACTION_DESIRE_NONE
             end
         end
     end
@@ -203,7 +259,6 @@ function X.ConsiderImpetus()
     if Impetus:GetAutoCastState()
     then
         Impetus:ToggleAutoCast()
-        return BOT_ACTION_DESIRE_HIGH
     end
 
     return BOT_ACTION_DESIRE_NONE

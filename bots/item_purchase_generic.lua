@@ -1,13 +1,6 @@
-----------------------------------------------------------------------------------------------------
---- The Creation Come From: BOT EXPERIMENT Credit:FURIOUSPUPPY
---- BOT EXPERIMENT Author: Arizona Fauzie
---- Link:http://steamcommunity.com/sharedfiles/filedetails/?id=837040016
---- Refactor: 决明子 Email: dota2jmz@163.com 微博@Dota2_决明子
---- Link:http://steamcommunity.com/sharedfiles/filedetails/?id=1573671599
---- Link:http://steamcommunity.com/sharedfiles/filedetails/?id=1627071163
-----------------------------------------------------------------------------------------------------
 local Item = require( GetScriptDirectory()..'/FunLib/aba_item' )
 local Role = require( GetScriptDirectory()..'/FunLib/aba_role' )
+local J = require( GetScriptDirectory()..'/FunLib/jmz_func')
 
 local bot = GetBot()
 
@@ -32,7 +25,6 @@ bot.SecretShop = false
 local sPurchaseList = BotBuild['sBuyList']
 local sItemSellList = BotBuild['sSellList']
 
-if sPurchaseList == nil then print("Can't load purchase list for: " .. bot:GetUnitName()) end
 
 for i = 1, #sPurchaseList
 do
@@ -80,8 +72,6 @@ local function GeneralPurchase()
 
 	if bot.currentComponentToBuy == "item_infused_raindrop"
 		or bot.currentComponentToBuy == "item_tome_of_knowledge"
-		or bot.currentComponentToBuy == "item_ward_observer"
-		or bot.currentComponentToBuy == "item_ward_sentry"
 		or bot.currentComponentToBuy == "item_flask"
 	then
 		if GetItemStockCount( bot.currentComponentToBuy ) <= 0
@@ -244,8 +234,6 @@ local function TurboModeGeneralPurchase()
 
 	if bot.currentComponentToBuy == "item_infused_raindrop"
 		or bot.currentComponentToBuy == "item_tome_of_knowledge"
-		or bot.currentComponentToBuy == "item_ward_observer"
-		or bot.currentComponentToBuy == "item_ward_sentry"
 	then
 		if GetItemStockCount( bot.currentComponentToBuy ) <= 0
 		then
@@ -316,7 +304,7 @@ local buyTPtime = 0
 local buyBookTime = 0
 local hasBuyClarity = false
 
-
+local initSmoke = false
 
 function ItemPurchaseThink()
 
@@ -324,6 +312,7 @@ function ItemPurchaseThink()
 	then return	end
 
 	if bot:HasModifier( 'modifier_arc_warden_tempest_double' )
+	or (DotaTime() > 0 and J.IsMeepoClone(bot))
 	then
 		bot.itemToBuy = {}
 		return
@@ -377,17 +366,181 @@ function ItemPurchaseThink()
 			return
 		end
 	end
-		
-	
+
+	-- Init Healing Items in Lane; works for now
+	if J.IsInLaningPhase()
+	then
+		if  botLevel < 6
+		and bot:IsAlive()
+		and bot:FindItemSlot('item_flask') < 0
+		and bot:FindItemSlot('item_tango') < 0
+		and bot:DistanceFromFountain() > 3800
+		and bot:GetStashValue() > 0
+		and not bot:HasModifier('modifier_elixer_healing')
+		and not bot:HasModifier('modifier_filler_heal')
+		and not bot:HasModifier('modifier_flask_healing')
+		and not bot:HasModifier('modifier_fountain_aura_buff')
+		and not bot:HasModifier('modifier_juggernaut_healing_ward_heal')
+		and not bot:HasModifier('modifier_warlock_shadow_word')
+		and not IsThereHealingInStash(bot)
+		and Item.GetEmptyInventoryAmount(bot) >= 1
+		and J.GetHP(bot) < 0.35
+		then
+			local partner = J.GetLanePartner(bot)
+
+			if bot:GetHealthRegen() <= 5
+			then
+				if J.IsCore(bot)
+				then
+					if partner ~= nil
+					then
+						if  partner:FindItemSlot('item_flask') < 0
+						and partner:FindItemSlot('item_tango') < 0
+						and Item.GetItemCharges(bot, 'item_flask') <= 0
+						then
+							bot:ActionImmediate_PurchaseItem('item_flask')
+							return
+						end
+					else
+						if  Item.GetItemCharges(bot, 'item_flask') <= 0
+						and (not J.HasItem(bot, 'item_bottle')
+							or (J.HasItem(bot, 'item_bottle') and Item.GetItemCharges(bot, 'item_bottle') <= 0))
+						then
+							bot:ActionImmediate_PurchaseItem('item_flask')
+							return
+						end
+					end
+				else
+					if Item.GetItemCharges(bot, 'item_flask') <= 0
+					then
+						bot:ActionImmediate_PurchaseItem('item_flask')
+						return
+					end
+				end
+			else
+				if J.IsCore(bot)
+				then
+					if partner ~= nil
+					then
+						if  partner:FindItemSlot('item_flask') < 0
+						and partner:FindItemSlot('item_tango') < 0
+						and partner ~= nil
+						and Item.GetItemCharges(bot, 'item_tango') <= 0
+						then
+							bot:ActionImmediate_PurchaseItem('item_tango')
+							return
+						end
+					else
+						if  Item.GetItemCharges(bot, 'item_flask') <= 0
+						and (not J.HasItem(bot, 'item_bottle')
+							or (J.HasItem(bot, 'item_bottle') and Item.GetItemCharges(bot, 'item_bottle') <= 0))
+						then
+							bot:ActionImmediate_PurchaseItem('item_flask')
+							return
+						end
+					end
+				else
+					if Item.GetItemCharges(bot, 'item_tango') <= 0
+					then
+						bot:ActionImmediate_PurchaseItem('item_tango')
+						return
+					end
+				end
+			end
+		end
+	end
+
+	-- Observer and Sentry Wards
+	if (J.GetPosition(bot) == 4)
+	then
+		local wardType = 'item_ward_sentry'
+
+		if  GetItemStockCount(wardType) > 0
+		and botGold >= GetItemCost(wardType)
+		and Item.GetEmptyInventoryAmount(bot) >= 1
+		and Item.GetItemCharges(bot, wardType) < 2
+		and bot:GetCourierValue() == 0
+		then
+			bot:ActionImmediate_PurchaseItem(wardType)
+			return
+		end
+	end
+
+	if (J.GetPosition(bot) == 5)
+	then
+		local wardType = 'item_ward_observer'
+
+		if  GetItemStockCount(wardType) > 0
+		and botGold >= GetItemCost(wardType)
+		and Item.GetEmptyInventoryAmount(bot) >= 1
+		and Item.GetItemCharges(bot, wardType) < 2
+		and bot:GetCourierValue() == 0
+		then
+			bot:ActionImmediate_PurchaseItem(wardType)
+			return
+		end
+	end
+
+	-- Smoke of Deceit
+	if  (J.GetPosition(bot) == 4 or J.GetPosition(bot) == 5)
+	and GetItemStockCount('item_smoke_of_deceit') > 1
+	and botGold >= GetItemCost('item_smoke_of_deceit')
+	and Item.GetEmptyInventoryAmount(bot) >= 3
+	and Item.GetItemCharges(bot, 'item_smoke_of_deceit') == 0
+	and bot:GetCourierValue() == 0
+	then
+		if  DotaTime() < 0
+		and not initSmoke
+		then
+			local hasSmoke = false
+			for _, allyHero in pairs(GetUnitList(UNIT_LIST_ALLIED_HEROES))
+			do
+				if  J.IsValidHero(allyHero)
+				and J.IsNotSelf(bot, allyHero)
+				and J.HasItem(allyHero, 'item_smoke_of_deceit')
+				then
+					hasSmoke = true
+					break
+				end
+			end
+
+			if not hasSmoke
+			then
+				bot:ActionImmediate_PurchaseItem('item_smoke_of_deceit')
+				return
+			end
+		else
+			if not J.IsInLaningPhase()
+			then
+				bot:ActionImmediate_PurchaseItem('item_smoke_of_deceit')
+				return
+			end
+		end
+	end
+
+	-- Blood Grenade
+	if  J.IsInLaningPhase()
+	and (J.GetPosition(bot) == 4 or J.GetPosition(bot) == 5)
+	and GetItemStockCount('item_blood_grenade') > 0
+	and botLevel < 6
+	and botGold >= GetItemCost('item_blood_grenade')
+	and Item.GetEmptyInventoryAmount(bot) >= 3
+	and Item.GetItemCharges(bot, 'item_blood_grenade') == 0
+	and bot:GetStashValue() > 0
+	then
+		bot:ActionImmediate_PurchaseItem('item_blood_grenade')
+		return
+	end
+
 	--为自己购买魔晶
 	if not hasBuyShard
 		and GetItemStockCount( "item_aghanims_shard" ) > 0
 		and botGold >= 1400
 	then
 		hasBuyShard = true
-		
+
 		bot:ActionImmediate_PurchaseItem( "item_aghanims_shard" )
-				
+
 		return
 	end
 
@@ -433,8 +586,6 @@ function ItemPurchaseThink()
 		return
 	end
 
-
-
 	--交换魂泪的位置避免过早被破坏
 	if currentTime > 180
 		and currentTime < 1800
@@ -455,10 +606,10 @@ function ItemPurchaseThink()
 		end
 	end
 
-	
+
 
 	if ( GetGameMode() ~= 23 and botLevel > 6 and currentTime > fullInvCheck + 1.0
-		and ( bot:DistanceFromFountain() <= 200 or bot:DistanceFromSecretShop() <= 200 ) )
+		and (bot:DistanceFromFountain() <= 200 or bot:DistanceFromSecretShop() <= 200 ))
 		or ( GetGameMode() == 23 and botLevel > 9 and currentTime > fullInvCheck + 1.0 )
 	then
 		local emptySlot = Item.GetEmptyInventoryAmount( bot )
@@ -510,23 +661,31 @@ function ItemPurchaseThink()
 	--出售过度装备
 	if currentTime > sell_time + 0.5
 		and ( bot:GetItemInSlot( 6 ) ~= nil or bot:GetItemInSlot( 7 ) ~= nil or bot:GetItemInSlot( 8 ) ~= nil )
-		and ( bot:DistanceFromFountain() <= 100 or bot:DistanceFromSecretShop() <= 100 )
+		and ( J.IsModeTurbo() or (bot:DistanceFromFountain() <= 100 or bot:DistanceFromSecretShop() <= 100 ))
 	then
 		sell_time = currentTime
 
-        for i = 1 , #sItemSellList, 1
-        do
-            local slot = bot:FindItemSlot( sItemSellList[i] )
-            if slot == 6 or slot == 7 or slot == 8
-            then
-                bot:ActionImmediate_SellItem( bot:GetItemInSlot( slot ) )
-                return
-            end
-        end
+		-- for i = 2 , #sItemSellList, 2
+		-- do
+		-- 	local nNewSlot = bot:FindItemSlot( sItemSellList[i - 1] )
+		-- 	local nOldSlot = bot:FindItemSlot( sItemSellList[i] )
+		-- 	if nNewSlot >= 0 and nOldSlot >= 0
+		-- 	then
+		-- 		bot:ActionImmediate_SellItem( bot:GetItemInSlot( nOldSlot ) )
+		-- 		return
+		-- 	end
+		-- end
+		for i = 1 , #sItemSellList, 1
+		do
+			local slot = bot:FindItemSlot( sItemSellList[i] )
+			if slot == 6 or slot == 7 or slot == 8
+			then
+				bot:ActionImmediate_SellItem( bot:GetItemInSlot( slot ) )
+				return
+			end
+		end
 
-
-		if currentTime > 18 * 60
-			and ( Item.HasItem( bot, "item_travel_boots" ) or Item.HasItem( bot, "item_travel_boots_2" ) )
+		if ( Item.HasItem( bot, "item_travel_boots" ) or Item.HasItem( bot, "item_travel_boots_2" ) )
 		then
 			for i = 1, #Item['tEarlyBoots']
 			do
@@ -539,10 +698,16 @@ function ItemPurchaseThink()
 			end
 		end
 
+		if  Item.HasItem(bot, 'item_mask_of_madness')
+		and Item.HasItem(bot, 'item_satanic')
+		then
+			bot:ActionImmediate_SellItem(bot:GetItemInSlot(bot:FindItemSlot('item_mask_of_madness')))
+			return
+		end
 	end
 
 
-	
+
 	if currentTime > 4 * 60
 		and buyTP == false
 		and bot:GetCourierValue() == 0
@@ -559,11 +724,7 @@ function ItemPurchaseThink()
 
 			if botLevel < 18 or ( botLevel >= 18 and tCharges == 1 )
 			then
-				if bot:GetUnitName() ~= "npc_dota_hero_meepo"
-				then
-					buyTP = true
-				end
-
+				buyTP = true
 				buyTPtime = currentTime
 				bot.currentComponentToBuy = nil
 				bot.currListItemToBuy[#bot.currListItemToBuy+1] = 'item_tpscroll'
@@ -580,10 +741,7 @@ function ItemPurchaseThink()
 
 			if botLevel >= 18 and tCharges == 0 and botGold >= GetItemCost( "item_tpscroll" ) * 2
 			then
-				if bot:GetUnitName() ~= "npc_dota_hero_meepo"
-				then
-					buyTP = true
-				end
+				buyTP = true
 				buyTPtime = currentTime
 				bot.currentComponentToBuy = nil
 				bot.currListItemToBuy[#bot.currListItemToBuy+1] = 'item_tpscroll'
@@ -655,4 +813,23 @@ function ItemPurchaseThink()
 	end
 
 end
--- dota2jmz@163.com QQ:2462331592..
+
+function IsThereHealingInStash(unit)
+	local amount = 0
+
+	for i = 9, 14
+	do
+		local item = unit:GetItemInSlot(i)
+		if item ~= nil
+		then
+			if string.find(item:GetName(), 'item_flask')
+			or string.find(item:GetName(), 'item_tango')
+			or string.find(item:GetName(), 'item_bottle')
+			then
+				amount = amount + 1
+			end
+		end
+	end
+
+	return amount > 0
+end

@@ -14,7 +14,7 @@ local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
 local Minion = dofile( GetScriptDirectory()..'/FunLib/aba_minion' )
 local sTalentList = J.Skill.GetTalentList( bot )
 local sAbilityList = J.Skill.GetAbilityList( bot )
-local sOutfitType = J.Item.GetOutfitType( bot )
+local sRole = J.Item.GetRoleItemsBuyList( bot )
 
 local tTalentTreeList = {
 						{--pos1,2
@@ -39,19 +39,19 @@ local tAllAbilityBuildList = {
 local nAbilityBuildList
 local nTalentBuildList
 
-if sOutfitType == "outfit_carry" or sOutfitType == "outfit_mid"
+if sRole == "pos_1" or sRole == "pos_2"
 then
     nAbilityBuildList   = tAllAbilityBuildList[1]
     nTalentBuildList    = J.Skill.GetTalentBuild(tTalentTreeList[1])
-elseif sOutfitType == "outfit_tank"
+elseif sRole == "pos_3"
 then
     nAbilityBuildList   = tAllAbilityBuildList[2]
     nTalentBuildList    = J.Skill.GetTalentBuild(tTalentTreeList[2])
 end
 
-local tOutFitList = {}
+local sRoleItemsBuyList = {}
 
-tOutFitList['outfit_carry'] = {
+sRoleItemsBuyList['pos_1'] = {
 	"item_tango",
 	"item_double_branches",
 	"item_magic_stick",
@@ -72,13 +72,13 @@ tOutFitList['outfit_carry'] = {
 	"item_ultimate_scepter_2",
 }
 
-tOutFitList['outfit_mid'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
 
-tOutFitList['outfit_priest'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_1']
 
-tOutFitList['outfit_mage'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_1']
 
-tOutFitList['outfit_tank'] = {
+sRoleItemsBuyList['pos_3'] = {
 	"item_tango",
 	"item_double_branches",
 	"item_slippers",
@@ -100,7 +100,7 @@ tOutFitList['outfit_tank'] = {
 	"item_ultimate_scepter_2",
 }
 
-X['sBuyList'] = tOutFitList[sOutfitType]
+X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 X['sSellList'] = {
 	"item_quelling_blade",
@@ -174,6 +174,9 @@ local nKeepMana, nMP, nHP, nLV, hEnemyList, hAllyList, botTarget, sMotive
 local aetherRange = 0
 
 function X.SkillsComplement()
+
+
+	J.ConsiderForMkbDisassembleMask( bot )
 
 
 	if J.CanNotUseAbility( bot ) or bot:IsInvisible() then return end

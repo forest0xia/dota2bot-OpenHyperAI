@@ -14,59 +14,64 @@ local J = require( GetScriptDirectory()..'/FunLib/jmz_func')
 local Minion = dofile( GetScriptDirectory()..'/FunLib/aba_minion')
 local sTalentList = J.Skill.GetTalentList(bot)
 local sAbilityList = J.Skill.GetAbilityList(bot)
-local sOutfitType = J.Item.GetOutfitType(bot)
+local sRole = J.Item.GetRoleItemsBuyList(bot)
 
 local tTalentTreeList = {
-						['t25'] = {10, 0},
+						['t25'] = {0, 10},
 						['t20'] = {10, 0},
 						['t15'] = {10, 0},
-						['t10'] = {10, 0},
+						['t10'] = {0, 10},
 }
 
 local tAllAbilityBuildList = {
-						{1,3,1,2,1,6,1,3,3,3,6,2,2,2,6},
+						{3,2,1,1,1,6,1,3,3,3,2,6,2,2,6},--pos1,2
 }
 
 local nAbilityBuildList = J.Skill.GetRandomBuild(tAllAbilityBuildList)
 
 local nTalentBuildList = J.Skill.GetTalentBuild(tTalentTreeList)
 
-local tOutFitList = {}
+local sRoleItemsBuyList = {}
 
-tOutFitList['outfit_carry'] = {
+sRoleItemsBuyList['pos_1'] = {
 
-	"item_ranged_carry_outfit",
-	"item_dragon_lance",
-	"item_rod_of_atos",
-	"item_maelstrom",
-	"item_black_king_bar",
-	"item_gungir",
-	"item_travel_boots",
-	"item_bloodthorn",
-	"item_hurricane_pike",	
-	"item_ultimate_scepter",
+	"item_slippers",
+	"item_circlet",
+	"item_double_branches",
+	"item_tango",
+
+	"item_wraith_band",
+	"item_boots",
+	"item_bracer",
+	"item_power_treads",
+	"item_magic_wand",
+
+	"item_gungir",--
+	"item_black_king_bar",--
+	"item_hurricane_pike",--
+	"item_butterfly",--
+	"item_greater_crit",--
+	"item_travel_boots_2",--
+
 	"item_moon_shard",
-	"item_travel_boots_2",
 	"item_ultimate_scepter_2",
-	"item_butterfly",
-	
+	"item_aghanims_shard",
 }
 
-tOutFitList['outfit_mid'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
 
-tOutFitList['outfit_priest'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_1']
 
-tOutFitList['outfit_mage'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_1']
 
-tOutFitList['outfit_tank'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_1']
 
-X['sBuyList'] = tOutFitList[sOutfitType]
+X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 X['sSellList'] = {
-		
-	"item_travel_boots",
+	"item_wraith_band",
+	"item_bracer",
 	"item_magic_wand",
-	
 }
 
 
@@ -154,9 +159,6 @@ function X.SkillsComplement()
 	if ( castQDesire > 0 ) 
 	then
 		J.SetReportMotive(bDebugMode,sMotive);		
-	
-		J.SetQueuePtToINT(bot, true)
-	
 		bot:ActionQueue_UseAbility( abilityQ )
 		return;
 	end
@@ -165,9 +167,6 @@ function X.SkillsComplement()
 	if ( castWDesire > 0 ) 
 	then
 		J.SetReportMotive(bDebugMode,sMotive);
-	
-		J.SetQueuePtToINT(bot, true)
-	
 		bot:ActionQueue_UseAbilityOnLocation( abilityW, castWTarget )
 		return;
 	end
@@ -176,9 +175,6 @@ function X.SkillsComplement()
 	if ( castEDesire > 0 ) 
 	then
 		J.SetReportMotive(bDebugMode,sMotive);
-	
-		J.SetQueuePtToINT(bot, false)
-	
 		bot:ActionQueue_UseAbility( abilityE )
 		return;
 	end
@@ -187,9 +183,6 @@ function X.SkillsComplement()
 	if ( castRDesire > 0 ) 
 	then
 		J.SetReportMotive(bDebugMode,sMotive);
-	
-		J.SetQueuePtToINT(bot, true)
-	
 		bot:ActionQueue_UseAbility( abilityR )
 		return;
 	

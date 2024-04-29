@@ -7,7 +7,7 @@ local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
 local Minion = dofile( GetScriptDirectory()..'/FunLib/aba_minion' )
 local sTalentList = J.Skill.GetTalentList( bot )
 local sAbilityList = J.Skill.GetAbilityList( bot )
-local sRole = J.Item.GetOutfitType( bot )
+local sRole = J.Item.GetRoleItemsBuyList( bot )
 
 local tTalentTreeList = {
 						['t25'] = {10, 0},
@@ -26,7 +26,7 @@ local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 
 local sRoleItemsBuyList = {}
 
-sRoleItemsBuyList['outfit_mid'] = {
+sRoleItemsBuyList['pos_2'] = {
     "item_faerie_fire",
     "item_mantle",
     "item_circlet",
@@ -50,13 +50,13 @@ sRoleItemsBuyList['outfit_mid'] = {
     "item_moon_shard",
 }
 
-sRoleItemsBuyList['outfit_tank'] = sRoleItemsBuyList['outfit_mid']
+sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_2']
 
-sRoleItemsBuyList['outfit_carry'] = sRoleItemsBuyList['outfit_mid']
+sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_2'] 
 
-sRoleItemsBuyList['outfit_priest'] = sRoleItemsBuyList['outfit_mid']
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_2']
 
-sRoleItemsBuyList['outfit_mage'] = sRoleItemsBuyList['outfit_mid']
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_2']
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 
@@ -453,7 +453,7 @@ function X.ConsiderBlindingLight()
         then
             if J.IsInRange(bot, nInRangeEnemy[1], 400)
             then
-                return BOT_ACTION_DESIRE_HIGH, bot
+                return BOT_ACTION_DESIRE_HIGH, bot:GetLocation()
             end
 
 			return BOT_ACTION_DESIRE_HIGH, nInRangeEnemy[1]:GetExtrapolatedLocation(nCastPoint)

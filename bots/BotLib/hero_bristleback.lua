@@ -14,7 +14,7 @@ local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
 local Minion = dofile( GetScriptDirectory()..'/FunLib/aba_minion' )
 local sTalentList = J.Skill.GetTalentList( bot )
 local sAbilityList = J.Skill.GetAbilityList( bot )
-local sOutfitType = J.Item.GetOutfitType( bot )
+local sRole = J.Item.GetRoleItemsBuyList( bot )
 
 local tTalentTreeList = {
 						['t25'] = {0, 10},
@@ -33,17 +33,15 @@ local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 
 local sRandomItem_1 = RandomInt( 1, 9 ) > 6 and "item_black_king_bar" or "item_heavens_halberd"
 
-local tOutFitList = {}
+local sRoleItemsBuyList = {}
 
-tOutFitList['outfit_carry'] = {
+sRoleItemsBuyList['pos_1'] = {
 	"item_tango",
 	"item_double_branches",
-	"item_enchanted_mango",
-	"item_enchanted_mango",
+	"item_double_enchanted_mango",
 	"item_quelling_blade",
 
 	"item_vanguard",
-	"item_ring_of_basilius",
 	"item_arcane_boots",
 	"item_magic_wand",
 	"item_ultimate_scepter",
@@ -55,25 +53,23 @@ tOutFitList['outfit_carry'] = {
 	"item_travel_boots",
 	"item_assault",--
 	"item_ultimate_scepter_2",
+	"item_travel_boots_2",--
 	"item_moon_shard",
-	"item_travel_boots_2"
 }
 
-tOutFitList['outfit_mid'] = tOutFitList['outfit_tank']
+sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_3']
 
-tOutFitList['outfit_priest'] = tOutFitList['outfit_tank']
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_3']
 
-tOutFitList['outfit_mage'] = tOutFitList['outfit_tank']
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_3']
 
-tOutFitList['outfit_tank'] = {
+sRoleItemsBuyList['pos_3'] = {
 	"item_tango",
 	"item_double_branches",
-	"item_enchanted_mango",
-	"item_enchanted_mango",
+	"item_double_enchanted_mango",
 	"item_quelling_blade",
 
 	"item_vanguard",
-	"item_ring_of_basilius",
 	"item_arcane_boots",
 	"item_magic_wand",
 	"item_ultimate_scepter",
@@ -85,16 +81,15 @@ tOutFitList['outfit_tank'] = {
 	"item_travel_boots",
 	"item_assault",--
 	"item_ultimate_scepter_2",
+	"item_travel_boots_2",--
 	"item_moon_shard",
-	"item_travel_boots_2"
 }
 
-X['sBuyList'] = tOutFitList[sOutfitType]
+X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 X['sSellList'] = {
 	"item_quelling_blade",
 	"item_vanguard",
-	"item_ring_of_basilius",
 	"item_magic_wand",
 }
 

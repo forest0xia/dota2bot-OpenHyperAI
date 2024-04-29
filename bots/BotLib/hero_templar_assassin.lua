@@ -14,71 +14,65 @@ local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
 local Minion = dofile( GetScriptDirectory()..'/FunLib/aba_minion' )
 local sTalentList = J.Skill.GetTalentList( bot )
 local sAbilityList = J.Skill.GetAbilityList( bot )
-local sOutfitType = J.Item.GetOutfitType( bot )
+local sRole = J.Item.GetRoleItemsBuyList( bot )
 
 local tTalentTreeList = {
-						['t25'] = {10, 0},
-						['t20'] = {10, 0},
-						['t15'] = {0, 10},
-						['t10'] = {0, 10},
+							['t25'] = {10, 0},
+							['t20'] = {0, 10},
+							['t15'] = {10, 0},
+							['t10'] = {10, 0},
 }
 
 local tAllAbilityBuildList = {
-						{1,3,1,3,1,6,1,2,2,2,6,2,3,3,6},
+							{2,3,1,1,1,6,1,2,2,2,3,6,3,3,6},--pos1,2
 }
 
 local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
 
 local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 
-local sRandomItem_1 = RandomInt( 1, 9 ) > 6 and "item_satanic" or "item_butterfly"
+local sRandomItem_1 = RandomInt( 1, 9 ) > 6 and "item_sphere" or "item_black_king_bar"
 
-local tOutFitList = {}
+local sRoleItemsBuyList = {}
 
-tOutFitList['outfit_carry'] = {
+sRoleItemsBuyList['pos_1'] = {
 
-	"item_ranged_carry_outfit",
+	"item_tango",
+	"item_double_branches",
+	"item_circlet",
+	"item_circlet",
+	"item_quelling_blade",
+
+	"item_magic_wand",
+	"item_power_treads",
 	"item_dragon_lance",
-	"item_desolator",
-	"item_black_king_bar",
-	"item_hurricane_pike",
-	"item_travel_boots",
-	"item_greater_crit",
-	sRandomItem_1,
+	"item_desolator",--
+	"item_blink",
+	"item_aghanims_shard",
+	"item_black_king_bar",--
+	"item_greater_crit",--
+	"item_hurricane_pike",--
+	"item_swift_blink",--
+	"item_sheepstick",--
 	"item_moon_shard",
-	"item_travel_boots_2",
-
+	"item_ultimate_scepter_2",
 }
 
-tOutFitList['outfit_mid'] = {
+sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
 
-	"item_templar_assassin_outfit",
-	"item_dragon_lance",
-	"item_desolator",
-	"item_black_king_bar",
-	"item_hurricane_pike",
-	"item_greater_crit",
-	"item_travel_boots",
-	sRandomItem_1,
-	"item_moon_shard",
-	"item_travel_boots_2",
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_1']
 
-}
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_1']
 
-tOutFitList['outfit_priest'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_1']
 
-tOutFitList['outfit_mage'] = tOutFitList['outfit_carry']
-
-tOutFitList['outfit_tank'] = tOutFitList['outfit_carry']
-
-X['sBuyList'] = tOutFitList[sOutfitType]
+X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 X['sSellList'] = {
-	"item_black_king_bar",
-	"item_urn_of_shadows",
-
-	'item_greater_crit',
-	'item_magic_wand',
+	"item_circlet",
+	"item_quelling_blade",
+	"item_magic_wand",
+	"item_power_treads",
 }
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_TA' }, {} end
@@ -252,7 +246,7 @@ function X.SkillsComplement()
 	then
 		local opMidTower1 = GetTower( GetOpposingTeam(), TOWER_MID_1 )
 		local myMidTower1 = GetTower( GetTeam(), TOWER_MID_1 )
-		midLoc = J.GetUnitTowardDistanceLocation( opMidTower1, myMidTower1, 928 )
+		midLoc = J.GetUnitTowardDistanceLocation( bot, myMidTower1, 928 )
 		topLoc = GetTower( GetTeam(), TOWER_TOP_1 ):GetLocation()
 		botLoc = GetTower( GetTeam(), TOWER_BOT_1 ):GetLocation()
 	end

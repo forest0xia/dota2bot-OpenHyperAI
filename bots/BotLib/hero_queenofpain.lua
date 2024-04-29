@@ -14,7 +14,7 @@ local J = require( GetScriptDirectory()..'/FunLib/jmz_func')
 local Minion = dofile( GetScriptDirectory()..'/FunLib/aba_minion')
 local sTalentList = J.Skill.GetTalentList(bot)
 local sAbilityList = J.Skill.GetAbilityList(bot)
-local sOutfitType = J.Item.GetOutfitType(bot)
+local sRole = J.Item.GetRoleItemsBuyList(bot)
 
 local tTalentTreeList = {
 						['t25'] = {0, 10},
@@ -24,18 +24,18 @@ local tTalentTreeList = {
 }
 
 local tAllAbilityBuildList = {
-						{3,1,1,2,1,6,3,3,3,2,2,6,3,1,6},--pos2
+						{3,1,1,2,3,6,3,3,2,2,6,2,1,1,6},--pos2
 }
 
 local nAbilityBuildList = J.Skill.GetRandomBuild(tAllAbilityBuildList)
 
 local nTalentBuildList = J.Skill.GetTalentBuild(tTalentTreeList)
 
-local tOutFitList = {}
+local sRoleItemsBuyList = {}
 
-tOutFitList['outfit_carry'] = tOutFitList['outfit_mid']
+sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_1']
 
-tOutFitList['outfit_mid'] = {
+sRoleItemsBuyList['pos_2'] = {
 	"item_tango",
 	"item_double_branches",
 	"item_faerie_fire",
@@ -55,47 +55,17 @@ tOutFitList['outfit_mid'] = {
 	"item_cyclone",
 	"item_ultimate_scepter_2",
 	"item_wind_waker",--
+	"item_travel_boots_2",--
 	"item_moon_shard",
-	"item_travel_boots_2"
 }
 
-tOutFitList['outfit_priest'] = {
-	
-	"item_priest_outfit",
-	"item_urn_of_shadows",
-	"item_mekansm",
-	"item_glimmer_cape",
-	"item_aghanims_shard",
-	"item_guardian_greaves",	
-	"item_spirit_vessel",
---	"item_rod_of_atos",
-	"item_shivas_guard",
-	"item_sheepstick",
-	"item_moon_shard",
-	"item_ultimate_scepter_2",
-	
-}
+sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_1']
 
-tOutFitList['outfit_mage'] = {
-	
-	"item_mage_outfit",
-	"item_cyclone",
-	"item_ancient_janggo",
-	"item_glimmer_cape",
-	"item_boots_of_bearing",
-	"item_pipe",
-	"item_veil_of_discord",
-	"item_aghanims_shard",
-	"item_sheepstick",
-	"item_wind_waker",
-	"item_moon_shard",
-	"item_ultimate_scepter_2",
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_1']
 
-}
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_1']
 
-tOutFitList['outfit_tank'] = tOutFitList['outfit_carry']
-
-X['sBuyList'] = tOutFitList[sOutfitType]
+X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 X['sSellList'] = {
 	"item_bottle",

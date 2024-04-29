@@ -14,12 +14,12 @@ local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
 local Minion = dofile( GetScriptDirectory()..'/FunLib/aba_minion' )
 local sTalentList = J.Skill.GetTalentList( bot )
 local sAbilityList = J.Skill.GetAbilityList( bot )
-local sOutfitType = J.Item.GetOutfitType( bot )
+local sRole = J.Item.GetRoleItemsBuyList( bot )
 
 local tTalentTreeList = {
 						['t25'] = {0, 10},
 						['t20'] = {0, 10},
-						['t15'] = {0, 10},
+						['t15'] = {10, 0},
 						['t10'] = {10, 0},
 }
 
@@ -32,9 +32,9 @@ local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
 local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 local RandomItem = RandomInt(1, 2) == 1 and "item_black_king_bar" or "item_sphere"
 
-local tOutFitList = {}
+local sRoleItemsBuyList = {}
 
-tOutFitList['outfit_carry'] = {
+sRoleItemsBuyList['pos_1'] = {
 	"item_tango",
 	"item_double_branches",
 	"item_slippers",
@@ -48,26 +48,26 @@ tOutFitList['outfit_carry'] = {
 	"item_manta",
 	"item_ultimate_scepter",
 	"item_hurricane_pike",--
-	"item_black_king_bar",--
+	RandomItem,--
 	"item_butterfly",--
-    "item_moon_shard",
 	"item_aghanims_shard",
 	"item_greater_crit",--
 	"item_satanic",--
 	"item_ultimate_scepter_2",
 	"item_travel_boots",
+	"item_moon_shard",
 	"item_travel_boots_2",--
 }
 
-tOutFitList['outfit_mid'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
 
-tOutFitList['outfit_priest'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_1']
 
-tOutFitList['outfit_mage'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_1']
 
-tOutFitList['outfit_tank'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_1']
 
-X['sBuyList'] = tOutFitList[sOutfitType]
+X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 X['sSellList'] = {
 	"item_wraith_band",
@@ -139,6 +139,8 @@ local castWMDesire, castWMLocation
 local nKeepMana, nMP, nHP, nLV, hEnemyList, hAllyList, botTarget, sMotive
 
 function X.SkillsComplement()
+
+	J.ConsiderForMkbDisassembleMask( bot )
 
 	if J.CanNotUseAbility( bot ) or bot:IsInvisible() then return end
 
@@ -749,7 +751,7 @@ function X.ConsiderGlacier()
 	local nAttackRange = bot:GetAttackRange()
 	local nEnemyHeroes = bot:GetNearbyHeroes(nAttackRange, true, BOT_MODE_NONE)
 	local nAllyHeroes = bot:GetNearbyHeroes(nAttackRange, true, BOT_MODE_ATTACK)
-	local botTarget = bot:GetTarget()
+	botTarget = J.GetProperTarget(bot)
 
 	local alliesAroundLoc = J.GetAlliesNearLoc(bot:GetLocation(), 500)
 
@@ -772,7 +774,8 @@ function X.ConsiderGlacier()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		if (abilityE:IsFullyCastable() and J.CanCastOnNonMagicImmune(botTarget))
+		if  J.IsValidTarget(botTarget)
+		and (abilityE:IsFullyCastable() and J.CanCastOnNonMagicImmune(botTarget))
 		and J.IsInRange(bot, botTarget, abilityE:GetCastRange() + 200)
 		then
 			return BOT_ACTION_DESIRE_HIGH

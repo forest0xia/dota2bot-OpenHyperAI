@@ -3724,7 +3724,7 @@ end
 
 function Chat.SetRawLanguage( sName )
 
-	sRawLanguage = Chat.GetRawLanguge( sName )
+	--sRawLanguage = Chat.GetRawLanguge( sName )
 
 end
 

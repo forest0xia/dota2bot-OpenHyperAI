@@ -15,86 +15,109 @@ local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
 local Minion = dofile( GetScriptDirectory()..'/FunLib/aba_minion' )
 local sTalentList = J.Skill.GetTalentList( bot )
 local sAbilityList = J.Skill.GetAbilityList( bot )
-local sOutfitType = J.Item.GetOutfitType( bot )
+local sRole = J.Item.GetRoleItemsBuyList( bot )
 
 local tTalentTreeList = {
-						['t25'] = {10, 0},
-						['t20'] = {10, 0},
-						['t15'] = {10, 0},
-						['t10'] = {0, 10},
+						{--pos2
+							['t25'] = {10, 0},
+							['t20'] = {0, 10},
+							['t15'] = {10, 0},
+							['t10'] = {0, 10},
+						},
+						{--pos3
+							['t25'] = {10, 0},
+							['t20'] = {0, 10},
+							['t15'] = {10, 0},
+							['t10'] = {0, 10},
+						},
 }
 
 local tAllAbilityBuildList = {
-						{2,3,1,1,1,6,1,3,3,3,6,2,2,2,6},
+						{1,3,3,2,3,6,1,1,1,2,6,2,2,3,6},--pos2
+						{2,3,3,1,1,6,1,1,2,2,2,6,3,3,6},--pos3
 }
 
-local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
+local nAbilityBuildList
+local nTalentBuildList
 
-local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
+if sRole == "pos_2"
+then
+    nAbilityBuildList   = tAllAbilityBuildList[1]
+    nTalentBuildList    = J.Skill.GetTalentBuild(tTalentTreeList[1])
+elseif sRole == "pos_3"
+then
+    nAbilityBuildList   = tAllAbilityBuildList[2]
+    nTalentBuildList    = J.Skill.GetTalentBuild(tTalentTreeList[2])
+end
 
-local tOutFitList = {}
+local sRoleItemsBuyList = {}
 
-tOutFitList['outfit_carry'] = {
+sRoleItemsBuyList['pos_2'] = {
+	"item_tango",
+	"item_double_branches",
+	"item_quelling_blade",
+	"item_double_gauntlets",
 
-	"item_bristleback_outfit",
-	"item_soul_ring",
-	"item_blade_mail",
-	"item_armlet",
-	"item_aghanims_shard",
-	"item_heavens_halberd",
-	"item_black_king_bar",
-	"item_satanic",
+	"item_bracer",
+	"item_bracer",
+	"item_boots",
+	"item_magic_wand",
+	"item_power_treads",
+	"item_hand_of_midas",
+	"item_blink",
+	"item_manta",--
+	"item_ultimate_scepter",
+	"item_black_king_bar",--
+	"item_octarine_core",--
+	"item_assault",--
 	"item_travel_boots",
---	"item_heart",
-	"item_abyssal_blade",
-	"item_moon_shard",
-	"item_travel_boots_2",
 	"item_ultimate_scepter_2",
-
-}
-
-tOutFitList['outfit_mid'] = tOutFitList['outfit_carry']
-
-tOutFitList['outfit_priest'] = tOutFitList['outfit_carry']
-
-tOutFitList['outfit_mage'] = tOutFitList['outfit_carry']
-
-tOutFitList['outfit_tank'] = {
-
-	"item_dragon_knight_outfit",
-	"item_crimson_guard",
-	"item_armlet",
+	"item_overwhelming_blink",--
+	"item_travel_boots_2",--
+	"item_moon_shard",
 	"item_aghanims_shard",
-	"item_heavens_halberd",
-	"item_travel_boots",
-	"item_assault",
-	"item_heart",
-	"item_moon_shard",
-	"item_travel_boots_2",
-	"item_ultimate_scepter_2",
-	"item_black_king_bar",
-
-
 }
 
-X['sBuyList'] = tOutFitList[sOutfitType]
+sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_2']
+
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_2']
+
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_2']
+
+sRoleItemsBuyList['pos_3'] = {
+	"item_tango",
+	"item_double_branches",
+	"item_quelling_blade",
+	"item_gauntlets",
+	"item_circlet",
+
+	"item_bracer",
+	"item_boots",
+	"item_magic_wand",
+	"item_power_treads",
+	"item_hand_of_midas",
+	"item_blink",
+	"item_ultimate_scepter",
+	"item_black_king_bar",--
+	"item_assault",--
+	"item_octarine_core",--
+	"item_bloodthorn",--
+	"item_ultimate_scepter_2",
+	"item_travel_boots",
+	"item_overwhelming_blink",--
+	"item_travel_boots_2",--
+
+	"item_moon_shard",
+	"item_aghanims_shard",
+}
+
+X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 X['sSellList'] = {
-
-	"item_power_treads",
 	"item_quelling_blade",
-
-	"item_heart",
+	"item_bracer",
 	"item_magic_wand",
-	
-	"item_travel_boots",
-	"item_magic_wand",
-
-	'item_heart',
-	'item_armlet',
-
-	"item_assault",
-	"item_ancient_janggo",
+	"item_hand_of_midas",
 }
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_tank' }, {"item_power_treads", 'item_quelling_blade'} end

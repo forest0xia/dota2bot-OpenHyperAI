@@ -18,7 +18,7 @@ function X.ConsiderStolenSpell(ability)
     botTarget = J.GetProperTarget(bot)
     local abilityName = ability:GetName()
 
-    if abilityName == ''
+    if abilityName == 'centaur_mount'
     then
         HitchARide = ability
         HitchARideDesire, HitchARideTarget = X.ConsiderHitchARide()
@@ -29,7 +29,7 @@ function X.ConsiderStolenSpell(ability)
         end
     end
 
-    if abilityName == ''
+    if abilityName == 'centaur_work_horse'
     then
         WorkHorse = ability
         WorkHorseDesire, HitchARideTarget = X.ConsiderWorkHorse()
@@ -40,7 +40,7 @@ function X.ConsiderStolenSpell(ability)
         end
     end
 
-    if abilityName == ''
+    if abilityName == 'centaur_stampede'
     then
         Stampede = ability
         StampedeDesire = X.ConsiderStampede()
@@ -51,7 +51,7 @@ function X.ConsiderStolenSpell(ability)
         end
     end
 
-    if abilityName == ''
+    if abilityName == 'centaur_hoof_stomp'
     then
         HoofStomp = ability
         HoofStompDesire = X.ConsiderHoofStomp()
@@ -62,7 +62,7 @@ function X.ConsiderStolenSpell(ability)
         end
     end
 
-    if abilityName == ''
+    if abilityName == 'centaur_double_edge'
     then
         DoubleEdge = ability
         DoubleEdgeDesire, DoubleEdgeTarget = X.ConsiderDoubleEdge()

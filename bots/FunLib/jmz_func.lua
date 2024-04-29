@@ -74,25 +74,25 @@ function J.SetUserHeroInit( nAbilityBuildList, nTalentBuildList, sBuyList, sSell
 	if J.Role.IsUserHero() 
 	then
 
-		-- local sBotDir = J.Chat.GetHeroDirName( bot )
+		local sBotDir = J.Chat.GetHeroDirName( bot )
 		
-		-- if J.Chat.GetNormName(bot) == '力丸'  --修复力丸的错误路径
-		-- 	and xpcall( function( loadDir ) require( loadDir ) end, function( err ) print( err ) end, sBotDir ) == false
-		-- then sBotDir = sBotDir..' '	end
+		if J.Chat.GetNormName(bot) == '力丸'  --修复力丸的错误路径
+			and xpcall( function( loadDir ) require( loadDir ) end, function( err ) print( err ) end, sBotDir ) == false
+		then sBotDir = sBotDir..' '	end
 
-		-- if xpcall( function( loadDir ) require( loadDir ) end, function( err ) print( err ) end, sBotDir )
-		-- then
-		-- 	local BotSet = require( sBotDir )
-		-- 	if J.Chat.GetRawGameWord( BotSet['ShiFouShengXiao'] ) == true
-		-- 	then
-		-- 		nAbilityBuildList = BotSet['JiNeng']
-		-- 		nTalentBuildList = J.Chat.GetTalentBuildList( BotSet['TianFu'] )
-		-- 		sBuyList = J.Chat.GetItemBuildList( BotSet['ChuZhuang'] )
-		-- 		sSellList = J.Chat.GetItemBuildList( BotSet['GuoDuZhuang'] )
-		-- 		if J.Chat.GetRawGameWord( BotSet['ShiFouDaFuZhu'] ) == true
-		-- 		then J.Role.SetUserSup( bot ) end
-		-- 	end
-		-- end
+		if xpcall( function( loadDir ) require( loadDir ) end, function( err ) print( err ) end, sBotDir )
+		then
+			local BotSet = require( sBotDir )
+			if J.Chat.GetRawGameWord( BotSet['ShiFouShengXiao'] ) == true
+			then
+				nAbilityBuildList = BotSet['JiNeng']
+				nTalentBuildList = J.Chat.GetTalentBuildList( BotSet['TianFu'] )
+				sBuyList = J.Chat.GetItemBuildList( BotSet['ChuZhuang'] )
+				sSellList = J.Chat.GetItemBuildList( BotSet['GuoDuZhuang'] )
+				if J.Chat.GetRawGameWord( BotSet['ShiFouDaFuZhu'] ) == true
+				then J.Role.SetUserSup( bot ) end
+			end
+		end
 
 	end
 
@@ -4597,38 +4597,6 @@ function J.GetHighestRightClickDamageHero(nUnits)
 	end
 
 	return target
-end
-
-function J.GetETAWithAcceleration(dist, speed, accel)
-	return (math.sqrt(2 * accel * dist + speed * speed) - speed) / accel
-end
-function J.GetTechiesMines()
-	local nMinesList = {}
-	for _, unit in pairs(GetUnitList(UNIT_LIST_ALLIES))
-    do
-		if  unit ~= nil
-        and unit:GetUnitName() == 'npc_dota_techies_land_mine'
-        then
-			table.insert(nMinesList, unit)
-		end
-	end
-	return nMinesList
-end
-function J.GetTechiesMinesInLoc(loc, nRadius)
-	local nMinesList = {}
-	for _, unit in pairs(GetUnitList(UNIT_LIST_ALLIES))
-    do
-		if  unit ~= nil
-        and unit:GetUnitName() == 'npc_dota_techies_land_mine'
-		and GetUnitToLocationDistance(unit, loc) <= nRadius
-        then
-			table.insert(nMinesList, unit)
-		end
-	end
-	return nMinesList
-end
-function J.CheckBitfieldFlag(bitfield, flag)
-    return ((bitfield / flag) % 2) >= 1
 end
 
 function J.IsBigCamp(nUnits)

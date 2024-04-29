@@ -22,7 +22,7 @@ function X.ConsiderStolenSpell(ability)
     botTarget = J.GetProperTarget(bot)
     local abilityName = ability:GetName()
 
-    if abilityName == ''
+    if abilityName == 'rattletrap_overclocking'
     then
         Overclocking = ability
         OverclockingDesire = X.ConsiderOverclocking()
@@ -33,7 +33,7 @@ function X.ConsiderStolenSpell(ability)
         end
     end
 
-    if abilityName == ''
+    if abilityName == 'rattletrap_hookshot'
     then
         Hookshot = ability
         HookshotDesire, HookshotTarget = X.ConsiderHookshot()
@@ -44,7 +44,7 @@ function X.ConsiderStolenSpell(ability)
         end
     end
 
-    if abilityName == ''
+    if abilityName == 'rattletrap_power_cogs'
     then
         PowerCogs = ability
         PowerCogsDesire = X.ConsiderPowerCogs()
@@ -56,7 +56,7 @@ function X.ConsiderStolenSpell(ability)
         end
     end
 
-    if abilityName == ''
+    if abilityName == 'rattletrap_battery_assault'
     then
         BatteryAssault = ability
         BatteryAssaultDesire = X.ConsiderBatteryAssault()
@@ -67,7 +67,7 @@ function X.ConsiderStolenSpell(ability)
         end
     end
 
-    if abilityName == ''
+    if abilityName == 'rattletrap_rocket_flare'
     then
         RocketFlare = ability
         RocketFlareDesire, RocketFlareLocation = X.ConsiderRocketFlare()
@@ -78,7 +78,7 @@ function X.ConsiderStolenSpell(ability)
         end
     end
 
-    if abilityName == ''
+    if abilityName == 'rattletrap_jetpack'
     then
         Jetpack = ability
         JetpackDesire = X.ConsiderJetpack()

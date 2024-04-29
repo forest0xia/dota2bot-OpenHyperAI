@@ -14,7 +14,7 @@ local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
 local Minion = dofile( GetScriptDirectory()..'/FunLib/aba_minion' )
 local sTalentList = J.Skill.GetTalentList( bot )
 local sAbilityList = J.Skill.GetAbilityList( bot )
-local sOutfitType = J.Item.GetOutfitType( bot )
+local sRole = J.Item.GetRoleItemsBuyList( bot )
 
 local tTalentTreeList = {
 						{--pos1
@@ -39,19 +39,19 @@ local tAllAbilityBuildList = {
 local nAbilityBuildList
 local nTalentBuildList
 
-if sOutfitType == "outfit_carry"
+if sRole == "pos_1"
 then
     nAbilityBuildList   = tAllAbilityBuildList[1]
     nTalentBuildList    = J.Skill.GetTalentBuild(tTalentTreeList[1])
-elseif sOutfitType == "outfit_mid"
+elseif sRole == "pos_2"
 then
     nAbilityBuildList   = tAllAbilityBuildList[2]
     nTalentBuildList    = J.Skill.GetTalentBuild(tTalentTreeList[2])
 end
 
-local tOutFitList = {}
+local sRoleItemsBuyList = {}
 
-tOutFitList['outfit_carry'] = {
+sRoleItemsBuyList['pos_1'] = {
 	"item_tango",
 	"item_double_branches",
 	"item_magic_stick",
@@ -73,7 +73,7 @@ tOutFitList['outfit_carry'] = {
 	"item_ultimate_scepter_2",
 }
 
-tOutFitList['outfit_mid'] = {
+sRoleItemsBuyList['pos_2'] = {
 	"item_tango",
 	"item_double_branches",
 	"item_faerie_fire",
@@ -91,17 +91,17 @@ tOutFitList['outfit_mid'] = {
 	"item_octarine_core",--
 	"item_sheepstick",--
 	"item_ultimate_scepter_2",
+	"item_travel_boots_2",--
 	"item_moon_shard",
-	"item_travel_boots_2"
 }
 
-tOutFitList['outfit_tank'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_1']
 
-tOutFitList['outfit_priest'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_1']
 
-tOutFitList['outfit_mage'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_1']
 
-X['sBuyList'] = tOutFitList[sOutfitType]
+X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 Pos1SellList = {
 	"item_magic_wand",
@@ -116,10 +116,10 @@ Pos2SellList = {
 
 X['sSellList'] = {}
 
-if sOutfitType == "outfit_carry"
+if sRole == "pos_1"
 then
     X['sSellList'] = Pos1SellList
-elseif sOutfitType == "outfit_mid"
+elseif sRole == "pos_2"
 then
     X['sSellList'] = Pos2SellList
 end
@@ -773,7 +773,7 @@ function X.ConsiderFlameCloak()
 	local nAlliedHeroes = bot:GetNearbyHeroes(nAttackRange, false, BOT_MODE_NONE)
 
 	if J.IsRetreating(bot)
-	and (nEnemyHeroes ~= nil and nAlliedHeroes ~= nil and nEnemyHeroes >= nAlliedHeroes)
+	and (nEnemyHeroes ~= nil and nAlliedHeroes ~= nil and #nEnemyHeroes >= #nAlliedHeroes)
 	and not J.WeAreStronger(bot, nAttackRange)
 	then
 		return BOT_ACTION_DESIRE_HIGH

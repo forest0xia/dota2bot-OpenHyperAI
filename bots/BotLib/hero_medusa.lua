@@ -14,17 +14,17 @@ local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
 local Minion = dofile( GetScriptDirectory()..'/FunLib/aba_minion' )
 local sTalentList = J.Skill.GetTalentList( bot )
 local sAbilityList = J.Skill.GetAbilityList( bot )
-local sOutfitType = J.Item.GetOutfitType( bot )
+local sRole = J.Item.GetRoleItemsBuyList( bot )
 
 local tTalentTreeList = {
 						['t25'] = {10, 0},
-						['t20'] = {0, 10},
-						['t15'] = {10, 0},
-						['t10'] = {0, 10},
+						['t20'] = {10, 0},
+						['t15'] = {0, 10},
+						['t10'] = {10, 0},
 }
 
 local tAllAbilityBuildList = {
-						{2,1,2,1,2,6,2,1,1,3,3,6,3,3,6},
+						{2,3,2,1,2,1,2,1,1,6,3,3,3,6,6},--pos1
 }
 
 local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
@@ -32,50 +32,40 @@ local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
 local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 
 
-local tOutFitList = {}
+local sRoleItemsBuyList = {}
 
-tOutFitList['outfit_carry'] = {
-
-	"item_medusa_outfit",
-	"item_ultimate_scepter",
-	"item_aghanims_shard",
-	"item_dragon_lance",
-	"item_manta",
-	"item_mjollnir",
-	"item_hurricane_pike", 
-	"item_travel_boots",
-	"item_skadi",
---	"item_sphere",	
-	"item_ultimate_scepter_2",
-	"item_butterfly",
-	"item_moon_shard",
-	"item_travel_boots_2",
-	
-
-
-}
-
-tOutFitList['outfit_mid'] = tOutFitList['outfit_carry']
-
-tOutFitList['outfit_priest'] = tOutFitList['outfit_carry']
-
-tOutFitList['outfit_mage'] = tOutFitList['outfit_carry']
-
-tOutFitList['outfit_tank'] = tOutFitList['outfit_carry']
-
-X['sBuyList'] = tOutFitList[sOutfitType]
-
-X['sSellList'] = {
-
-	"item_black_king_bar",
-	"item_urn_of_shadows",
-
-	"item_travel_boots",
+sRoleItemsBuyList['pos_1'] = {
 	"item_magic_wand",
 
---	"item_satanic",
---	"item_dragon_lance",
+	"item_ring_of_basilius",
+	"item_power_treads",
+	"item_manta",
+	"item_butterfly",--
+	"item_greater_crit",--
+	"item_skadi",--
+	"item_monkey_king_bar",--
+	"item_travel_boots",
+	"item_aghanims_shard",
+	"item_disperser",--
+	"item_moon_shard",
+	"item_travel_boots_2",--
+	"item_ultimate_scepter_2",
+}
 
+sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
+
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_1']
+
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_1']
+
+sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_1']
+
+X['sBuyList'] = sRoleItemsBuyList[sRole]
+
+X['sSellList'] = {
+	"item_magic_wand",
+	"item_ring_of_basilius",
+	"item_manta",
 }
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_mid' }, {} end
@@ -145,6 +135,8 @@ local lastToggleTime = 0
 
 
 function X.SkillsComplement()
+
+	J.ConsiderForMkbDisassembleMask( bot )
 	J.ConsiderTarget()
 
 	if J.CanNotUseAbility( bot ) or bot:IsInvisible() then return end

@@ -100,9 +100,9 @@ function GetDesire()
 					
 					if bFWQ 
 					then 
-						bot:ActionImmediate_Chat(sDropHero.."呀, 自信点, 别老是靠大药钓鱼啊(-_-) ", true)
+						bot:ActionImmediate_Chat(sDropHero.."Yeah, be more confident and don’t always rely on big medicine to fish (-_-)", true)
 					else
-						bot:ActionImmediate_Chat(sDropHero.."呀, 想赢直接 -gold 9999 吧, 别大药钓鱼了 ", true)
+						bot:ActionImmediate_Chat(sDropHero.."Yeah, if you want to win, just buy -gold 9999. Stop fishing with big drugs.", true)
 					end
 					
 				end
@@ -601,7 +601,8 @@ function X.IsSuitableToPickRune()
 	if X.IsNearRune(bot) then return true end
 
 	local mode = bot:GetActiveMode()
-	local nEnemies = bot:GetNearbyHeroes(1300, true, BOT_MODE_NONE)
+	-- local nEnemies = bot:GetNearbyHeroes(1300, true, BOT_MODE_NONE)
+	local nEnemies = bot:GetNearbyHeroes(600, true, BOT_MODE_NONE)
 	
 	if ( mode == BOT_MODE_RETREAT and bot:GetActiveModeDesire() > BOT_MODE_DESIRE_HIGH )
 		or ( #nEnemies >= 1 and X.IsIBecameTheTarget(nEnemies) )

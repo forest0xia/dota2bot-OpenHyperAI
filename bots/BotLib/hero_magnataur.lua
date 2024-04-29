@@ -5,7 +5,7 @@ local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
 local Minion = dofile( GetScriptDirectory()..'/FunLib/aba_minion' )
 local sTalentList = J.Skill.GetTalentList( bot )
 local sAbilityList = J.Skill.GetAbilityList( bot )
-local sRole = J.Item.GetOutfitType( bot )
+local sRole = J.Item.GetRoleItemsBuyList( bot )
 
 local tTalentTreeList = {
 						['t25'] = {10, 0},
@@ -27,7 +27,11 @@ local nUtility = sUtility[RandomInt(1, #sUtility)]
 
 local sRoleItemsBuyList = {}
 
-sRoleItemsBuyList['outfit_tank'] = {
+sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_1']
+
+sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
+
+sRoleItemsBuyList['pos_3'] = {
     "item_tango",
     "item_double_branches",
     "item_double_circlet",
@@ -50,13 +54,9 @@ sRoleItemsBuyList['outfit_tank'] = {
     "item_moon_shard",
 }
 
-sRoleItemsBuyList['outfit_carry'] = sRoleItemsBuyList['outfit_tank']
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_1']
 
-sRoleItemsBuyList['outfit_mid'] = sRoleItemsBuyList['outfit_tank']
-
-sRoleItemsBuyList['outfit_priest'] = sRoleItemsBuyList['outfit_tank']
-
-sRoleItemsBuyList['outfit_mage'] = sRoleItemsBuyList['outfit_tank']
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_1']
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 
@@ -825,6 +825,8 @@ function X.ConsiderSkewer2()
             end
         end
     end
+
+    return BOT_ACTION_DESIRE_NONE
 end
 
 function CanDoBlinkSkewer()

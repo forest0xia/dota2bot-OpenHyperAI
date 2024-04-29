@@ -20,7 +20,6 @@ local BotBuild = dofile(GetScriptDirectory() .. "/BotLib/" .. string.gsub(bot:Ge
 
 
 if BotBuild == nil
-	or botName == 'npc_dota_hero_spectre'
 then
 	return
 end	

@@ -91,7 +91,6 @@ sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
 
 sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_3']
 
-
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 Pos4SellList = {

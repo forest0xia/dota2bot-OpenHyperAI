@@ -6,7 +6,7 @@ local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
 local Minion = dofile( GetScriptDirectory()..'/FunLib/aba_minion' )
 local sTalentList = J.Skill.GetTalentList( bot )
 local sAbilityList = J.Skill.GetAbilityList( bot )
-local sRole = J.Item.GetOutfitType( bot )
+local sRole = J.Item.GetRoleItemsBuyList( bot )
 
 local tTalentTreeList = {
 						['t25'] = {0, 10},
@@ -25,9 +25,7 @@ local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 
 local sRoleItemsBuyList = {}
 
-sRoleItemsBuyList['outfit_carry'] = sRoleItemsBuyList['outfit_mid']
-
-sRoleItemsBuyList['outfit_mid'] = {
+sRoleItemsBuyList['pos_2'] = {
     "item_tango",
     "item_double_branches",
     "item_circlet",
@@ -52,11 +50,35 @@ sRoleItemsBuyList['outfit_mid'] = {
     "item_aghanims_shard",
 }
 
-sRoleItemsBuyList['outfit_priest'] = sRoleItemsBuyList['outfit_carry']
+sRoleItemsBuyList['pos_1'] = {
+    "item_tango",
+    "item_double_branches",
+    "item_circlet",
+    "item_gauntlets",
+    
+    "item_bracer",
+    "item_boots",
+    "item_magic_wand",
+    "item_power_treads",
+    "item_echo_sabre",
+    "item_ultimate_scepter",
+    "item_manta",--
+    "item_black_king_bar",--
+    "item_travel_boots",
+    "item_greater_crit",--
+    "item_sheepstick",--
+    "item_ultimate_scepter_2",
+    "item_travel_boots_2",--
+    "item_bloodthorn",--
+    "item_moon_shard",
+    "item_aghanims_shard",
+}
 
-sRoleItemsBuyList['outfit_mage'] = sRoleItemsBuyList['outfit_carry']
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_1']
 
-sRoleItemsBuyList['outfit_tank'] = sRoleItemsBuyList['outfit_carry']
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_1']
+
+sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_1']
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 

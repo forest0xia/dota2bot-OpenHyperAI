@@ -7,7 +7,7 @@ local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
 local Minion = dofile( GetScriptDirectory()..'/FunLib/aba_minion' )
 local sTalentList = J.Skill.GetTalentList( bot )
 local sAbilityList = J.Skill.GetAbilityList( bot )
-local sOutfitType = J.Item.GetOutfitType( bot )
+local sRole = J.Item.GetRoleItemsBuyList( bot )
 
 local tTalentTreeList = {
 						['t25'] = {0, 10},
@@ -24,9 +24,9 @@ local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
 
 local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 
-local tOutFitList = {}
+local sRoleItemsBuyList = {}
 
-tOutFitList['outfit_mid'] = {
+sRoleItemsBuyList['pos_2'] = {
     "item_tango",
 	"item_double_branches",
 	"item_faerie_fire",
@@ -49,15 +49,35 @@ tOutFitList['outfit_mid'] = {
     "item_moon_shard",
 }
 
-tOutFitList['outfit_tank'] = tOutFitList['outfit_mid']
+sRoleItemsBuyList['pos_3'] = {
+    "item_tango",
+	"item_double_branches",
+	"item_faerie_fire",
 
-tOutFitList['outfit_carry'] = tOutFitList['outfit_mid'] 
+	"item_boots",
+    "item_magic_wand",
+	"item_falcon_blade",
+    "item_power_treads",
+    "item_witch_blade",
+    "item_kaya_and_sange",--
+	"item_devastator",--
+    "item_black_king_bar",--
+    "item_ultimate_scepter",
+    "item_shivas_guard",--
+    "item_aghanims_shard",
+    "item_sheepstick",--
+    "item_ultimate_scepter_2",
+    "item_travel_boots_2",--
+    "item_moon_shard",
+}
 
-tOutFitList['outfit_priest'] = tOutFitList['outfit_mid']
+sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3'] 
 
-tOutFitList['outfit_mage'] = tOutFitList['outfit_mid']
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_3']
 
-X['sBuyList'] = tOutFitList[sOutfitType]
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_3']
+
+X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 X['sSellList'] = {
     "item_bottle",
@@ -87,22 +107,38 @@ local ElectricVortex 	= bot:GetAbilityByName( "storm_spirit_electric_vortex" )
 local Overload 			= bot:GetAbilityByName( "storm_spirit_overload" )
 local BallLightning 	= bot:GetAbilityByName( "storm_spirit_ball_lightning" )
 
-local OverloadDesire = 0
+local StaticRemnantDesire
+local ElectricVortexDesire, ElectricVortexTarget
+local OverloadDesire
+local BallLightningDesire, BallLightningLoc
+
+local BallVortexDesire, BallVortexLocation, eta
 
 function X.SkillsComplement()
 	if J.CanNotUseAbility(bot) then return end
 
+	BallVortexDesire, BallVortexLocation, eta = X.ConsiderBallVortex()
+	if BallVortexDesire > 0
+	then
+		bot:Action_ClearActions(false)
+		bot:ActionQueue_UseAbilityOnLocation(BallLightning, BallVortexLocation)
+		bot:ActionQueue_Delay(eta)
+		bot:ActionQueue_UseAbility(ElectricVortex)
+		return
+	end
+
     BallLightningDesire, BallLightningLoc = X.ConsiderBallLightning()
-    if (BallLightningDesire > 0)
+    if BallLightningDesire > 0
 	then
 		bot:Action_UseAbilityOnLocation(BallLightning, BallLightningLoc)
 		return
 	end
 
 	ElectricVortexDesire, ElectricVortexTarget = X.ConsiderElectricVortex()
-	if (ElectricVortexDesire > 0)
+	if ElectricVortexDesire > 0
 	then
-		if bot:HasScepter() then
+		if bot:HasScepter()
+		then
 			bot:Action_UseAbility(ElectricVortex)
 			return
 		else
@@ -112,14 +148,14 @@ function X.SkillsComplement()
 	end
 
 	OverloadDesire = X.ConsiderOverload()
-	if (OverloadDesire > 0)
+	if OverloadDesire > 0
 	then
 		bot:Action_UseAbility(Overload)
 		return
 	end
 
 	StaticRemnantDesire = X.ConsiderStaticRemnant()
-	if (StaticRemnantDesire > 0)
+	if StaticRemnantDesire > 0
 	then
 		bot:Action_UseAbility(StaticRemnant)
 		return
@@ -127,109 +163,171 @@ function X.SkillsComplement()
 end
 
 function X.ConsiderStaticRemnant()
-	if (not StaticRemnant:IsFullyCastable()) then
+	if not StaticRemnant:IsFullyCastable()
+	then
 		return BOT_ACTION_DESIRE_NONE
 	end
 
-	local nRadius = StaticRemnant:GetSpecialValueInt("static_remnant_radius")
-	local nDamage = StaticRemnant:GetSpecialValueInt("static_remnant_damage")
-	local manaCost = StaticRemnant:GetManaCost()
-	local aRange = bot:GetAttackRange()
+	local nRadius = StaticRemnant:GetSpecialValueInt('static_remnant_radius')
+	local nAbilityLevel = StaticRemnant:GetLevel()
+	local nManaCost = StaticRemnant:GetManaCost()
+	local nMana = bot:GetMana() / bot:GetMaxMana()
+	local nAttackRange = bot:GetAttackRange()
+	local botTarget = J.GetProperTarget(bot)
 
-	if J.IsRetreating(bot)
+	local nOverloadDamage = 0
+	if Overload:IsTrained()
 	then
-		local nEnemyHeroes = bot:GetNearbyHeroes(1000, true, BOT_MODE_NONE)
-		for _, npcEnemy in pairs(nEnemyHeroes)
-		do
-			if (bot:WasRecentlyDamagedByHero(npcEnemy, 2.0))
-			then
-				return BOT_ACTION_DESIRE_HIGH
-			end
-		end
+		nOverloadDamage = Overload:GetSpecialValueInt('overload_damage') + (1 + bot:GetSpellAmp())
 	end
 
-	if J.IsInTeamFight(bot, 1200)
-	then
-		local nEnemyHeroes = bot:GetNearbyHeroes(nRadius + aRange, true, BOT_MODE_NONE)
-		if (nEnemyHeroes ~= nil and #nEnemyHeroes > 0) then
-			return BOT_ACTION_DESIRE_HIGH
-		end
-	end
-
-	if J.IsFarming(bot) and J.CanSpamSpell(bot, manaCost)
-	then
-		local nNeutralCreeps = bot:GetNearbyNeutralCreeps(nRadius + aRange)
-		if (nNeutralCreeps ~= nil and #nNeutralCreeps > 1)
+	local nEnemyHeroes = bot:GetNearbyHeroes(nAttackRange, true, BOT_MODE_NONE)
+	for _, enemyHero in pairs(nEnemyHeroes)
+	do
+		if  J.IsValidHero(enemyHero)
+		and J.CanCastOnMagicImmune(enemyHero)
+		and J.IsInRange(bot, enemyHero, nAttackRange)
+		and J.CanKillTarget(enemyHero, nOverloadDamage, DAMAGE_TYPE_MAGICAL)
+		and not J.IsSuspiciousIllusion(enemyHero)
+		and not enemyHero:HasModifier('modifier_abaddon_aphotic_shield')
+		and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
+		and not enemyHero:HasModifier('modifier_dazzle_shallow_grave')
+		and not enemyHero:HasModifier('modifier_oracle_false_promise')
+		and not enemyHero:HasModifier('modifier_templar_assassin_refraction_absorb')
 		then
-			return BOT_ACTION_DESIRE_HIGH
-		end
-	end
-
-	if J.IsLaning(bot) and J.CanSpamSpell(bot, manaCost)
-	then
-		local botTarget = bot:GetTarget()
-		if J.IsValidTarget(botTarget)
-		and J.IsInRange(botTarget, bot, nRadius + aRange)
-		and nDamage >= botTarget:GetHealth()
-		then
-			return BOT_ACTION_DESIRE_ABSOLUTE
-		end
-	end
-
-	if (J.IsDefending(bot) or J.IsPushing(bot)) and J.CanSpamSpell(bot, manaCost)
-	then
-		local nEnemyCreeps = bot:GetNearbyLaneCreeps(nRadius + aRange, true)
-		if (nEnemyCreeps ~= nil and #nEnemyCreeps >= 2)
-		then
+			bot:SetTarget(enemyHero)
 			return BOT_ACTION_DESIRE_HIGH
 		end
 	end
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		local botTarget = bot:GetTarget()
-		if J.IsValidTarget(botTarget) and J.IsInRange(botTarget, bot, nRadius + aRange)
+		local nInRangeAlly = bot:GetNearbyHeroes(1000, false, BOT_MODE_NONE)
+		local nInRangeEnemy = bot:GetNearbyHeroes(800, true, BOT_MODE_NONE)
+
+		if  J.IsValidTarget(botTarget)
+		and J.CanCastOnNonMagicImmune(botTarget)
+		and J.IsInRange(bot, botTarget, nAttackRange)
+		and not J.IsSuspiciousIllusion(botTarget)
+		and not botTarget:HasModifier('modifier_abaddon_borrowed_time')
+		and not botTarget:HasModifier('modifier_dazzle_shallow_grave')
+		and not botTarget:HasModifier('modifier_templar_assassin_refraction_absorb')
+		and nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+		and #nInRangeAlly >= #nInRangeEnemy
 		then
 			return BOT_ACTION_DESIRE_HIGH
 		end
+	end
+
+	if J.IsRetreating(bot)
+	then
+		local nInRangeAlly = bot:GetNearbyHeroes(1000, false, BOT_MODE_NONE)
+		local nInRangeEnemy = bot:GetNearbyHeroes(800, true, BOT_MODE_NONE)
+
+		if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+		and J.IsValidHero(nInRangeEnemy[1])
+		and ((#nInRangeEnemy > #nInRangeAlly)
+			or (J.GetHP(bot) < 0.5 and J.IsInRange(bot, nInRangeEnemy[1], nAttackRange)))
+		and J.CanCastOnNonMagicImmune(nInRangeEnemy[1])
+		and not J.IsSuspiciousIllusion(nInRangeEnemy[1])
+		and not J.IsDisabled(nInRangeEnemy[1])
+		then
+			return BOT_ACTION_DESIRE_HIGH
+		end
+	end
+
+	if  J.IsFarming(bot)
+	and nAbilityLevel >= 2
+	and nMana > 0.44
+	then
+		local nNeutralCreeps = bot:GetNearbyNeutralCreeps(nAttackRange)
+
+		if nNeutralCreeps ~= nil and #nNeutralCreeps >= 2
+		then
+			return BOT_ACTION_DESIRE_HIGH
+		end
+	end
+
+	if  J.IsLaning(bot)
+	and J.AllowedToSpam(bot, nManaCost)
+	and Overload:IsTrained()
+	then
+		local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nAttackRange, true)
+
+		for _, creep in pairs(nEnemyLaneCreeps)
+		do
+			if  J.IsValid(creep)
+			and (J.IsKeyWordUnit('ranged', creep) or J.IsKeyWordUnit('siege', creep))
+			and creep:GetHealth() <= nOverloadDamage
+			then
+				local nInRangeEnemy = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+
+				if  nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
+				and GetUnitToUnitDistance(creep, nInRangeEnemy[1]) <= 500
+				then
+					bot:SetTarget(creep)
+					return BOT_ACTION_DESIRE_HIGH
+				end
+			end
+		end
+	end
+
+	if  (J.IsDefending(bot) or J.IsPushing(bot))
+	and nAbilityLevel >= 3
+	and nMana > 0.5
+	then
+		local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nAttackRange, true)
+
+		if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 3
+		then
+			return BOT_ACTION_DESIRE_HIGH
+		end
+	end
+
+	local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nRadius, true)
+	if  nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 3
+	and nAbilityLevel >= 2
+	and nMana > 0.5
+	then
+		return BOT_ACTION_DESIRE_HIGH
 	end
 
 	return BOT_ACTION_DESIRE_NONE
 end
 
 function X.ConsiderElectricVortex()
-	if (not ElectricVortex:IsFullyCastable()) then
+	if not ElectricVortex:IsFullyCastable()
+	then
 		return BOT_ACTION_DESIRE_NONE, 0
 	end
 
 	local nCastRange = ElectricVortex:GetCastRange()
-	local nInRangeEnemyList = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+	local nRadius = bot:HasScepter() and 475 or 0
+	local nCastPoint = ElectricVortex:GetCastPoint()
+	local botTarget = J.GetProperTarget(bot)
 
-	if bot:HasScepter() then
-		nCastRange = 475
-	end
-
-	for _, npcEnemy in pairs( nInRangeEnemyList )
+	local nEnemyHeroes = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+	for _, enemyHero in pairs(nEnemyHeroes)
 	do
-		if J.IsValidHero(npcEnemy)
+		if  J.IsValidHero(enemyHero)
+		and J.CanCastOnNonMagicImmune(enemyHero)
+		and J.IsInRange(bot, enemyHero, nCastRange)
+		and not J.IsSuspiciousIllusion(enemyHero)
 		then
-			if npcEnemy:IsChanneling()
-			and J.CanCastOnNonMagicImmune(npcEnemy)
+			if enemyHero:IsChanneling() or J.IsCastingUltimateAbility(enemyHero)
 			then
-				return BOT_ACTION_DESIRE_HIGH, npcEnemy
-			end
-
-			if J.IsCastingUltimateAbility(npcEnemy)
-			and J.CanCastOnNonMagicImmune(npcEnemy)
-			then
-				return BOT_ACTION_DESIRE_HIGH, npcEnemy
+				return BOT_ACTION_DESIRE_HIGH, enemyHero
 			end
 		end
 	end
 
-	if J.IsInTeamFight(bot, 1200) and bot:HasScepter()
+	if  J.IsInTeamFight(bot, 1200)
+	and bot:HasScepter()
+	and not CanDoBallVortex()
 	then
-		if nInRangeEnemyList ~= nil and #nInRangeEnemyList >= 2
+		local nLocationAoE = bot:FindAoELocation(true, true, bot:GetLocation(), nRadius, nRadius, nCastPoint, 0)
+
+		if nLocationAoE.count >= 2
 		then
 			return BOT_ACTION_DESIRE_HIGH, nil
 		end
@@ -237,13 +335,27 @@ function X.ConsiderElectricVortex()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		local botTarget = bot:GetTarget()
-		if J.IsValidHero(botTarget)
+		local nInRangeAlly = bot:GetNearbyHeroes(1000, false, BOT_MODE_NONE)
+		local nInRangeEnemy = bot:GetNearbyHeroes(800, true, BOT_MODE_NONE)
+
+		if  J.IsValidTarget(botTarget)
 		and J.CanCastOnNonMagicImmune(botTarget)
-		and J.IsInRange(bot, botTarget, nCastRange - 100)
+		and not J.IsSuspiciousIllusion(botTarget)
 		and not J.IsDisabled(botTarget)
+		and nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+		and ((#nInRangeAlly >= #nInRangeEnemy)
+			or (#nInRangeEnemy > #nInRangeAlly and J.WeAreStronger(bot, 1000)))
 		then
-			return BOT_ACTION_DESIRE_HIGH, botTarget
+			if  bot:HasScepter()
+			and J.IsInRange(bot, botTarget, nRadius)
+			then
+				return BOT_ACTION_DESIRE_HIGH, nil
+			else
+				if J.IsInRange(bot, botTarget, nCastRange)
+				then
+					return BOT_ACTION_DESIRE_HIGH, botTarget
+				end
+			end
 		end
 	end
 
@@ -258,15 +370,17 @@ function X.ConsiderOverload()
 	end
 
 	local nActivationRadius = 750
-	local nInRangeEnemyList = bot:GetNearbyHeroes(nActivationRadius, true, BOT_MODE_NONE)
-	local nInRangeAllyList = bot:GetNearbyHeroes(nActivationRadius, false, BOT_MODE_ATTACK)
 
-	if J.IsInTeamFight(bot, 1200) and bot:HasScepter()
+	if  J.IsInTeamFight(bot, 1200)
+	and bot:HasScepter()
 	then
-		if (nInRangeEnemyList ~= nil and #nInRangeEnemyList >= 1)
-		and (nInRangeAllyList ~= nil and #nInRangeAllyList >= 1)
+		local nInRangeAlly = bot:GetNearbyHeroes(nActivationRadius, false, BOT_MODE_NONE)
+		local nInRangeEnemy = bot:GetNearbyHeroes(nActivationRadius, true, BOT_MODE_NONE)
+
+		if  nInRangeAlly ~= nil and nInRangeEnemy
+		and #nInRangeAlly >= 2 and #nInRangeEnemy >= 1
 		then
-			return BOT_ACTION_DESIRE_HIGH, nil
+			return BOT_ACTION_DESIRE_HIGH
 		end
 	end
 
@@ -274,64 +388,147 @@ function X.ConsiderOverload()
 end
 
 function X.ConsiderBallLightning()
-	if (not BallLightning:IsFullyCastable() or BallLightning:IsInAbilityPhase() or bot:HasModifier("modifier_storm_spirit_ball_lightning") or bot:IsRooted() or bot:IsSilenced())
+	if not BallLightning:IsFullyCastable()
+	or BallLightning:IsInAbilityPhase()
+	or bot:IsRooted()
+	or bot:HasModifier("modifier_storm_spirit_ball_lightning")
 	then
 		return BOT_ACTION_DESIRE_NONE, 0
 	end
 
 	local nCastPoint = BallLightning:GetCastPoint()
-	local nInBonusEnemyList = J.GetAroundEnemyHeroList(1200)
-	local nAllyHeroes = bot:GetNearbyHeroes(1200, false, BOT_MODE_ATTACK)
+	local nMana = bot:GetMana() / bot:GetMaxMana()
+	local nSpeed = BallLightning:GetSpecialValueInt('ball_lightning_move_speed')
+	local botTarget = J.GetProperTarget(bot)
 
-	local nRDamage = StaticRemnant:GetSpecialValueInt("static_remnant_damage")
-	local nODamage = Overload:GetSpecialValueInt("overload_damage")
-
-	local botTarget = bot:GetTarget()
-
-	if J.IsLaning(bot)
+	if J.IsStuck(bot)
+	or J.IsStunProjectileIncoming(bot, bot:GetAttackRange())
 	then
-		if (nAllyHeroes ~= nil and nAllyHeroes > 0 and #nInBonusEnemyList == 1)
-		or J.WillMixedDamageKillTarget(botTarget, bot:GetAttackDamage(), nRDamage + nODamage, 0, nCastPoint)
-		then
-			return BOT_ACTION_DESIRE_HIGH
-		end
-
-		return BOT_ACTION_DESIRE_LOW
+		local loc = J.GetEscapeLoc()
+		return BOT_ACTION_DESIRE_HIGH, J.Site.GetXUnitsTowardsLocation(bot, loc, bot:GetAttackRange())
 	end
 
-	if J.IsGoingOnSomeone(bot)
-	and GetUnitToUnitDistance(bot, botTarget) > bot:GetAttackRange()
-	and not botTarget:HasModifier("modifier_black_king_bar_immune")
-	and nAllyHeroes ~= nil and #nAllyHeroes >= #nInBonusEnemyList
+	if  J.IsGoingOnSomeone(bot)
+	and not CanDoBallVortex()
+	and nMana > 0.15
 	then
-		if J.IsValidTarget(botTarget)
-		and J.IsInRange(bot, botTarget, 1200)
+		local nInRangeAlly = bot:GetNearbyHeroes(1000, false, BOT_MODE_NONE)
+		local nInRangeEnemy = bot:GetNearbyHeroes(1000, true, BOT_MODE_NONE)
+
+		if  J.IsValidTarget(botTarget)
+		and J.IsInRange(bot, botTarget, 1000)
 		and J.CanCastOnNonMagicImmune(botTarget)
+		and GetUnitToUnitDistance(bot, botTarget) > bot:GetAttackRange()
+		and not J.IsSuspiciousIllusion(botTarget)
+		and not J.IsDisabled(botTarget)
+		and not botTarget:HasModifier('modifier_faceless_void_chronosphere_freeze')
+		and nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+		and #nInRangeAlly >= #nInRangeEnemy
 		then
-			return BOT_ACTION_DESIRE_HIGH, botTarget:GetExtrapolatedLocation(nCastPoint)
+			local nDelay = (GetUnitToUnitDistance(bot, botTarget) / nSpeed) + nCastPoint
+			return BOT_ACTION_DESIRE_HIGH, botTarget:GetExtrapolatedLocation(nDelay)
 		end
 	end
 
 	if J.IsRetreating(bot)
 	then
-		for _, npcEnemy in pairs(nInBonusEnemyList)
-		do
-			if J.IsValid(npcEnemy)
-			and (bot:WasRecentlyDamagedByHero(npcEnemy, 2.0) or #nInBonusEnemyList >= 2)
-			then
-				local loc = J.GetEscapeLoc()
-				return BOT_ACTION_DESIRE_HIGH, J.Site.GetXUnitsTowardsLocation(bot, loc, RandomInt(600, 1000))
-			end
+		local nInRangeAlly = bot:GetNearbyHeroes(1000, false, BOT_MODE_NONE)
+		local nInRangeEnemy = bot:GetNearbyHeroes(1000, true, BOT_MODE_NONE)
+
+		if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+		and ((#nInRangeEnemy > #nInRangeAlly)
+			or (J.GetHP(bot) < 0.5 and bot:WasRecentlyDamagedByAnyHero(2)))
+		and J.IsValidHero(nInRangeEnemy[1])
+		and J.IsInRange(bot, nInRangeEnemy[1], 600)
+		and not J.IsSuspiciousIllusion(nInRangeEnemy[1])
+		then
+			local loc = J.GetEscapeLoc()
+			local dist = 1200 * (1 - J.GetHP(bot))
+
+			if dist < 600 then dist = 600 end
+
+			return BOT_ACTION_DESIRE_HIGH, J.Site.GetXUnitsTowardsLocation(bot, loc, dist)
 		end
 	end
 
-	if J.IsStuck(bot)
+	return BOT_ACTION_DESIRE_NONE, 0
+end
+
+function X.ConsiderBallVortex()
+	if CanDoBallVortex()
 	then
-		local loc = J.GetEscapeLoc()
-		return BOT_ACTION_DESIRE_HIGH, J.Site.GetXUnitsTowardsLocation(bot, loc, 600)
+		local nRadius = 475
+		local nCastPoint = BallLightning:GetCastPoint() + ElectricVortex:GetCastPoint()
+		local nSpeed = BallLightning:GetSpecialValueInt('ball_lightning_move_speed')
+
+		local nTeamFightLocation = J.GetTeamFightLocation(bot)
+
+		if  J.IsInTeamFight(bot, 1200)
+		and nTeamFightLocation ~= nil
+		and GetUnitToLocationDistance(bot, nTeamFightLocation) <= 1200
+		then
+			local nDelay = (GetUnitToLocationDistance(bot, nTeamFightLocation) / nSpeed) + nCastPoint
+			local nLocationAoE = bot:FindAoELocation(true, true, bot:GetLocation(), 1000, nRadius, nDelay, 0)
+
+			if  nLocationAoE.count >= 2
+			and not IsTargetLocInBigUlt(nLocationAoE.targetloc)
+			then
+				return BOT_ACTION_DESIRE_HIGH, nLocationAoE.targetloc, nDelay
+			end
+		end
+    end
+
+	return BOT_ACTION_DESIRE_NONE, 0, 0
+end
+
+function CanDoBallVortex()
+	if  ElectricVortex:IsFullyCastable()
+	and bot:HasScepter()
+    then
+		if J.IsInTeamFight(bot, 1200)
+		then
+			local nMana = bot:GetMaxMana()
+			local nActivationManaCost = BallLightning:GetSpecialValueInt('ball_lightning_initial_mana_base')
+			local nActivationInitManaPercentage = BallLightning:GetSpecialValueFloat('ball_lightning_initial_mana_percentage') / 100
+
+			local nTeamFightLocation = J.GetTeamFightLocation(bot)
+
+			if  nTeamFightLocation ~= nil
+			and GetUnitToLocationDistance(bot, nTeamFightLocation) <= 1200
+			then
+				local totalDist = GetUnitToLocationDistance(bot, nTeamFightLocation)
+
+				local nBofLCost = nActivationManaCost
+								+ nActivationInitManaPercentage * nMana
+								+ ((10 + 0.0065 * nMana) * (totalDist / 100))
+
+				local nManaCost = nBofLCost + ElectricVortex:GetManaCost()
+
+				if  bot:GetMana() >= nManaCost
+				then
+					return true
+				end
+			end
+		end
+    end
+
+	return false
+end
+
+function IsTargetLocInBigUlt(loc)
+	for _, enemyHero in pairs(GetUnitList(UNIT_LIST_ENEMY_HEROES))
+	do
+		if  J.IsValidHero(enemyHero)
+		and not J.IsSuspiciousIllusion(enemyHero)
+		and GetUnitToLocationDistance(enemyHero, loc) < 450
+		and (enemyHero:HasModifier('modifier_faceless_void_chronosphere_freeze')
+			or enemyHero:HasModifier('modifier_enigma_black_hole_pull'))
+		then
+			return true
+		end
 	end
 
-	return BOT_ACTION_DESIRE_NONE, 0
+	return false
 end
 
 return X

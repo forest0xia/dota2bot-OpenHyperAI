@@ -27,6 +27,10 @@ local sRoleItemsBuyList = {}
 local sUtility = {"item_pipe", "item_crimson_guard"}
 local nUtility = sUtility[RandomInt(1, #sUtility)]
 
+sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_1']
+
+sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
+
 sRoleItemsBuyList['pos_3'] = {
     "item_tango",
     "item_double_branches",
@@ -50,13 +54,9 @@ sRoleItemsBuyList['pos_3'] = {
     "item_moon_shard",
 }
 
-sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_1']
 
-sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_3']
-
-sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_3']
-
-sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_3']
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_1']
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 

@@ -14,7 +14,7 @@ local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
 local Minion = dofile( GetScriptDirectory()..'/FunLib/aba_minion' )
 local sTalentList = J.Skill.GetTalentList( bot )
 local sAbilityList = J.Skill.GetAbilityList( bot )
-local sOutfitType = J.Item.GetOutfitType( bot )
+local sRole = J.Item.GetRoleItemsBuyList( bot )
 
 local tTalentTreeList = {
 						['t25'] = {0, 10},
@@ -33,17 +33,17 @@ local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 
 local sLotusHalberd = RandomInt( 1, 2 ) == 1 and "item_lotus_orb" or "item_heavens_halberd"
 
-local tOutFitList = {}
+local sRoleItemsBuyList = {}
 
-tOutFitList['outfit_carry'] = tOutFitList['outfit_tank']
+sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
 
-tOutFitList['outfit_mid'] = tOutFitList['outfit_tank']
+sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_3']
 
-tOutFitList['outfit_priest'] = tOutFitList['outfit_tank']
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_3']
 
-tOutFitList['outfit_mage'] = tOutFitList['outfit_tank']
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_3']
 
-tOutFitList['outfit_tank'] = {
+sRoleItemsBuyList['pos_3'] = {
 	"item_tango",
 	"item_double_branches",
 	"item_quelling_blade",
@@ -67,7 +67,7 @@ tOutFitList['outfit_tank'] = {
 	"item_moon_shard",
 }
 
-X['sBuyList'] = tOutFitList[sOutfitType]
+X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 X['sSellList'] = {
 	"item_quelling_blade",
@@ -127,6 +127,7 @@ local abilityQ = bot:GetAbilityByName( sAbilityList[1] )
 local abilityW = bot:GetAbilityByName( sAbilityList[2] )
 local abilityE = bot:GetAbilityByName( sAbilityList[3] )
 local abilityR = bot:GetAbilityByName( sAbilityList[6] )
+local DeadInTheWater = bot:GetAbilityByName( 'tidehunter_dead_in_the_water' )
 local talent3 = bot:GetAbilityByName( sTalentList[3] )
 
 
@@ -692,7 +693,7 @@ function X.ConsiderDeadInTheWater()
 			and J.IsInRange(npcEnemy, bot, nCastRange)
 			and bot:WasRecentlyDamagedByHero(npcEnemy, 4.0)
 			and J.CanCastOnNonMagicImmune(npcEnemy)
-			and X.IsWithoutSpellShield(npcEnemy)
+			and IsWithoutSpellShield(npcEnemy)
 			and not J.IsDisabled(npcEnemy)
 			then
 				return BOT_ACTION_DESIRE_HIGH, npcEnemy
@@ -706,7 +707,7 @@ function X.ConsiderDeadInTheWater()
 		and J.IsMoving(botTarget)
 		and J.IsInRange(botTarget, bot, nCastRange)
 		and J.CanCastOnNonMagicImmune(botTarget)
-		and X.IsWithoutSpellShield(botTarget)
+		and IsWithoutSpellShield(botTarget)
 		and not J.IsDisabled(botTarget)
 		then
 			return BOT_ACTION_DESIRE_HIGH, botTarget
@@ -718,7 +719,7 @@ function X.ConsiderDeadInTheWater()
 	and J.IsMoving(npcEnemy)
 	and J.IsInRange(bot, npcEnemy, nCastRange - 100)
 	and J.CanCastOnNonMagicImmune(npcEnemy)
-	and X.IsWithoutSpellShield(npcEnemy)
+	and IsWithoutSpellShield(npcEnemy)
 	and not J.IsDisabled(npcEnemy)
 	and J.IsRunning(npcEnemy)
 	then
@@ -726,6 +727,12 @@ function X.ConsiderDeadInTheWater()
 	end
 
 	return BOT_ACTION_DESIRE_NONE, nil
+end
+
+function IsWithoutSpellShield(npcEnemy)
+	return not npcEnemy:HasModifier("modifier_item_sphere_target")
+			and not npcEnemy:HasModifier("modifier_antimage_spell_shield")
+			and not npcEnemy:HasModifier("modifier_item_lotus_orb_active")
 end
 
 return X

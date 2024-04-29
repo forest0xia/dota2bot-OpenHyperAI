@@ -14,7 +14,7 @@ local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
 local Minion = dofile( GetScriptDirectory()..'/FunLib/aba_minion' )
 local sTalentList = J.Skill.GetTalentList( bot )
 local sAbilityList = J.Skill.GetAbilityList( bot )
-local sRole = J.Item.GetOutfitType( bot )
+local sRole = J.Item.GetRoleItemsBuyList( bot )
 
 local tTalentTreeList = {
 						['t25'] = {10, 0},
@@ -36,15 +36,15 @@ local sCrimsonPipeHalberd = utilityItems[RandomInt(1, #utilityItems)]
 
 local sRoleItemsBuyList = {}
 
-sRoleItemsBuyList['outfit_carry'] = sRoleItemsBuyList['outfit_tank']
+sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
 
-sRoleItemsBuyList['outfit_mid'] = sRoleItemsBuyList['outfit_tank']
+sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_3']
 
-sRoleItemsBuyList['outfit_priest'] = sRoleItemsBuyList['outfit_tank']
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_3']
 
-sRoleItemsBuyList['outfit_mage'] = sRoleItemsBuyList['outfit_tank']
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_3']
 
-sRoleItemsBuyList['outfit_tank'] = {
+sRoleItemsBuyList['pos_3'] = {
 	"item_tango",
 	"item_double_branches",
 	"item_quelling_blade",

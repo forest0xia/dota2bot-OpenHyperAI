@@ -14,87 +14,107 @@ local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
 local Minion = dofile( GetScriptDirectory()..'/FunLib/aba_minion' )
 local sTalentList = J.Skill.GetTalentList( bot )
 local sAbilityList = J.Skill.GetAbilityList( bot )
-local sOutfitType = J.Item.GetOutfitType( bot )
+local sRole = J.Item.GetRoleItemsBuyList( bot )
 
 local tTalentTreeList = {
-						['t25'] = {0, 10},
-						['t20'] = {0, 10},
-						['t15'] = {10, 0},
-						['t10'] = {10, 0},
+						{--pos2
+							['t25'] = {10, 0},
+							['t20'] = {0, 10},
+							['t15'] = {0, 10},
+							['t10'] = {0, 10},
+						},
+						{--pos3
+							['t25'] = {10, 0},
+							['t20'] = {10, 0},
+							['t15'] = {0, 10},
+							['t10'] = {0, 10},
+						}
 }
 
 local tAllAbilityBuildList = {
-						{2,1,1,3,2,7,2,2,1,1,7,3,3,3,7},
+						{3,2,2,1,2,7,2,1,1,1,7,3,3,3,7},--pos2
+						{2,1,2,3,2,7,3,1,1,1,7,3,3,2,7},--pos3
 }
 
-local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
+local nAbilityBuildList
+local nTalentBuildList
 
-local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
+if sRole == "pos_2"
+then
+    nAbilityBuildList   = tAllAbilityBuildList[1]
+    nTalentBuildList    = J.Skill.GetTalentBuild(tTalentTreeList[1])
+elseif sRole == "pos_3"
+then
+    nAbilityBuildList   = tAllAbilityBuildList[2]
+    nTalentBuildList    = J.Skill.GetTalentBuild(tTalentTreeList[2])
+end
 
-local tOutFitList = {}
+local sRoleItemsBuyList = {}
 
-tOutFitList['outfit_carry'] = {
+sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_2']
 
-	"item_bristleback_outfit",
+sRoleItemsBuyList['pos_2'] = {
+	"item_tango",
+	"item_double_branches",
+	"item_gauntlets",
+	"item_gauntlets",
+
+	"item_bottle",
+	"item_phase_boots",
+	"item_soul_ring",
+	"item_magic_wand",
 	"item_hand_of_midas",
-	"item_aghanims_shard",
+	"item_blade_mail",
+	"item_heart",--
+	"item_black_king_bar",--
+	"item_shivas_guard",--
 	"item_ultimate_scepter",
-	"item_dagon_5",
+	"item_octarine_core",--
 	"item_travel_boots",
-	"item_sheepstick", --
-	"item_octarine_core",
-	"item_moon_shard",
-	"item_travel_boots_2",
 	"item_ultimate_scepter_2",
-	"item_bloodthorn",
-
-
+	"item_sheepstick",--
+	"item_travel_boots_2",
+	"item_moon_shard",
+	"item_aghanims_shard",
 }
 
-tOutFitList['outfit_mid'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_2']
 
-tOutFitList['outfit_priest'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_2']
 
-tOutFitList['outfit_mage'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_3'] = {
+	"item_tango",
+	"item_double_branches",
+	"item_gauntlets",
+	"item_gauntlets",
 
-tOutFitList['outfit_tank'] = {
-
-	"item_tank_outfit",
-	"item_crimson_guard",
-	"item_aghanims_shard",
+	"item_boots",
+	"item_hand_of_midas",
+	"item_magic_wand",
+	"item_aether_lens",--
 	"item_ultimate_scepter",
-	"item_heavens_halberd",
+	"item_crimson_guard",--
+	"item_lotus_orb",--
 	"item_travel_boots",
-	"item_assault",
-	"item_sheepstick",
-	"item_moon_shard",
-	"item_travel_boots_2",
+	"item_shivas_guard",--
 	"item_ultimate_scepter_2",
-	"item_octarine_core",
-
-
+	"item_heart",--
+	"item_travel_boots_2",--
+	"item_moon_shard",
+	"item_aghanims_shard",
 }
 
 
-X['sBuyList'] = tOutFitList[sOutfitType]
+X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 X['sSellList'] = {
-
-	"item_power_treads",
-	"item_quelling_blade",
-	
-
-	"item_assault",
-	"item_magic_wand",
-	
-	"item_sheepstick",
-	"item_magic_wand",
-
-	"item_travel_boots_2",
+	"item_gauntlets",
 	"item_hand_of_midas",
-
-	"item_assault",
-	"item_ancient_janggo",
+	"item_magic_wand",
+	"item_bottle",
+	"item_soul_ring",
+	"item_hand_of_midas",
+	"item_blade_mail",
 }
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_OM' }, {"item_power_treads", 'item_quelling_blade'} end
@@ -148,7 +168,7 @@ local abilityQ = bot:GetAbilityByName( sAbilityList[1] )
 local abilityW = bot:GetAbilityByName( sAbilityList[2] )
 local abilityE = bot:GetAbilityByName( sAbilityList[3] )
 local abilityD = bot:GetAbilityByName( sAbilityList[4] )
-local abilityAS = bot:GetAbilityByName( sAbilityList[5] )
+local FireShield = bot:GetAbilityByName( sAbilityList[5] )
 local talent2 = bot:GetAbilityByName( sTalentList[2] )
 local talent8 = bot:GetAbilityByName( sTalentList[8] )
 
@@ -156,7 +176,7 @@ local castQDesire, castQTarget
 local castWDesire, castWTarget
 local castEDesire, castETarget
 local castDDesire, castDTarget
-local castASDesire, castASTarget
+local FireShieldDesire, FireShieldTarget
 
 
 local nKeepMana, nMP, nHP, nLV, hEnemyList, hAllyList, botTarget, sMotive
@@ -231,14 +251,14 @@ function X.SkillsComplement()
 		return
 	end
 	
-	castASDesire, castASTarget, sMotive = X.ConsiderAS()
-	if ( castASDesire > 0 )
+	FireShieldDesire, FireShieldTarget, sMotive = X.ConsiderFireShield()
+	if ( FireShieldDesire > 0 )
 	then
 		J.SetReportMotive( bDebugMode, sMotive )
 
 		J.SetQueuePtToINT( bot, true )
 
-		bot:ActionQueue_UseAbilityOnEntity( abilityAS, castASTarget )
+		bot:ActionQueue_UseAbilityOnEntity( FireShield, FireShieldTarget )
 		return
 
 	end
@@ -1041,37 +1061,38 @@ function X.ConsiderD()
 end
 
 
-function X.ConsiderAS()
+function X.ConsiderFireShield()
 
-	if not abilityAS:IsTrained()
-		or not abilityAS:IsFullyCastable() 
+	if not FireShield:IsTrained()
+	or not FireShield:IsFullyCastable()
 	then
 		return BOT_ACTION_DESIRE_NONE, 0
 	end
 
 	local nRadius = 600
-	local nCastRange = abilityAS:GetCastRange()
-	local nCastPoint = abilityAS:GetCastPoint()
-	local nManaCost = abilityAS:GetManaCost()
+	local nCastRange = FireShield:GetCastRange() + aetherRange
+	local nCastPoint = FireShield:GetCastPoint()
+	local nManaCost = FireShield:GetManaCost()
 
 	for _, npcEnemy in pairs( hEnemyList )
-	do 
+	do
 		if J.IsValidHero( npcEnemy )
-			and J.CanCastOnNonMagicImmune( npcEnemy )
+		and J.CanCastOnNonMagicImmune( npcEnemy )
 		then
 			local enemyTarget = npcEnemy:GetAttackTarget()
+
 			if enemyTarget ~= nil
-				and J.IsInRange( bot, enemyTarget, nCastRange + 120 )
-				and not enemyTarget:HasModifier( 'modifier_fountain_glyph' )
-				and not enemyTarget:HasModifier( 'modifier_ogre_magi_smash_buff' )
+			and J.IsInRange( bot, enemyTarget, nCastRange )
+			and not enemyTarget:HasModifier( 'modifier_fountain_glyph' )
+			and not enemyTarget:HasModifier( 'modifier_ogre_magi_smash_buff' )
 			then
 				if enemyTarget:IsTower() and npcEnemy:IsBot()
 				then
 					return BOT_ACTION_DESIRE_HIGH, enemyTarget, "AS-守塔"
 				end
-				
+
 				if enemyTarget:IsHero()
-					and not enemyTarget:IsIllusion()
+				and not enemyTarget:IsIllusion()
 				then
 					return BOT_ACTION_DESIRE_HIGH, enemyTarget, "AS-保护队友:"..J.Chat.GetNormName(enemyTarget)
 				end

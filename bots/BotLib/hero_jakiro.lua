@@ -14,93 +14,96 @@ local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
 local Minion = dofile( GetScriptDirectory()..'/FunLib/aba_minion' )
 local sTalentList = J.Skill.GetTalentList( bot )
 local sAbilityList = J.Skill.GetAbilityList( bot )
-local sOutfitType = J.Item.GetOutfitType( bot )
+local sRole = J.Item.GetRoleItemsBuyList( bot )
 
 local tTalentTreeList = {
-						['t25'] = {0, 10},
+						['t25'] = {10, 0},
 						['t20'] = {10, 0},
 						['t15'] = {10, 0},
 						['t10'] = {0, 10},
 }
 
 local tAllAbilityBuildList = {
-						{3,1,2,1,1,6,1,2,2,2,6,3,3,3,6},
+						{1,3,1,2,1,6,1,2,2,2,6,3,3,3,6},--pos4,5
 }
 
 local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
 
 local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 
-local tOutFitList = {}
+local sRoleItemsBuyList = {}
 
-tOutFitList['outfit_carry'] = {
+sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_1']
 
-	"item_crystal_maiden_outfit",
---	"item_glimmer_cape",
-	"item_aghanims_shard",
-	"item_force_staff",
-	"item_ultimate_scepter",
-	"item_hurricane_pike",
-	"item_cyclone", 
-	"item_sheepstick",
-	"item_wind_waker",
-	"item_refresher",
-	"item_lotus_orb",
-	"item_moon_shard",
-	"item_ultimate_scepter_2",
+sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
 
-}
+sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_1']
 
-tOutFitList['outfit_mid'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_4'] = {
+	"item_tango",
+	"item_tango",
+	"item_double_branches",
+	"item_enchanted_mango",
+	"item_enchanted_mango",
+	"item_blood_grenade",
 
-tOutFitList['outfit_priest'] = {
-
-	"item_priest_outfit",
-	"item_urn_of_shadows",
-	"item_mekansm",
-	"item_glimmer_cape",
-	"item_aghanims_shard",
-	"item_guardian_greaves",
-	"item_spirit_vessel",
---	"item_wraith_pact",
-	"item_ultimate_scepter",
-	"item_shivas_guard",
-	"item_moon_shard",
-	"item_ultimate_scepter_2",
-	"item_sheepstick",
-
-}
-
-tOutFitList['outfit_mage'] = {
-
-	"item_mage_outfit",
-	"item_ancient_janggo",
-	"item_glimmer_cape",
-	"item_boots_of_bearing",
-	"item_pipe",
-	"item_aghanims_shard",
-	"item_veil_of_discord",
-	"item_cyclone",
-	"item_sheepstick",
-	"item_wind_waker",
-	"item_moon_shard",
-	"item_ultimate_scepter_2",
-
-}
-
-tOutFitList['outfit_tank'] = tOutFitList['outfit_carry']
-
-X['sBuyList'] = tOutFitList[sOutfitType]
-
-X['sSellList'] = {
-
-	"item_cyclone",
+	"item_boots",
 	"item_magic_wand",
-
+	"item_tranquil_boots",
+	"item_force_staff",--
+	"item_aghanims_shard",
+	"item_glimmer_cape",--
 	"item_ultimate_scepter",
-	"item_magic_wand",
-	
+	"item_boots_of_bearing",--
+	"item_octarine_core",--
+	"item_shivas_guard",--
+	"item_aeon_disk",--
+	"item_ultimate_scepter_2",
+	"item_moon_shard",
 }
+
+sRoleItemsBuyList['pos_5'] = {
+	"item_tango",
+	"item_tango",
+	"item_double_branches",
+	"item_enchanted_mango",
+	"item_enchanted_mango",
+	"item_blood_grenade",
+
+	"item_boots",
+	"item_magic_wand",
+	"item_arcane_boots",
+	"item_force_staff",--
+	"item_aghanims_shard",
+	"item_glimmer_cape",--
+	"item_ultimate_scepter",
+	"item_guardian_greaves",--
+	"item_octarine_core",--
+	"item_sheepstick",--
+	"item_aeon_disk",--
+	"item_ultimate_scepter_2",
+	"item_moon_shard",
+}
+
+X['sBuyList'] = sRoleItemsBuyList[sRole]
+
+Pos4SellList = {
+	"item_magic_wand",
+}
+
+Pos5SellList = {
+	"item_magic_wand",
+}
+
+X['sSellList'] = {}
+
+if sRole == "pos_4"
+then
+    X['sSellList'] = Pos4SellList
+elseif sRole == "pos_5"
+then
+    X['sSellList'] = Pos5SellList
+end
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_mage' }, {} end
 

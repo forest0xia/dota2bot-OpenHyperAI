@@ -14,7 +14,7 @@ local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
 local Minion = dofile( GetScriptDirectory()..'/FunLib/aba_minion' )
 local sTalentList = J.Skill.GetTalentList( bot )
 local sAbilityList = J.Skill.GetAbilityList( bot )
-local sOutfitType = J.Item.GetOutfitType( bot )
+local sRole = J.Item.GetRoleItemsBuyList( bot )
 
 local tTalentTreeList = {
 						{--pos2
@@ -39,19 +39,19 @@ local tAllAbilityBuildList = {
 local nAbilityBuildList
 local nTalentBuildList
 
-if sOutfitType == "outfit_mid"
+if sRole == "pos_2"
 then
     nAbilityBuildList   = tAllAbilityBuildList[1]
     nTalentBuildList    = J.Skill.GetTalentBuild(tTalentTreeList[1])
-elseif sOutfitType == "outfit_tank"
+elseif sRole == "pos_3"
 then
     nAbilityBuildList   = tAllAbilityBuildList[2]
     nTalentBuildList    = J.Skill.GetTalentBuild(tTalentTreeList[2])
 end
 
-local tOutFitList = {}
+local sRoleItemsBuyList = {}
 
-tOutFitList['outfit_mid'] = {
+sRoleItemsBuyList['pos_2'] = {
 	"item_tango",
 	"item_double_branches",
 	"item_quelling_blade",
@@ -72,17 +72,17 @@ tOutFitList['outfit_mid'] = {
 	"item_heart",--
 	"item_refresher",--
 	"item_ultimate_scepter_2",
-	"item_moon_shard",
-	"item_travel_boots_2"
+	"item_travel_boots_2",--
+	"item_moon_shard"
 }
 
-tOutFitList['outfit_carry'] = tOutFitList['outfit_mid']
+sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_2']
 
-tOutFitList['outfit_priest'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_1']
 
-tOutFitList['outfit_mage'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_1']
 
-tOutFitList['outfit_tank'] = {
+sRoleItemsBuyList['pos_3'] = {
 
 	"item_tango",
 	"item_double_branches",
@@ -103,13 +103,13 @@ tOutFitList['outfit_tank'] = {
 	"item_heart",--
 	"item_travel_boots_2",--
 
-	"item_moon_shard",
 	"item_ultimate_scepter_2",
+	"item_moon_shard",
 
 
 }
 
-X['sBuyList'] = tOutFitList[sOutfitType]
+X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 X['sSellList'] = {
 	"item_quelling_blade",
@@ -332,12 +332,12 @@ function X.SkillsComplement()
 		return
 
 	end
-
+	
 	--魔晶
 	castASDesire, castASTarget = X.ConsiderAS()
 	if ( castASDesire > 0 )
 	then
-
+		
 		J.SetQueuePtToINT( bot, true )
 
 		bot:ActionQueue_UseAbilityOnLocation( abilityAS, castASTarget )
@@ -702,7 +702,7 @@ function X.ConsiderW()
 	local nNearbyEnemy = X.GetNearbyUnit( bot, npcTarget )
 
 	if J.IsValid( nNearbyEnemy )
-		and GetUnitToUnitDistance( npcTarget, bot ) >  nAttackRange
+		and GetUnitToUnitDistance( npcTarget, bot ) >  nAttackRange 
 	then
 		return BOT_ACTION_DESIRE_HIGH, nNearbyEnemy
 	end
@@ -747,7 +747,7 @@ end
 function X.ConsiderAS()
 
 	if not abilityAS:IsTrained()
-		or not abilityAS:IsFullyCastable()
+		or not abilityAS:IsFullyCastable() 
 	then
 		return BOT_ACTION_DESIRE_NONE, 0
 	end
@@ -765,9 +765,9 @@ function X.ConsiderAS()
 			and J.CanCastOnNonMagicImmune( targetHero )
 		then
 			return BOT_ACTION_DESIRE_HIGH, targetHero:GetLocation()
-		end
+		end		
 	end
-
+	
 
 	if J.IsInTeamFight( bot, 1400 )
 	then
@@ -776,9 +776,9 @@ function X.ConsiderAS()
 		then
 			local loc = bot:GetLocation() + (bot:GetLocation() - nAoeLoc)
 			return BOT_ACTION_DESIRE_HIGH, nAoeLoc
-		end
+		end		
 	end
-
+	
 
 	if J.IsGoingOnSomeone( bot )
 	then
