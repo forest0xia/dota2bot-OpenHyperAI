@@ -87,8 +87,8 @@ tOutFitList['outfit_mid'] = {
 	"item_aghanims_shard",
 	"item_ultimate_scepter",
 	"item_black_king_bar",--
-	"item_monkey_king_bar",--
-	"item_greater_crit",--
+	"item_ethereal_blade",--
+	"item_octarine_core",--
 	"item_sheepstick",--
 	"item_ultimate_scepter_2",
 	"item_moon_shard",

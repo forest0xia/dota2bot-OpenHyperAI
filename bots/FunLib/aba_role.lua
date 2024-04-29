@@ -9,7 +9,6 @@ function X.GetBotVersion()
 end
 
 
-
 ----------------------------------------------------------------------------------------------------
 
 -- ["carry"] will become more useful later in the game if they gain a significant gold advantage.
@@ -2409,7 +2408,7 @@ function X.GetKeyType()
 end
 
 
-X["nUserModeLevel"] = 0
+X["nUserModeLevel"] = 10
 function X.IsAllMode()  --激活全部锦囊功能
 	return X["nUserModeLevel"] >= 4
 end

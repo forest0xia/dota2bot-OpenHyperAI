@@ -14,7 +14,6 @@ local bot = GetBot()
 if bot:IsInvulnerable()
 	or not bot:IsHero()
 	or bot:IsIllusion()
-	or bot:GetUnitName() == "npc_dota_hero_techies"
 then
 	return
 end
@@ -33,6 +32,7 @@ bot.SecretShop = false
 local sPurchaseList = BotBuild['sBuyList']
 local sItemSellList = BotBuild['sSellList']
 
+if sPurchaseList == nil then print("Can't load purchase list for: " .. bot:GetUnitName()) end
 
 for i = 1, #sPurchaseList
 do
@@ -559,7 +559,11 @@ function ItemPurchaseThink()
 
 			if botLevel < 18 or ( botLevel >= 18 and tCharges == 1 )
 			then
-				buyTP = true
+				if bot:GetUnitName() ~= "npc_dota_hero_meepo"
+				then
+					buyTP = true
+				end
+
 				buyTPtime = currentTime
 				bot.currentComponentToBuy = nil
 				bot.currListItemToBuy[#bot.currListItemToBuy+1] = 'item_tpscroll'
@@ -576,7 +580,10 @@ function ItemPurchaseThink()
 
 			if botLevel >= 18 and tCharges == 0 and botGold >= GetItemCost( "item_tpscroll" ) * 2
 			then
-				buyTP = true
+				if bot:GetUnitName() ~= "npc_dota_hero_meepo"
+				then
+					buyTP = true
+				end
 				buyTPtime = currentTime
 				bot.currentComponentToBuy = nil
 				bot.currListItemToBuy[#bot.currListItemToBuy+1] = 'item_tpscroll'

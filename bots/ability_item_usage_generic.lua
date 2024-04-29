@@ -6187,12 +6187,16 @@ X.ConsiderItemDesire['item_dust'] = function(item)
 		end	
 	end
 	
+	if bot:HasModifier('modifier_sandking_sand_storm_slow') 
+	or bot:HasModifier('modifier_sandking_sand_storm_slow_aura_thinker') 
+	then
+		return BOT_ACTION_DESIRE_HIGH, bot, 'none', nil
+	end
+
 	local nInRangeEnemy = J.GetEnemiesNearLoc(bot:GetLocation(), nRadius)
 	if nInRangeEnemy ~= nil and #nInRangeEnemy == 0
 	then
 		if bot:HasModifier('modifier_item_radiance_debuff') 
-		or bot:HasModifier('modifier_sandking_sand_storm_slow') 
-		or bot:HasModifier('modifier_sandking_sand_storm_slow_aura_thinker') 
 		then
 			return BOT_ACTION_DESIRE_HIGH, bot, 'none', nil
 		end

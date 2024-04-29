@@ -11,7 +11,6 @@ if bot:IsInvulnerable()
 	or not bot:IsHero() 
 	or bot:IsIllusion()
 	or not string.find( botName, "hero" )
-	or botName == "npc_dota_hero_techies"
 then
 	return
 end

@@ -152,6 +152,7 @@ local HeroSet = {}
 ---------------------------------------------------------
 
 local sPos1List = {
+	"npc_dota_hero_alchemist",
 	"npc_dota_hero_antimage",
 	"npc_dota_hero_arc_warden",
 	"npc_dota_hero_bloodseeker",
@@ -160,12 +161,17 @@ local sPos1List = {
 	"npc_dota_hero_clinkz",
 	"npc_dota_hero_drow_ranger",
 	"npc_dota_hero_faceless_void",
+	"npc_dota_hero_furion",
 	"npc_dota_hero_gyrocopter",
 	"npc_dota_hero_juggernaut",
 	"npc_dota_hero_life_stealer",
 	"npc_dota_hero_lina",
 	"npc_dota_hero_luna",
+	-- "npc_dota_hero_marci", -- DOESN'T WORK
 	"npc_dota_hero_medusa",
+	"npc_dota_hero_meepo",
+	"npc_dota_hero_morphling",
+	-- "npc_dota_hero_muerta", -- DOESN'T WORK
 	"npc_dota_hero_naga_siren",
 	"npc_dota_hero_nevermore",
 	"npc_dota_hero_phantom_assassin",
@@ -174,85 +180,120 @@ local sPos1List = {
 	"npc_dota_hero_riki",
 	"npc_dota_hero_skeleton_king",
 	"npc_dota_hero_slark",
+	"npc_dota_hero_spectre",
 	"npc_dota_hero_sniper",
 	"npc_dota_hero_sven",
 	"npc_dota_hero_templar_assassin",
 	"npc_dota_hero_terrorblade",
 	"npc_dota_hero_tiny",
+	"npc_dota_hero_troll_warlord",
 	"npc_dota_hero_ursa",
-	"npc_dota_hero_huskar"
+	"npc_dota_hero_weaver",
+	"npc_dota_hero_windrunner",
 }
 
 local sPos2List = {
 	"npc_dota_hero_arc_warden",
 	"npc_dota_hero_batrider",
+	"npc_dota_hero_bounty_hunter",
+	"npc_dota_hero_broodmother",
+	"npc_dota_hero_clinkz",
 	"npc_dota_hero_death_prophet",
 	"npc_dota_hero_doom_bringer",
+	"npc_dota_hero_dragon_knight",
 	"npc_dota_hero_earth_spirit",
 	"npc_dota_hero_ember_spirit",
+	"npc_dota_hero_huskar",
 	"npc_dota_hero_invoker",
 	"npc_dota_hero_keeper_of_the_light",
+	"npc_dota_hero_kunkka",
 	"npc_dota_hero_leshrac",
 	"npc_dota_hero_lina",
+	-- "npc_dota_hero_lone_druid", -- DOESN'T WORK
+	"npc_dota_hero_meepo",
 	"npc_dota_hero_mirana",
 	"npc_dota_hero_monkey_king",
+	"npc_dota_hero_morphling",
 	"npc_dota_hero_necrolyte",
 	"npc_dota_hero_nevermore",
 	"npc_dota_hero_obsidian_destroyer",
+	"npc_dota_hero_ogre_magi",
+	"npc_dota_hero_pangolier",
+	-- "npc_dota_hero_primal_beast", -- DOESN'T WORK
 	"npc_dota_hero_puck",
 	"npc_dota_hero_pudge",
 	"npc_dota_hero_queenofpain",
 	"npc_dota_hero_razor",
+	"npc_dota_hero_snapfire",
 	"npc_dota_hero_sniper",
 	"npc_dota_hero_storm_spirit",
 	"npc_dota_hero_templar_assassin",
+	"npc_dota_hero_tinker",
+	"npc_dota_hero_tiny",
 	"npc_dota_hero_viper",
 	"npc_dota_hero_void_spirit",
+	"npc_dota_hero_windrunner",
 	"npc_dota_hero_zuus",
-	"npc_dota_hero_magnataur"
 }
 
 local sPos3List = {
+	"npc_dota_hero_abyssal_underlord",
 	"npc_dota_hero_axe",
 	"npc_dota_hero_batrider",
 	"npc_dota_hero_beastmaster",
 	"npc_dota_hero_bounty_hunter",
+	"npc_dota_hero_brewmaster",
 	"npc_dota_hero_bristleback",
+	"npc_dota_hero_broodmother",
 	"npc_dota_hero_centaur",
 	"npc_dota_hero_chaos_knight",
 	"npc_dota_hero_dark_seer",
-    "npc_dota_hero_brewmaster",
 	"npc_dota_hero_dawnbreaker",
-    "npc_dota_hero_enigma",
 	"npc_dota_hero_death_prophet",
 	"npc_dota_hero_doom_bringer",
 	"npc_dota_hero_dragon_knight",
+	"npc_dota_hero_enigma",
+	"npc_dota_hero_furion",
 	"npc_dota_hero_kunkka",
+	"npc_dota_hero_leshrac",
 	"npc_dota_hero_legion_commander",
+	"npc_dota_hero_lycan",
 	"npc_dota_hero_magnataur",
+	-- "npc_dota_hero_marci", -- DOESN'T WORK
 	"npc_dota_hero_mars",
 	"npc_dota_hero_necrolyte",
 	"npc_dota_hero_night_stalker",
 	"npc_dota_hero_ogre_magi",
 	"npc_dota_hero_omniknight",
+	"npc_dota_hero_pangolier",
+	-- "npc_dota_hero_primal_beast", -- DOESN'T WORK
 	"npc_dota_hero_pudge",
 	"npc_dota_hero_razor",
 	"npc_dota_hero_sand_king",
 	"npc_dota_hero_shredder",
 	"npc_dota_hero_skeleton_king",
 	"npc_dota_hero_slardar",
+	"npc_dota_hero_spirit_breaker",
 	"npc_dota_hero_tidehunter",
 	"npc_dota_hero_viper",
+	"npc_dota_hero_visage",
+	"npc_dota_hero_windrunner",
 }
 
 local sPos4List = {
 	"npc_dota_hero_abaddon",
+	"npc_dota_hero_ancient_apparition",
 	"npc_dota_hero_bane",
+	"npc_dota_hero_chen",
 	"npc_dota_hero_crystal_maiden",
+	-- "npc_dota_hero_dark_willow", -- DOESN'T WORK
 	"npc_dota_hero_dazzle",
 	"npc_dota_hero_disruptor",
 	"npc_dota_hero_earthshaker",
+	-- "npc_dota_hero_elder_titan", -- DOESN'T WORK
+	"npc_dota_hero_enchantress",
 	"npc_dota_hero_grimstroke",
+	-- "npc_dota_hero_hoodwink", -- DOESN'T WORK
 	"npc_dota_hero_jakiro",
 	"npc_dota_hero_lich",
 	"npc_dota_hero_lion",
@@ -261,26 +302,36 @@ local sPos4List = {
 	"npc_dota_hero_phoenix",
 	"npc_dota_hero_pugna",
 	"npc_dota_hero_rattletrap",
+	-- "npc_dota_hero_rubick",
 	"npc_dota_hero_shadow_demon",
 	"npc_dota_hero_shadow_shaman",
 	"npc_dota_hero_silencer",
 	"npc_dota_hero_skywrath_mage",
+	"npc_dota_hero_techies",
+	"npc_dota_hero_treant",
+	"npc_dota_hero_tusk",
+	"npc_dota_hero_undying",
+	"npc_dota_hero_vengefulspirit",
+	"npc_dota_hero_venomancer",
 	"npc_dota_hero_warlock",
+	"npc_dota_hero_winter_wyvern",
 	"npc_dota_hero_witch_doctor",
-	"npc_dota_hero_chen",
-	"npc_dota_hero_enchantress",
-    "npc_dota_hero_enigma",
 }
 
 local sPos5List = {
 	"npc_dota_hero_abaddon",
+	"npc_dota_hero_ancient_apparition",
 	"npc_dota_hero_bane",
+	"npc_dota_hero_chen",
 	"npc_dota_hero_crystal_maiden",
+	-- "npc_dota_hero_dark_willow", -- DOESN'T WORK
 	"npc_dota_hero_dazzle",
 	"npc_dota_hero_disruptor",
 	"npc_dota_hero_earthshaker",
+	-- "npc_dota_hero_elder_titan", -- DOESN'T WORK
+	"npc_dota_hero_enchantress",
 	"npc_dota_hero_grimstroke",
-	"npc_dota_hero_hoodwink",
+	-- "npc_dota_hero_hoodwink", -- DOESN'T WORK
 	"npc_dota_hero_jakiro",
 	"npc_dota_hero_lich",
 	"npc_dota_hero_lion",
@@ -289,15 +340,20 @@ local sPos5List = {
 	"npc_dota_hero_phoenix",
 	"npc_dota_hero_pugna",
 	"npc_dota_hero_rattletrap",
+	-- "npc_dota_hero_rubick",
 	"npc_dota_hero_shadow_demon",
 	"npc_dota_hero_shadow_shaman",
 	"npc_dota_hero_silencer",
 	"npc_dota_hero_skywrath_mage",
+	"npc_dota_hero_techies",
+	"npc_dota_hero_treant",
+	"npc_dota_hero_tusk",
+	"npc_dota_hero_undying",
+	"npc_dota_hero_vengefulspirit",
+	"npc_dota_hero_venomancer",
 	"npc_dota_hero_warlock",
+	"npc_dota_hero_winter_wyvern",
 	"npc_dota_hero_witch_doctor",
-	"npc_dota_hero_chen",
-	"npc_dota_hero_enchantress",
-    "npc_dota_hero_enigma",
 }
 
 tSelectPoolList = {
@@ -355,6 +411,7 @@ then
 end
 
 
+-- The index in the list is the pick order. #1 pick is mid, #2 is pos3, #3 is pos1, #4 is pos 5, #5 is pos 4.
 function X.OverrideTeamHeroes()
 	if GetTeam() == TEAM_RADIANT
 	then
@@ -367,22 +424,37 @@ function X.OverrideTeamHeroes()
 		}
 	else
 		return {
-			-- [1] = "npc_dota_hero_arc_warden",
-			-- [2] = "npc_dota_hero_invoker",
+			-- [1] = "npc_dota_hero_invoker",
+			-- [2] = "npc_dota_hero_arc_warden",
 			-- [3] = "npc_dota_hero_clinkz",
-			-- [4] = "npc_dota_hero_bane",
-		 --    [5] = "npc_dota_hero_witch_doctor",
+		 --    [4] = "npc_dota_hero_witch_doctor",
+			-- [5] = "npc_dota_hero_bane",
+
+			-- [1] = "npc_dota_hero_meepo",
+			-- [2] = "npc_dota_hero_visage",
+			-- [3] = "npc_dota_hero_snapfire",
+		 --    [4] = "npc_dota_hero_earth_spirit",
+			-- [5] = "npc_dota_hero_tusk",
 
 
-			[1] = "npc_dota_hero_ember_spirit",
-			[2] = "npc_dota_hero_storm_spirit",
-			[3] = "npc_dota_hero_void_spirit",
-			[4] = "npc_dota_hero_brewmaster",
-		    [5] = "npc_dota_hero_earth_spirit",
+			-- Test buggy heroes:
+			-- [1] = "npc_dota_hero_tinker",
+			-- [2] = "npc_dota_hero_techies",
+			-- [3] = "npc_dota_hero_weaver",
+		 --    [4] = "npc_dota_hero_treant",
+			-- [5] = "npc_dota_hero_rubick",
+		    
+
+			[1] = "npc_dota_hero_storm_spirit",
+			[2] = "npc_dota_hero_ember_spirit",
+		    [3] = "npc_dota_hero_void_spirit",
+			[4] = "npc_dota_hero_earth_spirit",
+			[5] = "npc_dota_hero_brewmaster",
 		    
 		}
 	end
 end
+-- sSelectList = X.OverrideTeamHeroes()
 
 
 function X.GetMoveTable( nTable )
@@ -624,8 +696,6 @@ function X.GetRandomNameList( sStarList )
 end
 
 function Think()
-
-	sSelectList = X.OverrideTeamHeroes()
 
 	if GetGameState() == GAME_STATE_HERO_SELECTION then
 		InstallChatCallback( function ( tChat ) X.SetChatHeroBan( tChat.string ) end )

@@ -30,7 +30,6 @@ local towerCreepTime = 0;
 local beInitDone = false;
 local beSpecialSupport = false;
 local beSpecialCarry = false;
-local beTechies = false;
 local beFirstStop = false;
 local bePvNMode = false;
 
@@ -40,6 +39,8 @@ local refShardCheck = -90;
 local pickedItem = nil;
 
 
+local ShouldAttackSpecialUnit = false
+local SpecialUnitTarget = nil
 
 --可优化补充捡物品的逻辑在这里,移动换物品的逻辑到物品购买里
 function GetDesire()
@@ -47,17 +48,28 @@ function GetDesire()
 	if not beInitDone 
 	then
 		beInitDone = true
-		beTechies = string.find(botName, "techies")
-		--if bot == GetTeamMember(5) and GetTeam() == TEAM_DIRE then beTechies = true end
 		bePvNMode = J.Role.IsPvNMode()
-		beSpecialCarry = X.IsSpecialCarry(bot)
+		beSpecialCarry = X.IsSpecialCore(bot)
 		beSpecialSupport = X.IsSpecialSupport(bot)	
 	end
 	
 	if not bot:IsAlive() or bot:GetCurrentActionType() == BOT_ACTION_TYPE_DELAY then
 		return BOT_MODE_DESIRE_NONE;
 	end
-	
+
+	ShouldAttackSpecialUnit = CanAttackSpecialUnit()
+	if ShouldAttackSpecialUnit
+	then
+		return BOT_ACTION_DESIRE_VERYHIGH
+	end
+
+	-- Disperse from Lich, Jakiro Ultimate
+	if bot:HasModifier('modifier_lich_chainfrost_slow')
+	or bot:HasModifier('modifier_jakiro_macropyre_burn')
+	then
+		return BOT_MODE_DESIRE_ABSOLUTE * 0.98
+	end
+
 	--捡碎片
 	if bot:GetLevel() > 15 then
 		if DotaTime() >= droppedCheck + 2.0 then
@@ -115,7 +127,7 @@ function GetDesire()
 		return BOT_MODE_DESIRE_ABSOLUTE;
 	end
 	
-	if beTechies or J.Role['bStopAction'] then return 2.0 end
+	if J.Role['bStopAction'] then return 2.0 end
 	
 	if botName == "npc_dota_hero_pugna" 
 	then
@@ -195,6 +207,7 @@ function GetDesire()
 end
 
 
+
 function OnStart()
 	
 	
@@ -208,6 +221,99 @@ function OnEnd()
 	bot:SetTarget(nil);
 	
 end
+
+function CanAttackSpecialUnit()
+	local nInRangeEnemy = J.GetEnemiesNearLoc(bot:GetLocation(), bot:GetCurrentVisionRange())
+	local nAttackRange = bot:GetAttackRange() + 200
+	local nUnits = GetUnitList(UNIT_LIST_ENEMIES)
+
+	for _, unit in pairs(nUnits)
+	do
+		if J.IsValid(unit)
+		then
+			if string.find(unit:GetUnitName(), 'healing_ward')
+			or string.find(unit:GetUnitName(), 'forged_spirit')
+			or string.find(unit:GetUnitName(), 'grimstroke_ink_creature')
+			or string.find(unit:GetUnitName(), 'lone_druid_bear')
+			or string.find(unit:GetUnitName(), 'observer_ward')
+			or string.find(unit:GetUnitName(), 'phoenix_sun')
+			or string.find(unit:GetUnitName(), 'plague_ward')
+			or string.find(unit:GetUnitName(), 'rattletrap_cog')
+			or string.find(unit:GetUnitName(), 'sentry_ward')
+			or string.find(unit:GetUnitName(), 'tombstone')
+			or string.find(unit:GetUnitName(), 'warlock_golem')
+			or string.find(unit:GetUnitName(), 'weaver_swarm')
+			then
+				if unit:GetUnitName() == 'npc_dota_rattletrap_cog'
+				then
+					local cogsCount1 = J.GetPowerCogsCountInLoc(bot:GetLocation(), 800)
+					local cogsCount2 = J.GetPowerCogsCountInLoc(bot:GetLocation(), 255)
+					local isClockwerkInTeam = false
+					for i = 1, 5
+					do
+						local allyHero = GetTeamMember(i)
+						if  J.IsValidHero(allyHero)
+						and allyHero:GetUnitName() == 'npc_dota_hero_rattletrap'
+						then
+							isClockwerkInTeam = true
+							break
+						end
+					end
+
+					if nInRangeEnemy ~= nil
+					then
+						if #nInRangeEnemy >= 1
+						then
+							local nInRangeEnemy2 = J.GetEnemiesNearLoc(bot:GetLocation(), 255)
+
+							-- Is stuck inside?
+							if cogsCount1 == 8 and cogsCount2 >= 4
+							then
+								if nInRangeEnemy2 ~= nil
+								then
+									if #nInRangeEnemy2 == 0
+									or (J.IsRetreating(bot) and #nInRangeEnemy2 >= 1)
+									then
+										SpecialUnitTarget = unit
+										return true
+									end
+								end
+							end
+						end
+
+						if #nInRangeEnemy == 0
+						then
+							if cogsCount1 == 8 and cogsCount2 >= 4
+							then
+								if isClockwerkInTeam
+								then
+									SpecialUnitTarget = unit
+									return true
+								end
+							else
+								if not isClockwerkInTeam
+								then
+									SpecialUnitTarget = unit
+									return true
+								end
+							end
+						end
+					end
+				end
+
+				if  GetUnitToUnitDistance(bot, unit) <= nAttackRange
+				and J.CanBeAttacked(unit)
+				then
+					SpecialUnitTarget = unit
+					return true
+				end
+			end
+		end
+	end
+
+	return false
+end
+
 
 
 function Think()
@@ -224,6 +330,34 @@ function Think()
 	
 	if J.CanNotUseAction(bot) then return end
 	
+	if  ShouldAttackSpecialUnit
+	and SpecialUnitTarget ~= nil
+	then
+		bot:Action_AttackUnit(SpecialUnitTarget, false)
+		return
+	end
+
+
+	-- Disperse from Lich, Jakiro Ultimate
+	local botHP   = bot:GetHealth()/bot:GetMaxHealth();
+	if bot:HasModifier('modifier_jakiro_macropyre_burn')
+	or bot:HasModifier('modifier_dark_seer_wall_slow')
+	or (
+		(bot:HasModifier('modifier_warlock_upheaval')
+		or bot:HasModifier('modifier_sandking_sand_storm_slow')
+		or bot:HasModifier('modifier_sand_king_epicenter_slow')
+		or bot:HasModifier('modifier_lich_chainfrost_slow'))
+		and (not bot:HasModifier("modifier_black_king_bar_immune") or not bot:HasModifier("modifier_magic_immune") or not bot:HasModifier("modifier_omniknight_repel"))
+	)
+	then
+		if botHP < 0.9
+		then
+			bot:Action_MoveToLocation(J.GetTeamFountain() + RandomVector(1000))
+		end
+		return
+	end
+
+
 	if towerCreepMode 
 	then
 		bot:Action_AttackUnit( towerCreep, true );
@@ -1495,70 +1629,107 @@ function X.UpdateCommonCamp(creep, AvailableCamp)
 end
 
 
-function X.IsSpecialCarry(bot)
-    
-	local botName = bot:GetUnitName();
-	
-	local tSpecialCarryList = {
-		["npc_dota_hero_antimage"] = true,
-		["npc_dota_hero_arc_warden"] = true,
-		["npc_dota_hero_bloodseeker"] = true,
-		["npc_dota_hero_bristleback"] = true,
-		["npc_dota_hero_chaos_knight"] = true,
-		["npc_dota_hero_drow_ranger"] = true,
-		["npc_dota_hero_huskar"] = true,
-		["npc_dota_hero_kunkka"] = true,
-		["npc_dota_hero_luna"] = true,
-		["npc_dota_hero_medusa"] = true,
-		["npc_dota_hero_phantom_assassin"] = true,
-		["npc_dota_hero_phantom_lancer"] = true,
-		["npc_dota_hero_razor"] = true,
-		["npc_dota_hero_skeleton_king"] = true,
-		["npc_dota_hero_sniper"] = true,
-		["npc_dota_hero_sven"] = true,
-		["npc_dota_hero_templar_assassin"] = true,
-		["npc_dota_hero_viper"] = true,
-		["npc_dota_hero_ogre_magi"] = true,
-		["npc_dota_hero_sand_king"] = true,
-		["npc_dota_hero_riki"] = true,
-		["npc_dota_hero_bounty_hunter"] = true,
-		["npc_dota_hero_slardar"] = true,
-		["npc_dota_hero_legion_commander"] = true,
-		["npc_dota_hero_omniknight"] = true,
-		["npc_dota_hero_tidehunter"] = true,
-		["npc_dota_hero_axe"] = true,
-		["npc_dota_hero_slark"] = true,
-		["npc_dota_hero_juggernaut"] = true,
-		["npc_dota_hero_mirana"] = true,
-		["npc_dota_hero_naga_siren"] = true,
-		["npc_dota_hero_nevermore"] = true,
-		["npc_dota_hero_dragon_knight"] = true,
+function X.IsSpecialCore(bot)
+    if J.GetPosition(bot) == 1
+	or J.GetPosition(bot) == 2
+	or J.GetPosition(bot) == 3
+	then
+		local botName = bot:GetUnitName();
+		
+		local tSpecialCarryList = {
+			["npc_dota_hero_abyssal_underlord"] = true,
+			["npc_dota_hero_alchemist"] = true,
+			["npc_dota_hero_antimage"] = true,
+			["npc_dota_hero_arc_warden"] = true,
+			["npc_dota_hero_axe"] = true,
+			["npc_dota_hero_batrider"] = true,
+			["npc_dota_hero_beastmaster"] = true,
+			["npc_dota_hero_brewmaster"] = true,
+			["npc_dota_hero_bloodseeker"] = true,
+			["npc_dota_hero_bounty_hunter"] = true,
+			["npc_dota_hero_bristleback"] = true,
+			["npc_dota_hero_broodmother"] = true,
+			["npc_dota_hero_centaur"] = true,
+			["npc_dota_hero_chaos_knight"] = true,
+			["npc_dota_hero_clinkz"] = true,
+			["npc_dota_hero_dark_seer"] = true,
+			["npc_dota_hero_dawnbreaker"] = true,
+			["npc_dota_hero_death_prophet"] = true,
+			["npc_dota_hero_doom_bringer"] = true,
+			["npc_dota_hero_dragon_knight"] = true,
+			["npc_dota_hero_drow_ranger"] = true,
+			["npc_dota_hero_earth_spirit"] = true,
+			["npc_dota_hero_ember_spirit"] = true,
+			["npc_dota_hero_enigma"] = true,
+			["npc_dota_hero_faceless_void"] = true,
+			["npc_dota_hero_furion"] = true,
+			["npc_dota_hero_gyrocopter"] = true,
+			["npc_dota_hero_huskar"] = true,
+			["npc_dota_hero_invoker"] = true,
+			["npc_dota_hero_juggernaut"] = true,
+			["npc_dota_hero_keeper_of_the_light"] = true,
+			["npc_dota_hero_kunkka"] = true,
+			["npc_dota_hero_legion_commander"] = true,
+			["npc_dota_hero_leshrac"] = true,
+			["npc_dota_hero_life_stealer"] = true,
+			["npc_dota_hero_lina"] = true,
+			["npc_dota_hero_lone_druid"] = true,
+			["npc_dota_hero_luna"] = true,
+			["npc_dota_hero_lycan"] = true,
+			["npc_dota_hero_magnataur"] = true,
+			["npc_dota_hero_marci"] = true,
+			["npc_dota_hero_mars"] = true,
+			["npc_dota_hero_medusa"] = true,
+			["npc_dota_hero_meepo"] = true,
+			["npc_dota_hero_mirana"] = true,
+			["npc_dota_hero_monkey_king"] = true,
+			["npc_dota_hero_morphling"] = true,
+			["npc_dota_hero_muerta"] = true,
+			["npc_dota_hero_naga_siren"] = true,
+			["npc_dota_hero_necrolyte"] = true,
+			["npc_dota_hero_nevermore"] = true,
+			["npc_dota_hero_night_stalker"] = true,
+			["npc_dota_hero_obsidian_destroyer"] = true,
+			["npc_dota_hero_ogre_magi"] = true,
+			["npc_dota_hero_omniknight"] = true,
+			["npc_dota_hero_pangolier"] = true,
+			["npc_dota_hero_phantom_assassin"] = true,
+			["npc_dota_hero_phantom_lancer"] = true,
+			["npc_dota_hero_puck"] = true,
+			["npc_dota_hero_pudge"] = true,
+			["npc_dota_hero_queenofpain"] = true,
+			["npc_dota_hero_razor"] = true,
+			["npc_dota_hero_riki"] = true,
+			["npc_dota_hero_skeleton_king"] = true,
+			["npc_dota_hero_sand_king"] = true,
+			["npc_dota_hero_shredder"] = true,
+			["npc_dota_hero_slardar"] = true,
+			["npc_dota_hero_slark"] = true,
+			["npc_dota_hero_snapfire"] = true,
+			["npc_dota_hero_sniper"] = true,
+			["npc_dota_hero_spectre"] = true,
+			["npc_dota_hero_spirit_breaker"] = true,
+			["npc_dota_hero_storm_spirit"] = true,
+			["npc_dota_hero_sven"] = true,
+			["npc_dota_hero_templar_assassin"] = true,
+			["npc_dota_hero_terrorblade"] = true,
+			["npc_dota_hero_tidehunter"] = true,
+			["npc_dota_hero_tinker"] = true,
+			["npc_dota_hero_tiny"] = true,
+			["npc_dota_hero_troll_warlord"] = true,
+			["npc_dota_hero_ursa"] = true,
+			["npc_dota_hero_viper"] = true,
+			["npc_dota_hero_visage"] = true,
+			["npc_dota_hero_void_spirit"] = true,
+			["npc_dota_hero_weaver"] = true,
+			["npc_dota_hero_windrunner"] = true,
+			["npc_dota_hero_zuus"] = true,
+		}
 
-		["npc_dota_hero_lina"] = true,
-		["npc_dota_hero_queenofpain"] = true,
-		["npc_dota_hero_necrolyte"] = true,
-		["npc_dota_hero_death_prophet"] = true,
-		["npc_dota_hero_zuus"] = true,
+		return tSpecialCarryList[botName] == true
+	end
 
-		["npc_dota_hero_shredder"] = true,
-		["npc_dota_hero_mars"] = true,
-		["npc_dota_hero_storm_spirit"] = true,
-		["npc_dota_hero_ember_spirit"] = true,
-		["npc_dota_hero_faceless_void"] = true,
-		["npc_dota_hero_alchemist"] = true,
-		["npc_dota_hero_terrorblade"] = true,
-		["npc_dota_hero_ursa"] = true,
-		["npc_dota_hero_void_spirit"] = true,
-		["npc_dota_hero_earth_spirit"] = true,
-		["npc_dota_hero_tiny"] = true,
-		["npc_dota_hero_batrider"] = true,
-		["npc_dota_hero_beastmaster"] = true,
-		["npc_dota_hero_centaur"] = true,
-		["npc_dota_hero_clinkz"] = true,
-	}
-	
-	return tSpecialCarryList[botName] == true
-		 
+	return false
 end
 
 
@@ -1566,7 +1737,7 @@ function X.IsSpecialSupport(bot)
     
 	local botName = bot:GetUnitName();
 	
-	local tSpecialSupportList = {
+	local tSpecialSupportList = {	  
 		["npc_dota_hero_crystal_maiden"] = true,
 		["npc_dota_hero_jakiro"] = true,
 		["npc_dota_hero_lich"] = true,
@@ -1580,8 +1751,29 @@ function X.IsSpecialSupport(bot)
 		["npc_dota_hero_lion"] = true,
 		["npc_dota_hero_dazzle"] = true,
 		["npc_dota_hero_bane"] = true,
+
 		["npc_dota_hero_abaddon"] = true,
+		["npc_dota_hero_ancient_apparition"] = true,
+		["npc_dota_hero_chen"] = true,
 		["npc_dota_hero_rattletrap"] = true,
+		["npc_dota_hero_dark_willow"] = true,
+		["npc_dota_hero_disruptor"] = true,
+		["npc_dota_hero_earthshaker"] = true,
+		["npc_dota_hero_elder_titan"] = true,
+		["npc_dota_hero_enchantress"] = true,
+		["npc_dota_hero_grimstroke"] = true,
+		["npc_dota_hero_hoodwink"] = true,
+		["npc_dota_hero_nyx_assassin"] = true,
+		["npc_dota_hero_phoenix"] = true,
+		["npc_dota_hero_rubick"] = true,
+		["npc_dota_hero_shadow_demon"] = true,
+		["npc_dota_hero_techies"] = true,
+		["npc_dota_hero_treant"] = true,
+		["npc_dota_hero_tusk"] = true,
+		["npc_dota_hero_undying"] = true,
+		["npc_dota_hero_vengefulspirit"] = true,
+		["npc_dota_hero_venomancer"] = true,
+		["npc_dota_hero_winter_wyvern"] = true,
 	}
 	
 	return tSpecialSupportList[botName] == true

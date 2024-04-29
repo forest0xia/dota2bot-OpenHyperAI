@@ -57,7 +57,7 @@ local announcementList = {
 	{"#26A69A", "* The bots get bonus mana/hp regens and provide less exp on death."},
 	{"#81C784", "* When a player kills a bot, the player who made the kill receives a reduction in gold. This does not affect assisting players."},
 	{"#AED581", "* The amount of bonus mainly depends on the difficulty scale you voted." },
-	{"#BA4A00", "* This is a script derived https://github.com/p6668/beginner-ai-and-fretbots" },
+	{"#BA4A00", "* This is a script derived https://github.com/p6668/beginner-ai-and-fretbots. Kudos to BeginnerAI, Fretbots, and ryndrb@" },
 	-- {"#D4AC0D", "There are commands to play certain sounds like `ps love` or `ps dylm`. You can also explore other commands like `getroles`, `networth`, etc." }
 
 }

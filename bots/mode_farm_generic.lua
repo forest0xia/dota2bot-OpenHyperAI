@@ -1,17 +1,8 @@
-----------------------------------------------------------------------------------------------------
---- The Creation Come From: BOT EXPERIMENT Credit:FURIOUSPUPPY
---- BOT EXPERIMENT Author: Arizona Fauzie 2018.11.21
---- Link:http://steamcommunity.com/sharedfiles/filedetails/?id=837040016
---- Refactor: 决明子 Email: dota2jmz@163.com 微博@Dota2_决明子
---- Link:http://steamcommunity.com/sharedfiles/filedetails/?id=1573671599
---- Link:http://steamcommunity.com/sharedfiles/filedetails/?id=1627071163
-----------------------------------------------------------------------------------------------------
 if GetBot():IsInvulnerable() or not GetBot():IsHero() or not string.find(GetBot():GetUnitName(), "hero") or GetBot():IsIllusion() then
 	return;
 end
 
 local bot = GetBot();
-local bDebugMode = ( 1 == 10 )
 local X = {}
 local J = require( GetScriptDirectory()..'/FunLib/jmz_func')
 local RB = Vector(-7174.000000, -6671.00000, 0.000000)
@@ -28,10 +19,6 @@ local farmState = 0;
 local teamPlayers = nil;
 local nLaneList = {LANE_TOP, LANE_MID, LANE_BOT};
 local nTpSolt = 15
-
-
-local t3Destroyed = false;
-
 
 local runTime = 0;
 local shouldRunTime = 0
@@ -55,143 +42,50 @@ local beNormalFarmer = false;
 local beHighFarmer = false;
 local beVeryHighFarmer = false;
 
-local sBotVersion,sVersionDate = J.Role.GetBotVersion();
+local isWelcomeMessageDone = false
 
-local bPushNoticeDone = false;
-local bAllNotice = true;
-local nPushNoticeTime = nil;
+if bot.farmLocation == nil then bot.farmLocation = bot:GetLocation() end
 
-local nLobbyNoticeTime = -90
+function GetDesire()
 
-if J.Role.IsPvNMode()
-then
-	sVersionDate = sVersionDate.." (3V5)"
-end
-
-
-local sNoticeList = {
-	
-	[1] = "GL HF!",
-	[2] = "Enjoy the game <3",
-	
-}
-
-local hasTestDone = false
-
-
-function GetDesire()	
-
-
-
-	--设置夜魇方公告延迟 
-	if not bPushNoticeDone
-	   and DotaTime() < 0
-	   and GetTeam() == TEAM_DIRE
-	   and bot == GetTeamMember(5)
-	   and GetTeamPlayers(GetOpposingTeam())[5] ~= nil
-	   and IsPlayerBot( GetTeamPlayers(GetOpposingTeam())[5])
-	   and nPushNoticeTime == nil
+	if not isWelcomeMessageDone
+	and J.GetPosition(bot) == 5
 	then
-		nPushNoticeTime = DotaTime();
-		bAllNotice = false
-	end
-	
-	
-	--播放开局公告
-	if not bPushNoticeDone
-	   and DotaTime() < 0
-	   and bot:GetGold() < 300 
-	   and bot == GetTeamMember(5)
-	   and (GetTeam() ~= TEAM_DIRE 
-	         or nPushNoticeTime == nil
-			 or nPushNoticeTime + 2.0 < DotaTime())
-	then
-	
-		local sPushVersion = "随机搭配"
-		if sBotVersion == "New" then sPushVersion = "固定搭配" end 
-		local firstMessage = "(QQ交流群:877599588)天地星AI: "..sPushVersion..sVersionDate		
-		local secondMessage = firstMessage
-		
-
-		if J.Role.GetKeyType() ~= 0
+		if J.IsModeTurbo() and DotaTime() > -45 or DotaTime() > -60
 		then
-			local sKeyType = J.Role.GetKeyType()
-			local sUserName = J.Role.GetUserName()
-			-- firstMessage = J.Chat.GetLocalWord(sKeyType)..sVersionDate
-			if sUserName ~= "" and sUserName ~= " " and sUserName ~= "   " and sUserName ~= nil  
-			then
-				firstMessage = sUserName
-			end
-		end	
-		
-		-- bot:ActionImmediate_Chat( firstMessage, true)
-		
-		if firstMessage ~= secondMessage and GetTeamMember( 1 ):IsBot()
-		then
-			local sKeyType = J.Role.GetKeyType()
-			local sUserName = J.Role.GetUserName()
-			secondMessage = J.Chat.GetLocalWord(sKeyType)..sVersionDate
-			bot:ActionImmediate_Chat( secondMessage, true)
-		end
-		
-		if not J.Role.IsUserMode()
-		then
-			if bAllNotice
-			then			
-				-- bot:ActionImmediate_Chat("AI游戏群:459875234, 加群和其他玩家一起挑战多倍难度.",true);
-	
-			else
-				local sNoticeMessage = sNoticeList[RandomInt(1,#sNoticeList)]
-				bot:ActionImmediate_Chat(sNoticeMessage,true);
-			end
-		end		
-		
-		--夜魇方推送提示
-		if GetTeam() == TEAM_DIRE
-		then
-			if J.Role.IsWillPastKey()
-			then
-				bot:ActionImmediate_Chat("当前使用的锦囊包即将停止更新修复.",true);
-			elseif J.Role.IsPastKey()
-			then
-				bot:ActionImmediate_Chat("当前使用的锦囊包已经停止更新修复.",true);			
-			end		
-		end	
-
-		X.SetPushBonus( bot )
-		
-		bPushNoticeDone = true
-	end
-	
-	
-	--播放创建房间提示
-	if DotaTime() < 100
-		and nLobbyNoticeTime < DotaTime() - 15.0
-		and bot == GetTeamMember(5)
-		and GetTeam() == TEAM_DIRE
-		and not J.Role["bLobbyGame"]
-		and GetGameMode() == GAMEMODE_AP
-	then
-		local sVersion = J.Role.GetBotVersion()
-		if sVersion == "New" or sVersion == "Mid"
-		then
-			bot:ActionImmediate_Chat("提示:由于没有通过创建比赛房间来使用AI, 大部分英雄会失效(客户端的BUG), 请不要直接在主界面开始机器人练习.", true);
-			nLobbyNoticeTime = DotaTime()
+			bot:ActionImmediate_Chat("GLHF!", true)
+			isWelcomeMessageDone = true
 		end
 	end
 
-	-------------#############---------
-	--if true then return 0 end
-	-----------------------------------
-	
 	if not bInitDone
 	then
 		bInitDone = true
-		beNormalFarmer = X.IsNormalFarmer(bot);
-		beHighFarmer = X.IsHighFarmer(bot);
-		beVeryHighFarmer = X.IsVeryHighFarmer(bot);
+		beNormalFarmer = X.IsNormalFarmer(bot)
+		beHighFarmer = X.IsHighFarmer(bot)
+		beVeryHighFarmer = X.IsVeryHighFarmer(bot)
 	end
-	
+
+	local nMode = bot:GetActiveMode()
+	local nModeDesire = bot:GetActiveModeDesire()
+	if  (nMode == BOT_MODE_DEFEND_TOWER_TOP or nMode == BOT_MODE_DEFEND_TOWER_MID or nMode == BOT_MODE_DEFEND_TOWER_BOT)
+	and nModeDesire > BOT_MODE_DESIRE_MODERATE
+    then
+        return BOT_ACTION_DESIRE_NONE
+    end
+
+	local TormentorLocation = J.GetTormentorLocation(GetTeam())
+	local nNeutralCreeps = bot:GetNearbyNeutralCreeps(700)
+	for _, c in pairs(nNeutralCreeps)
+	do
+		local nInRangeAlly = J.GetAlliesNearLoc(TormentorLocation, 700)
+		if  c ~= nil
+		and (c:GetUnitName() == "npc_dota_miniboss"
+			or nInRangeAlly ~= nil and #nInRangeAlly >= 2)
+		then
+			return BOT_ACTION_DESIRE_NONE
+		end
+	end
 	
 	if teamPlayers == nil then teamPlayers = GetTeamPlayers(GetTeam()) end
 	
@@ -283,7 +177,30 @@ function GetDesire()
 		if preferedCamp == nil then preferedCamp = J.Site.GetClosestNeutralSpwan(bot, availableCamp) end;
 		return 0.99;
 	end
-	
+
+	if  bot:IsAlive()
+	and J.IsMeepoClone(bot)
+	then
+		if J.IsDoingRoshan(bot)
+		then
+			local botTarget = bot:GetAttackTarget()
+
+			if  J.IsRoshan(botTarget)
+			and J.IsInRange(bot, botTarget, 400)
+			and J.GetHP(botTarget) < 0.33
+			then
+				if preferedCamp == nil then preferedCamp = J.Site.GetClosestNeutralSpwan(bot, availableCamp) end
+				return BOT_MODE_DESIRE_ABSOLUTE
+			end
+		end
+
+		if nMode == BOT_MODE_ITEM
+		then
+			if preferedCamp == nil then preferedCamp = J.Site.GetClosestNeutralSpwan(bot, availableCamp) end
+			return bot:GetActiveModeDesire() + 0.1
+		end
+	end
+
 	if not bot:IsAlive() 
 	   or ( bot:WasRecentlyDamagedByAnyHero(2.5) and bot:GetAttackTarget() == nil )
 	   or ( bot:GetActiveMode() == BOT_MODE_RETREAT and bot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH )
@@ -317,7 +234,7 @@ function GetDesire()
 			J.Role['sayRate'] = true;
 			if RandomInt(1,6) < 3 
 			then
-				bot:ActionImmediate_Chat("我们预估获胜的概率低于百分之一,甘拜下风! Well played! ",true);
+				bot:ActionImmediate_Chat("We estimate that the probability of winning is less than 1%, so we are resigned to losing! Well played! ",true);
 			else
 				bot:ActionImmediate_Chat("We estimate the probability of winning to be below 1%.Well played!",true);
 			end
@@ -327,7 +244,7 @@ function GetDesire()
 		    J.Role['sayRate'] = true;
 			if RandomInt(1,6) < 3 
 			then
-				bot:ActionImmediate_Chat("我们预估团战获胜的概率在百分之九十以上。",true);
+				bot:ActionImmediate_Chat("We estimate that the probability of winning a team battle is over 90%",true);
 			else
 				bot:ActionImmediate_Chat("We estimate the probability of winning to above 90%.",true);
 			end
@@ -383,10 +300,12 @@ function GetDesire()
 	end
 	
 	if GetGameMode() ~= GAMEMODE_MO 
-	   and ( J.Site.IsTimeToFarm(bot) )
-	   and ( not X.IsHumanPlayerInTeam() or enemyKills > allyKills + 16 ) 
-	   and ( bot:GetNextItemPurchaseValue() > 0 or not bot:HasModifier("modifier_item_moon_shard_consumed") )
-	   and ( DotaTime() > 7 * 60 or bot:GetLevel() >= 8 or ( bot:GetAttackRange() < 220 and bot:GetLevel() >= 6 ) )	   
+	and (J.Site.IsTimeToFarm(bot) or pushTime > DotaTime() - 8.0)
+	-- and J.Site.IsTimeToFarm(bot)
+	-- and (not J.IsHumanPlayerInTeam() or enemyKills > allyKills + 16)
+	-- and ( bot:GetNextItemPurchaseValue() > 0 or not bot:HasModifier("modifier_item_moon_shard_consumed") )
+	-- and ( DotaTime() > 7 * 60 or bot:GetLevel() >= 8 or ( bot:GetAttackRange() < 220 and bot:GetLevel() >= 6 ) )	   
+	and not J.IsInLaningPhase()
 	then
 		if J.GetDistanceFromEnemyFountain(bot) > 4000 
 		then
@@ -401,6 +320,7 @@ function GetDesire()
 		
 		if #hLaneCreepList > 0 
 		then
+			bot.farmLocation = J.GetCenterOfUnits(hLaneCreepList)
 			return BOT_MODE_DESIRE_HIGH;
 		else
 			if preferedCamp == nil then preferedCamp = J.Site.GetClosestNeutralSpwan(bot, availableCamp);end
@@ -417,6 +337,7 @@ function GetDesire()
 						return BOT_MODE_DESIRE_VERYLOW;
 				elseif farmState == 1
 				    then 
+						bot.farmLocation = preferedCamp.cattr.location
 					    return BOT_MODE_DESIRE_ABSOLUTE *0.89;
 				else
 					
@@ -425,6 +346,7 @@ function GetDesire()
 						if pushTime > DotaTime() - 8.0
 						then
 							if preferedCamp == nil then preferedCamp = J.Site.GetClosestNeutralSpwan(bot, availableCamp);end
+							bot.farmLocation = preferedCamp.cattr.location
 							return BOT_MODE_DESIRE_MODERATE;
 						end
 						
@@ -441,6 +363,7 @@ function GetDesire()
 								and #allies < 2
 							then
 								pushTime = DotaTime();
+								bot.farmLocation = preferedCamp.cattr.location
 								return  BOT_MODE_DESIRE_ABSOLUTE *0.93;
 							end
 							
@@ -452,6 +375,7 @@ function GetDesire()
 									and #allies < 2
 								then
 									pushTime = DotaTime();
+									bot.farmLocation = preferedCamp.cattr.location
 									return  BOT_MODE_DESIRE_ABSOLUTE *0.98;
 								end
 							end
@@ -462,7 +386,7 @@ function GetDesire()
 					local farmDistance = GetUnitToLocationDistance(bot,preferedCamp.cattr.location);
 					
 					if botName == 'npc_dota_hero_medusa' and farmDistance < 133 then return 0.33 end 
-					
+					bot.farmLocation = preferedCamp.cattr.location
 					return math.floor((RemapValClamped(farmDistance, 6000, 0, BOT_MODE_DESIRE_MODERATE, BOT_MODE_DESIRE_VERYHIGH))*10)/10;
 				end
 			end
@@ -637,7 +561,7 @@ function Think()
 			then
 				J.Role['availableCampTable'] = J.Site.UpdateCommonCamp(nNeutrals[1],J.Role['availableCampTable']);
 			end
-			
+
 			local farmTarget = J.Site.FindFarmNeutralTarget(nNeutrals)
 			if farmTarget ~= nil 
 			then
@@ -767,19 +691,6 @@ function Think()
 	bot:Action_MoveToLocation( ( RB + DB )/2 );
 	return;
 end
-
-
-function X.IsHumanPlayerInTeam()
-
-	local numPlayer =  GetTeamPlayers(GetTeam());
-	if not IsPlayerBot(numPlayer[1]) 
-	then
-		return true;
-	end
-	
-	return false;
-end
-
 
 function X.IsThereT3Detroyed()
 	
@@ -1065,17 +976,14 @@ function X.ShouldRun(bot)
 			end
 		end	
 		
-		local nEnemy = bot:GetNearbyHeroes(800,true,BOT_MODE_NONE);
-		for _,enemy in pairs(nEnemy)
-		do
-			if J.IsValid(enemy)
-				and enemy:GetUnitName() == "npc_dota_hero_necrolyte"
-				and enemy:GetMana() >= 200
-				and J.GetHP(bot) < 0.45
-				and enemy:IsFacingLocation(bot:GetLocation(),20)
-			then
-				return 3;
-			end
+		if J.IsValid(enemy)
+		and not J.WeAreStronger(bot, 800)
+		then
+			-- and enemy:GetUnitName() == "npc_dota_hero_necrolyte"
+			-- and enemy:GetMana() >= 200
+			-- and J.GetHP(bot) < 0.45
+			-- and enemy:IsFacingLocation(bot:GetLocation(),20)
+			return 3;
 		end
 		
 	end	
@@ -1129,13 +1037,13 @@ function X.CouldBlink(bot,nLocation)
 	if botName == "npc_dota_hero_antimage"
 	then
 		blink = bot:GetAbilityByName( "antimage_blink" );
-		maxBlinkDist = blink:GetSpecialValueInt("blink_range");
+		maxBlinkDist = blink:GetSpecialValueInt('AbilityCastRange')
 	end
 	
 	if botName == "npc_dota_hero_queenofpain"
 	then
 		blink = bot:GetAbilityByName( "queenofpain_blink" );
-		maxBlinkDist = blink:GetSpecialValueInt("blink_range");
+		maxBlinkDist = J.GetProperCastRange(false, bot, blink:GetCastRange())
 	end
 	
 	if blink ~= nil 
@@ -1209,61 +1117,148 @@ end
 
 
 function X.IsNormalFarmer(bot)
+	local botName = bot:GetUnitName()
 
-	local botName = bot:GetUnitName();
-	
-	 return botName == "npc_dota_hero_chaos_knight" 
-		 or botName == "npc_dota_hero_dragon_knight"
-		 or botName == "npc_dota_hero_ogre_magi"
-		 or botName == "npc_dota_hero_omniknight"
-		 or botName == "npc_dota_hero_bristleback" 
-		 or botName == "npc_dota_hero_sand_king" 
-		 or botName == "npc_dota_hero_skeleton_king"
-		 or botName == "npc_dota_hero_kunkka"
-		 or botName == "npc_dota_hero_sniper"
-		 or botName == "npc_dota_hero_viper" 
-		 or botName == "npc_dota_hero_clinkz" 
-		 or botName == "npc_dota_hero_mirana" 
-
+	return (J.GetPosition(bot) == 3)
+	and (
+	botName == "npc_dota_hero_bristleback"
+	or botName == "npc_dota_hero_chaos_knight"
+	or botName == "npc_dota_hero_dragon_knight"
+	or botName == "npc_dota_hero_kunkka"
+	or botName == "npc_dota_hero_ogre_magi"
+	or botName == "npc_dota_hero_skeleton_king"
+	or botName == "npc_dota_hero_sand_king"
+	or botName == "npc_dota_hero_bounty_hunter"
+	or botName == "npc_dota_hero_slardar"
+	or botName == "npc_dota_hero_legion_commander"
+	or botName == "npc_dota_hero_omniknight"
+	or botName == "npc_dota_hero_axe"
+	or botName == "npc_dota_hero_razor"
+	or botName == "npc_dota_hero_viper"
+	or botName == "npc_dota_hero_necrolyte"
+	or botName == "npc_dota_hero_tidehunter"
+	or botName == "npc_dota_hero_death_prophet"
+	or botName == "npc_dota_hero_shredder"
+	or botName == "npc_dota_hero_mars"
+	or botName == "npc_dota_hero_batrider"
+	or botName == "npc_dota_hero_beastmaster"
+	or botName == "npc_dota_hero_brewmaster"
+	or botName == "npc_dota_hero_broodmother"
+	or botName == "npc_dota_hero_centaur"
+	or botName == "npc_dota_hero_dark_seer"
+	or botName == "npc_dota_hero_dawnbreaker"
+	or botName == "npc_dota_hero_doom_bringer"
+	or botName == "npc_dota_hero_enigma"
+	or botName == "npc_dota_hero_leshrac"
+	or botName == "npc_dota_hero_lycan"
+	or botName == "npc_dota_hero_magnataur"
+	or botName == "npc_dota_hero_marci"
+	or botName == "npc_dota_hero_furion"
+	or botName == "npc_dota_hero_night_stalker"
+	or botName == "npc_dota_hero_pangolier"
+	or botName == "npc_dota_hero_primal_beast"
+	or botName == "npc_dota_hero_pudge"
+	or botName == "npc_dota_hero_spirit_breaker"
+	or botName == "npc_dota_hero_abyssal_underlord"
+	or botName == "npc_dota_hero_visage"
+	or botName == "npc_dota_hero_windrunner"
+	)
 end
-
 
 function X.IsHighFarmer(bot)
+	local botName = bot:GetUnitName()
 
-	local botName = bot:GetUnitName();
-	
-	return botName == "npc_dota_hero_nevermore"
-		or botName == "npc_dota_hero_templar_assassin"
-		or botName == "npc_dota_hero_phantom_assassin"
-		or botName == "npc_dota_hero_phantom_lancer"
-		or botName == "npc_dota_hero_drow_ranger"
-		or botName == "npc_dota_hero_luna"
-		or botName == "npc_dota_hero_antimage"
-		or botName == "npc_dota_hero_arc_warden"
-		or botName == "npc_dota_hero_bloodseeker"
-		or botName == "npc_dota_hero_medusa"
-		or botName == "npc_dota_hero_razor"
-		or botName == "npc_dota_hero_huskar"
-		or botName == "npc_dota_hero_juggernaut"
-		or botName == "npc_dota_hero_slark"
-		or botName == "npc_dota_hero_naga_siren"
-		or botName == "npc_dota_hero_legion_commander"
-		
+	return (J.GetPosition(bot) == 2)
+	and (
+	botName == "npc_dota_hero_templar_assassin"
+	or botName == "npc_dota_hero_arc_warden"
+	or botName == "npc_dota_hero_mirana"
+	or botName == "npc_dota_hero_razor"
+	or botName == "npc_dota_hero_sniper"
+	or botName == "npc_dota_hero_viper"
+	or botName == "npc_dota_hero_nevermore"
+	or botName == "npc_dota_hero_lina"
+	or botName == "npc_dota_hero_dragon_knight"
+	or botName == "npc_dota_hero_kunkka"
+	or botName == "npc_dota_hero_queenofpain"
+	or botName == "npc_dota_hero_necrolyte"
+	or botName == "npc_dota_hero_huskar"
+	or botName == "npc_dota_hero_ogre_magi"
+	or botName == "npc_dota_hero_bounty_hunter"
+	or botName == "npc_dota_hero_death_prophet"
+	or botName == "npc_dota_hero_zuus"
+	or botName == "npc_dota_hero_storm_spirit"
+	or botName == "npc_dota_hero_ember_spirit"
+	or botName == "npc_dota_hero_void_spirit"
+	or botName == "npc_dota_hero_earth_spirit"
+	or botName == "npc_dota_hero_tiny"
+	or botName == "npc_dota_hero_batrider"
+	or botName == "npc_dota_hero_broodmother"
+	or botName == "npc_dota_hero_clinkz"
+	or botName == "npc_dota_hero_doom_bringer"
+	or botName == "npc_dota_hero_invoker"
+	or botName == "npc_dota_hero_keeper_of_the_light"
+	or botName == "npc_dota_hero_leshrac"
+	or botName == "npc_dota_hero_meepo"
+	or botName == "npc_dota_hero_monkey_king"
+	or botName == "npc_dota_hero_morphling"
+	or botName == "npc_dota_hero_obsidian_destroyer"
+	or botName == "npc_dota_hero_pangolier"
+	or botName == "npc_dota_hero_primal_beast"
+	or botName == "npc_dota_hero_puck"
+	or botName == "npc_dota_hero_pudge"
+	or botName == "npc_dota_hero_snapfire"
+	or botName == "npc_dota_hero_windrunner"
+	or botName == "npc_dota_hero_lone_druid"
+	or botName == "npc_dota_hero_tinker"
+	)
 end
 
-
 function X.IsVeryHighFarmer(bot)
+	local botName = bot:GetUnitName()
 
-	local botName = bot:GetUnitName();
-	
-	return botName == "npc_dota_hero_nevermore"
-		or botName == "npc_dota_hero_luna"
-		or botName == "npc_dota_hero_antimage"
-		or botName == "npc_dota_hero_medusa"
-		or botName == "npc_dota_hero_naga_siren"
-		or botName == "npc_dota_hero_phantom_lancer"
-		or botName == "npc_dota_hero_razor"
-		
+	return (J.GetPosition(bot) == 1)
+	and (
+	botName == "npc_dota_hero_antimage"
+	or botName == "npc_dota_hero_arc_warden"
+	or botName == "npc_dota_hero_bloodseeker"
+	or botName == "npc_dota_hero_bristleback"
+	or botName == "npc_dota_hero_chaos_knight"
+	or botName == "npc_dota_hero_drow_ranger"
+	or botName == "npc_dota_hero_luna"
+	or botName == "npc_dota_hero_medusa"
+	or botName == "npc_dota_hero_phantom_assassin"
+	or botName == "npc_dota_hero_phantom_lancer"
+	or botName == "npc_dota_hero_razor"
+	or botName == "npc_dota_hero_skeleton_king"
+	or botName == "npc_dota_hero_sniper"
+	or botName == "npc_dota_hero_sven"
+	or botName == "npc_dota_hero_templar_assassin"
+	or botName == "npc_dota_hero_riki"
+	or botName == "npc_dota_hero_slark"
+	or botName == "npc_dota_hero_juggernaut"
+	or botName == "npc_dota_hero_naga_siren"
+	or botName == "npc_dota_hero_nevermore"
+	or botName == "npc_dota_hero_lina"
+	or botName == "npc_dota_hero_faceless_void"
+	or botName == "npc_dota_hero_alchemist"
+	or botName == "npc_dota_hero_terrorblade"
+	or botName == "npc_dota_hero_ursa"
+	or botName == "npc_dota_hero_tiny"
+	or botName == "npc_dota_hero_clinkz"
+	or botName == "npc_dota_hero_gyrocopter"
+	or botName == "npc_dota_hero_life_stealer"
+	or botName == "npc_dota_hero_marci"
+	or botName == "npc_dota_hero_meepo"
+	or botName == "npc_dota_hero_monkey_king"
+	or botName == "npc_dota_hero_morphling"
+	or botName == "npc_dota_hero_muerta"
+	or botName == "npc_dota_hero_furion"
+	or botName == "npc_dota_hero_spectre"
+	or botName == "npc_dota_hero_troll_warlord"
+	or botName == "npc_dota_hero_weaver"
+	or botName == "npc_dota_hero_windrunner"
+	)
 end
 
 function X.SetPushBonus( bot )
@@ -1294,9 +1289,8 @@ function X.SetPushBonus( bot )
 		bot:ActionImmediate_Chat( bonusNoticeTable[bonusType], true )
 		return
 	else
-		bot:ActionImmediate_Chat( "你好, 当前挑战的是其他高手定制倍数AI.", true )
+		bot:ActionImmediate_Chat("Hello, I am currently challenging other experts to customize multiplier AI.", true)
 		return
 	end
 	
 end
--- dota2jmz@163.com QQ:2462331592..
