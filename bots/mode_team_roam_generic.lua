@@ -204,12 +204,24 @@ function Think()
 	end
 
 	-- Disperse from Lich, Jakiro Ultimate
-	if bot:HasModifier('modifier_lich_chainfrost_slow')
-	or bot:HasModifier('modifier_jakiro_macropyre_burn')
+	local botHP   = bot:GetHealth()/bot:GetMaxHealth();
+	if bot:HasModifier('modifier_jakiro_macropyre_burn')
+	or bot:HasModifier('modifier_dark_seer_wall_slow')
+	or (
+		(bot:HasModifier('modifier_warlock_upheaval')
+		or bot:HasModifier('modifier_sandking_sand_storm_slow')
+		or bot:HasModifier('modifier_sand_king_epicenter_slow')
+		or bot:HasModifier('modifier_lich_chainfrost_slow'))
+		and (not bot:HasModifier("modifier_black_king_bar_immune") or not bot:HasModifier("modifier_magic_immune") or not bot:HasModifier("modifier_omniknight_repel"))
+	)
 	then
-		bot:Action_MoveToLocation(J.GetTeamFountain() + RandomVector(1000))
+		if botHP < 0.9
+		then
+			bot:Action_MoveToLocation(J.GetTeamFountain() + RandomVector(1000))
+		end
 		return
 	end
+
 
 	if towerCreepMode
 	then

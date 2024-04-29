@@ -1,5 +1,13 @@
 local X = {}
 
+local sBotVersion = "New"
+-- local sBotVersion = "Mid"
+local sVersionDate = " 7.35, 2024/03/09"
+
+function X.GetBotVersion()
+	return sBotVersion, sVersionDate
+end
+
 ----------------------------------------------------------------------------------------------------
 
 -- ["carry"] will become more useful later in the game if they gain a significant gold advantage.

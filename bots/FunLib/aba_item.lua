@@ -1326,6 +1326,26 @@ function Item.GetTheItemSolt( bot, nSlotMin, nSlotMax, bMaxCost )
 
 end
 
+function Item.GetOutfitType( bot )
+	local sOutfitTypeList = {
+		[1] = 'outfit_mid',
+		[2] = 'outfit_tank',
+		[3] = 'outfit_carry',
+		[4] = 'outfit_mage',
+		[5] = 'outfit_priest',
+	}
+	local nTeamPlayerIDs = GetTeamPlayers( GetTeam() )
+	for i = 1, 5
+	do
+		local memberID = nTeamPlayerIDs[i]
+		if bot:GetPlayerID() == memberID
+		then
+			return sOutfitTypeList[i]
+		end
+	end
+	return 'outfit_carry'
+end
+
 
 function Item.GetRoleItemsBuyList( bot )
 

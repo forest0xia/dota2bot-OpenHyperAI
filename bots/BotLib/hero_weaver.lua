@@ -336,7 +336,7 @@ function X.ConsiderShukuchi()
 	end
 
     if J.IsPushing(bot)
-    and nMana > 0.5
+    and J.GetMP(bot) > 0.3
     then
         local tableNearbyEnemyTowers = bot:GetNearbyTowers(800, true)
 
