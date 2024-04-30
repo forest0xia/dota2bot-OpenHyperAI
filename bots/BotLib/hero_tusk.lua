@@ -33,7 +33,6 @@ sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_3']
 sRoleItemsBuyList['pos_4'] = {
     "item_double_tango",
     "item_faerie_fire",
-    "item_blood_grenade",
     "item_wind_lace",
 
     "item_tranquil_boots",
@@ -56,7 +55,6 @@ sRoleItemsBuyList['pos_4'] = {
 sRoleItemsBuyList['pos_5'] = {
     "item_double_tango",
     "item_faerie_fire",
-    "item_blood_grenade",
     "item_wind_lace",
 
     "item_arcane_boots",

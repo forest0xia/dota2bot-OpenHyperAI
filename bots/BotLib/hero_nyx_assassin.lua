@@ -24,12 +24,6 @@ local nTalentBuildList = J.Skill.GetTalentBuild(tTalentTreeList)
 
 local sRoleItemsBuyList = {}
 
-sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_1']
-
-sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
-
-sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_1']
-
 sRoleItemsBuyList['pos_4'] = {
     "item_double_tango",
     "item_double_branches",
@@ -71,6 +65,30 @@ sRoleItemsBuyList['pos_5'] = {
     "item_wind_waker",--
     "item_moon_shard",
 }
+
+sRoleItemsBuyList['pos_1'] = {
+    "item_double_tango",
+    "item_double_branches",
+
+    "item_tranquil_boots",
+    "item_magic_wand",
+    "item_dagon_2",
+    "item_aghanims_shard",
+    "item_blink",
+    "item_force_staff",--
+    "item_boots_of_bearing",--
+    "item_octarine_core",--
+    "item_ultimate_scepter",
+    "item_dagon_5",--
+    "item_swift_blink",--
+    "item_ultimate_scepter_2",
+    "item_wind_waker",--
+    "item_moon_shard",
+}
+
+sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
+
+sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_1']
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 

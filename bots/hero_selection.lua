@@ -2,6 +2,7 @@ local X = {}
 local sSelectHero = "npc_dota_hero_zuus"
 local fLastSlectTime, fLastRand = -100, 0
 local nDelayTime = nil
+local FretBots = nil
 local nHumanCount = 0
 local sBanList = {}
 local sSelectList = {}
@@ -189,7 +190,9 @@ local sPos1List = {
 	"npc_dota_hero_troll_warlord",
 	"npc_dota_hero_ursa",
 	"npc_dota_hero_weaver",
+	"npc_dota_hero_snapfire",
 	"npc_dota_hero_windrunner",
+	"npc_dota_hero_viper",
 }
 
 local sPos2List = {
@@ -204,7 +207,7 @@ local sPos2List = {
 	"npc_dota_hero_earth_spirit",
 	"npc_dota_hero_ember_spirit",
 	"npc_dota_hero_huskar",
-	"npc_dota_hero_invoker",
+	-- "npc_dota_hero_invoker",
 	"npc_dota_hero_keeper_of_the_light",
 	"npc_dota_hero_kunkka",
 	"npc_dota_hero_leshrac",
@@ -228,7 +231,7 @@ local sPos2List = {
 	"npc_dota_hero_sniper",
 	"npc_dota_hero_storm_spirit",
 	"npc_dota_hero_templar_assassin",
-	"npc_dota_hero_tinker",
+	-- "npc_dota_hero_tinker",
 	"npc_dota_hero_tiny",
 	"npc_dota_hero_viper",
 	"npc_dota_hero_void_spirit",
@@ -284,7 +287,7 @@ local sPos4List = {
 	"npc_dota_hero_abaddon",
 	"npc_dota_hero_ancient_apparition",
 	"npc_dota_hero_bane",
-	"npc_dota_hero_chen",
+	-- "npc_dota_hero_chen", -- TOO WEAK
 	"npc_dota_hero_crystal_maiden",
 	-- "npc_dota_hero_dark_willow", -- DOESN'T WORK
 	"npc_dota_hero_dazzle",
@@ -299,7 +302,7 @@ local sPos4List = {
 	"npc_dota_hero_lion",
 	"npc_dota_hero_nyx_assassin",
 	"npc_dota_hero_oracle",
-	"npc_dota_hero_phoenix",
+	-- "npc_dota_hero_phoenix",  -- TOO WEAK
 	"npc_dota_hero_pugna",
 	"npc_dota_hero_rattletrap",
 	"npc_dota_hero_rubick",
@@ -314,7 +317,7 @@ local sPos4List = {
 	"npc_dota_hero_vengefulspirit",
 	"npc_dota_hero_venomancer",
 	"npc_dota_hero_warlock",
-	"npc_dota_hero_winter_wyvern",
+	-- "npc_dota_hero_winter_wyvern", -- TOO WEAK
 	"npc_dota_hero_witch_doctor",
 }
 
@@ -322,7 +325,7 @@ local sPos5List = {
 	"npc_dota_hero_abaddon",
 	"npc_dota_hero_ancient_apparition",
 	"npc_dota_hero_bane",
-	"npc_dota_hero_chen",
+	-- "npc_dota_hero_chen", -- TOO WEAK
 	"npc_dota_hero_crystal_maiden",
 	-- "npc_dota_hero_dark_willow", -- DOESN'T WORK
 	"npc_dota_hero_dazzle",
@@ -337,7 +340,7 @@ local sPos5List = {
 	"npc_dota_hero_lion",
 	"npc_dota_hero_nyx_assassin",
 	"npc_dota_hero_oracle",
-	"npc_dota_hero_phoenix",
+	-- "npc_dota_hero_phoenix",  -- TOO WEAK
 	"npc_dota_hero_pugna",
 	"npc_dota_hero_rattletrap",
 	"npc_dota_hero_rubick",
@@ -352,7 +355,7 @@ local sPos5List = {
 	"npc_dota_hero_vengefulspirit",
 	"npc_dota_hero_venomancer",
 	"npc_dota_hero_warlock",
-	"npc_dota_hero_winter_wyvern",
+	-- "npc_dota_hero_winter_wyvern", -- TOO WEAK
 	"npc_dota_hero_witch_doctor",
 }
 
@@ -667,14 +670,14 @@ function X.OverrideTeamHeroes()
 			-- [5] = "npc_dota_hero_bane",
 
 			-- [1] = "npc_dota_hero_meepo",
-			-- [2] = "npc_dota_hero_visage",
+			-- [2] = "npc_dota_hero_invoker",
 			-- [3] = "npc_dota_hero_snapfire",
 		 --    [4] = "npc_dota_hero_earth_spirit",
 			-- [5] = "npc_dota_hero_tusk",
 
 
 			-- Test buggy heroes:
-			[1] = "npc_dota_hero_tinker",
+			[1] = "npc_dota_hero_invoker",
 			[2] = "npc_dota_hero_techies",
 			[3] = "npc_dota_hero_weaver",
 		    [4] = "npc_dota_hero_treant",
@@ -728,6 +731,7 @@ function Think()
 			break
 		end
 	end
+
 end
 
 function GetBotNames()

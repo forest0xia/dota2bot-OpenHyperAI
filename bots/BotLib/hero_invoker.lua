@@ -25,8 +25,6 @@ local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 
 local sRoleItemsBuyList = {}
 
-sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_1']
-
 sRoleItemsBuyList['pos_2'] = {
     "item_tango",
     "item_double_branches",
@@ -51,11 +49,13 @@ sRoleItemsBuyList['pos_2'] = {
     "item_moon_shard",
 }
 
-sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_3']
+sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_2']
 
-sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_4']
+sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_2']
 
-sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_5']
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_2']
+
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_2']
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 
@@ -138,6 +138,7 @@ local botTarget
 
 function X.SkillsComplement()
     if J.CanNotUseAbility(bot) then return end
+    if bot:HasModifier('modifier_invoker_ghost_walk_self') and J.GetHP(bot) < 0.4 then return end
 
     botTarget = J.GetProperTarget(bot)
 
@@ -450,41 +451,28 @@ function X.ConsiderGhostWalk()
 
     local RoshanLocation = J.GetCurrentRoshanLocation()
 
-	if	bot:DistanceFromFountain() > 600
-    and not J.IsRealInvisible(bot)
-    and not bot:IsInvulnerable()
-    and not bot:IsMagicImmune()
-	then
-		if bot:IsSilenced()
-        or bot:IsRooted()
-        or J.IsStunProjectileIncoming(bot, 500)
-		then
-			return BOT_ACTION_DESIRE_HIGH
-		end
+    if J.IsRetreating(bot) and bot:DistanceFromFountain() > 600
+    then
+        local nInRangeAlly = bot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
+        local nInRangeEnemy = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
 
-        if J.IsRetreating(bot)
+        if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+        and (#nInRangeEnemy > #nInRangeAlly
+            or bot:WasRecentlyDamagedByAnyHero(2))
         then
-            local nInRangeAlly = bot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
-            local nInRangeEnemy = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
-
-            if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
-            and (#nInRangeEnemy > #nInRangeAlly
-                or bot:WasRecentlyDamagedByAnyHero(2))
+            if #nInRangeEnemy > #nInRangeAlly
+            or bot:WasRecentlyDamagedByAnyHero(2)
             then
-                if #nInRangeEnemy > #nInRangeAlly
-                or bot:WasRecentlyDamagedByAnyHero(2)
-                then
-                    return BOT_ACTION_DESIRE_HIGH
-                end
+                return BOT_ACTION_DESIRE_HIGH
+            end
 
-                if  #nInRangeEnemy >= 1
-                and J.GetHP(bot) < 0.5 + (0.1 * #nInRangeEnemy)
-                then
-                    return BOT_ACTION_DESIRE_HIGH
-                end
+            if  #nInRangeEnemy >= 1
+            and J.GetHP(bot) < 0.5 + (0.1 * #nInRangeEnemy)
+            then
+                return BOT_ACTION_DESIRE_HIGH
             end
         end
-	end
+    end
 
     if J.IsDoingRoshan(bot)
     then
@@ -1557,16 +1545,13 @@ function X.ConsiderCombo()
         local nCastRange = ChaosMeteor:GetCastRange()
         local nRadius = EMP:GetSpecialValueInt('area_of_effect')
 
-        if  J.IsInTeamFight(bot, 1200)
-        then
-            local nLocationAoE = bot:FindAoELocation(true, true, bot:GetLocation(), nCastRange, nRadius, 0, 0)
-            local nInRangeEnemy = J.GetEnemiesNearLoc(nLocationAoE.targetloc, nRadius)
+        local nLocationAoE = bot:FindAoELocation(true, true, bot:GetLocation(), nCastRange, nRadius, 0, 0)
+        local nInRangeEnemy = J.GetEnemiesNearLoc(nLocationAoE.targetloc, nRadius)
 
-            if  nInRangeEnemy ~= nil and #nInRangeEnemy >= 2
-            and not J.IsLocationInChrono(J.GetCenterOfUnits(nInRangeEnemy))
-            then
-                return BOT_ACTION_DESIRE_HIGH, J.GetCenterOfUnits(nInRangeEnemy)
-            end
+        if  nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
+        and not J.IsLocationInChrono(J.GetCenterOfUnits(nInRangeEnemy))
+        then
+            return BOT_ACTION_DESIRE_HIGH, J.GetCenterOfUnits(nInRangeEnemy)
         end
     end
 

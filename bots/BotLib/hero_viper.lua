@@ -54,7 +54,29 @@ local nUtility = sUtility[RandomInt(1, #sUtility)]
 
 local sRoleItemsBuyList = {}
 
-sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_1']
+sRoleItemsBuyList['pos_1'] = {
+	"item_tango",
+	"item_faerie_fire",
+	"item_clarity",
+	"item_double_branches",
+	"item_circlet",
+	"item_slippers",
+
+	"item_wraith_band",
+	"item_magic_wand",
+	"item_power_treads",
+	"item_mage_slayer",--
+	"item_dragon_lance",
+	"item_manta",--
+	"item_hurricane_pike",--
+	"item_aghanims_shard",
+	"item_kaya_and_sange",--
+	"item_travel_boots",
+	"item_shivas_guard",--
+	"item_travel_boots_2",--
+	"item_ultimate_scepter_2",
+	"item_moon_shard",
+}
 
 sRoleItemsBuyList['pos_2'] = {
 	"item_tango",

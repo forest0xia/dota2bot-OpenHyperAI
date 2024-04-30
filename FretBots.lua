@@ -129,9 +129,8 @@ end
 if not Flags.isFretBotsInitialized then
 	-- Print version to console
 	print('Version: ' .. version)
-	print(versionString)
 	-- Welcome Message
-	Utilities:Print('Fret Bots! Version: ' .. version, MSG_GOOD, MATCH_READY)
+	Utilities:Print('FretBots enabled! Version: ' .. version, MSG_GOOD, MATCH_READY)
 	-- Register the listener that will run Initialize() once the game starts
 	Utilities:RegsiterGameStateListener(FretBots, 'Initialize', DOTA_GAMERULES_STATE_PRE_GAME )
 	Flags.isFretBotsInitialized = true

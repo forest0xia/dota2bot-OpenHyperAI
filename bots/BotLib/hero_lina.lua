@@ -91,15 +91,35 @@ sRoleItemsBuyList['pos_2'] = {
 	"item_octarine_core",--
 	"item_sheepstick",--
 	"item_ultimate_scepter_2",
+	"item_moon_shard",
+	"item_travel_boots_2"
+}
+
+sRoleItemsBuyList['pos_3'] = {
+	"item_tango",
+	"item_double_branches",
+	"item_faerie_fire",
+
+	"item_bottle",
+	"item_null_talisman",
+	"item_boots",
+	"item_magic_wand",
+	"item_travel_boots",
+	"item_aether_lens",--
+	"item_aghanims_shard",
+	"item_ultimate_scepter",
+	"item_black_king_bar",--
+	"item_ethereal_blade",--
+	"item_octarine_core",--
+	"item_sheepstick",--
+	"item_ultimate_scepter_2",
 	"item_travel_boots_2",--
 	"item_moon_shard",
 }
 
-sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_1']
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_3']
 
-sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_1']
-
-sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_1']
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_3']
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 

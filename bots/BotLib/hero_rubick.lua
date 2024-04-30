@@ -25,13 +25,6 @@ local nAbilityBuildList = J.Skill.GetRandomBuild(tAllAbilityBuildList)
 local nTalentBuildList = J.Skill.GetTalentBuild(tTalentTreeList)
 
 local sRoleItemsBuyList = {}
-
-sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_1']
-
-sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_2']
-
-sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_3']
-
 sRoleItemsBuyList['pos_4'] = {
     "item_double_tango",
     "item_double_branches",
@@ -81,6 +74,55 @@ sRoleItemsBuyList['pos_5'] = {
     "item_ultimate_scepter_2",
     "item_moon_shard",
 }
+
+sRoleItemsBuyList['pos_2'] = {
+    "item_double_tango",
+    "item_double_branches",
+    "item_blood_grenade",
+
+    "item_tranquil_boots",
+    "item_magic_wand",
+    "item_dagon_2",
+    "item_aghanims_shard",
+    "item_blink",
+    "item_force_staff",--
+    "item_ultimate_scepter",
+    "item_boots_of_bearing",--
+    "item_octarine_core",--
+    "item_dagon_5",--
+    "item_swift_blink",--
+    "item_ultimate_scepter_2",
+    "item_ethereal_blade",--
+    "item_wind_waker",--
+    "item_moon_shard",
+}
+
+sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_2']
+
+sRoleItemsBuyList['pos_3'] = {
+    "item_tango",
+    "item_double_branches",
+    "item_magic_stick",
+    "item_ring_of_protection",
+
+    "item_helm_of_iron_will",
+    "item_boots",
+    "item_magic_wand",
+    "item_phase_boots",
+    "item_veil_of_discord",
+    "item_eternal_shroud",--
+    "item_ultimate_scepter",
+    "item_blink",
+    "item_shivas_guard",--
+    "item_black_king_bar",--
+    "item_travel_boots",
+    "item_overwhelming_blink",--
+    "item_ultimate_scepter_2",
+    "item_travel_boots_2",--
+    "item_aghanims_shard",
+    "item_moon_shard",
+}
+
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 
@@ -660,30 +702,39 @@ function X.ConsiderSpellSteal()
     local nInRangeEnemy = J.GetEnemiesNearLoc(bot:GetLocation(), nCastRange + 300)
     for _, enemyHero in pairs(nInRangeEnemy)
     do
+        -- print("Rubick considering spell steal on an enemy...")
         if  J.IsValidHero(enemyHero)
         and J.CanCastOnTargetAdvanced(enemyHero)
-        and X.ShouldStealSpellFrom(enemyHero)
+        -- and X.ShouldStealSpellFrom(enemyHero)
         and not J.IsSuspiciousIllusion(enemyHero)
         and not J.IsMeepoClone(enemyHero)
         then
+            -- print("Rubick considering spell steal on a valid target enemy...")
             if enemyHero:IsUsingAbility()
             or enemyHero:IsCastingAbility()
             or J.IsCastingUltimateAbility(enemyHero)
             then
+                -- print("Rubick considering spell steal on a valid target enemy that casted an ability...")
+                local ss1Weight = SPL.GetSpellReplaceWeight(StolenSpell1) * 100
+                local ranInt = RandomInt(1, 70)
+                -- print("Rubick considering spell steal on a valid target enemy that casted an ability: weight="..ss1Weight..", random int="..ranInt)
+                
                 if bot:HasScepter()
                 then
-                    if  SPL.GetSpellReplaceWeight(StolenSpell1) * 100 >= RandomInt(1, 100)
-                    and SPL.GetSpellReplaceWeight(StolenSpell2) * 100 >= RandomInt(1, 100)
+                    local ss2Weight = SPL.GetSpellReplaceWeight(StolenSpell2) * 100
+
+                    if ss1Weight * 100 >= ranInt
+                    and ss2Weight * 100 >= RandomInt(1, 70)
                     then
                         return BOT_ACTION_DESIRE_HIGH, enemyHero
                     end
 
-                    if SPL.GetSpellReplaceWeight(StolenSpell2) * 100 >= RandomInt(1, 100)
+                    if ss2Weight * 100 >= ranInt
                     then
                         return BOT_ACTION_DESIRE_HIGH, enemyHero
                     end
                 else
-                    if SPL.GetSpellReplaceWeight(StolenSpell1) * 100 >= RandomInt(1, 100)
+                    if ss1Weight * 100 >= ranInt
                     then
                         return BOT_ACTION_DESIRE_HIGH, enemyHero
                     end

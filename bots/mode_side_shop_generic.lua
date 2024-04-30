@@ -140,8 +140,7 @@ function GetDesire()
 	and aveSuppLevel > 9.9
     and (((bot.lastKillTime == 0 and aliveAlly >= 5)
         or (bot.lastKillTime > 0 and aliveAlly >= 3)
-		or (GetAttackingCount() >= 3)))
-	and J.GetAliveAllyCoreCount() >= 2
+		or (GetAttackingCount() >= 3 and J.GetAliveAllyCoreCount() >= 1)))
 	then
 		if not IsTeamHealthy
 		then

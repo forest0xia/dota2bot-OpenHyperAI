@@ -115,6 +115,7 @@ function X.GetSpellReplaceWeight(ability)
         ['rubick_empty2'] = 1,
     }
 
+    -- the spell not added to the list yet, default to give it high weight to steal
     if SpellList[ability] == nil then return 1 end
 
     return SpellList[ability]

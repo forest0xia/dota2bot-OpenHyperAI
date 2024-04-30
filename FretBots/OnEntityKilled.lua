@@ -67,7 +67,7 @@ function EntityKilled:GetEntityKilledEventData(event)
         local goldPerLevel = -30
         local heroLevel = victim:GetLevel()
         -- 基于基础惩罚，死亡单位的等级，和难度来确定惩罚额度
-        local goldBounty = math.floor(goldPerLevel * heroLevel/4 * (Settings.difficultyScale * 3))
+        local goldBounty = math.floor(goldPerLevel * heroLevel/4 * (Settings.difficultyScale * 3) - math.random(1, 50))
         -- 给予击杀者赏金
         killer:ModifyGold(goldBounty, true, DOTA_ModifyGold_HeroKill)
         local msg = 'Balance Killer Award to ' .. PlayerResource:GetPlayerName(killer:GetPlayerID())..' for the kill. Gold: ' .. goldBounty

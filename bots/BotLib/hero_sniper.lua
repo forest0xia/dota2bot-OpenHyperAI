@@ -43,7 +43,7 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_wraith_band",
 	"item_power_treads",
 	"item_magic_wand",
-
+	
 	"item_mask_of_madness",
 	"item_dragon_lance",
 	"item_lesser_crit",
@@ -51,11 +51,11 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_aghanims_shard",
 	"item_greater_crit",--
 	"item_skadi",--
-	"item_angels_demise",--
+	"item_butterfly",--
 	"item_travel_boots",
+	"item_moon_shard",
 	"item_satanic",--
 	"item_travel_boots_2",--
-	"item_moon_shard",
 	"item_ultimate_scepter_2",
 }
 
