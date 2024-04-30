@@ -693,7 +693,7 @@ function X.OverrideTeamHeroes()
 		}
 	end
 end
-sSelectList = X.OverrideTeamHeroes()
+-- sSelectList = X.OverrideTeamHeroes()
 
 function Think()
 	if GetGameState() == GAME_STATE_HERO_SELECTION then

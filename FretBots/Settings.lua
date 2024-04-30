@@ -50,13 +50,16 @@ AllNeutrals = dofile('Fretbots.SettingsNeutralItemTable')
 -- cheat command list
 local cheats = dofile('Fretbots.CheatList')
 
+local currentAnnouncePrintTime = 0
+local lastAnnouncePrintedTime = -2
+local numberAnnouncePrinted = 0
 local announcementList = {
 	
 	{"#7986CB", "GLHF! Default bot scripts lack excitement. This script boosts bots with unfair advantages to make bot games more challenging:"},
 	{"#26C6DA", "* The bots receive a bonus in gold, exp, stats, etc every minute as well as upon their death."},
 	{"#26A69A", "* The bots get bonus mana/hp regens and provide less exp on death."},
 	{"#81C784", "* When a player kills a bot, the player who made the kill receives a reduction in gold. This does not affect assisting players."},
-	{"#AED581", "* The amount of bonus mainly depends on the difficulty scale you voted." },
+	{"#AED581", "* The amount of bonus mainly depends on the difficulty scale you vote." },
 	{"#BA4A00", "* This is a script based on ryndrb's https://github.com/ryndrb/dota2bot. Kudos to BeginnerAI, Fretbots, and ryndrb@; and thanks to -Calculated, Karma, Toph for sharing ideas." },
 	-- {"#D4AC0D", "There are commands to play certain sounds like `ps love` or `ps dylm`. You can also explore other commands like `getroles`, `networth`, etc." }
 
@@ -158,12 +161,19 @@ function Settings:DifficultySelectTimer()
 		msg = 'Enter a number (0 through 10) in chat to vote.'
 		Utilities:Print(msg, MSG_GOOD)
 		isVotingOpen = true
-
-
-		for i, msg in ipairs(announcementList) do
-			Utilities:Print(msg[2], msg[1])
-		end
 		
+	end
+
+	if numberAnnouncePrinted < #announcementList + 1 then
+		if currentAnnouncePrintTime - lastAnnouncePrintedTime >= 3 then
+			local msg = announcementList[numberAnnouncePrinted]
+			if msg ~= nil then
+				Utilities:Print(msg[2], msg[1])
+			end
+			numberAnnouncePrinted = numberAnnouncePrinted + 1
+			lastAnnouncePrintedTime = currentAnnouncePrintTime
+		end
+		currentAnnouncePrintTime = currentAnnouncePrintTime + 1
 	end
 
 	-- set voting closed

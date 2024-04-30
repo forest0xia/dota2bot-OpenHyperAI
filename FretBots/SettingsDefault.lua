@@ -18,7 +18,7 @@
 		-- game state in which voting should end
 		voteEndState = DOTA_GAMERULES_STATE_PRE_GAME,
 		-- voting ends when this amount of time has passed since voting began
-		voteEndTime = 30,
+		voteEndTime = 40,
 		-- Warning timings for vote ending
 		voteWarnTimes = {10,5},
 		-- are multipliers multiplicative, or additive
