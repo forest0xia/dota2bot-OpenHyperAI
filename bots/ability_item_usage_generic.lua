@@ -1350,7 +1350,7 @@ X.ConsiderItemDesire["item_bloodstone"] = function( hItem )
 	and J.GetHP(bot) < 0.3
 	then
 		hEffectTarget = bot
-		sCastMotive = "亡魂胸针进攻:"..J.Chat.GetNormName( botTarget )
+		sCastMotive = "开启血精石" --"亡魂胸针进攻:"..J.Chat.GetNormName( botTarget )
 		return BOT_ACTION_DESIRE_HIGH, hEffectTarget, sCastType, sCastMotive
 	end
 
@@ -1361,7 +1361,7 @@ X.ConsiderItemDesire["item_bloodstone"] = function( hItem )
 		if bot:WasRecentlyDamagedByAnyHero( 2.0 )
 		then
 			hEffectTarget = bot
-			sCastMotive = "亡魂胸针进攻:"..J.Chat.GetNormName( botTarget )
+			sCastMotive = "开启血精石" --"亡魂胸针进攻:"..J.Chat.GetNormName( botTarget )
 			return BOT_ACTION_DESIRE_HIGH, hEffectTarget, sCastType, sCastMotive
 		end
 	end

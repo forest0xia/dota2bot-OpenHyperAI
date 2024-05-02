@@ -509,7 +509,7 @@ function X.ConsiderReality()
                 and not J.IsSuspiciousIllusion(allyTarget)
                 and not J.IsLocationInChrono(allyTarget:GetLocation())
                 and not J.IsLocationInBlackHole(allyTarget:GetLocation())
-                and not GetUnitToLocationDistance(allyTarget, GetAncient(GetOpposingTeam()):GetLocation()) < 200
+                and not (GetUnitToLocationDistance(allyTarget, GetAncient(GetOpposingTeam()):GetLocation()) < 200)
                 then
                     local nInRangeAlly = allyHero:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
                     local nTargetInRangeAlly = allyHero:GetNearbyHeroes(1200, false, BOT_MODE_NONE)

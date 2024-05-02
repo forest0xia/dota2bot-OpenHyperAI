@@ -208,7 +208,7 @@ local sPos2List = {
 	"npc_dota_hero_ember_spirit",
 	"npc_dota_hero_huskar",
 	"npc_dota_hero_rubick",
-	-- "npc_dota_hero_invoker", -- TOO WEAK
+	"npc_dota_hero_invoker", -- TOO WEAK
 	"npc_dota_hero_keeper_of_the_light",
 	"npc_dota_hero_kunkka",
 	"npc_dota_hero_leshrac",

@@ -245,7 +245,7 @@ function X.SkillsComplement()
 
     ConsiderFirstSpell()
 
-    -- 预留技能; 预留球; 让没在cd的技能位置靠前
+    -- 预留技能; 预留球; 让没在cd的技能位置靠前。注意，这个阶段不能让大招进入CD
     X.ConsiderPreCast()
 
 
@@ -339,13 +339,6 @@ function X.SkillsComplement()
         return
     end
 
-    AlacrityDesire, AlacrityTarget = X.ConsiderAlacrity()
-    if AlacrityDesire > 0
-    then
-        X.CastAlacrity(AlacrityTarget)
-        return
-    end
-
     ChaosMeteorDesire, ChaosMeteorLocation = X.ConsiderChaosMeteor()
     if ChaosMeteorDesire > 0
     then
@@ -357,6 +350,13 @@ function X.SkillsComplement()
     if DeafeningBlastDesire > 0
     then
         X.CastDeafeningBlast(DeafeningBlastLocation)
+        return
+    end
+
+    AlacrityDesire, AlacrityTarget = X.ConsiderAlacrity()
+    if AlacrityDesire > 0
+    then
+        X.CastAlacrity(AlacrityTarget)
         return
     end
 
@@ -421,7 +421,7 @@ function X.SkillsComplement()
             if J.IsLaning(bot)
             and J.IsValidHero(enemyHero)
             and bot:GetLevel() >= 2
-            and J.GetHP(bot) > J.GetHP(enemyHero)
+            and J.GetHP(bot) >= J.GetHP(enemyHero)
             and (bot:HasModifier(modifier_invoker_alacrity)
             or enemyHero:HasModifier(modifier_invoker_cold_snap_freeze))
             then
@@ -508,6 +508,8 @@ end
 local lastTimeChangeModifierAbilities = 0
 
 -- If no desire actions, get some abilities actived on the skill list so they can be casted as soon as needed later.
+-- 预留技能; 预留球; 让没在cd的技能位置靠前。
+-- 注意，这个阶段不能让大招进入CD，不然会影响其他技能的使用判断，因为这里不做太多技能使用的条件判定，缺少正确取舍
 function X.ConsiderPreCast()
 
     -- temp don't consider pre cast if not all basic skills are trained.
@@ -517,7 +519,7 @@ function X.ConsiderPreCast()
         return
     end
 
-    -- reverse the abilities in slots to keep not-in-cd ability
+    -- reverse the abilities in slots to keep not-in-cd ability longer
     local abilityD = bot:GetAbilityInSlot(3)  -- First invoked slot
     local abilityF = bot:GetAbilityInSlot(4)  -- Second invoked slot
     if abilityD ~= nil and abilityF ~= nil
@@ -549,7 +551,7 @@ function X.ConsiderPreCast()
 
     if DotaTime() - lastTimeChangeModifierAbilities > 1 then
 
-        -- idle spells. Buggy. some conditions not seem to work properly
+        -- idle spells. Buggy. some conditions not seem to work properly.
         -- if not J.IsAttacking(bot)
         -- and not J.IsGoingOnSomeone(bot)
         -- and not J.IsDefending(bot)
@@ -1071,7 +1073,7 @@ function X.ConsiderColdSnap()
         if J.IsValidHero(enemyHero)
         and J.CanCastOnNonMagicImmune(enemyHero)
         and J.CanCastOnTargetAdvanced(enemyHero)
-        and J.IsInRange(bot, enemyHero, nCastRange)
+        and J.IsInRange(bot, enemyHero, 650)
         and not J.IsSuspiciousIllusion(enemyHero)
         and not J.IsDisabled(enemyHero)
         and not J.IsTaunted(enemyHero)
