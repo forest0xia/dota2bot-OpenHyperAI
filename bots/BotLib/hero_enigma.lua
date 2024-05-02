@@ -102,6 +102,19 @@ function X.SkillsComplement()
     then
         return
     end
+    
+    -- if near by enemy hero is pulled by black hole, don't do anything
+    local nEnemyHeroes = bot:GetNearbyHeroes(800, true, BOT_MODE_NONE)
+    for _, enemyHero in pairs(nEnemyHeroes)
+    do
+        if  J.IsValidHero(enemyHero)
+        and not J.IsSuspiciousIllusion(enemyHero)
+        and not enemyHero:HasModifier('modifier_enigma_black_hole_pull')
+        and not enemyHero:HasModifier('modifier_enigma_black_hole_pull_scepter')
+        then
+            return
+        end
+    end
 
     BlinkPulseHoleDesire, BlinkPulseHoleLocation = X.ConsiderBlinkPulseHole()
     if BlinkPulseHoleDesire > 0
@@ -153,6 +166,7 @@ function X.SkillsComplement()
         if  CanBKB()
         and not bot:IsMagicImmune()
         then
+            bot:Action_ClearActions(false)
             bot:ActionQueue_UseAbility(BlackKingBar)
             bot:ActionQueue_Delay(0.1)
             bot:ActionQueue_UseAbilityOnLocation(BlackHole, BlackHoleLocation)

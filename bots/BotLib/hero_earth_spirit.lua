@@ -248,7 +248,7 @@ function X.ConsiderBoulderSmash()
 
 	if stoneNearby
 	then
-		local nEnemyHeroes = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+		local nEnemyHeroes = bot:GetNearbyHeroes(math.min(nCastRange, 1600), true, BOT_MODE_NONE)
 		local target = J.GetCanBeKilledUnit(nEnemyHeroes, nDamage, DAMAGE_TYPE_MAGICAL, false)
 
 		if  target ~= nil
@@ -259,7 +259,7 @@ function X.ConsiderBoulderSmash()
 		end
 	elseif nStone >= 1
 	then
-		local nEnemyHeroes = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+		local nEnemyHeroes = bot:GetNearbyHeroes(math.min(nCastRange, 1600), true, BOT_MODE_NONE)
 		local target = J.GetCanBeKilledUnit(nEnemyHeroes, nDamage, DAMAGE_TYPE_MAGICAL, false)
 
 		if  target ~= nil
@@ -276,7 +276,7 @@ function X.ConsiderBoulderSmash()
 
 		if  J.IsValidTarget(botTarget)
 		and J.CanCastOnNonMagicImmune(botTarget)
-		and J.IsInRange(bot, botTarget, nCastRange)
+		and J.IsInRange(bot, botTarget, math.min(nCastRange, 1600))
 		and not J.IsSuspiciousIllusion(botTarget)
 		then
 			local loc = J.GetCorrectLoc(botTarget, GetUnitToUnitDistance(bot, botTarget) / nSpeed)
@@ -363,7 +363,7 @@ function X.ConsiderRollingBoulder()
 		nNearbyEnemySearchRange = nNearbyEnemySearchRange * 2
 	end
 
-	local nEnemyHeroes = bot:GetNearbyHeroes(nNearbyEnemySearchRange, true, BOT_MODE_NONE)
+	local nEnemyHeroes = bot:GetNearbyHeroes(math.min(nNearbyEnemySearchRange, 1600), true, BOT_MODE_NONE)
 	for _, enemyHero in pairs(nEnemyHeroes)
 	do
 		if  enemyHero:IsChanneling() or J.IsCastingUltimateAbility(enemyHero)
@@ -427,7 +427,7 @@ function X.ConsiderRollingBoulder()
 		and not J.IsSuspiciousIllusion(botTarget)
 		and not botTarget:HasModifier('modifier_faceless_void_chronosphere')
 		then
-			local nAllyHeroes = bot:GetNearbyHeroes(nDistance * 2, false, BOT_MODE_NONE)
+			local nAllyHeroes = bot:GetNearbyHeroes(math.min(nDistance * 2, 1600), false, BOT_MODE_NONE)
 
 			if  nEnemyHeroes ~= nil and nAllyHeroes ~= nil
 			and ((#nAllyHeroes >= #nEnemyHeroes) or (#nEnemyHeroes > #nAllyHeroes and J.WeAreStronger(nDistance)))
@@ -453,11 +453,11 @@ function X.ConsiderRollingBoulder()
 		end
 	end
 
-	local nInRangeAlly  = bot:GetNearbyHeroes(nDistance * 2, false, BOT_MODE_NONE)
+	local nInRangeAlly  = bot:GetNearbyHeroes(math.min(nDistance * 2, 1600), false, BOT_MODE_NONE)
 	if J.IsRetreating(bot)
 	or J.IsRetreating(bot) and (nInRangeAlly ~= nil and nEnemyHeroes ~= nil and #nEnemyHeroes > #nInRangeAlly)
 	then
-		local nAllyHeroes  = bot:GetNearbyHeroes(nDistance * 2, false, BOT_MODE_NONE)
+		local nAllyHeroes  = bot:GetNearbyHeroes(math.min(nDistance * 2, 1600), false, BOT_MODE_NONE)
 		local location = J.GetEscapeLoc()
 		local loc = J.Site.GetXUnitsTowardsLocation(bot, location, nDistance)
 

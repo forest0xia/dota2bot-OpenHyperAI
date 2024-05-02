@@ -207,7 +207,8 @@ local sPos2List = {
 	"npc_dota_hero_earth_spirit",
 	"npc_dota_hero_ember_spirit",
 	"npc_dota_hero_huskar",
-	-- "npc_dota_hero_invoker",
+	"npc_dota_hero_rubick",
+	-- "npc_dota_hero_invoker", -- TOO WEAK
 	"npc_dota_hero_keeper_of_the_light",
 	"npc_dota_hero_kunkka",
 	"npc_dota_hero_leshrac",
@@ -231,7 +232,7 @@ local sPos2List = {
 	"npc_dota_hero_sniper",
 	"npc_dota_hero_storm_spirit",
 	"npc_dota_hero_templar_assassin",
-	-- "npc_dota_hero_tinker",
+	-- "npc_dota_hero_tinker", -- TOO WEAK
 	"npc_dota_hero_tiny",
 	"npc_dota_hero_viper",
 	"npc_dota_hero_void_spirit",
@@ -655,7 +656,7 @@ function X.OverrideTeamHeroes()
 	if GetTeam() == TEAM_RADIANT
 	then
 		return {
-			[1] = tSelectPoolList[1][RandomInt( 1, #tSelectPoolList[1] )],
+			[1] = "npc_dota_hero_invoker",
 			[2] = tSelectPoolList[2][RandomInt( 1, #tSelectPoolList[2] )],
 			[3] = tSelectPoolList[3][RandomInt( 1, #tSelectPoolList[3] )],
 			[4] = tSelectPoolList[4][RandomInt( 1, #tSelectPoolList[4] )],
@@ -669,19 +670,24 @@ function X.OverrideTeamHeroes()
 		 --    [4] = "npc_dota_hero_witch_doctor",
 			-- [5] = "npc_dota_hero_bane",
 
-			-- [1] = "npc_dota_hero_meepo",
-			-- [2] = "npc_dota_hero_invoker",
-			-- [3] = "npc_dota_hero_snapfire",
+			-- [1] = "npc_dota_hero_rubick",
+			-- [2] = "npc_dota_hero_snapfire",
+			-- [3] = "npc_dota_hero_meepo",
 		 --    [4] = "npc_dota_hero_earth_spirit",
-			-- [5] = "npc_dota_hero_tusk",
+			-- [5] = "npc_dota_hero_techies",
 
 
 			-- Test buggy heroes:
-			[1] = "npc_dota_hero_invoker",
-			[2] = "npc_dota_hero_techies",
-			[3] = "npc_dota_hero_weaver",
-		    [4] = "npc_dota_hero_treant",
-			[5] = "npc_dota_hero_rubick",
+			-- [1] = "npc_dota_hero_invoker",
+			-- [2] = "npc_dota_hero_techies",
+			-- [3] = "npc_dota_hero_weaver",
+		    -- [4] = "npc_dota_hero_treant",
+			-- [5] = "npc_dota_hero_rubick",
+			[1] = tSelectPoolList[1][RandomInt( 1, #tSelectPoolList[1] )],
+			[2] = tSelectPoolList[2][RandomInt( 1, #tSelectPoolList[2] )],
+			[3] = tSelectPoolList[3][RandomInt( 1, #tSelectPoolList[3] )],
+			[4] = tSelectPoolList[4][RandomInt( 1, #tSelectPoolList[4] )],
+			[5] = tSelectPoolList[5][RandomInt( 1, #tSelectPoolList[5] )],
 		    
 
 			-- [1] = "npc_dota_hero_storm_spirit",
@@ -693,7 +699,7 @@ function X.OverrideTeamHeroes()
 		}
 	end
 end
--- sSelectList = X.OverrideTeamHeroes()
+sSelectList = X.OverrideTeamHeroes()
 
 function Think()
 	if GetGameState() == GAME_STATE_HERO_SELECTION then

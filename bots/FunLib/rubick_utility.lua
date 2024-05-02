@@ -79,11 +79,9 @@ function X.ConsiderStolenSpell(ability)
 
         if X.IsAbilityForSinglePoint(ability) then
             bot:ActionQueue_UseAbilityOnEntity( ability, castRTarget )
-        end
-        if X.IsAbilityForNoTarget(ability) then
+        elseif X.IsAbilityForNoTarget(ability) then
             bot:ActionQueue_UseAbility( ability )
-        end
-        if X.IsAbilityForAOE(ability) then
+        elseif X.IsAbilityForAOE(ability) then
             bot:ActionQueue_UseAbilityOnLocation(ability, castRTarget)
         end
 
@@ -148,7 +146,7 @@ function X.ConsiderSpellBehavior(ability)
         end
     end
 
-    if X.IsAbilityForTargetAllies(ability) and X.IsAbilityForTargetHero(ability) then
+    if X.IsAbilityForTargetAllies(ability) and not X.IsAbilityForTargetEnemy(ability) and X.IsAbilityForTargetHero(ability) then
         if DotaTime() >= lastCheck + 0.5 then
             local weakest = nil
             local minHP = 100000

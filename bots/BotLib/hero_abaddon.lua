@@ -24,12 +24,6 @@ local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 
 local sRoleItemsBuyList = {}
 
-sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_1']
-
-sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
-
-sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_1']
-
 sRoleItemsBuyList['pos_4'] = {
     "item_double_tango",
     "item_double_enchanted_mango",
@@ -72,6 +66,11 @@ sRoleItemsBuyList['pos_5'] = {
     "item_moon_shard"
 }
 
+sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_4']
+
+sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_4']
+
+sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_4']
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 
@@ -88,8 +87,7 @@ X['sSellList'] = {}
 if sRole == "pos_4"
 then
     X['sSellList'] = Pos4SellList
-elseif sRole == "pos_5"
-then
+else
     X['sSellList'] = Pos5SellList
 end
 

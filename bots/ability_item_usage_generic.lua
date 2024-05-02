@@ -1560,6 +1560,18 @@ X.ConsiderItemDesire["item_cyclone"] = function( hItem )
 		and X.IsWithoutSpellShield( botTarget )
 		and J.IsInRange( bot, botTarget, nCastRange + 200 )
 	then
+		-- Invoker combo with item_cyclone. 
+		if bot:GetUnitName() == "npc_dota_hero_invoker" and J.IsGoingOnSomeone(bot) then
+			if J.IsValidHero(botTarget)
+			and not J.IsSuspiciousIllusion(botTarget)
+			and J.GetMP(bot) > 0.5 then
+				-- Should check if the target is already stuned etc.
+				hEffectTarget = botTarget
+				sCastMotive = '预设连招:'..J.Chat.GetNormName( hEffectTarget )
+				return BOT_ACTION_DESIRE_HIGH, hEffectTarget, sCastType, sCastMotive
+			end
+		end
+
 		if botTarget:HasModifier( 'modifier_teleporting' )
 			 or botTarget:HasModifier( 'modifier_abaddon_borrowed_time' )
 			 or botTarget:HasModifier( "modifier_ursa_enrage" )
@@ -5155,14 +5167,15 @@ X.ConsiderItemDesire["item_urn_of_shadows"] = function( hItem )
 
 	if J.IsGoingOnSomeone( bot )
 	then
-		if J.IsValidHero( botTarget )
-			and J.CanCastOnNonMagicImmune( botTarget )
-			and J.IsInRange( bot, botTarget, nCastRange )
-			and not botTarget:HasModifier( "modifier_item_urn_damage" )
-			and not botTarget:HasModifier( "modifier_item_spirit_vessel_damage" )
-			and not botTarget:HasModifier( "modifier_arc_warden_tempest_double" )
-			and ( J.GetHP( botTarget ) < 0.95 or J.IsInRange( bot, botTarget, 700 ) )
-		then
+		if J.IsValidHero( botTarget ) and 
+			((J.CanCastOnNonMagicImmune( botTarget )
+				and J.IsInRange( bot, botTarget, nCastRange )
+				and not botTarget:HasModifier( "modifier_item_urn_damage" )
+				and not botTarget:HasModifier( "modifier_item_spirit_vessel_damage" )
+				and not botTarget:HasModifier( "modifier_arc_warden_tempest_double" )
+				and ( J.GetHP( botTarget ) < 0.95 or J.IsInRange( bot, botTarget, 700 ) ))
+			or botTarget:HasModifier( "modifier_invoker_cold_snap_freeze" ) -- 配合急速冷却
+		) then
 			hEffectTarget = botTarget
 			sCastMotive = "进攻:"..J.Chat.GetNormName( hEffectTarget )
 			return BOT_ACTION_DESIRE_HIGH, hEffectTarget, sCastType, sCastMotive

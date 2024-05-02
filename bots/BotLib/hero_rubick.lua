@@ -25,6 +25,30 @@ local nAbilityBuildList = J.Skill.GetRandomBuild(tAllAbilityBuildList)
 local nTalentBuildList = J.Skill.GetTalentBuild(tTalentTreeList)
 
 local sRoleItemsBuyList = {}
+
+sRoleItemsBuyList['pos_2'] = {
+    "item_tango",
+    "item_double_branches",
+    "item_faerie_fire",
+
+    "item_bottle",
+    "item_boots",
+    "item_magic_wand",
+    "item_dagon_2",
+    "item_travel_boots",
+    "item_aghanims_shard",
+    "item_cyclone",
+    "item_ultimate_scepter",
+    "item_octarine_core",--
+    "item_dagon_5",--
+    "item_ultimate_scepter_2",
+    "item_shivas_guard",
+    "item_travel_boots_2",--
+    "item_ethereal_blade",--
+    "item_wind_waker",--
+    "item_moon_shard",
+}
+
 sRoleItemsBuyList['pos_4'] = {
     "item_double_tango",
     "item_double_branches",
@@ -74,29 +98,6 @@ sRoleItemsBuyList['pos_5'] = {
     "item_ultimate_scepter_2",
     "item_moon_shard",
 }
-
-sRoleItemsBuyList['pos_2'] = {
-    "item_double_tango",
-    "item_double_branches",
-    "item_blood_grenade",
-
-    "item_tranquil_boots",
-    "item_magic_wand",
-    "item_dagon_2",
-    "item_aghanims_shard",
-    "item_blink",
-    "item_force_staff",--
-    "item_ultimate_scepter",
-    "item_boots_of_bearing",--
-    "item_octarine_core",--
-    "item_dagon_5",--
-    "item_swift_blink",--
-    "item_ultimate_scepter_2",
-    "item_ethereal_blade",--
-    "item_wind_waker",--
-    "item_moon_shard",
-}
-
 sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_2']
 
 sRoleItemsBuyList['pos_3'] = {
@@ -136,12 +137,11 @@ Pos5SellList = {
 
 X['sSellList'] = {}
 
-if sRole == "pos_4"
-then
-    X['sSellList'] = Pos4SellList
-elseif sRole == "pos_5"
+if sRole == "pos_5"
 then
     X['sSellList'] = Pos5SellList
+else
+    X['sSellList'] = Pos4SellList
 end
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_antimage' }, {} end

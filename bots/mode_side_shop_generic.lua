@@ -206,7 +206,7 @@ function Think()
 				and canDoTormentor
 				then
 					tormentorMessageTime = DotaTime()
-					bot:ActionImmediate_Chat("let's try tormentor?", false)
+					bot:ActionImmediate_Chat("Let's try tormentor?", false)
 					bot:ActionImmediate_Ping(c:GetLocation().x, c:GetLocation().y, true)
 				end
 			end
@@ -256,7 +256,7 @@ function IsEnoughAllies()
 		end
 	end
 
-	return (((bot.lastKillTime == 0 and heroCount >= 5) or (bot.lastKillTime > 0 and heroCount >= 3))) and coreCount >= 2
+	return (((bot.lastKillTime == 0 and heroCount >= 3) or (bot.lastKillTime > 0 and heroCount >= 2))) and coreCount >= 1
 end
 
 function DoesAllHaveShard()

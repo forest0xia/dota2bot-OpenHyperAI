@@ -558,6 +558,19 @@ function Utilities:RegsiterGameStateListener(o, initializer, initState)
 	end
 end
 
+
+function Utilities:IsTurboMode()
+    local courier = Entities:FindByName(nil, 'npc_dota_courier')
+    local moveSpeed = courier:GetMoveSpeedModifier(courier:GetBaseMoveSpeed(), true)
+
+    if moveSpeed == 1100
+    then
+        return true
+    end
+
+    return false
+end
+
 -- GameStateListener class for registering functions that will run once when
 -- a certain game state is reached
 if GameStateListener == nil then

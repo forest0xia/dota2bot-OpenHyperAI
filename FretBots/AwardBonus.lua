@@ -380,7 +380,11 @@ function AwardBonus:GetPerMinuteBonus(bot, gpm, xpm)
 	-- 减少死亡经验奖励
 	bot:SetCustomDeathXP(math.floor(bot:GetDeathXP() * 0.80))
 	-- 增加基础回蓝，按照分钟数翻倍
-	bot:SetBaseManaRegen(0.9 * Utilities:GetAbsoluteTime() / 60)
+	if Utilities:IsTurboMode() then
+		bot:SetBaseManaRegen(3 * Utilities:GetAbsoluteTime() / 60)
+	else
+		bot:SetBaseManaRegen(0.9 * Utilities:GetAbsoluteTime() / 60)
+	end
 	return gpmBonus, xpmBonus
 end
 

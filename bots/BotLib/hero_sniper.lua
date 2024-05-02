@@ -447,7 +447,7 @@ function X.ConsiderR()
 	local nDamageType = DAMAGE_TYPE_MAGICAL
 
 	local nEnemysHerosCanSeen = GetUnitList( UNIT_LIST_ENEMY_HEROES )
-	local nEnemysHerosInAttackRange = bot:GetNearbyHeroes( nAttackRange + 50, true, BOT_MODE_NONE )
+	local nEnemysHerosInAttackRange = bot:GetNearbyHeroes( math.min(nAttackRange + 50, 1600), true, BOT_MODE_NONE )
 
 	local nTempTarget = nEnemysHerosInAttackRange[1]
 	local nAttackTarget = J.GetProperTarget( bot )
