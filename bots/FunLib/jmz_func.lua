@@ -7,6 +7,22 @@
 --- Link:http://steamcommunity.com/sharedfiles/filedetails/?id=1627071163
 ----------------------------------------------------------------------------------------------------
 
+-- Overridding function to debug GetUnitToUnitDistance
+local original_GetUnitToUnitDistance = GetUnitToUnitDistance
+function GetUnitToUnitDistance(unit1, unit2)
+	if not unit1 then
+        print("[Error] GetUnitToUnitDistance called with invalid unit 1")
+		print("Stack Trace:", debug.traceback())
+	end
+	if not unit2 then
+		if unit1 then
+        	print("[Error] GetUnitToUnitDistance called with invalid unit 2, the unit 1 is: " .. unit1:GetUnitName())
+			print("Stack Trace:", debug.traceback())
+		end
+	end
+    return original_GetUnitToUnitDistance(unit1, unit2)
+end
+
 
 local J = {}
 

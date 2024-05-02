@@ -39,13 +39,13 @@ sRoleItemsBuyList['pos_2'] = {
     "item_travel_boots",
     "item_black_king_bar",--
     "item_aghanims_shard",
-    "item_octarine_core",--
-    "item_sheepstick",--
     "item_ultimate_scepter",
+    "item_octarine_core",--
+    "item_ultimate_scepter_2",
+    "item_sheepstick",--
     "item_refresher",--
     "item_wind_waker",--
     "item_travel_boots_2",--
-    "item_ultimate_scepter_2",
     "item_moon_shard",
 }
 
@@ -143,30 +143,46 @@ local ForgeSpiritDesire
 local IceWallDesire
 local DeafeningBlastDesire, DeafeningBlastLocation
 
-local ColdSnapCooldownTime          = 20
-local GhostWalkCooldownTime         = 35
-local TornadoCooldownTime           = 30
-local EMPCooldownTime               = 30
-local AlacrityCooldownTime          = 17
-local ChaosMeteorCooldownTime       = 55
-local SunstrikeCooldownTime         = 25
-local ForgeSpiritCooldownTime       = 30
-local IceWallCooldownTime           = 25
-local DeafeningBlastCooldownTime    = 40
-local CataclysmCooldownTime         = 100
+local AbilityCooldownTimes = {
+    ColdSnap = 20,
+    GhostWalk = 35,
+    Tornado = 30,
+    EMP = 30,
+    Alacrity = 17,
+    ChaosMeteor = 55,
+    Sunstrike = 25,
+    ForgeSpirit = 30,
+    IceWall = 25,
+    DeafeningBlast = 40,
+    Cataclysm = 100
+}
 
-local ColdSnapCastedTime          = -100
-local GhostWalkCastedTime         = -100
-local TornadoCastedTime           = -100
-local EMPCastedTime               = -100
-local AlacrityCastedTime          = -100
-local ChaosMeteorCastedTime       = -100
-local SunstrikeCastedTime         = -100
-local ForgeSpiritCastedTime       = -100
-local IceWallCastedTime           = -100
-local DeafeningBlastCastedTime    = -100
-local CataclysmCastedTime         = -100
+local AbilityCastedTimes = {
+    ColdSnap = -100,
+    GhostWalk = -100,
+    Tornado = -100,
+    EMP = -100,
+    Alacrity = -100,
+    ChaosMeteor = -100,
+    Sunstrike = -100,
+    ForgeSpirit = -100,
+    IceWall = -100,
+    DeafeningBlast = -100,
+    Cataclysm = -100,
+}
 
+local AbilityNameMap = {
+    invoker_cold_snap = 'ColdSnap',
+    invoker_ghost_walk = 'GhostWalk',
+    invoker_tornado = 'Tornado',
+    invoker_emp = 'EMP',
+    invoker_alacrity = 'Alacrity',
+    invoker_chaos_meteor = 'ChaosMeteor',
+    invoker_sun_strike = 'Sunstrike',
+    invoker_forge_spirit = 'ForgeSpirit',
+    invoker_ice_wall = 'IceWall',
+    invoker_deafening_blast = 'DeafeningBlast'
+}
 
 -- Combo name, combo avability
 local ComboName_RightClick = {"Right Click Combo", true}
@@ -218,12 +234,13 @@ local TornadoLiftTime
 local botTarget
 
 function X.SkillsComplement()
+    CheckAbilityUsage()
+
     if J.CanNotUseAbility(bot) then return end
     if bot:HasModifier(modifier_invoker_ghost_walk_self) and J.GetHP(bot) < 0.7 then return end
 
     botTarget = J.GetProperTarget(bot)
     TornadoLiftTime = Tornado:GetSpecialValueFloat('lift_duration')
-
     CheckForCooldownReductions()
 
     ConsiderFirstSpell()
@@ -236,7 +253,7 @@ function X.SkillsComplement()
     -- 如果前置技能进入cd，且距离使用它的时间刚刚过去（大招cd时间+delta）时间之内，则可以认为马上可以切下一个连招技能
     local deltaTime = 0.3
     
-    if DotaTime() - TornadoCastedTime <= Invoke:GetCooldown() + deltaTime then
+    if DotaTime() - AbilityCastedTimes['Tornado'] <= Invoke:GetCooldown() + deltaTime then
         ChaosMeteorDesire, ChaosMeteorLocation = X.ConsiderChaosMeteor()
         if ChaosMeteorDesire > 0 then X.CastChaosMeteor(ChaosMeteorLocation) return end
         
@@ -247,15 +264,18 @@ function X.SkillsComplement()
         if ColdSnapDesire > 0 then  X.CastColdSnap(ColdSnapTarget) return end
     end
 
-    if DotaTime() - ChaosMeteorCastedTime <= Invoke:GetCooldown() + deltaTime then
+    if DotaTime() - AbilityCastedTimes['ChaosMeteor'] <= Invoke:GetCooldown() + deltaTime then
         DeafeningBlastDesire, DeafeningBlastLocation = X.ConsiderDeafeningBlast()
         if DeafeningBlastDesire > 0 then X.CastDeafeningBlast(DeafeningBlastLocation) return end
+
+        CataclysmDesire = X.ConsiderCataclysm()
+        if CataclysmDesire > 0 then X.CastCataclysm() return end
 
         ColdSnapDesire, ColdSnapTarget = X.ConsiderColdSnap()
         if ColdSnapDesire > 0 then  X.CastColdSnap(ColdSnapTarget) return end
     end
 
-    if DotaTime() - ColdSnapCastedTime <= Invoke:GetCooldown() + deltaTime then
+    if DotaTime() - AbilityCastedTimes['ColdSnap'] <= Invoke:GetCooldown() + deltaTime then
         TornadoDesire, TornadoLocation = X.ConsiderTornado()
         if TornadoDesire > 0 then X.CastTornado(TornadoLocation) return end
 
@@ -266,7 +286,7 @@ function X.SkillsComplement()
         if AlacrityDesire > 0 then X.CastAlacrity(AlacrityTarget) return end
     end
 
-    if DotaTime() - AlacrityCooldownTime <= Invoke:GetCooldown() + deltaTime then
+    if DotaTime() - AbilityCastedTimes['Alacrity'] <= Invoke:GetCooldown() + deltaTime then
         ColdSnapDesire, ColdSnapTarget = X.ConsiderColdSnap()
         if ColdSnapDesire > 0 then  X.CastColdSnap(ColdSnapTarget) return end
 
@@ -274,7 +294,7 @@ function X.SkillsComplement()
         if ForgeSpiritDesire > 0 then X.CastForgeSpirit() return end
     end
 
-    if DotaTime() - ForgeSpiritCooldownTime <= Invoke:GetCooldown() + deltaTime then
+    if DotaTime() - AbilityCastedTimes['ForgeSpirit'] <= Invoke:GetCooldown() + deltaTime then
         ColdSnapDesire, ColdSnapTarget = X.ConsiderColdSnap()
         if ColdSnapDesire > 0 then  X.CastColdSnap(ColdSnapTarget) return end
 
@@ -282,7 +302,7 @@ function X.SkillsComplement()
         if AlacrityDesire > 0 then X.CastAlacrity(AlacrityTarget) return end
     end
 
-    if DotaTime() - IceWallCooldownTime <= Invoke:GetCooldown() + deltaTime then
+    if DotaTime() - AbilityCastedTimes['IceWall'] <= Invoke:GetCooldown() + deltaTime then
         ColdSnapDesire, ColdSnapTarget = X.ConsiderColdSnap()
         if ColdSnapDesire > 0 then  X.CastColdSnap(ColdSnapTarget) return end
 
@@ -293,7 +313,7 @@ function X.SkillsComplement()
         if EMPDesire > 0 then  X.CastEMP(EMPLocation) return end
     end
 
-    if DotaTime() - DeafeningBlastCastedTime <= Invoke:GetCooldown() + deltaTime then
+    if DotaTime() - AbilityCastedTimes['DeafeningBlast'] <= Invoke:GetCooldown() + deltaTime then
         SunstrikeDesire, SunstrikeLocation = X.ConsiderSunstrike()
         if SunstrikeDesire > 0 then X.CastSunstrike(SunstrikeLocation) return end
 
@@ -382,7 +402,58 @@ function X.SkillsComplement()
         X.CastIceWall()
         return
     end
+
+
+    -- 物理攻击消耗敌人
+
+    if J.GetHP(bot) > 0.75 and not J.IsRetreating(bot) and not J.IsGoingOnSomeone(bot) and not J.IsInTeamFight(bot, 1200) then
+		local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(300, true)
+		local nEnemyTowers = bot:GetNearbyTowers(700, true)
+		if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 3 and nEnemyTowers ~= nil and #nEnemyTowers >= 1
+        then
+			return
+		end
+
+        local nEnemyHeroes = bot:GetNearbyHeroes(1000, true, BOT_MODE_NONE)
+        for _, enemyHero in pairs(nEnemyHeroes)
+        do
+            -- 对线消耗
+            if J.IsLaning(bot)
+            and J.IsValidHero(enemyHero)
+            and bot:GetLevel() >= 2
+            and J.GetHP(bot) > J.GetHP(enemyHero)
+            and (bot:HasModifier(modifier_invoker_alacrity)
+            or enemyHero:HasModifier(modifier_invoker_cold_snap_freeze))
+            then
+                bot:ActionPush_AttackUnit(enemyHero, true)
+                return
+            end
+
+            if J.IsValidHero(enemyHero)
+            and bot:GetLevel() >= 2
+            and J.GetHP(bot) > J.GetHP(enemyHero)
+            and J.CanCastOnNonMagicImmune(enemyHero)
+            and J.CanCastOnTargetAdvanced(enemyHero)
+            and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
+            and not enemyHero:HasModifier('modifier_faceless_void_chronosphere_freeze')
+            and not enemyHero:HasModifier('modifier_enigma_black_hole_pull')
+            and not J.IsSuspiciousIllusion(enemyHero)
+            then
+                local nInRangeAlly = enemyHero:GetNearbyHeroes(1400, true, BOT_MODE_NONE)
+                local nInRangeEnemy = enemyHero:GetNearbyHeroes(1400, false, BOT_MODE_NONE)
+    
+                if nInRangeEnemy ~= nil and #nInRangeEnemy <= 1
+                or (nInRangeAlly ~= nil and nInRangeEnemy ~= nil and #nInRangeAlly >= #nInRangeEnemy)
+                then
+                    bot:ActionPush_AttackUnit(enemyHero, true)
+                    return
+                end
+            end
+        end
+    end
 end
+
+
 
 function X.InvokeColdSnap()
     print("Invoker invoking ColdSnap")
@@ -451,7 +522,7 @@ function X.ConsiderPreCast()
     local abilityF = bot:GetAbilityInSlot(4)  -- Second invoked slot
     if abilityD ~= nil and abilityF ~= nil
     and not abilityD:IsFullyCastable()
-    and abilityF:IsFullyCastable()and Invoke:IsFullyCastable() then
+    and abilityF:IsFullyCastable() and Invoke:IsFullyCastable() then
         -- bot:Action_ClearActions(false)
         if abilityF == ColdSnap then
             X.InvokeColdSnap()
@@ -760,9 +831,19 @@ end
 --     return false
 -- end
 
+function X.ConsiderClearActions()
+    local nActions = bot:NumQueuedActions()
+    print("Invoker enqueued actions="..tostring(nActions))
+    if nActions >= 3 then
+        print("Clear Invokers queued actions")
+        bot:Action_ClearActions(false)
+    end
+end
+
 function X.CastForgeSpirit()
     print(DotaTime()..' - Invoker going to cast ForgeSpirit')
 
+    X.ConsiderClearActions()
     if not IsAbilityActive(ForgeSpirit)
     then
         X.InvokeForgeSpirit()
@@ -770,55 +851,59 @@ function X.CastForgeSpirit()
 
     -- bot:Action_ClearActions(false)
     -- bot:ActionQueue_Delay(0.1)
-    bot:Action_UseAbility(ForgeSpirit)
+    bot:ActionQueue_UseAbility(ForgeSpirit)
 
     print(DotaTime()..' - Invoker tried to cast ForgeSpirit')
-    ForgeSpiritCastedTime = DotaTime()
 end
 
 function X.CastIceWall()
     print(DotaTime()..' - Invoker going to cast IceWall')
+
+    X.ConsiderClearActions()
     if not IsAbilityActive(IceWall)
     then
         X.InvokeIceWall()
     end
 
     -- bot:Action_ClearActions(false)
-    bot:Action_UseAbility(IceWall)
+    bot:ActionQueue_UseAbility(IceWall)
 
     print(DotaTime()..' - Invoker tried to cast IceWall')
-    IceWallCastedTime = DotaTime()
 end
 
 function X.CastDeafeningBlast(DeafeningBlastLocation)
     print(DotaTime()..' - Invoker going to cast DeafeningBlast')
+
+    X.ConsiderClearActions()
     if not IsAbilityActive(DeafeningBlast)
     then
         X.InvokeDeafeningBlast()
     end
 
     -- bot:Action_ClearActions(false)
-    bot:Action_UseAbilityOnLocation(DeafeningBlast, DeafeningBlastLocation)
+    bot:ActionQueue_UseAbilityOnLocation(DeafeningBlast, DeafeningBlastLocation)
     print(DotaTime()..' - Invoker tried to cast DeafeningBlast')
-    DeafeningBlastCastedTime = DotaTime()
 end
 
 function X.CastSunstrike(SunstrikeLocation)
     print(DotaTime()..' - Invoker going to cast Sunstrike')
+    
+    X.ConsiderClearActions()
     if not IsAbilityActive(Sunstrike)
     then
         X.InvokeSunstrike()
     end
 
     -- bot:Action_ClearActions(false)
-    bot:Action_UseAbilityOnLocation(Sunstrike, SunstrikeLocation)
+    bot:ActionQueue_UseAbilityOnLocation(Sunstrike, SunstrikeLocation)
 
     print(DotaTime()..' - Invoker tried to cast Sunstrike')
-    SunstrikeCastedTime = DotaTime()
 end
 
 function X.CastCataclysm()
     print(DotaTime()..' - Invoker going to cast Cataclysm')
+    
+    X.ConsiderClearActions()
     if bot:HasScepter()
     then
         if not IsAbilityActive(Sunstrike)
@@ -826,97 +911,100 @@ function X.CastCataclysm()
             X.InvokeSunstrike()
         end
         -- bot:Action_ClearActions(false)
-        bot:Action_UseAbilityOnLocation(Sunstrike, bot)
+        bot:ActionQueue_UseAbilityOnEntity(Sunstrike, bot)
         
         print(DotaTime()..' - Invoker tried to cast Cataclysm')
-        CataclysmCastedTime = DotaTime()
     end
 end
 
 function X.CastAlacrity(AlacrityTarget)
     print(DotaTime()..' - Invoker going to cast Alacrity')
+    
+    X.ConsiderClearActions()
     if not IsAbilityActive(Alacrity)
     then
         X.InvokeAlacrity()
     end
     -- bot:Action_ClearActions(false)
-    bot:Action_UseAbilityOnEntity(Alacrity, AlacrityTarget)
-    print(DotaTime()..' - Invoker tried to use Alacrity')
-
-    AlacrityCastedTime = DotaTime()
+    bot:ActionQueue_UseAbilityOnEntity(Alacrity, AlacrityTarget)
+    print(DotaTime()..' - Invoker tried to cast Alacrity')
 end
 
 function X.CastColdSnap(ColdSnapTarget)
     print(DotaTime()..' - Invoker going to cast ColdSnap')
+    
+    X.ConsiderClearActions()
     if not IsAbilityActive(ColdSnap)
     then
         X.InvokeColdSnap()
     end
     -- bot:Action_ClearActions(false)
-    bot:Action_UseAbilityOnEntity(ColdSnap, ColdSnapTarget)
-    print(DotaTime()..' - Invoker tried to use ColdSnap')
-
-    ColdSnapCastedTime = DotaTime()
+    bot:ActionQueue_UseAbilityOnEntity(ColdSnap, ColdSnapTarget)
+    print(DotaTime()..' - Invoker tried to cast ColdSnap')
 end
 
 function X.CastChaosMeteor(ChaosMeteorLocation)
     print(DotaTime()..' - Invoker going to cast ChaosMeteor')
+    
+    X.ConsiderClearActions()
     if not IsAbilityActive(ChaosMeteor)
     then
         X.InvokeChaosMeteor()
     end
     -- bot:Action_ClearActions(false)
-    bot:Action_UseAbilityOnLocation(ChaosMeteor, ChaosMeteorLocation)
-    print(DotaTime()..' - Invoker tried to use ChaosMeteor')
-
-    ChaosMeteorCastedTime = DotaTime()
+    bot:ActionQueue_UseAbilityOnLocation(ChaosMeteor, ChaosMeteorLocation)
+    print(DotaTime()..' - Invoker tried to cast ChaosMeteor')
 end
 
 function X.CastEMP(EMPLocation)
     print(DotaTime()..' - Invoker going to cast EMP')
+    
+    X.ConsiderClearActions()
     if not IsAbilityActive(EMP)
     then
         X.InvokeEMP()
     end
 
     -- bot:Action_ClearActions(false)
-    bot:Action_UseAbilityOnLocation(EMP, EMPLocation)
+    bot:ActionQueue_UseAbilityOnLocation(EMP, EMPLocation)
 
-    print(DotaTime()..' - Invoker tried to use EMP')
-    EMPCastedTime = DotaTime()
+    print(DotaTime()..' - Invoker tried to cast EMP')
 end
 
 function X.CastTornado(TornadoLocation)
     print(DotaTime()..' - Invoker going to cast Tornado')
+    
+    X.ConsiderClearActions()
     if not IsAbilityActive(Tornado)
     then
         X.InvokeTornado()
     end
 
     -- bot:Action_ClearActions(false)
-    bot:Action_UseAbilityOnLocation(Tornado, TornadoLocation)
-    print(DotaTime()..' - Invoker tried to use Tornado')
-    TornadoCastedTime = DotaTime()
+    bot:ActionQueue_UseAbilityOnLocation(Tornado, TornadoLocation)
+
+    print(DotaTime()..' - Invoker tried to cast Tornado')
 end
 
 function X.CastGhostWalk()
     print(DotaTime()..' - Invoker going to cast GhostWalk')
+
+    bot:Action_ClearActions(false)
+
     if not IsAbilityActive(GhostWalk)
     then
         X.InvokeGhostWalk()
     end
 
-    -- bot:Action_ClearActions(false)
-    bot:Action_UseAbility(GhostWalk)
-    print(DotaTime()..' - Invoker tried to use GhostWalk')
-    GhostWalkCastedTime = DotaTime()
+    bot:ActionQueue_UseAbility(GhostWalk)
+    print(DotaTime()..' - Invoker tried to cast GhostWalk')
 end
 
 function X.CanInvoke_ColdSnap()
     if not Quas:IsTrained()
     or (not ColdSnap:IsFullyCastable()
         or (not IsAbilityActive(ColdSnap)
-            and (DotaTime() < ColdSnapCastedTime + ColdSnapCooldownTime or not Invoke:IsFullyCastable())))
+            and (DotaTime() < AbilityCastedTimes['ColdSnap'] + AbilityCooldownTimes['ColdSnap'] or not Invoke:IsFullyCastable())))
     then
         return false
     end
@@ -953,12 +1041,11 @@ function X.ConsiderColdSnap()
 
     if J.IsGoingOnSomeone(bot)
 	then
-		if  J.IsValidTarget(botTarget)
+		if  J.IsValidHero(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.CanCastOnTargetAdvanced(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange + castDeltaRange)
         and not J.IsSuspiciousIllusion(botTarget)
-        and not J.IsDisabled(botTarget)
         and not botTarget:HasModifier('modifier_abaddon_borrowed_time')
         and not botTarget:HasModifier('modifier_faceless_void_chronosphere_freeze')
         and not botTarget:HasModifier('modifier_enigma_black_hole_pull')
@@ -966,7 +1053,7 @@ function X.ConsiderColdSnap()
             local nInRangeAlly = botTarget:GetNearbyHeroes(1400, true, BOT_MODE_NONE)
             local nInRangeEnemy = botTarget:GetNearbyHeroes(1400, false, BOT_MODE_NONE)
 
-            if nInRangeEnemy ~= nil and #nInRangeEnemy <= 1 
+            if nInRangeEnemy ~= nil and #nInRangeEnemy <= 2
             or (nInRangeAlly ~= nil and nInRangeEnemy ~= nil and #nInRangeAlly >= #nInRangeEnemy)
             then
                 return BOT_ACTION_DESIRE_HIGH, botTarget
@@ -979,7 +1066,7 @@ function X.ConsiderColdSnap()
 	then
         local nInRangeEnemy = bot:GetNearbyHeroes(1400, true, BOT_MODE_NONE)
         local enemyHero
-        if nInRangeEnemy ~= nil and #nInRangeEnemy <= 2 then enemyHero = nInRangeEnemy[1] else return BOT_ACTION_DESIRE_NONE, nil end
+        if nInRangeEnemy ~= nil and #nInRangeEnemy <= 2 and nInRangeEnemy[1] ~= nil then enemyHero = nInRangeEnemy[1] else return BOT_ACTION_DESIRE_NONE, nil end
 
         if J.IsValidHero(enemyHero)
         and J.CanCastOnNonMagicImmune(enemyHero)
@@ -997,7 +1084,7 @@ function X.ConsiderColdSnap()
 	then
         local nInRangeEnemy = bot:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
         local enemyHero
-        if nInRangeEnemy ~= nil and #nInRangeEnemy >= 1 then enemyHero = nInRangeEnemy[1] else return BOT_ACTION_DESIRE_NONE, nil end
+        if nInRangeEnemy ~= nil and #nInRangeEnemy >= 1 and nInRangeEnemy[1] ~= nil then enemyHero = nInRangeEnemy[1] else return BOT_ACTION_DESIRE_NONE, nil end
 
         if J.IsValidHero(enemyHero)
         and J.CanCastOnNonMagicImmune(enemyHero)
@@ -1029,10 +1116,10 @@ function X.ConsiderColdSnap()
 end
 
 function X.CanInvoke_GhostWalk()
-    if (not Quas:IsTrained() and not Wex:IsTrained())
+    if (not Quas:IsTrained() or not Wex:IsTrained())
     or (not GhostWalk:IsFullyCastable()
         or (not IsAbilityActive(GhostWalk)
-            and (DotaTime() < GhostWalkCastedTime + GhostWalkCooldownTime or not Invoke:IsFullyCastable())))
+            and (DotaTime() < AbilityCastedTimes['GhostWalk'] + AbilityCooldownTimes['GhostWalk'] or not Invoke:IsFullyCastable())))
     then
         return false
     end
@@ -1092,10 +1179,10 @@ function X.ConsiderGhostWalk()
 end
 
 function X.CanInvoke_Tornado()
-    if (not Quas:IsTrained() and not Wex:IsTrained())
+    if (not Quas:IsTrained() or not Wex:IsTrained())
     or (not Tornado:IsFullyCastable()
         or (not IsAbilityActive(Tornado)
-            and (DotaTime() < TornadoCastedTime + TornadoCooldownTime or not Invoke:IsFullyCastable())))
+            and (DotaTime() < AbilityCastedTimes['Tornado'] + AbilityCooldownTimes['Tornado'] or not Invoke:IsFullyCastable())))
     then
         return false
     end
@@ -1113,7 +1200,6 @@ function X.ConsiderTornado()
     local nCastPoint = Tornado:GetCastPoint()
 	local nRadius = Tornado:GetSpecialValueInt('area_of_effect')
 	local nSpeed = Tornado:GetSpecialValueInt('travel_speed')
-    local nDelay = (GetUnitToUnitDistance(bot, botTarget) / nSpeed) + nCastPoint
 
     if  J.IsInTeamFight(bot, 1200)
 	then
@@ -1130,7 +1216,8 @@ function X.ConsiderTornado()
 
     if J.IsGoingOnSomeone(bot) or J.IsLaning( bot )
 	then
-		if  J.IsValidTarget(botTarget)
+
+		if  J.IsValidHero(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
         and not J.IsSuspiciousIllusion(botTarget)
@@ -1144,6 +1231,8 @@ function X.ConsiderTornado()
 		then
             local nInRangeAlly = botTarget:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
             local nInRangeEnemy = botTarget:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+
+            local nDelay = (GetUnitToUnitDistance(bot, botTarget) / nSpeed) + nCastPoint
 
             if ((nInRangeAlly ~= nil and #nInRangeAlly >= 1)
             or (nInRangeEnemy ~= nil and nInRangeAlly ~= nil and #nInRangeAlly >= #nInRangeEnemy)
@@ -1297,7 +1386,7 @@ function X.CanInvoke_EMP()
     if not Wex:IsTrained()
     or (not EMP:IsFullyCastable()
         or (not IsAbilityActive(EMP)
-            and (DotaTime() < EMPCastedTime + EMPCooldownTime or not Invoke:IsFullyCastable())))
+            and (DotaTime() < AbilityCastedTimes['EMP'] + AbilityCooldownTimes['EMP'] or not Invoke:IsFullyCastable())))
     then
         return false
     end
@@ -1353,7 +1442,7 @@ function X.ConsiderEMP()
                 nInRangeEnemy = J.GetEnemiesNearLoc(botTarget:GetLocation(), nRadius)
 
                 if botTarget:HasModifier(modifier_invoker_tornado) then
-                    if DotaTime() > TornadoCastedTime + TornadoLiftTime - EMPDelay - nCastPoint
+                    if DotaTime() > AbilityCastedTimes['Tornado'] + TornadoLiftTime - EMPDelay - nCastPoint
                     then
                         if nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
                         then
@@ -1404,7 +1493,7 @@ function X.ConsiderEMP()
                 nInRangeEnemy = J.GetEnemiesNearLoc(enemyHero:GetLocation(), nRadius)
 
                 if enemyHero:HasModifier(modifier_invoker_tornado) then
-                    if DotaTime() > TornadoCastedTime + TornadoLiftTime - EMPDelay
+                    if DotaTime() > AbilityCastedTimes['Tornado'] + TornadoLiftTime - EMPDelay
                     then
                         if nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
                         then
@@ -1447,10 +1536,10 @@ function X.ConsiderEMP()
 end
 
 function X.CanInvoke_Alacrity()
-    if (not Wex:IsTrained() and not Exort:IsTrained())
+    if (not Wex:IsTrained() or not Exort:IsTrained())
     or (not Alacrity:IsFullyCastable()
         or (not IsAbilityActive(Alacrity)
-            and (DotaTime() < AlacrityCastedTime + AlacrityCooldownTime or not Invoke:IsFullyCastable())))
+            and (DotaTime() < AbilityCastedTimes['Alacrity'] + AbilityCooldownTimes['Alacrity'] or not Invoke:IsFullyCastable())))
     then
         return false
     end
@@ -1535,7 +1624,7 @@ function X.ConsiderAlacrity()
         
         local nInRangeEnemy = bot:GetNearbyHeroes(1400, true, BOT_MODE_NONE)
         local enemyHero
-        if nInRangeEnemy ~= nil and #nInRangeEnemy <=2 then enemyHero = nInRangeEnemy[1] else return BOT_ACTION_DESIRE_NONE, nil end
+        if nInRangeEnemy ~= nil and #nInRangeEnemy <=2 and nInRangeEnemy[1] ~= nil then enemyHero = nInRangeEnemy[1] else return BOT_ACTION_DESIRE_NONE, nil end
 
         if J.IsValidHero(enemyHero)
         and J.CanCastOnNonMagicImmune(enemyHero)
@@ -1577,10 +1666,10 @@ function X.ConsiderAlacrity()
 end
 
 function X.CanInvoke_ChaosMeteor()
-    if (not Wex:IsTrained() and not Exort:IsTrained())
+    if (not Wex:IsTrained() or not Exort:IsTrained())
     or (not ChaosMeteor:IsFullyCastable()
         or (not IsAbilityActive(ChaosMeteor)
-            and (DotaTime() < ChaosMeteorCastedTime + ChaosMeteorCooldownTime or not Invoke:IsFullyCastable())))
+            and (DotaTime() < AbilityCastedTimes['ChaosMeteor'] + AbilityCooldownTimes['ChaosMeteor'] or not Invoke:IsFullyCastable())))
     then
         return false
     end
@@ -1599,9 +1688,49 @@ function X.ConsiderChaosMeteor()
     local nLandTime = ChaosMeteor:GetSpecialValueFloat('land_time')
 	local nRadius = ChaosMeteor:GetSpecialValueInt('area_of_effect')
 
-	if J.IsGoingOnSomeone(bot) or J.IsLaning( bot )
+        
+    local nInRangeEnemy = bot:GetNearbyHeroes(1400, true, BOT_MODE_NONE)
+    
+    for _, enemyHero in pairs(nInRangeEnemy) do
+        if J.IsValidHero(enemyHero)
+        and J.CanCastOnNonMagicImmune(enemyHero)
+        and J.IsInRange(bot, enemyHero, nCastRange)
+        and not J.IsSuspiciousIllusion(enemyHero)
+        and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
+        and not enemyHero:HasModifier('modifier_dazzle_shallow_grave')
+        and not enemyHero:HasModifier('modifier_necrolyte_reapers_scythe')
+        and not enemyHero:HasModifier('modifier_item_aeon_disk_buff')
+        and (enemyHero:IsStunned()
+        or enemyHero:IsRooted()
+        or enemyHero:IsHexed()
+        or enemyHero:IsNightmared()
+        or enemyHero:IsChanneling()
+        or enemyHero:HasModifier('modifier_enigma_black_hole_pull')
+        or enemyHero:HasModifier('modifier_faceless_void_chronosphere_freeze')
+        or J.IsTaunted(enemyHero) or J.GetHP(enemyHero) <= 0.75) then
+
+            -- if hero is under temp damage immute control
+            local nDelay = nLandTime
+            if enemyHero:HasModifier(modifier_invoker_tornado) then
+                if DotaTime() >= AbilityCastedTimes['Tornado'] + TornadoLiftTime - (nDelay + nCastPoint)
+                then
+                    return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation()
+                end
+            elseif X.CheckTempModifiers(TempNonMovableModifierNames, enemyHero, (nDelay + nCastPoint)) > 0 then
+                return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
+            end
+
+            if J.IsRunning(enemyHero) then
+                return BOT_ACTION_DESIRE_HIGH, enemyHero:GetExtrapolatedLocation(nLandTime + nCastPoint)
+            else
+                return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation()
+            end
+        end
+    end
+
+	if J.IsGoingOnSomeone(bot) or J.IsLaning( bot ) or J.IsInTeamFight(bot)
 	then
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget) -- can be roshan or others
 		and J.CanCastOnNonMagicImmune(botTarget)
 		and J.IsInRange(bot, botTarget, nCastRange)
         and not J.IsSuspiciousIllusion(botTarget)
@@ -1610,10 +1739,10 @@ function X.ConsiderChaosMeteor()
         and not botTarget:HasModifier('modifier_item_aeon_disk_buff')
 		then
 
-            -- if hero is already under control
+            -- if hero is under temp damage immute control
             local nDelay = nLandTime
             if botTarget:HasModifier(modifier_invoker_tornado) then
-                if DotaTime() >= TornadoCastedTime + TornadoLiftTime - (nDelay + nCastPoint)
+                if DotaTime() >= AbilityCastedTimes['Tornado'] + TornadoLiftTime - (nDelay + nCastPoint)
                 then
                     return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
                 end
@@ -1621,21 +1750,29 @@ function X.ConsiderChaosMeteor()
                 return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
             end
 
+            if J.IsValidHero(botTarget) then
+                local nInRangeAlly = botTarget:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
+                local nInRangeEnemy = botTarget:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
 
-            local nInRangeAlly = botTarget:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
-            local nInRangeEnemy = botTarget:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
-
-            if (nInRangeAlly ~= nil and #nInRangeAlly >= 1)
-            or (nInRangeEnemy ~= nil and nInRangeAlly ~= nil and #nInRangeAlly >= #nInRangeEnemy)
-            or (nInRangeEnemy ~= nil and #nInRangeEnemy <= 2)
-            then
+                if (nInRangeAlly ~= nil and #nInRangeAlly >= 1)
+                or (nInRangeEnemy ~= nil and nInRangeAlly ~= nil and #nInRangeAlly >= #nInRangeEnemy)
+                or (nInRangeEnemy ~= nil and #nInRangeEnemy <= 2)
+                then
+                    if J.IsRunning(botTarget) then
+                        return BOT_ACTION_DESIRE_HIGH, botTarget:GetExtrapolatedLocation(nLandTime + nCastPoint)
+                    else
+                        return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
+                    end
+                    
+                end
+            else
                 if J.IsRunning(botTarget) then
                     return BOT_ACTION_DESIRE_HIGH, botTarget:GetExtrapolatedLocation(nLandTime + nCastPoint)
                 else
                     return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
                 end
-                
             end
+
 		end
 	end
 
@@ -1644,7 +1781,7 @@ function X.ConsiderChaosMeteor()
 	then
         local nInRangeEnemy = bot:GetNearbyHeroes(1400, true, BOT_MODE_NONE)
         local enemyHero
-        if nInRangeEnemy ~= nil and #nInRangeEnemy <=2 then enemyHero = nInRangeEnemy[1] else return BOT_ACTION_DESIRE_NONE, nil end
+        if nInRangeEnemy ~= nil and #nInRangeEnemy <=2 and nInRangeEnemy[1] ~= nil then enemyHero = nInRangeEnemy[1] else return BOT_ACTION_DESIRE_NONE, nil end
 
         if J.IsValidHero(enemyHero)
         and J.CanCastOnNonMagicImmune(enemyHero)
@@ -1673,7 +1810,7 @@ function X.ConsiderChaosMeteor()
 		end
 	end
 
-    if  J.IsDoingTormentor(bot)
+    if J.IsDoingTormentor(bot)
 	then
 		if  J.IsTormentor(botTarget)
 		and J.IsInRange(bot, botTarget, 700)
@@ -1692,9 +1829,9 @@ function X.CanInvoke_Cataclysm()
     or not Exort:IsTrained()
     or (not Sunstrike:IsFullyCastable()
         or (not IsAbilityActive(Sunstrike)
-            and DotaTime() < SunstrikeCastedTime + SunstrikeCooldownTime)
+            and DotaTime() < AbilityCastedTimes['Sunstrike'] + AbilityCooldownTimes['Sunstrike'])
         or (not IsAbilityActive(Sunstrike)
-            and DotaTime() < CataclysmCastedTime + CataclysmCooldownTime))
+            and DotaTime() < AbilityCastedTimes['Cataclysm'] + AbilityCooldownTimes['Cataclysm']))
     then
         return false
     end
@@ -1761,7 +1898,7 @@ function X.ConsiderCataclysm()
             local nDelay = Sunstrike:GetSpecialValueFloat('delay')
             local nCastPoint = Sunstrike:GetCastPoint()
             if botTarget:HasModifier(modifier_invoker_tornado) then
-                if DotaTime() >= TornadoCastedTime + TornadoLiftTime - (nDelay + nCastPoint)
+                if DotaTime() >= AbilityCastedTimes['Tornado'] + TornadoLiftTime - (nDelay + nCastPoint)
                 then
                     return BOT_ACTION_DESIRE_HIGH, 0
                 end
@@ -1832,7 +1969,7 @@ function X.CanInvoke_Sunstrike()
     if not Exort:IsTrained()
     or (not Sunstrike:IsFullyCastable()
         or (not IsAbilityActive(Sunstrike)
-            and (DotaTime() < SunstrikeCastedTime + SunstrikeCooldownTime or not Invoke:IsFullyCastable())))
+            and (DotaTime() < AbilityCastedTimes['Sunstrike'] + AbilityCooldownTimes['Sunstrike'] or not Invoke:IsFullyCastable())))
     then
         return false
     end
@@ -1922,7 +2059,7 @@ function X.ConsiderSunstrike()
             then
                 if botTarget:HasModifier(modifier_invoker_tornado)
                 then
-                    if DotaTime() > TornadoCastedTime + TornadoLiftTime - nDelay - nCastPoint
+                    if DotaTime() > AbilityCastedTimes['Tornado'] + TornadoLiftTime - nDelay - nCastPoint
                     then
                         return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
                     end
@@ -1946,7 +2083,7 @@ function X.ConsiderSunstrike()
 		
 		local nEnemyLaneCreeps = enemyHero:GetNearbyLaneCreeps(300, true)
 		if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps <= 1
-        and enemyHero ~= nil and J.GetMP(bot) > 0.45
+        and enemyHero ~= nil and J.GetMP(bot) > 0.6 and J.GetHP(enemyHero) < 0.75
 		then
 			return BOT_ACTION_DESIRE_HIGH, enemyHero:GetExtrapolatedLocation(nDelay + nCastPoint), '对线消耗'
 		end
@@ -1974,10 +2111,10 @@ function X.ConsiderSunstrike()
 end
 
 function X.CanInvoke_ForgeSpirit()
-    if (not Quas:IsTrained() and not Exort:IsTrained())
+    if (not Quas:IsTrained() or not Exort:IsTrained())
     or (not ForgeSpirit:IsFullyCastable()
         or (not IsAbilityActive(ForgeSpirit)
-            and (DotaTime() < ForgeSpiritCastedTime + ForgeSpiritCooldownTime or not Invoke:IsFullyCastable())))
+            and (DotaTime() < AbilityCastedTimes['ForgeSpirit'] + AbilityCooldownTimes['ForgeSpirit'] or not Invoke:IsFullyCastable())))
     then
         return false
     end
@@ -2035,10 +2172,10 @@ function X.ConsiderForgeSpirit()
 end
 
 function X.CanInvoke_IceWall()
-    if (not Quas:IsTrained() and not Exort:IsTrained())
+    if (not Quas:IsTrained() or not Exort:IsTrained())
     or (not IceWall:IsFullyCastable()
         or (not IsAbilityActive(IceWall)
-            and (DotaTime() < IceWallCastedTime + IceWallCooldownTime or not Invoke:IsFullyCastable())))
+            and (DotaTime() < AbilityCastedTimes['IceWall'] + AbilityCooldownTimes['IceWall'] or not Invoke:IsFullyCastable())))
     then
         return false
     end
@@ -2056,7 +2193,7 @@ function X.ConsiderIceWall()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		if  J.IsValidTarget(botTarget)
+		if  J.IsValidHero(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, nSpawnDistance)
         and bot:IsFacingLocation(botTarget:GetLocation(), 30)
@@ -2122,10 +2259,10 @@ function X.ConsiderIceWall()
 end
 
 function X.CanInvoke_DeafeningBlast()
-    if (not Quas:IsTrained() and not Wex:IsTrained() and not Exort:IsTrained())
+    if (not Quas:IsTrained() or not Wex:IsTrained() or not Exort:IsTrained())
     or (not DeafeningBlast:IsFullyCastable()
         or (not IsAbilityActive(DeafeningBlast)
-            and (DotaTime() < DeafeningBlastCastedTime + DeafeningBlastCooldownTime or not Invoke:IsFullyCastable())))
+            and (DotaTime() < AbilityCastedTimes['DeafeningBlast'] + AbilityCooldownTimes['DeafeningBlast'] or not Invoke:IsFullyCastable())))
     then
         return false
     end
@@ -2145,7 +2282,7 @@ function X.ConsiderDeafeningBlast()
 	local nRadius = DeafeningBlast:GetSpecialValueInt('radius_end')
     local nSpeed = DeafeningBlast:GetSpecialValueInt('travel_speed')
     if (nSpeed == nil) then
-        nSpeed = 200
+        nSpeed = 1000
     end
 
     if J.IsInTeamFight(bot, 1500)
@@ -2160,9 +2297,6 @@ function X.ConsiderDeafeningBlast()
 		end
 	end
 
-    -- if hero is already under control
-    local nDelay = (GetUnitToUnitDistance(bot, botTarget) / nSpeed) + nCastPoint
-
     if J.IsGoingOnSomeone(bot)
 	then
 		if J.IsValidHero(botTarget)
@@ -2176,9 +2310,11 @@ function X.ConsiderDeafeningBlast()
         and not botTarget:HasModifier('modifier_faceless_void_chronosphere_freeze')
         and not botTarget:HasModifier('modifier_necrolyte_reapers_scythe')
 		then
+            -- if hero is already under control
+            local nDelay = (GetUnitToUnitDistance(bot, botTarget) / nSpeed) + nCastPoint
 
             if botTarget:HasModifier(modifier_invoker_tornado) then
-                if DotaTime() >= TornadoCastedTime + TornadoLiftTime - nDelay
+                if DotaTime() >= AbilityCastedTimes['Tornado'] + TornadoLiftTime - nDelay
                 then
                     return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
                 end
@@ -2208,7 +2344,9 @@ function X.ConsiderDeafeningBlast()
 	then
         local nInRangeEnemy = bot:GetNearbyHeroes(1400, true, BOT_MODE_NONE)
         local enemyHero
-        if nInRangeEnemy ~= nil and #nInRangeEnemy <= 2 then enemyHero = nInRangeEnemy[1] else return BOT_ACTION_DESIRE_NONE, nil end
+        if nInRangeEnemy ~= nil and #nInRangeEnemy <= 2 and nInRangeEnemy[1] ~= nil then enemyHero = nInRangeEnemy[1] else return BOT_ACTION_DESIRE_NONE, nil end
+
+        local nDelay = (GetUnitToUnitDistance(bot, enemyHero) / nSpeed) + nCastPoint
 
         if J.IsValidHero(enemyHero)
         and J.CanCastOnNonMagicImmune(enemyHero)
@@ -2326,35 +2464,57 @@ function IsAbilityActive(ability)
     return true
 end
 
+function CheckAbilityUsage()
+    -- Check if the spell is just used.
+
+    local abilities = { bot:GetAbilityInSlot(3), bot:GetAbilityInSlot(4) }
+    for i, ability in pairs(abilities) do
+        if IsAbilityActive(ability) and not ability:IsCooldownReady() and (ability:GetCooldownTimeRemaining()/ability:GetCooldown() > 0.99) then
+            local sAbility = AbilityNameMap[ability:GetName()]
+            local timePassedSinceLastCast = DotaTime() - AbilityCastedTimes[sAbility];
+            if timePassedSinceLastCast > 0.06 then 
+                -- 0.03 是游戏时间最小单位，0.06保险一点
+                -- 避免重复记录，只记录0.06秒内未更新过的使用情况。可能导致快速用刷新后再次使用技能无法被检测到，但是问题不大。
+                print(DotaTime()..' - Invoker just used ability ' .. sAbility .. ', reset the cooldown tracking.')
+                AbilityCastedTimes[sAbility] = DotaTime()
+            end
+        end
+    end
+end
+
 local octarineCoreCooldownReductionsCheck = false
+
 function CheckForCooldownReductions()
-    if  J.HasItem(bot, 'item_octarine_core') and octarineCoreCooldownReductionsCheck == false then
-        ColdSnapCooldownTime        = ColdSnapCooldownTime * 0.75
-        GhostWalkCooldownTime       = GhostWalkCooldownTime * 0.75
-        TornadoCooldownTime         = TornadoCooldownTime * 0.75
-        EMPCooldownTime             = EMPCooldownTime * 0.75
-        AlacrityCooldownTime        = AlacrityCooldownTime * 0.75
-        ChaosMeteorCooldownTime     = ChaosMeteorCooldownTime * 0.75
-        SunstrikeCooldownTime       = SunstrikeCooldownTime * 0.75
-        ForgeSpiritCooldownTime     = ForgeSpiritCooldownTime * 0.75
-        IceWallCooldownTime         = IceWallCooldownTime * 0.75
-        DeafeningBlastCooldownTime  = DeafeningBlastCooldownTime * 0.75
-        CataclysmCooldownTime       = CataclysmCooldownTime * 0.75
+    
+    -- [TODO] Need to check with the usage of refresh as well
+
+    if J.HasItem(bot, 'item_octarine_core') and octarineCoreCooldownReductionsCheck == false then
+        AbilityCooldownTimes['ColdSnap']        = AbilityCooldownTimes['ColdSnap'] * 0.75
+        AbilityCooldownTimes['GhostWalk']       = AbilityCooldownTimes['GhostWalk'] * 0.75
+        AbilityCooldownTimes['Tornado']         = AbilityCooldownTimes['Tornado'] * 0.75
+        AbilityCooldownTimes['EMP']             = AbilityCooldownTimes['EMP'] * 0.75
+        AbilityCooldownTimes['Alacrity']        = AbilityCooldownTimes['Alacrity'] * 0.75
+        AbilityCooldownTimes['ChaosMeteor']     = AbilityCooldownTimes['ChaosMeteor'] * 0.75
+        AbilityCooldownTimes['Sunstrike']       = AbilityCooldownTimes['Sunstrike'] * 0.75
+        AbilityCooldownTimes['ForgeSpirit']     = AbilityCooldownTimes['ForgeSpirit'] * 0.75
+        AbilityCooldownTimes['IceWall']         = AbilityCooldownTimes['IceWall'] * 0.75
+        AbilityCooldownTimes['DeafeningBlast']  = AbilityCooldownTimes['DeafeningBlast'] * 0.75
+        AbilityCooldownTimes['Cataclysm']       = AbilityCooldownTimes['Cataclysm'] * 0.75
         octarineCoreCooldownReductionsCheck = true
     end
 
     if not J.HasItem(bot, 'item_octarine_core') then
-        ColdSnapCooldownTime          = 20
-        GhostWalkCooldownTime         = 35
-        TornadoCooldownTime           = 30
-        EMPCooldownTime               = 30
-        AlacrityCooldownTime          = 17
-        ChaosMeteorCooldownTime       = 55
-        SunstrikeCooldownTime         = 25
-        ForgeSpiritCooldownTime       = 30
-        IceWallCooldownTime           = 25
-        DeafeningBlastCooldownTime    = 40
-        CataclysmCooldownTime         = 100
+        AbilityCooldownTimes['ColdSnap']          = 20
+        AbilityCooldownTimes['GhostWalk']         = 35
+        AbilityCooldownTimes['Tornado']           = 30
+        AbilityCooldownTimes['EMP']               = 30
+        AbilityCooldownTimes['Alacrity']          = 17
+        AbilityCooldownTimes['ChaosMeteor']       = 55
+        AbilityCooldownTimes['Sunstrike']         = 25
+        AbilityCooldownTimes['ForgeSpirit']       = 30
+        AbilityCooldownTimes['IceWall']           = 25
+        AbilityCooldownTimes['DeafeningBlast']    = 40
+        AbilityCooldownTimes['Cataclysm']         = 100
         octarineCoreCooldownReductionsCheck = false
     end
 

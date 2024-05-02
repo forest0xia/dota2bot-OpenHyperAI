@@ -1560,7 +1560,7 @@ X.ConsiderItemDesire["item_cyclone"] = function( hItem )
 		and X.IsWithoutSpellShield( botTarget )
 		and J.IsInRange( bot, botTarget, nCastRange + 200 )
 	then
-		-- Invoker combo with item_cyclone. 
+		---- Invoker combo with item_cyclone ----
 		if bot:GetUnitName() == "npc_dota_hero_invoker" and J.IsGoingOnSomeone(bot) then
 			if J.IsValidHero(botTarget)
 			and not J.IsSuspiciousIllusion(botTarget)
@@ -1571,6 +1571,16 @@ X.ConsiderItemDesire["item_cyclone"] = function( hItem )
 				return BOT_ACTION_DESIRE_HIGH, hEffectTarget, sCastType, sCastMotive
 			end
 		end
+
+		-- 别帮电脑减伤害/解状态
+		if botTarget:HasModifier( 'modifier_invoker_cold_snap_freeze' ) 
+		or botTarget:HasModifier('modifier_invoker_cold_snap') 
+		or botTarget:HasModifier('modifier_invoker_chaos_meteor_burn') then
+			return BOT_ACTION_DESIRE_NONE
+		end
+
+		---- Above for Invoker combo with item_cyclone ----
+
 
 		if botTarget:HasModifier( 'modifier_teleporting' )
 			 or botTarget:HasModifier( 'modifier_abaddon_borrowed_time' )
