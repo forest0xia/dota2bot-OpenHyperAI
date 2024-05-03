@@ -444,6 +444,7 @@ function X.ConsiderInkSwell()
     for _, allyHero in pairs(nAllyHeroes)
     do
         if  J.IsValidHero(allyHero)
+        and J.IsValidTarget(botTarget)
         and not allyHero:IsIllusion()
         and GetUnitToUnitDistance(allyHero, botTarget) < dist
         then
@@ -456,7 +457,7 @@ function X.ConsiderInkSwell()
     then
         local nInRangeEnemy = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
 
-        if  J.IsValidTarget(botTarget)
+        if J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and not J.IsSuspiciousIllusion(botTarget)
         and not botTarget:HasModifier('modifier_abaddon_borrowed_time')

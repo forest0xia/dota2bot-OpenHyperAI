@@ -234,10 +234,6 @@ local TornadoLiftTime
 local botTarget
 
 function X.SkillsComplement()
-    if true then
-        bot:Action_AttackMove(J.GetTeamFountain())
-        return
-    end
     CheckAbilityUsage()
 
     if J.CanNotUseAbility(bot) then return end
