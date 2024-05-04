@@ -207,7 +207,7 @@ function X.GetWeakest( unitList )
 
 	local target = nil
 	local minKillTime = 10000
-	if #unitList > 0 
+	if unitList ~= nil and #unitList > 0
 	then
 		for i=1, #unitList 
 		do
@@ -232,7 +232,7 @@ function X.GetWeakestHero(radius, minion)
 
 	local enemies = minion:GetNearbyHeroes( radius * 0.5, true, BOT_MODE_NONE);
 	
-	if #enemies == 0 then enemies = minion:GetNearbyHeroes( radius, true, BOT_MODE_NONE) end
+	if enemies ~= nil and #enemies == 0 then enemies = minion:GetNearbyHeroes( radius, true, BOT_MODE_NONE) end
 	
 	return X.GetWeakest(enemies);
 end
@@ -909,11 +909,13 @@ function X.ConsiderBrewLinkUseAbilities(hMinionUnit, ability)
 		local nCastRange = J.GetProperCastRange(false, hMinionUnit, ability:GetCastRange())
 		local nAllyHeroes = hMinionUnit:GetNearbyHeroes(nCastRange, false, BOT_MODE_NONE)
 
-		for i = 1, #nAllyHeroes
-		do
-			if J.IsDisabled(nAllyHeroes[i])
-			then
-				return BOT_ACTION_DESIRE_LOW, nAllyHeroes[i]:GetLocation(), 'point'
+		if nAllyHeroes ~= nil then
+			for i = 1, #nAllyHeroes
+			do
+				if J.IsDisabled(nAllyHeroes[i])
+				then
+					return BOT_ACTION_DESIRE_LOW, nAllyHeroes[i]:GetLocation(), 'point'
+				end
 			end
 		end
 
@@ -1009,7 +1011,7 @@ function X.ConsiderBrewLinkRetreat(hMinionUnit)
 	local nAllyHeroes = hMinionUnit:GetNearbyHeroes(globRadius, false, BOT_MODE_NONE)
 	local nEnemyHeroes = hMinionUnit:GetNearbyHeroes(globRadius, true, BOT_MODE_NONE)
 
-	if (#nAllyHeroes == 0 and #nEnemyHeroes >= 2)
+	if (nAllyHeroes ~= nil and #nAllyHeroes == 0 and #nEnemyHeroes >= 2)
 	or J.GetHP(hMinionUnit) < 0.4
 	then
 		local loc = J.GetEscapeLoc()

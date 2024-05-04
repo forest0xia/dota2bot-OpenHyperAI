@@ -78,6 +78,8 @@ function X.ConsiderStolenSpell(ability)
         J.SetQueuePtToINT( bot, true )
 
         if X.IsAbilityForSinglePoint(ability) then
+            bot:ActionQueue_UseAbilityOnLocation( ability, castRTarget )
+        elseif X.IsAbilityForUnitTarget(ability) then
             bot:ActionQueue_UseAbilityOnEntity( ability, castRTarget )
         elseif X.IsAbilityForNoTarget(ability) then
             bot:ActionQueue_UseAbility( ability )
@@ -95,7 +97,7 @@ end
 -- About ABILITY_BEHAVIOR: https://moddota.com/api/#!/vscripts/DOTA_ABILITY_BEHAVIOR
 function X.ConsiderSpellBehavior(ability)
 
-    local nCastRange = ability:GetCastRange() + 500
+    local nCastRange = ability:GetCastRange() + 200
     local nCastPoint = ability:GetCastPoint()
     local nManaCost = ability:GetManaCost()
     local nRadius = 200 -- ability:GetSpecialValueInt( "xxx" )
@@ -119,7 +121,7 @@ function X.ConsiderSpellBehavior(ability)
 
         if J.IsValidHero( botTarget )
             and X.CanCastAbilityROnTarget( botTarget )
-            and J.IsInRange( botTarget, bot, nCastRange + 100 )
+            and J.IsInRange( botTarget, bot, nCastRange )
             and J.IsAllowedToSpam( bot, nManaCost * 0.5 )
         then
 
@@ -127,20 +129,23 @@ function X.ConsiderSpellBehavior(ability)
                 -- print("Rubick to use a spell on enemy hero target...")
                 if X.IsAbilityForSinglePoint(ability) then
                     print("Rubick to use a spell on single point...")
+                    return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation(), "打架"
+                elseif X.IsAbilityForUnitTarget(ability) then
+                    print("Rubick to use a spell on single point...")
                     return BOT_ACTION_DESIRE_HIGH, botTarget, "打架"
                 end
 
             end
 
             if X.IsAbilityForNoTarget(ability) then
-                print("Rubick to use a spell on where it stands...")
-                return BOT_ACTION_DESIRE_HIGH, bot:GetLocation(), "打架"
+                print("Rubick to use a spell direcly...")
+                return BOT_ACTION_DESIRE_HIGH, nil, "打架"
             end
 
             if X.IsAbilityForAOE(ability) then
                 print("Rubick to use a spell as AOE...")
                 local nCanHurtEnemyAoE = bot:FindAoELocation( true, true, bot:GetLocation(), nCastRange, nRadius, 0, 0 )
-                nTargetLocation = nCanHurtEnemyAoE.targetloc
+                local nTargetLocation = nCanHurtEnemyAoE.targetloc
                 return BOT_ACTION_DESIRE_HIGH, nTargetLocation, '打架'
             end
         end
@@ -192,9 +197,16 @@ function X.IsAbilityForTargetAllies(ability)
     return bit.band( DOTA_UNIT_TARGET_TEAM_FRIENDLY, nTargetTeamFlags ) ~= 0 or bit.band( DOTA_UNIT_TARGET_TEAM_BOTH, nTargetTeamFlags ) ~= 0  
 end
 
+-- Targeting a unit (a table)
+function X.IsAbilityForUnitTarget(ability)
+    local nBehaviorFlags = ability:GetBehavior()
+    return bit.band( DOTA_ABILITY_BEHAVIOR_UNIT_TARGET, nBehaviorFlags ) ~= 0
+end
+
+-- Targeting to a point (x, y)
 function X.IsAbilityForSinglePoint(ability)
     local nBehaviorFlags = ability:GetBehavior()
-    return bit.band( DOTA_ABILITY_BEHAVIOR_UNIT_TARGET, nBehaviorFlags ) ~= 0 or bit.band( DOTA_ABILITY_BEHAVIOR_POINT, nBehaviorFlags ) ~= 0
+    return bit.band( DOTA_ABILITY_BEHAVIOR_POINT, nBehaviorFlags ) ~= 0
 end
 
 function X.IsAbilityForNoTarget(ability)

@@ -6,14 +6,6 @@
 ----------------------------------------------------------------------------------------------------
 
 
--- Overridding GetBot to be able to override it's instance methods to all units, e.g. HasModifier()
-local original_GetBot = GetBot
-
-function GetBot()
-	ApplyHasModifierOverride(original_GetBot())
-	ApplGetNearbyHeroesOverride(original_GetBot())
-	return original_GetBot()
-end
 function ApplyHasModifierOverride(unit)
     local original_HasModifier = unit.HasModifier
 
@@ -28,17 +20,38 @@ function ApplGetNearbyHeroesOverride(unit)
     local original_GetNearbyHeroes = unit.GetNearbyHeroes
 
     unit.GetNearbyHeroes = function(self, nRadius, bEnemies, nMode)
-		if not unit:CanBeSeen() then
+		if not unit:CanBeSeen() or not unit:IsHero() then
 			return nil
-		end
+		end 
         return original_GetNearbyHeroes(self, nRadius, bEnemies, nMode)
     end
 end
+function ApplGetAttackRangeOverride(unit)
+    local original_GetAttackRange = unit.GetAttackRange
+
+    unit.GetAttackRange = function(self)
+		if not unit:CanBeSeen() or not unit:IsHero() then
+			return nil
+		end 
+        return original_GetAttackRange(self)
+    end
+end
+
+-- Overridding GetBot to be able to override it's instance methods to all units, e.g. HasModifier()
+local original_GetBot = GetBot
+GetBot = function()
+	local bot = original_GetBot()
+	ApplyHasModifierOverride(bot)
+	ApplGetNearbyHeroesOverride(bot)
+	ApplGetAttackRangeOverride(bot)
+	return bot
+end
+
 
 
 -- Overridding functions to debug and redcue logging spam
 local original_GetUnitToUnitDistance = GetUnitToUnitDistance
-function GetUnitToUnitDistance(unit1, unit2)
+GetUnitToUnitDistance = function (unit1, unit2)
 	if not unit1 then
         print("[Error] GetUnitToUnitDistance called with invalid unit 1")
 		print("Stack Trace:", debug.traceback())

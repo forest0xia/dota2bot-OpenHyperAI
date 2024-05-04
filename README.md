@@ -9,6 +9,7 @@ Useful resources:
 - Posts shared by Ranked Matchmaking AI author: https://www.adamqqq.com/ai/dota2-ai-devlopment-tutorial.html
 - Official Bot side script intro: https://developer.valvesoftware.com/wiki/Dota_Bot_Scripting
 - Lua (Bots side) APIs: https://docs.moddota.com/lua_bots/
-- https://raw.githubusercontent.com/dotabuff/d2vpk/master/dota_pak01/scripts/npc/npc_abilities.txt
+- Ability metadata: https://raw.githubusercontent.com/dotabuff/d2vpk/master/dota_pak01/scripts/npc/npc_abilities.txt
 - Lua APIs, modes, and enum values: https://moddota.com/api/#!/vscripts/dotaunitorder_t
 - Bot modifier names: https://developer.valvesoftware.com/wiki/Dota_2_Workshop_Tools/Scripting/Built-In_Modifier_Names
+- Dota2 data mining (details of items, abilities, heroes): https://github.com/muk-as/DOTA2_WEB/blob/master/dota2_web/Items_cn.json

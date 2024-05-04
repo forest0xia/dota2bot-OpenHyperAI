@@ -656,11 +656,18 @@ function X.OverrideTeamHeroes()
 	if GetTeam() == TEAM_RADIANT
 	then
 		return {
-			[1] = "npc_dota_hero_invoker",
+			
+			[1] = tSelectPoolList[1][RandomInt( 1, #tSelectPoolList[1] )],
 			[2] = tSelectPoolList[2][RandomInt( 1, #tSelectPoolList[2] )],
 			[3] = tSelectPoolList[3][RandomInt( 1, #tSelectPoolList[3] )],
 			[4] = tSelectPoolList[4][RandomInt( 1, #tSelectPoolList[4] )],
 			[5] = tSelectPoolList[5][RandomInt( 1, #tSelectPoolList[5] )],
+			-- [1] = "npc_dota_hero_invoker",
+			-- -- [1] = "npc_dota_hero_rubick",
+			-- [2] = tSelectPoolList[2][RandomInt( 1, #tSelectPoolList[2] )],
+			-- [3] = 'npc_dota_hero_faceless_void',
+			-- [4] = tSelectPoolList[4][RandomInt( 1, #tSelectPoolList[4] )],
+			-- [5] = tSelectPoolList[5][RandomInt( 1, #tSelectPoolList[5] )],
 		}
 	else
 		return {
@@ -672,22 +679,23 @@ function X.OverrideTeamHeroes()
 
 			-- [1] = "npc_dota_hero_rubick",
 			-- [2] = "npc_dota_hero_snapfire",
-			-- [3] = "npc_dota_hero_meepo",
-		 --    [4] = "npc_dota_hero_earth_spirit",
+			-- [3] = "npc_dota_hero_clinkz",
+		    -- [4] = "npc_dota_hero_earth_spirit",
 			-- [5] = "npc_dota_hero_techies",
 
 
 			-- Test buggy heroes:
-			-- [1] = "npc_dota_hero_invoker",
-			-- [2] = "npc_dota_hero_techies",
-			-- [3] = "npc_dota_hero_weaver",
-		    -- [4] = "npc_dota_hero_treant",
-			-- [5] = "npc_dota_hero_rubick",
-			[1] = tSelectPoolList[1][RandomInt( 1, #tSelectPoolList[1] )],
+			[1] = "npc_dota_hero_invoker",
 			[2] = tSelectPoolList[2][RandomInt( 1, #tSelectPoolList[2] )],
-			[3] = tSelectPoolList[3][RandomInt( 1, #tSelectPoolList[3] )],
+			[3] = "npc_dota_hero_weaver",
 			[4] = tSelectPoolList[4][RandomInt( 1, #tSelectPoolList[4] )],
 			[5] = tSelectPoolList[5][RandomInt( 1, #tSelectPoolList[5] )],
+
+			-- [1] = tSelectPoolList[1][RandomInt( 1, #tSelectPoolList[1] )],
+			-- [2] = tSelectPoolList[2][RandomInt( 1, #tSelectPoolList[2] )],
+			-- [3] = tSelectPoolList[3][RandomInt( 1, #tSelectPoolList[3] )],
+			-- [4] = tSelectPoolList[4][RandomInt( 1, #tSelectPoolList[4] )],
+			-- [5] = tSelectPoolList[5][RandomInt( 1, #tSelectPoolList[5] )],
 		    
 
 			-- [1] = "npc_dota_hero_storm_spirit",

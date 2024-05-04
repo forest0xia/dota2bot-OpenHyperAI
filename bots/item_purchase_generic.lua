@@ -457,7 +457,7 @@ function ItemPurchaseThink()
 	then
 		local wardType = 'item_ward_sentry'
 
-		if  GetItemStockCount(wardType) > 0
+		if  GetItemStockCount(wardType) > 1
 		and botGold >= GetItemCost(wardType)
 		and Item.GetEmptyInventoryAmount(bot) >= 1
 		and Item.GetItemCharges(bot, wardType) < 2
@@ -472,7 +472,7 @@ function ItemPurchaseThink()
 	then
 		local wardType = 'item_ward_observer'
 
-		if  GetItemStockCount(wardType) > 0
+		if  GetItemStockCount(wardType) > 1
 		and botGold >= GetItemCost(wardType)
 		and Item.GetEmptyInventoryAmount(bot) >= 1
 		and Item.GetItemCharges(bot, wardType) < 2
@@ -716,7 +716,9 @@ function ItemPurchaseThink()
 		and botGold >= GetItemCost( "item_tpscroll" )
 		and not Item.HasItem( bot, 'item_travel_boots' )
 		and not Item.HasItem( bot, 'item_travel_boots_2' )
+		and not bot:GetUnitName() == "npc_dota_hero_meepo" -- don't let meepo buy tp
 	then
+
 		local tCharges = Item.GetItemCharges( bot, 'item_tpscroll' )		
 		if bot:HasModifier("modifier_teleporting") then tCharges = tCharges - 1 end
 		
@@ -726,11 +728,7 @@ function ItemPurchaseThink()
 
 			if botLevel < 18 or ( botLevel >= 18 and tCharges == 1 )
 			then
-				if bot:GetUnitName() ~= "npc_dota_hero_meepo"
-				then
-				    buyTP = true
-				end
-
+				buyTP = true
 				buyTPtime = currentTime
 				bot.currentComponentToBuy = nil
 				bot.currListItemToBuy[#bot.currListItemToBuy+1] = 'item_tpscroll'
@@ -747,10 +745,7 @@ function ItemPurchaseThink()
 
 			if botLevel >= 18 and tCharges == 0 and botGold >= GetItemCost( "item_tpscroll" ) * 2
 			then
-				if bot:GetUnitName() ~= "npc_dota_hero_meepo"
-				then
-				    buyTP = true
-				end
+				buyTP = true
 				buyTPtime = currentTime
 				bot.currentComponentToBuy = nil
 				bot.currListItemToBuy[#bot.currListItemToBuy+1] = 'item_tpscroll'
@@ -775,8 +770,6 @@ function ItemPurchaseThink()
 		buyTP = false
 		return
 	end
-	
-	
 
 
 	if #bot.itemToBuy == 0 then bot:SetNextItemPurchaseValue( 0 ) return end

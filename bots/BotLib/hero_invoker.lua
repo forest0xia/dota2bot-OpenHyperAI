@@ -15,8 +15,9 @@ local tTalentTreeList = {
 }
 
 local tAllAbilityBuildList = {
-						-- {2,1,2,1,2,1,2,1,2,3,3,3,3,3,3,3,2,2,1,1,1},--pos2
-                        {3,1,3,1,2,3,3,1,3,1,3,2,3,2,2,2,2,2,1,1,1},--pos2
+						{2,1,2,1,3,1,2,1,2,2,3,3,3,3,3,3,2,2,1,1,1},--冰雷核
+                        -- {3,1,3,1,2,3,3,1,3,1,3,2,3,2,2,2,2,2,1,1,1},--冰火核
+                        -- {1,2,2,3,2,1,2,1,2,1,2,1,2,1,1,3,3,3,3,3,3},--冰雷辅助
 }
 
 local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
@@ -25,6 +26,7 @@ local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 
 local sRoleItemsBuyList = {}
 
+-- 冰雷核
 sRoleItemsBuyList['pos_2'] = {
     "item_tango",
     "item_double_branches",
@@ -35,19 +37,45 @@ sRoleItemsBuyList['pos_2'] = {
     "item_boots",
     "item_magic_wand",
     "item_spirit_vessel",
-    "item_cyclone",
+    "item_witch_blade",
     "item_travel_boots",
-    "item_black_king_bar",--
+    "item_black_king_bar",--6
+    "item_orchid",
     "item_aghanims_shard",
     "item_ultimate_scepter",
-    "item_octarine_core",--
+    "item_bloodthorn",--5
+    "item_devastator",--4
     "item_ultimate_scepter_2",
-    "item_sheepstick",--
-    "item_refresher",--
-    "item_wind_waker",--
-    "item_travel_boots_2",--
+    "item_octarine_core",--3
+    "item_sheepstick",--2
     "item_moon_shard",
+    "item_travel_boots_2",--1
 }
+
+-- 冰火核
+-- sRoleItemsBuyList['pos_2'] = {
+--     "item_tango",
+--     "item_double_branches",
+--     "item_double_circlet",
+
+--     "item_bracer",
+--     "item_urn_of_shadows",
+--     "item_boots",
+--     "item_magic_wand",
+--     "item_spirit_vessel",
+--     "item_cyclone",
+--     "item_travel_boots",
+--     "item_black_king_bar",--
+--     "item_aghanims_shard",
+--     "item_ultimate_scepter",
+--     "item_octarine_core",--
+--     "item_ultimate_scepter_2",
+--     "item_sheepstick",--
+--     "item_refresher",--
+--     "item_wind_waker",--
+--     "item_travel_boots_2",--
+--     "item_moon_shard",
+-- }
 
 sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_2']
 
@@ -244,14 +272,36 @@ function X.SkillsComplement()
     CheckForCooldownReductions()
 
     ConsiderFirstSpell()
+    
+    X.ConsiderClearActions()
 
-    -- 预留技能; 预留球; 让没在cd的技能位置靠前。注意，这个阶段不能让大招进入CD
+    -- 预留让没在cd的技能位置靠前。换占线的3球。注意，这个阶段用技能或者切球最好不要让大招进入CD
     X.ConsiderPreCast()
 
 
+    -- 先考虑切 (Invoke) 好2个技能。再考虑用任何切出的技能。
+    -- 切记不要在技能还没出现在技能栏中时，就在代码中queue或者直接action去使用技能。这样会导致bot无法cast那个技能，因为在执行那一行指令的瞬间 (0.033s a frame)，那个技能并不存在，从而导致bot错过了在那个瞬间释放技能。
+    -- 因为任何一个切球的动作或者Invoke，都在action queue中排列着，都要等动画etc。多余的序列多导致不必要的行为延迟。尤其是当技能还不在技能栏中却要queue该技能时，会出现 queued action type = -1 的情况。
+
+    -- 申明一下关键术语：
+    -- Invoke/切技能，是指用大招召唤出指定的技能，而非使用指定的被召唤技能。
+    -- Cast/释放技能，是指使用/释放/扔出指定的被召唤技能。
+
+    -- 技能Invoke优先级：
+    -- 2个能combo的没cd的技能
+    -- 和上一个刚使用的技能能combo的技能
+    -- 没在cd中的技能
+    -- cd时间在Invoke cd时间之内的
+
+    
+    
+    -- a somewhat better strategy can be using matrix to calculate weighted fields for decisition making. but it means a lot of calculation EVERY frame.
+    -- nCreep, nEnemyHero, nTower, nDistance, bTeamFight, bOnSomeone, bTargetHero, nTargetHp, nTargetMp, bInAttackRange, bHasModifier..., nModifierRemainTime..., bLaning, bRetreating, bDefending, 
+
+
     ------- 尝试把连招串联起来，判断是否用了可以连招的前置技能 -------
-    -- 如果前置技能进入cd，且距离使用它的时间刚刚过去（大招cd时间+delta）时间之内，则可以认为马上可以切下一个连招技能
-    local deltaTime = 0.3
+    -- 如果前置技能进入cd，且距离使用它的时间刚刚过去（大招cd时间+delta）时间之内，则可以试试是否能马上切下一个连招技能
+    local deltaTime = 1
     
     if DotaTime() - AbilityCastedTimes['Tornado'] <= Invoke:GetCooldown() + deltaTime then
         ChaosMeteorDesire, ChaosMeteorLocation = X.ConsiderChaosMeteor()
@@ -339,20 +389,6 @@ function X.SkillsComplement()
         return
     end
 
-    ChaosMeteorDesire, ChaosMeteorLocation = X.ConsiderChaosMeteor()
-    if ChaosMeteorDesire > 0
-    then
-        X.CastChaosMeteor(ChaosMeteorLocation)
-        return
-    end
-
-    DeafeningBlastDesire, DeafeningBlastLocation = X.ConsiderDeafeningBlast()
-    if DeafeningBlastDesire > 0
-    then
-        X.CastDeafeningBlast(DeafeningBlastLocation)
-        return
-    end
-
     AlacrityDesire, AlacrityTarget = X.ConsiderAlacrity()
     if AlacrityDesire > 0
     then
@@ -366,6 +402,7 @@ function X.SkillsComplement()
         X.CastTornado(TornadoLocation)
         return
     end
+
 
     -- 如果要逃跑，先判断吹风再用隐身
     GhostWalkDesire = X.ConsiderGhostWalk()
@@ -386,6 +423,20 @@ function X.SkillsComplement()
     if CataclysmDesire > 0
     then
         X.CastCataclysm()
+        return
+    end
+
+    ChaosMeteorDesire, ChaosMeteorLocation = X.ConsiderChaosMeteor()
+    if ChaosMeteorDesire > 0
+    then
+        X.CastChaosMeteor(ChaosMeteorLocation)
+        return
+    end
+
+    DeafeningBlastDesire, DeafeningBlastLocation = X.ConsiderDeafeningBlast()
+    if DeafeningBlastDesire > 0
+    then
+        X.CastDeafeningBlast(DeafeningBlastLocation)
         return
     end
 
@@ -425,7 +476,7 @@ function X.SkillsComplement()
             and (bot:HasModifier(modifier_invoker_alacrity)
             or enemyHero:HasModifier(modifier_invoker_cold_snap_freeze))
             then
-                bot:ActionPush_AttackUnit(enemyHero, true)
+                bot:ActionQueue_AttackUnit(enemyHero, true)
                 return
             end
 
@@ -445,7 +496,7 @@ function X.SkillsComplement()
                 if nInRangeEnemy ~= nil and #nInRangeEnemy <= 1
                 or (nInRangeAlly ~= nil and nInRangeEnemy ~= nil and #nInRangeAlly >= #nInRangeEnemy)
                 then
-                    bot:ActionPush_AttackUnit(enemyHero, true)
+                    bot:ActionQueue_AttackUnit(enemyHero, true)
                     return
                 end
             end
@@ -512,40 +563,39 @@ local lastTimeChangeModifierAbilities = 0
 -- 注意，这个阶段不能让大招进入CD，不然会影响其他技能的使用判断，因为这里不做太多技能使用的条件判定，缺少正确取舍
 function X.ConsiderPreCast()
 
-    -- temp don't consider pre cast if not all basic skills are trained.
-    if not (Quas:IsTrained()
+    -- temp don't consider cast-save if not all basic skills are trained.
+    if Quas:IsTrained()
         and Wex:IsTrained()
-        and Exort:IsTrained()) then
-        return
-    end
+        and Exort:IsTrained() then
 
-    -- reverse the abilities in slots to keep not-in-cd ability longer
-    local abilityD = bot:GetAbilityInSlot(3)  -- First invoked slot
-    local abilityF = bot:GetAbilityInSlot(4)  -- Second invoked slot
-    if abilityD ~= nil and abilityF ~= nil
-    and not abilityD:IsFullyCastable()
-    and abilityF:IsFullyCastable() and Invoke:IsFullyCastable() then
-        -- bot:Action_ClearActions(false)
-        if abilityF == ColdSnap then
-            X.InvokeColdSnap()
-        elseif abilityF == Tornado then
-            X.InvokeTornado()
-        elseif abilityF == GhostWalk then
-            X.InvokeGhostWalk()
-        elseif abilityF == IceWall then
-            X.InvokeIceWall()
-        elseif abilityF == EMP then
-            X.InvokeEMP()
-        elseif abilityF == Alacrity then
-            X.InvokeAlacrity()
-        elseif abilityF == Sunstrike then
-            X.InvokeSunstrike()
-        elseif abilityF == ForgeSpirit then
-            X.InvokeForgeSpirit()
-        elseif abilityF == ChaosMeteor then
-            X.InvokeChaosMeteor()
-        elseif abilityF == DeafeningBlast then
-            X.InvokeDeafeningBlast()
+        -- reverse the abilities in slots to keep not-in-cd ability longer
+        local abilityD = bot:GetAbilityInSlot(3)  -- First invoked slot
+        local abilityF = bot:GetAbilityInSlot(4)  -- Second invoked slot
+        if abilityD ~= nil and abilityF ~= nil
+        and not abilityD:IsFullyCastable()
+        and abilityF:IsFullyCastable() and Invoke:IsFullyCastable() then
+            -- bot:Action_ClearActions(false)
+            if abilityF == ColdSnap then
+                X.InvokeColdSnap()
+            elseif abilityF == Tornado then
+                X.InvokeTornado()
+            elseif abilityF == GhostWalk then
+                X.InvokeGhostWalk()
+            elseif abilityF == IceWall then
+                X.InvokeIceWall()
+            elseif abilityF == EMP then
+                X.InvokeEMP()
+            elseif abilityF == Alacrity then
+                X.InvokeAlacrity()
+            elseif abilityF == Sunstrike then
+                X.InvokeSunstrike()
+            elseif abilityF == ForgeSpirit then
+                X.InvokeForgeSpirit()
+            elseif abilityF == ChaosMeteor then
+                X.InvokeChaosMeteor()
+            elseif abilityF == DeafeningBlast then
+                X.InvokeDeafeningBlast()
+            end
         end
     end
 
@@ -573,27 +623,44 @@ function X.ConsiderPreCast()
         -- end
 
 
+        -- 切满3个一样的球
         if J.GetHP(bot) < 0.6 then
-            if J.IsRetreating(bot) and (bot:HasModifier('modifier_invoker_quas_instance') or bot:HasModifier('modifier_invoker_exort_instance')) then
+            if Wex:IsTrained()
+            and J.IsRetreating(bot)
+            and (bot:HasModifier('modifier_invoker_quas_instance') or bot:HasModifier('modifier_invoker_exort_instance')) then
                 bot:ActionQueue_UseAbility(Wex)
                 bot:ActionQueue_UseAbility(Wex)
                 bot:ActionQueue_UseAbility(Wex)
                 bot:ActionQueue_Delay(0.1)
-                lastTimeChangeModifierAbilities = DotaTime()
-            elseif bot:HasModifier('modifier_invoker_wex_instance') or bot:HasModifier('modifier_invoker_exort_instance') then
+            elseif Quas:IsTrained()
+            and (bot:HasModifier('modifier_invoker_wex_instance') or bot:HasModifier('modifier_invoker_exort_instance')) then
                 bot:ActionQueue_UseAbility(Quas)
                 bot:ActionQueue_UseAbility(Quas)
                 bot:ActionQueue_UseAbility(Quas)
                 bot:ActionQueue_Delay(0.1)
-                lastTimeChangeModifierAbilities = DotaTime()
             end
-        elseif bot:HasModifier('modifier_invoker_quas_instance') or bot:HasModifier('modifier_invoker_wex_instance') then
-            bot:ActionQueue_UseAbility(Exort)
-            bot:ActionQueue_UseAbility(Exort)
-            bot:ActionQueue_UseAbility(Exort)
-            bot:ActionQueue_Delay(0.1)
-            lastTimeChangeModifierAbilities = DotaTime()
+        else
+            if Wex:IsTrained()
+            and Exort:IsTrained() then
+                if Wex:GetLevel() >= Exort:GetLevel() then
+                    bot:ActionQueue_UseAbility(Wex)
+                    bot:ActionQueue_UseAbility(Wex)
+                    bot:ActionQueue_UseAbility(Wex)
+                    bot:ActionQueue_Delay(0.1)
+                else
+                    bot:ActionQueue_UseAbility(Exort)
+                    bot:ActionQueue_UseAbility(Exort)
+                    bot:ActionQueue_UseAbility(Exort)
+                    bot:ActionQueue_Delay(0.1)
+                end
+            elseif Exort:IsTrained() then
+                bot:ActionQueue_UseAbility(Exort)
+                bot:ActionQueue_UseAbility(Exort)
+                bot:ActionQueue_UseAbility(Exort)
+                bot:ActionQueue_Delay(0.1)
+            end
         end
+        lastTimeChangeModifierAbilities = DotaTime()
     end
 end
 
@@ -834,18 +901,38 @@ end
 -- end
 
 function X.ConsiderClearActions()
+    -- Invoker enqueues a lot, e.g. for any new spell it possibly needs to enqueue 3 basics and 1 Invoke and 1 Delay. 太多queued可能导致行为延迟过大而错放技能
+
     local nActions = bot:NumQueuedActions()
-    print("Invoker enqueued actions="..tostring(nActions))
-    if nActions >= 3 then
-        print("Clear Invokers queued actions")
-        bot:Action_ClearActions(false)
+
+    if nActions > 0 then
+        -- for i=1, nActions do
+        --     local aType = bot:GetQueuedActionType(i)
+        --     print("Enqueued actions i="..i..", type="..tostring(aType))
+        --     if aType == -1 then
+        --         print("Invokers has queued invalid action (-1). Clear action queue.")
+        --         bot:Action_ClearActions(false)
+        --         return
+        --     end
+        -- end
+
+        -- 只有当第一个action是 -1 时才clean queue。以免导致它之前的动作被撤销
+        if bot:GetQueuedActionType(1) == -1 then
+            print("Invokers has queued invalid action (-1). Clear action queue.")
+            bot:Action_ClearActions(false)
+        end
+
+        if nActions >= 6 then
+            print("Clear Invokers queued actions")
+            bot:Action_ClearActions(false)
+            return
+        end
     end
 end
 
 function X.CastForgeSpirit()
     print(DotaTime()..' - Invoker going to cast ForgeSpirit')
 
-    X.ConsiderClearActions()
     if not IsAbilityActive(ForgeSpirit)
     then
         X.InvokeForgeSpirit()
@@ -861,7 +948,6 @@ end
 function X.CastIceWall()
     print(DotaTime()..' - Invoker going to cast IceWall')
 
-    X.ConsiderClearActions()
     if not IsAbilityActive(IceWall)
     then
         X.InvokeIceWall()
@@ -876,7 +962,6 @@ end
 function X.CastDeafeningBlast(DeafeningBlastLocation)
     print(DotaTime()..' - Invoker going to cast DeafeningBlast')
 
-    X.ConsiderClearActions()
     if not IsAbilityActive(DeafeningBlast)
     then
         X.InvokeDeafeningBlast()
@@ -890,7 +975,6 @@ end
 function X.CastSunstrike(SunstrikeLocation)
     print(DotaTime()..' - Invoker going to cast Sunstrike')
     
-    X.ConsiderClearActions()
     if not IsAbilityActive(Sunstrike)
     then
         X.InvokeSunstrike()
@@ -905,7 +989,6 @@ end
 function X.CastCataclysm()
     print(DotaTime()..' - Invoker going to cast Cataclysm')
     
-    X.ConsiderClearActions()
     if bot:HasScepter()
     then
         if not IsAbilityActive(Sunstrike)
@@ -922,7 +1005,6 @@ end
 function X.CastAlacrity(AlacrityTarget)
     print(DotaTime()..' - Invoker going to cast Alacrity')
     
-    X.ConsiderClearActions()
     if not IsAbilityActive(Alacrity)
     then
         X.InvokeAlacrity()
@@ -935,7 +1017,6 @@ end
 function X.CastColdSnap(ColdSnapTarget)
     print(DotaTime()..' - Invoker going to cast ColdSnap')
     
-    X.ConsiderClearActions()
     if not IsAbilityActive(ColdSnap)
     then
         X.InvokeColdSnap()
@@ -948,7 +1029,6 @@ end
 function X.CastChaosMeteor(ChaosMeteorLocation)
     print(DotaTime()..' - Invoker going to cast ChaosMeteor')
     
-    X.ConsiderClearActions()
     if not IsAbilityActive(ChaosMeteor)
     then
         X.InvokeChaosMeteor()
@@ -961,7 +1041,6 @@ end
 function X.CastEMP(EMPLocation)
     print(DotaTime()..' - Invoker going to cast EMP')
     
-    X.ConsiderClearActions()
     if not IsAbilityActive(EMP)
     then
         X.InvokeEMP()
@@ -976,7 +1055,6 @@ end
 function X.CastTornado(TornadoLocation)
     print(DotaTime()..' - Invoker going to cast Tornado')
     
-    X.ConsiderClearActions()
     if not IsAbilityActive(Tornado)
     then
         X.InvokeTornado()
@@ -1845,14 +1923,11 @@ function X.CheckTempModifiers(modifierNames, botTarget, nDelay)
     for _, mName in pairs(modifierNames)
     do
         if botTarget:HasModifier(mName) then
-            local modifier = botTarget:GetModifierByName(mName)
-            if modifier then
-                local remaining = botTarget:GetModifierRemainingDuration(modifier)
-                print("Target has modifier "..mName..", the remaining time: " .. remaining .. " seconds")
-                if remaining ~= nil and (DotaTime() >= DotaTime() + remaining - nDelay )
-                then
-                    return BOT_ACTION_DESIRE_HIGH
-                end
+            local remaining = J.GetModifierTime(botTarget, mName)
+            print(DotaTime().."Target has modifier "..mName..", the remaining time: " .. tostring(remaining) .. " seconds, delay: "..tostring(nDelay))
+            if remaining ~= nil and (DotaTime() >= DotaTime() + remaining - nDelay )
+            then
+                return BOT_ACTION_DESIRE_HIGH
             end
         end
     end
@@ -2453,7 +2528,7 @@ end
 function IsAbilityActive(ability)
     local abilityD = bot:GetAbilityInSlot(3)  -- First invoked slot
     local abilityF = bot:GetAbilityInSlot(4)  -- Second invoked slot
-
+    
     if ability == abilityD or ability == abilityF then
         return true
     end
@@ -2466,17 +2541,49 @@ function IsAbilityActive(ability)
     return true
 end
 
+function ApplyActionQueue_AttackUnitOverride(unit)
+    local original_ActionQueue_AttackUnit = unit.ActionQueue_AttackUnit
+
+    unit.ActionQueue_AttackUnit = function(self, hTarget, bOnce)
+        print('ask invoker to attack unit')
+        return original_ActionQueue_AttackUnit(self, hTarget, bOnce)
+    end
+end
+function ApplyActionQueue_UseAbilityOnLocationOverride(unit)
+    local original_ActionQueue_UseAbilityOnLocation = unit.ActionQueue_UseAbilityOnLocation
+
+    unit.ActionQueue_UseAbilityOnLocation = function(self, hAbility, location)
+        print('ask invoker to use ability on location')
+        return original_ActionQueue_UseAbilityOnLocation(self, hAbility, location)
+    end
+end
+function ApplyActionQueue_UseAbilityOverride(unit)
+    local original_ActionQueue_UseAbility = unit.ActionQueue_UseAbility
+
+    unit.ActionQueue_UseAbility = function(self, hAbility)
+        if not (Quas or Wex or Exort or Invoke) then
+            print('ask invoker to use ability')
+        end
+        return original_ActionQueue_UseAbility(self, hAbility)
+    end
+end
+
+ApplyActionQueue_AttackUnitOverride(bot)
+ApplyActionQueue_UseAbilityOnLocationOverride(bot)
+ApplyActionQueue_UseAbilityOverride(bot)
+
 function CheckAbilityUsage()
     -- Check if the spell is just used.
 
     local abilities = { bot:GetAbilityInSlot(3), bot:GetAbilityInSlot(4) }
     for i, ability in pairs(abilities) do
-        if IsAbilityActive(ability) and not ability:IsCooldownReady() and (ability:GetCooldownTimeRemaining()/ability:GetCooldown() > 0.99) then
+        local pCD = ability:GetCooldownTimeRemaining()/ability:GetCooldown()
+        local detectP = 0.98
+        if IsAbilityActive(ability) and not ability:IsCooldownReady() and (pCD >= detectP) then
             local sAbility = AbilityNameMap[ability:GetName()]
             local timePassedSinceLastCast = DotaTime() - AbilityCastedTimes[sAbility];
-            if timePassedSinceLastCast > 0.06 then 
-                -- 0.03 是游戏时间最小单位，0.06保险一点
-                -- 避免重复记录，只记录0.06秒内未更新过的使用情况。可能导致快速用刷新后再次使用技能无法被检测到，但是问题不大。
+            if timePassedSinceLastCast > ability:GetCooldown() * (1 - detectP) - 0.1 then
+                -- 避免重复记录。可能导致快速用刷新后再次使用技能无法被检测到，但是问题不大。
                 print(DotaTime()..' - Invoker just used ability ' .. sAbility .. ', reset the cooldown tracking.')
                 AbilityCastedTimes[sAbility] = DotaTime()
             end
