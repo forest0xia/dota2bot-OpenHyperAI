@@ -910,21 +910,21 @@ function X.ConsiderClearActions()
     local nActions = bot:NumQueuedActions()
 
     if nActions > 0 then
-        -- for i=1, nActions do
-        --     local aType = bot:GetQueuedActionType(i)
-        --     print("Enqueued actions i="..i..", type="..tostring(aType))
-        --     if aType == -1 then
-        --         print("Invokers has queued invalid action (-1). Clear action queue.")
-        --         bot:Action_ClearActions(false)
-        --         return
-        --     end
-        -- end
-
-        -- 只有当第一个action是 -1 时才clean queue。以免导致它之前的动作被撤销
-        if bot:GetQueuedActionType(1) == -1 then
-            print("Invokers has queued invalid action (-1). Clear action queue.")
-            bot:Action_ClearActions(false)
+        for i=1, nActions do
+            local aType = bot:GetQueuedActionType(i)
+            print("Enqueued actions i="..i..", type="..tostring(aType))
+            if aType == -1 then
+                print("Invokers has queued invalid action (-1). Clear action queue.")
+                bot:Action_ClearActions(false)
+                return
+            end
         end
+
+        -- -- 只有当第一个action是 -1 时才clean queue。以免导致它之前的动作被撤销
+        -- if bot:GetQueuedActionType(1) == -1 then
+        --     print("Invokers has queued invalid action (-1). Clear action queue.")
+        --     bot:Action_ClearActions(false)
+        -- end
 
         if nActions >= 6 then
             print("Clear Invokers queued actions")
