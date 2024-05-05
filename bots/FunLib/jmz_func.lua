@@ -4788,41 +4788,52 @@ function J.CheckBotIdleState()
 			and J.GetLocationToLocationDistance( botState.botLocation, bot:GetLocation()) <= deltaIdleDistance then
 				print('Bot '..botName..' is idle/stuck.')
 				
-				bot:Action_ClearActions(true);
-
-				local foundTarget = false
-				local closetLocation = nil
-
-				for _, allyHero in pairs(GetUnitList(UNIT_LIST_ALLIED_HEROES))
-				do
-					local mode = allyHero:GetActiveMode()
-					local isActiveMode = 
-					       mode == BOT_MODE_ROAM
-						or mode == BOT_MODE_TEAM_ROAM
-						or mode == BOT_MODE_GANK
-						or mode == BOT_MODE_ATTACK
-						or mode == BOT_MODE_DEFEND_ALLY
-						or mode == BOT_MODE_PUSH_TOWER_TOP
-						or mode == BOT_MODE_PUSH_TOWER_MID
-						or mode == BOT_MODE_PUSH_TOWER_BOT
-						or mode == BOT_MODE_DEFEND_TOWER_TOP
-						or mode == BOT_MODE_DEFEND_TOWER_MID
-						or mode == BOT_MODE_DEFEND_TOWER_BOT
-					if isActiveMode and J.GetLocationToLocationDistance( allyHero:GetLocation(), bot:GetLocation() ) > deltaIdleDistance then
-						foundTarget = true
-						if closetLocation == nil or (J.GetLocationToLocationDistance( closetLocation, bot:GetLocation() ) > J.GetLocationToLocationDistance( allyHero:GetLocation(), bot:GetLocation() )) then
-							closetLocation = allyHero:GetLocation()
-						end
+				local nActions = bot:NumQueuedActions()
+				if nActions > 0 then
+					for i=1, nActions do
+						local aType = bot:GetQueuedActionType(i)
+						print('Bot '..botName.." has enqueued actions i="..i..", type="..tostring(aType))
 					end
 				end
+				bot:Action_ClearActions(true);
 
-				if foundTarget and closetLocation then
-					print('Relocate bot '..botName..' to move to where the closet active ally currently is.')
-					bot:ActionQueue_AttackMove(closetLocation)
-				else
-					print('[ERROR] Can not find a location to relocate the idle bot: '..botName..'. Sending it to push base.')
-					bot:ActionQueue_AttackMove(J.GetEnemyFountain())
-				end
+				-- local foundTarget = false
+				-- local closetLocation = nil
+
+				-- for _, allyHero in pairs(GetUnitList(UNIT_LIST_ALLIED_HEROES))
+				-- do
+				-- 	local mode = allyHero:GetActiveMode()
+				-- 	local isActiveMode = 
+				-- 	       mode == BOT_MODE_ROAM
+				-- 		or mode == BOT_MODE_TEAM_ROAM
+				-- 		or mode == BOT_MODE_GANK
+				-- 		or mode == BOT_MODE_ATTACK
+				-- 		or mode == BOT_MODE_DEFEND_ALLY
+				-- 		or mode == BOT_MODE_PUSH_TOWER_TOP
+				-- 		or mode == BOT_MODE_PUSH_TOWER_MID
+				-- 		or mode == BOT_MODE_PUSH_TOWER_BOT
+				-- 		or mode == BOT_MODE_DEFEND_TOWER_TOP
+				-- 		or mode == BOT_MODE_DEFEND_TOWER_MID
+				-- 		or mode == BOT_MODE_DEFEND_TOWER_BOT
+				-- 	if isActiveMode and J.GetLocationToLocationDistance( allyHero:GetLocation(), bot:GetLocation() ) > deltaIdleDistance then
+				-- 		foundTarget = true
+				-- 		if closetLocation == nil or (J.GetLocationToLocationDistance( closetLocation, bot:GetLocation() ) > J.GetLocationToLocationDistance( allyHero:GetLocation(), bot:GetLocation() )) then
+				-- 			closetLocation = allyHero:GetLocation()
+				-- 		end
+				-- 	end
+				-- end
+
+				-- if foundTarget and closetLocation then
+				-- 	print('Relocate bot '..botName..' to move to where the closet active ally currently is.')
+				-- 	bot:ActionQueue_AttackMove(closetLocation)
+				-- else
+				-- 	print('[ERROR] Can not find a location to relocate the idle bot: '..botName..'. Sending it to push base.')
+				-- 	bot:ActionQueue_AttackMove(J.GetEnemyFountain())
+				-- end
+				
+				print('[ERROR] Relocating the idle bot: '..botName..'. Sending it to push base.')
+				bot:ActionQueue_AttackMove(J.GetEnemyFountain())
+
 			else
 				-- print('Bot '..botName..' is not in idle state.')
 			end
