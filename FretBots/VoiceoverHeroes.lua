@@ -2,6 +2,12 @@
 
 local voHeroes =
 {
+	-- Annoucers
+	-- Cave Johnson
+	cavejohnson								=	'announcer_cave_johnson',
+	cave									=	'announcer_cave_johnson',
+	cj										=	'announcer_cave_johnson',
+
 	-- Abaddon
 	npc_dota_hero_abaddon 					=	'npc_dota_hero_abaddon',
 	aba 									=	'npc_dota_hero_abaddon',
