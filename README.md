@@ -5,7 +5,7 @@
 - new heroes from: https://github.com/ryndrb/dota2bot
 
 
-Useful resources:
+### Useful resources:
 - Posts shared by Ranked Matchmaking AI author: https://www.adamqqq.com/ai/dota2-ai-devlopment-tutorial.html
 - Official Bot side script intro: https://developer.valvesoftware.com/wiki/Dota_Bot_Scripting
 - Lua (Bots side) APIs: https://docs.moddota.com/lua_bots/
@@ -13,3 +13,15 @@ Useful resources:
 - Lua APIs, modes, and enum values: https://moddota.com/api/#!/vscripts/dotaunitorder_t
 - Bot modifier names: https://developer.valvesoftware.com/wiki/Dota_2_Workshop_Tools/Scripting/Built-In_Modifier_Names
 - Dota2 data mining (details of items, abilities, heroes): https://github.com/muk-as/DOTA2_WEB/blob/master/dota2_web/Items_cn.json
+
+
+### Things to be updated:
+Bots should be less aggressive to chase people into towers, human will take advantage of that to continuely lowering bot's hp and get the kill.
+Bots should respect the TPs while chasing people.
+Bots should have regens in laning phase. Don't stay in lane if ph is too low. e.g. not calling in regen like omni would have 1400 hp and sit in lane on 200 till they tp back and take a free kill
+Better Tormentor strategy with human players
+Don't kill couriers if bot is targeting a dieing hero or is retreating.
+Don't focus on some minions over heroes.
+Bot should rethink about dot damage on them. they run away from dot damage without considering why. e.g. dark seer ion shell you can chase a bot from their t1 to your t1 by simply walking behind them and they take the path most directly away from it. 
+Bots should take exp runes.
+Bots are ignoreing some abilities or modifiers that have relatively long duration and can end up deal with high dmg, spells like dazzle’s first ability modifier

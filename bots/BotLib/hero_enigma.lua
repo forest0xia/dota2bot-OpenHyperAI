@@ -98,19 +98,17 @@ local BlackKingBar
 
 function X.SkillsComplement()
 	if J.CanNotUseAbility(bot)
-    or bot:NumQueuedActions() > 0
     then
         return
     end
     
     -- if near by enemy hero is pulled by black hole, don't do anything
-    local nEnemyHeroes = bot:GetNearbyHeroes(800, true, BOT_MODE_NONE)
+    local nEnemyHeroes = bot:GetNearbyHeroes(1000, true, BOT_MODE_NONE)
     for _, enemyHero in pairs(nEnemyHeroes)
     do
-        if  J.IsValidHero(enemyHero)
-        and not J.IsSuspiciousIllusion(enemyHero)
-        and not enemyHero:HasModifier('modifier_enigma_black_hole_pull')
-        and not enemyHero:HasModifier('modifier_enigma_black_hole_pull_scepter')
+        if J.IsValidHero(enemyHero)
+        and (enemyHero:HasModifier('modifier_enigma_black_hole_pull')
+        or enemyHero:HasModifier('modifier_enigma_black_hole_pull_scepter'))
         then
             return
         end

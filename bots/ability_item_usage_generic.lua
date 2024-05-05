@@ -7211,9 +7211,6 @@ end
 
 function ItemUsageThink()
 	
-
-	J.CheckBotIdleState()
-	
 	ItemUsageComplement()
 end
 

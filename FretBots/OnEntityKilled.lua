@@ -64,6 +64,10 @@ function EntityKilled:GetEntityKilledEventData(event)
 
         -- 当击杀者是人类玩家时，给与击杀惩罚
         if killer == nil or killer.stats == nil or killer.stats.isBot then return end
+
+		-- TODO: check if victim is SNK or was with SNK's ult available - the first death was not a real death don't modify real player gold.
+		if victim:GetUnitName() == 'npc_dota_hero_skeleton_king' then return end
+
         local goldPerLevel = -30
         local heroLevel = victim:GetLevel()
         -- 基于基础惩罚，死亡单位的等级，和难度来确定惩罚额度

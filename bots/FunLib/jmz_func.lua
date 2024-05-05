@@ -4765,14 +4765,16 @@ end
 
 
 -- Check if any bot is stuck/idle for some time.
-local botIdelStateTimeThreshold = 8 -- relatively big number in case it's things like casting/being casted with long durating spells or other unexpected stuff.
-local deltaIdleDistance = 10
+local botIdelStateTimeThreshold = 8 -- relatively big number in case it's things like casting/being casted with long durating spells, in base healing, or other unexpected stuff.
+local deltaIdleDistance = 5
 local botIdleStateTracker = { }
 
 function J.CheckBotIdleState()
 	if DotaTime() <= 0 then return end
 
 	local bot = GetBot()
+	if not bot:IsAlive() then return end
+
 	local botName = bot:GetUnitName();
 
 	-- print('Checking bot '..botName..' idle state.')

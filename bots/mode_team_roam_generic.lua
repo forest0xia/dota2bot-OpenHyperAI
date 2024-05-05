@@ -43,6 +43,7 @@ local SpecialUnitTarget = nil
 
 local shouldHarass = false
 local harassTarget = nil
+local lastIdleStateCheck = -1
 
 local TormentorLocation
 if GetTeam() == TEAM_RADIANT
@@ -53,6 +54,17 @@ else
 end
 
 function GetDesire()
+	
+	
+	if DotaTime() - lastIdleStateCheck >= 2 then
+		J.CheckBotIdleState()
+		
+		if not GetBot().hasBeenOverridden then 
+			OverrideGlobalFunctions() 
+		end
+		lastIdleStateCheck = DotaTime()
+	end
+
 
 	if not beInitDone
 	then
@@ -185,6 +197,73 @@ function OnEnd()
 	harassTarget = nil
 end
 
+	
+function ApplyHasModifierOverride(unit)
+	local original_HasModifier = unit.HasModifier
+
+	unit.HasModifier = function(self, modifier_name)
+		if not unit:CanBeSeen() then
+			return nil
+		end
+		return original_HasModifier(self, modifier_name)
+	end
+end
+function ApplGetNearbyHeroesOverride(unit)
+	local original_GetNearbyHeroes = unit.GetNearbyHeroes
+
+	unit.GetNearbyHeroes = function(self, nRadius, bEnemies, nMode)
+		if not unit:CanBeSeen() or not unit:IsHero() then
+			return nil
+		end 
+		return original_GetNearbyHeroes(self, nRadius, bEnemies, nMode)
+	end
+end
+function ApplGetAttackRangeOverride(unit)
+	local original_GetAttackRange = unit.GetAttackRange
+
+	unit.GetAttackRange = function(self)
+		if not unit:CanBeSeen() or not unit:IsHero() then
+			return nil
+		end 
+		return original_GetAttackRange(self)
+	end
+end
+
+function GetBotMethodOverride(original_GetBot)
+	local bot = original_GetBot()
+	ApplyHasModifierOverride(bot)
+	ApplGetNearbyHeroesOverride(bot)
+	ApplGetAttackRangeOverride(bot)
+	return original_GetBot
+end
+
+local original_GetUnitToUnitDistance = nil
+function GetUnitToUnitDistanceOverride(unit1, unit2)
+	if not unit1 then
+		print("[Error] GetUnitToUnitDistance called with invalid unit 1")
+		print("Stack Trace:", debug.traceback())
+	end
+	if not unit2 then
+		if unit1 then
+			print("[Error] GetUnitToUnitDistance called with invalid unit 2, the unit 1 is: " .. unit1:GetUnitName())
+			print("Stack Trace:", debug.traceback())
+		end
+	end
+	return original_GetUnitToUnitDistance(unit1, unit2)
+end
+
+function OverrideGlobalFunctions()
+
+	-- Overridding GetBot to be able to override it's instance methods to all units, e.g. HasModifier()
+	local original_GetBot = GetBot
+	GetBot = GetBotMethodOverride(original_GetBot)
+
+	-- Overridding functions to debug and redcue logging spam
+	original_GetUnitToUnitDistance = GetUnitToUnitDistance
+	GetUnitToUnitDistance = GetUnitToUnitDistanceOverride
+
+	GetBot().hasBeenOverridden = true
+end
 
 function Think()
 	if J.CanNotUseAction(bot) then return end

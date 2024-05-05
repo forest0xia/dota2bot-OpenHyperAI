@@ -580,7 +580,7 @@ function X.ConsiderUnitTarget(minion, ability)
 	local castRange = ability:GetCastRange() + 200;
 	if bot:GetActiveMode() == BOT_MODE_RETREAT and bot:WasRecentlyDamagedByAnyHero(2.0) then
 		local enemies = minion:GetNearbyHeroes(castRange, true, BOT_MODE_NONE);
-		if #enemies > 0 then
+		if enemies ~= nil and #enemies > 0 then
 			for i=1, #enemies do
 				if X.IsValidTarget(enemies[i]) and X.CanCastOnTarget(enemies[i], ability) then
 					return BOT_ACTION_DESIRE_HIGH, enemies[i];
@@ -600,7 +600,7 @@ function X.ConsiderPointTarget(minion, ability)
 	local castRange = ability:GetCastRange()+200;
 	if bot:GetActiveMode() == BOT_MODE_RETREAT and bot:WasRecentlyDamagedByAnyHero(2.0) then
 		local enemies = minion:GetNearbyHeroes(castRange, true, BOT_MODE_NONE);
-		if #enemies > 0 then
+		if enemies ~= nil and #enemies > 0 then
 			for i=1, #enemies do
 				if X.IsValidTarget(enemies[i]) and X.CanCastOnTarget(enemies[i], ability) then
 					return BOT_ACTION_DESIRE_HIGH, enemies[i]:GetLocation();
@@ -624,7 +624,7 @@ function X.ConsiderNoTarget(minion, ability)
 	then
 		local enemies = minion:GetNearbyHeroes(nRadius, true, BOT_MODE_NONE)
 
-		if #enemies > 0
+		if enemies ~= nil and #enemies > 0
 		then
 			for i = 1, #enemies
 			do

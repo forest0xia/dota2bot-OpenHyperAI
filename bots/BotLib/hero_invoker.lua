@@ -261,6 +261,7 @@ local TornadoLiftTime
 
 local botTarget
 
+
 function X.SkillsComplement()
     CheckAbilityUsage()
 
@@ -273,30 +274,14 @@ function X.SkillsComplement()
 
     ConsiderFirstSpell()
     
+    -- 有时候queue的action太多了，新的指令可能不会被很快执行
     X.ConsiderClearActions()
 
-    -- 预留让没在cd的技能位置靠前。换占线的3球。注意，这个阶段用技能或者切球最好不要让大招进入CD
-    X.ConsiderPreCast()
+    -- 预留让没在cd的技能位置靠前。换占线的3球。这个阶段切球最好不要让大招进入CD
+    X.ConsiderPreInvoke()
 
-
-    -- 先考虑切 (Invoke) 好2个技能。再考虑用任何切出的技能。
-    -- 切记不要在技能还没出现在技能栏中时，就在代码中queue或者直接action去使用技能。这样会导致bot无法cast那个技能，因为在执行那一行指令的瞬间 (0.033s a frame)，那个技能并不存在，从而导致bot错过了在那个瞬间释放技能。
-    -- 因为任何一个切球的动作或者Invoke，都在action queue中排列着，都要等动画etc。多余的序列多导致不必要的行为延迟。尤其是当技能还不在技能栏中却要queue该技能时，会出现 queued action type = -1 的情况。
-
-    -- 申明一下关键术语：
-    -- Invoke/切技能，是指用大招召唤出指定的技能，而非使用指定的被召唤技能。
-    -- Cast/释放技能，是指使用/释放/扔出指定的被召唤技能。
-
-    -- 技能Invoke优先级：
-    -- 2个能combo的没cd的技能
-    -- 和上一个刚使用的技能能combo的技能
-    -- 没在cd中的技能
-    -- cd时间在Invoke cd时间之内的
-
-    
-    
-    -- a somewhat better strategy can be using matrix to calculate weighted fields for decisition making. but it means a lot of calculation EVERY frame.
-    -- nCreep, nEnemyHero, nTower, nDistance, bTeamFight, bOnSomeone, bTargetHero, nTargetHp, nTargetMp, bInAttackRange, bHasModifier..., nModifierRemainTime..., bLaning, bRetreating, bDefending, 
+    -- TODO: Implement the method, refactor the following logic.
+    -- X.ConsiderInvoke()
 
 
     ------- 尝试把连招串联起来，判断是否用了可以连招的前置技能 -------
@@ -505,55 +490,75 @@ function X.SkillsComplement()
 end
 
 
+-- 先考虑切 (Invoke) 好2个技能。再考虑用任何切出的技能。
+-- 切记不要在技能还没出现在技能栏中时，就在代码中queue或者直接action去使用技能。这样会导致bot无法cast那个技能，因为在执行那一行指令的瞬间 (0.033s a frame)，那个技能并不存在，从而导致bot错过了在那个瞬间释放技能。
+-- 因为任何一个切球的动作或者Invoke，都在action queue中排列着，都要等动画etc。多余的序列多导致不必要的行为延迟。尤其是当技能还不在技能栏中却要queue该技能时，会出现 queued action type = -1 的情况。
+
+-- 申明一下关键术语：
+-- Invoke/切技能，是指用大招召唤出指定的技能，而非使用指定的被召唤技能。
+-- Cast/释放技能，是指使用/释放/扔出指定的被召唤技能。
+
+-- 技能Invoke优先级：
+-- 2个能combo的没cd的技能
+-- 和上一个刚使用的技能能combo的技能
+-- 没在cd中的技能
+-- cd时间在Invoke cd时间之内的
+
+-- a somewhat better strategy can be using matrix to calculate weighted fields for decisition making. but it means a lot of calculation EVERY frame.
+-- nCreep, nEnemyHero, nTower, nDistance, bTeamFight, bOnSomeone, bTargetHero, nTargetHp, nTargetMp, bInAttackRange, bHasModifier..., nModifierRemainTime..., bLaning, bRetreating, bDefending, 
+function X.ConsiderInvoke()
+    if not Invoke:IsFullyCastable() then return end
+
+end
 
 function X.InvokeColdSnap()
     print("Invoker invoking ColdSnap")
-    InvokeSpell(Quas, Quas, Quas)
+    X.InvokeSpell(Quas, Quas, Quas)
 end
 
 function X.InvokeTornado()
     print("Invoker invoking Tornado")
-    InvokeSpell(Wex, Wex, Quas)
+    X.InvokeSpell(Wex, Wex, Quas)
 end
 
 function X.InvokeGhostWalk()
     print("Invoker invoking GhostWalk")
-    InvokeSpell(Quas, Quas, Wex)
+    X.InvokeSpell(Quas, Quas, Wex)
 end
 
 function X.InvokeIceWall()
     print("Invoker invoking IceWall")
-    InvokeSpell(Quas, Quas, Exort)
+    X.InvokeSpell(Quas, Quas, Exort)
 end
 
 function X.InvokeEMP()
     print("Invoker invoking EMP")
-    InvokeSpell(Wex, Wex, Wex)
+    X.InvokeSpell(Wex, Wex, Wex)
 end
 
 function X.InvokeAlacrity()
     print("Invoker invoking Alacrity")
-    InvokeSpell(Wex, Wex, Exort)
+    X.InvokeSpell(Wex, Wex, Exort)
 end
 
 function X.InvokeSunstrike()
     print("Invoker invoking Sunstrike")
-    InvokeSpell(Exort, Exort, Exort)
+    X.InvokeSpell(Exort, Exort, Exort)
 end
 
 function X.InvokeForgeSpirit()
     print("Invoker invoking ForgeSpirit")
-    InvokeSpell(Exort, Exort, Quas)
+    X.InvokeSpell(Exort, Exort, Quas)
 end
 
 function X.InvokeChaosMeteor()
     print("Invoker invoking ChaosMeteor")
-    InvokeSpell(Exort, Exort, Wex)
+    X.InvokeSpell(Exort, Exort, Wex)
 end
 
 function X.InvokeDeafeningBlast()
     print("Invoker invoking DeafeningBlast")
-    InvokeSpell(Quas, Wex, Exort)
+    X.InvokeSpell(Quas, Wex, Exort)
 end
 
 local lastTimeChangeModifierAbilities = 0
@@ -561,7 +566,7 @@ local lastTimeChangeModifierAbilities = 0
 -- If no desire actions, get some abilities actived on the skill list so they can be casted as soon as needed later.
 -- 预留技能; 预留球; 让没在cd的技能位置靠前。
 -- 注意，这个阶段不能让大招进入CD，不然会影响其他技能的使用判断，因为这里不做太多技能使用的条件判定，缺少正确取舍
-function X.ConsiderPreCast()
+function X.ConsiderPreInvoke()
 
     -- temp don't consider cast-save if not all basic skills are trained.
     if Quas:IsTrained()
@@ -631,13 +636,11 @@ function X.ConsiderPreCast()
                 bot:ActionQueue_UseAbility(Wex)
                 bot:ActionQueue_UseAbility(Wex)
                 bot:ActionQueue_UseAbility(Wex)
-                bot:ActionQueue_Delay(0.1)
             elseif Quas:IsTrained()
             and (bot:HasModifier('modifier_invoker_wex_instance') or bot:HasModifier('modifier_invoker_exort_instance')) then
                 bot:ActionQueue_UseAbility(Quas)
                 bot:ActionQueue_UseAbility(Quas)
                 bot:ActionQueue_UseAbility(Quas)
-                bot:ActionQueue_Delay(0.1)
             end
         else
             if Wex:IsTrained()
@@ -646,18 +649,15 @@ function X.ConsiderPreCast()
                     bot:ActionQueue_UseAbility(Wex)
                     bot:ActionQueue_UseAbility(Wex)
                     bot:ActionQueue_UseAbility(Wex)
-                    bot:ActionQueue_Delay(0.1)
                 else
                     bot:ActionQueue_UseAbility(Exort)
                     bot:ActionQueue_UseAbility(Exort)
                     bot:ActionQueue_UseAbility(Exort)
-                    bot:ActionQueue_Delay(0.1)
                 end
             elseif Exort:IsTrained() then
                 bot:ActionQueue_UseAbility(Exort)
                 bot:ActionQueue_UseAbility(Exort)
                 bot:ActionQueue_UseAbility(Exort)
-                bot:ActionQueue_Delay(0.1)
             end
         end
         lastTimeChangeModifierAbilities = DotaTime()
@@ -901,6 +901,8 @@ end
 -- end
 
 function X.ConsiderClearActions()
+    if DotaTime() <= 10 then return end
+
     -- Invoker enqueues a lot, e.g. for any new spell it possibly needs to enqueue 3 basics and 1 Invoke and 1 Delay. 太多queued可能导致行为延迟过大而错放技能
 
     local nActions = bot:NumQueuedActions()
@@ -933,136 +935,121 @@ end
 function X.CastForgeSpirit()
     print(DotaTime()..' - Invoker going to cast ForgeSpirit')
 
-    if not IsAbilityActive(ForgeSpirit)
+    if not X.IsAbilityAvailableOnSlots(ForgeSpirit)
     then
+        bot:ActionQueue_UseAbility(ForgeSpirit)
+        print(DotaTime()..' - Invoker tried to cast ForgeSpirit')
+    else
         X.InvokeForgeSpirit()
     end
-
-    -- bot:Action_ClearActions(false)
-    -- bot:ActionQueue_Delay(0.1)
-    bot:ActionQueue_UseAbility(ForgeSpirit)
-
-    print(DotaTime()..' - Invoker tried to cast ForgeSpirit')
 end
 
 function X.CastIceWall()
     print(DotaTime()..' - Invoker going to cast IceWall')
 
-    if not IsAbilityActive(IceWall)
+    if X.IsAbilityAvailableOnSlots(IceWall)
     then
+        bot:ActionQueue_UseAbility(IceWall)
+        print(DotaTime()..' - Invoker tried to cast IceWall')
+    else
         X.InvokeIceWall()
     end
-
-    -- bot:Action_ClearActions(false)
-    bot:ActionQueue_UseAbility(IceWall)
-
-    print(DotaTime()..' - Invoker tried to cast IceWall')
 end
 
 function X.CastDeafeningBlast(DeafeningBlastLocation)
     print(DotaTime()..' - Invoker going to cast DeafeningBlast')
 
-    if not IsAbilityActive(DeafeningBlast)
+    if X.IsAbilityAvailableOnSlots(DeafeningBlast)
     then
+        bot:ActionQueue_UseAbilityOnLocation(DeafeningBlast, DeafeningBlastLocation)
+        print(DotaTime()..' - Invoker tried to cast DeafeningBlast')
+    else
         X.InvokeDeafeningBlast()
     end
-
-    -- bot:Action_ClearActions(false)
-    bot:ActionQueue_UseAbilityOnLocation(DeafeningBlast, DeafeningBlastLocation)
-    print(DotaTime()..' - Invoker tried to cast DeafeningBlast')
 end
 
 function X.CastSunstrike(SunstrikeLocation)
     print(DotaTime()..' - Invoker going to cast Sunstrike')
     
-    if not IsAbilityActive(Sunstrike)
+    if X.IsAbilityAvailableOnSlots(Sunstrike)
     then
+        bot:ActionQueue_UseAbilityOnLocation(Sunstrike, SunstrikeLocation)
+        print(DotaTime()..' - Invoker tried to cast Sunstrike')
+    else
         X.InvokeSunstrike()
     end
-
-    -- bot:Action_ClearActions(false)
-    bot:ActionQueue_UseAbilityOnLocation(Sunstrike, SunstrikeLocation)
-
-    print(DotaTime()..' - Invoker tried to cast Sunstrike')
 end
 
 function X.CastCataclysm()
     print(DotaTime()..' - Invoker going to cast Cataclysm')
     
-    if bot:HasScepter()
+    if X.IsAbilityAvailableOnSlots(Sunstrike)
     then
-        if not IsAbilityActive(Sunstrike)
-        then
-            X.InvokeSunstrike()
-        end
-        -- bot:Action_ClearActions(false)
         bot:ActionQueue_UseAbilityOnEntity(Sunstrike, bot)
-        
         print(DotaTime()..' - Invoker tried to cast Cataclysm')
+    else
+        X.InvokeSunstrike()
     end
 end
 
 function X.CastAlacrity(AlacrityTarget)
     print(DotaTime()..' - Invoker going to cast Alacrity')
     
-    if not IsAbilityActive(Alacrity)
+    if X.IsAbilityAvailableOnSlots(Alacrity)
     then
+        bot:ActionQueue_UseAbilityOnEntity(Alacrity, AlacrityTarget)
+        print(DotaTime()..' - Invoker tried to cast Alacrity')
+    else
         X.InvokeAlacrity()
     end
-    -- bot:Action_ClearActions(false)
-    bot:ActionQueue_UseAbilityOnEntity(Alacrity, AlacrityTarget)
-    print(DotaTime()..' - Invoker tried to cast Alacrity')
 end
 
 function X.CastColdSnap(ColdSnapTarget)
     print(DotaTime()..' - Invoker going to cast ColdSnap')
     
-    if not IsAbilityActive(ColdSnap)
+    if X.IsAbilityAvailableOnSlots(ColdSnap)
     then
+        bot:ActionQueue_UseAbilityOnEntity(ColdSnap, ColdSnapTarget)
+        print(DotaTime()..' - Invoker tried to cast ColdSnap')
+    else
         X.InvokeColdSnap()
     end
-    -- bot:Action_ClearActions(false)
-    bot:ActionQueue_UseAbilityOnEntity(ColdSnap, ColdSnapTarget)
-    print(DotaTime()..' - Invoker tried to cast ColdSnap')
 end
 
 function X.CastChaosMeteor(ChaosMeteorLocation)
     print(DotaTime()..' - Invoker going to cast ChaosMeteor')
     
-    if not IsAbilityActive(ChaosMeteor)
+    if X.IsAbilityAvailableOnSlots(ChaosMeteor)
     then
+        bot:ActionQueue_UseAbilityOnLocation(ChaosMeteor, ChaosMeteorLocation)
+        print(DotaTime()..' - Invoker tried to cast ChaosMeteor')
+        return
+    else
         X.InvokeChaosMeteor()
     end
-    -- bot:Action_ClearActions(false)
-    bot:ActionQueue_UseAbilityOnLocation(ChaosMeteor, ChaosMeteorLocation)
-    print(DotaTime()..' - Invoker tried to cast ChaosMeteor')
 end
 
 function X.CastEMP(EMPLocation)
     print(DotaTime()..' - Invoker going to cast EMP')
     
-    if not IsAbilityActive(EMP)
+    if not X.IsAbilityAvailableOnSlots(EMP)
     then
         X.InvokeEMP()
     end
 
-    -- bot:Action_ClearActions(false)
     bot:ActionQueue_UseAbilityOnLocation(EMP, EMPLocation)
-
     print(DotaTime()..' - Invoker tried to cast EMP')
 end
 
 function X.CastTornado(TornadoLocation)
     print(DotaTime()..' - Invoker going to cast Tornado')
     
-    if not IsAbilityActive(Tornado)
+    if not X.IsAbilityAvailableOnSlots(Tornado)
     then
         X.InvokeTornado()
     end
 
-    -- bot:Action_ClearActions(false)
     bot:ActionQueue_UseAbilityOnLocation(Tornado, TornadoLocation)
-
     print(DotaTime()..' - Invoker tried to cast Tornado')
 end
 
@@ -1071,7 +1058,7 @@ function X.CastGhostWalk()
 
     bot:Action_ClearActions(false)
 
-    if not IsAbilityActive(GhostWalk)
+    if not X.IsAbilityAvailableOnSlots(GhostWalk)
     then
         X.InvokeGhostWalk()
     end
@@ -1081,15 +1068,16 @@ function X.CastGhostWalk()
 end
 
 function X.CanInvoke_ColdSnap()
-    if not Quas:IsTrained()
-    or (not ColdSnap:IsFullyCastable()
-        or (not IsAbilityActive(ColdSnap)
-            and (DotaTime() < AbilityCastedTimes['ColdSnap'] + AbilityCooldownTimes['ColdSnap'] or not Invoke:IsFullyCastable())))
-    then
-        return false
-    end
+    return Quas:IsTrained() and X.IsAbilityReadyForInvokeOrCast(ColdSnap)
+    -- if not Quas:IsTrained()
+    -- or (not ColdSnap:IsFullyCastable()
+    --     or (not IsAbilityActive(ColdSnap)
+    --         and (DotaTime() < AbilityCastedTimes['ColdSnap'] + AbilityCooldownTimes['ColdSnap'] or not Invoke:IsFullyCastable())))
+    -- then
+    --     return false
+    -- end
 
-    return true
+    -- return true
 end
 
 function X.ConsiderColdSnap()
@@ -1196,15 +1184,17 @@ function X.ConsiderColdSnap()
 end
 
 function X.CanInvoke_GhostWalk()
-    if (not Quas:IsTrained() or not Wex:IsTrained())
-    or (not GhostWalk:IsFullyCastable()
-        or (not IsAbilityActive(GhostWalk)
-            and (DotaTime() < AbilityCastedTimes['GhostWalk'] + AbilityCooldownTimes['GhostWalk'] or not Invoke:IsFullyCastable())))
-    then
-        return false
-    end
+    return Quas:IsTrained() and Wex:IsTrained() and X.IsAbilityReadyForInvokeOrCast(GhostWalk)
 
-    return true
+    -- if (not Quas:IsTrained() or not Wex:IsTrained())
+    -- or (not GhostWalk:IsFullyCastable()
+    --     or (not IsAbilityActive(GhostWalk)
+    --         and (DotaTime() < AbilityCastedTimes['GhostWalk'] + AbilityCooldownTimes['GhostWalk'] or not Invoke:IsFullyCastable())))
+    -- then
+    --     return false
+    -- end
+
+    -- return true
 end
 
 function X.ConsiderGhostWalk()
@@ -1259,15 +1249,17 @@ function X.ConsiderGhostWalk()
 end
 
 function X.CanInvoke_Tornado()
-    if (not Quas:IsTrained() or not Wex:IsTrained())
-    or (not Tornado:IsFullyCastable()
-        or (not IsAbilityActive(Tornado)
-            and (DotaTime() < AbilityCastedTimes['Tornado'] + AbilityCooldownTimes['Tornado'] or not Invoke:IsFullyCastable())))
-    then
-        return false
-    end
+    return Quas:IsTrained() and Wex:IsTrained() and X.IsAbilityReadyForInvokeOrCast(Tornado)
 
-    return true
+    -- if (not Quas:IsTrained() or not Wex:IsTrained())
+    -- or (not Tornado:IsFullyCastable()
+    --     or (not IsAbilityActive(Tornado)
+    --         and (DotaTime() < AbilityCastedTimes['Tornado'] + AbilityCooldownTimes['Tornado'] or not Invoke:IsFullyCastable())))
+    -- then
+    --     return false
+    -- end
+
+    -- return true
 end
 
 function X.ConsiderTornado()
@@ -1463,15 +1455,17 @@ function X.ConsiderTornado()
 end
 
 function X.CanInvoke_EMP()
-    if not Wex:IsTrained()
-    or (not EMP:IsFullyCastable()
-        or (not IsAbilityActive(EMP)
-            and (DotaTime() < AbilityCastedTimes['EMP'] + AbilityCooldownTimes['EMP'] or not Invoke:IsFullyCastable())))
-    then
-        return false
-    end
+    return Wex:IsTrained() and X.IsAbilityReadyForInvokeOrCast(EMP)
 
-    return true
+    -- if not Wex:IsTrained()
+    -- or (not EMP:IsFullyCastable()
+    --     or (not IsAbilityActive(EMP)
+    --         and (DotaTime() < AbilityCastedTimes['EMP'] + AbilityCooldownTimes['EMP'] or not Invoke:IsFullyCastable())))
+    -- then
+    --     return false
+    -- end
+
+    -- return true
 end
 
 function X.ConsiderEMP()
@@ -1616,15 +1610,17 @@ function X.ConsiderEMP()
 end
 
 function X.CanInvoke_Alacrity()
-    if (not Wex:IsTrained() or not Exort:IsTrained())
-    or (not Alacrity:IsFullyCastable()
-        or (not IsAbilityActive(Alacrity)
-            and (DotaTime() < AbilityCastedTimes['Alacrity'] + AbilityCooldownTimes['Alacrity'] or not Invoke:IsFullyCastable())))
-    then
-        return false
-    end
+    return Wex:IsTrained() and Exort:IsTrained() and X.IsAbilityReadyForInvokeOrCast(Alacrity)
 
-    return true
+    -- if (not Wex:IsTrained() or not Exort:IsTrained())
+    -- or (not Alacrity:IsFullyCastable()
+    --     or (not IsAbilityActive(Alacrity)
+    --         and (DotaTime() < AbilityCastedTimes['Alacrity'] + AbilityCooldownTimes['Alacrity'] or not Invoke:IsFullyCastable())))
+    -- then
+    --     return false
+    -- end
+
+    -- return true
 end
 
 function X.ConsiderAlacrity()
@@ -1746,15 +1742,17 @@ function X.ConsiderAlacrity()
 end
 
 function X.CanInvoke_ChaosMeteor()
-    if (not Wex:IsTrained() or not Exort:IsTrained())
-    or (not ChaosMeteor:IsFullyCastable()
-        or (not IsAbilityActive(ChaosMeteor)
-            and (DotaTime() < AbilityCastedTimes['ChaosMeteor'] + AbilityCooldownTimes['ChaosMeteor'] or not Invoke:IsFullyCastable())))
-    then
-        return false
-    end
+    return Wex:IsTrained() and Exort:IsTrained() and X.IsAbilityReadyForInvokeOrCast(ChaosMeteor)
 
-    return true
+    -- if (not Wex:IsTrained() or not Exort:IsTrained())
+    -- or (not ChaosMeteor:IsFullyCastable()
+    --     or (not IsAbilityActive(ChaosMeteor)
+    --         and (DotaTime() < AbilityCastedTimes['ChaosMeteor'] + AbilityCooldownTimes['ChaosMeteor'] or not Invoke:IsFullyCastable())))
+    -- then
+    --     return false
+    -- end
+
+    -- return true
 end
 
 function X.ConsiderChaosMeteor()
@@ -1905,18 +1903,21 @@ function X.ConsiderChaosMeteor()
 end
 
 function X.CanInvoke_Cataclysm()
-    if not bot:HasScepter() 
-    or not Exort:IsTrained()
-    or (not Sunstrike:IsFullyCastable()
-        or (not IsAbilityActive(Sunstrike)
-            and DotaTime() < AbilityCastedTimes['Sunstrike'] + AbilityCooldownTimes['Sunstrike'])
-        or (not IsAbilityActive(Sunstrike)
-            and DotaTime() < AbilityCastedTimes['Cataclysm'] + AbilityCooldownTimes['Cataclysm']))
-    then
-        return false
-    end
+    return bot:HasScepter() and Exort:IsTrained() and X.IsAbilityReadyForInvokeOrCast(Sunstrike)
+    and (DotaTime() >= AbilityCastedTimes['Cataclysm'] + AbilityCooldownTimes['Cataclysm'] and Invoke:IsFullyCastable())
 
-    return true
+    -- if not bot:HasScepter() 
+    -- or not Exort:IsTrained()
+    -- or (not Sunstrike:IsFullyCastable()
+    --     or (not IsAbilityActive(Sunstrike)
+    --         and DotaTime() < AbilityCastedTimes['Sunstrike'] + AbilityCooldownTimes['Sunstrike'])
+    --     or (not IsAbilityActive(Sunstrike)
+    --         and DotaTime() < AbilityCastedTimes['Cataclysm'] + AbilityCooldownTimes['Cataclysm']))
+    -- then
+    --     return false
+    -- end
+
+    -- return true
 end
 
 function X.CheckTempModifiers(modifierNames, botTarget, nDelay)
@@ -2045,7 +2046,7 @@ end
 function X.CanInvoke_Sunstrike()
     if not Exort:IsTrained()
     or (not Sunstrike:IsFullyCastable()
-        or (not IsAbilityActive(Sunstrike)
+        or (not X.IsAbilityAvailableOnSlots(Sunstrike)
             and (DotaTime() < AbilityCastedTimes['Sunstrike'] + AbilityCooldownTimes['Sunstrike'] or not Invoke:IsFullyCastable())))
     then
         return false
@@ -2190,7 +2191,7 @@ end
 function X.CanInvoke_ForgeSpirit()
     if (not Quas:IsTrained() or not Exort:IsTrained())
     or (not ForgeSpirit:IsFullyCastable()
-        or (not IsAbilityActive(ForgeSpirit)
+        or (not X.IsAbilityAvailableOnSlots(ForgeSpirit)
             and (DotaTime() < AbilityCastedTimes['ForgeSpirit'] + AbilityCooldownTimes['ForgeSpirit'] or not Invoke:IsFullyCastable())))
     then
         return false
@@ -2251,7 +2252,7 @@ end
 function X.CanInvoke_IceWall()
     if (not Quas:IsTrained() or not Exort:IsTrained())
     or (not IceWall:IsFullyCastable()
-        or (not IsAbilityActive(IceWall)
+        or (not X.IsAbilityAvailableOnSlots(IceWall)
             and (DotaTime() < AbilityCastedTimes['IceWall'] + AbilityCooldownTimes['IceWall'] or not Invoke:IsFullyCastable())))
     then
         return false
@@ -2338,7 +2339,7 @@ end
 function X.CanInvoke_DeafeningBlast()
     if (not Quas:IsTrained() or not Wex:IsTrained() or not Exort:IsTrained())
     or (not DeafeningBlast:IsFullyCastable()
-        or (not IsAbilityActive(DeafeningBlast)
+        or (not X.IsAbilityAvailableOnSlots(DeafeningBlast)
             and (DotaTime() < AbilityCastedTimes['DeafeningBlast'] + AbilityCooldownTimes['DeafeningBlast'] or not Invoke:IsFullyCastable())))
     then
         return false
@@ -2500,24 +2501,24 @@ function ConsiderFirstSpell()
     if bot:GetLevel() == 1
     then
         if Quas:IsTrained()
-            and not IsAbilityActive(ColdSnap)
+            and not X.IsAbilityAvailableOnSlots(ColdSnap)
         then
-            InvokeSpell(Quas, Quas, Quas)
+            X.InvokeSpell(Quas, Quas, Quas)
         elseif Wex:IsTrained()
-            and not IsAbilityActive(EMP)
+            and not X.IsAbilityAvailableOnSlots(EMP)
         then
-            InvokeSpell(Wex, Wex, Wex)
+            X.InvokeSpell(Wex, Wex, Wex)
         elseif Exort:IsTrained()
-            and not IsAbilityActive(Sunstrike)
+            and not X.IsAbilityAvailableOnSlots(Sunstrike)
         then
-            InvokeSpell(Exort, Exort, Exort)
+            X.InvokeSpell(Exort, Exort, Exort)
         end
 
         return
     end
 end
 
-function InvokeSpell(Orb1, Orb2, Orb3)
+function X.InvokeSpell(Orb1, Orb2, Orb3)
     bot:ActionQueue_UseAbility(Orb1)
     bot:ActionQueue_UseAbility(Orb2)
     bot:ActionQueue_UseAbility(Orb3)
@@ -2525,20 +2526,22 @@ function InvokeSpell(Orb1, Orb2, Orb3)
     bot:ActionQueue_Delay(0.1)
 end
 
-function IsAbilityActive(ability)
+-- Check if the ability is ready to be casted or can be invoked, including those that are not displayed on the ability panel list.
+-- First the bot should consider if it can cast the ability, if not, consider invoke the ability. Secondly, only if bot already has the ability on slots, the bot can then consider casting it - to avoid overridding/conflicting actions.
+function X.IsAbilityReadyForInvokeOrCast(ability)
+    local sAbility = AbilityNameMap[ability:GetName()]
+    -- note, intentionally not using a local var for can-be-created bool because this way we can possibly save some calculations by the advantage of `or`
+    return X.IsAbilityReadyForCast(ability) or (DotaTime() >= AbilityCastedTimes[sAbility] + AbilityCooldownTimes[sAbility] and Invoke:IsFullyCastable())
+end
+
+function X.IsAbilityReadyForCast(ability)
+    return X.IsAbilityAvailableOnSlots(ability) and ability:IsFullyCastable()
+end
+
+function X.IsAbilityAvailableOnSlots(ability)
     local abilityD = bot:GetAbilityInSlot(3)  -- First invoked slot
     local abilityF = bot:GetAbilityInSlot(4)  -- Second invoked slot
-    
-    if ability == abilityD or ability == abilityF then
-        return true
-    end
-
-    if ability:IsHidden()
-    or not ability:IsTrained() then
-        return false
-    end
-
-    return true
+    return ability == abilityD or ability == abilityF
 end
 
 function ApplyActionQueue_AttackUnitOverride(unit)
@@ -2554,7 +2557,9 @@ function ApplyActionQueue_UseAbilityOnLocationOverride(unit)
 
     unit.ActionQueue_UseAbilityOnLocation = function(self, hAbility, location)
         print('ask invoker to use ability on location')
-        return original_ActionQueue_UseAbilityOnLocation(self, hAbility, location)
+        local res = original_ActionQueue_UseAbilityOnLocation(self, hAbility, location)
+        -- unit:ActionQueue_Delay(hAbility:GetCastPoint())
+        return res
     end
 end
 function ApplyActionQueue_UseAbilityOverride(unit)
@@ -2564,29 +2569,41 @@ function ApplyActionQueue_UseAbilityOverride(unit)
         if not (Quas or Wex or Exort or Invoke) then
             print('ask invoker to use ability')
         end
-        return original_ActionQueue_UseAbility(self, hAbility)
+        local res = original_ActionQueue_UseAbility(self, hAbility)
+        -- unit:ActionQueue_Delay(hAbility:GetCastPoint())
+        return res
+    end
+end
+function ApplyActionQueue_UseAbilityOnEntityOverride(unit)
+    local original_ActionQueue_UseAbilityOnEntity = unit.ActionQueue_UseAbilityOnEntity
+
+    unit.ActionQueue_UseAbilityOnEntity = function(self, hAbility, target)
+        local res = original_ActionQueue_UseAbilityOnEntity(self, hAbility, target)
+        -- unit:ActionQueue_Delay(hAbility:GetCastPoint())
+        return res
     end
 end
 
 ApplyActionQueue_AttackUnitOverride(bot)
 ApplyActionQueue_UseAbilityOnLocationOverride(bot)
 ApplyActionQueue_UseAbilityOverride(bot)
+ApplyActionQueue_UseAbilityOnEntityOverride(bot)
 
+-- don't need to worry about the use of refresher here, this only need to keep tracking on the usage of the ability.
 function CheckAbilityUsage()
     -- Check if the spell is just used.
-
     local abilities = { bot:GetAbilityInSlot(3), bot:GetAbilityInSlot(4) }
     for i, ability in pairs(abilities) do
         local pCD = ability:GetCooldownTimeRemaining()/ability:GetCooldown()
         local detectP = 0.98
-        if IsAbilityActive(ability) and not ability:IsCooldownReady() and (pCD >= detectP) then
+        if X.IsAbilityAvailableOnSlots(ability) and not ability:IsCooldownReady() and pCD > detectP then
             local sAbility = AbilityNameMap[ability:GetName()]
-            local timePassedSinceLastCast = DotaTime() - AbilityCastedTimes[sAbility];
-            if timePassedSinceLastCast > ability:GetCooldown() * (1 - detectP) - 0.1 then
-                -- 避免重复记录。可能导致快速用刷新后再次使用技能无法被检测到，但是问题不大。
-                print(DotaTime()..' - Invoker just used ability ' .. sAbility .. ', reset the cooldown tracking.')
-                AbilityCastedTimes[sAbility] = DotaTime()
-            end
+            local timePassedSinceLastCast = DotaTime() - AbilityCastedTimes[sAbility]
+
+            if timePassedSinceLastCast <= ability:GetCooldown() * (1 - detectP) then return end -- 防止重复记录
+
+            print(DotaTime()..' - Invoker just used ability ' .. sAbility .. ', reset the cooldown tracking.')
+            AbilityCastedTimes[sAbility] = DotaTime()
         end
     end
 end
