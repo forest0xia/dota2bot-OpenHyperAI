@@ -663,7 +663,7 @@ function X.OverrideTeamHeroes()
 			[4] = tSelectPoolList[4][RandomInt( 1, #tSelectPoolList[4] )],
 			[5] = tSelectPoolList[5][RandomInt( 1, #tSelectPoolList[5] )],
 			-- [1] = "npc_dota_hero_invoker",
-			-- -- [1] = "npc_dota_hero_rubick",
+			-- [1] = "npc_dota_hero_rubick",
 			-- [2] = tSelectPoolList[2][RandomInt( 1, #tSelectPoolList[2] )],
 			-- [3] = 'npc_dota_hero_faceless_void',
 			-- [4] = tSelectPoolList[4][RandomInt( 1, #tSelectPoolList[4] )],
@@ -674,7 +674,7 @@ function X.OverrideTeamHeroes()
 			-- [1] = "npc_dota_hero_invoker",
 			-- [2] = "npc_dota_hero_arc_warden",
 			-- [3] = "npc_dota_hero_clinkz",
-		 --    [4] = "npc_dota_hero_witch_doctor",
+			-- [4] = "npc_dota_hero_witch_doctor",
 			-- [5] = "npc_dota_hero_bane",
 
 			-- [1] = "npc_dota_hero_rubick",
@@ -688,8 +688,8 @@ function X.OverrideTeamHeroes()
 			[1] = "npc_dota_hero_invoker",
 			[2] = tSelectPoolList[2][RandomInt( 1, #tSelectPoolList[2] )],
 			-- [3] = 'npc_dota_hero_muerta',
-			[3] = 'npc_dota_hero_enigma',
-			-- [3] = tSelectPoolList[3][RandomInt( 1, #tSelectPoolList[3] )],
+			-- [3] = 'npc_dota_hero_enigma',
+			[3] = tSelectPoolList[3][RandomInt( 1, #tSelectPoolList[3] )],
 			[4] = tSelectPoolList[4][RandomInt( 1, #tSelectPoolList[4] )],
 			[5] = tSelectPoolList[5][RandomInt( 1, #tSelectPoolList[5] )],
 
@@ -699,10 +699,10 @@ function X.OverrideTeamHeroes()
 			-- [4] = tSelectPoolList[4][RandomInt( 1, #tSelectPoolList[4] )],
 			-- [5] = tSelectPoolList[5][RandomInt( 1, #tSelectPoolList[5] )],
 		    
-
+			-- All Pandas/spirits
 			-- [1] = "npc_dota_hero_storm_spirit",
 			-- [2] = "npc_dota_hero_ember_spirit",
-		 --    [3] = "npc_dota_hero_void_spirit",
+			-- [3] = "npc_dota_hero_void_spirit",
 			-- [4] = "npc_dota_hero_earth_spirit",
 			-- [5] = "npc_dota_hero_brewmaster",
 		    

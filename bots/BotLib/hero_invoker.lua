@@ -39,14 +39,14 @@ sRoleItemsBuyList['pos_2'] = {
     "item_spirit_vessel",
     "item_witch_blade",
     "item_travel_boots",
-    "item_refresher",--6
+    "item_black_king_bar",--6
     "item_orchid",
     "item_aghanims_shard",
     "item_ultimate_scepter",
     "item_bloodthorn",--5
     "item_devastator",--4
     "item_ultimate_scepter_2",
-    "item_octarine_core",--3
+    "item_refresher",--3
     "item_sheepstick",--2
     "item_moon_shard",
     "item_travel_boots_2",--1
@@ -297,9 +297,6 @@ function X.SkillsComplement()
         
         EMPDesire, EMPLocation = X.ConsiderEMP()
         if EMPDesire > 0 then  X.CastEMP(EMPLocation) return end
-
-        ColdSnapDesire, ColdSnapTarget = X.ConsiderColdSnap()
-        if ColdSnapDesire > 0 then  X.CastColdSnap(ColdSnapTarget) return end
     end
 
     if DotaTime() - AbilityCastedTimes['ChaosMeteor'] <= deltaTime then
@@ -314,14 +311,14 @@ function X.SkillsComplement()
     end
 
     if DotaTime() - AbilityCastedTimes['ColdSnap'] <= deltaTime then
-        TornadoDesire, TornadoLocation = X.ConsiderTornado()
-        if TornadoDesire > 0 then X.CastTornado(TornadoLocation) return end
+        AlacrityDesire, AlacrityTarget = X.ConsiderAlacrity()
+        if AlacrityDesire > 0 then X.CastAlacrity(AlacrityTarget) return end
 
         ChaosMeteorDesire, ChaosMeteorLocation = X.ConsiderChaosMeteor()
         if ChaosMeteorDesire > 0 then X.CastChaosMeteor(ChaosMeteorLocation) return end
         
-        AlacrityDesire, AlacrityTarget = X.ConsiderAlacrity()
-        if AlacrityDesire > 0 then X.CastAlacrity(AlacrityTarget) return end
+        TornadoDesire, TornadoLocation = X.ConsiderTornado()
+        if TornadoDesire > 0 then X.CastTornado(TornadoLocation) return end
     end
 
     if DotaTime() - AbilityCastedTimes['Alacrity'] <= deltaTime then
@@ -344,8 +341,8 @@ function X.SkillsComplement()
         ColdSnapDesire, ColdSnapTarget = X.ConsiderColdSnap()
         if ColdSnapDesire > 0 then  X.CastColdSnap(ColdSnapTarget) return end
 
-        AlacrityDesire, AlacrityTarget = X.ConsiderAlacrity()
-        if AlacrityDesire > 0 then X.CastAlacrity(AlacrityTarget) return end
+        ChaosMeteorDesire, ChaosMeteorLocation = X.ConsiderChaosMeteor()
+        if ChaosMeteorDesire > 0 then X.CastChaosMeteor(ChaosMeteorLocation) return end
 
         EMPDesire, EMPLocation = X.ConsiderEMP()
         if EMPDesire > 0 then  X.CastEMP(EMPLocation) return end
@@ -360,28 +357,16 @@ function X.SkillsComplement()
     end
 
 
-
-    if Exort:GetLevel() >= 4 then -- 火大于4级优先考虑陨石连招
+    -- 火的等级大于4级优先考虑陨石连招
+    if Exort:GetLevel() >= 4 then
         TornadoDesire, TornadoLocation = X.ConsiderTornado()
-        if TornadoDesire > 0
-        then
-            X.CastTornado(TornadoLocation)
-            return
-        end
+        if TornadoDesire > 0 then X.CastTornado(TornadoLocation) return end
 
         ChaosMeteorDesire, ChaosMeteorLocation = X.ConsiderChaosMeteor()
-        if ChaosMeteorDesire > 0
-        then
-            X.CastChaosMeteor(ChaosMeteorLocation)
-            return
-        end
+        if ChaosMeteorDesire > 0 then X.CastChaosMeteor(ChaosMeteorLocation) return end
     
         DeafeningBlastDesire, DeafeningBlastLocation = X.ConsiderDeafeningBlast()
-        if DeafeningBlastDesire > 0
-        then
-            X.CastDeafeningBlast(DeafeningBlastLocation)
-            return
-        end
+        if DeafeningBlastDesire > 0 then X.CastDeafeningBlast(DeafeningBlastLocation) return end
     end
 
     ------- 考虑正常单独地使用技能 -------
@@ -413,8 +398,7 @@ function X.SkillsComplement()
         X.CastTornado(TornadoLocation)
         return
     end
-
-
+    
     -- 如果要逃跑，先判断吹风再用隐身
     GhostWalkDesire = X.ConsiderGhostWalk()
     if GhostWalkDesire > 0
@@ -931,48 +915,18 @@ function X.ConsiderGhostWalk()
         return BOT_ACTION_DESIRE_NONE
     end
 
-    if J.IsRetreating(bot) and bot:DistanceFromFountain() > 600 
+    if J.IsRetreating(bot) and (bot:DistanceFromFountain() > 1000 or bot:HasModifier('modifier_teleporting'))
     then
         local nInRangeAlly = bot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
         local nInRangeEnemy = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
 
-        if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
-        and (#nInRangeEnemy > #nInRangeAlly
-            or bot:WasRecentlyDamagedByAnyHero(1.5))
+        if bot:WasRecentlyDamagedByAnyHero(2)
+        and ((nInRangeAlly == nil or #nInRangeAlly == 0)
+        or (nInRangeEnemy ~= nil and #nInRangeEnemy >= #nInRangeAlly))
         then
-            if #nInRangeEnemy > #nInRangeAlly
-            or bot:WasRecentlyDamagedByAnyHero(1.5)
-            then
-                return BOT_ACTION_DESIRE_HIGH
-            end
-
-            if  #nInRangeEnemy >= 1
-            and J.GetHP(bot) < 0.5 + (0.1 * #nInRangeEnemy)
-            then
-                return BOT_ACTION_DESIRE_HIGH
-            end
+            return BOT_ACTION_DESIRE_HIGH
         end
     end
-
-    -- local RoshanLocation = J.GetCurrentRoshanLocation()
-    -- local TormentorLocation = J.GetTormentorLocation(GetTeam())
-
-    -- if J.IsDoingRoshan(bot)
-    -- then
-    --     if GetUnitToLocationDistance(bot, RoshanLocation) > 3200
-    --     then
-    --         return BOT_ACTION_DESIRE_HIGH
-    --     end
-    -- end
-
-    -- if J.IsDoingTormentor(bot)
-    -- then
-    --     if GetUnitToLocationDistance(bot, TormentorLocation) > 3200
-    --     then
-    --         return BOT_ACTION_DESIRE_HIGH
-    --     end
-    -- end
-
     return BOT_ACTION_DESIRE_NONE
 end
 
@@ -1065,13 +1019,13 @@ function X.ConsiderTornado()
 
     if J.IsRetreating(bot)
 	then
-        local nInRangeEnemy = bot:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
+        local nInRangeEnemy = bot:GetNearbyHeroes(1400, true, BOT_MODE_NONE)
         local enemyHero
         if nInRangeEnemy ~= nil and #nInRangeEnemy >= 1 and nInRangeEnemy[1] ~= nil then enemyHero = nInRangeEnemy[1] else return BOT_ACTION_DESIRE_NONE, 0 end
 
         if J.IsValidHero(enemyHero)
         and J.CanCastOnNonMagicImmune(enemyHero)
-        and J.IsInRange(bot, enemyHero, nCastRange)
+        and J.IsInRange(bot, enemyHero, nCastRange + 200)
         and not J.IsSuspiciousIllusion(enemyHero)
         and not J.IsDisabled(enemyHero)
         and not enemyHero:HasModifier('modifier_brewmaster_storm_cyclone')
@@ -1083,11 +1037,9 @@ function X.ConsiderTornado()
 		then
             local nInRangeAlly = enemyHero:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
             local nTargetInRangeAlly = enemyHero:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
-
-            if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
-            and (#nTargetInRangeAlly > #nInRangeAlly
-                or bot:WasRecentlyDamagedByAnyHero(2))
-            then
+            if bot:WasRecentlyDamagedByAnyHero(2)
+            and ((nInRangeAlly == nil or #nInRangeAlly == 0)
+            or (nTargetInRangeAlly ~= nil and #nTargetInRangeAlly >= #nInRangeAlly)) then
                 local nInRangeEnemy2 = J.GetEnemiesNearLoc(enemyHero:GetLocation(), nRadius)
                 if nInRangeEnemy2 ~= nil and #nInRangeEnemy2 >= 2
                 then
@@ -1674,11 +1626,14 @@ function X.ConsiderCataclysm()
 end
 
 function X.GoodTimeToUseCataclysmGlobally()
+    local nDamage = Sunstrike:GetSpecialValueInt('damage')
 
     local nEnemyHeroes = GetUnitList(UNIT_LIST_ENEMY_HEROES)
     for _, enemyHero in pairs(nEnemyHeroes)
     do
-        if  J.IsValidHero(enemyHero)
+        -- 敌人可以被大天火击杀
+        if J.IsValidHero(enemyHero)
+        and J.CanKillTarget(enemyHero, nDamage * 2, DAMAGE_TYPE_PURE)
         and not J.IsInRange(bot, enemyHero, 1000)
         and not J.IsSuspiciousIllusion(enemyHero)
         and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
@@ -1694,10 +1649,20 @@ function X.GoodTimeToUseCataclysmGlobally()
             or enemyHero:IsRooted()
             or enemyHero:IsHexed()
             or enemyHero:IsNightmared()
+            or enemyHero:HasModifier('modifier_bane_fiends_grip')
+            or enemyHero:HasModifier('modifier_legion_commander_duel')
             or enemyHero:HasModifier('modifier_enigma_black_hole_pull')
             or enemyHero:HasModifier('modifier_faceless_void_chronosphere_freeze')
             or J.IsTaunted(enemyHero))
         then
+            return BOT_ACTION_DESIRE_HIGH, 0
+        end
+        
+        -- 敌人被长时间大招固定控制
+        if enemyHero:HasModifier('modifier_bane_fiends_grip')
+        or enemyHero:HasModifier('modifier_legion_commander_duel')
+        or enemyHero:HasModifier('modifier_enigma_black_hole_pull')
+        or enemyHero:HasModifier('modifier_faceless_void_chronosphere_freeze') then
             return BOT_ACTION_DESIRE_HIGH, 0
         end
     end
@@ -1718,6 +1683,7 @@ function X.ConsiderSunstrike()
     local nEnemyHeroes = GetUnitList(UNIT_LIST_ENEMY_HEROES)
     for _, enemyHero in pairs(nEnemyHeroes)
     do
+        -- 敌人可以被天火击杀
         if J.IsValidHero(enemyHero)
         and J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_PURE)
         and not J.IsSuspiciousIllusion(enemyHero) 
@@ -1730,6 +1696,7 @@ function X.ConsiderSunstrike()
         and not enemyHero:HasModifier('modifier_templar_assassin_refraction_absorb')
         and not enemyHero:HasModifier('modifier_item_aeon_disk_buff')
         then
+            -- 敌人被控制
             if enemyHero:IsStunned()
             or enemyHero:IsRooted()
             or enemyHero:IsHexed()
@@ -1748,13 +1715,31 @@ function X.ConsiderSunstrike()
             else
                 return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation()
             end
+            
+            -- 杀掉残血tp
+			if enemyHero:HasModifier( 'modifier_teleporting' ) then
+                local remaining = J.GetModifierTime(enemyHero, 'modifier_teleporting')
+                if remaining ~= nil and (DotaTime() >= DotaTime() + remaining - nDelay - nCastPoint)
+                then
+                    return BOT_ACTION_DESIRE_HIGH
+                end
+            end
+        end
+
+        -- 敌人被长时间大招控制
+        if enemyHero:HasModifier('modifier_bane_fiends_grip')
+        or enemyHero:HasModifier('modifier_legion_commander_duel')
+        or enemyHero:HasModifier('modifier_enigma_black_hole_pull')
+        or enemyHero:HasModifier('modifier_faceless_void_chronosphere_freeze') then
+            return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation()
         end
         
+        -- 敌人是否有即将结束的无敌状态能在天火延迟后被击杀
         if J.IsValidHero(enemyHero)
         and J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_PURE)
         and not J.IsSuspiciousIllusion(enemyHero) then
             if X.CheckTempModifiers(TempNonMovableModifierNames, botTarget, (nDelay + nCastPoint)) > 0 then
-                return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation()
+                return BOT_ACTION_DESIRE_HIGH, enemyHero:GetExtrapolatedLocation(nDelay + nCastPoint)
             end
         end
     end
