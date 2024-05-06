@@ -3496,43 +3496,20 @@ end
 X.ConsiderItemDesire["item_refresher"] = function( hItem )
 
 	local nCastRange = 1000
-	local nManaCost = 350
 	local sCastType = 'none'
 	local hEffectTarget = nil
-	local sCastMotive = nil
+	local sCastMotive = '刷新技能'
 	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
 
-	-- 卡尔特殊判断，因为卡尔不太需要关注大招cd而主要关注某一些特殊技能（在或不在当前可见技能栏中）的cd
-	if bot:GetUnitName() == 'npc_dota_hero_invoker' then
-		local ChaosMeteor       = bot:GetAbilityByName('invoker_chaos_meteor')
-		local Sunstrike         = bot:GetAbilityByName('invoker_sun_strike')
-		
-		local abilityD = bot:GetAbilityInSlot(3)  -- First invoked slot
-		local abilityF = bot:GetAbilityInSlot(4)  -- Second invoked slot
-		local ChaosMeteorMana = ChaosMeteor:GetManaCost()
-		local SunstrikeMana = Sunstrike:GetManaCost()
-		
-		if Sunstrike:GetCooldownTimeRemaining()/Sunstrike:GetCooldown() >= 0.8
-		and (Sunstrike == abilityD or Sunstrike == abilityF) 
-		and bot:GetMana() >= (SunstrikeMana * 2 + nManaCost) then
-			sCastMotive = '刷新卡尔天火'
-			return BOT_ACTION_DESIRE_HIGH, hEffectTarget, sCastType, sCastMotive
-		end
-		
-		if ChaosMeteor:GetCooldownTimeRemaining()/ChaosMeteor:GetCooldown() >= 0.8 
-		and #nInRangeEnmyList > 0
-		and ( J.IsGoingOnSomeone( bot ) or J.IsInTeamFight( bot ) ) 
-		and bot:GetMana() >= (ChaosMeteorMana * 2 + nManaCost) then
-			sCastMotive = '刷新卡尔陨石'
-			return BOT_ACTION_DESIRE_HIGH, hEffectTarget, sCastType, sCastMotive
-		end
+	-- if bot has a overrided version of CanUseRefresherShard logic:
+	if BotBuild.CanUseRefresherShard ~= nil and BotBuild.CanUseRefresherShard() then
+		return BOT_ACTION_DESIRE_HIGH, hEffectTarget, sCastType, sCastMotive
 	end
 
 	if #nInRangeEnmyList > 0
 		and ( J.IsGoingOnSomeone( bot ) or J.IsInTeamFight( bot ) )
 		and J.CanUseRefresherShard( bot )
 	then
-		sCastMotive = '刷新技能'
 		return BOT_ACTION_DESIRE_HIGH, hEffectTarget, sCastType, sCastMotive
 	end
 

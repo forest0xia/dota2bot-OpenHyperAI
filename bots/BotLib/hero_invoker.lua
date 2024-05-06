@@ -39,7 +39,7 @@ sRoleItemsBuyList['pos_2'] = {
     "item_spirit_vessel",
     "item_witch_blade",
     "item_travel_boots",
-    "item_black_king_bar",--6
+    "item_refresher",--6
     "item_orchid",
     "item_aghanims_shard",
     "item_ultimate_scepter",
@@ -625,6 +625,32 @@ function X.ConsiderPreInvoke()
         end
         lastTimeChangeModifierAbilities = DotaTime()
     end
+end
+
+-- 卡尔特殊判断，因为卡尔不太需要关注大招cd而主要关注某一些特殊技能（在或不在当前可见技能栏中）的cd
+function X.CanUseRefresherShard()
+    local ChaosMeteorMana = ChaosMeteor:GetManaCost()
+    local SunstrikeMana = Sunstrike:GetManaCost()
+    
+    local ssPer = Sunstrike:GetCooldownTimeRemaining()/Sunstrike:GetCooldown()
+    local cmPer = ChaosMeteor:GetCooldownTimeRemaining()/ChaosMeteor:GetCooldown()
+	local nInRangeEnmyList = bot:GetNearbyHeroes( 1000, true, BOT_MODE_NONE )
+
+    if ssPer >= 0.5 and ssPer <= 0.95 -- 不想马上就刷新因为可能可以再连一些技能，或者技能已经快好了
+    and X.IsAbilityAvailableOnSlots(Sunstrike)
+    and bot:GetMana() >= (SunstrikeMana * 2 + SunstrikeMana)
+    and X.GoodTimeToUseCataclysmGlobally() then
+        return true
+    end
+    
+    if cmPer >= 0.5 and cmPer <= 0.95
+    and #nInRangeEnmyList > 0
+    and ( J.IsGoingOnSomeone( bot ) or J.IsInTeamFight( bot ) ) 
+    and bot:GetMana() >= (ChaosMeteorMana * 2 + ChaosMeteorMana) then
+        return true
+    end
+
+    return false
 end
 
 function X.ConsiderClearActions()
@@ -1644,6 +1670,11 @@ function X.ConsiderCataclysm()
 
     end
 
+    return X.GoodTimeToUseCataclysmGlobally()
+end
+
+function X.GoodTimeToUseCataclysmGlobally()
+
     local nEnemyHeroes = GetUnitList(UNIT_LIST_ENEMY_HEROES)
     for _, enemyHero in pairs(nEnemyHeroes)
     do
@@ -1670,6 +1701,7 @@ function X.ConsiderCataclysm()
             return BOT_ACTION_DESIRE_HIGH, 0
         end
     end
+
     return BOT_ACTION_DESIRE_NONE, 0
 end
 
