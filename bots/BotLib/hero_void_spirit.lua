@@ -459,7 +459,7 @@ function X.ConsiderAstralStep()
 		and not enemyHero:HasModifier('modifier_abaddon_aphotic_shield')
 		and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
 		and not enemyHero:HasModifier('modifier_dazzle_shallow_grave')
-		and not botTarget:HasModifier('modifier_faceless_void_chronosphere_freeze')
+		and not enemyHero:HasModifier('modifier_faceless_void_chronosphere_freeze')
 		and not enemyHero:HasModifier('modifier_templar_assassin_refraction_absorb')
 		then
 			return BOT_ACTION_DESIRE_HIGH, enemyHero:GetExtrapolatedLocation(nCastPoint)

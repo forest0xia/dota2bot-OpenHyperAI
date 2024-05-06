@@ -292,11 +292,11 @@ function X.SkillsComplement()
     local deltaTime = 1
     
     if DotaTime() - AbilityCastedTimes['Tornado'] <= deltaTime then
-        ChaosMeteorDesire, ChaosMeteorLocation = X.ConsiderChaosMeteor()
-        if ChaosMeteorDesire > 0 then X.CastChaosMeteor(ChaosMeteorLocation) return end
-        
         EMPDesire, EMPLocation = X.ConsiderEMP()
         if EMPDesire > 0 then  X.CastEMP(EMPLocation) return end
+
+        ChaosMeteorDesire, ChaosMeteorLocation = X.ConsiderChaosMeteor()
+        if ChaosMeteorDesire > 0 then X.CastChaosMeteor(ChaosMeteorLocation) return end
     end
 
     if DotaTime() - AbilityCastedTimes['ChaosMeteor'] <= deltaTime then
@@ -554,25 +554,23 @@ function X.ConsiderPreInvoke()
     if DotaTime() - lastTimeChangeModifierAbilities > 1 then
 
         -- idle spells. Buggy. some conditions not seem to work properly.
-        -- if not J.IsAttacking(bot)
-        -- and not J.IsGoingOnSomeone(bot)
-        -- and not J.IsDefending(bot)
-        -- and not J.IsLaning(bot)
-        -- and not J.IsPushing(bot)
-        -- and not bot:WasRecentlyDamagedByAnyHero(2)
-        -- and Invoke:IsFullyCastable() then
-        --     if not IsAbilityActive(Tornado) and Tornado:IsFullyCastable()
-        --     then
-        --         print('Invoke Tornado as idel spell')
-        --         X.InvokeTornado()
-        --     end
-        
-        --     if not IsAbilityActive(ColdSnap) and ColdSnap:IsFullyCastable()
-        --     then
-        --         print('Invoke ColdSnap as idel spell')
-        --         X.InvokeColdSnap()
-        --     end
-        -- end
+        if not J.IsAttacking(bot)
+        and J.IsGoingOnSomeone(bot)
+        and not bot:WasRecentlyDamagedByAnyHero(4)
+        and Invoke:IsFullyCastable() then
+            local nEnemyHeroes = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+            if nEnemyHeroes == nil or #nEnemyHeroes <= 0 then
+                if X.CanInvoke_Tornado() and not X.IsAbilityReadyForCast(Tornado) then
+                    print('Invoke Tornado as idel spell')
+                    X.InvokeTornado()
+                end
+                if X.CanInvoke_ColdSnap() and not X.IsAbilityReadyForCast(ColdSnap) then
+                    print('Invoke ColdSnap as idel spell')
+                    X.InvokeColdSnap()
+                end
+
+            end
+        end
 
 
         -- 切满3个一样的球
@@ -645,6 +643,12 @@ function X.ConsiderClearActions()
     local nActions = bot:NumQueuedActions()
 
     if nActions > 0 then
+        if nActions >= 6 then
+            print("Clear Invokers queued actions")
+            bot:Action_ClearActions(false)
+            return
+        end
+
         for i=1, nActions do
             local aType = bot:GetQueuedActionType(i)
             print("Enqueued actions i="..i..", type="..tostring(aType))
@@ -660,12 +664,6 @@ function X.ConsiderClearActions()
         --     print("Invokers has queued invalid action (-1). Clear action queue.")
         --     bot:Action_ClearActions(false)
         -- end
-
-        if nActions >= 6 then
-            print("Clear Invokers queued actions")
-            bot:Action_ClearActions(false)
-            return
-        end
     end
 end
 
@@ -956,7 +954,6 @@ function X.ConsiderTornado()
 
     if J.IsGoingOnSomeone(bot) or J.IsLaning( bot )
 	then
-
 		if  J.IsValidHero(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
@@ -966,8 +963,9 @@ function X.ConsiderTornado()
         and not botTarget:HasModifier('modifier_enigma_black_hole_pull')
         and not botTarget:HasModifier('modifier_eul_cyclone')
         and not botTarget:HasModifier('modifier_faceless_void_chronosphere_freeze')
-        and not botTarget:HasModifier(modifier_invoker_tornado)
         and not botTarget:HasModifier('modifier_necrolyte_reapers_scythe')
+        and not botTarget:HasModifier('modifier_invoker_chaos_meteor_burn')
+        and not botTarget:HasModifier('modifier_invoker_deafening_blast_disarm')
 		then
             local nInRangeAlly = botTarget:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
             local nInRangeEnemy = botTarget:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
@@ -1129,7 +1127,7 @@ function X.ConsiderEMP()
 
     EMPDelay = EMP:GetSpecialValueFloat('delay')
 
-	local nCastRange = J.GetProperCastRange(false, bot, EMP:GetCastRange()) + 200
+	local nCastRange = EMP:GetCastRange() + 300
     local nCastPoint = EMP:GetCastPoint()
 	local nRadius = EMP:GetSpecialValueInt('area_of_effect')
 
@@ -1169,15 +1167,12 @@ function X.ConsiderEMP()
                 nInRangeEnemy = J.GetEnemiesNearLoc(botTarget:GetLocation(), nRadius)
 
                 if botTarget:HasModifier(modifier_invoker_tornado) then
-                    if DotaTime() > AbilityCastedTimes['Tornado'] + TornadoLiftTime - EMPDelay - nCastPoint
-                    then
-                        if nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
+                    if nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
                         then
                             return BOT_ACTION_DESIRE_HIGH, J.GetCenterOfUnits(nInRangeEnemy)
                         else
                             return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
                         end
-                    end
                 else
                     if nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
                     then
@@ -1247,13 +1242,12 @@ function X.ConsiderEMP()
         if  J.IsValidHero(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
-        and J.GetMP(bot) > 0.75
         and J.GetMP(botTarget) > 0.3
         and bot:GetMana() - EMP:GetManaCost() >= saveManaInLaning
         then
             if J.IsRunning(botTarget)
             then
-                return BOT_ACTION_DESIRE_HIGH, botTarget:GetExtrapolatedLocation(0.5)
+                return BOT_ACTION_DESIRE_HIGH, botTarget:GetExtrapolatedLocation(0.5 + nCastPoint)
             else
                 return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
             end

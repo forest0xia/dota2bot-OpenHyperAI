@@ -106,31 +106,31 @@ local castASDesire, castASTarget
 
 local nKeepMana = 280
 
-X.TeamRoam = require(GetScriptDirectory() .. "/mode_team_roam_generic")
 
 function X.Think()
-    -- if X.TeamRoam == nil then
+	-- bot:Action_AttackMove(J.GetEnemyFountain())
+    if X.TeamRoam == nil then
+		X.TeamRoam = require(GetScriptDirectory() .. "/FunLib/mode_team_roam_generic_shared")
+		X.AbilityItemUsage = require( GetScriptDirectory()..'/FunLib/ability_item_usage_generic_shared')
     --     -- X.ItemPurchase = require(GetScriptDirectory() .. "/item_purchase_generic")
-    --     print('trying to load !!!!!!!!!!!!!!!!')
     --     -- X.TeamRoam = require(GetScriptDirectory() .. "/mode_team_roam_generic")
-    --     print('!!!!!!!!!!!!!!trying to load !!!!!!!!!!!!!!!!')
     --     -- X.AbilityItemUsage = require(GetScriptDirectory() .. "/ability_item_usage_generic")
     --     -- X.FarmGeneric = require(GetScriptDirectory() .. "/mode_farm_generic")
-    -- end
+    end
 
     -- X.ItemPurchase.ItemPurchaseThink()
 
-    -- if X.TeamRoam.GetDesire() > 0 then
-    --     X.TeamRoam.Think()
-    -- end
+    if X.TeamRoam.GetDesire() > 0 then
+        X.TeamRoam.Think()
+    end
     -- if X.FarmGeneric.GetDesire() > 0 then
     --     X.FarmGeneric.Think()
     -- end
 
-    -- X.AbilityItemUsage.ItemUsageThink()
-    -- X.AbilityItemUsage.AbilityUsageThink()
-    -- X.AbilityItemUsage.BuybackUsageThink()
-    -- X.AbilityItemUsage.AbilityLevelUpThink()
+    X.AbilityItemUsage.ItemUsageThink()
+    X.AbilityItemUsage.AbilityUsageThink()
+    X.AbilityItemUsage.BuybackUsageThink()
+    X.AbilityItemUsage.AbilityLevelUpThink()
 
 end
 

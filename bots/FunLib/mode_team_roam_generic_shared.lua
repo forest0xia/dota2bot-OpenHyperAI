@@ -53,15 +53,16 @@ else
 	TormentorLocation = Vector(8132, 1102, 1000)
 end
 
-function GetDesire()
-	
+function X.GetDesire()
+	bot = GetBot();
 	
 	if DotaTime() - lastIdleStateCheck >= 2 then
 		J.CheckBotIdleState()
 		
-		if not GetBot().hasBeenOverridden then 
-			OverrideGlobalFunctions() 
-		end
+		-- Buggy after moving below code to this shared generic file.
+		-- if not GetBot().hasBeenOverridden then
+		-- 	OverrideGlobalFunctions()
+		-- end
 		lastIdleStateCheck = DotaTime()
 	end
 
@@ -184,12 +185,14 @@ function GetDesire()
 end
 
 
-function OnStart()
-	
+function X.OnStart()
+	bot = GetBot();
 	
 end
 
-function OnEnd()
+function X.OnEnd()
+	bot = GetBot();
+
 	PickedItem = nil
 	towerTime = 0
 	towerCreepMode = false
@@ -265,7 +268,9 @@ function OverrideGlobalFunctions()
 	GetBot().hasBeenOverridden = true
 end
 
-function Think()
+function X.Think()
+	bot = GetBot();
+
 	if J.CanNotUseAction(bot) then return end
 
 	if  shouldHarass
@@ -2325,8 +2330,5 @@ function J.FindLeastExpensiveItemSlot()
 
 	return idx
 end
-
-X.GetDesire = GetDesire
-X.Think = Think
 
 return X
