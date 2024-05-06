@@ -554,8 +554,11 @@ function J.CanUseRefresherShard( bot )
 	then
 		local ultCD = ult:GetCooldown()
 		local manaCost = ult:GetManaCost()
+		local ultInCooldownAtLeast = 3 -- don't directly use refresh if the ult was just use.
+
 		if bot:GetMana() >= manaCost * 2
 			and ult:GetCooldownTimeRemaining() >= ultCD / 2
+			and ultCD - ult:GetCooldownTimeRemaining() >= ultInCooldownAtLeast
 		then
 			return true
 		end

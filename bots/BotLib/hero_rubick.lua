@@ -177,6 +177,19 @@ if bot.shouldBlink == nil then bot.shouldBlink = false end
 function X.SkillsComplement()
 	if J.CanNotUseAbility(bot) then return end
 
+    -- if Rubick is in good health condition and is casting an ability with some enmey still nearby, don't consider any other spells.
+    if J.GetHP(bot) > 0.3
+    and not J.IsRetreating(bot)
+    and (bot:IsChanneling()
+    or bot:IsUsingAbility()
+    or bot:IsCastingAbility())
+    then
+        local nEnemyHeroes = bot:GetNearbyHeroes(nCastRange + 300, true, BOT_MODE_NONE)
+        if nEnemyHeroes ~= nil and #nEnemyHeroes > 0 then
+            return
+        end
+    end
+
     botTarget = J.GetProperTarget(bot)
     StolenSpell1 = bot:GetAbilityInSlot(3)
     StolenSpell2 = bot:GetAbilityInSlot(4)

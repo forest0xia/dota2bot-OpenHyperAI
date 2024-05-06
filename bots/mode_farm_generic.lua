@@ -1294,4 +1294,7 @@ function X.SetPushBonus( bot )
 	end
 	
 end
--- dota2jmz@163.com QQ:2462331592..
+
+X.GetDesire = GetDesire
+X.Think = Think
+return X

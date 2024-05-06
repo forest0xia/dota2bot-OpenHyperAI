@@ -4,6 +4,8 @@ local J = require( GetScriptDirectory()..'/FunLib/jmz_func')
 
 local bot = GetBot()
 
+local X = {}
+
 if bot:IsInvulnerable()
 	or not bot:IsHero()
 	or bot:IsIllusion()
@@ -20,7 +22,6 @@ bot.currentItemToBuy = nil
 bot.currentComponentToBuy = nil
 bot.currListItemToBuy = {}
 bot.SecretShop = false
-
 
 local sPurchaseList = BotBuild['sBuyList']
 local sItemSellList = BotBuild['sSellList']
@@ -835,3 +836,7 @@ function IsThereHealingInStash(unit)
 
 	return amount > 0
 end
+
+X.ItemPurchaseThink = ItemPurchaseThink
+
+return X

@@ -3528,36 +3528,12 @@ X.ConsiderItemDesire["item_refresher"] = function( hItem )
 		end
 	end
 
-
 	if #nInRangeEnmyList > 0
 		and ( J.IsGoingOnSomeone( bot ) or J.IsInTeamFight( bot ) )
 		and J.CanUseRefresherShard( bot )
 	then
-		local abilityList = J.Skill.GetAbilityList(bot)
-		local countAbilityInCD = 0
-		local isUltInEnoughCD = false
-		local ultInCooldownAtLeast = 5 -- don't directly use refresh if the ult was just use.
-		local ultManaCost = 100
-		for i, ability in pairs(abilityList) do
-			countAbilityInCD = countAbilityInCD + 1
-			if ability ~= nil and ability:IsTrained() and not ability:IsPassive() 
-			and ability:GetCooldownTimeRemaining()/ability:GetCooldown() >= 0.5 then
-				if i == #abilityList then -- the ult ability
-					ultManaCost = ability:GetManaCost()
-					if  (ability:GetCooldown() - ability:GetCooldownTimeRemaining() > ultInCooldownAtLeast) then
-						isUltInEnoughCD = true
-					end
-				end
-			end
-		end
-
-		if isUltInEnoughCD or (countAbilityInCD / #abilityList) >= 0.6
-		and bot:GetMana() >= (ultManaCost * 2 + nManaCost)
-		then
-			sCastMotive = '刷新技能'
-			return BOT_ACTION_DESIRE_HIGH, hEffectTarget, sCastType, sCastMotive
-		end
-
+		sCastMotive = '刷新技能'
+		return BOT_ACTION_DESIRE_HIGH, hEffectTarget, sCastType, sCastMotive
 	end
 
 	return BOT_ACTION_DESIRE_NONE
@@ -7241,4 +7217,16 @@ function AbilityLevelUpThink()
 	AbilityLevelUpComplement()
 
 end
--- dota2jmz@163.com QQ:2462331592..
+
+function X.SetAbilityItemList(heroAbility, items, abilityLvlup)
+	bDeafaultAbilityHero = heroAbility
+	bDeafaultItemHero = items
+	sAbilityLevelUpList = abilityLvlup
+end
+
+X.AbilityLevelUpThink = AbilityLevelUpThink
+X.BuybackUsageThink = BuybackUsageThink
+X.AbilityUsageThink = AbilityUsageThink
+X.ItemUsageThink = ItemUsageThink
+
+return X

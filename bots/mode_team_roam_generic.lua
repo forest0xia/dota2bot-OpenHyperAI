@@ -294,7 +294,7 @@ function Think()
 		and (not bot:HasModifier("modifier_black_king_bar_immune") or not bot:HasModifier("modifier_magic_immune") or not bot:HasModifier("modifier_omniknight_repel"))
 	)
 	then
-		if botHP < 0.9
+		if botHP < 0.95
 		then
 			bot:Action_MoveToLocation(J.GetTeamFountain() + RandomVector(1000))
 		end
@@ -360,6 +360,7 @@ function X.SupportFindTarget()
 		
 		if nTarget:IsCourier() 
 			and GetUnitToUnitDistance(bot,nTarget) <= nAttackRange + 300
+			and botHP > 0.3 and not J.IsRetreating(bot)
 		then
 			return nTarget,BOT_MODE_DESIRE_ABSOLUTE *1.5;
 		end
@@ -390,6 +391,7 @@ function X.SupportFindTarget()
 	if enemyCourier ~= nil 
 		and not enemyCourier:IsAttackImmune()
 		and not enemyCourier:IsInvulnerable()
+		and botHP > 0.3 and not J.IsRetreating(bot)
 	then
 		return enemyCourier,BOT_MODE_DESIRE_ABSOLUTE * 1.5; 
 	end		
@@ -451,7 +453,6 @@ function X.SupportFindTarget()
 			end
 		end
 	end
-	
 	
 	local denyDamage = botAD + 3
 	local nNearbyEnemyHeroes = bot:GetNearbyHeroes(750,true,BOT_MODE_NONE); -----------*************
@@ -666,6 +667,7 @@ function X.CarryFindTarget()
 		
 		if nTarget:IsCourier() 
 			and GetUnitToUnitDistance(bot,nTarget) <= nAttackRange + 300
+			and botHP > 0.3 and not J.IsRetreating(bot)
 		then
 			return nTarget,BOT_MODE_DESIRE_ABSOLUTE *1.5;
 		end
@@ -710,6 +712,7 @@ function X.CarryFindTarget()
 	if enemyCourier ~= nil
 		and not enemyCourier:IsAttackImmune()
 		and not enemyCourier:IsInvulnerable()
+		and botHP > 0.3 and not J.IsRetreating(bot)
 	then
 		return enemyCourier,BOT_MODE_DESIRE_ABSOLUTE * 1.5; 
 	end		
@@ -1930,25 +1933,17 @@ end
 
 function CanAttackSpecialUnit()
 	local nInRangeEnemy = J.GetEnemiesNearLoc(bot:GetLocation(), bot:GetCurrentVisionRange())
-	local nAttackRange = bot:GetAttackRange() + 200
+	local nAttackRange = bot:GetAttackRange()
 	local nUnits = GetUnitList(UNIT_LIST_ENEMIES)
 
 	for _, unit in pairs(nUnits)
 	do
 		if J.IsValid(unit)
 		then
-			if string.find(unit:GetUnitName(), 'healing_ward')
-			or string.find(unit:GetUnitName(), 'forged_spirit')
+			-- Units the bots have to distroy no matter what
+			if string.find(unit:GetUnitName(), 'phoenix_sun')
 			or string.find(unit:GetUnitName(), 'grimstroke_ink_creature')
-			or string.find(unit:GetUnitName(), 'lone_druid_bear')
-			or string.find(unit:GetUnitName(), 'observer_ward')
-			or string.find(unit:GetUnitName(), 'phoenix_sun')
-			or string.find(unit:GetUnitName(), 'plague_ward')
-			or string.find(unit:GetUnitName(), 'rattletrap_cog')
-			or string.find(unit:GetUnitName(), 'sentry_ward')
 			or string.find(unit:GetUnitName(), 'tombstone')
-			or string.find(unit:GetUnitName(), 'warlock_golem')
-			or string.find(unit:GetUnitName(), 'weaver_swarm')
 			then
 				if unit:GetUnitName() == 'npc_dota_rattletrap_cog'
 				then
@@ -2007,13 +2002,39 @@ function CanAttackSpecialUnit()
 					end
 				end
 
-				if  GetUnitToUnitDistance(bot, unit) <= nAttackRange
+				if  GetUnitToUnitDistance(bot, unit) <= nAttackRange + 600
 				and J.CanBeAttacked(unit)
 				then
 					SpecialUnitTarget = unit
 					return true
 				end
+			else
+				-- Extra units the bots should distory if they are in good situation
+				if string.find(unit:GetUnitName(), 'forged_spirit')
+				or string.find(unit:GetUnitName(), 'lone_druid_bear')
+				or string.find(unit:GetUnitName(), 'plague_ward')
+				or string.find(unit:GetUnitName(), 'observer_ward')
+				or string.find(unit:GetUnitName(), 'sentry_ward')
+				or string.find(unit:GetUnitName(), 'healing_ward')
+				or string.find(unit:GetUnitName(), 'warlock_golem')
+				or string.find(unit:GetUnitName(), 'weaver_swarm')
+				then
+					local nInRangeAlly = bot:GetNearbyHeroes(1000, false, BOT_MODE_NONE)
+					local nInRangeEnemy = bot:GetNearbyHeroes(1000, true, BOT_MODE_NONE)
+
+					if  GetUnitToUnitDistance(bot, unit) <= nAttackRange + 300
+					and J.CanBeAttacked(unit)
+					and J.GetHP(bot) > 0.5
+					and (nInRangeEnemy == nil 
+						or (nInRangeAlly ~= nil and nInRangeEnemy and #nInRangeAlly >= #nInRangeEnemy)) 
+					then
+						SpecialUnitTarget = unit
+						return true
+					end
+					
+				end
 			end
+
 		end
 	end
 
@@ -2304,3 +2325,8 @@ function J.FindLeastExpensiveItemSlot()
 
 	return idx
 end
+
+X.GetDesire = GetDesire
+X.Think = Think
+
+return X
