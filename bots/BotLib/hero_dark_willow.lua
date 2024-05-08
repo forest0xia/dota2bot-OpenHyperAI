@@ -27,12 +27,6 @@ local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 
 local sRoleItemsBuyList = {}
 
-sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_1']
-
-sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
-
-sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_1']
-
 sRoleItemsBuyList['pos_4'] = {
     "item_double_tango",
     "item_enchanted_mango",
@@ -75,6 +69,30 @@ sRoleItemsBuyList['pos_5'] = {
     "item_moon_shard",
 }
 
+sRoleItemsBuyList['pos_3'] = {
+    "item_double_tango",
+    "item_enchanted_mango",
+    "item_double_branches",
+
+    "item_boots",
+    "item_magic_wand",
+    "item_tranquil_boots",
+    "item_cyclone",
+    "item_aghanims_shard",
+    "item_force_staff",--
+    "item_aether_lens",--
+    "item_boots_of_bearing",--
+    "item_ultimate_scepter",--
+    "item_octarine_core",--
+    "item_wind_waker",
+    "item_ultimate_scepter_2",
+    "item_moon_shard",
+}
+
+sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
+
+sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_3']
+
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 Pos4SellList = {
@@ -87,12 +105,11 @@ Pos5SellList = {
 
 X['sSellList'] = {}
 
-if sRole == "pos_4"
-then
-    X['sSellList'] = Pos4SellList
-elseif sRole == "pos_5"
+if sRole == "pos_5"
 then
     X['sSellList'] = Pos5SellList
+else
+    X['sSellList'] = Pos4SellList
 end
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_antimage' }, {} end

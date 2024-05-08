@@ -109,11 +109,10 @@ Pos2SellList = {
 
 X['sSellList'] = {}
 
-if sRole == "pos_1"
+if sRole == "pos_2"
 then
     X['sSellList'] = Pos1SellList
-elseif sRole == "pos_2"
-then
+else
     X['sSellList'] = Pos2SellList
 end
 

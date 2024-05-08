@@ -83,8 +83,6 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_tango",
 	"item_tango",
 	"item_double_branches",
-	"item_enchanted_mango",
-	"item_enchanted_mango",
 
 	"item_boots",
 	"item_magic_wand",
@@ -120,8 +118,7 @@ X['sSellList'] = {}
 if sRole == "pos_4"
 then
     X['sSellList'] = Pos4SellList
-elseif sRole == "pos_5"
-then
+else
     X['sSellList'] = Pos5SellList
 end
 

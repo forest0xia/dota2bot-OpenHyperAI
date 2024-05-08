@@ -14,10 +14,6 @@ local bLaneAssignActive = true
 local bLineupReserve = false
 
 local nDireFirstLaneType = 1
-if pcall( require,  'game/bot_dire_first_lane_type' )
-then
-	nDireFirstLaneType = require( 'game/bot_dire_first_lane_type' )
-end
 
 local Role = require( GetScriptDirectory()..'/FunLib/aba_role' )
 local Chat = require( GetScriptDirectory()..'/FunLib/aba_chat' )
@@ -400,18 +396,27 @@ else
 	tLaneAssignList = nDireLane
 end
 
+nDireFirstLaneType = math.random(1, 4)
+
 if nDireFirstLaneType == 2 and GetTeam() == TEAM_DIRE
 then
-	sSelectList[1], sSelectList[2] = sSelectList[2], sSelectList[1]
+	-- sSelectList[1], sSelectList[2] = sSelectList[2], sSelectList[1]
 	tSelectPoolList[1], tSelectPoolList[2] = tSelectPoolList[2], tSelectPoolList[1]
 	tLaneAssignList[1], tLaneAssignList[2] = tLaneAssignList[2], tLaneAssignList[1]
 end
 
 if nDireFirstLaneType == 3 and GetTeam() == TEAM_DIRE
 then
-	sSelectList[1], sSelectList[3] = sSelectList[3], sSelectList[1]
+	-- sSelectList[1], sSelectList[3] = sSelectList[3], sSelectList[1]
 	tSelectPoolList[1], tSelectPoolList[3] = tSelectPoolList[3], tSelectPoolList[1]
 	tLaneAssignList[1], tLaneAssignList[3] = tLaneAssignList[3], tLaneAssignList[1]
+end
+
+if nDireFirstLaneType == 4 and GetTeam() == TEAM_DIRE
+then
+	-- sSelectList[2], sSelectList[3] = sSelectList[3], sSelectList[2]
+	tSelectPoolList[2], tSelectPoolList[3] = tSelectPoolList[3], tSelectPoolList[2]
+	tLaneAssignList[2], tLaneAssignList[3] = tLaneAssignList[3], tLaneAssignList[2]
 end
 
 function X.GetMoveTable( nTable )
@@ -682,14 +687,20 @@ function X.OverrideTeamHeroes()
 			-- [3] = "npc_dota_hero_clinkz",
 		    -- [4] = "npc_dota_hero_earth_spirit",
 			-- [5] = "npc_dota_hero_techies",
+			
+			-- [1] = "npc_dota_hero_invoker",
+			-- [2] = 'npc_dota_hero_enigma',
+			-- [3] = "npc_dota_hero_meepo",
+		    -- [4] = "npc_dota_hero_earth_spirit",
+			-- [5] = "npc_dota_hero_techies",
 
 
 			-- Test buggy heroes:
 			[1] = "npc_dota_hero_invoker",
+			-- [2] = 'npc_dota_hero_enigma',
 			[2] = tSelectPoolList[2][RandomInt( 1, #tSelectPoolList[2] )],
-			[3] = 'npc_dota_hero_muerta',
-			-- [3] = 'npc_dota_hero_enigma',
-			-- [3] = tSelectPoolList[3][RandomInt( 1, #tSelectPoolList[3] )],
+			-- [3] = 'npc_dota_hero_muerta',
+			[3] = tSelectPoolList[3][RandomInt( 1, #tSelectPoolList[3] )],
 			[4] = tSelectPoolList[4][RandomInt( 1, #tSelectPoolList[4] )],
 			[5] = tSelectPoolList[5][RandomInt( 1, #tSelectPoolList[5] )],
 
@@ -709,7 +720,7 @@ function X.OverrideTeamHeroes()
 		}
 	end
 end
-sSelectList = X.OverrideTeamHeroes()
+-- sSelectList = X.OverrideTeamHeroes()
 
 function Think()
 	if GetGameState() == GAME_STATE_HERO_SELECTION then

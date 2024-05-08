@@ -53,8 +53,6 @@ local sCrimsonPipe = RandomInt( 1, 2 ) == 1 and "item_crimson_guard" or "item_pi
 
 local sRoleItemsBuyList = {}
 
-sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
-
 sRoleItemsBuyList['pos_2'] = {
 	"item_double_branches",
 	"item_quelling_blade",
@@ -78,10 +76,6 @@ sRoleItemsBuyList['pos_2'] = {
 	"item_aghanims_shard",
 }
 
-sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_1']
-
-sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_1']
-
 sRoleItemsBuyList['pos_3'] = {
 	"item_tango",
 	"item_quelling_blade",
@@ -100,6 +94,12 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_moon_shard",
 	"item_aghanims_shard",
 }
+
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_3']
+
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_3']
+
+sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
 
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]

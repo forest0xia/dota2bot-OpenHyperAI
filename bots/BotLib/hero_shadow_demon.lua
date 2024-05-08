@@ -26,12 +26,6 @@ local nRandItem = RandomInt(1, 2) == 1 and "item_glimmer_cape" or "item_force_st
 
 local sRoleItemsBuyList = {}
 
-sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_1']
-
-sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_2']
-
-sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_3']
-
 sRoleItemsBuyList['pos_4'] = {
     "item_double_tango",
     "item_double_branches",
@@ -70,6 +64,28 @@ sRoleItemsBuyList['pos_5'] = {
     "item_moon_shard",
 }
 
+sRoleItemsBuyList['pos_3'] = {
+    "item_double_tango",
+    "item_double_branches",
+
+    "item_tranquil_boots",
+    "item_magic_wand",
+    "item_aether_lens",--
+    "item_blink",
+    nRandItem,--
+    "item_boots_of_bearing",--
+    "item_ultimate_scepter",
+    "item_octarine_core",--
+    "item_aeon_disk",--
+    "item_ultimate_scepter_2",
+    "item_arcane_blink",--
+    "item_moon_shard",
+}
+
+sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
+
+sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_3']
+
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 Pos4SellList = {
@@ -85,8 +101,7 @@ X['sSellList'] = {}
 if sRole == "pos_4"
 then
     X['sSellList'] = Pos4SellList
-elseif sRole == "pos_5"
-then
+else
     X['sSellList'] = Pos5SellList
 end
 

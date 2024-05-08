@@ -484,7 +484,7 @@ function X.ConsiderBlinkHole()
     then
         local nRadius = BlackHole:GetSpecialValueInt('radius')
 
-        if J.IsInTeamFight(bot, 1200)
+        if J.IsInTeamFight(bot, 1400)
         then
             local nLocationAoE = bot:FindAoELocation(true, true, bot:GetLocation(), 1199, nRadius, 0, 0)
 
@@ -523,7 +523,7 @@ function X.ConsiderBlinkPulseHole()
     then
         local nRadius = BlackHole:GetSpecialValueInt('radius')
 
-        if J.IsInTeamFight(bot, 1200)
+        if J.IsInTeamFight(bot, 1400)
         then
             local nLocationAoE = bot:FindAoELocation(true, true, bot:GetLocation(), 1199, nRadius, 0, 0)
 

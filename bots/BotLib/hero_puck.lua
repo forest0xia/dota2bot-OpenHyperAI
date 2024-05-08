@@ -26,8 +26,6 @@ local nItemRand = RandomInt(1, 2) == 1 and "item_black_king_bar" or "item_sphere
 
 local sRoleItemsBuyList = {}
 
-sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_1']
-
 sRoleItemsBuyList['pos_2'] = {
     "item_tango",
     "item_double_branches",
@@ -53,11 +51,34 @@ sRoleItemsBuyList['pos_2'] = {
     "item_moon_shard",
 }
 
-sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_3']
+sRoleItemsBuyList['pos_1'] = {
+    "item_tango",
+    "item_double_branches",
+    "item_double_branches",
 
-sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_4']
+    "item_power_treads",
+    "item_magic_wand",
+    "item_witch_blade",
+    "item_cyclone",
+    "item_blink",
+    "item_aghanims_shard",
+    "item_devastator",--
+    "item_ultimate_scepter",
+    "item_mjollnir",--
+    nItemRand,--
+    "item_overwhelming_blink",--
+    "item_travel_boots",
+    "item_ultimate_scepter_2",
+    "item_wind_waker",--
+    "item_travel_boots_2",--
+    "item_moon_shard",
+}
 
-sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_5']
+sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_1']
+
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_1']
+
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_1']
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 

@@ -106,7 +106,6 @@ local castASDesire, castASTarget
 
 local nKeepMana = 280
 
-
 function X.Think()
 	-- bot:Action_AttackMove(J.GetEnemyFountain())
     if X.TeamRoam == nil then

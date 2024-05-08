@@ -286,10 +286,38 @@ function X.SkillsComplement()
     -- TODO: Implement the method, refactor the following logic.
     -- X.ConsiderInvoke()
 
+    -- K头第一
+    CataclysmDesire = X.ConsiderCataclysm()
+    if CataclysmDesire > 0
+    then
+        X.CastCataclysm()
+        return
+    end
+
+    SunstrikeDesire, SunstrikeLocation = X.ConsiderSunstrike()
+    if SunstrikeDesire > 0
+    then
+        X.CastSunstrike(SunstrikeLocation)
+        return
+    end
 
     ------- 尝试把连招串联起来，判断是否用了可以连招的前置技能 -------
     -- 如果前置技能进入cd，且距离使用它的时间刚刚过去delta时间之内，则可以试试是否能马上切或放下一个连招技能
     local deltaTime = 1
+    
+
+    -- 火的等级大于4级优先考虑陨石连招
+    if Exort:GetLevel() >= 4 then
+        TornadoDesire, TornadoLocation = X.ConsiderTornado()
+        if TornadoDesire > 0 then X.CastTornado(TornadoLocation) return end
+
+        ChaosMeteorDesire, ChaosMeteorLocation = X.ConsiderChaosMeteor()
+        if ChaosMeteorDesire > 0 then X.CastChaosMeteor(ChaosMeteorLocation) return end
+    
+        DeafeningBlastDesire, DeafeningBlastLocation = X.ConsiderDeafeningBlast()
+        if DeafeningBlastDesire > 0 then X.CastDeafeningBlast(DeafeningBlastLocation) return end
+    end
+
     
     if DotaTime() - AbilityCastedTimes['Tornado'] <= deltaTime then
         EMPDesire, EMPLocation = X.ConsiderEMP()
@@ -357,18 +385,6 @@ function X.SkillsComplement()
     end
 
 
-    -- 火的等级大于4级优先考虑陨石连招
-    if Exort:GetLevel() >= 4 then
-        TornadoDesire, TornadoLocation = X.ConsiderTornado()
-        if TornadoDesire > 0 then X.CastTornado(TornadoLocation) return end
-
-        ChaosMeteorDesire, ChaosMeteorLocation = X.ConsiderChaosMeteor()
-        if ChaosMeteorDesire > 0 then X.CastChaosMeteor(ChaosMeteorLocation) return end
-    
-        DeafeningBlastDesire, DeafeningBlastLocation = X.ConsiderDeafeningBlast()
-        if DeafeningBlastDesire > 0 then X.CastDeafeningBlast(DeafeningBlastLocation) return end
-    end
-
     ------- 考虑正常单独地使用技能 -------
 
     ForgeSpiritDesire = X.ConsiderForgeSpirit()
@@ -414,20 +430,6 @@ function X.SkillsComplement()
         return
     end
 
-    CataclysmDesire = X.ConsiderCataclysm()
-    if CataclysmDesire > 0
-    then
-        X.CastCataclysm()
-        return
-    end
-
-    SunstrikeDesire, SunstrikeLocation = X.ConsiderSunstrike()
-    if SunstrikeDesire > 0
-    then
-        X.CastSunstrike(SunstrikeLocation)
-        return
-    end
-
     IceWallDesire = X.ConsiderIceWall()
     if IceWallDesire > 0
     then
@@ -436,9 +438,15 @@ function X.SkillsComplement()
     end
 
 
-    -- 物理攻击消耗敌人
+    -- 物理攻击消耗敌人. 对线消耗
 
-    if J.GetHP(bot) > 0.75 and not J.IsRetreating(bot) and not J.IsGoingOnSomeone(bot) and not J.IsInTeamFight(bot, 1200) then
+    if J.IsLaning(bot)
+    and bot:GetLevel() >= 2
+    and DotaTime() < 600 -- 前10分钟
+    and J.GetHP(bot) > 0.75
+    and not J.IsRetreating(bot)
+    and not J.IsGoingOnSomeone(bot)
+    and not J.IsInTeamFight(bot, 1200) then
 		local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(300, true)
 		local nEnemyTowers = bot:GetNearbyTowers(700, true)
 		if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 3 and nEnemyTowers ~= nil and #nEnemyTowers >= 1
@@ -449,10 +457,7 @@ function X.SkillsComplement()
         local nEnemyHeroes = bot:GetNearbyHeroes(1000, true, BOT_MODE_NONE)
         for _, enemyHero in pairs(nEnemyHeroes)
         do
-            -- 对线消耗
-            if J.IsLaning(bot)
-            and J.IsValidHero(enemyHero)
-            and bot:GetLevel() >= 2
+            if J.IsValidHero(enemyHero)
             and J.GetHP(bot) >= J.GetHP(enemyHero)
             and (bot:HasModifier(modifier_invoker_alacrity)
             or enemyHero:HasModifier(modifier_invoker_cold_snap_freeze))
@@ -460,10 +465,9 @@ function X.SkillsComplement()
                 bot:ActionQueue_AttackUnit(enemyHero, true)
                 return
             end
-
+            
             if J.IsValidHero(enemyHero)
-            and bot:GetLevel() >= 2
-            and J.GetHP(bot) > J.GetHP(enemyHero)
+            and J.GetHP(bot) >= J.GetHP(enemyHero)
             and J.CanCastOnNonMagicImmune(enemyHero)
             and J.CanCastOnTargetAdvanced(enemyHero)
             and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
@@ -588,13 +592,12 @@ function X.ConsiderPreInvoke()
                 bot:ActionQueue_UseAbility(Quas)
             end
         else
-            if Wex:IsTrained()
-            and Exort:IsTrained() then
-                if Wex:GetLevel() >= Exort:GetLevel() and (bot:HasModifier('modifier_invoker_quas_instance') or bot:HasModifier('modifier_invoker_exort_instance')) then
+            if Wex:IsTrained() then
+                if (not Exort:IsTrained() or Wex:GetLevel() >= Exort:GetLevel()) and (bot:HasModifier('modifier_invoker_quas_instance') or bot:HasModifier('modifier_invoker_exort_instance')) then
                     bot:ActionQueue_UseAbility(Wex)
                     bot:ActionQueue_UseAbility(Wex)
                     bot:ActionQueue_UseAbility(Wex)
-                elseif bot:HasModifier('modifier_invoker_quas_instance') or bot:HasModifier('modifier_invoker_wex_instance') then
+                elseif (bot:HasModifier('modifier_invoker_quas_instance') or bot:HasModifier('modifier_invoker_wex_instance')) then
                     bot:ActionQueue_UseAbility(Exort)
                     bot:ActionQueue_UseAbility(Exort)
                     bot:ActionQueue_UseAbility(Exort)
@@ -620,9 +623,11 @@ function X.CanUseRefresherShard()
 
     if ssPer >= 0.5 and ssPer <= 0.95 -- 不想马上就刷新因为可能可以再连一些技能，或者技能已经快好了
     and X.IsAbilityAvailableOnSlots(Sunstrike)
-    and bot:GetMana() >= (SunstrikeMana * 2 + SunstrikeMana)
-    and X.GoodTimeToUseCataclysmGlobally() then
-        return true
+    and bot:GetMana() >= (SunstrikeMana * 2 + SunstrikeMana) then
+        local cataclysmDesire, _ = X.GoodTimeToUseCataclysmGlobally()
+        if cataclysmDesire > 0 then
+            return true
+            end
     end
     
     if cmPer >= 0.5 and cmPer <= 0.95
@@ -821,7 +826,7 @@ function X.ConsiderColdSnap()
         and (
             enemyHero:IsChanneling() -- 打断技能
             or enemyHero:HasModifier('modifier_item_urn_damage') -- 配合骨灰
-            or enemyHero:HasModifier('modifier_item_spirit_vessel_damage') -- 配合骨灰
+            or enemyHero:HasModifier('modifier_item_spirit_vessel_damage') -- 配合大骨灰
             or enemyHero:HasModifier('modifier_invoker_chaos_meteor_burn') -- 配合陨石
         )
         and not J.IsSuspiciousIllusion(enemyHero)
@@ -929,7 +934,10 @@ function X.ConsiderGhostWalk()
 end
 
 function X.ConsiderTornado()
+    local deltaTime = 1.5
     if not X.CanInvoke_Tornado() and not X.IsAbilityReadyForCast(Tornado)
+        -- 同时也确保不要在刚刚放了陨石或者推波之后马上用吹风
+        and (DotaTime() - AbilityCastedTimes['ChaosMeteor'] <= deltaTime and DotaTime() - AbilityCastedTimes['DeafeningBlast'] <= deltaTime)
     then
         return BOT_ACTION_DESIRE_NONE, 0
     end
@@ -1008,7 +1016,7 @@ function X.ConsiderTornado()
         local enemyHero
         if nInRangeEnemy ~= nil and #nInRangeEnemy <= 2 and nInRangeEnemy[1] ~= nil then enemyHero = nInRangeEnemy[1] else return BOT_ACTION_DESIRE_NONE, nil end
 		
-        if enemyHero ~= nil and J.GetMP(bot) > 0.5
+        if enemyHero ~= nil and J.GetMP(bot) > 0.7
 		then
             local nDelay = (GetUnitToUnitDistance(bot, enemyHero) / nSpeed) + nCastPoint
 			return BOT_ACTION_DESIRE_HIGH, enemyHero:GetExtrapolatedLocation(nDelay + nCastPoint), '对线消耗'
@@ -1544,6 +1552,11 @@ function X.ConsiderCataclysm()
         return BOT_ACTION_DESIRE_NONE, 0
     end
 
+    local desire, _ = X.GoodTimeToUseCataclysmGlobally()
+    if desire > 0 then
+        return BOT_ACTION_DESIRE_HIGH, 0
+    end
+
     if J.IsInTeamFight(bot, 1600)
     then
         local nInRangeEnemy = bot:GetNearbyHeroes(1400, true, BOT_MODE_NONE)
@@ -1616,7 +1629,7 @@ function X.ConsiderCataclysm()
 
     end
 
-    return X.GoodTimeToUseCataclysmGlobally()
+    return BOT_ACTION_DESIRE_NONE, 0
 end
 
 function X.GoodTimeToUseCataclysmGlobally()
@@ -1671,7 +1684,7 @@ function X.ConsiderSunstrike()
     end
 
     local nDelay = Sunstrike:GetSpecialValueFloat('delay')
-    local nCastPoint = Sunstrike:GetCastPoint()
+    local nCastPoint = 0 -- Sunstrike:GetCastPoint()
     local nDamage = Sunstrike:GetSpecialValueInt('damage')
 
     local nEnemyHeroes = GetUnitList(UNIT_LIST_ENEMY_HEROES)
@@ -1680,7 +1693,7 @@ function X.ConsiderSunstrike()
         -- 敌人可以被天火击杀
         if J.IsValidHero(enemyHero)
         and J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_PURE)
-        and not J.IsSuspiciousIllusion(enemyHero) 
+        and not J.IsSuspiciousIllusion(enemyHero)
         and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
         and not enemyHero:HasModifier('modifier_brewmaster_storm_cyclone')
         and not enemyHero:HasModifier('modifier_dazzle_shallow_grave')
@@ -1715,13 +1728,15 @@ function X.ConsiderSunstrike()
                 local remaining = J.GetModifierTime(enemyHero, 'modifier_teleporting')
                 if remaining ~= nil and (DotaTime() >= DotaTime() + remaining - nDelay - nCastPoint)
                 then
-                    return BOT_ACTION_DESIRE_HIGH
+                    return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation()
                 end
             end
         end
 
         -- 敌人被长时间大招控制
-        if enemyHero:HasModifier('modifier_bane_fiends_grip')
+        if J.IsValidHero(enemyHero)
+        and not J.IsSuspiciousIllusion(enemyHero)
+        or enemyHero:HasModifier('modifier_bane_fiends_grip')
         or enemyHero:HasModifier('modifier_legion_commander_duel')
         or enemyHero:HasModifier('modifier_enigma_black_hole_pull')
         or enemyHero:HasModifier('modifier_faceless_void_chronosphere_freeze') then
@@ -1747,7 +1762,7 @@ function X.ConsiderSunstrike()
             end
         end
 
-        if  J.IsValidTarget(botTarget)
+        if J.IsValidHero(botTarget)
         and not J.IsSuspiciousIllusion(botTarget)
         and not botTarget:HasModifier('modifier_abaddon_borrowed_time')
         and not botTarget:HasModifier('modifier_brewmaster_storm_cyclone')
@@ -1782,23 +1797,23 @@ function X.ConsiderSunstrike()
 
     
 	--对线消耗
-	if J.IsLaning( bot )
-	then
-        local nInRangeEnemy = bot:GetNearbyHeroes(1400, true, BOT_MODE_NONE)
-        local enemyHero
-        if nInRangeEnemy ~= nil and nInRangeEnemy[1] ~= nil and #nInRangeEnemy <= 2 then enemyHero = nInRangeEnemy[1] else return BOT_ACTION_DESIRE_NONE, nil end
+	-- if J.IsLaning( bot )
+	-- then
+    --     local nInRangeEnemy = bot:GetNearbyHeroes(1400, true, BOT_MODE_NONE)
+    --     local enemyHero
+    --     if nInRangeEnemy ~= nil and nInRangeEnemy[1] ~= nil and #nInRangeEnemy <= 2 then enemyHero = nInRangeEnemy[1] else return BOT_ACTION_DESIRE_NONE, nil end
 		
-		local nEnemyLaneCreeps = enemyHero:GetNearbyLaneCreeps(300, true)
-		if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps <= 1
-        and enemyHero ~= nil and J.GetMP(bot) > 0.6 and J.GetHP(enemyHero) < 0.75
-		then
-			return BOT_ACTION_DESIRE_HIGH, enemyHero:GetExtrapolatedLocation(nDelay + nCastPoint), '对线消耗'
-		end
-	end
+	-- 	local nEnemyLaneCreeps = enemyHero:GetNearbyLaneCreeps(300, true)
+	-- 	if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps <= 1
+    --     and enemyHero ~= nil and J.GetMP(bot) > 0.6 and J.GetHP(enemyHero) < 0.75
+	-- 	then
+	-- 		return BOT_ACTION_DESIRE_HIGH, enemyHero:GetExtrapolatedLocation(nDelay + nCastPoint), '对线消耗'
+	-- 	end
+	-- end
     
     if J.IsDoingRoshan(bot)
     then
-        if  J.IsRoshan(botTarget)
+        if J.IsRoshan(botTarget)
         and J.IsAttacking(bot)
         then
             return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
@@ -1807,7 +1822,7 @@ function X.ConsiderSunstrike()
 
     if J.IsDoingTormentor(bot)
     then
-        if  J.IsTormentor(botTarget)
+        if J.IsTormentor(botTarget)
         and J.IsAttacking(bot)
         then
             return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
@@ -2207,11 +2222,11 @@ function X.InvokeDeafeningBlast()
 end
 
 function X.InvokeSpell(Orb1, Orb2, Orb3)
-    bot:ActionQueue_UseAbility(Orb1)
-    bot:ActionQueue_UseAbility(Orb2)
-    bot:ActionQueue_UseAbility(Orb3)
-    bot:ActionQueue_UseAbility(Invoke)
-    bot:ActionQueue_Delay(0.1)
+    bot:ActionPush_UseAbility(Invoke)
+    bot:ActionPush_UseAbility(Orb1)
+    bot:ActionPush_UseAbility(Orb2)
+    bot:ActionPush_UseAbility(Orb3)
+    -- bot:ActionQueue_Delay(0.1)
 end
 
 -- Check if the ability is ready to be invoked+casted, including those that are not displayed on the ability panel list.
@@ -2252,16 +2267,16 @@ function ApplyActionQueue_UseAbilityOnLocationOverride(unit)
 end
 function ApplyActionQueue_UseAbilityOverride(unit)
     local original_ActionQueue_UseAbility = unit.ActionQueue_UseAbility
-
+    local res
     unit.ActionQueue_UseAbility = function(self, hAbility)
         if not (Quas or Wex or Exort or Invoke) then
             print('Invoker to queue an ability')
             unit:Action_ClearActions(false)
-        end
-        local res = original_ActionQueue_UseAbility(self, hAbility)
-        if hAbility:GetCastPoint() ~= nil and hAbility:GetCastPoint() > 0 then
+            res = original_ActionQueue_UseAbility(self, hAbility)
             unit:ActionQueue_Delay(hAbility:GetCastPoint())
-            end
+        else
+            res = original_ActionQueue_UseAbility(self, hAbility)
+        end
         return res
     end
 end

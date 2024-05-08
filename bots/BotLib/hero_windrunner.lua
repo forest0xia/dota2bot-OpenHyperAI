@@ -46,8 +46,7 @@ elseif sRole == "pos_2"
 then
     nAbilityBuildList   = tAllAbilityBuildList[2]
     nTalentBuildList    = J.Skill.GetTalentBuild(tTalentTreeList[2])
-elseif sRole == "pos_3"
-then
+else
     nAbilityBuildList   = tAllAbilityBuildList[3]
     nTalentBuildList    = J.Skill.GetTalentBuild(tTalentTreeList[3])
 end
@@ -129,9 +128,9 @@ sRoleItemsBuyList['pos_3'] = {
     "item_moon_shard",
 }
 
-sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_4']
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_3']
 
-sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_5']
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_3']
 
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
@@ -161,8 +160,7 @@ then
 elseif sRole == "pos_2"
 then
     X['sSellList'] = Pos2SellList
-elseif sRole == "pos_3"
-then
+else
     X['sSellList'] = Pos3SellList
 end
 

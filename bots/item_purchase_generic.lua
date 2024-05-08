@@ -668,6 +668,7 @@ function ItemPurchaseThink()
 	then
 		sell_time = currentTime
 
+		-- bug: 不见得新旧物品挨着放
 		-- for i = 2 , #sItemSellList, 2
 		-- do
 		-- 	local nNewSlot = bot:FindItemSlot( sItemSellList[i - 1] )
@@ -678,13 +679,25 @@ function ItemPurchaseThink()
 		-- 		return
 		-- 	end
 		-- end
-		for i = 1 , #sItemSellList, 1
-		do
-			local slot = bot:FindItemSlot( sItemSellList[i] )
-			if slot == 6 or slot == 7 or slot == 8
-			then
+
+		-- 如果游戏时间过了30或者加速模式的20分钟，满格了就卖
+		local minues = currentTime / 60
+		if minues > 30 or (J.IsModeTurbo() and minues > 20) then
+			for i = 1 , #sItemSellList, 1
+			do
+				local slot = bot:FindItemSlot( sItemSellList[i] )
 				bot:ActionImmediate_SellItem( bot:GetItemInSlot( slot ) )
-				return
+			end
+		else
+			-- bug: 不见得过渡装备一定在 6 7 8 格
+			for i = 1 , #sItemSellList, 1
+			do
+				local slot = bot:FindItemSlot( sItemSellList[i] )
+				if slot == 6 or slot == 7 or slot == 8
+				then
+					bot:ActionImmediate_SellItem( bot:GetItemInSlot( slot ) )
+					return
+				end
 			end
 		end
 

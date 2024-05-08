@@ -1884,7 +1884,7 @@ function X.ShouldNotRetreat(bot)
 	do
 		if J.IsValid(ally) 
 		then
-			if  ( J.GetHP(ally) > 0.88 and ally:GetLevel() >= 12 and ally:GetActiveMode() ~= BOT_MODE_RETREAT)
+			if  J.GetHP(bot) >= 0.3 and ( J.GetHP(ally) > 0.88 and ally:GetLevel() >= 12 and ally:GetActiveMode() ~= BOT_MODE_RETREAT)
 			    or ( ally:HasModifier("modifier_black_king_bar_immune") or ally:IsMagicImmune() )
 				or ( ally:HasModifier("modifier_item_mask_of_madness_berserk") and ally:GetAttackTarget() ~= nil )
 				or ally:HasModifier("modifier_abaddon_borrowed_time")

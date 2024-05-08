@@ -33,8 +33,6 @@ local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 
 local sRoleItemsBuyList = {}
 
-sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_2']
-
 sRoleItemsBuyList['pos_2'] = {
 	"item_tango",
 	"item_faerie_fire",
@@ -57,6 +55,8 @@ sRoleItemsBuyList['pos_2'] = {
 	"item_sheepstick",--
 	"item_moon_shard",
 }
+
+sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_2']
 
 sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_1']
 

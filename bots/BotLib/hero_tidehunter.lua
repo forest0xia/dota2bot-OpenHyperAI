@@ -35,14 +35,6 @@ local sLotusHalberd = RandomInt( 1, 2 ) == 1 and "item_lotus_orb" or "item_heave
 
 local sRoleItemsBuyList = {}
 
-sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
-
-sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_3']
-
-sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_3']
-
-sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_3']
-
 sRoleItemsBuyList['pos_3'] = {
 	"item_tango",
 	"item_double_branches",
@@ -66,6 +58,14 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_ultimate_scepter_2",
 	"item_moon_shard",
 }
+
+sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
+
+sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_3']
+
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_3']
+
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_3']
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 

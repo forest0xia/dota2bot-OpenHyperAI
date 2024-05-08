@@ -35,8 +35,7 @@ if sRole == "pos_1"
 then
     nAbilityBuildList   = tAllAbilityBuildList[1]
     nTalentBuildList    = J.Skill.GetTalentBuild(tTalentTreeList[1])
-elseif sRole == "pos_2"
-then
+else
     nAbilityBuildList   = tAllAbilityBuildList[2]
     nTalentBuildList    = J.Skill.GetTalentBuild(tTalentTreeList[2])
 end
@@ -89,11 +88,30 @@ sRoleItemsBuyList['pos_2'] = {
     "item_ultimate_scepter_2",
 }
 
-sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_3']
+sRoleItemsBuyList['pos_3'] = {
+    "item_tango",
+    "item_double_branches",
+    "item_faerie_fire",
 
-sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_4']
+    "item_wraith_band",
+    "item_magic_wand",
+    "item_boots_of_elves",
+    "item_power_treads",
+    "item_lifesteal",
+    "item_manta",--
+    "item_angels_demise",--
+    "item_black_king_bar",--
+    sItems,--
+    "item_aghanims_shard",
+    "item_satanic",--
+    "item_disperser",--
+    "item_moon_shard",
+    "item_ultimate_scepter_2",
+}
 
-sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_5']
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_3']
+
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_3']
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 
@@ -116,8 +134,7 @@ X['sSellList'] = {}
 if sRole == "pos_1"
 then
     X['sSellList'] = Pos1SellList
-elseif sRole == "pos_2"
-then
+else
     X['sSellList'] = Pos2SellList
 end
 
