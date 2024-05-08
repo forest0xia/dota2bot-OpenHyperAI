@@ -557,9 +557,9 @@ function X.ConsiderPreInvoke()
 
     if DotaTime() - lastTimeChangeModifierAbilities > 1 then
 
-        -- idle spells. Buggy. some conditions not seem to work properly.
-        if not J.IsAttacking(bot)
-        and J.IsGoingOnSomeone(bot)
+        -- idle spells. Maybe buggy. some conditions not seem to work properly.
+        if J.IsGoingOnSomeone(bot)
+        and not J.IsAttacking(bot)
         and not bot:WasRecentlyDamagedByAnyHero(4)
         and Invoke:IsFullyCastable() then
             local nEnemyHeroes = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
@@ -675,11 +675,11 @@ end
 function X.CastForgeSpirit()
     print(DotaTime()..' - Invoker going to cast ForgeSpirit')
 
-    if X.IsAbilityAvailableOnSlots(ForgeSpirit)
+    if X.IsAbilityReadyForCast(ForgeSpirit)
     then
         bot:ActionQueue_UseAbility(ForgeSpirit)
         print(DotaTime()..' - Invoker tried to cast ForgeSpirit')
-    else
+    elseif not X.IsAbilityAvailableOnSlots(ForgeSpirit) then
         X.InvokeForgeSpirit()
     end
 end
@@ -687,11 +687,11 @@ end
 function X.CastIceWall()
     print(DotaTime()..' - Invoker going to cast IceWall')
 
-    if X.IsAbilityAvailableOnSlots(IceWall)
+    if X.IsAbilityReadyForCast(IceWall)
     then
         bot:ActionQueue_UseAbility(IceWall)
         print(DotaTime()..' - Invoker tried to cast IceWall')
-    else
+    elseif not X.IsAbilityAvailableOnSlots(IceWall) then
         X.InvokeIceWall()
     end
 end
@@ -699,11 +699,11 @@ end
 function X.CastDeafeningBlast(DeafeningBlastLocation)
     print(DotaTime()..' - Invoker going to cast DeafeningBlast')
 
-    if X.IsAbilityAvailableOnSlots(DeafeningBlast)
+    if X.IsAbilityReadyForCast(DeafeningBlast)
     then
         bot:ActionQueue_UseAbilityOnLocation(DeafeningBlast, DeafeningBlastLocation)
         print(DotaTime()..' - Invoker tried to cast DeafeningBlast')
-    else
+    elseif not X.IsAbilityAvailableOnSlots(DeafeningBlast) then
         X.InvokeDeafeningBlast()
     end
 end
@@ -711,11 +711,11 @@ end
 function X.CastSunstrike(SunstrikeLocation)
     print(DotaTime()..' - Invoker going to cast Sunstrike')
     
-    if X.IsAbilityAvailableOnSlots(Sunstrike)
+    if X.IsAbilityReadyForCast(Sunstrike)
     then
         bot:ActionQueue_UseAbilityOnLocation(Sunstrike, SunstrikeLocation)
         print(DotaTime()..' - Invoker tried to cast Sunstrike')
-    else
+    elseif not X.IsAbilityAvailableOnSlots(Sunstrike) then
         X.InvokeSunstrike()
     end
 end
@@ -723,11 +723,11 @@ end
 function X.CastCataclysm()
     print(DotaTime()..' - Invoker going to cast Cataclysm')
     
-    if X.IsAbilityAvailableOnSlots(Sunstrike)
+    if X.IsAbilityReadyForCast(Sunstrike)
     then
         bot:ActionQueue_UseAbilityOnEntity(Sunstrike, bot)
         print(DotaTime()..' - Invoker tried to cast Cataclysm')
-    else
+    elseif not X.IsAbilityAvailableOnSlots(Sunstrike) then
         X.InvokeSunstrike()
     end
 end
@@ -735,11 +735,11 @@ end
 function X.CastAlacrity(AlacrityTarget)
     print(DotaTime()..' - Invoker going to cast Alacrity')
     
-    if X.IsAbilityAvailableOnSlots(Alacrity)
+    if X.IsAbilityReadyForCast(Alacrity)
     then
         bot:ActionQueue_UseAbilityOnEntity(Alacrity, AlacrityTarget)
         print(DotaTime()..' - Invoker tried to cast Alacrity')
-    else
+    elseif not X.IsAbilityAvailableOnSlots(Alacrity) then
         X.InvokeAlacrity()
     end
 end
@@ -747,11 +747,11 @@ end
 function X.CastColdSnap(ColdSnapTarget)
     print(DotaTime()..' - Invoker going to cast ColdSnap')
     
-    if X.IsAbilityAvailableOnSlots(ColdSnap)
+    if X.IsAbilityReadyForCast(ColdSnap)
     then
         bot:ActionQueue_UseAbilityOnEntity(ColdSnap, ColdSnapTarget)
         print(DotaTime()..' - Invoker tried to cast ColdSnap')
-    else
+    elseif not X.IsAbilityAvailableOnSlots(ColdSnap) then
         X.InvokeColdSnap()
     end
 end
@@ -759,12 +759,12 @@ end
 function X.CastChaosMeteor(ChaosMeteorLocation)
     print(DotaTime()..' - Invoker going to cast ChaosMeteor')
     
-    if X.IsAbilityAvailableOnSlots(ChaosMeteor)
+    if X.IsAbilityReadyForCast(ChaosMeteor)
     then
         bot:ActionQueue_UseAbilityOnLocation(ChaosMeteor, ChaosMeteorLocation)
         print(DotaTime()..' - Invoker tried to cast ChaosMeteor')
         return
-    else
+    elseif not X.IsAbilityAvailableOnSlots(ChaosMeteor) then
         X.InvokeChaosMeteor()
     end
 end
@@ -772,11 +772,11 @@ end
 function X.CastEMP(EMPLocation)
     print(DotaTime()..' - Invoker going to cast EMP')
     
-    if X.IsAbilityAvailableOnSlots(EMP)
+    if X.IsAbilityReadyForCast(EMP)
     then
         bot:ActionQueue_UseAbilityOnLocation(EMP, EMPLocation)
         print(DotaTime()..' - Invoker tried to cast EMP')
-    else
+    elseif not X.IsAbilityAvailableOnSlots(EMP) then
         X.InvokeEMP()
     end
 end
@@ -784,11 +784,11 @@ end
 function X.CastTornado(TornadoLocation)
     print(DotaTime()..' - Invoker going to cast Tornado')
     
-    if X.IsAbilityAvailableOnSlots(Tornado)
+    if X.IsAbilityReadyForCast(Tornado)
     then
         bot:ActionQueue_UseAbilityOnLocation(Tornado, TornadoLocation)
         print(DotaTime()..' - Invoker tried to cast Tornado')
-    else
+    elseif not X.IsAbilityAvailableOnSlots(Tornado) then
         X.InvokeTornado()
     end
 end
@@ -798,11 +798,11 @@ function X.CastGhostWalk()
 
     bot:Action_ClearActions(false)
 
-    if X.IsAbilityAvailableOnSlots(GhostWalk)
+    if X.IsAbilityReadyForCast(GhostWalk)
     then
         bot:ActionQueue_UseAbility(GhostWalk)
         print(DotaTime()..' - Invoker tried to cast GhostWalk')
-    else
+    elseif not X.IsAbilityAvailableOnSlots(GhostWalk) then
         X.InvokeGhostWalk()
     end
 
@@ -935,7 +935,7 @@ end
 
 function X.ConsiderTornado()
     local deltaTime = 1.5
-    if not X.CanInvoke_Tornado() and not X.IsAbilityReadyForCast(Tornado)
+    if (not X.CanInvoke_Tornado() or not X.IsAbilityReadyForCast(Tornado))
         -- 同时也确保不要在刚刚放了陨石或者推波之后马上用吹风
         and (DotaTime() - AbilityCastedTimes['ChaosMeteor'] <= deltaTime and DotaTime() - AbilityCastedTimes['DeafeningBlast'] <= deltaTime)
     then
@@ -1128,7 +1128,7 @@ function X.ConsiderTornado()
 end
 
 function X.ConsiderEMP()
-    if not X.CanInvoke_EMP() and not X.IsAbilityReadyForCast(EMP)
+    if not X.CanInvoke_EMP() or not X.IsAbilityReadyForCast(EMP)
     then
         return BOT_ACTION_DESIRE_NONE, 0
     end
@@ -1266,7 +1266,7 @@ function X.ConsiderEMP()
 end
 
 function X.ConsiderAlacrity()
-    if not X.CanInvoke_Alacrity() and not X.IsAbilityReadyForCast(Alacrity)
+    if not X.CanInvoke_Alacrity() or not X.IsAbilityReadyForCast(Alacrity)
     then
         return BOT_ACTION_DESIRE_NONE, nil
     end
@@ -1384,7 +1384,7 @@ function X.ConsiderAlacrity()
 end
 
 function X.ConsiderChaosMeteor()
-    if not X.CanInvoke_ChaosMeteor() and not X.IsAbilityReadyForCast(ChaosMeteor)
+    if not X.CanInvoke_ChaosMeteor() or not X.IsAbilityReadyForCast(ChaosMeteor)
     then
         return BOT_ACTION_DESIRE_NONE, 0
     end
@@ -1547,7 +1547,7 @@ function X.CheckTempModifiers(modifierNames, botTarget, nDelay)
 end
 
 function X.ConsiderCataclysm()
-    if not X.CanInvoke_Cataclysm() and not X.IsAbilityReadyForCast(Cataclysm)
+    if not X.CanInvoke_Cataclysm() or not X.IsAbilityReadyForCast(Cataclysm)
     then
         return BOT_ACTION_DESIRE_NONE, 0
     end
@@ -1678,7 +1678,7 @@ function X.GoodTimeToUseCataclysmGlobally()
 end
 
 function X.ConsiderSunstrike()
-    if not X.CanInvoke_Sunstrike() and not X.IsAbilityReadyForCast(Sunstrike)
+    if not X.CanInvoke_Sunstrike() or not X.IsAbilityReadyForCast(Sunstrike)
     then
         return BOT_ACTION_DESIRE_NONE, 0
     end
@@ -1833,7 +1833,7 @@ function X.ConsiderSunstrike()
 end
 
 function X.ConsiderForgeSpirit()
-    if not X.CanInvoke_ForgeSpirit() and not X.IsAbilityReadyForCast(ForgeSpirit)
+    if not X.CanInvoke_ForgeSpirit() or not X.IsAbilityReadyForCast(ForgeSpirit)
     then
         return BOT_ACTION_DESIRE_NONE
     end
@@ -1882,7 +1882,7 @@ function X.ConsiderForgeSpirit()
 end
 
 function X.ConsiderIceWall()
-    if not X.CanInvoke_IceWall() and not X.IsAbilityReadyForCast(IceWall)
+    if not X.CanInvoke_IceWall() or not X.IsAbilityReadyForCast(IceWall)
     then
         return BOT_ACTION_DESIRE_NONE
     end
@@ -1957,7 +1957,7 @@ function X.ConsiderIceWall()
 end
 
 function X.ConsiderDeafeningBlast()
-    if not X.CanInvoke_DeafeningBlast() and not X.IsAbilityReadyForCast(DeafeningBlast)
+    if not X.CanInvoke_DeafeningBlast() or not X.IsAbilityReadyForCast(DeafeningBlast)
     then
         return BOT_ACTION_DESIRE_NONE, 0
     end
