@@ -396,7 +396,7 @@ else
 	tLaneAssignList = nDireLane
 end
 
-nDireFirstLaneType = math.random(1, 4)
+nDireFirstLaneType = math.random(1, 3)
 
 if nDireFirstLaneType == 2 and GetTeam() == TEAM_DIRE
 then
@@ -410,13 +410,6 @@ then
 	-- sSelectList[1], sSelectList[3] = sSelectList[3], sSelectList[1]
 	tSelectPoolList[1], tSelectPoolList[3] = tSelectPoolList[3], tSelectPoolList[1]
 	tLaneAssignList[1], tLaneAssignList[3] = tLaneAssignList[3], tLaneAssignList[1]
-end
-
-if nDireFirstLaneType == 4 and GetTeam() == TEAM_DIRE
-then
-	-- sSelectList[2], sSelectList[3] = sSelectList[3], sSelectList[2]
-	tSelectPoolList[2], tSelectPoolList[3] = tSelectPoolList[3], tSelectPoolList[2]
-	tLaneAssignList[2], tLaneAssignList[3] = tLaneAssignList[3], tLaneAssignList[2]
 end
 
 function X.GetMoveTable( nTable )
@@ -774,7 +767,11 @@ function UpdateLaneAssignments()
 		and not bLaneAssignActive
 		and not bPvNLaneAssignDone
 	then
-		if RandomInt( 1, 8 ) > 4 then tLaneAssignList[4] = LANE_MID else tLaneAssignList[5] = LANE_MID end
+		if RandomInt( 1, 8 ) > 4 then
+			tLaneAssignList[4] = LANE_MID
+		else 
+			tLaneAssignList[5] = LANE_MID
+		end
 		bPvNLaneAssignDone = true
 	end
 
