@@ -396,6 +396,7 @@ else
 	tLaneAssignList = nDireLane
 end
 
+-- 人工挑选想要的阵容
 -- The index in the list is the pick order. #1 pick is mid, #2 is pos3, #3 is pos1, #4 is pos 5, #5 is pos 4.
 function X.OverrideTeamHeroes()
 	if GetTeam() == TEAM_RADIANT
@@ -448,7 +449,7 @@ function X.OverrideTeamHeroes()
 	end
 end
 
--- 如果想让电脑自己随机英雄，则注释掉这行
+-- 这行代码为了人工挑选想要的阵容。如果想让电脑自己随机英雄，则注释掉这行
 sSelectList = X.OverrideTeamHeroes()
 
 nDireFirstLaneType = math.random(1, 3)
@@ -457,6 +458,7 @@ then
 	sSelectList[1], sSelectList[2] = sSelectList[2], sSelectList[1]
 	tSelectPoolList[1], tSelectPoolList[2] = tSelectPoolList[2], tSelectPoolList[1]
 	tLaneAssignList[1], tLaneAssignList[2] = tLaneAssignList[2], tLaneAssignList[1]
+	Role.roleAssignment[1], Role.roleAssignment[2] = Role.roleAssignment[2], Role.roleAssignment[1]
 end
 
 if nDireFirstLaneType == 3 and GetTeam() == TEAM_DIRE
@@ -464,6 +466,7 @@ then
 	sSelectList[1], sSelectList[3] = sSelectList[3], sSelectList[1]
 	tSelectPoolList[1], tSelectPoolList[3] = tSelectPoolList[3], tSelectPoolList[1]
 	tLaneAssignList[1], tLaneAssignList[3] = tLaneAssignList[3], tLaneAssignList[1]
+	Role.roleAssignment[1], Role.roleAssignment[3] = Role.roleAssignment[3], Role.roleAssignment[1]
 end
 
 function X.GetMoveTable( nTable )

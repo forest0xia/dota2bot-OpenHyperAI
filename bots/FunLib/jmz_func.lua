@@ -3482,22 +3482,15 @@ function J.GetCoresTotalNetworth()
 end
 
 function J.GetPosition(bot)
-	local heroID = GetTeamPlayers(GetTeam())
-	local pos
-
-	if GetSelectedHeroName(heroID[1]) == bot:GetUnitName() then
-		pos = 2
-	elseif GetSelectedHeroName(heroID[2]) == bot:GetUnitName() then
-		pos = 3
-	elseif GetSelectedHeroName(heroID[3]) == bot:GetUnitName() then
-		pos = 1
-	elseif GetSelectedHeroName(heroID[4]) == bot:GetUnitName() then
-		pos = 5
-	elseif GetSelectedHeroName(heroID[5]) == bot:GetUnitName() then
-		pos = 4
+	if bot.assignedRole == nil then
+		local heroID = GetTeamPlayers(GetTeam())
+		for i, v in pairs(heroID) do
+			if GetSelectedHeroName(v) == bot:GetUnitName() then
+				bot.assignedRole = J.Role.roleAssignment[i]
+			end
+		end
 	end
-
-	return pos
+	return bot.assignedRole
 end
 
 function J.WeAreStronger(bot, radius)

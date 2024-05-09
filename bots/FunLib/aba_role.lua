@@ -10,6 +10,9 @@ end
 
 ----------------------------------------------------------------------------------------------------
 
+-- The index in the list is the pick order, value is the role. by default #1 pick is mid, #2 is pos3, #3 is pos1, #4 is pos 5, #5 is pos 4.
+X.roleAssignment = { 2, 3, 1, 4, 5 }
+
 -- ["carry"] will become more useful later in the game if they gain a significant gold advantage.
 -- ["durable"] has the ability to last longer in teamfights.
 -- ["support"] can focus less on amassing gold and items, and more on using their abilities to gain an advantage for the team.

@@ -1366,7 +1366,7 @@ function Item.GetRoleItemsBuyList( bot )
 			return sRole[i]
 		end
 	end
-	
+		
 	return 'pos_1'
 
 end
