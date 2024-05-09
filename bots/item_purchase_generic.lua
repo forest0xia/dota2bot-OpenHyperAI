@@ -350,7 +350,7 @@ function ItemPurchaseThink()
 	--买小净化
 	if currentTime <= 900
 	and J.GetMP(bot) < 0.4
-	and botGold >= GetItemCost( "item_clarity" )
+	and GetItemStockCount('item_clarity') > 1
 	and Item.GetItemCharges(bot, 'item_clarity') <= 0
 	and botGold >= GetItemCost( "item_clarity" )
 	then
@@ -412,6 +412,7 @@ function ItemPurchaseThink()
 						and partner:FindItemSlot('item_tango') < 0
 						and Item.GetItemCharges(bot, 'item_flask') <= 0
 						and botGold >= GetItemCost('item_flask')
+						and GetItemStockCount('item_flask') > 1
 						then
 							bot:ActionImmediate_PurchaseItem('item_flask')
 							return
@@ -419,6 +420,7 @@ function ItemPurchaseThink()
 					else
 						if  Item.GetItemCharges(bot, 'item_flask') <= 0
 						and botGold >= GetItemCost('item_flask')
+						and GetItemStockCount('item_flask') > 1
 						and (not J.HasItem(bot, 'item_bottle')
 							or (J.HasItem(bot, 'item_bottle') and Item.GetItemCharges(bot, 'item_bottle') <= 0))
 						then
@@ -429,6 +431,7 @@ function ItemPurchaseThink()
 				else
 					if Item.GetItemCharges(bot, 'item_flask') <= 0
 					and botGold >= GetItemCost('item_flask')
+					and GetItemStockCount('item_flask') > 1
 					then
 						bot:ActionImmediate_PurchaseItem('item_flask')
 						return
@@ -444,12 +447,14 @@ function ItemPurchaseThink()
 						and partner ~= nil
 						and Item.GetItemCharges(bot, 'item_tango') <= 0
 						and botGold >= GetItemCost('item_tango')
+						and GetItemStockCount('item_flask') > 1
 						then
 							bot:ActionImmediate_PurchaseItem('item_tango')
 							return
 						end
 					else
 						if  Item.GetItemCharges(bot, 'item_flask') <= 0
+						and GetItemStockCount('item_flask') > 1
 						and botGold >= GetItemCost('item_flask')
 						and (not J.HasItem(bot, 'item_bottle')
 							or (J.HasItem(bot, 'item_bottle') and Item.GetItemCharges(bot, 'item_bottle') <= 0))

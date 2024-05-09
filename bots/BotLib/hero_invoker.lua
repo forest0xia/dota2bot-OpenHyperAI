@@ -1305,7 +1305,7 @@ function X.ConsiderChaosMeteor()
         end
     end
 
-	if J.IsGoingOnSomeone(bot) or J.IsLaning( bot ) or J.IsInTeamFight(bot)
+	if J.IsGoingOnSomeone(bot) or J.IsLaning( bot )
 	then
 		if J.IsValidTarget(botTarget) -- can be roshan or others
 		and J.CanCastOnNonMagicImmune(botTarget)
@@ -1352,6 +1352,47 @@ function X.ConsiderChaosMeteor()
 
 		end
 	end
+
+    if J.IsInTeamFight(bot) then
+        local nLocationAoE = bot:FindAoELocation(true, true, bot:GetLocation(), nCastRange + 200, nRadius, nLandTime + nCastPoint, 0)
+
+        if  nLocationAoE.count >= 2
+        then
+            local realEnemyCount = J.GetEnemiesNearLoc(nLocationAoE.targetloc, nRadius)
+
+            if realEnemyCount ~= nil and realEnemyCount >= 2
+            then
+                return BOT_ACTION_DESIRE_HIGH, nLocationAoE.targetloc
+            end
+        end
+        
+        for _, enemyHero in pairs(nInRangeEnemy) do
+            if J.IsValidHero(enemyHero)
+            and J.CanCastOnNonMagicImmune(enemyHero)
+            and J.IsInRange(bot, enemyHero, nCastRange)
+            and not J.IsSuspiciousIllusion(enemyHero)
+            and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
+            and not enemyHero:HasModifier('modifier_dazzle_shallow_grave')
+            and not enemyHero:HasModifier('modifier_necrolyte_reapers_scythe')
+            and not enemyHero:HasModifier('modifier_item_aeon_disk_buff') then
+                -- if hero is under temp damage immute control
+                if enemyHero:HasModifier(modifier_invoker_tornado) then
+                    if DotaTime() >= AbilityCastedTimes['Tornado'] + TornadoLiftTime - (nLandTime + nCastPoint)
+                    then
+                        return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation()
+                    end
+                elseif X.CheckTempModifiers(TempNonMovableModifierNames, enemyHero, (nLandTime + nCastPoint)) > 0 then
+                    return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
+                end
+    
+                if J.IsRunning(enemyHero) then
+                    return BOT_ACTION_DESIRE_HIGH, enemyHero:GetExtrapolatedLocation(nLandTime + nCastPoint)
+                else
+                    return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation()
+                end
+            end
+        end
+    end
 
 	--对线
 	if J.IsLaning( bot )
@@ -1608,10 +1649,10 @@ function X.ConsiderSunstrike()
         -- 敌人被长时间大招控制
         if J.IsValidHero(enemyHero)
         and not J.IsSuspiciousIllusion(enemyHero)
-        or enemyHero:HasModifier('modifier_bane_fiends_grip')
+        and (enemyHero:HasModifier('modifier_bane_fiends_grip')
         or enemyHero:HasModifier('modifier_legion_commander_duel')
         or enemyHero:HasModifier('modifier_enigma_black_hole_pull')
-        or enemyHero:HasModifier('modifier_faceless_void_chronosphere_freeze') then
+        or enemyHero:HasModifier('modifier_faceless_void_chronosphere_freeze')) then
             return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation()
         end
         
@@ -1762,6 +1803,8 @@ function X.ConsiderIceWall()
     end
 
     local nSpawnDistance = IceWall:GetSpecialValueInt('wall_place_distance')
+    local nCastRange = 200
+    local nRadius = 1000
 
 	if J.IsGoingOnSomeone(bot)
 	then
@@ -1782,6 +1825,33 @@ function X.ConsiderIceWall()
             end
 		end
 	end
+    
+    if J.IsInTeamFight(bot) then
+        local nLocationAoE = bot:FindAoELocation(true, true, bot:GetLocation(), nCastRange + 200, nRadius, 0, 0)
+
+        if  nLocationAoE.count >= 2
+        then
+            local realEnemyCount = J.GetEnemiesNearLoc(nLocationAoE.targetloc, nRadius)
+
+            if realEnemyCount ~= nil and realEnemyCount >= 2
+            then
+                return BOT_ACTION_DESIRE_HIGH, nLocationAoE.targetloc
+            end
+        end
+        
+        local nInRangeEnemy = botTarget:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+        for _, enemyHero in pairs(nInRangeEnemy) do
+            if J.IsValidHero(enemyHero)
+            and J.CanCastOnNonMagicImmune(enemyHero)
+            and J.IsInRange(bot, enemyHero, nCastRange) then
+                if J.IsRunning(enemyHero) then
+                    return BOT_ACTION_DESIRE_HIGH, enemyHero:GetExtrapolatedLocation(1)
+                else
+                    return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation()
+                end
+            end
+        end
+    end
 
     if J.IsRetreating(bot)
 	then
