@@ -1445,7 +1445,7 @@ X.ConsiderItemDesire["item_clarity"] = function( hItem )
 	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
 
 
-	if J.GetMP( bot ) < 0.35
+	if J.GetMP( bot ) < 0.4
 		and not bot:HasModifier( "modifier_clarity_potion" )
 		and #nInRangeEnmyList == 0
 		and not bot:WasRecentlyDamagedByAnyHero( 4.0 )
@@ -3501,7 +3501,7 @@ X.ConsiderItemDesire["item_refresher"] = function( hItem )
 	local sCastMotive = '刷新技能'
 	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
 
-	-- if bot has a overrided version of CanUseRefresherShard logic:
+	-- if bot has an overrided version of CanUseRefresherShard logic:
 	if BotBuild.CanUseRefresherShard ~= nil and BotBuild.CanUseRefresherShard() then
 		return BOT_ACTION_DESIRE_HIGH, hEffectTarget, sCastType, sCastMotive
 	end

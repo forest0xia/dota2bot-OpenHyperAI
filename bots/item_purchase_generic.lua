@@ -347,6 +347,17 @@ function ItemPurchaseThink()
 		lastBootsCheck = currentTime
 	end
 
+	--买小净化
+	if currentTime <= 900
+	and J.GetMP(bot) < 0.4
+	and botGold >= GetItemCost( "item_clarity" )
+	and Item.GetItemCharges(bot, 'item_clarity') <= 0
+	and botGold >= GetItemCost( "item_clarity" )
+	then
+		hasBuyClarity = true
+		bot:ActionImmediate_PurchaseItem( "item_clarity" )
+	end
+
 	--辅助定位英雄购买辅助物品
 	if bot.theRole == 'support'
 	then
@@ -377,7 +388,7 @@ function ItemPurchaseThink()
 		and bot:IsAlive()
 		and bot:FindItemSlot('item_flask') < 0
 		and bot:FindItemSlot('item_tango') < 0
-		and bot:DistanceFromFountain() > 3800
+		and bot:DistanceFromFountain() > 2000
 		and bot:GetStashValue() > 0
 		and not bot:HasModifier('modifier_elixer_healing')
 		and not bot:HasModifier('modifier_filler_heal')
@@ -387,11 +398,11 @@ function ItemPurchaseThink()
 		and not bot:HasModifier('modifier_warlock_shadow_word')
 		and not IsThereHealingInStash(bot)
 		and Item.GetEmptyInventoryAmount(bot) >= 1
-		and J.GetHP(bot) < 0.35
+		and J.GetHP(bot) < 0.5
 		then
 			local partner = J.GetLanePartner(bot)
 
-			if bot:GetHealthRegen() <= 5
+			if bot:GetHealthRegen() <= 10
 			then
 				if J.IsCore(bot)
 				then
@@ -400,12 +411,14 @@ function ItemPurchaseThink()
 						if  partner:FindItemSlot('item_flask') < 0
 						and partner:FindItemSlot('item_tango') < 0
 						and Item.GetItemCharges(bot, 'item_flask') <= 0
+						and botGold >= GetItemCost('item_flask')
 						then
 							bot:ActionImmediate_PurchaseItem('item_flask')
 							return
 						end
 					else
 						if  Item.GetItemCharges(bot, 'item_flask') <= 0
+						and botGold >= GetItemCost('item_flask')
 						and (not J.HasItem(bot, 'item_bottle')
 							or (J.HasItem(bot, 'item_bottle') and Item.GetItemCharges(bot, 'item_bottle') <= 0))
 						then
@@ -415,6 +428,7 @@ function ItemPurchaseThink()
 					end
 				else
 					if Item.GetItemCharges(bot, 'item_flask') <= 0
+					and botGold >= GetItemCost('item_flask')
 					then
 						bot:ActionImmediate_PurchaseItem('item_flask')
 						return
@@ -429,12 +443,14 @@ function ItemPurchaseThink()
 						and partner:FindItemSlot('item_tango') < 0
 						and partner ~= nil
 						and Item.GetItemCharges(bot, 'item_tango') <= 0
+						and botGold >= GetItemCost('item_tango')
 						then
 							bot:ActionImmediate_PurchaseItem('item_tango')
 							return
 						end
 					else
 						if  Item.GetItemCharges(bot, 'item_flask') <= 0
+						and botGold >= GetItemCost('item_flask')
 						and (not J.HasItem(bot, 'item_bottle')
 							or (J.HasItem(bot, 'item_bottle') and Item.GetItemCharges(bot, 'item_bottle') <= 0))
 						then
@@ -444,6 +460,7 @@ function ItemPurchaseThink()
 					end
 				else
 					if Item.GetItemCharges(bot, 'item_tango') <= 0
+					and botGold >= GetItemCost('item_tango')
 					then
 						bot:ActionImmediate_PurchaseItem('item_tango')
 						return
@@ -681,12 +698,13 @@ function ItemPurchaseThink()
 		-- end
 
 		-- 如果游戏时间过了30或者加速模式的20分钟，满格了就卖
-		local minues = currentTime / 60
-		if minues > 30 or (J.IsModeTurbo() and minues > 20) then
+		if currentTime > 1800 or (J.IsModeTurbo() and currentTime > 1200) then
 			for i = 1 , #sItemSellList, 1
 			do
 				local slot = bot:FindItemSlot( sItemSellList[i] )
-				bot:ActionImmediate_SellItem( bot:GetItemInSlot( slot ) )
+				if slot and slot>= 0 then
+					bot:ActionImmediate_SellItem( bot:GetItemInSlot( slot ) )
+				end
 			end
 		else
 			-- bug: 不见得过渡装备一定在 6 7 8 格

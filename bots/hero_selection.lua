@@ -396,18 +396,72 @@ else
 	tLaneAssignList = nDireLane
 end
 
-nDireFirstLaneType = math.random(1, 3)
+-- The index in the list is the pick order. #1 pick is mid, #2 is pos3, #3 is pos1, #4 is pos 5, #5 is pos 4.
+function X.OverrideTeamHeroes()
+	if GetTeam() == TEAM_RADIANT
+	then
+		return sSelectList
+	else
+		return {
+			-- [1] = "npc_dota_hero_invoker",
+			-- [2] = "npc_dota_hero_arc_warden",
+			-- [3] = "npc_dota_hero_clinkz",
+			-- [4] = "npc_dota_hero_witch_doctor",
+			-- [5] = "npc_dota_hero_bane",
 
+			-- [1] = "npc_dota_hero_rubick",
+			-- [2] = "npc_dota_hero_enigma",
+			-- [3] = "npc_dota_hero_clinkz",
+		    -- [4] = "npc_dota_hero_earth_spirit",
+			-- [5] = "npc_dota_hero_lich",
+			
+			[1] = "npc_dota_hero_invoker",
+			[2] = 'npc_dota_hero_enigma',
+			[3] = "npc_dota_hero_meepo",
+		    [4] = "npc_dota_hero_lich",
+			[5] = "npc_dota_hero_techies",
+
+
+			-- Test buggy heroes:
+			-- [1] = "npc_dota_hero_invoker",
+			-- -- [2] = 'npc_dota_hero_enigma',
+			-- [2] = tSelectPoolList[2][RandomInt( 1, #tSelectPoolList[2] )],
+			-- -- [3] = 'npc_dota_hero_muerta',
+			-- [3] = tSelectPoolList[3][RandomInt( 1, #tSelectPoolList[3] )],
+			-- [4] = tSelectPoolList[4][RandomInt( 1, #tSelectPoolList[4] )],
+			-- [5] = tSelectPoolList[5][RandomInt( 1, #tSelectPoolList[5] )],
+
+			-- [1] = tSelectPoolList[1][RandomInt( 1, #tSelectPoolList[1] )],
+			-- [2] = tSelectPoolList[2][RandomInt( 1, #tSelectPoolList[2] )],
+			-- [3] = tSelectPoolList[3][RandomInt( 1, #tSelectPoolList[3] )],
+			-- [4] = tSelectPoolList[4][RandomInt( 1, #tSelectPoolList[4] )],
+			-- [5] = tSelectPoolList[5][RandomInt( 1, #tSelectPoolList[5] )],
+		    
+			-- All Pandas/spirits
+			-- [1] = "npc_dota_hero_storm_spirit",
+			-- [2] = "npc_dota_hero_ember_spirit",
+			-- [3] = "npc_dota_hero_void_spirit",
+			-- [4] = "npc_dota_hero_earth_spirit",
+			-- [5] = "npc_dota_hero_brewmaster",
+		    
+		}
+	end
+end
+
+-- 如果想让电脑自己随机英雄，则注释掉这行
+sSelectList = X.OverrideTeamHeroes()
+
+nDireFirstLaneType = math.random(1, 3)
 if nDireFirstLaneType == 2 and GetTeam() == TEAM_DIRE
 then
-	-- sSelectList[1], sSelectList[2] = sSelectList[2], sSelectList[1]
+	sSelectList[1], sSelectList[2] = sSelectList[2], sSelectList[1]
 	tSelectPoolList[1], tSelectPoolList[2] = tSelectPoolList[2], tSelectPoolList[1]
 	tLaneAssignList[1], tLaneAssignList[2] = tLaneAssignList[2], tLaneAssignList[1]
 end
 
 if nDireFirstLaneType == 3 and GetTeam() == TEAM_DIRE
 then
-	-- sSelectList[1], sSelectList[3] = sSelectList[3], sSelectList[1]
+	sSelectList[1], sSelectList[3] = sSelectList[3], sSelectList[1]
 	tSelectPoolList[1], tSelectPoolList[3] = tSelectPoolList[3], tSelectPoolList[1]
 	tLaneAssignList[1], tLaneAssignList[3] = tLaneAssignList[3], tLaneAssignList[1]
 end
@@ -648,72 +702,6 @@ function X.GetRandomNameList( sStarList )
 
 	return sNameList
 end
-
--- The index in the list is the pick order. #1 pick is mid, #2 is pos3, #3 is pos1, #4 is pos 5, #5 is pos 4.
-function X.OverrideTeamHeroes()
-	if GetTeam() == TEAM_RADIANT
-	then
-		return {
-			
-			[1] = tSelectPoolList[1][RandomInt( 1, #tSelectPoolList[1] )],
-			[2] = tSelectPoolList[2][RandomInt( 1, #tSelectPoolList[2] )],
-			[3] = tSelectPoolList[3][RandomInt( 1, #tSelectPoolList[3] )],
-			[4] = tSelectPoolList[4][RandomInt( 1, #tSelectPoolList[4] )],
-			[5] = tSelectPoolList[5][RandomInt( 1, #tSelectPoolList[5] )],
-			-- [1] = "npc_dota_hero_invoker",
-			-- [1] = "npc_dota_hero_rubick",
-			-- [2] = tSelectPoolList[2][RandomInt( 1, #tSelectPoolList[2] )],
-			-- [3] = 'npc_dota_hero_faceless_void',
-			-- [4] = tSelectPoolList[4][RandomInt( 1, #tSelectPoolList[4] )],
-			-- [5] = tSelectPoolList[5][RandomInt( 1, #tSelectPoolList[5] )],
-		}
-	else
-		return {
-			-- [1] = "npc_dota_hero_invoker",
-			-- [2] = "npc_dota_hero_arc_warden",
-			-- [3] = "npc_dota_hero_clinkz",
-			-- [4] = "npc_dota_hero_witch_doctor",
-			-- [5] = "npc_dota_hero_bane",
-
-			-- [1] = "npc_dota_hero_rubick",
-			-- [2] = "npc_dota_hero_snapfire",
-			-- [3] = "npc_dota_hero_clinkz",
-		    -- [4] = "npc_dota_hero_earth_spirit",
-			-- [5] = "npc_dota_hero_techies",
-			
-			[1] = "npc_dota_hero_invoker",
-			[2] = 'npc_dota_hero_enigma',
-			[3] = "npc_dota_hero_meepo",
-		    [4] = "npc_dota_hero_lich",
-			[5] = "npc_dota_hero_techies",
-
-
-			-- Test buggy heroes:
-			-- [1] = "npc_dota_hero_invoker",
-			-- -- [2] = 'npc_dota_hero_enigma',
-			-- [2] = tSelectPoolList[2][RandomInt( 1, #tSelectPoolList[2] )],
-			-- -- [3] = 'npc_dota_hero_muerta',
-			-- [3] = tSelectPoolList[3][RandomInt( 1, #tSelectPoolList[3] )],
-			-- [4] = tSelectPoolList[4][RandomInt( 1, #tSelectPoolList[4] )],
-			-- [5] = tSelectPoolList[5][RandomInt( 1, #tSelectPoolList[5] )],
-
-			-- [1] = tSelectPoolList[1][RandomInt( 1, #tSelectPoolList[1] )],
-			-- [2] = tSelectPoolList[2][RandomInt( 1, #tSelectPoolList[2] )],
-			-- [3] = tSelectPoolList[3][RandomInt( 1, #tSelectPoolList[3] )],
-			-- [4] = tSelectPoolList[4][RandomInt( 1, #tSelectPoolList[4] )],
-			-- [5] = tSelectPoolList[5][RandomInt( 1, #tSelectPoolList[5] )],
-		    
-			-- All Pandas/spirits
-			-- [1] = "npc_dota_hero_storm_spirit",
-			-- [2] = "npc_dota_hero_ember_spirit",
-			-- [3] = "npc_dota_hero_void_spirit",
-			-- [4] = "npc_dota_hero_earth_spirit",
-			-- [5] = "npc_dota_hero_brewmaster",
-		    
-		}
-	end
-end
--- sSelectList = X.OverrideTeamHeroes()
 
 function Think()
 	if GetGameState() == GAME_STATE_HERO_SELECTION then
