@@ -2494,6 +2494,17 @@ function X.IsUserSetSup( bot )
 end
 
 
+function X.GetPosition(bot)
+	if bot.assignedRole == nil then
+		local heroID = GetTeamPlayers(GetTeam())
+		for i, v in pairs(heroID) do
+			if GetSelectedHeroName(v) == bot:GetUnitName() then
+				bot.assignedRole = X.roleAssignment[i]
+			end
+		end
+	end
+	return bot.assignedRole
+end
 
 function X.IsPvNMode()
 

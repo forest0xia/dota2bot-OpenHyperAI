@@ -7,6 +7,7 @@
 --- Link:http://steamcommunity.com/sharedfiles/filedetails/?id=1627071163
 ----------------------------------------------------------------------------------------------------
 
+local Role = require( GetScriptDirectory()..'/FunLib/aba_role' )
 
 local Item = {}
 
@@ -1346,29 +1347,17 @@ function Item.GetOutfitType( bot )
 	return 'outfit_carry'
 end
 
-
 function Item.GetRoleItemsBuyList( bot )
-
-	local sRole = {
-		[1] = 'pos_2',
-		[2] = 'pos_3',
-		[3] = 'pos_1',
-		[4] = 'pos_5',
-		[5] = 'pos_4',
-	}
-
 	local nTeamPlayerIDs = GetTeamPlayers( GetTeam() )
 	for i = 1, 5
 	do
 		local memberID = nTeamPlayerIDs[i]
 		if bot:GetPlayerID() == memberID
 		then
-			return sRole[i]
+			return 'pos_'..tostring(Role.roleAssignment[i])
 		end
 	end
-		
 	return 'pos_1'
-
 end
 
 function Item.GetItemWardSolt()

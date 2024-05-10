@@ -67,7 +67,7 @@
 - Rubick, if it's a single point and not a target, then location. If it is a target, then unit.
 - Invoker shouldn't always be farming.
 - Carl, if there are people nearby and you have very low health, retreat unconditionally. Because Carl's full-screen abilities will cancel previous retreat commands.
-- Bots won't immediately use items from their backpack.
+- Bots won't immediately use items from their backpack. Better backpack managment needed to 1, swap items for e.g. healings and swap back when used.
 - Don't go to outpost alone or use smoke.
 
 

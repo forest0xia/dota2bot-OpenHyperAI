@@ -1360,7 +1360,7 @@ function X.ConsiderChaosMeteor()
         then
             local realEnemyCount = J.GetEnemiesNearLoc(nLocationAoE.targetloc, nRadius)
 
-            if realEnemyCount ~= nil and realEnemyCount >= 2
+            if realEnemyCount ~= nil and #realEnemyCount >= 2
             then
                 return BOT_ACTION_DESIRE_HIGH, nLocationAoE.targetloc
             end
@@ -1833,7 +1833,7 @@ function X.ConsiderIceWall()
         then
             local realEnemyCount = J.GetEnemiesNearLoc(nLocationAoE.targetloc, nRadius)
 
-            if realEnemyCount ~= nil and realEnemyCount >= 2
+            if realEnemyCount ~= nil and #realEnemyCount >= 2
             then
                 return BOT_ACTION_DESIRE_HIGH, nLocationAoE.targetloc
             end

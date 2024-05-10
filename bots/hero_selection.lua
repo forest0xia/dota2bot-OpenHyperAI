@@ -452,21 +452,13 @@ end
 -- 这行代码为了人工挑选想要的阵容。如果想让电脑自己随机英雄，则注释掉这行
 sSelectList = X.OverrideTeamHeroes()
 
-nDireFirstLaneType = math.random(1, 3)
-if nDireFirstLaneType == 2 and GetTeam() == TEAM_DIRE
+nDireFirstLaneType = math.random(1, 5)
+if nDireFirstLaneType ~= 1 and GetTeam() == TEAM_DIRE
 then
-	sSelectList[1], sSelectList[2] = sSelectList[2], sSelectList[1]
-	tSelectPoolList[1], tSelectPoolList[2] = tSelectPoolList[2], tSelectPoolList[1]
-	tLaneAssignList[1], tLaneAssignList[2] = tLaneAssignList[2], tLaneAssignList[1]
-	Role.roleAssignment[1], Role.roleAssignment[2] = Role.roleAssignment[2], Role.roleAssignment[1]
-end
-
-if nDireFirstLaneType == 3 and GetTeam() == TEAM_DIRE
-then
-	sSelectList[1], sSelectList[3] = sSelectList[3], sSelectList[1]
-	tSelectPoolList[1], tSelectPoolList[3] = tSelectPoolList[3], tSelectPoolList[1]
-	tLaneAssignList[1], tLaneAssignList[3] = tLaneAssignList[3], tLaneAssignList[1]
-	Role.roleAssignment[1], Role.roleAssignment[3] = Role.roleAssignment[3], Role.roleAssignment[1]
+	sSelectList[1], sSelectList[nDireFirstLaneType] = sSelectList[nDireFirstLaneType], sSelectList[1]
+	tSelectPoolList[1], tSelectPoolList[nDireFirstLaneType] = tSelectPoolList[nDireFirstLaneType], tSelectPoolList[1]
+	tLaneAssignList[1], tLaneAssignList[nDireFirstLaneType] = tLaneAssignList[nDireFirstLaneType], tLaneAssignList[1]
+	Role.roleAssignment[1], Role.roleAssignment[nDireFirstLaneType] = Role.roleAssignment[nDireFirstLaneType], Role.roleAssignment[1]
 end
 
 function X.GetMoveTable( nTable )
