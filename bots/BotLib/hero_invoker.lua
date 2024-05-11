@@ -47,8 +47,8 @@ sRoleItemsBuyList['pos_2'] = {
     "item_devastator",--4
     "item_ultimate_scepter_2",
     "item_refresher",--3
-    "item_sheepstick",--2
     "item_moon_shard",
+    "item_sheepstick",--2
     "item_travel_boots_2",--1
 }
 
@@ -299,13 +299,13 @@ function X.SkillsComplement()
 
     ------- 尝试把连招串联起来，判断是否用了可以连招的前置技能 -------
     -- 如果前置技能进入cd，且距离使用它的时间刚刚过去delta时间之内，则可以试试是否能马上切或放下一个连招技能
-    local deltaTime = 1
+    local deltaTime = 2
     
 
     -- 火的等级大于4级优先考虑陨石连招
     if Exort:GetLevel() >= 4 then
-        TornadoDesire, TornadoLocation = X.ConsiderTornado()
-        if TornadoDesire > 0 then X.CastInvokerSpell(Tornado, TornadoLocation) return end
+        -- TornadoDesire, TornadoLocation = X.ConsiderTornado()
+        -- if TornadoDesire > 0 then X.CastInvokerSpell(Tornado, TornadoLocation) return end
 
         ChaosMeteorDesire, ChaosMeteorLocation = X.ConsiderChaosMeteor()
         if ChaosMeteorDesire > 0 then X.CastInvokerSpell(ChaosMeteor, ChaosMeteorLocation) return end
@@ -586,12 +586,11 @@ end
 function X.CanUseRefresherShard()
     local ChaosMeteorMana = ChaosMeteor:GetManaCost()
     local SunstrikeMana = Sunstrike:GetManaCost()
-    
-    local ssPer = Sunstrike:GetCooldownTimeRemaining()/Sunstrike:GetCooldown()
-    local cmPer = ChaosMeteor:GetCooldownTimeRemaining()/ChaosMeteor:GetCooldown()
+
 	local nInRangeEnmyList = bot:GetNearbyHeroes( 1000, true, BOT_MODE_NONE )
 
-    if ssPer >= 0.5 and ssPer <= 0.95 -- 不想马上就刷新因为可能可以再连一些技能，或者技能已经快好了
+    if Sunstrike:GetCooldownTimeRemaining() >= 10 -- 技能快好了的话没必要刷新
+    and Sunstrike:GetCooldownTimeRemaining()/Sunstrike:GetCooldown() <= 0.95 -- 不想马上就刷新因为可能可以再连一些技能，或者技能已经快好了
     and X.IsAbilityAvailableOnSlots(Sunstrike)
     and bot:GetMana() >= (SunstrikeMana * 2 + SunstrikeMana) then
         local cataclysmDesire, _ = X.GoodTimeToUseCataclysmGlobally()
@@ -600,9 +599,11 @@ function X.CanUseRefresherShard()
             end
     end
     
-    if cmPer >= 0.5 and cmPer <= 0.95
+    if ChaosMeteor:GetCooldownTimeRemaining() >= 10 -- 技能快好了的话没必要刷新
+    and ChaosMeteor:GetCooldownTimeRemaining()/ChaosMeteor:GetCooldown() <= 0.9 -- 不想马上就刷新因为可能可以再连一些技能，或者技能已经快好了
+    and X.IsAbilityAvailableOnSlots(ChaosMeteor)
     and #nInRangeEnmyList > 0
-    and ( J.IsGoingOnSomeone( bot ) or J.IsInTeamFight( bot ) ) 
+    and ( J.IsGoingOnSomeone( bot ) or J.IsInTeamFight( bot ) )
     and bot:GetMana() >= (ChaosMeteorMana * 2 + ChaosMeteorMana) then
         return true
     end
@@ -644,7 +645,13 @@ end
 
 -- cast/use a spell available on the slots
 function X.CastInvokerSpell(ability, target)
-    local abilityName = ability:GetName()
+    local abilityName
+    if type(ability) == "string" and ability == 'Cataclysm' then
+        abilityName = ability
+    else
+        abilityName = ability:GetName()
+    end
+    
     -- print(DotaTime()..' - Invoker checking to cast '..abilityName) -- can be annoying since this line gets printed a lot if e.g. no enough mana or before invoker trains all elements
 
     if X.IsAbilityReadyForInvoke(ability) then
@@ -657,6 +664,9 @@ function X.CastInvokerSpell(ability, target)
         if ability == ForgeSpirit
             or ability == IceWall
             or ability == GhostWalk then
+                if ability == GhostWalk then
+                    bot:Action_ClearActions(true)
+                end
                 bot:ActionPush_UseAbility(ability)
         elseif ability == DeafeningBlast
             or ability == Sunstrike
@@ -714,8 +724,6 @@ function X.ConsiderColdSnap()
         and J.IsInRange(bot, botTarget, nCastRange + castDeltaRange)
         and not J.IsSuspiciousIllusion(botTarget)
         and not botTarget:HasModifier('modifier_abaddon_borrowed_time')
-        and not botTarget:HasModifier('modifier_faceless_void_chronosphere_freeze')
-        and not botTarget:HasModifier('modifier_enigma_black_hole_pull')
 		then
             local nInRangeAlly = botTarget:GetNearbyHeroes(1400, true, BOT_MODE_NONE)
             local nInRangeEnemy = botTarget:GetNearbyHeroes(1400, false, BOT_MODE_NONE)
@@ -789,14 +797,11 @@ function X.ConsiderGhostWalk()
         return BOT_ACTION_DESIRE_NONE
     end
 
-    if J.IsRetreating(bot) and (bot:DistanceFromFountain() > 1000 or bot:HasModifier('modifier_teleporting'))
+    if (J.IsRetreating(bot) or J.GetHP(bot) <= 0.15) and (bot:DistanceFromFountain() > 800 or bot:HasModifier('modifier_teleporting'))
     then
-        local nInRangeAlly = bot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
         local nInRangeEnemy = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
 
-        if bot:WasRecentlyDamagedByAnyHero(2)
-        and ((nInRangeAlly == nil or #nInRangeAlly == 0)
-        or (nInRangeEnemy ~= nil and #nInRangeEnemy >= #nInRangeAlly))
+        if bot:WasRecentlyDamagedByAnyHero(3) and nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
         then
             return BOT_ACTION_DESIRE_HIGH
         end
@@ -1161,7 +1166,7 @@ function X.ConsiderAlacrity()
 		end
 	end
 
-    if J.IsGoingOnSomeone(bot) or J.IsLaning( bot )
+    if J.IsGoingOnSomeone(bot)
 	then
 		if J.IsValidTarget(botTarget)
         and J.CanBeAttacked(botTarget)
@@ -1171,7 +1176,10 @@ function X.ConsiderAlacrity()
         and not botTarget:HasModifier('modifier_dazzle_shallow_grave')
         and not botTarget:HasModifier('modifier_necrolyte_reapers_scythe')
 		then
+            local nInRangeEnemy = bot:GetNearbyHeroes(1000, true, BOT_MODE_NONE)
             if J.IsInRange(suitableTarget, botTarget, 1200)
+            and ((nInRangeEnemy ~= nil and #nInRangeEnemy >=2 and not X.IsAbilityPossiblyBeCasted(ChaosMeteor)) -- 如果附近多人, 优先考虑陨石
+                or (nInRangeEnemy == nil or #nInRangeEnemy <= 1)) -- 如果附近就一个敌人
             then
                 return BOT_ACTION_DESIRE_HIGH, suitableTarget
             end
@@ -1235,7 +1243,7 @@ function X.ConsiderAlacrity()
     and suitableTarget ~= nil
 	then
 		if J.IsRoshan(botTarget)
-        and J.IsAttacking(suitableTarget)
+        and J.IsInRange(suitableTarget, botTarget, 1000)
 		then
 			return BOT_ACTION_DESIRE_HIGH, suitableTarget
 		end
@@ -1245,7 +1253,7 @@ function X.ConsiderAlacrity()
     and suitableTarget ~= nil
 	then
 		if  J.IsTormentor(botTarget)
-        and J.IsAttacking(suitableTarget)
+        and J.IsInRange(suitableTarget, botTarget, 1000)
 		then
 			return BOT_ACTION_DESIRE_HIGH, suitableTarget
 		end
@@ -1260,10 +1268,11 @@ function X.ConsiderChaosMeteor()
         return BOT_ACTION_DESIRE_NONE, 0
     end
 
-	local nCastRange = J.GetProperCastRange(false, bot, ChaosMeteor:GetCastRange())
+	local nCastRange = ChaosMeteor:GetCastRange() + 300
     local nCastPoint = ChaosMeteor:GetCastPoint()
     local nLandTime = ChaosMeteor:GetSpecialValueFloat('land_time')
 	local nRadius = ChaosMeteor:GetSpecialValueInt('area_of_effect')
+    local nManaCost = ChaosMeteor:GetManaCost()
 
         
     local nInRangeEnemy = bot:GetNearbyHeroes(1400, true, BOT_MODE_NONE)
@@ -1284,7 +1293,10 @@ function X.ConsiderChaosMeteor()
         or enemyHero:IsChanneling()
         or enemyHero:HasModifier('modifier_enigma_black_hole_pull')
         or enemyHero:HasModifier('modifier_faceless_void_chronosphere_freeze')
-        or J.IsTaunted(enemyHero) or J.GetHP(enemyHero) <= 0.75) then
+        or enemyHero:HasModifier('modifier_magnataur_reverse_polarity')
+        or enemyHero:HasModifier('modifier_tidehunter_ravage')
+        or J.IsTaunted(enemyHero)
+        or J.GetHP(enemyHero) <= 0.75) then
 
             -- if hero is under temp damage immute control
             local nDelay = nLandTime
@@ -1327,41 +1339,28 @@ function X.ConsiderChaosMeteor()
                 return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
             end
 
-            if J.IsValidHero(botTarget) then
-                local nInRangeAlly = botTarget:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
-                local nInRangeEnemy = botTarget:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
-
-                if (nInRangeAlly ~= nil and #nInRangeAlly >= 1)
-                or (nInRangeEnemy ~= nil and nInRangeAlly ~= nil and #nInRangeAlly >= #nInRangeEnemy)
-                or (nInRangeEnemy ~= nil and #nInRangeEnemy <= 2)
-                then
-                    if J.IsRunning(botTarget) then
-                        return BOT_ACTION_DESIRE_HIGH, botTarget:GetExtrapolatedLocation(nLandTime + nCastPoint)
-                    else
-                        return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
-                    end
-                    
-                end
+            if J.IsRunning(botTarget) then
+                return BOT_ACTION_DESIRE_HIGH, botTarget:GetExtrapolatedLocation(nLandTime + nCastPoint)
             else
-                if J.IsRunning(botTarget) then
-                    return BOT_ACTION_DESIRE_HIGH, botTarget:GetExtrapolatedLocation(nLandTime + nCastPoint)
-                else
-                    return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
+                if J.IsValidHero(botTarget) then
+                    local nLocationAoE = bot:FindAoELocation(true, true, bot:GetLocation(), nCastRange, nRadius + 300, nLandTime + nCastPoint, 0)
+                    if  nLocationAoE.count >= 2 then
+                        local realEnemyCount = J.GetEnemiesNearLoc(nLocationAoE.targetloc, nRadius + 300)
+                        if realEnemyCount ~= nil and #realEnemyCount >= 1 then
+                            return BOT_ACTION_DESIRE_HIGH, nLocationAoE.targetloc
+                        end
+                    end
                 end
+                return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
             end
-
 		end
 	end
 
     if J.IsInTeamFight(bot) then
-        local nLocationAoE = bot:FindAoELocation(true, true, bot:GetLocation(), nCastRange + 200, nRadius, nLandTime + nCastPoint, 0)
-
-        if  nLocationAoE.count >= 2
-        then
-            local realEnemyCount = J.GetEnemiesNearLoc(nLocationAoE.targetloc, nRadius)
-
-            if realEnemyCount ~= nil and #realEnemyCount >= 2
-            then
+        local nLocationAoE = bot:FindAoELocation(true, true, bot:GetLocation(), nCastRange, nRadius + 300, nLandTime + nCastPoint, 0)
+        if  nLocationAoE.count >= 2 then
+            local realEnemyCount = J.GetEnemiesNearLoc(nLocationAoE.targetloc, nRadius + 300)
+            if realEnemyCount ~= nil and #realEnemyCount >= 2 then
                 return BOT_ACTION_DESIRE_HIGH, nLocationAoE.targetloc
             end
         end
@@ -1394,9 +1393,34 @@ function X.ConsiderChaosMeteor()
         end
     end
 
+	--推进时对小兵用
+	if ( J.IsPushing( bot ) or J.IsDefending( bot ) or J.IsFarming( bot ) )
+    and J.IsAllowedToSpam( bot, nManaCost * 0.32 )
+    and bot:GetLevel() <= 15
+    then
+        local laneCreepList = bot:GetNearbyLaneCreeps( 1400, true )
+        if #laneCreepList >= 5
+            and J.IsValid( laneCreepList[1] )
+            and not laneCreepList[1]:HasModifier( "modifier_fountain_glyph" )
+        then
+            local locationAoEHurt = bot:FindAoELocation( true, false, bot:GetLocation(), nCastRange, nRadius + 100, 0, 0 )
+            if locationAoEHurt.count >= 4
+            then
+                return BOT_ACTION_DESIRE_HIGH, locationAoEHurt.targetloc, "带线2"
+            end
+        end
+    end
+    
 	--对线
 	if J.IsLaning( bot )
 	then
+        
+		local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(1000, true)
+		if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 5
+        then
+			return BOT_ACTION_DESIRE_HIGH, bot
+		end
+
         local nInRangeEnemy = bot:GetNearbyHeroes(1400, true, BOT_MODE_NONE)
         local enemyHero
         if nInRangeEnemy ~= nil and #nInRangeEnemy <=2 and nInRangeEnemy[1] ~= nil then enemyHero = nInRangeEnemy[1] else return BOT_ACTION_DESIRE_NONE, nil end
@@ -1477,20 +1501,22 @@ function X.ConsiderCataclysm()
         for _, enemyHero in pairs(nInRangeEnemy)
         do
             if J.IsValidHero(enemyHero)
+            and not J.IsSuspiciousIllusion(enemyHero)
             and (enemyHero:IsStunned()
                 or enemyHero:IsRooted()
                 or enemyHero:IsHexed()
                 or enemyHero:IsNightmared()
                 or enemyHero:HasModifier('modifier_enigma_black_hole_pull')
                 or enemyHero:HasModifier('modifier_faceless_void_chronosphere_freeze'))
+                or enemyHero:HasModifier('modifier_magnataur_reverse_polarity')
+                or enemyHero:HasModifier('modifier_tidehunter_ravage')
                 or J.IsTaunted(enemyHero)
-            and not J.IsSuspiciousIllusion(enemyHero)
             then
                 nNotMovingEnemyCount = nNotMovingEnemyCount + 1
             end
         end
 
-        if nNotMovingEnemyCount >= 1
+        if nNotMovingEnemyCount >= 2
         then
             return BOT_ACTION_DESIRE_HIGH, 0
         end
@@ -1527,6 +1553,8 @@ function X.ConsiderCataclysm()
             or botTarget:IsNightmared()
             or botTarget:HasModifier('modifier_enigma_black_hole_pull')
             or botTarget:HasModifier('modifier_faceless_void_chronosphere_freeze')
+            or botTarget:HasModifier('modifier_magnataur_reverse_polarity')
+            or botTarget:HasModifier('modifier_tidehunter_ravage')
             or J.IsTaunted(botTarget))
         then
             return BOT_ACTION_DESIRE_HIGH, 0
@@ -1573,6 +1601,8 @@ function X.GoodTimeToUseCataclysmGlobally()
             or enemyHero:HasModifier('modifier_legion_commander_duel')
             or enemyHero:HasModifier('modifier_enigma_black_hole_pull')
             or enemyHero:HasModifier('modifier_faceless_void_chronosphere_freeze')
+            or enemyHero:HasModifier('modifier_magnataur_reverse_polarity')
+            or enemyHero:HasModifier('modifier_tidehunter_ravage')
             or J.IsTaunted(enemyHero))
         then
             return BOT_ACTION_DESIRE_HIGH, 0
@@ -1624,6 +1654,8 @@ function X.ConsiderSunstrike()
             or enemyHero:IsChanneling()
             or enemyHero:HasModifier('modifier_enigma_black_hole_pull')
             or enemyHero:HasModifier('modifier_faceless_void_chronosphere_freeze')
+            or enemyHero:HasModifier('modifier_magnataur_reverse_polarity')
+            or enemyHero:HasModifier('modifier_tidehunter_ravage')
             or J.IsTaunted(enemyHero)
             then
                 return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation()
@@ -1652,7 +1684,9 @@ function X.ConsiderSunstrike()
         and (enemyHero:HasModifier('modifier_bane_fiends_grip')
         or enemyHero:HasModifier('modifier_legion_commander_duel')
         or enemyHero:HasModifier('modifier_enigma_black_hole_pull')
-        or enemyHero:HasModifier('modifier_faceless_void_chronosphere_freeze')) then
+        or enemyHero:HasModifier('modifier_faceless_void_chronosphere_freeze'))
+        or enemyHero:HasModifier('modifier_magnataur_reverse_polarity')
+        or enemyHero:HasModifier('modifier_tidehunter_ravage') then
             return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation()
         end
         
@@ -1839,15 +1873,17 @@ function X.ConsiderIceWall()
             end
         end
         
-        local nInRangeEnemy = botTarget:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
-        for _, enemyHero in pairs(nInRangeEnemy) do
-            if J.IsValidHero(enemyHero)
-            and J.CanCastOnNonMagicImmune(enemyHero)
-            and J.IsInRange(bot, enemyHero, nCastRange) then
-                if J.IsRunning(enemyHero) then
-                    return BOT_ACTION_DESIRE_HIGH, enemyHero:GetExtrapolatedLocation(1)
-                else
-                    return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation()
+        local nInRangeEnemy = bot:GetNearbyHeroes(1000, true, BOT_MODE_NONE)
+        if nInRangeEnemy ~= nil then
+            for _, enemyHero in pairs(nInRangeEnemy) do
+                if J.IsValidHero(enemyHero)
+                and J.CanCastOnNonMagicImmune(enemyHero)
+                and J.IsInRange(bot, enemyHero, nCastRange) then
+                    if J.IsRunning(enemyHero) then
+                        return BOT_ACTION_DESIRE_HIGH, enemyHero:GetExtrapolatedLocation(1)
+                    else
+                        return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation()
+                    end
                 end
             end
         end
@@ -1933,11 +1969,9 @@ function X.ConsiderDeafeningBlast()
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
         and not J.IsSuspiciousIllusion(botTarget)
-        and not J.IsDisabled(botTarget)
+        and (not J.IsDisabled(botTarget) or botTarget:HasModifier('modifier_invoker_chaos_meteor_burn'))
         and not botTarget:HasModifier('modifier_brewmaster_storm_cyclone')
-        and not botTarget:HasModifier('modifier_enigma_black_hole_pull')
         and not botTarget:HasModifier('modifier_eul_cyclone')
-        and not botTarget:HasModifier('modifier_faceless_void_chronosphere_freeze')
         and not botTarget:HasModifier('modifier_necrolyte_reapers_scythe')
 		then
             -- if hero is already under control
@@ -1952,20 +1986,10 @@ function X.ConsiderDeafeningBlast()
                 return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
             end
 
-
-
-            local nInRangeAlly = botTarget:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
-            local nInRangeEnemy = botTarget:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
-            
-            if (nInRangeAlly ~= nil and #nInRangeAlly >= 1)
-            or (nInRangeAlly ~= nil and nInRangeEnemy ~= nil and #nInRangeAlly >= #nInRangeEnemy)
-            or (nInRangeEnemy == nil or nInRangeEnemy ~= nil and #nInRangeEnemy <= 2)
-            then
-                if J.IsRunning(botTarget) then
-                    return BOT_ACTION_DESIRE_HIGH, botTarget:GetExtrapolatedLocation(nDelay)
-                end
-                return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
+            if J.IsRunning(botTarget) then
+                return BOT_ACTION_DESIRE_HIGH, botTarget:GetExtrapolatedLocation(nDelay)
             end
+            return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
 		end
 	end
     
@@ -2006,11 +2030,8 @@ function X.ConsiderDeafeningBlast()
         and not J.IsSuspiciousIllusion(nInRangeEnemy[1])
         and not J.IsDisabled(nInRangeEnemy[1])
         and not nInRangeEnemy[1]:HasModifier('modifier_brewmaster_storm_cyclone')
-        and not nInRangeEnemy[1]:HasModifier('modifier_enigma_black_hole_pull')
         and not nInRangeEnemy[1]:HasModifier('modifier_eul_cyclone')
-        and not nInRangeEnemy[1]:HasModifier('modifier_faceless_void_chronosphere_freeze')
         and not nInRangeEnemy[1]:HasModifier(modifier_invoker_tornado)
-        and not nInRangeEnemy[1]:HasModifier('modifier_legion_commander_duel')
         and not nInRangeEnemy[1]:HasModifier('modifier_necrolyte_reapers_scythe')
 		then
             local nInRangeAlly = nInRangeEnemy[1]:GetNearbyHeroes(1200, true, BOT_MODE_NONE)

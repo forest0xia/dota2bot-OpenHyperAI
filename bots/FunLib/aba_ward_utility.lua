@@ -6,8 +6,9 @@ local nVisionRadius = 1600
 
 -- Radiant Warding Spots
 -- Game Start
-local RADIANT_GAME_START_1 = Vector(-250, -1089, 128)
-local RADIANT_GAME_START_2 = Vector(2026, -3903, 128)
+local RADIANT_GAME_START_1 = Vector(-300, -1200, 128) -- radiant mid lane bot right
+local RADIANT_GAME_START_1_2 = Vector(-1350, -360, 128) -- radiant mid lane top left
+local RADIANT_GAME_START_2 = Vector(2026, -3003, 128) -- radiant bot river to jungle enterance
 
 -- Laning Phase
 local RADIANT_LANE_PHASE_1 = Vector(2306, -3001, 128)
@@ -16,11 +17,13 @@ local RADIANT_LANE_PHASE_3 = Vector(-3556, 6446, 128)
 
 -- Dire Warding Spots
 -- Game Start
-local DIRE_GAME_START_1 = Vector(-491, 303, 128)
-local DIRE_GAME_START_2 = Vector(-7045, 4110, 128)
+local DIRE_GAME_START_1 = Vector(-491, 303, 128) -- dire mid lane top left
+local DIRE_GAME_START_1_2 = Vector(800, -400, 128) -- dire mid lane bot right
+local DIRE_GAME_START_2 = Vector(-4000, 4000, 128) -- dire top river enterance besides the first left jungle.
+-- local DIRE_GAME_START_2 = Vector(-3519, 3018, 128) -- dire top river enterance to jungle.
 
 -- Laning Phase
-local DIRE_LANE_PHASE_1 = Vector(-5217, 2501, 128)
+local DIRE_LANE_PHASE_1 = Vector(-5217, 2501, 128) -- radian ward near t1 on the left side of the river top left enterance.
 local DIRE_LANE_PHASE_2 = Vector(-2462, 1534, 0)
 local DIRE_LANE_PHASE_3 = Vector(3851, -4636, 353)
 
@@ -103,14 +106,14 @@ local InvadeWardSpotDeadEnemyTowerDire = {
 					},
 
 	[TOWER_TOP_2] = {
-						Vector( 462, 4408, 128),
+						Vector( 462, 4408, 128), -- dire t2上半区野区高台眼
 						Vector(  50, 8668, 512),
 						Vector(3069, 6554, 256),
 						Vector(2334, 4270, 128),
 					},
 	[TOWER_MID_2] = {
-						Vector(4610,  759, 527),
-						Vector(3400,  986, 256),
+						Vector(4610,  759, 527), -- dire t2下半区野区高台眼
+						Vector(3400,  700, 256), -- dire t2下半区野区北部入口
 						Vector(1048, 3313, 399),
 						Vector(4590, 2915, 256),
 					},
@@ -263,13 +266,26 @@ function X.GetLaningPhaseWardSpots()
 end
 
 function X.GetGameStartWardSpots()
+	local radianStartWard1
+	if (RandomInt(1, 2) >= 2) then
+		radianStartWard1 = RADIANT_GAME_START_1_2
+	else
+		radianStartWard1 = RADIANT_GAME_START_1
+	end
+
 	local WardSpotRadiant = {
-		RADIANT_GAME_START_1,
+		radianStartWard1,
 		RADIANT_GAME_START_2,
 	}
 
+	local direStartWard1
+	if (RandomInt(1, 2) >= 2) then
+		direStartWard1 = DIRE_GAME_START_1_2
+	else
+		direStartWard1 = DIRE_GAME_START_1
+	end
 	local WardSpotDire = {
-		DIRE_GAME_START_1,
+		direStartWard1,
 		DIRE_GAME_START_2,
 	}
 

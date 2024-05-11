@@ -35,7 +35,10 @@ local bePvNMode = false
 local DroppedShardTime = -90
 local DroppedCheeseTime = -90
 local SwappedCheeseTime = -90
+local SwappedClarityTime = -90
+local SwappedFlaskTime = -90
 local SwappedRefresherShardTime = -90
+local SwappedMoonshardTime = -90
 local PickedItem = nil
 
 local ShouldAttackSpecialUnit = false
@@ -124,6 +127,10 @@ function GetDesire()
 	TrySwapInvItemForCheese()
 
 	TrySwapInvItemForRefresherShard()
+
+	TrySwapInvItemForClarity()
+	TrySwapInvItemForFlask()
+	TrySwapInvItemForMoonshard()
 
 	if J.Role['bStopAction'] then return 2.0 end
 
@@ -1853,6 +1860,7 @@ function X.ShouldNotRetreat(bot)
 	if  ( bot:HasModifier("modifier_item_mask_of_madness_berserk")
 			or bot:HasModifier("modifier_oracle_false_promise_timer") )
 		and ( #nAttackAlly >= 1 or J.GetHP(bot) > 0.6 )
+		and (bot:WasRecentlyDamagedByAnyHero(1) or bot:WasRecentlyDamagedByTower(1))
 	then
 		return true;
 	end		
@@ -1865,6 +1873,7 @@ function X.ShouldNotRetreat(bot)
 	
 	if ( botName == "npc_dota_hero_medusa" 
 	     or bot:FindItemSlot("item_abyssal_blade") >= 0 )
+		 and (bot:WasRecentlyDamagedByAnyHero(1) or J.GetHP(bot) > 0.2 or bot:WasRecentlyDamagedByTower(1))
 		and #nAllies >= 3 and #nAttackAlly >= 1
 	then
 		return true;
@@ -2220,6 +2229,63 @@ function TryPickupCheese()
 	end
 
 	return BOT_ACTION_DESIRE_NONE
+end
+
+-- Swap Items for healing
+function TrySwapInvItemForClarity()
+	if 	DotaTime() >= SwappedClarityTime + 6.0
+	and bot:GetActiveMode() ~= BOT_MODE_WARD 
+	then
+		local cSlot = bot:FindItemSlot('item_clarity')
+		if cSlot and bot:GetItemSlotType(cSlot) == ITEM_SLOT_TYPE_BACKPACK
+		then
+			local lessValItem = J.Item.GetMainInvLessValItemSlot(bot)
+
+			if lessValItem ~= -1
+			then
+				bot:ActionImmediate_SwapItems(cSlot, lessValItem)
+			end
+		end
+
+		SwappedClarityTime = DotaTime()
+	end
+end
+function TrySwapInvItemForFlask()
+	if 	DotaTime() >= SwappedFlaskTime + 6.0
+	and bot:GetActiveMode() ~= BOT_MODE_WARD 
+	then
+		local cSlot = bot:FindItemSlot('item_flask')
+		if cSlot and bot:GetItemSlotType(cSlot) == ITEM_SLOT_TYPE_BACKPACK
+		then
+			local lessValItem = J.Item.GetMainInvLessValItemSlot(bot)
+
+			if lessValItem ~= -1
+			then
+				bot:ActionImmediate_SwapItems(cSlot, lessValItem)
+			end
+		end
+
+		SwappedFlaskTime = DotaTime()
+	end
+end
+
+-- Swap Items for moonshard
+function TrySwapInvItemForMoonshard()
+	if DotaTime() >= SwappedMoonshardTime + 10.0
+	and bot:GetActiveMode() ~= BOT_MODE_WARD 
+	then
+		local cSlot = bot:FindItemSlot('item_moon_shard')
+		if cSlot and bot:GetItemSlotType(cSlot) == ITEM_SLOT_TYPE_BACKPACK
+		then
+			local lessValItem = J.Item.GetMainInvLessValItemSlot(bot)
+
+			if lessValItem ~= -1
+			then
+				bot:ActionImmediate_SwapItems(cSlot, lessValItem)
+			end
+		end
+		SwappedMoonshardTime = DotaTime()
+	end
 end
 
 -- Swap Items for Cheese

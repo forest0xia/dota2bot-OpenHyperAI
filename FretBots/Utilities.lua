@@ -229,9 +229,7 @@ end
 
 -- Emits a random sound from a table
 function Utilities:RandomSound(sound)
-	if (Utilities.CanPlaySound()) then
-		EmitGlobalSound(sound[math.random(#sound)])
-	end
+	Utilities:ActuallyPlaySound(sound[math.random(#sound)])
 end
 
 -- Plays a specific sound
@@ -240,9 +238,7 @@ end
 function Utilities:PlaySound(sound)
 	local s = string.upper(sound)
 	if Sounds[s] ~= nil then
-		if (Utilities.CanPlaySound()) then
-			EmitGlobalSound(Sounds[s])
-		end
+		Utilities:ActuallyPlaySound(Sounds[s])
 	else
 		Utilities:Print('Sound not found: '..s)
 	end
@@ -251,9 +247,7 @@ end
 -- Plays an arbitrary sound. Note that if you pass a sound that doesn't exist dota
 -- will crash to desktop.  Use carefully.
 function Utilities:TestSound(sound)
-	if (Utilities.CanPlaySound()) then
-		EmitGlobalSound(sound)
-	end
+	Utilities:ActuallyPlaySound(sound)
 end
 
 function Utilities:CanPlaySound()
@@ -270,11 +264,20 @@ end
 -- Plays a cheat detected sound
 function Utilities:CheatWarning()
 	if Sounds['CHEAT'] ~= nil then
-		if (Utilities.CanPlaySound()) then
-			EmitGlobalSound(Sounds['CHEAT'])
-		end
+		Utilities:ActuallyPlaySound(Sounds['CHEAT'])
 	end
 end
+
+function Utilities:ActuallyPlaySound(sound)
+	local success, result = pcall(function()
+        if (Utilities.CanPlaySound()) then
+			EmitGlobalSound(sound)
+		end
+		return true
+    end)
+	return result
+end
+
 -- clamps a number
 function Utilities:Clamp(number, minimum, maximum)
 	if number < minimum then return minimum end

@@ -57,7 +57,7 @@
 - In the first 5 minutes, don't roam, especially as a mid-laner.
 - If being attacked by a tower, and there's a small creep nearby, and all are within tower range, attack the enemy's small creep.
 - If no enemy heroes nearby and your side's status is below 75, don't get attacked by the tower.
-- Carry large HP and mana potions. Swap slots.
+
 - Random ward locations.
 - If Carl, don't use Ashes to heal, even if very low on health, unless there are many charges.
 - Roshan cannot be seen. Check Roshan's status only when within attack range.
@@ -84,3 +84,5 @@
 - [updated, need to test] Don't kill couriers if bot is targeting a dieing hero or is retreating.
 - [updated, need to test] Don't focus on some minions over heroes.
 - Bots won't stay on some ability effects for lone. e.g. jakiro_macropyre_burn, dark_seer_wall, sandking_sand_storm, warlock_upheaval, etc. Bots have the intension to run away from those effects.
+- Carry large HP and mana potions. Swap slots.
+- Swap slots to use moonshard

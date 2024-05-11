@@ -416,21 +416,22 @@ function X.OverrideTeamHeroes()
 		    -- [4] = "npc_dota_hero_earth_spirit",
 			-- [5] = "npc_dota_hero_lich",
 			
-			[1] = "npc_dota_hero_invoker",
-			[2] = 'npc_dota_hero_enigma',
-			[3] = "npc_dota_hero_meepo",
-		    [4] = "npc_dota_hero_lich",
-			[5] = "npc_dota_hero_techies",
+			-- [1] = "npc_dota_hero_invoker",
+			-- [2] = 'npc_dota_hero_enigma',
+			-- [3] = "npc_dota_hero_meepo",
+		    -- [4] = "npc_dota_hero_lich",
+			-- [5] = "npc_dota_hero_techies",
 
 
 			-- Test buggy heroes:
-			-- [1] = "npc_dota_hero_invoker",
-			-- -- [2] = 'npc_dota_hero_enigma',
+			[1] = "npc_dota_hero_invoker",
+			-- [2] = 'npc_dota_hero_enigma',
+			[2] = 'npc_dota_hero_skeleton_king',
 			-- [2] = tSelectPoolList[2][RandomInt( 1, #tSelectPoolList[2] )],
-			-- -- [3] = 'npc_dota_hero_muerta',
-			-- [3] = tSelectPoolList[3][RandomInt( 1, #tSelectPoolList[3] )],
-			-- [4] = tSelectPoolList[4][RandomInt( 1, #tSelectPoolList[4] )],
-			-- [5] = tSelectPoolList[5][RandomInt( 1, #tSelectPoolList[5] )],
+			-- [3] = 'npc_dota_hero_muerta',
+			[3] = tSelectPoolList[3][RandomInt( 1, #tSelectPoolList[3] )],
+			[4] = tSelectPoolList[4][RandomInt( 1, #tSelectPoolList[4] )],
+			[5] = tSelectPoolList[5][RandomInt( 1, #tSelectPoolList[5] )],
 
 			-- [1] = tSelectPoolList[1][RandomInt( 1, #tSelectPoolList[1] )],
 			-- [2] = tSelectPoolList[2][RandomInt( 1, #tSelectPoolList[2] )],
@@ -452,7 +453,7 @@ end
 -- 这行代码为了人工挑选想要的阵容。如果想让电脑自己随机英雄，则注释掉这行
 sSelectList = X.OverrideTeamHeroes()
 
-nDireFirstLaneType = math.random(1, 5)
+nDireFirstLaneType = RandomInt(2, 5)
 if nDireFirstLaneType ~= 1 and GetTeam() == TEAM_DIRE
 then
 	sSelectList[1], sSelectList[nDireFirstLaneType] = sSelectList[nDireFirstLaneType], sSelectList[1]

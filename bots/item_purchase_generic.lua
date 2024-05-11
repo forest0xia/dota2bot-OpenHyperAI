@@ -348,8 +348,9 @@ function ItemPurchaseThink()
 	end
 
 	--买小净化
-	if currentTime <= 900
-	and J.GetMP(bot) < 0.4
+	if botLevel < 15
+	and J.GetMP(bot) < 0.3
+	and bot:DistanceFromFountain() > 2000
 	and GetItemStockCount('item_clarity') > 1
 	and Item.GetItemCharges(bot, 'item_clarity') <= 0
 	and botGold >= GetItemCost( "item_clarity" )
@@ -384,7 +385,7 @@ function ItemPurchaseThink()
 	-- Init Healing Items in Lane; works for now
 	if J.IsInLaningPhase()
 	then
-		if  botLevel < 6
+		if botLevel < 6
 		and bot:IsAlive()
 		and bot:FindItemSlot('item_flask') < 0
 		and bot:FindItemSlot('item_tango') < 0

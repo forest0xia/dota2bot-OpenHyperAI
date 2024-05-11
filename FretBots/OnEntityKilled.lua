@@ -15,6 +15,8 @@ require 'FretBots.GameState'
 -- local debug flag
 local thisDebug = false;
 local isDebug = Debug.IsDebug() and thisDebug;
+local RADIANT			= 2
+local DIRE				= 3
 
 -- Instantiate ourself
 if EntityKilled == nil then
@@ -66,12 +68,17 @@ function EntityKilled:GetEntityKilledEventData(event)
         if killer == nil or killer.stats == nil or killer.stats.isBot then return end
 
 		-- TODO: check if victim is SNK or was with SNK's ult available - the first death was not a real death don't modify real player gold.
-		if victim:GetUnitName() == 'npc_dota_hero_skeleton_king' then return end
+		-- if victim:GetUnitName() == 'npc_dota_hero_skeleton_king' then return end
+		if victim:HasModifier("modifier_skeleton_king_reincarnation") or victim:HasModifier("modifier_aegis_regen") then
+			print("Entity got killde, but not truly dead yet.")
+			return
+		end
 
-        local goldPerLevel = -30
+
+        local goldPerLevel = -23
         local heroLevel = victim:GetLevel()
         -- 基于基础惩罚，死亡单位的等级，和难度来确定惩罚额度
-        local goldBounty = math.floor(goldPerLevel * heroLevel/4 * (Settings.difficultyScale * 3) - math.random(1, 50))
+        local goldBounty = math.floor(goldPerLevel * heroLevel/4 * (Settings.difficultyScale * 3) - math.random(1, 30))
         -- 给予击杀者赏金
         killer:ModifyGold(goldBounty, true, DOTA_ModifyGold_HeroKill)
         local msg = 'Balance Killer Award to ' .. PlayerResource:GetPlayerName(killer:GetPlayerID())..' for the kill. Gold: ' .. goldBounty
