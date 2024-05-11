@@ -4022,7 +4022,6 @@ function Chat.GetChatTableString( nIndex, bAllChat )
 end
 
 
-
 function Chat.GetReplyString( sString, bAllChat )
 
 	local sReplyString = nil
@@ -4033,15 +4032,14 @@ function Chat.GetReplyString( sString, bAllChat )
 	then
 		sReplyString = Chat.GetChatTableString( nIndex, bAllChat )
 	else
-		--print( sString )
 		sReplyString = Chat.GetCheaterReplyString( sString )
 		if sReplyString == nil
 		then
 			sReplyString = Chat.GetRepeatString( sString )
 			if sReplyString == nil or RandomInt( 1, 99 ) > 88
 			then
-				sReplyString = "目前还没有这句话的回答, 快来群里设计吧."
-				if bAllChat then sReplyString = "不知道你在说什么" end
+				sReplyString = "Okok."
+				if bAllChat then sReplyString = "Interesting" end
 			end
 		else
 			return nil
@@ -4094,6 +4092,7 @@ function Chat.GetRepeatString( sString )
 	sString = string.gsub( sString, "吗", sMaReplyWord )
 	sString = string.gsub( sString, "吧", "啊" )
 	sString = string.gsub( sString, "？", "！" )
+	sString = string.gsub( sString, "?", "!" )
 	sString = string.gsub( sString, "我", "你" )
 
 	return sString ~= sRawString and sString or nil

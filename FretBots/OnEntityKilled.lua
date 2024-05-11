@@ -70,10 +70,9 @@ function EntityKilled:GetEntityKilledEventData(event)
 		-- TODO: check if victim is SNK or was with SNK's ult available - the first death was not a real death don't modify real player gold.
 		-- if victim:GetUnitName() == 'npc_dota_hero_skeleton_king' then return end
 		if victim:HasModifier("modifier_skeleton_king_reincarnation") or victim:HasModifier("modifier_aegis_regen") then
-			print("Entity got killde, but not truly dead yet.")
+			print("Entity got killed, but not truly dead yet.")
 			return
 		end
-
 
         local goldPerLevel = -23
         local heroLevel = victim:GetLevel()

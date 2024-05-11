@@ -1395,18 +1395,22 @@ function X.ConsiderChaosMeteor()
 
 	--推进时对小兵用
 	if ( J.IsPushing( bot ) or J.IsDefending( bot ) or J.IsFarming( bot ) )
-    and J.IsAllowedToSpam( bot, nManaCost * 0.32 )
+    and J.IsAllowedToSpam( bot, nManaCost * 0.8 )
     and bot:GetLevel() <= 15
     then
-        local laneCreepList = bot:GetNearbyLaneCreeps( 1400, true )
-        if #laneCreepList >= 5
-            and J.IsValid( laneCreepList[1] )
-            and not laneCreepList[1]:HasModifier( "modifier_fountain_glyph" )
-        then
-            local locationAoEHurt = bot:FindAoELocation( true, false, bot:GetLocation(), nCastRange, nRadius + 100, 0, 0 )
-            if locationAoEHurt.count >= 4
+        local nInRangeAlly = bot:GetNearbyHeroes(1400, false, BOT_MODE_NONE)
+        local nInRangeEnemy = bot:GetNearbyHeroes(1400, true, BOT_MODE_NONE)
+        if (nInRangeAlly == nil or #nInRangeAlly == 0) and (nInRangeEnemy == nil or #nInRangeEnemy == 0) then
+            local laneCreepList = bot:GetNearbyLaneCreeps( 1400, true )
+            if #laneCreepList >= 5
+                and J.IsValid( laneCreepList[1] )
+                and not laneCreepList[1]:HasModifier( "modifier_fountain_glyph" )
             then
-                return BOT_ACTION_DESIRE_HIGH, locationAoEHurt.targetloc, "带线2"
+                local locationAoEHurt = bot:FindAoELocation( true, false, bot:GetLocation(), nCastRange, nRadius + 100, 0, 0 )
+                if locationAoEHurt.count >= 4
+                then
+                    return BOT_ACTION_DESIRE_HIGH, locationAoEHurt.targetloc, "带线"
+                end
             end
         end
     end

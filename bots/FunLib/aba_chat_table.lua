@@ -89,6 +89,7 @@ local tChatStringTable = {
 {{"？"},	{"?","“？”"},	{"¿"}},
 {{"你气不气"},	{"不气"},	{"？"}},
 {{"no"},	{"no no not like that"},	{"why not"}},
+{{"haha"},	{"have fun bot gaming huh"},	{"hahaha"}},
 {{"-respawn"},	{"额，别这样……"},	{"是不是玩不起！？"}},
 {{"-gold"},	{"唉，你这么玩很无聊哦"},	{"果然菜鸡靠外挂！！！"}},
 {{"-spawnneutrals"},	{"又一个打单机的……"},	{"你要再这样我们就退了！！你自己玩吧"}},
