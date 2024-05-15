@@ -1,9 +1,43 @@
-# Beginner-AI and Fretbots Enhanced
- A beta dota script. Derived from https://github.com/p6668/beginner-ai-and-fretbots which is based on three other bot scripts:
-- fretbots: https://github.com/fretmute/fretbots
-- beginner AI: https://steamcommunity.com/sharedfiles/filedetails/?id=1627071163
-- new heroes from: https://github.com/ryndrb/dota2bot
+### We love bot games!
+Thanks and kudos to all that contributed to make bot games fun and exciting.
+The goal of this script is to share the most up to date functionalities that we've implemented or fixed to keep the bot games challenging.
 
+This script is based on Valve's default bot script and many other people's work and their scripts. That being said, this is a partial override not completely take over bot script. It takes the advantages of some other existing bot scripts and aims to be a better off script than the existing ones. We hope the bot's decision making and team strategies are more effective and brings more joy to you.
+
+### Why it's enjoyable
+1. Support 115+ heroes. (I personally don't take much of credit for this because it's many peoples work to make this possible, what I did was improving existing ones). Kudos to Tinkering ABout (by ryndrb) for making a lot of improvements on recent hero supporting, as well as bots taking Tormentor.
+2. All supported heroes and play any position roles. Heroes will go to any lane they are assigned. The laning or pos of the hero is irrelevant to the pick order.
+3. Improved code structure general logic for decision making for ability and item usages as well as roaming and farming.
+4. Fixed tons of bugs that can cause bots to stay idle or cancel it's own channeling spells or stuck on weird state.
+
+### How to install this script?
+There is currently a bug where subscribing to recent bot scripts will NOT work when selecting them in the custom game lobby. They will revert back to default bots when you close out of the settings menu. In order to fix this, you must manually install this script:
+1. Subscribe to the bot.
+2. Navigate to \Steam\steamapps\workshop\content\570\3246316298
+3. Copy the contents of this folder.
+4. Navigate to \Steam\steamapps\common\dota 2 beta\game\dota\scripts\vscripts
+5. Create a folder called "bots" if you do not already have one (back this folder up if you already have another bot in here!).
+6. Paste all the contents you've copied into this folder.
+7. Create a lobby in Dota2, select "Local Dev Script" when you are choosing the bot script for teams. 
+8. Select "Local Host" as your server location or else this script will not load.
+(Note the above steps were shared by the author of PhalanxBot)
+
+### What's next
+1. This is a script mainly based on the code from Tinkering ABout (by ryndrb). But the code has diverged significantly due to some roles and item selection support, as well as the local support with Frebot. So the future maintenance will keep diverging.
+2. More heroes support.
+3. Better decision making on pushing and ganking.
+4. Better spell casting for certain heroes like Invoker, Rubick, etc.
+5. More code bug fixes.
+6. Better laning logic to avoid bots feeding too much in the early game.
+
+### Credits to
+- New beginner ai (by dota2jmz@163.com).
+- Tinkering ABout (by ryndrb: https://github.com/ryndrb/dota2bot or https://steamcommunity.com/sharedfiles/filedetails/?id=3139791706)
+- Ranked Matchmaking AI (by adamqqq)
+- fretbots (by fretmute)
+- BOT Experiment (by Furiospuppy)
+- ExtremePush (https://github.com/insraq/dota2bots)
+- All other bot script authors/contributors that had made bot scripts interesting.
 
 ### Useful resources:
 - Posts shared by Ranked Matchmaking AI author: https://www.adamqqq.com/ai/dota2-ai-devlopment-tutorial.html
@@ -69,9 +103,6 @@
 - Carl, if there are people nearby and you have very low health, retreat unconditionally. Because Carl's full-screen abilities will cancel previous retreat commands.
 - Bots won't immediately use items from their backpack. Better backpack managment needed to 1, swap items for e.g. healings and swap back when used.
 - Don't go to outpost alone or use smoke.
-
-
-
 
 
 ### Things fixed
