@@ -11,6 +11,16 @@ end
 local X = {}
 local bot = GetBot()
 
+--[[
+	Mode Desires - These can be useful for making sure all mode desires as using a common language for talking about their desire.
+	BOT_MODE_DESIRE_NONE - 0
+	BOT_MODE_DESIRE_VERYLOW - 0.1
+	BOT_MODE_DESIRE_LOW - 0.25
+	BOT_MODE_DESIRE_MODERATE - 0.5
+	BOT_MODE_DESIRE_HIGH - 0.75
+	BOT_MODE_DESIRE_VERYHIGH - 0.9
+	BOT_MODE_DESIRE_ABSOLUTE - 1.0
+]]
 
 function GetDesire()
 

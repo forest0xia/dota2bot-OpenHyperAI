@@ -73,8 +73,7 @@ X['sSellList'] = {}
 if sRole == "pos_2"
 then
     X['sSellList'] = Pos2SellList
-elseif sRole == "pos_3"
-then
+else
     X['sSellList'] = Pos3SellList
 end
 

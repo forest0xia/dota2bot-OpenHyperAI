@@ -147,14 +147,14 @@ function GetDesire()
 		return BOT_MODE_DESIRE_NONE;
 	end	
 
-	local nAttackAllys = J.GetSpecialModeAllies(bot,1600,BOT_MODE_ATTACK);
-	if #nAttackAllys > 0 and (not beVeryHighFarmer or bot:GetLevel() >= 16)
+	local nAttackAllys = J.GetSpecialModeAllies(bot,2600,BOT_MODE_ATTACK);
+	if #nAttackAllys > 0 and (not beVeryHighFarmer or bot:GetLevel() >= 18)
 	then
 		return BOT_MODE_DESIRE_NONE;
 	end	
 	
 	local nRetreatAllyList = bot:GetNearbyHeroes(1600,false,BOT_MODE_RETREAT);
-	if J.IsValid(nRetreatAllyList[1]) and (not beVeryHighFarmer or bot:GetLevel() >= 16)
+	if J.IsValid(nRetreatAllyList[1]) and (not beVeryHighFarmer or bot:GetLevel() >= 22)
 	   and nRetreatAllyList[1]:GetActiveModeDesire() > BOT_MODE_DESIRE_HIGH
 	then
 		return BOT_MODE_DESIRE_NONE;
@@ -162,7 +162,7 @@ function GetDesire()
 	
 	local nTeamFightLocation = J.GetTeamFightLocation(bot);
 	if nTeamFightLocation ~= nil 
-	   and ( not beVeryHighFarmer or bot:GetLevel() >= 15 )
+	   and ( not beVeryHighFarmer or bot:GetLevel() >= 20 )
 	   and GetUnitToLocationDistance(bot,nTeamFightLocation) < 2800
 	then
 		return BOT_MODE_DESIRE_NONE;
@@ -256,7 +256,7 @@ function GetDesire()
 	
 	local nAlliesCount = J.GetAllyCount(bot,1400);
 	if nAlliesCount >= 4
-	   or (bot:GetLevel() >= 20 and nAlliesCount >= 3)
+	   or (bot:GetLevel() >= 23 and nAlliesCount >= 3)
 	   or GetRoshanDesire() > BOT_MODE_DESIRE_VERYHIGH
 	then
 		local nNeutrals = bot:GetNearbyNeutralCreeps( bot:GetAttackRange() ); 
@@ -275,7 +275,7 @@ function GetDesire()
 		
 		local nNeutrals = bot:GetNearbyNeutralCreeps( bot:GetAttackRange() ); 
 		
-		if #nNeutrals == 0 and #nDefendAllies >= 2 and (not beVeryHighFarmer or bot:GetLevel() >= 13)
+		if #nNeutrals == 0 and #nDefendAllies >= 2 and (not beVeryHighFarmer or bot:GetLevel() >= 15)
 		then 
 		    teamTime = DotaTime();
 		end
@@ -298,7 +298,7 @@ function GetDesire()
 		if preferedCamp == nil then preferedCamp = J.Site.GetClosestNeutralSpwan(bot, availableCamp) end;
 		return BOT_MODE_DESIRE_HIGH;
 	end
-
+	
 	if GetGameMode() ~= GAMEMODE_MO 
 	and (J.Site.IsTimeToFarm(bot) or pushTime > DotaTime() - 8.0)
 	-- and J.Site.IsTimeToFarm(bot)

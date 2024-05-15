@@ -28,13 +28,6 @@ function MinionThink(hMinionUnit)
 	BotBuild.MinionThink(hMinionUnit)
 end
 
--- local origin_Think
--- if origin_Think == nil then
--- 	origin_Think = Think
--- end
-
 -- if botName == 'npc_dota_hero_muerta' then
 -- 	Think = BotBuild.Think
--- else
--- 	Think = origin_Think
 -- end

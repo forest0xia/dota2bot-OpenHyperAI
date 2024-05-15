@@ -9,22 +9,12 @@
 
 local J = {}
 
-local sDota2Version= '7.33'
-local sDebugVersion= '20230423ver1.9'
 local bDebugMode = ( 1 == 10 )
 local bDebugTeam = ( GetTeam() == TEAM_RADIANT )
 local sDebugHero = 'npc_dota_hero_luna'
 local tAllyIDList = GetTeamPlayers( GetTeam() )
 local tAllyHeroList = {}
 local tAllyHumanList = {}
-local nAllyTotalKill = 0
-local nAllyAverageLevel = 1
-local tEnemyIDList = GetTeamPlayers( GetOpposingTeam() )
-local tEnemyHeroList = {}
-local tEnemyHumanList = {}
-local nEnemyTotalKill = 0
-local nEnemyAverageLevel = 1
-
 
 local RB = Vector( -6619, -6336, 384 )
 local DB = Vector( 6928, 6372, 392 )
@@ -33,7 +23,6 @@ local roshanDireLoc = Vector(-7549, 7562, 1107)
 local RadiantTormentorLoc = Vector(-8075, -1148, 1000)
 local DireTormentorLoc = Vector(8132, 1102, 1000)
 local fKeepManaPercent = 0.39
-
 
 for i, id in pairs( tAllyIDList )
 do
@@ -805,7 +794,6 @@ function J.CanCastOnTargetAdvanced( npcTarget )
 			and ( not npcTarget:HasModifier( "modifier_dazzle_shallow_grave" ) or npcTarget:GetHealth() > 300 )
 
 end
-
 
 --加入时间后的进阶函数
 function J.CanCastUnitSpellOnTarget( npcTarget, nDelay )

@@ -74,7 +74,7 @@ function EntityKilled:GetEntityKilledEventData(event)
 			return
 		end
 
-        local goldPerLevel = -23
+        local goldPerLevel = -25
         local heroLevel = victim:GetLevel()
         -- 基于基础惩罚，死亡单位的等级，和难度来确定惩罚额度
         local goldBounty = math.floor(goldPerLevel * heroLevel/4 * (Settings.difficultyScale * 3) - math.random(1, 30))

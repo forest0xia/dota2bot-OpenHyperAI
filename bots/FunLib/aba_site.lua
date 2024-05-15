@@ -177,7 +177,6 @@ function Site.GetXUnitsTowardsLocation( hUnit, vLocation, nDistance )
 end
 
 
-
 function Site.GetNearestWatchTower( bot )
 
 	if GetUnitToUnitDistance( bot, nWatchTower_1 ) < GetUnitToUnitDistance( bot, nWatchTower_2 )
@@ -1072,7 +1071,21 @@ function Site.IsTimeToFarm( bot )
 	local botName = bot:GetUnitName()
 	local botNetWorth = bot:GetNetWorth()
 
-	--防止单独无用的推进
+	-- no desite for farming if it's already well farmed
+	if botNetWorth >= 30000 then return false end
+	if Site.IsModeTurbo() then
+		if (DotaTime() <= 25 * 60 and botNetWorth >= 22000)
+		or (DotaTime() >= 25 * 60 and botNetWorth >= 25000) then
+			return false
+		end
+	else
+		if DotaTime() <= 15 * 60 and botNetWorth >= 20000 then
+			return false
+		end
+	end
+
+
+	--防止单独无用的推进，宁可去打钱
 	if bot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT
 		or bot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID
 		or bot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP
@@ -1080,8 +1093,7 @@ function Site.IsTimeToFarm( bot )
 		local enemyAncient = GetAncient( GetOpposingTeam() )
 		local allyList = bot:GetNearbyHeroes( 1400, false, BOT_MODE_NONE )
 		local enemyAncientDistance = GetUnitToUnitDistance( bot, enemyAncient )
-		if  enemyAncientDistance < 2800
-		    and enemyAncientDistance > 1400
+		if enemyAncientDistance < 3000
 			and bot:GetActiveModeDesire() < BOT_MODE_DESIRE_HIGH
 			and #allyList <= 1
 		then
@@ -1091,7 +1103,6 @@ function Site.IsTimeToFarm( bot )
 		if Site.IsShouldFarmHero( bot )
 		then
 			if  bot:GetActiveModeDesire() < BOT_MODE_DESIRE_VERYHIGH
-				and enemyAncientDistance > 1600
 				and enemyAncientDistance < 5600
 				and #allyList <= 1
 			then

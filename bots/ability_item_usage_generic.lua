@@ -1951,6 +1951,13 @@ X.ConsiderItemDesire["item_force_staff"] = function( hItem )
 		return BOT_ACTION_DESIRE_NONE
 	end
 
+	-- 解开先知的树框。bug: 因为先知的树不是正常的树。GetNearbyTrees 不会返回先知的树
+	if bot:HasModifier('modifier_furion_sprout_damage') then
+		hEffectTarget = bot
+		sCastMotive = '解开先知的树框'..J.Chat.GetNormName( hEffectTarget )
+		return BOT_ACTION_DESIRE_HIGH, hEffectTarget, sCastType, sCastMotive
+	end
+
 	local hAllyList = J.GetAlliesNearLoc( bot:GetLocation(), 600 )
 	for _, npcAlly in pairs( hAllyList )
 	do
@@ -1987,7 +1994,7 @@ X.ConsiderItemDesire["item_force_staff"] = function( hItem )
 				end
 			end
 
-			if J.IsStuck( npcAlly )
+			if J.IsStuck( npcAlly ) or npcAlly:HasModifier('modifier_furion_sprout_damage')
 			then
 				hEffectTarget = npcAlly
 				sCastMotive = '队友卡地形了'..J.Chat.GetNormName( hEffectTarget )
@@ -3423,7 +3430,19 @@ X.ConsiderItemDesire["item_quelling_blade"] = function( hItem )
 	local hEffectTarget = nil
 	local sCastMotive = nil
 	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
-
+	
+	-- 解开先知的树框
+	if bot:HasModifier('modifier_furion_sprout_damage') then
+		local nearbyTrees = bot:GetNearbyTrees( 280 )
+		if nearbyTrees ~= nil and #nearbyTrees >= 8
+			and IsLocationVisible( GetTreeLocation( nearbyTrees[1] ) )
+			and IsLocationPassable( GetTreeLocation( nearbyTrees[1] ) )
+		then
+			hEffectTarget = nearbyTrees[1]
+			sCastMotive = '吃先知的树'
+			return BOT_ACTION_DESIRE_HIGH, hEffectTarget, sCastType, sCastMotive
+		end
+	end
 
 	if DotaTime() < 0 and not thereBeMonkey
 	then
@@ -4025,6 +4044,19 @@ X.ConsiderItemDesire["item_tango_single"] = function( hItem )
 	local nUseTangoLostHealth = ( hItem:GetName() == 'item_tango' ) and 200 or 160
 	local nLostHealth = bot:GetMaxHealth() - bot:GetHealth()
 
+	-- 解开先知的树框。bug: 因为先知的树不是正常的树。GetNearbyTrees 不会返回先知的树，此方式行不通
+	if bot:HasModifier('modifier_furion_sprout_damage') then
+		local nearbyTrees = bot:GetNearbyTrees( 280 )
+		if nearbyTrees ~= nil and #nearbyTrees >= 8
+			and IsLocationVisible( GetTreeLocation( nearbyTrees[1] ) )
+			and IsLocationPassable( GetTreeLocation( nearbyTrees[1] ) )
+		then
+			hEffectTarget = nearbyTrees[1]
+			sCastMotive = '吃先知的树'
+			return BOT_ACTION_DESIRE_HIGH, hEffectTarget, sCastType, sCastMotive
+		end
+	end
+	
 	if J.IsWithoutTarget( bot )
 		and not bot:HasModifier( "modifier_flask_healing" )
 		and not bot:HasModifier( "modifier_juggernaut_healing_ward_heal" )

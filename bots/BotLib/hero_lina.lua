@@ -141,6 +141,8 @@ then
 elseif sRole == "pos_2"
 then
     X['sSellList'] = Pos2SellList
+else
+    X['sSellList'] = Pos1SellList
 end
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_mage' }, {} end

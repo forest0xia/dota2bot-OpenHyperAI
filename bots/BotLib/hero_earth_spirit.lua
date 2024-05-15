@@ -298,14 +298,14 @@ function X.ConsiderBoulderSmash()
 		local nEnemyHeroes = bot:GetNearbyHeroes(800, true, BOT_MODE_NONE)
 
 		local target = J.GetClosestUnit(nEnemyHeroes)
-		if stoneNearby
+		if target ~= nil and stoneNearby
 		then
 			if  nAllyHeroes ~= nil and nEnemyHeroes ~= nil
 			and #nAllyHeroes <= 1 and #nEnemyHeroes <= 1
 			then
 				return BOT_ACTION_DESIRE_HIGH, target:GetLocation(), false, true
 			end
-		elseif nStone >= 1
+		elseif target ~= nil and nStone >= 1
 		then
 			if  nAllyHeroes ~= nil and nEnemyHeroes ~= nil
 			and #nAllyHeroes <= 1 and #nEnemyHeroes <= 1

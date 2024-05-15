@@ -273,7 +273,12 @@ function X.SkillsComplement()
     CheckAbilityUsage()
 
     if J.CanNotUseAbility(bot) then return end
-    if bot:HasModifier(modifier_invoker_ghost_walk_self) and J.GetHP(bot) < 0.7 then return end
+    if bot:HasModifier(modifier_invoker_ghost_walk_self) and J.GetHP(bot) <= 0.9 then
+        local nEnemyHeroes = bot:GetNearbyHeroes(1000, true, BOT_MODE_NONE)
+        if #nEnemyHeroes >= 1 then
+            return
+        end
+    end
 
     botTarget = J.GetProperTarget(bot)
     TornadoLiftTime = Tornado:GetSpecialValueFloat('lift_duration')
@@ -410,7 +415,7 @@ function X.SkillsComplement()
 
     if J.IsLaning(bot)
     and bot:GetLevel() >= 2
-    and DotaTime() < 600 -- 前10分钟
+    and bot:GetLevel() <= 12
     and J.GetHP(bot) > 0.75
     and not J.IsRetreating(bot)
     and not J.IsGoingOnSomeone(bot)
@@ -590,7 +595,7 @@ function X.CanUseRefresherShard()
 	local nInRangeEnmyList = bot:GetNearbyHeroes( 1000, true, BOT_MODE_NONE )
 
     if Sunstrike:GetCooldownTimeRemaining() >= 10 -- 技能快好了的话没必要刷新
-    and Sunstrike:GetCooldownTimeRemaining()/Sunstrike:GetCooldown() <= 0.95 -- 不想马上就刷新因为可能可以再连一些技能，或者技能已经快好了
+    and Sunstrike:GetCooldownTimeRemaining()/Sunstrike:GetCooldown() <= 0.9 -- 不想马上就刷新因为可能可以再连一些技能，或者技能已经快好了
     and X.IsAbilityAvailableOnSlots(Sunstrike)
     and bot:GetMana() >= (SunstrikeMana * 2 + SunstrikeMana) then
         local cataclysmDesire, _ = X.GoodTimeToUseCataclysmGlobally()
@@ -661,7 +666,9 @@ function X.CastInvokerSpell(ability, target)
         print(DotaTime()..' - Invoker has it on slot, going to cast '..abilityName)
 
         -- bot:ActionPush_Delay(ability:GetCastPoint())
-        if ability == ForgeSpirit
+        if abilityName == Cataclysm then
+            bot:ActionPush_UseAbilityOnEntity(Sunstrike, bot)
+        elseif ability == ForgeSpirit
             or ability == IceWall
             or ability == GhostWalk then
                 if ability == GhostWalk then
@@ -677,8 +684,6 @@ function X.CastInvokerSpell(ability, target)
         elseif ability == Alacrity
             or ability == ColdSnap then
                 bot:ActionPush_UseAbilityOnEntity(ability, target)
-        elseif ability == Cataclysm then
-            bot:ActionPush_UseAbilityOnEntity(Sunstrike, bot)
         else
             print(DotaTime()..' - [ERROR] Tried to cast unsupported spell: '..abilityName)
             print("Stack Trace:", debug.traceback())
@@ -797,15 +802,17 @@ function X.ConsiderGhostWalk()
         return BOT_ACTION_DESIRE_NONE
     end
 
-    if (J.IsRetreating(bot) or J.GetHP(bot) <= 0.15) and (bot:DistanceFromFountain() > 800 or bot:HasModifier('modifier_teleporting'))
+    if (J.IsRetreating(bot) or J.IsDefending(bot) or J.GetHP(bot) <= 0.2) and (bot:DistanceFromFountain() > 800 or bot:HasModifier('modifier_teleporting'))
     then
-        local nInRangeEnemy = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+        local nInRangeEnemy = bot:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
+        local nInRangeAlly = bot:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
 
-        if bot:WasRecentlyDamagedByAnyHero(3) and nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
+        if nInRangeEnemy ~= nil and #nInRangeEnemy >= 1 and (nInRangeAlly == nil or #nInRangeAlly == 0)
         then
             return BOT_ACTION_DESIRE_HIGH
         end
     end
+    
     return BOT_ACTION_DESIRE_NONE
 end
 
@@ -1274,7 +1281,6 @@ function X.ConsiderChaosMeteor()
 	local nRadius = ChaosMeteor:GetSpecialValueInt('area_of_effect')
     local nManaCost = ChaosMeteor:GetManaCost()
 
-        
     local nInRangeEnemy = bot:GetNearbyHeroes(1400, true, BOT_MODE_NONE)
     
     for _, enemyHero in pairs(nInRangeEnemy) do
@@ -1291,10 +1297,7 @@ function X.ConsiderChaosMeteor()
         or enemyHero:IsHexed()
         or enemyHero:IsNightmared()
         or enemyHero:IsChanneling()
-        or enemyHero:HasModifier('modifier_enigma_black_hole_pull')
-        or enemyHero:HasModifier('modifier_faceless_void_chronosphere_freeze')
-        or enemyHero:HasModifier('modifier_magnataur_reverse_polarity')
-        or enemyHero:HasModifier('modifier_tidehunter_ravage')
+        or X.IsUnderLongDurationStun(enemyHero)
         or J.IsTaunted(enemyHero)
         or J.GetHP(enemyHero) <= 0.75) then
 
@@ -1306,7 +1309,7 @@ function X.ConsiderChaosMeteor()
                     return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation()
                 end
             elseif X.CheckTempModifiers(TempNonMovableModifierNames, enemyHero, (nDelay + nCastPoint)) > 0 then
-                return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
+                return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation()
             end
 
             if J.IsRunning(enemyHero) then
@@ -1381,7 +1384,7 @@ function X.ConsiderChaosMeteor()
                         return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation()
                     end
                 elseif X.CheckTempModifiers(TempNonMovableModifierNames, enemyHero, (nLandTime + nCastPoint)) > 0 then
-                    return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
+                    return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation()
                 end
     
                 if J.IsRunning(enemyHero) then
@@ -1510,11 +1513,8 @@ function X.ConsiderCataclysm()
                 or enemyHero:IsRooted()
                 or enemyHero:IsHexed()
                 or enemyHero:IsNightmared()
-                or enemyHero:HasModifier('modifier_enigma_black_hole_pull')
-                or enemyHero:HasModifier('modifier_faceless_void_chronosphere_freeze'))
-                or enemyHero:HasModifier('modifier_magnataur_reverse_polarity')
-                or enemyHero:HasModifier('modifier_tidehunter_ravage')
-                or J.IsTaunted(enemyHero)
+                or X.IsUnderLongDurationStun(enemyHero)
+                or J.IsTaunted(enemyHero))
             then
                 nNotMovingEnemyCount = nNotMovingEnemyCount + 1
             end
@@ -1543,7 +1543,7 @@ function X.ConsiderCataclysm()
         end
 
         if J.IsValidHero(botTarget)
-        and J.GetHP(botTarget) <= 0.5
+        and J.GetHP(botTarget) <= 0.99
         and not J.IsSuspiciousIllusion(botTarget)
         and not botTarget:HasModifier('modifier_abaddon_borrowed_time')
         and not botTarget:HasModifier('modifier_brewmaster_storm_cyclone')
@@ -1555,10 +1555,7 @@ function X.ConsiderCataclysm()
             or botTarget:IsRooted()
             or botTarget:IsHexed()
             or botTarget:IsNightmared()
-            or botTarget:HasModifier('modifier_enigma_black_hole_pull')
-            or botTarget:HasModifier('modifier_faceless_void_chronosphere_freeze')
-            or botTarget:HasModifier('modifier_magnataur_reverse_polarity')
-            or botTarget:HasModifier('modifier_tidehunter_ravage')
+            or X.IsUnderLongDurationStun(botTarget)
             or J.IsTaunted(botTarget))
         then
             return BOT_ACTION_DESIRE_HIGH, 0
@@ -1586,7 +1583,6 @@ function X.GoodTimeToUseCataclysmGlobally()
         -- 敌人可以被大天火击杀
         if J.IsValidHero(enemyHero)
         and J.CanKillTarget(enemyHero, nDamage * 2, DAMAGE_TYPE_PURE)
-        and not J.IsInRange(bot, enemyHero, 1000)
         and not J.IsSuspiciousIllusion(enemyHero)
         and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
         and not enemyHero:HasModifier('modifier_brewmaster_storm_cyclone')
@@ -1601,27 +1597,30 @@ function X.GoodTimeToUseCataclysmGlobally()
             or enemyHero:IsRooted()
             or enemyHero:IsHexed()
             or enemyHero:IsNightmared()
-            or enemyHero:HasModifier('modifier_bane_fiends_grip')
-            or enemyHero:HasModifier('modifier_legion_commander_duel')
-            or enemyHero:HasModifier('modifier_enigma_black_hole_pull')
-            or enemyHero:HasModifier('modifier_faceless_void_chronosphere_freeze')
-            or enemyHero:HasModifier('modifier_magnataur_reverse_polarity')
-            or enemyHero:HasModifier('modifier_tidehunter_ravage')
+            or X.IsUnderLongDurationStun(enemyHero)
             or J.IsTaunted(enemyHero))
         then
             return BOT_ACTION_DESIRE_HIGH, 0
         end
         
-        -- 敌人被长时间大招固定控制
-        if enemyHero:HasModifier('modifier_bane_fiends_grip')
-        or enemyHero:HasModifier('modifier_legion_commander_duel')
-        or enemyHero:HasModifier('modifier_enigma_black_hole_pull')
-        or enemyHero:HasModifier('modifier_faceless_void_chronosphere_freeze') then
+        -- 不能被即可击杀，但是被大招控制了
+        if J.IsValidHero(enemyHero)
+        and X.IsUnderLongDurationStun(enemyHero) then
             return BOT_ACTION_DESIRE_HIGH, 0
         end
     end
 
     return BOT_ACTION_DESIRE_NONE, 0
+end
+
+-- 敌人被长时间大招固定控制
+function X.IsUnderLongDurationStun(enemyHero)
+    return enemyHero:HasModifier('modifier_bane_fiends_grip')
+    or enemyHero:HasModifier('modifier_legion_commander_duel')
+    or enemyHero:HasModifier('modifier_enigma_black_hole_pull')
+    or enemyHero:HasModifier('modifier_faceless_void_chronosphere_freeze')
+    or enemyHero:HasModifier('modifier_magnataur_reverse_polarity')
+    or enemyHero:HasModifier('modifier_tidehunter_ravage')
 end
 
 function X.ConsiderSunstrike()
@@ -1639,16 +1638,11 @@ function X.ConsiderSunstrike()
     do
         -- 敌人可以被天火击杀
         if J.IsValidHero(enemyHero)
-        and J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_PURE)
+        and (J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_PURE) or J.GetHP(enemyHero) < 0.2)
         and not J.IsSuspiciousIllusion(enemyHero)
         and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
-        and not enemyHero:HasModifier('modifier_brewmaster_storm_cyclone')
-        and not enemyHero:HasModifier('modifier_dazzle_shallow_grave')
-        and not enemyHero:HasModifier('modifier_eul_cyclone')
-        and not enemyHero:HasModifier('modifier_necrolyte_reapers_scythe')
         and not enemyHero:HasModifier('modifier_oracle_false_promise_timer')
         and not enemyHero:HasModifier('modifier_templar_assassin_refraction_absorb')
-        and not enemyHero:HasModifier('modifier_item_aeon_disk_buff')
         then
             -- 敌人被控制
             if enemyHero:IsStunned()
@@ -1656,10 +1650,7 @@ function X.ConsiderSunstrike()
             or enemyHero:IsHexed()
             or enemyHero:IsNightmared()
             or enemyHero:IsChanneling()
-            or enemyHero:HasModifier('modifier_enigma_black_hole_pull')
-            or enemyHero:HasModifier('modifier_faceless_void_chronosphere_freeze')
-            or enemyHero:HasModifier('modifier_magnataur_reverse_polarity')
-            or enemyHero:HasModifier('modifier_tidehunter_ravage')
+            or X.IsUnderLongDurationStun(enemyHero)
             or J.IsTaunted(enemyHero)
             then
                 return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation()
@@ -1671,29 +1662,25 @@ function X.ConsiderSunstrike()
             else
                 return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation()
             end
-            
-            -- 杀掉残血tp
-			if enemyHero:HasModifier( 'modifier_teleporting' ) then
-                local remaining = J.GetModifierTime(enemyHero, 'modifier_teleporting')
-                if remaining ~= nil and (DotaTime() >= DotaTime() + remaining - nDelay - nCastPoint)
-                then
-                    return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation()
-                end
+        end
+
+        -- 杀掉残血tp
+        if enemyHero:HasModifier( 'modifier_teleporting' )
+        and J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_PURE) then
+            local remaining = J.GetModifierTime(enemyHero, 'modifier_teleporting')
+            if remaining ~= nil and remaining >= 2
+            then
+                return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation()
             end
         end
 
         -- 敌人被长时间大招控制
         if J.IsValidHero(enemyHero)
         and not J.IsSuspiciousIllusion(enemyHero)
-        and (enemyHero:HasModifier('modifier_bane_fiends_grip')
-        or enemyHero:HasModifier('modifier_legion_commander_duel')
-        or enemyHero:HasModifier('modifier_enigma_black_hole_pull')
-        or enemyHero:HasModifier('modifier_faceless_void_chronosphere_freeze'))
-        or enemyHero:HasModifier('modifier_magnataur_reverse_polarity')
-        or enemyHero:HasModifier('modifier_tidehunter_ravage') then
+        and X.IsUnderLongDurationStun(enemyHero) then
             return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation()
         end
-        
+
         -- 敌人是否有即将结束的无敌状态能在天火延迟后被击杀
         if J.IsValidHero(enemyHero)
         and J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_PURE)
@@ -1726,24 +1713,17 @@ function X.ConsiderSunstrike()
         and not botTarget:HasModifier('modifier_templar_assassin_refraction_absorb')
         and not botTarget:HasModifier('modifier_item_aeon_disk_buff')
         then
-            local nInRangeAlly = bot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
-            local nInRangeEnemy = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
-
-            if ((nInRangeAlly ~= nil and #nInRangeAlly >= 1) or (#nInRangeEnemy ~= nil and #nInRangeEnemy == 0))
-            or (nInRangeEnemy ~= nil and nInRangeAlly ~= nil and #nInRangeAlly >= #nInRangeEnemy)
+            if botTarget:HasModifier(modifier_invoker_tornado)
             then
-                if botTarget:HasModifier(modifier_invoker_tornado)
+                if DotaTime() > AbilityCastedTimes['Tornado'] + TornadoLiftTime - nDelay - nCastPoint
                 then
-                    if DotaTime() > AbilityCastedTimes['Tornado'] + TornadoLiftTime - nDelay - nCastPoint
-                    then
-                        return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
-                    end
-                else
-                    if J.IsRunning(botTarget) then
-                        return BOT_ACTION_DESIRE_HIGH, botTarget:GetExtrapolatedLocation(nDelay + nCastPoint)
-                    end
                     return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
                 end
+            else
+                if J.IsRunning(botTarget) then
+                    return BOT_ACTION_DESIRE_HIGH, botTarget:GetExtrapolatedLocation(nDelay + nCastPoint)
+                end
+                return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
             end
         end
     end
@@ -2096,16 +2076,24 @@ function ConsiderFirstSpell()
 end
 
 function X.InvokeActualSpell(ability)
-    print(DotaTime()..' - Invoker going to invoke '..ability:GetName())
+    local abilityName
 
-    if ability == DeafeningBlast then
+    if type(ability) == "string" and ability == 'Cataclysm' then
+        abilityName = ability
+    else
+        abilityName = ability:GetName()
+    end
+
+    print(DotaTime()..' - Invoker going to invoke '..abilityName)
+
+    if abilityName == Cataclysm or ability == Sunstrike then
+        X.InvokeSpell(Exort, Exort, Exort)
+    elseif ability == DeafeningBlast then
         X.InvokeSpell(Quas, Wex, Exort)
     elseif ability == ChaosMeteor then
         X.InvokeSpell(Exort, Exort, Wex)
     elseif ability == ForgeSpirit then
         X.InvokeSpell(Exort, Exort, Quas)
-    elseif ability == Sunstrike then
-        X.InvokeSpell(Exort, Exort, Exort)
     elseif ability == Alacrity then
         X.InvokeSpell(Wex, Wex, Exort)
     elseif ability == EMP then
@@ -2119,10 +2107,10 @@ function X.InvokeActualSpell(ability)
     elseif ability == ColdSnap then
         X.InvokeSpell(Quas, Quas, Quas)
     else
-        print('[ERROR] Tried to invoke unsupported ability: '..ability:GetName())
+        print('[ERROR] Tried to invoke unsupported ability: '..abilityName)
 		print("Stack Trace:", debug.traceback())
     end
-    print(DotaTime()..' - Invoker tried to invoke '..ability:GetName())
+    print(DotaTime()..' - Invoker tried to invoke '..abilityName)
 end
 
 function X.InvokeSpell(Orb1, Orb2, Orb3)
@@ -2163,7 +2151,9 @@ end
 
 -- check if Invoker has trained the required basic elements for invoking the spell
 function X.HaveElementsTrainedToInvokeAbility(ability)
-    if ability == DeafeningBlast then
+    if type(ability) == "string" and ability == Cataclysm then
+        return bot:HasScepter() and X.HaveElementsTrainedToInvokeAbility(Sunstrike)
+    elseif ability == DeafeningBlast then
         return Quas:IsTrained() and Wex:IsTrained() and Exort:IsTrained()
     elseif ability == ChaosMeteor then
         return Wex:IsTrained() and Exort:IsTrained()
@@ -2171,8 +2161,6 @@ function X.HaveElementsTrainedToInvokeAbility(ability)
         return Quas:IsTrained() and Exort:IsTrained()
     elseif ability == Sunstrike then
         return Exort:IsTrained()
-    elseif type(ability) == "string" and ability == Cataclysm then
-        return bot:HasScepter() and X.HaveElementsTrainedToInvokeAbility(Sunstrike)
     elseif ability == Alacrity then
         return Wex:IsTrained() and Exort:IsTrained()
     elseif ability == EMP then

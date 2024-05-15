@@ -396,7 +396,7 @@ else
 	tLaneAssignList = nDireLane
 end
 
--- 人工挑选想要的阵容
+-- 你也可以人工挑选想要的阵容
 -- The index in the list is the pick order. #1 pick is mid, #2 is pos3, #3 is pos1, #4 is pos 5, #5 is pos 4.
 function X.OverrideTeamHeroes()
 	if GetTeam() == TEAM_RADIANT
@@ -404,37 +404,42 @@ function X.OverrideTeamHeroes()
 		return sSelectList
 	else
 		return {
-			-- [1] = "npc_dota_hero_invoker",
-			-- [2] = "npc_dota_hero_arc_warden",
-			-- [3] = "npc_dota_hero_clinkz",
-			-- [4] = "npc_dota_hero_witch_doctor",
-			-- [5] = "npc_dota_hero_bane",
 
+			-- All random
+			-- [1] = tSelectPoolList[1][RandomInt( 1, #tSelectPoolList[1] )],
+			-- [2] = tSelectPoolList[2][RandomInt( 1, #tSelectPoolList[2] )],
+			-- [3] = tSelectPoolList[3][RandomInt( 1, #tSelectPoolList[3] )],
+			-- [4] = tSelectPoolList[4][RandomInt( 1, #tSelectPoolList[4] )],
+			-- [5] = tSelectPoolList[5][RandomInt( 1, #tSelectPoolList[5] )],
+
+			-- Rubick mid, and good team fights
 			-- [1] = "npc_dota_hero_rubick",
 			-- [2] = "npc_dota_hero_enigma",
 			-- [3] = "npc_dota_hero_clinkz",
 		    -- [4] = "npc_dota_hero_earth_spirit",
-			-- [5] = "npc_dota_hero_lich",
+			-- [5] = "npc_dota_hero_techies",
+			
+			-- Invoker mid, strong pos3 with combos, and good other team members.
+			[1] = "npc_dota_hero_invoker",
+			[2] = 'npc_dota_hero_enigma',
+			[3] = "npc_dota_hero_arc_warden",
+		    [4] = "npc_dota_hero_shadow_demon",
+			[5] = "npc_dota_hero_nyx_assassin",
 			
 			-- [1] = "npc_dota_hero_invoker",
-			-- [2] = 'npc_dota_hero_enigma',
-			-- [3] = "npc_dota_hero_meepo",
-		    -- [4] = "npc_dota_hero_lich",
-			-- [5] = "npc_dota_hero_techies",
+			-- [2] = 'npc_dota_hero_tidehunter',
+			-- [3] = "npc_dota_hero_antimage",
+		    -- [4] = "npc_dota_hero_earth_spirit",
+			-- [5] = "npc_dota_hero_nyx_assassin",
 
 
 			-- Test buggy heroes:
-			[1] = "npc_dota_hero_invoker",
-			-- [2] = 'npc_dota_hero_enigma',
-			[2] = 'npc_dota_hero_skeleton_king',
-			-- [2] = tSelectPoolList[2][RandomInt( 1, #tSelectPoolList[2] )],
-			-- [3] = 'npc_dota_hero_muerta',
-			[3] = tSelectPoolList[3][RandomInt( 1, #tSelectPoolList[3] )],
-			[4] = tSelectPoolList[4][RandomInt( 1, #tSelectPoolList[4] )],
-			[5] = tSelectPoolList[5][RandomInt( 1, #tSelectPoolList[5] )],
-
-			-- [1] = tSelectPoolList[1][RandomInt( 1, #tSelectPoolList[1] )],
-			-- [2] = tSelectPoolList[2][RandomInt( 1, #tSelectPoolList[2] )],
+			-- [1] = "npc_dota_hero_invoker",
+			-- [2] = 'npc_dota_hero_muerta',
+			-- -- [2] = 'npc_dota_hero_tidehunter',
+			-- -- [2] = 'npc_dota_hero_enigma',
+			-- -- [2] = 'npc_dota_hero_skeleton_king',
+			-- -- [2] = tSelectPoolList[2][RandomInt( 1, #tSelectPoolList[2] )],
 			-- [3] = tSelectPoolList[3][RandomInt( 1, #tSelectPoolList[3] )],
 			-- [4] = tSelectPoolList[4][RandomInt( 1, #tSelectPoolList[4] )],
 			-- [5] = tSelectPoolList[5][RandomInt( 1, #tSelectPoolList[5] )],
@@ -451,15 +456,29 @@ function X.OverrideTeamHeroes()
 end
 
 -- 这行代码为了人工挑选想要的阵容。如果想让电脑自己随机英雄，则注释掉这行
-sSelectList = X.OverrideTeamHeroes()
+-- sSelectList = X.OverrideTeamHeroes()
 
-nDireFirstLaneType = RandomInt(2, 5)
-if nDireFirstLaneType ~= 1 and GetTeam() == TEAM_DIRE
-then
-	sSelectList[1], sSelectList[nDireFirstLaneType] = sSelectList[nDireFirstLaneType], sSelectList[1]
-	tSelectPoolList[1], tSelectPoolList[nDireFirstLaneType] = tSelectPoolList[nDireFirstLaneType], tSelectPoolList[1]
-	tLaneAssignList[1], tLaneAssignList[nDireFirstLaneType] = tLaneAssignList[nDireFirstLaneType], tLaneAssignList[1]
-	Role.roleAssignment[1], Role.roleAssignment[nDireFirstLaneType] = Role.roleAssignment[nDireFirstLaneType], Role.roleAssignment[1]
+
+function X.ShuffleArray(array)
+	if type(array) ~= "table" then
+        error("Expected a table, got " .. type(array))
+    end
+
+    local n = #array
+    for i = n, 2, -1 do
+        local j = RandomInt(1, i)
+        array[i], array[j] = array[j], array[i]  -- Swap elements
+    end
+    return array
+end
+
+local shuffleSelection = X.ShuffleArray({1, 2, 3, 4, 5})
+print('Random pick order: '..table.concat(shuffleSelection, ", "))
+for i = 1, #shuffleSelection do
+	sSelectList[i], sSelectList[shuffleSelection[i]] = sSelectList[shuffleSelection[i]], sSelectList[i]
+	tSelectPoolList[i], tSelectPoolList[shuffleSelection[i]] = tSelectPoolList[shuffleSelection[i]], tSelectPoolList[i]
+	tLaneAssignList[i], tLaneAssignList[shuffleSelection[i]] = tLaneAssignList[shuffleSelection[i]], tLaneAssignList[i]
+	Role.roleAssignment[i], Role.roleAssignment[shuffleSelection[i]] = Role.roleAssignment[shuffleSelection[i]], Role.roleAssignment[i]
 end
 
 function X.GetMoveTable( nTable )

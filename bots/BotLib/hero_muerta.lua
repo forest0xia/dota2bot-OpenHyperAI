@@ -100,6 +100,7 @@ local abilityE = bot:GetAbilityByName( sAbilityList[3] )
 local abilityR = bot:GetAbilityByName( sAbilityList[6] )
 local abilityAS = bot:GetAbilityByName( sAbilityList[4] )
 
+local castQDesire, castQTarget
 local castWDesire, castWLocation
 local castEDesire, castRDesire
 local castASDesire, castASTarget
@@ -107,17 +108,18 @@ local castASDesire, castASTarget
 local nKeepMana = 280
 
 function X.Think()
+	-- X.AbilityItemUsage = dofile( GetScriptDirectory()..'/ability_item_usage_generic')
+
 	-- bot:Action_AttackMove(J.GetEnemyFountain())
     if X.TeamRoam == nil then
 		X.TeamRoam = require(GetScriptDirectory() .. "/FunLib/mode_team_roam_generic_shared")
-		X.AbilityItemUsage = require( GetScriptDirectory()..'/FunLib/ability_item_usage_generic_shared')
+        -- X.FarmGeneric = dofile(GetScriptDirectory() .. "/FunLib/mode_farm_generic_shared")
     --     -- X.ItemPurchase = require(GetScriptDirectory() .. "/item_purchase_generic")
     --     -- X.TeamRoam = require(GetScriptDirectory() .. "/mode_team_roam_generic")
     --     -- X.AbilityItemUsage = require(GetScriptDirectory() .. "/ability_item_usage_generic")
-    --     -- X.FarmGeneric = require(GetScriptDirectory() .. "/mode_farm_generic")
     end
 
-    -- X.ItemPurchase.ItemPurchaseThink()
+    -- -- X.ItemPurchase.ItemPurchaseThink()
 
     if X.TeamRoam.GetDesire() > 0 then
         X.TeamRoam.Think()
@@ -126,10 +128,10 @@ function X.Think()
     --     X.FarmGeneric.Think()
     -- end
 
-    X.AbilityItemUsage.ItemUsageThink()
-    X.AbilityItemUsage.AbilityUsageThink()
-    X.AbilityItemUsage.BuybackUsageThink()
-    X.AbilityItemUsage.AbilityLevelUpThink()
+    -- X.AbilityItemUsage.ItemUsageThink()
+    -- X.AbilityItemUsage.AbilityUsageThink()
+    -- X.AbilityItemUsage.BuybackUsageThink()
+    -- X.AbilityItemUsage.AbilityLevelUpThink()
 
 end
 
@@ -139,6 +141,14 @@ function X.SkillsComplement()
 	J.ConsiderForMkbDisassembleMask( bot )
 
 	if J.CanNotUseAbility( bot ) or bot:IsInvisible() then return end
+
+    castQDesire, castQTarget = X.ConsiderQ()
+    if castQDesire > 0
+    then
+        bot:Action_UseAbilityOnEntity(abilityQ, castQTarget)
+        -- bot:Action_UseAbilityOnTree(abilityQ, castQTarget)
+        return
+    end
 
 	castRDesire = X.ConsiderR()
 	if ( castRDesire > 0 )
@@ -178,17 +188,16 @@ end
 function X.ConsiderTarget()
 	if not J.IsRunning( bot )
 		or bot:HasModifier( "modifier_item_hurricane_pike_range" )
-	then return  end
+	then return end
 
-	local nAttackRange = bot:GetAttackRange() + 60
-	if nAttackRange > 1600 then nAttackRange = 1600 end
+	local nAttackRange = math.max(1600, bot:GetAttackRange() + 60)
 	local nInAttackRangeWeakestEnemyHero = J.GetAttackableWeakestUnit( bot, nAttackRange, true, true )
 
 	local npcTarget = J.GetProperTarget( bot )
 	local nTargetUint = nil
 
 	if J.IsValidHero( npcTarget )
-		and GetUnitToUnitDistance( npcTarget, bot ) >  nAttackRange
+		and GetUnitToUnitDistance( npcTarget, bot ) > nAttackRange
 		and J.IsValidHero( nInAttackRangeWeakestEnemyHero )
 	then
 		nTargetUint = nInAttackRangeWeakestEnemyHero
@@ -196,6 +205,35 @@ function X.ConsiderTarget()
 		return
 	end
 
+end
+
+function X.ConsiderQ()
+	if not abilityQ:IsFullyCastable() then return 0 end
+
+    local nCastRange = abilityQ:GetCastRange()
+    local botTarget = J.GetProperTarget(bot)
+
+	if  J.IsValidTarget(botTarget)
+	and J.CanCastOnNonMagicImmune(botTarget)
+	and J.IsInRange(bot, botTarget, nCastRange)
+	and not J.IsSuspiciousIllusion(botTarget)
+	then
+		return BOT_ACTION_DESIRE_HIGH, botTarget
+		-- local nTrees = bot:GetNearbyTrees(nCastRange)
+
+		-- local nTargetInRangeAlly = botTarget:GetNearbyHeroes(1000, false, BOT_MODE_NONE)
+
+		-- if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+		-- and #nInRangeAlly >= #nTargetInRangeAlly
+		-- and nTrees ~= nil and #nTrees >= 1
+		-- and (IsLocationVisible(GetTreeLocation(nTrees[1]))
+		-- 	or IsLocationPassable(GetTreeLocation(nTrees[1])))
+		-- then
+		-- 	return BOT_ACTION_DESIRE_HIGH, nTrees[1]
+		-- end
+	end
+
+	return BOT_ACTION_DESIRE_NONE
 end
 
 function X.ConsiderW()

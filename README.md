@@ -16,18 +16,18 @@
 
 
 ### Things to be updated (not ranked by priority):
+- AM in place blink
+- less farming, more group push in late games.
+- focus more on tower and base in push.
+- use tango or something to escape from Prophet first spell trees
 - Bots should be less aggressive to chase people into towers, human will take advantage of that to continuely lowering bot's hp and get the kill.
 - Bots should respect the TPs while chasing people.
-- Bots should have regens in laning phase. Don't stay in lane if ph is too low. e.g. not calling in regen like omni would have 1400 hp and sit in lane on 200 till they tp back and take a free kill
-- Better Tormentor strategy with human players
 - Bot should rethink about dot damage on them. they run away from dot damage without considering why. e.g. dark seer ion shell you can chase a bot from their t1 to your t1 by simply walking behind them and they take the path most directly away from it. 
 - Bots should take exp runes. [exp rune is not officially supported as of 5.5.2024]
 - Bots are ignoreing some abilities or modifiers that have relatively long duration and can end up deal with high dmg, spells like dazzle’s first ability modifier.
 - Calculate Enigma's ultimate damage. 1600 range, lasts 4 seconds, plus Decay. Engage if it can kill, even if alone.
 - Use ultimate if it can hit all visible people and can take at least one with it.
 - Don't just focus on attacking Brewmaster's ultimate summons.
-- Random laning.
-- Randomly selected warding locations from good warding locations.
 - Enigma can use ultimate on just one. If it has been a long time since the last use, or if the target is one of the top two strongest visible enemies.
 - Or if you are slowed, with more than two enemies nearby. Being attacked. Health below 75%.
 - If already at half health and running away, continue to retreat rather than turning back.
@@ -38,10 +38,10 @@
 - Prioritize global Sun Strike conditions. If there's Enigma's ult or similar, prioritize using big Sun Strike, or with Batrider's pull.
 - Don't ignore illusion damage.
 - If retreating, calculate the total nearby illusions, decide whether to Wind Walk or go invisible. If possible, calculate total damage. In late game, can't judge escape skills based on health alone.
-- First 3 minutes. If within 300 range there are small fish, Pudge, retreat to 500 before fighting them.
+- First 3 minutes. If within 300 range there are Slark, Pudge, retreat to 500 before fighting them.
 - If there is a Witch Doctor's Maledict nearby, and the state lasts more than half, being attacked and health less than half. Don't continue to tank damage, retreat. If you're going to die but TP might save you, then TP.
-- Dodge Veno's skills. Similar to dodging Pudge's hooks.
-- Carry Gem in the late game.
+- Dodge shadow demon's skills. Similar to dodging Pudge's hooks.
+- Carry Gem/more dusts/wards in the late game.
 - Expand the search range for the weakest. Look for hiding mages, Witch Doctor, or Sniper.
 - Why would you act alone in the late game?
 - If dead late game, or resurrected and the enemy 5 are near the high ground, and your side has fewer people alive or less than the enemy, don't engage.
@@ -77,12 +77,19 @@
 ### Things fixed
 - Bots are now more flexible with different laning or roles. They were not able to purchase items if they were assigned with different role or laning.
 - Added/Improved a bunch of hero support so bots can have better performance on more heroes with better strategy of the ability usage, item purcahse, etc, such as Invoker casting abilities and making combos.
+- Added a canary logic to keep checking if any bot gets stuck or stays idle for some time. If such a bot is delected, it's current action or all queued actions will get cleaned and it will be forced to push.
 - When Fretbot is enabled. A list of unfair settings get applied in addition to what was provided by Frebot originally:
   - The bots get bonus mana/hp regens and provide less exp on death.
   - When a player kills a bot, the player who made the kill receives a reduction in gold. This does not affect assisting players.
 - Bots with refresher won't directly use refresher immidiately, this is to prevent e.g. Void, Enigma using ult immidiately twice. The logic is now also overridable in each bot files.
+- Enigma will keep casting ult instead of stopping casting it immidiately by itself doing something else.
 - [updated, need to test] Don't kill couriers if bot is targeting a dieing hero or is retreating.
 - [updated, need to test] Don't focus on some minions over heroes.
 - Bots won't stay on some ability effects for lone. e.g. jakiro_macropyre_burn, dark_seer_wall, sandking_sand_storm, warlock_upheaval, etc. Bots have the intension to run away from those effects.
 - Carry large HP and mana potions. Swap slots.
 - Swap slots to use moonshard
+- Bots should have regens in laning phase. Don't stay in lane if ph is too low. e.g. not calling in regen like omni would have 1400 hp and sit in lane on 200 till they tp back and take a free kill
+- Better Tormentor strategy with human players. [Partically improved]
+- Random laning.
+- Randomly selected warding locations from good warding locations. [Improved for game start warding]
+- Use item_force_staff to break through trees from furion_sprout. Note that GetNearbyTrees api does not work for furion_sprout trees as of 5/12/2024.
