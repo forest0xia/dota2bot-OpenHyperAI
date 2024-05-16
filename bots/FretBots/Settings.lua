@@ -1,16 +1,16 @@
 -- Dependencies
  -- global debug flag
-require 'Fretbots.Debug'
+require 'bots.FretBots.Debug'
  -- Other Flags
-require 'Fretbots.Flags'
+require 'bots.FretBots.Flags'
  -- Timers
-require 'Fretbots.Timers'
+require 'bots.FretBots.Timers'
  -- Utilities
-require 'Fretbots.Utilities'
+require 'bots.FretBots.Utilities'
 -- Version
-require 'Fretbots.Version'
+require 'bots.FretBots.Version'
 -- HeroSounds
-require('Fretbots.HeroSounds')
+require('bots.FretBots.HeroSounds')
 
 -- local debug flag
 local thisDebug = false;
@@ -41,14 +41,14 @@ noVoteDifficulty = 5
 local isRepurcussionTimerStarted = false
 -- Instantiate ourself
 if Settings == nil then
-	Settings = dofile('Fretbots.SettingsDefault')
+	Settings = dofile('bots.FretBots.SettingsDefault')
 end
 
 -- neutral item drop settings
-AllNeutrals = dofile('Fretbots.SettingsNeutralItemTable')
+AllNeutrals = dofile('bots.FretBots.SettingsNeutralItemTable')
 
 -- cheat command list
-local cheats = dofile('Fretbots.CheatList')
+local cheats = dofile('bots.FretBots.CheatList')
 
 local currentAnnouncePrintTime = 0
 local lastAnnouncePrintedTime = -2

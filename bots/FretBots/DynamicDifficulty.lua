@@ -1,13 +1,13 @@
 -- Functions for dynamically adjusting bot diffculty
 
 -- Global Debug flag
-require 'FretBots.Debug';
+require 'bots.FretBots.Debug';
  -- Other Flags
-require 'FretBots.Flags'
+require 'bots.FretBots.Flags'
 -- Settings
-require 'FretBots.Settings'
+require 'bots.FretBots.Settings'
 -- Convenience Utilities
-require 'FretBots.Utilities'
+require 'bots.FretBots.Utilities'
 
 -- local debug flag
 local thisDebug = true;

@@ -1,21 +1,21 @@
 -- Registers a timer function that's used to do things at certain points during the game
 
 -- This registers the Timer helpers
-require 'FretBots.Timers'
+require 'bots.FretBots.Timers'
  -- global debug flag
-require 'FretBots.Debug'
+require 'bots.FretBots.Debug'
 -- DataTables and associated globals
-require 'FretBots.DataTables'
+require 'bots.FretBots.DataTables'
 -- Settings
-require 'FretBots.Settings'
+require 'bots.FretBots.Settings'
 -- Utilities
-require 'FretBots.Utilities'
+require 'bots.FretBots.Utilities'
 -- Award functions
-require 'FretBots.AwardBonus'
+require 'bots.FretBots.AwardBonus'
 -- Flags for tracking status
-require 'FretBots.Flags'
+require 'bots.FretBots.Flags'
 -- Neutral Item Helpers
-require 'FretBots.NeutralItems'
+require 'bots.FretBots.NeutralItems'
 
 -- local debug flag
 local thisDebug = false;
@@ -65,7 +65,7 @@ NeutralStash = {{},{},{},{},{}}
 AwardedNeutrals = {}
 
 -- master table (items don't get removed from this one)
-local masterNeutralTable = dofile('Fretbots.SettingsNeutralItemTable')
+local masterNeutralTable = dofile('bots.FretBots.SettingsNeutralItemTable')
 
 -- returns true if we've found every item we can
 function BonusTimers:IsFindingDone()

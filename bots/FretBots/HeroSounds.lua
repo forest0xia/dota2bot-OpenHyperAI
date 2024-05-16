@@ -1,10 +1,10 @@
 -- Dependencies
-require 'Fretbots.Utilities'
-VoTypes				= dofile('Fretbots.VoiceoverTypes')
-VoAttitudes 		= dofile('Fretbots.VoiceoverAttitudes')
-VoHeroes			= dofile('Fretbots.VoiceoverHeroes')
+require 'bots.FretBots.Utilities'
+VoTypes				= dofile('bots.FretBots.VoiceoverTypes')
+VoAttitudes 		= dofile('bots.FretBots.VoiceoverAttitudes')
+VoHeroes			= dofile('bots.FretBots.VoiceoverHeroes')
 -- This needs to happen after the above because HeroSoundsTable references the above as globals
-local heroSounds	= dofile('Fretbots.HeroSoundsTable')
+local heroSounds	= dofile('bots.FretBots.HeroSoundsTable')
 
 -- Instantiate the class
 if HeroSounds == nil then

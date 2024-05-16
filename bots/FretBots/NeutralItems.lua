@@ -1,13 +1,13 @@
 -- Methods for the creation / removal of neutral items for the bots.
 
  -- global debug flag
-require 'FretBots.Debug'
+require 'bots.FretBots.Debug'
 -- Settings
-require 'FretBots.Settings'
+require 'bots.FretBots.Settings'
 -- Utilities
-require 'FretBots.Utilities'
+require 'bots.FretBots.Utilities'
 -- Flags for tracking status
-require 'FretBots.Flags'
+require 'bots.FretBots.Flags'
 
 -- local debug flag
 local thisDebug = true;

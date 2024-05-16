@@ -1,5 +1,5 @@
-require 'FretBots.Debug'
-require 'FretBots.Timers'
+require 'bots.FretBots.Debug'
+require 'bots.FretBots.Timers'
 
 -- Instantiate ourself
 if BuffUnit == nil then

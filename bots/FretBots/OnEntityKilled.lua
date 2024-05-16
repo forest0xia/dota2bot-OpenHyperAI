@@ -1,16 +1,16 @@
 -- Dependencies
  -- global debug flag
-require 'FretBots.Debug'
+require 'bots.FretBots.Debug'
  -- Global flags
- require 'FretBots.Flags'
+require 'bots.FretBots.Flags'
  -- Data Tables and helper functions
-require 'FretBots.DataTables'
+require 'bots.FretBots.DataTables'
 -- Awards for bots
-require 'FretBots.AwardBonus'
+require 'bots.FretBots.AwardBonus'
 -- Settings
-require 'FretBots.Settings'
+require 'bots.FretBots.Settings'
 -- Game State Tracker
-require 'FretBots.GameState'
+require 'bots.FretBots.GameState'
 
 -- local debug flag
 local thisDebug = false;

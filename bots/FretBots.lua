@@ -1,30 +1,30 @@
 -- Dependencies
 -- global debug flag
-require 'FretBots.Debug'
+require 'bots.FretBots.Debug'
 -- Other Flags
-require 'FretBots.Flags'
+require 'bots.FretBots.Flags'
 -- DataTables has helper functions for generating data structures we consume, and querying/acting on that data
-require 'FretBots.DataTables'
+require 'bots.FretBots.DataTables'
 -- Entity Killed monitors kills and provides bonuses (if settings dictate)
-require 'FretBots.OnEntityKilled'
+require 'bots.FretBots.OnEntityKilled'
 -- Entity hurt monitors damage and updates stat tables accordingly
-require 'FretBots.OnEntityHurt'
+require 'bots.FretBots.OnEntityHurt'
 -- Version information
-require 'FretBots.Version'
+require 'bots.FretBots.Version'
 -- Timers for periodic bonuses
-require 'FretBots.BonusTimers'
+require 'bots.FretBots.BonusTimers'
 -- Utilities
-require 'FretBots.Utilities'
+require 'bots.FretBots.Utilities'
 -- Dynamic Difficulty Adjustor
-require 'FretBots.DynamicDifficulty'
+require 'bots.FretBots.DynamicDifficulty'
 -- Settings
-require 'FretBots.Settings'
+require 'bots.FretBots.Settings'
 -- Timers
-require 'FretBots.Timers'
+require 'bots.FretBots.Timers'
 -- Hero Specifc Extensions
-require 'FretBots.HeroLoneDruid'
+require 'bots.FretBots.HeroLoneDruid'
 -- Role Determination
-require 'FretBots.RoleDetermination'
+require 'bots.FretBots.RoleDetermination'
 
 -- Instantiate ourself
 if FretBots == nil then

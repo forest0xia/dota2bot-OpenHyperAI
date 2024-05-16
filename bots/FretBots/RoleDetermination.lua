@@ -1,8 +1,8 @@
 -- Dependencies
  -- global debug flag
-require 'FretBots.Debug'
+require 'bots.FretBots.Debug'
 -- Timers
-require 'FretBots.Timers'
+require 'bots.FretBots.Timers'
 
 -- Instantiate ourself
 if RoleDetermination == nil then
