@@ -1347,6 +1347,7 @@ function Item.GetOutfitType( bot )
 	return 'outfit_carry'
 end
 
+-- returns pos_1, pos_2, pos_3, depends on the roles...
 function Item.GetRoleItemsBuyList( bot )
 	local nTeamPlayerIDs = GetTeamPlayers( GetTeam() )
 	for i = 1, 5

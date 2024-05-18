@@ -1659,6 +1659,9 @@ function J.GetCorrectLoc( npcTarget, fDelay )
 	return vFuture
 end
 
+function J.GetDistanceFromLaneFront(bot)
+	return J.GetDistance(GetLaneFrontLocation(GetTeam(), bot:GetAssignedLane(), 0), bot:GetLocation())
+end
 
 function J.GetEscapeLoc()
 
@@ -3449,17 +3452,7 @@ function J.IsModeTurbo()
 end
 
 function J.IsCore(bot)
-
-	local heroID = GetTeamPlayers(GetTeam())
-
-	if GetSelectedHeroName(heroID[1]) == bot:GetUnitName()
-	or GetSelectedHeroName(heroID[2]) == bot:GetUnitName()
-	or GetSelectedHeroName(heroID[3]) == bot:GetUnitName()
-	then
-		return true
-	end
-
-	return false
+	return J.GetPosition(bot) <= 3
 end
 
 function J.GetCoresTotalNetworth()
@@ -3469,8 +3462,14 @@ function J.GetCoresTotalNetworth()
 	return totalNetworth
 end
 
+-- returns 1, 2, 3, 4, or 5 as the position of the hero in the team
 function J.GetPosition(bot)
-	return J.Role.GetPosition(bot)
+	local role = J.Role.GetPosition(bot)
+	if role == nil then
+		print('[ERROR] Failed to get role for bot: '..bot:GetUnitName())
+		role = 2
+	end
+	return role
 end
 
 function J.WeAreStronger(bot, radius)
@@ -4737,13 +4736,28 @@ function J.ConsolePrintActiveMode(bot)
 	end
 end
 
+-- check if a table contains a value
+function J.hasValue(tab, val)
+    for index, value in ipairs(tab) do
+        if value == val then
+            return true
+        end
+    end
 
-
+    return false
+end
 
 -- Check if any bot is stuck/idle for some time.
 local botIdelStateTimeThreshold = 8 -- relatively big number in case it's things like casting/being casted with long durating spells, in base healing, or other unexpected stuff.
 local deltaIdleDistance = 5
 local botIdleStateTracker = { }
+-- some heroes are having issues due to current basic bot script from Valve, as of 5/17/2024
+local buggedHeroes = {
+	"npc_dota_hero_dark_willow",
+	"npc_dota_hero_marci",
+	"npc_dota_hero_primal_beast",
+	"npc_dota_hero_hoodwink",
+}
 
 function J.CheckBotIdleState()
 	if DotaTime() <= 0 then return end
@@ -4757,12 +4771,13 @@ function J.CheckBotIdleState()
 	local botState = botIdleStateTracker[botName]
 	if botState then
 		if DotaTime() - botState.lastCheckTime >= botIdelStateTimeThreshold then
+			local diffDistance = J.GetLocationToLocationDistance( botState.botLocation, bot:GetLocation())
 			if not bot:IsCastingAbility()
 			and not bot:IsUsingAbility()
 			and not bot:IsChanneling()
-			and not bot:WasRecentlyDamagedByAnyHero(botIdelStateTimeThreshold)
-			and J.GetLocationToLocationDistance( botState.botLocation, bot:GetLocation()) <= deltaIdleDistance then
-				print('Bot '..botName..' is idle/stuck.')
+			and not bot:WasRecentlyDamagedByAnyHero(5)
+			and diffDistance <= deltaIdleDistance -- normally a bot gets stuck if it stopped moving.
+			then
 				
 				local nActions = bot:NumQueuedActions()
 				if nActions > 0 then
@@ -4807,14 +4822,30 @@ function J.CheckBotIdleState()
 				-- 	bot:ActionQueue_AttackMove(J.GetEnemyFountain())
 				-- end
 				
-				print('[ERROR] Relocating the idle bot: '..botName..'. Sending it to push base.')
-				bot:ActionQueue_AttackMove(J.GetEnemyFountain())
-
+				-- Should send it to most desire farming lane, if in laning or send it to desire push lane.
+				local frontLoc = GetLaneFrontLocation(GetTeam(), bot:GetAssignedLane(), 0);
+				bot:ActionQueue_AttackMove(frontLoc)
+				print('[ERROR] Relocating the idle bot: '..botName..'. Sending it to the lane# it was originally assigned: '..tostring(bot:GetAssignedLane()))
 			else
 				-- print('Bot '..botName..' is not in idle state.')
 			end
+
+			-- 对线期有些bug英雄可能乱跑
+			if bot:GetLevel() <= 15 and J.hasValue(buggedHeroes, botName) and J.GetHP(bot) > 0.4 then
+				local distanceFromLane = J.GetDistanceFromLaneFront(bot)
+				local hAllyList = bot:GetNearbyHeroes(900, false, BOT_MODE_NONE )
+
+				if #hAllyList <= 1 and distanceFromLane >= 1200 then -- bugged bots keep moving around the same locations but not close to the lane they were assigned.
+					local frontLoc = GetLaneFrontLocation(GetTeam(), bot:GetAssignedLane(), 0);
+					bot:Action_ClearActions(true);
+					bot:ActionQueue_AttackMove(frontLoc)
+					print('[ERROR] Relocating the idle bot: '..botName..'. Sending it to the lane# it was originally assigned: '..tostring(bot:GetAssignedLane()))
+				end
+			end
+
 			botState.botLocation = bot:GetLocation()
 			botState.lastCheckTime = DotaTime()
+			
 		end
 	else
 		local botIdleState = {

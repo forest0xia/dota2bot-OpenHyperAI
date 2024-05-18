@@ -344,7 +344,7 @@ function X.ConsiderQ()
 		for _, npcEnemy in pairs( tableNearbyEnemyHeroes )
 		do
 			if J.IsValid( npcEnemy )
-				and J.IsInRange( npcTarget, bot, nCastRange )
+				and J.IsInRange( botTarget, bot, nCastRange )
 				and J.CanCastOnNonMagicImmune( npcEnemy )
 			then
 				local npcEnemyDamage = npcEnemy:GetEstimatedDamageToTarget( false, bot, 3.0, DAMAGE_TYPE_PHYSICAL )

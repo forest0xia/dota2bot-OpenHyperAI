@@ -246,18 +246,18 @@ function X.ConsiderBlink()
             end
 		end
 
-        nInRangeEnemy = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
-		if bot.laneToPush ~= nil
-		then
-			if  J.GetManaAfter(Blink:GetManaCost()) * bot:GetMana() > ManaVoid:GetManaCost() * 2
-			and nInRangeEnemy ~= nil and #nInRangeEnemy == 0
-			and nEnemyTowers ~= nil and #nEnemyTowers == 0
-			and GetUnitToLocationDistance(bot, GetLaneFrontLocation(GetTeam(), bot.laneToPush, 0)) > nCastRange
-			and bot:IsFacingLocation(GetLaneFrontLocation(GetTeam(), bot.laneToPush, 0), 30)
-			then
-				return  BOT_ACTION_DESIRE_HIGH, J.Site.GetXUnitsTowardsLocation(bot, GetLaneFrontLocation(GetTeam(), bot.laneToPush, 0), nCastRange)
-			end
-		end
+        -- nInRangeEnemy = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+		-- if bot.laneToPush ~= nil
+		-- then
+		-- 	if  J.GetManaAfter(Blink:GetManaCost()) * bot:GetMana() > ManaVoid:GetManaCost() * 2
+		-- 	and nInRangeEnemy ~= nil and #nInRangeEnemy == 0
+		-- 	and nEnemyTowers ~= nil and #nEnemyTowers == 0
+		-- 	and GetUnitToLocationDistance(bot, GetLaneFrontLocation(GetTeam(), bot.laneToPush, 0)) > nCastRange
+		-- 	and bot:IsFacingLocation(GetLaneFrontLocation(GetTeam(), bot.laneToPush, 0), 30)
+		-- 	then
+		-- 		return  BOT_ACTION_DESIRE_HIGH, J.Site.GetXUnitsTowardsLocation(bot, GetLaneFrontLocation(GetTeam(), bot.laneToPush, 0), nCastRange)
+		-- 	end
+		-- end
 	end
 
 	if  J.IsDefending(bot)

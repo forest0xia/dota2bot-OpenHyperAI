@@ -2494,16 +2494,22 @@ function X.IsUserSetSup( bot )
 end
 
 
+-- returns 1, 2, 3, 4, or 5 as the position of the hero in the team
 function X.GetPosition(bot)
-	if bot.assignedRole == nil then
+	local role = bot.assignedRole
+	if role == nil then
 		local heroID = GetTeamPlayers(GetTeam())
 		for i, v in pairs(heroID) do
 			if GetSelectedHeroName(v) == bot:GetUnitName() then
-				bot.assignedRole = X.roleAssignment[i]
+				role = X.roleAssignment[i]
 			end
 		end
 	end
-	return bot.assignedRole
+	bot.assignedRole = role
+	if role == nil then
+		print("[ERROR] Failed to match bot role for bot: "..bot:GetUnitName())
+	end
+	return role
 end
 
 function X.IsPvNMode()

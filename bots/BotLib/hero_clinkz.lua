@@ -307,7 +307,7 @@ function X.ConsiderTarBomb()
     local nDamage = 40 + (20 * nLevel - 1)
     local nRadius = 325
     local nEnemyHeroes = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
-    local nAllyHeroes = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+    local nAllyHeroes = bot:GetNearbyHeroes(nCastRange, false, BOT_MODE_NONE)
 
     for _, enemyHero in pairs(nEnemyHeroes)
     do
@@ -603,29 +603,29 @@ function X.ConsiderSkeletonWalk()
         end
 	end
 
-    if J.IsPushing(bot)
-    then
-        if bot.laneToPush ~= nil
-        then
-            if  GetUnitToLocationDistance(bot, GetLaneFrontLocation(GetTeam(), bot.laneToPush, 0)) > 3200
-            and bot:GetActiveModeDesire() > 0.65
-            then
-                return  BOT_ACTION_DESIRE_HIGH
-            end
-        end
-    end
+    -- if J.IsPushing(bot)
+    -- then
+    --     if bot.laneToPush ~= nil
+    --     then
+    --         if  GetUnitToLocationDistance(bot, GetLaneFrontLocation(GetTeam(), bot.laneToPush, 0)) > 3200
+    --         and bot:GetActiveModeDesire() > 0.65
+    --         then
+    --             return  BOT_ACTION_DESIRE_HIGH
+    --         end
+    --     end
+    -- end
 
-    if J.IsDefending(bot)
-    then
-        if bot.laneToDefend ~= nil
-        then
-            if  GetUnitToLocationDistance(bot, GetLaneFrontLocation(GetTeam(), bot.laneToDefend, 0)) > 3200
-            and bot:GetActiveModeDesire() > 0.65
-            then
-                return  BOT_ACTION_DESIRE_HIGH
-            end
-        end
-    end
+    -- if J.IsDefending(bot)
+    -- then
+    --     if bot.laneToDefend ~= nil
+    --     then
+    --         if  GetUnitToLocationDistance(bot, GetLaneFrontLocation(GetTeam(), bot.laneToDefend, 0)) > 3200
+    --         and bot:GetActiveModeDesire() > 0.65
+    --         then
+    --             return  BOT_ACTION_DESIRE_HIGH
+    --         end
+    --     end
+    -- end
 
     if J.IsFarming(bot)
     then

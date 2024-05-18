@@ -1,5 +1,3 @@
--- Doesn't work.
-
 local X             = {}
 local bot           = GetBot()
 

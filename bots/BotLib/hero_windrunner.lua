@@ -191,6 +191,25 @@ local FocusFireDesire, FocusFireTarget
 
 local botTarget
 
+
+
+-- local original_GetUnitToUnitDistance = GetUnitToUnitDistance
+-- function GetUnitToUnitDistanceOverride(unit1, unit2)
+-- 	if not unit1 then
+-- 		print("[Error] GetUnitToUnitDistance called with invalid unit 1")
+-- 		print("Stack Trace:", debug.traceback())
+-- 	end
+-- 	if not unit2 then
+-- 		if unit1 then
+-- 			print("[Error] GetUnitToUnitDistance called with invalid unit 2, the unit 1 is: " .. unit1:GetUnitName())
+-- 			print("Stack Trace:", debug.traceback())
+-- 		end
+-- 	end
+-- 	return original_GetUnitToUnitDistance(unit1, unit2)
+-- end
+-- GetUnitToUnitDistance = GetUnitToUnitDistanceOverride
+
+
 function X.SkillsComplement()
     if J.CanNotUseAbility(bot) then return end
 
@@ -589,12 +608,10 @@ function X.ConsiderWindrun()
     then
         local nInRangeAlly = bot:GetNearbyHeroes(1000, false, BOT_MODE_NONE)
         local nInRangeEnemy = bot:GetNearbyHeroes(1000, true, BOT_MODE_NONE)
-        local eta = (GetUnitToLocationDistance(bot, GetLaneFrontLocation(GetTeam(), bot.laneToPush, 0)) / nSpeed)
 
         if  J.GetMP(bot) > 0.5
         and nInRangeAlly ~= nil and #nInRangeAlly == 0
         and nInRangeEnemy ~= nil and #nInRangeEnemy == 0
-        and eta > nDuration
         then
             return  BOT_ACTION_DESIRE_HIGH
         end
@@ -604,12 +621,10 @@ function X.ConsiderWindrun()
     then
         local nInRangeAlly = bot:GetNearbyHeroes(1000, false, BOT_MODE_NONE)
         local nInRangeEnemy = bot:GetNearbyHeroes(1000, true, BOT_MODE_NONE)
-        local eta = (GetUnitToLocationDistance(bot, GetLaneFrontLocation(GetTeam(), bot.laneToDefend, 0)) / nSpeed)
 
         if  J.GetMP(bot) > 0.5
         and nInRangeAlly ~= nil and #nInRangeAlly == 0
         and nInRangeEnemy ~= nil and #nInRangeEnemy == 0
-        and eta > nDuration
         then
             return  BOT_ACTION_DESIRE_HIGH
         end
@@ -704,13 +719,13 @@ function X.ConsiderFocusFire()
         and not enemyHero:HasModifier('modifier_item_aeon_disk_buff')
         and not enemyHero:HasModifier('modifier_item_blade_mail_reflect')
         then
-            local nInRangeAlly = botTarget:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
-            local nInRangeEnemy = botTarget:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+            local nInRangeAlly = enemyHero:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
+            local nInRangeEnemy = enemyHero:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
 
             if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
             and #nInRangeAlly >= #nInRangeEnemy
             then
-                return BOT_ACTION_DESIRE_HIGH, botTarget
+                return BOT_ACTION_DESIRE_HIGH, enemyHero
             end
 
             return BOT_ACTION_DESIRE_HIGH, enemyHero

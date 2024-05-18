@@ -140,14 +140,14 @@ function GetDesire()
 	and aveSuppLevel > 9.9
     and (((bot.lastKillTime == 0 and aliveAlly >= 5)
         or (bot.lastKillTime > 0 and aliveAlly >= 3)
-		or (GetAttackingCount() >= 3 and J.GetAliveAllyCoreCount() >= 1)))
+		or (GetAttackingCount() >= 3 and J.GetAliveAllyCoreCount() >= 2)))
 	then
 		if not IsTeamHealthy
 		then
 			return BOT_ACTION_DESIRE_NONE
 		end
 
-		canDoTormentor = true
+		canDoTormentor = IsTeamHealthy
 
         if  J.GetHP(bot) < 0.3
         and J.IsTormentor(Tormentor)
@@ -161,7 +161,7 @@ function GetDesire()
             return BOT_ACTION_DESIRE_VERYHIGH
         end
 
-		if nAllyInLoc ~= nil and #nAllyInLoc >= 2
+		if nAllyInLoc ~= nil and #nAllyInLoc >= 3
 		or IsHumanInLoc()
 		then
 			return BOT_ACTION_DESIRE_VERYHIGH
@@ -256,7 +256,7 @@ function IsEnoughAllies()
 		end
 	end
 
-	return (((bot.lastKillTime == 0 and heroCount >= 3) or (bot.lastKillTime > 0 and heroCount >= 2))) and coreCount >= 1
+	return (((bot.lastKillTime == 0 and heroCount >= 4) or (bot.lastKillTime > 0 and heroCount >= 3))) and coreCount >= 1
 end
 
 function DoesAllHaveShard()

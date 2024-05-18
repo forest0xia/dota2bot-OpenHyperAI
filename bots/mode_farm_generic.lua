@@ -61,9 +61,9 @@ function GetDesire()
 	if not bInitDone
 	then
 		bInitDone = true
-		beNormalFarmer = X.IsNormalFarmer(bot)
-		beHighFarmer = X.IsHighFarmer(bot)
-		beVeryHighFarmer = X.IsVeryHighFarmer(bot)
+		beNormalFarmer = J.GetPosition(bot) == 3
+		beHighFarmer = J.GetPosition(bot) == 2
+		beVeryHighFarmer = J.GetPosition(bot) == 1
 	end
 
 	local nMode = bot:GetActiveMode()
@@ -1113,152 +1113,6 @@ function X.IsLocCanBeSeen(vLoc)
 	       and IsLocationVisible(tempLocUp) 
 		   and IsLocationVisible(tempLocDown)
 
-end
-
-
-function X.IsNormalFarmer(bot)
-	local botName = bot:GetUnitName()
-
-	return (J.GetPosition(bot) == 3)
-	and (
-	botName == "npc_dota_hero_bristleback"
-	or botName == "npc_dota_hero_chaos_knight"
-	or botName == "npc_dota_hero_dragon_knight"
-	or botName == "npc_dota_hero_kunkka"
-	or botName == "npc_dota_hero_ogre_magi"
-	or botName == "npc_dota_hero_skeleton_king"
-	or botName == "npc_dota_hero_sand_king"
-	or botName == "npc_dota_hero_bounty_hunter"
-	or botName == "npc_dota_hero_slardar"
-	or botName == "npc_dota_hero_legion_commander"
-	or botName == "npc_dota_hero_omniknight"
-	or botName == "npc_dota_hero_axe"
-	or botName == "npc_dota_hero_razor"
-	or botName == "npc_dota_hero_viper"
-	or botName == "npc_dota_hero_necrolyte"
-	or botName == "npc_dota_hero_tidehunter"
-	or botName == "npc_dota_hero_death_prophet"
-	or botName == "npc_dota_hero_shredder"
-	or botName == "npc_dota_hero_mars"
-	or botName == "npc_dota_hero_batrider"
-	or botName == "npc_dota_hero_beastmaster"
-	or botName == "npc_dota_hero_brewmaster"
-	or botName == "npc_dota_hero_broodmother"
-	or botName == "npc_dota_hero_centaur"
-	or botName == "npc_dota_hero_dark_seer"
-	or botName == "npc_dota_hero_dawnbreaker"
-	or botName == "npc_dota_hero_doom_bringer"
-	or botName == "npc_dota_hero_enigma"
-	or botName == "npc_dota_hero_leshrac"
-	or botName == "npc_dota_hero_lycan"
-	or botName == "npc_dota_hero_magnataur"
-	or botName == "npc_dota_hero_marci"
-	or botName == "npc_dota_hero_furion"
-	or botName == "npc_dota_hero_night_stalker"
-	or botName == "npc_dota_hero_pangolier"
-	or botName == "npc_dota_hero_primal_beast"
-	or botName == "npc_dota_hero_pudge"
-	or botName == "npc_dota_hero_spirit_breaker"
-	or botName == "npc_dota_hero_abyssal_underlord"
-	or botName == "npc_dota_hero_visage"
-	or botName == "npc_dota_hero_windrunner"
-	)
-end
-
-function X.IsHighFarmer(bot)
-	local botName = bot:GetUnitName()
-
-	return (J.GetPosition(bot) == 2)
-	and (
-	botName == "npc_dota_hero_templar_assassin"
-	or botName == "npc_dota_hero_arc_warden"
-	or botName == "npc_dota_hero_mirana"
-	or botName == "npc_dota_hero_razor"
-	or botName == "npc_dota_hero_sniper"
-	or botName == "npc_dota_hero_viper"
-	or botName == "npc_dota_hero_nevermore"
-	or botName == "npc_dota_hero_lina"
-	or botName == "npc_dota_hero_dragon_knight"
-	or botName == "npc_dota_hero_kunkka"
-	or botName == "npc_dota_hero_queenofpain"
-	or botName == "npc_dota_hero_necrolyte"
-	or botName == "npc_dota_hero_huskar"
-	or botName == "npc_dota_hero_ogre_magi"
-	or botName == "npc_dota_hero_bounty_hunter"
-	or botName == "npc_dota_hero_death_prophet"
-	or botName == "npc_dota_hero_zuus"
-	or botName == "npc_dota_hero_storm_spirit"
-	or botName == "npc_dota_hero_ember_spirit"
-	or botName == "npc_dota_hero_void_spirit"
-	or botName == "npc_dota_hero_earth_spirit"
-	or botName == "npc_dota_hero_tiny"
-	or botName == "npc_dota_hero_batrider"
-	or botName == "npc_dota_hero_broodmother"
-	or botName == "npc_dota_hero_clinkz"
-	or botName == "npc_dota_hero_doom_bringer"
-	or botName == "npc_dota_hero_invoker"
-	or botName == "npc_dota_hero_keeper_of_the_light"
-	or botName == "npc_dota_hero_leshrac"
-	or botName == "npc_dota_hero_meepo"
-	or botName == "npc_dota_hero_monkey_king"
-	or botName == "npc_dota_hero_morphling"
-	or botName == "npc_dota_hero_obsidian_destroyer"
-	or botName == "npc_dota_hero_pangolier"
-	or botName == "npc_dota_hero_primal_beast"
-	or botName == "npc_dota_hero_puck"
-	or botName == "npc_dota_hero_pudge"
-	or botName == "npc_dota_hero_snapfire"
-	or botName == "npc_dota_hero_windrunner"
-	or botName == "npc_dota_hero_lone_druid"
-	or botName == "npc_dota_hero_tinker"
-	)
-end
-
-function X.IsVeryHighFarmer(bot)
-	local botName = bot:GetUnitName()
-
-	return (J.GetPosition(bot) == 1)
-	and (
-	botName == "npc_dota_hero_antimage"
-	or botName == "npc_dota_hero_arc_warden"
-	or botName == "npc_dota_hero_bloodseeker"
-	or botName == "npc_dota_hero_bristleback"
-	or botName == "npc_dota_hero_chaos_knight"
-	or botName == "npc_dota_hero_drow_ranger"
-	or botName == "npc_dota_hero_luna"
-	or botName == "npc_dota_hero_medusa"
-	or botName == "npc_dota_hero_phantom_assassin"
-	or botName == "npc_dota_hero_phantom_lancer"
-	or botName == "npc_dota_hero_razor"
-	or botName == "npc_dota_hero_skeleton_king"
-	or botName == "npc_dota_hero_sniper"
-	or botName == "npc_dota_hero_sven"
-	or botName == "npc_dota_hero_templar_assassin"
-	or botName == "npc_dota_hero_riki"
-	or botName == "npc_dota_hero_slark"
-	or botName == "npc_dota_hero_juggernaut"
-	or botName == "npc_dota_hero_naga_siren"
-	or botName == "npc_dota_hero_nevermore"
-	or botName == "npc_dota_hero_lina"
-	or botName == "npc_dota_hero_faceless_void"
-	or botName == "npc_dota_hero_alchemist"
-	or botName == "npc_dota_hero_terrorblade"
-	or botName == "npc_dota_hero_ursa"
-	or botName == "npc_dota_hero_tiny"
-	or botName == "npc_dota_hero_clinkz"
-	or botName == "npc_dota_hero_gyrocopter"
-	or botName == "npc_dota_hero_life_stealer"
-	or botName == "npc_dota_hero_marci"
-	or botName == "npc_dota_hero_meepo"
-	or botName == "npc_dota_hero_monkey_king"
-	or botName == "npc_dota_hero_morphling"
-	or botName == "npc_dota_hero_muerta"
-	or botName == "npc_dota_hero_furion"
-	or botName == "npc_dota_hero_spectre"
-	or botName == "npc_dota_hero_troll_warlord"
-	or botName == "npc_dota_hero_weaver"
-	or botName == "npc_dota_hero_windrunner"
-	)
 end
 
 function X.SetPushBonus( bot )

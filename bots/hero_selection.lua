@@ -168,7 +168,7 @@ local sPos1List = {
 	"npc_dota_hero_medusa",
 	"npc_dota_hero_meepo",
 	"npc_dota_hero_morphling",
-	-- "npc_dota_hero_muerta", -- DOESN'T WORK
+	"npc_dota_hero_muerta", -- muerta seems working as pos1, base bot script issue.
 	"npc_dota_hero_naga_siren",
 	"npc_dota_hero_nevermore",
 	"npc_dota_hero_phantom_assassin",
@@ -205,7 +205,7 @@ local sPos2List = {
 	"npc_dota_hero_huskar",
 	"npc_dota_hero_rubick",
 	"npc_dota_hero_invoker", -- TOO WEAK
-	"npc_dota_hero_keeper_of_the_light",
+	-- "npc_dota_hero_keeper_of_the_light", -- TOO WEAK
 	"npc_dota_hero_kunkka",
 	"npc_dota_hero_leshrac",
 	"npc_dota_hero_lina",
@@ -219,7 +219,7 @@ local sPos2List = {
 	"npc_dota_hero_obsidian_destroyer",
 	"npc_dota_hero_ogre_magi",
 	"npc_dota_hero_pangolier",
-	-- "npc_dota_hero_primal_beast", -- DOESN'T WORK
+	-- "npc_dota_hero_primal_beast", -- To be improved. can work as 2 or 3.
 	"npc_dota_hero_puck",
 	"npc_dota_hero_pudge",
 	"npc_dota_hero_queenofpain",
@@ -266,7 +266,6 @@ local sPos3List = {
 	"npc_dota_hero_ogre_magi",
 	"npc_dota_hero_omniknight",
 	"npc_dota_hero_pangolier",
-	-- "npc_dota_hero_primal_beast", -- DOESN'T WORK
 	"npc_dota_hero_pudge",
 	"npc_dota_hero_razor",
 	"npc_dota_hero_sand_king",
@@ -286,14 +285,12 @@ local sPos4List = {
 	"npc_dota_hero_bane",
 	-- "npc_dota_hero_chen", -- TOO WEAK
 	"npc_dota_hero_crystal_maiden",
-	-- "npc_dota_hero_dark_willow", -- DOESN'T WORK
 	"npc_dota_hero_dazzle",
 	"npc_dota_hero_disruptor",
 	"npc_dota_hero_earthshaker",
-	-- "npc_dota_hero_elder_titan", -- DOESN'T WORK
+	-- "npc_dota_hero_elder_titan", -- DOESN'T WORK. by default wants to go mid. and it wont stay mid when e.g. laning against zuus
 	"npc_dota_hero_enchantress",
 	"npc_dota_hero_grimstroke",
-	-- "npc_dota_hero_hoodwink", -- DOESN'T WORK
 	"npc_dota_hero_jakiro",
 	"npc_dota_hero_lich",
 	"npc_dota_hero_lion",
@@ -324,14 +321,14 @@ local sPos5List = {
 	"npc_dota_hero_bane",
 	-- "npc_dota_hero_chen", -- TOO WEAK
 	"npc_dota_hero_crystal_maiden",
-	-- "npc_dota_hero_dark_willow", -- DOESN'T WORK
+	"npc_dota_hero_dark_willow", -- has to be pos 5
 	"npc_dota_hero_dazzle",
 	"npc_dota_hero_disruptor",
 	"npc_dota_hero_earthshaker",
 	-- "npc_dota_hero_elder_titan", -- DOESN'T WORK
 	"npc_dota_hero_enchantress",
 	"npc_dota_hero_grimstroke",
-	-- "npc_dota_hero_hoodwink", -- DOESN'T WORK
+	-- "npc_dota_hero_hoodwink", -- hoodwink seems working as pos5, base bot script issue.
 	"npc_dota_hero_jakiro",
 	"npc_dota_hero_lich",
 	"npc_dota_hero_lion",
@@ -420,28 +417,36 @@ function X.OverrideTeamHeroes()
 			-- [5] = "npc_dota_hero_techies",
 			
 			-- Invoker mid, strong pos3 with combos, and good other team members.
-			[1] = "npc_dota_hero_invoker",
-			[2] = 'npc_dota_hero_enigma',
-			[3] = "npc_dota_hero_arc_warden",
-		    [4] = "npc_dota_hero_shadow_demon",
-			[5] = "npc_dota_hero_nyx_assassin",
+			-- [1] = "npc_dota_hero_invoker",
+			-- [2] = 'npc_dota_hero_enigma',
+			-- [3] = "npc_dota_hero_arc_warden",
+		    -- [4] = "npc_dota_hero_shadow_demon",
+			-- [5] = "npc_dota_hero_nyx_assassin",
 			
 			-- [1] = "npc_dota_hero_invoker",
 			-- [2] = 'npc_dota_hero_tidehunter',
 			-- [3] = "npc_dota_hero_antimage",
 		    -- [4] = "npc_dota_hero_earth_spirit",
 			-- [5] = "npc_dota_hero_nyx_assassin",
+			
+			-- Muerta pos1 and Hoodwink pos5, both go top.
+			[1] = "npc_dota_hero_primal_beast",
+			[2] = tSelectPoolList[2][RandomInt( 1, #tSelectPoolList[2] )],
+			[3] = 'npc_dota_hero_muerta', -- muerta has to be pos 1, base bot script issue.
+			-- [4] = 'npc_dota_hero_hoodwink', -- hoodwink does not work over half of the time.
+			[4] = tSelectPoolList[4][RandomInt( 1, #tSelectPoolList[4] )],
+			[5] = tSelectPoolList[5][RandomInt( 1, #tSelectPoolList[5] )],
 
 
 			-- Test buggy heroes:
-			-- [1] = "npc_dota_hero_invoker",
-			-- [2] = 'npc_dota_hero_muerta',
+			-- [1] = "npc_dota_hero_primal_beast",
 			-- -- [2] = 'npc_dota_hero_tidehunter',
-			-- -- [2] = 'npc_dota_hero_enigma',
-			-- -- [2] = 'npc_dota_hero_skeleton_king',
-			-- -- [2] = tSelectPoolList[2][RandomInt( 1, #tSelectPoolList[2] )],
-			-- [3] = tSelectPoolList[3][RandomInt( 1, #tSelectPoolList[3] )],
-			-- [4] = tSelectPoolList[4][RandomInt( 1, #tSelectPoolList[4] )],
+			-- -- [2] = 'npc_dota_hero_primal_beast',
+			-- [2] = tSelectPoolList[2][RandomInt( 1, #tSelectPoolList[2] )],
+			-- [3] = 'npc_dota_hero_muerta', -- DOES NOT WORK. marci works as pos1.
+			-- -- [3] = tSelectPoolList[3][RandomInt( 1, #tSelectPoolList[3] )],
+			-- [4] = "npc_dota_hero_dark_willow", -- dark_willow does not work over half of the time.
+			-- -- [4] = tSelectPoolList[4][RandomInt( 1, #tSelectPoolList[4] )],
 			-- [5] = tSelectPoolList[5][RandomInt( 1, #tSelectPoolList[5] )],
 		    
 			-- All Pandas/spirits
@@ -456,7 +461,7 @@ function X.OverrideTeamHeroes()
 end
 
 -- 这行代码为了人工挑选想要的阵容。如果想让电脑自己随机英雄，则注释掉这行
--- sSelectList = X.OverrideTeamHeroes()
+sSelectList = X.OverrideTeamHeroes()
 
 
 function X.ShuffleArray(array)

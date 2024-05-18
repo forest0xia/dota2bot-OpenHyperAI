@@ -1059,11 +1059,11 @@ function X.ConsiderRearm()
     if  J.IsPushing(bot)
     and bot:GetActiveModeDesire() > 0.5
     then
-        if  GetUnitToLocationDistance(bot, GetLaneFrontLocation(GetTeam(), bot.laneToPush, 0)) > 4000
-        and KeenConveyance:IsTrained() and KeenConveyance:GetCooldownTimeRemaining() > 5
-        then
-            return BOT_ACTION_DESIRE_HIGH
-        end
+        -- if  GetUnitToLocationDistance(bot, GetLaneFrontLocation(GetTeam(), bot.laneToPush, 0)) > 4000
+        -- and KeenConveyance:IsTrained() and KeenConveyance:GetCooldownTimeRemaining() > 5
+        -- then
+        --     return BOT_ACTION_DESIRE_HIGH
+        -- end
 
         if Laser:GetCooldownTimeRemaining() > Rearm:GetChannelTime()
         then
