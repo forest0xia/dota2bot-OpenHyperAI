@@ -6,11 +6,13 @@ The goal of this script is to share the most up to date functionalities that we'
 This script is based on Valve's default bot script and many other people's work and their scripts. That being said, this is a partial override not completely take over bot script. It takes the advantages of some other existing bot scripts and aims to be a better off script than the existing ones. We hope the bot's decision making and team strategies are more effective and brings more joy to you.
 
 ### Why it's enjoyable
-1. Support 115+ heroes. (I personally don't take much of the credit for this because it's many peoples work to make this possible, I was mostly improving existing ones). Kudos to Tinkering ABout (by ryndrb) for making a lot of improvements on recent hero supporting.
+1. Support 116+ heroes. (I personally don't take much of the credit for this because it's many peoples work to make this possible). Kudos to Tinkering ABout (by ryndrb) for making a lot of improvements on recent hero supporting.
 2. All supported heroes can play any position roles. Heroes will go to any lane they are assigned. The laning or pos of the heroes is random and irrelevant to the pick order.
 3. If you ever feel all existing bot scripts lack excitement. This script boosts bots with huge unfair advantages to make bot games a lot more challenging. You will need to copy the script into your local vscripts folder and then enable the Fretbots mode for this feature. See instructions below.
 3. Improved code structure general logic for decision making for ability and item usages as well as roaming and farming.
 4. Fixed tons of bugs that can cause bots to stay idle or cancel it's own channeling spells or stuck on weird state.
+5. In hero selection phase, you can type `!pick XXX` to pick heros for ally bots, or type `/all !pick XXX` for enemy bots. For example `/all !pick puck`
+5. In pre-game phase, you can type `!pos X` to pick/swap the position with bot, this will also swap the lane. For example `!pos 2`
 
 ### How to install this script?
 There is currently a bug where subscribing to recent bot scripts will NOT work when selecting them in the custom game lobby. They will revert back to default bots when you close out of the settings menu. In order to fix this, you must manually install this script:
@@ -35,23 +37,24 @@ There is currently a bug where subscribing to recent bot scripts will NOT work w
 6. Better laning logic to avoid bots feeding too much in the early game.
 
 ### Some Recent Fixes
+1. Added new hero support for Primal Beast to play position 2.
 1. Bots are now more flexible with different laning or roles. They were not able to purchase items if they were assigned with different role or laning.
-2. Added/Improved a bunch of hero support so bots can have better performance on more heroes with better strategy of the ability usage, item purchase, etc, such as Invoker casting abilities and making combos.
-3. Added a canary logic to keep checking if any bot gets stuck or stays idle for some time. If such a bot is detected, it's current action or all queued actions will get cleaned and it will be forced to push.
-4. When Fretbots is enabled. A list of unfair settings get applied in addition to what was provided by Fretbots originally:
-4.1 The bots get bonus mana/hp regens and provide less exp on death.
-4.2 When a player kills a bot, the player who made the kill receives a reduction in gold. This does not affect assisting players.
-5. Bots with refresher won't directly use refresher immediately, this is to prevent e.g. Void, Enigma using ult immediately twice. The logic is now also overridable in each bot files.
-6. Enigma will keep casting ult instead of stopping casting it immediately by itself doing something else.
-7. [updated, need to test] Don't kill couriers if bot is targeting a dying hero or is retreating.
-8. [updated, need to test] Don't focus on some minions over heroes.
-9. Bots won't stay on some ability effects for lone. e.g. jakiro_macropyre_burn, dark_seer_wall, sandking_sand_storm, warlock_upheaval, etc. Bots have the intension to run away from those effects.
-10. Carry large HP and mana potions. Swap slots.
-11. Swap slots to use moonshard
-12. Bots should have regens in laning phase. Don't stay in lane if ph is too low. e.g. not calling in regen like omni would have 1400 hp and sit in lane on 200 till they tp back and take a free kill
-13. Better Tormentor strategy with human players. [Partially improved]
-14. Randomly selected warding locations from good warding locations. [Improved for game start warding]
-15. Use item_force_staff to break through trees from furion_sprout. Note that GetNearbyTrees api does not work for furion_sprout trees as of 5/12/2024.
+1. Added/Improved a bunch of hero support so bots can have better performance on more heroes with better strategy of the ability usage, item purchase, etc, such as Invoker casting abilities and making combos.
+1. Added a canary logic to keep checking if any bot gets stuck or stays idle for some time. If such a bot is detected, it's current action or all queued actions will get cleaned and it will be forced to push.
+1. When Fretbots is enabled. A list of unfair settings get applied in addition to what was provided by Fretbots originally:
+   * The bots get bonus mana/hp regens and provide less exp on death.
+   * When a player kills a bot, the player who made the kill receives a reduction in gold. This does not affect assisting players.
+1. Bots with refresher won't directly use refresher immediately, this is to prevent e.g. Void, Enigma using ult immediately twice. The logic is now also overridable in each bot files.
+1. Enigma will keep casting ult instead of stopping casting it immediately by itself doing something else.
+1. [updated, need to test] Don't kill couriers if bot is targeting a dying hero or is retreating.
+1. [updated, need to test] Don't focus on some minions over heroes.
+1. Bots won't stay on some ability effects for lone. e.g. jakiro_macropyre_burn, dark_seer_wall, sandking_sand_storm, warlock_upheaval, etc. Bots have the intension to run away from those effects.
+1. Carry large HP and mana potions. Swap slots.
+1. Swap slots to use moonshard
+1. Bots should have regens in laning phase. Don't stay in lane if ph is too low. e.g. not calling in regen like omni would have 1400 hp and sit in lane on 200 till they tp back and take a free kill
+1. Better Tormentor strategy with human players. [Partially improved]
+1. Randomly selected warding locations from good warding locations. [Improved for game start warding]
+1. Use item_force_staff to break through trees from furion_sprout. Note that GetNearbyTrees api does not work for furion_sprout trees as of 5/12/2024.
 
 ### Credits to
 - New beginner ai (by dota2jmz@163.com).
