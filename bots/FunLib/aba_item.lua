@@ -1355,7 +1355,8 @@ function Item.GetRoleItemsBuyList( bot )
 		local memberID = nTeamPlayerIDs[i]
 		if bot:GetPlayerID() == memberID
 		then
-			return 'pos_'..tostring(Role.roleAssignment[i])
+			local team = GetTeam() == TEAM_RADIANT and 'TEAM_RADIANT' or 'TEAM_DIRE'
+			return 'pos_'..tostring(Role.roleAssignment[team][i])
 		end
 	end
 	return 'pos_1'

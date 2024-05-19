@@ -149,6 +149,8 @@ local QDesire, QLocation
 function X.SkillsComplement()
     if J.CanNotUseAbility(bot) then return end
 
+    if bot:IsChanneling() or J.IsCastingUltimateAbility(bot) then return end
+
     X.ConsiderStopQ()
 
 	QDesire, QLocation = X.ConsiderQ()

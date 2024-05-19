@@ -11,7 +11,12 @@ end
 ----------------------------------------------------------------------------------------------------
 
 -- The index in the list is the pick order, value is the role. by default #1 pick is mid, #2 is pos3, #3 is pos1, #4 is pos 5, #5 is pos 4.
-X.roleAssignment = { 2, 3, 1, 5, 4 }
+-- X.roleAssignment = { 2, 3, 1, 5, 4 }
+X.roleAssignment = {
+	TEAM_RADIANT = { 1, 2, 3, 4, 5 },
+	TEAM_DIRE = { 1, 2, 3, 4, 5 }
+}
+
 
 -- ["carry"] will become more useful later in the game if they gain a significant gold advantage.
 -- ["durable"] has the ability to last longer in teamfights.
@@ -2497,11 +2502,12 @@ end
 -- returns 1, 2, 3, 4, or 5 as the position of the hero in the team
 function X.GetPosition(bot)
 	local role = bot.assignedRole
-	if role == nil then
+	if role == nil or GetGameState() == GAME_STATE_PRE_GAME then
 		local heroID = GetTeamPlayers(GetTeam())
 		for i, v in pairs(heroID) do
 			if GetSelectedHeroName(v) == bot:GetUnitName() then
-				role = X.roleAssignment[i]
+				local team = GetTeam() == TEAM_RADIANT and 'TEAM_RADIANT' or 'TEAM_DIRE'
+				role = X.roleAssignment[team][i]
 			end
 		end
 	end
