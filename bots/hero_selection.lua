@@ -1181,7 +1181,7 @@ function GetBotNames()
 end
 
 function UpdateLaneAssignments()
-	if GetGameMode() == GAMEMODE_AP then
+	if GetGameMode() == GAMEMODE_AP or GetGameMode() == GAMEMODE_TURBO then
 		if GetGameState() == GAME_STATE_HERO_SELECTION or GetGameState() == GAME_STATE_STRATEGY_TIME or GetGameState() == GAME_STATE_PRE_GAME then
 			-- InstallChatCallback(function ( tChat ) X.SetChatHeroBan( tChat.string ) end )
 			InstallChatCallback(function (attr) SelectHeroChatCallback(attr.player_id, attr.string, attr.team_only); end);

@@ -157,6 +157,34 @@ function J.CanNotUseAbility( bot )
 end
 
 
+local TempMovableModifierNames = {
+    'modifier_abaddon_borrowed_time',
+    'modifier_dazzle_shallow_grave',
+    'modifier_wind_waker', -- movability depends on whether who uses the item.
+    'modifier_item_wind_waker',
+    'modifier_oracle_false_promise_timer',
+    'modifier_item_aeon_disk_buff'
+}
+local MovableUndyingModifierRemain = 0
+
+-- check if the target will still have at least one movable undying modifier after nDelay seconds.
+function J.HasMovableUndyingModifier(botTarget, nDelay)
+    for _, mName in pairs(TempMovableModifierNames)
+    do
+        if botTarget:HasModifier(mName) then
+            MovableUndyingModifierRemain = J.GetModifierTime(botTarget, mName)
+            -- print(DotaTime().." - Target has undying modifier "..mName..", the remaining time: " .. tostring(MovableUndyingModifierRemain) .. " seconds, check delay: "..tostring(nDelay))
+            if MovableUndyingModifierRemain > 0 then
+				if DotaTime() < DotaTime() + MovableUndyingModifierRemain - nDelay then
+					return true
+				end
+				return false
+            end
+        end
+    end
+    return false
+end
+
 
 --友军生物数量
 function J.GetUnitAllyCountAroundEnemyTarget( target, nRadius )

@@ -36,7 +36,7 @@ local votingTimeElapsed = -1
 -- The playerID of the host.  Used to whitelist chat commands.
 local hostID = -1
 -- default difficulty if no one votes
-noVoteDifficulty = 5
+noVoteDifficulty = 2
 -- Is repurcussion timer started?
 local isRepurcussionTimerStarted = false
 -- Instantiate ourself
@@ -53,18 +53,21 @@ local cheats = dofile('bots.FretBots.CheatList')
 local currentAnnouncePrintTime = 0
 local lastAnnouncePrintedTime = -2
 local numberAnnouncePrinted = 0
+local announcementGap = 2
+
+-- RGB color and text. sample color pick web: https://htmlcolorcodes.com/
 local announcementList = {
-	
-	{"#7986CB", "GLHF! Default bot scripts lack excitement. This script boosts bots with unfair advantages to make bot games more challenging:"},
-	{"#26C6DA", "* The bots receive a bonus in gold, exp, stats, etc every minute as well as upon their death."},
-	{"#26A69A", "* The bots get bonus mana/hp regens and provide less exp on death."},
-	{"#81C784", "* When a player kills a bot, the player who made the kill receives a reduction in gold. This does not affect assisting players."},
-	{"#AED581", "* The amount of bonus mainly depends on the difficulty scale you vote." },
-	{"#BA4A00", "* This is a script based on ryndrb's https://github.com/ryndrb/dota2bot. Kudos to BeginnerAI, Fretbots, and ryndrb@; and thanks to -Calculated, Karma, Toph for sharing ideas." },
+	{"#C0392B", "GLHF! Default bot scripts lack excitement. This script boosts bots with unfair advantages to make bot games more challenging:"},
+	{"#9B59B6", "* You can vote for difficulty scale from 0 to 10, which affects the amount of bonus the bots will receive." },
+	{"#2980B9", "* If difficulty >= 0, bots get bonus neutral items, and get fair bonus in gold, exp, stats, etc every minute."},
+	{"#E59866", "* If difficulty >= 1, bots get above bonus upon their death; and also get new bonus in mana/hp regens."},
+	{"#1ABC9C", "* As difficulty increments, bots get neutral items sooner and higher bonus amount."},
+	{"#F39C12", "* If difficulty >= 5, when a player kills a bot, the player who made the kill receives a reduction in gold. This does not affect assisting players. Bots also provide less exp on death."},
+	{"#7FB3D5", "* The higher the difficulty you vote, the more bonus the bots will get which can make the game more challenging." },
+	{"#E74C3C", "* High difficulty can be overwhelming or even frustrating, please choose the right difficulty for you and your team." },
+	{"#D4AC0D", "* Kudos to BeginnerAI, Fretbots, and ryndrb@; and thanks to Toph, hiro1134, -Calculated, Karma, Psychdoctor for sharing ideas." },
 	-- {"#D4AC0D", "There are commands to play certain sounds like `ps love` or `ps dylm`. You can also explore other commands like `getroles`, `networth`, etc." }
-
 }
-
 
 
 -- Difficulty values voted for
@@ -109,7 +112,7 @@ function Settings:Initialize(difficulty)
 	-- Print
 	local msg = 'Difficulty Scale: '..Settings.difficultyScale
 	Debug:Print(msg)
-	Utilities:Print(msg, MSG_GOOD)
+	-- Utilities:Print(msg, MSG_GOOD) -- scale value vs difficulty they voted can confuse players.
 	-- Set Flag
 	Flags.isSettingsFinalized = true
 end
@@ -165,7 +168,7 @@ function Settings:DifficultySelectTimer()
 	end
 
 	if numberAnnouncePrinted < #announcementList + 1 then
-		if currentAnnouncePrintTime - lastAnnouncePrintedTime >= 3 then
+		if currentAnnouncePrintTime - lastAnnouncePrintedTime >= announcementGap then
 			local msg = announcementList[numberAnnouncePrinted]
 			if msg ~= nil then
 				Utilities:Print(msg[2], msg[1])

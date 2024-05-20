@@ -1,12 +1,4 @@
-version = '0.7.1.2.1'
+version = '0.7.35d'
 versionString = [[Changelog: 
-  Disabled magic resist bonuses for bots due to inconsistency of applied values in SetBaseMagicalResistanceValue.
-
-  Updated methodology used to issue stat bonuses.
-
-  Fixed some typos in HeroSoundsTable.
-
-  Added some sounds for heroes that had none.
-
-  Additonal hero sounds added.
+  Check out steam Workshop page: https://steamcommunity.com/workshop/filedetails/discussion/3246316298/6197594023017709799/
 ]]

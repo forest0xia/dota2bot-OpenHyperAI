@@ -5,14 +5,14 @@ The goal of this script is to share the most up to date functionalities that we'
 
 This script is based on Valve's default bot script and many other people's work and their scripts. That being said, this is a partial override not completely take over bot script. It takes the advantages of some other existing bot scripts and aims to be a better off script than the existing ones. We hope the bot's decision making and team strategies are more effective and brings more joy to you.
 
+Bot script in Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=3246316298
+
 ### Why it's enjoyable
 1. Support 116+ heroes. (I personally don't take much of the credit for this because it's many peoples work to make this possible). Kudos to Tinkering ABout (by ryndrb) for making a lot of improvements on recent hero supporting.
 2. All supported heroes can play any position roles. Heroes will go to any lane they are assigned. The laning or pos of the heroes is random and irrelevant to the pick order.
 3. If you ever feel all existing bot scripts lack excitement. This script boosts bots with huge unfair advantages to make bot games a lot more challenging. You will need to copy the script into your local vscripts folder and then enable the Fretbots mode for this feature. See instructions below.
 3. Improved code structure general logic for decision making for ability and item usages as well as roaming and farming.
 4. Fixed tons of bugs that can cause bots to stay idle or cancel it's own channeling spells or stuck on weird state.
-5. In hero selection phase, you can type `!pick XXX` to pick heros for ally bots, or type `/all !pick XXX` for enemy bots. For example `/all !pick puck`
-5. In pre-game phase, you can type `!pos X` to pick/swap the position with bot, this will also swap the lane. For example `!pos 2`
 
 ### How to install this script?
 There is currently a bug where subscribing to recent bot scripts will NOT work when selecting them in the custom game lobby. They will revert back to default bots when you close out of the settings menu. In order to fix this, you must manually install this script:
@@ -27,6 +27,12 @@ There is currently a bug where subscribing to recent bot scripts will NOT work w
 1. [**Additional Challenging bot**] Enable `Fretbots`:
    * Make sure to launch Dota 2 with the console enabled. When creating the lobby game, ensure that `Enable Cheat` is checked;
    * When the lobby game gets started, e.g. in the hero selection phase. Open the console, and input `sv_cheats 1; script_reload_code bots/fretbots`
+
+### Bots' roles and positioning
+1. The positioning are determined by the slot order in the lobby, so the roles 1 to 5 are the order of lobby slots from top to bottom. The pick order will get shuffled in the game but it won't affect their roles.
+1. In hero selection phase, you can type `!pick XXX` to pick heros for ally bots, or type `/all !pick XXX` for enemy bots. For example `/all !pick puck`
+1. In pre-game phase, you can type `!pos X` to pick/swap the position with bot, this will also swap the lane. For example `!pos 2`
+1. Bots will say what their roles are once loaded into the game.
 
 ### What's next
 1. This is a script mainly based on the code from Tinkering About (by ryndrb). But the code has diverged significantly due to some roles and item selection support, as well as the local support with Fretbots. So the future maintenance will keep diverging.
@@ -74,7 +80,7 @@ There is currently a bug where subscribing to recent bot scripts will NOT work w
 - Bot modifier names: https://developer.valvesoftware.com/wiki/Dota_2_Workshop_Tools/Scripting/Built-In_Modifier_Names
 - Dota2 data mining (details of items, abilities, heroes): https://github.com/muk-as/DOTA2_WEB/blob/master/dota2_web/Items_cn.json
 
-### Things to be updated (not ranked by priority):
+### Things to be updated (not ranked by priority, ChatGPT translated to English):
 - AM in place blink
 - less farming, more group push in late games.
 - focus more on tower and base in push.
@@ -128,4 +134,5 @@ There is currently a bug where subscribing to recent bot scripts will NOT work w
 - Carl, if there are people nearby and you have very low health, retreat unconditionally. Because Carl's full-screen abilities will cancel previous retreat commands.
 - Bots won't immediately use items from their backpack. Better backpack managment needed to 1, swap items for e.g. healings and swap back when used.
 - Don't go to outpost alone or use smoke.
+- Bots should be able to dynamically change the item-build-list and skill-talent-build list to refect the role swapping with player - in case player uses !pos to swap roles.
 

@@ -287,14 +287,17 @@ end
 function BonusTimers:GameStartBonus()
 	local msg = 'Bots given starting bonuses:'
 	local awarded = false
-	for _, bot in pairs(Bots) do
-		-- HP regen
-		bot:SetBaseHealthRegen(3 * Settings.difficultyScale)
-		-- Mana regen
-		bot:SetBaseManaRegen(3 * Settings.difficultyScale)
-		-- bot:SetHPRegenGain(5 * Settings.difficultyScale)
-		-- bot:SetManaRegenGain(5 * Settings.difficultyScale)
+	if Settings.difficultyScale >= 0.6 then
+		for _, bot in pairs(Bots) do
+			-- HP regen
+			bot:SetBaseHealthRegen(3 * Settings.difficultyScale)
+			-- Mana regen
+			bot:SetBaseManaRegen(3 * Settings.difficultyScale)
+			-- bot:SetHPRegenGain(5 * Settings.difficultyScale)
+			-- bot:SetManaRegenGain(5 * Settings.difficultyScale)
+		end
 	end
+
 	-- Gold
 	if Settings.gameStartBonus.gold  > 0 then
 		msg = msg .. ' Gold: '.. Settings.gameStartBonus.gold

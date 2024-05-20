@@ -152,14 +152,6 @@ local TempNonMovableModifierNames = {
     'modifier_item_wind_waker',
     'modifier_brewmaster_storm_cyclone'
 }
-local TempMovableModifierNames = {
-    'modifier_abaddon_borrowed_time',
-    'modifier_dazzle_shallow_grave',
-    'modifier_wind_waker', -- movability depends on whether who uses the item.
-    'modifier_item_wind_waker',
-    'modifier_oracle_false_promise_timer',
-    'modifier_item_aeon_disk_buff'
-}
 
 local ColdSnapDesire, ColdSnapTarget
 local GhostWalkDesire
