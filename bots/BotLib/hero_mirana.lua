@@ -17,14 +17,14 @@ local sAbilityList = J.Skill.GetAbilityList(bot)
 local sRole = J.Item.GetRoleItemsBuyList(bot)
 
 local tTalentTreeList = {
-						['t25'] = {0, 10},
-						['t20'] = {10, 0},
-						['t15'] = {10, 0},
-						['t10'] = {0, 10},
+	['t25'] = {10, 0},
+	['t20'] = {10, 0},
+	['t15'] = {10, 0},
+	['t10'] = {10, 0},
 }
 
 local tAllAbilityBuildList = {
-						{3,2,1,1,1,6,1,3,3,3,2,6,2,2,6},--pos1,2
+	{1,3,1,2,1,6,1,3,3,3,6,2,2,2,6},
 }
 
 local nAbilityBuildList = J.Skill.GetRandomBuild(tAllAbilityBuildList)
@@ -35,27 +35,20 @@ local sRoleItemsBuyList = {}
 
 sRoleItemsBuyList['pos_1'] = {
 
-	"item_slippers",
-	"item_circlet",
-	"item_double_branches",
-	"item_tango",
-
-	"item_wraith_band",
-	"item_boots",
-	"item_bracer",
-	"item_power_treads",
-	"item_magic_wand",
-
-	"item_gungir",--
-	"item_black_king_bar",--
-	"item_hurricane_pike",--
-	"item_butterfly",--
-	"item_greater_crit",--
-	"item_travel_boots_2",--
-
+	"item_ranged_carry_outfit",
+	"item_dragon_lance",
+	"item_rod_of_atos",
+	"item_maelstrom",
+	"item_black_king_bar",
+	"item_gungir",
+	"item_travel_boots",
+	"item_bloodthorn",
+	"item_hurricane_pike",	
+	"item_ultimate_scepter",
 	"item_moon_shard",
+	"item_travel_boots_2",
 	"item_ultimate_scepter_2",
-	"item_aghanims_shard",
+	"item_butterfly",
 }
 
 sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
@@ -159,6 +152,9 @@ function X.SkillsComplement()
 	if ( castQDesire > 0 ) 
 	then
 		J.SetReportMotive(bDebugMode,sMotive);		
+	
+		J.SetQueuePtToINT(bot, true)
+	
 		bot:ActionQueue_UseAbility( abilityQ )
 		return;
 	end
@@ -167,6 +163,9 @@ function X.SkillsComplement()
 	if ( castWDesire > 0 ) 
 	then
 		J.SetReportMotive(bDebugMode,sMotive);
+	
+		J.SetQueuePtToINT(bot, true)
+	
 		bot:ActionQueue_UseAbilityOnLocation( abilityW, castWTarget )
 		return;
 	end
@@ -175,6 +174,9 @@ function X.SkillsComplement()
 	if ( castEDesire > 0 ) 
 	then
 		J.SetReportMotive(bDebugMode,sMotive);
+	
+		J.SetQueuePtToINT(bot, false)
+	
 		bot:ActionQueue_UseAbility( abilityE )
 		return;
 	end
@@ -183,6 +185,9 @@ function X.SkillsComplement()
 	if ( castRDesire > 0 ) 
 	then
 		J.SetReportMotive(bDebugMode,sMotive);
+	
+		J.SetQueuePtToINT(bot, true)
+	
 		bot:ActionQueue_UseAbility( abilityR )
 		return;
 	
@@ -671,5 +676,5 @@ function X.IsEnemyCreepBetweenEnemyHero( hSource, hTarget, nRadius )
 end
 
 return X
--- dota2jmz@163.com QQ:2462331592
+
 

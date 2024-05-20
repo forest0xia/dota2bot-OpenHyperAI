@@ -1104,7 +1104,12 @@ local function handleCommand(command, PlayerID, bTeamOnly)
 		if HasValue(remainingPos, text) then
 			local role = tonumber(text)
 			
-			local playerIndex = PlayerID + 1 -- each team player id starts with 0, to 4 as the last player.
+			local playerIndex = PlayerID + 1 -- each team player id starts with 0, to 4 as the last player. 
+			-- this index can be differnt if the player choose a slot in lobby that has empty slots before the one the player chooses.
+			for idx, id in pairs(GetTeamPlayers(GetTeam())) do
+				if id == PlayerID then playerIndex = idx end
+			end
+
 			for index, id in pairs(GetTeamPlayers(GetTeam()))
 			do
 				if Role.roleAssignment[team][index] == role then

@@ -106,8 +106,13 @@ function Settings:Initialize(difficulty)
 	-- no argument implies default, do nothing
 	if difficulty == nil then return end
 	-- Adjust bot skill values by the difficulty value
-	-- 5 is nominal (1.0), and the max swing is +/- 0.50
 	Settings.difficultyScale = 1 + ((difficulty - 5) / 10)
+	-- increase diff scale for diffculty > 5.
+	if difficulty > 5 and difficulty < 10 then
+		Settings.difficultyScale = 1 + ((difficulty - 3) / 10)
+	elseif difficulty >= 10 then
+		Settings.difficultyScale = 1 + (difficulty / 10)
+	end
 	Settings.difficultyScale = Utilities:Round(Settings.difficultyScale, 2)
 	-- Print
 	local msg = 'Difficulty Scale: '..Settings.difficultyScale

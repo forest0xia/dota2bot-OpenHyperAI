@@ -2212,7 +2212,7 @@ function J.SetQueuePtToINT( bot, bSoulRingUsed )
 
 end
 
-
+-- 动力鞋/假腿状态
 function J.IsPTReady( bot, status )
 
 	if not bot:IsAlive()
@@ -4249,6 +4249,22 @@ function J.IsHumanPlayerInTeam()
 	end
 
 	return false
+end
+
+-- count the number of human vs bot players in the team. returns: #humen, #bots
+function J.NumHumanBotPlayersInTeam()
+	local nHuman, nBot = 0, 0
+	for _, member in pairs(GetTeamPlayers(GetTeam()))
+	do
+		if not IsPlayerBot(member)
+		then
+			nHuman = nHuman + 1
+		else
+			nBot = nBot + 1
+		end
+	end
+
+	return nHuman, nBot
 end
 
 function J.GetEnemiesAroundAncient()

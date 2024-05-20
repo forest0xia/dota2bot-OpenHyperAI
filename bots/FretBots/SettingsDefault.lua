@@ -39,11 +39,11 @@
 			-- percentages, by role (1, 2, 3, 4, 5).  A random number is chosen between the clamps
 			variance =
 			{
-				{1.0, 1.3},
-				{1.0, 1.3},
-				{1.0, 1.3},
-				{0.9, 1.3},
-				{0.9, 1.3}
+				{1.3, 1.5},
+				{1.3, 1.5},
+				{1.1, 1.5},
+				{1.1, 1.5},
+				{1.1, 1.5}
 			},
 			-- Warns players that the bot is very strong if they are over this threshold
 			warningThreshold = 1.2,
@@ -221,11 +221,11 @@
 			accrue =
 			{
 				gold 			= true,
-				armor 			= true,
-				magicResist 	= true,
+				armor 			= false,
+				magicResist 	= false,
 				levels 			= false,
 				neutral 		= false,
-				stats 			= true
+				stats 			= false
 			},
 			-- flat offsets for bonus per type
 			offset =
@@ -291,8 +291,8 @@
 			scaleEnabled =
 			{
 				gold 			= true,
-				armor 			= true,
-				magicResist 	= true,
+				armor 			= false,
+				magicResist 	= false,
 				levels 			= true,
 				neutral 		= true,
 				stats 			= true
@@ -301,9 +301,9 @@
 			timeGate =
 			{
 				gold 			= -100,
-				armor 			= -100,
-				magicResist 	= -100,
-				levels 			=  120,
+				armor 			= 1800,
+				magicResist 	= 1800,
+				levels 			=  360,
 				neutral 		= -100,
 				stats 			= -100,
 			},
@@ -325,9 +325,9 @@
 		-- caps for awards per game
 		awardCap =
 		{
-			gold 				= 25000,
-			armor 				= 25,
-			magicResist 		= 25,
+			gold 				= 30000,
+			armor 				= 20,
+			magicResist 		= 20,
 			levels 				= 10,
 			neutral 			= 1200,
 			stats 				= 25,

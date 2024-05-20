@@ -43,6 +43,7 @@ local beHighFarmer = false;
 local beVeryHighFarmer = false;
 
 local isWelcomeMessageDone = false
+local isChangePosMessageDone = false
 
 if bot.farmLocation == nil then bot.farmLocation = bot:GetLocation() end
 
@@ -60,6 +61,17 @@ function GetDesire()
 		then
 			bot:ActionImmediate_Chat("GLHF!", true)
 			isWelcomeMessageDone = true
+		end
+	end
+
+	if not isChangePosMessageDone
+	and J.GetPosition(bot) == 5
+	then
+		local nH, nB = J.NumHumanBotPlayersInTeam()
+		if DotaTime() >= 0 and nH > 0 and nB > 0
+		then
+			bot:ActionImmediate_Chat("Position selection closed.", true)
+			isChangePosMessageDone = true
 		end
 	end
 
