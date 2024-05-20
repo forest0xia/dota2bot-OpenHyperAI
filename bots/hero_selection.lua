@@ -636,31 +636,30 @@ function X.OverrideTeamHeroes()
 			-- [5] = tSelectPoolList[5][RandomInt( 1, #tSelectPoolList[5] )],
 
 			-- Rubick mid, and good team fights
-			-- [1] = "npc_dota_hero_rubick",
-			-- [2] = "npc_dota_hero_enigma",
-			-- [3] = "npc_dota_hero_clinkz",
+			-- [1] = "npc_dota_hero_clinkz",
+			-- [2] = "npc_dota_hero_rubick",
+			-- [3] = "npc_dota_hero_enigma",
 		    -- [4] = "npc_dota_hero_earth_spirit",
 			-- [5] = "npc_dota_hero_techies",
 			
 			-- Invoker mid, strong pos3 with combos, and good other team members.
-			-- [1] = "npc_dota_hero_invoker",
-			-- [2] = 'npc_dota_hero_enigma',
-			-- [3] = "npc_dota_hero_arc_warden",
-		    -- [4] = "npc_dota_hero_shadow_demon",
-			-- [5] = "npc_dota_hero_nyx_assassin",
+			-- [1] = "npc_dota_hero_arc_warden",
+			-- [2] = 'npc_dota_hero_invoker',
+			-- [3] = "npc_dota_hero_enigma",
+		    -- [4] = "npc_dota_hero_nyx_assassin",
+			-- [5] = "npc_dota_hero_shadow_demon",
 			
-			-- [1] = "npc_dota_hero_invoker",
-			-- [2] = 'npc_dota_hero_tidehunter',
-			-- [3] = "npc_dota_hero_antimage",
-		    -- [4] = "npc_dota_hero_earth_spirit",
-			-- [5] = "npc_dota_hero_nyx_assassin",
+			-- [1] = "npc_dota_hero_antimage",
+			-- [2] = 'npc_dota_hero_invoker',
+			-- [3] = "npc_dota_hero_tidehunter",
+		    -- [4] = "npc_dota_hero_nyx_assassin",
+			-- [5] = "npc_dota_hero_earth_spirit",
 			
 			-- Muerta pos1 and Hoodwink pos5, both go top.
-			[1] = "npc_dota_hero_muerta",
-			[2] = 'npc_dota_hero_primal_beast', -- muerta has to be pos 1, base bot script issue.
-			[3] = tSelectPoolList[3][RandomInt( 1, #tSelectPoolList[3] )], -- muerta has to be pos 1, base bot script issue.
-			-- [4] = 'npc_dota_hero_hoodwink', -- hoodwink does not work over half of the time.
-			[4] = tSelectPoolList[4][RandomInt( 1, #tSelectPoolList[4] )],
+			[1] = "npc_dota_hero_muerta", -- muerta be pos 1 has smaller chance for bug, 
+			[2] = tSelectPoolList[2][RandomInt( 1, #tSelectPoolList[2] )],
+			[3] = tSelectPoolList[3][RandomInt( 1, #tSelectPoolList[3] )],
+			[4] = 'npc_dota_hero_hoodwink', -- hoodwink does not work over half of the time.
 			[5] = tSelectPoolList[5][RandomInt( 1, #tSelectPoolList[5] )],
 
 
@@ -676,12 +675,11 @@ function X.OverrideTeamHeroes()
 			-- [5] = tSelectPoolList[5][RandomInt( 1, #tSelectPoolList[5] )],
 		    
 			-- All Pandas/spirits
-			-- [1] = "npc_dota_hero_storm_spirit",
-			-- [2] = "npc_dota_hero_ember_spirit",
-			-- [3] = "npc_dota_hero_void_spirit",
-			-- [4] = "npc_dota_hero_earth_spirit",
-			-- [5] = "npc_dota_hero_brewmaster",
-		    
+			-- [1] = "npc_dota_hero_void_spirit",
+			-- [2] = "npc_dota_hero_storm_spirit",
+			-- [3] = "npc_dota_hero_ember_spirit",
+			-- [4] = "npc_dota_hero_brewmaster",
+			-- [5] = "npc_dota_hero_earth_spirit",
 		}
 	end
 end
