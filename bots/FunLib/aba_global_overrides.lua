@@ -2,9 +2,9 @@
 -- Override this func for the script to use
 local orig_GetTeamPlayers = GetTeamPlayers
 local direTeamPlaters = nil
-function GetTeamPlayers()
-	local nIDs = orig_GetTeamPlayers(GetTeam())
-	if GetTeam() == TEAM_DIRE then
+function GetTeamPlayers(nTeam)
+	local nIDs = orig_GetTeamPlayers(nTeam)
+	if nTeam == TEAM_DIRE then
 		if direTeamPlaters ~= nil then
 			return direTeamPlaters
 		end

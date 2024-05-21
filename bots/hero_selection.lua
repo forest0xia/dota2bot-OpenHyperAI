@@ -657,11 +657,13 @@ function X.OverrideTeamHeroes()
 			-- [5] = "npc_dota_hero_earth_spirit",
 			
 			-- Muerta pos1 and Hoodwink pos5, both go top.
-			[1] = "npc_dota_hero_muerta", -- muerta be pos 1 has smaller chance for bug, 
+			-- muerta be pos 1 has smaller chance for bug, 
+			-- hoodwink does not work over half of the time.
+			[1] = "npc_dota_hero_muerta",
 			[2] = tSelectPoolList[2][RandomInt( 1, #tSelectPoolList[2] )],
-			[3] = tSelectPoolList[3][RandomInt( 1, #tSelectPoolList[3] )],
-			[4] = 'npc_dota_hero_hoodwink', -- hoodwink does not work over half of the time.
-			[5] = tSelectPoolList[5][RandomInt( 1, #tSelectPoolList[5] )],
+			[3] = 'npc_dota_hero_enigma',
+			[4] = 'npc_dota_hero_lycan',
+			[5] = 'npc_dota_hero_lycan',
 
 
 			-- Test buggy heroes:

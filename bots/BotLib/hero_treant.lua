@@ -72,15 +72,17 @@ sRoleItemsBuyList['pos_5'] = {
 sRoleItemsBuyList['pos_3'] = {
     "item_tango",
     "item_double_branches",
+    "item_enchanted_mango",
     "item_wind_lace",
 
     "item_boots",
+    "item_ring_of_basilius",
     "item_magic_wand",
-    "item_tranquil_boots",
+    "item_arcane_boots",
     "item_aghanims_shard",
     "item_blink",
-    "item_force_staff",--
-    "item_boots_of_bearing",--
+    "item_glimmer_cape",--
+    "item_guardian_greaves",--
     "item_pipe",--
     "item_sheepstick",--
     "item_aeon_disk",--
@@ -104,12 +106,13 @@ Pos5SellList = {
     "item_wind_lace",
 }
 
-X['sSellList'] = {}
+X['sSellList'] = Pos4SellList
 
 if sRole == "pos_4"
 then
     X['sSellList'] = Pos4SellList
-else
+elseif sRole == "pos_5"
+then
     X['sSellList'] = Pos5SellList
 end
 
@@ -358,7 +361,7 @@ function X.ConsiderLeechSeed()
             then
                 local nInRangeAlly = enemyHero:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
                 local nTargetInRangeAlly = enemyHero:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
-                local currDmg = enemyHero:GetEstimatedDamageToTarget(true, bot, 5, DAMAGE_TYPE_ALL)
+                local currDmg = enemyHero:GetEstimatedDamageToTarget(false, bot, 5, DAMAGE_TYPE_ALL)
 
                 if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
                 and #nInRangeAlly >= #nTargetInRangeAlly

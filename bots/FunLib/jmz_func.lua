@@ -4471,6 +4471,10 @@ function J.GetManaAfter(manaCost)
 	local bot = GetBot()
 	return (bot:GetMana() - manaCost) / bot:GetMaxMana()
 end
+function J.GetHealthAfter(hpCost)
+	local bot = GetBot()
+	return (bot:GetHealth() - hpCost) / bot:GetMaxHealth()
+end
 
 function J.GetCreepListAroundTargetCanKill(target, nRadius, damage, bEnemy, bNeutral, bLaneCreep)
 	if nRadius > 1600 then nRadius = 1600 end

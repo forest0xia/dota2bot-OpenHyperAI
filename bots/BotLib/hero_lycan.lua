@@ -15,17 +15,68 @@ local tTalentTreeList = {
 }
 
 local tAllAbilityBuildList = {
+                        {1,3,1,3,1,6,1,3,3,2,2,6,2,2,6},--pos1,2
 						{1,3,1,2,1,6,1,3,3,3,6,2,2,2,6},--pos3
 }
 
-local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
+local nAbilityBuildList = tAllAbilityBuildList[1]
+if sRole == 'pos_1' then nAbilityBuildList = tAllAbilityBuildList[1] end
+if sRole == 'pos_2' then nAbilityBuildList = tAllAbilityBuildList[1] end
+if sRole == 'pos_3' then nAbilityBuildList = tAllAbilityBuildList[2] end
 
-local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
+local nTalentBuildList = J.Skill.GetTalentBuild(tTalentTreeList)
+if sRole == 'pos_1' then nTalentBuildList = J.Skill.GetTalentBuild(tTalentTreeList) end
+if sRole == 'pos_2' then nTalentBuildList = J.Skill.GetTalentBuild(tTalentTreeList) end
+if sRole == 'pos_3' then nTalentBuildList = J.Skill.GetTalentBuild(tTalentTreeList) end
 
 local sUtility = {"item_pipe", "item_lotus_orb", "item_heavens_halberd", "item_crimson_guard"}
 local nUtility = sUtility[RandomInt(1, #sUtility)]
 
 local sRoleItemsBuyList = {}
+
+sRoleItemsBuyList['pos_1'] = {
+    "item_tango",
+    "item_double_branches",
+    "item_double_circlet",
+
+    "item_double_bracer",
+    "item_power_treads",
+    "item_magic_wand",
+    "item_ring_of_basilius",
+    "item_echo_sabre",
+    "item_manta",--
+    "item_aghanims_shard",
+    "item_harpoon",--
+    "item_black_king_bar",--
+    "item_bloodthorn",--
+    "item_skadi",--
+    "item_travel_boots_2",--
+    "item_moon_shard",
+    "item_ultimate_scepter_2",
+}
+
+sRoleItemsBuyList['pos_2'] = {
+    "item_tango",
+    "item_double_branches",
+    "item_double_circlet",
+
+    "item_bottle",
+    "item_double_bracer",
+    "item_power_treads",
+    "item_magic_wand",
+    "item_ring_of_basilius",
+    "item_echo_sabre",
+    "item_manta",--
+    "item_aghanims_shard",
+    "item_harpoon",--
+    "item_black_king_bar",--
+    "item_bloodthorn",--
+    "item_travel_boots",
+    "item_skadi",--
+    "item_travel_boots_2",--
+    "item_moon_shard",
+    "item_ultimate_scepter_2",
+}
 
 sRoleItemsBuyList['pos_3'] = {
     "item_tango",
@@ -49,21 +100,36 @@ sRoleItemsBuyList['pos_3'] = {
     "item_moon_shard",
 }
 
-sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
-
-sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_3']
-
 sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_3']
 
 sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_3']
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 
-X['sSellList'] = {
+Pos1SellList = {
+    "item_bracer",
+    "item_magic_wand",
+    "item_ring_of_basilius",
+}
+
+Pos2SellList = {
+    "item_bottle",
+    "item_bracer",
+    "item_magic_wand",
+    "item_ring_of_basilius",
+}
+
+Pos3SellList = {
     "item_quelling_blade",
     "item_magic_wand",
     "item_ancient_janggo",
 }
+
+X['sSellList'] = Pos3SellList
+
+if sRole == "pos_1" then X['sSellList'] = Pos1SellList end
+if sRole == "pos_2" then X['sSellList'] = Pos2SellList end
+if sRole == "pos_3" then X['sSellList'] = Pos3SellList end
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_mid' }, {} end
 

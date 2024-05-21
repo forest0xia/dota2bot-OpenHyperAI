@@ -80,6 +80,7 @@ sRoleItemsBuyList['pos_5'] = {
 sRoleItemsBuyList['pos_3'] = {
 	"item_tango",
 	"item_tango",
+	"item_enchanted_mango",
 	"item_double_branches",
 
 	"item_tranquil_boots",
@@ -111,12 +112,13 @@ Pos5SellList = {
 	"item_magic_wand",
 }
 
-X['sSellList'] = {}
+X['sSellList'] = Pos4SellList
 
 if sRole == "pos_4"
 then
     X['sSellList'] = Pos4SellList
-else
+elseif sRole == "pos_5"
+then
     X['sSellList'] = Pos5SellList
 end
 
@@ -490,32 +492,135 @@ end
 
 
 function X.ConsiderW()
-
-
 	if not abilityW:IsFullyCastable() then return 0 end
 
-	local nSkillLV = abilityW:GetLevel()
-	local nCastRange = abilityW:GetCastRange()
-	local nCastPoint = abilityW:GetCastPoint()
-	local nManaCost = abilityW:GetManaCost()
-	local nDamage = abilityW:GetAbilityDamage()
-	local nDamageType = DAMAGE_TYPE_MAGICAL
 	local nRadius = abilityW:GetSpecialValueInt( 'radius' )
-	local nInRangeAllyList = J.GetAlliesNearLoc( bot:GetLocation(), nRadius )
+	local nInRangeEnemy = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
 
-	if abilityW:GetToggleState()
+	if J.GetMP(bot) < 0.33
 	then
-		return 0
+		if abilityW:GetToggleState() == true
+		then
+			return BOT_ACTION_DESIRE_HIGH
+		else
+			return BOT_ACTION_DESIRE_NONE
+		end
 	end
 
-	if not abilityW:GetToggleState()
+	if J.IsGoingOnSomeone(bot)
 	then
-		return 0
+		if  J.IsValidTarget(botTarget)
+		and J.IsInRange(bot, botTarget, 1600)
+		and not J.IsSuspiciousIllusion(botTarget)
+		then
+			local nInRangeAlly = botTarget:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
+            local nTargetInRangeAlly = botTarget:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+
+			if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+			and #nInRangeAlly >= #nTargetInRangeAlly
+			then
+				nInRangeAlly = J.GetAlliesNearLoc(bot:GetLocation(), nRadius)
+				for _, allyHero in pairs(nInRangeAlly)
+				do
+					if  J.IsValidHero(allyHero)
+					and J.GetHP(allyHero) < 0.5
+					and not J.IsSuspiciousIllusion(allyHero)
+					and not allyHero:HasModifier('modifier_skeleton_king_reincarnation_scepter_active')
+					and not allyHero:HasModifier('modifier_oracle_false_promise_timer')
+					and not allyHero:HasModifier('modifier_item_aeon_disk_buff')
+					then
+						if abilityW:GetToggleState() == false
+						then
+							return BOT_ACTION_DESIRE_HIGH
+						else
+							return BOT_ACTION_DESIRE_NONE
+						end
+					end
+				end
+			end
+		end
+	end
+
+	if J.IsRetreating(bot)
+	then
+		if  J.IsValidHero(nInRangeEnemy[1])
+		and J.GetHP(bot) < 0.5
+		and not J.IsSuspiciousIllusion(nInRangeEnemy[1])
+		then
+			local nInRangeAlly = nInRangeEnemy[1]:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
+            local nTargetInRangeAlly = nInRangeEnemy[1]:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+
+			if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+			and (#nInRangeAlly > #nTargetInRangeAlly
+				or bot:WasRecentlyDamagedByAnyHero(1.5))
+			then
+				if abilityW:GetToggleState() == false
+				then
+					return BOT_ACTION_DESIRE_HIGH
+				else
+					return BOT_ACTION_DESIRE_NONE
+				end
+			end
+		end
+	end
+
+	local nInRangeAlly = J.GetAlliesNearLoc(bot:GetLocation(), nRadius)
+	for _, allyHero in pairs(nInRangeAlly)
+	do
+		if  J.IsValidHero(allyHero)
+		and J.GetHP(allyHero) < 0.5
+		and nInRangeEnemy ~= nil and #nInRangeEnemy == 0
+		and not J.IsSuspiciousIllusion(allyHero)
+		and not allyHero:HasModifier('modifier_skeleton_king_reincarnation_scepter_active')
+		and not allyHero:HasModifier('modifier_oracle_false_promise_timer')
+		and not allyHero:HasModifier('modifier_item_aeon_disk_buff')
+		then
+			if abilityW:GetToggleState() == false
+			then
+				return BOT_ACTION_DESIRE_HIGH
+			else
+				return BOT_ACTION_DESIRE_NONE
+			end
+		end
+	end
+
+	if J.IsDoingRoshan(bot)
+	then
+		if  J.IsRoshan(botTarget)
+		and J.IsInRange(bot, botTarget, bot:GetAttackRange())
+		and J.IsAttacking(bot)
+		then
+			if abilityW:GetToggleState() == false
+			then
+				return BOT_ACTION_DESIRE_HIGH
+			else
+				return BOT_ACTION_DESIRE_NONE
+			end
+		end
+	end
+
+	if J.IsDoingTormentor(bot)
+	then
+		if  J.IsTormentor(botTarget)
+		and J.IsInRange(bot, botTarget, bot:GetAttackRange())
+		and J.IsAttacking(bot)
+		then
+			if abilityW:GetToggleState() == false
+			then
+				return BOT_ACTION_DESIRE_HIGH
+			else
+				return BOT_ACTION_DESIRE_NONE
+			end
+		end
+	end
+
+	if abilityW:GetToggleState() == true
+	-- and not bot:HasModifier('') -- to add DoT spells/items modifiers
+	then
+		return BOT_ACTION_DESIRE_HIGH
 	end
 
 	return BOT_ACTION_DESIRE_NONE
-
-
 end
 
 
@@ -706,4 +811,3 @@ end
 
 return X
 -- dota2jmz@163.com QQ:2462331592..
-
