@@ -19,7 +19,7 @@ function GetDesire()
     local nAllyInLoc = J.GetAlliesNearLoc(TormentorLocation, 700)
 	local aliveAlly = J.GetNumOfAliveHeroes(false)
 	local aveDistance, heroCount = GetAveTeamDistance()
-	local spawnTime = J.IsModeTurbo() and 10 or 20
+	local spawnTime = J.IsModeTurbo() and 15 or 25 -- give bots more time. original: 10 or 20
 	local topFrontP = GetLaneFrontAmount(GetOpposingTeam(), LANE_TOP, true)
 	local midFrontP = GetLaneFrontAmount(GetOpposingTeam(), LANE_MID, true)
 	local botFrontP = GetLaneFrontAmount(GetOpposingTeam(), LANE_BOT, true)

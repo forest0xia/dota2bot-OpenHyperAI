@@ -1076,7 +1076,7 @@ local RemainingPos = {
 
 -- Function to check if a string starts with "!"
 local function startsWithExclamation(str)
-    return str:sub(1, 1) == "!"
+    return string.len(str) > 3 and str:sub(1, 1) == "!"
 end
 -- Function to parse the command string
 local function parseCommand(command)
@@ -1086,6 +1086,10 @@ end
 -- Function to handle the command
 local function handleCommand(command, PlayerID, bTeamOnly)
     local action, text = parseCommand(command)
+	if action == nil then
+		print('[WARN] Invalid command')
+	end
+
 	local teamPlayers = GetTeamPlayers(GetTeam())
 
     if action == "!pick" then

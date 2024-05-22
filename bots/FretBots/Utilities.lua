@@ -302,6 +302,20 @@ function Utilities:Round(num, decimals)
 	end
 end
 
+-- Function to insert an item into a table only if it's unique using a set-like approach
+function Utilities:InsertUnique(tbl, item)
+    -- Check if the item already exists in the table
+    for _, value in ipairs(tbl) do
+        if value == item then
+            return false -- Item already exists, do not insert
+        end
+    end
+
+    -- Insert the item as it does not exist in the table
+    table.insert(tbl, item)
+    return true -- Item inserted successfully
+end
+
 -- Returns a random decimal number between two numbers
 function Utilities:RandomDecimal(low, high)
 	local percentage = math.random()

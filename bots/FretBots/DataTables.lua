@@ -209,13 +209,13 @@ function DataTables:GenerateStatsTables(unit)
 	-- Is bot?
 	if PlayerResource:GetSteamID(unit:GetMainControllingPlayer())==PlayerResource:GetSteamID(100) then
 		thisIsBot = true
-		table.insert(Bots, unit)
-		else
-		table.insert(Players, unit)
-		end
-		table.insert(AllUnits,unit)
+		Utilities:InsertUnique(Bots, unit)
+	else
+		Utilities:InsertUnique(Players, unit)
+	end
+	Utilities:InsertUnique(AllUnits, unit)
 	-- PlayerID, Team, Role
-		if unit:GetPlayerID() ~= nil then
+	if unit:GetPlayerID() ~= nil then
 		thisId = unit:GetPlayerID()
 		thisTeam=PlayerResource:GetTeam(thisId)
 		thisRole = 0;

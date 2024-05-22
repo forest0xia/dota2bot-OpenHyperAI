@@ -11,6 +11,8 @@ require 'bots.FretBots.Utilities'
 require 'bots.FretBots.Version'
 -- HeroSounds
 require('bots.FretBots.HeroSounds')
+-- HeroSounds
+require('bots.FretBots.Chat')
 
 -- local debug flag
 local thisDebug = false;
@@ -257,6 +259,13 @@ function Settings:OnPlayerChat(event)
 	if not isVotingClosed then
 		Settings:DoChatVoteParse(playerID, text)
 	end
+
+    for _, player in ipairs(AllUnits) do
+		if player.stats.id == playerID and not player.stats.isBot then
+			SendMessageToBackend(text)
+		end
+	end
+
 	-- if Settings have been chosen then monitor for commands to change them
 	if Flags.isSettingsFinalized then
 		-- Some commands are available for everyone
