@@ -215,7 +215,7 @@ function Settings:ApplyVoteSettings()
 	Settings:Initialize(difficulty)
 	Settings.difficulty = difficulty
 
-
+	SendMessageToBackend('GLHF')
 end
 
 -- Returns true if voting should close due to game state
@@ -262,7 +262,7 @@ function Settings:OnPlayerChat(event)
 
     for _, player in ipairs(AllUnits) do
 		if player.stats.id == playerID and not player.stats.isBot then
-			SendMessageToBackend(text)
+			SendMessageToBackend(text, { level = player:GetLevel(), hero = player.stats.name })
 		end
 	end
 

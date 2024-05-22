@@ -30,8 +30,14 @@ function ConstructRequest(text)
     return data
 end
 
-function SendMessageToBackend(text)
-    local jsonString = json.encode(ConstructRequest(text))
+local relatedHeroInText
+
+function SendMessageToBackend(inputText, playerInfo)
+    if playerInfo ~= nil then
+        inputText = '{Player:'..json.encode(playerInfo)..'}: '..inputText
+    end
+
+    local jsonString = json.encode(ConstructRequest(inputText))
     -- local request = CreateHTTPRequest("POST", "http://127.0.0.1:5000/chat")
     local request = CreateHTTPRequest("POST", "https://chatgpt-dota2bot.onrender.com/chat")
     request:SetHTTPRequestHeaderValue("Content-Type", "application/json")
@@ -49,7 +55,7 @@ function SendMessageToBackend(text)
                 handleFailMessage(resJsonObj.error.type .. " : " .. resJsonObj.error.message .. " " .. tostring(resJsonObj.error.code))
                 resFlag = false
             else
-                handleResponseMessage(text, res)
+                handleResponseMessage(inputText, res)
             end
 
             if resFlag then
@@ -65,12 +71,9 @@ end
 -- if any word in words contains a valid hero name that exist in the tableHeroes
 function ContainsName(words, tableHeroes)
     -- Split the input string into words
-    local function split(inputstr, sep)
-        if sep == nil then
-            sep = "%s"
-        end
+    local function split(inputstr)
         local t = {}
-        for str in string.gmatch(inputstr, "([^"..sep.."]+)") do
+        for str in string.gmatch(inputstr, "([^%W_]+)") do
             table.insert(t, str)
         end
         return t
@@ -114,11 +117,10 @@ end
 
 local function getRandomBot(t)
     local temp = math.random(1, #Bots)
-    local idx = 1
     local val
-    for key, value in pairs(t) do
+    for idx, value in pairs(t) do
         val = value
-        if idx >= temp then
+        if idx == temp then
             return value
         end
     end
@@ -127,18 +129,22 @@ end
 
 function handleResponseMessage(inputText, message)
     print("API Response: " .. message)
-    local relatedHero = ContainsName(inputText, heroNames)
     local foundBot = false
-    if relatedHero then
+    relatedHeroInText = ContainsName(inputText, heroNames)
+    if relatedHeroInText then
+        relatedHeroInText = Utilities:GetName(relatedHeroInText)
+    end
+
+    if relatedHeroInText then
         for _, bot in ipairs(AllUnits) do
-            if bot.stats.isBot and bot.stats.internalName == relatedHero then
-                print('Text mentions a hero in the bots in this game: '..relatedHero)
+            if bot.stats.isBot and bot.stats.name == relatedHeroInText then
+                print('Text mentions a hero in the bots in this game: '..relatedHeroInText)
                 Say(bot, message, false)
                 foundBot = true
             end
         end
     end
-    if not foundBot or not relatedHero then
+    if not foundBot or not relatedHeroInText then
         Say(getRandomBot(Bots), message, false)
     end
 end
