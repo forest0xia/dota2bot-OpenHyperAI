@@ -215,7 +215,7 @@ function Settings:ApplyVoteSettings()
 	Settings:Initialize(difficulty)
 	Settings.difficulty = difficulty
 
-	SendMessageToBackend('GLHF')
+	SendMessageToBackend('GLHF. How do you feel at this very moment')
 end
 
 -- Returns true if voting should close due to game state
@@ -260,14 +260,10 @@ function Settings:OnPlayerChat(event)
 		Settings:DoChatVoteParse(playerID, text)
 	end
 
-    for _, player in ipairs(AllUnits) do
-		if player.stats.id == playerID and not player.stats.isBot then
-			SendMessageToBackend(text, { level = player:GetLevel(), hero = player.stats.name })
-		end
-	end
-
 	-- if Settings have been chosen then monitor for commands to change them
 	if Flags.isSettingsFinalized then
+		Settings:OpenAIResponse(text, playerID)
+
 		-- Some commands are available for everyone
 		Settings:DoUserChatCommandParse(text, playerID)
 		if playerID == hostID or Debug:IsPlayerIDFret(playerID) then
@@ -275,6 +271,20 @@ function Settings:OnPlayerChat(event)
 			local isSuccess = Settings:DoSuperUserChatCommandParse(text)
 			-- if not that, then try to pcall arbitrary text
 			Utilities:PCallText(text)
+		end
+	end
+end
+
+function Settings:OpenAIResponse(text, playerID)
+	local function startsWithExclamation(str)
+		return str:sub(1, 1) == "!"
+	end
+	if not startsWithExclamation(text) then
+		for _, player in ipairs(AllUnits) do
+			if player.stats.id == playerID and not player.stats.isBot then
+				local kda = player:GetKills()..'/'..player:GetDeaths()..'/'..player:GetAssists()
+				SendMessageToBackend(text, { level = player:GetLevel(), name = player.stats.name, team = player.stats.team, kda = kda })
+			end
 		end
 	end
 end

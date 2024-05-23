@@ -7,7 +7,22 @@ local API_KEY = ''
 local recordedMessages = {}
 local maxpromptsLength = 12
 
+local inGameBots = {}
+local function botNameListInTheGame()
+    inGameBots = {}
+    for i, unit in pairs(AllUnits) do
+        if unit.stats.isBot then
+            local kda = unit:GetKills()..'/'..unit:GetDeaths()..'/'..unit:GetAssists()
+            table.insert(inGameBots, {team = unit.stats.team, name = unit.stats.name, level = unit:GetLevel(), kda = kda})
+        end
+    end
+end
+
 function ConstructRequest(text)
+    -- if next(inGameBots) == nil then botNameListInTheGame() end -- only load bots once to save cpu.
+    botNameListInTheGame()
+
+    table.insert(recordedMessages, 1, { role = "user", content = 'Bot heroes in this game: ' .. json.encode(inGameBots)})
     table.insert(recordedMessages, { role = "user", content = text })
 
     -- Initialize data table
@@ -30,11 +45,9 @@ function ConstructRequest(text)
     return data
 end
 
-local relatedHeroInText
-
 function SendMessageToBackend(inputText, playerInfo)
     if playerInfo ~= nil then
-        inputText = '{Player:'..json.encode(playerInfo)..'}: '..inputText
+        inputText = 'At game time '..tostring(math.floor(GameRules:GetGameTime()))..'s, player:'..json.encode(playerInfo)..' says: '..inputText.. '. What do you say?'
     end
 
     local jsonString = json.encode(ConstructRequest(inputText))
@@ -68,47 +81,6 @@ function SendMessageToBackend(inputText, playerInfo)
     end)
 end
 
--- if any word in words contains a valid hero name that exist in the tableHeroes
-function ContainsName(words, tableHeroes)
-    -- Split the input string into words
-    local function split(inputstr)
-        local t = {}
-        for str in string.gmatch(inputstr, "([^%W_]+)") do
-            table.insert(t, str)
-        end
-        return t
-    end
-
-    -- List of words to ignore
-    local ignoreWords = { npc = true, dota = true, hero = true }
-
-    -- Get the list of words from the input string
-    local wordList = split(words)
-
-    -- Filtered list to check against tableHeroes keys
-    local filteredWords = {}
-
-    -- Iterate over the words and filter out ignored words
-    for _, word in ipairs(wordList) do
-        local lowerWord = string.lower(word)
-        if not ignoreWords[lowerWord] then
-            table.insert(filteredWords, lowerWord)
-        end
-    end
-
-    -- Check if any filtered word is a key in tableHeroes
-    for heroKey in pairs(tableHeroes) do
-        for _, word in ipairs(filteredWords) do
-            if string.find(heroKey, word) then
-                return heroKey
-            end
-        end
-    end
-
-    -- Return nil if no match is found
-    return nil
-end
-
 -- Helper functions
 function handleFailMessage(message)
     print("API Failure: " .. message)
@@ -127,24 +99,32 @@ local function getRandomBot(t)
     return val
 end
 
+local function splitHeroNameFromMessage(message)
+    local hero_pattern = "(npc_dota_hero_[%w_]+)" 
+    local before_hero, hero_name = message:match("^(.-)(" .. hero_pattern .. ")$")
+    
+    if before_hero and hero_name then
+        return before_hero, hero_name
+    else
+        return message, nil  -- If no hero name is found, return the original message and nil
+    end
+end
+
 function handleResponseMessage(inputText, message)
     print("API Response: " .. message)
     local foundBot = false
-    relatedHeroInText = ContainsName(inputText, heroNames)
-    if relatedHeroInText then
-        relatedHeroInText = Utilities:GetName(relatedHeroInText)
-    end
 
-    if relatedHeroInText then
+    local aiText, heroHame = splitHeroNameFromMessage(message)
+
+    if heroHame then
         for _, bot in ipairs(AllUnits) do
-            if bot.stats.isBot and bot.stats.name == relatedHeroInText then
-                print('Text mentions a hero in the bots in this game: '..relatedHeroInText)
-                Say(bot, message, false)
+            if bot.stats.isBot and bot.stats.internalName == heroHame then
+                Say(bot, aiText, false)
                 foundBot = true
             end
         end
     end
-    if not foundBot or not relatedHeroInText then
-        Say(getRandomBot(Bots), message, false)
+    if not foundBot or not heroHame then
+        Say(getRandomBot(Bots), aiText, false)
     end
 end
