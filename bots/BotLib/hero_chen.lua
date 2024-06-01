@@ -81,28 +81,11 @@ sRoleItemsBuyList['pos_5'] = {
     "item_moon_shard",
 }
 
-sRoleItemsBuyList['pos_1'] = {
-    "item_double_tango",
-    "item_double_branches",
+sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_5']
 
-    "item_ring_of_basilius",
-    "item_magic_wand",
-    "item_vladmir",--
-    "item_ancient_janggo",
-    "item_boots",
-    "item_solar_crest",--
-    "item_aghanims_shard",
-    "item_boots_of_bearing",--
-    "item_glimmer_cape",--
-    "item_holy_locket",--
-    "item_assault",--
-    "item_ultimate_scepter_2",
-    "item_moon_shard",
-}
+sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_5']
 
-sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_4']
-
-sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_4']
+sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_5']
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 
@@ -139,11 +122,13 @@ end
 local Penitence         = bot:GetAbilityByName('chen_penitence')
 local HolyPersuasion    = bot:GetAbilityByName('chen_holy_persuasion')
 local DivineFavor       = bot:GetAbilityByName('chen_divine_favor')
+local SummonConvert     = bot:GetAbilityByName('chen_summon_convert')
 local HandOfGod         = bot:GetAbilityByName('chen_hand_of_god')
 
 local PenitenceDesire, PenitenceTarget
 local HolyPersuasionDesire, HolyPersuasionTarget
 local DivineFavorDesire, DivineFavorTarget
+local SummonConvertDesire
 local HandOfGodDesire
 
 local nChenCreeps = {}
@@ -166,6 +151,13 @@ function X.SkillsComplement()
     if PenitenceDesire > 0
     then
         bot:Action_UseAbilityOnEntity(Penitence, PenitenceTarget)
+        return
+    end
+
+    SummonConvertDesire = X.ConsiderSummonConvert()
+    if SummonConvertDesire > 0
+    then
+        bot:Action_UseAbility(SummonConvert)
         return
     end
 
@@ -472,6 +464,50 @@ function X.ConsiderDivineFavor()
     return BOT_ACTION_DESIRE_NONE, nil
 end
 
+function X.ConsiderSummonConvert()
+    if not SummonConvert:IsFullyCastable()
+    or X.IsThereChenCreepAlive()
+    then
+        return BOT_ACTION_DESIRE_NONE
+    end
+
+    if J.IsGoingOnSomeone(bot)
+	then
+		if  J.IsValidTarget(botTarget)
+        and J.IsInRange(bot, botTarget, 900)
+        and not J.IsSuspiciousIllusion(botTarget)
+        and not botTarget:HasModifier('modifier_necrolyte_reapers_scythe')
+		then
+            local nInRangeAlly = botTarget:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
+            local nInRangeEnemy = botTarget:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+
+            if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+            and #nInRangeAlly >= #nInRangeEnemy
+            then
+                return BOT_ACTION_DESIRE_HIGH
+            end
+		end
+	end
+
+    if  (J.IsFarming(bot) or J.IsPushing(bot) or J.IsDefending(bot) or J.IsLaning(bot))
+    and J.IsAttacking(bot)
+    then
+        return BOT_ACTION_DESIRE_HIGH
+    end
+
+    if J.IsDoingRoshan(bot) or J.IsDoingTormentor(bot)
+	then
+		if  (J.IsRoshan(botTarget) or J.IsTormentor(botTarget))
+        and J.IsInRange(bot, botTarget, bot:GetAttackRange())
+        and J.IsAttacking(bot)
+		then
+            return BOT_ACTION_DESIRE_HIGH
+        end
+	end
+
+    return BOT_ACTION_DESIRE_NONE
+end
+
 function X.ConsiderHandOfGod()
 	if not HandOfGod:IsFullyCastable()
     then
@@ -526,6 +562,19 @@ function X.ConsiderHandOfGod()
     end
 
 	return BOT_ACTION_DESIRE_NONE
+end
+
+function X.IsThereChenCreepAlive()
+    for _, unit in pairs(GetUnitList(UNIT_LIST_ALLIES))
+    do
+        if  string.find(unit:GetUnitName(), 'neutral')
+        and unit:HasModifier('modifier_chen_holy_persuasion')
+        then
+            return true
+        end
+    end
+
+    return false
 end
 
 return X

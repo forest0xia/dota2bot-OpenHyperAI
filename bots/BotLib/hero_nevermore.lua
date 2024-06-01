@@ -144,6 +144,7 @@ local abilityZ = bot:GetAbilityByName( sAbilityList[1] )
 local abilityX = bot:GetAbilityByName( sAbilityList[2] )
 local abilityC = bot:GetAbilityByName( sAbilityList[3] )
 local abilityN = bot:GetAbilityByName( sAbilityList[4] )
+local FeastOfSouls = bot:GetAbilityByName('nevermore_frenzy')
 local abilityR = bot:GetAbilityByName( sAbilityList[6] )
 local talent4 = bot:GetAbilityByName( sTalentList[4] )
 
@@ -151,9 +152,10 @@ local castZDesire
 local castXDesire
 local castCDesire
 local castNDesire, castNTarget
+local FeastOfSoulsDesire
 local castRDesire
 
-local nKeepMana, nMP, nHP, nLV, hEnemyHeroList
+local nKeepMana, nMP, nHP, nLV, hEnemyHeroList, botTarget
 
 
 
@@ -171,6 +173,7 @@ function X.SkillsComplement()
 	nMP = bot:GetMana()/bot:GetMaxMana()
 	nHP = bot:GetHealth()/bot:GetMaxHealth()
 	hEnemyHeroList = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+	botTarget = J.GetProperTarget(bot)
 
 
 	
@@ -183,6 +186,14 @@ function X.SkillsComplement()
 		J.SetQueuePtToINT( bot, true )
 
 		bot:ActionQueue_UseAbility( abilityC )
+		return
+	end
+
+	FeastOfSoulsDesire = X.ConsiderFeastOfSouls()
+	if FeastOfSoulsDesire > 0
+	then
+		J.SetQueuePtToINT(bot, false)
+		bot:ActionQueue_UseAbility(FeastOfSouls)
 		return
 	end
 
@@ -431,6 +442,92 @@ function X.Consider( nAbility, nDistance )
 	return 0
 end
 
+function X.ConsiderFeastOfSouls()
+	if not FeastOfSouls:IsFullyCastable()
+	then
+		return BOT_ACTION_DESIRE_NONE
+	end
+
+	local nAttackRange = bot:GetAttackRange()
+	local nSoulCount = bot:GetModifierStackCount(bot:GetModifierByName('modifier_nevermore_necromastery'))
+	local nManaAfter = J.GetManaAfter(FeastOfSouls:GetManaCost()) * bot:GetMana()
+
+	if nSoulCount < 5 then return BOT_ACTION_DESIRE_NONE end
+
+	if J.IsGoingOnSomeone(bot)
+	then
+		if  J.IsValidTarget(botTarget)
+        and J.IsInRange(bot, botTarget, nAttackRange)
+        and not J.IsChasingTarget(bot, botTarget)
+        and not J.IsSuspiciousIllusion(botTarget)
+        and not botTarget:HasModifier('modifier_abaddon_borrowed_time')
+        and not botTarget:HasModifier('modifier_dazzle_shallow_grave')
+        and not botTarget:HasModifier('modifier_necrolyte_reapers_scythe')
+		then
+            local nInRangeAlly = botTarget:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
+            local nInRangeEnemy = botTarget:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+
+            if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+            and #nInRangeAlly >= #nInRangeEnemy
+            then
+                return BOT_ACTION_DESIRE_HIGH
+            end
+		end
+	end
+
+    if  J.IsFarming(bot)
+	and nManaAfter > 0.3
+    then
+        if J.IsAttacking(bot)
+        then
+            local nNeutralCreeps = bot:GetNearbyNeutralCreeps(1000)
+            if  nNeutralCreeps ~= nil
+            and (#nNeutralCreeps >= 3
+                or (#nNeutralCreeps >= 2 and nNeutralCreeps[1]:IsAncientCreep()))
+            then
+				return BOT_ACTION_DESIRE_HIGH
+            end
+
+            local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(1000, true)
+            if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 4
+            then
+				return BOT_ACTION_DESIRE_HIGH
+            end
+        end
+    end
+
+    if J.IsPushing(bot) or J.IsDefending(bot)
+    then
+		local nInRangeEnemy = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+        local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(1000, true)
+
+        if  nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 4
+		and nInRangeEnemy ~= nil and #nInRangeEnemy == 0
+		and nManaAfter > 0.3
+        then
+			return BOT_ACTION_DESIRE_HIGH
+        end
+
+		if  J.IsValidBuilding(botTarget)
+		and J.CanBeAttacked(botTarget)
+		and J.IsAttacking(bot)
+		then
+			return BOT_ACTION_DESIRE_HIGH
+		end
+    end
+
+	if J.IsDoingRoshan(bot) or J.IsDoingTormentor(bot)
+	then
+		if  (J.IsRoshan(botTarget) or J.IsTormentor(botTarget))
+        and J.IsInRange(bot, botTarget, nAttackRange)
+        and J.IsAttacking(bot)
+		then
+			return BOT_ACTION_DESIRE_HIGH
+		end
+	end
+
+	return BOT_ACTION_DESIRE_NONE
+end
 
 function X.IsUnitNearLoc( nUnit, vLoc, nRange, nDely )
 

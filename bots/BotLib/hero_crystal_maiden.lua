@@ -1,11 +1,3 @@
-----------------------------------------------------------------------------------------------------
---- The Creation Come From: BOT EXPERIMENT Credit:FURIOUSPUPPY
---- BOT EXPERIMENT Author: Arizona Fauzie 2018.11.21
---- Link:http://steamcommunity.com/sharedfiles/filedetails/?id=837040016
---- Refactor: 决明子 Email: dota2jmz@163.com 微博@Dota2_决明子
---- Link:http://steamcommunity.com/sharedfiles/filedetails/?id=1573671599
---- Link:http://steamcommunity.com/sharedfiles/filedetails/?id=1627071163
-----------------------------------------------------------------------------------------------------
 local X = {}
 local bDebugMode = ( 1 == 10 )
 local bot = GetBot()
@@ -79,6 +71,7 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_tango",
 	"item_tango",
 	"item_double_branches",
+	"item_faerie_fire",
 
 	"item_boots",
 	"item_magic_wand",
@@ -88,7 +81,7 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_boots_of_bearing",--
 	"item_force_staff",--
 	"item_sheepstick",--
-	"item_aeon_disk",--
+	"item_octarine_core",--
 	"item_ultimate_scepter_2",
 	"item_moon_shard",
 }
@@ -107,7 +100,7 @@ Pos5SellList = {
 	"item_magic_wand",
 }
 
-X['sSellList'] = {}
+X['sSellList'] = Pos4SellList
 
 if sRole == "pos_4"
 then
@@ -175,7 +168,7 @@ local talent2 = bot:GetAbilityByName( sTalentList[2] )
 local castQDesire, castQLoc = 0
 local castWDesire, castWTarget = 0
 local castRDesire = 0
-local CrystalCloneDesire = 0
+local CrystalCloneDesire, CrystalCloneLocation
 
 local nKeepMana, nMP, nHP, nLV
 
@@ -194,11 +187,11 @@ function X.SkillsComplement()
 	if aether ~= nil then aetherRange = 250 end
 --	if talent2:IsTrained() then aetherRange = aetherRange + talent2:GetSpecialValueInt( 'value' ) end
 
-	CrystalCloneDesire = X.ConsiderCrystalClone()
-	if (CrystalCloneDesire > 0)
+	CrystalCloneDesire, CrystalCloneLocation = X.ConsiderCrystalClone()
+	if CrystalCloneDesire > 0
 	then
-		J.SetQueuePtToINT( bot, false )
-		bot:ActionQueue_UseAbility(CrystalClone)
+		J.SetQueuePtToINT(bot, false)
+		bot:ActionQueue_UseAbilityOnLocation(CrystalClone, CrystalCloneLocation)
 		return
 	end
 
@@ -911,30 +904,48 @@ function X.ConsiderCrystalClone()
 		return BOT_ACTION_DESIRE_NONE
 	end
 
-	local nRange = bot:GetAttackRange()
-
-	if J.IsRetreating(bot)
-	and not J.IsRealInvisible(bot)
-	and not bot:IsFacingLocation(GetAncient(GetTeam()):GetLocation(), 45)
-	and not J.IsRealInvisible(bot)
-	and bot:DistanceFromFountain() > 600
-	and bot:WasRecentlyDamagedByAnyHero(4.0)
-	then
-		return BOT_ACTION_DESIRE_MODERATE
-	end
+	local nRadius = 450
+	local botTarget = J.GetProperTarget(bot)
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		local botTarget = bot:GetTarget()
-
-		if J.IsValidHero(botTarget)
-		and J.IsInRange(bot, botTarget, nRange - 150)
+		if  J.IsValidTarget(botTarget)
+		and J.IsInRange(bot, botTarget, nRadius)
 		and J.CanCastOnNonMagicImmune(botTarget)
-		and bot:IsFacingLocation(botTarget:GetLocation(), 30)
+		and not J.IsSuspiciousIllusion(botTarget)
+		and not botTarget:HasModifier('modifier_abaddon_borrowed_time')
 		then
-			return BOT_ACTION_DESIRE_HIGH
+			local nInRangeAlly = botTarget:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
+			local nInRangeEnemy = botTarget:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+
+			if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+			and #nInRangeAlly >= #nInRangeEnemy
+			then
+				return BOT_ACTION_DESIRE_HIGH, J.Site.GetXUnitsTowardsLocation(bot, J.GetTeamFountain(), nRadius)
+			end
 		end
 	end
+
+    if J.IsRetreating(bot)
+    then
+        local nInRangeEnemy = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+
+        if  nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
+        and J.IsValidHero(nInRangeEnemy[1])
+        and J.IsInRange(bot, nInRangeEnemy[1], nRadius)
+        and not J.IsSuspiciousIllusion(nInRangeEnemy[1])
+        then
+            local nInRangeAlly = nInRangeEnemy[1]:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
+            local nTargetInRangeAlly = nInRangeEnemy[1]:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+
+            if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+            and (#nTargetInRangeAlly > #nInRangeAlly
+                or bot:WasRecentlyDamagedByAnyHero(1))
+            then
+		        return BOT_ACTION_DESIRE_HIGH, J.Site.GetXUnitsTowardsLocation(bot, J.GetTeamFountain(), nRadius)
+            end
+        end
+    end
 
 	return BOT_ACTION_DESIRE_NONE
 end

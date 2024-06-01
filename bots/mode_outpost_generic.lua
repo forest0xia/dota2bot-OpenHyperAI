@@ -12,7 +12,10 @@ local ClosestOutpostDist = 10000
 
 local IsEnemyTier2Down = false
 
+local TinkerShouldWaitInBaseToHeal = false
+
 local ShouldWaitInBaseToHeal = false
+local TPScroll = nil
 
 local botName = bot:GetUnitName()
 local cAbility = nil
@@ -23,6 +26,8 @@ local ShouldMoveMortimerKisses = false
 
 local ShouldMoveCloseTowerForEdict = false
 local EdictTowerTarget = nil
+
+local ShouldHuskarMoveOutsideFountain = false
 
 function GetDesire()
 	if not IsEnemyTier2Down
@@ -35,10 +40,24 @@ function GetDesire()
 		end
 	end
 
-	ShouldWaitInBaseToHeal = TinkerWaitInBaseAndHeal()
-	if ShouldWaitInBaseToHeal
+	TPScroll = J.GetItem2(bot, 'item_tpscroll')
+
+	if  ConsiderWaitInBaseToHeal()
+	and GetUnitToLocationDistance(bot, J.GetTeamFountain()) > 5500
 	then
 		return BOT_ACTION_DESIRE_ABSOLUTE
+	end
+
+	TinkerShouldWaitInBaseToHeal = TinkerWaitInBaseAndHeal()
+	if TinkerShouldWaitInBaseToHeal
+	then
+		return BOT_ACTION_DESIRE_ABSOLUTE
+	end
+
+	ShouldHuskarMoveOutsideFountain = ConsiderHuskarMoveOutsideFountain()
+	if ShouldHuskarMoveOutsideFountain
+	then
+		return bot:GetActiveModeDesire() + 0.1
 	end
 
 	------------------------------
@@ -218,7 +237,7 @@ function GetDesire()
 		if cAbility == nil then cAbility = bot:GetAbilityByName("puck_phase_shift") end
 		if cAbility:IsTrained()
 		then
-			if bot:HasModifier('modifier_puck_phase_shift') then
+			if cAbility:IsInAbilityPhase() or bot:HasModifier('modifier_puck_phase_shift') then
 				return BOT_MODE_DESIRE_ABSOLUTE
 			end
 		end
@@ -289,10 +308,64 @@ end
 function OnEnd()
 	ClosestOutpost = nil
 	ClosestOutpostDist = 10000
+	ShouldWaitInBaseToHeal = false
 end
 
 function Think()
 	if J.CanNotUseAction(bot) then return end
+
+	-- Huskar
+	if ShouldHuskarMoveOutsideFountain
+	then
+		bot:Action_MoveToLocation(J.GetEnemyFountain())
+		return
+	end
+
+	-- Heal in Base
+	-- Just for TP. Too much back and forth when "forcing" them try to walk to fountain; <- not reliable and misses farm.
+	if ShouldWaitInBaseToHeal
+	then
+		if GetUnitToLocationDistance(bot, J.GetTeamFountain()) > 150
+		then
+			local nInRangeEnemy = J.GetEnemiesNearLoc(bot:GetLocation(), 1600)
+			if  J.Item.GetItemCharges(bot, 'item_tpscroll') >= 1
+			and nInRangeEnemy ~= nil and #nInRangeEnemy == 0
+			then
+				if bot:GetUnitName() == 'npc_dota_hero_furion'
+				then
+					local Teleportation = bot:GetAbilityByName('furion_teleportation')
+					if  Teleportation:IsTrained()
+					and Teleportation:IsFullyCastable()
+					then
+						bot:Action_UseAbilityOnLocation(Teleportation, J.GetTeamFountain())
+						return
+					end
+				end
+
+				if  TPScroll ~= nil
+				and TPScroll:IsFullyCastable()
+				then
+					bot:Action_UseAbilityOnLocation(TPScroll, J.GetTeamFountain())
+					return
+				end
+			end
+		else
+			if J.GetHP(bot) < 0.85 or J.GetMP(bot) < 0.85
+			then
+				if  J.Item.GetItemCharges(bot, 'item_tpscroll') <= 1
+				and bot:GetGold() >= GetItemCost('item_tpscroll')
+				then
+					bot:ActionImmediate_PurchaseItem('item_tpscroll')
+					return
+				end
+
+				bot:Action_MoveToLocation(bot:GetLocation() + 150)
+				return
+			else
+				ShouldWaitInBaseToHeal = false
+			end
+		end
+	end
 
 	-- Tinker
 	if bot.healInBase
@@ -573,6 +646,64 @@ function ConsiderLeshracEdictTower()
 					return true
 				end
 			end
+		end
+	end
+
+	return false
+end
+
+-- Just for TP. Too much back and forth when "forcing" them try to walk to fountain; <- not reliable and misses farm.
+function ConsiderWaitInBaseToHeal()
+	local nInRangeEnemy = J.GetEnemiesNearLoc(bot:GetLocation(), 1600)
+
+	local ProphetTP = nil
+	if bot:GetUnitName() == 'npc_dota_hero_furion'
+	then
+		ProphetTP = bot:GetAbilityByName('furion_teleportation')
+	end
+
+	if  not J.IsInLaningPhase()
+	and not (J.IsFarming(bot) and J.IsAttacking(bot))
+	and nInRangeEnemy ~= nil and #nInRangeEnemy == 0
+	and GetUnitToUnitDistance(bot, GetAncient(GetOpposingTeam())) > 2400
+	and (  (TPScroll ~= nil and TPScroll:IsFullyCastable())
+		or (ProphetTP ~= nil and ProphetTP:IsTrained() and ProphetTP:IsFullyCastable()))
+	then
+		if  (J.GetHP(bot) < 0.25
+			and bot:GetHealthRegen() < 15
+			and bot:GetUnitName() ~= 'npc_dota_hero_huskar'
+			and bot:GetUnitName() ~= 'npc_dota_hero_slark'
+			and bot:GetUnitName() ~= 'npc_dota_hero_necrolyte'
+			and not bot:HasModifier('modifier_tango_heal')
+			and not bot:HasModifier('modifier_flask_healing')
+			and not bot:HasModifier('modifier_alchemist_chemical_rage')
+			and not bot:HasModifier('modifier_arc_warden_tempest_double')
+			and not bot:HasModifier('modifier_juggernaut_healing_ward_heal')
+			and not bot:HasModifier('modifier_oracle_purifying_flames')
+			and not bot:HasModifier('modifier_warlock_fatal_bonds')
+			and not bot:HasModifier('modifier_item_satanic_unholy')
+			and not bot:HasModifier('modifier_item_spirit_vessel_heal')
+			and not bot:HasModifier('modifier_item_urn_heal'))
+		or (((J.IsCore(bot) and J.GetMP(bot) < 0.25 and (J.GetHP(bot) < 0.75 and bot:GetHealthRegen() < 10))
+				or ((not J.IsCore(bot) and J.GetMP(bot) < 0.25 and bot:GetHealthRegen() < 10)))
+			and bot:GetUnitName() ~= 'npc_dota_hero_necrolyte'
+			and not (J.IsPushing(bot) and #J.GetAlliesNearLoc(bot:GetLocation(), 900) >= 3))
+		then
+			ShouldWaitInBaseToHeal = true
+			return true
+		end
+	end
+
+	return false
+end
+
+function ConsiderHuskarMoveOutsideFountain()
+	if bot:GetUnitName() == 'npc_dota_hero_huskar'
+	then
+		if  bot:HasModifier('modifier_fountain_aura_buff')
+		and J.GetHP(bot) > 0.95
+		then
+			return true
 		end
 	end
 

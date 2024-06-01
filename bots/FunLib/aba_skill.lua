@@ -152,6 +152,42 @@ function X.GetSkillList( sAbilityList, nAbilityBuildList, sTalentList, nTalentBu
 						[23] = sTalentList[nTalentBuildList[8]],
 					}
 
+	if GetBot():GetUnitName() == 'npc_dota_hero_meepo'
+	then
+		sSkillList = {
+						[1] = sAbilityList[nAbilityBuildList[1]],
+						[2] = sAbilityList[nAbilityBuildList[2]],
+						[3] = sAbilityList[nAbilityBuildList[3]],
+						[4] = sAbilityList[nAbilityBuildList[4]],
+						[5] = sAbilityList[nAbilityBuildList[5]],
+						[6] = sAbilityList[nAbilityBuildList[6]],
+						[7] = sAbilityList[nAbilityBuildList[7]],
+						[8] = sAbilityList[nAbilityBuildList[8]],
+						[9] = sAbilityList[nAbilityBuildList[9]],
+						[10] = sAbilityList[nAbilityBuildList[10]],
+						[11] = sTalentList[nTalentBuildList[1]],
+						[12] = sAbilityList[nAbilityBuildList[11]],
+						[13] = sAbilityList[nAbilityBuildList[12]],
+						[14] = sAbilityList[nAbilityBuildList[13]],
+						[15] = sTalentList[nTalentBuildList[2]],
+						[16] = sAbilityList[nAbilityBuildList[14]],
+						[17] = sAbilityList[nAbilityBuildList[15]],
+						[18] = sTalentList[nTalentBuildList[3]],
+						[19] = sTalentList[nTalentBuildList[4]],
+						[20] = sTalentList[nTalentBuildList[5]],
+						[21] = sTalentList[nTalentBuildList[6]],
+						[22] = sTalentList[nTalentBuildList[7]],
+						[23] = sTalentList[nTalentBuildList[8]],
+						[24] = sAbilityList[nAbilityBuildList[16]],
+						[25] = sTalentList[nTalentBuildList[3]],
+						[26] = sTalentList[nTalentBuildList[4]],
+						[27] = sTalentList[nTalentBuildList[5]],
+						[28] = sTalentList[nTalentBuildList[6]],
+						[29] = sTalentList[nTalentBuildList[7]],
+						[30] = sTalentList[nTalentBuildList[8]],
+		}
+	end
+
 	if GetBot():GetUnitName() == 'npc_dota_hero_invoker'
 	then
 		sSkillList = {

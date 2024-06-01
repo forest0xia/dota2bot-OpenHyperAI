@@ -180,6 +180,83 @@ function X.ConsiderRage()
     return BOT_ACTION_DESIRE_NONE
 end
 
+function X.ConsiderOpenWounds()
+    if not OpenWounds:IsFullyCastable()
+    or bot:HasModifier('modifier_life_stealer_infest')
+    then
+        return BOT_ACTION_DESIRE_NONE, nil
+    end
+
+	local nCastRange = OpenWounds:GetCastRange()
+    local botTarget = J.GetProperTarget(bot)
+
+	if J.IsGoingOnSomeone(bot)
+	then
+        local nInRangeAlly = bot:GetNearbyHeroes(nCastRange + 100, false, BOT_MODE_NONE)
+        local nInRangeEnemy = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+
+        if  J.IsValidTarget(botTarget)
+        and J.CanCastOnNonMagicImmune(botTarget)
+        and J.IsInRange(bot, botTarget, nCastRange)
+        and not J.IsSuspiciousIllusion(botTarget)
+        and not J.IsDisabled(botTarget)
+        and not botTarget:HasModifier('modifier_abaddon_borrowed_time')
+        and not botTarget:HasModifier('modifier_dazzle_shallow_grave')
+        and not botTarget:HasModifier('modifier_templar_assassin_refraction_absorb')
+        and nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+        and #nInRangeAlly >= #nInRangeEnemy
+		then
+            return BOT_ACTION_DESIRE_HIGH, botTarget
+        end
+	end
+
+    if J.IsRetreating(bot)
+    then
+        local nInRangeAlly = bot:GetNearbyHeroes(nCastRange + 125, false, BOT_MODE_NONE)
+        local nInRangeEnemy = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+
+        if  nInRangeAlly ~= nil and nInRangeEnemy
+        and ((#nInRangeEnemy > #nInRangeAlly)
+            or (J.GetHP(bot) < 0.62 and bot:WasRecentlyDamagedByAnyHero(2)))
+        and J.IsValidHero(nInRangeEnemy[1])
+        and J.CanCastOnNonMagicImmune(nInRangeEnemy[1])
+        and J.IsInRange(bot, nInRangeEnemy[1], nCastRange)
+        and not J.IsSuspiciousIllusion(nInRangeEnemy[1])
+        and not J.IsDisabled(nInRangeEnemy[1])
+        then
+            return BOT_ACTION_DESIRE_HIGH, nInRangeEnemy[1]
+        end
+    end
+
+	if  J.IsFarming(bot)
+    and J.GetHP(bot) < 0.49
+	then
+        local nNeutralCreeps = bot:GetNearbyNeutralCreeps(nCastRange)
+
+		if  nNeutralCreeps ~= nil and #nNeutralCreeps >= 1
+        and J.IsAttacking(bot)
+        and J.CanBeAttacked(nNeutralCreeps[1])
+        and J.GetHP(nNeutralCreeps[1]) >= 0.75
+        then
+            return BOT_ACTION_DESIRE_HIGH, nNeutralCreeps[1]
+        end
+	end
+
+	if J.IsDoingRoshan(bot)
+	then
+        if  J.IsRoshan(botTarget)
+        and J.CanBeAttacked(botTarget)
+        and J.CanCastOnNonMagicImmune(botTarget)
+        and J.IsAttacking(bot)
+        and J.GetHP(bot) < 0.54
+        then
+            return BOT_ACTION_DESIRE_HIGH, botTarget
+        end
+	end
+
+    return BOT_ACTION_DESIRE_NONE, nil
+end
+
 function X.ConsiderInfest()
     if Infest:IsHidden()
     or not Infest:IsFullyCastable()
@@ -341,83 +418,6 @@ function X.ConsiderConsume()
     end
 
     return BOT_ACTION_DESIRE_NONE
-end
-
-function X.ConsiderOpenWounds()
-    if not OpenWounds:IsTrained()
-    or bot:HasModifier('modifier_life_stealer_infest')
-    then
-        return BOT_ACTION_DESIRE_NONE, nil
-    end
-
-	local nCastRange = OpenWounds:GetCastRange()
-    local botTarget = J.GetProperTarget(bot)
-
-	if J.IsGoingOnSomeone(bot)
-	then
-        local nInRangeAlly = bot:GetNearbyHeroes(nCastRange + 100, false, BOT_MODE_NONE)
-        local nInRangeEnemy = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
-
-        if  J.IsValidTarget(botTarget)
-        and J.CanCastOnNonMagicImmune(botTarget)
-        and J.IsInRange(bot, botTarget, nCastRange)
-        and not J.IsSuspiciousIllusion(botTarget)
-        and not J.IsDisabled(botTarget)
-        and not botTarget:HasModifier('modifier_abaddon_borrowed_time')
-        and not botTarget:HasModifier('modifier_dazzle_shallow_grave')
-        and not botTarget:HasModifier('modifier_templar_assassin_refraction_absorb')
-        and nInRangeAlly ~= nil and nInRangeEnemy ~= nil
-        and #nInRangeAlly >= #nInRangeEnemy
-		then
-            return BOT_ACTION_DESIRE_HIGH, botTarget
-        end
-	end
-
-    if J.IsRetreating(bot)
-    then
-        local nInRangeAlly = bot:GetNearbyHeroes(nCastRange + 125, false, BOT_MODE_NONE)
-        local nInRangeEnemy = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
-
-        if  nInRangeAlly ~= nil and nInRangeEnemy
-        and ((#nInRangeEnemy > #nInRangeAlly)
-            or (J.GetHP(bot) < 0.62 and bot:WasRecentlyDamagedByAnyHero(2)))
-        and J.IsValidHero(nInRangeEnemy[1])
-        and J.CanCastOnNonMagicImmune(nInRangeEnemy[1])
-        and J.IsInRange(bot, nInRangeEnemy[1], nCastRange)
-        and not J.IsSuspiciousIllusion(nInRangeEnemy[1])
-        and not J.IsDisabled(nInRangeEnemy[1])
-        then
-            return BOT_ACTION_DESIRE_HIGH, nInRangeEnemy[1]
-        end
-    end
-
-	if  J.IsFarming(bot)
-    and J.GetHP(bot) < 0.49
-	then
-        local nNeutralCreeps = bot:GetNearbyNeutralCreeps(nCastRange)
-
-		if  nNeutralCreeps ~= nil and #nNeutralCreeps >= 1
-        and J.IsAttacking(bot)
-        and J.CanBeAttacked(nNeutralCreeps[1])
-        and J.GetHP(nNeutralCreeps[1]) >= 0.75
-        then
-            return BOT_ACTION_DESIRE_HIGH, nNeutralCreeps[1]
-        end
-	end
-
-	if J.IsDoingRoshan(bot)
-	then
-        if  J.IsRoshan(botTarget)
-        and J.CanBeAttacked(botTarget)
-        and J.CanCastOnNonMagicImmune(botTarget)
-        and J.IsAttacking(bot)
-        and J.GetHP(bot) < 0.54
-        then
-            return BOT_ACTION_DESIRE_HIGH, botTarget
-        end
-	end
-
-    return BOT_ACTION_DESIRE_NONE, nil
 end
 
 return X

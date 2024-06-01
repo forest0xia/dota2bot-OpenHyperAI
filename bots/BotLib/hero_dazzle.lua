@@ -232,13 +232,20 @@ function X.SkillsComplement()
 	-- if ( castRDesire > 0 )
 	-- then
 		-- J.SetReportMotive( bDebugMode, sMotive )
+	castRDesire, castRTarget, sMotive = X.ConsiderR()
+	if ( castRDesire > 0 )
+	then
+		J.SetReportMotive( bDebugMode, sMotive )
 
 		-- J.SetQueuePtToINT( bot, true )
+		J.SetQueuePtToINT( bot, true )
 
 		-- bot:ActionQueue_UseAbility( abilityR )
 		-- return
 	-- end
-
+		bot:ActionQueue_UseAbility( abilityR )
+		return
+	end
 
 end
 

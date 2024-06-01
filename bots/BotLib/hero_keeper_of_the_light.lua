@@ -10,19 +10,34 @@ local sAbilityList = J.Skill.GetAbilityList( bot )
 local sRole = J.Item.GetRoleItemsBuyList( bot )
 
 local tTalentTreeList = {
-						['t25'] = {10, 0},
-						['t20'] = {0, 10},
-						['t15'] = {0, 10},
-						['t10'] = {10, 0},
+						{
+                            ['t25'] = {10, 0},
+                            ['t20'] = {0, 10},
+                            ['t15'] = {0, 10},
+                            ['t10'] = {10, 0},
+                        },
+                        {
+                            ['t25'] = {0, 10},
+                            ['t20'] = {0, 10},
+                            ['t15'] = {0, 10},
+                            ['t10'] = {10, 0},
+                        }
 }
 
 local tAllAbilityBuildList = {
 						{1,3,1,3,1,6,1,3,3,2,6,2,2,2,6},--pos2
+                        {1,3,1,3,1,6,1,3,3,2,6,2,2,2,6},--pos4,5
 }
 
-local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
+local nAbilityBuildList = tAllAbilityBuildList[1]
+if sRole == 'pos_2' then nAbilityBuildList = tAllAbilityBuildList[1] end
+if sRole == 'pos_4' then nAbilityBuildList = tAllAbilityBuildList[2] end
+if sRole == 'pos_5' then nAbilityBuildList = tAllAbilityBuildList[2] end
 
-local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
+local nTalentBuildList = J.Skill.GetTalentBuild(tTalentTreeList[1])
+if sRole == 'pos_2' then nTalentBuildList = J.Skill.GetTalentBuild(tTalentTreeList[1]) end
+if sRole == 'pos_4' then nTalentBuildList = J.Skill.GetTalentBuild(tTalentTreeList[2]) end
+if sRole == 'pos_5' then nTalentBuildList = J.Skill.GetTalentBuild(tTalentTreeList[2]) end
 
 local sRoleItemsBuyList = {}
 
@@ -52,19 +67,69 @@ sRoleItemsBuyList['pos_2'] = {
 
 sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_2']
 
-sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_2'] 
+sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_2']
 
-sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_2']
+sRoleItemsBuyList['pos_4'] = {
+    "item_double_tango",
+    "item_faerie_fire",
+    "item_clarity",
+    "item_blood_grenade",
 
-sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_2']
+    "item_boots",
+    "item_urn_of_shadows",
+    "item_tranquil_boots",
+    "item_solar_crest",--
+    "item_spirit_vessel",--
+    "item_glimmer_cape",--
+    "item_boots_of_bearing",--
+    "item_octarine_core",--
+    "item_sheepstick",--
+    "item_aghanims_shard",
+    "item_ultimate_scepter_2",
+    "item_moon_shard",
+}
+
+sRoleItemsBuyList['pos_5'] = {
+    "item_double_tango",
+    "item_faerie_fire",
+    "item_clarity",
+    "item_blood_grenade",
+
+    "item_boots",
+    "item_urn_of_shadows",
+    "item_arcane_boots",
+    "item_solar_crest",--
+    "item_glimmer_cape",--
+    "item_spirit_vessel",--
+    "item_guardian_greaves",--
+    "item_octarine_core",--
+    "item_sheepstick",--
+    "item_aghanims_shard",
+    "item_ultimate_scepter_2",
+    "item_moon_shard",
+}
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 
-X['sSellList'] = {
+Pos2SellList = {
     "item_null_talisman",
     "item_magic_wand",
     "item_spirit_vessel",
 }
+
+Pos4SellList = {
+
+}
+
+Pos5SellList = {
+
+}
+
+X['sSellList'] = Pos2SellList
+
+if sRole == "pos_2" then X['sSellList'] = Pos2SellList end
+if sRole == "pos_4" then X['sSellList'] = Pos4SellList end
+if sRole == "pos_5" then X['sSellList'] = Pos5SellList end
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_mid' }, {} end
 
@@ -88,7 +153,7 @@ local IlluminateEnd = bot:GetAbilityByName('keeper_of_the_light_illuminate_end')
 local BlindingLight = bot:GetAbilityByName('keeper_of_the_light_blinding_light')
 local ChakraMagic   = bot:GetAbilityByName('keeper_of_the_light_chakra_magic')
 local SolarBind     = bot:GetAbilityByName('keeper_of_the_light_radiant_bind')
-local Recall        = bot:GetAbilityByName('keeper_of_the_light_recall')
+-- local Recall        = bot:GetAbilityByName('keeper_of_the_light_recall')
 local WillOWisp     = bot:GetAbilityByName('keeper_of_the_light_will_o_wisp')
 local SpiritForm    = bot:GetAbilityByName('keeper_of_the_light_spirit_form')
 
@@ -100,7 +165,7 @@ local IlluminateEndDesire
 local BlindingLightDesire, BlindingLightLocation
 local ChakraMagicDesire, ChakraMagicTarget
 local SolarBindDesire, SolarBindTarget
-local RecallDesire, RecallTarget
+-- local RecallDesire, RecallTarget
 local WillOWispDesire, WillOWispLocation
 local SpiritFormDesire
 
@@ -171,12 +236,12 @@ function X.SkillsComplement()
         return
     end
 
-    RecallDesire, RecallTarget = X.ConsiderRecall()
-    if RecallDesire > 0
-    then
-        bot:Action_UseAbilityOnEntity(Recall, RecallTarget)
-        return
-    end
+    -- RecallDesire, RecallTarget = X.ConsiderRecall()
+    -- if RecallDesire > 0
+    -- then
+    --     bot:Action_UseAbilityOnEntity(Recall, RecallTarget)
+    --     return
+    -- end
 end
 
 function X.ConsiderIlluminate()
@@ -253,6 +318,7 @@ function X.ConsiderIlluminate()
     end
 
     if  J.IsLaning(bot)
+    and (J.IsCore(bot) or not J.IsCore(bot) and not J.IsThereCoreNearby(1200))
     and nMana > 0.33
 	then
 		local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nTravelDist, true)
@@ -521,7 +587,8 @@ function X.ConsiderChakraMagic()
 end
 
 function X.ConsiderSolarBind()
-    if not SolarBind:IsFullyCastable()
+    if SolarBind:IsHidden()
+    or not SolarBind:IsFullyCastable()
     then
         return BOT_ACTION_DESIRE_NONE, nil
     end
@@ -659,45 +726,45 @@ function X.ConsiderSpiritForm()
     return BOT_ACTION_DESIRE_NONE
 end
 
-function X.ConsiderRecall()
-    if Recall:IsHidden()
-    or not Recall:IsTrained()
-    or not Recall:IsFullyCastable()
-    then
-        return BOT_ACTION_DESIRE_NONE, nil
-    end
+-- function X.ConsiderRecall()
+--     if Recall:IsHidden()
+--     or not Recall:IsTrained()
+--     or not Recall:IsFullyCastable()
+--     then
+--         return BOT_ACTION_DESIRE_NONE, nil
+--     end
 
-    for _, allyHero in pairs(GetUnitList(UNIT_LIST_ALLIED_HEROES))
-    do
-        if  J.IsValidHero(allyHero)
-        and not allyHero:IsIllusion()
-        and not allyHero:WasRecentlyDamagedByAnyHero(2.5)
-        then
-            if  J.IsRetreating(allyHero)
-            and J.IsRunning(allyHero)
-            and J.GetHP(allyHero) < 0.5
-            and allyHero:DistanceFromFountain() > 2000
-            and bot:DistanceFromFountain() < 1600
-            then
-                return BOT_ACTION_DESIRE_HIGH, allyHero
-            end
-        end
+--     for _, allyHero in pairs(GetUnitList(UNIT_LIST_ALLIED_HEROES))
+--     do
+--         if  J.IsValidHero(allyHero)
+--         and not allyHero:IsIllusion()
+--         and not allyHero:WasRecentlyDamagedByAnyHero(2.5)
+--         then
+--             if  J.IsRetreating(allyHero)
+--             and J.IsRunning(allyHero)
+--             and J.GetHP(allyHero) < 0.5
+--             and allyHero:DistanceFromFountain() > 2000
+--             and bot:DistanceFromFountain() < 1600
+--             then
+--                 return BOT_ACTION_DESIRE_HIGH, allyHero
+--             end
+--         end
 
-        if J.IsPushing(bot)
-        then
-            local nInRangeAlly = bot:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+--         if J.IsPushing(bot)
+--         then
+--             local nInRangeAlly = bot:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
 
-            if  nInRangeAlly ~= nil and #nInRangeAlly >= 2
-            and GetUnitToUnitDistance(bot, allyHero) > 3200
-            and not J.IsFarming(allyHero)
-            then
-                return BOT_ACTION_DESIRE_HIGH, allyHero
-            end
-        end
-    end
+--             if  nInRangeAlly ~= nil and #nInRangeAlly >= 2
+--             and GetUnitToUnitDistance(bot, allyHero) > 3200
+--             and not J.IsFarming(allyHero)
+--             then
+--                 return BOT_ACTION_DESIRE_HIGH, allyHero
+--             end
+--         end
+--     end
 
-    return BOT_ACTION_DESIRE_NONE, nil
-end
+--     return BOT_ACTION_DESIRE_NONE, nil
+-- end
 
 function X.ConsiderWillOWisp()
     if WillOWisp:IsHidden()

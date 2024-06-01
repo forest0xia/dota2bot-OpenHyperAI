@@ -17,21 +17,81 @@ local sAbilityList = J.Skill.GetAbilityList( bot )
 local sRole = J.Item.GetRoleItemsBuyList( bot )
 
 local tTalentTreeList = {
-						['t25'] = {10, 0},
-						['t20'] = {0, 10},
-						['t15'] = {0, 10},
-						['t10'] = {0, 10},
+						{--pos2
+							['t25'] = {10, 0},
+							['t20'] = {0, 10},
+							['t15'] = {0, 10},
+							['t10'] = {0, 10},
+						},
+						{--pos4,5
+							['t25'] = {10, 0},
+							['t20'] = {0, 10},
+							['t15'] = {0, 10},
+							['t10'] = {0, 10},
+						}
 }
 
 local tAllAbilityBuildList = {
-						{1,3,1,2,1,6,1,3,3,3,6,2,2,2,6},
+						{2,1,3,1,1,6,1,3,3,3,6,2,2,2,6},--pos2
+						{1,3,1,2,1,6,1,3,3,3,6,2,2,2,6},--pos4,5
 }
 
-local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
+local nAbilityBuildList = tAllAbilityBuildList[1]
+if sRole == 'pos_2' then nAbilityBuildList = tAllAbilityBuildList[1] end
+if sRole == 'pos_4' then nAbilityBuildList = tAllAbilityBuildList[2] end
+if sRole == 'pos_5' then nAbilityBuildList = tAllAbilityBuildList[2] end
 
-local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
+local nTalentBuildList = J.Skill.GetTalentBuild(tTalentTreeList[1])
+if sRole == 'pos_2' then nTalentBuildList = J.Skill.GetTalentBuild(tTalentTreeList[1]) end
+if sRole == 'pos_4' then nTalentBuildList = J.Skill.GetTalentBuild(tTalentTreeList[2]) end
+if sRole == 'pos_5' then nTalentBuildList = J.Skill.GetTalentBuild(tTalentTreeList[2]) end
 
 local sRoleItemsBuyList = {}
+
+sRoleItemsBuyList['pos_2'] = {
+	"item_tango",
+	"item_double_branches",
+	"item_faerie_fire",
+	"item_enchanted_mango",
+
+	"item_bottle",
+	"item_power_treads",
+	"item_magic_wand",
+	"item_witch_blade",
+	"item_hurricane_pike",--
+	"item_aghanims_shard",
+	"item_black_king_bar",--
+	"item_sheepstick",--
+	"item_devastator",--
+	"item_travel_boots",
+	"item_bloodthorn",--
+	"item_travel_boots_2",--
+	"item_moon_shard",
+	"item_ultimate_scepter_2",
+}
+
+sRoleItemsBuyList['pos_3'] = {
+	"item_tango",
+	"item_double_branches",
+	"item_faerie_fire",
+	"item_enchanted_mango",
+
+	"item_power_treads",
+	"item_magic_wand",
+	"item_witch_blade",
+	"item_hurricane_pike",--
+	"item_aghanims_shard",
+	"item_black_king_bar",--
+	"item_sheepstick",--
+	"item_devastator",--
+	"item_travel_boots",
+	"item_bloodthorn",--
+	"item_travel_boots_2",--
+	"item_moon_shard",
+	"item_ultimate_scepter_2",
+}
+
+sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
 
 sRoleItemsBuyList['pos_4'] = {
 	"item_tango",
@@ -77,30 +137,12 @@ sRoleItemsBuyList['pos_5'] = {
 	"item_ultimate_scepter_2",
 }
 
-sRoleItemsBuyList['pos_3'] = {
-	"item_tango",
-	"item_tango",
-	"item_double_branches",
-
-	"item_tranquil_boots",
-	"item_magic_wand",
-	"item_force_staff",
-	"item_solar_crest",--
-	"item_glimmer_cape",--
-	"item_boots_of_bearing",--
-	"item_aghanims_shard",
-	"item_hurricane_pike",--
-	"item_sheepstick",--
-	"item_refresher",--
-	"item_moon_shard",
-	"item_ultimate_scepter_2",
-}
-
-sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
-
-sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_3']
-
 X['sBuyList'] = sRoleItemsBuyList[sRole]
+
+Pos2SellList = {
+	"item_bottle",
+	"item_magic_wand",
+}
 
 Pos4SellList = {
 	"item_magic_wand",
@@ -110,14 +152,11 @@ Pos5SellList = {
 	"item_magic_wand",
 }
 
-X['sSellList'] = {}
+X['sSellList'] = Pos2SellList
 
-if sRole == "pos_4"
-then
-    X['sSellList'] = Pos4SellList
-else
-    X['sSellList'] = Pos5SellList
-end
+if sRole == "pos_2" then X['sSellList'] = Pos2SellList end
+if sRole == "pos_4" then X['sSellList'] = Pos4SellList end
+if sRole == "pos_5" then X['sSellList'] = Pos5SellList end
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_priest' }, {} end
 
@@ -137,34 +176,6 @@ function X.MinionThink( hMinionUnit )
 	end
 
 end
-
---[[
-
-npc_dota_hero_silencer
-
-"Ability1"		"silencer_curse_of_the_silent"
-"Ability2"		"silencer_glaives_of_wisdom"
-"Ability3"		"silencer_last_word"
-"Ability4"		"generic_hidden"
-"Ability5"		"generic_hidden"
-"Ability6"		"silencer_global_silence"
-"Ability10"		"special_bonus_armor_6"
-"Ability11"		"special_bonus_attack_speed_25"
-"Ability12"		"special_bonus_gold_income_20"
-"Ability13"		"special_bonus_unique_silencer_2"
-"Ability14"		"special_bonus_attack_range_125"
-"Ability15"		"special_bonus_unique_silencer"
-"Ability16"		"special_bonus_unique_silencer_3"
-"Ability17"		"special_bonus_unique_silencer_4"
-
-modifier_silencer_int_steal
-modifier_silencer_curse_of_the_silent
-modifier_silencer_glaives_of_wisdom
-modifier_silencer_last_word
-modifier_silencer_last_word_disarm
-modifier_silencer_global_silence
-
---]]
 
 local abilityQ = bot:GetAbilityByName( sAbilityList[1] )
 local abilityW = bot:GetAbilityByName( sAbilityList[2] )
@@ -218,23 +229,23 @@ function X.SkillsComplement()
 		return
 	end
 
-	castEDesire, castETarget = X.ConsiderE()
-	if ( castEDesire > 0 )
-	then
+	-- castEDesire, castETarget = X.ConsiderE()
+	-- if ( castEDesire > 0 )
+	-- then
 
-		J.SetQueuePtToINT( bot, false )
+	-- 	J.SetQueuePtToINT( bot, false )
 
-		-- bot:ActionQueue_UseAbilityOnEntity( abilityE, castETarget )
-		if bot:HasScepter()
-		and castETarget ~= nil
-		then
-			bot:ActionQueue_UseAbilityOnLocation( abilityE, castETarget:GetLocation() )
-		else
-			bot:ActionQueue_UseAbilityOnEntity( abilityE, castETarget )
-		end
+	-- 	-- bot:ActionQueue_UseAbilityOnEntity( abilityE, castETarget )
+	-- 	if bot:HasScepter()
+	-- 	and castETarget ~= nil
+	-- 	then
+	-- 		bot:ActionQueue_UseAbilityOnLocation( abilityE, castETarget:GetLocation() )
+	-- 	else
+	-- 		bot:ActionQueue_UseAbilityOnEntity( abilityE, castETarget )
+	-- 	end
 
-		return
-	end
+	-- 	return
+	-- end
 
 	castWDesire, castWTarget = X.ConsiderW()
 	if ( castWDesire > 0 )

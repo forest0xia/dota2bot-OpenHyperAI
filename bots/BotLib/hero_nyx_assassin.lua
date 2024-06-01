@@ -66,7 +66,7 @@ sRoleItemsBuyList['pos_5'] = {
     "item_moon_shard",
 }
 
-sRoleItemsBuyList['pos_1'] = {
+sRoleItemsBuyList['pos_3'] = {
     "item_double_tango",
     "item_double_branches",
 
@@ -86,9 +86,9 @@ sRoleItemsBuyList['pos_1'] = {
     "item_moon_shard",
 }
 
-sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
+sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
 
-sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_1']
+sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_3']
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 
@@ -371,14 +371,14 @@ function X.ConsiderMindflare()
     end
 
     local nCastRange = J.GetProperCastRange(false, bot, Mindflare:GetCastRange())
-	local nMultiplier = Mindflare:GetSpecialValueInt('float_multiplier')
+	local nDmgPct = Mindflare:GetSpecialValueInt('max_mana_as_damage_pct')
 
     local nEnemyHeroes = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
     for _, enemyHero in pairs(nEnemyHeroes)
     do
         if  J.IsValidHero(enemyHero)
         and J.CanCastOnNonMagicImmune(enemyHero)
-        and J.CanKillTarget(enemyHero, nMultiplier * enemyHero:GetAttributeValue(ATTRIBUTE_INTELLECT), DAMAGE_TYPE_MAGICAL)
+        and J.CanKillTarget(enemyHero, enemyHero:GetMaxMana() * (nDmgPct / 100), DAMAGE_TYPE_MAGICAL)
         and not J.IsSuspiciousIllusion(enemyHero)
         and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
         and not enemyHero:HasModifier('modifier_dazzle_shallow_grave')

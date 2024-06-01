@@ -31,13 +31,13 @@ local tAllAbilityBuildList = {
 local nAbilityBuildList
 local nTalentBuildList
 
-if sRole == "pos_1"
+if sRole == "pos_2"
 then
-    nAbilityBuildList   = tAllAbilityBuildList[1]
-    nTalentBuildList    = J.Skill.GetTalentBuild(tTalentTreeList[1])
-else
     nAbilityBuildList   = tAllAbilityBuildList[2]
     nTalentBuildList    = J.Skill.GetTalentBuild(tTalentTreeList[2])
+else
+    nAbilityBuildList   = tAllAbilityBuildList[1]
+    nTalentBuildList    = J.Skill.GetTalentBuild(tTalentTreeList[1])
 end
 
 local nItems = {"item_butterfly", "item_skadi", "item_mjollnir"}
@@ -88,30 +88,11 @@ sRoleItemsBuyList['pos_2'] = {
     "item_ultimate_scepter_2",
 }
 
-sRoleItemsBuyList['pos_3'] = {
-    "item_tango",
-    "item_double_branches",
-    "item_faerie_fire",
+sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_1']
 
-    "item_wraith_band",
-    "item_magic_wand",
-    "item_boots_of_elves",
-    "item_power_treads",
-    "item_lifesteal",
-    "item_manta",--
-    "item_angels_demise",--
-    "item_black_king_bar",--
-    sItems,--
-    "item_aghanims_shard",
-    "item_satanic",--
-    "item_disperser",--
-    "item_moon_shard",
-    "item_ultimate_scepter_2",
-}
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_1']
 
-sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_3']
-
-sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_3']
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_1']
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 
@@ -129,12 +110,13 @@ Pos2SellList = {
     "item_magic_wand",
 }
 
-X['sSellList'] = {}
+X['sSellList'] = Pos1SellList
 
 if sRole == "pos_1"
 then
     X['sSellList'] = Pos1SellList
-else
+elseif sRole == "pos_2"
+then
     X['sSellList'] = Pos2SellList
 end
 
@@ -154,19 +136,16 @@ end
 local Waveform              = bot:GetAbilityByName('morphling_waveform')
 local AdaptiveStrikeAGI     = bot:GetAbilityByName('morphling_adaptive_strike_agi')
 local AdaptiveStrikeSTR     = bot:GetAbilityByName('morphling_adaptive_strike_str')
-local AtttributeShiftAGI    = bot:GetAbilityByName('morphling_morph_agi')
-local AtttributeShiftSTR    = bot:GetAbilityByName('morphling_morph_str')
+local AttributeShiftAGI    = bot:GetAbilityByName('morphling_morph_agi')
+local AttributeShiftSTR    = bot:GetAbilityByName('morphling_morph_str')
 local Morph                 = bot:GetAbilityByName('morphling_replicate')
 local MorphReplicate        = bot:GetAbilityByName('morphling_morph_replicate')
 
 local WaveformDesire, WaveformLocation
 local AdaptiveStrikeAGIDesire, AdaptiveStrikeAGITarget
 local AdaptiveStrikeSTRDesire, AdaptiveStrikeSTRTarget
-local AtttributeShiftAGIDesire
-local AtttributeShiftSTRDesire
+local AtttributeShiftDesire
 local MorphDesire, MorphTarget
-
-local ShiftingSTRTime = 0
 
 local MorphedHero = nil
 
@@ -174,10 +153,20 @@ local botTarget
 
 if bot.IsMorphling == nil then bot.IsMorphling = true end
 
+local nAGIRatio = 1
+local nSTRRatio = 1
+
+local AGI_BASE = 24
+local STR_BASE = 23
+local AGI_GROWTH_RATE = 3.9
+local STR_GROWTH_RATE = 3.2
+
 function X.SkillsComplement()
     if J.CanNotUseAbility(bot) then return end
 
     botTarget = J.GetProperTarget(bot)
+
+    X.SetRatios()
 
     -- Later Stuff ^^
     -- if bot:GetAbilityInSlot(0) == Waveform then bot.IsMorphling = true else bot.IsMorphling = false end
@@ -199,46 +188,24 @@ function X.SkillsComplement()
 
     if bot.IsMorphling
     then
-        AtttributeShiftSTRDesire = X.ConsiderAtttributeShiftSTR()
-        if AtttributeShiftSTRDesire > 0
+        AtttributeShiftDesire, Type = X.ConsiderAtttributeShift()
+        if AtttributeShiftDesire > 0
         then
-            bot:Action_UseAbility(AtttributeShiftSTR)
-            ShiftingSTRTime = DotaTime()
-            return
-        end
-
-        AtttributeShiftAGIDesire = X.ConsiderAtttributeShiftAGI()
-        if AtttributeShiftAGIDesire > 0
-        then
-            local nInRangeEnemy = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
-            if nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
+            if Type == 'agi'
             then
-                if DotaTime() > ShiftingSTRTime + 5
-                then
-                    bot:Action_UseAbility(AtttributeShiftAGI)
-                end
+                bot:Action_UseAbility(AttributeShiftAGI)
             else
-                bot:Action_UseAbility(AtttributeShiftAGI)
+                bot:Action_UseAbility(AttributeShiftSTR)
             end
-
             return
         end
 
         WaveformDesire, WaveformLocation = X.ConsiderWaveform()
         if WaveformDesire > 0
         then
-            if J.HasItem(bot, 'item_power_treads')
-            or J.HasItem(bot, 'item_power_treads_agi')
-            or J.HasItem(bot, 'item_power_treads_int')
-            or J.HasItem(bot, 'item_power_treads_str')
-            then
-                J.SetQueuePtToINT(bot, false)
-                bot:ActionQueue_UseAbilityOnLocation(Waveform, WaveformLocation)
-                return
-            else
-                bot:Action_UseAbilityOnLocation(Waveform, WaveformLocation)
-                return
-            end
+            J.SetQueuePtToINT(bot, false)
+            bot:ActionQueue_UseAbilityOnLocation(Waveform, WaveformLocation)
+            return
         end
 
         AdaptiveStrikeSTRDesire, AdaptiveStrikeSTRTarget = X.ConsiderAdaptiveStrikeSTR()
@@ -251,18 +218,9 @@ function X.SkillsComplement()
         AdaptiveStrikeAGIDesire, AdaptiveStrikeAGITarget = X.ConsiderAdaptiveStrikeAGI()
         if AdaptiveStrikeAGIDesire > 0
         then
-            if J.HasItem(bot, 'item_power_treads')
-            or J.HasItem(bot, 'item_power_treads_agi')
-            or J.HasItem(bot, 'item_power_treads_int')
-            or J.HasItem(bot, 'item_power_treads_str')
-            then
-                J.SetQueuePtToINT(bot, false)
-                bot:ActionQueue_UseAbilityOnEntity(AdaptiveStrikeAGI, AdaptiveStrikeAGITarget)
-                return
-            else
-                bot:Action_UseAbilityOnEntity(AdaptiveStrikeAGI, AdaptiveStrikeAGITarget)
-                return
-            end
+            J.SetQueuePtToINT(bot, false)
+            bot:ActionQueue_UseAbilityOnEntity(AdaptiveStrikeAGI, AdaptiveStrikeAGITarget)
+            return
         end
 
         -- MorphDesire, MorphTarget = X.ConsiderMorph()
@@ -664,236 +622,194 @@ function X.ConsiderAdaptiveStrikeSTR()
     return BOT_ACTION_DESIRE_NONE, nil
 end
 
-function X.ConsiderAtttributeShiftAGI()
-    if not AtttributeShiftAGI:IsFullyCastable()
-    or bot:HasModifier('modifier_morphling_morph_str')
-    then
-        return BOT_ACTION_DESIRE_NONE
-    end
-
-	local nCurrAGI = bot:GetAttributeValue(ATTRIBUTE_AGILITY)
-	local nCurrSTR = bot:GetAttributeValue(ATTRIBUTE_STRENGTH)
+function X.ConsiderAtttributeShift()
+	if  J.IsRetreating(bot)
+    and not J.IsRealInvisible(bot)
+	then
+        if J.GetHP(bot) < 0.5
+        then
+            if AttributeShiftSTR:GetToggleState() == false
+            then
+                return BOT_ACTION_DESIRE_HIGH, 'str'
+            else
+                return BOT_ACTION_DESIRE_NONE, ''
+            end
+        else
+            if  nSTRRatio > 0.85
+            and AttributeShiftSTR:GetToggleState() == true
+            then
+                return BOT_ACTION_DESIRE_HIGH, 'str'
+            end
+        end
+	end
 
 	if J.IsGoingOnSomeone(bot)
 	then
 		if  J.IsValidTarget(botTarget)
-        and J.CanCastOnNonMagicImmune(botTarget)
-        and J.IsInRange(bot, botTarget, bot:GetAttackRange() + 500)
-		and not J.IsSuspiciousIllusion(botTarget)
+        and J.IsInRange(bot, botTarget, 1600)
 		then
-			local nInRangeAlly = botTarget:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
-			local nInRangeEnemy = botTarget:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+			local nInRangeAlly = botTarget:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+			local nInRangeEnemy = botTarget:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
 
 			if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
-			and #nInRangeAlly >= #nInRangeEnemy
+			and (#nInRangeAlly >= #nInRangeEnemy or J.WeAreStronger(bot, 1600))
 			then
-                if  ((nCurrAGI) / (nCurrAGI + nCurrSTR)) < 0.8
-                and J.GetHP(bot) > 0.35
+                if  nAGIRatio < 0.8
+                and J.GetHP(bot) > 0.5
                 then
-                    if AtttributeShiftAGI:GetToggleState() == false
+                    if AttributeShiftAGI:GetToggleState() == false
                     then
-                        return BOT_ACTION_DESIRE_HIGH
+                        return BOT_ACTION_DESIRE_HIGH, 'agi'
                     else
-                        if ((nCurrAGI) / (nCurrAGI + nCurrSTR)) >= 0.8
+                        if  nAGIRatio > 0.8
+                        and AttributeShiftAGI:GetToggleState() == true
                         then
-                            if AtttributeShiftAGI:GetToggleState() == true
-                            then
-                                return BOT_ACTION_DESIRE_HIGH
-                            end
+                            return BOT_ACTION_DESIRE_HIGH, 'agi'
                         end
 
-                        return BOT_ACTION_DESIRE_NONE
+                        return BOT_ACTION_DESIRE_NONE, ''
+                    end
+                else
+                    if  J.GetHP(bot) < 0.5
+                    and (bot:WasRecentlyDamagedByAnyHero(1) or bot:WasRecentlyDamagedByTower(1))
+                    then
+                        if AttributeShiftSTR:GetToggleState() == false
+                        then
+                            return BOT_ACTION_DESIRE_HIGH, 'str'
+                        else
+                            if  nSTRRatio > 0.8
+                            and AttributeShiftSTR:GetToggleState() == true
+                            then
+                                return BOT_ACTION_DESIRE_HIGH, 'str'
+                            end
+
+                            return BOT_ACTION_DESIRE_NONE, ''
+                        end
                     end
                 end
 			end
 		end
-	end
 
-	if J.IsRetreating(bot)
-	then
-        return BOT_ACTION_DESIRE_NONE
-	end
-
-    if  J.IsPushing(bot)
-    and J.GetHP(bot) > 0.3
-    then
-        if ((nCurrAGI) / (nCurrAGI + nCurrSTR)) < 0.85
+        if AttributeShiftAGI:GetToggleState() == true
         then
-            if AtttributeShiftAGI:GetToggleState() == false
+            return BOT_ACTION_DESIRE_HIGH, 'agi'
+        end
+	end
+
+    if J.IsPushing(bot)
+    then
+        if  nAGIRatio < 0.85
+        and J.GetHP(bot) > 0.5
+        and J.IsAttacking(bot)
+        then
+            if AttributeShiftAGI:GetToggleState() == false
             then
-                return BOT_ACTION_DESIRE_HIGH
+                return BOT_ACTION_DESIRE_HIGH, 'agi'
             else
-                if ((nCurrAGI) / (nCurrAGI + nCurrSTR)) >= 0.85
+                if  nAGIRatio >= 0.85
+                and AttributeShiftAGI:GetToggleState() == true
                 then
-                    if AtttributeShiftAGI:GetToggleState() == true
-                    then
-                        return BOT_ACTION_DESIRE_HIGH
-                    end
+                    return BOT_ACTION_DESIRE_HIGH, 'agi'
                 end
 
-                return BOT_ACTION_DESIRE_NONE
+                return BOT_ACTION_DESIRE_NONE, ''
+            end
+        else
+            if J.GetHP(bot) < 0.48
+            then
+                if AttributeShiftSTR:GetToggleState() == false
+                then
+                    return BOT_ACTION_DESIRE_HIGH, 'str'
+                else
+                    if  (J.GetHP(bot) > 0.5 or nSTRRatio > 0.8)
+                    and AttributeShiftSTR:GetToggleState() == true
+                    then
+                        return BOT_ACTION_DESIRE_HIGH, 'str'
+                    end
+
+                    return BOT_ACTION_DESIRE_NONE, ''
+                end
             end
         end
     end
 
     if  J.IsLaning(bot)
     and J.IsInLaningPhase()
-    and J.GetHP(bot) > 0.3
-    and not bot:WasRecentlyDamagedByAnyHero(1)
-    and not bot:WasRecentlyDamagedByTower(1)
     then
         local nRatio = RemapValClamped(bot:GetHealth(), bot:GetMaxHealth() * 0.5, bot:GetMaxHealth(), 0.5, 0.77)
-        if ((nCurrAGI) / (nCurrAGI + nCurrSTR)) < nRatio
+        if  nAGIRatio < nRatio
+        and J.GetHP(bot) > 0.5
         then
-            if AtttributeShiftAGI:GetToggleState() == false
+            if AttributeShiftAGI:GetToggleState() == false
             then
-                return BOT_ACTION_DESIRE_HIGH
+                return BOT_ACTION_DESIRE_HIGH, 'agi'
             else
-                if ((nCurrAGI) / (nCurrAGI + nCurrSTR)) >= nRatio
+                if nAGIRatio >= nRatio
                 then
-                    if AtttributeShiftAGI:GetToggleState() == true
+                    if AttributeShiftAGI:GetToggleState() == true
                     then
-                        return BOT_ACTION_DESIRE_HIGH
+                        return BOT_ACTION_DESIRE_HIGH, 'agi'
                     end
                 end
 
-                return BOT_ACTION_DESIRE_NONE
+                return BOT_ACTION_DESIRE_NONE, ''
+            end
+        else
+            if J.GetHP(bot) < 0.48
+            then
+                if AttributeShiftSTR:GetToggleState() == false
+                then
+                    return BOT_ACTION_DESIRE_HIGH, 'str'
+                else
+                    if  (J.GetHP(bot) > 0.5 or nSTRRatio > 0.8)
+                    and AttributeShiftSTR:GetToggleState() == true
+                    then
+                        return BOT_ACTION_DESIRE_HIGH, 'str'
+                    end
+
+                    return BOT_ACTION_DESIRE_NONE, ''
+                end
             end
         end
     end
 
-    if  J.IsFarming(bot)
-    and J.GetHP(bot) > 0.3
+    if J.IsFarming(bot)
     then
         local nRatio = RemapValClamped(bot:GetHealth(), bot:GetMaxHealth() * 0.5, bot:GetMaxHealth(), 0.5, 0.88)
-        if ((nCurrAGI) / (nCurrAGI + nCurrSTR)) < nRatio
+        if  nAGIRatio < nRatio
+        and J.GetHP(bot) > 0.45
+        and J.IsAttacking(bot)
         then
-            if AtttributeShiftAGI:GetToggleState() == false
+            if AttributeShiftAGI:GetToggleState() == false
             then
-                return BOT_ACTION_DESIRE_HIGH
+                return BOT_ACTION_DESIRE_HIGH, 'agi'
             else
-                if ((nCurrAGI) / (nCurrAGI + nCurrSTR)) >= nRatio
+                if nAGIRatio >= nRatio
                 then
-                    if AtttributeShiftAGI:GetToggleState() == true
+                    if AttributeShiftAGI:GetToggleState() == true
                     then
-                        return BOT_ACTION_DESIRE_HIGH
+                        return BOT_ACTION_DESIRE_HIGH, 'agi'
                     end
                 end
 
-                return BOT_ACTION_DESIRE_NONE
+                return BOT_ACTION_DESIRE_NONE, ''
             end
-        end
-    end
-
-    if  bot:DistanceFromFountain() < 1200
-    and bot:HasModifier('modifier_fountain_aura_buff')
-    and J.GetHP(bot) > 0.2
-    and not bot:WasRecentlyDamagedByAnyHero(1)
-    then
-        if ((nCurrAGI) / (nCurrAGI + nCurrSTR)) < 0.85
-        then
-            if AtttributeShiftAGI:GetToggleState() == false
-            then
-                return BOT_ACTION_DESIRE_HIGH
-            end
-        end
-
-        return BOT_ACTION_DESIRE_NONE
-    end
-
-    if AtttributeShiftAGI:GetToggleState() == true
-    then
-        return BOT_ACTION_DESIRE_HIGH
-    end
-
-    return BOT_ACTION_DESIRE_NONE
-end
-
-function X.ConsiderAtttributeShiftSTR()
-    if not AtttributeShiftSTR:IsFullyCastable()
-    then
-        return BOT_ACTION_DESIRE_NONE
-    end
-
-    local nCurrAGI = bot:GetAttributeValue(ATTRIBUTE_AGILITY)
-	local nCurrSTR = bot:GetAttributeValue(ATTRIBUTE_STRENGTH)
-
-    if J.IsGoingOnSomeone(bot)
-	then
-		if  J.IsValidTarget(botTarget)
-        and J.CanCastOnNonMagicImmune(botTarget)
-        and J.IsInRange(bot, botTarget, bot:GetAttackRange() + 500)
-		and not J.IsSuspiciousIllusion(botTarget)
-		then
-			local nInRangeAlly = botTarget:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
-			local nInRangeEnemy = botTarget:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
-
-			if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
-			and #nInRangeAlly >= #nInRangeEnemy
-			then
-                if J.GetHP(bot) < 0.35
-                then
-                    if AtttributeShiftSTR:GetToggleState() == false
-                    then
-                        return BOT_ACTION_DESIRE_HIGH
-                    else
-                        return BOT_ACTION_DESIRE_NONE
-                    end
-                end
-			end
-		end
-	end
-
-	if J.IsRetreating(bot)
-	then
-        local nInRangeEnemy = bot:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
-		for _, enemyHero in pairs(nInRangeEnemy)
-        do
-			if  J.IsValidHero(enemyHero)
-			and not J.IsSuspiciousIllusion(enemyHero)
-			and not J.IsRealInvisible(bot)
-			then
-				local nInRangeAlly = enemyHero:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
-				local nTargetInRangeAlly = enemyHero:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
-
-				if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
-				and ((#nTargetInRangeAlly > #nInRangeAlly)
-					or bot:WasRecentlyDamagedByAnyHero(0.5))
-				then
-                    if J.GetHP(bot) < 0.3
-                    then
-                        if AtttributeShiftSTR:GetToggleState() == false
-                        then
-                            return BOT_ACTION_DESIRE_HIGH
-                        else
-                            return BOT_ACTION_DESIRE_NONE
-                        end
-                    else
-                        if bot:GetHealth() > J.GetTotalEstimatedDamageToTarget(nInRangeEnemy, bot)
-                        then
-                            if AtttributeShiftSTR:GetToggleState() == true
-                            then
-                                return BOT_ACTION_DESIRE_HIGH
-                            else
-                                return BOT_ACTION_DESIRE_NONE
-                            end
-                        end
-
-                        return BOT_ACTION_DESIRE_NONE
-                    end
-				end
-			end
-        end
-	end
-
-    if  J.IsFarming(bot)
-    and J.GetHP(bot) < 0.3
-    then
-        if AtttributeShiftAGI:GetToggleState() == false
-        then
-            return BOT_ACTION_DESIRE_HIGH
         else
-            return BOT_ACTION_DESIRE_NONE
+            if J.GetHP(bot) < 0.48
+            then
+                if AttributeShiftSTR:GetToggleState() == false
+                then
+                    return BOT_ACTION_DESIRE_HIGH, 'str'
+                else
+                    if  J.GetHP(bot) > 0.5
+                    and AttributeShiftSTR:GetToggleState() == true
+                    then
+                        return BOT_ACTION_DESIRE_HIGH, 'str'
+                    end
+
+                    return BOT_ACTION_DESIRE_NONE, ''
+                end
+            end
         end
     end
 
@@ -902,24 +818,66 @@ function X.ConsiderAtttributeShiftSTR()
         if  (J.IsRoshan(botTarget) or J.IsTormentor(botTarget))
         and J.IsInRange(bot, botTarget, 1000)
         then
-            if J.GetHP(bot) < 0.35
+            if  J.GetHP(bot) > 0.5
+            and J.IsAttacking(bot)
             then
-                if AtttributeShiftSTR:GetToggleState() == false
+                if AttributeShiftAGI:GetToggleState() == false
                 then
-                    return BOT_ACTION_DESIRE_HIGH
+                    return BOT_ACTION_DESIRE_HIGH, 'agi'
                 else
-                    return BOT_ACTION_DESIRE_NONE
+                    if  nAGIRatio > 0.8
+                    and AttributeShiftAGI:GetToggleState() == true
+                    then
+                        return BOT_ACTION_DESIRE_HIGH, 'agi'
+                    end
+
+                    return BOT_ACTION_DESIRE_NONE, ''
+                end
+            else
+                if AttributeShiftSTR:GetToggleState() == false
+                then
+                    return BOT_ACTION_DESIRE_HIGH, 'str'
+                else
+                    if  (J.GetHP(bot) > 0.45 or nSTRRatio > 0.87)
+                    and AttributeShiftSTR:GetToggleState() == true
+                    then
+                        return BOT_ACTION_DESIRE_HIGH, 'str'
+                    end
+
+                    return BOT_ACTION_DESIRE_NONE, ''
                 end
             end
         end
     end
 
-    if AtttributeShiftSTR:GetToggleState() == true
+    if  bot:DistanceFromFountain() < 1200
+    and bot:HasModifier('modifier_fountain_aura_buff')
+    and J.GetHP(bot) > 0.2
+    and DotaTime() > 0
+    and not bot:WasRecentlyDamagedByAnyHero(1)
     then
-        return BOT_ACTION_DESIRE_HIGH
+        if nAGIRatio < 0.85
+        then
+            if AttributeShiftAGI:GetToggleState() == false
+            then
+                return BOT_ACTION_DESIRE_HIGH, 'agi'
+            end
+        end
+
+        return BOT_ACTION_DESIRE_NONE, ''
     end
 
-    return BOT_ACTION_DESIRE_NONE
+    if AttributeShiftSTR:GetToggleState() == true
+    then
+        return BOT_ACTION_DESIRE_HIGH, 'str'
+    end
+
+    if AttributeShiftAGI:GetToggleState() == true
+    then
+        return BOT_ACTION_DESIRE_HIGH, 'agi'
+    end
+
+    return BOT_ACTION_DESIRE_NONE, ''
 end
 
 function X.ConsiderMorph()
@@ -1239,6 +1197,248 @@ local sDirectStunHeroes = {
 }
 function DoesTargetHeroHaveDirectStun(target)
     return sDirectStunHeroes[target:GetUnitName()]
+end
+
+function X.SetRatios()
+    local count = 0
+    local nAddedAGI = 0
+    local nAddedSTR = 0
+
+    if sRole == 'pos_1'
+    then
+        -- Iron Branches
+        if J.HasItem(bot, 'item_branches')
+        then
+            count = X.CountItemsInInventory('item_branches')
+            nAddedAGI = nAddedAGI + 1 * count
+            nAddedSTR = nAddedSTR + 1 * count
+        end
+
+        -- Circlet
+        if J.HasItem(bot, 'item_circlet')
+        then
+            count = X.CountItemsInInventory('item_circlet')
+            nAddedAGI = nAddedAGI + 2 * count
+            nAddedSTR = nAddedSTR + 2 * count
+        end
+
+        -- Slippers of Agility
+        if J.HasItem(bot, 'item_slippers')
+        then
+            count = X.CountItemsInInventory('item_slippers')
+            nAddedAGI = nAddedAGI + 3 * count
+        end
+
+        -- Wraith Band
+        if J.HasItem(bot, 'item_wraith_band')
+        then
+            count = X.CountItemsInInventory('item_wraith_band')
+            local mul = 1
+
+            if J.IsModeTurbo() and DotaTime() > 12.5 * 60
+            or (not J.IsModeTurbo() and DotaTime() > 25 * 60)
+            then
+                mul = 2
+            end
+
+            nAddedAGI = nAddedAGI + count * 5 * mul
+            nAddedSTR = nAddedSTR + count * 2 * mul
+        end
+
+        -- Boots of Elves
+        if J.HasItem(bot, 'item_boots_of_elves')
+        then
+            count = X.CountItemsInInventory('item_boots_of_elves')
+            nAddedAGI = nAddedAGI + 6 * count
+        end
+
+        -- Magic Wand
+        if J.HasItem(bot, 'item_magic_wand')
+        then
+            nAddedAGI = nAddedAGI + 3
+            nAddedSTR = nAddedSTR + 3
+        end
+
+        -- Power Treads
+        if J.HasItem(bot, 'item_power_treads')
+        then
+            local hItem = J.GetItem('item_power_treads')
+            if hItem ~= nil
+            then
+                local nState = hItem:GetPowerTreadsStat()
+
+                if nState == ATTRIBUTE_AGILITY
+                then
+                    nAddedAGI = nAddedAGI + 10
+                elseif nState == ATTRIBUTE_STRENGTH
+                then
+                    nAddedSTR = nAddedSTR + 10
+                end
+            end
+        end
+
+        -- Blades of Alacrity
+        if J.HasItem(bot, 'item_blade_of_alacrity')
+        then
+            count = X.CountItemsInInventory('item_boots_of_elves')
+            nAddedAGI = nAddedAGI + 10 * count
+        end
+
+        -- Yasha
+        if J.HasItem(bot, 'item_yasha')
+        then
+            nAddedAGI = nAddedAGI + 16
+        end
+
+        -- Manta
+        if J.HasItem(bot, 'item_manta')
+        then
+            nAddedAGI = nAddedAGI + 26
+            nAddedSTR = nAddedSTR + 10
+        end
+
+        -- Diadem
+        if J.HasItem(bot, 'item_diadem')
+        then
+            count = X.CountItemsInInventory('item_diadem')
+            nAddedAGI = nAddedAGI + 6 * count
+            nAddedSTR = nAddedSTR + 6 * count
+        end
+
+        -- Phylactery
+        if J.HasItem(bot, 'item_phylactery')
+        then
+            nAddedAGI = nAddedAGI + 7
+            nAddedSTR = nAddedSTR + 7
+        end
+
+        -- Khanda
+        if J.HasItem(bot, 'item_angels_demise')
+        then
+            nAddedAGI = nAddedAGI + 8
+            nAddedSTR = nAddedSTR + 8
+        end
+
+        -- Ogre Axe
+        if J.HasItem(bot, 'item_ogre_axe')
+        then
+            nAddedSTR = nAddedSTR + 10
+        end
+
+        -- Black King Bar
+        if J.HasItem(bot, 'item_black_king_bar')
+        then
+            nAddedSTR = nAddedSTR + 10
+        end
+
+        -- Eagle Song
+        if J.HasItem(bot, 'item_eagle')
+        then
+            nAddedAGI = nAddedAGI + 25
+        end
+
+        -- Butterfly
+        if J.HasItem(bot, 'item_eagle')
+        then
+            nAddedAGI = nAddedAGI + 35
+        end
+
+        -- Reaver
+        if J.HasItem(bot, 'item_reaver')
+        then
+            nAddedSTR = nAddedSTR + 25
+        end
+
+        -- Satanic
+        if J.HasItem(bot, 'item_satanic')
+        then
+            nAddedSTR = nAddedSTR + 25
+        end
+
+        -- Diffusal Blade
+        if J.HasItem(bot, 'item_diffusal_blade')
+        then
+            nAddedAGI = nAddedAGI + 15
+        end
+
+        -- Disperser
+        if J.HasItem(bot, 'item_disperser')
+        then
+            nAddedAGI = nAddedAGI + 40
+        end
+
+        -- Scepter
+        if bot:HasModifier('modifier_item_ultimate_scepter')
+        then
+            nAddedAGI = nAddedAGI + 10
+            nAddedSTR = nAddedSTR + 10
+        end
+
+        -- Ultimate Orb
+        if bot:HasModifier('item_ultimate_orb')
+        then
+            nAddedAGI = nAddedAGI + 15
+            nAddedSTR = nAddedSTR + 15
+        end
+
+        -- Skadi
+        if bot:HasModifier('item_skadi')
+        then
+            nAddedAGI = nAddedAGI + 22
+            nAddedSTR = nAddedSTR + 22
+        end
+
+        -- Skadi
+        if bot:HasModifier('item_skadi')
+        then
+            nAddedAGI = nAddedAGI + 22
+            nAddedSTR = nAddedSTR + 22
+        end
+    end
+
+    -- Stats
+    count = 0
+    if bot:GetLevel() >= 26 then count = 7
+    elseif bot:GetLevel() >= 24 then count = 6
+    elseif bot:GetLevel() >= 23 then count = 5
+    elseif bot:GetLevel() >= 22 then count = 4
+    elseif bot:GetLevel() >= 21 then count = 3
+    elseif bot:GetLevel() >= 19 then count = 2
+    elseif bot:GetLevel() >= 17 then count = 1
+    end
+
+    nAddedAGI = nAddedAGI + 2 * count
+    nAddedSTR = nAddedSTR + 2 * count
+
+    local nBaseAGI = AGI_BASE + AGI_GROWTH_RATE * (bot:GetLevel() - 1)
+    local nBaseSTR = STR_BASE + STR_GROWTH_RATE * (bot:GetLevel() - 1)
+
+    local nTotalAGI = bot:GetAttributeValue(ATTRIBUTE_AGILITY)
+    local nTotalSTR = bot:GetAttributeValue(ATTRIBUTE_STRENGTH)
+
+    local nShiftedAGI = nTotalAGI - nBaseAGI
+    local nShiftedSTR = nTotalSTR - nBaseSTR
+
+    local nEffAGI = nBaseAGI + nShiftedAGI - nAddedAGI
+    local nEffSTR = nBaseSTR + nShiftedSTR - nAddedSTR
+
+    nAGIRatio = nEffAGI / (nEffAGI + nEffSTR)
+    nSTRRatio = nEffSTR / (nEffAGI + nEffSTR)
+end
+
+function X.CountItemsInInventory(itemName)
+    local count = 0
+    for i = 0, 5
+    do
+        local item = bot:GetItemInSlot(i)
+        if  item ~= nil
+        and item:GetName() == itemName
+        then
+            count = count + 1
+        end
+    end
+
+	return count
 end
 
 return X

@@ -286,7 +286,7 @@ end
 
 function X.ConsiderCelestialHammer()
     if not CelestialHammer:IsFullyCastable()
-    or bot:HasModifier('modifier_starbreaker_fire_wreath_caster')
+    -- or bot:HasModifier('modifier_starbreaker_fire_wreath_caster')
     then
         return BOT_ACTION_DESIRE_NONE, 0
     end
@@ -464,7 +464,7 @@ end
 
 function X.ConsiderSolarGuardian()
     if not SolarGuardian:IsFullyCastable()
-    or bot:HasModifier('modifier_starbreaker_fire_wreath_caster')
+    -- or bot:HasModifier('modifier_starbreaker_fire_wreath_caster')
     then
         return BOT_ACTION_DESIRE_NONE, 0
     end

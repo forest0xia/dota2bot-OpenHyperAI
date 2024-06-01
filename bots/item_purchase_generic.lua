@@ -376,6 +376,7 @@ function ItemPurchaseThink()
 			and Item.GetEmptyInventoryAmount( bot ) >= 2
 			and Item.GetItemCharges( bot, "item_dust" ) <= 0
 			and bot:GetCourierValue() == 0
+			and not J.HasItem(bot, 'item_ward_sentry')
 		then
 			bot:ActionImmediate_PurchaseItem( "item_dust" )
 			return
@@ -597,20 +598,20 @@ function ItemPurchaseThink()
 	end
 
 
-	--辅助死前如果会损失金钱则购买粉
-	if botGold >= GetItemCost( "item_dust" )
-		and bot:IsAlive()
-		and GetGameMode() ~= 23
-		and botLevel > 6
-		and bot.theRole == 'support'
-		and botGold < ( GetItemCost( "item_dust" )  + botWorth / 40 )
-		and botHP < 0.06
-		and bot:WasRecentlyDamagedByAnyHero( 3.1 )
-		and Item.GetItemCharges( bot, 'item_dust' ) <= 1
-	then
-		bot:ActionImmediate_PurchaseItem( "item_dust" )
-		return
-	end
+	-- --辅助死前如果会损失金钱则购买粉
+	-- if botGold >= GetItemCost( "item_dust" )
+	-- 	and bot:IsAlive()
+	-- 	and GetGameMode() ~= 23
+	-- 	and botLevel > 6
+	-- 	and bot.theRole == 'support'
+	-- 	and botGold < ( GetItemCost( "item_dust" )  + botWorth / 40 )
+	-- 	and botHP < 0.06
+	-- 	and bot:WasRecentlyDamagedByAnyHero( 3.1 )
+	-- 	and Item.GetItemCharges( bot, 'item_dust' ) <= 1
+	-- then
+	-- 	bot:ActionImmediate_PurchaseItem( "item_dust" )
+	-- 	return
+	-- end
 
 	--交换魂泪的位置避免过早被破坏
 	if currentTime > 180

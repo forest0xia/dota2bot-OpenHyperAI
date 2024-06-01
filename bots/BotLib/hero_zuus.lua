@@ -1,11 +1,3 @@
-----------------------------------------------------------------------------------------------------
---- The Creation Come From: BOT EXPERIMENT Credit:FURIOUSPUPPY
---- BOT EXPERIMENT Author: Arizona Fauzie 2018.11.21
---- Link:http://steamcommunity.com/sharedfiles/filedetails/?id=837040016
---- Refactor: 决明子 Email: dota2jmz@163.com 微博@Dota2_决明子
---- Link:http://steamcommunity.com/sharedfiles/filedetails/?id=1573671599
---- Link:http://steamcommunity.com/sharedfiles/filedetails/?id=1627071163
-----------------------------------------------------------------------------------------------------
 local X = {}
 local bDebugMode = ( 1 == 10 )
 local bot = GetBot()
@@ -25,11 +17,18 @@ local tTalentTreeList = {
 
 local tAllAbilityBuildList = {
 						{1,3,1,2,1,6,1,2,2,2,6,3,3,3,6},--pos2
+						{1,3,1,2,1,6,1,2,2,2,6,3,3,3,6},--pos4,5
 }
 
-local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
+local nAbilityBuildList = tAllAbilityBuildList[1]
+if sRole == 'pos_2' then nAbilityBuildList = tAllAbilityBuildList[1] end
+if sRole == 'pos_4' then nAbilityBuildList = tAllAbilityBuildList[2] end
+if sRole == 'pos_5' then nAbilityBuildList = tAllAbilityBuildList[2] end
 
-local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
+local nTalentBuildList = J.Skill.GetTalentBuild(tTalentTreeList)
+if sRole == 'pos_2' then nTalentBuildList = J.Skill.GetTalentBuild(tTalentTreeList) end
+if sRole == 'pos_4' then nTalentBuildList = J.Skill.GetTalentBuild(tTalentTreeList) end
+if sRole == 'pos_5' then nTalentBuildList = J.Skill.GetTalentBuild(tTalentTreeList) end
 
 local sRoleItemsBuyList = {}
 
@@ -40,53 +39,114 @@ sRoleItemsBuyList['pos_2'] = {
 
 	"item_bottle",
 	"item_arcane_boots",
-	"item_magic_wand",
 	"item_phylactery",
-	"item_ethereal_blade",--
+	"item_magic_wand",
+	"item_aghanims_shard",
+	"item_manta",--
+	"item_octarine_core",--
+	"item_ultimate_scepter",
 	"item_kaya_and_sange",--
 	"item_black_king_bar",--
-	"item_ultimate_scepter",
 	"item_travel_boots",
-	"item_octarine_core",--
-	"item_ultimate_scepter_2",
 	"item_angels_demise",--
 	"item_travel_boots_2",--
+	"item_ultimate_scepter_2",
 	"item_moon_shard",
 }
 
-sRoleItemsBuyList['pos_1'] = {
+sRoleItemsBuyList['pos_3'] = {
 	"item_tango",
 	"item_double_branches",
 	"item_faerie_fire",
 
 	"item_arcane_boots",
-	"item_magic_wand",
 	"item_phylactery",
-	"item_ethereal_blade",--
+	"item_magic_wand",
+	"item_aghanims_shard",
+	"item_manta",--
+	"item_octarine_core",--
+	"item_ultimate_scepter",
 	"item_kaya_and_sange",--
 	"item_black_king_bar",--
-	"item_ultimate_scepter",
 	"item_travel_boots",
-	"item_octarine_core",--
-	"item_ultimate_scepter_2",
 	"item_angels_demise",--
 	"item_travel_boots_2",--
+	"item_ultimate_scepter_2",
 	"item_moon_shard",
 }
 
-sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_1']
+sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
 
-sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_1']
+sRoleItemsBuyList['pos_4'] = {
+	"item_tango",
+	"item_magic_stick",
+	"item_double_branches",
+	"item_enchanted_mango",
+	"item_blood_grenade",
 
-sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_1']
+	"item_tranquil_boots",
+	"item_wind_lace",
+	"item_phylactery",
+	"item_magic_wand",
+	"item_aether_lens",
+	"item_force_staff",--
+	"item_octarine_core",--
+	"item_boots_of_bearing",--
+	"item_aghanims_shard",
+	"item_ultimate_scepter",
+	"item_manta",--
+	"item_ethereal_blade",--
+	"item_angels_demise",--
+	"item_ultimate_scepter_2",
+	"item_moon_shard",
+}
 
+sRoleItemsBuyList['pos_5'] = {
+	"item_tango",
+	"item_magic_stick",
+	"item_double_branches",
+	"item_enchanted_mango",
+	"item_blood_grenade",
+
+	"item_arcane_boots",
+	"item_wind_lace",
+	"item_phylactery",
+	"item_magic_wand",
+	"item_aether_lens",
+	"item_force_staff",--
+	"item_octarine_core",--
+	"item_guardian_greaves",--
+	"item_aghanims_shard",
+	"item_ultimate_scepter",
+	"item_manta",--
+	"item_ethereal_blade",--
+	"item_angels_demise",--
+	"item_ultimate_scepter_2",
+	"item_moon_shard",
+}
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 
-X['sSellList'] = {
-	"item_bottle",
-	"item_magic_wand",
+Pos2SellList = {
+    "item_bottle",
+    "item_magic_wand",
 }
+
+Pos4SellList = {
+    "item_wind_lace",
+    "item_magic_wand",
+}
+
+Pos5SellList = {
+    "item_wind_lace",
+    "item_magic_wand",
+}
+
+X['sSellList'] = Pos2SellList
+
+if sRole == "pos_2" then X['sSellList'] = Pos2SellList end
+if sRole == "pos_4" then X['sSellList'] = Pos4SellList end
+if sRole == "pos_5" then X['sSellList'] = Pos5SellList end
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_mage' }, {} end
 
@@ -106,20 +166,6 @@ function X.MinionThink( hMinionUnit )
 	end
 
 end
-
---[[
-
-npc_dota_hero_zuus
-
-
-
-modifier_zuus_arc_lightning
-modifier_zuus_lightningbolt_vision_thinker
-modifier_zuus_static_field
-modifier_zuus_thundergodswrath_vision_thinker
-modifier_zuus_cloud
-
---]]
 
 local abilityQ = bot:GetAbilityByName( sAbilityList[1] )
 local abilityW = bot:GetAbilityByName( sAbilityList[2] )
@@ -189,7 +235,7 @@ function X.SkillsComplement()
 		
 		if talent7:IsTrained() 
 		then
-			bot:ActionQueue_UseAbilityOnEntity( abilityW, castWTarget:GetLocation() )
+			bot:ActionQueue_UseAbilityOnLocation( abilityW, castWTarget:GetLocation() )
 		else
 			bot:ActionQueue_UseAbilityOnEntity( abilityW, castWTarget )
 		end
@@ -686,4 +732,3 @@ end
 
 
 return X
--- dota2jmz@163.com QQ:2462331592..

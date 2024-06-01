@@ -2228,16 +2228,16 @@ function CheckForCooldownReductions()
     end
 
     if not J.HasItem(bot, 'item_octarine_core') then
-        AbilityCooldownTimes['ColdSnap']          = 20
-        AbilityCooldownTimes['GhostWalk']         = 35
-        AbilityCooldownTimes['Tornado']           = 30
-        AbilityCooldownTimes['EMP']               = 30
-        AbilityCooldownTimes['Alacrity']          = 17
-        AbilityCooldownTimes['ChaosMeteor']       = 55
-        AbilityCooldownTimes['Sunstrike']         = 25
-        AbilityCooldownTimes['ForgeSpirit']       = 30
-        AbilityCooldownTimes['IceWall']           = 25
-        AbilityCooldownTimes['DeafeningBlast']    = 40
+        AbilityCooldownTimes['ColdSnap']          = 18
+        AbilityCooldownTimes['GhostWalk']         = 32
+        AbilityCooldownTimes['Tornado']           = 27
+        AbilityCooldownTimes['EMP']               = 27
+        AbilityCooldownTimes['Alacrity']          = 15
+        AbilityCooldownTimes['ChaosMeteor']       = 50
+        AbilityCooldownTimes['Sunstrike']         = 23
+        AbilityCooldownTimes['ForgeSpirit']       = 27
+        AbilityCooldownTimes['IceWall']           = 23
+        AbilityCooldownTimes['DeafeningBlast']    = 36
         AbilityCooldownTimes['Cataclysm']         = 100
         octarineCoreCooldownReductionsCheck = false
     end

@@ -16,6 +16,7 @@ local bDebugMode = ( 1 == 10 )
 local X = {}
 
 local J = require( GetScriptDirectory()..'/FunLib/jmz_func')
+local Item = require( GetScriptDirectory()..'/FunLib/aba_item')
 
 local botName = bot:GetUnitName();
 
@@ -1985,13 +1986,14 @@ function TryPickupDroppedNeutralItemTokens()
 		or drop.item:GetName() == 'item_tier4_token'
 		or drop.item:GetName() == 'item_tier5_token'
 		then
-			item = drop
+			item = drop.item
 			break
 		end
 	end
 
 	if  item ~= nil
 	and J.GetLocationToLocationDistance(item.location, J.GetTeamFountain()) > 900
+	and Item.GetEmptyInventoryAmount(bot) > 0
 	then
 		PickedItem = item
 		return BOT_ACTION_DESIRE_VERYHIGH
@@ -2020,7 +2022,7 @@ function TryPickupRefresherShard()
 			do
 				if item.item:GetName() == 'item_refresher_shard'
 				then
-					refreshShard = item
+					refreshShard = item.item
 					break
 				end
 			end
@@ -2057,7 +2059,7 @@ function TryPickupCheese()
 			do
 				if item.item:GetName() == 'item_cheese'
 				then
-					cheese = item
+					cheese = item.item
 					break
 				end
 			end

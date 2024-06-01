@@ -1926,27 +1926,28 @@ end
 
 
 local NearbyHeroMap = {
-	'hero_unit_name' = {
-		'enemy' = {
-			'1600' = { 
-				'time' = DotaTime(),
-				'heroes' = {}
-			},
-			'1000' = { },
-		},
-		'ally' = {
-			'1600' = { },
-			'1000' = { },
-		}
-	}
+	-- 'hero_unit_name' = {
+	-- 	'enemy' = {
+	-- 		'1600' = { 
+	-- 			'time' = DotaTime(),
+	-- 			'heroes' = {}
+	-- 		},
+	-- 		'1000' = { },
+	-- 	},
+	-- 	'ally' = {
+	-- 		'1600' = { },
+	-- 		'1000' = { },
+	-- 	}
+	-- }
 }
 
 local tempBotUnitName = ''
 local nearByHeroCache = nil
 local nearByHeroCacheDuration = 0.01 -- 0.01s = 10ms.
-local nearByHeroCacheTime = DotaTime()
 -- Method to refresh and cache nearby hero lists for each hero unit. This is to reduce the calculation thus optimize the fps performance.
 function J.GetNearbyHeroes(bot, nRadius, bEnemy)
+	if nRadius > 1600 then nRadius = 1600 end
+
     -- Use the file-scope variable for the bot unit name
     tempBotUnitName = bot:GetUnitName()
 
@@ -1956,7 +1957,7 @@ function J.GetNearbyHeroes(bot, nRadius, bEnemy)
     nearByHeroCache[nRadius] = nearByHeroCache[nRadius] or { time = 0, heroes = {} }
 
     -- Check if it's time to refresh the cache
-    nearByHeroCacheTime = DotaTime()
+    local nearByHeroCacheTime = DotaTime()
     if nearByHeroCacheTime - cache[nRadius].time >= nearByHeroCacheDuration then
         -- Refresh the cache
         nearByHeroCache[nRadius].heroes = bot:GetNearbyHeroes(nRadius, bEnemy, BOT_MODE_NONE)
@@ -2822,9 +2823,16 @@ end
 
 
 function J.GetHP( bot )
+	local nCurHealth = bot:GetHealth()
+    local nMaxHealth = bot:GetMaxHealth()
 
-	return bot:GetHealth() / bot:GetMaxHealth()
+	if bot:GetUnitName() == 'npc_dota_hero_medusa'
+    then
+        nCurHealth = nCurHealth + bot:GetMana()
+        nMaxHealth = nMaxHealth + bot:GetMaxMana()
+    end
 
+	return nCurHealth / nMaxHealth
 end
 
 

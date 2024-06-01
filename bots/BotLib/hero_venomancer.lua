@@ -103,12 +103,13 @@ Pos5SellList = {
     "item_magic_wand",
 }
 
-X['sSellList'] = {}
+X['sSellList'] = Pos4SellList
 
 if sRole == "pos_4"
 then
     X['sSellList'] = Pos4SellList
-else
+elseif sRole == "pos_5"
+then
     X['sSellList'] = Pos5SellList
 end
 
@@ -128,13 +129,13 @@ end
 local VenomousGale      = bot:GetAbilityByName('venomancer_venomous_gale')
 -- local PoisonSting       = bot:GetAbilityByName('venomancer_poison_sting')
 local PlagueWard        = bot:GetAbilityByName('venomancer_plague_ward')
-local LatentToxicity    = bot:GetAbilityByName('venomancer_latent_poison')
+-- local LatentToxicity    = bot:GetAbilityByName('venomancer_latent_poison')
 -- local PoisonNova        = bot:GetAbilityByName('venomancer_poison_nova')
 local NoxiousPlague     = bot:GetAbilityByName('venomancer_noxious_plague')
 
 local VenomousGaleDesire, VenomousGaleLocation
 local PlagueWardDesire, PlagueWardLocation
-local LatentToxicityDesire, LatentToxicityTarget
+-- local LatentToxicityDesire, LatentToxicityTarget
 local NoxiousPlagueDesire, NoxiousPlagueTarget
 
 local botTarget
@@ -151,12 +152,12 @@ function X.SkillsComplement()
         return
     end
 
-    LatentToxicityDesire, LatentToxicityTarget = X.ConsiderLatentToxicity()
-    if LatentToxicityDesire > 0
-    then
-        bot:Action_UseAbilityOnEntity(LatentToxicity, LatentToxicityTarget)
-        return
-    end
+    -- LatentToxicityDesire, LatentToxicityTarget = X.ConsiderLatentToxicity()
+    -- if LatentToxicityDesire > 0
+    -- then
+    --     bot:Action_UseAbilityOnEntity(LatentToxicity, LatentToxicityTarget)
+    --     return
+    -- end
 
     VenomousGaleDesire, VenomousGaleLocation = X.ConsiderVenomousGale()
     if VenomousGaleDesire > 0
@@ -574,86 +575,86 @@ function X.ConsiderNoxiousPlague()
     return BOT_ACTION_DESIRE_NONE, nil
 end
 
-function X.ConsiderLatentToxicity()
-    if not LatentToxicity:IsTrained()
-    or not LatentToxicity:IsFullyCastable()
-    then
-        return BOT_ACTION_DESIRE_NONE, nil
-    end
+-- function X.ConsiderLatentToxicity()
+--     if not LatentToxicity:IsTrained()
+--     or not LatentToxicity:IsFullyCastable()
+--     then
+--         return BOT_ACTION_DESIRE_NONE, nil
+--     end
 
-    local nCastRange = J.GetProperCastRange(false, bot, LatentToxicity:GetCastRange())
-    local nDamagePer = LatentToxicity:GetSpecialValueInt('duration_damage')
-    local nDuration = LatentToxicity:GetSpecialValueInt('duration')
+--     local nCastRange = J.GetProperCastRange(false, bot, LatentToxicity:GetCastRange())
+--     local nDamagePer = LatentToxicity:GetSpecialValueInt('duration_damage')
+--     local nDuration = LatentToxicity:GetSpecialValueInt('duration')
 
-    local nEnemyHeroes = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
-    for _, enemyHero in pairs(nEnemyHeroes)
-    do
-        if  J.IsValidHero(enemyHero)
-        and J.CanCastOnNonMagicImmune(enemyHero)
-        and J.CanCastOnTargetAdvanced(enemyHero)
-        and (J.CanKillTarget(enemyHero, nDamagePer * nDuration, DAMAGE_TYPE_MAGICAL))
-        and not J.IsSuspiciousIllusion(enemyHero)
-        and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
-        and not enemyHero:HasModifier('modifier_dazzle_shallow_grave')
-        and not enemyHero:HasModifier('modifier_necrolyte_reapers_scythe')
-        and not enemyHero:HasModifier('modifier_oracle_false_promise_timer')
-        and not enemyHero:HasModifier('modifier_templar_assassin_refraction_absorb')
-        then
-            return BOT_ACTION_DESIRE_HIGH
-        end
-    end
+--     local nEnemyHeroes = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+--     for _, enemyHero in pairs(nEnemyHeroes)
+--     do
+--         if  J.IsValidHero(enemyHero)
+--         and J.CanCastOnNonMagicImmune(enemyHero)
+--         and J.CanCastOnTargetAdvanced(enemyHero)
+--         and (J.CanKillTarget(enemyHero, nDamagePer * nDuration, DAMAGE_TYPE_MAGICAL))
+--         and not J.IsSuspiciousIllusion(enemyHero)
+--         and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
+--         and not enemyHero:HasModifier('modifier_dazzle_shallow_grave')
+--         and not enemyHero:HasModifier('modifier_necrolyte_reapers_scythe')
+--         and not enemyHero:HasModifier('modifier_oracle_false_promise_timer')
+--         and not enemyHero:HasModifier('modifier_templar_assassin_refraction_absorb')
+--         then
+--             return BOT_ACTION_DESIRE_HIGH
+--         end
+--     end
 
-    if J.IsGoingOnSomeone(bot)
-	then
-        local target = nil
-        local dmg = 0
-        local nInRangeEnemy = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+--     if J.IsGoingOnSomeone(bot)
+-- 	then
+--         local target = nil
+--         local dmg = 0
+--         local nInRangeEnemy = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
 
-        for _, enemyHero in pairs(nInRangeEnemy)
-        do
-            if  J.IsValidHero(enemyHero)
-            and J.CanCastOnNonMagicImmune(enemyHero)
-            and J.CanCastOnTargetAdvanced(enemyHero)
-            and not J.IsSuspiciousIllusion(enemyHero)
-            and not J.IsDisabled(enemyHero)
-            and not enemyHero:HasModifier('modifier_enigma_black_hole_pull')
-            and not enemyHero:HasModifier('modifier_faceless_void_chronosphere_freeze')
-            and not enemyHero:HasModifier('modifier_necrolyte_reapers_scythe')
-            and not enemyHero:HasModifier('modifier_venomancer_noxious_plague_primary')
-            then
-                local nInRangeAlly = enemyHero:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
-                local nTargetInRangeAlly = enemyHero:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
-                local currDmg = enemyHero:GetEstimatedDamageToTarget(true, bot, 5, DAMAGE_TYPE_ALL)
+--         for _, enemyHero in pairs(nInRangeEnemy)
+--         do
+--             if  J.IsValidHero(enemyHero)
+--             and J.CanCastOnNonMagicImmune(enemyHero)
+--             and J.CanCastOnTargetAdvanced(enemyHero)
+--             and not J.IsSuspiciousIllusion(enemyHero)
+--             and not J.IsDisabled(enemyHero)
+--             and not enemyHero:HasModifier('modifier_enigma_black_hole_pull')
+--             and not enemyHero:HasModifier('modifier_faceless_void_chronosphere_freeze')
+--             and not enemyHero:HasModifier('modifier_necrolyte_reapers_scythe')
+--             and not enemyHero:HasModifier('modifier_venomancer_noxious_plague_primary')
+--             then
+--                 local nInRangeAlly = enemyHero:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
+--                 local nTargetInRangeAlly = enemyHero:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+--                 local currDmg = enemyHero:GetEstimatedDamageToTarget(true, bot, 5, DAMAGE_TYPE_ALL)
 
-                if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
-                and #nInRangeAlly >= #nTargetInRangeAlly
-                and dmg < currDmg
-                then
-                    dmg = currDmg
-                    target = enemyHero
-                end
-            end
-        end
+--                 if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+--                 and #nInRangeAlly >= #nTargetInRangeAlly
+--                 and dmg < currDmg
+--                 then
+--                     dmg = currDmg
+--                     target = enemyHero
+--                 end
+--             end
+--         end
 
-        if target ~= nil
-        then
-            return BOT_ACTION_DESIRE_HIGH, target
-        end
-	end
+--         if target ~= nil
+--         then
+--             return BOT_ACTION_DESIRE_HIGH, target
+--         end
+-- 	end
 
-    if J.IsDoingRoshan(bot)
-    then
-        if  J.IsRoshan(botTarget)
-        and J.CanCastOnNonMagicImmune(botTarget)
-        and J.CanCastOnTargetAdvanced(botTarget)
-        and J.IsInRange(bot, botTarget, 500)
-        and J.IsAttacking(bot)
-        then
-            return BOT_ACTION_DESIRE_HIGH, botTarget
-        end
-    end
+--     if J.IsDoingRoshan(bot)
+--     then
+--         if  J.IsRoshan(botTarget)
+--         and J.CanCastOnNonMagicImmune(botTarget)
+--         and J.CanCastOnTargetAdvanced(botTarget)
+--         and J.IsInRange(bot, botTarget, 500)
+--         and J.IsAttacking(bot)
+--         then
+--             return BOT_ACTION_DESIRE_HIGH, botTarget
+--         end
+--     end
 
-    return BOT_ACTION_DESIRE_NONE, nil
-end
+--     return BOT_ACTION_DESIRE_NONE, nil
+-- end
 
 return X

@@ -16,7 +16,7 @@ function X.FamiliarThink(hero, hMinionUnit)
 	Desire = ConsiderStoneForm(hMinionUnit, StoneForm)
 	if Desire > 0
 	then
-		hMinionUnit:Action_UseAbility(StoneForm)
+		hMinionUnit:Action_UseAbilityOnLocation(StoneForm, hMinionUnit:GetLocation())
 		return
 	end
 

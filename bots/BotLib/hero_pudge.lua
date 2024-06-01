@@ -19,25 +19,32 @@ local tTalentTreeList = {
                             ['t20'] = {0, 10},
                             ['t15'] = {0, 10},
                             ['t10'] = {10, 0},
+                        },
+                        {--pos4,5
+                            ['t25'] = {10, 0},
+                            ['t20'] = {10, 0},
+                            ['t15'] = {10, 0},
+                            ['t10'] = {0, 10},
                         }
 }
 
 local tAllAbilityBuildList = {
 						{1,2,2,3,1,6,1,1,2,2,6,3,3,3,6},--pos2
                         {1,2,2,3,2,6,2,3,3,3,6,1,1,1,6},--pos3
+                        {1,2,2,3,1,6,1,1,2,2,3,6,3,3,6},--pos4,5
 }
 
-local nAbilityBuildList
-local nTalentBuildList
+local nAbilityBuildList = tAllAbilityBuildList[2]
+if sRole == 'pos_2' then nAbilityBuildList = tAllAbilityBuildList[1] end
+if sRole == 'pos_3' then nAbilityBuildList = tAllAbilityBuildList[2] end
+if sRole == 'pos_4' then nAbilityBuildList = tAllAbilityBuildList[3] end
+if sRole == 'pos_5' then nAbilityBuildList = tAllAbilityBuildList[3] end
 
-if sRole == "pos_2"
-then
-    nAbilityBuildList   = tAllAbilityBuildList[1]
-    nTalentBuildList    = J.Skill.GetTalentBuild(tTalentTreeList[1])
-else
-    nAbilityBuildList   = tAllAbilityBuildList[2]
-    nTalentBuildList    = J.Skill.GetTalentBuild(tTalentTreeList[2])
-end
+local nTalentBuildList = J.Skill.GetTalentBuild(tTalentTreeList[2])
+if sRole == 'pos_2' then nTalentBuildList = J.Skill.GetTalentBuild(tTalentTreeList[1]) end
+if sRole == 'pos_3' then nTalentBuildList = J.Skill.GetTalentBuild(tTalentTreeList[2]) end
+if sRole == 'pos_4' then nTalentBuildList = J.Skill.GetTalentBuild(tTalentTreeList[3]) end
+if sRole == 'pos_5' then nTalentBuildList = J.Skill.GetTalentBuild(tTalentTreeList[3]) end
 
 local sUtility = {"item_pipe", "item_lotus_orb", "item_crimson_guard"}
 local nUtility = sUtility[RandomInt(1, #sUtility)]
@@ -91,11 +98,51 @@ sRoleItemsBuyList['pos_3'] = {
     "item_moon_shard",
 }
 
+sRoleItemsBuyList['pos_4'] = {
+    "item_tango",
+    "item_flask",
+    "item_enchanted_mango",
+    "item_wind_lace",
+    "item_blood_grenade",
+
+    "item_tranquil_boots",
+    "item_magic_wand",
+    "item_blink",
+    "item_aether_lens",--
+    "item_force_staff",
+    "item_boots_of_bearing",--
+    "item_pipe",--
+    "item_lotus_orb",--
+    "item_overwhelming_blink",--
+    "item_wind_waker",--
+    "item_aghanims_shard",
+    "item_ultimate_scepter_2",
+    "item_moon_shard",
+}
+
+sRoleItemsBuyList['pos_5'] = {
+    "item_tango",
+    "item_flask",
+    "item_enchanted_mango",
+    "item_wind_lace",
+    "item_blood_grenade",
+
+    "item_arcane_boots",
+    "item_magic_wand",
+    "item_blink",
+    "item_aether_lens",--
+    "item_guardian_greaves",--
+    "item_force_staff",
+    "item_pipe",--
+    "item_lotus_orb",--
+    "item_overwhelming_blink",--
+    "item_wind_waker",--
+    "item_aghanims_shard",
+    "item_ultimate_scepter_2",
+    "item_moon_shard",
+}
+
 sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
-
-sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_3']
-
-sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_3']
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 
@@ -110,14 +157,20 @@ Pos3SellList = {
     "item_magic_wand",
 }
 
-X['sSellList'] = {}
+Pos4SellList = {
+    "item_magic_wand",
+}
 
-if sRole == "pos_2"
-then
-    X['sSellList'] = Pos2SellList
-else
-    X['sSellList'] = Pos3SellList
-end
+Pos5SellList = {
+    "item_magic_wand",
+}
+
+X['sSellList'] = Pos3SellList
+
+if sRole == "pos_2" then X['sSellList'] = Pos2SellList end
+if sRole == "pos_3" then X['sSellList'] = Pos3SellList end
+if sRole == "pos_4" then X['sSellList'] = Pos4SellList end
+if sRole == "pos_5" then X['sSellList'] = Pos5SellList end
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_mid' }, {} end
 
@@ -132,15 +185,15 @@ function X.MinionThink(hMinionUnit)
     Minion.MinionThink(hMinionUnit)
 end
 
-local MeatHook  = bot:GetAbilityByName('pudge_meat_hook')
-local Rot       = bot:GetAbilityByName('pudge_rot')
-local FleshHeap = bot:GetAbilityByName('pudge_flesh_heap')
+local MeatHook   = bot:GetAbilityByName('pudge_meat_hook')
+local Rot        = bot:GetAbilityByName('pudge_rot')
+local MeatShield = bot:GetAbilityByName('pudge_flesh_heap')
 -- local Eject     = bot:GetAbilityByName('')
-local Dismember = bot:GetAbilityByName('pudge_dismember')
+local Dismember  = bot:GetAbilityByName('pudge_dismember')
 
 local MeatHookDesire, MeatHookLocation
 local RotDesire
-local FleshHeapDesire
+local MeatShieldDesire
 -- local EjectDesire
 local DismemberDesire, DismemberTarget
 
@@ -161,10 +214,10 @@ function X.SkillsComplement()
         return
     end
 
-    FleshHeapDesire = X.ConsiderFleshHeap()
-    if FleshHeapDesire > 0
+    MeatShieldDesire = X.ConsiderMeatShield()
+    if MeatShieldDesire > 0
     then
-        bot:Action_UseAbility(FleshHeap)
+        bot:Action_UseAbility(MeatShield)
         return
     end
 
@@ -177,10 +230,10 @@ function X.SkillsComplement()
             bot:Action_UseAbility(Rot)
         end
 
-        if  FleshHeap:IsTrained()
-        and FleshHeap:IsFullyCastable()
+        if  MeatShield:IsTrained()
+        and MeatShield:IsFullyCastable()
         then
-            bot:Action_UseAbility(FleshHeap)
+            bot:Action_UseAbility(MeatShield)
         end
 
         bot:Action_UseAbilityOnEntity(Dismember, DismemberTarget)
@@ -332,6 +385,7 @@ function X.ConsiderMeatHook()
                     or not J.IsInRange(bot, creep, bot:GetAttackRange() + 25))
                 and not J.IsHeroBetweenMeAndTarget(bot, creep, creep:GetLocation(), nRadius)
                 and not J.IsNonSiegeCreepBetweenMeAndLocation(bot, creep:GetLocation(), nRadius)
+                and (J.IsCore(bot) or not J.IsCore(bot) and not J.IsThereCoreNearby(1200))
 				then
 					return BOT_ACTION_DESIRE_HIGH, creep:GetLocation()
 				end
@@ -560,7 +614,8 @@ function X.ConsiderRot()
         end
     end
 
-    if J.IsLaning(bot)
+    if  J.IsLaning(bot)
+    and (J.IsCore(bot) or not J.IsCore(bot) and not J.IsThereCoreNearby(1200))
 	then
         local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nRadius, true)
         local nInRangeEnemy = bot:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
@@ -639,8 +694,8 @@ function X.ConsiderRot()
     return BOT_ACTION_DESIRE_NONE
 end
 
-function X.ConsiderFleshHeap()
-    if not FleshHeap:IsFullyCastable()
+function X.ConsiderMeatShield()
+    if not MeatShield:IsFullyCastable()
     then
         return BOT_ACTION_DESIRE_NONE
     end
