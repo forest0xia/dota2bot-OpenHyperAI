@@ -41,6 +41,9 @@ local hostID = -1
 noVoteDifficulty = 2
 -- Is repurcussion timer started?
 local isRepurcussionTimerStarted = false
+-- can players freely enter cheating commands?
+local allowPlayersToCheat = false
+
 -- Instantiate ourself
 if Settings == nil then
 	Settings = dofile('bots.FretBots.SettingsDefault')
@@ -101,6 +104,7 @@ local chatCommands =
 	'me',				-- play a sound from your hero
 	'vo',				-- 'voiceover': play a sound from another hero
 	'voc',				-- does the same thing as 'vo c': plays caster voiceovers
+	'enablecheat'       -- enable players to cheat without getting punishment.
 }
 
 -- Sets difficulty value
@@ -133,6 +137,8 @@ end
 
 -- Checks each player to see if they need a repurcussion
 function Settings:RepurcussionTimer()
+	if allowPlayersToCheat then return end
+
 	for _, player in ipairs(Players) do
 		if player.stats.repurcussionCount < player.stats.repurcussionTarget then
 			if player:IsAlive() then
@@ -252,7 +258,9 @@ function Settings:OnPlayerChat(event)
 	-- Get event data
 	local playerID, rawText = Settings:GetChatEventData(event)
 	-- Check to see if they're cheating
-	Settings:DoChatCheatParse(playerID, rawText)
+	if not allowPlayersToCheat then
+		Settings:DoChatCheatParse(playerID, rawText)
+	end
 	-- Remove dashes (potentially)
 	local text = Utilities:CheckForDash(rawText)
 	-- Handle votes if we're still in the voting phase
@@ -303,6 +311,10 @@ function Settings:DoUserChatCommandParse(text, id)
 	-- Random bad sound
 	if command == 'badsound' then
 		Utilities:RandomSound(BAD_LIST)
+		return true
+	end
+	if command == 'enablecheat' then
+		allowPlayersToCheat = true
 		return true
 	end
 	-- Random Asian soundboard
