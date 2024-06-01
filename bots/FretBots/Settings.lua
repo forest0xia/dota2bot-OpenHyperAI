@@ -314,7 +314,8 @@ function Settings:DoUserChatCommandParse(text, id)
 		return true
 	end
 	if command == 'enablecheat' then
-		allowPlayersToCheat = true
+		allowPlayersToCheat = not allowPlayersToCheat
+		Utilities:Print('Free to cheat: '..tostring(allowPlayersToCheat), MSG_GOOD)
 		return true
 	end
 	-- Random Asian soundboard

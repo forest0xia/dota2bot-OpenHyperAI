@@ -758,7 +758,7 @@ function J.CanCastOnMagicImmune( npcTarget )
 			and not npcTarget:IsInvulnerable()
 			and not J.IsSuspiciousIllusion( npcTarget )
 			and not J.HasForbiddenModifier( npcTarget )
-			and not J.IsAllyCanKill( npcTarget )
+			-- and not J.IsAllyCanKill( npcTarget )
 
 end
 
@@ -766,11 +766,10 @@ end
 function J.CanCastOnNonMagicImmune( npcTarget )
 
 	return npcTarget:CanBeSeen()
-			and (not npcTarget:IsMagicImmune() or (not npcTarget:IsMagicImmune() and J.IsInEtherealForm( npcTarget )))
+			and not npcTarget:IsMagicImmune()
 			and not npcTarget:IsInvulnerable()
 			and not J.IsSuspiciousIllusion( npcTarget )
 			and not J.HasForbiddenModifier( npcTarget )
-			and not J.IsAllyCanKill( npcTarget )
 
 end
 
@@ -1121,7 +1120,6 @@ function J.IsLaning( bot )
 	return mode == BOT_MODE_LANING
 
 end
-
 
 function J.IsDoingRoshan( bot )
 
@@ -1958,7 +1956,7 @@ function J.GetNearbyHeroes(bot, nRadius, bEnemy)
 
     -- Check if it's time to refresh the cache
     local nearByHeroCacheTime = DotaTime()
-    if nearByHeroCacheTime - cache[nRadius].time >= nearByHeroCacheDuration then
+    if nearByHeroCacheTime - nearByHeroCache[nRadius].time >= nearByHeroCacheDuration then
         -- Refresh the cache
         nearByHeroCache[nRadius].heroes = bot:GetNearbyHeroes(nRadius, bEnemy, BOT_MODE_NONE)
 
@@ -4629,6 +4627,22 @@ function J.GetItem(itemName)
         and item:GetName() == itemName
         then
 			return item
+		end
+	end
+
+	return nil
+end
+
+function J.GetItem2(bot, sItemName)
+	for i = 0, 16
+	do
+		local item = bot:GetItemInSlot(i)
+		if item ~= nil
+		then
+			if string.find(item:GetName(), sItemName)
+			then
+				return item
+			end
 		end
 	end
 

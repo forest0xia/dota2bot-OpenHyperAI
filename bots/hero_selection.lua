@@ -14,6 +14,7 @@ local bLineupReserve = false
 
 local Role = require( GetScriptDirectory()..'/FunLib/aba_role' )
 local Chat = require( GetScriptDirectory()..'/FunLib/aba_chat' )
+local Dota2Teams = require( GetScriptDirectory()..'/FunLib/aba_team_names' )
 local Overrides = require( GetScriptDirectory()..'/FunLib/aba_global_overrides' )
 local HeroSet = {}
 local SupportedHeroes = {}
@@ -659,23 +660,23 @@ function X.OverrideTeamHeroes()
 			-- Muerta pos1 and Hoodwink pos5, both go top.
 			-- muerta be pos 1 has smaller chance for bug, 
 			-- hoodwink does not work over half of the time.
-			[1] = "npc_dota_hero_muerta",
-			[2] = tSelectPoolList[2][RandomInt( 1, #tSelectPoolList[2] )],
-			[3] = 'npc_dota_hero_enigma',
-			[4] = 'npc_dota_hero_lycan',
-			[5] = 'npc_dota_hero_lycan',
+			-- [1] = "npc_dota_hero_muerta",
+			-- [2] = tSelectPoolList[2][RandomInt( 1, #tSelectPoolList[2] )],
+			-- [3] = 'npc_dota_hero_enigma',
+			-- [4] = 'npc_dota_hero_lycan',
+			-- [5] = 'npc_dota_hero_lycan',
 
 
 			-- Test buggy heroes:
-			-- [1] = "npc_dota_hero_primal_beast",
-			-- -- [2] = 'npc_dota_hero_tidehunter',
-			-- -- [2] = 'npc_dota_hero_primal_beast',
+			[1] = tSelectPoolList[1][RandomInt( 1, #tSelectPoolList[1] )],
+			[2] = 'npc_dota_hero_invoker',
+			-- [2] = 'npc_dota_hero_primal_beast',
 			-- [2] = tSelectPoolList[2][RandomInt( 1, #tSelectPoolList[2] )],
 			-- [3] = 'npc_dota_hero_muerta', -- DOES NOT WORK. marci works as pos1.
-			-- -- [3] = tSelectPoolList[3][RandomInt( 1, #tSelectPoolList[3] )],
+			[3] = tSelectPoolList[3][RandomInt( 1, #tSelectPoolList[3] )],
 			-- [4] = "npc_dota_hero_dark_willow", -- dark_willow does not work over half of the time.
-			-- -- [4] = tSelectPoolList[4][RandomInt( 1, #tSelectPoolList[4] )],
-			-- [5] = tSelectPoolList[5][RandomInt( 1, #tSelectPoolList[5] )],
+			[4] = tSelectPoolList[4][RandomInt( 1, #tSelectPoolList[4] )],
+			[5] = tSelectPoolList[5][RandomInt( 1, #tSelectPoolList[5] )],
 		    
 			-- All Pandas/spirits
 			-- [1] = "npc_dota_hero_void_spirit",
@@ -834,206 +835,6 @@ function X.IsBanByChat( sHero )
 
 	return false
 end
-
-local TIWinners =
-{
-	-- Winners
-	{--ti1
-		"Na'Vi.Dendi",
-		"Na'Vi.XBOCT",
-		"Na'Vi.Artsyle",
-		"Na'Vi.LighTofHeaveN",
-		"Na'Vi.Puppey",
-	},
-	{--ti2
-		"iG.Ferrari_430",
-		"iG.YYF",
-		"iG.Zhou",
-		"iG.Faith",
-		"iG.ChuaN",
-	},
-	{--ti3
-		"Alliance.s4",
-		"Alliance.AdmiralBulldog",
-		"Alliance.Loda",
-		"Alliance.Akke",
-		"Alliance.EGM",
-	},
-	{--ti4
-		"Newbee.Mu",
-		"Newbee.xiao8",
-		"Newbee.Hao",
-		"Newbee.SanSheng",
-		"Newbee.Banana",
-	},
-	{--ti5
-		"EG.SumaiL",
-		"EG.UNiVeRsE",
-		"EG.Fear",
-		"EG.ppd",
-		"EG.Aui_2000",
-	},
-	{--ti6
-		"Wings.bLink",
-		"Wings.Faith_bian",
-		"Wings.shadow",
-		"Wings.iceice",
-		"Wings.y`",
-	},
-	{--ti7
-		"Liquid.Miracle-",
-		"Liquid.MinD_ContRoL",
-		"Liquid.MATUMBAMAN",
-		"Liquid.KurokY",
-		"Liquid.Gh",
-	},
-	{--ti8,9
-		"OG.Topson",
-		"OG.Ceb",
-		"OG.ana",
-		"OG.N0tail",
-		"OG.JerAx",
-	},
-	{--ti10
-		"TSpirit.TORONTOTOKYO",
-		"TSpirit.Collapse",
-		"TSpirit.Yatoro",
-		"TSpirit.Miposhka",
-		"TSpirit.Mira",
-	},
-	{--ti11
-		"Tundra.Nine",
-		"Tundra.33",
-		"Tundra.skiter",
-		"Tundra.Sneyking",
-		"Tundra.Saksa",
-	},
-	{--ti12
-		"TSpirit.Larl",
-		"TSpirit.Collapse",
-		"TSpirit.Yatoro雨",
-		"TSpirit.Miposhka",
-		"TSpirit.Mira",
-	},
-}
-
-local TIRunnerUps =
-{
--- Runner-Ups
-	{--ti1
-		"EHOME.QQQ",
-		"EHOME.X!!",
-		"EHOME.820",
-		"EHOME.SJQ",
-		"EHOME.LaNm",
-	},
-	{--ti2
-		"Na'Vi.Dendi",
-		"Na'Vi.LighTofHeaveN",
-		"Na'Vi.XBOCT",
-		"Na'Vi.ARS-ART",
-		"Na'Vi.Puppey",
-	},
-	{--ti3
-		"Na'Vi.Dendi",
-		"Na'Vi.Funn1k",
-		"Na'Vi.XBOCT",
-		"Na'Vi.KuroKy",
-		"Na'Vi.Puppey",
-	},
-	{--ti4
-		"VG.Super",
-		"VG.rOtk",
-		"VG.Sylar",
-		"VG.fy",
-		"VG.Fenrir",
-	},
-	{--ti5
-		"CDEC.Shiki",
-		"CDEC.Xz",
-		"CDEC.Agressif",
-		"CDEC.Q",
-		"CDEC.Garder",
-	},
-	{--ti6
-		"DC.w33",
-		"DC.Moo",
-		"DC.Resolut1on",
-		"DC.MiSeRy",
-		"DC.Saksa",
-	},
-	{--ti7
-		"Newbee.Sccc",
-		"Newbee.kpii",
-		"Newbee.Moogy",
-		"Newbee.Faith",
-		"Newbee.Kaka",
-	},
-	{--ti8
-		"PSG.LGD.Somnus` M",
-		"PSG.LGD.Chalice",
-		"PSG.LGD.Ame",
-		"PSG.LGD.xNova",
-		"PSG.LGD.fy",
-	},
-	{--ti9
-		"Liquid.w33",
-		"Liquid.MinD_ContRoL",
-		"Liquid.Miracle-",
-		"Liquid.KuroKy",
-		"Liquid.Gh",
-	},
-	{--ti10
-		"PSG.LGD.NothingToSay",
-		"PSG.LGD.Faith_bian",
-		"PSG.LGD.Ame",
-		"PSG.LGD.y`",
-		"PSG.LGD.XinQ",
-	},
-	{--ti11
-		"Secret.Nisha",
-		"Secret.Resolut1on",
-		"Secret.Crystallis",
-		"Secret.Puppey",
-		"Secret.Zayac",
-	},
-	{--ti12
-		"GG.Quinn",
-		"GG.Ace",
-		"GG.dyrachyo",
-		"GG.Seleri",
-		"GG.tOfu",
-	},
-	{
-		"AzureRay.Lou",
-		"AzureRay.Ori",
-		"AzureRay.Faith_bian",
-		"AzureRay.Fy",
-		"AzureRay.天命",
-	},
-	{
-		"PSG.LGD.shiro",
-		"PSG.LGD.Setsu",
-		"PSG.LGD.niu",
-		"PSG.LGD.Pyw",
-		"PSG.LGD.y`",
-	},
-}
-
-function X.GetRandomNameList( sStarList )
-	local sNameList = {sStarList[1]}
-	table.remove( sStarList, 1 )
-
-	for i = 1, 4
-	do
-	    local nRand = RandomInt( 1, #sStarList )
-		table.insert( sNameList, sStarList[nRand] )
-		table.remove( sStarList, nRand )
-	end
-
-	return sNameList
-end
-
 
 local sTeamName = GetTeam() == TEAM_RADIANT and 'TEAM_RADIANT' or 'TEAM_DIRE'
 
@@ -1205,8 +1006,14 @@ function SelectHeroChatCallback(PlayerID, ChatText, bTeamOnly)
 	end
 end
 
+-- Example of overrides with specific player names for Radiant
+local playerNameOverrides = {
+    -- Radiant = {"p1", "p2", "p3", "p4", "p5"}
+}
+local teamPlayerNames = Dota2Teams.generateTeams(playerNameOverrides)
+
 function GetBotNames()
-	return GetTeam() == TEAM_RADIANT and TIWinners[RandomInt(1, #TIWinners)] or TIRunnerUps[RandomInt(1, #TIRunnerUps)]
+	return GetTeam() == TEAM_RADIANT and teamPlayerNames.Radiant or teamPlayerNames.Dire
 end
 
 function UpdateLaneAssignments()
