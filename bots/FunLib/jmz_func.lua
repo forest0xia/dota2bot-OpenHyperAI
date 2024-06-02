@@ -1090,7 +1090,6 @@ function J.IsGoingOnSomeone( bot )
 
 end
 
-
 function J.IsDefending( bot )
 
 	local mode = bot:GetActiveMode()
@@ -1941,7 +1940,7 @@ local NearbyHeroMap = {
 
 local tempBotUnitName = ''
 local nearByHeroCache = nil
-local nearByHeroCacheDuration = 0.01 -- 0.01s = 10ms.
+local nearByHeroCacheDuration = 0.02 -- 0.02s = 20ms.
 -- Method to refresh and cache nearby hero lists for each hero unit. This is to reduce the calculation thus optimize the fps performance.
 function J.GetNearbyHeroes(bot, nRadius, bEnemy)
 	if nRadius > 1600 then nRadius = 1600 end
@@ -2387,6 +2386,9 @@ function J.IsValid( nTarget )
 
 end
 
+function J.IsValidTarget(npcTarget)
+	return npcTarget ~= nil and npcTarget:IsAlive() and npcTarget:IsHero()
+end
 
 function J.IsValidHero( nTarget )
 
@@ -3401,10 +3403,6 @@ function J.GetProperCastRange(bIgnore, hUnit, abilityCR)
 	else
 		return abilityCR;
 	end
-end
-
-function J.IsValidTarget(npcTarget)
-	return npcTarget ~= nil and npcTarget:IsAlive() and npcTarget:IsHero(); 
 end
 
 function J.GetLowestHPUnit(tUnits, bIgnoreImmune)

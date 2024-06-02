@@ -224,7 +224,7 @@ local sPos2List = {
 	"npc_dota_hero_ogre_magi",
 	"npc_dota_hero_omniknight",
 	"npc_dota_hero_pangolier",
-	"npc_dota_hero_primal_beast",
+	"npc_dota_hero_primal_beast", -- still passive
 	"npc_dota_hero_puck",
 	"npc_dota_hero_pugna",
 	"npc_dota_hero_pudge",
@@ -671,7 +671,7 @@ function X.OverrideTeamHeroes()
 
 
 			-- Test buggy heroes:
-			[1] = tSelectPoolList[1][RandomInt( 1, #tSelectPoolList[1] )],
+			[1] = 'npc_dota_hero_muerta',
 			[2] = 'npc_dota_hero_invoker',
 			-- [2] = 'npc_dota_hero_primal_beast',
 			-- [2] = tSelectPoolList[2][RandomInt( 1, #tSelectPoolList[2] )],
@@ -865,10 +865,10 @@ function AllPickHeros()
 	local teamPlayers = GetTeamPlayers(GetTeam())
 	CorrectDireLaneAssignment(tDefaultLaningDire)
 
-	-- if not ShuffledPickOrder[sTeamName] then
-	-- 	X.ShufflePickOrder(teamPlayers)
-	-- 	ShuffledPickOrder[sTeamName] = true
-	-- end
+	if not ShuffledPickOrder[sTeamName] then
+		X.ShufflePickOrder(teamPlayers)
+		ShuffledPickOrder[sTeamName] = true
+	end
 
 	for i, id in pairs( teamPlayers )
 	do

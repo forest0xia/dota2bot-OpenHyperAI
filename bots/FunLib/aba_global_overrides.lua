@@ -51,6 +51,21 @@ function GetTeamPlayers(nTeam)
 	return nIDs
 end
 
+local original_GetUnitToUnitDistance = GetUnitToUnitDistance
+function GetUnitToUnitDistance(unit1, unit2)
+	if not unit1 then
+		print("[Error] GetUnitToUnitDistance called with invalid unit 1")
+		print("Stack Trace:", debug.traceback())
+	end
+	if not unit2 or unit2:GetLocation() == nil then
+		if unit1 then
+			print("[Error] GetUnitToUnitDistance called with invalid unit 2, the unit 1 is: " .. unit1:GetUnitName())
+			print("Stack Trace:", debug.traceback())
+		end
+	end
+	return original_GetUnitToUnitDistance(unit1, unit2)
+end
+
 local X = {
 	orig_GetTeamPlayers = orig_GetTeamPlayers,
 	GetTeamPlayers = GetTeamPlayers
