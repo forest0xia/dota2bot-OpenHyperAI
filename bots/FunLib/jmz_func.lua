@@ -1487,6 +1487,11 @@ end
 
 --以下可少算但不可多算
 function J.GetAttackProDelayTime( bot, nCreep )
+	if nCreep == nil then
+		print('[ERROR] nil creep target')
+		print("Stack Trace:", debug.traceback())
+		return 0
+	end
 
 	local botName = bot:GetUnitName()
 	local botAttackRange = bot:GetAttackRange()
@@ -1942,29 +1947,31 @@ local tempBotUnitName = ''
 local nearByHeroCache = nil
 local nearByHeroCacheDuration = 0.02 -- 0.02s = 20ms.
 -- Method to refresh and cache nearby hero lists for each hero unit. This is to reduce the calculation thus optimize the fps performance.
+-- Turned out it only consumes more fps, probably due to `bot:GetUnitName()` is time consuming.
 function J.GetNearbyHeroes(bot, nRadius, bEnemy)
-	if nRadius > 1600 then nRadius = 1600 end
+	return bot:GetNearbyHeroes(nRadius, bEnemy, BOT_MODE_NONE)
+	-- if nRadius > 1600 then nRadius = 1600 end
 
-    -- Use the file-scope variable for the bot unit name
-    tempBotUnitName = bot:GetUnitName()
+    -- -- Use the file-scope variable for the bot unit name
+    -- tempBotUnitName = bot:GetUnitName()
 
-    -- Initialize the cache if it doesn't exist for the current bot, radius, and enemy status
-    NearbyHeroMap[tempBotUnitName] = NearbyHeroMap[tempBotUnitName] or { enemy = {}, ally = {} }
-    nearByHeroCache = bEnemy and NearbyHeroMap[tempBotUnitName].enemy or NearbyHeroMap[tempBotUnitName].ally
-    nearByHeroCache[nRadius] = nearByHeroCache[nRadius] or { time = 0, heroes = {} }
+    -- -- Initialize the cache if it doesn't exist for the current bot, radius, and enemy status
+    -- NearbyHeroMap[tempBotUnitName] = NearbyHeroMap[tempBotUnitName] or { enemy = {}, ally = {} }
+    -- nearByHeroCache = bEnemy and NearbyHeroMap[tempBotUnitName].enemy or NearbyHeroMap[tempBotUnitName].ally
+    -- nearByHeroCache[nRadius] = nearByHeroCache[nRadius] or { time = 0, heroes = {} }
 
-    -- Check if it's time to refresh the cache
-    local nearByHeroCacheTime = DotaTime()
-    if nearByHeroCacheTime - nearByHeroCache[nRadius].time >= nearByHeroCacheDuration then
-        -- Refresh the cache
-        nearByHeroCache[nRadius].heroes = J.GetNearbyHeroes(bot,nRadius, bEnemy, BOT_MODE_NONE)
+    -- -- Check if it's time to refresh the cache
+    -- local nearByHeroCacheTime = DotaTime()
+    -- if nearByHeroCacheTime - nearByHeroCache[nRadius].time >= nearByHeroCacheDuration then
+    --     -- Refresh the cache
+    --     nearByHeroCache[nRadius].heroes = J.GetNearbyHeroes(bot,nRadius, bEnemy, BOT_MODE_NONE)
 
-        -- Update the cache time
-        nearByHeroCache[nRadius].time = nearByHeroCacheTime
-    end
+    --     -- Update the cache time
+    --     nearByHeroCache[nRadius].time = nearByHeroCacheTime
+    -- end
 
-    -- Return the cached nearby hero list
-    return nearByHeroCache[nRadius].heroes
+    -- -- Return the cached nearby hero list
+    -- return nearByHeroCache[nRadius].heroes
 end
 
 function J.GetAroundBotUnitList( bot, nRadius, bEnemy )

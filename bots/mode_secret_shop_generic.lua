@@ -10,6 +10,8 @@ if GetBot():IsInvulnerable() or not GetBot():IsHero() or not string.find(GetBot(
 	return;
 end
 
+local J = require(GetScriptDirectory()..'/FunLib/jmz_func')
+
 local bot = GetBot();
 local X = {}
 local preferedShop = nil;

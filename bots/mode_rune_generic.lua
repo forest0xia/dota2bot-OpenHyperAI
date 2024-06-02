@@ -16,6 +16,7 @@ end
 local X = {}
 local Role = require( GetScriptDirectory()..'/FunLib/aba_role')
 local Chat = require( GetScriptDirectory()..'/FunLib/aba_chat' )
+local J = require(GetScriptDirectory()..'/FunLib/jmz_func')
 local bot = GetBot()
 local minute = 0
 local sec = 0

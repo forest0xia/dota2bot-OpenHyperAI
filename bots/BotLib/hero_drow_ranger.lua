@@ -620,7 +620,7 @@ function X.ConsiderQ()
 					and creep:GetHealth() < nAttackDamage + 180
 					and not J.IsAllysTarget( creep )
 				then
-					local nAttackProDelayTime = J.GetAttackProDelayTime( bot, nCreep ) * 1.08 + 0.08
+					local nAttackProDelayTime = J.GetAttackProDelayTime( bot, creep ) * 1.08 + 0.08
 					local nAD = nAttackDamage * 1.0
 					if J.WillKillTarget( creep, nAD, nDamageType, nAttackProDelayTime )
 					then
