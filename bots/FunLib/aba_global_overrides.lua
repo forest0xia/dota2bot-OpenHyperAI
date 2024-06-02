@@ -50,3 +50,10 @@ function GetTeamPlayers(nTeam)
 	end
 	return nIDs
 end
+
+local X = {
+	orig_GetTeamPlayers = orig_GetTeamPlayers,
+	GetTeamPlayers = GetTeamPlayers
+}
+
+return X

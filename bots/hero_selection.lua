@@ -14,6 +14,7 @@ local bLineupReserve = false
 
 local Role = require( GetScriptDirectory()..'/FunLib/aba_role' )
 local Chat = require( GetScriptDirectory()..'/FunLib/aba_chat' )
+local Utils = require( GetScriptDirectory()..'/FunLib/utils' )
 local Dota2Teams = require( GetScriptDirectory()..'/FunLib/aba_team_names' )
 local Overrides = require( GetScriptDirectory()..'/FunLib/aba_global_overrides' )
 local HeroSet = {}
@@ -603,6 +604,14 @@ sSelectList = {
 	[5] = tSelectPoolList[5][RandomInt( 1, #tSelectPoolList[5] )],
 }
 
+local tDefaultLaningDire = {
+	[1] = LANE_TOP,
+	[2] = LANE_MID,
+	[3] = LANE_BOT,
+	[4] = LANE_BOT,
+	[5] = LANE_TOP,
+}
+
 tLaneAssignList = {
 	-- 天辉夜宴的上下路相反
 	TEAM_RADIANT = {
@@ -612,13 +621,7 @@ tLaneAssignList = {
 		[4] = LANE_TOP,
 		[5] = LANE_BOT,
 	},
-	TEAM_DIRE = {
-		[1] = LANE_TOP,
-		[2] = LANE_MID,
-		[3] = LANE_BOT,
-		[4] = LANE_BOT,
-		[5] = LANE_TOP,
-	}
+	TEAM_DIRE = Utils.Deepcopy(tDefaultLaningDire)
 }
 
 -- 你也可以人工挑选想要的阵容
@@ -842,13 +845,30 @@ local ShuffledPickOrder = {
 	TEAM_RADIANT = false,
 	TEAM_DIRE = false,
 }
+local CorrectDireAssignedLanes = false
+
+function CorrectDireLaneAssignment(currentLaning)
+	if GetTeam() == TEAM_DIRE and not CorrectDireAssignedLanes then
+		for i, oid in pairs( Overrides.orig_GetTeamPlayers(TEAM_DIRE) ) do
+			for j, id in pairs( GetTeamPlayers(TEAM_DIRE) ) do
+				if id == oid then
+					-- print('['..i..', ' ..j.. ']. assign idx '.. i .. ' to '.. currentLaning[j])
+					tLaneAssignList.TEAM_DIRE[i] = currentLaning[j]
+				end
+			end
+		end
+		CorrectDireAssignedLanes = true
+	end
+end
 
 function AllPickHeros()
 	local teamPlayers = GetTeamPlayers(GetTeam())
-	if not ShuffledPickOrder[sTeamName] then
-		X.ShufflePickOrder(teamPlayers)
-		ShuffledPickOrder[sTeamName] = true
-	end
+	CorrectDireLaneAssignment(tDefaultLaningDire)
+
+	-- if not ShuffledPickOrder[sTeamName] then
+	-- 	X.ShufflePickOrder(teamPlayers)
+	-- 	ShuffledPickOrder[sTeamName] = true
+	-- end
 
 	for i, id in pairs( teamPlayers )
 	do
@@ -922,7 +942,7 @@ local function handleCommand(command, PlayerID, bTeamOnly)
 		else
 			print("Hero name not found or not supported! Please refer to hero_selection.lua of this script for list of heroes's name");
 		end
-    elseif action == "!pos" then
+    elseif action == "!pos" and GetGameState() == GAME_STATE_PRE_GAME then
         print("Selecting pos " .. text)
 		local sTeamName = GetTeamForPlayer(PlayerID) == TEAM_RADIANT and 'TEAM_RADIANT' or 'TEAM_DIRE'
 		local remainingPos = RemainingPos[sTeamName]
@@ -939,10 +959,8 @@ local function handleCommand(command, PlayerID, bTeamOnly)
 			do
 				if Role.roleAssignment[sTeamName][index] == role then
 					if IsPlayerBot(id) then
-						
 						-- remove so can't re-swap
 						-- table.remove(RemainingPos[team], role)
-
 						Role.roleAssignment[sTeamName][playerIndex], Role.roleAssignment[sTeamName][index] = role, Role.roleAssignment[sTeamName][playerIndex]
 						tLaneAssignList[sTeamName][playerIndex], tLaneAssignList[sTeamName][index] = tLaneAssignList[sTeamName][index], tLaneAssignList[sTeamName][playerIndex]
 						print('Switch role successfully. Team: '..sTeamName..', playerId: '..PlayerID..', new role: '..Role.roleAssignment[sTeamName][playerIndex])

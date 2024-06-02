@@ -1992,7 +1992,7 @@ function TryPickupDroppedNeutralItemTokens()
 		end
 	end
 
-	if  item ~= nil
+	if  item ~= nil and item.location ~= nil
 	and J.GetLocationToLocationDistance(item.location, J.GetTeamFountain()) > 900
 	and Item.GetEmptyInventoryAmount(bot) > 0
 	then

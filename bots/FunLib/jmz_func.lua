@@ -1995,7 +1995,6 @@ function J.GetAroundBotUnitList( bot, nRadius, bEnemy )
 
 end
 
-
 function J.GetLocationToLocationDistance( fLoc, sLoc )
 
 	local x1 = fLoc.x
