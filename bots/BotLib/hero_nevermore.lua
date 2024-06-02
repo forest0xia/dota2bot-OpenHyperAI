@@ -172,7 +172,7 @@ function X.SkillsComplement()
 	nLV = bot:GetLevel()
 	nMP = bot:GetMana()/bot:GetMaxMana()
 	nHP = bot:GetHealth()/bot:GetMaxHealth()
-	hEnemyHeroList = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+	hEnemyHeroList = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 	botTarget = J.GetProperTarget(bot)
 
 
@@ -340,7 +340,7 @@ function X.Consider( nAbility, nDistance )
 	
 	local nBonus	 = nAbility:GetSpecialValueInt( 'stack_bonus_damage' )
 	local keyWord	 = "ranged"
-	local nEnemyHeroes = bot:GetNearbyHeroes( 1000, true, BOT_MODE_NONE )
+	local nEnemyHeroes = J.GetNearbyHeroes(bot, 1000, true, BOT_MODE_NONE )
 	local npcTarget = J.GetProperTarget( bot )
 
 
@@ -464,8 +464,8 @@ function X.ConsiderFeastOfSouls()
         and not botTarget:HasModifier('modifier_dazzle_shallow_grave')
         and not botTarget:HasModifier('modifier_necrolyte_reapers_scythe')
 		then
-            local nInRangeAlly = botTarget:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
-            local nInRangeEnemy = botTarget:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+            local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1200, true, BOT_MODE_NONE)
+            local nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1200, false, BOT_MODE_NONE)
 
             if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
             and #nInRangeAlly >= #nInRangeEnemy
@@ -498,7 +498,7 @@ function X.ConsiderFeastOfSouls()
 
     if J.IsPushing(bot) or J.IsDefending(bot)
     then
-		local nInRangeEnemy = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+		local nInRangeEnemy = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE)
         local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(1000, true)
 
         if  nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 4

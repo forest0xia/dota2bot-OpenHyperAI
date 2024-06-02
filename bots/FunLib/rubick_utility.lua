@@ -103,7 +103,7 @@ function X.ConsiderSpellBehavior(ability)
     local nRadius = 200 -- ability:GetSpecialValueInt( "xxx" )
     -- local nDamage = ability:GetSpecialValueInt( "damage" )
     -- local nDamage2 = ability:GetSpecialValueInt( "AbilityDamage" )
-    -- local nInRangeEnemyList = bot:GetNearbyHeroes( nCastRange -80, true, BOT_MODE_NONE )
+    -- local nInRangeEnemyList = J.GetNearbyHeroes(bot, nCastRange -80, true, BOT_MODE_NONE )
 
     -- local nBehaviorFlags = ability:GetBehavior()
     -- local nTargetTypeFlags = ability:GetTargetType()
@@ -155,7 +155,7 @@ function X.ConsiderSpellBehavior(ability)
         if DotaTime() >= lastCheck + 0.5 then
             local weakest = nil
             local minHP = 100000
-            local allies = bot:GetNearbyHeroes( nCastRange, false, BOT_MODE_NONE )
+            local allies = J.GetNearbyHeroes(bot, nCastRange, false, BOT_MODE_NONE )
             if #allies > 0 then
                 for i=1, #allies do
                     if not allies[i]:HasModifier( "modifier_"..ability:GetName() )

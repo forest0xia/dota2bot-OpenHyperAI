@@ -153,7 +153,7 @@ function X.SkillsComplement()
 	nMP = bot:GetMana()/bot:GetMaxMana();
 	nHP = bot:GetHealth()/bot:GetMaxHealth();
 	botTarget = J.GetProperTarget(bot);
-	hEnemyList = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE);
+	hEnemyList = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE);
 	hAllyList = J.GetAlliesNearLoc(bot:GetLocation(), 1600);
 	
 	
@@ -493,7 +493,7 @@ function X.ConsiderR()
 			and not botTarget:WasRecentlyDamagedByAnyHero( 3.0 )
 			and bot:IsFacingLocation( botTarget:GetLocation(), 20 )
 		then
-			local allyList = botTarget:GetNearbyHeroes( 700, true, BOT_MODE_NONE )
+			local allyList = J.GetNearbyHeroes(botTarget,  700, true, BOT_MODE_NONE )
 			if #allyList == 0
 			then
 				hCastTarget = botTarget
@@ -544,7 +544,7 @@ function X.ConsiderSR()
 		if J.IsValidHero( botTarget )
 			and J.IsInRange( bot, botTarget, 300 )
 		then
-			local allyList = botTarget:GetNearbyHeroes( 300, true, BOT_MODE_NONE )
+			local allyList = J.GetNearbyHeroes(botTarget,  300, true, BOT_MODE_NONE )
 			if allyList ~= nil
 				and #allyList >= 3
 			then
@@ -567,8 +567,8 @@ function X.ConsiderReelIn()
 	end
 
 	local nRange = 1400
-	local nInRangeAllyList = bot:GetNearbyHeroes(nRange, false, BOT_MODE_NONE)
-	local nInRangeEnemyList = bot:GetNearbyHeroes(nRange, true, BOT_MODE_NONE)
+	local nInRangeAllyList = J.GetNearbyHeroes(bot,nRange, false, BOT_MODE_NONE)
+	local nInRangeEnemyList = J.GetNearbyHeroes(bot,nRange, true, BOT_MODE_NONE)
 
 	for _, npcEnemy in pairs(nInRangeEnemyList)
 	do

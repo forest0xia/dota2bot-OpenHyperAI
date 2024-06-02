@@ -190,7 +190,7 @@ function X.SkillsComplement()
 	nMP = bot:GetMana()/bot:GetMaxMana()
 	nHP = bot:GetHealth()/bot:GetMaxHealth()
 	nLV = bot:GetLevel()
-	hEnemyHeroList = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+	hEnemyHeroList = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 
 
 	BloodMistDesire = X.ConsiderBloodMist()
@@ -246,7 +246,7 @@ function X.ConsiderBloodMist()
 	end
 
 	local nRadius = 450
-	local nInRangeEnemyHeroList = bot:GetNearbyHeroes(nRadius, true, BOT_MODE_NONE)
+	local nInRangeEnemyHeroList = J.GetNearbyHeroes(bot,nRadius, true, BOT_MODE_NONE)
 	local botTarget = J.GetProperTarget(bot)
 
 	if BloodMist:GetToggleState() == true
@@ -292,10 +292,10 @@ function X.ConsiderQ()
 	--团战时辅助
 	if J.IsInTeamFight( bot, 1200 ) or J.IsPushing( bot ) or J.IsDefending( bot )
 	then
-		local tableNearbyEnemyHeroes = bot:GetNearbyHeroes( 1200, true, BOT_MODE_NONE )
+		local tableNearbyEnemyHeroes = J.GetNearbyHeroes(bot, 1200, true, BOT_MODE_NONE )
 
 		if #tableNearbyEnemyHeroes >= 1 then
-			local tableNearbyAllyHeroes = bot:GetNearbyHeroes( nCastRange + 200, false, BOT_MODE_NONE )
+			local tableNearbyAllyHeroes = J.GetNearbyHeroes(bot, nCastRange + 200, false, BOT_MODE_NONE )
 			local highesAD = 0
 			local highesADUnit = nil
 
@@ -377,8 +377,8 @@ function X.ConsiderW()
 	local nManaCost = abilityW:GetManaCost()
 	local nDamage = abilityW:GetSpecialValueInt( 'damage' )
 
-	local tableNearbyEnemyHeroes = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
-	local tableNearbyAllyHeroes = bot:GetNearbyHeroes( 800, false, BOT_MODE_NONE )
+	local tableNearbyEnemyHeroes = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
+	local tableNearbyAllyHeroes = J.GetNearbyHeroes(bot, 800, false, BOT_MODE_NONE )
 
 	for _, npcEnemy in pairs( tableNearbyEnemyHeroes )
 	do
@@ -472,7 +472,7 @@ function X.ConsiderR()
 	local nCastPoint = abilityR:GetCastPoint()
 	local nManaCost = abilityR:GetManaCost()
 
-	local tableNearbyEnemyHeroes = bot:GetNearbyHeroes( nCastRange + 200, true, BOT_MODE_NONE )
+	local tableNearbyEnemyHeroes = J.GetNearbyHeroes(bot, nCastRange + 200, true, BOT_MODE_NONE )
 
 	if J.IsRetreating( bot )
 	then
@@ -513,7 +513,7 @@ function X.ConsiderR()
 			and not npcTarget:HasModifier( 'modifier_bloodseeker_bloodrage' )
 			and not J.IsDisabled( npcTarget )
 		then
-			local allies = npcTarget:GetNearbyHeroes( 1200, true, BOT_MODE_NONE )
+			local allies = J.GetNearbyHeroes(npcTarget, 1200, true, BOT_MODE_NONE )
 			if ( allies ~= nil and #allies >= 2 )
 			then
 				return BOT_ACTION_DESIRE_HIGH, npcTarget

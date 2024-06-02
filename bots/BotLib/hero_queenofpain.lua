@@ -161,7 +161,7 @@ function X.SkillsComplement()
 	nMP = bot:GetMana()/bot:GetMaxMana();
 	nHP = bot:GetHealth()/bot:GetMaxHealth();
 	botTarget = J.GetProperTarget(bot);
-	hEnemyList = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE);
+	hEnemyList = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE);
 	hAllyList = J.GetAlliesNearLoc(bot:GetLocation(), 1600);
 	
 	local aether = J.IsItemAvailable("item_aether_lens");
@@ -389,8 +389,8 @@ function X.ConsiderW()
 			and J.CanCastOnMagicImmune( botTarget )
 			and not botTarget:IsAttackImmune()
 		then
-			local enemyList = botTarget:GetNearbyHeroes( 1100, false, BOT_MODE_NONE )
-			local allyList = botTarget:GetNearbyHeroes( 1000, true, BOT_MODE_NONE )
+			local enemyList = J.GetNearbyHeroes(botTarget,  1100, false, BOT_MODE_NONE )
+			local allyList = J.GetNearbyHeroes(botTarget,  1000, true, BOT_MODE_NONE )
 			local aliveEnemyCount = J.GetNumOfAliveHeroes( true )
 			
 			if aliveEnemyCount <= 1
@@ -463,7 +463,7 @@ function X.ConsiderW()
 
 	
 
-	local nAttackAllys = bot:GetNearbyHeroes( 1600, false, BOT_MODE_ATTACK )
+	local nAttackAllys = J.GetNearbyHeroes(bot, 1600, false, BOT_MODE_ATTACK )
 	if #hEnemyList == 0 
 		and not bot:WasRecentlyDamagedByAnyHero( 3.0 ) 
 		and nLV >= 9
@@ -712,7 +712,7 @@ function X.ConsiderR()
 			and J.IsInRange( bot, botTarget, nCastRange + nRadius * 0.5 )
 			and J.CanCastOnMagicImmune( botTarget )
 		then
-			local nearbyEnemyList = botTarget:GetNearbyHeroes( nRadius, false, BOT_MODE_NONE )
+			local nearbyEnemyList = J.GetNearbyHeroes(botTarget,  nRadius, false, BOT_MODE_NONE )
 			if J.CanKillTarget( botTarget, nDamage * 1.3, nDamageType )
 				or #nearbyEnemyList >= 2
 			then

@@ -152,7 +152,7 @@ function X.SkillsComplement()
 	nMP = bot:GetMana()/bot:GetMaxMana()
 	nHP = bot:GetHealth()/bot:GetMaxHealth()
 	nLV = bot:GetLevel()
-	hEnemyHeroList = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+	hEnemyHeroList = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 
 	castRDesire, castRTarget = X.ConsiderR()
 	if ( castRDesire > 0 )
@@ -239,7 +239,7 @@ function X.ConsiderQ()
 	local botLocation = bot:GetLocation()
 
 	local nEnemysLaneCreepsInSkillRange = bot:GetNearbyLaneCreeps( 1600, true )
-	local nEnemysHeroesInSkillRange = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+	local nEnemysHeroesInSkillRange = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 
 	local nCanHurtCreepsLocationAoE = bot:FindAoELocation( true, false, botLocation, nCastRange, nRadius, 0.8, 0 )
 	local nCanHurtCreepCount = nCanHurtCreepsLocationAoE.count
@@ -335,7 +335,7 @@ function X.ConsiderQ()
 
 		if bot:GetActiveModeDesire() > 0.8
 		then
-			local nEnemyNearby = bot:GetNearbyHeroes( 800, true, BOT_MODE_NONE )
+			local nEnemyNearby = J.GetNearbyHeroes(bot, 800, true, BOT_MODE_NONE )
 			for _, npcEnemy in pairs( nEnemyNearby )
 			do
 				if J.IsValid( npcEnemy )
@@ -391,7 +391,7 @@ function X.ConsiderQ()
 			and not nAttackTarget:HasModifier( "modifier_sniper_shrapnel_slow" )
 			and not X.IsAbiltyQCastedHere( nAttackTarget:GetLocation(), nRadius )
 		then
-			local nAllies = bot:GetNearbyHeroes( 800, false, BOT_MODE_ROSHAN )
+			local nAllies = J.GetNearbyHeroes(bot, 800, false, BOT_MODE_ROSHAN )
 			if #nAllies >= 4
 			then
 				return BOT_ACTION_DESIRE_HIGH, nAttackTarget:GetLocation()
@@ -447,7 +447,7 @@ function X.ConsiderR()
 	local nDamageType = DAMAGE_TYPE_MAGICAL
 
 	local nEnemysHerosCanSeen = GetUnitList( UNIT_LIST_ENEMY_HEROES )
-	local nEnemysHerosInAttackRange = bot:GetNearbyHeroes( math.min(nAttackRange + 50, 1600), true, BOT_MODE_NONE )
+	local nEnemysHerosInAttackRange = J.GetNearbyHeroes(bot, math.min(nAttackRange + 50, 1600), true, BOT_MODE_NONE )
 
 	local nTempTarget = nEnemysHerosInAttackRange[1]
 	local nAttackTarget = J.GetProperTarget( bot )
@@ -612,7 +612,7 @@ function X.ConsiderAS()
 
 	if J.IsRetreating( bot )
 	then
-		local enemyHeroList = bot:GetNearbyHeroes( nRadius, true, BOT_MODE_NONE )
+		local enemyHeroList = J.GetNearbyHeroes(bot, nRadius, true, BOT_MODE_NONE )
 		local targetHero = enemyHeroList[1]
 		if J.IsValidHero( targetHero )
 			and J.CanCastOnNonMagicImmune( targetHero )

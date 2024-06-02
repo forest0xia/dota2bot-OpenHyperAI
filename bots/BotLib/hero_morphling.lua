@@ -244,7 +244,7 @@ function X.ConsiderWaveform()
 	local nSpeed = Waveform:GetSpecialValueInt('speed')
     local nDamage = Waveform:GetAbilityDamage()
 
-    local nEnemyHeroes = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+    local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 	for _, enemyHero in pairs(nEnemyHeroes)
 	do
         if  J.IsValidHero(enemyHero)
@@ -257,8 +257,8 @@ function X.ConsiderWaveform()
         and not enemyHero:HasModifier('modifier_oracle_false_promise_timer')
         and not enemyHero:HasModifier('modifier_templar_assassin_refraction_absorb')
         then
-            local nInRangeAlly = enemyHero:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
-			local nInRangeEnemy = enemyHero:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
+            local nInRangeAlly = J.GetNearbyHeroes(enemyHero, 1600, true, BOT_MODE_NONE)
+			local nInRangeEnemy = J.GetNearbyHeroes(enemyHero, 1600, false, BOT_MODE_NONE)
             local eta = (GetUnitToUnitDistance(bot, botTarget) / nSpeed) + nCastPoint
 
             if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
@@ -310,8 +310,8 @@ function X.ConsiderWaveform()
 		and not botTarget:IsAttackImmune()
 		and not botTarget:HasModifier('modifier_necrolyte_reapers_scythe')
 		then
-			local nInRangeAlly = botTarget:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
-			local nInRangeEnemy = botTarget:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+			local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1200, true, BOT_MODE_NONE)
+			local nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1200, false, BOT_MODE_NONE)
 			local eta = (GetUnitToUnitDistance(bot, botTarget) / nSpeed) + nCastPoint
 			local loc = J.Site.GetXUnitsTowardsLocation(bot, botTarget:GetExtrapolatedLocation(eta), nCastRange)
 
@@ -346,7 +346,7 @@ function X.ConsiderWaveform()
 	if  J.IsRetreating(bot)
     and bot:GetActiveModeDesire() > BOT_MODE_DESIRE_MODERATE
 	then
-        local nInRangeEnemy = bot:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,1200, true, BOT_MODE_NONE)
 		for _, enemyHero in pairs(nInRangeEnemy)
         do
 			if  J.IsValidHero(enemyHero)
@@ -354,8 +354,8 @@ function X.ConsiderWaveform()
 			and not J.IsDisabled(enemyHero)
 			and not J.IsRealInvisible(bot)
 			then
-				local nInRangeAlly = enemyHero:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
-				local nTargetInRangeAlly = enemyHero:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+				local nInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, true, BOT_MODE_NONE)
+				local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
 
 				if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
 				and ((#nTargetInRangeAlly > #nInRangeAlly)
@@ -407,7 +407,7 @@ function X.ConsiderWaveform()
 
 	if J.IsLaning(bot)
 	then
-        local nInRangeEnemy = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE)
 		if  J.GetManaAfter(Waveform:GetManaCost()) > 0.85
 		and J.IsInLaningPhase()
 		and bot:DistanceFromFountain() > 100
@@ -487,7 +487,7 @@ function X.ConsiderAdaptiveStrikeAGI()
 		nDamage = nMinAGI * nCurrAGI
 	end
 
-    local nEnemyHeroes = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+    local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 	for _, enemyHero in pairs(nEnemyHeroes)
 	do
         if  J.IsValidHero(enemyHero)
@@ -520,8 +520,8 @@ function X.ConsiderAdaptiveStrikeAGI()
         and not botTarget:HasModifier('modifier_item_aeon_disk_buff')
         and not botTarget:HasModifier('modifier_item_sphere_target')
 		then
-			local nInRangeAlly = botTarget:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
-			local nInRangeEnemy = botTarget:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+			local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1200, true, BOT_MODE_NONE)
+			local nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1200, false, BOT_MODE_NONE)
 
 			if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 			and #nInRangeAlly >= #nInRangeEnemy
@@ -543,7 +543,7 @@ function X.ConsiderAdaptiveStrikeAGI()
     and J.IsInLaningPhase()
 	then
 		local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(1200, true)
-        local nInRangeEnemy = bot:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,1200, true, BOT_MODE_NONE)
 
 		for _, creep in pairs(nEnemyLaneCreeps)
 		do
@@ -582,7 +582,7 @@ function X.ConsiderAdaptiveStrikeSTR()
 
     local nCastRange = J.GetProperCastRange(false, bot, AdaptiveStrikeSTR:GetCastRange())
 
-    local nEnemyHeroes = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+    local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 	for _, enemyHero in pairs(nEnemyHeroes)
 	do
         if  J.IsValidHero(enemyHero)
@@ -597,7 +597,7 @@ function X.ConsiderAdaptiveStrikeSTR()
     if  J.IsRetreating(bot)
     and bot:GetActiveModeDesire() > BOT_MODE_DESIRE_MODERATE
 	then
-        local nInRangeEnemy = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 		for _, enemyHero in pairs(nInRangeEnemy)
         do
 			if  J.IsValidHero(enemyHero)
@@ -606,8 +606,8 @@ function X.ConsiderAdaptiveStrikeSTR()
 			and not J.IsDisabled(enemyHero)
 			and not J.IsRealInvisible(bot)
 			then
-				local nInRangeAlly = enemyHero:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
-				local nTargetInRangeAlly = enemyHero:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+				local nInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, true, BOT_MODE_NONE)
+				local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
 
 				if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
 				and ((#nTargetInRangeAlly > #nInRangeAlly)
@@ -648,8 +648,8 @@ function X.ConsiderAtttributeShift()
 		if  J.IsValidTarget(botTarget)
         and J.IsInRange(bot, botTarget, 1600)
 		then
-			local nInRangeAlly = botTarget:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
-			local nInRangeEnemy = botTarget:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
+			local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1600, true, BOT_MODE_NONE)
+			local nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1600, false, BOT_MODE_NONE)
 
 			if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 			and (#nInRangeAlly >= #nInRangeEnemy or J.WeAreStronger(bot, 1600))
@@ -890,7 +890,7 @@ function X.ConsiderMorph()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-        local nInRangeEnemy = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
         for _, enemyHero in pairs(nInRangeEnemy)
         do
             if  J.IsValidHero(enemyHero)
@@ -898,8 +898,8 @@ function X.ConsiderMorph()
             and DoesTargetHeroHaveDirectStun(enemyHero)
             and not J.IsSuspiciousIllusion(enemyHero)
             then
-                local nInRangeAlly = enemyHero:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
-                local nTargetInRangeAlly = enemyHero:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+                local nInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, true, BOT_MODE_NONE)
+                local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
 
                 if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
                 and #nInRangeAlly >= #nTargetInRangeAlly
@@ -914,7 +914,7 @@ function X.ConsiderMorph()
     and bot:GetActiveModeDesire() > BOT_MODE_DESIRE_MODERATE
     and Waveform:GetCooldownTimeRemaining() > 5
 	then
-        local nInRangeEnemy = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 		for _, enemyHero in pairs(nInRangeEnemy)
         do
 			if  J.IsValidHero(enemyHero)
@@ -923,8 +923,8 @@ function X.ConsiderMorph()
 			and not J.IsSuspiciousIllusion(enemyHero)
 			and not J.IsRealInvisible(bot)
 			then
-				local nInRangeAlly = enemyHero:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
-				local nTargetInRangeAlly = enemyHero:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+				local nInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, true, BOT_MODE_NONE)
+				local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
 
 				if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
 				and ((#nTargetInRangeAlly > #nInRangeAlly)

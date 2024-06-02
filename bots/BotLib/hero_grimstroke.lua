@@ -203,7 +203,7 @@ function X.ConsiderStrokeOfFate()
     local nAbilityLevel = StrokeOfFate:GetLevel()
 	local botTarget = J.GetProperTarget(bot)
 
-	local nEnemyHeroes = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+	local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
     for _, enemyHero in pairs(nEnemyHeroes)
     do
         if  J.IsValidHero(enemyHero)
@@ -219,10 +219,10 @@ function X.ConsiderStrokeOfFate()
 		end
     end
 
-    local nAllyHeroes  = bot:GetNearbyHeroes(nCastRange, false, BOT_MODE_NONE)
+    local nAllyHeroes  = J.GetNearbyHeroes(bot,nCastRange, false, BOT_MODE_NONE)
     for _, allyHero in pairs(nAllyHeroes)
     do
-        local nAllyInRangeEnemy = allyHero:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+        local nAllyInRangeEnemy = J.GetNearbyHeroes(allyHero, nCastRange, true, BOT_MODE_NONE)
 
         if J.IsValidHero(allyHero)
         and J.IsRetreating(allyHero)
@@ -253,8 +253,8 @@ function X.ConsiderStrokeOfFate()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-        local nInRangeAlly = bot:GetNearbyHeroes(nCastRange, false, BOT_MODE_NONE)
-        local nInRangeEnemy = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+        local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange, false, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 
 		if  J.IsValidTarget(botTarget)
         and J.IsValidHero(enemyHero)
@@ -274,8 +274,8 @@ function X.ConsiderStrokeOfFate()
 
 	if J.IsRetreating(bot)
 	then
-        local nInRangeAlly = bot:GetNearbyHeroes(nCastRange, false, BOT_MODE_NONE)
-        local nInRangeEnemy = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+        local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange, false, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 
         if  nInRangeAlly ~= nil and nInRangeEnemy
         and ((#nInRangeEnemy > #nInRangeAlly)
@@ -334,7 +334,7 @@ function X.ConsiderPhantomsEmbrace()
     local nRendDamage = PhantomsEmbrace:GetSpecialValueInt('pop_damage')
     local botTarget = J.GetProperTarget(bot)
 
-    local nEnemyHeroes = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+    local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
     for _, enemyHero in pairs(nEnemyHeroes)
     do
         if  J.IsValidHero(enemyHero)
@@ -350,10 +350,10 @@ function X.ConsiderPhantomsEmbrace()
 		end
     end
 
-    local nAllyHeroes  = bot:GetNearbyHeroes(nCastRange, false, BOT_MODE_NONE)
+    local nAllyHeroes  = J.GetNearbyHeroes(bot,nCastRange, false, BOT_MODE_NONE)
     for _, allyHero in pairs(nAllyHeroes)
     do
-        local nAllyInRangeEnemy = allyHero:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+        local nAllyInRangeEnemy = J.GetNearbyHeroes(allyHero, nCastRange, true, BOT_MODE_NONE)
 
         if  J.IsValidHero(allyHero)
         and J.IsRetreating(allyHero)
@@ -373,8 +373,8 @@ function X.ConsiderPhantomsEmbrace()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-        local nInRangeAlly = bot:GetNearbyHeroes(nCastRange + 100, false, BOT_MODE_NONE)
-        local nInRangeEnemy = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+        local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange + 100, false, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 
 		if  J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
@@ -391,8 +391,8 @@ function X.ConsiderPhantomsEmbrace()
 
 	if J.IsRetreating(bot)
 	then
-        local nInRangeAlly = bot:GetNearbyHeroes(nCastRange + 150, false, BOT_MODE_NONE)
-        local nInRangeEnemy = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+        local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange + 150, false, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 
         if  nInRangeAlly ~= nil and nInRangeEnemy
         and ((#nInRangeEnemy > #nInRangeAlly)
@@ -421,7 +421,7 @@ function X.ConsiderInkSwell()
 	local nRadius = InkSwell:GetSpecialValueInt('radius')
     local botTarget = J.GetProperTarget(bot)
 
-    local nEnemyHeroes = bot:GetNearbyHeroes(nRadius, true, BOT_MODE_NONE)
+    local nEnemyHeroes = J.GetNearbyHeroes(bot,nRadius, true, BOT_MODE_NONE)
     for _, enemyHero in pairs(nEnemyHeroes)
     do
         if  J.IsValidHero(enemyHero)
@@ -434,10 +434,10 @@ function X.ConsiderInkSwell()
 		end
     end
 
-    local nAllyHeroes = bot:GetNearbyHeroes(nCastRange, false, BOT_MODE_NONE)
+    local nAllyHeroes = J.GetNearbyHeroes(bot,nCastRange, false, BOT_MODE_NONE)
     for _, allyHero in pairs(nAllyHeroes)
     do
-        local nInRangeAllyEnemy = allyHero:GetNearbyHeroes(nRadius, true, BOT_MODE_NONE)
+        local nInRangeAllyEnemy = J.GetNearbyHeroes(allyHero, nRadius, true, BOT_MODE_NONE)
 
         if  J.IsValidHero(allyHero)
         and not allyHero:IsIllusion()
@@ -473,7 +473,7 @@ function X.ConsiderInkSwell()
 
     if J.IsGoingOnSomeone(bot)
     then
-        local nInRangeEnemy = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 
         if J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
@@ -494,8 +494,8 @@ function X.ConsiderInkSwell()
 	if  J.IsRetreating(bot)
     and not StrokeOfFate:IsFullyCastable()
 	then
-        local nInRangeAlly = bot:GetNearbyHeroes(nCastRange + 150, false, BOT_MODE_NONE)
-        local nInRangeEnemy = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+        local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange + 150, false, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 
         if  nInRangeAlly ~= nil and nInRangeEnemy
         and ((#nInRangeEnemy > #nInRangeAlly)
@@ -526,7 +526,7 @@ function X.ConsiderInkExplosion()
 
     if DotaTime() < InkSwellCastTime + nDuration
     then
-        local nEnemyHeroes = bot:GetNearbyHeroes(nRadius, true, BOT_MODE_NONE)
+        local nEnemyHeroes = J.GetNearbyHeroes(bot,nRadius, true, BOT_MODE_NONE)
         for _, enemyHero in pairs(nEnemyHeroes)
         do
             if  J.IsValidHero(enemyHero)
@@ -540,10 +540,10 @@ function X.ConsiderInkExplosion()
             end
         end
 
-        local nAllyHeroes = bot:GetNearbyHeroes(nCastRange, false, BOT_MODE_NONE)
+        local nAllyHeroes = J.GetNearbyHeroes(bot,nCastRange, false, BOT_MODE_NONE)
         for _, allyHero in pairs(nAllyHeroes)
         do
-            local nInRangeAllyEnemy = allyHero:GetNearbyHeroes(nRadius, true, BOT_MODE_NONE)
+            local nInRangeAllyEnemy = J.GetNearbyHeroes(allyHero, nRadius, true, BOT_MODE_NONE)
 
             if  J.IsValidHero(allyHero)
             and not allyHero:IsIllusion()
@@ -579,8 +579,8 @@ function X.ConsiderSoulBind()
 
     if J.IsInTeamFight(bot, 1200)
     then
-        local nInRangeAlly = bot:GetNearbyHeroes(nCastRange + 150, false, BOT_MODE_NONE)
-        local nInRangeEnemy = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+        local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange + 150, false, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
         local strongestTarget = J.GetStrongestUnit(nCastRange, bot, true, false, nDuration)
 
         if  J.IsValidHero(strongestTarget)
@@ -590,7 +590,7 @@ function X.ConsiderSoulBind()
         and nInRangeAlly ~= nil and nInRangeEnemy
         and #nInRangeAlly >= #nInRangeEnemy
         then
-            local nTargetInRangeAlly = strongestTarget:GetNearbyHeroes(nRadius, false, BOT_MODE_NONE)
+            local nTargetInRangeAlly = J.GetNearbyHeroes(strongestTarget, nRadius, false, BOT_MODE_NONE)
 
             if nTargetInRangeAlly ~= nil and #nTargetInRangeAlly >= 1
             then
@@ -613,8 +613,8 @@ function X.ConsiderDarkPortrait()
 
     if J.IsGoingOnSomeone(bot)
     then
-        local nInRangeAlly = bot:GetNearbyHeroes(nCastRange + 150, false, BOT_MODE_NONE)
-        local nInRangeEnemy = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+        local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange + 150, false, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 
         local strongestTarget = J.GetStrongestUnit(nCastRange, bot, true, false, 0)
 

@@ -141,7 +141,7 @@ function X.SkillsComplement()
 	nMP = bot:GetMana()/bot:GetMaxMana();
 	nHP = bot:GetHealth()/bot:GetMaxHealth();
 	botTarget = J.GetProperTarget(bot);
-	hEnemyList = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE);
+	hEnemyList = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE);
 	hAllyList = J.GetAlliesNearLoc(bot:GetLocation(), 1600);
 	
 	local aether = J.IsItemAvailable("item_aether_lens");
@@ -499,8 +499,8 @@ function X.ConsiderE()
 			and J.CanCastOnMagicImmune( botTarget )
 			and bot:IsFacingLocation( botTarget:GetLocation(), 6 )
 		then
-			local enemyList = botTarget:GetNearbyHeroes( 900, false, BOT_MODE_NONE )
-			local allyList = botTarget:GetNearbyHeroes( 1300, true, BOT_MODE_NONE )
+			local enemyList = J.GetNearbyHeroes(botTarget,  900, false, BOT_MODE_NONE )
+			local allyList = J.GetNearbyHeroes(botTarget,  1300, true, BOT_MODE_NONE )
 			local aliveEnemyCount = J.GetNumOfAliveHeroes( true )
 			
 			if aliveEnemyCount <= 2
@@ -622,7 +622,7 @@ function X.ConsiderR()
 			--为撤退的队友隐身
 			if J.IsRetreating( npcAlly )
 			then
-				local enemyList = npcAlly:GetNearbyHeroes( 900, true, BOT_MODE_NONE )
+				local enemyList = J.GetNearbyHeroes(npcAlly,  900, true, BOT_MODE_NONE )
 				for _, npcEnemy in pairs( enemyList )
 				do 
 					if npcAlly:WasRecentlyDamagedByHero( npcEnemy, 3.0 )

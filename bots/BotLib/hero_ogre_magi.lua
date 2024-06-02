@@ -196,7 +196,7 @@ function X.SkillsComplement()
 	nMP = bot:GetMana()/bot:GetMaxMana()
 	nHP = bot:GetHealth()/bot:GetMaxHealth()
 	botTarget = J.GetProperTarget( bot )
-	hEnemyList = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+	hEnemyList = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 	hAllyList = J.GetAlliesNearLoc( bot:GetLocation(), 1600 )
 
 
@@ -281,8 +281,8 @@ function X.ConsiderQ()
 	local nDamage = abilityQ:GetSpecialValueInt( "fireblast_damage" ) + talent8Damage
 	local nDamageType = DAMAGE_TYPE_MAGICAL
 
-	local nInRangeEnemyList = bot:GetNearbyHeroes( nCastRange + 50, true, BOT_MODE_NONE )
-	local nInBonusEnemyList = bot:GetNearbyHeroes( nCastRange + 200, true, BOT_MODE_NONE )
+	local nInRangeEnemyList = J.GetNearbyHeroes(bot, nCastRange + 50, true, BOT_MODE_NONE )
+	local nInBonusEnemyList = J.GetNearbyHeroes(bot, nCastRange + 200, true, BOT_MODE_NONE )
 
 	--打断和击杀
 	for _, npcEnemy in pairs( nInBonusEnemyList )
@@ -525,8 +525,8 @@ function X.ConsiderW()
 	local nDamage = abilityW:GetSpecialValueInt( "burn_damage" ) * nDuration
 	local nDamageType = DAMAGE_TYPE_MAGICAL
 
-	local nInRangeEnemyList = bot:GetNearbyHeroes( nCastRange + 32, true, BOT_MODE_NONE )
-	local nInBonusEnemyList = bot:GetNearbyHeroes( nCastRange + 200, true, BOT_MODE_NONE )
+	local nInRangeEnemyList = J.GetNearbyHeroes(bot, nCastRange + 32, true, BOT_MODE_NONE )
+	local nInBonusEnemyList = J.GetNearbyHeroes(bot, nCastRange + 200, true, BOT_MODE_NONE )
 
 	--击杀
 	for _, npcEnemy in pairs( nInBonusEnemyList )
@@ -868,10 +868,10 @@ function X.ConsiderD()
 	local nManaCost = abilityD:GetManaCost()
 	local nDamage = abilityD:GetSpecialValueInt( "fireblast_damage" )
 	local nDamageType = DAMAGE_TYPE_MAGICAL
-	local nInRangeEnemyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnemyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
-	local nInRangeEnemyList = bot:GetNearbyHeroes( nCastRange + 50, true, BOT_MODE_NONE )
-	local nInBonusEnemyList = bot:GetNearbyHeroes( nCastRange + 200, true, BOT_MODE_NONE )
+	local nInRangeEnemyList = J.GetNearbyHeroes(bot, nCastRange + 50, true, BOT_MODE_NONE )
+	local nInBonusEnemyList = J.GetNearbyHeroes(bot, nCastRange + 200, true, BOT_MODE_NONE )
 
 	if nManaCost/bot:GetMaxMana() > 0.45 and nHP > 0.25 then return 0 end
 

@@ -195,8 +195,8 @@ function X.ConsiderBlink()
 		and not botTarget:HasModifier('modifier_faceless_void_chronosphere_freeze')
 		and not botTarget:HasModifier('modifier_necrolyte_reapers_scythe')
 		then
-			local nInRangeAlly = botTarget:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
-			local nInRangeEnemy = botTarget:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+			local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1200, true, BOT_MODE_NONE)
+			local nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1200, false, BOT_MODE_NONE)
 
 			if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 			and #nInRangeAlly >= #nInRangeEnemy
@@ -228,7 +228,7 @@ function X.ConsiderBlink()
 
 	if J.IsRetreating(bot)
 	then
-        local nInRangeEnemy = bot:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,1200, true, BOT_MODE_NONE)
 		for _, enemyHero in pairs(nInRangeEnemy)
         do
 			if  J.IsValidHero(enemyHero)
@@ -237,8 +237,8 @@ function X.ConsiderBlink()
 			and not J.IsDisabled(enemyHero)
 			and not J.IsRealInvisible(bot)
 			then
-				local nInRangeAlly = enemyHero:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
-				local nTargetInRangeAlly = enemyHero:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+				local nInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, true, BOT_MODE_NONE)
+				local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
 
 				if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
 				and ((#nTargetInRangeAlly > #nInRangeAlly)
@@ -253,30 +253,30 @@ function X.ConsiderBlink()
 
 	if J.IsLaning(bot)
 	then
-		local nLaneCreeps = bot:GetNearbyLaneCreeps(nCastRange + 80, true)
-		for _, creep in pairs( nLaneCreeps )
-		do
-			if  J.IsValid(creep)
-			and J.CanBeAttacked(creep)
-			and (J.IsKeyWordUnit('ranged', creep) or J.IsKeyWordUnit('siege', creep) or J.IsKeyWordUnit('flagbearer', creep))
-			and GetUnitToUnitDistance(bot, creep) > 500
-			then
-				local nCreepInRangeHero = creep:GetNearbyHeroes(creep:GetCurrentVisionRange(), false, BOT_MODE_NONE)
-				local nCreepInRangeTower = creep:GetNearbyTowers(700, false)
-				local nDamage = bot:GetAttackDamage()
+		-- local nLaneCreeps = bot:GetNearbyLaneCreeps(nCastRange + 80, true)
+		-- for _, creep in pairs( nLaneCreeps )
+		-- do
+		-- 	if  J.IsValid(creep)
+		-- 	and J.CanBeAttacked(creep)
+		-- 	and (J.IsKeyWordUnit('ranged', creep) or J.IsKeyWordUnit('siege', creep) or J.IsKeyWordUnit('flagbearer', creep))
+		-- 	and GetUnitToUnitDistance(bot, creep) > 500
+		-- 	then
+		-- 		local nCreepInRangeHero = creep:GetNearbyHeroes(creep:GetCurrentVisionRange(), false, BOT_MODE_NONE)
+		-- 		local nCreepInRangeTower = creep:GetNearbyTowers(700, false)
+		-- 		local nDamage = bot:GetAttackDamage()
 
-				if  J.WillKillTarget(creep, nDamage, DAMAGE_TYPE_PHYSICAL, nCastPoint + nAttackPoint + 0.53)
-				and nCreepInRangeHero ~= nil and #nCreepInRangeHero == 0
-				and nCreepInRangeTower ~= nil and #nCreepInRangeTower == 0
-				and botTarget ~= creep
-				then
-					bot:SetTarget(creep)
-					return BOT_ACTION_DESIRE_HIGH, creep:GetLocation()
-				end
-			end
-		end
+		-- 		if  J.WillKillTarget(creep, nDamage, DAMAGE_TYPE_PHYSICAL, nCastPoint + nAttackPoint + 0.53)
+		-- 		and nCreepInRangeHero ~= nil and #nCreepInRangeHero == 0
+		-- 		and nCreepInRangeTower ~= nil and #nCreepInRangeTower == 0
+		-- 		and botTarget ~= creep
+		-- 		then
+		-- 			bot:SetTarget(creep)
+		-- 			return BOT_ACTION_DESIRE_HIGH, creep:GetLocation()
+		-- 		end
+		-- 	end
+		-- end
 
-		local nInRangeEnemy = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+		local nInRangeEnemy = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE)
 		local nInRangeTower = bot:GetNearbyTowers(1600, true)
 		if  J.GetManaAfter(Blink:GetManaCost()) > 0.85
 		and J.IsInLaningPhase()
@@ -321,7 +321,7 @@ function X.ConsiderBlink()
             end
 		end
 
-        -- nInRangeEnemy = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+        -- nInRangeEnemy = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE)
 		-- if bot.laneToPush ~= nil
 		-- then
 		-- 	if  J.GetManaAfter(Blink:GetManaCost()) * bot:GetMana() > ManaVoid:GetManaCost() * 2
@@ -338,7 +338,7 @@ function X.ConsiderBlink()
 	if  J.IsDefending(bot)
 	and bot:GetActiveModeDesire() > BOT_MODE_DESIRE_HIGH
 	then
-        local nInRangeEnemy = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE)
 		if bot.laneToDefend ~= nil
 		then
 			if  J.GetManaAfter(Blink:GetManaCost()) * bot:GetMana() > ManaVoid:GetManaCost() * 2
@@ -423,7 +423,7 @@ function X.ConsiderManaVoid()
 	if J.IsInTeamFight(bot, 1200)
 	then
 		local nCastTarget = nil
-		local nInRangeEnemy = bot:GetNearbyHeroes(nCastRange + 200, true, BOT_MODE_NONE)
+		local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange + 200, true, BOT_MODE_NONE)
 		for _, enemyHero in pairs(nInRangeEnemy)
 		do
 			local nDamage = nDamagaPerHealth * (enemyHero:GetMaxMana() - enemyHero:GetMana())
@@ -468,8 +468,8 @@ function X.ConsiderManaVoid()
 		and not botTarget:HasModifier('modifier_necrolyte_reapers_scythe')
 		and not botTarget:HasModifier('modifier_oracle_false_promise_timer')
 		then
-			local nInRangeAlly = botTarget:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
-			local nTargetInRangeAlly = botTarget:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+			local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1200, true, BOT_MODE_NONE)
+			local nTargetInRangeAlly = J.GetNearbyHeroes(botTarget, 1200, false, BOT_MODE_NONE)
 			local nDamage = nDamagaPerHealth * (botTarget:GetMaxMana() - botTarget:GetMana())
 
 			if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
@@ -494,7 +494,7 @@ function X.ConsiderCounterSpellAlly()
 	end
 
 	local nCastRange = CounterSpellAlly:GetCastRange()
-	local nInRangeAlly = bot:GetNearbyHeroes(nCastRange, false, BOT_MODE_NONE)
+	local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange, false, BOT_MODE_NONE)
 
 	for _, allyHero in pairs(nInRangeAlly)
 	do
@@ -547,8 +547,8 @@ function X.ConsiderBlinkFragment()
 			and not enemyHero:HasModifier('modifier_faceless_void_chronosphere_freeze')
 			and not enemyHero:HasModifier('modifier_necrolyte_reapers_scythe')
 			then
-				local nInRangeAlly = enemyHero:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
-				local nTargetInRangeAlly = enemyHero:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+				local nInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, true, BOT_MODE_NONE)
+				local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
 
 				if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
 				and #nInRangeAlly >= #nTargetInRangeAlly
@@ -568,7 +568,7 @@ function X.ConsiderBlinkFragment()
 
 	if J.IsRetreating(bot)
 	then
-        local nInRangeEnemy = bot:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,1200, true, BOT_MODE_NONE)
 		for _, enemyHero in pairs(nInRangeEnemy)
         do
 			if  J.IsValidHero(enemyHero)
@@ -577,8 +577,8 @@ function X.ConsiderBlinkFragment()
 			and not J.IsDisabled(enemyHero)
 			and not J.IsRealInvisible(bot)
 			then
-				local nInRangeAlly = enemyHero:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
-				local nTargetInRangeAlly = enemyHero:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+				local nInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, true, BOT_MODE_NONE)
+				local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
 
 				if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
 				and ((#nTargetInRangeAlly > #nInRangeAlly)
@@ -624,8 +624,8 @@ function X.ConsiderBlinkVoid()
 		and not enemyHero:HasModifier('modifier_necrolyte_reapers_scythe')
 		and not enemyHero:HasModifier('modifier_oracle_false_promise_timer')
 		then
-			local nInRangeAlly = enemyHero:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
-			local nInRangeEnemy = enemyHero:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
+			local nInRangeAlly = J.GetNearbyHeroes(enemyHero, 1600, true, BOT_MODE_NONE)
+			local nInRangeEnemy = J.GetNearbyHeroes(enemyHero, 1600, false, BOT_MODE_NONE)
 			local nDamage = nDamagaPerHealth * (enemyHero:GetMaxMana() - enemyHero:GetMana())
 
 			if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil

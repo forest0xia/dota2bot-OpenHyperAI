@@ -227,7 +227,7 @@ function X.SkillsComplement()
 	nMP = bot:GetMana()/bot:GetMaxMana()
 	nHP = bot:GetHealth()/bot:GetMaxHealth()
 	botTarget = J.GetProperTarget( bot )
-	hEnemyList = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+	hEnemyList = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 	hAllyList = J.GetAlliesNearLoc( bot:GetLocation(), 1600 )
 
 
@@ -296,7 +296,7 @@ function X.ConsiderQ()
 	local nRadius = abilityQ:GetSpecialValueInt( "dragon_slave_width_end" )
 	local nDamageType = DAMAGE_TYPE_MAGICAL
 
-	local nInRangeEnemyList = bot:GetNearbyHeroes( nCastRange -80, true, BOT_MODE_NONE )
+	local nInRangeEnemyList = J.GetNearbyHeroes(bot, nCastRange -80, true, BOT_MODE_NONE )
 	local nTargetLocation = nil
 
 	--击杀
@@ -495,7 +495,7 @@ function X.ConsiderW()
 	local nDamageType = DAMAGE_TYPE_MAGICAL
 	local nRadius 	 = abilityW:GetSpecialValueInt( "light_strike_array_aoe" )
 
-	local nInRangeEnemyList = bot:GetNearbyHeroes( nCastRange + nRadius * 0.5, true, BOT_MODE_NONE )
+	local nInRangeEnemyList = J.GetNearbyHeroes(bot, nCastRange + nRadius * 0.5, true, BOT_MODE_NONE )
 
 	local nTargetLocation = nil
 
@@ -697,8 +697,8 @@ function X.ConsiderR()
 	local nDamageType = bot:HasScepter() and DAMAGE_TYPE_PURE or DAMAGE_TYPE_MAGICAL
 
 
-	local nInRangeEnemyList = bot:GetNearbyHeroes( nCastRange + 80, true, BOT_MODE_NONE )
-	local nInBonusEnemyList = bot:GetNearbyHeroes( nCastRange + 240, true, BOT_MODE_NONE )
+	local nInRangeEnemyList = J.GetNearbyHeroes(bot, nCastRange + 80, true, BOT_MODE_NONE )
+	local nInBonusEnemyList = J.GetNearbyHeroes(bot, nCastRange + 240, true, BOT_MODE_NONE )
 
 
 	--击杀
@@ -790,8 +790,8 @@ function X.ConsiderFlameCloak()
 	end
 
 	local nAttackRange = bot:GetAttackRange()
-	local nEnemyHeroes = bot:GetNearbyHeroes(nAttackRange, true, BOT_MODE_NONE)
-	local nAlliedHeroes = bot:GetNearbyHeroes(nAttackRange, false, BOT_MODE_NONE)
+	local nEnemyHeroes = J.GetNearbyHeroes(bot,nAttackRange, true, BOT_MODE_NONE)
+	local nAlliedHeroes = J.GetNearbyHeroes(bot,nAttackRange, false, BOT_MODE_NONE)
 
 	if J.IsRetreating(bot)
 	and (nEnemyHeroes ~= nil and nAlliedHeroes ~= nil and #nEnemyHeroes >= #nAlliedHeroes)

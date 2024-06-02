@@ -145,7 +145,7 @@ function X.SkillsComplement()
 	nLV = bot:GetLevel()
 	nMP = bot:GetMana()/bot:GetMaxMana()
 	nHP = bot:GetHealth()/bot:GetMaxHealth()
-	hEnemyHeroList = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+	hEnemyHeroList = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 
 
 	castWDesire, castWTarget = X.ConsiderW()
@@ -186,7 +186,7 @@ function X.ConsiderQ()
 	local nCastRange = bot:GetAttackRange() + 150
 	local nSkillLv = abilityQ:GetLevel()
 	
-	local nInRangeEnemyHeroList = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+	local nInRangeEnemyHeroList = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 	local nInRangeEnemyCreepList = bot:GetNearbyCreeps(nCastRange, true)
 	local nInRangeEnemyLaneCreepList = bot:GetNearbyLaneCreeps(nCastRange, true)
 	local nAllyLaneCreepList = bot:GetNearbyLaneCreeps(800, false)
@@ -251,7 +251,7 @@ function X.ConsiderW()
 
 	if J.IsRetreating( bot )
 	then
-		local tableNearbyEnemyHeroes = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+		local tableNearbyEnemyHeroes = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 		for _, npcEnemy in pairs( tableNearbyEnemyHeroes )
 		do
 			if J.IsValidHero( npcEnemy )
@@ -270,7 +270,7 @@ function X.ConsiderW()
 		local npcMaxManaEnemy = nil
 		local nEnemyMaxMana = 0
 
-		local tableNearbyEnemyHeroes = bot:GetNearbyHeroes( nCastRange + 50, true, BOT_MODE_NONE )
+		local tableNearbyEnemyHeroes = J.GetNearbyHeroes(bot, nCastRange + 50, true, BOT_MODE_NONE )
 		for _, npcEnemy in pairs( tableNearbyEnemyHeroes )
 		do
 			if J.IsValidHero( npcEnemy )
@@ -328,7 +328,7 @@ function X.ConsiderW()
 		if #nCreeps >= 2 and nSkillLv >= 3
 		then
 			local creeps = bot:GetNearbyCreeps( 1400, true )
-			local heroes = bot:GetNearbyHeroes( 1000, true, BOT_MODE_NONE )
+			local heroes = J.GetNearbyHeroes(bot, 1000, true, BOT_MODE_NONE )
 			if J.IsValid( nCreeps[1] )
 				and #creeps + #heroes >= 4
 				and J.CanCastOnNonMagicImmune( nCreeps[1] )
@@ -369,7 +369,7 @@ function X.ConsiderR()
 
 	if J.IsRetreating( bot )
 	then
-		local tableNearbyEnemyHeroes = bot:GetNearbyHeroes( 1000, true, BOT_MODE_NONE )
+		local tableNearbyEnemyHeroes = J.GetNearbyHeroes(bot, 1000, true, BOT_MODE_NONE )
 		for _, npcEnemy in pairs( tableNearbyEnemyHeroes )
 		do
 			if ( bot:WasRecentlyDamagedByHero( npcEnemy, 2.0 ) and npcEnemy:IsFacingLocation( bot:GetLocation(), 20 ) )
@@ -391,7 +391,7 @@ function X.ConsiderR()
 			end
 		end
 
-		local nEnemysHerosInSkillRange = bot:GetNearbyHeroes( 800, true, BOT_MODE_NONE )
+		local nEnemysHerosInSkillRange = J.GetNearbyHeroes(bot, 800, true, BOT_MODE_NONE )
 		if #nEnemysHerosInSkillRange >= 3
 		then
 			return BOT_ACTION_DESIRE_HIGH
@@ -424,7 +424,7 @@ end
 
 function X.GetHurtCount( nUnit, nCount )
 
-	local nHeroes = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+	local nHeroes = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 	local nCreeps = bot:GetNearbyCreeps( 1600, true, BOT_MODE_NONE )
 	local nTable = {}
 	table.insert( nTable, nUnit )

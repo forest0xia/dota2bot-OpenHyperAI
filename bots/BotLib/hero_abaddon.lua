@@ -172,7 +172,7 @@ function X.ConsiderMistCoil()
         nDamageType = DAMAGE_TYPE_PURE
     end
 
-    local nEnemyHeroes = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+    local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
     for _, enemyHero in pairs(nEnemyHeroes)
     do
         if  J.IsValidHero(enemyHero)
@@ -187,7 +187,7 @@ function X.ConsiderMistCoil()
         end
     end
 
-    local nAllyHeroes = bot:GetNearbyHeroes(nCastRange, false, BOT_MODE_NONE)
+    local nAllyHeroes = J.GetNearbyHeroes(bot,nCastRange, false, BOT_MODE_NONE)
 	for _, allyHero in pairs(nAllyHeroes)
 	do
         if  J.IsValidHero(allyHero)
@@ -232,8 +232,8 @@ function X.ConsiderMistCoil()
     if  J.IsRetreating(bot)
     and J.IsInRange(bot, botTarget, nCastRange)
 	then
-        local nInRangeAlly = bot:GetNearbyHeroes(nCastRange + 200, false, BOT_MODE_NONE)
-        local nInRangeEnemy = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+        local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange + 200, false, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 
         if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
         and ((#nInRangeAlly == 0 and #nInRangeEnemy >= 1)
@@ -282,7 +282,7 @@ function X.ConsiderAphoticShield()
 	local nCastRange  = AphoticShield:GetCastRange()
     local botTarget = J.GetProperTarget(bot)
 
-    local nAllyHeroes = bot:GetNearbyHeroes(nCastRange, false, BOT_MODE_NONE)
+    local nAllyHeroes = J.GetNearbyHeroes(bot,nCastRange, false, BOT_MODE_NONE)
     for _, allyHero in pairs(nAllyHeroes)
 	do
         if  J.IsValidHero(allyHero)
@@ -312,7 +312,7 @@ function X.ConsiderAphoticShield()
         and not allyHero:IsIllusion()
         and J.IsNotSelf(bot, allyHero)
 		then
-            local nAllyInRangeEnemy = allyHero:GetNearbyHeroes(800, true, BOT_MODE_NONE)
+            local nAllyInRangeEnemy = J.GetNearbyHeroes(allyHero, 800, true, BOT_MODE_NONE)
 
             if  J.IsRetreating(allyHero)
             and allyHero:WasRecentlyDamagedByAnyHero(1.6)
@@ -347,8 +347,8 @@ function X.ConsiderAphoticShield()
                 and not allyTarget:HasModifier('modifier_enigma_black_hole_pull')
                 and not allyTarget:HasModifier('modifier_necrolyte_reapers_scythe')
 				then
-                    local nAllInRangeAlly = allyHero:GetNearbyHeroes(800, false, BOT_MODE_NONE)
-                    local nTargetInRangeAlly = allyTarget:GetNearbyHeroes(800, false, BOT_MODE_NONE)
+                    local nAllInRangeAlly = J.GetNearbyHeroes(allyHero, 800, false, BOT_MODE_NONE)
+                    local nTargetInRangeAlly = J.GetNearbyHeroes(allyTarget, 800, false, BOT_MODE_NONE)
 
                     if  nAllInRangeAlly ~= nil and  nTargetInRangeAlly ~= nil
                     and #nAllInRangeAlly >= #nTargetInRangeAlly
@@ -362,8 +362,8 @@ function X.ConsiderAphoticShield()
 
 	if J.IsGoingOnSomeone(bot)
     then
-		local nInRangeAlly = bot:GetNearbyHeroes(1000, false, BOT_MODE_NONE)
-        local nInRangeEnemy = bot:GetNearbyHeroes(1000, true, BOT_MODE_NONE)
+		local nInRangeAlly = J.GetNearbyHeroes(bot,1000, false, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,1000, true, BOT_MODE_NONE)
 
 		if  J.IsValidTarget(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
@@ -372,7 +372,7 @@ function X.ConsiderAphoticShield()
         and not botTarget:HasModifier('modifier_faceless_void_chronosphere_freeze')
         and not botTarget:HasModifier('modifier_enigma_black_hole_pull')
         then
-            local nTargetInRangeAlly = botTarget:GetNearbyHeroes(800, false, BOT_MODE_NONE)
+            local nTargetInRangeAlly = J.GetNearbyHeroes(botTarget, 800, false, BOT_MODE_NONE)
 
             if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
             and #nInRangeAlly >= #nTargetInRangeAlly
@@ -411,8 +411,8 @@ function X.ConsiderAphoticShield()
 
     if J.IsRetreating(bot)
     then
-        local nInRangeAlly = bot:GetNearbyHeroes(800, false, BOT_MODE_NONE)
-        local nInRangeEnemy = bot:GetNearbyHeroes(800, true, BOT_MODE_NONE)
+        local nInRangeAlly = J.GetNearbyHeroes(bot,800, false, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,800, true, BOT_MODE_NONE)
 
         if  nInRangeAlly ~= nil and nInRangeEnemy
         and J.IsValidHero(nInRangeEnemy[1])
@@ -426,7 +426,7 @@ function X.ConsiderAphoticShield()
         and not nInRangeEnemy[1]:HasModifier('modifier_faceless_void_chronosphere_freeze')
         and not nInRangeEnemy[1]:HasModifier('modifier_necrolyte_reapers_scythe')
         then
-            local nTargetInRangeAlly = nInRangeEnemy[1]:GetNearbyHeroes(800, false, BOT_MODE_NONE)
+            local nTargetInRangeAlly = J.GetNearbyHeroes(nInRangeEnemy[1], 800, false, BOT_MODE_NONE)
 
             if  nTargetInRangeAlly ~= nil
             and ((#nTargetInRangeAlly > #nInRangeAlly)

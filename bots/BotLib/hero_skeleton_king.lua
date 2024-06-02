@@ -172,7 +172,7 @@ function X.SkillsComplement()
 	nLV = bot:GetLevel()
 	nMP = bot:GetMana()/bot:GetMaxMana()
 	nHP = bot:GetHealth()/bot:GetMaxHealth()
-	hEnemyHeroList = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+	hEnemyHeroList = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 
 
 	castQDesire, castQTarget = X.ConsiderQ()
@@ -213,9 +213,9 @@ function X.ConsiderQ()
 	local nDamage = 40 * ( nSkillLV - 1 ) + 100
 	local nDamageType = DAMAGE_TYPE_MAGICAL
 
-	local allyList =  bot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE )
+	local allyList =  J.GetNearbyHeroes(bot, 1200, false, BOT_MODE_NONE )
 
-	local nEnemysHerosInView = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+	local nEnemysHerosInView = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 
 	if #nEnemysHerosInView == 1
 		and J.IsValidHero( nEnemysHerosInView[1] )
@@ -227,8 +227,8 @@ function X.ConsiderQ()
 		nCastRange = nCastRange + 260
 	end
 
-	local nEnemysHerosInRange = bot:GetNearbyHeroes( nCastRange + 43, true, BOT_MODE_NONE )
-	local nEnemysHerosInBonus = bot:GetNearbyHeroes( nCastRange + 330, true, BOT_MODE_NONE )
+	local nEnemysHerosInRange = J.GetNearbyHeroes(bot, nCastRange + 43, true, BOT_MODE_NONE )
+	local nEnemysHerosInBonus = J.GetNearbyHeroes(bot, nCastRange + 330, true, BOT_MODE_NONE )
 
 	--打断和击杀
 	for _, npcEnemy in pairs( nEnemysHerosInBonus )
@@ -429,7 +429,7 @@ function X.ConsiderW()
 	end
 	local maxStack = abilityW:GetSpecialValueInt( "max_skeleton_charges" )
 
-	local nEnemysHerosInView = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+	local nEnemysHerosInView = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 	local npcTarget = J.GetProperTarget( bot )
 
 	--辅助进攻

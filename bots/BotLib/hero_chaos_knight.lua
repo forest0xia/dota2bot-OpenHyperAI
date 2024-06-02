@@ -146,7 +146,7 @@ function X.SkillsComplement()
 	nMP = bot:GetMana()/bot:GetMaxMana()
 	nHP = bot:GetHealth()/bot:GetMaxHealth()
 	nLV = bot:GetLevel()
-	hEnemyHeroList = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+	hEnemyHeroList = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 	abilityArmlet = J.IsItemAvailable( "item_armlet" )
 
 	castRDesire = X.ConsiderR()
@@ -197,8 +197,8 @@ function X.ConsiderQ()
 	local nSkillLV = abilityQ:GetLevel()
 	local nDamage = 30 + nSkillLV * 30 + 120 * 0.38
 
-	local nEnemysHeroesInCastRange = bot:GetNearbyHeroes( nCastRange + 99, true, BOT_MODE_NONE )
-	local nEnemysHeroesInView = bot:GetNearbyHeroes( 880, true, BOT_MODE_NONE )
+	local nEnemysHeroesInCastRange = J.GetNearbyHeroes(bot, nCastRange + 99, true, BOT_MODE_NONE )
+	local nEnemysHeroesInView = J.GetNearbyHeroes(bot, 880, true, BOT_MODE_NONE )
 
 	--击杀
 	if #nEnemysHeroesInCastRange > 0 then
@@ -320,7 +320,7 @@ function X.ConsiderW()
 	local nDamage = 0
 	local bIgnoreMagicImmune = talent6:IsTrained()
 
-	local nEnemysHeroesInCastRange = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nEnemysHeroesInCastRange = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 
 	if J.IsGoingOnSomeone( bot )
@@ -340,7 +340,7 @@ function X.ConsiderW()
 
 	if J.IsRetreating( bot )
 	then
-		local enemies = bot:GetNearbyHeroes( 800, true, BOT_MODE_NONE )
+		local enemies = J.GetNearbyHeroes(bot, 800, true, BOT_MODE_NONE )
 		local creeps = bot:GetNearbyLaneCreeps( nCastRange, true )
 
 		if enemies[1] ~= nil and creeps[1] ~= nil

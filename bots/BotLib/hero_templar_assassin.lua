@@ -241,7 +241,7 @@ function X.SkillsComplement()
 	nLV = bot:GetLevel()
 	nMP = bot:GetMana()/bot:GetMaxMana()
 	nHP = bot:GetHealth()/bot:GetMaxHealth()
-	hEnemyHeroList = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+	hEnemyHeroList = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 	if midLoc == nil
 	then
 		local opMidTower1 = GetTower( GetOpposingTeam(), TOWER_MID_1 )
@@ -299,7 +299,7 @@ function X.ConsiderQ()
 	local nSkillLV = abilityQ:GetLevel()
 	local nManaCost = abilityQ:GetManaCost()
 
-	local tableNearbyEnemyHeroes = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+	local tableNearbyEnemyHeroes = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 	if nHP < 0.8
 	then
 		for _, npcEnemy in pairs( tableNearbyEnemyHeroes )
@@ -424,7 +424,7 @@ function X.ConsiderQ()
 	--通用的
 	if nLV >= 12 and bot:GetMana() > 325
 	then
-		local tableNearbyEnemyHeroes = bot:GetNearbyHeroes( 800, true, BOT_MODE_NONE )
+		local tableNearbyEnemyHeroes = J.GetNearbyHeroes(bot, 800, true, BOT_MODE_NONE )
 		local tableNearbyEnemyCreeps = bot:GetNearbyLaneCreeps( 1600, true )
 		local tableNearbyEnemyTowers = bot:GetNearbyTowers( 1600, true )
 		if #tableNearbyEnemyHeroes > 0
@@ -473,7 +473,7 @@ function X.ConsiderW()
 	local nDamage = abilityW:GetSpecialValueInt( "bonus_damage" )
 	local nDamageType = DAMAGE_TYPE_PHYSICAL
 	local nTotalDamage = nAttackDamage + nDamage
-	local nEnemyHeroInView = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+	local nEnemyHeroInView = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 
 
 	if ( bot:GetActiveMode() == BOT_MODE_ROSHAN )
@@ -609,12 +609,12 @@ function X.ConsiderR()
 	local nSkillLV = abilityR:GetLevel()
 
 	local creeps = bot:GetNearbyCreeps( 1000, true )
-	local enemyHeroes = bot:GetNearbyHeroes( 600, true, BOT_MODE_NONE )
+	local enemyHeroes = J.GetNearbyHeroes(bot, 600, true, BOT_MODE_NONE )
 
 
 	if J.IsRetreating( bot )
 	then
-		local tableNearbyEnemyHeroes = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+		local tableNearbyEnemyHeroes = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 		for _, npcEnemy in pairs( tableNearbyEnemyHeroes )
 		do
 			if J.IsMoving( npcEnemy )
@@ -669,7 +669,7 @@ function X.ConsiderR()
 	end
 
 	--对特殊地点使用
-	local tableNearbyEnemyHeroes = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+	local tableNearbyEnemyHeroes = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 	if runeLocCheckTime < DotaTime() - 1.0
 		and #tableNearbyEnemyHeroes == 0
 		and not bot:WasRecentlyDamagedByAnyHero( 3.0 )
@@ -768,7 +768,7 @@ function X.TAConsiderTarget()
 
 	local nAttackRange = bot:GetAttackRange() + 40
 	if nAttackRange > 1600 then nAttackRange = 1600 end
-	local nEnemyHeroInRange = bot:GetNearbyHeroes( nAttackRange, true, BOT_MODE_NONE )
+	local nEnemyHeroInRange = J.GetNearbyHeroes(bot, nAttackRange, true, BOT_MODE_NONE )
 
 	local nInAttackRangeNearestEnemyHero = nEnemyHeroInRange[1]
 

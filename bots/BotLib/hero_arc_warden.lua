@@ -244,7 +244,7 @@ function X.ConsiderFlux()
 	local nDuration = Flux:GetSpecialValueInt('duration')
 	local nDamage = nDot * nDuration
 
-	local nEnemyHeroes = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+	local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 	for _, enemyHero in pairs(nEnemyHeroes)
 	do
 		if  J.IsValidHero(enemyHero)
@@ -267,7 +267,7 @@ function X.ConsiderFlux()
 		local npcMostDangerousEnemy = nil
 		local nMostDangerousDamage = 0
 
-		local nInRangeEnemy = bot:GetNearbyHeroes(nCastRange + 150, true, BOT_MODE_NONE)
+		local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange + 150, true, BOT_MODE_NONE)
 		for _, enemyHero in pairs(nInRangeEnemy)
 		do
 			if  J.IsValid(enemyHero)
@@ -303,8 +303,8 @@ function X.ConsiderFlux()
 		and not botTarget:HasModifier('modifier_abaddon_borrowed_time')
 		and not botTarget:HasModifier('modifier_necrolyte_reapers_scythe')
 		then
-			local nInRangeAlly = botTarget:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
-			local nInRangeEnemy = botTarget:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
+			local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1600, true, BOT_MODE_NONE)
+			local nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1600, false, BOT_MODE_NONE)
 
 			if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 			and #nInRangeAlly >= #nInRangeEnemy
@@ -316,7 +316,7 @@ function X.ConsiderFlux()
 
 	if J.IsRetreating(bot)
 	then
-        local nInRangeEnemy = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 		if  J.IsValidHero(nInRangeEnemy[1])
 		and J.CanCastOnNonMagicImmune(nInRangeEnemy[1])
 		and J.CanCastOnTargetAdvanced(nInRangeEnemy[1])
@@ -324,8 +324,8 @@ function X.ConsiderFlux()
 		and not J.IsSuspiciousIllusion(nInRangeEnemy[1])
 		and not J.IsDisabled(nInRangeEnemy[1])
 		then
-			local nInRangeAlly = nInRangeEnemy[1]:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
-			local nTargetInRangeAlly = nInRangeEnemy[1]:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+			local nInRangeAlly = J.GetNearbyHeroes(nInRangeEnemy[1], 1200, true, BOT_MODE_NONE)
+			local nTargetInRangeAlly = J.GetNearbyHeroes(nInRangeEnemy[1], 1200, false, BOT_MODE_NONE)
 
 			if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
 			and ((#nTargetInRangeAlly > #nInRangeAlly)
@@ -393,7 +393,7 @@ function X.ConsiderMagneticField()
 		if  J.IsValidTarget(botTarget)
 		and J.IsInRange(bot, botTarget, nCastRange)
 		then
-			local nInRangeAllyAttack = bot:GetNearbyHeroes(nCastRange, false, BOT_MODE_ATTACK)
+			local nInRangeAllyAttack = J.GetNearbyHeroes(bot,nCastRange, false, BOT_MODE_ATTACK)
 			for _, allyHero in pairs(nInRangeAllyAttack)
 			do
 				local allyTarget = allyHero:GetAttackTarget()
@@ -404,8 +404,8 @@ function X.ConsiderMagneticField()
 				and not J.IsSuspiciousIllusion(allyTarget)
 				and not allyTarget:HasModifier('modifier_abaddon_borrowed_time')
 				then
-					local nInRangeAlly = botTarget:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
-					local nInRangeEnemy = botTarget:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
+					local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1600, true, BOT_MODE_NONE)
+					local nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1600, false, BOT_MODE_NONE)
 
 					if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 					and #nInRangeAlly >= #nInRangeEnemy
@@ -493,7 +493,7 @@ function X.ConsiderSparkWraith()
 	local nCastPoint = SparkWraith:GetCastPoint()
 	local nDelay = SparkWraith:GetSpecialValueInt('activation_delay') + nCastPoint
 
-	local nEnemyHeroes = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+	local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 	for _, enemyHero in pairs(nEnemyHeroes)
 	do
 		if  J.IsValidHero(enemyHero)
@@ -522,8 +522,8 @@ function X.ConsiderSparkWraith()
 		and not botTarget:HasModifier('modifier_templar_assassin_refraction_absorb')
 		and not botTarget:HasModifier('modifier_item_aeon_disk_buff')
 		then
-			local nInRangeAlly = botTarget:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
-			local nInRangeEnemy = botTarget:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
+			local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1600, true, BOT_MODE_NONE)
+			local nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1600, false, BOT_MODE_NONE)
 
 			if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 			then
@@ -556,7 +556,7 @@ function X.ConsiderSparkWraith()
 	and bot:GetActiveModeDesire() > BOT_ACTION_DESIRE_HIGH
 	and not bot:HasModifier('modifier_silencer_curse_of_the_silent')
 	then
-		local nInRangeEnemy = bot:GetNearbyHeroes(800, true, BOT_MODE_NONE)
+		local nInRangeEnemy = J.GetNearbyHeroes(bot,800, true, BOT_MODE_NONE)
 		for _, enemyHero in pairs(nInRangeEnemy)
 		do
 			if  J.IsValid(enemyHero)
@@ -671,7 +671,7 @@ function X.ConsiderSparkWraith()
 			end
 		end
 
-		local nEnemyHeroesInView = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+		local nEnemyHeroesInView = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE)
 		local nEnemyLaneFront = J.GetNearestLaneFrontLocation(bot:GetLocation(), true, nRadius / 2)
 
 		if  nEnemyHeroesInView ~= nil and #nEnemyHeroesInView == 0 and nEnemyLaneFront ~= nil
@@ -756,7 +756,7 @@ function X.ConsiderTempestDouble()
 	then
 		local target = nil
 		local hp = 0
-		local nInRangeEnemy = bot:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
+		local nInRangeEnemy = J.GetNearbyHeroes(bot,1200, true, BOT_MODE_NONE)
 		for _, enemyHero in pairs(nInRangeEnemy)
 		do
 			if  J.IsValidHero(enemyHero)
@@ -792,8 +792,8 @@ function X.ConsiderTempestDouble()
 		and not botTarget:HasModifier('modifier_abaddon_borrowed_time')
 		and not botTarget:HasModifier('modifier_necrolyte_reapers_scythe')
 		then
-			local nInRangeAlly = botTarget:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
-			local nInRangeEnemy = botTarget:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
+			local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1600, true, BOT_MODE_NONE)
+			local nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1600, false, BOT_MODE_NONE)
 
 			if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 			and #nInRangeAlly + 1 >= #nInRangeEnemy

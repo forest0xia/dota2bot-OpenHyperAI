@@ -212,7 +212,7 @@ function X.SkillsComplement()
 	nLV = bot:GetLevel()
 	nMP = bot:GetMana()/bot:GetMaxMana()
 	nHP = bot:GetHealth()/bot:GetMaxHealth()
-	hEnemyHeroList = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+	hEnemyHeroList = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 	abilityRef = J.IsItemAvailable( "item_refresher" )
 
 
@@ -290,8 +290,8 @@ function X.ConsiderStop()
 		and bot:GetActiveMode() ~= BOT_MODE_SIDE_SHOP
 		and abilityE:IsTrained() and not abilityE:IsFullyCastable()
 	then
-		local tableEnemyHeroes = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
-		local tableAllyHeroes = bot:GetNearbyHeroes( 1600, false, BOT_MODE_NONE )
+		local tableEnemyHeroes = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
+		local tableAllyHeroes = J.GetNearbyHeroes(bot, 1600, false, BOT_MODE_NONE )
 		if abilityR:IsFullyCastable()
 			or abilityQ:IsFullyCastable()
 			or abilityW:IsFullyCastable()
@@ -427,7 +427,7 @@ function X.ConsiderE()
 			and J.CanCastOnNonMagicImmune( npcTarget )
 			and J.IsInRange( npcTarget, bot, nCastRange + 200 )
 		then
-			local enemies = npcTarget:GetNearbyHeroes( nRadius, false, BOT_MODE_NONE )
+			local enemies = J.GetNearbyHeroes(npcTarget, nRadius, false, BOT_MODE_NONE )
 			if #enemies >= 2 then
 				return BOT_ACTION_DESIRE_HIGH, npcTarget:GetExtrapolatedLocation( nCastPoint )
 			end
@@ -452,7 +452,7 @@ function X.ConsiderW()
 	if DotaTime() >= lastCheck + 0.5 then
 		local weakest = nil
 		local minHP = 100000
-		local allies = bot:GetNearbyHeroes( nCastRange, false, BOT_MODE_NONE )
+		local allies = J.GetNearbyHeroes(bot, nCastRange, false, BOT_MODE_NONE )
 		if #allies > 0 then
 			for i=1, #allies do
 				if not allies[i]:HasModifier( "modifier_warlock_shadow_word" )
@@ -486,7 +486,7 @@ function X.ConsiderW()
 
 			local npcWeakestEnemy = nil
 			local npcWeakestEnemyHealth = 10000
-			local nEnemysHeroesInRange = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+			local nEnemysHeroesInRange = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 			for _, npcEnemy in pairs( nEnemysHeroesInRange )
 			do
 				if J.IsValid( npcEnemy )
@@ -543,7 +543,7 @@ function X.ConsiderQ()
 		local locationAoE = bot:FindAoELocation( true, true, bot:GetLocation(), nCastRange, nRadius, 0, 0 )
 		if ( locationAoE.count >= 2 )
 		then
-			local nEnemyHeroes = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+			local nEnemyHeroes = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 			if J.IsValidHero( nEnemyHeroes[1] )
 				and J.CanCastOnNonMagicImmune( nEnemyHeroes[1] )
 				and J.CanCastOnTargetAdvanced( nEnemyHeroes[1] )

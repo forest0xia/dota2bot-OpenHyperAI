@@ -130,7 +130,7 @@ function X.ConsiderEarthshock()
 	local nMana = bot:GetMana() / bot:GetMaxMana()
 	local botTarget = J.GetProperTarget(bot)
 
-	local nEnemyHeroes = bot:GetNearbyHeroes(nRadius, true, BOT_MODE_NONE)
+	local nEnemyHeroes = J.GetNearbyHeroes(bot,nRadius, true, BOT_MODE_NONE)
 	local nEnemyTowers = bot:GetNearbyTowers(nRadius * 2, true)
 
 	for _, enemyHero in pairs(nEnemyHeroes)
@@ -144,7 +144,7 @@ function X.ConsiderEarthshock()
 		then
 			if bot:IsFacingLocation(enemyHero:GetExtrapolatedLocation(nLeapDuration), 15)
 			then
-				local nTargetInRangeAlly = enemyHero:GetNearbyHeroes(nRadius + 100, true, BOT_MODE_NONE)
+				local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, nRadius + 100, true, BOT_MODE_NONE)
 
 				if  nTargetInRangeAlly ~= nil and #nTargetInRangeAlly <= 1
 				and J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_MAGICAL)
@@ -157,8 +157,8 @@ function X.ConsiderEarthshock()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		local nInRangeAlly = bot:GetNearbyHeroes(nRadius + 200, false, BOT_MODE_NONE)
-		local nInRangeEnemy = bot:GetNearbyHeroes(nRadius, true, BOT_MODE_NONE)
+		local nInRangeAlly = J.GetNearbyHeroes(bot,nRadius + 200, false, BOT_MODE_NONE)
+		local nInRangeEnemy = J.GetNearbyHeroes(bot,nRadius, true, BOT_MODE_NONE)
 
 		if  J.IsValidTarget(botTarget)
 		and J.IsInRange(bot, botTarget, nRadius)
@@ -178,8 +178,8 @@ function X.ConsiderEarthshock()
 
 	if J.IsRetreating(bot)
 	then
-		local nInRangeAlly = bot:GetNearbyHeroes(nRadius * 2.5, false, BOT_MODE_NONE)
-		local nInRangeEnemy = bot:GetNearbyHeroes(nRadius * 2, true, BOT_MODE_NONE)
+		local nInRangeAlly = J.GetNearbyHeroes(bot,nRadius * 2.5, false, BOT_MODE_NONE)
+		local nInRangeEnemy = J.GetNearbyHeroes(bot,nRadius * 2, true, BOT_MODE_NONE)
 
 		if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 		and ((#nInRangeEnemy > #nInRangeAlly)
@@ -253,8 +253,8 @@ function X.ConsiderOverpower()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		local nInRangeAlly = bot:GetNearbyHeroes(nAttackRange * 3, false, BOT_MODE_NONE)
-		local nInRangeEnemy = bot:GetNearbyHeroes(nAttackRange * 2, true, BOT_MODE_NONE)
+		local nInRangeAlly = J.GetNearbyHeroes(bot,nAttackRange * 3, false, BOT_MODE_NONE)
+		local nInRangeEnemy = J.GetNearbyHeroes(bot,nAttackRange * 2, true, BOT_MODE_NONE)
 
 		if  J.IsValidTarget(botTarget)
 		and J.IsInRange(bot, botTarget, nAttackRange * 2)
@@ -317,8 +317,8 @@ function X.ConsiderEnrage()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		local nInRangeAlly = bot:GetNearbyHeroes(800, false, BOT_MODE_NONE)
-		local nInRangeEnemy = bot:GetNearbyHeroes(600, true, BOT_MODE_NONE)
+		local nInRangeAlly = J.GetNearbyHeroes(bot,800, false, BOT_MODE_NONE)
+		local nInRangeEnemy = J.GetNearbyHeroes(bot,600, true, BOT_MODE_NONE)
 
 		if  J.IsValidTarget(botTarget)
 		and J.IsInRange(bot, botTarget, nAttackRange + 75)
@@ -340,8 +340,8 @@ function X.ConsiderEnrage()
 
 	if J.IsRetreating(bot)
 	then
-		local nInRangeAlly = bot:GetNearbyHeroes(800, false, BOT_MODE_NONE)
-		local nInRangeEnemy = bot:GetNearbyHeroes(600, true, BOT_MODE_NONE)
+		local nInRangeAlly = J.GetNearbyHeroes(bot,800, false, BOT_MODE_NONE)
+		local nInRangeEnemy = J.GetNearbyHeroes(bot,600, true, BOT_MODE_NONE)
 
 		if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 		and ((#nInRangeEnemy > #nInRangeAlly)

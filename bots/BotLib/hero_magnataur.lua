@@ -247,7 +247,7 @@ function X.ConsiderShockwave()
     local nMana = bot:GetMana() / bot:GetMaxMana()
     local botTarget = J.GetProperTarget(bot)
 
-    local nEnemyHeroes = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+    local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
     for _, enemyHero in pairs(nEnemyHeroes)
     do
         if  J.IsValidHero(enemyHero)
@@ -267,8 +267,8 @@ function X.ConsiderShockwave()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-        local nInRangeAlly = bot:GetNearbyHeroes(1000, false, BOT_MODE_NONE)
-        local nInRangeEnemy = bot:GetNearbyHeroes(800, true, BOT_MODE_NONE)
+        local nInRangeAlly = J.GetNearbyHeroes(bot,1000, false, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,800, true, BOT_MODE_NONE)
 
         if  J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
@@ -339,7 +339,7 @@ function X.ConsiderShockwave()
 			and (J.IsKeyWordUnit('ranged', creep) or J.IsKeyWordUnit('siege', creep) or J.IsKeyWordUnit('flagbearer', creep))
 			and creep:GetHealth() <= nDamage
 			then
-				local nInRangeEnemy = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+				local nInRangeEnemy = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE)
 
 				if  nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
 				and GetUnitToUnitDistance(creep, nInRangeEnemy[1]) <= 500
@@ -360,10 +360,10 @@ function X.ConsiderShockwave()
         end
     end
 
-    local nAllyHeroes = bot:GetNearbyHeroes(nCastRange, false, BOT_MODE_NONE)
+    local nAllyHeroes = J.GetNearbyHeroes(bot,nCastRange, false, BOT_MODE_NONE)
     for _, allyHero in pairs(nAllyHeroes)
     do
-        local nAllyInRangeEnemy = allyHero:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+        local nAllyInRangeEnemy = J.GetNearbyHeroes(allyHero, nCastRange, true, BOT_MODE_NONE)
 
         if  J.IsRetreating(allyHero)
         and allyHero:WasRecentlyDamagedByAnyHero(2.1)
@@ -404,7 +404,7 @@ function X.ConsiderEmpower()
 
     local buffAllyUnit = nil
 	local nMaxDamage = 0
-    local nAllyHeroes = bot:GetNearbyHeroes(nCastRange, false, BOT_MODE_NONE)
+    local nAllyHeroes = J.GetNearbyHeroes(bot,nCastRange, false, BOT_MODE_NONE)
 	for _, allyHero in pairs(nAllyHeroes)
 	do
 		if  J.IsValidHero(allyHero)
@@ -422,8 +422,8 @@ function X.ConsiderEmpower()
 
     if J.IsGoingOnSomeone(bot)
 	then
-        local nInRangeAlly = bot:GetNearbyHeroes(nCastRange + 200, false, BOT_MODE_NONE)
-        local nInRangeEnemy = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+        local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange + 200, false, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 
 		if  J.IsValidTarget(botTarget)
         and J.CanBeAttacked(botTarget)
@@ -548,8 +548,8 @@ function X.ConsiderSkewer()
 	if  J.IsGoingOnSomeone(bot)
     and (not CanDoBlinkSkewer() or not CanDoBlinkRPSkewer() or not CanDoBlinkHornTossSkewer())
 	then
-        local nInRangeAlly = bot:GetNearbyHeroes(1000, false, BOT_MODE_NONE)
-        local nInRangeEnemy = bot:GetNearbyHeroes(1000, true, BOT_MODE_NONE)
+        local nInRangeAlly = J.GetNearbyHeroes(bot,1000, false, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,1000, true, BOT_MODE_NONE)
 
         if  J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
@@ -584,8 +584,8 @@ function X.ConsiderSkewer()
 
 	if J.IsRetreating(bot)
 	then
-        local nInRangeAlly = bot:GetNearbyHeroes(800, false, BOT_MODE_NONE)
-        local nInRangeEnemy = bot:GetNearbyHeroes(600, true, BOT_MODE_NONE)
+        local nInRangeAlly = J.GetNearbyHeroes(bot,800, false, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,600, true, BOT_MODE_NONE)
 
         if  nInRangeAlly ~= nil and nInRangeEnemy
         and ((#nInRangeEnemy > #nInRangeAlly)
@@ -617,7 +617,7 @@ function X.ConsiderReversePolarity()
     if  J.IsInTeamFight(bot, 1200)
     and (not CanDoBlinkRP() or not CanDoBlinkRPSkewer())
 	then
-		local nInRangeEnemy = bot:GetNearbyHeroes(nRadius, true, BOT_MODE_NONE)
+		local nInRangeEnemy = J.GetNearbyHeroes(bot,nRadius, true, BOT_MODE_NONE)
 
 		if nInRangeEnemy ~= nil and #nInRangeEnemy >= 2
         then
@@ -634,8 +634,8 @@ function X.ConsiderReversePolarity()
 
 	if J.IsRetreating(bot)
 	then
-        local nInRangeAlly = bot:GetNearbyHeroes(nRadius + 200, false, BOT_MODE_NONE)
-        local nInRangeEnemy = bot:GetNearbyHeroes(nRadius, true, BOT_MODE_NONE)
+        local nInRangeAlly = J.GetNearbyHeroes(bot,nRadius + 200, false, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,nRadius, true, BOT_MODE_NONE)
 
         if  nInRangeAlly ~= nil and nInRangeEnemy
         and ((#nInRangeEnemy > #nInRangeAlly)
@@ -677,8 +677,8 @@ function X.ConsiderHornToss()
     if  J.IsGoingOnSomeone(bot)
     and not CanDoBlinkHornTossSkewer()
     then
-        local nInRangeAlly = bot:GetNearbyHeroes(800, false, BOT_MODE_NONE)
-        local nInRangeEnemy = bot:GetNearbyHeroes(800, true, BOT_MODE_NONE)
+        local nInRangeAlly = J.GetNearbyHeroes(bot,800, false, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,800, true, BOT_MODE_NONE)
 
         if  J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
@@ -697,8 +697,8 @@ function X.ConsiderHornToss()
 
     if J.IsRetreating(bot)
 	then
-        local nInRangeAlly = bot:GetNearbyHeroes(nRadius + 200, false, BOT_MODE_NONE)
-        local nInRangeEnemy = bot:GetNearbyHeroes(nRadius, true, BOT_MODE_NONE)
+        local nInRangeAlly = J.GetNearbyHeroes(bot,nRadius + 200, false, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,nRadius, true, BOT_MODE_NONE)
 
         if  nInRangeAlly ~= nil and nInRangeEnemy
         and ((#nInRangeEnemy > #nInRangeAlly)
@@ -774,8 +774,8 @@ function X.ConsiderBlinkForSkewer()
 
         if J.IsGoingOnSomeone(bot)
         then
-            local nInRangeAlly = bot:GetNearbyHeroes(1000, false, BOT_MODE_NONE)
-            local nInRangeEnemy = bot:GetNearbyHeroes(800, true, BOT_MODE_NONE)
+            local nInRangeAlly = J.GetNearbyHeroes(bot,1000, false, BOT_MODE_NONE)
+            local nInRangeEnemy = J.GetNearbyHeroes(bot,800, true, BOT_MODE_NONE)
 
             if  J.IsValidTarget(botTarget)
             and J.CanCastOnNonMagicImmune(botTarget)
@@ -799,9 +799,9 @@ function X.ConsiderSkewer2()
     local nRadius = Skewer:GetSpecialValueInt('skewer_radius')
     local nDist = Skewer:GetSpecialValueInt('range')
 
-    local nInRangeAlly = bot:GetNearbyHeroes(800, false, BOT_MODE_NONE)
-    local nInRangeEnemy = bot:GetNearbyHeroes(800, true, BOT_MODE_NONE)
-    local nInRangeEnemy2 = bot:GetNearbyHeroes(nRadius, true, BOT_MODE_NONE)
+    local nInRangeAlly = J.GetNearbyHeroes(bot,800, false, BOT_MODE_NONE)
+    local nInRangeEnemy = J.GetNearbyHeroes(bot,800, true, BOT_MODE_NONE)
+    local nInRangeEnemy2 = J.GetNearbyHeroes(bot,nRadius, true, BOT_MODE_NONE)
 
     for _, enemyHero in pairs(nInRangeEnemy2)
     do
@@ -900,8 +900,8 @@ function X.ConsiderBlinkForHornTossSkewer()
 
         if J.IsGoingOnSomeone(bot)
         then
-            local nInRangeAlly = bot:GetNearbyHeroes(800, false, BOT_MODE_NONE)
-            local nInRangeEnemy = bot:GetNearbyHeroes(800, true, BOT_MODE_NONE)
+            local nInRangeAlly = J.GetNearbyHeroes(bot,800, false, BOT_MODE_NONE)
+            local nInRangeEnemy = J.GetNearbyHeroes(bot,800, true, BOT_MODE_NONE)
 
             if  J.IsValidTarget(botTarget)
             and J.CanCastOnNonMagicImmune(botTarget)

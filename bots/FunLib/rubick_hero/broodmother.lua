@@ -96,8 +96,8 @@ function X.ConsiderInsatiableHunger()
         and not botTarget:HasModifier('modifier_oracle_false_promise_timer')
         and not botTarget:HasModifier('modifier_templar_assassin_refraction_absorb')
 		then
-            local nInRangeAlly = botTarget:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
-            local nInRangeEnemy = botTarget:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+            local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1200, true, BOT_MODE_NONE)
+            local nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1200, false, BOT_MODE_NONE)
 
             if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
             and #nInRangeAlly >= #nInRangeEnemy
@@ -187,8 +187,8 @@ function X.ConsiderSpinWeb()
         and not J.IsLocationInChrono(botTarget:GetLocation())
         and not J.IsLocationInBlackHole(botTarget:GetLocation())
 		then
-            local nInRangeAlly = botTarget:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
-            local nInRangeEnemy = botTarget:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+            local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1200, true, BOT_MODE_NONE)
+            local nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1200, false, BOT_MODE_NONE)
 
             if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
             and #nInRangeAlly >= #nInRangeEnemy
@@ -200,8 +200,8 @@ function X.ConsiderSpinWeb()
 
     if J.IsRetreating(bot)
 	then
-        local nInRangeAlly = bot:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
-        local nInRangeEnemy = bot:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
+        local nInRangeAlly = J.GetNearbyHeroes(bot,1200, false, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,1200, true, BOT_MODE_NONE)
 
         if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
         and J.IsValidHero(nInRangeEnemy[1])
@@ -211,7 +211,7 @@ function X.ConsiderSpinWeb()
         and not J.IsDisabled(nInRangeEnemy[1])
         and not X.DoesLocationHaveWeb(bot:GetLocation(), nRadius)
         then
-            local nTargetInRangeAlly = nInRangeEnemy[1]:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+            local nTargetInRangeAlly = J.GetNearbyHeroes(nInRangeEnemy[1], 1200, false, BOT_MODE_NONE)
 
             if  nTargetInRangeAlly ~= nil
             and ((#nTargetInRangeAlly > #nInRangeAlly)
@@ -281,7 +281,7 @@ function X.ConsiderSilkenBola()
 	local nCastRange = J.GetProperCastRange(false, bot, SilkenBola:GetCastRange())
     local nDamage = SilkenBola:GetSpecialValueInt('impact_damage')
 
-    local nEnemyHeroes = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+    local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
     for _, enemyHero in pairs(nEnemyHeroes)
     do
         if  J.IsValidHero(enemyHero)
@@ -308,8 +308,8 @@ function X.ConsiderSilkenBola()
         and not botTarget:HasModifier('modifier_necrolyte_reapers_scythe')
         and not botTarget:HasModifier('modifier_oracle_false_promise_timer')
 		then
-            local nInRangeAlly = botTarget:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
-            local nInRangeEnemy = botTarget:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+            local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1200, true, BOT_MODE_NONE)
+            local nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1200, false, BOT_MODE_NONE)
 
             if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
             and #nInRangeAlly >= #nInRangeEnemy
@@ -321,8 +321,8 @@ function X.ConsiderSilkenBola()
 
     if J.IsRetreating(bot)
 	then
-        local nInRangeAlly = bot:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
-        local nInRangeEnemy = bot:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
+        local nInRangeAlly = J.GetNearbyHeroes(bot,1200, false, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,1200, true, BOT_MODE_NONE)
 
         if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
         and J.IsValidHero(nInRangeEnemy[1])
@@ -331,7 +331,7 @@ function X.ConsiderSilkenBola()
         and not J.IsSuspiciousIllusion(nInRangeEnemy[1])
         and not nInRangeEnemy[1]:HasModifier('modifier_necrolyte_reapers_scythe')
         then
-            local nTargetInRangeAlly = nInRangeEnemy[1]:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+            local nTargetInRangeAlly = J.GetNearbyHeroes(nInRangeEnemy[1], 1200, false, BOT_MODE_NONE)
 
             if  nTargetInRangeAlly ~= nil
             and ((#nTargetInRangeAlly > #nInRangeAlly)
@@ -342,26 +342,26 @@ function X.ConsiderSilkenBola()
         end
     end
 
-    if J.IsLaning(bot)
-	then
-		local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nCastRange, true)
+    -- if J.IsLaning(bot)
+	-- then
+	-- 	local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nCastRange, true)
 
-		for _, creep in pairs(nEnemyLaneCreeps)
-		do
-			if  J.IsValid(creep)
-			and (J.IsKeyWordUnit('ranged', creep) or J.IsKeyWordUnit('siege', creep) or J.IsKeyWordUnit('flagbearer', creep))
-			and creep:GetHealth() <= nDamage
-			then
-				local nCreepInRangeHero = creep:GetNearbyHeroes(500, false, BOT_MODE_NONE)
+	-- 	for _, creep in pairs(nEnemyLaneCreeps)
+	-- 	do
+	-- 		if  J.IsValid(creep)
+	-- 		and (J.IsKeyWordUnit('ranged', creep) or J.IsKeyWordUnit('siege', creep) or J.IsKeyWordUnit('flagbearer', creep))
+	-- 		and creep:GetHealth() <= nDamage
+	-- 		then
+	-- 			local nCreepInRangeHero = creep:GetNearbyHeroes(500, false, BOT_MODE_NONE)
 
-				if  nCreepInRangeHero ~= nil and #nCreepInRangeHero >= 1
-                and J.GetMP(bot) > 0.49
-				then
-					return BOT_ACTION_DESIRE_HIGH, creep
-				end
-			end
-		end
-	end
+	-- 			if  nCreepInRangeHero ~= nil and #nCreepInRangeHero >= 1
+    --             and J.GetMP(bot) > 0.49
+	-- 			then
+	-- 				return BOT_ACTION_DESIRE_HIGH, creep
+	-- 			end
+	-- 		end
+	-- 	end
+	-- end
 
     if J.IsDoingRoshan(bot)
 	then
@@ -383,10 +383,10 @@ function X.ConsiderSilkenBola()
         end
     end
 
-    local nAllyHeroes = bot:GetNearbyHeroes(nCastRange, false, BOT_MODE_NONE)
+    local nAllyHeroes = J.GetNearbyHeroes(bot,nCastRange, false, BOT_MODE_NONE)
     for _, allyHero in pairs(nAllyHeroes)
     do
-        local nAllyInRangeEnemy = allyHero:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
+        local nAllyInRangeEnemy = J.GetNearbyHeroes(allyHero, 1200, true, BOT_MODE_NONE)
 
         if  J.IsValidHero(allyHero)
         and J.IsRetreating(allyHero)
@@ -425,7 +425,7 @@ function X.ConsiderSpawnSpiderlings()
 	local nCastRange = J.GetProperCastRange(false, bot, SpawnSpiderlings:GetCastRange())
 	local nDamage = SpawnSpiderlings:GetSpecialValueInt('damage')
 
-    local nEnemyHeroes = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+    local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
     for _, enemyHero in pairs(nEnemyHeroes)
     do
         if  J.IsValidHero(enemyHero)

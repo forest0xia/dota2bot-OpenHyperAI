@@ -151,7 +151,7 @@ function X.SkillsComplement()
 	nMP = bot:GetMana() / bot:GetMaxMana()
 	nHP = bot:GetHealth() / bot:GetMaxHealth()
 	botTarget = J.GetProperTarget( bot )
-	hEnemyList = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+	hEnemyList = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 	hAllyList = J.GetAlliesNearLoc( bot:GetLocation(), 1600 )
 
 
@@ -682,7 +682,7 @@ function X.ConsiderDeadInTheWater()
 	end
 
 	local nCastRange = DeadInTheWater:GetCastRange()
-	local nInRangeEnmyList = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 
 	if J.IsRetreating(bot)
 	then

@@ -70,7 +70,7 @@ function GetDesire()
         end
     end
 
-    local nEnemyHeroes = bot:GetNearbyHeroes(700 + bot:GetAttackRange(), true, BOT_MODE_NONE)
+    local nEnemyHeroes = J.GetNearbyHeroes(bot,700 + bot:GetAttackRange(), true, BOT_MODE_NONE)
     if nEnemyHeroes ~= nil and #nEnemyHeroes > 0
     then
         return BOT_ACTION_DESIRE_NONE
@@ -125,7 +125,7 @@ end
 
 --     local nRange = bot:GetAttackRange() + 700
 
---     local enemies = bot:GetNearbyHeroes(nRange, true, BOT_MODE_NONE)
+--     local enemies = J.GetNearbyHeroes(bot,nRange, true, BOT_MODE_NONE)
 --     if enemies ~= nil and #enemies > 0 and J.WeAreStronger(bot, nRange)
 --     then
 --         return bot:ActionPush_AttackUnit(enemies[1], false)

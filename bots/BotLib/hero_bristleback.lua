@@ -165,7 +165,7 @@ function X.SkillsComplement()
 	nHP = bot:GetHealth()/bot:GetMaxHealth()
 	nLV = bot:GetLevel()
 	botTarget = J.GetProperTarget( bot )
-	hEnemyList = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+	hEnemyList = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 
 
 	castASDesire, castASTarget = X.ConsiderAS()
@@ -221,8 +221,8 @@ function X.ConsiderQ()
 	local nCastPoint = abilityQ:GetCastPoint()
 	local nManaCost = abilityQ:GetManaCost()
 
-	local tableNearbyEnemyHeroes = bot:GetNearbyHeroes( nRadius, true, BOT_MODE_NONE )
-	local nEnemyHeroes = bot:GetNearbyHeroes( 800, true, BOT_MODE_NONE )
+	local tableNearbyEnemyHeroes = J.GetNearbyHeroes(bot, nRadius, true, BOT_MODE_NONE )
+	local nEnemyHeroes = J.GetNearbyHeroes(bot, 800, true, BOT_MODE_NONE )
 
 	if J.IsRetreating( bot )
 	then
@@ -307,7 +307,7 @@ function X.ConsiderW()
 	local nCastPoint = abilityW:GetCastPoint()
 	local nManaCost = abilityW:GetManaCost()
 
-	local tableNearbyEnemyHeroes = bot:GetNearbyHeroes( nRadius, true, BOT_MODE_NONE )
+	local tableNearbyEnemyHeroes = J.GetNearbyHeroes(bot, nRadius, true, BOT_MODE_NONE )
 
 	if J.IsRetreating( bot ) and #tableNearbyEnemyHeroes > 0
 	then
@@ -418,7 +418,7 @@ function X.ConsiderAS()
 
 	if J.IsRetreating( bot )
 	then
-		local enemyHeroList = bot:GetNearbyHeroes( nRadius, true, BOT_MODE_NONE )
+		local enemyHeroList = J.GetNearbyHeroes(bot, nRadius, true, BOT_MODE_NONE )
 		local targetHero = enemyHeroList[1]
 		if J.IsValidHero( targetHero )
 			and J.CanCastOnNonMagicImmune( targetHero )
@@ -482,7 +482,7 @@ function X.ConsiderBristleback()
 
 	if J.IsRetreating( bot )
 	then
-		local nEnemyHeroes = bot:GetNearbyHeroes( 700, true, BOT_MODE_NONE )
+		local nEnemyHeroes = J.GetNearbyHeroes(bot, 700, true, BOT_MODE_NONE )
 		if nEnemyHeroes ~= nil and #nEnemyHeroes > 0
 		then
 			local targetHero = nEnemyHeroes[1]

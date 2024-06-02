@@ -74,10 +74,10 @@ function X.ConsiderBloodrage()
 
 	if J.IsInTeamFight( bot, 1200 ) or J.IsPushing( bot ) or J.IsDefending( bot )
 	then
-		local tableNearbyEnemyHeroes = bot:GetNearbyHeroes( 1200, true, BOT_MODE_NONE )
+		local tableNearbyEnemyHeroes = J.GetNearbyHeroes(bot, 1200, true, BOT_MODE_NONE )
 
 		if #tableNearbyEnemyHeroes >= 1 then
-			local tableNearbyAllyHeroes = bot:GetNearbyHeroes( nCastRange + 200, false, BOT_MODE_NONE )
+			local tableNearbyAllyHeroes = J.GetNearbyHeroes(bot, nCastRange + 200, false, BOT_MODE_NONE )
 			local highesAD = 0
 			local highesADUnit = nil
 
@@ -155,8 +155,8 @@ function X.ConsiderBloodRite()
 	local nManaCost = BloodRite:GetManaCost()
 	local nDamage = BloodRite:GetSpecialValueInt( 'damage' )
 
-	local tableNearbyEnemyHeroes = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
-	local tableNearbyAllyHeroes = bot:GetNearbyHeroes( 800, false, BOT_MODE_NONE )
+	local tableNearbyEnemyHeroes = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
+	local tableNearbyAllyHeroes = J.GetNearbyHeroes(bot, 800, false, BOT_MODE_NONE )
 
 	for _, npcEnemy in pairs( tableNearbyEnemyHeroes )
 	do
@@ -242,7 +242,7 @@ function X.ConsiderRupture()
 
 	local nCastRange = Rupture:GetCastRange()
 
-	local tableNearbyEnemyHeroes = bot:GetNearbyHeroes( nCastRange + 200, true, BOT_MODE_NONE )
+	local tableNearbyEnemyHeroes = J.GetNearbyHeroes(bot, nCastRange + 200, true, BOT_MODE_NONE )
 
 	if J.IsRetreating( bot )
 	then
@@ -282,7 +282,7 @@ function X.ConsiderRupture()
 			and not botTarget:HasModifier( 'modifier_bloodseeker_rupture' )
 			and not J.IsDisabled( botTarget )
 		then
-			local allies = botTarget:GetNearbyHeroes( 1200, true, BOT_MODE_NONE )
+			local allies = J.GetNearbyHeroes(botTarget,  1200, true, BOT_MODE_NONE )
 			if ( allies ~= nil and #allies >= 2 )
 			then
 				return BOT_ACTION_DESIRE_HIGH, botTarget
@@ -302,7 +302,7 @@ function X.ConsiderBloodMist()
 	end
 
 	local nRadius = 450
-	local nInRangeEnemyHeroList = bot:GetNearbyHeroes(nRadius, true, BOT_MODE_NONE)
+	local nInRangeEnemyHeroList = J.GetNearbyHeroes(bot,nRadius, true, BOT_MODE_NONE)
 
 	if BloodMist:GetToggleState() == true
 	then

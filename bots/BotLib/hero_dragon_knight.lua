@@ -193,7 +193,7 @@ function X.SkillsComplement()
 	nMP = bot:GetMana()/bot:GetMaxMana()
 	nHP = bot:GetHealth()/bot:GetMaxHealth()
 	nLV = bot:GetLevel()
-	hEnemyHeroList = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+	hEnemyHeroList = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 
 
 	castRDesire = X.ConsiderR()
@@ -253,8 +253,8 @@ function X.ConsiderQ()
 	local nManaCost = abilityQ:GetManaCost()
 	local nDamage = abilityQ:GetAbilityDamage()
 
-	local tableNearbyEnemyHeroes = bot:GetNearbyHeroes( nCastRange + 150, true, BOT_MODE_NONE )
-	local nEnemysHeroesInView = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+	local tableNearbyEnemyHeroes = J.GetNearbyHeroes(bot, nCastRange + 150, true, BOT_MODE_NONE )
+	local nEnemysHeroesInView = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 
 
 	for _, npcEnemy in pairs( tableNearbyEnemyHeroes )
@@ -312,7 +312,7 @@ function X.ConsiderQ()
 		and #nEnemysHeroesInView == 0
 	then
 		local laneCreepList = bot:GetNearbyLaneCreeps( nCastRange + 200, true )
-		local allyHeroes = bot:GetNearbyHeroes( 1000, true, BOT_MODE_NONE )
+		local allyHeroes = J.GetNearbyHeroes(bot, 1000, true, BOT_MODE_NONE )
 		if #laneCreepList >= 2
 			and #allyHeroes <= 2
 			and J.IsValid( laneCreepList[1] )
@@ -377,7 +377,7 @@ function X.ConsiderQ()
 	if bot:GetLevel() < 18
 	then
 		local laneCreepList = bot:GetNearbyLaneCreeps( nCastRange + 200, true )
-		local allyHeroes = bot:GetNearbyHeroes( 1000, true, BOT_MODE_NONE )
+		local allyHeroes = J.GetNearbyHeroes(bot, 1000, true, BOT_MODE_NONE )
 		if #laneCreepList >= 3
 			and #allyHeroes < 3
 			and J.IsValid( laneCreepList[1] )
@@ -411,7 +411,7 @@ function X.ConsiderW()
 		nCastRange = 400
 	end
 
-	local tableNearbyEnemyHeroes = bot:GetNearbyHeroes( nCastRange + 240, true, BOT_MODE_NONE )
+	local tableNearbyEnemyHeroes = J.GetNearbyHeroes(bot, nCastRange + 240, true, BOT_MODE_NONE )
 
 	for _, npcEnemy in pairs( tableNearbyEnemyHeroes )
 	do
@@ -424,7 +424,7 @@ function X.ConsiderW()
 	end
 
 
-	local nEnemysHeroesInView = bot:GetNearbyHeroes( 800, true, BOT_MODE_NONE )
+	local nEnemysHeroesInView = J.GetNearbyHeroes(bot, 800, true, BOT_MODE_NONE )
 	if #nEnemysHeroesInView > 0 then
 		for i=1, #nEnemysHeroesInView do
 			if J.IsValid( nEnemysHeroesInView[i] )
@@ -558,7 +558,7 @@ function X.ConsiderAS()
 
 	if J.IsRetreating( bot )
 	then
-		local enemyHeroList = bot:GetNearbyHeroes( nRadius, true, BOT_MODE_NONE )
+		local enemyHeroList = J.GetNearbyHeroes(bot, nRadius, true, BOT_MODE_NONE )
 		local targetHero = enemyHeroList[1]
 		if J.IsValidHero( targetHero )
 			and J.CanCastOnNonMagicImmune( targetHero )

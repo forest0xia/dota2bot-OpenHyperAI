@@ -178,7 +178,7 @@ function X.SkillsComplement()
 	nMP = bot:GetMana()/bot:GetMaxMana()
 	nHP = bot:GetHealth()/bot:GetMaxHealth()
 	botTarget = J.GetProperTarget( bot )
-	hEnemyList = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+	hEnemyList = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 	hAllyList = J.GetAlliesNearLoc( bot:GetLocation(), 1600 )
 
 
@@ -251,8 +251,8 @@ function X.ConsiderQ()
 	local nManaCost = abilityQ:GetManaCost()
 	local nDamage = abilityQ:GetSpecialValueInt( "damage" ) + talent7Damage
 	local nDamageType = DAMAGE_TYPE_MAGICAL
-	local nInRangeEnemyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
-	local nInBonusEnemyList = bot:GetNearbyHeroes( nCastRange + 220, true, BOT_MODE_NONE )
+	local nInRangeEnemyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
+	local nInBonusEnemyList = J.GetNearbyHeroes(bot, nCastRange + 220, true, BOT_MODE_NONE )
 
 
 	for _, npcEnemy in pairs( nInBonusEnemyList )
@@ -448,8 +448,8 @@ function X.ConsiderW()
 	local nManaCost = abilityW:GetManaCost()
 	local nDamage = abilityW:GetAbilityDamage()
 	local nDamageType = DAMAGE_TYPE_MAGICAL
-	local nInRangeEnemyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
-	local nInBonusEnemyList = bot:GetNearbyHeroes( nCastRange + 240, true, BOT_MODE_NONE )
+	local nInRangeEnemyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
+	local nInBonusEnemyList = J.GetNearbyHeroes(bot, nCastRange + 240, true, BOT_MODE_NONE )
 
 
 
@@ -590,8 +590,8 @@ function X.ConsiderE()
 	local nManaCost = abilityE:GetManaCost()
 	local nDamage = nSkillLV * 100 - 40 + bot:GetAttackDamage() * 2
 	local nDamageType = DAMAGE_TYPE_MAGICAL
-	local nInRangeEnemyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
-	local nInBonusEnemyList = bot:GetNearbyHeroes( nCastRange + 240, true, BOT_MODE_NONE )
+	local nInRangeEnemyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
+	local nInBonusEnemyList = J.GetNearbyHeroes(bot, nCastRange + 240, true, BOT_MODE_NONE )
 
 
 	for _, npcEnemy in pairs( nInBonusEnemyList )
@@ -713,7 +713,7 @@ function X.ConsiderR()
 	local nManaCost = abilityR:GetManaCost()
 	local nDamage = abilityR:GetAbilityDamage()
 	local nDamageType = DAMAGE_TYPE_MAGICAL
-	local nInRangeEnemyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnemyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 	local targetLocation = nil
 
 	if J.IsGoingOnSomeone( bot )

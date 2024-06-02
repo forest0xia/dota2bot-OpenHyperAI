@@ -39,7 +39,7 @@ function X.ConsiderMagicMissile(hMinionUnit, MagicMissile)
     local nAllyHeroes = hMinionUnit:GetNearbyHeroes(nCastRange, false, BOT_MODE_NONE)
     for _, allyHero in pairs(nAllyHeroes)
     do
-        local nAllyInRangeEnemy = allyHero:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
+        local nAllyInRangeEnemy = J.GetNearbyHeroes(allyHero, 1200, true, BOT_MODE_NONE)
 
         if  J.IsValidHero(allyHero)
         and J.IsRetreating(allyHero)
@@ -79,8 +79,8 @@ function X.ConsiderMagicMissile(hMinionUnit, MagicMissile)
 		and not enemyHero:HasModifier('modifier_faceless_void_chronosphere_freeze')
 		and not enemyHero:HasModifier('modifier_necrolyte_reapers_scythe')
 		then
-			local nInRangeAlly = enemyHero:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
-			local nTargetInRangeAlly = enemyHero:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+			local nInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, true, BOT_MODE_NONE)
+			local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
 			local currDmg = enemyHero:GetEstimatedDamageToTarget(true, hMinionUnit, 5, DAMAGE_TYPE_ALL)
 
 			if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
@@ -148,8 +148,8 @@ function X.ConsiderWaveOfTerror(hMinionUnit, WaveOfTerror)
 		and not enemyHero:HasModifier('modifier_faceless_void_chronosphere_freeze')
 		and not enemyHero:HasModifier('modifier_necrolyte_reapers_scythe')
 		then
-			local nInRangeAlly = enemyHero:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
-			local nTargetInRangeAlly = enemyHero:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+			local nInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, true, BOT_MODE_NONE)
+			local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
 			local currDmg = enemyHero:GetEstimatedDamageToTarget(true, hMinionUnit, 5, DAMAGE_TYPE_ALL)
 
 			if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
@@ -214,7 +214,7 @@ function X.ConsiderNetherSwap(hMinionUnit, NetherSwap)
 
 	local target = nil
 	local dmg = 0
-	local nInRangeEnemy = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+	local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 
 	for _, enemyHero in pairs(nInRangeEnemy)
 	do
@@ -229,8 +229,8 @@ function X.ConsiderNetherSwap(hMinionUnit, NetherSwap)
 		and not enemyHero:HasModifier('modifier_necrolyte_reapers_scythe')
 		and not enemyHero:WasRecentlyDamagedByAnyHero(2)
 		then
-			local nInRangeAlly = enemyHero:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
-			local nTargetInRangeAlly = enemyHero:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+			local nInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, true, BOT_MODE_NONE)
+			local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
 			local currDmg = enemyHero:GetEstimatedDamageToTarget(true, bot, 5, DAMAGE_TYPE_ALL)
 
 			if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil

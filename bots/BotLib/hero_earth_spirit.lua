@@ -228,8 +228,8 @@ function X.ConsiderBoulderSmash()
 	local stoneNearby = IsStoneNearby(bot:GetLocation(), nAttackRange)
 	local nMana = bot:GetMana() / bot:GetMaxMana()
 
-	local nInRangeEnemy = bot:GetNearbyHeroes(nAttackRange, true, BOT_MODE_NONE)
-	local nInRangeAlly = bot:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+	local nInRangeEnemy = J.GetNearbyHeroes(bot,nAttackRange, true, BOT_MODE_NONE)
+	local nInRangeAlly = J.GetNearbyHeroes(bot,1200, false, BOT_MODE_NONE)
 	for _, enemyHero in pairs(nInRangeEnemy)
 	do
 		if  J.IsValidHero(enemyHero)
@@ -248,7 +248,7 @@ function X.ConsiderBoulderSmash()
 
 	if stoneNearby
 	then
-		local nEnemyHeroes = bot:GetNearbyHeroes(math.min(nCastRange, 1600), true, BOT_MODE_NONE)
+		local nEnemyHeroes = J.GetNearbyHeroes(bot,math.min(nCastRange, 1600), true, BOT_MODE_NONE)
 		local target = J.GetCanBeKilledUnit(nEnemyHeroes, nDamage, DAMAGE_TYPE_MAGICAL, false)
 
 		if  target ~= nil
@@ -259,7 +259,7 @@ function X.ConsiderBoulderSmash()
 		end
 	elseif nStone >= 1
 	then
-		local nEnemyHeroes = bot:GetNearbyHeroes(math.min(nCastRange, 1600), true, BOT_MODE_NONE)
+		local nEnemyHeroes = J.GetNearbyHeroes(bot,math.min(nCastRange, 1600), true, BOT_MODE_NONE)
 		local target = J.GetCanBeKilledUnit(nEnemyHeroes, nDamage, DAMAGE_TYPE_MAGICAL, false)
 
 		if  target ~= nil
@@ -294,8 +294,8 @@ function X.ConsiderBoulderSmash()
 	if  J.IsRetreating(bot)
 	and bot:WasRecentlyDamagedByAnyHero(2)
 	then
-		local nAllyHeroes = bot:GetNearbyHeroes(1000, false, BOT_MODE_NONE)
-		local nEnemyHeroes = bot:GetNearbyHeroes(800, true, BOT_MODE_NONE)
+		local nAllyHeroes = J.GetNearbyHeroes(bot,1000, false, BOT_MODE_NONE)
+		local nEnemyHeroes = J.GetNearbyHeroes(bot,800, true, BOT_MODE_NONE)
 
 		local target = J.GetClosestUnit(nEnemyHeroes)
 		if target ~= nil and stoneNearby
@@ -329,7 +329,7 @@ function X.ConsiderBoulderSmash()
 				and J.IsKeyWordUnit('ranged', creep)
 				and creep:GetHealth() <= nDamage
 				then
-					local nEnemyHeroes = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+					local nEnemyHeroes = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE)
 
 					if  nEnemyHeroes ~= nil and #nEnemyHeroes >= 1
 					and GetUnitToUnitDistance(creep, nEnemyHeroes[1]) <= 600
@@ -362,7 +362,7 @@ function X.ConsiderRollingBoulder()
 		nNearbyEnemySearchRange = nNearbyEnemySearchRange * 2
 	end
 
-	local nEnemyHeroes = bot:GetNearbyHeroes(math.min(nNearbyEnemySearchRange, 1600), true, BOT_MODE_NONE)
+	local nEnemyHeroes = J.GetNearbyHeroes(bot,math.min(nNearbyEnemySearchRange, 1600), true, BOT_MODE_NONE)
 	for _, enemyHero in pairs(nEnemyHeroes)
 	do
 		if  enemyHero:IsChanneling() or J.IsCastingUltimateAbility(enemyHero)
@@ -426,7 +426,7 @@ function X.ConsiderRollingBoulder()
 		and not J.IsSuspiciousIllusion(botTarget)
 		and not botTarget:HasModifier('modifier_faceless_void_chronosphere')
 		then
-			local nAllyHeroes = bot:GetNearbyHeroes(math.min(nDistance * 2, 1600), false, BOT_MODE_NONE)
+			local nAllyHeroes = J.GetNearbyHeroes(bot,math.min(nDistance * 2, 1600), false, BOT_MODE_NONE)
 
 			if  nEnemyHeroes ~= nil and nAllyHeroes ~= nil
 			and ((#nAllyHeroes >= #nEnemyHeroes) or (#nEnemyHeroes > #nAllyHeroes and J.WeAreStronger(nDistance)))
@@ -452,11 +452,11 @@ function X.ConsiderRollingBoulder()
 		end
 	end
 
-	local nInRangeAlly  = bot:GetNearbyHeroes(math.min(nDistance * 2, 1600), false, BOT_MODE_NONE)
+	local nInRangeAlly  = J.GetNearbyHeroes(bot,math.min(nDistance * 2, 1600), false, BOT_MODE_NONE)
 	if J.IsRetreating(bot)
 	or J.IsRetreating(bot) and (nInRangeAlly ~= nil and nEnemyHeroes ~= nil and #nEnemyHeroes > #nInRangeAlly)
 	then
-		local nAllyHeroes  = bot:GetNearbyHeroes(math.min(nDistance * 2, 1600), false, BOT_MODE_NONE)
+		local nAllyHeroes  = J.GetNearbyHeroes(bot,math.min(nDistance * 2, 1600), false, BOT_MODE_NONE)
 		local location = J.GetEscapeLoc()
 		local loc = J.Site.GetXUnitsTowardsLocation(bot, location, nDistance)
 
@@ -531,8 +531,8 @@ function X.ConsiderGeomagneticGrip()
 
 	if J.HasAghanimsShard(bot)
 	then
-		local tableNearbyAllies = bot:GetNearbyHeroes(nCastRange, false, BOT_MODE_NONE)
-		local tableNearbyEnemies = bot:GetNearbyHeroes(300, false, BOT_MODE_NONE)
+		local tableNearbyAllies = J.GetNearbyHeroes(bot,nCastRange, false, BOT_MODE_NONE)
+		local tableNearbyEnemies = J.GetNearbyHeroes(bot,300, false, BOT_MODE_NONE)
 
 		for _, ally in pairs(tableNearbyAllies)
 		do
@@ -555,7 +555,7 @@ function X.ConsiderGeomagneticGrip()
 		end
 	end
 
-	local nEnemyHeroes = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+	local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 	local target = J.GetCanBeKilledUnit(nEnemyHeroes, nDamage, DAMAGE_TYPE_MAGICAL, false)
 	if  target ~= nil
 	and J.CanCastOnNonMagicImmune(target)
@@ -584,8 +584,8 @@ function X.ConsiderGeomagneticGrip()
 		and J.CanKillTarget(botTarget, nDamage, DAMAGE_TYPE_MAGICAL)
 		and not J.IsSuspiciousIllusion(botTarget)
 		then
-			local nTargetAlly  = botTarget:GetNearbyHeroes(nCastRange, false, BOT_MODE_NONE)
-			local nTargetEnemy = botTarget:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+			local nTargetAlly  = J.GetNearbyHeroes(botTarget, nCastRange, false, BOT_MODE_NONE)
+			local nTargetEnemy = J.GetNearbyHeroes(botTarget, nCastRange, true, BOT_MODE_NONE)
 
 			if  nTargetAlly ~= nil and nTargetEnemy ~= nil
 			and #nTargetAlly >= #nTargetEnemy
@@ -617,7 +617,7 @@ function X.ConsiderGeomagneticGrip()
 				and J.IsKeyWordUnit('ranged', creep)
 				and creep:GetHealth() <= nDamage
 				then
-					local nEnemyHeroesL = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+					local nEnemyHeroesL = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE)
 
 					if  nEnemyHeroesL ~= nil and #nEnemyHeroesL >= 1
 					and GetUnitToUnitDistance(creep, nEnemyHeroesL[1]) <= 600
@@ -653,7 +653,7 @@ function X.ConsiderMagnetize()
 
 	if J.IsInTeamFight(bot, 1200)
 	then
-		local nEnemyHeroes = bot:GetNearbyHeroes(nRadius, true, BOT_MODE_NONE)
+		local nEnemyHeroes = J.GetNearbyHeroes(bot,nRadius, true, BOT_MODE_NONE)
 
 		if nEnemyHeroes ~= nil and #nEnemyHeroes >= 2
 		then
@@ -663,8 +663,8 @@ function X.ConsiderMagnetize()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		local nAllyHeroes = bot:GetNearbyHeroes(nRadius + 200, false, BOT_MODE_NONE)
-		local nEnemyHeroes = bot:GetNearbyHeroes(nRadius, true, BOT_MODE_NONE)
+		local nAllyHeroes = J.GetNearbyHeroes(bot,nRadius + 200, false, BOT_MODE_NONE)
+		local nEnemyHeroes = J.GetNearbyHeroes(bot,nRadius, true, BOT_MODE_NONE)
 
 		if  J.IsValidTarget(botTarget)
 		and J.CanCastOnNonMagicImmune(botTarget)
@@ -679,8 +679,8 @@ function X.ConsiderMagnetize()
 
 	if J.IsRetreating(bot)
 	then
-		local nAllyHeroes = bot:GetNearbyHeroes(nRadius + 200, false, BOT_MODE_NONE)
-		local nEnemyHeroes = bot:GetNearbyHeroes(nRadius, true, BOT_MODE_NONE)
+		local nAllyHeroes = J.GetNearbyHeroes(bot,nRadius + 200, false, BOT_MODE_NONE)
+		local nEnemyHeroes = J.GetNearbyHeroes(bot,nRadius, true, BOT_MODE_NONE)
 
 		if  nEnemyHeroes ~= nil and nAllyHeroes ~= nil
 		and #nEnemyHeroes >= 2

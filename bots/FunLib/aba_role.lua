@@ -1928,7 +1928,7 @@ function X.UpdateInvisEnemyStatus( bot )
 			and DotaTime() > 10 * 60
 			and DotaTime() > lastCheck + 3.0
 	then
-		local enemies = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+		local enemies = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 		if #enemies > 0
 		then
 			for i = 1, #enemies

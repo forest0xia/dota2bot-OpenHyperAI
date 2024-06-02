@@ -620,7 +620,7 @@ function ItemPurchaseThink()
 	then
 		local raindrop = bot:FindItemSlot( "item_infused_raindrop" )
 		local raindropCharge = Item.GetItemCharges( bot, "item_infused_raindrop" )
-		local nEnemyHeroes = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+		local nEnemyHeroes = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 		if ( raindrop >= 0 and raindrop <= 5 )
 			and ( nEnemyHeroes[1] ~= nil
 				or botMode == BOT_MODE_ROSHAN

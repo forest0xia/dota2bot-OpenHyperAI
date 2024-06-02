@@ -49,7 +49,7 @@ function GetDesire()
 
 	-- if DotaTime() < 0
 	-- then
-	-- 	local nEnemyHeroes = bot:GetNearbyHeroes(700, true, BOT_MODE_NONE)
+	-- 	local nEnemyHeroes = J.GetNearbyHeroes(bot,700, true, BOT_MODE_NONE)
 
 	-- 	if  not (J.GetPosition(bot) == 1)
 	-- 	and bot:GetAssignedLane() ~= LANE_MID
@@ -340,7 +340,7 @@ function FindMostItemSlot()
 end
 
 function IsSuitableToWard()
-	local nEnemyHeroes = bot:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
+	local nEnemyHeroes = J.GetNearbyHeroes(bot,1200, true, BOT_MODE_NONE)
 
 	local nMode = bot:GetActiveMode()
 

@@ -216,7 +216,7 @@ function X.SkillsComplement()
 	nMP = bot:GetMana()/bot:GetMaxMana()
 	nHP = bot:GetHealth()/bot:GetMaxHealth()
 	botTarget = J.GetProperTarget( bot )
-	hEnemyList = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+	hEnemyList = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 	hAllyList = J.GetAlliesNearLoc( bot:GetLocation(), 1200 )
 
 
@@ -313,8 +313,8 @@ function X.ConsiderQ()
 	local nRadius = abilityQ:GetSpecialValueInt( "radius" )
 
 
-	local nInRangeEnemyList = bot:GetNearbyHeroes( nCastRange + 32, true, BOT_MODE_NONE )
-	local nInBonusEnemyList = bot:GetNearbyHeroes( nCastRange + 150, true, BOT_MODE_NONE )
+	local nInRangeEnemyList = J.GetNearbyHeroes(bot, nCastRange + 32, true, BOT_MODE_NONE )
+	local nInBonusEnemyList = J.GetNearbyHeroes(bot, nCastRange + 150, true, BOT_MODE_NONE )
 	local nEmemysCreepsInRange = bot:GetNearbyCreeps( nCastRange + 43, true )
 
 
@@ -622,7 +622,7 @@ function X.ConsiderW()
 
 		for _, npcAlly in pairs( nInRangeAllyList )
 		do
-			local nEnemyHeroList = npcAlly:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+			local nEnemyHeroList = J.GetNearbyHeroes(npcAlly,  1600, true, BOT_MODE_NONE )
 			local nEnemyCreepList = npcAlly:GetNearbyCreeps( 1000, true )
 			local nAllyScore = 0
 
@@ -715,7 +715,7 @@ function X.ConsiderW()
 	for _, npcAlly in pairs( nInRangeAllyList )
 	do
 		--Aoe
-		local nEnemyHeroList = npcAlly:GetNearbyHeroes( nRadius -20, true, BOT_MODE_NONE )
+		local nEnemyHeroList = J.GetNearbyHeroes(npcAlly,  nRadius -20, true, BOT_MODE_NONE )
 		if #nEnemyHeroList >= 3
 		then
 			return BOT_ACTION_DESIRE_HIGH, npcAlly, "W-Aoe:"..( #nEnemyHeroList )
@@ -819,7 +819,7 @@ function X.ConsiderE()
 	local nManaCost = abilityE:GetManaCost()
 	local nDamage = abilityE:GetAbilityDamage()
 	local nDamageType = DAMAGE_TYPE_MAGICAL
-	local nInRangeEnemyList = bot:GetNearbyHeroes( nCastRange + 50, true, BOT_MODE_NONE )
+	local nInRangeEnemyList = J.GetNearbyHeroes(bot, nCastRange + 50, true, BOT_MODE_NONE )
 
 
 	--打断
@@ -922,7 +922,7 @@ function X.ConsiderR()
 	local nDamage = abilityR:GetSpecialValueInt( 'damage' )
 	if talent5:IsTrained() then nDamage = nDamage + talent5:GetSpecialValueInt( 'value' ) end
 	local nDamageType = DAMAGE_TYPE_MAGICAL
-	local nInRangeEnemyList = bot:GetNearbyHeroes( nCastRange + 50, true, BOT_MODE_NONE )
+	local nInRangeEnemyList = J.GetNearbyHeroes(bot, nCastRange + 50, true, BOT_MODE_NONE )
 
 	local nRadius = abilityR:GetSpecialValueInt( 'jump_range' )/2
 
@@ -971,7 +971,7 @@ function X.ConsiderR()
 			and J.IsInRange( bot, botTarget, nCastRange )
 		then
 			local nEnemyCreepList = botTarget:GetNearbyCreeps( nRadius * 1.9, false )
-			local nEnemyHeroList = botTarget:GetNearbyHeroes( nRadius * 1.9, false, BOT_MODE_NONE )
+			local nEnemyHeroList = J.GetNearbyHeroes(botTarget,  nRadius * 1.9, false, BOT_MODE_NONE )
 			if #nEnemyCreepList >= 2 or #nEnemyHeroList >= 2 or nHP < 0.28
 			then
 				return BOT_ACTION_DESIRE_HIGH, botTarget, 'R-攻击:'..J.Chat.GetNormName( botTarget )
@@ -991,7 +991,7 @@ function X.ConsiderR()
 				and bot:WasRecentlyDamagedByHero( npcEnemy, 4.0 )
 			then
 				local nEnemyCreepList = npcEnemy:GetNearbyCreeps( nRadius * 1.9, false )
-				local nEnemyHeroList = npcEnemy:GetNearbyHeroes( nRadius * 1.9, false, BOT_MODE_NONE )
+				local nEnemyHeroList = J.GetNearbyHeroes(npcEnemy,  nRadius * 1.9, false, BOT_MODE_NONE )
 				if #nEnemyCreepList + #nEnemyHeroList >= 2 or nHP < 0.38
 				then
 					return BOT_ACTION_DESIRE_HIGH, npcEnemy, 'R-撤退时减速:'..J.Chat.GetNormName( npcEnemy )
@@ -1021,7 +1021,7 @@ function X.ConsiderAS()
 
 	if J.IsRetreating( bot )
 	then
-		local enemyHeroList = bot:GetNearbyHeroes( nRadius, true, BOT_MODE_NONE )
+		local enemyHeroList = J.GetNearbyHeroes(bot, nRadius, true, BOT_MODE_NONE )
 		local targetHero = enemyHeroList[1]
 		if J.IsValidHero( targetHero )
 			and J.CanCastOnNonMagicImmune( targetHero )

@@ -935,7 +935,7 @@ function Site.IsTimeToFarm( bot )
 		or bot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP
 	then
 		local enemyAncient = GetAncient( GetOpposingTeam() )
-		local allyList = bot:GetNearbyHeroes( 1400, false, BOT_MODE_NONE )
+		local allyList = J.GetNearbyHeroes(bot, 1400, false, BOT_MODE_NONE )
 		local enemyAncientDistance = GetUnitToUnitDistance( bot, enemyAncient )
 		if enemyAncientDistance < 3000
 			and bot:GetActiveModeDesire() < BOT_MODE_DESIRE_HIGH

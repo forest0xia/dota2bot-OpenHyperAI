@@ -199,7 +199,7 @@ function X.ConsiderIceShards()
 	local nDamage = IceShards:GetSpecialValueInt('shard_damage')
 	local nSpeed = IceShards:GetSpecialValueInt('shard_speed')
 
-    local nEnemyHeroes = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+    local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
     for _, enemyHero in pairs(nEnemyHeroes)
     do
         if  J.IsValidHero(enemyHero)
@@ -243,8 +243,8 @@ function X.ConsiderIceShards()
         and not botTarget:HasModifier('modifier_legion_commander_duel')
         and not botTarget:HasModifier('modifier_necrolyte_reapers_scythe')
 		then
-            local nInRangeAlly = botTarget:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
-            local nInRangeEnemy = botTarget:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+            local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1200, true, BOT_MODE_NONE)
+            local nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1200, false, BOT_MODE_NONE)
 
             if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
             and #nInRangeAlly >= #nInRangeEnemy
@@ -257,8 +257,8 @@ function X.ConsiderIceShards()
 
     -- if J.IsRetreating(bot)
     -- then
-    --     local nInRangeAlly = bot:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
-    --     local nInRangeEnemy = bot:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
+    --     local nInRangeAlly = J.GetNearbyHeroes(bot,1200, false, BOT_MODE_NONE)
+    --     local nInRangeEnemy = J.GetNearbyHeroes(bot,1200, true, BOT_MODE_NONE)
 
     --     if  nInRangeAlly ~= nil and nInRangeEnemy
     --     and J.IsValidHero(nInRangeEnemy[1])
@@ -270,7 +270,7 @@ function X.ConsiderIceShards()
     --     and not nInRangeEnemy[1]:HasModifier('modifier_legion_commander_duel')
     --     and not nInRangeEnemy[1]:HasModifier('modifier_necrolyte_reapers_scythe')
     --     then
-    --         local nTargetInRangeAlly = nInRangeEnemy[1]:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+    --         local nTargetInRangeAlly = J.GetNearbyHeroes(nInRangeEnemy[1], 1200, false, BOT_MODE_NONE)
 
     --         if  nTargetInRangeAlly ~= nil
     --         and ((#nTargetInRangeAlly > #nInRangeAlly)
@@ -313,7 +313,7 @@ function X.ConsiderSnowball()
 		local strongestTarget = nil
 		local dmg = 0
 
-		local nInRangeEnemy = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+		local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 		for _, enemyHero in pairs(nInRangeEnemy)
 		do
 			if  J.IsValidHero(enemyHero)
@@ -335,8 +335,8 @@ function X.ConsiderSnowball()
 
 		if strongestTarget ~= nil
 		then
-            local nInRangeAlly = strongestTarget:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
-            nInRangeEnemy = strongestTarget:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+            local nInRangeAlly = J.GetNearbyHeroes(strongestTarget, 1200, true, BOT_MODE_NONE)
+            nInRangeEnemy = J.GetNearbyHeroes(strongestTarget, 1200, false, BOT_MODE_NONE)
 
             if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
             and #nInRangeAlly >= #nInRangeEnemy
@@ -348,8 +348,8 @@ function X.ConsiderSnowball()
 
 	if J.IsRetreating(bot)
 	then
-        local nInRangeAlly = bot:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
-        local nInRangeEnemy = bot:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
+        local nInRangeAlly = J.GetNearbyHeroes(bot,1200, false, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,1200, true, BOT_MODE_NONE)
         local targetCreep = nil
         local dist = 0
 
@@ -386,7 +386,7 @@ function X.ConsiderSnowball()
                 return BOT_ACTION_DESIRE_HIGH, targetCreep
             end
 
-            nInRangeEnemy = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+            nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
             for _, enemyHero in pairs(nInRangeEnemy)
             do
                 if  J.IsValidHero(enemyHero)
@@ -473,8 +473,8 @@ function X.ConsiderTagTeam()
         and not botTarget:HasModifier('modifier_necrolyte_reapers_scythe')
         and not botTarget:HasModifier('modifier_templar_assassin_refraction_absorb')
 		then
-            local nInRangeAlly = botTarget:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
-            local nInRangeEnemy = botTarget:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+            local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1200, true, BOT_MODE_NONE)
+            local nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1200, false, BOT_MODE_NONE)
 
             if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
             and #nInRangeAlly >= #nInRangeEnemy
@@ -486,7 +486,7 @@ function X.ConsiderTagTeam()
 
     if J.IsDoingRoshan(bot)
     then
-        local nInRangeAlly = bot:GetNearbyHeroes(600, false, BOT_MODE_NONE)
+        local nInRangeAlly = J.GetNearbyHeroes(bot,600, false, BOT_MODE_NONE)
 
         if  J.IsRoshan(botTarget)
         and J.IsInRange(bot, botTarget, 500)
@@ -525,7 +525,7 @@ function X.ConsiderWalrusPunch()
 		local strongestTarget = nil
 		local dmg = 0
 
-		local nInRangeEnemy = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+		local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 		for _, enemyHero in pairs(nInRangeEnemy)
 		do
 			if  J.IsValidHero(enemyHero)
@@ -557,7 +557,7 @@ function X.ConsiderWalrusPunch()
 
     if J.IsDoingRoshan(bot)
     then
-        local nInRangeAlly = bot:GetNearbyHeroes(600, false, BOT_MODE_NONE)
+        local nInRangeAlly = J.GetNearbyHeroes(bot,600, false, BOT_MODE_NONE)
 
         if  J.IsRoshan(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)

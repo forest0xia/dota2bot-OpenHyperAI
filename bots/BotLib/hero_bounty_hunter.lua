@@ -180,7 +180,7 @@ function X.SkillsComplement()
 	nMP = bot:GetMana()/bot:GetMaxMana()
 	nHP = bot:GetHealth()/bot:GetMaxHealth()
 	botTarget = J.GetProperTarget( bot )
-	hEnemyList = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+	hEnemyList = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 	hAllyList = J.GetAlliesNearLoc( bot:GetLocation(), 1600 )
 
 	local aether = J.IsItemAvailable( "item_aether_lens" )
@@ -521,7 +521,7 @@ function X.ConsiderE()
 	--潜行
 	if J.IsInEnemyArea( bot ) and nLV >= 7 and nMP >= 280
 	then
-		local nEnemies = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+		local nEnemies = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 		local nEnemyTowers = bot:GetNearbyTowers( 1600, true )
 		if #nEnemies == 0 and nEnemyTowers == 0
 		then
@@ -583,7 +583,7 @@ function X.ConsiderFriendlyShadow()
 	end
 
 	local nCastRange = FriendlyShadow:GetCastRange()
-	local nAllyHeroes = bot:GetNearbyHeroes(nCastRange, false, BOT_MODE_NONE)
+	local nAllyHeroes = J.GetNearbyHeroes(bot,nCastRange, false, BOT_MODE_NONE)
 
 	for _, ally in pairs(nAllyHeroes) do
 		if J.IsGoingOnSomeone(ally)
@@ -607,7 +607,7 @@ function X.ConsiderFriendlyShadow()
 
 		if J.IsInEnemyArea(bot)
 		then
-			local nEnemies = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+			local nEnemies = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE)
 			local nEnemyTowers = bot:GetNearbyTowers(1600, true)
 
 			if nEnemies ~= nil and nEnemyTowers ~= nil

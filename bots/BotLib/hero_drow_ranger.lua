@@ -148,7 +148,7 @@ function X.SkillsComplement()
 	nMP = bot:GetMana()/bot:GetMaxMana()
 	nHP = bot:GetHealth()/bot:GetMaxHealth()
 	nLV = bot:GetLevel()
-	hEnemyList = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+	hEnemyList = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 	hAllyList = J.GetAlliesNearLoc( bot:GetLocation(), 1600 )
 	abilityM = J.IsItemAvailable( "item_mask_of_madness" )
 
@@ -229,7 +229,7 @@ function X.ConsiderE()
 	local nManaCost = abilityE:GetManaCost()
 	local nTargetLocation = nil
 
-	local nEnemyHeroes = bot:GetNearbyHeroes( nCastRange + 100, true, BOT_MODE_NONE )
+	local nEnemyHeroes = J.GetNearbyHeroes(bot, nCastRange + 100, true, BOT_MODE_NONE )
 
 
 	if J.IsGoingOnSomeone( bot )
@@ -318,7 +318,7 @@ function X.ConsiderWM()
 	local nRadius = abilityW:GetAOERadius()
 
 	local nEnemysHeroesInView = hEnemyList
-	local nEnemysHeroesNearBy = bot:GetNearbyHeroes( 500, true, BOT_MODE_NONE )
+	local nEnemysHeroesNearBy = J.GetNearbyHeroes(bot, 500, true, BOT_MODE_NONE )
 
 	local npcTarget = J.GetProperTarget( bot )
 
@@ -368,7 +368,7 @@ function X.ConsiderW()
 	local nCastPoint = abilityW:GetCastPoint()
 	local nTargetLocation = nil
 
-	local nEnemyHeroes = bot:GetNearbyHeroes( nCastRange + 100, true, BOT_MODE_NONE )
+	local nEnemyHeroes = J.GetNearbyHeroes(bot, nCastRange + 100, true, BOT_MODE_NONE )
 
 
 	for _, npcEnemy in pairs( nEnemyHeroes )
@@ -522,7 +522,7 @@ function X.ConsiderQ()
 		nEnemysWeakestLaneCreepsInRangeHealth = nEnemysWeakestLaneCreepsInRange:GetHealth()
 	end
 
-	local nEnemysHeroesInAttackRange = bot:GetNearbyHeroes( nAttackRange, true, BOT_MODE_NONE )
+	local nEnemysHeroesInAttackRange = J.GetNearbyHeroes(bot, nAttackRange, true, BOT_MODE_NONE )
 	local nInAttackRangeWeakestEnemyHero = J.GetAttackableWeakestUnit( bot, nAttackRange, true, true )
 	local nInViewWeakestEnemyHero = J.GetAttackableWeakestUnit( bot, 800, true, true )
 
@@ -749,8 +749,8 @@ function X.ConsiderGlacier()
 	end
 
 	local nAttackRange = bot:GetAttackRange()
-	local nEnemyHeroes = bot:GetNearbyHeroes(nAttackRange, true, BOT_MODE_NONE)
-	local nAllyHeroes = bot:GetNearbyHeroes(nAttackRange, true, BOT_MODE_ATTACK)
+	local nEnemyHeroes = J.GetNearbyHeroes(bot,nAttackRange, true, BOT_MODE_NONE)
+	local nAllyHeroes = J.GetNearbyHeroes(bot,nAttackRange, true, BOT_MODE_ATTACK)
 	botTarget = J.GetProperTarget(bot)
 
 	local alliesAroundLoc = J.GetAlliesNearLoc(bot:GetLocation(), 500)

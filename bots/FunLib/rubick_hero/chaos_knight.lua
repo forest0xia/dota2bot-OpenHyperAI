@@ -19,7 +19,7 @@ function X.ConsiderStolenSpell(ability)
     local abilityName = ability:GetName()
 
 	nHP = bot:GetHealth()/bot:GetMaxHealth()
-	hEnemyHeroList = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+	hEnemyHeroList = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 
     if abilityName == 'chaos_knight_phantasm'
     then
@@ -63,8 +63,8 @@ function X.ConsiderChaosBolt()
 	local nSkillLV = ChaosBolt:GetLevel()
 	local nDamage = 30 + nSkillLV * 30 + 120 * 0.38
 
-	local nEnemysHeroesInCastRange = bot:GetNearbyHeroes( nCastRange + 99, true, BOT_MODE_NONE )
-	local nEnemysHeroesInView = bot:GetNearbyHeroes( 880, true, BOT_MODE_NONE )
+	local nEnemysHeroesInCastRange = J.GetNearbyHeroes(bot, nCastRange + 99, true, BOT_MODE_NONE )
+	local nEnemysHeroesInView = J.GetNearbyHeroes(bot, 880, true, BOT_MODE_NONE )
 
 	if #nEnemysHeroesInCastRange > 0 then
 		for i=1, #nEnemysHeroesInCastRange do
@@ -190,7 +190,7 @@ function X.ConsiderRealityRift()
 
 	if J.IsRetreating( bot )
 	then
-		local enemies = bot:GetNearbyHeroes( 800, true, BOT_MODE_NONE )
+		local enemies = J.GetNearbyHeroes(bot, 800, true, BOT_MODE_NONE )
 		local creeps = bot:GetNearbyLaneCreeps( nCastRange, true )
 
 		if enemies[1] ~= nil and creeps[1] ~= nil

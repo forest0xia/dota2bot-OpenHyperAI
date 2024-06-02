@@ -381,7 +381,7 @@ function Think()
 	if bot:HasModifier('modifier_spirit_breaker_charge_of_darkness')
 	then
 		bot:Action_ClearActions(false)
-		local nInRangeEnemy = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+		local nInRangeEnemy = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE)
 
 		if  bot.chargeRetreat
 		and nInRangeEnemy ~= nil and #nInRangeEnemy == 0
@@ -586,7 +586,7 @@ function TinkerWaitInBaseAndHeal()
 end
 
 function GetMortimerKissesTarget()
-	local nInRangeEnemy = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+	local nInRangeEnemy = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE)
 
 	for _, enemyHero in pairs(nInRangeEnemy)
 	do

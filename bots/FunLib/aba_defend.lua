@@ -494,7 +494,7 @@ function Defend.DefendThink(bot, lane)
 		-- 	bot:ActionPush_MoveToLocation(GetLaneFrontLocation(GetTeam(), lane, 0))
 		-- end
 
-		local enemies = bot:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
+		local enemies = J.GetNearbyHeroes(bot,1200, true, BOT_MODE_NONE)
 		if enemies ~= nil and #enemies > 0
 		and J.WeAreStronger(bot, 1600)
 		then

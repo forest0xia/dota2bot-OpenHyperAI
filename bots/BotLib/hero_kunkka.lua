@@ -217,7 +217,7 @@ function X.SkillsComplement()
 	nMP = bot:GetMana()/bot:GetMaxMana()
 	nHP = bot:GetHealth()/bot:GetMaxHealth()
 	nLV = bot:GetLevel()
-	hEnemyHeroList = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+	hEnemyHeroList = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 
 
 
@@ -458,7 +458,7 @@ function X.ConsiderCombo3()
 	local nCastRange = abilityE:GetCastRange() + 38
 
 	--打断持续施法
-	local tableNearbyEnemyHeroes = bot:GetNearbyHeroes( nCastRange + 200, true, BOT_MODE_NONE )
+	local tableNearbyEnemyHeroes = J.GetNearbyHeroes(bot, nCastRange + 200, true, BOT_MODE_NONE )
 	for _, npcEnemy in pairs( tableNearbyEnemyHeroes )
 	do
 		if ( npcEnemy:IsChanneling() )
@@ -548,7 +548,7 @@ function X.ConsiderQ()
 
 	if J.IsRetreating( bot )
 	then
-		local tableNearbyEnemyHeroes = bot:GetNearbyHeroes( 1000, true, BOT_MODE_NONE )
+		local tableNearbyEnemyHeroes = J.GetNearbyHeroes(bot, 1000, true, BOT_MODE_NONE )
 		for _, npcEnemy in pairs( tableNearbyEnemyHeroes )
 		do
 			if ( bot:WasRecentlyDamagedByHero( npcEnemy, 1.0 ) )
@@ -559,7 +559,7 @@ function X.ConsiderQ()
 	end
 
 	--打断持续施法
-	local tableNearbyEnemyHeroes = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+	local tableNearbyEnemyHeroes = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 	for _, npcEnemy in pairs( tableNearbyEnemyHeroes )
 	do
 		if ( npcEnemy:IsChanneling() )
@@ -605,7 +605,7 @@ function X.ConsiderE()
 
 	if J.IsRetreating( bot )
 	then
-		local tableNearbyEnemyHeroes = bot:GetNearbyHeroes( 1000, true, BOT_MODE_NONE )
+		local tableNearbyEnemyHeroes = J.GetNearbyHeroes(bot, 1000, true, BOT_MODE_NONE )
 		for _, npcEnemy in pairs( tableNearbyEnemyHeroes )
 		do
 			if bot:WasRecentlyDamagedByHero( npcEnemy, 1.0 )
@@ -616,7 +616,7 @@ function X.ConsiderE()
 		end
 	end
 
-	local tableNearbyEnemyHeroes = bot:GetNearbyHeroes( 1200, true, BOT_MODE_NONE )
+	local tableNearbyEnemyHeroes = J.GetNearbyHeroes(bot, 1200, true, BOT_MODE_NONE )
 	for _, npcEnemy in pairs( tableNearbyEnemyHeroes )
 	do
 		if ( npcEnemy:IsChanneling()
@@ -646,7 +646,7 @@ function X.ConsiderR()
 
 	if J.IsRetreating( bot )
 	then
-		local tableNearbyEnemyHeroes = bot:GetNearbyHeroes( 1000, true, BOT_MODE_NONE )
+		local tableNearbyEnemyHeroes = J.GetNearbyHeroes(bot, 1000, true, BOT_MODE_NONE )
 		for _, npcEnemy in pairs( tableNearbyEnemyHeroes )
 		do
 			if ( bot:WasRecentlyDamagedByHero( npcEnemy, 1.0 ) )
@@ -657,7 +657,7 @@ function X.ConsiderR()
 	end
 
 	--打断持续施法
-	local tableNearbyEnemyHeroes = bot:GetNearbyHeroes( 1000, true, BOT_MODE_NONE )
+	local tableNearbyEnemyHeroes = J.GetNearbyHeroes(bot, 1000, true, BOT_MODE_NONE )
 	for _, npcEnemy in pairs( tableNearbyEnemyHeroes )
 	do
 		if ( npcEnemy:IsChanneling() )
@@ -724,7 +724,7 @@ function X.GetNearbyUnit( bot, npcTarget )
 			end
 		end
 
-		local nEnemys = bot:GetNearbyHeroes( 240, true, BOT_MODE_NONE )
+		local nEnemys = J.GetNearbyHeroes(bot, 240, true, BOT_MODE_NONE )
 		for _, enemy  in pairs( nEnemys )
 		do
 			if J.IsValid( enemy )
@@ -756,7 +756,7 @@ function X.ConsiderAS()
 
 	if J.IsRetreating( bot )
 	then
-		local enemyHeroList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+		local enemyHeroList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 		local targetHero = enemyHeroList[1]
 		if J.IsValidHero( targetHero )
 			and J.CanCastOnNonMagicImmune( targetHero )

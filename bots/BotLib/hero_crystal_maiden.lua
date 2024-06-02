@@ -283,11 +283,11 @@ function X.ConsiderQ()
 	local nDamage = abilityQ:GetSpecialValueInt( 'nova_damage' )
 	local nSkillLV = abilityQ:GetLevel()
 
-	local nAllys =  bot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE )
+	local nAllys =  J.GetNearbyHeroes(bot, 1200, false, BOT_MODE_NONE )
 
-	local nEnemysHeroesInRange = bot:GetNearbyHeroes( nCastRange + nRadius, true, BOT_MODE_NONE )
-	local nEnemysHeroesInBonus = bot:GetNearbyHeroes( nCastRange + nRadius + 150, true, BOT_MODE_NONE )
-	local nEnemysHeroesInView = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+	local nEnemysHeroesInRange = J.GetNearbyHeroes(bot, nCastRange + nRadius, true, BOT_MODE_NONE )
+	local nEnemysHeroesInBonus = J.GetNearbyHeroes(bot, nCastRange + nRadius + 150, true, BOT_MODE_NONE )
+	local nEnemysHeroesInView = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 	local nWeakestEnemyHeroInRange, nWeakestEnemyHeroHealth1 = X.cm_GetWeakestUnit( nEnemysHeroesInRange )
 	local nWeakestEnemyHeroInBonus, nWeakestEnemyHeroHealth2 = X.cm_GetWeakestUnit( nEnemysHeroesInBonus )
 
@@ -574,12 +574,12 @@ function X.ConsiderW()
 	local nSkillLV = abilityW:GetLevel()
 	local nDamage = ( 100 + nSkillLV * 50 )
 
-	local nAllies =  bot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE )
+	local nAllies =  J.GetNearbyHeroes(bot, 1200, false, BOT_MODE_NONE )
 
-	local nEnemysHeroesInView = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+	local nEnemysHeroesInView = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 	if #nEnemysHeroesInView <= 1 and nCastRange < bot:GetAttackRange() then nCastRange = bot:GetAttackRange() + 60 end
-	local nEnemysHeroesInRange = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
-	local nEnemysHeroesInBonus = bot:GetNearbyHeroes( nCastRange + 200, true, BOT_MODE_NONE )
+	local nEnemysHeroesInRange = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
+	local nEnemysHeroesInBonus = J.GetNearbyHeroes(bot, nCastRange + 200, true, BOT_MODE_NONE )
 
 	local nWeakestEnemyHeroInRange, nWeakestEnemyHeroHealth1 = X.cm_GetWeakestUnit( nEnemysHeroesInRange )
 	local nWeakestEnemyHeroInBonus, nWeakestEnemyHeroHealth2 = X.cm_GetWeakestUnit( nEnemysHeroesInBonus )
@@ -622,7 +622,7 @@ function X.ConsiderW()
 		local npcMostDangerousEnemy = nil
 		local nMostDangerousDamage = 0
 
-		local tableNearbyEnemyHeroes = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+		local tableNearbyEnemyHeroes = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 		for _, npcEnemy in pairs( tableNearbyEnemyHeroes )
 		do
 			if J.IsValid( npcEnemy )
@@ -836,9 +836,9 @@ function X.ConsiderR()
 
 	local nRadius = abilityR:GetAOERadius() * 0.88
 
-	local nAllies =  bot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE )
+	local nAllies =  J.GetNearbyHeroes(bot, 1200, false, BOT_MODE_NONE )
 
-	local nEnemysHeroesInRange = bot:GetNearbyHeroes( nRadius, true, BOT_MODE_NONE )
+	local nEnemysHeroesInRange = J.GetNearbyHeroes(bot, nRadius, true, BOT_MODE_NONE )
 	local nWeakestEnemyHeroInRange, nWeakestEnemyHeroHealth1 = X.cm_GetWeakestUnit( nEnemysHeroesInRange )
 
 
@@ -880,8 +880,8 @@ function X.ConsiderR()
 
 	if J.IsRetreating( bot ) and nHP > 0.38
 	then
-		local nEnemysHeroesNearby = bot:GetNearbyHeroes( 500, true, BOT_MODE_NONE )
-		local nEnemysHeroesFurther = bot:GetNearbyHeroes( 1300, true, BOT_MODE_NONE )
+		local nEnemysHeroesNearby = J.GetNearbyHeroes(bot, 500, true, BOT_MODE_NONE )
+		local nEnemysHeroesFurther = J.GetNearbyHeroes(bot, 1300, true, BOT_MODE_NONE )
 		local npcTarget = nEnemysHeroesNearby[1]
 		if J.IsValidHero( npcTarget )
 			and J.CanCastOnNonMagicImmune( npcTarget )
@@ -915,8 +915,8 @@ function X.ConsiderCrystalClone()
 		and not J.IsSuspiciousIllusion(botTarget)
 		and not botTarget:HasModifier('modifier_abaddon_borrowed_time')
 		then
-			local nInRangeAlly = botTarget:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
-			local nInRangeEnemy = botTarget:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+			local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1200, true, BOT_MODE_NONE)
+			local nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1200, false, BOT_MODE_NONE)
 
 			if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 			and #nInRangeAlly >= #nInRangeEnemy
@@ -928,15 +928,15 @@ function X.ConsiderCrystalClone()
 
     if J.IsRetreating(bot)
     then
-        local nInRangeEnemy = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE)
 
         if  nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
         and J.IsValidHero(nInRangeEnemy[1])
         and J.IsInRange(bot, nInRangeEnemy[1], nRadius)
         and not J.IsSuspiciousIllusion(nInRangeEnemy[1])
         then
-            local nInRangeAlly = nInRangeEnemy[1]:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
-            local nTargetInRangeAlly = nInRangeEnemy[1]:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+            local nInRangeAlly = J.GetNearbyHeroes(nInRangeEnemy[1], 1200, true, BOT_MODE_NONE)
+            local nTargetInRangeAlly = J.GetNearbyHeroes(nInRangeEnemy[1], 1200, false, BOT_MODE_NONE)
 
             if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
             and (#nTargetInRangeAlly > #nInRangeAlly

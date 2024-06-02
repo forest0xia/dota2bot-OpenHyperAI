@@ -181,7 +181,7 @@ function X.ConsiderStaticRemnant()
 		nOverloadDamage = Overload:GetSpecialValueInt('overload_damage') + (1 + bot:GetSpellAmp())
 	end
 
-	local nEnemyHeroes = bot:GetNearbyHeroes(nAttackRange, true, BOT_MODE_NONE)
+	local nEnemyHeroes = J.GetNearbyHeroes(bot,nAttackRange, true, BOT_MODE_NONE)
 	for _, enemyHero in pairs(nEnemyHeroes)
 	do
 		if  J.IsValidHero(enemyHero)
@@ -202,8 +202,8 @@ function X.ConsiderStaticRemnant()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		local nInRangeAlly = bot:GetNearbyHeroes(1000, false, BOT_MODE_NONE)
-		local nInRangeEnemy = bot:GetNearbyHeroes(800, true, BOT_MODE_NONE)
+		local nInRangeAlly = J.GetNearbyHeroes(bot,1000, false, BOT_MODE_NONE)
+		local nInRangeEnemy = J.GetNearbyHeroes(bot,800, true, BOT_MODE_NONE)
 
 		if  J.IsValidTarget(botTarget)
 		and J.CanCastOnNonMagicImmune(botTarget)
@@ -221,8 +221,8 @@ function X.ConsiderStaticRemnant()
 
 	if J.IsRetreating(bot)
 	then
-		local nInRangeAlly = bot:GetNearbyHeroes(1000, false, BOT_MODE_NONE)
-		local nInRangeEnemy = bot:GetNearbyHeroes(800, true, BOT_MODE_NONE)
+		local nInRangeAlly = J.GetNearbyHeroes(bot,1000, false, BOT_MODE_NONE)
+		local nInRangeEnemy = J.GetNearbyHeroes(bot,800, true, BOT_MODE_NONE)
 
 		if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 		and J.IsValidHero(nInRangeEnemy[1])
@@ -260,7 +260,7 @@ function X.ConsiderStaticRemnant()
 			and (J.IsKeyWordUnit('ranged', creep) or J.IsKeyWordUnit('siege', creep))
 			and creep:GetHealth() <= nOverloadDamage
 			then
-				local nInRangeEnemy = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+				local nInRangeEnemy = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE)
 
 				if  nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
 				and GetUnitToUnitDistance(creep, nInRangeEnemy[1]) <= 500
@@ -306,7 +306,7 @@ function X.ConsiderElectricVortex()
 	local nCastPoint = ElectricVortex:GetCastPoint()
 	local botTarget = J.GetProperTarget(bot)
 
-	local nEnemyHeroes = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+	local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 	for _, enemyHero in pairs(nEnemyHeroes)
 	do
 		if  J.IsValidHero(enemyHero)
@@ -335,8 +335,8 @@ function X.ConsiderElectricVortex()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		local nInRangeAlly = bot:GetNearbyHeroes(1000, false, BOT_MODE_NONE)
-		local nInRangeEnemy = bot:GetNearbyHeroes(800, true, BOT_MODE_NONE)
+		local nInRangeAlly = J.GetNearbyHeroes(bot,1000, false, BOT_MODE_NONE)
+		local nInRangeEnemy = J.GetNearbyHeroes(bot,800, true, BOT_MODE_NONE)
 
 		if  J.IsValidTarget(botTarget)
 		and J.CanCastOnNonMagicImmune(botTarget)
@@ -374,8 +374,8 @@ function X.ConsiderOverload()
 	if  J.IsInTeamFight(bot, 1200)
 	and bot:HasScepter()
 	then
-		local nInRangeAlly = bot:GetNearbyHeroes(nActivationRadius, false, BOT_MODE_NONE)
-		local nInRangeEnemy = bot:GetNearbyHeroes(nActivationRadius, true, BOT_MODE_NONE)
+		local nInRangeAlly = J.GetNearbyHeroes(bot,nActivationRadius, false, BOT_MODE_NONE)
+		local nInRangeEnemy = J.GetNearbyHeroes(bot,nActivationRadius, true, BOT_MODE_NONE)
 
 		if  nInRangeAlly ~= nil and nInRangeEnemy
 		and #nInRangeAlly >= 2 and #nInRangeEnemy >= 1
@@ -412,8 +412,8 @@ function X.ConsiderBallLightning()
 	and not CanDoBallVortex()
 	and nMana > 0.15
 	then
-		local nInRangeAlly = bot:GetNearbyHeroes(1000, false, BOT_MODE_NONE)
-		local nInRangeEnemy = bot:GetNearbyHeroes(1000, true, BOT_MODE_NONE)
+		local nInRangeAlly = J.GetNearbyHeroes(bot,1000, false, BOT_MODE_NONE)
+		local nInRangeEnemy = J.GetNearbyHeroes(bot,1000, true, BOT_MODE_NONE)
 
 		if  J.IsValidTarget(botTarget)
 		and J.IsInRange(bot, botTarget, 1000)
@@ -432,8 +432,8 @@ function X.ConsiderBallLightning()
 
 	if J.IsRetreating(bot)
 	then
-		local nInRangeAlly = bot:GetNearbyHeroes(1000, false, BOT_MODE_NONE)
-		local nInRangeEnemy = bot:GetNearbyHeroes(1000, true, BOT_MODE_NONE)
+		local nInRangeAlly = J.GetNearbyHeroes(bot,1000, false, BOT_MODE_NONE)
+		local nInRangeEnemy = J.GetNearbyHeroes(bot,1000, true, BOT_MODE_NONE)
 
 		if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 		and ((#nInRangeEnemy > #nInRangeAlly)

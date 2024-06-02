@@ -134,7 +134,7 @@ function X.ConsiderRocketBarrage()
     local nMana = bot:GetMana() / bot:GetMaxMana()
     local botTarget = J.GetProperTarget(bot)
 
-    local nEnemyHeroes = bot:GetNearbyHeroes(nRadius, true, BOT_MODE_NONE)
+    local nEnemyHeroes = J.GetNearbyHeroes(bot,nRadius, true, BOT_MODE_NONE)
     for _, enemyHero in pairs(nEnemyHeroes)
     do
         local nCreeps = bot:GetNearbyCreeps(nRadius, true)
@@ -156,7 +156,7 @@ function X.ConsiderRocketBarrage()
 
     if J.IsInTeamFight(bot, 1200)
 	then
-		local nInRangeEnemy = bot:GetNearbyHeroes(nRadius - 75, true, BOT_MODE_NONE)
+		local nInRangeEnemy = J.GetNearbyHeroes(bot,nRadius - 75, true, BOT_MODE_NONE)
 
 		if nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
         then
@@ -167,8 +167,8 @@ function X.ConsiderRocketBarrage()
 	if J.IsGoingOnSomeone(bot)
 	then
         local nCreeps = bot:GetNearbyCreeps(nRadius, true)
-        local nInRangeAlly = bot:GetNearbyHeroes(nRadius + 150, false, BOT_MODE_NONE)
-        local nInRangeEnemy = bot:GetNearbyHeroes(nRadius - 75, true, BOT_MODE_NONE)
+        local nInRangeAlly = J.GetNearbyHeroes(bot,nRadius + 150, false, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,nRadius - 75, true, BOT_MODE_NONE)
 
 		if  J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
@@ -187,8 +187,8 @@ function X.ConsiderRocketBarrage()
 
 	if J.IsRetreating(bot)
 	then
-		local nInRangeAlly = bot:GetNearbyHeroes(nRadius + 200, false, BOT_MODE_NONE)
-        local nInRangeEnemy = bot:GetNearbyHeroes(nRadius - 25, true, BOT_MODE_NONE)
+		local nInRangeAlly = J.GetNearbyHeroes(bot,nRadius + 200, false, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,nRadius - 25, true, BOT_MODE_NONE)
 
         if  nInRangeAlly ~= nil and nInRangeEnemy
         and ((#nInRangeEnemy > #nInRangeAlly)
@@ -239,7 +239,7 @@ function X.ConsiderHomingMissile()
     local nMana = bot:GetMana() / bot:GetMaxMana()
     local botTarget = J.GetProperTarget(bot)
 
-    local nEnemyHeroes = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+    local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
     for _, enemyHero in pairs(nEnemyHeroes)
     do
         if  J.IsValidHero(enemyHero)
@@ -274,8 +274,8 @@ function X.ConsiderHomingMissile()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-        local nInRangeAlly = bot:GetNearbyHeroes(nCastRange + 200, false, BOT_MODE_NONE)
-        local nInRangeEnemy = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+        local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange + 200, false, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 
         if  J.IsValidHero(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
@@ -293,8 +293,8 @@ function X.ConsiderHomingMissile()
 
 	if J.IsRetreating(bot)
 	then
-		local nInRangeAlly = bot:GetNearbyHeroes(nCastRange + 200, false, BOT_MODE_NONE)
-        local nInRangeEnemy = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+		local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange + 200, false, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 
         if  nInRangeAlly ~= nil and nInRangeEnemy
         and ((#nInRangeEnemy > #nInRangeAlly)
@@ -320,7 +320,7 @@ function X.ConsiderHomingMissile()
 			and (J.IsKeyWordUnit('ranged', creep) or J.IsKeyWordUnit('siege', creep))
 			and creep:GetHealth() <= nDamage
 			then
-				local nInRangeEnemy = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+				local nInRangeEnemy = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE)
 
 				if  nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
 				and GetUnitToUnitDistance(creep, nInRangeEnemy[1]) <= 500
@@ -331,10 +331,10 @@ function X.ConsiderHomingMissile()
 		end
 	end
 
-    local nAllyHeroes  = bot:GetNearbyHeroes(nCastRange, false, BOT_MODE_NONE)
+    local nAllyHeroes  = J.GetNearbyHeroes(bot,nCastRange, false, BOT_MODE_NONE)
     for _, allyHero in pairs(nAllyHeroes)
     do
-        local nAllyInRangeEnemy = allyHero:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+        local nAllyInRangeEnemy = J.GetNearbyHeroes(allyHero, nCastRange, true, BOT_MODE_NONE)
 
         if  J.IsValidHero(allyHero)
         and J.IsRetreating(allyHero)
@@ -367,7 +367,7 @@ function X.ConsiderFlakCannon()
     local nMana = bot:GetMana() / bot:GetMaxMana()
     local nAbilityLevel = FlakCannon:GetLevel()
     local botTarget = J.GetProperTarget(bot)
-    local nEnemyHeroes = bot:GetNearbyHeroes(nRadius, true, BOT_MODE_NONE)
+    local nEnemyHeroes = J.GetNearbyHeroes(bot,nRadius, true, BOT_MODE_NONE)
 
 	if J.IsInTeamFight(bot, 1200)
 	then
@@ -379,8 +379,8 @@ function X.ConsiderFlakCannon()
 
     if J.IsGoingOnSomeone(bot)
 	then
-        local nInRangeAlly = bot:GetNearbyHeroes(nRadius + 100, false, BOT_MODE_NONE)
-        local nInRangeEnemy = bot:GetNearbyHeroes(nRadius, true, BOT_MODE_NONE)
+        local nInRangeAlly = J.GetNearbyHeroes(bot,nRadius + 100, false, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,nRadius, true, BOT_MODE_NONE)
 
 		if  J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
@@ -416,7 +416,7 @@ function X.ConsiderFlakCannon()
     and nMana > 0.35
     then
         local nNeutralCreeps = bot:GetNearbyNeutralCreeps(nRadius)
-        nEnemyHeroes = bot:GetNearbyHeroes(600, true, BOT_MODE_NONE)
+        nEnemyHeroes = J.GetNearbyHeroes(bot,600, true, BOT_MODE_NONE)
 
         if  nNeutralCreeps ~= nil
         and (#nNeutralCreeps >= 3
@@ -456,10 +456,10 @@ function X.ConsiderCallDown()
 		end
 	end
 
-    local nEnemyHeroes = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+    local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
     for _, enemyHero in pairs(nEnemyHeroes)
     do
-        local nInRangeAlly = bot:GetNearbyHeroes(nCastRange + 200, false, BOT_MODE_NONE)
+        local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange + 200, false, BOT_MODE_NONE)
 
         if  J.IsValidHero(enemyHero)
         and J.CanCastOnNonMagicImmune(enemyHero)

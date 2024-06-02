@@ -190,7 +190,7 @@ function X.ConsiderBrambleMaze()
     end
 
 	local nCastRange = BrambleMaze:GetCastRange()
-	local nEnemyHeroes = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+	local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
     local botTarget = J.GetProperTarget(bot)
 
 	for _, enemyHero in pairs(nEnemyHeroes)
@@ -238,7 +238,7 @@ function X.ConsiderShadowRealm()
 
 	local nRangeBonus = ShadowRealm:GetSpecialValueInt('attack_range_bonus')
     local nAttackRange = bot:GetAttackRange()
-    local nEnemyHeroes = bot:GetNearbyHeroes(nAttackRange + nRangeBonus, true, BOT_MODE_NONE)
+    local nEnemyHeroes = J.GetNearbyHeroes(bot,nAttackRange + nRangeBonus, true, BOT_MODE_NONE)
     local botTarget = J.GetProperTarget(bot)
 
 	if J.IsGoingOnSomeone(bot)
@@ -279,8 +279,8 @@ function X.ConsiderCurseCrown()
 
 	local nCastRange = J.GetProperCastRange(false, bot, CurseCrown:GetCastRange())
     local nMana = bot:GetMana() / bot:GetMaxMana()
-	local nEnemysHeroesInRange = bot:GetNearbyHeroes(nCastRange + 50, true, BOT_MODE_NONE)
-	local nEnemysHeroesInBonus = bot:GetNearbyHeroes(nCastRange + 150, true, BOT_MODE_NONE)
+	local nEnemysHeroesInRange = J.GetNearbyHeroes(bot,nCastRange + 50, true, BOT_MODE_NONE)
+	local nEnemysHeroesInBonus = J.GetNearbyHeroes(bot,nCastRange + 150, true, BOT_MODE_NONE)
 	local nWeakestEnemyHeroInRange = J.GetWeakestUnit(nEnemysHeroesInRange)
 	local nWeakestEnemyHeroInBonus = J.GetWeakestUnit(nEnemysHeroesInBonus)
 
@@ -290,7 +290,7 @@ function X.ConsiderCurseCrown()
 	then
 		local npcMostDangerousEnemy = nil
 		local nMostDangerousDamage = 0
-		local nEnemyHeroes = bot:GetNearbyHeroes(nCastRange + 100, true, BOT_MODE_NONE)
+		local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange + 100, true, BOT_MODE_NONE)
 
 		for _, enemyHero in pairs(nEnemyHeroes)
 		do
@@ -422,7 +422,7 @@ function X.ConsiderBedlam()
 
 	if J.IsInTeamFight(bot, 1200)
 	then
-        local nAllyHeroes = bot:GetNearbyHeroes(nCastRange, false, BOT_MODE_NONE)
+        local nAllyHeroes = J.GetNearbyHeroes(bot,nCastRange, false, BOT_MODE_NONE)
 
         if nAllyHeroes ~= nil and #nAllyHeroes >= 1
         then
@@ -447,8 +447,8 @@ function X.ConsiderBedlam()
 
     if J.IsGoingOnSomeone(bot)
 	then
-        local nAllyHeroes = bot:GetNearbyHeroes(nCastRange, false, BOT_MODE_NONE)
-        local nEnemyHeroes = bot:GetNearbyHeroes(nCastRange + 100, true, BOT_MODE_NONE)
+        local nAllyHeroes = J.GetNearbyHeroes(bot,nCastRange, false, BOT_MODE_NONE)
+        local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange + 100, true, BOT_MODE_NONE)
 
         if  nAllyHeroes ~= nil and #nAllyHeroes <= 1
         and nEnemyHeroes ~= nil and #nEnemyHeroes <= 1
@@ -489,7 +489,7 @@ function X.ConsiderTerrorize()
 	if J.IsInTeamFight(bot, 1200)
 	then
         local nTeamFightLocation = J.GetTeamFightLocation(bot)
-		local nAllyHeroes = bot:GetNearbyHeroes(nCastRange, false, BOT_MODE_NONE)
+		local nAllyHeroes = J.GetNearbyHeroes(bot,nCastRange, false, BOT_MODE_NONE)
         local nDisabledAllies = 0
         local nInArenaEnemy = 0
         local IsCoreAllyInChronosphere = false
@@ -501,7 +501,7 @@ function X.ConsiderTerrorize()
         end
 
         -----
-        local nEnemyHeroes = bot:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
+        local nEnemyHeroes = J.GetNearbyHeroes(bot,1200, true, BOT_MODE_NONE)
         for _, enemyHero in pairs(nEnemyHeroes)
         do
             if  J.IsValidHero(enemyHero)
@@ -537,7 +537,7 @@ function X.ConsiderTerrorize()
             and J.IsCore(allyHero)
             and allyHero:HasModifier('modifier_faceless_void_chronosphere')
             then
-                local nNearbyEnemyWithAlly = allyHero:GetNearbyHeroes(400, true, BOT_MODE_NONE)
+                local nNearbyEnemyWithAlly = J.GetNearbyHeroes(allyHero, 400, true, BOT_MODE_NONE)
 
                 if nNearbyEnemyWithAlly ~= nil and #nNearbyEnemyWithAlly >= 1
                 then
@@ -570,7 +570,7 @@ function X.ConsiderTerrorize()
 
 	if J.IsRetreating(bot)
 	then
-		local nEnemyHeroes = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+		local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 
 		if  bot:WasRecentlyDamagedByAnyHero(2.0)
         and #nEnemyHeroes >= 2
@@ -584,7 +584,7 @@ function X.ConsiderTerrorize()
 		end
 	end
 
-    local nAllyHeroes = bot:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+    local nAllyHeroes = J.GetNearbyHeroes(bot,1200, false, BOT_MODE_NONE)
     for _, allyHero in pairs(nAllyHeroes)
     do
         if  J.IsValidHero(allyHero)

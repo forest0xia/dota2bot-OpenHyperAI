@@ -208,7 +208,7 @@ function X.SkillsComplement()
 	nMP = bot:GetMana()/bot:GetMaxMana()
 	nHP = bot:GetHealth()/bot:GetMaxHealth()
 	botTarget = J.GetProperTarget( bot )
-	hEnemyList = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+	hEnemyList = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 	hAllyList = J.GetAlliesNearLoc( bot:GetLocation(), 1600 )
 
 
@@ -276,7 +276,7 @@ function X.ConsiderQ()
 	local nDamage = abilityQ:GetAbilityDamage()
 	local nDamageType = DAMAGE_TYPE_MAGICAL
 	local nRadius = abilityQ:GetSpecialValueInt( "end_radius" )
-	local nInRangeEnemyList = bot:GetNearbyHeroes( nCastRange - 50, true, BOT_MODE_NONE )
+	local nInRangeEnemyList = J.GetNearbyHeroes(bot, nCastRange - 50, true, BOT_MODE_NONE )
 	local nTargetLocation = nil
 
 	--击杀
@@ -470,7 +470,7 @@ function X.ConsiderW()
 	local nManaCost = abilityW:GetManaCost()
 	local nDamage = abilityW:GetAbilityDamage()
 	local nDamageType = DAMAGE_TYPE_MAGICAL
-	local nInRangeEnemyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnemyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 	local nTargetLocation = nil
 
 	for _, npcEnemy in pairs( hEnemyList )
@@ -529,7 +529,7 @@ function X.ConsiderE()
 	local nManaCost = abilityE:GetManaCost()
 	local nDamage = abilityE:GetAbilityDamage()
 	local nDamageType = DAMAGE_TYPE_MAGICAL
-	local nInRangeEnemyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnemyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 	if J.IsGoingOnSomeone( bot )
 	then
@@ -591,7 +591,7 @@ function X.ConsiderR()
 	local nManaCost = abilityR:GetManaCost()
 	local nDamage = abilityR:GetAbilityDamage()
 	local nDamageType = DAMAGE_TYPE_MAGICAL
-	local nInRangeEnemyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnemyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 
 	if J.IsGoingOnSomeone( bot )

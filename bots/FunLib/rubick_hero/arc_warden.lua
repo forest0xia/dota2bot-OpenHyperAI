@@ -74,7 +74,7 @@ function X.ConsiderFlux()
 		local npcMostDangerousEnemy = nil
 		local nMostDangerousDamage = 0
 
-		local tableNearbyEnemyHeroes = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+		local tableNearbyEnemyHeroes = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 		for _, npcEnemy in pairs( tableNearbyEnemyHeroes )
 		do
 			if J.IsValid( npcEnemy )
@@ -121,8 +121,8 @@ function X.ConsiderFlux()
 
 	if J.IsRetreating( bot )
 	then
-		local tableNearbyEnemyHeroes = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
-		local nEnemyHeroes = bot:GetNearbyHeroes( 800, true, BOT_MODE_NONE )
+		local tableNearbyEnemyHeroes = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
+		local nEnemyHeroes = J.GetNearbyHeroes(bot, 800, true, BOT_MODE_NONE )
 		local npcEnemy = tableNearbyEnemyHeroes[1]
 		if J.IsValid( npcEnemy )
 			and ( bot:IsFacingLocation( npcEnemy:GetLocation(), 10 ) or #nEnemyHeroes <= 1 )
@@ -150,7 +150,7 @@ function X.ConsiderMagneticField()
 	if J.IsRetreating( bot )
 		and not bot:HasModifier( "modifier_arc_warden_magnetic_field" )
 	then
-		local tableNearbyEnemyHeroes = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+		local tableNearbyEnemyHeroes = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 		for _, npcEnemy in pairs( tableNearbyEnemyHeroes )
 		do
 			if ( J.IsValid( npcEnemy ) and bot:WasRecentlyDamagedByHero( npcEnemy, 2.0 ) )
@@ -211,7 +211,7 @@ function X.ConsiderMagneticField()
 		local botTarget = bot:GetTarget()
 		if J.IsValidHero( botTarget ) and  J.IsInRange( botTarget, bot, nCastRange )
 		then
-			local tableNearbyAttackingAlliedHeroes = bot:GetNearbyHeroes( nCastRange, false, BOT_MODE_ATTACK )
+			local tableNearbyAttackingAlliedHeroes = J.GetNearbyHeroes(bot, nCastRange, false, BOT_MODE_ATTACK )
 			for _, npcAlly in pairs( tableNearbyAttackingAlliedHeroes )
 			do
 				if J.IsValid( npcAlly )
@@ -296,7 +296,7 @@ function X.ConsiderSparkWraith()
 		and bot:GetActiveModeDesire() > BOT_ACTION_DESIRE_HIGH
 		and not bot:HasModifier( "modifier_silencer_curse_of_the_silent" )
 	then
-		local tableNearbyEnemyHeroes = bot:GetNearbyHeroes( 800, true, BOT_MODE_NONE )
+		local tableNearbyEnemyHeroes = J.GetNearbyHeroes(bot, 800, true, BOT_MODE_NONE )
 		for _, npcEnemy in pairs( tableNearbyEnemyHeroes )
 		do
 			if ( J.IsValid( npcEnemy ) and bot:WasRecentlyDamagedByHero( npcEnemy, 1.0 ) and J.CanCastOnNonMagicImmune( npcEnemy ) )
@@ -388,7 +388,7 @@ function X.ConsiderSparkWraith()
 			end
 		end
 
-		local nEnemyHeroesInView = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+		local nEnemyHeroesInView = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 		local nEnemyLaneFront = J.GetNearestLaneFrontLocation( bot:GetLocation(), true, nRadius/2 )
 		if #nEnemyHeroesInView == 0 and nEnemyLaneFront ~= nil
 			and GetUnitToLocationDistance( bot, nEnemyLaneFront ) <= nCastRange + nRadius

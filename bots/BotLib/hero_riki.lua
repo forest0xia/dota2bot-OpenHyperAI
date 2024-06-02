@@ -152,7 +152,7 @@ function X.SkillsComplement()
 	nMP = bot:GetMana()/bot:GetMaxMana()
 	nHP = bot:GetHealth()/bot:GetMaxHealth()
 	botTarget = J.GetProperTarget( bot )
-	hEnemyList = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+	hEnemyList = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 	hAllyList = J.GetAlliesNearLoc( bot:GetLocation(), 1600 )
 	nAttackPoint = bot:GetSecondsPerAttack()
 
@@ -372,7 +372,7 @@ function X.ConsiderW()
 				and J.CanCastOnTargetAdvanced( npcEnemy )
 			then
 				local npcEnemyHealth = npcEnemy:GetHealth()
-				local tableNearbyAllyHeroes = npcEnemy:GetNearbyHeroes( 600, true, BOT_MODE_NONE )
+				local tableNearbyAllyHeroes = J.GetNearbyHeroes(npcEnemy,  600, true, BOT_MODE_NONE )
 				if npcEnemyHealth < npcWeakestEnemyHealth
 					and ( #tableNearbyAllyHeroes >= 1 or aliveEnemyCount <= 2 )
 				then
@@ -404,9 +404,9 @@ function X.ConsiderW()
 			and J.CanCastOnTargetAdvanced( botTarget )
 			and J.IsInRange( botTarget, bot, nCastRange + 50 )
 		then
-			local tableNearbyEnemyHeroes = botTarget:GetNearbyHeroes( 800, false, BOT_MODE_NONE )
-			local tableNearbyAllyHeroes = botTarget:GetNearbyHeroes( 800, true, BOT_MODE_NONE )
-			local tableAllEnemyHeroes = botTarget:GetNearbyHeroes( 1600, false, BOT_MODE_NONE )
+			local tableNearbyEnemyHeroes = J.GetNearbyHeroes(botTarget,  800, false, BOT_MODE_NONE )
+			local tableNearbyAllyHeroes = J.GetNearbyHeroes(botTarget,  800, true, BOT_MODE_NONE )
+			local tableAllEnemyHeroes = J.GetNearbyHeroes(botTarget,  1600, false, BOT_MODE_NONE )
 			if ( J.WillKillTarget( botTarget, nPhysicalDamge * 3, DAMAGE_TYPE_PHYSICAL, 1.0 ) )
 				or ( #tableNearbyEnemyHeroes <= #tableNearbyAllyHeroes )
 				or ( #tableAllEnemyHeroes <= 1 )
@@ -426,10 +426,10 @@ function X.ConsiderW()
 	if J.IsRetreating( bot )
 		and bot:WasRecentlyDamagedByAnyHero( 3.0 )
 	then
-		local nAttackAllys = bot:GetNearbyHeroes( 800, false, BOT_MODE_ATTACK )
+		local nAttackAllys = J.GetNearbyHeroes(bot, 800, false, BOT_MODE_ATTACK )
 		if #nAttackAllys == 0 or nHP < 0.16
 		then
-			local nAllyInCastRange = bot:GetNearbyHeroes( nCastRange, false, BOT_MODE_NONE )
+			local nAllyInCastRange = J.GetNearbyHeroes(bot, nCastRange, false, BOT_MODE_NONE )
 			local nAllyCreeps	 = bot:GetNearbyCreeps( nCastRange, false )
 			local nEnemyCreeps = bot:GetNearbyCreeps( nCastRange, true )
 			local nAllyUnits = J.CombineTwoTable( nAllyInCastRange, nAllyCreeps )
@@ -635,7 +635,7 @@ function X.ConsiderAS()
 	local nManaCost = abilityAS:GetManaCost()
 
 	
-	local tableNearbyEnemyHeroes = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local tableNearbyEnemyHeroes = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 	for _, npcEnemy in pairs( tableNearbyEnemyHeroes )
 	do
 		if J.CanCastOnNonMagicImmune( npcEnemy )
@@ -649,7 +649,7 @@ function X.ConsiderAS()
 	
 	if J.IsRetreating( bot )
 	then
-		local enemyHeroList = bot:GetNearbyHeroes( 1200, true, BOT_MODE_NONE )
+		local enemyHeroList = J.GetNearbyHeroes(bot, 1200, true, BOT_MODE_NONE )
 		local targetHero = enemyHeroList[1]
 		if J.IsValidHero( targetHero )
 			and J.CanCastOnNonMagicImmune( targetHero )
@@ -706,7 +706,7 @@ function X.ConsiderAS()
 				return BOT_ACTION_DESIRE_HIGH, botTarget, "AS-追击"
 			end
 			
-			local enemyHeroList = bot:GetNearbyHeroes( nCastRange, true, BOT_ACTION_DESIRE_NONE )
+			local enemyHeroList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_ACTION_DESIRE_NONE )
 			if #enemyHeroList >= 2
 			then
 				for _, npcEnemy in pairs( enemyHeroList )

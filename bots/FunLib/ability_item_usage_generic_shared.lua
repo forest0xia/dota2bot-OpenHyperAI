@@ -587,7 +587,7 @@ function X.IsCourierTargetedByUnit( courier )
 		end
 	end
 
-	local nEnemysHeroes = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+	local nEnemysHeroes = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 	for _, enemy in pairs( nEnemysHeroes )
 	do
 		if GetUnitToUnitDistance( enemy, courier ) <= 700 + botLV * 15
@@ -687,7 +687,7 @@ local function ItemUsageComplement()
 		or X.WillBreakInvisible( bot )
 	then return	BOT_ACTION_DESIRE_NONE end
 
-	hNearbyEnemyHeroList = bot:GetNearbyHeroes( 1000, true, BOT_MODE_NONE )
+	hNearbyEnemyHeroList = J.GetNearbyHeroes(bot, 1000, true, BOT_MODE_NONE )
 	hNearbyEnemyTowerList = bot:GetNearbyTowers( 888, true )
 	botTarget = J.GetProperTarget( bot )
 	nMode = bot:GetActiveMode()
@@ -840,7 +840,7 @@ X.ConsiderItemDesire["item_abyssal_blade"] = function( hItem )
 	local hEffectTarget = nil
 	local sCastMotive = nil
 
-	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 
 	for _, npcEnemy in pairs( nInRangeEnmyList )
@@ -900,7 +900,7 @@ X.ConsiderItemDesire["item_ancient_janggo"] = function( hItem )
 	local sCastType = 'none'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 	if bot:HasModifier('modifier_nyx_assassin_vendetta')
 	then
@@ -933,7 +933,7 @@ X.ConsiderItemDesire["item_arcane_boots"] = function( hItem )
 	local sCastType = 'none'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 
 	local hNearbyAllyList = J.GetAllyList( bot, nCastRange )
@@ -984,7 +984,7 @@ X.ConsiderItemDesire["item_armlet"] = function( hItem )
 	local sCastType = 'none'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 	local bActive = hItem:GetToggleState()
 
@@ -1048,7 +1048,7 @@ X.ConsiderItemDesire["item_black_king_bar"] = function( hItem )
 	local sCastType = 'none'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 
 	if #nInRangeEnmyList > 0
@@ -1111,7 +1111,7 @@ X.ConsiderItemDesire["item_blade_mail"] = function( hItem )
 	local sCastType = 'none'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 
 	if J.IsNotAttackProjectileIncoming( bot, 366 )
@@ -1160,7 +1160,7 @@ X.ConsiderItemDesire["item_blink"] = function( hItem )
 	and bot:GetActiveModeDesire() > BOT_MODE_DESIRE_MODERATE
 	then
 		local bLocation = J.GetLocationTowardDistanceLocation(bot, GetAncient(GetTeam()):GetLocation(), 1199)
-		local nInRangeAlly = bot:GetNearbyHeroes(660, false, BOT_MODE_ATTACK)
+		local nInRangeAlly = J.GetNearbyHeroes(bot,660, false, BOT_MODE_ATTACK)
 		local nInRangeEnemy = J.GetEnemiesNearLoc(bot:GetLocation(), 1200)
 
 		if  bot:DistanceFromFountain() > 900
@@ -1173,7 +1173,7 @@ X.ConsiderItemDesire["item_blink"] = function( hItem )
 		end
 	end
 
-	local nInRangeAlly = bot:GetNearbyHeroes(1600, false, BOT_MODE_ATTACK)
+	local nInRangeAlly = J.GetNearbyHeroes(bot,1600, false, BOT_MODE_ATTACK)
 
 	if  nInRangeAlly ~= nil and #nInRangeAlly == 0 and (botTarget == nil or not botTarget:IsHero())
 	and J.IsFarming(bot)
@@ -1241,8 +1241,8 @@ X.ConsiderItemDesire["item_blink"] = function( hItem )
 		and not botTarget:IsAttackImmune()
 		and not botTarget:IsInvulnerable()
 		then
-			local nInRangeAlly = botTarget:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
-			local nInRangeEnemy = botTarget:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
+			local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1600, true, BOT_MODE_NONE)
+			local nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1600, false, BOT_MODE_NONE)
 
 			if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 			and ((#nInRangeAlly >= #nInRangeEnemy)
@@ -1295,7 +1295,7 @@ X.ConsiderItemDesire["item_cheese"] = function( hItem )
 	local sCastType = 'none'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 	local nLostHealth = bot:GetMaxHealth() - bot:GetHealth()
 	local botHP = bot:GetHealth() / bot:GetMaxHealth()
@@ -1344,7 +1344,7 @@ X.ConsiderItemDesire["item_bloodstone"] = function( hItem )
 	local sCastType = 'none'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 	if bot:WasRecentlyDamagedByAnyHero(2.0)
 	and J.GetHP(bot) < 0.3
@@ -1442,7 +1442,7 @@ X.ConsiderItemDesire["item_clarity"] = function( hItem )
 	local sCastType = 'unit'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 
 	if J.GetMP( bot ) < 0.35
@@ -1457,7 +1457,7 @@ X.ConsiderItemDesire["item_clarity"] = function( hItem )
 
 	if #nInRangeEnmyList == 0 
 	then
-		local hAllyList = bot:GetNearbyHeroes( 600, false, BOT_MODE_NONE )
+		local hAllyList = J.GetNearbyHeroes(bot, 600, false, BOT_MODE_NONE )
 		local hNeedManaAlly = nil
 		local nNeedManaAllyMana = 99999
 		for _, npcAlly in pairs( hAllyList )
@@ -1498,7 +1498,7 @@ X.ConsiderItemDesire["item_crimson_guard"] = function( hItem )
 	local sCastType = 'none'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 
 	local hNearbyAllyList = J.GetAllyList( bot, nCastRange )
@@ -1518,7 +1518,7 @@ X.ConsiderItemDesire["item_crimson_guard"] = function( hItem )
 	end
 
 
-	local nNearbyEnemyHeroes = bot:GetNearbyHeroes( 1000, true, BOT_MODE_NONE )
+	local nNearbyEnemyHeroes = J.GetNearbyHeroes(bot, 1000, true, BOT_MODE_NONE )
 	local nNearbyEnemyTowers = bot:GetNearbyTowers( 800, true )
 	if #hNearbyAllyList >= 2
 		and ( #nNearbyEnemyHeroes + #nNearbyEnemyTowers >= 2 or #nNearbyEnemyHeroes >= 2 )
@@ -1548,7 +1548,7 @@ X.ConsiderItemDesire["item_cyclone"] = function( hItem )
 	local sCastType = 'unit'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 	if bot:HasModifier('modifier_nyx_assassin_vendetta')
 	then
@@ -1654,7 +1654,7 @@ X.ConsiderItemDesire["item_dagon"] = function( hItem )
 	local sCastType = 'unit'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange + 100, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange + 100, true, BOT_MODE_NONE )
 	local nDamage = hItem:GetSpecialValueInt( "damage" )
 
 	if bot:HasModifier('modifier_nyx_assassin_vendetta')
@@ -1725,7 +1725,7 @@ X.ConsiderItemDesire["item_diffusal_blade"] = function( hItem )
 	local sCastType = 'unit'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 
 	if( nMode == BOT_MODE_RETREAT )
@@ -1810,7 +1810,7 @@ X.ConsiderItemDesire["item_ethereal_blade"] = function( hItem )
 	local sCastType = 'unit'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 
 	if J.IsGoingOnSomeone( bot )
@@ -1840,7 +1840,7 @@ X.ConsiderItemDesire["item_faerie_fire"] = function( hItem )
 	local sCastType = 'none'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 
 	if nMode == BOT_MODE_RETREAT
@@ -1888,7 +1888,7 @@ X.ConsiderItemDesire["item_flask"] = function( hItem )
 	local sCastType = 'unit'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 
 	if bot:GetMaxHealth() - bot:GetHealth() > 500
@@ -1944,7 +1944,7 @@ X.ConsiderItemDesire["item_force_staff"] = function( hItem )
 	local sCastType = 'unit'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 	if bot:HasModifier('modifier_nyx_assassin_vendetta')
 	then
@@ -1957,7 +1957,7 @@ X.ConsiderItemDesire["item_force_staff"] = function( hItem )
 		if npcAlly ~= nil and npcAlly:IsAlive()
 			and J.CanCastOnNonMagicImmune( npcAlly )
 		then
-			local nNearAllysEnemyList = npcAlly:GetNearbyHeroes( 1200, true, BOT_MODE_NONE )
+			local nNearAllysEnemyList = J.GetNearbyHeroes(npcAlly,  1200, true, BOT_MODE_NONE )
 			if #nNearAllysEnemyList >= 1
 				and not npcAlly:IsInvisible()
 				and npcAlly:GetActiveMode() == BOT_MODE_RETREAT
@@ -2005,7 +2005,7 @@ X.ConsiderItemDesire["item_force_staff"] = function( hItem )
 			and ( npcAlly:IsInvisible() or npcAlly:GetHealth() / npcAlly:GetMaxHealth() > 0.8 )
 			and ( npcAlly:IsChanneling() and not npcAlly:HasModifier( "modifier_teleporting" ) )
 		then
-			local enemyHeroesNearbyCM = npcAlly:GetNearbyHeroes( 1200, true, BOT_MODE_NONE )
+			local enemyHeroesNearbyCM = J.GetNearbyHeroes(npcAlly,  1200, true, BOT_MODE_NONE )
 			for _, npcEnemy in pairs( enemyHeroesNearbyCM )
 			do
 				if npcEnemy ~= nil and npcEnemy:IsAlive()
@@ -2068,7 +2068,7 @@ X.ConsiderItemDesire["item_ghost"] = function( hItem )
 	local sCastType = 'none'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 
 	if bot:GetAttackTarget() == nil
@@ -2134,7 +2134,7 @@ X.ConsiderItemDesire["item_glimmer_cape"] = function( hItem )
 		--------------------
 		--use at npcAlly target
 		--------------------
-		local hAllyList = bot:GetNearbyHeroes( nCastRange, false, BOT_MODE_NONE )
+		local hAllyList = J.GetNearbyHeroes(bot, nCastRange, false, BOT_MODE_NONE )
 		for _, npcAlly in pairs( hAllyList )
 		do
 			if J.IsValid( npcAlly )
@@ -2325,7 +2325,7 @@ X.ConsiderItemDesire["item_heavens_halberd"] = function( hItem )
 	local sCastType = 'unit'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 
 	local targetHero = nil
@@ -2443,7 +2443,7 @@ X.ConsiderItemDesire["item_hood_of_defiance"] = function( hItem )
 	local sCastType = 'none'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 
 	if #nInRangeEnmyList > 0
@@ -2476,7 +2476,7 @@ X.ConsiderItemDesire["item_hurricane_pike"] = function( hItem )
 	local sCastType = 'unit'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( nNearRange, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nNearRange, true, BOT_MODE_NONE )
 
 
 	if ( nMode == BOT_MODE_RETREAT and bot:GetActiveModeDesire() > BOT_MODE_DESIRE_HIGH )
@@ -2536,7 +2536,7 @@ X.ConsiderItemDesire["item_hurricane_pike"] = function( hItem )
 		end
 	end
 
-	local hAllyList = bot:GetNearbyHeroes( nCastRange, false, BOT_MODE_NONE )
+	local hAllyList = J.GetNearbyHeroes(bot, nCastRange, false, BOT_MODE_NONE )
 	for _, npcAlly in pairs( hAllyList )
 	do
 		if npcAlly ~= nil and npcAlly:IsAlive()
@@ -2546,7 +2546,7 @@ X.ConsiderItemDesire["item_hurricane_pike"] = function( hItem )
 			and ( npcAlly:IsInvisible() or npcAlly:GetHealth() / npcAlly:GetMaxHealth() > 0.8 )
 			and ( npcAlly:IsChanneling() and not npcAlly:HasModifier( "modifier_teleporting" ) )
 		then
-			local enemyHeroesNearbyCM = npcAlly:GetNearbyHeroes( 1200, true, BOT_MODE_NONE )
+			local enemyHeroesNearbyCM = J.GetNearbyHeroes(npcAlly,  1200, true, BOT_MODE_NONE )
 			for _, npcEnemy in pairs( enemyHeroesNearbyCM )
 			do
 				if npcEnemy ~= nil and npcEnemy:IsAlive()
@@ -2579,7 +2579,7 @@ X.ConsiderItemDesire["item_invis_sword"] = function( hItem )
 	local sCastType = 'none'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 
 	if J.IsRetreating( bot )
@@ -2627,7 +2627,7 @@ X.ConsiderItemDesire["item_lotus_orb"] = function( hItem )
 	local sCastType = 'unit'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nNearAllyList = bot:GetNearbyHeroes( nCastRange, false, BOT_MODE_NONE )
+	local nNearAllyList = J.GetNearbyHeroes(bot, nCastRange, false, BOT_MODE_NONE )
 
 
 	for _, npcAlly in pairs( nNearAllyList )
@@ -2676,7 +2676,7 @@ X.ConsiderItemDesire["item_magic_stick"] = function( hItem )
 	local sCastType = 'none'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 
 	local nEnemyCount = #nInRangeEnmyList
@@ -2719,7 +2719,7 @@ X.ConsiderItemDesire["item_magic_wand"] = function( hItem )
 	if hItem:GetName() == 'item_holy_locket' then sCastType = 'unit' end
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 
 	local nEnemyCount = #nInRangeEnmyList
@@ -2768,11 +2768,11 @@ X.ConsiderItemDesire["item_manta"] = function( hItem )
 	local sCastType = 'none'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 
-	local nNearbyAttackingAlliedHeroes = bot:GetNearbyHeroes( 1000, false, BOT_MODE_ATTACK )
-	local nNearbyEnemyHeroes = bot:GetNearbyHeroes( 1000, true, BOT_MODE_NONE )
+	local nNearbyAttackingAlliedHeroes = J.GetNearbyHeroes(bot, 1000, false, BOT_MODE_ATTACK )
+	local nNearbyEnemyHeroes = J.GetNearbyHeroes(bot, 1000, true, BOT_MODE_NONE )
 	local nNearbyEnemyTowers = bot:GetNearbyTowers( 800, true )
 	local nNearbyEnemyBarracks = bot:GetNearbyBarracks( 600, true )
 	local nNearbyAlliedCreeps = bot:GetNearbyLaneCreeps( 1000, false )
@@ -2860,9 +2860,9 @@ X.ConsiderItemDesire["item_mjollnir"] = function( hItem )
 	local sCastType = 'unit'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
-	local nNearbyAllyList = bot:GetNearbyHeroes( nCastRange + 100, false, BOT_MODE_NONE);
+	local nNearbyAllyList = J.GetNearbyHeroes(bot, nCastRange + 100, false, BOT_MODE_NONE);
 
 	--团战中对被攻击频率最高的用
 	if J.IsInTeamFight( bot, 800 )
@@ -2876,7 +2876,7 @@ X.ConsiderItemDesire["item_mjollnir"] = function( hItem )
 				and not npcAlly:HasModifier( "modifier_item_mjollnir_static" )
 			then
 				local nAllyCount = 0 ;
-				local nEnemyHeroes = npcAlly:GetNearbyHeroes(1400, true, BOT_MODE_NONE);
+				local nEnemyHeroes = J.GetNearbyHeroes(npcAlly, 1400, true, BOT_MODE_NONE);
 				local nEnemyCreeps = npcAlly:GetNearbyCreeps(1000, true);
 				for _, unit in pairs(nEnemyHeroes)
 				do
@@ -2992,7 +2992,7 @@ X.ConsiderItemDesire["item_mask_of_madness"] = function( hItem )
 	local sCastType = 'none'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 
 	if ( J.IsValid( nAttackTarget ) or J.IsValidBuilding( nAttackTarget ) )
@@ -3001,7 +3001,7 @@ X.ConsiderItemDesire["item_mask_of_madness"] = function( hItem )
 		and ( not J.CanKillTarget( nAttackTarget, bot:GetAttackDamage() * 2, DAMAGE_TYPE_PHYSICAL )
 			 or J.GetAroundTargetEnemyUnitCount( bot, nCastRange ) >= 2 )
 	then
-		local nEnemyHeroInView = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+		local nEnemyHeroInView = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 		if nAttackTarget:IsHero()
 			or ( #nEnemyHeroInView == 0 and not bot:WasRecentlyDamagedByAnyHero( 2.0 ) )
 		then
@@ -3030,7 +3030,7 @@ X.ConsiderItemDesire["item_medallion_of_courage"] = function( hItem )
 	local sCastType = 'unit'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 
 	if J.IsGoingOnSomeone( bot )
@@ -3066,7 +3066,7 @@ X.ConsiderItemDesire["item_medallion_of_courage"] = function( hItem )
 	end
 
 	--------
-	local hAllyList = bot:GetNearbyHeroes( 1000, false, BOT_MODE_NONE )
+	local hAllyList = J.GetNearbyHeroes(bot, 1000, false, BOT_MODE_NONE )
 	for _, npcAlly in pairs( hAllyList )
 	do
 		if npcAlly ~= bot
@@ -3159,7 +3159,7 @@ X.ConsiderItemDesire["item_necronomicon"] = function( hItem )
 	local sCastType = 'none'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 
 	if botTarget ~= nil and botTarget:IsAlive()
@@ -3193,7 +3193,7 @@ X.ConsiderItemDesire["item_nullifier"] = function( hItem )
 	local sCastType = 'unit'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 
 	if J.IsGoingOnSomeone( bot )
@@ -3221,7 +3221,7 @@ X.ConsiderItemDesire["item_orchid"] = function( hItem )
 	local sCastType = 'unit'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 
 	for _, npcEnemy in pairs( nInRangeEnmyList )
@@ -3274,7 +3274,7 @@ X.ConsiderItemDesire["item_phase_boots"] = function( hItem )
 	local sCastType = 'none'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 
 	if J.IsRunning( bot )
@@ -3295,8 +3295,8 @@ X.ConsiderItemDesire["item_pipe"] = function( hItem )
 	local sCastType = 'none'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
-	local hNearbyAllyList = bot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
+	local hNearbyAllyList = J.GetNearbyHeroes(bot, 1200, false, BOT_MODE_NONE )
 
 	for _, npcAlly in pairs( hNearbyAllyList )
 	do
@@ -3311,8 +3311,8 @@ X.ConsiderItemDesire["item_pipe"] = function( hItem )
 		end
 	end
 
-	local nNearbyAllyHeroes = bot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE )
-	local nNearbyEnemyHeroes = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+	local nNearbyAllyHeroes = J.GetNearbyHeroes(bot, 1200, false, BOT_MODE_NONE )
+	local nNearbyEnemyHeroes = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 	local nNearbyAllyTowers = bot:GetNearbyTowers( 1200, true )
 	if ( #nNearbyAllyHeroes >= 2 and #nNearbyEnemyHeroes >= 2 )
 		or ( #nNearbyEnemyHeroes >= 2 and #nNearbyAllyHeroes + #nNearbyAllyTowers >= 2 )
@@ -3335,7 +3335,7 @@ X.ConsiderItemDesire["item_power_treads"] = function( hItem )
 	local sCastType = 'none'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 
 	local nPtStat = hItem:GetPowerTreadsStat()
@@ -3422,7 +3422,7 @@ X.ConsiderItemDesire["item_quelling_blade"] = function( hItem )
 	local sCastType = 'tree'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 
 	if DotaTime() < 0 and not thereBeMonkey
@@ -3499,7 +3499,7 @@ X.ConsiderItemDesire["item_refresher"] = function( hItem )
 	local sCastType = 'none'
 	local hEffectTarget = nil
 	local sCastMotive = '刷新技能'
-	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 	-- if bot has a overrided version of CanUseRefresherShard logic:
 	if BotBuild.CanUseRefresherShard ~= nil and BotBuild.CanUseRefresherShard() then
@@ -3532,7 +3532,7 @@ X.ConsiderItemDesire["item_ultimate_scepter_roshan"] = function( hItem )
 	local sCastType = 'none'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 	if hItem:IsFullyCastable()
 	then
@@ -3552,7 +3552,7 @@ X.ConsiderItemDesire["item_aghanims_shard_roshan"] = function( hItem )
 	local sCastType = 'none'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 	if hItem:IsFullyCastable()
 	then
@@ -3574,7 +3574,7 @@ X.ConsiderItemDesire["item_rod_of_atos"] = function( hItem )
 	if hItem:GetName() == "item_gungir" then sCastType = 'ground' end
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nEnemysHerosInCastRange = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nEnemysHerosInCastRange = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 
 	for _, npcEnemy in pairs( nEnemysHerosInCastRange )
@@ -3635,7 +3635,7 @@ X.ConsiderItemDesire["item_satanic"] = function( hItem )
 	local sCastType = 'none'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 
 	if bot:GetHealth() / bot:GetMaxHealth() < 0.62
@@ -3659,7 +3659,7 @@ X.ConsiderItemDesire["item_shadow_amulet"] = function( hItem )
 	local sCastType = 'unit'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 
 	if not bot:HasModifier( 'modifier_invisible' )
@@ -3668,7 +3668,7 @@ X.ConsiderItemDesire["item_shadow_amulet"] = function( hItem )
 		and not bot:HasModifier( 'modifier_slardar_amplify_damage' )
 		and not bot:HasModifier( 'modifier_item_dustofappearance' )
 	then
-		local nEnemyList = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+		local nEnemyList = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 		for _, enemy in pairs( nEnemyList )
 		do
 			if enemy:IsAlive()
@@ -3702,7 +3702,7 @@ X.ConsiderItemDesire["item_shadow_amulet"] = function( hItem )
 		end
 	end
 
-	local nNearAllyList = bot:GetNearbyHeroes( 849, false, BOT_MODE_NONE )
+	local nNearAllyList = J.GetNearbyHeroes(bot, 849, false, BOT_MODE_NONE )
 	for _, npcAlly in pairs( nNearAllyList )
 	do
 		if J.IsValid( npcAlly )
@@ -3740,7 +3740,7 @@ X.ConsiderItemDesire["item_sheepstick"] = function( hItem )
 	local sCastType = 'unit'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 
 	for _, npcEnemy in pairs( nInRangeEnmyList )
@@ -3794,7 +3794,7 @@ X.ConsiderItemDesire["item_shivas_guard"] = function( hItem )
 	local sCastType = 'none'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange + 50, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange + 50, true, BOT_MODE_NONE )
 
 
 	local hNearbyCreepList = bot:GetNearbyCreeps( nCastRange, true )
@@ -3817,7 +3817,7 @@ X.ConsiderItemDesire["item_silver_edge"] = function( hItem )
 	local sCastType = 'none'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 	--破被动
 	if J.IsGoingOnSomeone( bot )
@@ -3897,8 +3897,8 @@ X.ConsiderItemDesire["item_sphere"] = function( hItem )
 	local sCastType = 'unit'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
-	local nNearAllyList = bot:GetNearbyHeroes( nCastRange, false, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
+	local nNearAllyList = J.GetNearbyHeroes(bot, nCastRange, false, BOT_MODE_NONE )
 
 
 	--对可能被作为敌方目标的队友使用
@@ -3982,7 +3982,7 @@ X.ConsiderItemDesire["item_tango"] = function( hItem )
 			and DotaTime() > 10
 			and DotaTime() > J.Role['fLastGiveTangoTime'] + 40.0
 		then
-			local hAllyList = bot:GetNearbyHeroes( 800, false, BOT_MODE_NONE )
+			local hAllyList = J.GetNearbyHeroes(bot, 800, false, BOT_MODE_NONE )
 			for _, npcAlly in pairs( hAllyList )
 			do
 				if npcAlly ~= bot
@@ -4031,7 +4031,7 @@ X.ConsiderItemDesire["item_tango_single"] = function( hItem )
 	then
 		local trees = bot:GetNearbyTrees( 800 )
 		local targetTree = trees[1]
-		local nearEnemyList = bot:GetNearbyHeroes( 1200, true, BOT_MODE_NONE )
+		local nearEnemyList = J.GetNearbyHeroes(bot, 1200, true, BOT_MODE_NONE )
 		local nearestEnemy = nearEnemyList[1]
 		local nearTowerList = bot:GetNearbyTowers( 1400, true )
 		local nearestTower = nearTowerList[1]
@@ -4114,7 +4114,7 @@ X.ConsiderItemDesire["item_tango_single"] = function( hItem )
 		and nMode ~= BOT_MODE_RUNE
 	then
 		local tCount = J.Item.GetItemCount( bot, "item_tango_single" )
-		local hNearbyEnemyHeroList = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+		local hNearbyEnemyHeroList = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 		if tCount >= 2
 		then
 			local trees = bot:GetNearbyTrees( 1200 )
@@ -4157,7 +4157,7 @@ X.ConsiderItemDesire["item_tome_of_knowledge"] = function( hItem )
 	local sCastType = 'none'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 	if hItem:IsFullyCastable()
 	then
@@ -4261,7 +4261,7 @@ function X.CanJuke()
 
 				if GetUnitToLocationDistance( bot, dInfo.location ) < 600
 				then
-					local hNearbyEnemyHeroList = bot:GetNearbyHeroes( 600, true, BOT_MODE_NONE )
+					local hNearbyEnemyHeroList = J.GetNearbyHeroes(bot, 600, true, BOT_MODE_NONE )
 					if #hNearbyEnemyHeroList == 0
 					then
 						return false
@@ -4272,7 +4272,7 @@ function X.CanJuke()
 	end
 
 	local totalDamage = 0
-	local nEnemies = bot:GetNearbyHeroes( 1200, true, BOT_MODE_NONE )
+	local nEnemies = J.GetNearbyHeroes(bot, 1200, true, BOT_MODE_NONE )
 	for _, enemy in pairs( nEnemies )
 	do
 		local enemyDamage = enemy:GetEstimatedDamageToTarget( true, bot, 4.0, DAMAGE_TYPE_ALL )
@@ -4323,7 +4323,7 @@ function X.IsFarmingAlways( bot )
 		return true
 	end
 
-	local nNearAllyList = bot:GetNearbyHeroes( 800, false, BOT_MODE_NONE )
+	local nNearAllyList = J.GetNearbyHeroes(bot, 800, false, BOT_MODE_NONE )
 	if J.IsValid( nTarget )
 		and nTarget:IsAncientCreep()
 		and not J.IsRoshan( nTarget )
@@ -4688,7 +4688,7 @@ X.ConsiderItemDesire["item_tpscroll"] = function( hItem )
 
 
 		--第二种情况:有多个敌人但可以卡视野TP
-		local nAttackAllyList = bot:GetNearbyHeroes( 1500, false, BOT_MODE_ATTACK )
+		local nAttackAllyList = J.GetNearbyHeroes(bot, 1500, false, BOT_MODE_ATTACK )
 		if botHP < ( 0.15 + 0.24 * nEnemyCount )
 			and #nAttackAllyList == 0
 			and bot:WasRecentlyDamagedByAnyHero( 6.0 )
@@ -4817,8 +4817,8 @@ X.ConsiderItemDesire["item_tpscroll"] = function( hItem )
 		and not J.Role.CanBeSupport( bot:GetUnitName() )
 		and not J.IsEnemyHeroAroundLocation( GetAncient( GetTeam() ):GetLocation(), 3300 )
 	then
-		local nAttackAllyList = bot:GetNearbyHeroes( 1600, false, BOT_MODE_ATTACK )
-		local nNearEnemyList = bot:GetNearbyHeroes( 1400, true, BOT_MODE_NONE )
+		local nAttackAllyList = J.GetNearbyHeroes(bot, 1600, false, BOT_MODE_ATTACK )
+		local nNearEnemyList = J.GetNearbyHeroes(bot, 1400, true, BOT_MODE_NONE )
 		local nCreeps= bot:GetNearbyCreeps( 1600, true )
 		local mostFarmDesireLane, mostFarmDesire = J.GetMostFarmLaneDesire()
 		
@@ -4898,7 +4898,7 @@ X.ConsiderItemDesire["item_tpscroll"] = function( hItem )
 		and ( botTarget == nil or not botTarget:IsHero() )
 		--and J.GetAllyCount( bot, 1600 ) <= 3 --守护遗迹bug
 	then
-		local nNearEnemyList = bot:GetNearbyHeroes( 1400, true, BOT_MODE_NONE )
+		local nNearEnemyList = J.GetNearbyHeroes(bot, 1400, true, BOT_MODE_NONE )
 		local nTeamFightLocation = J.GetTeamFightLocation( bot )
 		local isTravelBootsAvailable = false
 		if J.IsItemAvailable( "item_travel_boots" )
@@ -5084,7 +5084,7 @@ X.ConsiderItemDesire["item_tpscroll"] = function( hItem )
 	if bot:HasModifier( 'modifier_bloodseeker_rupture' ) and nEnemyCount <= 1
 		and J.GetModifierTime( bot, "modifier_bloodseeker_rupture" ) >= 3.1
 	then
-		local nAllyCount = bot:GetNearbyHeroes( 1000, false, BOT_MODE_NONE )
+		local nAllyCount = J.GetNearbyHeroes(bot, 1000, false, BOT_MODE_NONE )
 		if #nAllyCount <= 1 and X.CanJuke()
 		then
 			tpLoc = J.GetTeamFountain()
@@ -5175,7 +5175,7 @@ X.ConsiderItemDesire["item_urn_of_shadows"] = function( hItem )
 	local sCastType = 'unit'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 
 	if J.IsGoingOnSomeone( bot )
@@ -5197,7 +5197,7 @@ X.ConsiderItemDesire["item_urn_of_shadows"] = function( hItem )
 
 	if bot:GetActiveMode() ~= BOT_MODE_ROSHAN
 	then
-		local hAllyList = bot:GetNearbyHeroes( nCastRange + 80, false, BOT_MODE_NONE )
+		local hAllyList = J.GetNearbyHeroes(bot, nCastRange + 80, false, BOT_MODE_NONE )
 		local hNeedHealAlly = nil
 		local nNeedHealAllyHealth = 99999
 		for _, npcAlly in pairs( hAllyList )
@@ -5241,7 +5241,7 @@ X.ConsiderItemDesire["item_veil_of_discord"] = function( hItem )
 	local sCastType = 'none'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange + 50, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange + 50, true, BOT_MODE_NONE )
 
 	local hNearbyCreepList = bot:GetNearbyCreeps( nCastRange, true )
 	if #hNearbyCreepList >= 6
@@ -5266,7 +5266,7 @@ X.ConsiderItemDesire["item_ward_sentry"] = function( hItem )
 	local sCastType = 'ground'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( 1200, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, 1200, true, BOT_MODE_NONE )
 	local nAllyTowerList = bot:GetNearbyTowers( 1200, false )
 
 
@@ -5348,7 +5348,7 @@ X.ConsiderItemDesire["item_essence_ring"] = function( hItem )
 	local sCastType = 'none'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( 1400, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, 1400, true, BOT_MODE_NONE )
 
 	if bot:GetMaxHealth() - bot:GetHealth() > 600
 		and J.IsAllowedToSpam( bot, 200 )
@@ -5380,7 +5380,7 @@ X.ConsiderItemDesire["item_flicker"] = function( hItem )
 	local sCastType = 'none'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( 800, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, 800, true, BOT_MODE_NONE )
 
 	if J.IsGoingOnSomeone( bot )
 	then
@@ -5468,7 +5468,7 @@ X.ConsiderItemDesire["item_fallen_sky"] = function( hItem )
 	local nCastDelay = 0.5
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( 1200, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, 1200, true, BOT_MODE_NONE )
 
 
 	if J.IsGoingOnSomeone( bot )
@@ -5499,7 +5499,7 @@ X.ConsiderItemDesire["item_fallen_sky"] = function( hItem )
 		and bot:WasRecentlyDamagedByAnyHero( 3.0 )
 	then
 		local bLocation = J.GetLocationTowardDistanceLocation( bot, GetAncient( GetTeam() ):GetLocation(), 1600 )
-		local nAttackAllyList = bot:GetNearbyHeroes( 800, false, BOT_MODE_ATTACK )
+		local nAttackAllyList = J.GetNearbyHeroes(bot, 800, false, BOT_MODE_ATTACK )
 		if bot:DistanceFromFountain() > 800
 			and IsLocationPassable( bLocation )
 			and ( #nAttackAllyList == 0 or bot:GetActiveModeDesire() > BOT_MODE_DESIRE_VERYHIGH * 0.9 )
@@ -5522,7 +5522,7 @@ X.ConsiderItemDesire["item_ex_machina"] = function( hItem )
 	local sCastType = 'none'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 
 	if J.IsGoingOnSomeone( bot )
@@ -5561,7 +5561,7 @@ X.ConsiderItemDesire["item_stormcrafter"] = function( hItem )
 	local sCastType = 'unit'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 
 
 	if J.CanCastOnNonMagicImmune( bot )
@@ -5601,7 +5601,7 @@ X.ConsiderItemDesire["item_pogo_stick"] = function( hItem )
 	local sCastType = 'none'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 	--追击敌人
 	if J.IsGoingOnSomeone( bot )
@@ -5643,7 +5643,7 @@ X.ConsiderItemDesire["item_paintball"] = function( hItem )
 	local sCastType = 'unit'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 
 	if J.IsValidHero( botTarget )
@@ -5668,7 +5668,7 @@ X.ConsiderItemDesire["item_heavy_blade"] = function( hItem )
 	local sCastType = 'unit'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 
 	--驱散友军
@@ -5682,7 +5682,7 @@ X.ConsiderItemDesire["item_heavy_blade"] = function( hItem )
 				and npcAlly:WasRecentlyDamagedByAnyHero( 2.0 )
 				and J.GetHP( npcAlly ) < 0.85
 			then
-				local nEnemyList = npcAlly:GetNearbyHeroes( 300, true, BOT_MODE_NONE )
+				local nEnemyList = J.GetNearbyHeroes(npcAlly,  300, true, BOT_MODE_NONE )
 				local npcEnemy = nEnemyList[1]
 				if J.IsValidHero( npcEnemy )
 					and J.CanCastOnMagicImmune( npcEnemy )
@@ -5727,7 +5727,7 @@ X.ConsiderItemDesire["item_revenants_brooch"] = function( hItem )
 	local sCastType = 'none'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 
 	if J.IsGoingOnSomeone( bot )
@@ -5753,7 +5753,7 @@ X.ConsiderItemDesire["item_wraith_pact"] = function( hItem )
 	local sCastType = 'ground'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 
 	if J.IsGoingOnSomeone( bot )
@@ -5789,7 +5789,7 @@ X.ConsiderItemDesire["item_new"] = function( hItem )
 	local sCastType = 'unit'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 
 	if J.IsGoingOnSomeone( bot )
@@ -5834,8 +5834,8 @@ X.ConsiderItemDesire['item_pavise'] = function(item)
 	local sCastType = 'unit'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
-	local nNearAllyList = bot:GetNearbyHeroes( nCastRange, false, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
+	local nNearAllyList = J.GetNearbyHeroes(bot, nCastRange, false, BOT_MODE_NONE )
 	local health = bot:GetHealth() / bot:GetMaxHealth()
 
 	--对可能被作为敌方目标的队友使用
@@ -5931,8 +5931,8 @@ X.ConsiderItemDesire['item_disperser'] = function(item)
 
 	local nAttackRange = bot:GetAttackRange()
 	local botTarget = J.GetProperTarget(bot)
-	local nAllyHeroes = bot:GetNearbyHeroes(nCastRange, false, BOT_MODE_NONE)
-	local nEnemyHeroes = bot:GetNearbyHeroes(nCastRange + nAttackRange, true, BOT_MODE_NONE)
+	local nAllyHeroes = J.GetNearbyHeroes(bot,nCastRange, false, BOT_MODE_NONE)
+	local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange + nAttackRange, true, BOT_MODE_NONE)
 
 	if J.IsDisabled(bot)
 	then
@@ -6029,7 +6029,7 @@ X.ConsiderItemDesire['item_blood_grenade'] = function(item)
 	local nImpactDamage = 50
 	local nDPS = 15
 	local nDuration = 5
-	local nEnemyHeroes = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+	local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 
 	for _, enemyHero in pairs(nEnemyHeroes)
 	do
@@ -6068,8 +6068,8 @@ X.ConsiderItemDesire['item_blood_grenade'] = function(item)
 			and not enemyHero:HasModifier('modifier_oracle_false_promise_timer')
 			and nHealth > nHealthCost * 2
 			then
-				local nInRangeAlly = enemyHero:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
-				local nInRangeEnemy = enemyHero:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+				local nInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, true, BOT_MODE_NONE)
+				local nInRangeEnemy = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
 				
 				if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 				and #nInRangeAlly >= #nInRangeEnemy
@@ -6105,7 +6105,7 @@ X.ConsiderItemDesire['item_smoke_of_deceit'] = function(item)
 
 	local isThereEnemyNearby = false
 	local nInRangeAlly = J.GetAllyList(bot, nRadius)
-	local nInRangeEnemy = bot:GetNearbyHeroes(nRadius, true, BOT_MODE_NONE)
+	local nInRangeEnemy = J.GetNearbyHeroes(bot,nRadius, true, BOT_MODE_NONE)
 	local nInRangeTower = bot:GetNearbyTowers(nRadius, true)
 
 	if DotaTime() < 0 and DotaTime() > -60
@@ -6120,7 +6120,7 @@ X.ConsiderItemDesire['item_smoke_of_deceit'] = function(item)
 		do
 			if J.IsValidHero(allyHero)
 			then
-				local nAllyInRangeEnemy = allyHero:GetNearbyHeroes(nRadius, true, BOT_MODE_NONE)
+				local nAllyInRangeEnemy = J.GetNearbyHeroes(allyHero, nRadius, true, BOT_MODE_NONE)
 				local nAllyInRangeTower = allyHero:GetNearbyTowers(nRadius, true)
 
 				if (nAllyInRangeEnemy ~= nil and #nAllyInRangeEnemy >= 1)
@@ -6294,7 +6294,7 @@ end
 -- Pig Pole
 X.ConsiderItemDesire["item_unstable_wand"] = function(hItem)
 	local nCastRange = 1600
-	local nInRangeEnemy = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+	local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 
 	if  nInRangeEnemy ~= nil and #nInRangeEnemy == 0
 	and J.GetMP(bot) > 0.5
@@ -6309,7 +6309,7 @@ end
 -- Seeds of Serenity
 X.ConsiderItemDesire["item_seeds_of_serenity"] = function(hItem)
 	local nRadius = 400
-	local nInRangeEnemy = bot:GetNearbyHeroes(nRadius, true, BOT_MODE_NONE)
+	local nInRangeEnemy = J.GetNearbyHeroes(bot,nRadius, true, BOT_MODE_NONE)
 	local nInRangeTower = bot:GetNearbyTowers(700, true)
 
 	if J.IsFarming(bot)
@@ -6430,7 +6430,7 @@ X.ConsiderItemDesire["item_bullwhip"] = function(hItem)
 		if  J.IsValidHero(allyHero)
 		and J.CanCastOnNonMagicImmune(allyHero)
 		then
-			local nAllyInRangeEnemy = allyHero:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
+			local nAllyInRangeEnemy = J.GetNearbyHeroes(allyHero, 1200, true, BOT_MODE_NONE)
 
 			if  nAllyInRangeEnemy ~= nil and #nAllyInRangeEnemy >= 1
 			and J.IsRetreating(allyHero)
@@ -6486,7 +6486,7 @@ X.ConsiderItemDesire["item_craggy_coat"] = function(hItem)
 
     if J.IsGoingOnSomeone(bot)
 	then
-		local nInRangeAlly = bot:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+		local nInRangeAlly = J.GetNearbyHeroes(bot,1200, false, BOT_MODE_NONE)
 
         if  J.IsValidTarget(botTarget)
         and J.IsAttacking(botTarget)
@@ -6494,7 +6494,7 @@ X.ConsiderItemDesire["item_craggy_coat"] = function(hItem)
         and J.IsInRange(bot, botTarget, 600)
         and not J.IsSuspiciousIllusion(botTarget)
         then
-            local nTargetInRangeAlly = botTarget:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+            local nTargetInRangeAlly = J.GetNearbyHeroes(botTarget, 1200, false, BOT_MODE_NONE)
 
             if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
             and #nInRangeAlly >= #nTargetInRangeAlly
@@ -6555,7 +6555,7 @@ X.ConsiderItemDesire["item_ogre_seal_totem"] = function(hItem)
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		local nInRangeAlly = bot:GetNearbyHeroes(1000, false, BOT_MODE_NONE)
+		local nInRangeAlly = J.GetNearbyHeroes(bot,1000, false, BOT_MODE_NONE)
 
 		if  J.IsValidTarget(botTarget)
 		and J.CanCastOnNonMagicImmune(botTarget)
@@ -6568,7 +6568,7 @@ X.ConsiderItemDesire["item_ogre_seal_totem"] = function(hItem)
 		and not J.IsLocationInChrono(botTarget:GetLocation())
 		and not J.IsLocationInBlackHole(botTarget:GetLocation())
 		then
-			local nTargetInRangeAlly = botTarget:GetNearbyHeroes(1000, false, BOT_MODE_NONE)
+			local nTargetInRangeAlly = J.GetNearbyHeroes(botTarget, 1000, false, BOT_MODE_NONE)
 
 			if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
 			and #nInRangeAlly >= #nTargetInRangeAlly
@@ -6599,7 +6599,7 @@ X.ConsiderItemDesire["item_doubloon"] = function(hItem)
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		local nInRangeAlly = bot:GetNearbyHeroes(1000, false, BOT_MODE_NONE)
+		local nInRangeAlly = J.GetNearbyHeroes(bot,1000, false, BOT_MODE_NONE)
 
 		if  J.IsValidTarget(botTarget)
 		and J.IsInRange(bot, botTarget, 1000)
@@ -6699,7 +6699,7 @@ X.ConsiderItemDesire["item_havoc_hammer"] = function(hItem)
 	local nRadius = 400
 	local nDamage = 175 + bot:GetAttributeValue(ATTRIBUTE_STRENGTH) * 1.5
 
-	local nEnemyHeroes = bot:GetNearbyHeroes(nRadius, true, BOT_MODE_NONE)
+	local nEnemyHeroes = J.GetNearbyHeroes(bot,nRadius, true, BOT_MODE_NONE)
     for _, enemyHero in pairs(nEnemyHeroes)
     do
         if  J.IsValidHero(enemyHero)
@@ -6734,7 +6734,7 @@ X.ConsiderItemDesire["item_havoc_hammer"] = function(hItem)
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		local nInRangeAlly = bot:GetNearbyHeroes(1000, false, BOT_MODE_NONE)
+		local nInRangeAlly = J.GetNearbyHeroes(bot,1000, false, BOT_MODE_NONE)
 
 		if  J.IsValidTarget(botTarget)
 		and J.CanCastOnNonMagicImmune(botTarget)
@@ -6804,7 +6804,7 @@ end
 -- Force Boots
 X.ConsiderItemDesire["item_force_boots"] = function( hItem )
 	local nCastRange = 700 + aetherRange
-	local nInRangeEnemy = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+	local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 
 	if J.IsStuck(bot)
 	then
@@ -6821,8 +6821,8 @@ X.ConsiderItemDesire["item_force_boots"] = function( hItem )
 		and not J.IsLocationInBlackHole(botTarget:GetLocation())
 		and not botTarget:HasModifier('modifier_necrolyte_reapers_scythe')
 		then
-			local nInRangeAlly = bot:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
-			local nTargetInRangeAlly = botTarget:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+			local nInRangeAlly = J.GetNearbyHeroes(bot,1200, false, BOT_MODE_NONE)
+			local nTargetInRangeAlly = J.GetNearbyHeroes(botTarget, 1200, false, BOT_MODE_NONE)
 
 			if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
 			and #nInRangeAlly >= #nTargetInRangeAlly
@@ -6860,7 +6860,7 @@ X.ConsiderItemDesire["item_force_boots"] = function( hItem )
 		if  J.IsValidHero(allyHero)
 		and J.CanCastOnNonMagicImmune(allyHero)
 		then
-			local nAllyInRangeEnemy = allyHero:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
+			local nAllyInRangeEnemy = J.GetNearbyHeroes(allyHero, 1200, true, BOT_MODE_NONE)
 
 			if  nAllyInRangeEnemy ~= nil and #nAllyInRangeEnemy >= 1
 			and J.IsRetreating(allyHero)
@@ -6908,8 +6908,8 @@ X.ConsiderItemDesire["item_force_boots"] = function( hItem )
 			and GetUnitToLocationDistance(enemyHero, GetAncient(GetTeam()):GetLocation()) < 1600
 			and not J.IsSuspiciousIllusion(enemyHero)
 			then
-				local nInRangeAlly = bot:GetNearbyHeroes(1000, false, BOT_MODE_NONE)
-				local nTargetInRangeAlly = enemyHero:GetNearbyHeroes(1000, false, BOT_MODE_NONE)
+				local nInRangeAlly = J.GetNearbyHeroes(bot,1000, false, BOT_MODE_NONE)
+				local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 1000, false, BOT_MODE_NONE)
 
 				if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
 				and #nInRangeAlly >= #nTargetInRangeAlly
@@ -6983,7 +6983,7 @@ end
 -- Book of the Dead
 X.ConsiderItemDesire["item_demonicon"] = function(hItem)
 	local nCastRange = 750
-	local nInRangeEnmyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 	if J.IsPushing(bot)
 	then
@@ -7001,7 +7001,7 @@ X.ConsiderItemDesire["item_demonicon"] = function(hItem)
 	and J.IsInRange(bot, botTarget, 1000)
 	and not botTarget:HasModifier('modifier_abaddon_borrowed_time')
 	then
-		local nTargetInRangeAlly = botTarget:GetNearbyHeroes(1000, false, BOT_MODE_NONE)
+		local nTargetInRangeAlly = J.GetNearbyHeroes(botTarget, 1000, false, BOT_MODE_NONE)
 
 		if nTargetInRangeAlly ~= nil
 		then
@@ -7059,7 +7059,7 @@ X.ConsiderItemDesire["item_book_of_shadows"] = function( hItem )
 		and J.CanCastOnNonMagicImmune(allyHero)
 		and allyHero:WasRecentlyDamagedByAnyHero(3)
 		then
-			local nAllyInRangeEnemy = allyHero:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
+			local nAllyInRangeEnemy = J.GetNearbyHeroes(allyHero, 1200, true, BOT_MODE_NONE)
 
 			if nAllyInRangeEnemy ~= nil and #nAllyInRangeEnemy >= 1
 			and J.IsRetreating(allyHero)

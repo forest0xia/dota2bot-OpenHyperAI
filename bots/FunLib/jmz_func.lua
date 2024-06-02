@@ -227,7 +227,7 @@ function J.GetNearbyAroundLocationUnitCount( bEnemy, bHero, nRadius, vLoc )
 
 	if bHero
 	then
-		unitList = bot:GetNearbyHeroes( 1600, bEnemy, BOT_MODE_NONE )
+		unitList = J.GetNearbyHeroes(bot, 1600, bEnemy, BOT_MODE_NONE )
 	else
 		unitList = bot:GetNearbyCreeps( 1600, bEnemy )
 	end
@@ -273,7 +273,7 @@ function J.GetVulnerableWeakestUnit( bot, bHero, bEnemy, nRadius )
 	local weakestHP = 10000
 	if bHero
 	then
-		unitList = bot:GetNearbyHeroes( nRadius, bEnemy, BOT_MODE_NONE )
+		unitList = J.GetNearbyHeroes(bot, nRadius, bEnemy, BOT_MODE_NONE )
 	else
 		unitList = bot:GetNearbyLaneCreeps( nRadius, bEnemy )
 	end
@@ -301,7 +301,7 @@ function J.GetVulnerableUnitNearLoc( bot, bHero, bEnemy, nCastRange, nRadius, vL
 
 	if bHero
 	then
-		unitList = bot:GetNearbyHeroes( nCastRange, bEnemy, BOT_MODE_NONE )
+		unitList = J.GetNearbyHeroes(bot, nCastRange, bEnemy, BOT_MODE_NONE )
 	else
 		unitList = bot:GetNearbyLaneCreeps( nCastRange, bEnemy )
 	end
@@ -513,7 +513,7 @@ function J.IsAllyHeroBetweenAllyAndEnemy( hAlly, hEnemy, vLoc, nRadius )
 
 	local vStart = hAlly:GetLocation()
 	local vEnd = vLoc
-	local heroList = hAlly:GetNearbyHeroes( 1600, false, BOT_MODE_NONE )
+	local heroList = J.GetNearbyHeroes( hAlly, 1600, false, BOT_MODE_NONE )
 	for i, hero in pairs( heroList )
 	do
 		if hero ~= hAlly
@@ -528,7 +528,7 @@ function J.IsAllyHeroBetweenAllyAndEnemy( hAlly, hEnemy, vLoc, nRadius )
 		end
 	end
 
-	heroList = hEnemy:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+	heroList = J.GetNearbyHeroes( hEnemy, 1600, true, BOT_MODE_NONE )
 	for i, hero in pairs( heroList )
 	do
 		if hero ~= hAlly
@@ -940,7 +940,7 @@ function J.HasForbiddenModifier( npcTarget )
 
 	if npcTarget:IsHero()
 	then
-		local enemies = npcTarget:GetNearbyHeroes( 800, false, BOT_MODE_NONE )
+		local enemies = J.GetNearbyHeroes(npcTarget, 800, false, BOT_MODE_NONE )
 		if enemies ~= nil and #enemies >= 2
 		then
 			for _, mod in pairs( J.Buff['enemy_is_undead'] )
@@ -982,11 +982,11 @@ end
 
 function J.ShouldEscape( bot )
 
-	local tableNearbyAttackAllies = bot:GetNearbyHeroes( 800, false, BOT_MODE_ATTACK )
+	local tableNearbyAttackAllies = J.GetNearbyHeroes(bot, 800, false, BOT_MODE_ATTACK )
 
 	if #tableNearbyAttackAllies > 0 and J.GetHP( bot ) > 0.16 then return false end
 
-	local tableNearbyEnemyHeroes = bot:GetNearbyHeroes( 1000, true, BOT_MODE_NONE )
+	local tableNearbyEnemyHeroes = J.GetNearbyHeroes(bot, 1000, true, BOT_MODE_NONE )
 	if bot:WasRecentlyDamagedByAnyHero( 2.0 )
 		or bot:WasRecentlyDamagedByTower( 2.0 )
 		or #tableNearbyEnemyHeroes >= 2
@@ -1057,7 +1057,7 @@ function J.IsInTeamFight( bot, nRadius )
 
 	if nRadius == nil or nRadius > 1600 then nRadius = 1600 end
 
-	local attackModeAllyList = bot:GetNearbyHeroes( nRadius, false, BOT_MODE_ATTACK )
+	local attackModeAllyList = J.GetNearbyHeroes(bot, nRadius, false, BOT_MODE_ATTACK )
 
 	return #attackModeAllyList >= 2 -- and bot:GetActiveMode() ~= BOT_MODE_RETREAT
 
@@ -1303,7 +1303,7 @@ function J.IsWillBeCastUnitTargetSpell( bot, nRadius )
 
 	if nRadius > 1600 then nRadius = 1600 end
 
-	local enemyList = bot:GetNearbyHeroes( nRadius, true, BOT_MODE_NONE )
+	local enemyList = J.GetNearbyHeroes(bot, nRadius, true, BOT_MODE_NONE )
 	for _, npcEnemy in pairs( enemyList )
 	do
 		if npcEnemy ~= nil and npcEnemy:IsAlive()
@@ -1344,7 +1344,7 @@ end
 
 function J.IsWillBeCastPointSpell( bot, nRadius )
 
-	local enemyList = bot:GetNearbyHeroes( nRadius, true, BOT_MODE_NONE )
+	local enemyList = J.GetNearbyHeroes(bot, nRadius, true, BOT_MODE_NONE )
 
 	for _, npcEnemy in pairs( enemyList )
 	do
@@ -1784,7 +1784,7 @@ function J.GetInvUnitInLocCount( bot, nRadius, nFindRadius, vLocation, pierceImm
 
 	local nUnits = 0
 	if nRadius > 1600 then nRadius = 1600 end
-	local unitList = bot:GetNearbyHeroes( nRadius, true, BOT_MODE_NONE )
+	local unitList = J.GetNearbyHeroes(bot, nRadius, true, BOT_MODE_NONE )
 	for _, u in pairs( unitList ) do
 		if ( ( pierceImmune and J.CanCastOnMagicImmune( u ) )
 			 or ( not pierceImmune and J.CanCastOnNonMagicImmune( u ) ) )
@@ -1957,7 +1957,7 @@ function J.GetNearbyHeroes(bot, nRadius, bEnemy)
     local nearByHeroCacheTime = DotaTime()
     if nearByHeroCacheTime - nearByHeroCache[nRadius].time >= nearByHeroCacheDuration then
         -- Refresh the cache
-        nearByHeroCache[nRadius].heroes = bot:GetNearbyHeroes(nRadius, bEnemy, BOT_MODE_NONE)
+        nearByHeroCache[nRadius].heroes = J.GetNearbyHeroes(bot,nRadius, bEnemy, BOT_MODE_NONE)
 
         -- Update the cache time
         nearByHeroCache[nRadius].time = nearByHeroCacheTime
@@ -1971,7 +1971,7 @@ function J.GetAroundBotUnitList( bot, nRadius, bEnemy )
 
 	if nRadius > 1600 then nRadius = 1600 end
 
-	local heroList = bot:GetNearbyHeroes( nRadius, bEnemy, BOT_MODE_NONE )
+	local heroList = J.GetNearbyHeroes(bot, nRadius, bEnemy, BOT_MODE_NONE )
 	local creepList = bot:GetNearbyCreeps( nRadius, bEnemy )
 	local unitList = {}
 
@@ -2316,7 +2316,7 @@ end
 function J.IsOtherAllysTarget( unit )
 
 	local bot = GetBot()
-	local hAllyList = bot:GetNearbyHeroes( 800, false, BOT_MODE_NONE )
+	local hAllyList = J.GetNearbyHeroes(bot, 800, false, BOT_MODE_NONE )
 
 	if #hAllyList <= 1 then return false end
 
@@ -2340,7 +2340,7 @@ end
 function J.IsAllysTarget( unit )
 
 	local bot = GetBot()
-	local hAllyList = bot:GetNearbyHeroes( 800, false, BOT_MODE_NONE )
+	local hAllyList = J.GetNearbyHeroes(bot, 800, false, BOT_MODE_NONE )
 
 	for _, ally in pairs( hAllyList )
 	do
@@ -2779,7 +2779,7 @@ function J.GetAttackableWeakestUnit( bot, nRadius, bHero, bEnemy )
 
 	if bHero
 	then
-		unitList = bot:GetNearbyHeroes( nRadius, bEnemy, BOT_MODE_NONE )
+		unitList = J.GetNearbyHeroes(bot, nRadius, bEnemy, BOT_MODE_NONE )
 	else
 		unitList = bot:GetNearbyLaneCreeps( nRadius, bEnemy )
 	end
@@ -2847,7 +2847,7 @@ function J.GetAllyList( bot, nRadius )
 	if nRadius > 1600 then nRadius = 1600 end
 
 	local nRealAllyList = {}
-	local nCandidate = bot:GetNearbyHeroes( nRadius, false, BOT_MODE_NONE )
+	local nCandidate = J.GetNearbyHeroes(bot, nRadius, false, BOT_MODE_NONE )
 	if #nCandidate <= 1 then return nCandidate end
 
 	for _, ally in pairs( nCandidate )
@@ -2877,7 +2877,7 @@ function J.GetAroundEnemyHeroList( nRadius )
 
 	if nRadius > 1600 then nRadius = 1600 end
 
-	return GetBot():GetNearbyHeroes( nRadius, true, BOT_MODE_NONE )
+	return J.GetNearbyHeroes(GetBot(), nRadius, true, BOT_MODE_NONE )
 
 end
 
@@ -2924,7 +2924,7 @@ function J.GetEnemyList( bot, nRadius )
 
 	if nRadius > 1600 then nRadius = 1600 end
 	local nRealEnemyList = {}
-	local nCandidate = bot:GetNearbyHeroes( nRadius, true, BOT_MODE_NONE )
+	local nCandidate = J.GetNearbyHeroes(bot, nRadius, true, BOT_MODE_NONE )
 	if nCandidate[1] == nil then return nCandidate end
 
 	for _, enemy in pairs( nCandidate )
@@ -3071,7 +3071,7 @@ function J.IsEnemyFacingUnit( bot, nRadius, nDegrees )
 	local nLoc = bot:GetLocation()
 
 	if nRadius > 1600 then nRadius = 1600 end
-	local nEnemyHeroes = bot:GetNearbyHeroes( nRadius, true, BOT_MODE_NONE )
+	local nEnemyHeroes = J.GetNearbyHeroes(bot, nRadius, true, BOT_MODE_NONE )
 	for _, enemy in pairs( nEnemyHeroes )
 	do
 		if J.IsValid( enemy )
@@ -3110,7 +3110,7 @@ end
 function J.IsEnemyTargetUnit( nUnit, nRadius )
 
 	if nRadius > 1600 then nRadius = 1600 end
-	local nEnemyHeroes = GetBot():GetNearbyHeroes( nRadius, true, BOT_MODE_NONE )
+	local nEnemyHeroes = J.GetNearbyHeroes(GetBot(), nRadius, true, BOT_MODE_NONE )
 	for _, enemy in pairs( nEnemyHeroes )
 	do
 		if J.IsValid( enemy )
@@ -3549,8 +3549,8 @@ end
 
 function J.WeAreStronger(bot, radius)
 
-    local mates = bot:GetNearbyHeroes(radius, false, BOT_MODE_NONE);
-    local enemies = bot:GetNearbyHeroes(radius, true, BOT_MODE_NONE);
+    local mates = J.GetNearbyHeroes(bot,radius, false, BOT_MODE_NONE);
+    local enemies = J.GetNearbyHeroes(bot,radius, true, BOT_MODE_NONE);
   
     local ourPower = 0;
     local enemyPower = 0;
@@ -3620,8 +3620,8 @@ function J.GetUnitWithMaxDistanceToLoc(hUnit, hUnits, cUnits, fMinDist, vLoc)
 end
 
 function J.GetFurthestUnitToLocationFrommAll(hUnit, nRange, vLoc)
-	local aHeroes = hUnit:GetNearbyHeroes(nRange, false, BOT_MODE_NONE)
-	local eHeroes = hUnit:GetNearbyHeroes(nRange, true, BOT_MODE_NONE)
+	local aHeroes = J.GetNearbyHeroes(hUnit,nRange, false, BOT_MODE_NONE)
+	local eHeroes = J.GetNearbyHeroes(hUnit,nRange, true, BOT_MODE_NONE)
 	local aCreeps = hUnit:GetNearbyLaneCreeps(nRange, false)
 	local eCreeps = hUnit:GetNearbyLaneCreeps(nRange, true)
 
@@ -3641,8 +3641,8 @@ function J.GetFurthestUnitToLocationFrommAll(hUnit, nRange, vLoc)
 end
 
 function J.GetClosestUnitToLocationFrommAll(hUnit, nRange, vLoc)
-	local aHeroes = hUnit:GetNearbyHeroes(nRange, false, BOT_MODE_NONE);
-	local eHeroes = hUnit:GetNearbyHeroes(nRange, true, BOT_MODE_NONE);
+	local aHeroes = J.GetNearbyHeroes(hUnit,nRange, false, BOT_MODE_NONE);
+	local eHeroes = J.GetNearbyHeroes(hUnit,nRange, true, BOT_MODE_NONE);
 	local aCreeps = hUnit:GetNearbyLaneCreeps(nRange, false);
 	local eCreeps = hUnit:GetNearbyLaneCreeps(nRange, true);
 		
@@ -3662,8 +3662,8 @@ function J.GetClosestUnitToLocationFrommAll(hUnit, nRange, vLoc)
 end
 
 function J.GetClosestUnitToLocationFrommAll2(hUnit, nRange, vLoc)
-	local aHeroes = hUnit:GetNearbyHeroes(nRange, false, BOT_MODE_NONE);
-	local eHeroes = hUnit:GetNearbyHeroes(nRange, true, BOT_MODE_NONE);
+	local aHeroes = J.GetNearbyHeroes(hUnit,nRange, false, BOT_MODE_NONE);
+	local eHeroes = J.GetNearbyHeroes(hUnit,nRange, true, BOT_MODE_NONE);
 	local aCreeps = hUnit:GetNearbyLaneCreeps(nRange, false);
 	local eCreeps = hUnit:GetNearbyLaneCreeps(nRange, true);
 		
@@ -3788,7 +3788,7 @@ function J.IsNotSelf(bot, ally)
 end
 
 function J.IsThereCoreNearby(nRadius)
-    local nAllyHeroes = GetBot():GetNearbyHeroes(nRadius, false, BOT_MODE_NONE)
+    local nAllyHeroes = J.GetNearbyHeroes(GetBot(),nRadius, false, BOT_MODE_NONE)
 
     for _, ally in pairs(nAllyHeroes) do
         if J.IsCore(ally)
@@ -3816,7 +3816,7 @@ function J.GetAliveAllyCoreCount()
 end
 
 function J.GetStrongestUnit(nRange, hUnit, bEnemy, bMagicImune, fTime)
-	local units = hUnit:GetNearbyHeroes(nRange, bEnemy, BOT_MODE_NONE)
+	local units = J.GetNearbyHeroes(hUnit,nRange, bEnemy, BOT_MODE_NONE)
 	local strongest = nil
 	local maxPower = 0
 
@@ -3845,7 +3845,7 @@ function J.IsHeroBetweenMeAndLocation(hSource, vLoc, nRadius)
 	local vEnd = vLoc
 	local bot = GetBot()
 
-	local nAllyHeroes = bot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
+	local nAllyHeroes = J.GetNearbyHeroes(bot,1600, false, BOT_MODE_NONE)
 	for _, allyHero in pairs(nAllyHeroes)
     do
 		if allyHero ~= hSource
@@ -3855,7 +3855,7 @@ function J.IsHeroBetweenMeAndLocation(hSource, vLoc, nRadius)
 		end
 	end
 
-	local nEnemyHeroes = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+	local nEnemyHeroes = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE)
 	for _, enemyHero in pairs(nEnemyHeroes)
     do
 		if enemyHero ~= hSource
@@ -3874,7 +3874,7 @@ function J.IsEnemyBetweenMeAndLocation(hSource, vLoc, nRadius)
 	local vEnd = vLoc
 	local bot = GetBot()
 
-	local nEnemyHeroes = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+	local nEnemyHeroes = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE)
 	for _, enemyHero in pairs(nEnemyHeroes)
     do
 		if enemyHero ~= hSource
@@ -3892,7 +3892,7 @@ function J.IsHeroBetweenMeAndTarget(hSource, hTarget, vLoc, nRadius)
 	local vStart = hSource:GetLocation()
 	local vEnd = vLoc
 
-	local nAllyHeroes = hSource:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
+	local nAllyHeroes = J.GetNearbyHeroes(hSource,1600, false, BOT_MODE_NONE)
 	for _, allyHero in pairs(nAllyHeroes)
     do
 		if allyHero ~= hTarget and allyHero ~= hSource
@@ -3902,7 +3902,7 @@ function J.IsHeroBetweenMeAndTarget(hSource, hTarget, vLoc, nRadius)
 		end
 	end
 
-	local nEnemyHeroes = hSource:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+	local nEnemyHeroes = J.GetNearbyHeroes(hSource,1600, true, BOT_MODE_NONE)
 	for _, enemyHero in pairs(nEnemyHeroes)
     do
 		if enemyHero ~= hTarget and enemyHero ~= hSource
@@ -4026,7 +4026,7 @@ function J.IsAllyHeroBetweenMeAndTarget(hSource, hTarget, vLoc, nRadius)
 	local vStart = hSource:GetLocation()
 	local vEnd = vLoc
 
-	local nAllyHeroes = hSource:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
+	local nAllyHeroes = J.GetNearbyHeroes(hSource, 1600, false, BOT_MODE_NONE)
 	for _, allyHero in pairs(nAllyHeroes)
 	do
 		if allyHero ~= hSource
@@ -4036,7 +4036,7 @@ function J.IsAllyHeroBetweenMeAndTarget(hSource, hTarget, vLoc, nRadius)
 		end
 	end
 
-	local nEnemyHeroes = hTarget:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+	local nEnemyHeroes = J.GetNearbyHeroes(hTarget, 1600, true, BOT_MODE_NONE)
 	for _, enemyHero in pairs(nEnemyHeroes)
 	do
 		if enemyHero ~= hSource
@@ -4075,7 +4075,7 @@ local sIgnoreAbilityIndex = {
 }
 function J.DidEnemyCastAbility()
 	local bot = GetBot()
-	local nEnemyHeroes = bot:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
+	local nEnemyHeroes = J.GetNearbyHeroes(bot,1200, true, BOT_MODE_NONE)
 
 	for _, npcEnemy in pairs(nEnemyHeroes)
 	do
@@ -4944,7 +4944,7 @@ function J.CheckBotIdleState()
 			-- 对线期有些bug英雄可能乱跑
 			if bot:GetLevel() <= 15 and J.hasValue(buggedHeroes, botName) and J.GetHP(bot) > 0.4 then
 				local distanceFromLane = J.GetDistanceFromLaneFront(bot)
-				local hAllyList = bot:GetNearbyHeroes(900, false, BOT_MODE_NONE )
+				local hAllyList = J.GetNearbyHeroes(bot,900, false, BOT_MODE_NONE )
 
 				if #hAllyList <= 1 and distanceFromLane >= 1200 then -- bugged bots keep moving around the same locations but not close to the lane they were assigned.
 					local frontLoc = GetLaneFrontLocation(GetTeam(), bot:GetAssignedLane(), 0);

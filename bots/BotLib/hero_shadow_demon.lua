@@ -188,7 +188,7 @@ function X.ConsiderDisruption()
     local nDuration = Disruption:GetSpecialValueFloat('disruption_duration')
     local botTarget = J.GetProperTarget(bot)
 
-    local nEnemyHeroes = bot:GetNearbyHeroes(nCastRange + 150, true, BOT_MODE_NONE)
+    local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange + 150, true, BOT_MODE_NONE)
     for _, enemyHero in pairs(nEnemyHeroes)
     do
         if  J.IsValidHero(enemyHero)
@@ -201,7 +201,7 @@ function X.ConsiderDisruption()
         end
     end
 
-    local nAllyHeroes = bot:GetNearbyHeroes(nCastRange + 150, false, BOT_MODE_NONE)
+    local nAllyHeroes = J.GetNearbyHeroes(bot,nCastRange + 150, false, BOT_MODE_NONE)
     for _, allyHero in pairs(nAllyHeroes)
     do
         if  J.IsValidHero(allyHero)
@@ -217,7 +217,7 @@ function X.ConsiderDisruption()
             end
         end
 
-        local nAllyInRangeEnemy = allyHero:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
+        local nAllyInRangeEnemy = J.GetNearbyHeroes(allyHero, 1200, true, BOT_MODE_NONE)
 
         if  J.IsRetreating(allyHero)
         and allyHero:WasRecentlyDamagedByAnyHero(2)
@@ -246,8 +246,8 @@ function X.ConsiderDisruption()
 
     if J.IsRetreating(bot)
     then
-        local nInRangeAlly = bot:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
-        local nInRangeEnemy = bot:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
+        local nInRangeAlly = J.GetNearbyHeroes(bot,1200, false, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,1200, true, BOT_MODE_NONE)
 
         if  nInRangeAlly ~= nil and nInRangeEnemy
         and J.IsValidHero(nInRangeEnemy[1])
@@ -260,7 +260,7 @@ function X.ConsiderDisruption()
         and not nInRangeEnemy[1]:HasModifier('modifier_faceless_void_chronosphere_freeze')
         and not nInRangeEnemy[1]:HasModifier('modifier_necrolyte_reapers_scythe')
         then
-            local nTargetInRangeAlly = nInRangeEnemy[1]:GetNearbyHeroes(1000, false, BOT_MODE_NONE)
+            local nTargetInRangeAlly = J.GetNearbyHeroes(nInRangeEnemy[1], 1000, false, BOT_MODE_NONE)
 
             if  nTargetInRangeAlly ~= nil
             and ((#nTargetInRangeAlly > #nInRangeAlly)
@@ -273,7 +273,7 @@ function X.ConsiderDisruption()
 
     if J.IsInTeamFight(bot, 1200)
 	then
-        local nInRangeAlly = bot:GetNearbyHeroes(nCastRange, false, BOT_MODE_NONE)
+        local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange, false, BOT_MODE_NONE)
         for _, allyHero in pairs(nInRangeAlly)
         do
             if  J.IsValidHero(allyHero)
@@ -326,8 +326,8 @@ function X.ConsiderDisruption()
         and not J.IsSuspiciousIllusion(strongestTarget)
         and not J.IsDisabled(strongestTarget)
 		then
-            local nTargetInRangeAlly = strongestTarget:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
-            local nTargetInRangeEnemy = strongestTarget:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
+            local nTargetInRangeAlly = J.GetNearbyHeroes(strongestTarget, 1200, false, BOT_MODE_NONE)
+            local nTargetInRangeEnemy = J.GetNearbyHeroes(strongestTarget, 1200, true, BOT_MODE_NONE)
 
             if  nTargetInRangeAlly ~= nil and nTargetInRangeEnemy ~= nil
             and #nTargetInRangeAlly >= #nTargetInRangeEnemy
@@ -347,7 +347,7 @@ function X.ConsiderDisruption()
                 return BOT_ACTION_DESIRE_HIGH, bot
             end
 
-            local nInRangeAlly = bot:GetNearbyHeroes(nCastRange, false, BOT_MODE_NONE)
+            local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange, false, BOT_MODE_NONE)
             for _, allyHero in pairs(nInRangeAlly)
             do
                 if  J.IsValidHero(allyHero)
@@ -591,8 +591,8 @@ function X.ConsiderDemonicPurge()
         and not J.IsSuspiciousIllusion(strongestTarget)
         and not J.IsDisabled(strongestTarget)
 		then
-            local nTargetInRangeAlly = strongestTarget:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
-            local nInRangeAlly = strongestTarget:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
+            local nTargetInRangeAlly = J.GetNearbyHeroes(strongestTarget, 1200, false, BOT_MODE_NONE)
+            local nInRangeAlly = J.GetNearbyHeroes(strongestTarget, 1200, true, BOT_MODE_NONE)
 
             if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
             and #nInRangeAlly >= #nTargetInRangeAlly

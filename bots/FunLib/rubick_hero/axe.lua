@@ -16,7 +16,7 @@ function X.ConsiderStolenSpell(ability)
     if J.CanNotUseAbility(bot) then return end
 
     nMP = bot:GetMana() / bot:GetMaxMana()
-    hEnemyList = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+    hEnemyList = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 	hAllyList = J.GetAlliesNearLoc( bot:GetLocation(), 1600 )
 
     botTarget = J.GetProperTarget(bot)

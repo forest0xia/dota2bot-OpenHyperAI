@@ -182,7 +182,7 @@ function X.SkillsComplement()
 	nMP = bot:GetMana()/bot:GetMaxMana()
 	nHP = bot:GetHealth()/bot:GetMaxHealth()
 	botTarget = J.GetProperTarget( bot )
-	hEnemyList = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+	hEnemyList = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 	hAllyList = J.GetAlliesNearLoc( bot:GetLocation(), 1600 )
 
 
@@ -251,7 +251,7 @@ function X.ConsiderQ()
 	local nManaCost = abilityQ:GetManaCost()
 	local nDamage = abilityQ:GetSpecialValueInt( "blast_damage" ) + talent7Damage
 	local nDamageType = DAMAGE_TYPE_MAGICAL
-	local nInRangeEnemyList = bot:GetNearbyHeroes( nCastRange + nRadius * 0.8, true, BOT_MODE_NONE )
+	local nInRangeEnemyList = J.GetNearbyHeroes(bot, nCastRange + nRadius * 0.8, true, BOT_MODE_NONE )
 
 	local nTargetLocation = nil
 
@@ -476,7 +476,7 @@ function X.ConsiderW()
 	local nManaCost = abilityW:GetManaCost()
 	local nDamage = abilityW:GetAbilityDamage()
 	local nDamageType = DAMAGE_TYPE_MAGICAL
-	local nInRangeEnemyList = bot:GetNearbyHeroes( nCastRange + 50, true, BOT_MODE_NONE )
+	local nInRangeEnemyList = J.GetNearbyHeroes(bot, nCastRange + 50, true, BOT_MODE_NONE )
 
 
 	if J.IsValid( hNetherWard )
@@ -587,7 +587,7 @@ function X.ConsiderE()
 	local nManaCost = abilityE:GetManaCost()
 	local nDamage = abilityE:GetAbilityDamage()
 	local nDamageType = DAMAGE_TYPE_MAGICAL
-	local nInRangeEnemyList = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+	local nInRangeEnemyList = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 
 	local vCastLocation = J.GetLocationTowardDistanceLocation( bot, J.GetTeamFountain(), nCastRange * 0.8 )
 
@@ -646,8 +646,8 @@ function X.ConsiderR()
 	local nManaCost = abilityR:GetManaCost()
 	local nDamage = abilityR:GetAbilityDamage()
 	local nDamageType = DAMAGE_TYPE_MAGICAL
-	local nInRangeEnemyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
-	local nInWardRangeEnemyList = bot:GetNearbyHeroes( 1400, true, BOT_MODE_NONE )
+	local nInRangeEnemyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
+	local nInWardRangeEnemyList = J.GetNearbyHeroes(bot, 1400, true, BOT_MODE_NONE )
 
 	if J.IsInTeamFight( bot, 1400 )
 	and J.HasAghanimsShard(bot)
@@ -680,8 +680,8 @@ function X.ConsiderR()
 
 	if J.IsRetreating( bot )
 	then
-		local nAttackAllyList = bot:GetNearbyHeroes( 1400, false, BOT_MODE_ATTACK )
-		local nDefendAllyList = bot:GetNearbyHeroes( 1600, false, BOT_MODE_DEFEND_ALLY )
+		local nAttackAllyList = J.GetNearbyHeroes(bot, 1400, false, BOT_MODE_ATTACK )
+		local nDefendAllyList = J.GetNearbyHeroes(bot, 1600, false, BOT_MODE_DEFEND_ALLY )
 		if #nAttackAllyList >= 1
 			or #nDefendAllyList >= 1
 			or #hEnemyList <= 1

@@ -183,10 +183,10 @@ function X.SkillsComplement()
     if bot:HasModifier('modifier_primal_beast_pulverize_self') then return end
 
     botTarget = J.GetProperTarget(bot)
-	nEnemyHeroes = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
-	nInRangeAlly = bot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
+	nEnemyHeroes = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE)
+	nInRangeAlly = J.GetNearbyHeroes(bot,1600, false, BOT_MODE_NONE)
 
-    bysideEnemeyHeroes = bot:GetNearbyHeroes(nTrampleRadius, true, BOT_MODE_NONE)
+    bysideEnemeyHeroes = J.GetNearbyHeroes(bot,nTrampleRadius, true, BOT_MODE_NONE)
 
     X.ConsiderStopQ()
 

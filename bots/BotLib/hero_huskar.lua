@@ -151,7 +151,7 @@ function X.SkillsComplement()
 	nMP = bot:GetMana()/bot:GetMaxMana()
 	nHP = bot:GetHealth()/bot:GetMaxHealth()
 	botTarget = J.GetProperTarget( bot )
-	hEnemyList = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+	hEnemyList = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 	hAllyList = J.GetAlliesNearLoc( bot:GetLocation(), 1600 )
 	abilityH = J.IsItemAvailable( "item_hurricane_pike" )
 
@@ -259,7 +259,7 @@ function X.ConsiderQ()
 	local nDamage = abilityQ:GetSpecialValueInt( 'damage' )
 	local nRadius = abilityQ:GetSpecialValueInt( 'radius' )
 	local nDamageType = DAMAGE_TYPE_MAGICAL
-	local nInRangeEnemyList = bot:GetNearbyHeroes( nRadius -32, true, BOT_MODE_NONE )
+	local nInRangeEnemyList = J.GetNearbyHeroes(bot, nRadius -32, true, BOT_MODE_NONE )
 
 
 	--击杀, 消耗, 撤退
@@ -410,12 +410,12 @@ function X.ConsiderW()
 	local nManaCost = abilityW:GetManaCost()
 	local nDamage = abilityW:GetAbilityDamage()
 	local nDamageType = DAMAGE_TYPE_MAGICAL
-	local nInRangeEnemyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnemyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 	local nAttackDamage = bot:GetAttackDamage()
 
 	local nTowerList = bot:GetNearbyTowers( 800, true )
-	local nEnemysHeroesInAttackRange = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nEnemysHeroesInAttackRange = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 	local nInAttackRangeWeakestEnemyHero = J.GetAttackableWeakestUnit( bot, nCastRange, true, true )
 
 
@@ -626,7 +626,7 @@ function X.ConsiderR()
 	local nManaCost = abilityR:GetManaCost()
 	local nDamage = abilityR:GetAbilityDamage()
 	local nDamageType = DAMAGE_TYPE_MAGICAL
-	local nInRangeEnemyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnemyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 
 	--打架

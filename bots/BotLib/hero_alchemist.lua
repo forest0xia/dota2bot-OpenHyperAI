@@ -169,7 +169,7 @@ function X.ConsiderAcidSpray()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		local nInRangeAlly = bot:GetNearbyHeroes(900, false, BOT_MODE_NONE)
+		local nInRangeAlly = J.GetNearbyHeroes(bot,900, false, BOT_MODE_NONE)
 
 		if  J.IsValidTarget(botTarget)
 		and J.CanCastOnNonMagicImmune(botTarget)
@@ -182,7 +182,7 @@ function X.ConsiderAcidSpray()
 		and nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 		and #nInRangeAlly >= #nInRangeEnemy
 		then
-			local nTargetInRangeAlly = botTarget:GetNearbyHeroes(900, false, BOT_MODE_NONE)
+			local nTargetInRangeAlly = J.GetNearbyHeroes(botTarget, 900, false, BOT_MODE_NONE)
 
             if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
             and #nInRangeAlly >= #nTargetInRangeAlly
@@ -194,8 +194,8 @@ function X.ConsiderAcidSpray()
 
 	if J.IsRetreating(bot)
 	then
-		local nInRangeAlly = bot:GetNearbyHeroes(1000, false, BOT_MODE_NONE)
-        local nInRangeEnemy = bot:GetNearbyHeroes(1000, true, BOT_MODE_NONE)
+		local nInRangeAlly = J.GetNearbyHeroes(bot,1000, false, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,1000, true, BOT_MODE_NONE)
 
         if  nInRangeAlly ~= nil and nInRangeEnemy
         and J.IsValidHero(nInRangeEnemy[1])
@@ -206,7 +206,7 @@ function X.ConsiderAcidSpray()
         and not J.IsSuspiciousIllusion(nInRangeEnemy[1])
 		and not J.IsDisabled(nInRangeEnemy[1])
         then
-            local nTargetInRangeAlly = nInRangeEnemy[1]:GetNearbyHeroes(800, false, BOT_MODE_NONE)
+            local nTargetInRangeAlly = J.GetNearbyHeroes(nInRangeEnemy[1], 800, false, BOT_MODE_NONE)
 
             if  nTargetInRangeAlly ~= nil
             and ((#nTargetInRangeAlly > #nInRangeAlly)
@@ -305,7 +305,7 @@ function X.ConsiderUnstableConcoction()
 	local nCastRange = UnstableConcoction:GetCastRange()
 	local nDamage = UnstableConcoction:GetSpecialValueInt('max_damage')
 
-	local nEnemyHeroes = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+	local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 	for _, enemyHero in pairs(nEnemyHeroes)
 	do
 		if  J.IsValidHero(enemyHero)
@@ -334,8 +334,8 @@ function X.ConsiderUnstableConcoction()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		local nInRangeAlly = bot:GetNearbyHeroes(1000, false, BOT_MODE_NONE)
-		local nInRangeEnemy = bot:GetNearbyHeroes(nCastRange - 175, true, BOT_MODE_NONE)
+		local nInRangeAlly = J.GetNearbyHeroes(bot,1000, false, BOT_MODE_NONE)
+		local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange - 175, true, BOT_MODE_NONE)
 
 		for _, enemyHero in pairs(nInRangeEnemy)
 		do
@@ -348,7 +348,7 @@ function X.ConsiderUnstableConcoction()
 			and not enemyHero:HasModifier('modifier_legion_commander_duel')
 			and not enemyHero:HasModifier('modifier_necrolyte_reapers_scythe')
 			then
-				local nTargetInRangeAlly = enemyHero:GetNearbyHeroes(1000, false, BOT_MODE_NONE)
+				local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 1000, false, BOT_MODE_NONE)
 
 				if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
 				and #nInRangeAlly >= #nTargetInRangeAlly
@@ -361,8 +361,8 @@ function X.ConsiderUnstableConcoction()
 
 	if J.IsRetreating(bot)
 	then
-		local nInRangeAlly = bot:GetNearbyHeroes(nCastRange + 175, false, BOT_MODE_NONE)
-		local nInRangeEnemy = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+		local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange + 175, false, BOT_MODE_NONE)
+		local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 
 		if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 		and J.IsValidHero(nInRangeEnemy[1])
@@ -376,7 +376,7 @@ function X.ConsiderUnstableConcoction()
 		and not nInRangeEnemy[1]:HasModifier('modifier_faceless_void_chronosphere_freeze')
 		and not nInRangeEnemy[1]:HasModifier('modifier_necrolyte_reapers_scythe')
 		then
-			local nTargetInRangeAlly = nInRangeEnemy[1]:GetNearbyHeroes(800, false, BOT_MODE_NONE)
+			local nTargetInRangeAlly = J.GetNearbyHeroes(nInRangeEnemy[1], 800, false, BOT_MODE_NONE)
 
             if  nTargetInRangeAlly ~= nil
             and ((#nTargetInRangeAlly > #nInRangeAlly)
@@ -400,7 +400,7 @@ function X.ConsiderUnstableConcoctionThrow()
 	local nCastRange = UnstableConcoctionThrow:GetCastRange()
 	local nDamage = UnstableConcoction:GetSpecialValueInt("max_damage")
 
-	local nEnemyHeroes = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+	local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 	for _, enemyHero in pairs(nEnemyHeroes)
 	do
 		if  J.IsValidHero(enemyHero)
@@ -429,8 +429,8 @@ function X.ConsiderUnstableConcoctionThrow()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		local nInRangeAlly = bot:GetNearbyHeroes(1000, false, BOT_MODE_NONE)
-		local nInRangeEnemy = bot:GetNearbyHeroes(nCastRange - 175, true, BOT_MODE_NONE)
+		local nInRangeAlly = J.GetNearbyHeroes(bot,1000, false, BOT_MODE_NONE)
+		local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange - 175, true, BOT_MODE_NONE)
 
 		for _, enemyHero in pairs(nInRangeEnemy)
 		do
@@ -444,7 +444,7 @@ function X.ConsiderUnstableConcoctionThrow()
 			and not enemyHero:HasModifier('modifier_necrolyte_reapers_scythe')
 			and DotaTime() >= ConcoctionThrowTime + offDuration
 			then
-				local nTargetInRangeAlly = enemyHero:GetNearbyHeroes(1000, false, BOT_MODE_NONE)
+				local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 1000, false, BOT_MODE_NONE)
 
 				if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
 				and #nInRangeAlly >= #nTargetInRangeAlly
@@ -457,8 +457,8 @@ function X.ConsiderUnstableConcoctionThrow()
 
 	if J.IsRetreating(bot)
 	then
-		local nInRangeAlly = bot:GetNearbyHeroes(800, false, BOT_MODE_NONE)
-		local nInRangeEnemy = bot:GetNearbyHeroes(1000, true, BOT_MODE_NONE)
+		local nInRangeAlly = J.GetNearbyHeroes(bot,800, false, BOT_MODE_NONE)
+		local nInRangeEnemy = J.GetNearbyHeroes(bot,1000, true, BOT_MODE_NONE)
 
 		if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 		and J.IsValidHero(nInRangeEnemy[1])
@@ -470,7 +470,7 @@ function X.ConsiderUnstableConcoctionThrow()
 		and not nInRangeEnemy[1]:HasModifier('modifier_necrolyte_reapers_scythe')
 		and DotaTime() >= ConcoctionThrowTime + defDuration
 		then
-			local nTargetInRangeAlly = nInRangeEnemy[1]:GetNearbyHeroes(800, false, BOT_MODE_NONE)
+			local nTargetInRangeAlly = J.GetNearbyHeroes(nInRangeEnemy[1], 800, false, BOT_MODE_NONE)
 
             if  nTargetInRangeAlly ~= nil
             and ((#nTargetInRangeAlly > #nInRangeAlly)
@@ -509,7 +509,7 @@ function X.ConsiderChemicalRage()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		local nInRangeAlly = bot:GetNearbyHeroes(1000, false, BOT_MODE_NONE)
+		local nInRangeAlly = J.GetNearbyHeroes(bot,1000, false, BOT_MODE_NONE)
 
 		if  J.IsValidTarget(botTarget)
 		and J.IsInRange(bot, botTarget, 800)
@@ -518,7 +518,7 @@ function X.ConsiderChemicalRage()
 		and not botTarget:HasModifier('modifier_faceless_void_chronosphere_freeze')
 		and not botTarget:HasModifier('modifier_necrolyte_reapers_scythe')
 		then
-            local nTargetInRangeAlly = botTarget:GetNearbyHeroes(1000, false, BOT_MODE_NONE)
+            local nTargetInRangeAlly = J.GetNearbyHeroes(botTarget, 1000, false, BOT_MODE_NONE)
 
             if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
             and #nInRangeAlly >= #nTargetInRangeAlly
@@ -530,8 +530,8 @@ function X.ConsiderChemicalRage()
 
 	if J.IsRetreating(bot)
 	then
-		local nInRangeAlly = bot:GetNearbyHeroes(800, false, BOT_MODE_NONE)
-		local nInRangeEnemy = bot:GetNearbyHeroes(800, true, BOT_MODE_NONE)
+		local nInRangeAlly = J.GetNearbyHeroes(bot,800, false, BOT_MODE_NONE)
+		local nInRangeEnemy = J.GetNearbyHeroes(bot,800, true, BOT_MODE_NONE)
 
 		if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 		and J.IsValidHero(nInRangeEnemy[1])
@@ -543,7 +543,7 @@ function X.ConsiderChemicalRage()
 		and not nInRangeEnemy[1]:HasModifier('modifier_faceless_void_chronosphere_freeze')
 		and not nInRangeEnemy[1]:HasModifier('modifier_necrolyte_reapers_scythe')
 		then
-			local nTargetInRangeAlly = nInRangeEnemy[1]:GetNearbyHeroes(800, false, BOT_MODE_NONE)
+			local nTargetInRangeAlly = J.GetNearbyHeroes(nInRangeEnemy[1], 800, false, BOT_MODE_NONE)
 
             if  nTargetInRangeAlly ~= nil
             and ((#nTargetInRangeAlly > #nInRangeAlly)
@@ -599,7 +599,7 @@ function X.ConsiderBerserkPotion()
 
 	local nCastRange = BerserkPotion:GetCastRange()
 
-	local nAllyHeroes = bot:GetNearbyHeroes(nCastRange, false, BOT_MODE_NONE)
+	local nAllyHeroes = J.GetNearbyHeroes(bot,nCastRange, false, BOT_MODE_NONE)
 	for _, allyHero in pairs(nAllyHeroes)
 	do
 		if  J.IsValidHero(allyHero)

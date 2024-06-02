@@ -208,7 +208,7 @@ function X.SkillsComplement()
 	nHP = bot:GetHealth()/bot:GetMaxHealth()
 	nManaPercentage = bot:GetMana()/bot:GetMaxMana()
 	nHealthPercentage = bot:GetHealth()/bot:GetMaxHealth()
-	hEnemyHeroList = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+	hEnemyHeroList = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 
 	local aether = J.IsItemAvailable( "item_aether_lens" )
 	if aether ~= nil then aetherRange = 250 end
@@ -295,7 +295,7 @@ function X.ConsiderQ()
 	local manaCost = abilityQ:GetManaCost()
 	local nRadius = abilityQ:GetSpecialValueInt( "radius" )
 	local nDamage = abilityQ:GetSpecialValueInt( "arc_damage" )
-	local nEnemyHeroesInSkillRange = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nEnemyHeroesInSkillRange = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 	for _, npcEnemy in pairs( nEnemyHeroesInSkillRange )
 	do
@@ -426,9 +426,9 @@ function X.ConsiderW2()
 	local nDamage = abilityW:GetAbilityDamage()
 	local nRadius = 325
 
-	local nAllies = bot:GetNearbyHeroes( 800, false, BOT_MODE_NONE )
+	local nAllies = J.GetNearbyHeroes(bot, 800, false, BOT_MODE_NONE )
 
-	local nEnemyHeroesInSkillRange = bot:GetNearbyHeroes( nCastRange + nRadius, true, BOT_MODE_NONE )
+	local nEnemyHeroesInSkillRange = J.GetNearbyHeroes(bot, nCastRange + nRadius, true, BOT_MODE_NONE )
 	local nWeakestEnemyHeroInSkillRange = J.GetVulnerableWeakestUnit( bot, true, true, nCastRange + nRadius )
 	local nCanKillHeroLocationAoE = bot:FindAoELocation( true, true, bot:GetLocation(), nCastRange, nRadius , 0.3, nDamage )
 
@@ -543,7 +543,7 @@ function X.ConsiderD()
 	--撤退时
 	if J.IsRetreating( bot )
 	then
-		local tableNearbyEnemyHeroes = bot:GetNearbyHeroes( 1200, true, BOT_MODE_NONE )
+		local tableNearbyEnemyHeroes = J.GetNearbyHeroes(bot, 1200, true, BOT_MODE_NONE )
 		for _, npcEnemy in pairs( tableNearbyEnemyHeroes )
 		do
 			if ( J.IsValid( npcEnemy ) and bot:WasRecentlyDamagedByHero( npcEnemy, 1.0 ) and J.CanCastOnNonMagicImmune( npcEnemy ) )
@@ -583,7 +583,7 @@ function X.ConsiderR()
 
 	if J.IsInTeamFight( bot, 1400 )
 	then
-		local tableNearbyEnemyHeroes = bot:GetNearbyHeroes( 1400, true, BOT_MODE_NONE )
+		local tableNearbyEnemyHeroes = J.GetNearbyHeroes(bot, 1400, true, BOT_MODE_NONE )
 		local nInvUnit = J.GetInvUnitCount( false, tableNearbyEnemyHeroes )
 		if nInvUnit >= 5 then
 			return BOT_ACTION_DESIRE_MODERATE
@@ -628,8 +628,8 @@ end
 
 function X.GetRanged( bot, nRadius )
 	local mode = bot:GetActiveMode()
-	local enemys = bot:GetNearbyHeroes( 1400, true, BOT_MODE_NONE )
-	local allies = bot:GetNearbyHeroes( 800, false, BOT_MODE_NONE )
+	local enemys = J.GetNearbyHeroes(bot, 1400, true, BOT_MODE_NONE )
+	local allies = J.GetNearbyHeroes(bot, 800, false, BOT_MODE_NONE )
 
 	if mode == BOT_MODE_TEAM_ROAM
 		or mode == BOT_MODE_ATTACK
@@ -695,7 +695,7 @@ function X.ConsiderE()
 	local nCastPoint = abilityE:GetCastPoint()
 	local nManaCost = abilityE:GetManaCost()
 
-	local tableNearbyEnemyHeroes = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local tableNearbyEnemyHeroes = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 	
 
 	if J.IsRetreating( bot )

@@ -161,7 +161,7 @@ function X.SkillsComplement()
 	nMP = bot:GetMana()/bot:GetMaxMana()
 	nHP = bot:GetHealth()/bot:GetMaxHealth()
 	botTarget = J.GetProperTarget( bot )
-	hEnemyList = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+	hEnemyList = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 	hAllyList = J.GetAlliesNearLoc( bot:GetLocation(), 1600 )
 
 
@@ -252,7 +252,7 @@ function X.ConsiderQ()
 	local nManaCost = abilityQ:GetManaCost()
 	local nDamage = abilityQ:GetSpecialValueInt( 'lance_damage' )
 	local nDamageType = DAMAGE_TYPE_MAGICAL
-	local nInRangeEnemyList = bot:GetNearbyHeroes( nCastRange + 50, true, BOT_MODE_NONE )
+	local nInRangeEnemyList = J.GetNearbyHeroes(bot, nCastRange + 50, true, BOT_MODE_NONE )
 
 
 	local nAttackDamage = bot:GetAttackDamage()
@@ -418,7 +418,7 @@ function X.ConsiderW()
 	local nCastRange = abilityW:GetCastRange() + aetherRange
 	local nCastPoint = abilityW:GetCastPoint()
 	local nManaCost = abilityW:GetManaCost()
-	local nInRangeEnemyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
+	local nInRangeEnemyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 	local vEscapeLoc = J.GetLocationTowardDistanceLocation( bot, J.GetTeamFountain(), nCastRange )
 
@@ -533,7 +533,7 @@ local sIgnoreAbilityIndex = {
 
 function X.IsEnemyCastAbility()
 
-	local enemyList = bot:GetNearbyHeroes( 1200, true, BOT_MODE_NONE )
+	local enemyList = J.GetNearbyHeroes(bot, 1200, true, BOT_MODE_NONE )
 
 	for _, npcEnemy in pairs( enemyList )
 	do

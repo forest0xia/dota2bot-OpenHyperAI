@@ -135,7 +135,7 @@ function X.ConsiderArcaneOrb()
     if J.IsGoingOnSomeone(bot)
 	then
         local weakestTarget = J.GetVulnerableWeakestUnit(bot, true, true, nAttackRange)
-        local nInRangeAlly = bot:GetNearbyHeroes(800, false, BOT_MODE_NONE)
+        local nInRangeAlly = J.GetNearbyHeroes(bot,800, false, BOT_MODE_NONE)
 
 		if  J.IsValidTarget(weakestTarget)
         and not J.IsSuspiciousIllusion(weakestTarget)
@@ -144,7 +144,7 @@ function X.ConsiderArcaneOrb()
         and not weakestTarget:HasModifier('modifier_necrolyte_reapers_scythe')
         and not weakestTarget:HasModifier('modifier_templar_assassin_refraction_absorb')
 		then
-            local nTargetInRangeAlly = weakestTarget:GetNearbyHeroes(800, false, BOT_MODE_NONE)
+            local nTargetInRangeAlly = J.GetNearbyHeroes(weakestTarget, 800, false, BOT_MODE_NONE)
 
             if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
             and #nInRangeAlly >= #nTargetInRangeAlly
@@ -154,24 +154,24 @@ function X.ConsiderArcaneOrb()
 		end
 	end
 
-    if J.IsLaning(bot)
-	then
-		local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nAttackRange + 200, true)
+    -- if J.IsLaning(bot)
+	-- then
+	-- 	local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nAttackRange + 200, true)
 
-		for _, creep in pairs(nEnemyLaneCreeps)
-		do
-			if  J.IsValid(creep)
-			and J.CanKillTarget(creep, nDamage, DAMAGE_TYPE_PURE)
-			then
-				local nCreepInRangeHero = creep:GetNearbyHeroes(500, false, BOT_MODE_NONE)
+	-- 	for _, creep in pairs(nEnemyLaneCreeps)
+	-- 	do
+	-- 		if  J.IsValid(creep)
+	-- 		and J.CanKillTarget(creep, nDamage, DAMAGE_TYPE_PURE)
+	-- 		then
+	-- 			local nCreepInRangeHero = creep:GetNearbyHeroes(500, false, BOT_MODE_NONE)
 
-				if nCreepInRangeHero ~= nil and #nCreepInRangeHero >= 1
-				then
-					return BOT_ACTION_DESIRE_HIGH, creep
-				end
-			end
-		end
-	end
+	-- 			if nCreepInRangeHero ~= nil and #nCreepInRangeHero >= 1
+	-- 			then
+	-- 				return BOT_ACTION_DESIRE_HIGH, creep
+	-- 			end
+	-- 		end
+	-- 	end
+	-- end
 
     if J.IsDoingRoshan(bot)
     then
@@ -208,7 +208,7 @@ function X.ConsiderAstralImprisonment()
     local nDuration = AstralImprisonment:GetSpecialValueInt('prison_duration')
     local botTarget = J.GetProperTarget(bot)
 
-    local nEnemyHeroes = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+    local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
     for _, enemyHero in pairs(nEnemyHeroes)
     do
         if  J.IsValidHero(enemyHero)
@@ -220,7 +220,7 @@ function X.ConsiderAstralImprisonment()
                 return BOT_ACTION_DESIRE_HIGH, enemyHero
             end
 
-            local nInRangeAlly = bot:GetNearbyHeroes(1000, false, BOT_MODE_NONE)
+            local nInRangeAlly = J.GetNearbyHeroes(bot,1000, false, BOT_MODE_NONE)
 
             if  J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_MAGICAL)
             and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
@@ -236,7 +236,7 @@ function X.ConsiderAstralImprisonment()
 
 	if J.IsInTeamFight(bot, 1200)
 	then
-        local nInRangeAlly = bot:GetNearbyHeroes(nCastRange, false, BOT_MODE_NONE)
+        local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange, false, BOT_MODE_NONE)
         for _, allyHero in pairs(nInRangeAlly)
         do
             if  J.IsValidHero(allyHero)
@@ -278,7 +278,7 @@ function X.ConsiderAstralImprisonment()
 
     if J.IsGoingOnSomeone(bot)
 	then
-        local nInRangeAlly = bot:GetNearbyHeroes(1000, false, BOT_MODE_NONE)
+        local nInRangeAlly = J.GetNearbyHeroes(bot,1000, false, BOT_MODE_NONE)
 
 		if  J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
@@ -293,7 +293,7 @@ function X.ConsiderAstralImprisonment()
         and not botTarget:HasModifier('modifier_necrolyte_reapers_scythe')
         and not botTarget:HasModifier('modifier_templar_assassin_refraction_absorb')
 		then
-            local nTargetInRangeAlly = botTarget:GetNearbyHeroes(1000, false, BOT_MODE_NONE)
+            local nTargetInRangeAlly = J.GetNearbyHeroes(botTarget, 1000, false, BOT_MODE_NONE)
 
             if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
             and #nInRangeAlly >= #nTargetInRangeAlly
@@ -306,8 +306,8 @@ function X.ConsiderAstralImprisonment()
 
     if J.IsRetreating(bot)
     then
-        local nInRangeAlly = bot:GetNearbyHeroes(800, false, BOT_MODE_NONE)
-        local nInRangeEnemy = bot:GetNearbyHeroes(800, true, BOT_MODE_NONE)
+        local nInRangeAlly = J.GetNearbyHeroes(bot,800, false, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,800, true, BOT_MODE_NONE)
 
         if  nInRangeAlly ~= nil and nInRangeEnemy
         and J.IsValidHero(nInRangeEnemy[1])
@@ -321,7 +321,7 @@ function X.ConsiderAstralImprisonment()
         and not nInRangeEnemy[1]:HasModifier('modifier_faceless_void_chronosphere_freeze')
         and not nInRangeEnemy[1]:HasModifier('modifier_necrolyte_reapers_scythe')
         then
-            local nTargetInRangeAlly = nInRangeEnemy[1]:GetNearbyHeroes(800, false, BOT_MODE_NONE)
+            local nTargetInRangeAlly = J.GetNearbyHeroes(nInRangeEnemy[1], 800, false, BOT_MODE_NONE)
 
             if  nTargetInRangeAlly ~= nil
             and ((#nTargetInRangeAlly > #nInRangeAlly)
@@ -337,7 +337,7 @@ function X.ConsiderAstralImprisonment()
 	then
 		if J.GetMP(bot) > 0.65
         then
-            local nInRangeEnemy = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+            local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
             for _, enemyHero in pairs(nInRangeEnemy)
             do
                 if  J.IsValidHero(enemyHero)
@@ -364,7 +364,7 @@ function X.ConsiderAstralImprisonment()
                 return BOT_ACTION_DESIRE_HIGH, bot
             end
 
-            local nInRangeAlly = bot:GetNearbyHeroes(nCastRange, false, BOT_MODE_NONE)
+            local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange, false, BOT_MODE_NONE)
             for _, allyHero in pairs(nInRangeAlly)
             do
                 if  J.IsValidHero(allyHero)
@@ -380,10 +380,10 @@ function X.ConsiderAstralImprisonment()
         end
     end
 
-    local nAllyHeroes = bot:GetNearbyHeroes(nCastRange, false, BOT_MODE_NONE)
+    local nAllyHeroes = J.GetNearbyHeroes(bot,nCastRange, false, BOT_MODE_NONE)
     for _, allyHero in pairs(nAllyHeroes)
     do
-        local nAllyInRangeEnemy = allyHero:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+        local nAllyInRangeEnemy = J.GetNearbyHeroes(allyHero, nCastRange, true, BOT_MODE_NONE)
 
         if  J.IsRetreating(allyHero)
         and allyHero:WasRecentlyDamagedByAnyHero(1.6)
@@ -425,9 +425,9 @@ function X.ConsiderSanitysEclipse()
 
     if J.IsGoingOnSomeone(bot)
 	then
-        local nInRangeAlly = bot:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+        local nInRangeAlly = J.GetNearbyHeroes(bot,1200, false, BOT_MODE_NONE)
 
-        local nInRangeEnemy = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
         for _, enemyHero in pairs(nInRangeEnemy)
         do
             if  J.IsValidTarget(enemyHero)
@@ -441,7 +441,7 @@ function X.ConsiderSanitysEclipse()
             and not enemyHero:HasModifier('modifier_necrolyte_reapers_scythe')
             and not enemyHero:HasModifier('modifier_oracle_false_promise_timer')
             then
-                local nTargetInRangeAlly = enemyHero:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+                local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
                 local nManaDiff = math.abs(bot:GetMana() - enemyHero:GetMana())
                 local nDamage = nManaDiff * nMultiplier
 

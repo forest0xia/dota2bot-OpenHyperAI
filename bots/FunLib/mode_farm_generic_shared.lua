@@ -138,8 +138,8 @@ function GetDesire()
 	
 	availableCamp = J.Role['availableCampTable'];
 	
-	local hEnemyHeroList = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE);
-	local hNearbyAttackAllyHeroList  = bot:GetNearbyHeroes(1600, false,BOT_MODE_ATTACK);
+	local hEnemyHeroList = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE);
+	local hNearbyAttackAllyHeroList  = J.GetNearbyHeroes(bot,1600, false,BOT_MODE_ATTACK);
 	
 	
 	if #hEnemyHeroList > 0 or #hNearbyAttackAllyHeroList > 0
@@ -153,7 +153,7 @@ function GetDesire()
 		return BOT_MODE_DESIRE_NONE;
 	end	
 	
-	local nRetreatAllyList = bot:GetNearbyHeroes(1600,false,BOT_MODE_RETREAT);
+	local nRetreatAllyList = J.GetNearbyHeroes(bot,1600,false,BOT_MODE_RETREAT);
 	if J.IsValid(nRetreatAllyList[1]) and (not beVeryHighFarmer or bot:GetLevel() >= 22)
 	   and nRetreatAllyList[1]:GetActiveModeDesire() > BOT_MODE_DESIRE_HIGH
 	then
@@ -355,7 +355,7 @@ function GetDesire()
 							or bot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP
 						then
 							local enemyAncient = GetAncient(GetOpposingTeam());
-							local allies       = bot:GetNearbyHeroes(1400,false,BOT_MODE_NONE);
+							local allies       = J.GetNearbyHeroes(bot,1400,false,BOT_MODE_NONE);
 							local enemyAncientDistance = GetUnitToUnitDistance(bot,enemyAncient);
 							if enemyAncientDistance < 2800
 								and enemyAncientDistance > 1600
@@ -426,8 +426,8 @@ function Think()
 		then
 			local botAttackRange = bot:GetAttackRange();
 			if botAttackRange > 1400 then botAttackRange = 1400 end;
-			local runModeAllies = bot:GetNearbyHeroes(900,false,BOT_MODE_NONE);
-			local runModeEnemyHeroes = bot:GetNearbyHeroes(botAttackRange +50,true,BOT_MODE_NONE);
+			local runModeAllies = J.GetNearbyHeroes(bot,900,false,BOT_MODE_NONE);
+			local runModeEnemyHeroes = J.GetNearbyHeroes(bot,botAttackRange +50,true,BOT_MODE_NONE);
 			local runModeTowers  = bot:GetNearbyTowers(240,true);
 			local runModeBarracks  = bot:GetNearbyBarracks(botAttackRange +150,true);
 			if J.IsValid(runModeEnemyHeroes[1])
@@ -958,7 +958,7 @@ function X.ShouldRun(bot)
 			and botMode ~= BOT_MODE_TEAM_ROAM
 			and bot:GetCurrentMovementSpeed() > 300
 		then
-			local nNearByHeroes = bot:GetNearbyHeroes(700,true,BOT_MODE_NONE);
+			local nNearByHeroes = J.GetNearbyHeroes(bot,700,true,BOT_MODE_NONE);
 			if #nNearByHeroes < 2
 	        then
 				return 4;
@@ -969,7 +969,7 @@ function X.ShouldRun(bot)
 			and botMode ~= BOT_MODE_LANING
 			and bot:GetCurrentMovementSpeed() > 300
 		then
-			local nNearByHeroes = bot:GetNearbyHeroes(700,true,BOT_MODE_NONE);
+			local nNearByHeroes = J.GetNearbyHeroes(bot,700,true,BOT_MODE_NONE);
 			if #nNearByHeroes < 2
 	        then
 				return 3;

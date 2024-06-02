@@ -222,7 +222,7 @@ function X.ConsiderQ()
     -- local nAbilityLevel = abilityQ:GetLevel()
 
 	-- get the kill
-    local nEnemyHeroes = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+    local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
     for _, enemyHero in pairs(nEnemyHeroes)
     do
 		if J.IsValidHero( enemyHero )
@@ -277,7 +277,7 @@ function X.ConsiderW()
 	local nCastPoint = abilityW:GetCastPoint()
 	local botLocation = bot:GetLocation()
 
-	local nEnemysHeroesInSkillRange = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+	local nEnemysHeroesInSkillRange = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 
 	local nCanHurtHeroLocationAoE = bot:FindAoELocation( true, true, botLocation, nCastRange, nRadius-30, 0.8, 0 )
 
@@ -360,7 +360,7 @@ function X.ConsiderW()
 
 		if bot:GetActiveModeDesire() > 0.8
 		then
-			local nEnemyNearby = bot:GetNearbyHeroes( 800, true, BOT_MODE_NONE )
+			local nEnemyNearby = J.GetNearbyHeroes(bot, 800, true, BOT_MODE_NONE )
 			for _, npcEnemy in pairs( nEnemyNearby )
 			do
 				if J.IsValid( npcEnemy )
@@ -397,7 +397,7 @@ function X.ConsiderW()
 			and J.GetHP( nAttackTarget ) > 0.5
 			and J.IsInRange( nAttackTarget, bot, 600 )
 		then
-			local nAllies = bot:GetNearbyHeroes( 800, false, BOT_MODE_ROSHAN )
+			local nAllies = J.GetNearbyHeroes(bot, 800, false, BOT_MODE_ROSHAN )
 			if #nAllies >= 4
 			then
 				return BOT_ACTION_DESIRE_HIGH, nAttackTarget:GetLocation()
@@ -424,7 +424,7 @@ function X.ConsiderR()
 	if not abilityR:IsFullyCastable() then return 0 end
 
     local nAttackRange = bot:GetAttackRange()
-	local nEnemyHeroes = bot:GetNearbyHeroes( 1000, true, BOT_MODE_NONE )
+	local nEnemyHeroes = J.GetNearbyHeroes(bot, 1000, true, BOT_MODE_NONE )
 
     if J.IsRetreating( bot )
 	then

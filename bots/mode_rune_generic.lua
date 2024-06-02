@@ -142,7 +142,7 @@ function GetDesire()
 	if DotaTime() < 0 
 		and not bot:WasRecentlyDamagedByAnyHero( 12.0 )
 	then
-		local enemyHeroList = bot:GetNearbyHeroes(1400, true, BOT_MODE_NONE)
+		local enemyHeroList = J.GetNearbyHeroes(bot,1400, true, BOT_MODE_NONE)
 		if #enemyHeroList <= 1 
 		then
 			return BOT_MODE_DESIRE_MODERATE
@@ -154,7 +154,7 @@ function GetDesire()
 		and not bMidHumanHere
 		and bot:GetAssignedLane() == LANE_MID
 	then
-		local enemyHeroList = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+		local enemyHeroList = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE)
 		for i = 1, #enemyHeroList
 		do 
 			if enemyHeroList[i] ~= nil
@@ -331,7 +331,7 @@ function Think()
 		   
 		    local nAttactRange = bot:GetAttackRange() +90
 			if nAttactRange > 1400 then nAttactRange = 1400 end
-			local nEnemys = bot:GetNearbyHeroes(nAttactRange,true,BOT_MODE_NONE)
+			local nEnemys = J.GetNearbyHeroes(bot,nAttactRange,true,BOT_MODE_NONE)
 			if nEnemys[1] ~= nil and nEnemys[1]:IsAlive() and nEnemys[1]:CanBeSeen()
 				and 1.5 * bot:GetEstimatedDamageToTarget(true, bot, 4.0, DAMAGE_TYPE_ALL) > nEnemys[1]:GetEstimatedDamageToTarget(true, bot, 4.0, DAMAGE_TYPE_ALL)
 				and bot:GetHealth() > 500
@@ -366,7 +366,7 @@ function Think()
 		
 		local nAttactRange = bot:GetAttackRange() + 80
 		if nAttactRange > 1400 then nAttactRange = 1400 end
-		local nEnemys = bot:GetNearbyHeroes(nAttactRange,true,BOT_MODE_NONE)
+		local nEnemys = J.GetNearbyHeroes(bot,nAttactRange,true,BOT_MODE_NONE)
 		if nEnemys[1] ~= nil 
 		   and nEnemys[1]:IsAlive() 
 		   and nEnemys[1]:CanBeSeen()
@@ -601,8 +601,8 @@ function X.IsSuitableToPickRune()
 	if X.IsNearRune(bot) then return true end
 
 	local mode = bot:GetActiveMode()
-	-- local nEnemies = bot:GetNearbyHeroes(1300, true, BOT_MODE_NONE)
-	local nEnemies = bot:GetNearbyHeroes(600, true, BOT_MODE_NONE)
+	-- local nEnemies = J.GetNearbyHeroes(bot,1300, true, BOT_MODE_NONE)
+	local nEnemies = J.GetNearbyHeroes(bot,600, true, BOT_MODE_NONE)
 	
 	if ( mode == BOT_MODE_RETREAT and bot:GetActiveModeDesire() > BOT_MODE_DESIRE_HIGH )
 		or ( #nEnemies >= 1 and X.IsIBecameTheTarget(nEnemies) )
@@ -712,7 +712,7 @@ end
 
 function X.IsEnemyPickRune(bot,nRune)
 	
-	local nEnemys = bot:GetNearbyHeroes(1600,true,BOT_MODE_NONE)
+	local nEnemys = J.GetNearbyHeroes(bot,1600,true,BOT_MODE_NONE)
 	local runeLocation = GetRuneSpawnLocation( nRune )
 	if GetUnitToLocationDistance(bot,runeLocation) < 500 then return false end
 	

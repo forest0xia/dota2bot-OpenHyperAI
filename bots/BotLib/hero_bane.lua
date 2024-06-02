@@ -209,7 +209,7 @@ function X.SkillsComplement()
 	nMP = bot:GetMana() / bot:GetMaxMana()
 	nHP = bot:GetHealth() / bot:GetMaxHealth()
 	botTarget = J.GetProperTarget( bot )
-	hEnemyList = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+	hEnemyList = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 	hAllyList = J.GetAlliesNearLoc( bot:GetLocation(), 1600 )
 
 
@@ -403,7 +403,7 @@ function X.ConsiderE()
 				and J.CanCastOnNonMagicImmune( botTarget )
 				and J.CanCastOnTargetAdvanced( botTarget )
 			then
-				local allyList = botTarget:GetNearbyHeroes( 500, true, BOT_MODE_NONE )
+				local allyList = J.GetNearbyHeroes(botTarget,  500, true, BOT_MODE_NONE )
 				if #allyList == 0
 				then
 					hCastTarget = botTarget

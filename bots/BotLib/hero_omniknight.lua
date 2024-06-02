@@ -150,7 +150,7 @@ function X.SkillsComplement()
 	nMP = bot:GetMana() / bot:GetMaxMana()
 	nHP = bot:GetHealth() / bot:GetMaxHealth()
 	botTarget = J.GetProperTarget( bot )
-	hEnemyList = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+	hEnemyList = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 	hAllyList = J.GetAlliesNearLoc( bot:GetLocation(), 1600 )
 
 
@@ -225,7 +225,7 @@ function X.ConsiderQ()
 	local nInRangeEnemyList = J.GetAroundEnemyHeroList( nCastRange + nRadius )
 	local nInBonusEnemyList = J.GetAroundEnemyHeroList( nCastRange + 200 + nRadius )
 	
-	local nInRangeAllyHeroList = bot:GetNearbyHeroes( nCastRange + 350, false, BOT_MODE_NONE )
+	local nInRangeAllyHeroList = J.GetNearbyHeroes(bot, nCastRange + 350, false, BOT_MODE_NONE )
 	local nInRangeAllyCreepList = bot:GetNearbyCreeps( nCastRange + 200, false )
 	
 	local hCastTarget = nil
@@ -292,7 +292,7 @@ function X.ConsiderQ()
 			if J.IsInRange( bot, npcAlly, nCastRange )
 				and npcAlly:GetMaxHealth() - npcAlly:GetHealth() > nDamage + 50
 			then
-				local nearbyEnemyList = npcAlly:GetNearbyHeroes( nRadius, true, BOT_MODE_NONE )
+				local nearbyEnemyList = J.GetNearbyHeroes(npcAlly,  nRadius, true, BOT_MODE_NONE )
 				if #nearbyEnemyList > bestAoeCount
 				then
 					bestAoeCount = #nearbyEnemyList 
@@ -303,7 +303,7 @@ function X.ConsiderQ()
 		
 		if bestTarget ~= nil
 		then
-			local nearbyEnemyList = bestTarget:GetNearbyHeroes( nRadius, true, BOT_MODE_NONE)
+			local nearbyEnemyList = bestJ.GetNearbyHeroes(target,  nRadius, true, BOT_MODE_NONE)
 			for _, npcEnemy in pairs( nearbyEnemyList )
 			do 
 				if J.CanCastOnMagicImmune( npcEnemy )
@@ -353,7 +353,7 @@ function X.ConsiderQ()
 		do 
 			if npcAlly:GetMaxHealth() - npcAlly:GetHealth() > nDamage * 1.2
 			then
-				local nearbyEnemyList = npcAlly:GetNearbyHeroes( nRadius - 20, true, BOT_MODE_NONE )
+				local nearbyEnemyList = J.GetNearbyHeroes(npcAlly,  nRadius - 20, true, BOT_MODE_NONE )
 				if J.IsValidHero( nearbyEnemyList[1] )
 					and J.CanCastOnMagicImmune(  nearbyEnemyList[1]  )
 				then
@@ -570,13 +570,13 @@ function X.ConsiderE()
 	local nDamage = 25 * nSkillLV + 25 + bot:GetAttackDamage() * ( 0.5 + nSkillLV * 0.1 )
 	local nDamageType = DAMAGE_TYPE_PURE
 
-	local allyList =  bot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE )
+	local allyList =  J.GetNearbyHeroes(bot, 1200, false, BOT_MODE_NONE )
 
-	local nEnemysHerosInView = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+	local nEnemysHerosInView = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 
 
-	local nEnemysHerosInRange = bot:GetNearbyHeroes( nCastRange + 43, true, BOT_MODE_NONE )
-	local nEnemysHerosInBonus = bot:GetNearbyHeroes( nCastRange + 330, true, BOT_MODE_NONE )
+	local nEnemysHerosInRange = J.GetNearbyHeroes(bot, nCastRange + 43, true, BOT_MODE_NONE )
+	local nEnemysHerosInBonus = J.GetNearbyHeroes(bot, nCastRange + 330, true, BOT_MODE_NONE )
 
 	--击杀
 	for _, npcEnemy in pairs( nEnemysHerosInBonus )
@@ -748,7 +748,7 @@ function X.ConsiderR()
 			if J.IsInTeamFight( npcAlly, 1300 )
 			then
 				local allyList = J.GetAlliesNearLoc( npcAlly:GetLocation(), nCastRange )
-				local enemyList = npcAlly:GetNearbyHeroes( 1400, true, BOT_MODE_NONE )
+				local enemyList = J.GetNearbyHeroes(npcAlly,  1400, true, BOT_MODE_NONE )
 				if #enemyList >= 2 
 					and ( #enemyList >= #allyList or #enemyList >= 3 )
 				then
@@ -777,8 +777,8 @@ function X.ConsiderR()
 			if J.IsRetreating( npcAlly )
 				and npcAlly:WasRecentlyDamagedByAnyHero( 5.0 )
 			then
-				local attackModeAlly = npcAlly:GetNearbyHeroes( nRadius, false, BOT_MODE_ATTACK )
-				local retreatModeAlly = npcAlly:GetNearbyHeroes( nRadius, false, BOT_MODE_RETREAT )
+				local attackModeAlly = J.GetNearbyHeroes(npcAlly,  nRadius, false, BOT_MODE_ATTACK )
+				local retreatModeAlly = J.GetNearbyHeroes(npcAlly,  nRadius, false, BOT_MODE_RETREAT )
 				if ( #attackModeAlly >= 2 or ( #attackModeAlly >= 1 and #retreatModeAlly >= 2 ) )
 				then
 					hCastTarget = npcAlly

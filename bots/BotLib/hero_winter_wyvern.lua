@@ -201,8 +201,8 @@ function X.ConsiderArcticBurn()
             and not J.IsDisabled(botTarget)
             and not botTarget:HasModifier('modifier_necrolyte_reapers_scythe')
 			then
-                local nInRangeAlly = botTarget:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
-                local nInRangeEnemy = botTarget:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+                local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1200, true, BOT_MODE_NONE)
+                local nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1200, false, BOT_MODE_NONE)
 
                 if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
                 and #nInRangeAlly >= #nInRangeEnemy
@@ -222,7 +222,7 @@ function X.ConsiderArcticBurn()
 
         if J.IsRetreating(bot)
         then
-            local nInRangeEnemy = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+            local nInRangeEnemy = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE)
             for _, enemyHero in pairs(nInRangeEnemy)
             do
                 if  J.IsValidHero(enemyHero)
@@ -230,8 +230,8 @@ function X.ConsiderArcticBurn()
                 and not J.IsSuspiciousIllusion(enemyHero)
                 and not J.IsDisabled(enemyHero)
                 then
-                    local nInRangeAlly = enemyHero:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
-                    local nTargetInRangeAlly = enemyHero:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+                    local nInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, true, BOT_MODE_NONE)
+                    local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
 
                     if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
                     and ((#nTargetInRangeAlly > #nInRangeAlly)
@@ -282,7 +282,7 @@ function X.ConsiderArcticBurn()
 
         if J.IsRetreating(bot)
         then
-            local nInRangeEnemy = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+            local nInRangeEnemy = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE)
 
             if nInRangeEnemy ~= nil and #nInRangeEnemy == 0
             then
@@ -299,8 +299,8 @@ function X.ConsiderArcticBurn()
                 and not J.IsSuspiciousIllusion(enemyHero)
                 and not J.IsDisabled(enemyHero)
                 then
-                    local nInRangeAlly = enemyHero:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
-                    local nTargetInRangeAlly = enemyHero:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+                    local nInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, true, BOT_MODE_NONE)
+                    local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
 
                     if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
                     and ((#nTargetInRangeAlly > #nInRangeAlly)
@@ -337,7 +337,7 @@ function X.ConsiderSplinterBlast()
 	local nRadius = SplinterBlast:GetSpecialValueInt('split_radius')
     local nManaCost = SplinterBlast:GetManaCost()
 
-    local nEnemyHeroes = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+    local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
     for _, enemyHero in pairs(nEnemyHeroes)
     do
         if  J.IsValidHero(enemyHero)
@@ -361,7 +361,7 @@ function X.ConsiderSplinterBlast()
                 end
             end
 
-            local nTargetInRangeAlly = enemyHero:GetNearbyHeroes(nRadius, false, BOT_MODE_NONE)
+            local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, nRadius, false, BOT_MODE_NONE)
             for _, enemyHero2 in pairs(nTargetInRangeAlly)
             do
                 if  J.IsValidHero(enemyHero2)
@@ -384,8 +384,8 @@ function X.ConsiderSplinterBlast()
         and not botTarget:HasModifier('modifier_faceless_void_chronosphere_freeze')
         and not botTarget:HasModifier('modifier_necrolyte_reapers_scythe')
 		then
-            local nInRangeAlly = botTarget:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
-            local nInRangeEnemy = botTarget:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+            local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1200, true, BOT_MODE_NONE)
+            local nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1200, false, BOT_MODE_NONE)
 
             if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
             and #nInRangeAlly >= #nInRangeEnemy
@@ -400,7 +400,7 @@ function X.ConsiderSplinterBlast()
                     end
                 end
 
-                local nTargetInRangeAlly = botTarget:GetNearbyHeroes(nRadius, false, BOT_MODE_NONE)
+                local nTargetInRangeAlly = J.GetNearbyHeroes(botTarget, nRadius, false, BOT_MODE_NONE)
                 for _, enemyHero in pairs(nTargetInRangeAlly)
                 do
                     if  J.IsValidHero(enemyHero)
@@ -416,7 +416,7 @@ function X.ConsiderSplinterBlast()
 
     if J.IsRetreating(bot)
     then
-        local nInRangeEnemy = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE)
         for _, enemyHero in pairs(nInRangeEnemy)
         do
             if  J.IsValidHero(enemyHero)
@@ -425,8 +425,8 @@ function X.ConsiderSplinterBlast()
             and not J.IsDisabled(enemyHero)
             and not enemyHero:HasModifier('modifier_winter_wyvern_arctic_burn_slow')
             then
-                local nInRangeAlly = enemyHero:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
-                local nTargetInRangeAlly = enemyHero:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+                local nInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, true, BOT_MODE_NONE)
+                local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
 
                 if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
                 and ((#nTargetInRangeAlly > #nInRangeAlly)
@@ -442,7 +442,7 @@ function X.ConsiderSplinterBlast()
                         end
                     end
 
-                    nTargetInRangeAlly = enemyHero:GetNearbyHeroes(nRadius, false, BOT_MODE_NONE)
+                    nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, nRadius, false, BOT_MODE_NONE)
                     for _, enemyHero2 in pairs(nTargetInRangeAlly)
                     do
                         if  J.IsValidHero(enemyHero2)
@@ -557,7 +557,7 @@ function X.ConsiderSplinterBlast()
             and not J.IsDisabled(enemyHero)
             and not enemyHero:HasModifier('modifier_winter_wyvern_arctic_burn_slow')
             then
-                local nInRangeAlly = bot:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+                local nInRangeAlly = J.GetNearbyHeroes(bot,1200, false, BOT_MODE_NONE)
                 for _, allyHero in pairs(nInRangeAlly)
                 do
                     if  J.IsValidHero(allyHero)
@@ -574,7 +574,7 @@ function X.ConsiderSplinterBlast()
                             end
                         end
 
-                        local nTargetInRangeAlly = enemyHero:GetNearbyHeroes(nRadius, false, BOT_MODE_NONE)
+                        local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, nRadius, false, BOT_MODE_NONE)
                         for _, enemyHero2 in pairs(nTargetInRangeAlly)
                         do
                             if  J.IsValidHero(enemyHero2)
@@ -604,7 +604,7 @@ function X.ConsiderColdEmbrace()
     local nBaseHealPerSec = ColdEmbrace:GetSpecialValueInt('heal_additive')
     local nMaxHPHealPercentage = ColdEmbrace:GetSpecialValueInt('heal_percentage') / 100
 
-    local nAllyHeroes = bot:GetNearbyHeroes(nCastRange, false, BOT_MODE_NONE)
+    local nAllyHeroes = J.GetNearbyHeroes(bot,nCastRange, false, BOT_MODE_NONE)
     for _, allyHero in pairs(nAllyHeroes)
     do
         if  J.IsValidHero(allyHero)
@@ -612,7 +612,7 @@ function X.ConsiderColdEmbrace()
         and not J.IsSuspiciousIllusion(allyHero)
         and not allyHero:HasModifier('modifier_necrolyte_reapers_scythe')
         then
-            local nAllyInRangeEnemy = allyHero:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+            local nAllyInRangeEnemy = J.GetNearbyHeroes(allyHero, 1600, true, BOT_MODE_NONE)
             for _, enemyHero in pairs(nAllyInRangeEnemy)
             do
                 if  J.IsValidHero(enemyHero)
@@ -636,13 +636,13 @@ function X.ConsiderColdEmbrace()
         and J.IsInRange(bot, botTarget, bot:GetCurrentVisionRange())
         and not J.IsSuspiciousIllusion(botTarget)
         then
-            local nInRangeAlly2 = botTarget:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
-            local nInRangeEnemy = botTarget:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+            local nInRangeAlly2 = J.GetNearbyHeroes(botTarget, 1200, true, BOT_MODE_NONE)
+            local nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1200, false, BOT_MODE_NONE)
 
             if  nInRangeAlly2 ~= nil and nInRangeEnemy ~= nil
             and #nInRangeAlly2 >= #nInRangeEnemy
             then
-                local nInRangeAlly = bot:GetNearbyHeroes(nCastRange, false, BOT_MODE_NONE)
+                local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange, false, BOT_MODE_NONE)
                 -- Core
                 for _, allyHero in pairs(nInRangeAlly)
                 do
@@ -677,7 +677,7 @@ function X.ConsiderColdEmbrace()
 
     if J.IsRetreating(bot)
     then
-        local nInRangeEnemy = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE)
         for _, enemyHero in pairs(nInRangeEnemy)
         do
             if  J.IsValidHero(enemyHero)
@@ -687,8 +687,8 @@ function X.ConsiderColdEmbrace()
             and not J.IsDisabled(enemyHero)
             and not not enemyHero:HasModifier('modifier_fountain_aura_buff')
             then
-                local nInRangeAlly = enemyHero:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
-                local nTargetInRangeAlly = enemyHero:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+                local nInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, true, BOT_MODE_NONE)
+                local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
 
                 if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
                 and ((#nTargetInRangeAlly > #nInRangeAlly)
@@ -723,7 +723,7 @@ function X.ConsiderColdEmbrace()
                 return BOT_ACTION_DESIRE_HIGH, bot
             end
 
-            local nInRangeAlly = bot:GetNearbyHeroes(nCastRange, false, BOT_MODE_NONE)
+            local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange, false, BOT_MODE_NONE)
             for _, allyHero in pairs(nInRangeAlly)
             do
                 if  J.IsValidHero(allyHero)
@@ -803,7 +803,7 @@ function X.ConsiderWintersCurse()
 
     if J.IsRetreating(bot)
     then
-        local nInRangeEnemy = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE)
         for _, enemyHero in pairs(nInRangeEnemy)
         do
             if  J.IsValidHero(enemyHero)
@@ -834,7 +834,7 @@ function X.ConsiderWintersCurse()
         end
     end
 
-    local nEnemyHeroes = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+    local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 	for _, enemyHero in pairs(nEnemyHeroes)
 	do
 		if  J.IsValidHero(enemyHero)

@@ -205,7 +205,7 @@ function X.SkillsComplement()
 	nMP = bot:GetMana()/bot:GetMaxMana()
 	nHP = bot:GetHealth()/bot:GetMaxHealth()
 	botTarget = J.GetProperTarget( bot )
-	hEnemyList = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+	hEnemyList = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 	hAllyList = J.GetAlliesNearLoc( bot:GetLocation(), 1200 )
 
 
@@ -329,7 +329,7 @@ function X.ConsiderQ()
 	local nManaCost = abilityQ:GetManaCost()
 	local nDamage = 50 + nSkillLV * 25
 	local nDamageType = DAMAGE_TYPE_MAGICAL
-	local nInRangeEnemyList = bot:GetNearbyHeroes( nCastRange + 50, true, BOT_MODE_NONE )
+	local nInRangeEnemyList = J.GetNearbyHeroes(bot, nCastRange + 50, true, BOT_MODE_NONE )
 
 	local nRadius = abilityR:GetSpecialValueInt( 'bounce_range' )/2
 
@@ -383,7 +383,7 @@ function X.ConsiderQ()
 			and J.CanCastOnTargetAdvanced( botTarget )
 		then
 			local nEnemyCreepList = botTarget:GetNearbyCreeps( nRadius * 1.9, false )
-			local nEnemyHeroList = botTarget:GetNearbyHeroes( nRadius * 1.9, false, BOT_MODE_NONE )
+			local nEnemyHeroList = J.GetNearbyHeroes(botTarget,  nRadius * 1.9, false, BOT_MODE_NONE )
 			if #nEnemyCreepList >= 2 or #nEnemyHeroList >= 2 or nHP < 0.28
 			then
 				return BOT_ACTION_DESIRE_HIGH, botTarget, 'Q-Attack:'..J.Chat.GetNormName( botTarget )
@@ -403,7 +403,7 @@ function X.ConsiderQ()
 				and bot:WasRecentlyDamagedByHero( npcEnemy, 3.0 )
 			then
 				local nEnemyCreepList = npcEnemy:GetNearbyCreeps( nRadius * 1.9, false )
-				local nEnemyHeroList = npcEnemy:GetNearbyHeroes( nRadius * 1.9, false, BOT_MODE_NONE )
+				local nEnemyHeroList = J.GetNearbyHeroes(npcEnemy,  nRadius * 1.9, false, BOT_MODE_NONE )
 				if #nEnemyCreepList + #nEnemyHeroList >= 2 or nHP < 0.23
 				then
 					return BOT_ACTION_DESIRE_HIGH, npcEnemy, 'Q-Retreat:'..J.Chat.GetNormName( npcEnemy )
@@ -495,7 +495,7 @@ function X.ConsiderW()
 	if not abilityW:IsFullyCastable() then return 0 end
 
 	local nRadius = abilityW:GetSpecialValueInt( 'radius' )
-	local nInRangeEnemy = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+	local nInRangeEnemy = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE)
 
 	if J.GetMP(bot) < 0.33
 	then
@@ -513,8 +513,8 @@ function X.ConsiderW()
 		and J.IsInRange(bot, botTarget, 1600)
 		and not J.IsSuspiciousIllusion(botTarget)
 		then
-			local nInRangeAlly = botTarget:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
-            local nTargetInRangeAlly = botTarget:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+			local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1200, true, BOT_MODE_NONE)
+            local nTargetInRangeAlly = J.GetNearbyHeroes(botTarget, 1200, false, BOT_MODE_NONE)
 
 			if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
 			and #nInRangeAlly >= #nTargetInRangeAlly
@@ -547,8 +547,8 @@ function X.ConsiderW()
 		and J.GetHP(bot) < 0.5
 		and not J.IsSuspiciousIllusion(nInRangeEnemy[1])
 		then
-			local nInRangeAlly = nInRangeEnemy[1]:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
-            local nTargetInRangeAlly = nInRangeEnemy[1]:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+			local nInRangeAlly = J.GetNearbyHeroes(nInRangeEnemy[1], 1200, true, BOT_MODE_NONE)
+            local nTargetInRangeAlly = J.GetNearbyHeroes(nInRangeEnemy[1], 1200, false, BOT_MODE_NONE)
 
 			if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
 			and (#nInRangeAlly > #nTargetInRangeAlly
@@ -635,7 +635,7 @@ function X.ConsiderE()
 	local nManaCost = abilityE:GetManaCost()
 	local nDamage = abilityE:GetAbilityDamage()
 	local nDamageType = DAMAGE_TYPE_MAGICAL
-	local nInRangeEnemyList = bot:GetNearbyHeroes( nCastRange + 32, true, BOT_MODE_NONE )
+	local nInRangeEnemyList = J.GetNearbyHeroes(bot, nCastRange + 32, true, BOT_MODE_NONE )
 
 	local nRadius = abilityE:GetSpecialValueInt( "radius" )
 
@@ -689,7 +689,7 @@ function X.ConsiderR()
 	local nDamageType = DAMAGE_TYPE_PHYSICAL
 	local nRadius = 700 - 120
 
-	local nInRangeEnemyList = bot:GetNearbyHeroes( nCastRange + nRadius, true, BOT_MODE_NONE )
+	local nInRangeEnemyList = J.GetNearbyHeroes(bot, nCastRange + nRadius, true, BOT_MODE_NONE )
 
 	if J.IsInTeamFight( bot, 900 )
 	then
@@ -749,7 +749,7 @@ function X.ConsiderAS()
 	local nCastPoint = abilityAS:GetCastPoint()
 	local nManaCost = abilityAS:GetManaCost()
 
-	local tableNearbyEnemyHeroes = bot:GetNearbyHeroes( 1200, true, BOT_MODE_NONE )
+	local tableNearbyEnemyHeroes = J.GetNearbyHeroes(bot, 1200, true, BOT_MODE_NONE )
 	
 	
 	if #tableNearbyEnemyHeroes >= 1
@@ -784,7 +784,7 @@ function X.ConsiderAS()
 	
 	if J.IsInTeamFight( bot, 900 )
 	then
-		local nearbyEnemyList = bot:GetNearbyHeroes( nRadius, true, BOT_MODE_NONE )
+		local nearbyEnemyList = J.GetNearbyHeroes(bot, nRadius, true, BOT_MODE_NONE )
 		if #nearbyEnemyList >= 2
 		then
 			return BOT_ACTION_DESIRE_HIGH, "AS-团战"

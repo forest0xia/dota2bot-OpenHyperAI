@@ -185,7 +185,7 @@ function X.SkillsComplement()
 	nMP = bot:GetMana() / bot:GetMaxMana()
 	nHP = bot:GetHealth() / bot:GetMaxHealth()
 	botTarget = J.GetProperTarget( bot )
-	hEnemyList = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+	hEnemyList = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 	hAllyList = J.GetAlliesNearLoc( bot:GetLocation(), 1600 )
 
 
@@ -261,7 +261,7 @@ function X.ConsiderR()
 		and not abilityW:IsFullyCastable()
 		and not abilityE:IsFullyCastable()
 	then
-		local enemyList = bot:GetNearbyHeroes( 900, true, BOT_MODE_NONE )
+		local enemyList = J.GetNearbyHeroes(bot, 900, true, BOT_MODE_NONE )
 		if #enemyList >= 1
 		then
 			return BOT_ACTION_DESIRE_HIGH, 'none', "R-refresh"
@@ -703,7 +703,7 @@ function X.GetBestHealTarget( npcEnemy, nRadius )
 	local maxLostHealth = -1
 
 	local allyCreepList = bot:GetNearbyCreeps( 1600, false )
-	local allyHeroList = bot:GetNearbyHeroes( 1600, false, BOT_MODE_NONE )
+	local allyHeroList = J.GetNearbyHeroes(bot, 1600, false, BOT_MODE_NONE )
 	local allyUnit = J.CombineTwoTable( allyCreepList, allyHeroList )
 
 

@@ -201,7 +201,7 @@ function X.SkillsComplement()
 	nMP = bot:GetMana()/bot:GetMaxMana()
 	nHP = bot:GetHealth()/bot:GetMaxHealth()
 	nLV = bot:GetLevel()
-	hEnemyHeroList = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+	hEnemyHeroList = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 
 	--计算天赋可能带来的变化
 	local aether = J.IsItemAvailable( "item_aether_lens" )
@@ -273,9 +273,9 @@ function X.ConsiderQ()
 	local nDamage = abilityQ:GetSpecialValueInt( "duration" ) * abilityQ:GetSpecialValueInt( "damage" )
 	local nSkillLV = abilityQ:GetLevel()							 
 
-	local nEnemysHeroesInRange = bot:GetNearbyHeroes( nCastRange + nRadius, true, BOT_MODE_NONE )
-	local nEnemysHeroesInBonus = bot:GetNearbyHeroes( nCastRange + nRadius + 80, true, BOT_MODE_NONE )
-	local nEnemysHeroesInView = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+	local nEnemysHeroesInRange = J.GetNearbyHeroes(bot, nCastRange + nRadius, true, BOT_MODE_NONE )
+	local nEnemysHeroesInBonus = J.GetNearbyHeroes(bot, nCastRange + nRadius + 80, true, BOT_MODE_NONE )
+	local nEnemysHeroesInView = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 	local nWeakestEnemyHeroInRange, nWeakestEnemyHeroInRangeHealth = X.sil_GetWeakestUnit( nEnemysHeroesInRange )
 	local nWeakestEnemyHeroInBonus, nWeakestEnemyHeroInBonusHealth = X.sil_GetWeakestUnit( nEnemysHeroesInBonus )
 
@@ -545,7 +545,7 @@ function X.ConsiderW()
 	local nEnemysLaneCreepsInBonus = bot:GetNearbyLaneCreeps( 400, true )
 	local nEnemysWeakestLaneCreepsInRange = J.GetVulnerableWeakestUnit( bot, false, true, nAttackRange + 100 )
 
-	local nEnemysHerosInAttackRange = bot:GetNearbyHeroes( nAttackRange, true, BOT_MODE_NONE )
+	local nEnemysHerosInAttackRange = J.GetNearbyHeroes(bot, nAttackRange, true, BOT_MODE_NONE )
 	local nEnemysWeakestHerosInAttackRange = J.GetVulnerableWeakestUnit( bot, true, true, nAttackRange )
 	local nEnemysWeakestHero = J.GetVulnerableWeakestUnit( bot, true, true, nAttackRange + 40 )
 
@@ -739,10 +739,10 @@ function X.ConsiderE()
 	local nSkillLV = abilityE:GetLevel()
 	local nDamage = nSkillLV * 75 * ( 1 + bot:GetSpellAmp() )
 
-	local nAllies =  bot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE )
+	local nAllies =  J.GetNearbyHeroes(bot, 1200, false, BOT_MODE_NONE )
 
-	local nEnemysHeroesInRange = bot:GetNearbyHeroes( nCastRange + 50, true, BOT_MODE_NONE )
-	local nEnemysHeroesInBonus = bot:GetNearbyHeroes( nCastRange + 150, true, BOT_MODE_NONE )
+	local nEnemysHeroesInRange = J.GetNearbyHeroes(bot, nCastRange + 50, true, BOT_MODE_NONE )
+	local nEnemysHeroesInBonus = J.GetNearbyHeroes(bot, nCastRange + 150, true, BOT_MODE_NONE )
 	local nWeakestEnemyHeroInRange, nWeakestEnemyHeroInRangeHealth = X.sil_GetWeakestUnit( nEnemysHeroesInRange )
 	local nWeakestEnemyHeroInBonus, nWeakestEnemyHeroInBonusHealth = X.sil_GetWeakestUnit( nEnemysHeroesInBonus )
 
@@ -770,7 +770,7 @@ function X.ConsiderE()
 		local npcMostDangerousEnemy = nil
 		local nMostDangerousDamage = 0
 
-		local tableNearbyEnemyHeroes = bot:GetNearbyHeroes( nCastRange + 100, true, BOT_MODE_NONE )
+		local tableNearbyEnemyHeroes = J.GetNearbyHeroes(bot, nCastRange + 100, true, BOT_MODE_NONE )
 		for _, npcEnemy in pairs( tableNearbyEnemyHeroes )
 		do
 			if J.IsValidHero( npcEnemy )
@@ -907,8 +907,8 @@ function X.ConsiderR()
 		return BOT_ACTION_DESIRE_NONE, 0
 	end
 
-	local tableNearbyEnemyHeroes = bot:GetNearbyHeroes( 1400, true, BOT_MODE_NONE )
-	local tableNearbyAllyHeroes = bot:GetNearbyHeroes( 800, false, BOT_MODE_NONE )
+	local tableNearbyEnemyHeroes = J.GetNearbyHeroes(bot, 1400, true, BOT_MODE_NONE )
+	local tableNearbyAllyHeroes = J.GetNearbyHeroes(bot, 800, false, BOT_MODE_NONE )
 
 
 	for _, npcEnemy in pairs( tableNearbyEnemyHeroes )
@@ -957,7 +957,7 @@ function X.ConsiderR()
 			and J.IsInRange( npcTarget, bot, 1200 )
 			and not J.IsDisabled( npcTarget )
 		then
-			local tableNearbyEnemyHeroes = bot:GetNearbyHeroes( 1600, false, BOT_MODE_NONE )
+			local tableNearbyEnemyHeroes = J.GetNearbyHeroes(bot, 1600, false, BOT_MODE_NONE )
 			if #tableNearbyEnemyHeroes >= 2
 			then
 				return BOT_ACTION_DESIRE_HIGH

@@ -439,7 +439,7 @@ function X.SupportFindTarget()
 		end	
 		
 		local nNeutrals = bot:GetNearbyNeutralCreeps(nAttackRange + 150);
-		local nAllies = bot:GetNearbyHeroes(1300,false,BOT_MODE_NONE); -----***************
+		local nAllies = J.GetNearbyHeroes(bot,1300,false,BOT_MODE_NONE); -----***************
 		if J.IsWithoutTarget(bot)
 			and botMode ~= BOT_MODE_FARM 
 			and #nNeutrals > 0
@@ -460,7 +460,7 @@ function X.SupportFindTarget()
 	end
 	
 	local denyDamage = botAD + 3
-	local nNearbyEnemyHeroes = bot:GetNearbyHeroes(750,true,BOT_MODE_NONE); -----------*************
+	local nNearbyEnemyHeroes = J.GetNearbyHeroes(bot,750,true,BOT_MODE_NONE); -----------*************
 	if  IsModeSuitHit 
 		and bot:GetLevel() <= 8
 		and bot:GetNetWorth() < 13998   -----------*************
@@ -502,7 +502,7 @@ function X.SupportFindTarget()
 		and bot:DistanceFromFountain() > 3800
 		and J.GetDistanceFromEnemyFountain(bot) > 5000
 	 then
-	     local nAllies = bot:GetNearbyHeroes(1200,false,BOT_MODE_NONE);
+	     local nAllies = J.GetNearbyHeroes(bot,1200,false,BOT_MODE_NONE);
 		 local nNum = X.GetCanTogetherCount(nAllies)
 		 local centerAlly = X.GetMostDamageUnit(nAllies);
 		 if centerAlly ~= nil and nNum >= 2
@@ -579,7 +579,7 @@ function X.SupportFindTarget()
 		
 	end
 	
-	local nNearbyEnemyHeroes = bot:GetNearbyHeroes(1600,true,BOT_MODE_NONE);
+	local nNearbyEnemyHeroes = J.GetNearbyHeroes(bot,1600,true,BOT_MODE_NONE);
 	local nEnemyLaneCreep = bot:GetNearbyLaneCreeps(1200, true);
 	local nWillAttackCreeps = X.GetExceptRangeLastHitCreep(true, attackDamage *1.2, 0, nAttackRange + 120, bot);
 	if  IsModeSuitHit
@@ -782,7 +782,7 @@ function X.CarryFindTarget()
 		
 	
 	local denyDamage = botAD + 3
-	local nNearbyEnemyHeroes = bot:GetNearbyHeroes(650,true,BOT_MODE_NONE);
+	local nNearbyEnemyHeroes = J.GetNearbyHeroes(bot,650,true,BOT_MODE_NONE);
 	if  IsModeSuitHit 
 		and ( botHP > 0.38 or not bot:WasRecentlyDamagedByAnyHero(3.0))
 		and (nNearbyEnemyHeroes[1] == nil or nNearbyEnemyHeroes[1]:GetLevel() < 12)
@@ -826,7 +826,7 @@ function X.CarryFindTarget()
 		and bot:DistanceFromFountain() > 3800
 		and J.GetDistanceFromEnemyFountain(bot) > 5000
 	 then
-	     local nAllies = bot:GetNearbyHeroes(1200,false,BOT_MODE_NONE);
+	     local nAllies = J.GetNearbyHeroes(bot,1200,false,BOT_MODE_NONE);
 		 local nNum = X.GetCanTogetherCount(nAllies)
 		 local centerAlly = X.GetMostDamageUnit(nAllies);
 		 if centerAlly ~= nil and nNum >= 2
@@ -904,7 +904,7 @@ function X.CarryFindTarget()
 	end
 	
 	
-	local nNearbyEnemyHeroes = bot:GetNearbyHeroes(1600,true,BOT_MODE_NONE);
+	local nNearbyEnemyHeroes = J.GetNearbyHeroes(bot,1600,true,BOT_MODE_NONE);
 	local nEnemyLaneCreep = bot:GetNearbyLaneCreeps(1200, true);
 	local nWillAttackCreeps = X.GetExceptRangeLastHitCreep(true, attackDamage *1.2, 0, nAttackRange + 120, bot);
 	if  IsModeSuitHit
@@ -1157,7 +1157,7 @@ function X.WeakestUnitCanBeAttacked(bHero, bEnemy, nRadius, bot)
 	local realHP = 0;
 	if nRadius > 1600 then nRadius = 1600 end;
 	if bHero then
-		units = bot:GetNearbyHeroes(nRadius, bEnemy, BOT_MODE_NONE);
+		units = J.GetNearbyHeroes(bot,nRadius, bEnemy, BOT_MODE_NONE);
 	else	
 		units = bot:GetNearbyLaneCreeps(nRadius, bEnemy);
 	end
@@ -1189,7 +1189,7 @@ function X.WeakestUnitExceptRangeCanBeAttacked(bHero, bEnemy, nRange, nRadius, b
 	if nRadius > 1600 then nRadius = 1600 end;
 	
 	if bHero then
-		units = bot:GetNearbyHeroes(nRadius, bEnemy, BOT_MODE_NONE);
+		units = J.GetNearbyHeroes(bot,nRadius, bEnemy, BOT_MODE_NONE);
 	else	
 		units = bot:GetNearbyLaneCreeps(nRadius, bEnemy);
 	end
@@ -1344,7 +1344,7 @@ end
 
 function X.IsAllysTarget(unit)
 	local bot = GetBot();
-	local allies = bot:GetNearbyHeroes(1000,false,BOT_MODE_NONE);
+	local allies = J.GetNearbyHeroes(bot,1000,false,BOT_MODE_NONE);
 	if #allies < 2 then return false end;
 	
 	for _,ally in pairs(allies) 
@@ -1362,7 +1362,7 @@ end
 
 function X.IsEnemysTarget(unit)
 	local bot = GetBot();
-	local enemys = bot:GetNearbyHeroes(1600,true,BOT_MODE_NONE);
+	local enemys = J.GetNearbyHeroes(bot,1600,true,BOT_MODE_NONE);
 	for _,enemy in pairs(enemys) 
 	do
 		if  X.IsValid(enemy) and J.GetProperTarget(enemy) == unit 
@@ -1376,8 +1376,8 @@ end
 
 function X.CanAttackTogether(bot)
    
-   local allies = bot:GetNearbyHeroes(1200,false,BOT_MODE_NONE);
-   local nNearbyEnemyHeroes = bot:GetNearbyHeroes(600,true,BOT_MODE_NONE);
+   local allies = J.GetNearbyHeroes(bot,1200,false,BOT_MODE_NONE);
+   local nNearbyEnemyHeroes = J.GetNearbyHeroes(bot,600,true,BOT_MODE_NONE);
    
    return bot ~= nil and bot:IsAlive()
 		  and not bot:IsIllusion()
@@ -1456,7 +1456,7 @@ end
 
 function X.IsMostAttackDamage(bot)
 
-	local nAllies = bot:GetNearbyHeroes(800,false,BOT_MODE_NONE);
+	local nAllies = J.GetNearbyHeroes(bot,800,false,BOT_MODE_NONE);
 	for _,ally in pairs(nAllies)
 	do
 		if ally ~= bot
@@ -1767,7 +1767,7 @@ function X.ShouldAttackTowerCreep(bot)
 		local enemyCreeps = bot:GetNearbyLaneCreeps(800,true);
 		local attackTime = bot:GetSecondsPerAttack() * 0.75;
 		local attackTarget = nil;
-		local nEnemyHeroes = bot:GetNearbyHeroes(800,true,BOT_MODE_NONE);
+		local nEnemyHeroes = J.GetNearbyHeroes(bot,800,true,BOT_MODE_NONE);
 		local nEnemyTowers = bot:GetNearbyTowers(nRange,true);
 		local botMoveSpeed = bot:GetCurrentMovementSpeed();
 		if X.CanBeAttacked(nEnemyTowers[1]) 
@@ -1854,7 +1854,7 @@ function X.ShouldNotRetreat(bot)
 		return true; 
 	end
 	
-	local nAttackAlly = bot:GetNearbyHeroes(1000,false,BOT_MODE_ATTACK);
+	local nAttackAlly = J.GetNearbyHeroes(bot,1000,false,BOT_MODE_ATTACK);
 	if  ( bot:HasModifier("modifier_item_mask_of_madness_berserk")
 			or bot:HasModifier("modifier_oracle_false_promise_timer") )
 		and ( #nAttackAlly >= 1 or J.GetHP(bot) > 0.6 )
@@ -1923,7 +1923,7 @@ function X.HasHumanAlly( bot )
 		if bHumanAlly ~= true then bHumanAlly = false end		
 	end
 	
-	local allyHeroList = bot:GetNearbyHeroes( 900, false, BOT_MODE_NONE )
+	local allyHeroList = J.GetNearbyHeroes(bot, 900, false, BOT_MODE_NONE )
 	for _, npcAlly in pairs( allyHeroList )
 	do 
 		if not npcAlly:IsBot()
@@ -2024,8 +2024,8 @@ function CanAttackSpecialUnit()
 				or string.find(unit:GetUnitName(), 'warlock_golem')
 				or string.find(unit:GetUnitName(), 'weaver_swarm')
 				then
-					local nInRangeAlly = bot:GetNearbyHeroes(1000, false, BOT_MODE_NONE)
-					local nInRangeEnemy = bot:GetNearbyHeroes(1000, true, BOT_MODE_NONE)
+					local nInRangeAlly = J.GetNearbyHeroes(bot,1000, false, BOT_MODE_NONE)
+					local nInRangeEnemy = J.GetNearbyHeroes(bot,1000, true, BOT_MODE_NONE)
 
 					if  GetUnitToUnitDistance(bot, unit) <= nAttackRange + 300
 					and J.CanBeAttacked(unit)
@@ -2050,8 +2050,8 @@ function ConsiderHarassInLaningPhase()
 	if J.IsInLaningPhase()
 	then
 		local nModeDesire = bot:GetActiveModeDesire()
-		local nInRangeAlly = bot:GetNearbyHeroes(700, false, BOT_MODE_NONE)
-		local nInRangeEnemy = bot:GetNearbyHeroes(700, true, BOT_MODE_NONE)
+		local nInRangeAlly = J.GetNearbyHeroes(bot,700, false, BOT_MODE_NONE)
+		local nInRangeEnemy = J.GetNearbyHeroes(bot,700, true, BOT_MODE_NONE)
 		local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(700, true)
 		local nAttackRange = bot:GetAttackRange()
 
@@ -2080,7 +2080,7 @@ function ConsiderHarassInLaningPhase()
 					nAttackRange = 300
 				end
 
-				nInRangeEnemy = bot:GetNearbyHeroes(nAttackRange, true, BOT_MODE_NONE)
+				nInRangeEnemy = J.GetNearbyHeroes(bot,nAttackRange, true, BOT_MODE_NONE)
 				if nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
 				then
 					if  J.IsValidHero(nInRangeEnemy[1])

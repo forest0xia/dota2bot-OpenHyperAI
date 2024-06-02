@@ -23,7 +23,7 @@ function X.ConsiderStolenSpell(ability)
 	nLV = bot:GetLevel()
 	nMP = bot:GetMana() / bot:GetMaxMana()
 	botTarget = J.GetProperTarget( bot )
-	hEnemyList = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+	hEnemyList = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 	hAllyList = J.GetAlliesNearLoc( bot:GetLocation(), 1600 )
 
     if abilityName == 'bane_enfeeble'
@@ -324,7 +324,7 @@ function X.ConsiderNightmare()
 
 	local nCastRange = J.GetProperCastRange(false, bot, Nightmare:GetCastRange())
 
-    local nEnemyHeroes = bot:GetNearbyHeroes(nCastRange + 150, true, BOT_MODE_NONE)
+    local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange + 150, true, BOT_MODE_NONE)
 	for _, enemyHero in pairs(nEnemyHeroes)
 	do
 		if  J.IsValidHero(enemyHero)
@@ -345,7 +345,7 @@ function X.ConsiderNightmare()
 		local dmg = 0
 		local nEnemyCount = 0
 
-        local nInRangeEnemy = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 		for _, enemyHero in pairs(nInRangeEnemy)
 		do
 			if  J.IsValidHero(enemyHero)
@@ -379,7 +379,7 @@ function X.ConsiderNightmare()
 	then
 		if J.IsValidHero(botTarget)
 		then
-            local nInRangeEnemy = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+            local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 			for _, enemyHero in pairs(nInRangeEnemy)
 			do
 				if  J.IsValid(enemyHero)
@@ -405,8 +405,8 @@ function X.ConsiderNightmare()
             and not botTarget:HasModifier('modifier_legion_commander_duel')
             and not botTarget:HasModifier('modifier_necrolyte_reapers_scythe')
 			then
-				local nInRangeAlly = botTarget:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
-                nInRangeEnemy = botTarget:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+				local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1200, true, BOT_MODE_NONE)
+                nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1200, false, BOT_MODE_NONE)
 
 				if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
                 and #nInRangeAlly >= #nInRangeEnemy
@@ -430,8 +430,8 @@ function X.ConsiderNightmare()
             and not J.IsDisabled(enemyHero)
             and not enemyHero:IsDisarmed()
 			then
-                local nInRangeAlly = enemyHero:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
-                local nTargetInRangeAlly = enemyHero:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+                local nInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, true, BOT_MODE_NONE)
+                local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
                 if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
                 and (#nTargetInRangeAlly > #nInRangeAlly
                     or bot:WasRecentlyDamagedByAnyHero(2))
@@ -451,7 +451,7 @@ function X.ConsiderFiendsGrip()
 	local nCastRange = J.GetProperCastRange(false, bot, FiendsGrip:GetCastRange())
 	local nDamage = FiendsGrip:GetSpecialValueInt('fiend_grip_damage') * 6
 
-    local nEnemyHeroes = bot:GetNearbyHeroes(nCastRange + 150, true, BOT_MODE_NONE)
+    local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange + 150, true, BOT_MODE_NONE)
 	for _, enemyHero in pairs(nEnemyHeroes)
 	do
 		if  J.IsValidHero(enemyHero)
@@ -481,7 +481,7 @@ function X.ConsiderFiendsGrip()
 		local target = nil
 		local dmg = 0
 
-        local nInRangeEnemy = bot:GetNearbyHeroes(nCastRange + 150, true, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange + 150, true, BOT_MODE_NONE)
 		for _, enemyHero in pairs(nInRangeEnemy)
 		do
 			if  J.IsValidHero(enemyHero)

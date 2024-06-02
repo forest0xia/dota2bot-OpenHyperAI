@@ -206,8 +206,8 @@ function X.ConsiderSearingChains()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		local nInRangeAlly = bot:GetNearbyHeroes(nRadius + 200, false, BOT_MODE_NONE)
-		local nInRangeEnemy = bot:GetNearbyHeroes(nRadius + 50, true, BOT_MODE_NONE)
+		local nInRangeAlly = J.GetNearbyHeroes(bot,nRadius + 200, false, BOT_MODE_NONE)
+		local nInRangeEnemy = J.GetNearbyHeroes(bot,nRadius + 50, true, BOT_MODE_NONE)
 
 		if  J.IsValidHero(botTarget)
 		and J.IsInRange(bot, botTarget, nRadius)
@@ -246,8 +246,8 @@ function X.ConsiderSearingChains()
 
 	if J.IsRetreating(bot)
 	then
-		local nInRangeAlly = bot:GetNearbyHeroes(nRadius + 200, false, BOT_MODE_NONE)
-		local nInRangeEnemy = bot:GetNearbyHeroes(nRadius + 50, true, BOT_MODE_NONE)
+		local nInRangeAlly = J.GetNearbyHeroes(bot,nRadius + 200, false, BOT_MODE_NONE)
+		local nInRangeEnemy = J.GetNearbyHeroes(bot,nRadius + 50, true, BOT_MODE_NONE)
 
 		if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 		and #nInRangeEnemy > #nInRangeAlly
@@ -292,7 +292,7 @@ function X.ConsiderSleightOfFist()
 	local nAbilityLevel = SleightOfFist:GetLevel()
 	local botTarget = J.GetProperTarget(bot)
 
-	local nEnemyHeroes = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+	local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 	for _, enemyHero in pairs(nEnemyHeroes)
 	do
 		if  J.IsValidHero(enemyHero)
@@ -308,7 +308,7 @@ function X.ConsiderSleightOfFist()
 	if J.IsStunProjectileIncoming(bot, bot:GetAttackRange())
 	then
 		local nInRangeCreeps = bot:GetNearbyCreeps(nCastRange, true)
-		local nInRangeEnemy = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+		local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 
 		if nInRangeCreeps ~= nil and #nInRangeCreeps >= 1
 		then
@@ -331,8 +331,8 @@ function X.ConsiderSleightOfFist()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		local nInRangeAlly = bot:GetNearbyHeroes(nCastRange + 100, false, BOT_MODE_NONE)
-		local nInRangeEnemy = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+		local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange + 100, false, BOT_MODE_NONE)
+		local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 
 		if  J.IsValidTarget(botTarget)
 		and J.CanCastOnMagicImmune(botTarget)
@@ -350,8 +350,8 @@ function X.ConsiderSleightOfFist()
 
 	if J.IsRetreating(bot)
 	then
-		local nInRangeAlly = bot:GetNearbyHeroes(nCastRange + 250, false, BOT_MODE_NONE)
-		local nInRangeEnemy = bot:GetNearbyHeroes(nCastRange + 100, true, BOT_MODE_NONE)
+		local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange + 250, false, BOT_MODE_NONE)
+		local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange + 100, true, BOT_MODE_NONE)
 
 		if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 		and #nInRangeEnemy > #nInRangeAlly
@@ -391,7 +391,7 @@ function X.ConsiderSleightOfFist()
 			and (J.IsKeyWordUnit('ranged', creep) or J.IsKeyWordUnit('siege', creep))
 			and creep:GetHealth() <= creepDamage
 			then
-				local nInRangeEnemy = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+				local nInRangeEnemy = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE)
 
 				if  nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
 				and GetUnitToUnitDistance(creep, nInRangeEnemy[1]) <= 500
@@ -429,7 +429,7 @@ function X.ConsiderFlameGuard()
 
 	if J.IsInTeamFight(bot, 1200)
 	then
-		local nEnemyHeroes = bot:GetNearbyHeroes(nRadius, true, BOT_MODE_NONE)
+		local nEnemyHeroes = J.GetNearbyHeroes(bot,nRadius, true, BOT_MODE_NONE)
 
 		if  nEnemyHeroes ~= nil and #nEnemyHeroes >= 2
 		and J.IsInRange(bot, nEnemyHeroes[1], nRadius)
@@ -452,8 +452,8 @@ function X.ConsiderFlameGuard()
 
 	if J.IsRetreating(bot)
 	then
-		local nInRangeAlly = bot:GetNearbyHeroes(nRadius + 200, false, BOT_MODE_NONE)
-		local nInRangeEnemy = bot:GetNearbyHeroes(nRadius, true, BOT_MODE_NONE)
+		local nInRangeAlly = J.GetNearbyHeroes(bot,nRadius + 200, false, BOT_MODE_NONE)
+		local nInRangeEnemy = J.GetNearbyHeroes(bot,nRadius, true, BOT_MODE_NONE)
 
 		if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 		and #nInRangeEnemy > #nInRangeAlly
@@ -497,8 +497,8 @@ function X.ConsiderActivateFireRemnant()
 	if  J.IsGoingOnSomeone(bot)
 	and not CanDoSleightChains()
 	then
-		local nInRangeAlly = bot:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
-		local nInRangeEnemy = bot:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
+		local nInRangeAlly = J.GetNearbyHeroes(bot,1200, false, BOT_MODE_NONE)
+		local nInRangeEnemy = J.GetNearbyHeroes(bot,1200, true, BOT_MODE_NONE)
 		local closestRemnantToTarget = nil
 		local targetDist = 100000
 
@@ -526,8 +526,8 @@ function X.ConsiderActivateFireRemnant()
 
 	if J.IsRetreating(bot)
 	then
-		local nInRangeAlly = bot:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
-		local nInRangeEnemy = bot:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
+		local nInRangeAlly = J.GetNearbyHeroes(bot,1200, false, BOT_MODE_NONE)
+		local nInRangeEnemy = J.GetNearbyHeroes(bot,1200, true, BOT_MODE_NONE)
 		local closestRemnantToAncient = nil
 		local targetDist = 100000
 
@@ -594,7 +594,7 @@ function X.ConsiderFireRemnant()
 
 	if nCastRange > 1600 then nCastRange = 1600 end
 
-	local nEnemyHeroes = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+	local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 	for _, enemyHero in pairs(nEnemyHeroes)
 	do
 		if  J.CanCastOnNonMagicImmune(enemyHero)
@@ -619,8 +619,8 @@ function X.ConsiderFireRemnant()
 		and not botTarget:HasModifier('modifier_abaddon_borrowed_time')
 		and not botTarget:HasModifier('modifier_faceless_void_chronosphere')
 		then
-			local nInRangeAlly = botTarget:GetNearbyHeroes(nCastRange + 100, false, BOT_MODE_NONE)
-			local nInRangeEnemy = botTarget:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+			local nInRangeAlly = J.GetNearbyHeroes(botTarget, nCastRange + 100, false, BOT_MODE_NONE)
+			local nInRangeEnemy = J.GetNearbyHeroes(botTarget, nCastRange, true, BOT_MODE_NONE)
 
 			if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 			and #nInRangeAlly >= #nInRangeEnemy
@@ -634,8 +634,8 @@ function X.ConsiderFireRemnant()
 
 	if J.IsRetreating(bot)
 	then
-		local nInRangeAlly = bot:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
-		local nInRangeEnemy = bot:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
+		local nInRangeAlly = J.GetNearbyHeroes(bot,1200, false, BOT_MODE_NONE)
+		local nInRangeEnemy = J.GetNearbyHeroes(bot,1200, true, BOT_MODE_NONE)
 
 		if  bot:WasRecentlyDamagedByAnyHero(2.5)
 		and nInRangeAlly ~= nil and nInRangeEnemy ~= nil
@@ -663,8 +663,8 @@ function X.ConsiderSleightChains()
 
 		if J.IsGoingOnSomeone(bot)
 		then
-			local nInRangeAlly = bot:GetNearbyHeroes(nCastRange + 100, false, BOT_MODE_NONE)
-			local nInRangeEnemy = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+			local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange + 100, false, BOT_MODE_NONE)
+			local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 
 			if  J.IsValidTarget(botTarget)
 			and J.CanCastOnMagicImmune(botTarget)
@@ -684,8 +684,8 @@ function X.ConsiderSleightChains()
 
 		if J.IsRetreating(bot)
 		then
-			local nInRangeAlly = bot:GetNearbyHeroes(nCastRange + 250, false, BOT_MODE_NONE)
-			local nInRangeEnemy = bot:GetNearbyHeroes(nCastRange + 100, true, BOT_MODE_NONE)
+			local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange + 250, false, BOT_MODE_NONE)
+			local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange + 100, true, BOT_MODE_NONE)
 
 			if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 			and #nInRangeEnemy > #nInRangeAlly

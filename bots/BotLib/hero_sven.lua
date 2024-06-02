@@ -143,7 +143,7 @@ function X.SkillsComplement()
 	nLV = bot:GetLevel()
 	nMP = bot:GetMana()/bot:GetMaxMana()
 	nHP = bot:GetHealth()/bot:GetMaxHealth()
-	hEnemyHeroList = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+	hEnemyHeroList = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 
 
 	castRDesire = X.ConsiderR()
@@ -196,7 +196,7 @@ function X.ConsiderQ()
 	local nRadius = 255
 	local nDamageType = DAMAGE_TYPE_MAGICAL
 
-	local nAllies =  bot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE )
+	local nAllies =  J.GetNearbyHeroes(bot, 1200, false, BOT_MODE_NONE )
 
 	if #hEnemyHeroList == 1
 		and J.IsValidHero( hEnemyHeroList[1] )
@@ -208,8 +208,8 @@ function X.ConsiderQ()
 		nCastRange = nCastRange + 260
 	end
 
-	local nEnemysHerosInRange = bot:GetNearbyHeroes( nCastRange + 43, true, BOT_MODE_NONE )
-	local nEnemysHerosInBonus = bot:GetNearbyHeroes( nCastRange + 350, true, BOT_MODE_NONE )
+	local nEnemysHerosInRange = J.GetNearbyHeroes(bot, nCastRange + 43, true, BOT_MODE_NONE )
+	local nEnemysHerosInBonus = J.GetNearbyHeroes(bot, nCastRange + 350, true, BOT_MODE_NONE )
 
 	local nEmemysCreepsInRange = bot:GetNearbyCreeps( nCastRange + 43, true )
 
@@ -533,7 +533,7 @@ function X.ConsiderR()
 		return 0
 	end
 
-	local nEnemysHerosInBonus = bot:GetNearbyHeroes( 1200, true, BOT_MODE_NONE )
+	local nEnemysHerosInBonus = J.GetNearbyHeroes(bot, 1200, true, BOT_MODE_NONE )
 
 	--打架时先手
 	if J.IsGoingOnSomeone( bot )
@@ -572,7 +572,7 @@ function X.SvenConsiderTarget()
 	if not J.IsValidHero( npcTarget ) then return end
 
 	local nAttackRange = bot:GetAttackRange() + 50
-	local nEnemyHeroInRange = bot:GetNearbyHeroes( nAttackRange, true, BOT_MODE_NONE )
+	local nEnemyHeroInRange = J.GetNearbyHeroes(bot, nAttackRange, true, BOT_MODE_NONE )
 
 	local nInAttackRangeNearestEnemyHero = nEnemyHeroInRange[1]
 

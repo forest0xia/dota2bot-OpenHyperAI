@@ -21,7 +21,7 @@ function X.ConsiderStolenSpell(ability)
 
 	nMP = bot:GetMana()/bot:GetMaxMana()
 	nLV = bot:GetLevel()
-	hEnemyList = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+	hEnemyList = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 
     if abilityName == 'bristleback_hairball'
     then
@@ -78,8 +78,8 @@ function X.ConsiderViscousNasalGoo()
 	local nCastRange = J.GetProperCastRange(false, bot, ViscousNasalGoo:GetCastRange())
 	local nManaCost = ViscousNasalGoo:GetManaCost()
 
-	local tableNearbyEnemyHeroes = bot:GetNearbyHeroes( nRadius, true, BOT_MODE_NONE )
-	local nEnemyHeroes = bot:GetNearbyHeroes( 800, true, BOT_MODE_NONE )
+	local tableNearbyEnemyHeroes = J.GetNearbyHeroes(bot, nRadius, true, BOT_MODE_NONE )
+	local nEnemyHeroes = J.GetNearbyHeroes(bot, 800, true, BOT_MODE_NONE )
 
 	if J.IsRetreating( bot )
 	then
@@ -161,7 +161,7 @@ function X.ConsiderQuillSpray()
 	local nRadius = QuillSpray:GetSpecialValueInt( "radius" )
 	local nManaCost = QuillSpray:GetManaCost()
 
-	local tableNearbyEnemyHeroes = bot:GetNearbyHeroes( nRadius, true, BOT_MODE_NONE )
+	local tableNearbyEnemyHeroes = J.GetNearbyHeroes(bot, nRadius, true, BOT_MODE_NONE )
 
 	if J.IsRetreating( bot ) and #tableNearbyEnemyHeroes > 0
 	then
@@ -284,7 +284,7 @@ function X.ConsiderBristleback()
 
 	if J.IsRetreating( bot )
 	then
-		local nEnemyHeroes = bot:GetNearbyHeroes( 700, true, BOT_MODE_NONE )
+		local nEnemyHeroes = J.GetNearbyHeroes(bot, 700, true, BOT_MODE_NONE )
 		if nEnemyHeroes ~= nil and #nEnemyHeroes > 0
 		then
 			local targetHero = nEnemyHeroes[1]
@@ -312,7 +312,7 @@ function X.ConsiderHairBall()
 
 	if J.IsRetreating( bot )
 	then
-		local enemyHeroList = bot:GetNearbyHeroes( nRadius, true, BOT_MODE_NONE )
+		local enemyHeroList = J.GetNearbyHeroes(bot, nRadius, true, BOT_MODE_NONE )
 		local targetHero = enemyHeroList[1]
 		if J.IsValidHero( targetHero )
 			and J.CanCastOnNonMagicImmune( targetHero )

@@ -202,8 +202,8 @@ function X.ConsiderImpetus()
 
     if J.IsGoingOnSomeone(bot)
     then
-        local nInRangeAlly = bot:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
-        local nInRangeEnemy = bot:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
+        local nInRangeAlly = J.GetNearbyHeroes(bot,1200, false, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,1200, true, BOT_MODE_NONE)
 
         if  J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
@@ -314,7 +314,7 @@ function X.ConsiderEnchant()
 	local nNeutralCreeps = bot:GetNearbyNeutralCreeps(nCastRange)
     local botTarget = J.GetProperTarget(bot)
 
-    -- local nEnemyHeroes = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+    -- local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
     -- for _, enemyHero in pairs(nEnemyHeroes)
     -- do
     --     if  J.IsValidHero(enemyHero)
@@ -326,10 +326,10 @@ function X.ConsiderEnchant()
     --     end
     -- end
 
-    local nAllyHeroes = bot:GetNearbyHeroes(nCastRange, false, BOT_MODE_NONE)
+    local nAllyHeroes = J.GetNearbyHeroes(bot,nCastRange, false, BOT_MODE_NONE)
     for _, allyHero in pairs(nAllyHeroes)
     do
-        local nAllyInRangeEnemy = allyHero:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+        local nAllyInRangeEnemy = J.GetNearbyHeroes(allyHero, nCastRange, true, BOT_MODE_NONE)
 
         if  J.IsRetreating(allyHero)
         and J.IsValidHero(nAllyInRangeEnemy[1])
@@ -345,8 +345,8 @@ function X.ConsiderEnchant()
 
     if J.IsGoingOnSomeone(bot)
     then
-        local nInRangeAlly = bot:GetNearbyHeroes(nCastRange + 100, false, BOT_MODE_NONE)
-        local nInRangeEnemy = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+        local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange + 100, false, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 
         if  J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
@@ -416,8 +416,8 @@ function X.ConsiderSproink()
 
     local nAttackRange = bot:GetAttackRange()
 
-    local nAllyHeroes = bot:GetNearbyHeroes(nAttackRange + 100, false, BOT_MODE_NONE)
-    local nEnemyHeroes = bot:GetNearbyHeroes(nAttackRange, true, BOT_MODE_NONE)
+    local nAllyHeroes = J.GetNearbyHeroes(bot,nAttackRange + 100, false, BOT_MODE_NONE)
+    local nEnemyHeroes = J.GetNearbyHeroes(bot,nAttackRange, true, BOT_MODE_NONE)
     local nImpetusMul = Impetus:GetSpecialValueFloat('value') / 100
     local botTarget = J.GetProperTarget(bot)
 
@@ -472,7 +472,7 @@ function X.ConsiderLittleFriends()
     local nRadius = LittleFriends:GetSpecialValueInt('radius')
     local nDuration = LittleFriends:GetSpecialValueInt('duration')
 
-    local nEnemyHeroes = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+    local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
     for _, enemyHero in pairs(nEnemyHeroes)
     do
         if  J.IsValidHero(enemyHero)
@@ -489,9 +489,9 @@ function X.ConsiderLittleFriends()
     if J.IsGoingOnSomeone(bot, 1200)
     then
         local botTarget = J.GetStrongestUnit(nCastRange, bot, true, false, nDuration)
-        local nTargetInRangeEnemy = botTarget:GetNearbyHeroes(nRadius, true, BOT_MODE_NONE)
-        local nInRangeAlly = bot:GetNearbyHeroes(nCastRange + 150, false, BOT_MODE_NONE)
-        local nInRangeEnemy = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+        local nTargetInRangeEnemy = J.GetNearbyHeroes(botTarget, nRadius, true, BOT_MODE_NONE)
+        local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange + 150, false, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 
         if  J.IsValidTarget(botTarget)
         and nInRangeAlly ~= nil and nInRangeEnemy
@@ -507,8 +507,8 @@ function X.ConsiderLittleFriends()
 
     if J.IsRetreating(bot)
     then
-        local nInRangeAlly = bot:GetNearbyHeroes(nCastRange + 150, false, BOT_MODE_NONE)
-        local nInRangeEnemy = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+        local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange + 150, false, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 
         if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
         and #nInRangeEnemy > #nInRangeAlly

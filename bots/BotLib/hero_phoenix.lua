@@ -227,7 +227,7 @@ function X.ConsiderIcarusDive()
     local nHealth = (bot:GetHealth() - nHealthCost) / bot:GetMaxHealth()
     local botTarget = J.GetProperTarget(bot)
 
-    local nEnemyHeroes = bot:GetNearbyHeroes(nDiveLength, true, BOT_MODE_NONE)
+    local nEnemyHeroes = J.GetNearbyHeroes(bot,nDiveLength, true, BOT_MODE_NONE)
     for _, enemyHero in pairs(nEnemyHeroes)
     do
         if  J.IsValidHero(enemyHero)
@@ -275,7 +275,7 @@ function X.ConsiderIcarusDive()
 
     if J.IsGoingOnSomeone(bot)
     then
-        local nInRangeAlly = bot:GetNearbyHeroes(800, false, BOT_MODE_NONE)
+        local nInRangeAlly = J.GetNearbyHeroes(bot,800, false, BOT_MODE_NONE)
 
         if  J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
@@ -286,7 +286,7 @@ function X.ConsiderIcarusDive()
         and not botTarget:HasModifier('modifier_necrolyte_reapers_scythe')
         and nHealth > 0.3
         then
-            local nTargetInRangeAlly = botTarget:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+            local nTargetInRangeAlly = J.GetNearbyHeroes(botTarget, 1200, false, BOT_MODE_NONE)
 
             if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
             and #nInRangeAlly >= #nTargetInRangeAlly + 1
@@ -298,15 +298,15 @@ function X.ConsiderIcarusDive()
 
     if J.IsRetreating(bot)
     then
-        local nInRangeAlly = bot:GetNearbyHeroes(800, false, BOT_MODE_NONE)
-        local nInRangeEnemy = bot:GetNearbyHeroes(800, true, BOT_MODE_NONE)
+        local nInRangeAlly = J.GetNearbyHeroes(bot,800, false, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,800, true, BOT_MODE_NONE)
 
         if  nInRangeAlly ~= nil and nInRangeEnemy
         and J.IsValidHero(nInRangeEnemy[1])
         and not J.IsSuspiciousIllusion(nInRangeEnemy[1])
         and not J.IsDisabled(nInRangeEnemy[1])
         then
-            local nTargetInRangeAlly = nInRangeEnemy[1]:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+            local nTargetInRangeAlly = J.GetNearbyHeroes(nInRangeEnemy[1], 1200, false, BOT_MODE_NONE)
 
             if  nTargetInRangeAlly ~= nil
             and ((#nTargetInRangeAlly > #nInRangeAlly)
@@ -351,19 +351,19 @@ function X.ConsiderIcarusDiveStop()
 
     if J.IsGoingOnSomeone(bot)
     then
-        local nInRangeAlly = bot:GetNearbyHeroes(800, false, BOT_MODE_NONE)
+        local nInRangeAlly = J.GetNearbyHeroes(bot,800, false, BOT_MODE_NONE)
 
         if  J.IsValidTarget(botTarget)
         then
-            local nTargetInRangeAlly = botTarget:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+            local nTargetInRangeAlly = J.GetNearbyHeroes(botTarget, 1200, false, BOT_MODE_NONE)
 
             if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
             and #nInRangeAlly >= #nTargetInRangeAlly
             and #nTargetInRangeAlly <= 1
             and DotaTime() > (IcarusDiveTime + (IcarusDiveDuration / 2))
             then
-                local nTargetInRangeTower = botTarget:GetNearbyHeroes(700, false, BOT_MODE_NONE)
-                local nTargetInRangeEnemy = botTarget:GetNearbyHeroes(700, true, BOT_MODE_NONE)
+                local nTargetInRangeTower = J.GetNearbyHeroes(botTarget, 700, false, BOT_MODE_NONE)
+                local nTargetInRangeEnemy = J.GetNearbyHeroes(botTarget, 700, true, BOT_MODE_NONE)
 
                 if J.IsInLaningPhase()
                 then
@@ -410,7 +410,7 @@ function X.ConsiderFireSpirits()
     local nHealth = (bot:GetHealth() - nHealthCost) / bot:GetMaxHealth()
     local botTarget = J.GetProperTarget(bot)
 
-    local nEnemyHeroes = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+    local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
     for _, enemyHero in pairs(nEnemyHeroes)
     do
         if  J.IsValidHero(enemyHero)
@@ -441,7 +441,7 @@ function X.ConsiderFireSpirits()
 
     if J.IsGoingOnSomeone(bot)
     then
-        local nInRangeAlly = bot:GetNearbyHeroes(800, false, BOT_MODE_NONE)
+        local nInRangeAlly = J.GetNearbyHeroes(bot,800, false, BOT_MODE_NONE)
 
         if  J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
@@ -456,7 +456,7 @@ function X.ConsiderFireSpirits()
         and not botTarget:HasModifier('modifier_phoenix_fire_spirit_burn')
         and nHealth > 0.3
         then
-            local nTargetInRangeAlly = botTarget:GetNearbyHeroes(800, false, BOT_MODE_NONE)
+            local nTargetInRangeAlly = J.GetNearbyHeroes(botTarget, 800, false, BOT_MODE_NONE)
 
             if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
             and #nInRangeAlly >= #nTargetInRangeAlly
@@ -471,7 +471,7 @@ function X.ConsiderFireSpirits()
     then
         local nLocationAoE = bot:FindAoELocation(true, false, bot:GetLocation(), nCastRange, nRadius, 0, 0)
         local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nCastRange, true)
-        local nInRangeEnemy = bot:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,1200, true, BOT_MODE_NONE)
 
         if  nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 4
         and nLocationAoE.count >= 4
@@ -553,7 +553,7 @@ function X.ConsiderFireSpiritsLaunch()
 	local nDamage = FireSpirits:GetSpecialValueInt('damage_per_second') * nDuration
     local botTarget = J.GetProperTarget(bot)
 
-    local nEnemyHeroes = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+    local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
     for _, enemyHero in pairs(nEnemyHeroes)
     do
         if  J.IsValidHero(enemyHero)
@@ -594,7 +594,7 @@ function X.ConsiderFireSpiritsLaunch()
 
     if J.IsGoingOnSomeone(bot)
     then
-        local nInRangeAlly = bot:GetNearbyHeroes(800, false, BOT_MODE_NONE)
+        local nInRangeAlly = J.GetNearbyHeroes(bot,800, false, BOT_MODE_NONE)
 
         if  J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
@@ -608,7 +608,7 @@ function X.ConsiderFireSpiritsLaunch()
         and not botTarget:HasModifier('modifier_oracle_false_promise_timer')
         and not botTarget:HasModifier('modifier_phoenix_fire_spirit_burn')
         then
-            local nTargetInRangeAlly = botTarget:GetNearbyHeroes(800, false, BOT_MODE_NONE)
+            local nTargetInRangeAlly = J.GetNearbyHeroes(botTarget, 800, false, BOT_MODE_NONE)
 
             if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
             and #nInRangeAlly >= #nTargetInRangeAlly
@@ -630,7 +630,7 @@ function X.ConsiderFireSpiritsLaunch()
     then
         local nLocationAoE = bot:FindAoELocation(true, false, bot:GetLocation(), nCastRange, nRadius, 0, 0)
         local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nCastRange, true)
-        local nInRangeEnemy = bot:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,1200, true, BOT_MODE_NONE)
 
         if  nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 4
         and nLocationAoE.count >= 4
@@ -756,7 +756,7 @@ function X.ConsiderSunRay()
 
     if J.IsGoingOnSomeone(bot)
     then
-        local nInRangeAlly = bot:GetNearbyHeroes(800, false, BOT_MODE_NONE)
+        local nInRangeAlly = J.GetNearbyHeroes(bot,800, false, BOT_MODE_NONE)
         local weakestEnemy = J.GetVulnerableWeakestUnit(bot, true, true, nCastRange)
 
         if  J.IsValidTarget(weakestEnemy)
@@ -769,7 +769,7 @@ function X.ConsiderSunRay()
         and not weakestEnemy:HasModifier('modifier_necrolyte_reapers_scythe')
         and J.GetHP(bot) > 0.4
         then
-            local nTargetInRangeAlly = weakestEnemy:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+            local nTargetInRangeAlly = J.GetNearbyHeroes(weakestEnemy, 1200, false, BOT_MODE_NONE)
 
             if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
             and #nInRangeAlly >= #nTargetInRangeAlly
@@ -780,7 +780,7 @@ function X.ConsiderSunRay()
             end
         end
 
-        nInRangeAlly = bot:GetNearbyHeroes(nCastRange, false, BOT_MODE_NONE)
+        nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange, false, BOT_MODE_NONE)
         for _, allyHero in pairs(nInRangeAlly)
         do
             if  J.IsValidHero(allyHero)
@@ -813,8 +813,8 @@ function X.ConsiderSunRayStop()
     local nCastRange = J.GetProperCastRange(false, bot, SunRay:GetCastRange())
 	if nCastRange > 1600 then nCastRange = 1600 end
 
-	local nInRangeAlly = bot:GetNearbyHeroes(nCastRange, false, BOT_MODE_ATTACK)
-	local nInRangeEnemy = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+	local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange, false, BOT_MODE_ATTACK)
+	local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
     local botTarget = J.GetProperTarget(bot)
 
 	if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
@@ -878,7 +878,7 @@ function X.ConsiderSupernova()
         then
             if bot:HasScepter()
             then
-                local nInRangeAlly = bot:GetNearbyHeroes(nCastRange + 100, false, BOT_MODE_NONE)
+                local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange + 100, false, BOT_MODE_NONE)
 
                 for _, allyHero in pairs(nInRangeAlly)
                 do

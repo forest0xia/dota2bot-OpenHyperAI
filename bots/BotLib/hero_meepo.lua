@@ -170,7 +170,7 @@ function X.ConsiderEarthBind()
     local nModeDesire = bot:GetActiveModeDesire()
     local botTarget = J.GetProperTarget(bot)
 
-    local nEnemyHeroes = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+    local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
     for _, enemyHero in pairs(nEnemyHeroes)
     do
         if  J.IsValidHero(enemyHero)
@@ -194,8 +194,8 @@ function X.ConsiderEarthBind()
 
     if J.IsGoingOnSomeone(bot)
 	then
-        local nInRangeAlly = bot:GetNearbyHeroes(1000, false, BOT_MODE_NONE)
-        local nInRangeEnemy = bot:GetNearbyHeroes(800, true, BOT_MODE_NONE)
+        local nInRangeAlly = J.GetNearbyHeroes(bot,1000, false, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,800, true, BOT_MODE_NONE)
 
         if  J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
@@ -217,8 +217,8 @@ function X.ConsiderEarthBind()
     if  J.IsRetreating(bot)
     and nModeDesire > BOT_ACTION_DESIRE_HIGH
     then
-        local nInRangeAlly = bot:GetNearbyHeroes(800, false, BOT_MODE_NONE)
-        local nInRangeEnemy = bot:GetNearbyHeroes(800, true, BOT_MODE_NONE)
+        local nInRangeAlly = J.GetNearbyHeroes(bot,800, false, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,800, true, BOT_MODE_NONE)
 
         if  nInRangeAlly ~= nil and nInRangeEnemy
         and ((#nInRangeEnemy > #nInRangeAlly)
@@ -235,10 +235,10 @@ function X.ConsiderEarthBind()
         end
     end
 
-    local nAllyHeroes = bot:GetNearbyHeroes(nCastRange, false, BOT_MODE_NONE)
+    local nAllyHeroes = J.GetNearbyHeroes(bot,nCastRange, false, BOT_MODE_NONE)
     for _, allyHero in pairs(nAllyHeroes)
     do
-        local nAllyInRangeEnemy = allyHero:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
+        local nAllyInRangeEnemy = J.GetNearbyHeroes(allyHero, nCastRange, true, BOT_MODE_NONE)
 
         if  J.IsRetreating(allyHero)
         and allyHero:WasRecentlyDamagedByAnyHero(2.1)
@@ -283,8 +283,8 @@ function X.ConsiderPoof()
 
         if J.IsGoingOnSomeone(meepo)
         then
-            local nInRangeAlly = meepo:GetNearbyHeroes(1000, false, BOT_MODE_NONE)
-            local nInRangeEnemy = meepo:GetNearbyHeroes(800, true, BOT_MODE_NONE)
+            local nInRangeAlly = J.GetNearbyHeroes(meepo, 1000, false, BOT_MODE_NONE)
+            local nInRangeEnemy = J.GetNearbyHeroes(meepo, 800, true, BOT_MODE_NONE)
 
             if  J.IsValidTarget(mTarget)
             and J.IsInRange(meepo, mTarget, 800)
@@ -313,7 +313,7 @@ function X.ConsiderPoof()
 
         if J.IsDoingRoshan(meepo)
         then
-            local nInRangeEnemy = meepo:GetNearbyHeroes(800, true, BOT_MODE_NONE)
+            local nInRangeEnemy = J.GetNearbyHeroes(meepo, 800, true, BOT_MODE_NONE)
 
             if  J.IsRoshan(mTarget)
             and J.IsInRange(meepo, mTarget, 400)
@@ -326,7 +326,7 @@ function X.ConsiderPoof()
 
         if J.IsDoingTormentor(meepo)
         then
-            local nInRangeEnemy = meepo:GetNearbyHeroes(800, true, BOT_MODE_NONE)
+            local nInRangeEnemy = J.GetNearbyHeroes(meepo, 800, true, BOT_MODE_NONE)
 
             if  J.IsTormentor(mTarget)
             and J.IsInRange(meepo, mTarget, 400)
@@ -347,8 +347,8 @@ function X.ConsiderPoof()
 
 	if  J.IsRetreating(bot)
 	then
-        local nInRangeAlly = bot:GetNearbyHeroes(800, false, BOT_MODE_NONE)
-        local nInRangeEnemy = bot:GetNearbyHeroes(800, true, BOT_MODE_NONE)
+        local nInRangeAlly = J.GetNearbyHeroes(bot,800, false, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,800, true, BOT_MODE_NONE)
 
         if  nInRangeAlly ~= nil and nInRangeEnemy
         and ((#nInRangeEnemy > #nInRangeAlly)
@@ -419,7 +419,7 @@ function X.ConsiderPoof()
             return BOT_ACTION_DESIRE_HIGH, bot
         end
 
-        local nInRangeEnemy = bot:GetNearbyHeroes(nRadius / 2.1, true, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,nRadius / 2.1, true, BOT_MODE_NONE)
         for _, enemyHero in pairs(nInRangeEnemy)
         do
             if  J.IsValidHero(enemyHero)
@@ -441,7 +441,7 @@ function X.ConsiderPoof()
 			and (J.IsKeyWordUnit('ranged', creep) or J.IsKeyWordUnit('siege', creep) or J.IsKeyWordUnit('flagbearer', creep))
 			and J.CanKillTarget(creep, nDamage, DAMAGE_TYPE_MAGICAL)
 			then
-				nInRangeEnemy = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+				nInRangeEnemy = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE)
 
 				if  nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
 				and GetUnitToUnitDistance(creep, nInRangeEnemy[1]) <= 500
@@ -467,8 +467,8 @@ function X.ConsiderPoof()
     then
 		for _, meepo in pairs(Meepos)
         do
-            local nInRangeAlly = meepo:GetNearbyHeroes(800, false, BOT_MODE_NONE)
-			local nInRangeEnemy = meepo:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
+            local nInRangeAlly = J.GetNearbyHeroes(meepo, 800, false, BOT_MODE_NONE)
+			local nInRangeEnemy = J.GetNearbyHeroes(meepo, 1200, true, BOT_MODE_NONE)
 
 			if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
             and ((#Meepos >= #nInRangeEnemy)
@@ -486,8 +486,8 @@ function X.ConsiderPoof()
     then
 		for _, meepo in pairs(Meepos)
         do
-            local nInRangeAlly = meepo:GetNearbyHeroes(800, false, BOT_MODE_NONE)
-			local nInRangeEnemy = meepo:GetNearbyHeroes(324, true, BOT_MODE_NONE)
+            local nInRangeAlly = J.GetNearbyHeroes(meepo, 800, false, BOT_MODE_NONE)
+			local nInRangeEnemy = J.GetNearbyHeroes(meepo, 324, true, BOT_MODE_NONE)
 
 			if  nInRangeEnemy ~= nil
             and J.GetHP(bot) - J.GetHP(meepo) > 0.2
@@ -565,8 +565,8 @@ function X.ConsiderMegaMeepoFling()
     end
 
     local nCastRange = MegaMeepoFling:GetCastRange()
-    local nInRangeAlly = bot:GetNearbyHeroes(1000, false, BOT_MODE_NONE)
-    local nInRangeEnemy = bot:GetNearbyHeroes(800, true, BOT_MODE_NONE)
+    local nInRangeAlly = J.GetNearbyHeroes(bot,1000, false, BOT_MODE_NONE)
+    local nInRangeEnemy = J.GetNearbyHeroes(bot,800, true, BOT_MODE_NONE)
 
     if  J.IsGoingOnSomeone(bot)
     then

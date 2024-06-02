@@ -138,7 +138,7 @@ end
 
 function X.IsSuitableToBuy()
 	local mode = bot:GetActiveMode();
-	local Enemies = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE);
+	local Enemies = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE);
 	if not bot:IsAlive() 
 		or bot:HasModifier("modifier_item_shadow_amulet_fade")
 		or ( mode == BOT_MODE_RETREAT and bot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH )

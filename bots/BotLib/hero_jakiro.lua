@@ -202,7 +202,7 @@ function X.SkillsComplement()
 	nLV = bot:GetLevel()
 	nMP = bot:GetMana()/bot:GetMaxMana()
 	nHP = bot:GetHealth()/bot:GetMaxHealth()
-	hEnemyHeroList = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+	hEnemyHeroList = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 
 
 	local aether = J.IsItemAvailable( "item_aether_lens" )
@@ -282,7 +282,7 @@ function X.ConsiderQ()
 	if castRange > 1600 then castRange = 1600 end
 	
 	local target = J.GetProperTarget( bot )
-	local enemies = bot:GetNearbyHeroes( castRange, true, BOT_MODE_NONE )
+	local enemies = J.GetNearbyHeroes(bot, castRange, true, BOT_MODE_NONE )
 
 	if J.IsGoingOnSomeone( bot ) and #enemies == 1
 	then
@@ -313,7 +313,7 @@ function X.ConsiderQ2()
 	local nDamage = abilityQ:GetSpecialValueInt( 'burn_damage' )
 
 	local target = J.GetProperTarget( bot )
-	local enemies = bot:GetNearbyHeroes( castRange, true, BOT_MODE_NONE )
+	local enemies = J.GetNearbyHeroes(bot, castRange, true, BOT_MODE_NONE )
 
 	if J.IsRetreating( bot )
 	then
@@ -371,8 +371,8 @@ function X.ConsiderW()
 	local nDamage = abilityW:GetSpecialValueInt( 'damage' )
 
 	local target = J.GetProperTarget( bot )
-	local enemies = bot:GetNearbyHeroes( castRange + 200, true, BOT_MODE_NONE )
-	local hNearEnemyHeroList = bot:GetNearbyHeroes( castRange, true, BOT_MODE_NONE )
+	local enemies = J.GetNearbyHeroes(bot, castRange + 200, true, BOT_MODE_NONE )
+	local hNearEnemyHeroList = J.GetNearbyHeroes(bot, castRange, true, BOT_MODE_NONE )
 
 	for _, enemy in pairs( enemies )
 	do
@@ -440,7 +440,7 @@ function X.ConsiderE()
 
 	local target = J.GetProperTarget( bot )
 	local aTarget = bot:GetAttackTarget()
-	local enemies = bot:GetNearbyHeroes( castRange, true, BOT_MODE_NONE )
+	local enemies = J.GetNearbyHeroes(bot, castRange, true, BOT_MODE_NONE )
 	local nRadius = 300
 
 	--团战中对作用数量最多或物理输出最强的敌人使用
@@ -448,8 +448,8 @@ function X.ConsiderE()
 	then
 		local npcMostAoeEnemy = nil
 		local nMostAoeECount = 1
-		local nEnemysHerosInBonus = bot:GetNearbyHeroes( castRange + 299, true, BOT_MODE_NONE )
-		local nEnemysHerosInRange = bot:GetNearbyHeroes( castRange + 43, true, BOT_MODE_NONE )
+		local nEnemysHerosInBonus = J.GetNearbyHeroes(bot, castRange + 299, true, BOT_MODE_NONE )
+		local nEnemysHerosInRange = J.GetNearbyHeroes(bot, castRange + 43, true, BOT_MODE_NONE )
 		local nEmemysCreepsInRange = bot:GetNearbyCreeps( castRange + 43, true )
 		local nAllEnemyUnits = J.CombineTwoTable( nEnemysHerosInRange, nEmemysCreepsInRange )
 
@@ -563,7 +563,7 @@ function X.ConsiderAS()
 
 	local target = J.GetProperTarget( bot )
 	local aTarget = bot:GetAttackTarget()
-	local enemies = bot:GetNearbyHeroes( castRange, true, BOT_MODE_NONE )
+	local enemies = J.GetNearbyHeroes(bot, castRange, true, BOT_MODE_NONE )
 	
 
 	if aTarget ~= nil
@@ -637,7 +637,7 @@ function X.ConsiderR()
 	local nDamage = abilityR:GetSpecialValueInt( 'damage' )
 
 	local target = J.GetProperTarget( bot )
-	local enemies = bot:GetNearbyHeroes( castRange, true, BOT_MODE_NONE )
+	local enemies = J.GetNearbyHeroes(bot, castRange, true, BOT_MODE_NONE )
 
 
 	if J.IsRetreating( bot )
@@ -687,7 +687,7 @@ function X.ConsiderR()
 			and J.CanCastOnNonMagicImmune( target )
 			and J.IsInRange( target, bot, castRange -200 )
 		then
-			local targetAllies = target:GetNearbyHeroes( 2 * nRadius, false, BOT_MODE_NONE )
+			local targetAllies = J.GetNearbyHeroes(target,  2 * nRadius, false, BOT_MODE_NONE )
 			if #targetAllies >= 2 or J.IsInRange( target, bot, 600 )
 			then
 				return BOT_ACTION_DESIRE_HIGH, target:GetExtrapolatedLocation( castPoint )
