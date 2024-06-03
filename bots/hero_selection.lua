@@ -17,6 +17,7 @@ local Chat = require( GetScriptDirectory()..'/FunLib/aba_chat' )
 local Utils = require( GetScriptDirectory()..'/FunLib/utils' )
 local Dota2Teams = require( GetScriptDirectory()..'/FunLib/aba_team_names' )
 local Overrides = require( GetScriptDirectory()..'/FunLib/aba_global_overrides' )
+local CM = require( GetScriptDirectory()..'/FunLib/captain_mode' )
 local HeroSet = {}
 local SupportedHeroes = {}
 
@@ -308,7 +309,6 @@ local sPos4List = {
 	"npc_dota_hero_batrider",
 	"npc_dota_hero_bounty_hunter",
 	"npc_dota_hero_chen",
-	"npc_dota_hero_clinkz",
 	"npc_dota_hero_crystal_maiden",
 	-- "npc_dota_hero_dark_willow", -- DOESN'T WORK
 	"npc_dota_hero_dawnbreaker",
@@ -366,7 +366,6 @@ local sPos5List = {
 	"npc_dota_hero_batrider",
 	"npc_dota_hero_bounty_hunter",
 	"npc_dota_hero_chen",
-	"npc_dota_hero_clinkz",
 	"npc_dota_hero_crystal_maiden",
 	-- "npc_dota_hero_dark_willow", -- DOESN'T WORK
 	"npc_dota_hero_dawnbreaker",
@@ -417,20 +416,12 @@ local sPos5List = {
 	"npc_dota_hero_zuus",
 }
 
--- Function to add all items from one table to another and keep them unique
-function X.CombineTablesUnique(destination, source)
-    for _, item in ipairs(source) do
-        if not destination[item] then
-            destination[item] = true
-        end
-    end
-end
 -- Combine hero list
-X.CombineTablesUnique(SupportedHeroes, sPos1List)
-X.CombineTablesUnique(SupportedHeroes, sPos2List)
-X.CombineTablesUnique(SupportedHeroes, sPos3List)
-X.CombineTablesUnique(SupportedHeroes, sPos4List)
-X.CombineTablesUnique(SupportedHeroes, sPos5List)
+SupportedHeroes = Utils.CombineTablesUnique(SupportedHeroes, sPos1List)
+SupportedHeroes = Utils.CombineTablesUnique(SupportedHeroes, sPos2List)
+SupportedHeroes = Utils.CombineTablesUnique(SupportedHeroes, sPos3List)
+SupportedHeroes = Utils.CombineTablesUnique(SupportedHeroes, sPos4List)
+SupportedHeroes = Utils.CombineTablesUnique(SupportedHeroes, sPos5List)
 
 -- Role weight for now, heroes synergy later
 -- Might take DotaBuff or others role weights once other pos are added
@@ -904,6 +895,8 @@ local function parseCommand(command)
     local action, target = command:match("^(%S+)%s+(.*)$")
     return action, target
 end
+local userSwitchedRole = false
+
 -- Function to handle the command
 local function handleCommand(command, PlayerID, bTeamOnly)
     local action, text = parseCommand(command)
@@ -913,7 +906,7 @@ local function handleCommand(command, PlayerID, bTeamOnly)
 
 	local teamPlayers = GetTeamPlayers(GetTeam())
 
-    if action == "!pick" then
+    if action == "!pick" and GetGameMode() ~= GAMEMODE_CM then
         print("Picking hero " .. text)
 
 		local hero = GetHumanChatHero(text);
@@ -939,6 +932,7 @@ local function handleCommand(command, PlayerID, bTeamOnly)
 					end
 				end
 			end
+			userSwitchedRole = true
 		else
 			print("Hero name not found or not supported! Please refer to hero_selection.lua of this script for list of heroes's name");
 		end
@@ -979,18 +973,23 @@ local function handleCommand(command, PlayerID, bTeamOnly)
 end
 
 function Think()
-	if ( GameTime() < 3.0 and not bLineupReserve )
-	   or fLastSlectTime > GameTime() - fLastRand
-	   or X.IsHumanNotReady( GetTeam() )
-	   or X.IsHumanNotReady( GetOpposingTeam() )
-	then
-		if GetGameMode() ~= 23 then return end
+	if GetGameMode() == GAMEMODE_CM then
+		CM.CaptainModeLogic(SupportedHeroes);
+		CM.AddToList();
+	else
+		if ( GameTime() < 3.0 and not bLineupReserve )
+		or fLastSlectTime > GameTime() - fLastRand
+		or X.IsHumanNotReady( GetTeam() )
+		or X.IsHumanNotReady( GetOpposingTeam() )
+		then
+			if GetGameMode() ~= 23 then return end
+		end
+
+		if nDelayTime == nil then nDelayTime = GameTime() fLastRand = RandomInt( 12, 34 )/10 end
+		if nDelayTime ~= nil and nDelayTime > GameTime() - fLastRand then return end
+
+		AllPickHeros()
 	end
-
-	if nDelayTime == nil then nDelayTime = GameTime() fLastRand = RandomInt( 12, 34 )/10 end
-	if nDelayTime ~= nil and nDelayTime > GameTime() - fLastRand then return end
-
-	AllPickHeros()
 end
 
 -- check if a table contains a value
@@ -1008,7 +1007,7 @@ end
 function GetHumanChatHero(name)
 	if name == nil then return ""; end
 
-	for hero, _ in pairs(SupportedHeroes) do
+	for _, hero in pairs(SupportedHeroes) do
 		if string.find(hero, name) then
 			return hero;
 		end
@@ -1034,7 +1033,25 @@ function GetBotNames()
 	return GetTeam() == TEAM_RADIANT and teamPlayerNames.Radiant or teamPlayerNames.Dire
 end
 
+local CMSupportAlreadyAssigned = {
+	TEAM_RADIANT = false,
+	TEAM_DIRE = false
+};
+
 function UpdateLaneAssignments()
+	local team = GetTeam() == TEAM_RADIANT and 'TEAM_RADIANT' or 'TEAM_DIRE'
+
+	if GetGameMode() == GAMEMODE_CM then
+		InstallChatCallback(function (attr) SelectHeroChatCallback(attr.player_id, attr.string, attr.team_only); end);
+		tLaneAssignList[team] = CM.CMLaneAssignment(Role.roleAssignment, userSwitchedRole)
+		-- print('role assigment:')
+		-- Utils.PrintTable(Role.roleAssignment.TEAM_RADIANT)
+		-- print('lane assigment:' ..userSwitchedRole)
+		-- Utils.PrintTable(CM.CMLaneAssignment(Role.roleAssignment, userSwitchedRole))
+		-- AlignLanesBasedOnRoles(team)
+		-- return tLaneAssignList[team]
+	end
+
 	if GetGameMode() == GAMEMODE_AP or GetGameMode() == GAMEMODE_TURBO then
 		if GetGameState() == GAME_STATE_HERO_SELECTION or GetGameState() == GAME_STATE_STRATEGY_TIME or GetGameState() == GAME_STATE_PRE_GAME then
 			-- InstallChatCallback(function ( tChat ) X.SetChatHeroBan( tChat.string ) end )
@@ -1042,6 +1059,26 @@ function UpdateLaneAssignments()
 		end
 	end
 
-	local team = GetTeam() == TEAM_RADIANT and 'TEAM_RADIANT' or 'TEAM_DIRE'
 	return tLaneAssignList[team]
+end
+
+-- Make sure the laning is in sync with the role assignment so bots won't keep switching lanings.
+function AlignLanesBasedOnRoles(team)
+	for idx, nRole in pairs(Role.roleAssignment[team]) do
+		if nRole == 1 or nRole == 5 then
+			if GetTeam() == TEAM_RADIANT then
+				tLaneAssignList[team][idx] = LANE_BOT
+			else
+				tLaneAssignList[team][idx] = LANE_TOP
+			end
+		elseif nRole == 2 then
+			tLaneAssignList[team][idx] = LANE_MID
+		elseif nRole == 3 or nRole == 4 then
+			if GetTeam() == TEAM_RADIANT then
+				tLaneAssignList[team][idx] = LANE_TOP
+			else
+				tLaneAssignList[team][idx] = LANE_BOT
+			end
+		end
+	end
 end

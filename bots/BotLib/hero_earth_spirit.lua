@@ -102,7 +102,7 @@ function X.MinionThink( hMinionUnit )
 
 	if Minion.IsValidUnit( hMinionUnit )
 	then
-		if hMinionUnit:IsIllusion()
+		if J.IsValidHero(hMinionUnit) and hMinionUnit:IsIllusion()
 		then
 			Minion.IllusionThink( hMinionUnit )
 		end

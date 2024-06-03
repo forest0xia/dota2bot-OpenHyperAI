@@ -250,8 +250,11 @@ function X.GetWeakestCreep(radius, minion)
 end
 
 function X.GetWeakestTower(radius, minion)
-	local towers = minion:GetNearbyTowers(radius, true);
-	return X.GetWeakest(towers);
+	if J.IsValidHero(minion) then
+		local towers = minion:GetNearbyTowers(radius, true);
+		return X.GetWeakest(towers);
+	end
+	return nil
 end
 
 function X.GetWeakestBarracks(radius, minion)
@@ -1173,7 +1176,8 @@ function X.MinionThink(hMinionUnit)
 
 	if X.IsValidUnit(hMinionUnit)
 	then
-		if  hMinionUnit:IsIllusion()
+		if J.IsValidHero(hMinionUnit)
+		and hMinionUnit:IsIllusion()
 		and hMinionUnit:GetUnitName() ~= 'npc_dota_hero_vengefulspirit'
 		then
 			X.IllusionThink(hMinionUnit)

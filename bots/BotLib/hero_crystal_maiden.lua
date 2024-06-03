@@ -978,13 +978,11 @@ function X.cm_GetStrongestUnit( nEnemyUnits )
 	do
 		if 	unit ~= nil and unit:IsAlive()
 			and not unit:HasModifier( 'modifier_fountain_glyph' )
-			and not unit:IsIllusion()
 			and not unit:IsMagicImmune()
 			and not unit:IsInvulnerable()
 			and unit:GetHealth() <= 1100
 			and not unit:IsAncientCreep()
 			and unit:GetMagicResist() < 1.05 - unit:GetHealth()/1100
-			and not unit:WasRecentlyDamagedByAnyHero( 2.5 )
 			and not J.IsOtherAllysTarget( unit )
 			and string.find( unit:GetUnitName(), 'siege' ) == nil
 			and ( nLV < 25 or unit:GetTeam() == TEAM_NEUTRAL )

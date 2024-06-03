@@ -27,4 +27,51 @@ function X.Deepcopy(orig)
     return copy
 end
 
+function X.CombineTablesUnique(tbl1, tbl2)
+    -- Create a set to track unique values
+    local set = {}
+    
+    -- Add all elements of the first table to the set
+    for _, value in ipairs(tbl1) do
+        set[value] = true
+    end
+    
+    -- Add all elements of the second table to the set
+    for _, value in ipairs(tbl2) do
+        set[value] = true
+    end
+    
+    -- Create a result table with unique values
+    local result = {}
+    for key, _ in pairs(set) do
+        table.insert(result, key)
+    end
+    
+    return result
+end
+
+function X.RemoveValueFromTable(tbl, valueToRemove)
+    for i = #tbl, 1, -1 do  -- Iterate backwards to avoid issues with changing indices
+        if tbl[i] == valueToRemove then
+            table.remove(tbl, i)
+        end
+    end
+end
+
+-- count the number of human vs bot players in the team. returns: #humen, #bots
+function X.NumHumanBotPlayersInTeam(team)
+	local nHuman, nBot = 0, 0
+	for _, member in pairs(GetTeamPlayers(team))
+	do
+		if not IsPlayerBot(member)
+		then
+			nHuman = nHuman + 1
+		else
+			nBot = nBot + 1
+		end
+	end
+
+	return nHuman, nBot
+end
+
 return X

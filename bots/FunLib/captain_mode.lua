@@ -3,6 +3,9 @@ local UnImplementedHeroes = {
 
 };
 
+local role = require( GetScriptDirectory()..'/FunLib/aba_role' )
+local Utils = require( GetScriptDirectory()..'/FunLib/utils' )
+
 local X = { }
 local ListPickedHeroes = {};
 local AllHeroesSelected = false;
@@ -16,18 +19,34 @@ local UnavailableHeroes = {
 	"npc_dota_hero_techies"
 }
 local HeroLanes = {
-	[1] = LANE_MID,
-	[2] = LANE_TOP,
-	[3] = LANE_TOP,
-	[4] = LANE_BOT,
-	[5] = LANE_BOT,
+	TEAM_RADIANT = {
+		[1] = LANE_BOT,
+		[2] = LANE_MID,
+		[3] = LANE_TOP,
+		[4] = LANE_TOP,
+		[5] = LANE_BOT,
+	},
+	TEAM_DIRE = {
+		[1] = LANE_TOP,
+		[2] = LANE_MID,
+		[3] = LANE_BOT,
+		[4] = LANE_BOT,
+		[5] = LANE_TOP,
+	 }
 };
 
-local PairsHeroNameNRole = {};
+local allBotHeroes = { }
+
+local PairsHeroNameNRole = {
+	TEAM_RADIANT = { },
+	TEAM_DIRE = { }
+};
 local humanPick = {};
 
 --Picking logic for Captain's Mode Game Mode
-function CaptainModeLogic()
+function X.CaptainModeLogic(SupportedHeroes)
+	allBotHeroes = SupportedHeroes
+
 	if (GetGameState() ~= GAME_STATE_HERO_SELECTION) then
 		return
 	end
@@ -39,8 +58,7 @@ function CaptainModeLogic()
 	end
 	if GetHeroPickState() == HEROPICK_STATE_CM_CAPTAINPICK then
 		PickCaptain();
-	elseif GetHeroPickState() >= HEROPICK_STATE_CM_BAN1 and GetHeroPickState() <= 18 and
-		GetCMPhaseTimeRemaining() <= NeededTime then
+	elseif GetHeroPickState() >= HEROPICK_STATE_CM_BAN1 and GetHeroPickState() <= 20 and GetCMPhaseTimeRemaining() <= NeededTime then
 		BansHero();
 		NeededTime = 0
 	elseif GetHeroPickState() >= HEROPICK_STATE_CM_SELECT1 and GetHeroPickState() <= HEROPICK_STATE_CM_SELECT10 and
@@ -95,7 +113,7 @@ function BansHero()
 		return
 	end
 	local BannedHero = RandomHero();
-	print(BannedHero .. " is banned")
+	print(tostring(BannedHero) .. " is banned")
 	CMBanHero(BannedHero);
 	BanCycle = BanCycle + 1;
 end
@@ -105,43 +123,46 @@ function PicksHero()
 	if not IsPlayerBot(GetCMCaptain()) or not IsPlayerInHeroSelectionControl(GetCMCaptain()) then
 		return
 	end
+
+	local sTeamName = GetTeam() == TEAM_RADIANT and 'TEAM_RADIANT' or 'TEAM_DIRE'
 	local PickedHero = RandomHero();
 	if PickCycle == 1 then
 		while not role.CanBeOfflaner(PickedHero) do
 			PickedHero = RandomHero();
 		end
-		PairsHeroNameNRole[PickedHero] = "offlaner";
+		PairsHeroNameNRole[sTeamName][PickedHero] = "offlaner";
 	elseif PickCycle == 2 then
 		while not role.CanBeSupport(PickedHero) do
 			PickedHero = RandomHero();
 		end
-		PairsHeroNameNRole[PickedHero] = "support";
+		PairsHeroNameNRole[sTeamName][PickedHero] = "support";
 	elseif PickCycle == 3 then
 		while not role.CanBeMidlaner(PickedHero) do
 			PickedHero = RandomHero();
 		end
-		PairsHeroNameNRole[PickedHero] = "midlaner";
+		PairsHeroNameNRole[sTeamName][PickedHero] = "midlaner";
 	elseif PickCycle == 4 then
 		while not role.CanBeSupport(PickedHero) do
 			PickedHero = RandomHero();
 		end
-		PairsHeroNameNRole[PickedHero] = "support";
+		PairsHeroNameNRole[sTeamName][PickedHero] = "support";
 	elseif PickCycle == 5 then
 		while not role.CanBeSafeLaneCarry(PickedHero) do
 			PickedHero = RandomHero();
 		end
-		PairsHeroNameNRole[PickedHero] = "carry";
+		PairsHeroNameNRole[sTeamName][PickedHero] = "carry";
 	end
+
 	print(PickedHero .. " is picked")
 	CMPickHero(PickedHero);
 	PickCycle = PickCycle + 1;
 end
 
 --Add to list human picked heroes
-function AddToList()
+function X.AddToList()
 	if not IsPlayerBot(GetCMCaptain()) then
 		for _, h in pairs(allBotHeroes) do
-			if IsCMPickedHero(GetTeam(), h) and not alreadyInTable(h) then
+			if IsCMPickedHero(GetTeam(), h) and not AlreadyInTable(h) then
 				table.insert(humanPick, h)
 			end
 		end
@@ -149,7 +170,7 @@ function AddToList()
 end
 
 --Check if selected hero already picked by human
-function alreadyInTable(hero_name)
+function AlreadyInTable(hero_name)
 	for _, h in pairs(humanPick) do
 		if hero_name == h then
 			return true
@@ -253,72 +274,126 @@ end
 -------------------------------------------------------------------------------------------------------
 
 ---------------------------------------------------------CAPTAIN'S MODE LANE ASSIGNMENT------------------------------------------------
-function CMLaneAssignment()
+local doneLaneAssignementOnce = false
+local roleAssignment, playerSwitchedRoles = { TEAM_RADIANT = {}, TEAM_DIRE = {} }, false
+function X.CMLaneAssignment(roleAssign, switchedRoles)
+	local sTeamName = GetTeam() == TEAM_RADIANT and 'TEAM_RADIANT' or 'TEAM_DIRE'
+
+	-- roleAssignment = roleAssign -- TODO: role assignment to be improved
+	-- playerSwitchedRoles = switchedRoles -- TODO: role assignment to be improved
+
+	-- if playerSwitchedRoles then
+	-- 	return roleAssignment[sTeamName]
+	-- end
+
+	-- if not doneLaneAssignementOnce then
+	-- 	if not IsPlayerBot(GetCMCaptain()) then
+	-- 		FillLAHumanCaptain()
+	-- 	end
+	-- 	FillLaneAssignmentTable();
+	-- end
+
 	if IsPlayerBot(GetCMCaptain()) then
 		FillLaneAssignmentTable();
 	else
-		FillLAHumanCaptain()
+		-- FillLAHumanCaptain()
 	end
-	return HeroLanes;
+	return HeroLanes[sTeamName];
 end
 
 --Lane Assignment if the captain is not human
 function FillLaneAssignmentTable()
-	local supportAlreadyAssigned = false;
 	local TeamMember = GetTeamPlayers(GetTeam());
+	local sTeamName = GetTeam() == TEAM_RADIANT and 'TEAM_RADIANT' or 'TEAM_DIRE'
+	local supportAlreadyAssigned = {
+		TEAM_RADIANT = false,
+		TEAM_DIRE = false
+	};
 	for i = 1, #TeamMember do
-		--[[if GetTeamMember(i) ~= nil and GetTeamMember(i):IsHero() then
-			local unit_name =  GetTeamMember(i):GetUnitName(); 
-			if PairsHeroNameNRole[unit_name] == "support" and not supportAlreadyAssigned then
-				HeroLanes[i] = LANE_TOP;
-				supportAlreadyAssigned = true;
-			elseif PairsHeroNameNRole[unit_name] == "support" and supportAlreadyAssigned then
-				HeroLanes[i] = LANE_BOT;
-			elseif PairsHeroNameNRole[unit_name] == "midlaner" then
-				HeroLanes[i] = LANE_MID;
-			elseif PairsHeroNameNRole[unit_name] == "offlaner" then
+		local unit = GetTeamMember(i)
+		if unit ~= nil and unit:IsHero() then
+			local unit_name = unit:GetUnitName();
+			if PairsHeroNameNRole[sTeamName][unit_name] == "support" then
 				if GetTeam() == TEAM_RADIANT then
-					HeroLanes[i] = LANE_TOP;
+					if not supportAlreadyAssigned.TEAM_RADIANT then
+						HeroLanes[sTeamName][i] = LANE_BOT;
+						supportAlreadyAssigned.TEAM_RADIANT = true
+						roleAssignment[sTeamName][i] = 5
+					else
+						HeroLanes[sTeamName][i] = LANE_TOP;
+						roleAssignment[sTeamName][i] = 4
+					end
 				else
-					HeroLanes[i] = LANE_BOT;
+					if not supportAlreadyAssigned.TEAM_DIRE then
+						HeroLanes[sTeamName][i] = LANE_TOP;
+						supportAlreadyAssigned.TEAM_DIRE = true
+						roleAssignment[sTeamName][i] = 5
+					else
+						HeroLanes[sTeamName][i] = LANE_BOT;
+						roleAssignment[sTeamName][i] = 4
+					end
 				end
-			elseif PairsHeroNameNRole[unit_name] == "carry" then
+			elseif PairsHeroNameNRole[sTeamName][unit_name] == "midlaner" then
+				HeroLanes[sTeamName][i] = LANE_MID;
+				roleAssignment[sTeamName][i] = 2
+			elseif PairsHeroNameNRole[sTeamName][unit_name] == "offlaner" then
 				if GetTeam() == TEAM_RADIANT then
-					HeroLanes[i] = LANE_BOT;
+					HeroLanes[sTeamName][i] = LANE_TOP;
 				else
-					HeroLanes[i] = LANE_TOP;
-				end	
+					HeroLanes[sTeamName][i] = LANE_BOT;
+				end
+				roleAssignment[sTeamName][i] = 3
+			elseif PairsHeroNameNRole[sTeamName][unit_name] == "carry" then
+				if GetTeam() == TEAM_RADIANT then
+					HeroLanes[sTeamName][i] = LANE_BOT;
+				else
+					HeroLanes[sTeamName][i] = LANE_TOP;
+				end
+				roleAssignment[sTeamName][i] = 1
 			end
-		end]]
-		if GetTeamMember(i) ~= nil and GetTeamMember(i):IsHero() then
-			local unit_name = GetTeamMember(i):GetUnitName();
-			if PairsHeroNameNRole[unit_name] == "support" then
-				if GetTeam() == TEAM_RADIANT then
-					HeroLanes[i] = LANE_BOT;
-				else
-					HeroLanes[i] = LANE_TOP;
-				end
-			elseif PairsHeroNameNRole[unit_name] == "midlaner" then
-				HeroLanes[i] = LANE_MID;
-			elseif PairsHeroNameNRole[unit_name] == "offlaner" then
-				if GetTeam() == TEAM_RADIANT then
-					HeroLanes[i] = LANE_TOP;
-				else
-					HeroLanes[i] = LANE_BOT;
-				end
-			elseif PairsHeroNameNRole[unit_name] == "carry" then
-				if GetTeam() == TEAM_RADIANT then
-					HeroLanes[i] = LANE_BOT;
-				else
-					HeroLanes[i] = LANE_TOP;
-				end
-			end
+			doneLaneAssignementOnce = true
 		end
 	end
 end
 
 --Fill the lane assignment if the captain is human
+local AvailableRoles = {
+	TEAM_RADIANT = { "carry", "midlaner", "offlaner", "support1", "support2" },
+	TEAM_DIRE = { "carry", "midlaner", "offlaner", "support1", "support2" }
+}
 function FillLAHumanCaptain()
+	local sTeamName = GetTeam() == TEAM_RADIANT and 'TEAM_RADIANT' or 'TEAM_DIRE'
+	-- local TeamMember = GetTeamPlayers(GetTeam());
+	-- for i = 1, #TeamMember do
+	-- 	local unit = GetTeamMember(i)
+	-- 	if unit ~= nil and unit:IsHero() then
+	-- 		local unit_name = unit:GetUnitName();
+	-- 		for _, sRole in pairs(AvailableRoles[sTeamName]) do
+	-- 			if sRole == "carry" and role.CanBeSafeLaneCarry(unit_name) then
+	-- 				PairsHeroNameNRole[sTeamName][unit_name] = sRole
+	-- 			elseif sRole == "midlaner" and role.CanBeMidlaner(unit_name) then
+	-- 				PairsHeroNameNRole[sTeamName][unit_name] = sRole
+	-- 			elseif sRole == "offlaner" and role.CanBeOfflaner(unit_name) then
+	-- 				PairsHeroNameNRole[sTeamName][unit_name] = sRole
+	-- 			elseif sRole == "support1" and role.CanBeSupport(unit_name) then
+	-- 				PairsHeroNameNRole[sTeamName][unit_name] = "support"
+	-- 			elseif sRole == "support2" and role.CanBeSupport(unit_name) then
+	-- 				PairsHeroNameNRole[sTeamName][unit_name] = "support"
+	-- 			else
+	-- 				print('[WARN] Does not find a suitable role for: '..unit_name..', target role: '..sRole..', assigning role directrly. Remaining roles:')
+	-- 				Utils.PrintTable(AvailableRoles[sTeamName])
+	-- 				-- TODO: optimize the coding style.
+	-- 				if sRole == "support1" or sRole == "support2" then
+	-- 					PairsHeroNameNRole[sTeamName][unit_name] = "support"
+	-- 				else
+	-- 					PairsHeroNameNRole[sTeamName][unit_name] = sRole
+	-- 				end
+	-- 			end
+	-- 			Utils.RemoveValueFromTable(AvailableRoles[sTeamName], sRole)
+	-- 		end
+	-- 	end
+	-- end
+
 	local TeamMember = GetTeamPlayers(GetTeam());
 	for i = 1, #TeamMember do
 		if GetTeamMember(i) ~= nil and GetTeamMember(i):IsHero() then
@@ -327,30 +402,35 @@ function FillLAHumanCaptain()
 			if key ~= nil then
 				if key == 1 then
 					if GetTeam() == TEAM_DIRE then
-						HeroLanes[i] = LANE_BOT;
+						HeroLanes[sTeamName][i] = LANE_BOT;
 					else
-						HeroLanes[i] = LANE_TOP;
+						HeroLanes[sTeamName][i] = LANE_TOP;
 					end
+					-- roleAssignment[sTeamName][i] = 3
 				elseif key == 2 then
 					if GetTeam() == TEAM_DIRE then
-						HeroLanes[i] = LANE_BOT;
+						HeroLanes[sTeamName][i] = LANE_BOT;
 					else
-						HeroLanes[i] = LANE_TOP;
+						HeroLanes[sTeamName][i] = LANE_TOP;
 					end
+					-- roleAssignment[sTeamName][i] = 4
 				elseif key == 3 then
 					HeroLanes[i] = LANE_MID;
+					roleAssignment[sTeamName][i] = 2
 				elseif key == 4 then
 					if GetTeam() == TEAM_DIRE then
-						HeroLanes[i] = LANE_TOP;
+						HeroLanes[sTeamName][i] = LANE_TOP;
 					else
-						HeroLanes[i] = LANE_BOT;
+						HeroLanes[sTeamName][i] = LANE_BOT;
 					end
+					-- roleAssignment[sTeamName][i] = 5
 				elseif key == 5 then
 					if GetTeam() == TEAM_DIRE then
-						HeroLanes[i] = LANE_TOP;
+						HeroLanes[sTeamName][i] = LANE_TOP;
 					else
-						HeroLanes[i] = LANE_BOT;
+						HeroLanes[sTeamName][i] = LANE_BOT;
 					end
+					-- roleAssignment[sTeamName][i] = 1
 				end
 			end
 		end
@@ -367,3 +447,7 @@ function GetFromHumanPick(hero_name)
 	end
 	return i;
 end
+
+X.PairsHeroNameNRole = PairsHeroNameNRole
+
+return X

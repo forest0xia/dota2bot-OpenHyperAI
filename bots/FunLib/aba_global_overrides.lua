@@ -66,6 +66,50 @@ function GetUnitToUnitDistance(unit1, unit2)
 	return original_GetUnitToUnitDistance(unit1, unit2)
 end
 
+local originalWasRecentlyDamagedByAnyHero = CDOTA_Bot_Script.WasRecentlyDamagedByAnyHero
+function CDOTA_Bot_Script:WasRecentlyDamagedByAnyHero(fInterval)
+    if not self:IsHero() then
+		-- print("WasRecentlyDamagedByAnyHero has been called on non hero")
+		-- print("Stack Trace:", debug.traceback())
+		return nil
+	end
+    return originalWasRecentlyDamagedByAnyHero(self, fInterval)
+end
+
+local originalGetNearbyTowers = CDOTA_Bot_Script.GetNearbyTowers
+function CDOTA_Bot_Script:GetNearbyTowers(nRadius, bEnemies)
+    if not self:IsHero() then
+		-- print("GetNearbyTowers has been called on non hero")
+		-- print("Stack Trace:", debug.traceback())
+		return nil
+	end
+    return originalGetNearbyTowers(self, nRadius, bEnemies)
+end
+
+local originalIsIllusion = CDOTA_Bot_Script.IsIllusion
+function CDOTA_Bot_Script:IsIllusion()
+    if not self:IsHero() then
+		-- print("IsIllusion has been called on non hero")
+		-- print("Stack Trace:", debug.traceback())
+		return nil
+	end
+    return originalIsIllusion(self)
+end
+
+local originalHasModifier = CDOTA_Bot_Script.HasModifier
+function CDOTA_Bot_Script:HasModifier(sModifierName)
+    if not self:CanBeSeen() then
+		return nil
+		-- print("HasModifier has been called on unit can't be seen")
+		-- print("Stack Trace:", debug.traceback())
+	end
+    -- if not self:IsHero() then
+	-- 	print("HasModifier has been called on non hero")
+	-- 	print("Stack Trace:", debug.traceback())
+	-- end
+    return originalHasModifier(self, sModifierName)
+end
+
 local X = {
 	orig_GetTeamPlayers = orig_GetTeamPlayers,
 	GetTeamPlayers = GetTeamPlayers

@@ -5,6 +5,7 @@ local sBotVersion = "New"
 local sVersionDate = " 7.35, 2024/03/09"
 
 local Overrides = require( GetScriptDirectory()..'/FunLib/aba_global_overrides' )
+local Utils = require( GetScriptDirectory()..'/FunLib/utils' )
 
 function X.GetBotVersion()
 	return sBotVersion, sVersionDate
@@ -1681,7 +1682,10 @@ X['off'] = {
 	-- 'npc_dota_hero_tusk',
 	-- 'npc_dota_hero_venomancer',
 	'npc_dota_hero_windrunner',
-
+	'npc_dota_hero_techies',
+	'npc_dota_hero_rubick',
+	'npc_dota_hero_earth_spirit',
+	'npc_dota_hero_troll_warlord',
 }
 
 X['mid'] = {
@@ -1702,7 +1706,7 @@ X['mid'] = {
 	'npc_dota_hero_leshrac',
 	'npc_dota_hero_lina',
 	'npc_dota_hero_lone_druid',
-	--'npc_dota_hero_medusa',
+	'npc_dota_hero_medusa',
 	'npc_dota_hero_meepo',
 	'npc_dota_hero_mirana',
 	'npc_dota_hero_monkey_king',
@@ -1725,8 +1729,12 @@ X['mid'] = {
 	'npc_dota_hero_viper',
 	'npc_dota_hero_zuus',
 	"npc_dota_hero_razor",
-	-- 'npc_dota_hero_weaver',
+	'npc_dota_hero_weaver',
 	'npc_dota_hero_windrunner',
+	'npc_dota_hero_techies',
+	'npc_dota_hero_rubick',
+	'npc_dota_hero_troll_warlord',
+	'npc_dota_hero_tidehunter',
 }
 
 X['safe'] = {
@@ -1741,11 +1749,12 @@ X['safe'] = {
 	'npc_dota_hero_juggernaut',
 	'npc_dota_hero_life_stealer',
 	'npc_dota_hero_luna',
-	-- 'npc_dota_hero_lycan',
+	'npc_dota_hero_lycan',
 	'npc_dota_hero_meepo',
 	'npc_dota_hero_monkey_king',
 	'npc_dota_hero_morphling',
 	'npc_dota_hero_muerta',
+	'npc_dota_hero_bloodseeker',
 	'npc_dota_hero_naga_siren',
 	'npc_dota_hero_phantom_assassin',
 	'npc_dota_hero_phantom_lancer',
@@ -1760,25 +1769,27 @@ X['safe'] = {
 	'npc_dota_hero_troll_warlord',
 	'npc_dota_hero_ursa',
 	'npc_dota_hero_shredder',
-	--'npc_dota_hero_axe',
+	'npc_dota_hero_axe',
 	'npc_dota_hero_weaver',
-	--'npc_dota_hero_ogre_magi',
+	'npc_dota_hero_ogre_magi',
 	--'npc_dota_hero_omniknight',
 	'npc_dota_hero_marci',
 	'npc_dota_hero_windrunner',
+	'npc_dota_hero_techies',
+	'npc_dota_hero_tidehunter',
 }
 
 X['supp'] = {
 	'npc_dota_hero_abaddon',
 	'npc_dota_hero_ancient_apparition',
 	'npc_dota_hero_bane',
---	'npc_dota_hero_bounty_hunter',
+	'npc_dota_hero_bounty_hunter',
 	'npc_dota_hero_chen',
 	'npc_dota_hero_crystal_maiden',
 	'npc_dota_hero_dark_willow',
 	'npc_dota_hero_dazzle',
 	'npc_dota_hero_disruptor',
-	-- 'npc_dota_hero_earth_spirit',
+	'npc_dota_hero_earth_spirit',
 	'npc_dota_hero_earthshaker',
 	'npc_dota_hero_elder_titan',
 	'npc_dota_hero_enchantress',
@@ -1788,7 +1799,7 @@ X['supp'] = {
 	'npc_dota_hero_jakiro',
 	-- 'npc_dota_hero_keeper_of_the_light',
 	'npc_dota_hero_lich',
-	-- 'npc_dota_hero_lina',
+	'npc_dota_hero_lina',
 	'npc_dota_hero_lion',
 	'npc_dota_hero_nyx_assassin',
 	'npc_dota_hero_oracle',
@@ -1809,14 +1820,15 @@ X['supp'] = {
 	'npc_dota_hero_warlock',
 	'npc_dota_hero_winter_wyvern',
 	'npc_dota_hero_wisp',
-	-- 'npc_dota_hero_necrolyte',
+	'npc_dota_hero_necrolyte',
 	'npc_dota_hero_witch_doctor',
-	-- 'npc_dota_hero_zuus',
+	'npc_dota_hero_zuus',
 	'npc_dota_hero_pugna',
 	--'npc_dota_hero_queenofpain',
 	-- 'npc_dota_hero_death_prophet',
 	-- 'npc_dota_hero_windrunner',
 	'npc_dota_hero_venomancer',
+	'npc_dota_hero_techies',
 
 }
 
@@ -1928,7 +1940,7 @@ function X.UpdateInvisEnemyStatus( bot )
 			and DotaTime() > 10 * 60
 			and DotaTime() > lastCheck + 3.0
 	then
-		local enemies = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
+		local enemies = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE )
 		if #enemies > 0
 		then
 			for i = 1, #enemies
@@ -2500,10 +2512,52 @@ function X.IsUserSetSup( bot )
 
 end
 
+function X.GetPositionForCM(bot)
+	local lane = bot:GetAssignedLane()
+	local role
+	if lane == LANE_MID then
+		role = 2
+	elseif lane == LANE_TOP then
+		if bot:GetTeam() == TEAM_RADIANT then
+			if X.CanBeOfflaner(bot) then
+				role = 3
+			else
+				role = 4
+			end
+		else
+			if X.CanBeSafeLaneCarry(bot) then
+				role = 1
+			else
+				role = 5
+			end
+		end
+	elseif lane == LANE_BOT then
+		if bot:GetTeam() == TEAM_RADIANT then
+			if X.CanBeSafeLaneCarry(bot) then
+				role = 1
+			else
+				role = 5
+			end
+		else
+			if X.CanBeOfflaner(bot) then
+				role = 3
+			else
+				role = 4
+			end
+		end
+	end
+	return role
+end
 
 -- returns 1, 2, 3, 4, or 5 as the position of the hero in the team
 function X.GetPosition(bot)
 	local role = bot.assignedRole
+	if role == nil and GetGameMode() == GAMEMODE_CM then
+		local nH, nB = Utils.NumHumanBotPlayersInTeam(bot:GetTeam())
+		if nH == 0 then
+			role = X.GetPositionForCM(bot)
+		end
+	end
 	if role == nil or GetGameState() == GAME_STATE_PRE_GAME then
 		local heroID = GetTeamPlayers(GetTeam())
 		for i, v in pairs(heroID) do
@@ -2513,6 +2567,7 @@ function X.GetPosition(bot)
 			end
 		end
 	end
+
 	bot.assignedRole = role
 	if role == nil then
 		print("[ERROR] Failed to match bot role for bot: "..bot:GetUnitName())

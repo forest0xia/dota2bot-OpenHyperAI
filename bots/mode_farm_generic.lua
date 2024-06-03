@@ -48,8 +48,8 @@ local isChangePosMessageDone = false
 if bot.farmLocation == nil then bot.farmLocation = bot:GetLocation() end
 
 function GetDesire()
-
-	if GetGameState() == GAME_STATE_PRE_GAME and (bot.announcedRole == nil or bot.announcedRole ~= J.GetPosition(bot)) then
+	if GetGameState() == GAME_STATE_PRE_GAME
+	and (bot.announcedRole == nil or bot.announcedRole ~= J.GetPosition(bot)) then
 		bot.announcedRole = J.GetPosition(bot)
 		bot:ActionImmediate_Chat('I will play position '..J.GetPosition(bot), false)
 	end

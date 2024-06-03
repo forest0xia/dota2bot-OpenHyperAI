@@ -136,5 +136,6 @@ There is currently a bug where subscribing to recent bot scripts will NOT work w
 - Don't go to outpost alone or use smoke.
 - Bots should be able to dynamically change the item-build-list and skill-talent-build list to refect the role swapping with player - in case player uses !pos to swap roles.
 - Fix `!pos X` command for Dire side when player skips some slots in local lobby and still wants to swap role with a bot.
+- Better support for role switching in captain mode.
 
 

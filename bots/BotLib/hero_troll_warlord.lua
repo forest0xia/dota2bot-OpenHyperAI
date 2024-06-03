@@ -314,7 +314,7 @@ function X.ConsiderWhirlingAxesRanged()
             if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
             and #nInRangeAlly >= #nInRangeEnemy
             then
-                local eta = (GetUnitToUnitDistance(bot, enemyHero)/ nSpeed) + nCastPoint
+                local eta = (GetUnitToUnitDistance(bot, botTarget)/ nSpeed) + nCastPoint
                 return BOT_ACTION_DESIRE_HIGH, botTarget:GetExtrapolatedLocation(eta)
             end
 		end

@@ -51,6 +51,10 @@ local function generateTeam(availableTeams, overrides, teamType)
     return team
 end
 
+-- Example of overrides arg with specific player names for Radiant:
+-- local playerNameOverrides = {
+--     Radiant = {"p1", "p2", "p3", "p4", "p5"}
+-- }
 function Dota2Teams.generateTeams(overrides)
     local availableTeams = {}
     for teamName, _ in pairs(teams) do

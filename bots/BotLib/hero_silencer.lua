@@ -805,7 +805,7 @@ function X.ConsiderE()
 				and J.CanCastOnNonMagicImmune( npcEnemy )
 				and J.CanCastOnTargetAdvanced( npcEnemy )
 				and not J.IsDisabled( npcEnemy )
-				and not npcEnemy:IsIllusion()
+				and not J.IsSuspiciousIllusion(npcEnemy)
 				and bot:IsFacingLocation( npcEnemy:GetLocation(), 30 )
 			then
 				return BOT_ACTION_DESIRE_HIGH, npcEnemy

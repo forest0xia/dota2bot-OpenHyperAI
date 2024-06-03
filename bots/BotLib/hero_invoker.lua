@@ -35,7 +35,6 @@ sRoleItemsBuyList['pos_2'] = {
     "item_bracer",
     "item_urn_of_shadows",
     "item_boots",
-    "item_hand_of_midas",
     "item_magic_wand",
     "item_spirit_vessel",
     "item_witch_blade",
@@ -60,10 +59,9 @@ sRoleItemsBuyList['pos_2_qe'] = {
     "item_double_circlet",
 
     "item_bracer",
-    "item_urn_of_shadows",
     "item_boots",
+    "item_hand_of_midas",
     "item_magic_wand",
-    "item_spirit_vessel",
     "item_cyclone",
     "item_travel_boots",
     "item_black_king_bar",--
