@@ -615,6 +615,21 @@ tLaneAssignList = {
 	TEAM_DIRE = Utils.Deepcopy(tDefaultLaningDire)
 }
 
+local MidOnlyLaneAssignment = {
+	[1] = LANE_MID,
+	[2] = LANE_MID,
+	[3] = LANE_MID,
+	[4] = LANE_MID,
+	[5] = LANE_MID,
+}
+local OneVoneLaneAssignment = {
+	[1] = LANE_MID,
+	[2] = LANE_TOP,
+	[3] = LANE_TOP,
+	[4] = LANE_TOP,
+	[5] = LANE_TOP,
+};
+
 -- 你也可以人工挑选想要的阵容
 -- The index in the list is the pick order. #1 pick is mid, #2 is pos3, #3 is pos1, #4 is pos 5, #5 is pos 4.
 function X.OverrideTeamHeroes()
@@ -906,6 +921,8 @@ local function handleCommand(command, PlayerID, bTeamOnly)
 
 	local teamPlayers = GetTeamPlayers(GetTeam())
 
+	print('Handling command: '..action..', text: '..text)
+
     if action == "!pick" and GetGameMode() ~= GAMEMODE_CM then
         print("Picking hero " .. text)
 
@@ -976,6 +993,8 @@ function Think()
 	if GetGameMode() == GAMEMODE_CM then
 		CM.CaptainModeLogic(SupportedHeroes);
 		CM.AddToList();
+	elseif GetGameMode() == DOTA_GAMEMODE_1V1MID then
+		OneVsOneLogic()
 	else
 		if ( GameTime() < 3.0 and not bLineupReserve )
 		or fLastSlectTime > GameTime() - fLastRand
@@ -1041,8 +1060,13 @@ local CMSupportAlreadyAssigned = {
 function UpdateLaneAssignments()
 	local team = GetTeam() == TEAM_RADIANT and 'TEAM_RADIANT' or 'TEAM_DIRE'
 
+	if GetGameMode() == DOTA_GAMEMODE_MO then
+		return MidOnlyLaneAssignment
+	elseif GetGameMode() == DOTA_GAMEMODE_1V1MID then
+		return OneVoneLaneAssignment
+	end
+
 	if GetGameMode() == GAMEMODE_CM then
-		InstallChatCallback(function (attr) SelectHeroChatCallback(attr.player_id, attr.string, attr.team_only); end);
 		tLaneAssignList[team] = CM.CMLaneAssignment(Role.roleAssignment, userSwitchedRole)
 		-- print('role assigment:')
 		-- Utils.PrintTable(Role.roleAssignment.TEAM_RADIANT)
@@ -1052,12 +1076,19 @@ function UpdateLaneAssignments()
 		-- return tLaneAssignList[team]
 	end
 
-	if GetGameMode() == GAMEMODE_AP or GetGameMode() == GAMEMODE_TURBO then
-		if GetGameState() == GAME_STATE_HERO_SELECTION or GetGameState() == GAME_STATE_STRATEGY_TIME or GetGameState() == GAME_STATE_PRE_GAME then
-			-- InstallChatCallback(function ( tChat ) X.SetChatHeroBan( tChat.string ) end )
-			InstallChatCallback(function (attr) SelectHeroChatCallback(attr.player_id, attr.string, attr.team_only); end);
-		end
+	if GetGameState() == GAME_STATE_HERO_SELECTION or GetGameState() == GAME_STATE_STRATEGY_TIME or GetGameState() == GAME_STATE_PRE_GAME then
+		-- InstallChatCallback(function ( tChat ) X.SetChatHeroBan( tChat.string ) end )
+		InstallChatCallback(function (attr) SelectHeroChatCallback(attr.player_id, attr.string, attr.team_only); end);
 	end
+
+	-- GetGameMode() == GAMEMODE_AP -- All Pick
+	-- or GetGameMode() == GAMEMODE_TURBO
+	-- or GetGameMode() == DOTA_GAMEMODE_RD -- Random Draft
+	-- or GetGameMode() == DOTA_GAMEMODE_SD -- Single Draft
+	-- or GetGameMode() == DOTA_GAMEMODE_AR -- All Random
+	-- or GetGameMode() == DOTA_GAMEMODE_MO -- Mid Only
+	-- or GetGameMode() == DOTA_GAMEMODE_LP -- Least Played
+	-- or GetGameMode() == DOTA_GAMEMODE_1V1MID
 
 	return tLaneAssignList[team]
 end
@@ -1079,6 +1110,34 @@ function AlignLanesBasedOnRoles(team)
 			else
 				tLaneAssignList[team][idx] = LANE_BOT
 			end
+		end
+	end
+end
+
+local oboselect = false;
+function OneVsOneLogic()
+	local hero;
+	if IsHumanPlayerExist() then
+		oboselect = true;
+	end
+
+	for _, i in pairs(GetTeamPlayers(GetTeam())) do
+		if not oboselect and IsPlayerBot(i) and IsPlayerInHeroSelectionControl(i) and GetSelectedHeroName(i) == ""
+		then
+			if IsHumanPresentInGame() then
+				hero = GetSelectedHumanHero(GetOpposingTeam());
+			else
+				hero = X.GetNotRepeatHero( tSelectPoolList[2] );
+			end
+			if hero ~= nil then
+				SelectHero(i, hero);
+				oboselect = true;
+			end
+			return
+		elseif oboselect and IsPlayerBot(i) and IsPlayerInHeroSelectionControl(i) and GetSelectedHeroName(i) == ""
+		then
+			SelectHero(i, 'npc_dota_hero_techies');
+			return
 		end
 	end
 end

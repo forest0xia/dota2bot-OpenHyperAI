@@ -627,7 +627,7 @@ Item['item_sange']	= GetItemComponents( 'item_sange' )[1]
 
 Item['item_sange_and_yasha']	= GetItemComponents( 'item_sange_and_yasha' )[1]
 
-Item['item_satanic']	= {"item_reaver", "item_lifesteal", "item_claymore"}
+Item['item_satanic']	= GetItemComponents( 'item_satanic' )[1]
 
 Item['item_sheepstick']	= {"item_tiara_of_selemene", "item_mystic_staff", "item_recipe_sheepstick"}
 

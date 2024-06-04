@@ -303,7 +303,7 @@ function X.ConsiderQ()
 		
 		if bestTarget ~= nil
 		then
-			local nearbyEnemyList = bestJ.GetNearbyHeroes(target,  nRadius, true, BOT_MODE_NONE)
+			local nearbyEnemyList = J.GetNearbyHeroes(bot,  nRadius, true, BOT_MODE_NONE)
 			for _, npcEnemy in pairs( nearbyEnemyList )
 			do 
 				if J.CanCastOnMagicImmune( npcEnemy )
