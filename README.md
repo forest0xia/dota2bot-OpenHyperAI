@@ -8,11 +8,14 @@ This script is based on Valve's default bot script and many other people's work 
 Bot script in Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=3246316298
 
 ### Why it's enjoyable
+0. Support 7.36
 1. Support 116+ heroes. (I personally don't take much of the credit for this because it's many peoples work to make this possible). Kudos to Tinkering ABout (by ryndrb) for making a lot of improvements on recent hero supporting.
 2. All supported heroes can play any position roles. Heroes will go to any lane they are assigned. The laning or pos of the heroes is random and irrelevant to the pick order.
 3. If you ever feel all existing bot scripts lack excitement. This script boosts bots with huge unfair advantages to make bot games a lot more challenging. You will need to copy the script into your local vscripts folder and then enable the Fretbots mode for this feature. See instructions below.
-3. Improved code structure general logic for decision making for ability and item usages as well as roaming and farming.
-4. Fixed tons of bugs that can cause bots to stay idle or cancel it's own channeling spells or stuck on weird state.
+4. Support multiple modes: All Pick, Turbo, Random Draft, Single Draft, All Random, Mid Only, Least Played, and 1V1 mid. Note for 1V1 mid, other bots (if you have any other empty slots filled with bots) all go to top.
+5. Improved code structure general logic for decision making for ability and item usages as well as roaming and farming.
+6. Fixed tons of bugs that can cause bots to stay idle or cancel it's own channeling spells or stuck on weird state.
+7. You can chat with bots in the game as if they were real and optimistic players. [You need to enable Fretbot mode for this, check out How to Install section below.]
 
 ### How to install this script?
 There is currently a bug where subscribing to recent bot scripts will NOT work when selecting them in the custom game lobby. They will revert back to default bots when you close out of the settings menu. In order to fix this, you must manually install this script:

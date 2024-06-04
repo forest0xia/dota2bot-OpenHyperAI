@@ -993,7 +993,7 @@ function Think()
 	if GetGameMode() == GAMEMODE_CM then
 		CM.CaptainModeLogic(SupportedHeroes);
 		CM.AddToList();
-	elseif GetGameMode() == DOTA_GAMEMODE_1V1MID then
+	elseif GetGameMode() == GAMEMODE_1V1MID then
 		OneVsOneLogic()
 	else
 		if ( GameTime() < 3.0 and not bLineupReserve )
@@ -1057,12 +1057,31 @@ local CMSupportAlreadyAssigned = {
 	TEAM_DIRE = false
 };
 
+
+--[[ Game Modes
+GAMEMODE_NONE
+GAMEMODE_AP -- All Pick
+GAMEMODE_CM -- Captain Mode
+GAMEMODE_RD -- Random Draft
+GAMEMODE_SD -- Single Draft
+GAMEMODE_AR -- All Random
+GAMEMODE_REVERSE_CM
+GAMEMODE_MO -- Mid Only
+GAMEMODE_CD
+GAMEMODE_ABILITY_DRAFT
+GAMEMODE_LP -- Least Played
+GAMEMODE_ARDM
+GAMEMODE_1V1MID
+GAMEMODE_ALL_DRAFT -- Ranked All Pick
+]]
+
 function UpdateLaneAssignments()
 	local team = GetTeam() == TEAM_RADIANT and 'TEAM_RADIANT' or 'TEAM_DIRE'
 
-	if GetGameMode() == DOTA_GAMEMODE_MO then
+	if GetGameMode() == GAMEMODE_MO then
+		Role.roleAssignment[team] = {2, 2, 2, 2, 2}
 		return MidOnlyLaneAssignment
-	elseif GetGameMode() == DOTA_GAMEMODE_1V1MID then
+	elseif GetGameMode() == GAMEMODE_1V1MID then
 		return OneVoneLaneAssignment
 	end
 
@@ -1080,15 +1099,6 @@ function UpdateLaneAssignments()
 		-- InstallChatCallback(function ( tChat ) X.SetChatHeroBan( tChat.string ) end )
 		InstallChatCallback(function (attr) SelectHeroChatCallback(attr.player_id, attr.string, attr.team_only); end);
 	end
-
-	-- GetGameMode() == GAMEMODE_AP -- All Pick
-	-- or GetGameMode() == GAMEMODE_TURBO
-	-- or GetGameMode() == DOTA_GAMEMODE_RD -- Random Draft
-	-- or GetGameMode() == DOTA_GAMEMODE_SD -- Single Draft
-	-- or GetGameMode() == DOTA_GAMEMODE_AR -- All Random
-	-- or GetGameMode() == DOTA_GAMEMODE_MO -- Mid Only
-	-- or GetGameMode() == DOTA_GAMEMODE_LP -- Least Played
-	-- or GetGameMode() == DOTA_GAMEMODE_1V1MID
 
 	return tLaneAssignList[team]
 end
@@ -1138,6 +1148,33 @@ function OneVsOneLogic()
 		then
 			SelectHero(i, 'npc_dota_hero_techies');
 			return
+		end
+	end
+end
+
+--Check if human present in the game
+function IsHumanPresentInGame()
+	for i, id in pairs(GetTeamPlayers(GetTeam())) do
+		if not IsPlayerBot(id)
+		then
+			return true;
+		end
+	end
+	for i, id in pairs(GetTeamPlayers(GetOpposingTeam())) do
+		if not IsPlayerBot(id)
+		then
+			return true;
+		end
+	end
+	return false;
+end
+
+--Get Human Selected Hero
+function GetSelectedHumanHero(team)
+	for i, id in pairs(GetTeamPlayers(team)) do
+		if not IsPlayerBot(id) and GetSelectedHeroName(id) ~= ""
+		then
+			return GetSelectedHeroName(id);
 		end
 	end
 end
