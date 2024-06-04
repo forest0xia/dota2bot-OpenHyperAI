@@ -47,7 +47,7 @@ end
 
 function SendMessageToBackend(inputText, playerInfo)
     if playerInfo ~= nil then
-        inputText = 'At game time '..tostring(math.floor(GameRules:GetGameTime()))..'s, player:'..json.encode(playerInfo)..' says: '..inputText.. '. What do you say?'
+        inputText = 'At game time '..tostring(math.floor(GameRules:GetGameTime()))..'s, player:'..json.encode(playerInfo)..' says: '..inputText
     end
 
     local jsonString = json.encode(ConstructRequest(inputText))
@@ -111,7 +111,7 @@ local function splitHeroNameFromMessage(message)
 end
 
 function handleResponseMessage(inputText, message)
-    print("API Response: " .. message)
+    -- print("API Response: " .. message)
     local foundBot = false
 
     local aiText, heroHame = splitHeroNameFromMessage(message)
