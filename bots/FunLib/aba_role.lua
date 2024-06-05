@@ -1686,6 +1686,7 @@ X['off'] = {
 	'npc_dota_hero_rubick',
 	'npc_dota_hero_earth_spirit',
 	'npc_dota_hero_troll_warlord',
+	'npc_dota_hero_invoker',
 }
 
 X['mid'] = {
@@ -1829,6 +1830,7 @@ X['supp'] = {
 	-- 'npc_dota_hero_windrunner',
 	'npc_dota_hero_venomancer',
 	'npc_dota_hero_techies',
+	'npc_dota_hero_invoker',
 
 }
 

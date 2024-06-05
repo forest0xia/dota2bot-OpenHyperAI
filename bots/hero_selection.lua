@@ -188,6 +188,7 @@ local sPos1List = {
 	"npc_dota_hero_ursa",
 	"npc_dota_hero_weaver",
 	"npc_dota_hero_windrunner",
+	"npc_dota_hero_invoker",
 }
 
 local sPos2List = {
@@ -299,6 +300,7 @@ local sPos3List = {
 	"npc_dota_hero_viper",
 	"npc_dota_hero_visage",
 	"npc_dota_hero_windrunner",
+	"npc_dota_hero_invoker",
 	-- "npc_dota_hero_winter_wyvern", -- TOO WEAK
 }
 
@@ -357,6 +359,7 @@ local sPos4List = {
 	-- "npc_dota_hero_winter_wyvern", -- TOO WEAK
 	"npc_dota_hero_witch_doctor",
 	"npc_dota_hero_zuus",
+	"npc_dota_hero_invoker",
 }
 
 local sPos5List = {
