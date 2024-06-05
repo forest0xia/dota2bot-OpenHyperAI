@@ -113,9 +113,8 @@ end
 function handleResponseMessage(inputText, message)
     -- print("API Response: " .. message)
     local foundBot = false
-
     local aiText, heroHame = splitHeroNameFromMessage(message)
-
+    
     if heroHame then
         for _, bot in ipairs(AllUnits) do
             if bot.stats.isBot and bot.stats.internalName == heroHame then
@@ -125,6 +124,9 @@ function handleResponseMessage(inputText, message)
         end
     end
     if not foundBot or not heroHame then
-        Say(getRandomBot(Bots), aiText, false)
+        local aBot = getRandomBot(Bots)
+        if aBot ~= nil then
+            Say(aBot, aiText, false)
+        end
     end
 end

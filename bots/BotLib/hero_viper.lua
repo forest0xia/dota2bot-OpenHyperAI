@@ -263,6 +263,7 @@ function X.ConsiderPoisonAttack()
 	if J.IsGoingOnSomeone(bot)
 	then
 		if  J.IsValidTarget(botTarget)
+		and botTarget:CanBeSeen()
         and not J.IsSuspiciousIllusion(botTarget)
         and not botTarget:IsMagicImmune()
 		and not botTarget:IsInvulnerable()

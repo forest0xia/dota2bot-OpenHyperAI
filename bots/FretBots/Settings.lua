@@ -256,7 +256,7 @@ end
 -- Monitors chat for votes on settings
 function Settings:OnPlayerChat(event)
 	-- Get event data
-	local playerID, rawText = Settings:GetChatEventData(event)
+	local playerID, rawText, teamonly = Settings:GetChatEventData(event)
 	-- Check to see if they're cheating
 	if not allowPlayersToCheat then
 		Settings:DoChatCheatParse(playerID, rawText)
@@ -270,7 +270,7 @@ function Settings:OnPlayerChat(event)
 
 	-- if Settings have been chosen then monitor for commands to change them
 	if Flags.isSettingsFinalized then
-		Settings:OpenAIResponse(text, playerID)
+		Settings:OpenAIResponse(text, playerID, teamonly)
 
 		-- Some commands are available for everyone
 		Settings:DoUserChatCommandParse(text, playerID)
@@ -283,10 +283,16 @@ function Settings:OnPlayerChat(event)
 	end
 end
 
-function Settings:OpenAIResponse(text, playerID)
-	local function startsWithExclamation(str)
-		return str:sub(1, 1) == "!"
-	end
+local function startsWithExclamation(str)
+	return str:sub(1, 1) == "!"
+end
+
+function Settings:OpenAIResponse(text, playerID, teamonly)
+	-- TODO: should only response to player that talk to ALL players or to bots in the team. This is to avoid spamming when the players are talking to other players not to bots.
+
+	-- do not handle team only message to avoid spamming.
+	if teamonly == 1 then return end
+
 	if not startsWithExclamation(text) then
 		for _, player in ipairs(AllUnits) do
 			if player.stats.id == playerID and not player.stats.isBot then
@@ -859,7 +865,8 @@ end
 function Settings:GetChatEventData(event)
 	local playerID = event.playerid
 	local text = event.text
-	return playerID, text
+	local teamonly = event.teamonly
+	return playerID, text, teamonly
 end
 
 -- set host ID to whitelist settings commands

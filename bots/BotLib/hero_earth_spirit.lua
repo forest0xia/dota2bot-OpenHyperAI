@@ -365,7 +365,7 @@ function X.ConsiderRollingBoulder()
 	local nEnemyHeroes = J.GetNearbyHeroes(bot,math.min(nNearbyEnemySearchRange, 1600), true, BOT_MODE_NONE)
 	for _, enemyHero in pairs(nEnemyHeroes)
 	do
-		if  enemyHero:IsChanneling() or J.IsCastingUltimateAbility(enemyHero)
+		if enemyHero:CanBeSeen() and enemyHero:IsChanneling() or J.IsCastingUltimateAbility(enemyHero)
 		and not J.IsSuspiciousIllusion(enemyHero)
 		and not bot:HasModifier('modifier_earth_spirit_rolling_boulder_caster')
 		then

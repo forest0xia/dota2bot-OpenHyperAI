@@ -93,13 +93,20 @@ function CDOTA_Bot_Script:IsIllusion()
 		-- print("Stack Trace:", debug.traceback())
 		return nil
 	end
+    if not self:CanBeSeen() then
+		-- print("IsIllusion has been called on non hero")
+		-- print("Stack Trace:", debug.traceback())
+		return nil
+	end
+
+	-- TODO: add is-teammate check.
     return originalIsIllusion(self)
 end
 
 local originalHasModifier = CDOTA_Bot_Script.HasModifier
 function CDOTA_Bot_Script:HasModifier(sModifierName)
     if not self:CanBeSeen() then
-		return nil
+		return false
 		-- print("HasModifier has been called on unit can't be seen")
 		-- print("Stack Trace:", debug.traceback())
 	end
@@ -108,6 +115,86 @@ function CDOTA_Bot_Script:HasModifier(sModifierName)
 	-- 	print("Stack Trace:", debug.traceback())
 	-- end
     return originalHasModifier(self, sModifierName)
+end
+
+local originalIsInvulnerable = CDOTA_Bot_Script.IsInvulnerable
+function CDOTA_Bot_Script:IsInvulnerable()
+    if not self:CanBeSeen() then
+		-- print("IsInvulnerable has been called on unit can't be seen")
+		-- print("Stack Trace:", debug.traceback())
+		return false
+	end
+    return originalIsInvulnerable(self)
+end
+
+local originalIsAttackImmune = CDOTA_Bot_Script.IsAttackImmune
+function CDOTA_Bot_Script:IsAttackImmune()
+    if not self:CanBeSeen() then
+		-- print("IsAttackImmune has been called on unit can't be seen")
+		-- print("Stack Trace:", debug.traceback())
+		return false
+	end
+    return originalIsAttackImmune(self)
+end
+
+local originalIsUsingAbility = CDOTA_Bot_Script.IsUsingAbility
+function CDOTA_Bot_Script:IsUsingAbility()
+    if not self:CanBeSeen() then
+		-- print("IsUsingAbility has been called on unit can't be seen")
+		-- print("Stack Trace:", debug.traceback())
+		return false
+	end
+    return originalIsUsingAbility(self)
+end
+
+local originalIsChanneling = CDOTA_Bot_Script.IsChanneling
+function CDOTA_Bot_Script:IsChanneling()
+    if not self:CanBeSeen() then
+		-- print("IsChanneling has been called on unit can't be seen")
+		-- print("Stack Trace:", debug.traceback())
+		return false
+	end
+    return originalIsChanneling(self)
+end
+
+local originalGetAttackTarget = CDOTA_Bot_Script.GetAttackTarget
+function CDOTA_Bot_Script:GetAttackTarget()
+    if not self:CanBeSeen() then
+		-- print("GetAttackTarget has been called on unit can't be seen")
+		-- print("Stack Trace:", debug.traceback())
+		return nil
+	end
+    return originalGetAttackTarget(self)
+end
+
+local originalGetNearbyHeroes = CDOTA_Bot_Script.GetNearbyHeroes
+function CDOTA_Bot_Script:GetNearbyHeroes(nRadius, bEnemies, nMode)
+    if not self:CanBeSeen() then
+		-- print("GetNearbyHeroes has been called on unit can't be seen")
+		-- print("Stack Trace:", debug.traceback())
+		return nil
+	end
+    return originalGetNearbyHeroes(self, nRadius, bEnemies, nMode)
+end
+
+local originalIsMagicImmune = CDOTA_Bot_Script.IsMagicImmune
+function CDOTA_Bot_Script:IsMagicImmune()
+    if not self:CanBeSeen() then
+		-- print("IsMagicImmune has been called on unit can't be seen")
+		-- print("Stack Trace:", debug.traceback())
+		return true
+	end
+    return originalIsMagicImmune(self)
+end
+
+local originalGetAttackRange = CDOTA_Bot_Script.GetAttackRange
+function CDOTA_Bot_Script:GetAttackRange()
+    if not self:CanBeSeen() then
+		-- print("GetAttackRange has been called on unit can't be seen")
+		-- print("Stack Trace:", debug.traceback())
+		return 200
+	end
+    return originalGetAttackRange(self)
 end
 
 local X = {

@@ -225,7 +225,7 @@ local sPos2List = {
 	"npc_dota_hero_ogre_magi",
 	"npc_dota_hero_omniknight",
 	"npc_dota_hero_pangolier",
-	"npc_dota_hero_primal_beast", -- still passive
+	-- "npc_dota_hero_primal_beast", -- still passive
 	"npc_dota_hero_puck",
 	"npc_dota_hero_pugna",
 	"npc_dota_hero_pudge",

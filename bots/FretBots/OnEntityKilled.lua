@@ -28,7 +28,7 @@ function EntityKilled:OnEntityKilled(event)
 	-- Get Event Data
 	local isHero, victim, killer = EntityKilled:GetEntityKilledEventData(event);
 	-- Log Tower/Building kills to track game state
-	if victim == nil then return end
+	if victim == nil or victim.stats == nil then return end
 	if victim:IsTower() or victim:IsBuilding() then
 		GameState:Update(victim)
 	end

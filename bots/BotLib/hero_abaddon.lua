@@ -230,6 +230,7 @@ function X.ConsiderMistCoil()
 	end
 
     if  J.IsRetreating(bot)
+    and J.IsValidHero(botTarget)
     and J.IsInRange(bot, botTarget, nCastRange)
 	then
         local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange + 200, false, BOT_MODE_NONE)

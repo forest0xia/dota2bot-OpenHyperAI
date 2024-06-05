@@ -120,7 +120,7 @@ function X.SkillsComplement()
     if DrunkenBrawlerDesire > 0
     and DotaTime() > 0
     then
-        if ActionType ~= nil
+        if ActionType ~= nil and bot.drunkenBrawlerState ~= nil
         then
             local curr = bot.drunkenBrawlerState
             local state = 1

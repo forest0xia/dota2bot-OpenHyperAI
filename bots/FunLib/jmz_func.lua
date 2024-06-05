@@ -681,10 +681,12 @@ end
 
 function J.IsSuspiciousIllusion( npcTarget )
 
-	if not npcTarget:IsHero()
+	if npcTarget:CanBeSeen() and (
+		not npcTarget:IsHero()
 		or npcTarget:IsCastingAbility()
 		or npcTarget:IsUsingAbility()
 		or npcTarget:IsChanneling()
+	)
 		-- or npcTarget:HasModifier( "modifier_item_satanic_unholy" )
 		-- or npcTarget:HasModifier( "modifier_item_mask_of_madness_berserk" )
 		-- or npcTarget:HasModifier( "modifier_black_king_bar_immune" )
@@ -3134,7 +3136,7 @@ end
 
 function J.IsCastingUltimateAbility( bot )
 
-	if bot:IsCastingAbility() or bot:IsUsingAbility()
+	if bot:CanBeSeen() and (bot:IsCastingAbility() or bot:IsUsingAbility())
 	then
 		local nAbility = bot:GetCurrentActiveAbility()
 		if nAbility ~= nil
@@ -4660,6 +4662,7 @@ function J.GetHeroCountAttackingTarget(nUnits, target)
 		if  J.IsValidHero(hero)
 		and J.IsInRange(hero, target, 1600)
 		and J.IsGoingOnSomeone(hero)
+		and hero:CanBeSeen()
 		and (hero:GetAttackTarget() == hero or hero:GetTarget() == hero)
 		and not J.IsSuspiciousIllusion(hero)
 		then
