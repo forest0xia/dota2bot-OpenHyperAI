@@ -949,7 +949,7 @@ end
 
 function CanShackleToHero(hSource, hTarget, nRadius)
 	local vStart = hSource:GetLocation()
-	local nEnemyHeroes = hJ.GetNearbyHeroes(target, nRadius, false, BOT_MODE_NONE)
+	local nEnemyHeroes = J.GetNearbyHeroes(hTarget, nRadius, false, BOT_MODE_NONE)
 
 	for _, enemyHero in pairs(nEnemyHeroes)
     do
