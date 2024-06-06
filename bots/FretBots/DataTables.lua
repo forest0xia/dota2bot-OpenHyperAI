@@ -93,7 +93,8 @@ function DataTables:Initialize()
 	Debug:Print('There are '..#Bots..' bots!')
 
 	-- Purge human side bots
-	DataTables:PurgeHumanSideBots()
+	-- DataTables:PurgeHumanSideBots()
+	
 	-- Get Towers (Used for determining bot role, eventually)
 	DataTables:GetTowers()
 	-- Assign roles to bots

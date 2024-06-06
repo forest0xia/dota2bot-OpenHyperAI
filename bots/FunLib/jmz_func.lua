@@ -23,6 +23,12 @@ local roshanDireLoc = Vector(-7549, 7562, 1107)
 local RadiantTormentorLoc = Vector(-8075, -1148, 1000)
 local DireTormentorLoc = Vector(8132, 1102, 1000)
 local fKeepManaPercent = 0.39
+local ToBeAnnouncedList = {
+	"You can use `!pos X` to swap role with the bots on your side. E.g. `!pos 2` to go to mid lane.",
+	"`!pick XXX` can be used to pick heros.",
+	"You can enable Fretbots mode to have a much more challenging experience with bots, check the script content page for how to enable.",
+	"The bots are enabled with ChatGPT so you can talk to enemy bots and they will be willing to chat with you. Check the script content page for how to enable.",
+}
 
 for i, id in pairs( tAllyIDList )
 do
@@ -1000,7 +1006,7 @@ end
 
 function J.IsDisabled( npcTarget )
 
-	if npcTarget:GetTeam() ~= GetTeam()
+	if npcTarget:GetTeam() ~= GetTeam() and npcTarget:CanBeSeen()
 	then
 		return npcTarget:IsRooted()
 				or npcTarget:IsStunned()
@@ -1032,6 +1038,9 @@ end
 
 
 function J.IsTaunted( npcTarget )
+	if not npcTarget:CanBeSeen() then
+		return false
+	end
 
 	return npcTarget:HasModifier( "modifier_axe_berserkers_call" )
 		or npcTarget:HasModifier( "modifier_legion_commander_duel" )
@@ -1042,6 +1051,9 @@ end
 
 
 function J.IsInRange( bot, npcTarget, nRadius )
+	if not npcTarget:CanBeSeen() then
+		return false
+	end
 
 	return GetUnitToUnitDistance( bot, npcTarget ) <= nRadius
 
@@ -1049,6 +1061,9 @@ end
 
 
 function J.IsInLocRange( npcTarget, nLoc, nRadius )
+	if not npcTarget:CanBeSeen() then
+		return false
+	end
 
 	return GetUnitToLocationDistance( npcTarget, nLoc ) <= nRadius
 
@@ -1945,35 +1960,42 @@ local NearbyHeroMap = {
 	-- }
 }
 
-local tempBotUnitName = ''
-local nearByHeroCache = nil
-local nearByHeroCacheDuration = 0.02 -- 0.02s = 20ms.
--- Method to refresh and cache nearby hero lists for each hero unit. This is to reduce the calculation thus optimize the fps performance.
--- Turned out it only consumes more fps, probably due to `bot:GetUnitName()` is time consuming.
+-- Cache duration in seconds
+local nearByHeroCacheDuration = 0.02 -- 0.02s = 20ms. if you have 60 frames per second, it's 1000/60 = 16.7ms per frame
+-- Check the current time
+local currentTime
+local cacheNearbyTable
+
+-- Method to refresh and cache nearby hero lists for each hero unit
 function J.GetNearbyHeroes(bot, nRadius, bEnemy)
-	return bot:GetNearbyHeroes(nRadius, bEnemy, BOT_MODE_NONE)
-	-- if nRadius > 1600 then nRadius = 1600 end
+	-- return bot:GetNearbyHeroes(nRadius, bEnemy, BOT_MODE_NONE)
 
-    -- -- Use the file-scope variable for the bot unit name
-    -- tempBotUnitName = bot:GetUnitName()
+    -- Cap the radius to a maximum value
+    if nRadius > 1600 then nRadius = 1600 end
 
-    -- -- Initialize the cache if it doesn't exist for the current bot, radius, and enemy status
-    -- NearbyHeroMap[tempBotUnitName] = NearbyHeroMap[tempBotUnitName] or { enemy = {}, ally = {} }
-    -- nearByHeroCache = bEnemy and NearbyHeroMap[tempBotUnitName].enemy or NearbyHeroMap[tempBotUnitName].ally
-    -- nearByHeroCache[nRadius] = nearByHeroCache[nRadius] or { time = 0, heroes = {} }
+    -- Initialize the bot's cache table if it doesn't exist
+    bot.nearbyHeroes = bot.nearbyHeroes or { ally = {}, enemy = {} }
 
-    -- -- Check if it's time to refresh the cache
-    -- local nearByHeroCacheTime = DotaTime()
-    -- if nearByHeroCacheTime - nearByHeroCache[nRadius].time >= nearByHeroCacheDuration then
-    --     -- Refresh the cache
-    --     nearByHeroCache[nRadius].heroes = J.GetNearbyHeroes(bot,nRadius, bEnemy, BOT_MODE_NONE)
+    -- Select the appropriate cache based on whether we're looking for enemies or allies
+    cacheNearbyTable = bEnemy and bot.nearbyHeroes.enemy or bot.nearbyHeroes.ally
 
-    --     -- Update the cache time
-    --     nearByHeroCache[nRadius].time = nearByHeroCacheTime
-    -- end
+    -- Initialize the cache for the specific radius if it doesn't exist
+    cacheNearbyTable[nRadius] = cacheNearbyTable[nRadius] or { time = 0, heroes = {} }
 
-    -- -- Return the cached nearby hero list
-    -- return nearByHeroCache[nRadius].heroes
+    -- Check the current time
+    currentTime = DotaTime()
+
+    -- Refresh the cache if it's outdated
+    if currentTime - cacheNearbyTable[nRadius].time >= nearByHeroCacheDuration then
+        -- Update the cache with the latest nearby heroes
+        cacheNearbyTable[nRadius].heroes = bot:GetNearbyHeroes(nRadius, bEnemy, BOT_MODE_NONE)
+        
+        -- Update the time of the cache
+        cacheNearbyTable[nRadius].time = currentTime
+    end
+
+    -- Return the cached nearby heroes
+    return cacheNearbyTable[nRadius].heroes
 end
 
 function J.GetAroundBotUnitList( bot, nRadius, bEnemy )
@@ -3550,7 +3572,7 @@ end
 function J.GetPosition(bot)
 	local role = J.Role.GetPosition(bot)
 	if role == nil then
-		print('[ERROR] Failed to get role for bot: '..bot:GetUnitName())
+		-- print('[ERROR] Failed to get role for bot: '..bot:GetUnitName())
 		role = 2
 	end
 	return role

@@ -290,11 +290,11 @@ function X.IsBusy(unit)
 end
 
 function X.CantMove(unit)
-	return unit:IsStunned() or unit:IsRooted() or unit:IsNightmared() or unit:IsInvulnerable();
+	return unit:CanBeSeen() and (unit:IsStunned() or unit:IsRooted() or unit:IsNightmared() or unit:IsInvulnerable());
 end
 
 function X.CantAttack(unit)
-	return unit:IsStunned() or unit:IsRooted() or unit:IsNightmared() or unit:IsDisarmed() or unit:IsInvulnerable() or unit:GetAttackDamage() <= 0;
+	return unit:CanBeSeen() and (unit:IsStunned() or unit:IsRooted() or unit:IsNightmared() or unit:IsDisarmed() or unit:IsInvulnerable() or unit:GetAttackDamage() <= 0);
 end
 
 ------------ILLUSION ACT

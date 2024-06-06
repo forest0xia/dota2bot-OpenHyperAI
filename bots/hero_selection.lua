@@ -881,7 +881,7 @@ function AllPickHeros()
 
 	for i, id in pairs( teamPlayers )
 	do
-		if IsPlayerBot( id ) and GetSelectedHeroName( id ) == "" and GameTime() >= fLastSlectTime + GetTeam()
+		if IsPlayerBot( id ) and GetSelectedHeroName( id ) == "" and GameTime() >= fLastSlectTime + GetTeam() * 2
 		then
 			if X.IsRepeatHero( sSelectList[i] )
 			then

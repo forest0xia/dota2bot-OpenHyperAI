@@ -2551,6 +2551,7 @@ function X.GetPositionForCM(bot)
 	return role
 end
 
+HeroPositions = { }
 -- returns 1, 2, 3, 4, or 5 as the position of the hero in the team
 function X.GetPosition(bot)
 	local role = bot.assignedRole
@@ -2561,18 +2562,24 @@ function X.GetPosition(bot)
 		end
 	end
 	if role == nil or GetGameState() == GAME_STATE_PRE_GAME then
-		local heroID = GetTeamPlayers(GetTeam())
-		for i, v in pairs(heroID) do
-			if GetSelectedHeroName(v) == bot:GetUnitName() then
-				local team = GetTeam() == TEAM_RADIANT and 'TEAM_RADIANT' or 'TEAM_DIRE'
-				role = X.roleAssignment[team][i]
+		local cRole = HeroPositions[bot:GetUnitName()]
+		if cRole ~= nil then
+			role = cRole
+		else
+			local heroID = GetTeamPlayers(GetTeam())
+			for i, v in pairs(heroID) do
+				if GetSelectedHeroName(v) == bot:GetUnitName() then
+					local team = GetTeam() == TEAM_RADIANT and 'TEAM_RADIANT' or 'TEAM_DIRE'
+					role = X.roleAssignment[team][i]
+				end
 			end
+			cRole = role
 		end
 	end
 
 	bot.assignedRole = role
 	if role == nil then
-		print("[ERROR] Failed to match bot role for bot: "..bot:GetUnitName())
+		-- print("[ERROR] Failed to match bot role for bot: "..bot:GetUnitName())
 	end
 	return role
 end

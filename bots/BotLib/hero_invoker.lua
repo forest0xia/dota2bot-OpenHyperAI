@@ -7,13 +7,21 @@ local sTalentList = J.Skill.GetTalentList( bot )
 local sAbilityList = J.Skill.GetAbilityList( bot )
 local sRole = J.Item.GetRoleItemsBuyList( bot )
 
-local tTalentTreeList = {
+local tQWTalentTreeList = {
 						['t25'] = {10, 0},
+						['t20'] = {10, 0},
+						['t15'] = {10, 0},
+						['t10'] = {10, 0},
+}
+
+local tQETalentTreeList = {
+						['t25'] = {0, 10},
 						['t20'] = {0, 10},
 						['t15'] = {10, 0},
 						['t10'] = {10, 0},
 }
 
+local tQEAbilityBuildList = {3,1,3,1,2,3,3,1,3,1,3,2,3,2,2,2,2,2,1,1,1} --冰火核
 local tAllAbilityBuildList = {
 						{2,1,2,1,3,1,2,1,2,2,3,3,3,3,3,3,2,2,1,1,1},--冰雷核
                         -- {3,1,3,1,2,3,3,1,3,1,3,2,3,2,2,2,2,2,1,1,1},--冰火核
@@ -22,9 +30,9 @@ local tAllAbilityBuildList = {
 
 local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
 
-local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
+local nTalentBuildList = J.Skill.GetTalentBuild( tQWTalentTreeList )
 
-local sRoleItemsBuyList = {}
+local sRoleItemsBuyList = { }
 
 -- 冰雷核
 sRoleItemsBuyList['pos_2'] = {
@@ -85,6 +93,13 @@ sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_2']
 sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_2']
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
+if sRole == 'pos_2'
+-- and RandomInt( 1, 9 ) > 3
+then
+    X['sBuyList'] = sRoleItemsBuyList['pos_2_qe']
+    nAbilityBuildList = tQEAbilityBuildList
+    nTalentBuildList = J.Skill.GetTalentBuild( tQETalentTreeList )
+end
 
 X['sSellList'] = {
     "item_circlet",
@@ -645,6 +660,7 @@ function X.CastInvokerSpell(ability, target)
     local abilityName
     if type(ability) == "string" and ability == 'Cataclysm' then
         abilityName = ability
+        ability = Sunstrike
     else
         abilityName = ability:GetName()
     end
@@ -659,7 +675,7 @@ function X.CastInvokerSpell(ability, target)
 
         -- bot:ActionPush_Delay(ability:GetCastPoint())
         if abilityName == Cataclysm then
-            bot:ActionPush_UseAbilityOnEntity(Sunstrike, bot)
+            bot:ActionPush_UseAbilityOnEntity(ability, bot)
         elseif ability == ForgeSpirit
             or ability == IceWall
             or ability == GhostWalk then
@@ -784,7 +800,7 @@ function X.ConsiderGhostWalk()
         return BOT_ACTION_DESIRE_NONE
     end
 
-    if (J.IsRetreating(bot) or J.GetHP(bot) <= 0.2) and #nEnemyHeroes >= 1 then
+    if ((J.IsRetreating(bot) and J.GetHP(bot) <= 0.8) or J.GetHP(bot) <= 0.2) and #nEnemyHeroes >= 1 then
         return BOT_ACTION_DESIRE_HIGH
     end
     return BOT_ACTION_DESIRE_NONE
@@ -1169,19 +1185,27 @@ function X.ConsiderChaosMeteor()
                 return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
             end
 
-            if J.IsRunning(botTarget) then
-                return BOT_ACTION_DESIRE_HIGH, botTarget:GetExtrapolatedLocation(nLandTime + nCastPoint)
-            else
-                if J.IsValidHero(botTarget) then
-                    local nLocationAoE = bot:FindAoELocation(true, true, bot:GetLocation(), nCastRange, nRadius + 300, nLandTime + nCastPoint, 0)
-                    if  nLocationAoE.count >= 2 then
-                        local realEnemyCount = J.GetEnemiesNearLoc(nLocationAoE.targetloc, nRadius + 300)
-                        if realEnemyCount ~= nil and #realEnemyCount >= 1 then
-                            return BOT_ACTION_DESIRE_HIGH, nLocationAoE.targetloc
+            if botTarget:IsStunned()
+            or botTarget:IsRooted()
+            or botTarget:IsHexed()
+            or botTarget:IsNightmared()
+            or botTarget:IsChanneling()
+            or X.IsUnderLongDurationStun(botTarget)
+            or J.IsTaunted(botTarget) then
+                if J.IsRunning(botTarget) then
+                    return BOT_ACTION_DESIRE_HIGH, botTarget:GetExtrapolatedLocation(nLandTime + nCastPoint)
+                else
+                    if J.IsValidHero(botTarget) then
+                        local nLocationAoE = bot:FindAoELocation(true, true, bot:GetLocation(), nCastRange, nRadius + 300, nLandTime + nCastPoint, 0)
+                        if  nLocationAoE.count >= 2 then
+                            local realEnemyCount = J.GetEnemiesNearLoc(nLocationAoE.targetloc, nRadius + 300)
+                            if realEnemyCount ~= nil and #realEnemyCount >= 1 then
+                                return BOT_ACTION_DESIRE_HIGH, nLocationAoE.targetloc
+                            end
                         end
                     end
+                    return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
                 end
-                return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
             end
 		end
 	end
@@ -1820,7 +1844,7 @@ end
 
 -- check if the ability is actually castble at the moment without doing anything else.
 function X.IsAbilityReadyForCast(ability)
-    return X.IsAbilityAvailableOnSlots(ability) and X.CanAbilityPossiblyBeCasted(ability) and ability:IsFullyCastable()
+    return X.IsAbilityAvailableOnSlots(ability) and ability:IsFullyCastable()
 end
 
 -- check if the ability could be casted if assuming it's available on slots right now, so we can consider invoke it or cast it.

@@ -383,7 +383,7 @@ function X.ConsiderShockwave()
             and not nAllyInRangeEnemy[1]:HasModifier('modifier_enigma_black_hole_pull')
             and not nAllyInRangeEnemy[1]:HasModifier('modifier_faceless_void_chronosphere_freeze')
             then
-                local nDelay = (GetUnitToUnitDistance(bot, botTarget) / nSpeed) + nCastPoint
+                local nDelay = (GetUnitToUnitDistance(bot, nAllyInRangeEnemy[1]) / nSpeed) + nCastPoint
                 return BOT_ACTION_DESIRE_HIGH, nAllyInRangeEnemy[1]:GetExtrapolatedLocation(nDelay + nCastPoint)
             end
         end
