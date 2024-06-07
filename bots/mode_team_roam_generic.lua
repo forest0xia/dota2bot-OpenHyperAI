@@ -1804,6 +1804,7 @@ function CanAttackSpecialUnit()
 				or string.find(unit:GetUnitName(), 'healing_ward')
 				or string.find(unit:GetUnitName(), 'warlock_golem')
 				or string.find(unit:GetUnitName(), 'weaver_swarm')
+				or string.find(unit:GetUnitName(), 'grimstroke_ink_creature')
 				then
 					local nInRangeAlly = J.GetNearbyHeroes(bot,1000, false, BOT_MODE_NONE)
 					local nInRangeEnemy = J.GetNearbyHeroes(bot,1000, true, BOT_MODE_NONE)

@@ -680,7 +680,7 @@ function X.OverrideTeamHeroes()
 
 
 			-- Test buggy heroes:
-			[1] = 'npc_dota_hero_muerta',
+			[1] = 'npc_dota_hero_alchemist',
 			[2] = 'npc_dota_hero_invoker',
 			-- [2] = 'npc_dota_hero_primal_beast',
 			-- [2] = tSelectPoolList[2][RandomInt( 1, #tSelectPoolList[2] )],

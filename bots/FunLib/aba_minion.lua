@@ -507,6 +507,7 @@ function X.CantBeControlled(unit_name)
 		or unit_name == "npc_dota_unit_undying_zombie"
 		or unit_name == "npc_dota_unit_undying_zombie_torso"
 		or unit_name == "npc_dota_weaver_swarm"
+		or unit_name == "grimstroke_ink_creature"
 		or unit_name == "npc_dota_death_prophet_torment"
 		or unit_name == "npc_dota_gyrocopter_homing_missile"
 		or unit_name == "npc_dota_plasma_field"

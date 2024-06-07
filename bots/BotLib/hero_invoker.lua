@@ -94,7 +94,7 @@ sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_2']
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 if sRole == 'pos_2'
--- and RandomInt( 1, 9 ) > 3
+and RandomInt( 1, 9 ) > 3
 then
     X['sBuyList'] = sRoleItemsBuyList['pos_2_qe']
     nAbilityBuildList = tQEAbilityBuildList
@@ -1265,10 +1265,13 @@ function X.ConsiderChaosMeteor()
     
 	--对线
 	if J.IsLaning( bot ) then
-		local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(1000, true)
+		local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(1400, true)
 		if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 5
         then
-			return BOT_ACTION_DESIRE_HIGH, bot
+			local locationAoEKill = bot:FindAoELocation( true, false, bot:GetLocation(), nCastRange, nRadius, 0, 500 )
+			if locationAoEKill.count >= 3 then
+				return BOT_ACTION_DESIRE_HIGH, locationAoEKill.targetloc, "带线"..locationAoEKill.count
+			end
 		end
 
         local enemyHero

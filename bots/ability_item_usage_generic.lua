@@ -590,7 +590,7 @@ function X.IsCourierTargetedByUnit( courier )
 	local nEnemysHeroes = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 	for _, enemy in pairs( nEnemysHeroes )
 	do
-		if GetUnitToUnitDistance( enemy, courier ) <= 700 + botLV * 15
+		if enemy ~= nil and J.IsValidHero( enemy ) and GetUnitToUnitDistance( enemy, courier ) <= 700 + botLV * 15
 		then
 			local nNearCourierAllyList = J.GetAlliesNearLoc( enemy:GetLocation(), 800 )
 			if #nNearCourierAllyList == 0
@@ -600,7 +600,7 @@ function X.IsCourierTargetedByUnit( courier )
 			end
 		end
 
-		if GetUnitToUnitDistance( enemy, courier ) <= enemy:GetAttackRange() + 100
+		if enemy ~= nil and J.IsValidHero( enemy ) and GetUnitToUnitDistance( enemy, courier ) <= enemy:GetAttackRange() + 100
 		then
 			return true
 		end

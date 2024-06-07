@@ -1778,6 +1778,8 @@ X['safe'] = {
 	'npc_dota_hero_windrunner',
 	'npc_dota_hero_techies',
 	'npc_dota_hero_tidehunter',
+	'npc_dota_hero_alchemist',
+	'npc_dota_hero_medusa',
 }
 
 X['supp'] = {
@@ -2579,7 +2581,7 @@ function X.GetPosition(bot)
 
 	bot.assignedRole = role
 	if role == nil then
-		-- print("[ERROR] Failed to match bot role for bot: "..bot:GetUnitName())
+		print("[ERROR] Failed to match bot role for bot: "..bot:GetUnitName())
 	end
 	return role
 end
