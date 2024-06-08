@@ -54,15 +54,15 @@ function GetDesire()
 		bot:ActionImmediate_Chat('I will play position '..J.GetPosition(bot), false)
 	end
 
-	-- if not isWelcomeMessageDone
-	-- and J.GetPosition(bot) == 5
-	-- then
-	-- 	if J.IsModeTurbo() and DotaTime() > -45 or DotaTime() > -60
-	-- 	then
-	-- 		bot:ActionImmediate_Chat("GLHF!", true)
-	-- 		isWelcomeMessageDone = true
-	-- 	end
-	-- end
+	if not isWelcomeMessageDone
+	and J.GetPosition(bot) == 5
+	then
+		if J.IsModeTurbo() and DotaTime() > -45 or DotaTime() > -55
+		then
+			bot:ActionImmediate_Chat("You can type !pos X to swap position with a bot. For example, type: `!pos 2` to go mid lane.", false)
+			isWelcomeMessageDone = true
+		end
+	end
 
 	if not isChangePosMessageDone
 	and J.GetPosition(bot) == 5

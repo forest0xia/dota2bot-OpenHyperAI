@@ -4317,15 +4317,28 @@ function J.DoesSomeoneHaveModifier(nUnitList, modifierName)
 	return false
 end
 
+IsHumanPlayerInTheTeam = {
+	TEAM_RADIANT = nil,
+	TEAM_DIRE = nil
+}
+
 function J.IsHumanPlayerInTeam()
+	local sTeamName = GetTeam() == TEAM_RADIANT and 'TEAM_RADIANT' or 'TEAM_DIRE'
+
+	if IsHumanPlayerInTheTeam[sTeamName] ~= nil then
+		return IsHumanPlayerInTheTeam[sTeamName]
+	end
+
 	for _, member in pairs(GetTeamPlayers(GetTeam()))
 	do
 		if not IsPlayerBot(member)
 		then
+			IsHumanPlayerInTheTeam[sTeamName] = true
 			return true
 		end
 	end
 
+	IsHumanPlayerInTheTeam[sTeamName] = false
 	return false
 end
 

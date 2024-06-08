@@ -725,7 +725,7 @@ function X.ConsiderW()
 				and EnemyplayerCreep:GetHealth() > 460
 				and not EnemyplayerCreep:IsMagicImmune()
 				and not EnemyplayerCreep:IsInvulnerable()
-				and ( EnemyplayerCreep:IsDominated() or EnemyplayerCreep:IsMinion() )
+				and EnemyplayerCreep:IsDominated()
 			then
 				return BOT_ACTION_DESIRE_HIGH, EnemyplayerCreep
 			end

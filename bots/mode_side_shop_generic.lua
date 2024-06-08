@@ -13,7 +13,22 @@ if bot.tormentorState == nil then bot.tormentorState = false end
 if bot.lastKillTime == nil then bot.lastKillTime = 0 end
 if bot.wasAttackingTormentor == nil then bot.wasAttackingTormentor = false end
 
+
+local WisdomRuneSpawned = false
+local ClosestAllyToWisdomRune
+local TeamWisdomRune
+local RWR = Vector( -8126, -320, 256 )
+local DWR = Vector( 8319, 266, 256 )
+local LastWisdomRuneTime = 0
+local TeamWisdomTimer = 0
+local WisdomRuneTimeGap = 420
+
 function GetDesire()
+	local wisdomRuneDesire = WisdomRuneDesire()
+	if wisdomRuneDesire > 0 then
+		return wisdomRuneDesire
+	end
+
 	TormentorLocation = J.GetTormentorLocation(GetTeam())
 
     local nAllyInLoc = J.GetAlliesNearLoc(TormentorLocation, 700)
@@ -182,6 +197,10 @@ function GetDesire()
 end
 
 function Think()
+	if WisdomRuneThink() >= 1 then
+		return
+	end
+
 	if GetUnitToLocationDistance(bot, TormentorLocation) > 100
 	then
 		bot:Action_MoveToLocation(TormentorLocation)
@@ -379,4 +398,103 @@ function WasHealthy()
 	end
 
 	return count == J.GetNumOfAliveHeroes(false)
+end
+
+local function CheckWisdomRuneAvailability()
+	if not WisdomRuneSpawned then
+		if DotaTime() - LastWisdomRuneTime >= WisdomRuneTimeGap then
+			LastWisdomRuneTime = DotaTime()
+			WisdomRuneSpawned = true
+		end
+	end
+end
+
+local function GetClosestAllyToWisdomRune()
+	local Allies = GetUnitList(UNIT_LIST_ALLIED_HEROES)
+	
+	if J.IsLaning(bot) then
+		for v, Ally in pairs(Allies) do
+			if Ally:IsAlive() and J.IsValidHero(Ally) and not Ally:IsIllusion() and J.GetPosition(Ally) >= 3 then
+				return Ally
+			end
+		end
+	else
+		local ClosestAlly = bot
+		local ClosestDistance = 99999
+		
+		for v, Ally in pairs(Allies) do
+			if Ally:IsAlive() and J.IsValidHero(Ally) and not Ally:IsIllusion() then
+				local dist = GetUnitToLocationDistance(Ally, TeamWisdomRune)
+				if dist < ClosestDistance then
+					ClosestAlly = Ally
+					ClosestDistance = dist
+				end
+			end
+		end
+
+		if (ClosestDistance >= 3200) then
+			return nil -- too far. bots may be group pushing.
+		end
+		
+		return ClosestAlly
+	end
+	
+	return bot
+end
+
+function WisdomRuneDesire()
+	-- don't worry about wisdom rune if human player exist in the team.
+	if J.IsHumanPlayerInTeam() then
+		return 0
+	end
+
+	if bot:GetTeam() == TEAM_RADIANT then
+		TeamWisdomRune = RWR
+	elseif bot:GetTeam() == TEAM_DIRE then
+		TeamWisdomRune = DWR
+	end
+	
+	CheckWisdomRuneAvailability()
+	
+	if WisdomRuneSpawned then
+
+		ClosestAllyToWisdomRune = GetClosestAllyToWisdomRune()
+		if ClosestAllyToWisdomRune ~= nil then
+			if GetUnitToLocationDistance(ClosestAllyToWisdomRune, TeamWisdomRune) > 200 then
+				TeamWisdomTimer = DotaTime()
+			else
+				if (DotaTime() - TeamWisdomTimer) > 1 then
+					WisdomRuneSpawned = false
+				end
+			end
+		end
+	end
+	
+	if ClosestAllyToWisdomRune == bot and bot:GetLevel() < 25 then
+		if WisdomRuneSpawned then
+			return 0.81
+		end
+	end
+	return 0
+end
+
+function WisdomRuneThink()
+	-- don't worry about wisdom rune if human player exist in the team.
+	if J.IsHumanPlayerInTeam() then
+		return
+	end
+
+	if bot:GetTeam() == TEAM_RADIANT then
+		TeamWisdomRune = RWR
+	elseif bot:GetTeam() == TEAM_DIRE then
+		TeamWisdomRune = DWR
+	end
+	
+	if WisdomRuneSpawned then
+		if ClosestAllyToWisdomRune == bot then
+			bot:Action_MoveToLocation(TeamWisdomRune)
+			return 1
+		end
+	end
+	return 0
 end
