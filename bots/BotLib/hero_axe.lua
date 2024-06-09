@@ -42,14 +42,14 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_boots",
 	"item_blink",
 	"item_magic_wand",
-	"item_blade_mail",
+	"item_blade_mail",--
 	"item_black_king_bar",--
 	"item_travel_boots",
 	"item_shivas_guard",--
 	"item_aghanims_shard",
 	"item_overwhelming_blink",--
 	"item_heart",--
-	"item_refresher",--
+	-- "item_refresher",--
 	"item_travel_boots_2",--
 	"item_ultimate_scepter_2",
 	"item_moon_shard",

@@ -3999,59 +3999,92 @@ function J.IsNonSiegeCreepBetweenMeAndLocation(hSource, vLoc, nRadius)
 end
 
 function J.IsCreepBetweenMeAndTarget(hSource, hTarget, vLoc, nRadius)
-	if not J.IsAllyCreepBetweenMeAndTarget(hSource, hTarget, vLoc, nRadius)
-	then
-		return J.IsEnemyCreepBetweenMeAndTarget(hSource, hTarget, vLoc, nRadius)
-	end
-
-	return false
-end
-
-function J.IsEnemyCreepBetweenMeAndTarget(hSource, hTarget, vLoc, nRadius)
 	local vStart = hSource:GetLocation()
 	local vEnd = vLoc
-
-	local nAllyLaneCreeps = hTarget:GetNearbyLaneCreeps(1600, false)
-	for _, creep in pairs(nAllyLaneCreeps)
-	do
-		local tResult = PointToLineDistance(vStart, vEnd, creep:GetLocation())
-		if tResult ~= nil and tResult.within and tResult.distance < nRadius then return true end
-	end
-
-	local nEnemyLaneCreeps = hSource:GetNearbyLaneCreeps(1600, true)
-	for _, creep in pairs(nEnemyLaneCreeps)
-	do
-		local tResult = PointToLineDistance(vStart, vEnd, creep:GetLocation())
-		if tResult ~= nil and tResult.within and tResult.distance < nRadius then return true end
-	end
-
-	return false
-end
-
-function J.IsAllyCreepBetweenMeAndTarget(hSource, hTarget, vLoc, nRadius)
-	local vStart = hSource:GetLocation()
-	local vEnd = vLoc
-
-	local nAllyLaneCreeps = hSource:GetNearbyLaneCreeps(1600, false)
-	for _, creep in pairs(nAllyLaneCreeps)
-	do
-		local tResult = PointToLineDistance(vStart, vEnd, creep:GetLocation())
-		if tResult ~= nil and tResult.within and tResult.distance < nRadius then
+	local creeps = hSource:GetNearbyCreeps(1600, false)
+	for i,creep in pairs(creeps) do
+		local tResult = PointToLineDistance(vStart, vEnd, creep:GetLocation());
+		if tResult ~= nil and tResult.within and tResult.distance <= nRadius then
 			return true
 		end
 	end
-
-	local nEnemyLaneCreeps = hTarget:GetNearbyLaneCreeps(1600, true)
-	for _, creep in pairs(nEnemyLaneCreeps)
-	do
-		local tResult = PointToLineDistance(vStart, vEnd, creep:GetLocation())
-		if tResult ~= nil and tResult.within and tResult.distance < nRadius then
+	
+	if hTarget:IsHero() then
+		creeps = hTarget:GetNearbyCreeps(1600, true)
+		for i,creep in pairs(creeps) do
+			local tResult = PointToLineDistance(vStart, vEnd, creep:GetLocation());
+			if tResult ~= nil and tResult.within and tResult.distance <= nRadius then
+				return true
+			end
+		end
+	end
+	
+	creeps = hSource:GetNearbyCreeps(1600, true)
+	for i,creep in pairs(creeps) do
+		local tResult = PointToLineDistance(vStart, vEnd, creep:GetLocation());
+		if tResult ~= nil and tResult.within and tResult.distance <= nRadius then
 			return true
 		end
 	end
-
+	
+	if hTarget:IsHero() then
+		creeps = hTarget:GetNearbyCreeps(1600, false)
+		for i,creep in pairs(creeps) do
+			local tResult = PointToLineDistance(vStart, vEnd, creep:GetLocation());
+			if tResult ~= nil and tResult.within and tResult.distance <= nRadius then
+				return true
+			end
+		end
+	end
+	
 	return false
 end
+
+-- function J.IsEnemyCreepBetweenMeAndTarget(hSource, hTarget, vLoc, nRadius)
+-- 	local vStart = hSource:GetLocation()
+-- 	local vEnd = vLoc
+
+-- 	local nAllyLaneCreeps = hTarget:GetNearbyLaneCreeps(1600, false)
+-- 	for _, creep in pairs(nAllyLaneCreeps)
+-- 	do
+-- 		local tResult = PointToLineDistance(vStart, vEnd, creep:GetLocation())
+-- 		if tResult ~= nil and tResult.within and tResult.distance < nRadius then return true end
+-- 	end
+
+-- 	local nEnemyLaneCreeps = hSource:GetNearbyLaneCreeps(1600, true)
+-- 	for _, creep in pairs(nEnemyLaneCreeps)
+-- 	do
+-- 		local tResult = PointToLineDistance(vStart, vEnd, creep:GetLocation())
+-- 		if tResult ~= nil and tResult.within and tResult.distance < nRadius then return true end
+-- 	end
+
+-- 	return false
+-- end
+
+-- function J.IsAllyCreepBetweenMeAndTarget(hSource, hTarget, vLoc, nRadius)
+-- 	local vStart = hSource:GetLocation()
+-- 	local vEnd = vLoc
+
+-- 	local nAllyLaneCreeps = hSource:GetNearbyLaneCreeps(1600, false)
+-- 	for _, creep in pairs(nAllyLaneCreeps)
+-- 	do
+-- 		local tResult = PointToLineDistance(vStart, vEnd, creep:GetLocation())
+-- 		if tResult ~= nil and tResult.within and tResult.distance < nRadius then
+-- 			return true
+-- 		end
+-- 	end
+
+-- 	local nEnemyLaneCreeps = hTarget:GetNearbyLaneCreeps(1600, true)
+-- 	for _, creep in pairs(nEnemyLaneCreeps)
+-- 	do
+-- 		local tResult = PointToLineDistance(vStart, vEnd, creep:GetLocation())
+-- 		if tResult ~= nil and tResult.within and tResult.distance < nRadius then
+-- 			return true
+-- 		end
+-- 	end
+
+-- 	return false
+-- end
 
 function J.IsAllyHeroBetweenMeAndTarget(hSource, hTarget, vLoc, nRadius)
 	local vStart = hSource:GetLocation()

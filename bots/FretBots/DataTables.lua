@@ -79,14 +79,14 @@ function DataTables:Initialize()
 	Bots={}
 	Players={}
 	AllUnits = {}
-	for i,unit in pairs(Units) do
-		local id = PlayerResource:GetSteamID(unit:GetMainControllingPlayer());
-		local isFret = Debug:IsFret(id);
-		-- Buff Fret for Debug purposes
-		if isFret and not Flags.isDebugBuffed and isBuff then
-			BuffUnit:Hero(unit)
-			Flags.isDebugBuffed = true
-			end
+	for i, unit in pairs(Units) do
+		-- local id = PlayerResource:GetSteamID(unit:GetMainControllingPlayer());
+		-- local isFret = Debug:IsFret(id);
+		-- -- Buff Fret for Debug purposes
+		-- if isFret and not Flags.isDebugBuffed and isBuff then
+		-- 	BuffUnit:Hero(unit)
+		-- 	Flags.isDebugBuffed = true
+		-- 	end
 		-- Initialize data tables for this unit
 		DataTables:GenerateStatsTables(unit)
 	end
@@ -193,7 +193,6 @@ function DataTables:GetTowers()
 		end
 	end
 end
-
 
 -- Generates various data used to track bot stats
 function DataTables:GenerateStatsTables(unit)

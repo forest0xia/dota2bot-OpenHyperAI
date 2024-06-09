@@ -663,6 +663,12 @@ function X.OverrideTeamHeroes()
 		    -- [4] = "npc_dota_hero_nyx_assassin",
 			-- [5] = "npc_dota_hero_shadow_demon",
 			
+			[1] = "npc_dota_hero_meepo",
+			[2] = 'npc_dota_hero_invoker',
+			[3] = "npc_dota_hero_enigma",
+		    [4] = "npc_dota_hero_nyx_assassin",
+			[5] = "npc_dota_hero_techies",
+			
 			-- [1] = "npc_dota_hero_antimage",
 			-- [2] = 'npc_dota_hero_invoker',
 			-- [3] = "npc_dota_hero_tidehunter",
@@ -680,15 +686,15 @@ function X.OverrideTeamHeroes()
 
 
 			-- Test buggy heroes:
-			[1] = 'npc_dota_hero_alchemist',
-			[2] = 'npc_dota_hero_invoker',
-			-- [2] = 'npc_dota_hero_primal_beast',
-			-- [2] = tSelectPoolList[2][RandomInt( 1, #tSelectPoolList[2] )],
-			-- [3] = 'npc_dota_hero_muerta', -- DOES NOT WORK. marci works as pos1.
-			[3] = tSelectPoolList[3][RandomInt( 1, #tSelectPoolList[3] )],
-			-- [4] = "npc_dota_hero_dark_willow", -- dark_willow does not work over half of the time.
-			[4] = tSelectPoolList[4][RandomInt( 1, #tSelectPoolList[4] )],
-			[5] = tSelectPoolList[5][RandomInt( 1, #tSelectPoolList[5] )],
+			-- [1] = 'npc_dota_hero_muerta',
+			-- [2] = 'npc_dota_hero_invoker',
+			-- -- [2] = 'npc_dota_hero_primal_beast',
+			-- -- [2] = tSelectPoolList[2][RandomInt( 1, #tSelectPoolList[2] )],
+			-- -- [3] = 'npc_dota_hero_muerta', -- DOES NOT WORK. marci works as pos1.
+			-- [3] = tSelectPoolList[3][RandomInt( 1, #tSelectPoolList[3] )],
+			-- -- [4] = "npc_dota_hero_dark_willow", -- dark_willow does not work over half of the time.
+			-- [4] = tSelectPoolList[4][RandomInt( 1, #tSelectPoolList[4] )],
+			-- [5] = tSelectPoolList[5][RandomInt( 1, #tSelectPoolList[5] )],
 		    
 			-- All Pandas/spirits
 			-- [1] = "npc_dota_hero_void_spirit",

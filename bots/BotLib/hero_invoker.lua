@@ -70,16 +70,18 @@ sRoleItemsBuyList['pos_2_qe'] = {
     "item_boots",
     "item_hand_of_midas",
     "item_magic_wand",
-    "item_cyclone",
+    -- "item_cyclone", --瞎吹还喜欢走到吹起的点上，以后再改
     "item_travel_boots",
     "item_black_king_bar",--
-    "item_aghanims_shard",
+    "item_orchid",
     "item_ultimate_scepter",
-    "item_octarine_core",--
+    "item_bloodthorn",--
+    "item_aghanims_shard",
     "item_ultimate_scepter_2",
+    "item_octarine_core",--
     "item_sheepstick",--
     "item_refresher",--
-    "item_wind_waker",--
+    -- "item_wind_waker",--
     "item_travel_boots_2",--
     "item_moon_shard",
 }

@@ -400,9 +400,14 @@ function WasHealthy()
 	return count == J.GetNumOfAliveHeroes(false)
 end
 
+local humanSideTimeGap = WisdomRuneTimeGap
 local function CheckWisdomRuneAvailability()
 	if not WisdomRuneSpawned then
-		if DotaTime() - LastWisdomRuneTime >= WisdomRuneTimeGap then
+		if humanSideTimeGap ~= WisdomRuneTimeGap and J.IsHumanPlayerInTeam() then
+			humanSideTimeGap = WisdomRuneTimeGap + 110
+		end
+
+		if DotaTime() - LastWisdomRuneTime >= humanSideTimeGap then
 			LastWisdomRuneTime = DotaTime()
 			WisdomRuneSpawned = true
 		end
@@ -481,7 +486,7 @@ end
 function WisdomRuneThink()
 	-- don't worry about wisdom rune if human player exist in the team.
 	if J.IsHumanPlayerInTeam() then
-		return
+		return 0
 	end
 
 	if bot:GetTeam() == TEAM_RADIANT then
