@@ -58,9 +58,15 @@ local maxTier = 5
 -- Per Minute Timer Interval
 local perMinuteTimerInterval = 60
 -- amount of neutrals found per tier
-local tierAwards = {0,0,0,0,0}
+local tierAwards = {
+	[2] = {0,0,0,0,0},
+	[3] = {0,0,0,0,0}
+}
 -- current neutral items available to dole
-NeutralStash = {{},{},{},{},{}}
+NeutralStash = {
+	[2] = {{},{},{},{},{}},
+	[3] = {{},{},{},{},{}},
+}
 -- all items ever found
 AwardedNeutrals = {}
 
@@ -69,11 +75,13 @@ local masterNeutralTable = dofile('bots.FretBots.SettingsNeutralItemTable')
 
 -- returns true if we've found every item we can
 function BonusTimers:IsFindingDone()
-	for i, count in ipairs(tierAwards) do
+	for team = 2, 3 do
+	for i, count in ipairs(tierAwards[team]) do
 		if count < Settings.neutralItems.maxPerTier[i] then
 			return false
 		end
 	end
+end
 	return true
 end
 
@@ -91,14 +99,15 @@ function BonusTimers:NeutralItemFindTimer()
 	-- Logic to do things here, we'll use this method primarily for giving neutrals to bots
 	local interval = 0
 	-- loop over all bots
-	for _, bot in pairs(Bots) do
+	for team = 2, 3 do
+	for _, bot in pairs(AllBots[team]) do
 		-- if time is greater than stats.neutralTiming, we try to award an item
 		-- negative numbers disable the award
 		local tier =  bot.stats.neutralsFound + 1
 		if gameTime > bot.stats.neutralTiming and
 			 bot.stats.neutralTiming >= 0 and
 			 bot.stats.neutralTiming ~= nil and
-			 tierAwards[tier] < Settings.neutralItems.maxPerTier[tier] then
+			 tierAwards[team][tier] < Settings.neutralItems.maxPerTier[tier] then
 			-- Register NeutralItemDoleTimer (This will only happen once)
 			------ 7.33 Edits - This is now unnecessary
 			----if not inits.neutralItemDoleTimer then
@@ -110,9 +119,9 @@ function BonusTimers:NeutralItemFindTimer()
 			-- Increment tiers 'found' for this bot
 			bot.stats.neutralsFound = tier
 			-- Check if tier still has items to award
-			if tierAwards[tier] < Settings.neutralItems.maxPerTier[tier] then
+			if tierAwards[team][tier] < Settings.neutralItems.maxPerTier[tier] then
 				-- increment awards
-				tierAwards[tier] = tierAwards[tier] + 1
+				tierAwards[team][tier] = tierAwards[team][tier] + 1
 				-- Get the neediest bot
 				local neediest = NeutralItems:NeediestBotForToken(tier)
 				------ 7.33 Edits - This is now obsolete
@@ -171,10 +180,11 @@ function BonusTimers:NeutralItemFindTimer()
 				NeutralItems:SetBotFindTier(bot, tier + 1)
 			end
 			-- Close the tier if we hit the limit
-			if tierAwards[tier] >= Settings.neutralItems.maxPerTier[tier] then
+			if tierAwards[team][tier] >= Settings.neutralItems.maxPerTier[tier] then
 				NeutralItems:CloseBotFindTier(tier)
 			end
 		end
+	end
 	end
 	return neutralFindInterval
 end
@@ -190,13 +200,14 @@ end
 function BonusTimers:NeutralItemDoleTimer()
 	repeat
 		-- Do we have something to do?
-		local itemToDole = BonusTimers:GetNextItemToDole()
+		for team = 2, 3 do
+		local itemToDole = BonusTimers:GetNextItemToDole(team)
 		if itemToDole ~= nil then
 			-- Items in stash only get one chance to be doled, so remove it whether
 			-- we actually assign it or not
-			BonusTimers:RemoveItemFromStash(itemToDole)
+			BonusTimers:RemoveItemFromStash(itemToDole, team)
 			-- try to find a bot that wants it
-			for _, bot in ipairs(Bots) do
+			for _, bot in ipairs(AllBots[team]) do
 				-- Bot wants?
 				local botWants, newDesire, currentDesire = NeutralItems:DoesBotPreferItem(bot, itemToDole)
 				if botWants then
@@ -215,7 +226,7 @@ function BonusTimers:NeutralItemDoleTimer()
 							--Utilities:AnnounceNeutral(bot, item, MSG_NEUTRAL_RETURN)
 						end
 						-- return old item to stash
-						table.insert(NeutralStash[item.tier], item)
+						table.insert(NeutralStash[team][item.tier], item)
 					end
 					-- announce item taking, maybe
 					if Settings.neutralItems.announce then
@@ -224,23 +235,24 @@ function BonusTimers:NeutralItemDoleTimer()
 					break
 				end
 			end
+			end
 		end
 	until itemToDole == nil
 	return neutralDolenterval
 end
 
 -- Returns the next item to dole, or nil
-function BonusTimers:GetNextItemToDole()
+function BonusTimers:GetNextItemToDole(team)
 	for tier = maxTier, 1, -1 do
-		if #NeutralStash[tier] > 0 then
-			return NeutralStash[tier][1]
+		if #NeutralStash[team][tier] > 0 then
+			return NeutralStash[team][tier][1]
 		end
 	end
 end
 
 -- removes a specific item from the stash
-function BonusTimers:RemoveItemFromStash(item)
-	for _, tierStash in ipairs(NeutralStash) do
+function BonusTimers:RemoveItemFromStash(item, team)
+	for _, tierStash in ipairs(NeutralStash[team]) do
 		for i, stashItem in ipairs(tierStash) do
 			if stashItem == item then
 				table.remove(tierStash,i)
@@ -258,7 +270,7 @@ function BonusTimers:PerMinuteTimer()
 		inits.perMinuteTimer = true
 	end
 	-- if no bots, unregister
-	if Bots == nil then
+	if AllBots == nil then
 		Timers:RemoveTimer(names.perMinuteTimer)
 		return nil
 	end
@@ -267,8 +279,15 @@ function BonusTimers:PerMinuteTimer()
 	-- Get GPM/XPM tables
 	local gpm, xpm = DataTables:GetPerMinuteTables()
 	-- loop over all bots
-	for _, bot in pairs(Bots) do
+	for team = 2, 3 do
+	for _, bot in pairs(AllBots[team]) do
 		if bot ~= nil then
+			if bot.stats == nil then
+				print('[ERROR]. Bot has no stats:')
+				DeepPrintTable(bot)
+				return
+			end
+
 			-- GPM bonus
 			local goldBonus, xpBonus = AwardBonus:GetPerMinuteBonus(bot, gpm, xpm)
 			if goldBonus > 0 then
@@ -279,16 +298,18 @@ function BonusTimers:PerMinuteTimer()
 			end
 		end
 	end
+	end
 	-- return interval
 	return perMinuteTimerInterval
 end
 
 -- One time bonus given to bots at game start
 function BonusTimers:GameStartBonus()
+	for team = 2, 3 do
 	local msg = 'Bots given starting bonuses:'
 	local awarded = false
 	if Settings.difficultyScale >= 0.6 then
-		for _, bot in pairs(Bots) do
+		for _, bot in pairs(AllBots[team]) do
 			-- HP regen
 			bot:SetBaseHealthRegen(3 * Settings.difficultyScale)
 			-- Mana regen
@@ -302,7 +323,7 @@ function BonusTimers:GameStartBonus()
 	if Settings.gameStartBonus.gold  > 0 then
 		msg = msg .. ' Gold: '.. Settings.gameStartBonus.gold
 		awarded = true
-		for _, bot in pairs(Bots) do
+		for _, bot in pairs(AllBots[team]) do
 			AwardBonus:gold(bot, Settings.gameStartBonus.gold)
 		end
 	end
@@ -310,7 +331,7 @@ function BonusTimers:GameStartBonus()
 	if Settings.gameStartBonus.armor  > 0 then
 		msg = msg .. ' Armor: '.. Settings.gameStartBonus.armor
 		awarded = true
-		for _, bot in pairs(Bots) do
+		for _, bot in pairs(AllBots[team]) do
 			AwardBonus:armor(bot, Settings.gameStartBonus.armor)
 		end
 	end
@@ -318,7 +339,7 @@ function BonusTimers:GameStartBonus()
 	if Settings.gameStartBonus.magicResist  > 0 then
 		msg = msg .. ' Magic Resist: '.. Settings.gameStartBonus.magicResist
 		awarded = true
-		for _, bot in pairs(Bots) do
+		for _, bot in pairs(AllBots[team]) do
 			AwardBonus:magicResist(bot, Settings.gameStartBonus.magicResist)
 		end
 	end
@@ -326,7 +347,7 @@ function BonusTimers:GameStartBonus()
 	if Settings.gameStartBonus.levels  > 0 then
 		msg = msg .. ' Levels: '.. Settings.gameStartBonus.levels
 		awarded = true
-		for _, bot in pairs(Bots) do
+		for _, bot in pairs(AllBots[team]) do
 			AwardBonus:levels(bot, Settings.gameStartBonus.levels)
 		end
 	end
@@ -334,7 +355,7 @@ function BonusTimers:GameStartBonus()
 	if Settings.gameStartBonus.levels  > 0 then
 		msg = msg .. ' Levels: '.. Settings.gameStartBonus.levels
 		awarded = true
-		for _, bot in pairs(Bots) do
+		for _, bot in pairs(AllBots[team]) do
 			AwardBonus:levels(bot, Settings.gameStartBonus.levels)
 		end
 	end
@@ -342,7 +363,7 @@ function BonusTimers:GameStartBonus()
 	if Settings.gameStartBonus.stats  > 0 then
 		msg = msg .. ' Stats: '.. Settings.gameStartBonus.stats
 		awarded = true
-		for _, bot in pairs(Bots) do
+		for _, bot in pairs(AllBots[team]) do
 			AwardBonus:stats(bot, Settings.gameStartBonus.stats)
 		end
 	end
@@ -350,13 +371,14 @@ function BonusTimers:GameStartBonus()
 	if Settings.gameStartBonus.neutral  > 0 then
 		msg = msg .. ' Neutral: '.. Settings.gameStartBonus.neutral
 		awarded = true
-		for _, bot in pairs(Bots) do
+		for _, bot in pairs(AllBots[team]) do
 			AwardBonus:neutral(bot, Settings.gameStartBonus.neutral)
 		end
 	end
 	if awarded then
 		Utilities:Print(msg, MSG_WARNING, ATTENTION)
 	end
+end
 end
 
 -- registers the bonus timner listeners

@@ -22,11 +22,13 @@ end
 -- Returns the bot that wants an item from this tier the most
 -- This represents the carry wanting to use the token first, etc
 function NeutralItems:NeediestBotForToken(tier)
-	for _, bot in ipairs(Bots) do
+	for team = 2, 3 do
+	for _, bot in ipairs(AllBots[team]) do
 		if tier > bot.stats.neutralTier then
 			return bot
 		end
 	end
+end
 	return nil
 end
 
@@ -209,7 +211,8 @@ end
 function NeutralItems:GetNeediestBot(tier)
 	local data = {}
 	-- ipairs sorts bots by role 1-5
-	for i, bot in ipairs(Bots) do
+	for team = 2, 3 do
+	for i, bot in ipairs(AllBots[team]) do
 		local isUpgrade = tier > bot.stats.neutralTier
 		local isSidegrade = (tier == bot.stats.neutralTier) and (not bot.stats.hasSuitableNeutral)
 		-- for our bots, cores are assholes and always want a new item
@@ -221,6 +224,7 @@ function NeutralItems:GetNeediestBot(tier)
 			return bot
 		end
 	end
+end
 	-- if we made it this far,
 	-- No one found
 	return nil
@@ -264,17 +268,20 @@ end
 -- This method preserves the previous tier's variance and neutral
 -- award subtractions.
 function NeutralItems:CloseBotFindTier(tier)
-	for _, bot in ipairs(Bots) do
+	for team = 2, 3 do
+	for _, bot in ipairs(AllBots[team]) do
 		-- if this is the case, the bot is behind and needs to be updated to new tier.
 		if bot.stats.neutralsFound < tier then
 			NeutralItems:SetBotFindTier(bot, tier + 1)
 		end
 	end
 end
+end
 
 -- Sets all bots to find tier 1 items.
 function NeutralItems:InitializeFindTimings()
-	for _, bot in ipairs(Bots) do
+	for team = 2, 3 do
+	for _, bot in ipairs(AllBots[team]) do
 		local variance = Utilities:GetIntegerVariance(Settings.neutralItems.variance)
 		local difficultyShift = NeutralItems:GetTimingDifficultyScaleShift(1)
 			bot.stats.neutralsFound = 0
@@ -283,6 +290,7 @@ function NeutralItems:InitializeFindTimings()
 		local msg = bot.stats.name..': Initialized Neutral Timing for Tier 1: '..bot.stats.neutralTiming..' (shift: '..difficultyShift..', var: '..variance..')'
 		Debug:Print(msg)
 	end
+end
 end
 
 -- sets a particular bot for a timing to find a specific tier

@@ -465,20 +465,22 @@ function AwardBonus:PunishForAbuse()
 	if state == DOTA_GAMERULES_STATE_PRE_GAME then
 		local msg = 'Bot rune AI abuse is a bad idea!'
 		Utilities:Print(msg, MSG_BAD, BAD_LIST)
-		for _, bot in ipairs(Bots) do
-			local awardsTable = {}
-			table.insert(awardsTable, bot)
-			local isSuccess = AwardBonus['levels'](AwardBonus, bot, 17)
-			-- if success, set isAwarded, isLoudWarning, Clear chance, Update message
-			if isSuccess then
-				table.insert(awardsTable, {'levels', 17})
+		for team = 2, 3 do
+			for _, bot in ipairs(AllBots[team]) do
+				local awardsTable = {}
+				table.insert(awardsTable, bot)
+				local isSuccess = AwardBonus['levels'](AwardBonus, bot, 17)
+				-- if success, set isAwarded, isLoudWarning, Clear chance, Update message
+				if isSuccess then
+					table.insert(awardsTable, {'levels', 17})
+				end
+				local isSuccess = AwardBonus['stats'](AwardBonus, bot, 25)
+				-- if success, set isAwarded, isLoudWarning, Clear chance, Update message
+				if isSuccess then
+					table.insert(awardsTable, {'stats', 25})
+				end
+				Utilities:Print(awardsTable, MSG_AWARD, BAD_LIST)
 			end
-			local isSuccess = AwardBonus['stats'](AwardBonus, bot, 25)
-			-- if success, set isAwarded, isLoudWarning, Clear chance, Update message
-			if isSuccess then
-				table.insert(awardsTable, {'stats', 25})
-			end
-			Utilities:Print(awardsTable, MSG_AWARD, BAD_LIST)
 		end
 	end
 end

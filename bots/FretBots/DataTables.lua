@@ -32,9 +32,17 @@ if isBuff then
 	Utilities:Print('Hey Fret, isBuff is True!', MSG_BAD)
 end
 
+
+-- convenient constants for dumb valve integers
+local RADIANT = 2
+local DIRE = 3
+
 -- Globals
-Bots = {}
-Players = {}
+AllBots = {
+    [RADIANT]    = {},
+    [DIRE]     = {}
+}
+AllHumanPlayers = {}
 PlayerBots = {}
 AllUnits = {}
 DireTowers = {}
@@ -42,10 +50,6 @@ RadiantTowers = {}
 
 BotTeam = 0
 HumanTeam = 0
-
--- convenient constants for dumb valve integers
-local RADIANT = 2
-local DIRE = 3
 
 -- globlal constants for lane identification
 LANE_UNKNOWN	= 0
@@ -75,9 +79,12 @@ function DataTables:Initialize()
 		FIND_ANY_ORDER,
 		false)
 
-	Bots = nil
-	Bots={}
-	Players={}
+	AllBots = nil
+	AllBots = {
+		[RADIANT]    = {},
+		[DIRE]     = {}
+	}
+	AllHumanPlayers = {}
 	AllUnits = {}
 	for i, unit in pairs(Units) do
 		-- local id = PlayerResource:GetSteamID(unit:GetMainControllingPlayer());
@@ -90,17 +97,18 @@ function DataTables:Initialize()
 		-- Initialize data tables for this unit
 		DataTables:GenerateStatsTables(unit)
 	end
-	Debug:Print('There are '..#Bots..' bots!')
+	Debug:Print('There are '..#AllBots[RADIANT]..' Radiant bots!')
+	Debug:Print('There are '..#AllBots[DIRE]..' Dire bots!')
 
 	-- Purge human side bots
-	DataTables:PurgeHumanSideBots()
+	-- DataTables:PurgeHumanSideBots()
 	
 	-- Get Towers (Used for determining bot role, eventually)
 	DataTables:GetTowers()
 	-- Assign roles to bots
 	DataTables:AssignBotRoles()
 	-- Sort Bots Table by role for convenience
-	Bots = DataTables:SortBotsByRole()
+	AllBots = DataTables:SortBotsByRole()
 	-- Set all bots to find tier 1 neutrals
 	NeutralItems:InitializeFindTimings()
 	-- Set Initialized Flag
@@ -108,18 +116,23 @@ function DataTables:Initialize()
 
 	-- debug prints
 	if isDebug then
-		if Players ~= nil then
-			for i,unit in pairs(Players) do
+		if AllHumanPlayers ~= nil then
+			for i, unit in pairs(AllHumanPlayers) do
 				print('Stats table for Player '.. i)
 				DeepPrintTable(unit.stats)
 			end
 		end
-		if Bots ~= nil then
-			for i,unit in pairs(Bots) do
-				print('Stats table for Bot '.. i)
-				DeepPrintTable(unit.stats)
-			end
+		
+		for i,unit in pairs(AllBots[RADIANT]) do
+			print('Stats table for Bot '.. i)
+			DeepPrintTable(unit.stats)
 		end
+		
+		for i,unit in pairs(AllBots[DIRE]) do
+			print('Stats table for Bot '.. i)
+			DeepPrintTable(unit.stats)
+		end
+
 	end
 
 end
@@ -206,20 +219,22 @@ function DataTables:GenerateStatsTables(unit)
 	if not DataTables:IsRealHero(unit) then return end
 	-- name for debug purposes
 	local thisName = unit:GetName()
-	-- Is bot?
-	if PlayerResource:GetSteamID(unit:GetMainControllingPlayer())==PlayerResource:GetSteamID(100) then
-		thisIsBot = true
-		Utilities:InsertUnique(Bots, unit)
-	else
-		Utilities:InsertUnique(Players, unit)
-	end
-	Utilities:InsertUnique(AllUnits, unit)
 	-- PlayerID, Team, Role
 	if unit:GetPlayerID() ~= nil then
 		thisId = unit:GetPlayerID()
-		thisTeam=PlayerResource:GetTeam(thisId)
+		thisTeam = PlayerResource:GetTeam(thisId)
 		thisRole = 0;
 	end
+
+	-- Is bot?
+	if PlayerResource:GetSteamID(unit:GetMainControllingPlayer()) == PlayerResource:GetSteamID(100) then
+		thisIsBot = true
+		Utilities:InsertUnique(AllBots[thisTeam], unit)
+	else
+		Utilities:InsertUnique(AllHumanPlayers, unit)
+	end
+
+	Utilities:InsertUnique(AllUnits, unit)
 	thisRole = DataTables:GetRole(thisName)
 
 	-- create a stats table for the bot
@@ -409,7 +424,7 @@ end
 function DataTables:GetRoleGPM(bot)
 	local data = {}
 	local names = {}
-	for _,unit in pairs(Players) do
+	for _,unit in pairs(AllHumanPlayers) do
 		local num = PlayerResource:GetGoldPerMin(unit.stats.id)
 		table.insert(data,num)
 		table.insert(names, unit.stats.name)
@@ -422,7 +437,7 @@ function DataTables:GetRoleGPM(bot)
 	if data[bot.stats.role] ~= nil then
 		return data[bot.stats.role], names[bot.stats.role]
 	-- specific debug case, pretend we have more players than we do
-	elseif isDebug and #Players == 1 then
+	elseif isDebug and #AllHumanPlayers == 1 then
 		return data[1] / bot.stats.role, names[1]
 	else
 		return 0
@@ -434,7 +449,7 @@ end
 function DataTables:GetRoleXPM(bot)
 	local data = {}
 	local names = {}
-	for _,unit in pairs(Players) do
+	for _,unit in pairs(AllHumanPlayers) do
 		local num = PlayerResource:GetXPPerMin(unit.stats.id)
 		table.insert(data,num)
 		table.insert(names, unit.stats.name)
@@ -455,7 +470,7 @@ function DataTables:GetRoleXPM(bot)
 	if data[role] ~= nil then
 		return data[role], names[role]
 	-- specific debug case, pretend we have more players than we do
-	elseif isDebug and #Players == 1 then
+	elseif isDebug and #AllHumanPlayers == 1 then
 		return data[1] / role, names[1]
 	else
 		return 0
@@ -467,7 +482,7 @@ function DataTables:GetPerMinuteTables()
 	local gpm = {}
 	local xpm = {}
 	local names = {}
-	for _,unit in pairs(Players) do
+	for _,unit in pairs(AllHumanPlayers) do
 		local gp = PlayerResource:GetGoldPerMin(unit.stats.id)
 		local xp = PlayerResource:GetXPPerMin(unit.stats.id)
 		table.insert(gpm,gp)
@@ -475,7 +490,7 @@ function DataTables:GetPerMinuteTables()
 		table.insert(names, unit.stats.name)
 	end
 	-- specific debug case, pretend we have more players than we do
-	if isDebug and #Players == 1 then
+	if isDebug and #AllHumanPlayers == 1 then
 		for i=2,5 do
 			table.insert(gpm, gpm[1] / i)
 			table.insert(xpm, xpm[1] / i)
@@ -536,9 +551,9 @@ function DataTables:PurgeHumanSideBots()
 	local removed = 0
 	while removed < countToRemove and attempts < countToRemove do
 		attempts = attempts + 1
-		for i, unit in pairs(Bots) do
+		for i, unit in pairs(AllBots[team]) do
 			if unit.stats.team == team then
-				table.remove(Bots,i)
+				table.remove(AllBots,i)
 				removed = removed + 1
 				print('Removing '..unit.stats.name..' from the bots list.')
 				table.insert(PlayerBots, unit)
@@ -551,7 +566,14 @@ end
 -- Both support bots will initially be set to position four.
 -- Make one bot support 5 (at random)
 function DataTables:SetBotPositionFive()
-	for _, bot in pairs(Bots) do
+	for _, bot in pairs(AllBots[RADIANT]) do
+		-- The first position four selected is the unlucky one
+		if bot.stats.role == 4 then
+			bot.stats.role = 5
+			break
+		end
+	end
+	for _, bot in pairs(AllBots[DIRE]) do
 		-- The first position four selected is the unlucky one
 		if bot.stats.role == 4 then
 			bot.stats.role = 5
@@ -591,22 +613,28 @@ end
 -- Assigns role positions to bots
 -- Base role positions are determined by
 function DataTables:AssignBotRoles()
-	local assignedRoles = {false, false, false, false, false}
+	local assignedRoles = {
+		[RADIANT] = {false, false, false, false, false},
+		[DIRE] = {false, false, false, false, false}
+	}
 	local roleNames = {'', '', '', '', ''}
 	local roleBuckets = { {}, {}, {}, {}, {}}
 	-- Add bots to their preferred role bucket
-	for index, bot in pairs(Bots) do
+	for index, bot in pairs(AllBots[DIRE]) do
+		table.insert(roleBuckets[bot.stats.role], bot)
+	end
+	for index, bot in pairs(AllBots[RADIANT]) do
 		table.insert(roleBuckets[bot.stats.role], bot)
 	end
 	-- iterate over buckets
 	for _, bucket in ipairs(roleBuckets) do
 		-- iterate over bucket members and assign best role
 		for _, bot in ipairs(bucket) do
-			local preferredRole = DataTables:GetBestPossibleRole(bot.stats.role, assignedRoles)
+			local preferredRole = DataTables:GetBestPossibleRole(bot.stats.role, assignedRoles[bot.stats.team])
 			if preferredRole ~= nil then
 				bot.stats.role = preferredRole
 				roleNames[preferredRole] = bot.stats.name
-				assignedRoles[preferredRole] = true
+				assignedRoles[bot.stats.team][preferredRole] = true
 			end
 		end
 	end
@@ -643,10 +671,10 @@ end
 -- Sorts the bots table by role
 function DataTables:SortBotsByRole()
 	local sortedData = {}
-	for i = 1,#Bots do
+	for i = 1,#AllBots[RADIANT] do
 		table.insert(sortedData,i)
 	end
-	for _,bot in pairs(Bots) do
+	for _,bot in pairs(AllBots[RADIANT]) do
 		if type(bot) == 'table' then
 		sortedData[bot.stats.role] = bot
 		end
@@ -657,12 +685,30 @@ function DataTables:SortBotsByRole()
 			table.remove(sortedData, i)
 		end
 	end
-	return sortedData
+	AllBots[RADIANT] = sortedData
+
+	sortedData = {}
+	for i = 1,#AllBots[DIRE] do
+		table.insert(sortedData,i)
+	end
+	for _,bot in pairs(AllBots[DIRE]) do
+		if type(bot) == 'table' then
+		sortedData[bot.stats.role] = bot
+		end
+	end
+	-- ensure all slots are bots
+	for i=5,1,-1 do
+			if type(sortedData[i]) ~= 'table' then
+			table.remove(sortedData, i)
+		end
+	end
+	AllBots[DIRE] = sortedData
+	return AllBots
 end
 
 -- returns a players Player table by their steam ID
 function DataTables:GetPlayerById(id)
-	for _, player in ipairs(Players) do
+	for _, player in ipairs(AllHumanPlayers) do
 		if player.stats.id == id then
 			return player
 		end
@@ -673,5 +719,5 @@ end
 -- Initialize (if Debug)
 if isSoloDebug then
 	DataTables:Initialize()
-	DeepPrintTable(Bots)
+	DeepPrintTable(AllBots)
 end

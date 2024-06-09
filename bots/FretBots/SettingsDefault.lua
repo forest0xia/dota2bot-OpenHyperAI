@@ -351,7 +351,7 @@
 				-- Set to false to disable adjustments based on kills.
 				enabled	= true,
 				-- if the bots are this many kills behind, begin adjusting
-				advantageThreshold = 2,
+				advantageThreshold = 1,
 				-- Awards scaled by scale amount every <this many> kills beyond the threshold
 				incrementEvery = 1,
 				-- base bonus increased by this much when over threshold

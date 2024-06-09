@@ -404,7 +404,7 @@ local humanSideTimeGap = WisdomRuneTimeGap
 local function CheckWisdomRuneAvailability()
 	if not WisdomRuneSpawned then
 		if humanSideTimeGap ~= WisdomRuneTimeGap and J.IsHumanPlayerInTeam() then
-			humanSideTimeGap = WisdomRuneTimeGap + 110
+			humanSideTimeGap = WisdomRuneTimeGap + 90
 		end
 
 		if DotaTime() - LastWisdomRuneTime >= humanSideTimeGap then

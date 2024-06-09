@@ -35,7 +35,8 @@ RoleDeterminationBots = {}
 -- prior to starting this
 function RoleDetermination:Timer()
 	-- Sanity Check
-	if Bots == nil then
+	-- if AllBots == nil or AllBots[2] == nil or AllBots[3] == nil then
+	if AllBots == nil then
 		Debug:Print('DataTables not yet initialized!')
 		Timers:RemoveTimer(botRoleDeterminationTimerName)
 		return nil
@@ -54,7 +55,9 @@ function RoleDetermination:Timer()
 	-- the horn sounds. This timer should ideally track for less than one
 	-- minute so that we can resort the Bots array prior to the first
 	-- PerMinuteTimer tick.
-	for _, bot in ipairs(Bots) do
+	for team = 2, 3 do
+		
+	for _, bot in ipairs(AllBots[team]) do
 		local midWeight = 0
 		local topWeight = 0
 		local botWeight = 0
@@ -86,6 +89,7 @@ function RoleDetermination:Timer()
 			bot.stats.laneWeights.bot = botWeight
 		end
 	end
+end
 	-- rerun in one second
 	return 1
 end
@@ -112,11 +116,13 @@ end
 function RoleDetermination:DetermineRoles()
 	-- If there are less than 5 bots (i.e. they have a human), don't even bother.
 	-- far too many extra cases to handle.
-	if #Bots < 5 then
+	
+	for team = 2, 3 do
+	if #AllBots[team] < 5 then
 		Debug:Print('The bots have human players on their team. Dynamic role assignment disabled.')
 		return
 	end
-	for _, bot in ipairs(Bots) do
+	for _, bot in ipairs(AllBots[team]) do
 		local top = bot.stats.laneWeights.top
 		local mid = bot.stats.laneWeights.mid
 		local bottom = bot.stats.laneWeights.bot
@@ -161,7 +167,7 @@ function RoleDetermination:DetermineRoles()
 		table.insert(RoleDeterminationBots, RoleDetermination:GetBestBot(LANE_OFF, 3))
 		table.insert(RoleDeterminationBots, RoleDetermination:GetBestBot(LANE_OFF, 4))
 		table.insert(RoleDeterminationBots, RoleDetermination:GetBestBot(LANE_SAFE, 5))
-		Bots = RoleDeterminationBots
+		AllBots[team] = RoleDeterminationBots
 	-- def. trilane
 	elseif laneCounts.safe == 3 and laneCounts.mid == 1 and laneCounts.off == 1 then
 		table.insert(RoleDeterminationBots, RoleDetermination:GetBestBot(LANE_SAFE, 1))
@@ -169,7 +175,7 @@ function RoleDetermination:DetermineRoles()
 		table.insert(RoleDeterminationBots, RoleDetermination:GetBestBot(LANE_OFF, 3))
 		table.insert(RoleDeterminationBots, RoleDetermination:GetBestBot(LANE_SAFE, 4))
 		table.insert(RoleDeterminationBots, RoleDetermination:GetBestBot(LANE_SAFE, 5))
-		Bots = RoleDeterminationBots
+		AllBots[team] = RoleDeterminationBots
 	-- off. trilane
 	elseif laneCounts.safe == 1 and laneCounts.mid == 1 and laneCounts.off == 3 then
 		table.insert(RoleDeterminationBots, RoleDetermination:GetBestBot(LANE_SAFE, 1))
@@ -177,7 +183,7 @@ function RoleDetermination:DetermineRoles()
 		table.insert(RoleDeterminationBots, RoleDetermination:GetBestBot(LANE_OFF, 3))
 		table.insert(RoleDeterminationBots, RoleDetermination:GetBestBot(LANE_OFF, 4))
 		table.insert(RoleDeterminationBots, RoleDetermination:GetBestBot(LANE_OFF,5))
-		Bots = RoleDeterminationBots
+		AllBots[team] = RoleDeterminationBots
 	-- dual mid, solo off
 	elseif laneCounts.safe == 2 and laneCounts.mid == 2 and laneCounts.off == 1 then
 		table.insert(RoleDeterminationBots, RoleDetermination:GetBestBot(LANE_SAFE, 1))
@@ -185,7 +191,7 @@ function RoleDetermination:DetermineRoles()
 		table.insert(RoleDeterminationBots, RoleDetermination:GetBestBot(LANE_OFF, 3))
 		table.insert(RoleDeterminationBots, RoleDetermination:GetBestBot(LANE_MID, 4))
 		table.insert(RoleDeterminationBots, RoleDetermination:GetBestBot(LANE_SAFE, 5))
-		Bots = RoleDeterminationBots
+		AllBots[team] = RoleDeterminationBots
 	-- dual mid, solo safe
 	elseif laneCounts.safe == 2 and laneCounts.mid == 2 and laneCounts.off == 1 then
 		table.insert(RoleDeterminationBots, RoleDetermination:GetBestBot(LANE_SAFE, 1))
@@ -193,7 +199,7 @@ function RoleDetermination:DetermineRoles()
 		table.insert(RoleDeterminationBots, RoleDetermination:GetBestBot(LANE_OFF, 3))
 		table.insert(RoleDeterminationBots, RoleDetermination:GetBestBot(LANE_MID, 4))
 		table.insert(RoleDeterminationBots, RoleDetermination:GetBestBot(LANE_OFF, 5))
-		Bots = RoleDeterminationBots
+		AllBots[team] = RoleDeterminationBots
 	-- Things start getting wacky here
 	-- tri safe, dual mid
 	elseif laneCounts.safe == 3 and laneCounts.mid == 2 then
@@ -202,7 +208,7 @@ function RoleDetermination:DetermineRoles()
 		table.insert(RoleDeterminationBots, RoleDetermination:GetBestBot(LANE_SAFE, 3))
 		table.insert(RoleDeterminationBots, RoleDetermination:GetBestBot(LANE_MID, 4))
 		table.insert(RoleDeterminationBots, RoleDetermination:GetBestBot(LANE_SAFE, 5))
-		Bots = RoleDeterminationBots
+		AllBots[team] = RoleDeterminationBots
 	-- tri off, dual mid
 	elseif laneCounts.off == 3 and laneCounts.mid == 2 then
 		table.insert(RoleDeterminationBots, RoleDetermination:GetBestBot(LANE_OFF, 1))
@@ -210,7 +216,7 @@ function RoleDetermination:DetermineRoles()
 		table.insert(RoleDeterminationBots, RoleDetermination:GetBestBot(LANE_OFF, 3))
 		table.insert(RoleDeterminationBots, RoleDetermination:GetBestBot(LANE_MID, 4))
 		table.insert(RoleDeterminationBots, RoleDetermination:GetBestBot(LANE_OFF, 5))
-		Bots = RoleDeterminationBots
+		AllBots[team] = RoleDeterminationBots
 	-- tri off, dual safe
 	elseif laneCounts.off == 3 and laneCounts.safe == 2 then
 		table.insert(RoleDeterminationBots, RoleDetermination:GetBestBot(LANE_SAFE, 1))
@@ -218,7 +224,7 @@ function RoleDetermination:DetermineRoles()
 		table.insert(RoleDeterminationBots, RoleDetermination:GetBestBot(LANE_OFF, 3))
 		table.insert(RoleDeterminationBots, RoleDetermination:GetBestBot(LANE_OFF, 4))
 		table.insert(RoleDeterminationBots, RoleDetermination:GetBestBot(LANE_SAFE, 5))
-		Bots = RoleDeterminationBots
+		AllBots[team] = RoleDeterminationBots
 	-- tri safe, dual off
 	elseif laneCounts.safe == 3 and laneCounts.off == 2 then
 		table.insert(RoleDeterminationBots, RoleDetermination:GetBestBot(LANE_SAFE, 1))
@@ -226,19 +232,21 @@ function RoleDetermination:DetermineRoles()
 		table.insert(RoleDeterminationBots, RoleDetermination:GetBestBot(LANE_OFF, 3))
 		table.insert(RoleDeterminationBots, RoleDetermination:GetBestBot(LANE_SAFE, 4))
 		table.insert(RoleDeterminationBots, RoleDetermination:GetBestBot(LANE_SAFE, 5))
-		Bots = RoleDeterminationBots
+		AllBots[team] = RoleDeterminationBots
 	else
 		--If we got here, the bots are trying something too strange to bother with.
 		Debug:Print('I consider the current case too edge to bother fixing.  Dynamic roles have not been assigned.')
 	end
+end
 end
 
 -- Iterates over the Bots table and finds the best bot for this role
 -- It's assumed we'll work top down (1 to 5, that is), so all it really does
 -- is find the first bot that is in the right lane and has not been assigned.
 function RoleDetermination:GetBestBot(lane, role)
+	for team = 2, 3 do
 	-- typical case, bot assigned to right lane and not yet assigned
-	for _, bot in ipairs(Bots) do
+	for _, bot in ipairs(AllBots[team]) do
 		if bot.stats.lane == lane and not bot.stats.isRoleAssigned then
 			bot.stats.isRoleAssigned = true
 			bot.stats.role = role
@@ -248,7 +256,7 @@ function RoleDetermination:GetBestBot(lane, role)
 	end
 	-- This shouldn't happen, but if we get here then we didn't detect a bot
 	-- for the desired lane. Just give 'em the best we got
-	for _, bot in ipairs(Bots) do
+	for _, bot in ipairs(AllBots[team]) do
 		if not bot.stats.isRoleAssigned then
 			bot.stats.isRoleAssigned = true
 			bot.stats.role = role
@@ -257,15 +265,23 @@ function RoleDetermination:GetBestBot(lane, role)
 	end
 	-- This should double never happen, means all bots are already reassigned.
 	Debug:Print('Something has gone horribly wrong.  All bots have already been assigned roles.')
+end
 	return nil
 end
 
 function RoleDetermination:AnnounceRoles()
-	Utilities:Print('Bot Roles have been determined:')
-	for _, bot in ipairs(Bots) do
-		-- Print this role to chat
-		local msg = Utilities:ColorString('Position '..bot.stats.role..': '.. bot.stats.name .. ': ' .. bot.stats.skill, Utilities:GetPlayerColor(bot.stats.id))
-		Utilities:Print(msg)
+	Utilities:Print('Bot Roles have been determined.')
+	for team = 2, 3 do
+		if team == 2 and #AllBots[team] >= 1 then
+			Utilities:Print('For Radiant team:')
+		elseif team == 3 and #AllBots[team] >= 1 then
+			Utilities:Print('For Dire team:')
+		end
+		for _, bot in ipairs(AllBots[team]) do
+			-- Print this role to chat
+			local msg = Utilities:ColorString('Position '..bot.stats.role..': '.. bot.stats.name .. ': ' .. bot.stats.skill, Utilities:GetPlayerColor(bot.stats.id))
+			Utilities:Print(msg)
+		end
 	end
 end
 

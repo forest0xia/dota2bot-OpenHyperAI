@@ -139,7 +139,7 @@ end
 function Settings:RepurcussionTimer()
 	if allowPlayersToCheat then return end
 
-	for _, player in ipairs(Players) do
+	for _, player in ipairs(AllHumanPlayers) do
 		if player.stats.repurcussionCount < player.stats.repurcussionTarget then
 			if player:IsAlive() then
 				player.stats.repurcussionCount = player.stats.repurcussionCount + 1
@@ -474,7 +474,8 @@ function Settings:DoDisplayNetWorth()
 	local playerTeamNetWorth = 0
 	local netWorth = 0
 	local roundedNetWorth = 0
-	for _, bot in ipairs(Bots) do
+	for team = 2, 3 do
+	for _, bot in ipairs(AllBots[team]) do
 		netWorth = PlayerResource:GetNetWorth(bot.stats.id)
 		botTeamNetWorth = netWorth + botTeamNetWorth
 		roundedNetWorth = Utilities:Round(netWorth, -2)
@@ -482,8 +483,9 @@ function Settings:DoDisplayNetWorth()
 		botMsg = Utilities:ColorString(bot.stats.name ..': '..tostring(roundedNetWorth)..'k', Utilities:GetPlayerColor(bot.stats.id))
 		msg = msg..'  '..botMsg
 	end
+end
 	Utilities:Print(msg)
-	for _, player in ipairs(Players) do
+	for _, player in ipairs(AllHumanPlayers) do
 		netWorth = PlayerResource:GetNetWorth(player.stats.id)
 		playerTeamNetWorth = netWorth + playerTeamNetWorth
 	end
@@ -502,7 +504,8 @@ end
 function Settings:DoGetStats(tokens)
 	-- tokens[2] will contain the stat to display
 	local stat = tokens[2]
-	for _, bot in ipairs(Bots) do
+	for team = 2, 3 do
+	for _, bot in ipairs(AllBots[team]) do
 		local value = bot.stats.awards[stat]
 		if value ~= nil then
 			local msg = ''
@@ -510,6 +513,7 @@ function Settings:DoGetStats(tokens)
 			Utilities:Print(msg,MSG_CONSOLE_GOOD)
 		end
 	end
+end
 end
 
 

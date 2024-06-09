@@ -230,7 +230,7 @@ function X.ConsiderEarthBind()
         and not J.IsDisabled(nInRangeEnemy[1])
         and not nInRangeEnemy[1]:HasModifier('modifier_meepo_earthbind')
         then
-            local nDelay = (GetUnitToUnitDistance(bot, botTarget) / nSpeed) + nCastPoint
+            local nDelay = (GetUnitToUnitDistance(bot, nInRangeEnemy[1]) / nSpeed) + nCastPoint
             return BOT_ACTION_DESIRE_HIGH, nInRangeEnemy[1]:GetExtrapolatedLocation(nDelay)
         end
     end
@@ -259,7 +259,7 @@ function X.ConsiderEarthBind()
             and not nAllyInRangeEnemy[1]:HasModifier('modifier_faceless_void_chronosphere_freeze')
             and not nAllyInRangeEnemy[1]:HasModifier('modifier_meepo_earthbind')
             then
-                local nDelay = (GetUnitToUnitDistance(bot, botTarget) / nSpeed) + nCastPoint
+                local nDelay = (GetUnitToUnitDistance(bot, nAllyInRangeEnemy[1]) / nSpeed) + nCastPoint
                 return BOT_ACTION_DESIRE_HIGH, nAllyInRangeEnemy[1]:GetExtrapolatedLocation(nDelay + nCastPoint)
             end
         end

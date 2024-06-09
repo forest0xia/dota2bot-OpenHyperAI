@@ -707,7 +707,7 @@ function X.OverrideTeamHeroes()
 end
 
 -- 这行代码为了人工挑选想要的阵容。如果想让电脑自己随机英雄，则注释掉这行
--- sSelectList = X.OverrideTeamHeroes()
+sSelectList = X.OverrideTeamHeroes()
 
 function X.ShuffleArray(array)
 	if type(array) ~= "table" then

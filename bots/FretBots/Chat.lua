@@ -87,14 +87,16 @@ function handleFailMessage(message)
     -- Implement
 end
 
-local function getRandomBot(t)
-    local temp = math.random(1, #Bots)
+local function getRandomBot()
     local val
-    for idx, value in pairs(t) do
+	for team = 2, 3 do
+    local temp = math.random(1, #AllBots[team])
+    for idx, value in pairs(AllBots[team]) do
         val = value
         if idx == temp then
             return value
         end
+    end
     end
     return val
 end
@@ -124,7 +126,7 @@ function handleResponseMessage(inputText, message)
         end
     end
     if not foundBot or not heroHame then
-        local aBot = getRandomBot(Bots)
+        local aBot = getRandomBot()
         if aBot ~= nil then
             Say(aBot, aiText, false)
         end
