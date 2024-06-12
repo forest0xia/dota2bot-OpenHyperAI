@@ -5,7 +5,7 @@ local heroNames = require('bots.FretBots.HeroNames')
 local API_KEY = ''
 
 local recordedMessages = {}
-local maxpromptsLength = 12
+local maxpromptsLength = 2
 
 local inGameBots = {}
 local function botNameListInTheGame()
