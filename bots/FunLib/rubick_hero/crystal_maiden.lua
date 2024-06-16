@@ -219,7 +219,7 @@ function X.ConsiderCrystalNova()
 		end
 
 		npcEnemy = nWeakestEnemyHeroInRange
-		if J.IsValidHero(npcEnemy)
+		if npcEnemy ~= nil and npcEnemy:IsAlive()
 			and ( npcEnemy:GetHealth()/npcEnemy:GetMaxHealth() < 0.4 )
 			and GetUnitToUnitDistance( npcEnemy, bot ) <= nRadius + nCastRange
 		then

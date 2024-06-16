@@ -176,13 +176,6 @@ function X.SkillsComplement()
         bot:Action_UseAbility(Burrow)
         return
     end
-
-    UnBurrowDesire = X.ConsiderUnBurrow()
-    if UnBurrowDesire > 0
-    then
-        bot:Action_UseAbility(UnBurrow)
-        return
-    end
 end
 
 function X.ConsiderImpale()
@@ -446,7 +439,7 @@ function X.ConsiderSpikedCarapace()
 end
 
 function X.ConsiderBurrow()
-    if bot:HasModifier('modifier_nyx_assassin_burrow') or not J.CanBeCast(Burrow)
+    if not Burrow:IsFullyCastable()
     then
         return BOT_ACTION_DESIRE_NONE
     end
@@ -461,21 +454,6 @@ function X.ConsiderBurrow()
         then
             return BOT_ACTION_DESIRE_HIGH
         end
-    end
-
-    return BOT_ACTION_DESIRE_NONE
-end
-
-function X.ConsiderUnBurrow()
-    if not bot:HasModifier('modifier_nyx_assassin_burrow') or not J.CanBeCast(UnBurrow)
-    then
-        return BOT_ACTION_DESIRE_NONE
-    end
-
-    local nEnemyHeroes = J.GetNearbyHeroes(bot, 1200, true, BOT_MODE_NONE)
-    if #nEnemyHeroes < 1
-    then
-        return BOT_ACTION_DESIRE_HIGH
     end
 
     return BOT_ACTION_DESIRE_NONE

@@ -84,7 +84,7 @@ sRoleItemsBuyList['pos_4'] = {
 	"item_enchanted_mango",
 	"item_blood_grenade",
 
-	"item_arcane_boots",
+	"item_tranquil_boots",
 	"item_wind_lace",
 	"item_phylactery",
 	"item_magic_wand",
@@ -142,7 +142,7 @@ Pos5SellList = {
     "item_magic_wand",
 }
 
-X['sSellList'] = Pos4SellList
+X['sSellList'] = Pos2SellList
 
 if sRole == "pos_2" then X['sSellList'] = Pos2SellList end
 if sRole == "pos_4" then X['sSellList'] = Pos4SellList end

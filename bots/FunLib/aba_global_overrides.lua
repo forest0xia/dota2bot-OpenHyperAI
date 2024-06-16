@@ -197,23 +197,6 @@ function CDOTA_Bot_Script:GetAttackRange()
     return originalGetAttackRange(self)
 end
 
-local originalActionImmediate_SwapItems = CDOTA_Bot_Script.ActionImmediate_SwapItems
-local itemSwapTime = { }
-local itemSwapGapTime = 6 + 1 -- 6s item cd after swap, 1s delta time for item usage reaction.
-function CDOTA_Bot_Script:ActionImmediate_SwapItems(intnSlot1, intnSlot2)
-	local unitName = self:GetUnitName()
-	-- print(unitName.." swaps items: "..tostring(intnSlot1)..', '..tostring(intnSlot2))
-	if itemSwapTime[unitName] == nil then
-		itemSwapTime[unitName] = DotaTime()
-	end
-	if DotaTime() - itemSwapTime[unitName] > itemSwapGapTime then
-		return originalActionImmediate_SwapItems(self, intnSlot1, intnSlot2)
-	else
-		print('[WARN] '..unitName..' failed to swap items due to trying too frequently.')
-	end
-    return nil
-end
-
 -- local originalGetUnitToLocationDistance = CDOTA_Bot_Script.GetUnitToLocationDistance
 -- -- Cache duration in seconds
 -- local cacheDuration = 0.03 -- 30 milliseconds
