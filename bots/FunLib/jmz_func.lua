@@ -1961,7 +1961,7 @@ local NearbyHeroMap = {
 }
 
 -- Cache duration in seconds
-local nearByHeroCacheDuration = 0.02 -- 0.02s = 20ms. if you have 60 frames per second, it's 1000/60 = 16.7ms per frame
+local nearByHeroCacheDuration = 0.05 -- 0.05s = 50ms. if you have 60 frames per second, it's 1000/60 = 16.7ms per frame
 -- Check the current time
 local currentTime
 local cacheNearbyTable
