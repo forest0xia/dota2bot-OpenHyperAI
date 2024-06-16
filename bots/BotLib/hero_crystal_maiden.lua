@@ -391,7 +391,7 @@ function X.ConsiderQ()
 
 		--对最虚弱的敌人使用
 		npcEnemy = nWeakestEnemyHeroInRange
-		if npcEnemy ~= nil and npcEnemy:IsAlive()
+		if J.IsValidHero(npcEnemy)
 			and ( npcEnemy:GetHealth()/npcEnemy:GetMaxHealth() < 0.4 )
 			and GetUnitToUnitDistance( npcEnemy, bot ) <= nRadius + nCastRange
 		then

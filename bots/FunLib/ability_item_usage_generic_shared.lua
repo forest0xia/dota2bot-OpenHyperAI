@@ -2008,7 +2008,7 @@ X.ConsiderItemDesire["item_force_staff"] = function( hItem )
 			local enemyHeroesNearbyCM = J.GetNearbyHeroes(npcAlly,  1200, true, BOT_MODE_NONE )
 			for _, npcEnemy in pairs( enemyHeroesNearbyCM )
 			do
-				if npcEnemy ~= nil and npcEnemy:IsAlive()
+				if J.IsValidHero(npcEnemy)
 					and J.CanCastOnNonMagicImmune( npcEnemy )
 					and GetUnitToUnitDistance( npcEnemy, npcAlly ) > 835
 					and npcAlly:IsFacingLocation( npcEnemy:GetLocation(), 30 )
@@ -2549,7 +2549,7 @@ X.ConsiderItemDesire["item_hurricane_pike"] = function( hItem )
 			local enemyHeroesNearbyCM = J.GetNearbyHeroes(npcAlly,  1200, true, BOT_MODE_NONE )
 			for _, npcEnemy in pairs( enemyHeroesNearbyCM )
 			do
-				if npcEnemy ~= nil and npcEnemy:IsAlive()
+				if J.IsValidHero(npcEnemy)
 					and J.CanCastOnNonMagicImmune( npcEnemy )
 					and GetUnitToUnitDistance( npcEnemy, npcAlly ) > 835
 					and npcAlly:IsFacingLocation( npcEnemy:GetLocation(), 30 )

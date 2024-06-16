@@ -1,5 +1,5 @@
 -- Edit this flag to enable / disable debug
-local isDebug = true;
+local isDebug = false;
 local FretId = "76561197969449114";
 
 -- Instantiate the class

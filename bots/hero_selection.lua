@@ -638,7 +638,15 @@ local OneVoneLaneAssignment = {
 function X.OverrideTeamHeroes()
 	if GetTeam() == TEAM_RADIANT
 	then
-		return sSelectList
+		-- All random
+		return {
+			[1] = tSelectPoolList[1][RandomInt( 1, #tSelectPoolList[1] )],
+			[2] = tSelectPoolList[2][RandomInt( 1, #tSelectPoolList[2] )],
+			[3] = tSelectPoolList[3][RandomInt( 1, #tSelectPoolList[3] )],
+			[4] = 'npc_dota_hero_nyx_assassin',
+			[5] = tSelectPoolList[5][RandomInt( 1, #tSelectPoolList[5] )]
+		}
+		-- return sSelectList
 	else
 		return {
 
@@ -707,7 +715,7 @@ function X.OverrideTeamHeroes()
 end
 
 -- 这行代码为了人工挑选想要的阵容。如果想让电脑自己随机英雄，则注释掉这行
-sSelectList = X.OverrideTeamHeroes()
+-- sSelectList = X.OverrideTeamHeroes()
 
 function X.ShuffleArray(array)
 	if type(array) ~= "table" then

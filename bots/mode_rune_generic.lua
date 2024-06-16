@@ -719,7 +719,7 @@ function X.IsEnemyPickRune(bot,nRune)
 	
 	for _,enemy in pairs(nEnemys)
 	do
-		if  enemy ~= nil and enemy:IsAlive()
+		if J.IsValidHero(enemy)
 			and ( enemy:IsFacingLocation(runeLocation,30) or enemy:IsFacingLocation(bot:GetLocation(),30) or GetUnitToLocationDistance(enemy,runeLocation) < 500 )
 			and GetUnitToLocationDistance(enemy,runeLocation) < GetUnitToLocationDistance(bot,runeLocation) + 300
 		then

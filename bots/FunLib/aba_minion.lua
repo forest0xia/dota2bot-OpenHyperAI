@@ -177,6 +177,7 @@ local independent = {
 function X.IsValidUnit(unit)
 	return unit ~= nil
 	   and not unit:IsNull()
+	   and unit:CanBeSeen()
 	   and unit:IsAlive()
 end
 

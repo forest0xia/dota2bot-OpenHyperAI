@@ -2015,7 +2015,7 @@ X.ConsiderItemDesire["item_force_staff"] = function( hItem )
 			local enemyHeroesNearbyCM = J.GetNearbyHeroes(npcAlly,  1200, true, BOT_MODE_NONE )
 			for _, npcEnemy in pairs( enemyHeroesNearbyCM )
 			do
-				if npcEnemy ~= nil and npcEnemy:IsAlive()
+				if J.IsValidHero(npcEnemy)
 					and J.CanCastOnNonMagicImmune( npcEnemy )
 					and GetUnitToUnitDistance( npcEnemy, npcAlly ) > 835
 					and npcAlly:IsFacingLocation( npcEnemy:GetLocation(), 30 )
@@ -2556,7 +2556,7 @@ X.ConsiderItemDesire["item_hurricane_pike"] = function( hItem )
 			local enemyHeroesNearbyCM = J.GetNearbyHeroes(npcAlly,  1200, true, BOT_MODE_NONE )
 			for _, npcEnemy in pairs( enemyHeroesNearbyCM )
 			do
-				if npcEnemy ~= nil and npcEnemy:IsAlive()
+				if J.IsValidHero(npcEnemy)
 					and J.CanCastOnNonMagicImmune( npcEnemy )
 					and GetUnitToUnitDistance( npcEnemy, npcAlly ) > 835
 					and npcAlly:IsFacingLocation( npcEnemy:GetLocation(), 30 )
@@ -3690,7 +3690,7 @@ X.ConsiderItemDesire["item_shadow_amulet"] = function( hItem )
 		local nEnemyList = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 		for _, enemy in pairs( nEnemyList )
 		do
-			if enemy:IsAlive()
+			if J.IsValidHero(enemy)
 				and ( enemy:GetAttackTarget() == bot or enemy:IsFacingLocation( bot:GetLocation(), 16 ) )
 			then
 				local nNearbyEnemyTowers = bot:GetNearbyTowers( 888, true )
@@ -4307,11 +4307,13 @@ function X.CanJuke()
 	local nEnemies = J.GetNearbyHeroes(bot, 1200, true, BOT_MODE_NONE )
 	for _, enemy in pairs( nEnemies )
 	do
-		local enemyDamage = enemy:GetEstimatedDamageToTarget( true, bot, 4.0, DAMAGE_TYPE_ALL )
-		totalDamage = totalDamage + enemyDamage
-		if bot:GetHealth() <= totalDamage
-		then
-			return false
+		if J.IsValidHero(enemy) then
+			local enemyDamage = enemy:GetEstimatedDamageToTarget( true, bot, 4.0, DAMAGE_TYPE_ALL )
+			totalDamage = totalDamage + enemyDamage
+			if bot:GetHealth() <= totalDamage
+			then
+				return false
+			end
 		end
 	end
 

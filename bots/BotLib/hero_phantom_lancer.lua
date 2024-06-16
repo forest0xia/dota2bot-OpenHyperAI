@@ -537,7 +537,7 @@ function X.IsEnemyCastAbility()
 
 	for _, npcEnemy in pairs( enemyList )
 	do
-		if npcEnemy ~= nil and npcEnemy:IsAlive()
+		if J.IsValidHero(npcEnemy)
 			and ( npcEnemy:IsCastingAbility() or npcEnemy:IsUsingAbility() )
 			and npcEnemy:IsFacingLocation( bot:GetLocation(), 25 )
 		then

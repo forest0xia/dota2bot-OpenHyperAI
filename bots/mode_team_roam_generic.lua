@@ -1403,38 +1403,40 @@ end
 function X.IsOthersTarget(nUnit)
 	local bot = GetBot();
 
-	if X.IsAllysTarget(nUnit)
-	then
-		return true;
-	end
-	
-	if X.IsEnemysTarget(nUnit)
-	then
-		return true;
-	end
-	
-	if X.IsCreepTarget(nUnit)
-	then
-		return true
-	end
-	
-	local nTowers = bot:GetNearbyTowers(1600,true);
-	for _,tower in pairs(nTowers)
-	do
-		if tower ~= nil and tower:IsAlive()
-		   and tower:GetAttackTarget() == nUnit
+	if X.IsValid(nUnit) then
+		if X.IsAllysTarget(nUnit)
 		then
 			return true;
 		end
-	end
-	
-	local nTowers = bot:GetNearbyTowers(1600,false);
-	for _,tower in pairs(nTowers)
-	do
-		if tower ~= nil and tower:IsAlive()
-		   and tower:GetAttackTarget() == nUnit
+
+		if X.IsEnemysTarget(nUnit)
 		then
 			return true;
+		end
+
+		if X.IsCreepTarget(nUnit)
+		then
+			return true
+		end
+
+		local nTowers = bot:GetNearbyTowers(1600,true);
+		for _,tower in pairs(nTowers)
+		do
+			if J.IsValidBuilding(tower)
+			   and tower:GetAttackTarget() == nUnit
+			then
+				return true;
+			end
+		end
+
+		local nTowers = bot:GetNearbyTowers(1600,false);
+		for _,tower in pairs(nTowers)
+		do
+			if J.IsValidBuilding(tower)
+			   and tower:GetAttackTarget() == nUnit
+			then
+				return true;
+			end
 		end
 	end
 	
@@ -1448,7 +1450,7 @@ function X.IsCreepTarget(nUnit)
 	local nCreeps = bot:GetNearbyCreeps(1200,true);
 	for _,creep in pairs(nCreeps)
 	do
-		if  creep ~= nil and creep:IsAlive()
+		if X.IsValid(creep)
 		and creep:GetAttackTarget() == nUnit
 		and not J.IsTormentor(creep)
 		and not J.IsRoshan(creep)
@@ -1460,7 +1462,7 @@ function X.IsCreepTarget(nUnit)
 	local nCreeps = bot:GetNearbyCreeps(1200,false);
 	for _,creep in pairs(nCreeps)
 	do
-		if creep ~= nil and creep:IsAlive()
+		if X.IsValid(creep)
 		and creep:GetAttackTarget() == nUnit
 		and not J.IsTormentor(creep)
 		and not J.IsRoshan(creep)
@@ -2016,7 +2018,7 @@ function TrySwapInvItemForClarity()
 	and bot:GetActiveMode() ~= BOT_MODE_WARD 
 	then
 		local cSlot = bot:FindItemSlot('item_clarity')
-		if cSlot and bot:GetItemSlotType(cSlot) == ITEM_SLOT_TYPE_BACKPACK
+		if cSlot and bot:GetItemSlotType(cSlot) == ITEM_SLOT_TYPE_BACKPACK and J.GetMP(bot) < 0.3
 		then
 			local lessValItem = J.Item.GetMainInvLessValItemSlot(bot)
 
@@ -2034,7 +2036,7 @@ function TrySwapInvItemForFlask()
 	and bot:GetActiveMode() ~= BOT_MODE_WARD 
 	then
 		local cSlot = bot:FindItemSlot('item_flask')
-		if cSlot and bot:GetItemSlotType(cSlot) == ITEM_SLOT_TYPE_BACKPACK
+		if cSlot and bot:GetItemSlotType(cSlot) == ITEM_SLOT_TYPE_BACKPACK and J.GetHP(bot) < 0.6
 		then
 			local lessValItem = J.Item.GetMainInvLessValItemSlot(bot)
 

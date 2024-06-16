@@ -1323,7 +1323,7 @@ function J.IsWillBeCastUnitTargetSpell( bot, nRadius )
 	local enemyList = J.GetNearbyHeroes(bot, nRadius, true, BOT_MODE_NONE )
 	for _, npcEnemy in pairs( enemyList )
 	do
-		if npcEnemy ~= nil and npcEnemy:IsAlive()
+		if J.IsValidHero(npcEnemy)
 			and ( npcEnemy:IsCastingAbility() or npcEnemy:IsUsingAbility() )
 			and npcEnemy:IsFacingLocation( bot:GetLocation(), 20 )
 		then
@@ -1365,7 +1365,7 @@ function J.IsWillBeCastPointSpell( bot, nRadius )
 
 	for _, npcEnemy in pairs( enemyList )
 	do
-		if npcEnemy ~= nil and npcEnemy:IsAlive()
+		if J.IsValidHero(npcEnemy)
 			and ( npcEnemy:IsCastingAbility() or npcEnemy:IsUsingAbility() )
 			and npcEnemy:IsFacingLocation( bot:GetLocation(), 50 )
 		then
@@ -1961,7 +1961,7 @@ local NearbyHeroMap = {
 }
 
 -- Cache duration in seconds
-local nearByHeroCacheDuration = 0.02 -- 0.02s = 20ms. if you have 60 frames per second, it's 1000/60 = 16.7ms per frame
+local nearByHeroCacheDuration = 0.05 -- 0.05s = 50ms. if you have 60 frames per second, it's 1000/60 = 16.7ms per frame. the higher fps you have, the smaller the ms per frame.
 -- Check the current time
 local currentTime
 local cacheNearbyTable
@@ -2960,7 +2960,7 @@ function J.GetEnemyList( bot, nRadius )
 
 	for _, enemy in pairs( nCandidate )
 	do
-		if enemy ~= nil and enemy:IsAlive()
+		if J.IsValidHero(enemy)
 			and not J.IsSuspiciousIllusion( enemy )
 		then
 			table.insert( nRealEnemyList, enemy )
@@ -4143,7 +4143,7 @@ function J.DidEnemyCastAbility()
 
 	for _, npcEnemy in pairs(nEnemyHeroes)
 	do
-		if  npcEnemy ~= nil and npcEnemy:IsAlive()
+		if J.IsValidHero(npcEnemy)
 		and npcEnemy:IsFacingLocation(bot:GetLocation(), 30)
 		and (npcEnemy:IsCastingAbility() or npcEnemy:IsUsingAbility())
 		then
