@@ -1,7 +1,7 @@
 local Dota2Teams = {}
 
 -- List should have a least 4 teams for better performance.
-local teams = {
+local defaultTeams = {
     AzureRay = {"Eurus", "Paparazi", "Yang", "Fade", "Dy"},
     TSpirit = {"Yatoro雨", "TORONTOTOKYO", "Collapse", "Mira", "Miposhka"},
     Liquid = {"miCKe", "MATUMBAMAN", "qojqva", "Boxi", "Insania"},
@@ -27,16 +27,20 @@ end
 local function generateTeam(availableTeams, overrides, teamType)
     local teamName
     local playerList = {}
+    local randomNum = 2
+    local mody = teamType == "Radiant" and 2 or 3
     
     if overrides and #overrides > 0 then
         playerList = overrides
         teamName = teamType
     else
         repeat
-            teamName = table.remove(availableTeams, math.random(#availableTeams))
-        until not pickedTeams[teamName]
+            randomNum = RandomInt(1, #availableTeams)
+            teamName = table.remove(availableTeams, randomNum)
+        -- ensure a team can only pick from certain team names.
+        until not pickedTeams[teamName] and math.fmod(randomNum, 2) == (mody - 2)
         pickedTeams[teamName] = true
-        playerList = teams[teamName]
+        playerList = defaultTeams[teamName]
     end
 
     shuffle(playerList)
@@ -57,7 +61,7 @@ end
 -- }
 function Dota2Teams.generateTeams(overrides)
     local availableTeams = {}
-    for teamName, _ in pairs(teams) do
+    for teamName, _ in pairs(defaultTeams) do
         table.insert(availableTeams, teamName)
     end
 

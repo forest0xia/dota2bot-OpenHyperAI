@@ -2559,7 +2559,7 @@ function X.GetPositionForCM(bot)
 	end
 	if role == nil then
 		role = 1
-		print('[ERROR] Failed to determine role for bot '..bot:GetUnitName()..' in CM. Set it to pos: '..tostring(role))
+		print('[ERROR] Failed to determine role for bot '..bot:GetUnitName()..' in CM. It got assigned lane#: '..lane..'. Set it to pos: '..tostring(role))
 	end
 	return role
 end
@@ -2585,14 +2585,15 @@ function X.GetPosition(bot)
 			role = X.GetPositionForCM(bot)
 		end
 	end
+	local unitName = bot:GetUnitName()
 	if role == nil or GetGameState() == GAME_STATE_PRE_GAME then
-		local cRole = HeroPositions[bot:GetUnitName()]
+		local cRole = HeroPositions[unitName]
 		if cRole ~= nil then
 			role = cRole
 		else
 			local heroID = GetTeamPlayers(GetTeam())
 			for i, v in pairs(heroID) do
-				if GetSelectedHeroName(v) == bot:GetUnitName() then
+				if GetSelectedHeroName(v) == unitName then
 					local team = GetTeam() == TEAM_RADIANT and 'TEAM_RADIANT' or 'TEAM_DIRE'
 					role = X.roleAssignment[team][i]
 				end
@@ -2602,8 +2603,14 @@ function X.GetPosition(bot)
 	end
 
 	bot.assignedRole = role
-	if role == nil then
-		print("[ERROR] Failed to match bot role for bot: "..bot:GetUnitName())
+	
+	if role == nil and GetGameState() ~= GAME_STATE_PRE_GAME then
+		if HeroPositions[unitName] == nil then
+			HeroPositions[unitName] = X.GetRoleFromId(bot)
+		end
+		-- fallback to use Captain mode logic to determine roles
+		role = HeroPositions[unitName] ~= nil and HeroPositions[unitName] or X.GetPositionForCM(bot)
+		print("[ERROR] Failed to match bot role for bot: "..unitName..', set it to play pos: '..tostring(role))
 	end
 	return role
 end
