@@ -462,18 +462,20 @@ function X.ConsiderChronosphere()
 				and not J.IsLocationInBlackHole(loc)
 				and not J.IsLocationInArena(loc, nRadius)
 				then
-					if J.IsCore(botTarget)
-					then
-						bot:SetTarget(botTarget)
-						return BOT_ACTION_DESIRE_HIGH, loc
-					end
+					bot:SetTarget(botTarget)
+					return BOT_ACTION_DESIRE_HIGH, loc
+					-- if J.IsCore(botTarget)
+					-- then
+					-- 	bot:SetTarget(botTarget)
+					-- 	return BOT_ACTION_DESIRE_HIGH, loc
+					-- end
 
-					if  not J.IsCore(botTarget)
-					and nBotDeaths > nBotKills + 4
-					then
-						bot:SetTarget(botTarget)
-						return BOT_ACTION_DESIRE_HIGH, loc
-					end
+					-- if  not J.IsCore(botTarget)
+					-- and nBotDeaths > nBotKills + 4
+					-- then
+					-- 	bot:SetTarget(botTarget)
+					-- 	return BOT_ACTION_DESIRE_HIGH, loc
+					-- end
 				end
 			end
 		end

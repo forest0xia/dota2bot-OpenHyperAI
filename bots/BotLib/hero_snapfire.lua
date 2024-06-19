@@ -667,8 +667,7 @@ function X.ConsiderMortimerKisses()
                 and #nInRangeAlly >= #nTargetInRangeAlly
                 then
                     if (#nTargetInRangeAlly >= 1 and #nTargetInRangeAlly >= 1)
-                    or (#nTargetInRangeAlly == 0
-                        and J.IsCore(enemyHero))
+                    or #nTargetInRangeAlly == 0
                     then
                         return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation()
                     end

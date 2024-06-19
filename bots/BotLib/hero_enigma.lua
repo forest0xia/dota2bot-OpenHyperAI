@@ -688,7 +688,7 @@ function X.ConsiderBlackHole()
                 and #nInRangeEnemy <= 1
                 then
                     if  J.CanKillTarget(botTarget, nDamage * nDuration, DAMAGE_TYPE_PURE)
-                    and J.IsCore(botTarget)
+                    -- and J.IsCore(botTarget)
                     and botTarget:GetHealth() > 200
                     then
                         nInRangeEnemy = J.GetEnemiesNearLoc(botTarget:GetLocation(), nRadius)
@@ -708,7 +708,7 @@ function X.ConsiderBlackHole()
                 end
 
                 if  #nInRangeAlly >= #nInRangeEnemy
-                and J.IsCore(botTarget)
+                -- and J.IsCore(botTarget)
                 then
                     if  #nInRangeAlly == 0
                     and J.CanKillTarget(botTarget, nDamage * nDuration, DAMAGE_TYPE_PURE)

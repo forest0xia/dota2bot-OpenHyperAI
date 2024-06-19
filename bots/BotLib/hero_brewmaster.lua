@@ -540,7 +540,7 @@ function X.ConsiderPrimalSplit()
 
             if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
             and #nInRangeAlly >= #nInRangeEnemy
-            and J.IsCore(botTarget)
+            -- and J.IsCore(botTarget)
             and not (#nInRangeAlly >= 2 and #nInRangeEnemy <= 1)
             then
                 return BOT_ACTION_DESIRE_HIGH

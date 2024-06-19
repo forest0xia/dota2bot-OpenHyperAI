@@ -587,7 +587,7 @@ function X.ConsiderDemonicPurge()
         and J.CanCastOnNonMagicImmune(strongestTarget)
         and J.CanCastOnTargetAdvanced(strongestTarget)
         and J.IsInRange(bot, strongestTarget, nCastRange + 150)
-        and J.IsCore(strongestTarget)
+        -- and J.IsCore(strongestTarget)
         and not J.IsSuspiciousIllusion(strongestTarget)
         and not J.IsDisabled(strongestTarget)
 		then

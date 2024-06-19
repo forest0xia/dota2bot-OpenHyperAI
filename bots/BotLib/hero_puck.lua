@@ -730,31 +730,19 @@ function X.ConsiderDreamCoil()
             if  nInRangeAlly ~= nil and nTargetInRangeAlly
             and #nInRangeAlly >= #nTargetInRangeAlly
             then
-                if J.IsCore(strongestTarget)
+                if  #nInRangeAlly == 1 and #nTargetInRangeAlly == 0
+                and J.GetHP(strongestTarget) > 0.55
+                and J.IsAttacking(bot)
                 then
-                    if  #nInRangeAlly == 1 and #nTargetInRangeAlly == 0
-                    and J.GetHP(strongestTarget) > 0.55
-                    and J.IsAttacking(bot)
-                    then
-                        return BOT_ACTION_DESIRE_HIGH, strongestTarget:GetLocation()
-                    end
+                    return BOT_ACTION_DESIRE_HIGH, strongestTarget:GetLocation()
+                end
 
-                    if  #nInRangeAlly == 2 and #nTargetInRangeAlly == 0
-                    and J.GetHP(strongestTarget) > 0.2
-                    and J.IsRunning(strongestTarget)
-                    and not strongestTarget:IsFacingLocation(bot:GetLocation(), 90)
-                    then
-                        return BOT_ACTION_DESIRE_HIGH, strongestTarget:GetLocation()
-                    end
-                else
-                    local realEnemyCount = J.GetEnemiesNearLoc(strongestTarget:GetLocation(), nRadius)
-
-                    if  not J.IsCore(strongestTarget)
-                    and realEnemyCount ~= nil and #realEnemyCount >= 1
-                    and J.IsAttacking(bot)
-                    then
-                        return BOT_ACTION_DESIRE_HIGH, strongestTarget:GetLocation()
-                    end
+                if  #nInRangeAlly == 2 and #nTargetInRangeAlly == 0
+                and J.GetHP(strongestTarget) > 0.2
+                and J.IsRunning(strongestTarget)
+                and not strongestTarget:IsFacingLocation(bot:GetLocation(), 90)
+                then
+                    return BOT_ACTION_DESIRE_HIGH, strongestTarget:GetLocation()
                 end
             end
 		end

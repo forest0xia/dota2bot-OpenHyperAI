@@ -83,7 +83,7 @@ function CDOTA_Bot_Script:GetNearbyTowers(nRadius, bEnemies)
 		-- print("Stack Trace:", debug.traceback())
 		return nil
 	end
-    return originalGetNearbyTowers(self, nRadius, bEnemies)
+    return originalGetNearbyTowers(self, math.min(nRadius, 1600), bEnemies)
 end
 
 local originalIsIllusion = CDOTA_Bot_Script.IsIllusion
@@ -139,7 +139,7 @@ end
 
 local originalIsUsingAbility = CDOTA_Bot_Script.IsUsingAbility
 function CDOTA_Bot_Script:IsUsingAbility()
-    if not self:CanBeSeen() then
+    if not self:CanBeSeen() or not self:IsHero() then
 		-- print("IsUsingAbility has been called on unit can't be seen")
 		-- print("Stack Trace:", debug.traceback())
 		return false
@@ -174,7 +174,7 @@ function CDOTA_Bot_Script:GetNearbyHeroes(nRadius, bEnemies, nMode)
 		-- print("Stack Trace:", debug.traceback())
 		return nil
 	end
-    return originalGetNearbyHeroes(self, nRadius, bEnemies, nMode)
+    return originalGetNearbyHeroes(self, math.min(nRadius, 1600), bEnemies, nMode)
 end
 
 local originalIsMagicImmune = CDOTA_Bot_Script.IsMagicImmune
@@ -185,6 +185,21 @@ function CDOTA_Bot_Script:IsMagicImmune()
 		return true
 	end
     return originalIsMagicImmune(self)
+end
+
+local originalGetNearbyNeutralCreeps = CDOTA_Bot_Script.GetNearbyNeutralCreeps
+function CDOTA_Bot_Script:GetNearbyNeutralCreeps( nRadius, bEnemies)
+    return originalGetNearbyNeutralCreeps(self, math.min(nRadius, 1600), bEnemies)
+end
+
+local originalGetNearbyLaneCreeps = CDOTA_Bot_Script.GetNearbyLaneCreeps
+function CDOTA_Bot_Script:GetNearbyLaneCreeps( nRadius, bEnemies)
+    return originalGetNearbyLaneCreeps(self, math.min(nRadius, 1600), bEnemies)
+end
+
+local originalGetNearbyCreeps = CDOTA_Bot_Script.GetNearbyCreeps
+function CDOTA_Bot_Script:GetNearbyCreeps( nRadius, bEnemies)
+    return originalGetNearbyCreeps(self, math.min(nRadius, 1600), bEnemies)
 end
 
 local originalGetAttackRange = CDOTA_Bot_Script.GetAttackRange

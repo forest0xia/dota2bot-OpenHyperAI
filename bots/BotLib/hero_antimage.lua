@@ -438,13 +438,15 @@ function X.ConsiderManaVoid()
 				and not enemyHero:HasModifier('modifier_necrolyte_reapers_scythe')
 				and not enemyHero:HasModifier('modifier_oracle_false_promise_timer')
 			then
-				if J.IsCore(enemyHero)
-				then
-					nCastTarget = enemyHero
-					break
-				else
-					nCastTarget = enemyHero
-				end
+				nCastTarget = enemyHero
+				break
+				-- if J.IsCore(enemyHero)
+				-- then
+				-- 	nCastTarget = enemyHero
+				-- 	break
+				-- else
+				-- 	nCastTarget = enemyHero
+				-- end
 			end
 		end
 

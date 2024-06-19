@@ -7006,7 +7006,7 @@ X.ConsiderItemDesire["item_demonicon"] = function(hItem)
 		if nTargetInRangeAlly ~= nil
 		then
 			if  #nTargetInRangeAlly == 0
-			and J.IsCore(botTarget)
+			-- and J.IsCore(botTarget)
 			then
 				return BOT_ACTION_DESIRE_HIGH, bot, 'none', nil
 			end

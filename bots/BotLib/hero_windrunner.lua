@@ -755,15 +755,7 @@ function X.ConsiderFocusFire()
                 if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
                 and #nInRangeAlly >= #nTargetInRangeAlly
                 then
-                    if not J.IsCore(enemyHero)
-                    then
-                        if J.GetHP(enemyHero) > 0.49
-                        then
-                            return BOT_ACTION_DESIRE_HIGH, enemyHero
-                        end
-                    else
-                        return BOT_ACTION_DESIRE_HIGH, enemyHero
-                    end
+                    return BOT_ACTION_DESIRE_HIGH, enemyHero
                 end
             end
         end
