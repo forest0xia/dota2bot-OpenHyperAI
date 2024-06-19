@@ -188,8 +188,8 @@ function CDOTA_Bot_Script:IsMagicImmune()
 end
 
 local originalGetNearbyNeutralCreeps = CDOTA_Bot_Script.GetNearbyNeutralCreeps
-function CDOTA_Bot_Script:GetNearbyNeutralCreeps( nRadius, bEnemies)
-    return originalGetNearbyNeutralCreeps(self, math.min(nRadius, 1600), bEnemies)
+function CDOTA_Bot_Script:GetNearbyNeutralCreeps( nRadius)
+    return originalGetNearbyNeutralCreeps(self, math.min(nRadius, 1600))
 end
 
 local originalGetNearbyLaneCreeps = CDOTA_Bot_Script.GetNearbyLaneCreeps
