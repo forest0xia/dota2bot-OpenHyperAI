@@ -274,7 +274,7 @@ function Settings:OnPlayerChat(event)
 
 		-- Some commands are available for everyone
 		Settings:DoUserChatCommandParse(text, playerID)
-		if playerID == hostID or Debug:IsPlayerIDFret(playerID) then
+		if playerID == hostID then
 			-- check for 'light' commands
 			local isSuccess = Settings:DoSuperUserChatCommandParse(text)
 			-- if not that, then try to pcall arbitrary text

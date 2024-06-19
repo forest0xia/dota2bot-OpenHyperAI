@@ -200,6 +200,7 @@ function OnEnd()
 end
 
 function Think()
+
 	if J.CanNotUseAction(bot) then return end
 
 	if  shouldHarass
@@ -702,14 +703,39 @@ function X.CarryFindTarget()
 		if botLV > 12 then nBonusRange = 380; end
 		if botLV > 20 then nBonusRange = 330; end
 
-		nTarget = X.GetNearbyLastHitCreep(true, true, attackDamage, nAttackRange + nBonusRange, bot); 
-		if nTarget ~= nil 
+		nTarget = X.GetNearbyLastHitCreep(true, true, attackDamage, nAttackRange + nBonusRange, bot);
+		if nTarget ~= nil
 		then
-			return nTarget,BOT_MODE_DESIRE_ABSOLUTE; 
-		end	
-	end
+			return nTarget,BOT_MODE_DESIRE_ABSOLUTE;
+		end
+
+		--补两刀塔
+		local nEnemyTowers = bot:GetNearbyTowers(nAttackRange + 150,true);
+		if X.CanBeAttacked(nEnemyTowers[1])
+		   and J.IsWithoutTarget(bot)
+		   and X.IsLastHitCreep(nEnemyTowers[1], botAD * 2)
+		then
+			return nEnemyTowers[1],BOT_MODE_DESIRE_ABSOLUTE;
+		end
 		
-	
+		--补一刀野
+		local nNeutrals = bot:GetNearbyNeutralCreeps(nAttackRange + 150);
+		if J.IsWithoutTarget(bot)
+			and botMode ~= BOT_MODE_FARM 
+			and #nNeutrals > 0
+		then
+			for i = 1,#nNeutrals
+			do
+				if X.CanBeAttacked(nNeutrals[i])
+					and not X.IsAllysTarget(nNeutrals[i])
+					and X.IsLastHitCreep(nNeutrals[i],attackDamage)
+				then
+					return nNeutrals[i],BOT_MODE_DESIRE_ABSOLUTE;
+				end
+			end
+		end
+	end
+
 	local denyDamage = botAD + 3
 	local nNearbyEnemyHeroes = J.GetNearbyHeroes(bot,650,true,BOT_MODE_NONE);
 	if  IsModeSuitHit 
@@ -1886,7 +1912,9 @@ function ConsiderHarassInLaningPhase()
 
 							if J.IsLaning(bot)
 							then
-								if (J.IsHumanPlayer(nInRangeEnemy[1]) or J.IsCore(nInRangeEnemy[1])) then return nModeDesire + 0.1 end
+								if J.IsHumanPlayer(nInRangeEnemy[1]) then
+									return nModeDesire + 0.1
+								end
 								return BOT_MODE_DESIRE_MODERATE * 1.15
 							else
 								return BOT_MODE_DESIRE_MODERATE * 1.16

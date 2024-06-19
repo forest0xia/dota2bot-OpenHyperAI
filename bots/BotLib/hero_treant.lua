@@ -465,7 +465,7 @@ function X.ConsiderLivingArmor()
 
     -- Ally
     local ally = nil
-    local hp = 1
+    local hp = 0.7
 
     for _, allyHero in pairs(GetUnitList(UNIT_LIST_ALLIED_HEROES))
     do
@@ -477,7 +477,7 @@ function X.ConsiderLivingArmor()
         and not allyHero:HasModifier('modifier_fountain_aura')
         then
             if  J.GetHP(allyHero) < hp
-            and J.GetHP(allyHero) < 0.8
+            and J.GetHP(allyHero) < 0.7
             then
                 hp = J.GetHP(allyHero)
                 ally = allyHero
@@ -492,7 +492,7 @@ function X.ConsiderLivingArmor()
 
     -- Building
     local allyBuilding = nil
-    local bHealth = 1
+    local bHealth = 0.8
 
     for _, b in pairs(GetUnitList(UNIT_LIST_ALLIED_BUILDINGS))
     do
@@ -500,7 +500,7 @@ function X.ConsiderLivingArmor()
         and not b:HasModifier('modifier_treant_living_armor')
         then
             if  (b:GetHealth() / b:GetMaxHealth()) < bHealth
-            and (b:GetHealth() / b:GetMaxHealth()) < 0.9
+            and (b:GetHealth() / b:GetMaxHealth()) < 0.8
             then
                 bHealth = (b:GetHealth() / b:GetMaxHealth())
                 allyBuilding = b

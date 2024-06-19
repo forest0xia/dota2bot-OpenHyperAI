@@ -1,6 +1,5 @@
 -- Edit this flag to enable / disable debug
-local isDebug = true;
-local FretId = "76561197969449114";
+local isDebug = false;
 
 -- Instantiate the class
 if Debug == nil then
@@ -10,19 +9,6 @@ end
 -- Edit this return to enable / disable debug
 function Debug:IsDebug()
 	return isDebug;
-end
-
--- Is this player Fret?
-function Debug:IsFret(id)
-	if (tostring(id) == FretId) then
-		return true;
-	else
-		return false;
-	end
-end
-
-function Debug:IsPlayerIDFret(playerID)
-	return Debug:IsFret(PlayerResource:GetSteamID(playerID))
 end
 
 -- shorthand for debug printing

@@ -1690,6 +1690,7 @@ X['off'] = {
 	'npc_dota_hero_tiny',
 	'npc_dota_hero_ogre_magi',
 	'npc_dota_hero_skeleton_king',
+	'npc_dota_hero_zuus',
 }
 
 X['mid'] = {
@@ -1786,7 +1787,8 @@ X['safe'] = {
 	'npc_dota_hero_alchemist',
 	'npc_dota_hero_medusa',
 	'npc_dota_hero_void_spirit',
-	'npc_dota_hero_magnataur'
+	'npc_dota_hero_magnataur',
+	'npc_dota_hero_zuus',
 }
 
 X['supp'] = {
@@ -2611,6 +2613,7 @@ function X.GetPosition(bot)
 		-- fallback to use Captain mode logic to determine roles
 		role = HeroPositions[unitName] ~= nil and HeroPositions[unitName] or X.GetPositionForCM(bot)
 		print("[ERROR] Failed to match bot role for bot: "..unitName..', set it to play pos: '..tostring(role))
+		print("Stack Trace:", debug.traceback())
 	end
 	return role
 end

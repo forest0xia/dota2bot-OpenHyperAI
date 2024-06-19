@@ -240,7 +240,7 @@ function X.ConsiderQ()
 	local nManaCost = abilityQ:GetManaCost()
 	local nDamage = abilityQ:GetSpecialValueInt( "bolt_damage" ) + bot:GetAttributeValue( ATTRIBUTE_INTELLECT ) * 1.6
 	local nDamageType = DAMAGE_TYPE_MAGICAL
-	local nInRangeEnemyHeroList = J.GetNearbyHeroes(bot, nCastRange + 50, true, BOT_MODE_NONE )
+	local nInRangeEnemyHeroList = J.GetNearbyHeroes(bot, math.min(nCastRange + 50, 1600), true, BOT_MODE_NONE )
 	local nAttackDamage = bot:GetAttackDamage()
 
 
@@ -267,7 +267,7 @@ function X.ConsiderQ()
 		and ( hAllyList[2] == nil or not J.IsHumanPlayer( hAllyList[2] ) )
 		and #hAllyList <= 2
 	then
-		local hLaneCreepList = bot:GetNearbyLaneCreeps( nCastRange + 50, true )
+		local hLaneCreepList = bot:GetNearbyLaneCreeps( math.min(nCastRange + 50, 1600), true )
 		for _, creep in pairs( hLaneCreepList )
 		do
 			if J.IsValid( creep )
@@ -303,7 +303,7 @@ function X.ConsiderQ()
 		and #hAllyList < 3 and nLV > 7
 		and J.IsAllowedToSpam( bot, 30 )
 	then
-		local hLaneCreepList = bot:GetNearbyLaneCreeps( nCastRange + 150, true )
+		local hLaneCreepList = bot:GetNearbyLaneCreeps( math.min(nCastRange + 150, 1600), true )
 		for _, creep in pairs( hLaneCreepList )
 		do
 			if J.IsValid( creep )
@@ -433,7 +433,7 @@ function X.ConsiderE()
 	local nManaCost = abilityE:GetManaCost()
 	local nDamage = abilityE:GetAbilityDamage()
 	local nDamageType = DAMAGE_TYPE_MAGICAL
-	local nInRangeEnemyHeroList = J.GetNearbyHeroes(bot, nCastRange + 50, true, BOT_MODE_NONE )
+	local nInRangeEnemyHeroList = J.GetNearbyHeroes(bot, math.min(nCastRange + 50, 1600), true, BOT_MODE_NONE )
 
 
 	for _, npcEnemy in pairs( nInRangeEnemyHeroList )
@@ -454,7 +454,7 @@ function X.ConsiderE()
 		local npcMostDangerousEnemy = nil
 		local nMostDangerousDamage = 0
 
-		local tableNearbyEnemyHeroes = J.GetNearbyHeroes(bot, nCastRange + 100, true, BOT_MODE_NONE )
+		local tableNearbyEnemyHeroes = J.GetNearbyHeroes(bot, math.min(nCastRange + 100, 1600), true, BOT_MODE_NONE )
 		for _, npcEnemy in pairs( tableNearbyEnemyHeroes )
 		do
 			if J.IsValidHero( npcEnemy )
@@ -565,7 +565,7 @@ function X.ConsiderR()
 	local nManaCost = abilityR:GetManaCost()
 	local nDamage = abilityR:GetAbilityDamage()
 	local nDamageType = DAMAGE_TYPE_MAGICAL
-	local nInRangeEnemyHeroList = J.GetNearbyHeroes(bot, nCastRange + 200, true, BOT_MODE_NONE )
+	local nInRangeEnemyHeroList = J.GetNearbyHeroes(bot, math.min(nCastRange + 200, 1600), true, BOT_MODE_NONE )
 
 
 	if J.IsInTeamFight( bot, 1200 )

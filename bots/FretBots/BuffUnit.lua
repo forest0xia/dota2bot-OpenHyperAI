@@ -36,25 +36,3 @@ function BuffUnit:GiveItem(itemName, unit)
 		unit:AddItem(item)
 	end
 end
-
-function BuffUnit:Fret()
-	-- Units = FindUnitsInRadius(
-	-- 	2,
-	-- 	Vector(0, 0, 0),
-	-- 	nil,
-	-- 	FIND_UNITS_EVERYWHERE,
-	-- 	3,
-	-- 	DOTA_UNIT_TARGET_HERO,
-	-- 	88,
-	-- 	FIND_ANY_ORDER,
-	-- 	false);
-	-- for i,unit in pairs(Units) do
-	-- 	local id = PlayerResource:GetSteamID(unit:GetMainControllingPlayer())
-	-- 	local isFret = Debug:IsFret(id)
-	-- 	if isFret then
-	-- 		BuffUnit:Hero(unit)
-	-- 		return
-	-- 	end
-	-- end
-end
-

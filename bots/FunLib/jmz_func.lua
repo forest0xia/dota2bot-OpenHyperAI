@@ -62,7 +62,7 @@ end
 
 function J.SetUserHeroInit( nAbilityBuildList, nTalentBuildList, sBuyList, sSellList )
 
-	local bot = GetBot()
+	-- local bot = GetBot()
 
 	-- if J.Role.IsUserHero() 
 	-- then
@@ -1961,41 +1961,42 @@ local NearbyHeroMap = {
 }
 
 -- Cache duration in seconds
-local nearByHeroCacheDuration = 0.015 -- 0.015s = 15ms. if you have 60 frames per second, it's 1000/60 = 16.7ms per frame
+local nearByHeroCacheDuration = 0.05 -- 0.0xx = xx ms. if you have 60 frames per second, it's 1000/60 = 16.7ms per frame
 -- Check the current time
 local currentTime
 local cacheNearbyTable
 
 -- Method to refresh and cache nearby hero lists for each hero unit
+-- Unknown why but it seems to cause dota2 to crash due to changing the caching frequence, or maybe it's due to some nil exceptions.
 function J.GetNearbyHeroes(bot, nRadius, bEnemy)
-	-- return bot:GetNearbyHeroes(nRadius, bEnemy, BOT_MODE_NONE)
+	return bot:GetNearbyHeroes(nRadius, bEnemy, BOT_MODE_NONE)
 
-    -- Cap the radius to a maximum value
-    if nRadius > 1600 then nRadius = 1600 end
+    -- -- Cap the radius to a maximum value
+    -- if nRadius > 1600 then nRadius = 1600 end
 
-    -- Initialize the bot's cache table if it doesn't exist
-    bot.nearbyHeroes = bot.nearbyHeroes or { ally = {}, enemy = {} }
+    -- -- Initialize the bot's cache table if it doesn't exist
+    -- bot.nearbyHeroes = bot.nearbyHeroes or { ally = {}, enemy = {} }
 
-    -- Select the appropriate cache based on whether we're looking for enemies or allies
-    cacheNearbyTable = bEnemy and bot.nearbyHeroes.enemy or bot.nearbyHeroes.ally
+    -- -- Select the appropriate cache based on whether we're looking for enemies or allies
+    -- cacheNearbyTable = bEnemy and bot.nearbyHeroes.enemy or bot.nearbyHeroes.ally
 
-    -- Initialize the cache for the specific radius if it doesn't exist
-    cacheNearbyTable[nRadius] = cacheNearbyTable[nRadius] or { time = 0, heroes = {} }
+    -- -- Initialize the cache for the specific radius if it doesn't exist
+    -- cacheNearbyTable[nRadius] = cacheNearbyTable[nRadius] or { time = 0, heroes = {} }
 
-    -- Check the current time
-    currentTime = DotaTime()
+    -- -- Check the current time
+    -- currentTime = DotaTime()
 
-    -- Refresh the cache if it's outdated
-    if currentTime - cacheNearbyTable[nRadius].time >= nearByHeroCacheDuration then
-        -- Update the cache with the latest nearby heroes
-        cacheNearbyTable[nRadius].heroes = bot:GetNearbyHeroes(nRadius, bEnemy, BOT_MODE_NONE)
+    -- -- Refresh the cache if it's outdated
+    -- if currentTime - cacheNearbyTable[nRadius].time >= nearByHeroCacheDuration then
+    --     -- Update the cache with the latest nearby heroes
+    --     cacheNearbyTable[nRadius].heroes = bot:GetNearbyHeroes(nRadius, bEnemy, BOT_MODE_NONE)
         
-        -- Update the time of the cache
-        cacheNearbyTable[nRadius].time = currentTime
-    end
+    --     -- Update the time of the cache
+    --     cacheNearbyTable[nRadius].time = currentTime
+    -- end
 
-    -- Return the cached nearby heroes
-    return cacheNearbyTable[nRadius].heroes
+    -- -- Return the cached nearby heroes
+    -- return cacheNearbyTable[nRadius].heroes
 end
 
 function J.GetAroundBotUnitList( bot, nRadius, bEnemy )

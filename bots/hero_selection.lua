@@ -663,10 +663,10 @@ function X.OverrideTeamHeroes()
 		    -- [4] = "npc_dota_hero_nyx_assassin",
 			-- [5] = "npc_dota_hero_shadow_demon",
 			
-			[1] = "npc_dota_hero_meepo",
+			[1] = "npc_dota_hero_nyx_assassin",
 			[2] = 'npc_dota_hero_invoker',
 			[3] = "npc_dota_hero_enigma",
-		    [4] = "npc_dota_hero_nyx_assassin",
+		    [4] = "npc_dota_hero_zuus",
 			[5] = "npc_dota_hero_techies",
 			
 			-- [1] = "npc_dota_hero_antimage",
@@ -707,7 +707,7 @@ function X.OverrideTeamHeroes()
 end
 
 -- 这行代码为了人工挑选想要的阵容。如果想让电脑自己随机英雄，则注释掉这行
--- sSelectList = X.OverrideTeamHeroes()
+sSelectList = X.OverrideTeamHeroes()
 
 function X.ShuffleArray(array)
 	if type(array) ~= "table" then
