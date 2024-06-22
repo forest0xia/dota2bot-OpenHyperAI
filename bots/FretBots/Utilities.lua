@@ -588,6 +588,20 @@ function Utilities:IsTurboMode()
     return false
 end
 
+function Utilities:GetPInfo()
+    local playerCount = PlayerResource:GetPlayerCount()
+	local pSteamInfoList = { }
+    for playerID = 0, playerCount - 1 do
+        local connectionState = PlayerResource:GetConnectionState(playerID)
+        if connectionState == DOTA_CONNECTION_STATE_CONNECTED then
+			local steamId = PlayerResource:GetSteamID(playerID)
+			local name = PlayerResource:GetPlayerName(playerID)
+			table.insert(pSteamInfoList, { name = name, steamId = tostring(steamId) })
+		end
+	end
+	return pSteamInfoList
+end
+
 -- GameStateListener class for registering functions that will run once when
 -- a certain game state is reached
 if GameStateListener == nil then

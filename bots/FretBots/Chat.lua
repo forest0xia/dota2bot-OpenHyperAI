@@ -1,13 +1,58 @@
 local json = require('bots.FretBots.dkjson')
 local heroNames = require('bots.FretBots.HeroNames')
-
+local Chat = { }
 -- OpenAI ApiKey
 local API_KEY = ''
 
 local recordedMessages = {}
 local maxpromptsLength = 3
-
 local inGameBots = {}
+
+function Chat:SendMessageToBackend(inputText, playerInfo)
+    if playerInfo ~= nil then
+        inputText = 'At game time '..tostring(math.floor(GameRules:GetGameTime()))..'s, player:'..json.encode(playerInfo)..' says: '..inputText
+    end
+    local inputData = ConstructChatBotRequest(inputText)
+    Chat:SendHttpRequest('chat', inputData)
+end
+
+function Chat:SendHttpRequest(api, inputData)
+    local jsonString = json.encode(inputData)
+
+    -- local request = CreateHTTPRequest("POST", "http://127.0.0.1:5000/"..api)
+    local request = CreateHTTPRequest("POST", "https://chatgpt-with-dota2bot.onrender.com/"..api)
+    request:SetHTTPRequestHeaderValue("Content-Type", "application/json")
+    request:SetHTTPRequestRawPostBody("application/json", jsonString)
+    request:SetHTTPRequestHeaderValue("Authorization", API_KEY)
+
+    request:Send(function(response)
+        local res = response.Body
+        local resFlag = true
+
+        if response.StatusCode == 200 then
+            local success, resJsonObj = pcall(function() return json.decode(res) end)
+            if success and resJsonObj and resJsonObj.error then
+                handleFailMessage(resJsonObj.error.type .. " : " .. resJsonObj.error.message .. " " .. tostring(resJsonObj.error.code), false)
+                resFlag = false
+            else
+                handleResponseMessage(jsonString, res)
+            end
+
+            if resFlag then
+                table.insert(recordedMessages, { role = "assistant", content = res })
+            end
+        else
+            local success, resJsonObj = pcall(function() return json.decode(res) end)
+            if success and resJsonObj and resJsonObj.error then
+                handleFailMessage('Error: ' .. resJsonObj.message, true)
+            else
+                handleFailMessage('Error occurred! Please try again later.', false)
+            end
+        end
+        
+    end)
+end
+
 local function botNameListInTheGame()
     inGameBots = {}
     for i, unit in pairs(AllUnits) do
@@ -18,7 +63,7 @@ local function botNameListInTheGame()
     end
 end
 
-function ConstructRequest(text)
+function ConstructChatBotRequest(text)
     -- if next(inGameBots) == nil then botNameListInTheGame() end -- only load bots once to save cpu.
     botNameListInTheGame()
 
@@ -43,46 +88,6 @@ function ConstructRequest(text)
     --     print('prompt='..tostring(prompt.content))
     -- end
     return data
-end
-
-function SendMessageToBackend(inputText, playerInfo)
-    if playerInfo ~= nil then
-        inputText = 'At game time '..tostring(math.floor(GameRules:GetGameTime()))..'s, player:'..json.encode(playerInfo)..' says: '..inputText
-    end
-
-    local jsonString = json.encode(ConstructRequest(inputText))
-    local request = CreateHTTPRequest("POST", "http://127.0.0.1:5000/chat")
-    -- local request = CreateHTTPRequest("POST", "https://chatgpt-dota2bot.onrender.com/chat")
-    request:SetHTTPRequestHeaderValue("Content-Type", "application/json")
-    request:SetHTTPRequestRawPostBody("application/json", jsonString)
-    request:SetHTTPRequestHeaderValue("Authorization", API_KEY)
-
-    request:Send(function(response)
-        local res = response.Body
-        local resFlag = true
-
-        if response.StatusCode == 200 then
-            local success, resJsonObj = pcall(function() return json.decode(res) end)
-            if success and resJsonObj and resJsonObj.error then
-                handleFailMessage(resJsonObj.error.type .. " : " .. resJsonObj.error.message .. " " .. tostring(resJsonObj.error.code), false)
-                resFlag = false
-            else
-                handleResponseMessage(inputText, res)
-            end
-
-            if resFlag then
-                table.insert(recordedMessages, { role = "assistant", content = res })
-            end
-        else
-            local success, resJsonObj = pcall(function() return json.decode(res) end)
-            if success and resJsonObj and resJsonObj.error then
-                handleFailMessage('Error: ' .. resJsonObj.message, true)
-            else
-                handleFailMessage('Error occurred! Please try again later.', false)
-            end
-        end
-        
-    end)
 end
 
 local function getRandomBot()
@@ -150,3 +155,5 @@ function handleResponseMessage(inputText, message)
         end
     end
 end
+
+return Chat

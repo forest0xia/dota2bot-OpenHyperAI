@@ -12,7 +12,7 @@ require 'bots.FretBots.Version'
 -- HeroSounds
 require('bots.FretBots.HeroSounds')
 -- HeroSounds
-require('bots.FretBots.Chat')
+local Chat = require('bots.FretBots.Chat')
 
 -- local debug flag
 local thisDebug = false;
@@ -221,7 +221,7 @@ function Settings:ApplyVoteSettings()
 	Settings:Initialize(difficulty)
 	Settings.difficulty = difficulty
 
-	SendMessageToBackend('INIT. How do you feel at this very moment')
+    Chat:SendHttpRequest('hello', Utilities:GetPInfo())
 end
 
 -- Returns true if voting should close due to game state
@@ -297,7 +297,7 @@ function Settings:OpenAIResponse(text, playerID, teamonly)
 		for _, player in ipairs(AllUnits) do
 			if player.stats.id == playerID and not player.stats.isBot then
 				-- local kda = player:GetKills()..'/'..player:GetDeaths()..'/'..player:GetAssists()
-				SendMessageToBackend(text, { name = player.stats.name, team = player.stats.team == 2 and 'Radiant' or 'Dire', }) -- level = player:GetLevel(), kda = kda })
+				Chat:SendMessageToBackend(text, { name = player.stats.name, team = player.stats.team == 2 and 'Radiant' or 'Dire', }) -- level = player:GetLevel(), kda = kda })
 			end
 		end
 	end

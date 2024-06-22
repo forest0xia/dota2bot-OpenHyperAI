@@ -924,12 +924,13 @@ local userSwitchedRole = false
 local function handleCommand(command, PlayerID, bTeamOnly)
     local action, text = parseCommand(command)
 	if action == nil then
-		print('[WARN] Invalid command')
+		print('[WARN] Invalid command: '..tostring(command))
+		return
 	end
 
 	local teamPlayers = GetTeamPlayers(GetTeam())
 
-	print('Handling command: '..action..', text: '..text)
+	print('Handling command: '..tostring(action)..', text: '..tostring(text))
 
     if action == "!pick" and GetGameMode() ~= GAMEMODE_CM then
         print("Picking hero " .. text)
