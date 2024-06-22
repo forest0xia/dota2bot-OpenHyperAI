@@ -370,7 +370,7 @@ function X.ConsiderRollingBoulder()
 		and not J.IsSuspiciousIllusion(enemyHero)
 		and not bot:HasModifier('modifier_earth_spirit_rolling_boulder_caster')
 		then
-			local loc = J.GetCorrectLoc(enemyHero, (GetUnitToUnitDistance(bot, target) / nSpeed) + nDelay)
+			local loc = J.GetCorrectLoc(enemyHero, (GetUnitToUnitDistance(bot, enemyHero) / nSpeed) + nDelay)
 
 			if IsStoneInPath(loc, GetUnitToUnitDistance(bot, enemyHero))
 			or nStone == 0

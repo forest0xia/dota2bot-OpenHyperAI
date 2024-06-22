@@ -765,7 +765,7 @@ function ItemPurchaseThink()
 			or ( botLevel >= 18 and tCharges <= 1 )
 		then
 
-			if botLevel < 18 or ( botLevel >= 18 and tCharges == 1 )
+			if botLevel < 18 or ( botLevel >= 18 and tCharges <= 1 )
 			then
 				buyTP = true
 				buyTPtime = currentTime
@@ -782,7 +782,7 @@ function ItemPurchaseThink()
 				return
 			end
 
-			if botLevel >= 18 and tCharges == 0 and botGold >= GetItemCost( "item_tpscroll" ) * 2
+			if botLevel >= 18 and tCharges == 0 and botGold >= GetItemCost( "item_tpscroll" )
 			then
 				buyTP = true
 				buyTPtime = currentTime

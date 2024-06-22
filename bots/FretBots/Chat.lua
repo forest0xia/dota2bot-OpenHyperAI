@@ -5,15 +5,15 @@ local heroNames = require('bots.FretBots.HeroNames')
 local API_KEY = ''
 
 local recordedMessages = {}
-local maxpromptsLength = 2
+local maxpromptsLength = 3
 
 local inGameBots = {}
 local function botNameListInTheGame()
     inGameBots = {}
     for i, unit in pairs(AllUnits) do
         if unit.stats.isBot then
-            local kda = unit:GetKills()..'/'..unit:GetDeaths()..'/'..unit:GetAssists()
-            table.insert(inGameBots, {team = unit.stats.team, name = unit.stats.name, level = unit:GetLevel(), kda = kda})
+            -- local kda = unit:GetKills()..'/'..unit:GetDeaths()..'/'..unit:GetAssists()
+            table.insert(inGameBots, {team = unit.stats.team == 2 and 'Radiant' or 'Dire', name = unit.stats.name, }) -- level = unit:GetLevel(), kda = kda})
         end
     end
 end
@@ -22,7 +22,7 @@ function ConstructRequest(text)
     -- if next(inGameBots) == nil then botNameListInTheGame() end -- only load bots once to save cpu.
     botNameListInTheGame()
 
-    table.insert(recordedMessages, 1, { role = "user", content = 'Bot heroes in this game: ' .. json.encode(inGameBots)})
+    table.insert(recordedMessages, 1, { role = "user", content = 'Bot players in this game:' .. json.encode(inGameBots)})
     table.insert(recordedMessages, { role = "user", content = text })
 
     -- Initialize data table
@@ -35,7 +35,7 @@ function ConstructRequest(text)
 
     if #data.prompts > maxpromptsLength then
         for i = 1, #data.prompts - maxpromptsLength - 1 do
-            table.remove(data.prompts, 1)
+            table.remove(data.prompts, 2)
         end
     end
 
@@ -51,8 +51,8 @@ function SendMessageToBackend(inputText, playerInfo)
     end
 
     local jsonString = json.encode(ConstructRequest(inputText))
-    -- local request = CreateHTTPRequest("POST", "http://127.0.0.1:5000/chat")
-    local request = CreateHTTPRequest("POST", "https://chatgpt-dota2bot.onrender.com/chat")
+    local request = CreateHTTPRequest("POST", "http://127.0.0.1:5000/chat")
+    -- local request = CreateHTTPRequest("POST", "https://chatgpt-dota2bot.onrender.com/chat")
     request:SetHTTPRequestHeaderValue("Content-Type", "application/json")
     request:SetHTTPRequestRawPostBody("application/json", jsonString)
     request:SetHTTPRequestHeaderValue("Authorization", API_KEY)
@@ -62,10 +62,9 @@ function SendMessageToBackend(inputText, playerInfo)
         local resFlag = true
 
         if response.StatusCode == 200 then
-            local resJsonObj = nil
             local success, resJsonObj = pcall(function() return json.decode(res) end)
             if success and resJsonObj and resJsonObj.error then
-                handleFailMessage(resJsonObj.error.type .. " : " .. resJsonObj.error.message .. " " .. tostring(resJsonObj.error.code))
+                handleFailMessage(resJsonObj.error.type .. " : " .. resJsonObj.error.message .. " " .. tostring(resJsonObj.error.code), false)
                 resFlag = false
             else
                 handleResponseMessage(inputText, res)
@@ -75,16 +74,15 @@ function SendMessageToBackend(inputText, playerInfo)
                 table.insert(recordedMessages, { role = "assistant", content = res })
             end
         else
-            handleFailMessage('Error occurred! Please try again later.')
+            local success, resJsonObj = pcall(function() return json.decode(res) end)
+            if success and resJsonObj and resJsonObj.error then
+                handleFailMessage('Error: ' .. resJsonObj.message, true)
+            else
+                handleFailMessage('Error occurred! Please try again later.', false)
+            end
         end
         
     end)
-end
-
--- Helper functions
-function handleFailMessage(message)
-    print("API Failure: " .. message)
-    -- Implement
 end
 
 local function getRandomBot()
@@ -112,16 +110,36 @@ local function splitHeroNameFromMessage(message)
     end
 end
 
+local countErrorMsg = 0
+function handleFailMessage(message, isBotSay)
+    -- print("API Failure: " .. message)
+    countErrorMsg = countErrorMsg + 1
+    if isBotSay and countErrorMsg <= 2 then
+        local aBot = getRandomBot()
+        if aBot ~= nil then
+            Say(aBot, message, false)
+        end
+    else
+        print("[ERROR] Cannot get valid repsonse from Chat server. Hide the errors to avoid spams.")
+    end
+    if countErrorMsg >= 5 then
+        -- Reset count every 5 times so users can get re-notified about the error.
+        countErrorMsg = 0
+    end
+end
+
 function handleResponseMessage(inputText, message)
-    -- print("API Response: " .. message)
+    print("API Response: " .. message)
     local foundBot = false
     local aiText, heroHame = splitHeroNameFromMessage(message)
     
     if heroHame then
-        for _, bot in ipairs(AllUnits) do
-            if bot.stats.isBot and bot.stats.internalName == heroHame then
-                Say(bot, aiText, false)
-                foundBot = true
+        for team = 2, 3 do
+            for _, bot in ipairs(AllBots[team]) do
+                if bot.stats.isBot and bot.stats.internalName == heroHame then
+                    Say(bot, aiText, false)
+                    foundBot = true
+                end
             end
         end
     end

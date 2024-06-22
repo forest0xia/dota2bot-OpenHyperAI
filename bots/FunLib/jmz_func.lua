@@ -4938,7 +4938,7 @@ function J.hasValue(tab, val)
 end
 
 -- Check if any bot is stuck/idle for some time.
-local botIdelStateTimeThreshold = 8 -- relatively big number in case it's things like casting/being casted with long durating spells, in base healing, or other unexpected stuff.
+local botIdelStateTimeThreshold = 5 -- relatively big number in case it's things like casting/being casted with long durating spells, in base healing, or other unexpected stuff.
 local deltaIdleDistance = 5
 local botIdleStateTracker = { }
 -- some heroes are having issues due to current basic bot script from Valve, as of 5/17/2024
@@ -4967,6 +4967,7 @@ function J.CheckBotIdleState()
 			and not bot:IsChanneling()
 			and not bot:WasRecentlyDamagedByAnyHero(5)
 			and diffDistance <= deltaIdleDistance -- normally a bot gets stuck if it stopped moving.
+			and bot:GetCurrentActionType() == BOT_ACTION_TYPE_IDLE
 			then
 				
 				local nActions = bot:NumQueuedActions()

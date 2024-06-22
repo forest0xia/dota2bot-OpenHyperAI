@@ -379,13 +379,13 @@ function AwardBonus:GetPerMinuteBonus(bot, gpm, xpm)
 
 	if Settings.difficultyScale >= 1 then
 		-- 减少死亡经验奖励
-		print('Enabled death xp deduction for diffculty scale = '..Settings.difficultyScale)
+		-- print('Enabled death xp deduction for diffculty scale = '..Settings.difficultyScale)
 		bot:SetCustomDeathXP(math.floor(bot:GetDeathXP() * 0.70))
 	end
 
 	if Settings.difficultyScale >= 0.6 then
 		-- 增加基础回蓝，按照难度和分钟数翻倍
-		print('Enabled bots with extra regens for diffculty scale = '..Settings.difficultyScale)
+		-- print('Enabled bots with extra regens for diffculty scale = '..Settings.difficultyScale)
 		if Utilities:IsTurboMode() then
 			bot:SetBaseManaRegen((0.6 + Settings.difficultyScale) * Utilities:GetAbsoluteTime() / 60)
 		else

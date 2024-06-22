@@ -221,7 +221,7 @@ function Settings:ApplyVoteSettings()
 	Settings:Initialize(difficulty)
 	Settings.difficulty = difficulty
 
-	SendMessageToBackend('GLHF. How do you feel at this very moment')
+	SendMessageToBackend('INIT. How do you feel at this very moment')
 end
 
 -- Returns true if voting should close due to game state
@@ -296,8 +296,8 @@ function Settings:OpenAIResponse(text, playerID, teamonly)
 	if not startsWithExclamation(text) then
 		for _, player in ipairs(AllUnits) do
 			if player.stats.id == playerID and not player.stats.isBot then
-				local kda = player:GetKills()..'/'..player:GetDeaths()..'/'..player:GetAssists()
-				SendMessageToBackend(text, { level = player:GetLevel(), name = player.stats.name, team = player.stats.team, kda = kda })
+				-- local kda = player:GetKills()..'/'..player:GetDeaths()..'/'..player:GetAssists()
+				SendMessageToBackend(text, { name = player.stats.name, team = player.stats.team == 2 and 'Radiant' or 'Dire', }) -- level = player:GetLevel(), kda = kda })
 			end
 		end
 	end
