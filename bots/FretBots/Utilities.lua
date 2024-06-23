@@ -588,7 +588,7 @@ function Utilities:IsTurboMode()
     return false
 end
 
-function Utilities:GetPInfo()
+function Utilities:GetPInfo(difficulty)
     local playerCount = PlayerResource:GetPlayerCount()
 	local pSteamInfoList = { }
     for playerID = 0, playerCount - 1 do
@@ -596,7 +596,7 @@ function Utilities:GetPInfo()
         if connectionState == DOTA_CONNECTION_STATE_CONNECTED then
 			local steamId = PlayerResource:GetSteamID(playerID)
 			local name = PlayerResource:GetPlayerName(playerID)
-			table.insert(pSteamInfoList, { name = name, steamId = tostring(steamId) })
+			table.insert(pSteamInfoList, { name = name, steamId = tostring(steamId), fretbots_difficulty = difficulty })
 		end
 	end
 	return pSteamInfoList

@@ -221,7 +221,7 @@ function Settings:ApplyVoteSettings()
 	Settings:Initialize(difficulty)
 	Settings.difficulty = difficulty
 
-    Chat:SendHttpRequest('hello', Utilities:GetPInfo())
+    Chat:SendHttpRequest('hello', Utilities:GetPInfo(difficulty))
 end
 
 -- Returns true if voting should close due to game state
@@ -297,7 +297,7 @@ function Settings:OpenAIResponse(text, playerID, teamonly)
 		for _, player in ipairs(AllUnits) do
 			if player.stats.id == playerID and not player.stats.isBot then
 				-- local kda = player:GetKills()..'/'..player:GetDeaths()..'/'..player:GetAssists()
-				Chat:SendMessageToBackend(text, { name = player.stats.name, team = player.stats.team == 2 and 'Radiant' or 'Dire', }) -- level = player:GetLevel(), kda = kda })
+				Chat:SendMessageToBackend(text, { name = player.stats.name, team = player.stats.team == 2 and 'Radiant' or 'Dire', steamId = tostring(player.stats.steamId) }) -- level = player:GetLevel(), kda = kda })
 			end
 		end
 	end

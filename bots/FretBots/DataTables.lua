@@ -294,6 +294,7 @@ function DataTables:GenerateStatsTables(unit)
 		name = Utilities:GetName(thisName),
 		-- Skill
 		skill = DataTables:GetSkill(thisName, thisRole, thisIsBot),
+		steamId = steamId,
 		-- Current death bonus chances
 		chance =
 		{

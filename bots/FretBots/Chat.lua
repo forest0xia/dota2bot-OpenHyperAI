@@ -9,37 +9,32 @@ local maxpromptsLength = 3
 local inGameBots = {}
 
 function Chat:SendMessageToBackend(inputText, playerInfo)
+    local inputContent
     if playerInfo ~= nil then
-        inputText = 'At game time '..tostring(math.floor(GameRules:GetGameTime()))..'s, player:'..json.encode(playerInfo)..' says: '..inputText
+        inputContent = {player = playerInfo, said = inputText } -- 'At game time '..tostring(math.floor(GameRules:GetGameTime()))..'s, player:'..json.encode(playerInfo)..' says: '..inputText
     end
-    local inputData = ConstructChatBotRequest(inputText)
+    local inputData = ConstructChatBotRequest(json.encode(inputContent))
     Chat:SendHttpRequest('chat', inputData)
 end
 
 function Chat:SendHttpRequest(api, inputData)
     local jsonString = json.encode(inputData)
 
-    -- local request = CreateHTTPRequest("POST", "http://127.0.0.1:5000/"..api)
-    local request = CreateHTTPRequest("POST", "https://chatgpt-with-dota2bot.onrender.com/"..api)
+    local request = CreateHTTPRequest("POST", "http://127.0.0.1:5000/"..api)
+    -- local request = CreateHTTPRequest("POST", "https://chatgpt-with-dota2bot.onrender.com/"..api)
     request:SetHTTPRequestHeaderValue("Content-Type", "application/json")
     request:SetHTTPRequestRawPostBody("application/json", jsonString)
     request:SetHTTPRequestHeaderValue("Authorization", API_KEY)
 
     request:Send(function(response)
         local res = response.Body
-        local resFlag = true
 
         if response.StatusCode == 200 then
             local success, resJsonObj = pcall(function() return json.decode(res) end)
             if success and resJsonObj and resJsonObj.error then
                 handleFailMessage(resJsonObj.error.type .. " : " .. resJsonObj.error.message .. " " .. tostring(resJsonObj.error.code), false)
-                resFlag = false
             else
                 handleResponseMessage(jsonString, res)
-            end
-
-            if resFlag then
-                table.insert(recordedMessages, { role = "assistant", content = res })
             end
         else
             local success, resJsonObj = pcall(function() return json.decode(res) end)
@@ -63,12 +58,12 @@ local function botNameListInTheGame()
     end
 end
 
-function ConstructChatBotRequest(text)
+function ConstructChatBotRequest(inputContent)
     -- if next(inGameBots) == nil then botNameListInTheGame() end -- only load bots once to save cpu.
     botNameListInTheGame()
 
     table.insert(recordedMessages, 1, { role = "user", content = 'Bot players in this game:' .. json.encode(inGameBots)})
-    table.insert(recordedMessages, { role = "user", content = text })
+    table.insert(recordedMessages, { role = "user", content = inputContent })
 
     -- Initialize data table
     local data = { prompts = {} }
@@ -148,12 +143,18 @@ function handleResponseMessage(inputText, message)
             end
         end
     end
-    if not foundBot or not heroHame then
+    if not heroHame then
+        return
+    end
+
+    if not foundBot then
         local aBot = getRandomBot()
         if aBot ~= nil then
             Say(aBot, aiText, false)
         end
     end
+    
+    table.insert(recordedMessages, { role = "assistant", content = message })
 end
 
 return Chat
