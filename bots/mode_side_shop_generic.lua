@@ -13,6 +13,7 @@ if bot.tormentorState == nil then bot.tormentorState = false end
 if bot.lastKillTime == nil then bot.lastKillTime = 0 end
 if bot.wasAttackingTormentor == nil then bot.wasAttackingTormentor = false end
 
+local NoTormentorAfterThisTime = 35 * 60 -- do not do tormentor again since it's late and doing tormentor only slows down the game more.
 
 local WisdomRuneSpawned = false
 local ClosestAllyToWisdomRune
@@ -100,88 +101,90 @@ function GetDesire()
 	aveCoreLevel = aveCoreLevel / 3
 	aveSuppLevel = aveSuppLevel / 2
 
-	if DotaTime() >= spawnTime * 60
-	and (DotaTime() - bot.lastKillTime) >= (spawnTime / 2) * 60
-	then
-		-- Go check
-		if not IsTormentorAlive()
+	if DotaTime() <= NoTormentorAfterThisTime then
+		if DotaTime() >= spawnTime * 60
+		and (DotaTime() - bot.lastKillTime) >= (spawnTime / 2) * 60
 		then
-			if not J.IsCore(bot)
-			and (GetUnitToUnitDistance(bot, enemyAncient) > 2000
-			or (topFrontP < 0.9 or midFrontP < 0.9 or botFrontP < 0.9)
-			or (topFrontD < 0.9 or midFrontD < 0.9 or botFrontD < 0.9))
+			-- Go check
+			if not IsTormentorAlive()
 			then
-                local closestAlly = nil
-                local dist = 100000
-                for _, allyHero in pairs(GetUnitList(UNIT_LIST_ALLIED_HEROES))
-                do
-                    if  J.IsValidHero(allyHero)
-                    and allyHero:IsAlive()
-                    and not allyHero:IsIllusion()
-                    and not J.IsCore(allyHero)
-                    then
-                        if GetUnitToLocationDistance(allyHero, TormentorLocation) < dist
-                        then
-                            closestAlly = allyHero
-                            dist = GetUnitToLocationDistance(allyHero, TormentorLocation)
-                        end
-                    end
-                end
+				if not J.IsCore(bot)
+				and (GetUnitToUnitDistance(bot, enemyAncient) > 2000
+				or (topFrontP < 0.9 or midFrontP < 0.9 or botFrontP < 0.9)
+				or (topFrontD < 0.9 or midFrontD < 0.9 or botFrontD < 0.9))
+				then
+					local closestAlly = nil
+					local dist = 100000
+					for _, allyHero in pairs(GetUnitList(UNIT_LIST_ALLIED_HEROES))
+					do
+						if  J.IsValidHero(allyHero)
+						and allyHero:IsAlive()
+						and not allyHero:IsIllusion()
+						and not J.IsCore(allyHero)
+						then
+							if GetUnitToLocationDistance(allyHero, TormentorLocation) < dist
+							then
+								closestAlly = allyHero
+								dist = GetUnitToLocationDistance(allyHero, TormentorLocation)
+							end
+						end
+					end
 
-                if  closestAlly ~= nil
-                and bot == closestAlly
-                and bot.tormentorState == false
-                then
-                    return nModeDesire
-                end
+					if  closestAlly ~= nil
+					and bot == closestAlly
+					and bot.tormentorState == false
+					then
+						return nModeDesire
+					end
+				end
+			else
+				bot.tormentorState = true
 			end
 		else
-			bot.tormentorState = true
+			bot.tormentorState = false
 		end
-	else
-		bot.tormentorState = false
-	end
 
-	if not IsTeamHealthy
-	then
-		if WasHealthy()
-		then
-			IsTeamHealthy = true
-		end
-	end
-
-	if  bot.tormentorState
-	and aveCoreLevel > 12.9
-	and aveSuppLevel > 9.9
-    and (((bot.lastKillTime == 0 and aliveAlly >= 5)
-        or (bot.lastKillTime > 0 and aliveAlly >= 3)
-		or (GetAttackingCount() >= 3 and J.GetAliveAllyCoreCount() >= 2)))
-	then
 		if not IsTeamHealthy
 		then
-			return BOT_ACTION_DESIRE_NONE
+			if WasHealthy()
+			then
+				IsTeamHealthy = true
+			end
 		end
 
-		canDoTormentor = IsTeamHealthy
-
-        if  J.GetHP(bot) < 0.3
-        and J.IsTormentor(Tormentor)
-		and J.GetHP(Tormentor) > 0.2
-        then
-            return BOT_ACTION_DESIRE_NONE
-        end
-
-        if IsEnoughAllies()
-        then
-            return BOT_ACTION_DESIRE_VERYHIGH
-        end
-
-		if nAllyInLoc ~= nil and #nAllyInLoc >= 3
-		or IsHumanInLoc()
+		if  bot.tormentorState
+		and aveCoreLevel > 12.9
+		and aveSuppLevel > 9.9
+		and (((bot.lastKillTime == 0 and aliveAlly >= 5)
+			or (bot.lastKillTime > 0 and aliveAlly >= 3)
+			or (GetAttackingCount() >= 3 and J.GetAliveAllyCoreCount() >= 2)))
 		then
-			return BOT_ACTION_DESIRE_VERYHIGH
-		else
-			return nModeDesire
+			if not IsTeamHealthy
+			then
+				return BOT_ACTION_DESIRE_NONE
+			end
+
+			canDoTormentor = IsTeamHealthy
+
+			if  J.GetHP(bot) < 0.3
+			and J.IsTormentor(Tormentor)
+			and J.GetHP(Tormentor) > 0.2
+			then
+				return BOT_ACTION_DESIRE_NONE
+			end
+
+			if IsEnoughAllies()
+			then
+				return BOT_ACTION_DESIRE_VERYHIGH
+			end
+
+			if nAllyInLoc ~= nil and #nAllyInLoc >= 3
+			or IsHumanInLoc()
+			then
+				return BOT_ACTION_DESIRE_VERYHIGH
+			else
+				return nModeDesire
+			end
 		end
 	end
 
@@ -201,32 +204,34 @@ function Think()
 		return
 	end
 
-	if GetUnitToLocationDistance(bot, TormentorLocation) > 100
-	then
-		bot:Action_MoveToLocation(TormentorLocation)
-		return
-	else
-		local nCreeps = bot:GetNearbyNeutralCreeps(700)
-
-		for _, c in pairs(nCreeps)
-		do
-			if c:GetUnitName() == "npc_dota_miniboss"
-			then
-				Tormentor = c
-
-				if IsEnoughAllies()
-				or J.GetHP(c) < 0.25
+	if DotaTime() <= NoTormentorAfterThisTime then
+		if GetUnitToLocationDistance(bot, TormentorLocation) > 100
+		then
+			bot:Action_MoveToLocation(TormentorLocation)
+			return
+		else
+			local nCreeps = bot:GetNearbyNeutralCreeps(700)
+	
+			for _, c in pairs(nCreeps)
+			do
+				if c:GetUnitName() == "npc_dota_miniboss"
 				then
-					bot.wasAttackingTormentor = true
-					bot:Action_AttackUnit(c, false)
-				end
-
-				if  (DotaTime() - tormentorMessageTime) > 15
-				and canDoTormentor
-				then
-					tormentorMessageTime = DotaTime()
-					bot:ActionImmediate_Chat("Let's try tormentor?", false)
-					bot:ActionImmediate_Ping(c:GetLocation().x, c:GetLocation().y, true)
+					Tormentor = c
+	
+					if IsEnoughAllies()
+					or J.GetHP(c) < 0.25
+					then
+						bot.wasAttackingTormentor = true
+						bot:Action_AttackUnit(c, false)
+					end
+	
+					if  (DotaTime() - tormentorMessageTime) > 15
+					and canDoTormentor
+					then
+						tormentorMessageTime = DotaTime()
+						bot:ActionImmediate_Chat("Let's try tormentor?", false)
+						bot:ActionImmediate_Ping(c:GetLocation().x, c:GetLocation().y, true)
+					end
 				end
 			end
 		end

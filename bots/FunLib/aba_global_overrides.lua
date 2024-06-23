@@ -214,7 +214,7 @@ end
 
 local originalActionImmediate_SwapItems = CDOTA_Bot_Script.ActionImmediate_SwapItems
 local itemSwapTime = { }
-local itemSwapGapTime = 6 + 1 -- 6s item cd after swap, 1s delta time for item usage reaction.
+local itemSwapGapTime = 6 + 5 -- 6s item cd after swap, 5s delta time for item usage reaction.
 function CDOTA_Bot_Script:ActionImmediate_SwapItems(intnSlot1, intnSlot2)
 	local unitName = self:GetUnitName()
 	-- print(unitName.." swaps items: "..tostring(intnSlot1)..', '..tostring(intnSlot2))
