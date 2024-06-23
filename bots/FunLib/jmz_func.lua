@@ -51,6 +51,7 @@ J.Buff = require( GetScriptDirectory()..'/FunLib/aba_buff' )
 J.Role = require( GetScriptDirectory()..'/FunLib/aba_role' )
 J.Skill = require( GetScriptDirectory()..'/FunLib/aba_skill' )
 J.Chat = require( GetScriptDirectory()..'/FunLib/aba_chat' )
+J.Utils = require( GetScriptDirectory()..'/FunLib/utils' )
 
 
 if bDebugTeam
@@ -1944,7 +1945,7 @@ function J.GetAllyUnitCountAroundEnemyTarget( bot, target, nRadius )
 end
 
 
-local NearbyHeroMap = {
+-- local NearbyHeroMap = {
 	-- 'hero_unit_name' = {
 	-- 	'enemy' = {
 	-- 		'1600' = { 
@@ -1958,20 +1959,25 @@ local NearbyHeroMap = {
 	-- 		'1000' = { },
 	-- 	}
 	-- }
-}
-
+-- }
 -- Cache duration in seconds
-local nearByHeroCacheDuration = 0.05 -- 0.0xx = xx ms. if you have 60 frames per second, it's 1000/60 = 16.7ms per frame
+local nearByHeroCacheDuration = 0.1 -- 0.xxx = xxx ms. if you have 60 frames per second, it's 1000/60 = 16.7ms per frame. higher fps, smaller ms per frame.
 -- Check the current time
 local currentTime
 local cacheNearbyTable
+local printN = 0
 
 -- Method to refresh and cache nearby hero lists for each hero unit
 -- Unknown why but it seems to cause dota2 to crash due to changing the caching frequence, or maybe it's due to some nil exceptions.
 function J.GetNearbyHeroes(bot, nRadius, bEnemy)
+	-- local nearbyHeroes = bot:GetNearbyHeroes(nRadius, bEnemy, BOT_MODE_NONE)
+	-- if printN <= 100000 then
+	-- 	printN = printN + 1
+	-- 	J.Utils.PrintTable(nearbyHeroes)
+	-- end
 	return bot:GetNearbyHeroes(nRadius, bEnemy, BOT_MODE_NONE)
 
-    -- -- Cap the radius to a maximum value
+    -- Cap the radius to a maximum value
     -- if nRadius > 1600 then nRadius = 1600 end
 
     -- -- Initialize the bot's cache table if it doesn't exist
@@ -1980,21 +1986,20 @@ function J.GetNearbyHeroes(bot, nRadius, bEnemy)
     -- -- Select the appropriate cache based on whether we're looking for enemies or allies
     -- cacheNearbyTable = bEnemy and bot.nearbyHeroes.enemy or bot.nearbyHeroes.ally
 
-    -- -- Initialize the cache for the specific radius if it doesn't exist
-    -- cacheNearbyTable[nRadius] = cacheNearbyTable[nRadius] or { time = 0, heroes = {} }
-
     -- -- Check the current time
     -- currentTime = DotaTime()
 
-    -- -- Refresh the cache if it's outdated
-    -- if currentTime - cacheNearbyTable[nRadius].time >= nearByHeroCacheDuration then
-    --     -- Update the cache with the latest nearby heroes
-    --     cacheNearbyTable[nRadius].heroes = bot:GetNearbyHeroes(nRadius, bEnemy, BOT_MODE_NONE)
-        
-    --     -- Update the time of the cache
-    --     cacheNearbyTable[nRadius].time = currentTime
-    -- end
+    -- -- Initialize or update the cache for the specific radius
+	-- if cacheNearbyTable[nRadius] == nil or
+	-- 	currentTime - cacheNearbyTable[nRadius].time >= nearByHeroCacheDuration
+	-- then
+	-- 	cacheNearbyTable[nRadius] = {
+	-- 		time = currentTime,
+	-- 		heroes = bot:GetNearbyHeroes(nRadius, bEnemy, BOT_MODE_NONE)
+	-- 	}
+	-- end
 
+	-- -- J.Utils.PrintTable(cacheNearbyTable[nRadius].heroes)
     -- -- Return the cached nearby heroes
     -- return cacheNearbyTable[nRadius].heroes
 end
@@ -2961,7 +2966,7 @@ function J.GetEnemyList( bot, nRadius )
 
 	for _, enemy in pairs( nCandidate )
 	do
-		if enemy ~= nil and enemy:IsAlive()
+		if enemy ~= nil and type(enemy) == "table" and enemy:IsAlive()
 			and not J.IsSuspiciousIllusion( enemy )
 		then
 			table.insert( nRealEnemyList, enemy )

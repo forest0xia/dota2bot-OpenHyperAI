@@ -4,10 +4,21 @@
 local X = { }
 
 
-function X.PrintTable(tbl)
-	for i, v in ipairs(tbl) do
-		print('idx='..i..', value='..v)
-	end
+function X.PrintTable(tbl, indent)
+	if not indent then indent = 0 end
+    for k, v in pairs(tbl) do
+        formatting = string.rep("  ", indent) .. k .. ": "
+        if type(v) == "table" then
+            if indent < 3 then
+                print(formatting)
+                X.PrintTable(v, indent+1)
+            else
+                print(formatting .. "[WARN] Table has deep nested tables in it, stop printing more nexted tables.")
+            end
+        else
+            print(formatting .. tostring(v))
+        end
+    end
 end
 
 

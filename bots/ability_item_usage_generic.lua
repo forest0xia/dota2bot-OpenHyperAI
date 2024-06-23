@@ -3098,11 +3098,10 @@ X.ConsiderItemDesire["item_medallion_of_courage"] = function( hItem )
 end
 
 --银月
-local moonSharedTime = nil --添加使用延迟避免吃得过快以为没出
 X.ConsiderItemDesire["item_moon_shard"] = function( hItem )
 
 	if bot:GetNetWorth() < 18000
-		or ( bot:GetItemInSlot( 6 ) == nil and bot:GetItemInSlot( 7 ) == nil )
+		or ( bot:GetItemInSlot( 6 ) == nil and bot:GetItemInSlot( 7 ) == nil and bot:GetItemInSlot( 8 ) == nil )
 	then
 		return BOT_ACTION_DESIRE_NONE
 	end
@@ -3115,12 +3114,12 @@ X.ConsiderItemDesire["item_moon_shard"] = function( hItem )
 
 	if not bot:HasModifier( "modifier_item_moon_shard_consumed" )
 	then
-		if moonSharedTime == nil
+		if bot.moonSharedTime == nil --添加使用延迟避免吃得过快以为没出
 		then
-			moonSharedTime = DotaTime()
-		elseif moonSharedTime < DotaTime() - 3.0
+			bot.moonSharedTime = DotaTime()
+		elseif bot.moonSharedTime < DotaTime() - 2.0
 		then
-			moonSharedTime = nil
+			bot.moonSharedTime = nil
 			hEffectTarget = bot
 			sCastMotive = "自己吃"
 			return BOT_ACTION_DESIRE_HIGH, hEffectTarget, sCastType, sCastMotive
@@ -3142,12 +3141,12 @@ X.ConsiderItemDesire["item_moon_shard"] = function( hItem )
 	end
 	if targetMember ~= nil
 	then
-		if moonSharedTime == nil
+		if bot.moonSharedTime == nil
 		then
-			moonSharedTime = DotaTime()
-		elseif moonSharedTime < DotaTime() - 4.0
+			bot.moonSharedTime = DotaTime()
+		elseif bot.moonSharedTime < DotaTime() - 3.0
 		then
-			moonSharedTime = nil
+			bot.moonSharedTime = nil
 			hEffectTarget = targetMember
 			sCastMotive = "给队友"
 			return BOT_ACTION_DESIRE_HIGH, hEffectTarget, sCastType, sCastMotive
