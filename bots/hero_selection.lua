@@ -211,6 +211,9 @@ local sPos2List = {
 	"npc_dota_hero_ember_spirit",
 	"npc_dota_hero_huskar",
 	"npc_dota_hero_invoker",
+	"npc_dota_hero_invoker", -- increase the chance of having mid Invoker.
+	"npc_dota_hero_invoker",
+	"npc_dota_hero_invoker",
 	"npc_dota_hero_keeper_of_the_light",
 	"npc_dota_hero_kunkka",
 	"npc_dota_hero_leshrac",
@@ -879,7 +882,7 @@ function AllPickHeros()
 	local teamPlayers = GetTeamPlayers(GetTeam())
 	CorrectDireLaneAssignment(tDefaultLaningDire)
 
-	if not ShuffledPickOrder[sTeamName] then
+	if not ShuffledPickOrder[sTeamName] and not IsHumanPlayerExist() then
 		X.ShufflePickOrder(teamPlayers)
 		ShuffledPickOrder[sTeamName] = true
 	end
