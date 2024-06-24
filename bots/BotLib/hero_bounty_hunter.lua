@@ -52,62 +52,60 @@ local sCrimsonPipe = RandomInt( 1, 2 ) == 1 and "item_crimson_guard" or "item_pi
 
 local sRoleItemsBuyList = {}
 
-sRoleItemsBuyList['pos_2'] = {
-	"item_double_branches",
-	"item_quelling_blade",
-	"item_tango",
-	"item_faerie_fire",
-
-	"item_bottle",
-	"item_phase_boots",
-	"item_ultimate_scepter",
-	"item_magic_wand",
-	"item_angels_demise",--
-	"item_cyclone",
-	"item_octarine_core",--
-	"item_black_king_bar",--
-	"item_ultimate_scepter_2",
-	"item_wind_waker",--
-	"item_travel_boots",--
-	"item_bloodthorn",--
-	"item_travel_boots_2",--
-	"item_moon_shard",
+sRoleItemsBuyList['pos_1'] = {
+	
+	'item_melee_carry_outfit',
+--	'item_medallion_of_courage',
+	'item_vanguard',
 	"item_aghanims_shard",
+	"item_solar_crest",
+	"item_black_king_bar",
+	"item_ultimate_scepter",
+	"item_travel_boots",
+	"item_abyssal_blade",
+	"item_butterfly",
+	"item_moon_shard",
+	"item_travel_boots_2",
+	"item_reaver",
+	"item_ultimate_scepter_2",
+	"item_heart",
 }
 
-sRoleItemsBuyList['pos_3'] = {
-	"item_tango",
-	"item_quelling_blade",
-	"item_double_branches",
+sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
 
-	"item_boots",
-	"item_magic_wand",
-	sCrimsonPipe,--
-	"item_guardian_greaves",--
+sRoleItemsBuyList['pos_3'] = {
+	"item_dragon_knight_outfit",
+	"item_crimson_guard",
+	"item_heavens_halberd",
 	"item_ultimate_scepter",
-	"item_sphere",--
-	"item_assault",--
-	"item_heart",--
-	"item_ultimate_scepter_2",
-	"item_sheepstick",--
-	"item_moon_shard",
+	"item_travel_boots",
 	"item_aghanims_shard",
+	"item_black_king_bar",
+	"item_assault",
+	"item_moon_shard",
+	"item_travel_boots_2",
+	"item_reaver",
+	"item_ultimate_scepter_2",
+	"item_heart",
+
 }
 
 sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_3']
 
 sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_3']
 
-sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
-
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
-
 
 X['sSellList'] = {
 	"item_quelling_blade",
 	"item_magic_wand",
 	"item_bottle",
+	"item_power_treads",
+	"item_heavens_halberd",
+	"item_abyssal_blade",
+	"item_assault",
+	"item_ancient_janggo",
 }
 
 if J.Role.IsPvNMode() then X['sBuyList'], X['sSellList'] = { 'PvN_BH' }, {"item_power_treads", 'item_quelling_blade'} end

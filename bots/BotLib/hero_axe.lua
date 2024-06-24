@@ -32,32 +32,40 @@ local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
 local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 
 local sRoleItemsBuyList = {}
-sRoleItemsBuyList['pos_3'] = {
-	"item_tango",
-	"item_double_branches",
-	"item_quelling_blade",
-	"item_ring_of_protection",
 
-	"item_vanguard",
-	"item_boots",
-	"item_blink",
-	"item_magic_wand",
-	"item_blade_mail",--
-	"item_black_king_bar",--
-	"item_travel_boots",
-	"item_shivas_guard",--
+sRoleItemsBuyList['pos_1'] = {
+	"item_sven_outfit",
+	"item_blade_mail",
+	"item_black_king_bar",
 	"item_aghanims_shard",
-	"item_overwhelming_blink",--
-	"item_heart",--
-	-- "item_refresher",--
-	"item_travel_boots_2",--
+	"item_blink",
+	"item_ultimate_scepter",
+	"item_travel_boots",
+	"item_overwhelming_blink",	
+	"item_abyssal_blade",
 	"item_ultimate_scepter_2",
+	"item_heart",
 	"item_moon_shard",
+	"item_travel_boots_2",
 }
 
-sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
+sRoleItemsBuyList['pos_3'] = {
 
-sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_3']
+	"item_tank_outfit",
+	"item_crimson_guard",
+	"item_aghanims_shard",
+	"item_heavens_halberd",
+	"item_lotus_orb",
+	"item_travel_boots",
+	"item_assault",
+	"item_ultimate_scepter_2",
+	"item_heart",
+	"item_moon_shard",
+	"item_travel_boots_2",
+
+}
+
+sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
 
 sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_3']
 

@@ -34,73 +34,88 @@ local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 local sRoleItemsBuyList = {}
 
 sRoleItemsBuyList['pos_4'] = {
-	"item_tango",
-	"item_tango",
-	"item_double_branches",
-	"item_blood_grenade",
-
-	"item_circlet",
-	"item_boots",
-	"item_magic_wand",
-	"item_tranquil_boots",
-	"item_aether_lens",--
-	"item_solar_crest",--
-	"item_glimmer_cape",--
-	"item_aghanims_shard",
-	"item_boots_of_bearing",--
-	"item_ultimate_scepter",
-	"item_aeon_disk",--
-	"item_refresher",--
+	"item_priest_outfit",
+	"item_mekansm",
+	"item_shadow_amulet",
+--	"item_aghanims_shard",
+	"item_guardian_greaves",
+	"item_spirit_vessel",
+	"item_glimmer_cape",
+--	"item_wraith_pact",
+	"item_shivas_guard",
+	"item_mystic_staff",
+	"item_sheepstick",
 	"item_ultimate_scepter_2",
-	"item_moon_shard",
 }
 
 sRoleItemsBuyList['pos_5'] = {
-	"item_tango",
-	"item_tango",
-	"item_double_branches",
-	"item_blood_grenade",
-
-	"item_circlet",
-	"item_boots",
-	"item_magic_wand",
-	"item_arcane_boots",
-	"item_aether_lens",--
-	"item_glimmer_cape",--
+	"item_priest_outfit",
+	"item_mekansm",
+	"item_shadow_amulet",
 	"item_aghanims_shard",
-	"item_force_staff",--
-	"item_guardian_greaves",--
-	"item_ultimate_scepter",
-	"item_aeon_disk",--
-	"item_refresher",--
+	"item_guardian_greaves",
+	"item_spirit_vessel",
+	"item_glimmer_cape",
+--	"item_wraith_pact",
+	"item_shivas_guard",
+	"item_mystic_staff",
+	"item_sheepstick",
 	"item_ultimate_scepter_2",
-	"item_moon_shard",
 }
 
 sRoleItemsBuyList['pos_1'] = {
-	"item_tango",
-	"item_tango",
-	"item_double_branches",
 
-	"item_circlet",
-	"item_boots",
-	"item_magic_wand",
-	"item_tranquil_boots",
-	"item_aether_lens",--
-	"item_solar_crest",--
-	"item_glimmer_cape",--
+	"item_crystal_maiden_outfit",
+	"item_point_booster",
 	"item_aghanims_shard",
-	"item_boots_of_bearing",--
 	"item_ultimate_scepter",
-	"item_aeon_disk",--
-	"item_refresher",--
+	"item_shadow_amulet",
+	"item_rod_of_atos",
+	"item_invis_sword", 
+	"item_black_king_bar",
+	"item_silver_edge",
+	"item_shivas_guard",
+	"item_gungir",
+	"item_mystic_staff",
 	"item_ultimate_scepter_2",
-	"item_moon_shard",
+	"item_sheepstick",
+
 }
 
-sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
+sRoleItemsBuyList['pos_2'] = {
+	
+	"item_mage_outfit",
+	"item_ancient_janggo",
+	"item_glimmer_cape",
+	"item_boots_of_bearing",
+	"item_pipe",
+	"item_aghanims_shard",
+	"item_veil_of_discord",
+	"item_ultimate_scepter",
+	"item_wind_waker",
+	"item_mystic_staff",
+	"item_ultimate_scepter_2",
+	"item_sheepstick",
 
-sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_1']
+}
+
+sRoleItemsBuyList['pos_3'] = {
+	
+	"item_crystal_maiden_outfit",
+	"item_point_booster",
+	"item_aghanims_shard",
+	"item_ultimate_scepter",
+	"item_shadow_amulet",
+	"item_rod_of_atos",
+	"item_invis_sword", 
+	"item_black_king_bar",
+	"item_silver_edge",
+	"item_shivas_guard",
+	"item_gungir",
+	"item_mystic_staff",
+	"item_ultimate_scepter_2",
+	"item_sheepstick",
+}
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 

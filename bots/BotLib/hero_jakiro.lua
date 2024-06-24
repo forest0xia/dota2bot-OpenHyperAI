@@ -33,27 +33,53 @@ local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 
 local sRoleItemsBuyList = {}
 
-sRoleItemsBuyList['pos_4'] = {
-	"item_tango",
-	"item_tango",
-	"item_double_branches",
-	"item_enchanted_mango",
-	"item_enchanted_mango",
-	"item_blood_grenade",
-
-	"item_boots",
-	"item_magic_wand",
-	"item_tranquil_boots",
-	"item_force_staff",--
+sRoleItemsBuyList['pos_1'] = {
+	"item_crystal_maiden_outfit",
+--	"item_glimmer_cape",
 	"item_aghanims_shard",
-	"item_glimmer_cape",--
+	"item_force_staff",
 	"item_ultimate_scepter",
-	"item_boots_of_bearing",--
-	"item_octarine_core",--
-	"item_shivas_guard",--
-	"item_aeon_disk",--
-	"item_ultimate_scepter_2",
+	"item_hurricane_pike",
+	"item_cyclone", 
+	"item_sheepstick",
+	"item_wind_waker",
+	"item_refresher",
+	"item_lotus_orb",
 	"item_moon_shard",
+	"item_ultimate_scepter_2",
+}
+
+sRoleItemsBuyList['pos_2'] = {
+	"item_mage_outfit",
+	"item_ancient_janggo",
+	"item_glimmer_cape",
+	"item_boots_of_bearing",
+	"item_pipe",
+	"item_aghanims_shard",
+	"item_veil_of_discord",
+	"item_cyclone",
+	"item_sheepstick",
+	"item_wind_waker",
+	"item_moon_shard",
+	"item_ultimate_scepter_2",
+
+}
+
+sRoleItemsBuyList['pos_4'] = {
+	"item_priest_outfit",
+	"item_urn_of_shadows",
+	"item_mekansm",
+	"item_glimmer_cape",
+	"item_aghanims_shard",
+	"item_guardian_greaves",
+	"item_spirit_vessel",
+--	"item_wraith_pact",
+	"item_ultimate_scepter",
+	"item_shivas_guard",
+	"item_moon_shard",
+	"item_ultimate_scepter_2",
+	"item_sheepstick",
+
 }
 
 sRoleItemsBuyList['pos_5'] = {
@@ -79,29 +105,7 @@ sRoleItemsBuyList['pos_5'] = {
 	"item_moon_shard",
 }
 
-sRoleItemsBuyList['pos_3'] = {
-	"item_tango",
-	"item_tango",
-	"item_double_branches",
-
-	"item_boots",
-	"item_magic_wand",
-	"item_tranquil_boots",
-	"item_force_staff",--
-	"item_aghanims_shard",
-	"item_glimmer_cape",--
-	"item_ultimate_scepter",
-	"item_boots_of_bearing",--
-	"item_octarine_core",--
-	"item_shivas_guard",--
-	"item_aeon_disk",--
-	"item_ultimate_scepter_2",
-	"item_moon_shard",
-}
-
-sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_3']
-
-sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
+sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_1']
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 
@@ -113,7 +117,15 @@ Pos5SellList = {
 	"item_magic_wand",
 }
 
-X['sSellList'] = {}
+X['sSellList'] = {
+	
+	"item_cyclone",
+	"item_magic_wand",
+
+	"item_ultimate_scepter",
+	"item_magic_wand",
+	
+}
 
 if sRole == "pos_4"
 then
