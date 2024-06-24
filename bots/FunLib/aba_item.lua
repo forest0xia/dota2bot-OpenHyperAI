@@ -477,18 +477,18 @@ Item['item_abyssal_blade']	= GetItemComponents( 'item_abyssal_blade' )[1]
 
 Item['item_aether_lens']	= GetItemComponents( 'item_aether_lens' )[1]
 
-Item['item_arcane_boots']	= {"item_boots", "item_ring_of_basilius", "item_recipe_arcane_boots"}
+Item['item_arcane_boots']	= GetItemComponents( 'item_arcane_boots' )[1]
 
 Item['item_armlet']	= GetItemComponents( 'item_armlet' )[1]
 
-Item['item_assault']	= {"item_platemail", "item_hyperstone", "item_buckler", "item_recipe_assault"}
+Item['item_assault']	= GetItemComponents( 'item_assault' )[1]
 
 Item['item_ancient_janggo']	= GetItemComponents( 'item_ancient_janggo' )[1]
 
 Item['item_aeon_disk']	= GetItemComponents( 'item_aeon_disk' )[1]
 
 Item['item_bfury']	= GetItemComponents( 'item_bfury' )[1]
-
+	
 Item['item_black_king_bar']	= GetItemComponents( 'item_black_king_bar' )[1]
 
 Item['item_blade_mail']	= GetItemComponents( 'item_blade_mail' )[1]
@@ -533,7 +533,7 @@ Item['item_force_staff']	= GetItemComponents( 'item_force_staff' )[1]
 
 Item['item_glimmer_cape']	= GetItemComponents( 'item_glimmer_cape' )[1]
 
-Item['item_guardian_greaves']	= {"item_arcane_boots", "item_mekansm", "item_buckler", "item_recipe_guardian_greaves"}
+Item['item_guardian_greaves']	= GetItemComponents( 'item_guardian_greaves' )[1]
 
 Item['item_greater_crit']	= GetItemComponents( 'item_greater_crit' )[1]
 
@@ -549,7 +549,7 @@ Item['item_helm_of_the_dominator']	= GetItemComponents( 'item_helm_of_the_domina
 
 Item['item_hood_of_defiance']	= GetItemComponents( 'item_hood_of_defiance' )[1]
 
-Item['item_hurricane_pike']		= { 'item_dragon_lance', 'item_force_staff', 'item_recipe_hurricane_pike' }
+Item['item_hurricane_pike']		= GetItemComponents( 'item_hurricane_pike' )[1]
 
 Item['item_holy_locket']	= GetItemComponents( 'item_holy_locket' )[1]
 
@@ -629,7 +629,7 @@ Item['item_sange_and_yasha']	= GetItemComponents( 'item_sange_and_yasha' )[1]
 
 Item['item_satanic']	= GetItemComponents( 'item_satanic' )[1]
 
-Item['item_sheepstick']	= {"item_tiara_of_selemene", "item_mystic_staff", "item_recipe_sheepstick"}
+Item['item_sheepstick']	= GetItemComponents( 'item_sheepstick' )[1]
 
 Item['item_sphere']	= GetItemComponents( 'item_sphere' )[1]
 
@@ -655,7 +655,7 @@ Item['item_travel_boots_2']	= GetItemComponents( 'item_travel_boots_2' )[1]
 
 Item['item_urn_of_shadows']	= GetItemComponents( 'item_urn_of_shadows' )[1]
 
-Item['item_ultimate_scepter']	= {'item_ogre_axe', 'item_blade_of_alacrity', 'item_staff_of_wizardry', 'item_point_booster'}
+Item['item_ultimate_scepter']	= { 'item_point_booster', 'item_ogre_axe', 'item_blade_of_alacrity', 'item_staff_of_wizardry' }
 
 Item['item_ultimate_scepter_2']	= GetItemComponents( 'item_ultimate_scepter_2' )[1]
 
@@ -663,7 +663,7 @@ Item['item_vanguard']	= GetItemComponents( 'item_vanguard' )[1]
 
 Item['item_veil_of_discord']	= GetItemComponents( 'item_veil_of_discord' )[1]
 
-Item['item_vladmir']	= {"item_ring_of_basilius", "item_lifesteal", "item_buckler", "item_blades_of_attack"}
+Item['item_vladmir']	= GetItemComponents( 'item_vladmir' )[1]
 
 Item['item_wraith_band']	= GetItemComponents( 'item_wraith_band' )[1]
 
@@ -672,15 +672,15 @@ Item['item_yasha']	= { 'item_boots_of_elves', 'item_blade_of_alacrity', 'item_re
 Item['item_yasha_and_kaya']	= GetItemComponents( 'item_yasha_and_kaya' )[1]
 
 
-Item['item_falcon_blade']	= {"item_sobi_mask", "item_blades_of_attack", "item_fluffy_hat", "item_recipe_falcon_blade"}
+Item['item_falcon_blade']	= GetItemComponents( 'item_falcon_blade' )[1]
 
-Item['item_orb_of_corrosion']	= {"item_orb_of_venom", "item_gloves", "item_ring_of_protection"}
+Item['item_orb_of_corrosion']	= GetItemComponents( 'item_orb_of_corrosion' )[1]
 
 Item['item_witch_blade']	= GetItemComponents( 'item_witch_blade' )[1]
 
 Item['item_gungir']	= GetItemComponents( 'item_gungir' )[1]
 
-Item['item_mage_slayer']	= {"item_oblivion_staff", "item_cloak", "item_recipe_mage_slayer"}
+Item['item_mage_slayer']	= GetItemComponents( 'item_mage_slayer' )[1]
 
 Item['item_eternal_shroud']	= GetItemComponents( 'item_eternal_shroud' )[1]
 
@@ -854,7 +854,7 @@ Item['item_dragon_knight_outfit']		= { 'item_tango', 'item_flask', 'item_quellin
 
 --------------------------------------------------------------------------
 
-Item['item_priest_outfit']				= { 'item_tango', 'item_tango', 'item_branches', 'item_circlet', 'item_magic_stick', 'item_branches', 'item_boots', 'item_recipe_magic_wand', 'item_flask', 'item_ring_of_protection', 'item_sobi_mask', 'item_recipe_urn_of_shadows', 'item_ring_of_basilius', 'item_recipe_arcane_boots' }
+Item['item_priest_outfit']				= { 'item_tango', 'item_tango', 'item_branches', 'item_magic_stick', 'item_branches', 'item_arcane_boots', 'item_recipe_magic_wand', 'item_flask', 'item_urn_of_shadows' }
 
 -----------------------------------------------------------------------------
 

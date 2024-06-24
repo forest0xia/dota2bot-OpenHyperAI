@@ -26,26 +26,19 @@ local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 local sRoleItemsBuyList = {}
 
 sRoleItemsBuyList['pos_1'] = {
-	"item_tango",
-    "item_double_branches",
-	"item_quelling_blade",
-	"item_double_gauntlets",
-
-    "item_magic_wand",
-	"item_power_treads",
-	"item_soul_ring",
-    "item_radiance",--
+	"item_bristleback_outfit",
+	"item_radiance",--
+	"item_travel_boots",
+	"item_blade_mail",--
+	"item_heavens_halberd",--
     "item_blink",
-    "item_black_king_bar",--
-    "item_assault",--
-	"item_basher",
-    "item_swift_blink",--
+	"item_black_king_bar",--
     "item_aghanims_shard",
-    "item_abyssal_blade",--
-    "item_travel_boots",
-    "item_moon_shard",
-    "item_travel_boots_2",--
+	"item_abyssal_blade",--
+	"item_overwhelming_blink",--
+	"item_moon_shard",
     "item_ultimate_scepter_2",
+	"item_travel_boots_2",--
 }
 
 sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
@@ -59,9 +52,16 @@ sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_1']
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 X['sSellList'] = {
-	"item_quelling_blade",
-    "item_magic_wand",
 	"item_power_treads",
+	"item_quelling_blade",
+
+	"item_assault",
+	"item_magic_wand",
+	
+	"item_abyssal_blade",
+	
+	"item_assault",
+	"item_ancient_janggo",
 	"item_soul_ring",
 }
 

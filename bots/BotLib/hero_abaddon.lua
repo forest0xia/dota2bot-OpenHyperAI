@@ -24,26 +24,39 @@ local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 
 local sRoleItemsBuyList = {}
 
-sRoleItemsBuyList['pos_4'] = {
-    "item_double_tango",
-    "item_double_enchanted_mango",
-    "item_double_branches",
-    "item_faerie_fire",
-    "item_blood_grenade",
 
-    "item_tranquil_boots",
-    "item_magic_wand",
-    "item_solar_crest",--
-    "item_holy_locket",--
-    "item_ultimate_scepter",
-    "item_force_staff",--
-    "item_boots_of_bearing",--
-    "item_lotus_orb",--
-    "item_wind_waker",--
-    "item_aghanims_shard",
-    "item_ultimate_scepter_2",
-    "item_moon_shard"
+sRoleItemsBuyList['pos_1'] = {
+	"item_sven_outfit",
+	"item_blade_mail",
+	"item_black_king_bar",
+	"item_aghanims_shard",
+	"item_blink",
+	"item_ultimate_scepter",
+	"item_travel_boots",
+	"item_overwhelming_blink",
+	"item_abyssal_blade",
+	"item_ultimate_scepter_2",
+	"item_heart",
+	"item_moon_shard",
+	"item_travel_boots_2",
 }
+
+sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
+sRoleItemsBuyList['pos_3'] = {
+	"item_tank_outfit",
+	"item_crimson_guard",
+	"item_aghanims_shard",
+	"item_heavens_halberd",
+	"item_lotus_orb",
+	"item_travel_boots",
+	"item_assault",
+	"item_ultimate_scepter_2",
+	"item_heart",
+	"item_moon_shard",
+	"item_travel_boots_2",
+}
+
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_3']
 
 sRoleItemsBuyList['pos_5'] = {
     "item_double_tango",
@@ -55,39 +68,16 @@ sRoleItemsBuyList['pos_5'] = {
     "item_arcane_boots",
     "item_magic_wand",
     "item_solar_crest",--
-    "item_holy_locket",--
+    "item_heart",--
     "item_ultimate_scepter",
     "item_force_staff",--
     "item_guardian_greaves",--
     "item_lotus_orb",--
-    "item_wind_waker",--
+    "item_shivas_guard",--
     "item_aghanims_shard",
     "item_ultimate_scepter_2",
     "item_moon_shard"
 }
-sRoleItemsBuyList['pos_3'] = {
-    "item_double_tango",
-    "item_double_enchanted_mango",
-    "item_double_branches",
-    "item_faerie_fire",
-
-    "item_tranquil_boots",
-    "item_magic_wand",
-    "item_solar_crest",--
-    "item_holy_locket",--
-    "item_ultimate_scepter",
-    "item_force_staff",--
-    "item_boots_of_bearing",--
-    "item_lotus_orb",--
-    "item_wind_waker",--
-    "item_aghanims_shard",
-    "item_ultimate_scepter_2",
-    "item_moon_shard"
-}
-
-sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
-
-sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_3']
 
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]

@@ -26,6 +26,24 @@ local sRoleItemsBuyList = {}
 
 local sUtility = {"item_lotus_orb", "item_crimson_guard", "item_heavens_halberd"}
 local nUtility = sUtility[RandomInt(1, #sUtility)]
+
+sRoleItemsBuyList['pos_1'] = {
+	"item_bristleback_outfit",
+	"item_blade_mail",--
+	"item_heavens_halberd",--
+	"item_lotus_orb",--
+	"item_black_king_bar",--
+	"item_aghanims_shard",
+	"item_travel_boots",
+	"item_abyssal_blade",--
+	-- "item_heart",--
+	"item_moon_shard",
+    "item_ultimate_scepter_2",
+	"item_travel_boots_2",--
+}
+
+sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
+
 sRoleItemsBuyList['pos_3'] = {
     "item_tango",
     "item_double_branches",
@@ -50,17 +68,40 @@ sRoleItemsBuyList['pos_3'] = {
     "item_moon_shard",
 }
 
-sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
+sRoleItemsBuyList['pos_4'] = {
 
-sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_3']
+	"item_tank_outfit",
+	"item_crimson_guard",
+	"item_heavens_halberd",
+	"item_lotus_orb",
+	"item_aghanims_shard",
+	"item_travel_boots",
+	"item_assault",
+	"item_heart",
+	"item_moon_shard",
+    "item_ultimate_scepter_2",
+	"item_travel_boots_2",
 
-sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_3']
+}
 
-sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_3']
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_4']
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 X['sSellList'] = {
+
+	"item_power_treads",
+	"item_quelling_blade",
+
+	"item_assault",
+	"item_magic_wand",
+	
+	"item_abyssal_blade",
+	"item_magic_wand",
+	
+	"item_assault",
+	"item_ancient_janggo",
+
     "item_quelling_blade",
     "item_bracer",
     "item_soul_ring",

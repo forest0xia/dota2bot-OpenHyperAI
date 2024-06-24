@@ -26,30 +26,37 @@ local sRoleItemsBuyList = {}
 
 local sCrimsonPipe = RandomInt(1, 2) == 1 and "item_crimson_guard" or "item_pipe"
 
-sRoleItemsBuyList['pos_3'] = {
-    "item_tango",
-    "item_double_branches",
-    "item_circlet",
-    "item_circlet",
-
-    "item_magic_wand",
-    "item_ring_of_basilius",
-    "item_arcane_boots",
-    "item_helm_of_the_overlord",--
-    "item_black_king_bar",--
+sRoleItemsBuyList['pos_1'] = {
+	"item_bristleback_outfit",
+	"item_heavens_halberd",--
+	"item_black_king_bar",--
     "item_blink",
-    "item_aghanims_shard",
-    sCrimsonPipe,--
+	"item_travel_boots",
+	"item_abyssal_blade",--
+	"item_aghanims_shard",
+	"item_overwhelming_blink",--
     "item_refresher",--
-    "item_overwhelming_blink",--
-    "item_travel_boots_2",--
+	"item_moon_shard",
     "item_ultimate_scepter_2",
-    "item_moon_shard",
+	"item_travel_boots_2",--
 }
 
-sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
+sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
 
-sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_3']
+sRoleItemsBuyList['pos_3'] = {
+	"item_tank_outfit",
+    sCrimsonPipe,--
+	"item_aghanims_shard",
+	"item_heavens_halberd",
+	"item_blink",
+	"item_travel_boots",
+	"item_assault",--
+	"item_heart",--
+	"item_overwhelming_blink",--
+	"item_moon_shard",
+    "item_ultimate_scepter_2",
+	"item_travel_boots_2",--
+}
 
 sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_3']
 
@@ -58,8 +65,16 @@ sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_3']
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 X['sSellList'] = {
-    "item_circlet",
-    "item_magic_wand",
+
+	"item_power_treads",
+	"item_quelling_blade",
+
+	"item_assault",
+	"item_magic_wand",
+	
+	"item_abyssal_blade",
+	
+	"item_ancient_janggo",
     "item_arcane_boots",
 }
 

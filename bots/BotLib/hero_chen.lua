@@ -41,51 +41,31 @@ end
 
 local sRoleItemsBuyList = {}
 
+sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_4']
+
+sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_4']
+
+sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_4']
+
 sRoleItemsBuyList['pos_4'] = {
-    "item_double_tango",
-    "item_double_branches",
     "item_blood_grenade",
 
-    "item_ring_of_basilius",
-    "item_magic_wand",
+	"item_priest_outfit",
+	"item_urn_of_shadows",
+	"item_mekansm",
     "item_vladmir",--
-    "item_ancient_janggo",
-    "item_boots",
-    "item_solar_crest",--
-    "item_aghanims_shard",
-    "item_boots_of_bearing",--
-    "item_glimmer_cape",--
-    "item_holy_locket",--
-    "item_assault",--
+	"item_glimmer_cape",--
+	"item_aghanims_shard",
+	"item_guardian_greaves",--
+	"item_spirit_vessel",--
+--	"item_wraith_pact",
+	"item_shivas_guard",--
+	"item_sheepstick",--
     "item_ultimate_scepter_2",
-    "item_moon_shard",
+	"item_moon_shard",
 }
 
-sRoleItemsBuyList['pos_5'] = {
-    "item_double_tango",
-    "item_double_branches",
-    "item_blood_grenade",
-
-    "item_ring_of_basilius",
-    "item_magic_wand",
-    "item_vladmir",--
-    "item_mekansm",
-    "item_boots",
-    "item_pipe",--
-    "item_aghanims_shard",
-    "item_guardian_greaves",--
-    "item_glimmer_cape",--
-    "item_holy_locket",--
-    "item_assault",--
-    "item_ultimate_scepter_2",
-    "item_moon_shard",
-}
-
-sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_5']
-
-sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_5']
-
-sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_5']
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_4']
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 
@@ -97,14 +77,14 @@ Pos5SellList = {
 	
 }
 
-X['sSellList'] = {}
+X['sSellList'] = {
+	"item_shivas_guard",
+	"item_magic_wand",
 
-if sRole == "pos_4"
-then
-    X['sSellList'] = Pos4SellList
-else
-    X['sSellList'] = Pos5SellList
-end
+	"item_sheepstick",
+	"item_magic_wand",
+}
+
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_antimage' }, {} end
 
