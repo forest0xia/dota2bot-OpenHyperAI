@@ -23,6 +23,9 @@ local bot = GetBot()
 ]]
 
 function GetDesire()
+	if GetGameMode() == GAMEMODE_1V1MID or GetGameMode() == GAMEMODE_MO then
+		return 1
+	end
 
 	local currentTime = DotaTime()
 	local botLV = bot:GetLevel()

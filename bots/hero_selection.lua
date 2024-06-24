@@ -1093,7 +1093,8 @@ function UpdateLaneAssignments()
 	if GetGameMode() == GAMEMODE_MO then
 		Role.roleAssignment[team] = {2, 2, 2, 2, 2}
 		return MidOnlyLaneAssignment
-	elseif GetGameMode() == GAMEMODE_1V1MID then
+	end
+	if GetGameMode() == GAMEMODE_1V1MID then
 		return OneVoneLaneAssignment
 	end
 

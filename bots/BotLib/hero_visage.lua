@@ -158,13 +158,13 @@ function X.SkillsComplement()
         return
     end
 
-    -- Bugged...
-    -- SummonFamiliarsDesire = X.ConsiderSummonFamiliars()
-    -- if SummonFamiliarsDesire > 0
-    -- then
-    --     bot:Action_UseAbility(SummonFamiliars)
-    --     return
-    -- end
+    -- Bugged. New facet in 7.36 modified the ability so Action_UseAbility only toggle the ability not using it, whoever there is no other api to cast this ability now.
+    SummonFamiliarsDesire = X.ConsiderSummonFamiliars()
+    if SummonFamiliarsDesire > 0
+    then
+        bot:Action_UseAbility(SummonFamiliars)
+        return
+    end
 end
 
 function X.ConsiderGraveChill()
@@ -376,12 +376,15 @@ function X.ConsiderGravekeepersCloak()
     return BOT_ACTION_DESIRE_NONE
 end
 
+local lastSummonCheckTime = 0
+local deltaSummonCheckTime = 20
 function X.ConsiderSummonFamiliars()
-    if not SummonFamiliars:IsFullyCastable()
+    if not SummonFamiliars:IsFullyCastable() or (DotaTime() - lastSummonCheckTime <= deltaSummonCheckTime)
     then
         return BOT_ACTION_DESIRE_NONE
     end
 
+    lastSummonCheckTime = DotaTime()
     local nFamiliarCount = SummonFamiliars:GetSpecialValueInt('familiar_count')
     local nCurrFamiliar = 0
 

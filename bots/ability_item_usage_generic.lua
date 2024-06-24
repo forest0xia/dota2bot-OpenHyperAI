@@ -4204,6 +4204,11 @@ end
 
 function X.GetLaningTPLocation( bot, nMinTPDistance, botLocation )
 
+	-- overridding for mid only modes
+	if GetGameMode() == GAMEMODE_1V1MID or GetGameMode() == GAMEMODE_MO then
+		return nil, false
+	end
+
 	local laneToTP
 	local tp = false
 	local team = GetTeam()

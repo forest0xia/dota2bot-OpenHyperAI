@@ -7,6 +7,8 @@ This script is based on Valve's default bot script and many other people's work 
 
 Bot script in Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=3246316298
 
+If you'd like to buy me a coffee: https://www.buymeacoffee.com/forest.dota
+
 ### Why it's enjoyable
 0. Support 7.36
 1. Support 116+ heroes. (I personally don't take much of the credit for this because it's many peoples work to make this possible). Kudos to Tinkering ABout (by ryndrb) for making a lot of improvements on recent hero supporting.
