@@ -57,8 +57,8 @@ sRoleItemsBuyList['pos_1'] = {
     "item_bloodthorn",--
     "item_hurricane_pike",--
     "item_greater_crit",--
-    "item_butterfly",--
     "item_moon_shard",
+    "item_butterfly",--
     "item_ultimate_scepter",
     "item_ultimate_scepter_2",
 }
@@ -79,8 +79,8 @@ sRoleItemsBuyList['pos_2'] = {
     "item_bloodthorn",--
     "item_hurricane_pike",--
     "item_sheepstick",--
-    "item_butterfly",--
     "item_moon_shard",
+    "item_butterfly",--
     "item_ultimate_scepter",
     "item_ultimate_scepter_2",
 }

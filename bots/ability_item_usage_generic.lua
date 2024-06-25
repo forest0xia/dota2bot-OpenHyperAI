@@ -5316,7 +5316,7 @@ X.ConsiderItemDesire["item_ward_sentry"] = function( hItem )
 			if J.IsValidHero( npcEnemy )
 				and J.IsInRange( bot, npcEnemy, 900 )
 				and J.CanCastOnMagicImmune( npcEnemy )
-				and X.HasInvisibilityOrItem( npcEnemy )
+				and J.HasInvisibilityOrItem( npcEnemy )
 				and not npcEnemy:HasModifier( "modifier_slardar_amplify_damage" )
 				and not npcEnemy:HasModifier( "modifier_item_dustofappearance" )
 				and not J.Site.IsLocationHaveTrueSight( npcEnemy:GetLocation() )
@@ -5333,23 +5333,6 @@ X.ConsiderItemDesire["item_ward_sentry"] = function( hItem )
 	return BOT_ACTION_DESIRE_NONE
 
 end
-
-
-function X.HasInvisibilityOrItem( npcEnemy )
-
-	if npcEnemy:HasInvisibility( false )
-		or J.HasItem( npcEnemy, "item_shadow_amulet" )
-		or J.HasItem( npcEnemy, "item_glimmer_cape" )
-		or J.HasItem( npcEnemy, "item_invis_sword" )
-		or J.HasItem( npcEnemy, "item_silver_edge" )
-	then
-		return true
-	end
-
-	return false
-
-end
-
 
 
 --GG树
@@ -6975,7 +6958,7 @@ X.ConsiderItemDesire["item_seer_stone"] = function(hItem)
 			if J.IsValidHero(enemyHero)
 			and J.IsInRange(bot, enemyHero, nRadius)
 			and J.CanCastOnMagicImmune(enemyHero)
-			and X.HasInvisibilityOrItem(enemyHero)
+			and J.HasInvisibilityOrItem(enemyHero)
 			and not enemyHero:HasModifier('modifier_slardar_amplify_damage')
 			and not enemyHero:HasModifier('modifier_item_dustofappearance')
 			and not J.Site.IsLocationHaveTrueSight(enemyHero:GetLocation())

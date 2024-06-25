@@ -689,7 +689,7 @@ function X.OverrideTeamHeroes()
 
 			-- Test buggy heroes:
 			[1] = 'npc_dota_hero_muerta',
-			[2] = 'npc_dota_hero_invoker',
+			[2] = 'npc_dota_hero_ember_spirit',
 			-- [2] = 'npc_dota_hero_primal_beast',
 			-- [2] = tSelectPoolList[2][RandomInt( 1, #tSelectPoolList[2] )],
 			-- [3] = 'npc_dota_hero_muerta', -- DOES NOT WORK. marci works as pos1.
@@ -709,7 +709,7 @@ function X.OverrideTeamHeroes()
 end
 
 -- 这行代码为了人工挑选想要的阵容。如果想让电脑自己随机英雄，则注释掉这行
--- sSelectList = X.OverrideTeamHeroes()
+sSelectList = X.OverrideTeamHeroes()
 
 function X.ShuffleArray(array)
 	if type(array) ~= "table" then
@@ -1072,19 +1072,20 @@ local CMSupportAlreadyAssigned = {
 
 --[[ Game Modes
 GAMEMODE_NONE
-GAMEMODE_AP -- All Pick
-GAMEMODE_CM -- Captain Mode
-GAMEMODE_RD -- Random Draft
-GAMEMODE_SD -- Single Draft
-GAMEMODE_AR -- All Random
+GAMEMODE_AP = 1 -- All Pick
+GAMEMODE_CM = 2 -- Captain Mode
+GAMEMODE_RD = 3 -- Random Draft
+GAMEMODE_SD = 4 -- Single Draft
+GAMEMODE_AR = 5 -- All Random
 GAMEMODE_REVERSE_CM
-GAMEMODE_MO -- Mid Only
-GAMEMODE_CD
+GAMEMODE_MO = 11 -- Mid Only
+GAMEMODE_CD = 16
 GAMEMODE_ABILITY_DRAFT
 GAMEMODE_LP -- Least Played
 GAMEMODE_ARDM
-GAMEMODE_1V1MID
-GAMEMODE_ALL_DRAFT -- Ranked All Pick
+GAMEMODE_1V1MID = 21
+GAMEMODE_ALL_DRAFT = 22 -- Ranked All Pick
+GAMEMODE_TURBO = 23
 ]]
 
 function UpdateLaneAssignments()

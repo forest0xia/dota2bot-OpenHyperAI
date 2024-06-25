@@ -42,9 +42,9 @@ sRoleItemsBuyList['pos_1'] = {
     "item_aghanims_shard",
     "item_bloodthorn",--
     "item_ultimate_scepter_2",
+    "item_moon_shard",
     "item_abyssal_blade",--
     "item_travel_boots_2",--
-    "item_moon_shard",
 }
 
 sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']

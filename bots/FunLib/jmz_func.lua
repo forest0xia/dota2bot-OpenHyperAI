@@ -4202,6 +4202,21 @@ function J.GetWeakestUnit(nEnemyUnits)
 	return nWeakestUnit, nWeakestUnitLowestHealth
 end
 
+function J.HasInvisibilityOrItem( npcEnemy )
+
+	if npcEnemy:HasInvisibility( false )
+		or J.HasItem( npcEnemy, "item_shadow_amulet" )
+		or J.HasItem( npcEnemy, "item_glimmer_cape" )
+		or J.HasItem( npcEnemy, "item_invis_sword" )
+		or J.HasItem( npcEnemy, "item_silver_edge" )
+	then
+		return true
+	end
+
+	return false
+
+end
+
 function J.AdjustLocationWithOffset(vLoc, offset, target)
 	local targetLoc = vLoc
 

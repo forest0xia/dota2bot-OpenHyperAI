@@ -220,7 +220,9 @@ function CDOTA_Bot_Script:ActionImmediate_SwapItems(intnSlot1, intnSlot2)
 	if self.itemSwapTime == nil then
 		self.itemSwapTime = 0
 	end
-	if DotaTime() - self.itemSwapTime > itemSwapGapTime then
+	-- print("ActionImmediate_SwapItems has been called on unit: "..unitName)
+	-- print("Stack Trace:", debug.traceback())
+	if #self:GetNearbyHeroes(1000, true, BOT_MODE_NONE) == 0 and DotaTime() - self.itemSwapTime > itemSwapGapTime then
 		self.itemSwapTime = DotaTime()
 		return originalActionImmediate_SwapItems(self, intnSlot1, intnSlot2)
 	else

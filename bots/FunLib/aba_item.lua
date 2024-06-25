@@ -360,6 +360,9 @@ Item['sCanNotSwitchItems'] = {
 		'item_cheese',
 		'item_bloodstone',
 		'item_gem',
+		'item_moon_shard',
+		'item_black_king_bar', -- prevent keep swapping with critical items in other settings
+		-- 'item_ward_sentry', -- prevent keep swapping with critical items in other settings
 }
 local tCanNotSwitchItemList = {}
 for _, sItem in pairs( Item['sCanNotSwitchItems'] )

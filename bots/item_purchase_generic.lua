@@ -298,12 +298,10 @@ local fullInvCheck = -90
 local lastBootsCheck = -90
 local buyBootsStatus = false
 local buyRD = false
-local buyTP = false
 
 local switchTime = 0
 local buyWardTime = -999
 
-local buyTPtime = 0
 local buyBookTime = 0
 local hasBuyClarity = false
 
@@ -586,7 +584,6 @@ function ItemPurchaseThink()
 		and bot:IsAlive()
 		and botGold < ( GetItemCost( "item_tpscroll" ) + botWorth / 40 )
 		and botHP < 0.08
-		and GetGameMode() ~= 23
 		and bot:GetHealth() >= 1
 		and bot:WasRecentlyDamagedByAnyHero( 3.1 )
 		and not Item.HasItem( bot, 'item_travel_boots' )
@@ -596,22 +593,36 @@ function ItemPurchaseThink()
 		bot:ActionImmediate_PurchaseItem( "item_tpscroll" )
 		return
 	end
-
+	
+	--正常买备用tp
+	if currentTime > 4 * 60
+		and bot:GetCourierValue() == 0
+		and botGold >= GetItemCost( "item_tpscroll" )
+		and not Item.HasItem( bot, 'item_travel_boots' )
+		and not Item.HasItem( bot, 'item_travel_boots_2' )
+		and not bot:GetUnitName() == "npc_dota_hero_meepo" -- don't let meepo buy tp
+	then
+		local tCharges = Item.GetItemCharges( bot, 'item_tpscroll' )
+		if bot:HasModifier("modifier_teleporting") then tCharges = tCharges - 1 end
+		if tCharges <= 0 or ( botLevel >= 18 and tCharges <= 1 )
+		then
+			bot:ActionImmediate_PurchaseItem( "item_tpscroll" )
+		end
+	end
 
 	-- --辅助死前如果会损失金钱则购买粉
-	-- if botGold >= GetItemCost( "item_dust" )
-	-- 	and bot:IsAlive()
-	-- 	and GetGameMode() ~= 23
-	-- 	and botLevel > 6
-	-- 	and bot.theRole == 'support'
-	-- 	and botGold < ( GetItemCost( "item_dust" )  + botWorth / 40 )
-	-- 	and botHP < 0.06
-	-- 	and bot:WasRecentlyDamagedByAnyHero( 3.1 )
-	-- 	and Item.GetItemCharges( bot, 'item_dust' ) <= 1
-	-- then
-	-- 	bot:ActionImmediate_PurchaseItem( "item_dust" )
-	-- 	return
-	-- end
+	if botGold >= GetItemCost( "item_dust" )
+		and bot:IsAlive()
+		and botLevel > 6
+		and bot.theRole == 'support'
+		and botGold < ( GetItemCost( "item_dust" )  + botWorth / 40 )
+		and botHP < 0.06
+		and bot:WasRecentlyDamagedByAnyHero( 3.1 )
+		and Item.GetItemCharges( bot, 'item_dust' ) <= 1
+	then
+		bot:ActionImmediate_PurchaseItem( "item_dust" )
+		return
+	end
 
 	--交换魂泪的位置避免过早被破坏
 	if currentTime > 180
@@ -632,8 +643,6 @@ function ItemPurchaseThink()
 			return
 		end
 	end
-
-
 
 	if ( GetGameMode() ~= 23 and botLevel > 6 and currentTime > fullInvCheck + 1.0
 		and (bot:DistanceFromFountain() <= 200 or bot:DistanceFromSecretShop() <= 200 ))
@@ -746,70 +755,6 @@ function ItemPurchaseThink()
 			return
 		end
 	end
-
-
-
-	if currentTime > 4 * 60
-		and buyTP == false
-		and bot:GetCourierValue() == 0
-		and botGold >= GetItemCost( "item_tpscroll" )
-		and not Item.HasItem( bot, 'item_travel_boots' )
-		and not Item.HasItem( bot, 'item_travel_boots_2' )
-		and not bot:GetUnitName() == "npc_dota_hero_meepo" -- don't let meepo buy tp
-	then
-
-		local tCharges = Item.GetItemCharges( bot, 'item_tpscroll' )		
-		if bot:HasModifier("modifier_teleporting") then tCharges = tCharges - 1 end
-		
-		if tCharges <= 0
-			or ( botLevel >= 18 and tCharges <= 1 )
-		then
-
-			if botLevel < 18 or ( botLevel >= 18 and tCharges <= 1 )
-			then
-				buyTP = true
-				buyTPtime = currentTime
-				bot.currentComponentToBuy = nil
-				bot.currListItemToBuy[#bot.currListItemToBuy+1] = 'item_tpscroll'
-				if #bot.itemToBuy == 0
-				then
-					bot.itemToBuy = { 'item_tpscroll' }
-					if bot.currentItemToBuy == nil
-					then
-						bot.currentItemToBuy = 'item_tpscroll'
-					end
-				end
-				return
-			end
-
-			if botLevel >= 18 and tCharges == 0 and botGold >= GetItemCost( "item_tpscroll" )
-			then
-				buyTP = true
-				buyTPtime = currentTime
-				bot.currentComponentToBuy = nil
-				bot.currListItemToBuy[#bot.currListItemToBuy+1] = 'item_tpscroll'
-				bot.currListItemToBuy[#bot.currListItemToBuy+1] = 'item_tpscroll'
-				if #bot.itemToBuy == 0
-				then
-					bot.itemToBuy = { 'item_tpscroll' }
-					if bot.currentItemToBuy == nil
-					then
-						bot.currentItemToBuy = 'item_tpscroll'
-					end
-				end
-				return
-			end
-			
-		end
-	end
-
-	
-	if buyTP == true and buyTPtime < currentTime - 70
-	then
-		buyTP = false
-		return
-	end
-
 
 	if #bot.itemToBuy == 0 then bot:SetNextItemPurchaseValue( 0 ) return end
 
