@@ -43,36 +43,31 @@ sRoleItemsBuyList['pos_2'] = {
 	"item_magic_wand",
 	"item_aghanims_shard",
 	"item_manta",--
-	"item_octarine_core",--
 	"item_ultimate_scepter",
 	"item_kaya_and_sange",--
 	"item_black_king_bar",--
 	"item_travel_boots",
 	"item_angels_demise",--
-	"item_travel_boots_2",--
-	"item_ultimate_scepter_2",
 	"item_moon_shard",
+	"item_ultimate_scepter_2",
+	"item_octarine_core",--
+	"item_travel_boots_2",--
 }
 
 sRoleItemsBuyList['pos_3'] = {
-	"item_tango",
-	"item_double_branches",
-	"item_faerie_fire",
-
-	"item_arcane_boots",
-	"item_phylactery",
-	"item_magic_wand",
+	"item_mage_outfit",
+	"item_soul_ring",
+	"item_glimmer_cape",--
 	"item_aghanims_shard",
-	"item_manta",--
-	"item_octarine_core",--
-	"item_ultimate_scepter",
 	"item_kaya_and_sange",--
-	"item_black_king_bar",--
-	"item_travel_boots",
-	"item_angels_demise",--
-	"item_travel_boots_2",--
-	"item_ultimate_scepter_2",
+	"item_shivas_guard",--
+	"item_cyclone",
+	"item_ultimate_scepter",
+	"item_sheepstick",--
+	"item_wind_waker",--
 	"item_moon_shard",
+	"item_ultimate_scepter_2",
+	"item_octarine_core",--
 }
 
 sRoleItemsBuyList['pos_1'] = {
@@ -101,69 +96,33 @@ sRoleItemsBuyList['pos_4'] = {
 	"item_double_branches",
 	"item_enchanted_mango",
 
-	"item_tranquil_boots",
-	"item_wind_lace",
-	"item_phylactery",
-	"item_magic_wand",
-	"item_aether_lens",
-	"item_force_staff",--
-	"item_octarine_core",--
-	"item_boots_of_bearing",--
-	"item_aghanims_shard",
-	"item_ultimate_scepter",
-	"item_manta",--
-	"item_ethereal_blade",--
-	"item_angels_demise",--
-	"item_ultimate_scepter_2",
-	"item_moon_shard",
-}
-
-sRoleItemsBuyList['pos_5'] = {
-	"item_tango",
-	"item_magic_stick",
-	"item_double_branches",
-	"item_enchanted_mango",
-	"item_blood_grenade",
-
 	"item_arcane_boots",
-	"item_wind_lace",
-	"item_phylactery",
 	"item_magic_wand",
+	"item_glimmer_cape",--
 	"item_aether_lens",
-	"item_force_staff",--
-	"item_octarine_core",--
 	"item_guardian_greaves",--
+	"item_kaya_and_sange",--
+	"item_octarine_core",--
 	"item_aghanims_shard",
 	"item_ultimate_scepter",
-	"item_manta",--
 	"item_ethereal_blade",--
-	"item_angels_demise",--
 	"item_ultimate_scepter_2",
+	"item_sheepstick",--
 	"item_moon_shard",
 }
+
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_4']
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 
-Pos2SellList = {
+X['sSellList'] = {
     "item_bottle",
-    "item_magic_wand",
-}
+	"item_cyclone",
+	"item_magic_wand",
 
-Pos4SellList = {
+	'item_ultimate_scepter',
     "item_wind_lace",
-    "item_magic_wand",
 }
-
-Pos5SellList = {
-    "item_wind_lace",
-    "item_magic_wand",
-}
-
-X['sSellList'] = Pos4SellList
-
-if sRole == "pos_2" then X['sSellList'] = Pos2SellList end
-if sRole == "pos_4" then X['sSellList'] = Pos4SellList end
-if sRole == "pos_5" then X['sSellList'] = Pos5SellList end
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_mage' }, {} end
 

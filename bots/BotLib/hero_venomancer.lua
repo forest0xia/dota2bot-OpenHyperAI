@@ -76,11 +76,11 @@ sRoleItemsBuyList['pos_3'] = {
     "item_boots",
     "item_magic_wand",
     "item_urn_of_shadows",
-    "item_tranquil_boots",
+    "item_arcane_boots",
     "item_solar_crest",--
     "item_spirit_vessel",--
     "item_force_staff",--
-    "item_boots_of_bearing",--
+	"item_guardian_greaves",--
     "item_aghanims_shard",
     nUtility,--
     "item_ultimate_scepter",

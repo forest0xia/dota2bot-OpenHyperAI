@@ -11,24 +11,28 @@ If you'd like to buy me a coffee: https://www.buymeacoffee.com/forest.dota
 
 ### Why it's enjoyable
 0. Support 7.36
-1. Support 116+ heroes. (I personally don't take much of the credit for this because it's many peoples work to make this possible). Kudos to Tinkering ABout (by ryndrb) for making a lot of improvements on recent hero supporting.
-2. All supported heroes can play any position roles. Heroes will go to any lane they are assigned. The laning or pos of the heroes is random and irrelevant to the pick order.
-3. If you ever feel all existing bot scripts lack excitement. This script boosts bots with huge unfair advantages to make bot games a lot more challenging. You will need to copy the script into your local vscripts folder and then enable the Fretbots mode for this feature. See instructions below.
-4. Support multiple modes: All Pick, Turbo, Captain Mode, Random Draft, Single Draft, All Random, Mid Only, Least Played, and 1V1 mid. Note for 1V1 mid, other bots (if you have any other empty slots filled with bots) all go to top.
-5. Improved code structure general logic for decision making for ability and item usages as well as roaming and farming.
-6. Fixed tons of bugs that can cause bots to stay idle or cancel it's own channeling spells or stuck on weird state.
-7. You can chat with bots in the game as if they were real and optimistic players. [You need to enable Fretbot mode for this, check out How to Install section below.]
+1. Support 115+ heroes. (I personally don't take much of the credit for this because it's many peoples work to make this possible). Kudos to Tinkering ABout (by ryndrb) for making a lot of improvements on recent hero supporting.
+1. All supported heroes can play any position roles. Heroes will go to any lane they are assigned. The laning or pos of the bot heroes will seem random in the game, but it's deterministic - check the Bot roles section below.
+1. Dynamic difficulty. If you ever feel all existing bot scripts lack excitement. This script boosts bots with huge unfair advantages to make bot games a lot more challenging. You will need to copy the script into your local vscripts folder and then enable the Fretbots mode for this feature. See instructions below.
+1. Support multiple modes: All Pick, Turbo, Captain Mode, Random Draft, Single Draft, All Random, Mid Only, Least Played, and 1V1 mid. 
+   1. Notes for 1V1 mid: Enemy will pick the same hero after your pick. This way you can play 1:1 SF mid, or any mid heroes you like to practice against bot with the same hero.
+   1. Notes for 1V1 mid: Other bots, if you have any other empty slots filled with bots, will all go to top.
+1. Improved code structure & general logic for decision making for ability and item usages as well as roaming and farming.
+1. Fixed tons of bugs. Bugs that can cause bots to stay idle or cancel it's own channeling spells or stuck on weird state.
+1. Enhanced AI Chatbot. You can chat with bots in the game as if they were real and optimistic players. Integrated with ChatGPT. [Note: you need to enable Fretbot mode for this, check out How to Install section below.]
 
 ### How to install this script?
 There is currently a bug where subscribing to recent bot scripts will NOT work when selecting them in the custom game lobby. They will revert back to default bots when you close out of the settings menu. In order to fix this, you must manually install this script:
-1. Subscribe to the bot.
-1. Navigate to \Steam\steamapps\workshop\content\570\3246316298
-1. Copy the contents of this folder.
-1. Navigate to \Steam\steamapps\common\dota 2 beta\game\dota\scripts\vscripts
-1. Create a folder called "bots" if you do not already have one (back this folder up if you already have another bot in here!).
+1. Subscribe to the bot script "Open Hyper AI" in Dota2 client.
+   1. Navigate to `\Steam\steamapps\workshop\content\570\3246316298`
+   1. Copy the contents of this folder.
+1. Or, download the file content of this github repo.
+   1. Copy all of the files in the `bots` folder in this repo.
+1. Navigate to `\Steam\steamapps\common\dota 2 beta\game\dota\scripts\vscripts`
+1. Create a folder called `bots` if you do not already have one (back this folder up if you already have another bot in here!).
 1. Paste all the contents you've copied into this folder.
-1. Create a lobby in Dota2, select "Local Dev Script" when you are choosing the bot script for teams. 
-1. Select "Local Host" as your server location or else this script will not load.
+1. Create a lobby in Dota2, select `Local Dev Script` when you are choosing the bot script for teams. 
+1. Select `Local Host` as your server location or else this script will not load.
 1. [**Additional Challenging bot**] Enable `Fretbots`:
    * Make sure to launch Dota 2 with the console enabled. When creating the lobby game, ensure that `Enable Cheat` is checked;
    * When the lobby game gets started, e.g. in the hero selection phase. Open the console, and input `sv_cheats 1; script_reload_code bots/fretbots`

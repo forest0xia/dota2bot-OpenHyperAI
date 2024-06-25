@@ -24,76 +24,56 @@ local nTalentBuildList = J.Skill.GetTalentBuild(tTalentTreeList)
 
 local sRoleItemsBuyList = {}
 
-sRoleItemsBuyList['pos_4'] = {
-    "item_double_tango",
-    "item_double_branches",
-    "item_blood_grenade",
-    "item_enchanted_mango",
 
-    "item_tranquil_boots",
-    "item_magic_wand",
-    "item_blink",
-    "item_ancient_janggo",
-    "item_aghanims_shard",
-    "item_aether_lens",--
-    "item_cyclone",
-    "item_boots_of_bearing",--
-    "item_octarine_core",--
-    "item_ultimate_scepter",
-    "item_wind_waker",--
-    "item_overwhelming_blink",--
-    "item_black_king_bar",--
-    "item_ultimate_scepter_2",
-    "item_moon_shard",
+sRoleItemsBuyList['pos_1'] = {
+	"item_sven_outfit",
+	"item_echo_sabre",
+	"item_hand_of_midas",
+	"item_aghanims_shard",
+	"item_blink",
+	"item_black_king_bar",
+	"item_travel_boots",
+	"item_satanic",
+	"item_overwhelming_blink",
+	"item_greater_crit", 
+	"item_abyssal_blade",
+	"item_moon_shard",
+	"item_travel_boots_2",
 }
 
-sRoleItemsBuyList['pos_5'] = {
-    "item_double_tango",
-    "item_double_branches",
-    "item_blood_grenade",
-    "item_enchanted_mango",
-
-    "item_arcane_boots",
-    "item_magic_wand",
-    "item_blink",
-    "item_mekansm",
-    "item_aghanims_shard",
-    "item_aether_lens",--
-    "item_cyclone",
-    "item_guardian_greaves",--
-    "item_octarine_core",--
-    "item_ultimate_scepter",
-    "item_wind_waker",--
-    "item_overwhelming_blink",--
-    "item_black_king_bar",--
-    "item_ultimate_scepter_2",
-    "item_moon_shard",
-}
+sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
 
 sRoleItemsBuyList['pos_3'] = {
-    "item_double_tango",
-    "item_double_branches",
-
-    "item_tranquil_boots",
-    "item_magic_wand",
-    "item_blink",
-    "item_ancient_janggo",
-    "item_aghanims_shard",
-    "item_aether_lens",--
-    "item_cyclone",
-    "item_boots_of_bearing",--
-    "item_octarine_core",--
-    "item_ultimate_scepter",
-    "item_wind_waker",--
-    "item_overwhelming_blink",--
-    "item_black_king_bar",--
-    "item_ultimate_scepter_2",
-    "item_moon_shard",
+	"item_tank_outfit",
+	"item_crimson_guard",
+	"item_aghanims_shard",
+	"item_heavens_halberd",
+	"item_lotus_orb",
+	"item_travel_boots",
+	"item_assault",
+	"item_ultimate_scepter_2",
+	"item_heart",
+	"item_moon_shard",
+	"item_travel_boots_2",
 }
 
-sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
+sRoleItemsBuyList['pos_4'] = {
+	"item_priest_outfit",
+	"item_urn_of_shadows",
+	"item_blink",
+	"item_mekansm",
+	"item_glimmer_cape",--
+	"item_aghanims_shard",--
+	"item_guardian_greaves",--
+	"item_spirit_vessel",--
+--	"item_wraith_pact",
+	"item_overwhelming_blink",--
+	"item_ultimate_scepter_2",
+	"item_sheepstick",--
+	"item_moon_shard",
+}
 
-sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_3']
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_4']
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 

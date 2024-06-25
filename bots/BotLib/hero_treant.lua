@@ -40,7 +40,7 @@ sRoleItemsBuyList['pos_4'] = {
     "item_boots_of_bearing",--
     "item_pipe",--
     "item_sheepstick",--
-    "item_aeon_disk",--
+	"item_guardian_greaves",--
     "item_overwhelming_blink",--
     "item_ultimate_scepter_2",
     "item_moon_shard",
@@ -63,7 +63,7 @@ sRoleItemsBuyList['pos_5'] = {
     "item_guardian_greaves",--
     "item_pipe",--
     "item_sheepstick",--
-    "item_aeon_disk",--
+	"item_guardian_greaves",--
     "item_overwhelming_blink",--
     "item_ultimate_scepter_2",
     "item_moon_shard",
@@ -85,15 +85,29 @@ sRoleItemsBuyList['pos_3'] = {
     "item_guardian_greaves",--
     "item_pipe",--
     "item_sheepstick",--
-    "item_aeon_disk",--
+	"item_guardian_greaves",--
     "item_overwhelming_blink",--
     "item_ultimate_scepter_2",
     "item_moon_shard",
 }
 
-sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
+sRoleItemsBuyList['pos_1'] = {
+    
+	"item_bristleback_outfit",
+	"item_aghanims_shard",
+	"item_blade_mail",--
+	"item_heavens_halberd",--
+	"item_lotus_orb",--
+	"item_black_king_bar",--
+	"item_travel_boots",
+	-- "item_abyssal_blade",
+	"item_heart",--
+	"item_moon_shard",
+	"item_travel_boots_2",--
 
-sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_3']
+}
+
+sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 

@@ -28,61 +28,40 @@ local nUtility = sUtility[RandomInt(1, #sUtility)]
 local sRoleItemsBuyList = {}
 
 sRoleItemsBuyList['pos_4'] = {
-    "item_double_tango",
-    "item_double_branches",
-    "item_double_enchanted_mango",
     "item_blood_grenade",
-
-    "item_tranquil_boots",
-    "item_magic_wand",
-    "item_force_staff",--
-    "item_boots_of_bearing",--
-    "item_blink",
-    nUtility,--
-    "item_sheepstick",--
-    "item_heart",--
-    "item_overwhelming_blink",--
-    "item_ultimate_scepter_2",
-    "item_aghanims_shard",
-    "item_moon_shard",
-}
-
-sRoleItemsBuyList['pos_5'] = {
-    "item_double_tango",
-    "item_double_branches",
-    "item_double_enchanted_mango",
-    "item_blood_grenade",
-
+	"item_tank_outfit",
     "item_arcane_boots",
-    "item_magic_wand",
-    "item_force_staff",--
+	"item_crimson_guard",--
     "item_guardian_greaves",--
-    "item_blink",
-    nUtility,--
-    "item_sheepstick",--
-    "item_heart",--
-    "item_overwhelming_blink",--
+	"item_aghanims_shard",
+	"item_heavens_halberd",--
+	"item_lotus_orb",--
+	"item_travel_boots",
+	"item_assault",--
     "item_ultimate_scepter_2",
-    "item_aghanims_shard",
-    "item_moon_shard",
+	-- "item_heart",--
+	"item_moon_shard",
+	"item_travel_boots_2",--
 }
+
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_4']
 
 sRoleItemsBuyList['pos_1'] = {
-    "item_double_branches",
-    "item_double_enchanted_mango",
 
-    "item_tranquil_boots",
-    "item_magic_wand",
-    "item_force_staff",--
-    "item_boots_of_bearing",--
-    "item_blink",
-    nUtility,--
-    "item_sheepstick",--
-    "item_heart",--
-    "item_overwhelming_blink",--
+	"item_bristleback_outfit",
+	"item_aghanims_shard",
+	"item_blade_mail",
+	"item_heavens_halberd",
+	"item_lotus_orb",
+	"item_black_king_bar",
+    "item_ultimate_scepter",
+	"item_travel_boots",
+	-- "item_abyssal_blade",
     "item_ultimate_scepter_2",
-    "item_aghanims_shard",
-    "item_moon_shard",
+	"item_heart",
+	"item_moon_shard",
+	"item_travel_boots_2",
+
 }
 
 sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
@@ -91,22 +70,21 @@ sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_1']
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 
-Pos4SellList = {
+X['sSellList'] = {
+
+	"item_power_treads",
+	"item_quelling_blade",
+
+	"item_assault",
 	"item_magic_wand",
+	
+	"item_abyssal_blade",
+	"item_magic_wand",
+	
+	"item_assault",
+	"item_ancient_janggo",
 }
 
-Pos5SellList = {
-    "item_magic_wand",
-}
-
-X['sSellList'] = {}
-
-if sRole == "pos_4"
-then
-    X['sSellList'] = Pos4SellList
-else
-    X['sSellList'] = Pos5SellList
-end
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_antimage' }, {} end
 

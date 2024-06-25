@@ -31,25 +31,6 @@ sRoleItemsBuyList['pos_4'] = {
     "item_double_branches",
     "item_blood_grenade",
 
-    "item_tranquil_boots",
-    "item_magic_wand",
-    "item_aether_lens",--
-    "item_blink",
-    nRandItem,--
-    "item_boots_of_bearing",--
-    "item_ultimate_scepter",
-    "item_octarine_core",--
-    "item_aeon_disk",--
-    "item_ultimate_scepter_2",
-    "item_arcane_blink",--
-    "item_moon_shard",
-}
-
-sRoleItemsBuyList['pos_5'] = {
-    "item_double_tango",
-    "item_double_branches",
-    "item_blood_grenade",
-
     "item_arcane_boots",
     "item_magic_wand",
     "item_aether_lens",--
@@ -64,22 +45,23 @@ sRoleItemsBuyList['pos_5'] = {
     "item_moon_shard",
 }
 
-sRoleItemsBuyList['pos_3'] = {
-    "item_double_tango",
-    "item_double_branches",
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_4']
 
-    "item_tranquil_boots",
-    "item_magic_wand",
-    "item_aether_lens",--
-    "item_blink",
-    nRandItem,--
-    "item_boots_of_bearing",--
+sRoleItemsBuyList['pos_3'] = {
+    "item_crystal_maiden_outfit",
+--		"item_glimmer_cape",
+    "item_aghanims_shard",
     "item_ultimate_scepter",
-    "item_octarine_core",--
-    "item_aeon_disk",--
-    "item_ultimate_scepter_2",
-    "item_arcane_blink",--
+    "item_force_staff",
+    "item_guardian_greaves",--
+    "item_cyclone",
+	"item_hurricane_pike",--
+    "item_sheepstick",--
+    "item_wind_waker",--
     "item_moon_shard",
+    "item_octarine_core",--
+    "item_ultimate_scepter_2",
+    "item_ethereal_blade",--
 }
 
 sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
@@ -88,22 +70,14 @@ sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_3']
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 
-Pos4SellList = {
+X['sSellList'] = {
+	"item_cyclone",
+	"item_magic_wand",
+
+	"item_ultimate_scepter",
 	"item_magic_wand",
 }
 
-Pos5SellList = {
-    "item_magic_wand",
-}
-
-X['sSellList'] = {}
-
-if sRole == "pos_4"
-then
-    X['sSellList'] = Pos4SellList
-else
-    X['sSellList'] = Pos5SellList
-end
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_antimage' }, {} end
 

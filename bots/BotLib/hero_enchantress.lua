@@ -98,9 +98,23 @@ sRoleItemsBuyList['pos_5'] = {
     "item_ultimate_scepter_2",
 }
 
-sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
+sRoleItemsBuyList['pos_1'] = {
+	"item_ranged_carry_outfit",
+	"item_dragon_lance",
+	"item_point_booster",
+	"item_hurricane_pike", --
+	"item_black_king_bar",--
+	"item_travel_boots",
+    "item_mage_slayer",--
+	"item_bloodthorn",--
+	"item_sheepstick",--
+    "item_aghanims_shard",
+	"item_moon_shard",
+	"item_travel_boots_2",--
+	"item_ultimate_scepter_2",
+}
 
-sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_3']
+sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 
@@ -117,7 +131,10 @@ Pos5SellList = {
     "item_magic_wand",
 }
 
-X['sSellList'] = Pos3SellList
+X['sSellList'] = {
+    "item_bracer",
+    "item_magic_wand",
+}
 
 if sRole == "pos_3" then X['sSellList'] = Pos3SellList end
 if sRole == "pos_4" then X['sSellList'] = Pos4SellList end

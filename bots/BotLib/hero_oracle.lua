@@ -33,57 +33,48 @@ local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 
 local sRoleItemsBuyList = {}
 
+sRoleItemsBuyList['pos_1'] = {
+	"item_crystal_maiden_outfit",
+--	"item_glimmer_cape",
+	"item_rod_of_atos",
+	"item_glimmer_cape",--
+	"item_dagon_5",--
+	"item_force_staff",
+	"item_hurricane_pike",--
+	"item_aghanims_shard",
+	"item_lotus_orb",
+	"item_sheepstick",--
+	"item_ultimate_scepter",
+	"item_gungir",--
+	"item_ultimate_scepter_2",
+	"item_cyclone",
+	"item_wind_waker",--
+	"item_travel_boots_2",--
+	"item_moon_shard",
+}
+
+sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
+
 sRoleItemsBuyList['pos_4'] = {
-	"item_tango",
-	"item_enchanted_mango",
-	"item_enchanted_mango",
-	"item_double_branches",
 	"item_blood_grenade",
-
-	"item_ring_of_basilius",
-	"item_boots",
-	"item_magic_wand",
-	"item_tranquil_boots",
-	"item_aether_lens",--
-	"item_glimmer_cape",--
-	"item_force_staff",--
+	'item_priest_outfit',
+	"item_urn_of_shadows",
+	"item_mekansm",
+	"item_glimmer_cape",
 	"item_aghanims_shard",
-	"item_boots_of_bearing",--
+	"item_guardian_greaves",
+	"item_spirit_vessel",
 	"item_ultimate_scepter",
-	"item_refresher",--
-	"item_sheepstick",--
+--	"item_wraith_pact",
+	"item_shivas_guard",
 	"item_ultimate_scepter_2",
+	"item_sheepstick",
 	"item_moon_shard",
 }
 
-sRoleItemsBuyList['pos_5'] = {
-	"item_tango",
-	"item_enchanted_mango",
-	"item_enchanted_mango",
-	"item_double_branches",
-	"item_blood_grenade",
-
-	"item_ring_of_basilius",
-	"item_boots",
-	"item_magic_wand",
-	"item_arcane_boots",
-	"item_aether_lens",--
-	"item_glimmer_cape",--
-	"item_force_staff",--
-	"item_aghanims_shard",
-	"item_guardian_greaves",--
-	"item_ultimate_scepter",
-	"item_refresher",--
-	"item_sheepstick",--
-	"item_ultimate_scepter_2",
-	"item_moon_shard",
-}
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_4']
 
 sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_4']
-
-sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_4']
-
-sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_4']
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 
@@ -96,14 +87,15 @@ Pos5SellList = {
 	"item_magic_wand",
 }
 
-X['sSellList'] = {}
+X['sSellList'] = {
+	"item_ring_of_basilius",
+	"item_arcane_boots",
+	"item_glimmer_cape",
+	"item_shivas_guard",
+	"item_magic_wand",
 
-if sRole == "pos_4"
-then
-    X['sSellList'] = Pos4SellList
-else
-    X['sSellList'] = Pos5SellList
-end
+	"item_cyclone",
+}
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_mage' }, {} end
 

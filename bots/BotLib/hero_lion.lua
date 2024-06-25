@@ -34,50 +34,57 @@ local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 local sRoleItemsBuyList = {}
 
 sRoleItemsBuyList['pos_4'] = {
-	"item_tango",
-	"item_tango",
-	"item_double_branches",
 	"item_blood_grenade",
-
-	"item_tranquil_boots",
-	"item_magic_wand",
+	"item_priest_outfit",
+	"item_urn_of_shadows",
+	"item_mekansm",
+	"item_glimmer_cape",
 	"item_aghanims_shard",
-	"item_aether_lens",--
-	"item_glimmer_cape",--
+	"item_guardian_greaves",
+	"item_spirit_vessel",
 	"item_ultimate_scepter",
-	"item_boots_of_bearing",--
-	"item_force_staff",--
-	"item_aeon_disk",--
-	"item_wind_waker",--
-	"item_ultimate_scepter_2",
+--	"item_wraith_pact",
+	"item_shivas_guard",
 	"item_moon_shard",
+	"item_octarine_core",
+	"item_ultimate_scepter_2",
 }
 
-sRoleItemsBuyList['pos_5'] = {
-	"item_tango",
-	"item_tango",
-	"item_double_branches",
-	"item_blood_grenade",
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_4']
 
-	"item_arcane_boots",
-	"item_magic_wand",
+sRoleItemsBuyList['pos_1'] = {
+	"item_crystal_maiden_outfit",
+	"item_force_staff",
+--	"item_glimmer_cape",
 	"item_aghanims_shard",
-	"item_aether_lens",--
-	"item_glimmer_cape",--
-	"item_guardian_greaves",--
-	"item_force_staff",--
 	"item_ultimate_scepter",
-	"item_aeon_disk",--
-	"item_wind_waker",--
-	"item_ultimate_scepter_2",
+	"item_cyclone",
+	"item_hurricane_pike",
+	"item_bloodthorn",
+	"item_wind_waker",
 	"item_moon_shard",
+	"item_octarine_core",
+	"item_ultimate_scepter_2",
 }
 
-sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_4']
+sRoleItemsBuyList['pos_2'] = {
+	
+	"item_mage_outfit",
+	"item_ancient_janggo",
+	"item_glimmer_cape",
+	"item_boots_of_bearing",
+	"item_pipe",
+	"item_aghanims_shard",
+	"item_veil_of_discord",
+	"item_ultimate_scepter",
+	"item_cyclone",
+	"item_octarine_core",
+	"item_wind_waker",
+	"item_ultimate_scepter_2",
 
-sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_4']
+}
 
-sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_4']
+sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_2']
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 

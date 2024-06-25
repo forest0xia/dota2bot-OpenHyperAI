@@ -45,9 +45,9 @@ sRoleItemsBuyList['pos_4'] = {
 	"item_glimmer_cape",--
 	"item_aghanims_shard",
 	"item_force_staff",--
-	"item_solar_crest",--
-	"item_boots_of_bearing",--
 	"item_ultimate_scepter",
+	"item_shivas_guard",--
+	"item_boots_of_bearing",--
 	"item_refresher",--
 	"item_octarine_core",--
 	"item_ultimate_scepter_2",
@@ -65,9 +65,9 @@ sRoleItemsBuyList['pos_5'] = {
 	"item_glimmer_cape",--
 	"item_aghanims_shard",
 	"item_force_staff",--
-	"item_aether_lens",--
-	"item_guardian_greaves",--
 	"item_ultimate_scepter",
+	"item_shivas_guard",--
+	"item_guardian_greaves",--
 	"item_refresher",--
 	"item_octarine_core",--
 	"item_ultimate_scepter_2",
@@ -79,14 +79,14 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_tango",
 	"item_double_branches",
 
-	"item_tranquil_boots",
+	"item_arcane_boots",
 	"item_magic_wand",
 	"item_glimmer_cape",--
-	"item_aghanims_shard",
 	"item_force_staff",--
-	"item_solar_crest",--
-	"item_boots_of_bearing",--
+	"item_aghanims_shard",
 	"item_ultimate_scepter",
+	"item_shivas_guard",--
+	"item_guardian_greaves",--
 	"item_refresher",--
 	"item_octarine_core",--
 	"item_ultimate_scepter_2",
@@ -99,22 +99,11 @@ sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_1']
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 
-Pos4SellList = {
+X['sSellList'] = {
 	"item_magic_wand",
+	
+	"item_cyclone",
 }
-
-Pos5SellList = {
-	"item_magic_wand",
-}
-
-X['sSellList'] = {}
-
-if sRole == "pos_4"
-then
-    X['sSellList'] = Pos4SellList
-else
-    X['sSellList'] = Pos5SellList
-end
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_priest' }, {} end
 

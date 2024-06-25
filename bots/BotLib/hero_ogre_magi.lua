@@ -50,54 +50,38 @@ end
 
 local sRoleItemsBuyList = {}
 
-sRoleItemsBuyList['pos_2'] = {
-	"item_tango",
-	"item_double_branches",
-	"item_gauntlets",
-	"item_gauntlets",
-
-	"item_bottle",
-	"item_phase_boots",
-	"item_soul_ring",
-	"item_magic_wand",
-	"item_hand_of_midas",
-	"item_blade_mail",
-	"item_heart",--
-	"item_black_king_bar",--
-	"item_shivas_guard",--
-	"item_ultimate_scepter",
-	"item_octarine_core",--
-	"item_travel_boots",
-	"item_ultimate_scepter_2",
-	"item_sheepstick",--
-	"item_travel_boots_2",
-	"item_moon_shard",
-	"item_aghanims_shard",
-}
-
 sRoleItemsBuyList['pos_3'] = {
-	"item_tango",
-	"item_double_branches",
-	"item_gauntlets",
-	"item_gauntlets",
-
-	"item_boots",
-	"item_hand_of_midas",
-	"item_magic_wand",
-	"item_aether_lens",--
-	"item_ultimate_scepter",
+	"item_tank_outfit",
 	"item_crimson_guard",--
-	"item_lotus_orb",--
-	"item_travel_boots",
-	"item_shivas_guard",--
-	"item_ultimate_scepter_2",
-	"item_heart",--
-	"item_travel_boots_2",--
-	"item_moon_shard",
 	"item_aghanims_shard",
+	"item_ultimate_scepter",
+	"item_heavens_halberd",--
+	"item_travel_boots",
+	"item_assault",--
+	"item_sheepstick",--
+	"item_moon_shard",
+	"item_travel_boots_2",--
+	"item_ultimate_scepter_2",
+	"item_octarine_core",--
 }
 
-sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
+sRoleItemsBuyList['pos_1'] = {
+	
+	"item_bristleback_outfit",
+	"item_hand_of_midas",
+	"item_aghanims_shard",
+	"item_ultimate_scepter",
+	"item_dagon_5",
+	"item_travel_boots",
+	"item_sheepstick", --
+	"item_octarine_core",
+	"item_moon_shard",
+	"item_travel_boots_2",
+	"item_ultimate_scepter_2",
+	"item_bloodthorn",
+}
+
+sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
 
 sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_3']
 
@@ -107,12 +91,20 @@ sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_3']
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 X['sSellList'] = {
-	"item_gauntlets",
+	"item_power_treads",
+	"item_quelling_blade",
+	"item_assault",
+	"item_sheepstick",
+
+	"item_travel_boots_2",
 	"item_hand_of_midas",
+
+	"item_assault",
+	"item_ancient_janggo",
+	"item_gauntlets",
 	"item_magic_wand",
 	"item_bottle",
 	"item_soul_ring",
-	"item_hand_of_midas",
 	"item_blade_mail",
 }
 

@@ -32,39 +32,22 @@ sRoleItemsBuyList['pos_4'] = {
 
     "item_boots",
     "item_magic_wand",
-    "item_tranquil_boots",
-    "item_solar_crest",--
-    "item_boots_of_bearing",--
-    "item_aghanims_shard",
-    "item_force_staff",
-    "item_glimmer_cape",--
-    "item_lotus_orb",--
-    "item_aeon_disk",--
-    "item_hurricane_pike",--
-    "item_ultimate_scepter_2",
-    "item_moon_shard",
-}
-
-sRoleItemsBuyList['pos_5'] = {
-    "item_double_tango",
-    "item_double_branches",
-    "item_blood_grenade",
-    "item_circlet",
-
-    "item_boots",
-    "item_magic_wand",
     "item_arcane_boots",
     "item_solar_crest",--
+    "item_glimmer_cape",--
     "item_guardian_greaves",--
+    "item_ultimate_scepter",
     "item_aghanims_shard",
     "item_force_staff",
-    "item_glimmer_cape",--
     "item_lotus_orb",--
-    "item_aeon_disk",--
+    "item_aghanims_shard",
     "item_hurricane_pike",--
     "item_ultimate_scepter_2",
+	"item_sheepstick",--
     "item_moon_shard",
 }
+
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_4']
 
 sRoleItemsBuyList['pos_3'] = {
     "item_double_tango",
@@ -73,16 +56,18 @@ sRoleItemsBuyList['pos_3'] = {
 
     "item_boots",
     "item_magic_wand",
-    "item_tranquil_boots",
+    "item_arcane_boots",
     "item_solar_crest",--
-    "item_boots_of_bearing",--
+    "item_glimmer_cape",--
+    "item_guardian_greaves",--
+    "item_ultimate_scepter",
     "item_aghanims_shard",
     "item_force_staff",
-    "item_glimmer_cape",--
     "item_lotus_orb",--
-    "item_aeon_disk",--
+    "item_aghanims_shard",
     "item_hurricane_pike",--
     "item_ultimate_scepter_2",
+	"item_sheepstick",--
     "item_moon_shard",
 }
 
@@ -90,27 +75,12 @@ sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
 
 sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_3']
 
-
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 
-Pos4SellList = {
+X['sSellList'] = {
     "item_circlet",
     "item_magic_wand",
 }
-
-Pos5SellList = {
-    "item_circlet",
-    "item_magic_wand",
-}
-
-X['sSellList'] = {}
-
-if sRole == "pos_4"
-then
-    X['sSellList'] = Pos4SellList
-else
-    X['sSellList'] = Pos5SellList
-end
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_antimage' }, {} end
 

@@ -549,7 +549,7 @@ function ItemPurchaseThink()
 	if  J.IsInLaningPhase()
 	and (J.GetPosition(bot) == 4 or J.GetPosition(bot) == 5)
 	and GetItemStockCount('item_blood_grenade') > 0
-	and botLevel < 6
+	and botLevel < 5
 	and botGold >= GetItemCost('item_blood_grenade')
 	and Item.GetEmptyInventoryAmount(bot) >= 3
 	and Item.GetItemCharges(bot, 'item_blood_grenade') == 0
