@@ -226,7 +226,7 @@ function CDOTA_Bot_Script:ActionImmediate_SwapItems(intnSlot1, intnSlot2)
 		self.itemSwapTime = DotaTime()
 		return originalActionImmediate_SwapItems(self, intnSlot1, intnSlot2)
 	else
-		print('[WARN] '..unitName..' failed to swap items due to trying too frequently.')
+		-- print('[WARN] '..unitName..' failed to swap items due to trying too frequently.')
 	end
     return nil
 end

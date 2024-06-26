@@ -1,3 +1,5 @@
+local Utils = require( GetScriptDirectory()..'/FunLib/utils' )
+
 if GetBot():IsInvulnerable() or not GetBot():IsHero() or not string.find(GetBot():GetUnitName(), "hero") or GetBot():IsIllusion() then
 	return;
 end
@@ -430,12 +432,24 @@ end
 
 
 function Think()
+	if J.CanNotUseAction(bot) then return end
+
+	-- if bot.isBuggyHero == nil then
+	-- 	bot.isBuggyHero = J.Utils.BuggyHeroesDueToValveTooLazy[bot:GetUnitName()] ~= nil
+	-- end
+	-- if bot.isBuggyHero and DotaTime() < 3 * 60
+	-- then
+	-- 	local laningLoc = GetLaneFrontLocation(GetTeam(), bot:GetAssignedLane(), 0)
+	-- 	local diffDistance = J.GetLocationToLocationDistance( laningLoc, bot:GetLocation())
+	-- 	if diffDistance > 1500 then
+	-- 		bot:Action_ClearActions(true);
+	-- 		bot:ActionQueue_AttackMove(laningLoc)
+	-- 		-- print('[ERROR] Relocating the buggy bot: '..botName..'. Sending it to the lane# it was originally assigned: '..tostring(bot:GetAssignedLane()))
+	-- 		return
+	-- 	end
+	-- end
 	
-	if J.CanNotUseAction(bot)
-	then return end
-	
-	if runMode 
-	then
+	if runMode then
 	
 		if not bot:IsInvisible() and bot:GetLevel() >= 15
 			and not bot:HasModifier('modifier_medusa_stone_gaze_facing')

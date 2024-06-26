@@ -34,42 +34,57 @@ local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 local sRoleItemsBuyList = {}
 
 sRoleItemsBuyList['pos_3'] = {
-	"item_tango",
-	"item_double_branches",
-	"item_quelling_blade",
-
-	"item_bracer",
-	"item_power_treads",
-	"item_magic_wand",
+	"item_tank_outfit",
 	"item_echo_sabre",
-	"item_blink",
-	"item_aghanims_shard",
+	"item_crimson_guard",--
 	"item_ultimate_scepter",
-	"item_black_king_bar",--
-	"item_octarine_core",--
+	"item_heavens_halberd",--
 	"item_assault",--
-	"item_swift_blink",--
+	"item_travel_boots",
+	"item_aghanims_shard",
+	"item_satanic",--
 	"item_ultimate_scepter_2",
-	"item_monkey_king_bar",--
+	"item_moon_shard",
+	"item_heart",--
 	"item_travel_boots_2",--
-	
 }
 
-sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
+sRoleItemsBuyList['pos_1'] = {
+	"item_bristleback_outfit",
+	"item_bracer",
+	"item_echo_sabre",
+	"item_ultimate_scepter",
+	"item_blink",
+	"item_black_king_bar",--
+	"item_harpoon",--
+	"item_travel_boots",
+	"item_aghanims_shard",
+	"item_bloodthorn",--
+	"item_moon_shard",
+	"item_ultimate_scepter_2",
+	"item_heart",--
+	"item_overwhelming_blink",--
+	"item_travel_boots_2",--
+}
 
 sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
 
-sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_1']
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_3']
 
-sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_1']
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_3']
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 X['sSellList'] = {
+	"item_power_treads",
 	"item_quelling_blade",
-	"item_bracer",
+
+	"item_assault",
+
+	"item_travel_boots",
 	"item_magic_wand",
-	"item_echo_sabre",
+	
+	"item_ancient_janggo",
 }
 
 

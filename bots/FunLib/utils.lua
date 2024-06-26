@@ -3,6 +3,15 @@
 
 local X = { }
 
+local BuggyHeroesDueToValveTooLazy = {
+    ['npc_dota_hero_muerta'] = true,
+    ['npc_dota_hero_marci'] = true,
+    ['npc_dota_hero_lone_druid'] = true,
+    ['npc_dota_hero_primal_beast'] = true,
+    ['npc_dota_hero_dark_willow'] = true,
+    ['npc_dota_hero_elder_titan'] = true,
+    ['npc_dota_hero_hoodwink'] = true,
+}
 
 function X.PrintTable(tbl, indent)
 	if not indent then indent = 0 end
@@ -84,5 +93,22 @@ function X.NumHumanBotPlayersInTeam(team)
 
 	return nHuman, nBot
 end
+
+-- Set-like operation
+function X.AddToSet(set, key)
+    set[key] = true
+end
+
+-- Set-like operation
+function X.RemoveFromSet(set, key)
+    set[key] = nil
+end
+
+-- Set-like operation
+function X.SetContains(set, key)
+    return set[key] ~= nil
+end
+
+X.BuggyHeroesDueToValveTooLazy = BuggyHeroesDueToValveTooLazy
 
 return X
