@@ -50,30 +50,32 @@ local isChangePosMessageDone = false
 if bot.farmLocation == nil then bot.farmLocation = bot:GetLocation() end
 
 function GetDesire()
-	if GetGameState() == GAME_STATE_PRE_GAME
-	and (bot.announcedRole == nil or bot.announcedRole ~= J.GetPosition(bot)) then
-		bot.announcedRole = J.GetPosition(bot)
-		bot:ActionImmediate_Chat('I will play position '..J.GetPosition(bot), false)
-	end
-
-	if not isWelcomeMessageDone
-	and J.GetPosition(bot) == 5
-	then
-		if J.IsModeTurbo() and DotaTime() > -45 or DotaTime() > -55
-		then
-			bot:ActionImmediate_Chat("You can type !pos X to swap position with a bot. For example, type: `!pos 2` to go mid lane.", false)
-			isWelcomeMessageDone = true
+	if GetGameMode() ~= GAMEMODE_CM then
+		if GetGameState() == GAME_STATE_PRE_GAME
+		and (bot.announcedRole == nil or bot.announcedRole ~= J.GetPosition(bot)) then
+			bot.announcedRole = J.GetPosition(bot)
+			bot:ActionImmediate_Chat('I will play position '..J.GetPosition(bot), false)
 		end
-	end
-
-	if not isChangePosMessageDone
-	and J.GetPosition(bot) == 5
-	then
-		local nH, nB = J.NumHumanBotPlayersInTeam()
-		if DotaTime() >= 0 and nH > 0 and nB > 0
+	
+		if not isWelcomeMessageDone
+		and J.GetPosition(bot) == 5
 		then
-			bot:ActionImmediate_Chat("Position selection closed.", true)
-			isChangePosMessageDone = true
+			if J.IsModeTurbo() and DotaTime() > -45 or DotaTime() > -55
+			then
+				bot:ActionImmediate_Chat("You can type !pos X to swap position with a bot. For example, type: `!pos 2` to go mid lane.", false)
+				isWelcomeMessageDone = true
+			end
+		end
+	
+		if not isChangePosMessageDone
+		and J.GetPosition(bot) == 5
+		then
+			local nH, nB = J.NumHumanBotPlayersInTeam()
+			if DotaTime() >= 0 and nH > 0 and nB > 0
+			then
+				bot:ActionImmediate_Chat("Position selection closed.", true)
+				isChangePosMessageDone = true
+			end
 		end
 	end
 

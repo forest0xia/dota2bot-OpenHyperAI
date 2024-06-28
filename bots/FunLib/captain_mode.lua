@@ -279,7 +279,7 @@ local roleAssignment, playerSwitchedRoles = { TEAM_RADIANT = {}, TEAM_DIRE = {} 
 function X.CMLaneAssignment(roleAssign, switchedRoles)
 	local sTeamName = GetTeam() == TEAM_RADIANT and 'TEAM_RADIANT' or 'TEAM_DIRE'
 
-	-- roleAssignment = roleAssign -- TODO: role assignment to be improved
+	roleAssignment = roleAssign -- TODO: role assignment to be improved
 	-- playerSwitchedRoles = switchedRoles -- TODO: role assignment to be improved
 
 	-- if playerSwitchedRoles then

@@ -880,7 +880,6 @@ end
 
 function AllPickHeros()
 	local teamPlayers = GetTeamPlayers(GetTeam())
-	CorrectDireLaneAssignment(tDefaultLaningDire)
 
 	if not ShuffledPickOrder[sTeamName] and not IsHumanPlayerExist() then
 		X.ShufflePickOrder(teamPlayers)
@@ -928,6 +927,10 @@ local function handleCommand(command, PlayerID, bTeamOnly)
     local action, text = parseCommand(command)
 	if action == nil then
 		print('[WARN] Invalid command: '..tostring(command))
+		return
+	end
+	if GetGameMode() == GAMEMODE_CM then
+		print('[WARN] Captain mode does not support commands')
 		return
 	end
 
@@ -1002,6 +1005,7 @@ local function handleCommand(command, PlayerID, bTeamOnly)
 end
 
 function Think()
+	CorrectDireLaneAssignment(tDefaultLaningDire)
 	if GetGameMode() == GAMEMODE_CM then
 		CM.CaptainModeLogic(SupportedHeroes);
 		CM.AddToList();
@@ -1114,6 +1118,8 @@ function UpdateLaneAssignments()
 		InstallChatCallback(function (attr) SelectHeroChatCallback(attr.player_id, attr.string, attr.team_only); end);
 	end
 
+	-- print('lane for team: '..team)
+	-- Utils.PrintTable(tLaneAssignList[team])
 	return tLaneAssignList[team]
 end
 
