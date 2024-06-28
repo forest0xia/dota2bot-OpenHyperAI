@@ -101,11 +101,8 @@ X['sSellList'] = {
 	"item_quelling_blade",
 	"item_magic_wand",
 	"item_bottle",
-	"item_power_treads",
-	"item_heavens_halberd",
-	"item_abyssal_blade",
-	"item_assault",
 	"item_ancient_janggo",
+	"item_power_treads",
 }
 
 if J.Role.IsPvNMode() then X['sBuyList'], X['sSellList'] = { 'PvN_BH' }, {"item_power_treads", 'item_quelling_blade'} end

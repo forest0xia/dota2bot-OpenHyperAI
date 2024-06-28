@@ -802,7 +802,7 @@ function X.ConsiderGhostWalk()
         return BOT_ACTION_DESIRE_NONE
     end
 
-    if ((J.IsRetreating(bot) and J.GetHP(bot) <= 0.8) or J.GetHP(bot) <= 0.2) and #nEnemyHeroes >= 1 then
+    if ((J.IsRetreating(bot) and J.GetHP(bot) <= 0.8) or J.GetHP(bot) <= 0.3) and #nEnemyHeroes >= 1 then
         return BOT_ACTION_DESIRE_HIGH
     end
     return BOT_ACTION_DESIRE_NONE

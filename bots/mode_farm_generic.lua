@@ -439,14 +439,21 @@ function Think()
 	-- end
 	-- if bot.isBuggyHero and DotaTime() < 3 * 60
 	-- then
-	-- 	local laningLoc = GetLaneFrontLocation(GetTeam(), bot:GetAssignedLane(), 0)
-	-- 	local diffDistance = J.GetLocationToLocationDistance( laningLoc, bot:GetLocation())
-	-- 	if diffDistance > 1500 then
+	-- 	local closestHero, closestHeroDistance = J.GetClosestAllyHero(bot)
+	-- 	if closestHeroDistance > 800 then
 	-- 		bot:Action_ClearActions(true);
-	-- 		bot:ActionQueue_AttackMove(laningLoc)
-	-- 		-- print('[ERROR] Relocating the buggy bot: '..botName..'. Sending it to the lane# it was originally assigned: '..tostring(bot:GetAssignedLane()))
-	-- 		return
+	-- 		bot:ActionQueue_AttackMove(closestHero:GetLocation())
+	-- 		print('[ERROR] Relocating the buggy bot: '..botName..'. Sending it to the lane# it was originally assigned: '..tostring(bot:GetAssignedLane()))
 	-- 	end
+
+		-- local laningLoc = GetLaneFrontLocation(GetTeam(), bot:GetAssignedLane(), 0)
+		-- local diffDistance = J.GetLocationToLocationDistance( laningLoc, bot:GetLocation())
+		-- if diffDistance > 1500 then
+		-- 	bot:Action_ClearActions(true);
+		-- 	bot:ActionQueue_AttackMove(laningLoc)
+		-- 	-- print('[ERROR] Relocating the buggy bot: '..botName..'. Sending it to the lane# it was originally assigned: '..tostring(bot:GetAssignedLane()))
+		-- 	return
+		-- end
 	-- end
 	
 	if runMode then

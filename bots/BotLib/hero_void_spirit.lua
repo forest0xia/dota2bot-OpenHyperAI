@@ -258,7 +258,7 @@ function X.ConsiderDissimilate()
 	local nRadius = Dissimilate:GetSpecialValueInt('first_ring_distance_offset')
 	local botTarget = J.GetProperTarget(bot)
 
-	if J.IsStunProjectileIncoming(bot, 300)
+	if J.IsStunProjectileIncoming(bot, 600)
 	then
 		return BOT_ACTION_DESIRE_HIGH
 	end

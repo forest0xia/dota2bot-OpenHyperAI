@@ -34,15 +34,16 @@ sRoleItemsBuyList['pos_2'] = {
     "item_soul_ring",
     "item_magic_wand",
     "item_blink",
+	"item_kaya_and_sange",--
+	"item_angels_demise",--
     "item_shivas_guard",--
     "item_ethereal_blade",--
-    "item_black_king_bar",--
-    "item_overwhelming_blink",--
-    "item_sheepstick",--
-    "item_sphere",--
-    "item_aghanims_shard",
+	"item_ultimate_scepter",
     "item_ultimate_scepter_2",
     "item_moon_shard",
+    "item_sheepstick",--
+    "item_overwhelming_blink",--
+    "item_aghanims_shard",
 }
 
 sRoleItemsBuyList['pos_3'] = {
@@ -54,15 +55,16 @@ sRoleItemsBuyList['pos_3'] = {
     "item_soul_ring",
     "item_magic_wand",
     "item_blink",
+	"item_kaya_and_sange",--
+	"item_angels_demise",--
     "item_shivas_guard",--
     "item_ethereal_blade",--
-    "item_black_king_bar",--
-    "item_overwhelming_blink",--
-    "item_sheepstick",--
-    "item_sphere",--
-    "item_aghanims_shard",
+	"item_ultimate_scepter",
     "item_ultimate_scepter_2",
     "item_moon_shard",
+    "item_sheepstick",--
+    "item_overwhelming_blink",--
+    "item_aghanims_shard",
 }
 
 sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_1']

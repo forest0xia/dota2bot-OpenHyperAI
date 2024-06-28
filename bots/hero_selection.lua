@@ -689,14 +689,14 @@ function X.OverrideTeamHeroes()
 
 			-- Test buggy heroes:
 			[1] = 'npc_dota_hero_muerta',
-			[2] = 'npc_dota_hero_ember_spirit',
+			[2] = 'npc_dota_hero_tinker',
 			-- [2] = 'npc_dota_hero_primal_beast',
 			-- [2] = tSelectPoolList[2][RandomInt( 1, #tSelectPoolList[2] )],
-			-- [3] = 'npc_dota_hero_muerta', -- DOES NOT WORK. marci works as pos1.
-			[3] = tSelectPoolList[3][RandomInt( 1, #tSelectPoolList[3] )],
+			[3] = 'npc_dota_hero_marci', -- DOES NOT WORK. marci works as pos1.
+			-- [3] = tSelectPoolList[3][RandomInt( 1, #tSelectPoolList[3] )],
 			[4] = "npc_dota_hero_dark_willow", -- dark_willow does not work over half of the time.
 			-- [4] = tSelectPoolList[4][RandomInt( 1, #tSelectPoolList[4] )],
-			[5] = tSelectPoolList[5][RandomInt( 1, #tSelectPoolList[5] )],
+			[5] = 'npc_dota_hero_hoodwink',
 		    
 			-- All Pandas/spirits
 			-- [1] = "npc_dota_hero_void_spirit",

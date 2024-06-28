@@ -129,7 +129,7 @@ function handleFailMessage(message, isBotSay)
 end
 
 function handleResponseMessage(inputText, message)
-    print("API Response: " .. message)
+    -- print("API Response: " .. message)
     local foundBot = false
     local aiText, heroHame = splitHeroNameFromMessage(message)
     

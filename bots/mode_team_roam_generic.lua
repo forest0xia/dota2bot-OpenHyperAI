@@ -236,6 +236,18 @@ function Think()
 		return
 	end
 
+	if DotaTime() < 5 * 60 then
+		if bot:HasModifier('modifier_maledict') -- 防止中了巫医毒还继续吃伤害
+		or bot:HasModifier('modifier_dazzle_poison_touch')
+		or bot:HasModifier('modifier_slark_essence_shift_debuff') -- 防止不停被小鱼偷属性
+		then
+			if botHP < 0.9 and bot:WasRecentlyDamagedByAnyHero(1.0)
+			then
+				bot:Action_MoveToLocation(J.GetTeamFountain() + RandomVector(1000))
+			end
+		end
+	end
+
 
 	if towerCreepMode
 	then

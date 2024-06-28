@@ -4946,6 +4946,24 @@ function J.ConsolePrintActiveMode(bot)
 	end
 end
 
+function J.GetClosestAllyHero(bot)
+	local closestHeroDistance = 999999
+	local closestHero = nil
+	for _, allyHero in pairs(GetUnitList(UNIT_LIST_ALLIED_HEROES))
+	do
+		if J.IsValidHero(allyHero)
+		and J.IsNotSelf(bot, allyHero)
+		then
+			local diffDistance = J.GetLocationToLocationDistance(allyHero:GetLocation(), bot:GetLocation())
+			if diffDistance < closestHeroDistance then
+				closestHero = allyHero
+				closestHeroDistance = diffDistance
+			end
+		end
+	end
+	return closestHero, closestHeroDistance
+end
+
 -- check if a table contains a value
 function J.hasValue(tab, val)
     for index, value in ipairs(tab) do
@@ -4992,40 +5010,6 @@ function J.CheckBotIdleState()
 				end
 				bot:Action_ClearActions(true);
 
-				-- local foundTarget = false
-				-- local closetLocation = nil
-
-				-- for _, allyHero in pairs(GetUnitList(UNIT_LIST_ALLIED_HEROES))
-				-- do
-				-- 	local mode = allyHero:GetActiveMode()
-				-- 	local isActiveMode = 
-				-- 	       mode == BOT_MODE_ROAM
-				-- 		or mode == BOT_MODE_TEAM_ROAM
-				-- 		or mode == BOT_MODE_GANK
-				-- 		or mode == BOT_MODE_ATTACK
-				-- 		or mode == BOT_MODE_DEFEND_ALLY
-				-- 		or mode == BOT_MODE_PUSH_TOWER_TOP
-				-- 		or mode == BOT_MODE_PUSH_TOWER_MID
-				-- 		or mode == BOT_MODE_PUSH_TOWER_BOT
-				-- 		or mode == BOT_MODE_DEFEND_TOWER_TOP
-				-- 		or mode == BOT_MODE_DEFEND_TOWER_MID
-				-- 		or mode == BOT_MODE_DEFEND_TOWER_BOT
-				-- 	if isActiveMode and J.GetLocationToLocationDistance( allyHero:GetLocation(), bot:GetLocation() ) > deltaIdleDistance then
-				-- 		foundTarget = true
-				-- 		if closetLocation == nil or (J.GetLocationToLocationDistance( closetLocation, bot:GetLocation() ) > J.GetLocationToLocationDistance( allyHero:GetLocation(), bot:GetLocation() )) then
-				-- 			closetLocation = allyHero:GetLocation()
-				-- 		end
-				-- 	end
-				-- end
-
-				-- if foundTarget and closetLocation then
-				-- 	print('Relocate bot '..botName..' to move to where the closet active ally currently is.')
-				-- 	bot:ActionQueue_AttackMove(closetLocation)
-				-- else
-				-- 	print('[ERROR] Can not find a location to relocate the idle bot: '..botName..'. Sending it to push base.')
-				-- 	bot:ActionQueue_AttackMove(J.GetEnemyFountain())
-				-- end
-				
 				-- Should send it to most desire farming lane, if in laning or send it to desire push lane.
 				local frontLoc = GetLaneFrontLocation(GetTeam(), bot:GetAssignedLane(), 0);
 				bot:ActionQueue_AttackMove(frontLoc)

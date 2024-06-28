@@ -42,15 +42,15 @@ sRoleItemsBuyList['pos_2'] = {
 	"item_phylactery",
 	"item_magic_wand",
 	"item_aghanims_shard",
-	"item_manta",--
-	"item_ultimate_scepter",
 	"item_kaya_and_sange",--
-	"item_black_king_bar",--
 	"item_travel_boots",
+	"item_black_king_bar",--
+	"item_ultimate_scepter",
 	"item_angels_demise",--
+	"item_octarine_core",--
 	"item_moon_shard",
 	"item_ultimate_scepter_2",
-	"item_octarine_core",--
+	"item_sheepstick",--
 	"item_travel_boots_2",--
 }
 
@@ -78,16 +78,16 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_phylactery",
 	"item_magic_wand",
 	"item_aghanims_shard",
-	"item_manta",--
-	"item_octarine_core",--
-	"item_ultimate_scepter",
 	"item_kaya_and_sange",--
-	"item_black_king_bar",--
 	"item_travel_boots",
+	"item_black_king_bar",--
+	"item_ultimate_scepter",
 	"item_angels_demise",--
-	"item_travel_boots_2",--
-	"item_ultimate_scepter_2",
+	"item_octarine_core",--
 	"item_moon_shard",
+	"item_ultimate_scepter_2",
+	"item_sheepstick",--
+	"item_travel_boots_2",--
 }
 
 sRoleItemsBuyList['pos_4'] = {
@@ -120,6 +120,7 @@ X['sSellList'] = {
 	"item_cyclone",
 	"item_magic_wand",
 
+	"item_arcane_boots",
 	'item_ultimate_scepter',
     "item_wind_lace",
 }

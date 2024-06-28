@@ -53,6 +53,12 @@ function EntityKilled:OnEntityKilled(event)
 	end
 end
 
+-- Event Listener
+function EntityKilled:OnCombatlog(event)
+	-- print("[BAREBONES] dota_combatlog")
+	-- DeepPrintTable(event)
+end
+
 -- returns useful data about the kill event
 function EntityKilled:GetEntityKilledEventData(event)
 	-- Victim
@@ -97,6 +103,7 @@ end
 function EntityKilled:RegisterEvents()
 	if not Flags.isEntityKilledRegistered then
 		ListenToGameEvent('entity_killed', Dynamic_Wrap(EntityKilled, 'OnEntityKilled'), EntityKilled)
+		ListenToGameEvent("dota_combatlog", Dynamic_Wrap(EntityKilled, 'OnCombatlog'), EntityKilled)
 		Flags.isEntityKilledRegistered = true;
 		if true then
 			print('EntityKilled Event Listener Registered.')

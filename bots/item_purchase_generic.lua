@@ -604,8 +604,11 @@ function ItemPurchaseThink()
 	then
 		local tCharges = Item.GetItemCharges( bot, 'item_tpscroll' )
 		if bot:HasModifier("modifier_teleporting") then tCharges = tCharges - 1 end
-		if tCharges <= 0 or ( botLevel >= 18 and tCharges <= 1 )
+		if tCharges <= 1 or ( botLevel >= 18 and tCharges <= 2 )
 		then
+			if botGold >= GetItemCost( "item_tpscroll" ) * 2 then
+				bot:ActionImmediate_PurchaseItem( "item_tpscroll" )
+			end
 			bot:ActionImmediate_PurchaseItem( "item_tpscroll" )
 		end
 	end
