@@ -212,6 +212,17 @@ function CDOTA_Bot_Script:GetAttackRange()
     return originalGetAttackRange(self)
 end
 
+
+-- CDOTA_AttackRecordManager::GetRecordByIndex - Could not find attack record (-1)!
+-- local originalGetRecordByIndex = CDOTA_AttackRecordManager.GetRecordByIndex
+-- function CDOTA_AttackRecordManager:GetRecordByIndex(idx)
+--     if idx < 0 then
+-- 		print("GetRecordByIndex has been called on unit can't be seen")
+-- 		print("Stack Trace:", debug.traceback())
+-- 	end
+--     return originalGetRecordByIndex(self)
+-- end
+
 local originalActionImmediate_SwapItems = CDOTA_Bot_Script.ActionImmediate_SwapItems
 local itemSwapGapTime = 6 + 5 -- 6s item cd after swap, 5s delta time for item usage reaction.
 function CDOTA_Bot_Script:ActionImmediate_SwapItems(intnSlot1, intnSlot2)

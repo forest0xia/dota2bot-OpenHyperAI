@@ -433,8 +433,13 @@ function OnEnd()
 end
 
 
+local FrameProcessTime = 0.05
 function Think()
 	if J.CanNotUseAction(bot) then return end
+
+	if bot.lastFarmFrameProcessTime == nil then bot.lastFarmFrameProcessTime = DotaTime() end
+	if DotaTime() - bot.lastFarmFrameProcessTime < FrameProcessTime then return end
+	bot.lastFarmFrameProcessTime = DotaTime()
 
 	-- if bot.isBuggyHero == nil then
 	-- 	bot.isBuggyHero = J.Utils.BuggyHeroesDueToValveTooLazy[bot:GetUnitName()] ~= nil

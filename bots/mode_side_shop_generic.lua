@@ -199,7 +199,13 @@ function GetDesire()
 	return BOT_MODE_DESIRE_NONE
 end
 
+local FrameProcessTime = 0.05
 function Think()
+	
+	if bot.lastSideShopFrameProcessTime == nil then bot.lastSideShopFrameProcessTime = DotaTime() end
+	if DotaTime() - bot.lastSideShopFrameProcessTime < FrameProcessTime then return end
+	bot.lastSideShopFrameProcessTime = DotaTime()
+
 	if WisdomRuneThink() >= 1 then
 		return
 	end

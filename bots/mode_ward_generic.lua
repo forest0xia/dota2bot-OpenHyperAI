@@ -151,12 +151,17 @@ function OnEnd()
 	end
 end
 
+local FrameProcessTime = 0.05
 function Think()
 	if  GetGameState() ~= GAME_STATE_PRE_GAME
 	and GetGameState()~= GAME_STATE_GAME_IN_PROGRESS
 	then
 		return
 	end
+	
+	if bot.lastWardFrameProcessTime == nil then bot.lastWardFrameProcessTime = DotaTime() end
+	if DotaTime() - bot.lastWardFrameProcessTime < FrameProcessTime then return end
+	bot.lastWardFrameProcessTime = DotaTime()
 
 	if bot.ward
 	then

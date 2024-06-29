@@ -199,10 +199,15 @@ function OnEnd()
 	harassTarget = nil
 end
 
+local FrameProcessTime = 0.05
 function Think()
 
 	if J.CanNotUseAction(bot) then return end
 
+	if bot.lastTeamRoamFrameProcessTime == nil then bot.lastTeamRoamFrameProcessTime = DotaTime() end
+	if DotaTime() - bot.lastTeamRoamFrameProcessTime < FrameProcessTime then return end
+	bot.lastTeamRoamFrameProcessTime = DotaTime()
+	
 	if  shouldHarass
 	and harassTarget ~= nil
 	then

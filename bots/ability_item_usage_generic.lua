@@ -7180,38 +7180,41 @@ local function UseGlyph()
 
 end
 
-
+local FrameProcessTime = 0.05
 function ItemUsageThink()
-	
+	if bot.lastItemFrameProcessTime == nil then bot.lastItemFrameProcessTime = DotaTime() end
+	if DotaTime() - bot.lastItemFrameProcessTime < FrameProcessTime then return end
+	bot.lastItemFrameProcessTime = DotaTime()
 	ItemUsageComplement()
 end
 
 function AbilityUsageThink()
+	if bot.lastAbilityFrameProcessTime == nil then bot.lastAbilityFrameProcessTime = DotaTime() end
+	if DotaTime() - bot.lastAbilityFrameProcessTime < FrameProcessTime then return end
+	bot.lastAbilityFrameProcessTime = DotaTime()
 	BotBuild.SkillsComplement()
 end
 
 function BuybackUsageThink()
-
-	-- BotBuild.SkillsComplement()
-
-	-- ItemUsageComplement()
-
+	if bot.lastBuybackFrameProcessTime == nil then bot.lastBuybackFrameProcessTime = DotaTime() end
+	if DotaTime() - bot.lastBuybackFrameProcessTime < FrameProcessTime then return end
+	bot.lastBuybackFrameProcessTime = DotaTime()
 	BuybackUsageComplement()
-
 	UseGlyph()
-
 end
 
 function CourierUsageThink()
-
+	if bot.lastCourierFrameProcessTime == nil then bot.lastCourierFrameProcessTime = DotaTime() end
+	if DotaTime() - bot.lastCourierFrameProcessTime < FrameProcessTime then return end
+	bot.lastCourierFrameProcessTime = DotaTime()
 	CourierUsageComplement()
-
 end
 
 function AbilityLevelUpThink()
-
+	if bot.lastLevelUpFrameProcessTime == nil then bot.lastLevelUpFrameProcessTime = DotaTime() end
+	if DotaTime() - bot.lastLevelUpFrameProcessTime < FrameProcessTime then return end
+	bot.lastLevelUpFrameProcessTime = DotaTime()
 	AbilityLevelUpComplement()
-
 end
 
 function X.SetAbilityItemList(heroAbility, items, abilityLvlup)
