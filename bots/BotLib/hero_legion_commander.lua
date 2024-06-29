@@ -71,7 +71,7 @@ X['sSellList'] = {
 	"item_quelling_blade",
 	"item_bracer",
 	"item_magic_wand",
-	"item_blade_mail",
+	-- "item_blade_mail",
 }
 
 
