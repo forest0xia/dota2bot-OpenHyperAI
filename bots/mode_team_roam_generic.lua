@@ -199,7 +199,7 @@ function OnEnd()
 	harassTarget = nil
 end
 
-local FrameProcessTime = 0.05
+local FrameProcessTime = 0.08
 function Think()
 
 	if J.CanNotUseAction(bot) then return end

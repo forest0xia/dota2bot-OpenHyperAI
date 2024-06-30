@@ -4806,7 +4806,7 @@ X.ConsiderItemDesire["item_tpscroll"] = function( hItem )
 		and botHP > 0.9
 		and botMP > 0.8
 	then
-		local mostFarmDesireLane, mostFarmDesire = J.GetMostFarmLaneDesire()
+		local mostFarmDesireLane, mostFarmDesire = J.GetMostFarmLaneDesire(bot)
 
 		if mostFarmDesire > 0.1
 		then
@@ -4856,7 +4856,7 @@ X.ConsiderItemDesire["item_tpscroll"] = function( hItem )
 		local nAttackAllyList = J.GetNearbyHeroes(bot, 1600, false, BOT_MODE_ATTACK )
 		local nNearEnemyList = J.GetNearbyHeroes(bot, 1400, true, BOT_MODE_NONE )
 		local nCreeps= bot:GetNearbyCreeps( 1600, true )
-		local mostFarmDesireLane, mostFarmDesire = J.GetMostFarmLaneDesire()
+		local mostFarmDesireLane, mostFarmDesire = J.GetMostFarmLaneDesire(bot)
 		
 		local isTravelBootsAvailable = false
 		if J.IsItemAvailable( "item_travel_boots" )
@@ -7180,7 +7180,7 @@ local function UseGlyph()
 
 end
 
-local FrameProcessTime = 0.05
+local FrameProcessTime = 0.08
 function ItemUsageThink()
 	if bot.lastItemFrameProcessTime == nil then bot.lastItemFrameProcessTime = DotaTime() end
 	if DotaTime() - bot.lastItemFrameProcessTime < FrameProcessTime then return end

@@ -1102,7 +1102,7 @@ function X.ConsiderKeenConveyance()
 
     if J.IsFarming(bot)
     then
-        local mostFarmDesireLane, mostFarmDesire = J.GetMostFarmLaneDesire()
+        local mostFarmDesireLane, mostFarmDesire = J.GetMostFarmLaneDesire(bot)
 
         if mostFarmDesire > 0.1
         then

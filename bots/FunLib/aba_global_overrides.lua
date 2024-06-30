@@ -1,4 +1,6 @@
 
+local Utils = require( GetScriptDirectory()..'/FunLib/utils')
+
 -- Override this func for the script to use
 local orig_GetTeamPlayers = GetTeamPlayers
 local direTeamPlaters = nil
@@ -212,6 +214,22 @@ function CDOTA_Bot_Script:GetAttackRange()
     return originalGetAttackRange(self)
 end
 
+-- local original_Action_MoveToLocation = CDOTA_Bot_Script.Action_MoveToLocation
+-- function CDOTA_Bot_Script:Action_MoveToLocation(vLocation)
+-- 	if self.isBuggyHero == nil then
+-- 		self.isBuggyHero = Utils.BuggyHeroesDueToValveTooLazy[self:GetUnitName()] ~= nil
+-- 	end
+-- 	if self.isBuggyHero
+-- 	then
+-- 		self:Action_ClearActions(true);
+-- 		print('Override buggy hero movement, make it go assigned lane front with Action_MoveToLocation.'..self:GetUnitName())
+-- 		local assignedLaneLoc = GetLaneFrontLocation(GetTeam(), self:GetAssignedLane(), 0)
+-- 		if Utils.GetLocationToLocationDistance(assignedLaneLoc, vLocation) > 1000 and DotaTime() < 2*60 then
+-- 			return original_Action_MoveToLocation(self, assignedLaneLoc )
+-- 		end
+-- 	end
+--     return original_Action_MoveToLocation(self, vLocation )
+-- end
 
 -- CDOTA_AttackRecordManager::GetRecordByIndex - Could not find attack record (-1)!
 -- local originalGetRecordByIndex = CDOTA_AttackRecordManager.GetRecordByIndex

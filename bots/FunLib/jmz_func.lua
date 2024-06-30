@@ -2716,8 +2716,7 @@ function J.GetCenterOfUnits( nUnits )
 
 end
 
-
-function J.GetMostFarmLaneDesire()
+function J.GetMostFarmLaneDesire(bot)
 
 	local nTopDesire = GetFarmLaneDesire( LANE_TOP )
 	local nMidDesire = GetFarmLaneDesire( LANE_MID )
@@ -2731,6 +2730,10 @@ function J.GetMostFarmLaneDesire()
 	if nBotDesire > nMidDesire and nBotDesire > nTopDesire
 	then
 		return LANE_BOT, nBotDesire
+	end
+
+	if DotaTime() < 8 * 60 then
+		return bot:GetAssignedLane(), 0.667
 	end
 
 	return LANE_MID, nMidDesire

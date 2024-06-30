@@ -585,7 +585,7 @@ function Think()
 				if bot:GetLevel() >= 12
 					 and J.Role.ShouldTpToFarm() 
 				then
-					local mostFarmDesireLane,mostFarmDesire = J.GetMostFarmLaneDesire();
+					local mostFarmDesireLane,mostFarmDesire = J.GetMostFarmLaneDesire(bot);
 					local tps = bot:GetItemInSlot(nTpSolt);
 					local tpLoc = GetLaneFrontLocation(GetTeam(),mostFarmDesireLane,0);
 					local bestTpLoc = J.GetNearbyLocationToTp(tpLoc);

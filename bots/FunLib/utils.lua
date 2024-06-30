@@ -3,6 +3,7 @@
 
 local X = { }
 
+-- This heroes bugged because Valve was too lazy to add them with the correct laning target point. No high desired lane.
 local BuggyHeroesDueToValveTooLazy = {
     ['npc_dota_hero_muerta'] = true,
     ['npc_dota_hero_marci'] = true,
@@ -92,6 +93,14 @@ function X.NumHumanBotPlayersInTeam(team)
 	end
 
 	return nHuman, nBot
+end
+
+function X.GetLocationToLocationDistance( fLoc, sLoc )
+	local x1 = fLoc.x
+	local x2 = sLoc.x
+	local y1 = fLoc.y
+	local y2 = sLoc.y
+	return math.sqrt( math.pow( ( y2-y1 ), 2 ) + math.pow( ( x2-x1 ), 2 ) )
 end
 
 -- Set-like operation

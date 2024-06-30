@@ -82,7 +82,7 @@ X['sSellList'] = {
 	"item_vanguard",
 	"item_magic_wand",
 	"item_power_treads",
-	"item_blade_mail",
+	-- "item_blade_mail",
 }
 
 

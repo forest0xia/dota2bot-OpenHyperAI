@@ -151,7 +151,7 @@ function OnEnd()
 	end
 end
 
-local FrameProcessTime = 0.05
+local FrameProcessTime = 0.08
 function Think()
 	if  GetGameState() ~= GAME_STATE_PRE_GAME
 	and GetGameState()~= GAME_STATE_GAME_IN_PROGRESS

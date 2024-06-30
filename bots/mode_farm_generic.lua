@@ -86,6 +86,14 @@ function GetDesire()
 		beHighFarmer = J.GetPosition(bot) == 2
 		beVeryHighFarmer = J.GetPosition(bot) == 1
 	end
+	
+	-- if bot.isBuggyHero == nil then
+	-- 	bot.isBuggyHero = Utils.BuggyHeroesDueToValveTooLazy[bot:GetUnitName()] ~= nil
+	-- end
+	-- if bot.isBuggyHero and DotaTime() < 0.5 * 60
+	-- then
+	-- 	return 0.369
+	-- end
 
 	-- local nMode = bot:GetActiveMode()
 	-- local nModeDesire = bot:GetActiveModeDesire()
@@ -433,13 +441,25 @@ function OnEnd()
 end
 
 
-local FrameProcessTime = 0.05
+local FrameProcessTime = 0.08
 function Think()
 	if J.CanNotUseAction(bot) then return end
 
 	if bot.lastFarmFrameProcessTime == nil then bot.lastFarmFrameProcessTime = DotaTime() end
 	if DotaTime() - bot.lastFarmFrameProcessTime < FrameProcessTime then return end
 	bot.lastFarmFrameProcessTime = DotaTime()
+
+
+	-- if bot.isBuggyHero == nil then
+	-- 	bot.isBuggyHero = Utils.BuggyHeroesDueToValveTooLazy[bot:GetUnitName()] ~= nil
+	-- end
+	-- if bot.isBuggyHero and DotaTime() < 0.5 * 60
+	-- then
+	-- 	local mostFarmDesireLane = bot:GetAssignedLane();
+	-- 	local tpLoc = GetLaneFrontLocation(GetTeam(),mostFarmDesireLane,0);
+	-- 	bot:Action_MoveToLocation(tpLoc);
+	-- 	return
+	-- end
 
 	-- if bot.isBuggyHero == nil then
 	-- 	bot.isBuggyHero = J.Utils.BuggyHeroesDueToValveTooLazy[bot:GetUnitName()] ~= nil
@@ -629,7 +649,7 @@ function Think()
 				if bot:GetLevel() >= 12
 					 and J.Role.ShouldTpToFarm() 
 				then
-					local mostFarmDesireLane,mostFarmDesire = J.GetMostFarmLaneDesire();
+					local mostFarmDesireLane,mostFarmDesire = J.GetMostFarmLaneDesire(bot);
 					local tps = bot:GetItemInSlot(nTpSolt);
 					local tpLoc = GetLaneFrontLocation(GetTeam(),mostFarmDesireLane,0);
 					local bestTpLoc = J.GetNearbyLocationToTp(tpLoc);
