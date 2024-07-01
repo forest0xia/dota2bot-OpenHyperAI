@@ -79,20 +79,20 @@ function GetDesire()
 		and not Ward.IsOtherWardClose(WardTargetLocation)
 		then
 			bot.ward = true
-			return RemapValClamped(GetUnitToLocationDistance(bot, WardTargetLocation), 1200, 0, BOT_MODE_DESIRE_HIGH, BOT_ACTION_DESIRE_VERYHIGH)
+			return RemapValClamped(GetUnitToLocationDistance(bot, WardTargetLocation), 6400, 0, BOT_MODE_DESIRE_MODERATE, BOT_ACTION_DESIRE_VERYHIGH)
 		end
 
 		AvailableSpots = Ward.GetAvailableSpot(bot)
 		WardTargetLocation, WardTargetDist = Ward.GetClosestSpot(bot, AvailableSpots)
 
-		if  WardTargetLocation ~= nil
-		and DotaTime() > (J.IsModeTurbo() and -45 or -60)
-		and DotaTime() < 0
-		and not IsEnemyCloserToWardLocation(WardTargetLocation, WardTargetDist)
-		then
-			bot.ward = true
-			return BOT_MODE_DESIRE_ABSOLUTE
-		end
+		-- if  WardTargetLocation ~= nil
+		-- and DotaTime() > (J.IsModeTurbo() and -45 or -60)
+		-- and DotaTime() < 0
+		-- and not IsEnemyCloserToWardLocation(WardTargetLocation, WardTargetDist)
+		-- then
+		-- 	bot.ward = true
+		-- 	return BOT_MODE_DESIRE_ABSOLUTE
+		-- end
 
 		if  WardTargetLocation ~= nil
 		and DotaTime() > WardCastTime + 1.0

@@ -315,6 +315,9 @@ function X.SkillsComplement()
     SunstrikeDesire, SunstrikeLocation = X.ConsiderSunstrike()
     if SunstrikeDesire > 0 then X.CastInvokerSpell(Sunstrike, SunstrikeLocation) return end
 
+    -- 逃命第二
+    GhostWalkDesire = X.ConsiderGhostWalk()
+    if GhostWalkDesire > 0 then X.CastInvokerSpell(GhostWalk) return end
 
     ------- 尝试把连招串联起来，判断是否用了可以连招的前置技能 -------
     -- 如果前置技能进入cd，且距离使用它的时间刚刚过去delta时间之内，则可以试试是否能马上切或放下一个连招技能
@@ -413,10 +416,6 @@ function X.SkillsComplement()
 
     TornadoDesire, TornadoLocation = X.ConsiderTornado()
     if TornadoDesire > 0 then X.CastInvokerSpell(Tornado, TornadoLocation) return end
-    
-    -- 如果要逃跑，先判断吹风再用隐身
-    GhostWalkDesire = X.ConsiderGhostWalk()
-    if GhostWalkDesire > 0 then X.CastInvokerSpell(GhostWalk) return end
 
     EMPDesire, EMPLocation = X.ConsiderEMP()
     if EMPDesire > 0 then  X.CastInvokerSpell(EMP, EMPLocation) return end
@@ -1031,6 +1030,7 @@ function X.ConsiderAlacrity()
     if J.IsGoingOnSomeone(bot)
 	then
 		if J.IsValidTarget(botTarget)
+        and J.IsAttacking(bot)
         and J.CanBeAttacked(botTarget)
         and not J.IsSuspiciousIllusion(botTarget)
         and not botTarget:HasModifier('modifier_abaddon_borrowed_time')
@@ -1047,7 +1047,7 @@ function X.ConsiderAlacrity()
 		end
 	end
 
-	if J.IsPushing(bot) or J.IsDefending(bot)
+	if (J.IsPushing(bot) or J.IsDefending(bot)) and J.IsAttacking(bot)
 	then
 		local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(1000, true)
 		if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 2
@@ -1085,6 +1085,8 @@ function X.ConsiderAlacrity()
 
         if J.IsValidHero(enemyHero)
         and J.CanCastOnNonMagicImmune(enemyHero)
+        and J.IsAttacking(bot)
+        and bot:GetMana() - Alacrity:GetManaCost() >= saveManaInLaning
 		then
             return BOT_ACTION_DESIRE_HIGH, bot, "对线消耗:"..J.Chat.GetNormName( enemyHero )
 		end
@@ -1103,6 +1105,7 @@ function X.ConsiderAlacrity()
 	then
 		if J.IsRoshan(botTarget)
         and J.IsInRange(suitableTarget, botTarget, 1000)
+        and J.IsAttacking(bot)
 		then
 			return BOT_ACTION_DESIRE_HIGH, suitableTarget
 		end
@@ -1113,6 +1116,7 @@ function X.ConsiderAlacrity()
 	then
 		if  J.IsTormentor(botTarget)
         and J.IsInRange(suitableTarget, botTarget, 1000)
+        and J.IsAttacking(bot)
 		then
 			return BOT_ACTION_DESIRE_HIGH, suitableTarget
 		end
@@ -1553,7 +1557,9 @@ function X.ConsiderForgeSpirit()
 		end
 	end
     
-    if J.IsLaning( bot ) or J.IsFarming(bot)
+    if (J.IsLaning( bot ) or J.IsFarming(bot))
+    and J.IsAttacking(bot)
+    and bot:GetMana() - ForgeSpirit:GetManaCost() >= saveManaInLaning
 	then
 		return BOT_ACTION_DESIRE_HIGH
 	end
@@ -1577,7 +1583,7 @@ function X.ConsiderForgeSpirit()
 
     if J.IsDoingTormentor(bot)
 	then
-		if  J.IsTormentor(target)
+		if J.IsTormentor(target)
         and J.IsAttacking(bot)
 		then
 			return BOT_ACTION_DESIRE_HIGH

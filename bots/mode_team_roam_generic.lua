@@ -99,12 +99,12 @@ function GetDesire()
 		return BOT_MODE_DESIRE_ABSOLUTE * 0.98
 	end
 
-	-- Pickup Neutral Item Tokens
-	nDesire = TryPickupDroppedNeutralItemTokens()
-	if nDesire > 0
-	then
-		return nDesire
-	end
+	-- -- Pickup Neutral Item Tokens
+	-- nDesire = TryPickupDroppedNeutralItemTokens()
+	-- if nDesire > 0
+	-- then
+	-- 	return nDesire
+	-- end
 
 	-- Pickup Roshan Dropped Items
 	nDesire = TryPickupRefresherShard()
@@ -122,10 +122,6 @@ function GetDesire()
 	TrySwapInvItemForCheese()
 
 	TrySwapInvItemForRefresherShard()
-
-	TrySwapInvItemForClarity()
-	TrySwapInvItemForFlask()
-	TrySwapInvItemForMoonshard()
 
 	if J.Role['bStopAction'] then return 2.0 end
 
@@ -180,6 +176,9 @@ function GetDesire()
 		end
 	end
 	
+	TrySwapInvItemForClarity()
+	TrySwapInvItemForFlask()
+	TrySwapInvItemForMoonshard()
 	
 	return 0.0;
 	
@@ -1950,35 +1949,36 @@ function ConsiderHarassInLaningPhase()
 	return BOT_ACTION_DESIRE_NONE
 end
 
-function TryPickupDroppedNeutralItemTokens()
-	local item = nil
-	local droppedItem = GetDroppedItemList()
+-- Do not want to use this code because it makes bot dumb that bots spend time to walk which is damgious to pick up items they are not able to use at all.
+-- function TryPickupDroppedNeutralItemTokens()
+-- 	local item = nil
+-- 	local droppedItem = GetDroppedItemList()
 
-	for _, drop in pairs(droppedItem)
-	do
-		if drop.item:GetName() == 'item_tier1_token'
-		or drop.item:GetName() == 'item_tier2_token'
-		or drop.item:GetName() == 'item_tier3_token'
-		or drop.item:GetName() == 'item_tier4_token'
-		or drop.item:GetName() == 'item_tier5_token'
-		then
-			item = drop
-			break
-		end
-	end
+-- 	for _, drop in pairs(droppedItem)
+-- 	do
+-- 		if drop.item:GetName() == 'item_tier1_token'
+-- 		or drop.item:GetName() == 'item_tier2_token'
+-- 		or drop.item:GetName() == 'item_tier3_token'
+-- 		or drop.item:GetName() == 'item_tier4_token'
+-- 		or drop.item:GetName() == 'item_tier5_token'
+-- 		then
+-- 			item = drop
+-- 			break
+-- 		end
+-- 	end
 
-	if  item ~= nil and item.location ~= nil
-	and J.GetLocationToLocationDistance(item.location, J.GetTeamFountain()) > 900
-	and Item.GetEmptyInventoryAmount(bot) > 0
-	then
-		PickedItem = item
-		return BOT_ACTION_DESIRE_VERYHIGH
-	else
-		PickedItem = nil
-	end
+-- 	if  item ~= nil and item.location ~= nil
+-- 	and J.GetLocationToLocationDistance(item.location, J.GetTeamFountain()) > 900
+-- 	and Item.GetEmptyInventoryAmount(bot) > 0
+-- 	then
+-- 		PickedItem = item
+-- 		return BOT_ACTION_DESIRE_VERYHIGH
+-- 	else
+-- 		PickedItem = nil
+-- 	end
 
-	return BOT_ACTION_DESIRE_NONE
-end
+-- 	return BOT_ACTION_DESIRE_NONE
+-- end
 
 -- Pickup Refresher Shard
 function TryPickupRefresherShard()

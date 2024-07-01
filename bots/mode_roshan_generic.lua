@@ -21,7 +21,11 @@ local initDPSFlag = false
 function GetDesire()
     local aliveAlly = J.GetNumOfAliveHeroes(false)
     local aliveEnemy = J.GetNumOfAliveHeroes(true)
-    local hasSameOrMoreHero = aliveAlly >= aliveEnemy
+    local hasSameOrMoreHero = aliveAlly >= aliveEnemy + 2
+    if not hasSameOrMoreHero then
+        return BOT_ACTION_DESIRE_NONE
+    end
+    
     local timeOfDay = J.CheckTimeOfDay()
 
     local aliveHeroesList = {}
@@ -78,7 +82,7 @@ function GetDesire()
 
     if  shouldKillRoshan
     and initDPSFlag
-    and (hasSameOrMoreHero or (not hasSameOrMoreHero and IsEnoughAllies()))
+    -- and (hasSameOrMoreHero or (not hasSameOrMoreHero and IsEnoughAllies()))
     then
         local mul = RemapValClamped(DotaTime(), sinceRoshAliveTime, sinceRoshAliveTime + (2.5 * 60), 1, 2)
         local nRoshanDesire = (GetRoshanDesire() * mul)
@@ -156,26 +160,26 @@ end
 --     end
 -- end
 
-function IsEnoughAllies()
-    local timeOfDay = J.CheckTimeOfDay()
-    local roshLoc = nil
+-- function IsEnoughAllies()
+--     local timeOfDay = J.CheckTimeOfDay()
+--     local roshLoc = nil
 
-    if timeOfDay == "day" then
-        roshLoc = roshanRadiantLoc
-    else
-        roshLoc = roshanDireLoc
-    end
+--     if timeOfDay == "day" then
+--         roshLoc = roshanRadiantLoc
+--     else
+--         roshLoc = roshanDireLoc
+--     end
 
-    local allyList = {}
-    for _, h in pairs(GetUnitList(UNIT_LIST_ALLIED_HEROES)) do
-        if GetUnitToLocationDistance(h, roshLoc) < 1600
-        then
-            table.insert(allyList, h)
-        end
-    end
+--     local allyList = {}
+--     for _, h in pairs(GetUnitList(UNIT_LIST_ALLIED_HEROES)) do
+--         if GetUnitToLocationDistance(h, roshLoc) < 1600
+--         then
+--             table.insert(allyList, h)
+--         end
+--     end
 
-    return J.HasEnoughDPSForRoshan(allyList)
-end
+--     return J.HasEnoughDPSForRoshan(allyList)
+-- end
 
 -- No functionality yet from API
 -- function ConsiderTwinGates(timeOfDay, time)

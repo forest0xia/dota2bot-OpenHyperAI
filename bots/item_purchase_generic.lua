@@ -596,7 +596,7 @@ function ItemPurchaseThink()
 	
 	--正常买备用tp
 	if currentTime > 4 * 60
-		and bot:GetCourierValue() == 0
+		and bot:GetCourierValue() <= 100
 		and botGold >= GetItemCost( "item_tpscroll" )
 		and not Item.HasItem( bot, 'item_travel_boots' )
 		and not Item.HasItem( bot, 'item_travel_boots_2' )

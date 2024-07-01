@@ -213,7 +213,6 @@ local sPos2List = {
 	"npc_dota_hero_invoker",
 	"npc_dota_hero_invoker", -- increase the chance of having mid Invoker.
 	"npc_dota_hero_invoker",
-	"npc_dota_hero_invoker",
 	"npc_dota_hero_keeper_of_the_light",
 	"npc_dota_hero_kunkka",
 	"npc_dota_hero_leshrac",

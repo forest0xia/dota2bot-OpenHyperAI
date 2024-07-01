@@ -29,12 +29,28 @@ function GetDesire()
 	if wisdomRuneDesire > 0 then
 		return wisdomRuneDesire
 	end
+	
+	local tormentorDesire = TormentorDesire()
+	if tormentorDesire > 0 then
+		return tormentorDesire
+	end
+
+	return BOT_MODE_DESIRE_NONE
+end
+
+function TormentorDesire()
+    local aliveAlly = J.GetNumOfAliveHeroes(false)
+    local aliveEnemy = J.GetNumOfAliveHeroes(true)
+    local hasSameOrMoreHero = aliveAlly >= aliveEnemy + 2
+    if not hasSameOrMoreHero then
+        return BOT_ACTION_DESIRE_NONE
+    end
 
 	TormentorLocation = J.GetTormentorLocation(GetTeam())
 
     local nAllyInLoc = J.GetAlliesNearLoc(TormentorLocation, 700)
 	local aliveAlly = J.GetNumOfAliveHeroes(false)
-	local aveDistance, heroCount = GetAveTeamDistance()
+	-- local aveDistance, heroCount = GetAveTeamDistance()
 	local spawnTime = J.IsModeTurbo() and 15 or 25 -- give bots more time. original: 10 or 20
 	local topFrontP = GetLaneFrontAmount(GetOpposingTeam(), LANE_TOP, true)
 	local midFrontP = GetLaneFrontAmount(GetOpposingTeam(), LANE_MID, true)
@@ -195,8 +211,6 @@ function GetDesire()
 	end
 
 	canDoTormentor = false
-
-	return BOT_MODE_DESIRE_NONE
 end
 
 local FrameProcessTime = 0.08
@@ -225,7 +239,7 @@ function Think()
 					Tormentor = c
 	
 					if IsEnoughAllies()
-					or J.GetHP(c) < 0.25
+					and J.GetHP(c) > 0.25
 					then
 						bot.wasAttackingTormentor = true
 						bot:Action_AttackUnit(c, false)
@@ -285,8 +299,10 @@ function IsEnoughAllies()
 			heroCount = heroCount + 1
 		end
 	end
+	
+	local nInRangeEnemy = J.GetNearbyHeroes(bot, 1600, false)
 
-	return (((bot.lastKillTime == 0 and heroCount >= 4) or (bot.lastKillTime > 0 and heroCount >= 3))) and coreCount >= 1
+	return #nInRangeEnemy >= 3 and bot.lastKillTime >= 0 and heroCount >= 4 and coreCount >= 2
 end
 
 function DoesAllHaveShard()
