@@ -4949,6 +4949,21 @@ function J.ConsolePrintActiveMode(bot)
 	end
 end
 
+-- Adds an avoidance zone for use with GeneratePath(). Takes a Vector with x and y as a 2D location, and z as as radius. Returns a handle to the avoidance zone.
+-- location as Vector(-7174.0, -6671.0, 10.0)
+function J.AddAvoidanceZone(locationR, durationSec)
+	local zone = AddAvoidanceZone(locationR, durationSec)
+	-- J.Utils.StartCoroutine(function()
+	-- 	local endTime = DotaTime() + durationSec
+	-- 	while endTime >= DotaTime() do
+	-- 		print('AddAvoidanceZone...'..' endtime='..endTime..', time='..DotaTime())
+	-- 		coroutine.yield()
+	-- 	end
+	-- 	return RemoveAvoidanceZone(zone)
+	-- end)
+	return zone
+end
+
 function J.GetClosestAllyHero(bot)
 	local closestHeroDistance = 999999
 	local closestHero = nil

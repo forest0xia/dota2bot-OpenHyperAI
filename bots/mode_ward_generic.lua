@@ -79,7 +79,7 @@ function GetDesire()
 		and not Ward.IsOtherWardClose(WardTargetLocation)
 		then
 			bot.ward = true
-			return RemapValClamped(GetUnitToLocationDistance(bot, WardTargetLocation), 6400, 0, BOT_MODE_DESIRE_MODERATE, BOT_ACTION_DESIRE_VERYHIGH)
+			return RemapValClamped(GetUnitToLocationDistance(bot, WardTargetLocation), 6400, 0, BOT_ACTION_DESIRE_VERYLOW, BOT_ACTION_DESIRE_VERYHIGH)
 		end
 
 		AvailableSpots = Ward.GetAvailableSpot(bot)
@@ -99,7 +99,7 @@ function GetDesire()
 		and not IsEnemyCloserToWardLocation(WardTargetLocation, WardTargetDist)
 		then
 			bot.ward = true
-			return RemapValClamped(WardTargetDist, 6400, 0, BOT_MODE_DESIRE_MODERATE, BOT_MODE_DESIRE_VERYHIGH)
+			return RemapValClamped(WardTargetDist, 6400, 0, BOT_ACTION_DESIRE_VERYLOW, BOT_MODE_DESIRE_VERYHIGH)
 		end
 	else
 		bot.lastPlayerChat = nil

@@ -22,7 +22,7 @@ local RWR = Vector( -8126, -320, 256 )
 local DWR = Vector( 8319, 266, 256 )
 local LastWisdomRuneTime = 0
 local TeamWisdomTimer = 0
-local WisdomRuneTimeGap = 420
+local WisdomRuneTimeGap = 420 - 5 -- which is 7 mins - 5 seconds
 
 function GetDesire()
 	local wisdomRuneDesire = WisdomRuneDesire()
@@ -211,6 +211,7 @@ function TormentorDesire()
 	end
 
 	canDoTormentor = false
+	return BOT_ACTION_DESIRE_NONE
 end
 
 local FrameProcessTime = 0.08
@@ -489,7 +490,6 @@ function WisdomRuneDesire()
 	CheckWisdomRuneAvailability()
 	
 	if WisdomRuneSpawned then
-
 		ClosestAllyToWisdomRune = GetClosestAllyToWisdomRune()
 		if ClosestAllyToWisdomRune ~= nil then
 			if GetUnitToLocationDistance(ClosestAllyToWisdomRune, TeamWisdomRune) > 200 then
@@ -504,7 +504,7 @@ function WisdomRuneDesire()
 	
 	if ClosestAllyToWisdomRune == bot and bot:GetLevel() < 25 then
 		if WisdomRuneSpawned then
-			return 0.81
+			return RemapValClamped(GetUnitToLocationDistance(ClosestAllyToWisdomRune, TeamWisdomRune), 6400, 0, BOT_ACTION_DESIRE_VERYLOW, BOT_ACTION_DESIRE_VERYHIGH )
 		end
 	end
 	return 0

@@ -206,7 +206,39 @@ function Think()
 	if bot.lastTeamRoamFrameProcessTime == nil then bot.lastTeamRoamFrameProcessTime = DotaTime() end
 	if DotaTime() - bot.lastTeamRoamFrameProcessTime < FrameProcessTime then return end
 	bot.lastTeamRoamFrameProcessTime = DotaTime()
-	
+
+	-- Disperse from Lich, Jakiro Ultimate
+	if bot:HasModifier('modifier_jakiro_macropyre_burn') -- 可能无视魔免的技能
+	or bot:HasModifier('modifier_dark_seer_wall_slow')
+	or ( -- 不无视魔免的技能
+		(bot:HasModifier('modifier_warlock_upheaval')
+		or bot:HasModifier('modifier_sandking_sand_storm_slow')
+		or bot:HasModifier('modifier_sand_king_epicenter_slow')
+		or bot:HasModifier('modifier_lich_chainfrost_slow'))
+		and (not bot:HasModifier("modifier_black_king_bar_immune") or not bot:HasModifier("modifier_magic_immune") or not bot:HasModifier("modifier_omniknight_repel"))
+	)
+	then
+		if J.GetHP(bot) < 0.95 and bot:WasRecentlyDamagedByAnyHero(1.5)
+		then
+			-- local botLoc = bot:GetLocation()
+			-- J.AddAvoidanceZone(Vector(botLoc.x, botLoc.y, 800.0), 5)
+			bot:Action_MoveToLocation(J.GetTeamFountain() + RandomVector(1000))
+		end
+		return
+	end
+
+	if DotaTime() < 5 * 60 then
+		if bot:HasModifier('modifier_maledict') -- 防止中了巫医毒还继续吃伤害
+		or bot:HasModifier('modifier_dazzle_poison_touch')
+		or bot:HasModifier('modifier_slark_essence_shift_debuff') -- 防止不停被小鱼偷属性
+		then
+			if J.GetHP(bot) < 0.9 and bot:WasRecentlyDamagedByAnyHero(1.0)
+			then
+				bot:Action_MoveToLocation(J.GetTeamFountain() + RandomVector(1000))
+			end
+		end
+	end
+
 	if  shouldHarass
 	and harassTarget ~= nil
 	then
@@ -220,38 +252,6 @@ function Think()
 		bot:Action_AttackUnit(SpecialUnitTarget, false)
 		return
 	end
-
-	-- Disperse from Lich, Jakiro Ultimate
-	local botHP   = bot:GetHealth()/bot:GetMaxHealth();
-	if bot:HasModifier('modifier_jakiro_macropyre_burn')
-	or bot:HasModifier('modifier_dark_seer_wall_slow')
-	or (
-		(bot:HasModifier('modifier_warlock_upheaval')
-		or bot:HasModifier('modifier_sandking_sand_storm_slow')
-		or bot:HasModifier('modifier_sand_king_epicenter_slow')
-		or bot:HasModifier('modifier_lich_chainfrost_slow'))
-		and (not bot:HasModifier("modifier_black_king_bar_immune") or not bot:HasModifier("modifier_magic_immune") or not bot:HasModifier("modifier_omniknight_repel"))
-	)
-	then
-		if botHP < 0.95
-		then
-			bot:Action_MoveToLocation(J.GetTeamFountain() + RandomVector(1000))
-		end
-		return
-	end
-
-	if DotaTime() < 5 * 60 then
-		if bot:HasModifier('modifier_maledict') -- 防止中了巫医毒还继续吃伤害
-		or bot:HasModifier('modifier_dazzle_poison_touch')
-		or bot:HasModifier('modifier_slark_essence_shift_debuff') -- 防止不停被小鱼偷属性
-		then
-			if botHP < 0.9 and bot:WasRecentlyDamagedByAnyHero(1.0)
-			then
-				bot:Action_MoveToLocation(J.GetTeamFountain() + RandomVector(1000))
-			end
-		end
-	end
-
 
 	if towerCreepMode
 	then
@@ -289,7 +289,6 @@ function X.SupportFindTarget()
 	
 	
 	local nTarget = J.GetProperTarget(bot);	
-	local botHP   = bot:GetHealth()/bot:GetMaxHealth();
 	local botMode = bot:GetActiveMode();
 	local botLV   = bot:GetLevel();
 	local botAD   = bot:GetAttackDamage();
@@ -311,7 +310,7 @@ function X.SupportFindTarget()
 		
 		if nTarget:IsCourier() 
 			and GetUnitToUnitDistance(bot,nTarget) <= nAttackRange + 300
-			and botHP > 0.3 and not J.IsRetreating(bot)
+			and J.GetHP(bot) > 0.3 and not J.IsRetreating(bot)
 		then
 			return nTarget,BOT_MODE_DESIRE_ABSOLUTE *1.5;
 		end
@@ -342,7 +341,7 @@ function X.SupportFindTarget()
 	if enemyCourier ~= nil 
 		and not enemyCourier:IsAttackImmune()
 		and not enemyCourier:IsInvulnerable()
-		and botHP > 0.3 and not J.IsRetreating(bot)
+		and J.GetHP(bot) > 0.3 and not J.IsRetreating(bot)
 	then
 		return enemyCourier,BOT_MODE_DESIRE_ABSOLUTE * 1.5; 
 	end		
@@ -364,7 +363,7 @@ function X.SupportFindTarget()
 	local attackDamage = botBAD - 1;
 	if  IsModeSuitHit
 		and not X.HasHumanAlly( bot )
-		and ( botHP > 0.5 or not bot:WasRecentlyDamagedByAnyHero(2.0) )
+		and ( J.GetHP(bot) > 0.5 or not bot:WasRecentlyDamagedByAnyHero(2.0) )
 	then
 		local nBonusRange = 400;
 		if botLV > 12 then nBonusRange = 300; end
@@ -410,7 +409,7 @@ function X.SupportFindTarget()
 	if  IsModeSuitHit 
 		and bot:GetLevel() <= 8
 		and bot:GetNetWorth() < 13998   -----------*************
-		and ( botHP > 0.38 or not bot:WasRecentlyDamagedByAnyHero(3.0))
+		and ( J.GetHP(bot) > 0.38 or not bot:WasRecentlyDamagedByAnyHero(3.0))
 		and (nNearbyEnemyHeroes[1] == nil or nNearbyEnemyHeroes[1]:GetLevel() < 10) -----------*************
 		and bot:DistanceFromFountain() > 3800
 		and J.GetDistanceFromEnemyFountain(bot) > 5000
@@ -596,7 +595,6 @@ function X.CarryFindTarget()
 	
 	
 	local nTarget = J.GetProperTarget(bot);	
-	local botHP   = bot:GetHealth()/bot:GetMaxHealth();
 	local botMode = bot:GetActiveMode();
 	local botLV   = bot:GetLevel();
 	local botAD   = bot:GetAttackDamage() - 0.8;
@@ -618,7 +616,7 @@ function X.CarryFindTarget()
 		
 		if nTarget:IsCourier() 
 			and GetUnitToUnitDistance(bot,nTarget) <= nAttackRange + 300
-			and botHP > 0.3 and not J.IsRetreating(bot)
+			and J.GetHP(bot) > 0.3 and not J.IsRetreating(bot)
 		then
 			return nTarget,BOT_MODE_DESIRE_ABSOLUTE *1.5;
 		end
@@ -663,7 +661,7 @@ function X.CarryFindTarget()
 	if enemyCourier ~= nil
 		and not enemyCourier:IsAttackImmune()
 		and not enemyCourier:IsInvulnerable()
-		and botHP > 0.3 and not J.IsRetreating(bot)
+		and J.GetHP(bot) > 0.3 and not J.IsRetreating(bot)
 	then
 		return enemyCourier,BOT_MODE_DESIRE_ABSOLUTE * 1.5; 
 	end		
@@ -686,7 +684,7 @@ function X.CarryFindTarget()
 	local cItem = J.IsItemAvailable("item_echo_sabre")
     if  cItem ~= nil and (cItem:IsFullyCastable() or cItem:GetCooldownTimeRemaining() < bot:GetAttackPoint() +0.8)
 		and IsModeSuitHit
-		and (botHP > 0.35 or not bot:WasRecentlyDamagedByAnyHero(1.0))
+		and (J.GetHP(bot) > 0.35 or not bot:WasRecentlyDamagedByAnyHero(1.0))
 	then
 		
 		local echoDamage = botBAD *2;
@@ -713,7 +711,7 @@ function X.CarryFindTarget()
 	local attackDamage = botBAD;
 	if  IsModeSuitHit
 		and not X.HasHumanAlly( bot )
-		and ( botHP > 0.5 or not bot:WasRecentlyDamagedByAnyHero(2.0))
+		and ( J.GetHP(bot) > 0.5 or not bot:WasRecentlyDamagedByAnyHero(2.0))
 	then
 		local nBonusRange = 430;
 		if botLV > 12 then nBonusRange = 380; end
@@ -755,7 +753,7 @@ function X.CarryFindTarget()
 	local denyDamage = botAD + 3
 	local nNearbyEnemyHeroes = J.GetNearbyHeroes(bot,650,true,BOT_MODE_NONE);
 	if  IsModeSuitHit 
-		and ( botHP > 0.38 or not bot:WasRecentlyDamagedByAnyHero(3.0))
+		and ( J.GetHP(bot) > 0.38 or not bot:WasRecentlyDamagedByAnyHero(3.0))
 		and (nNearbyEnemyHeroes[1] == nil or nNearbyEnemyHeroes[1]:GetLevel() < 12)
 		and bot:DistanceFromFountain() > 3800
 		and J.GetDistanceFromEnemyFountain(bot) > 5000

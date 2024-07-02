@@ -83,7 +83,7 @@ function GetDesire()
 		and lastCheckDropTime + 0.4 < DotaTime()
 	then
 		lastCheckDropTime = DotaTime()
-		
+
 		local  dropItemList = GetDroppedItemList()
 		for _, tDropItem in pairs( dropItemList )
 		do
@@ -95,78 +95,64 @@ function GetDesire()
 					and not nDropOwner:IsBot()
 					and sDropName == 'item_flask'
 				then
-					
 					hasTaunt = true
 					local sDropHero = Chat.GetNormName( nDropOwner )
-					
-					if bFWQ 
-					then 
-						bot:ActionImmediate_Chat(sDropHero.."Yeah, be more confident and don’t always rely on big medicine to fish (-_-)", true)
-					else
-						bot:ActionImmediate_Chat(sDropHero.."Yeah, if you want to win, just buy -gold 9999. Stop fishing with big drugs.", true)
-					end
-					
+					bot:ActionImmediate_Chat(sDropHero.."Yeah, be more confident and dont't try to phishing (-_-)", true)
 				end
 			end
 		end
 	end
 
-
-
-	if bot:IsInvulnerable() 
+	if bot:IsInvulnerable()
 		and bot:GetHealth() / bot:GetMaxHealth() > 0.96
 		and bot:DistanceFromFountain() < 100
 	then
 		return 1.0
 	end
 
-	
-	if GetGameMode() == GAMEMODE_1V1MID 
+	if GetGameMode() == GAMEMODE_1V1MID
 		or ( GetGameMode() == GAMEMODE_MO and DotaTime() <= 0 )
 		or ( bot:HasModifier("modifier_arc_warden_tempest_double") )
-		or ( DotaTime() > - 10 and bot:GetCurrentActionType() == BOT_ACTION_TYPE_IDLE ) 
+		or ( DotaTime() > - 10 and bot:GetCurrentActionType() == BOT_ACTION_TYPE_IDLE )
 	then
 		return BOT_MODE_DESIRE_NONE
 	end
-	
+
 	if teamPlayers == nil then teamPlayers = GetTeamPlayers(GetTeam()) end
-	
+
 	minute = math.floor(DotaTime() / 60)
 	sec = DotaTime() % 60
 
-	
 	if not X.IsSuitableToPickRune() then
 		return BOT_MODE_DESIRE_NONE
-	end	
-	
-	
-	if DotaTime() < 0 
+	end
+
+	if DotaTime() < 0
 		and not bot:WasRecentlyDamagedByAnyHero( 12.0 )
 	then
-		local enemyHeroList = J.GetNearbyHeroes(bot,1400, true, BOT_MODE_NONE)
-		if #enemyHeroList <= 1 
+		local enemyHeroList = J.GetNearbyHeroes(bot, 1400, true, BOT_MODE_NONE)
+		if #enemyHeroList <= 1
 		then
 			return BOT_MODE_DESIRE_MODERATE
 		end
-	end	
-	
-	
+	end
+
 	if DotaTime() < 5 * 60 and DotaTime() > 30
 		and not bMidHumanHere
 		and bot:GetAssignedLane() == LANE_MID
 	then
 		local enemyHeroList = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE)
 		for i = 1, #enemyHeroList
-		do 
+		do
 			if enemyHeroList[i] ~= nil
 			   and not enemyHeroList[i]:IsBot()
 			then
 				bMidHumanHere = true
-			end		
+			end
 		end
 	end
-	
-	
+
+
 	if DotaTime() > 26 * 60 
 		and X.IsUnitAroundLocation(GetAncient(GetTeam()):GetLocation(), 2800) 
 	then
@@ -407,32 +393,29 @@ end
 
 function X.CountDesire(base_desire, dist, maxDist)
 	 return base_desire + math.floor((RemapValClamped( dist, maxDist, 0, 0, 1 - base_desire))*40)/40
-end	
+end
 
 function X.GetBotClosestRune()
-	
-	local cDist = 100000	
-	local cRune = -1	
-	
+	local cDist = 100000
+	local cRune = -1
 	if bFWQ and DotaTime() > 10 then return -1 end
-	
 	for _,r in pairs(nRuneList)
 	do
 		local rLoc = GetRuneSpawnLocation(r)
-		if not X.IsHumanPlayerNearby(rLoc) 
-			and not X.IsPingedByHumanPlayer(rLoc) 
-			and not X.IsThereMidlaner(rLoc) 
-			and not X.IsThereCarry(rLoc) 
+		if not X.IsHumanPlayerNearby(rLoc)
+			and not X.IsPingedByHumanPlayer(rLoc)
+			and not X.IsThereMidlaner(rLoc)
+			and not X.IsThereCarry(rLoc)
 		    and not X.IsMissing(r)
 			--and not X.IsKnown(r)
 		    and X.IsTheClosestOne(rLoc)
 		then
 			local dist = GetUnitToLocationDistance(bot, rLoc)
-			if dist < cDist 
+			if dist < cDist
 			then
 				cDist = dist
 				cRune = r
-			end	
+			end
 		end
 	end
 	return cRune, cDist
