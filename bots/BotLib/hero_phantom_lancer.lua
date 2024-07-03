@@ -46,16 +46,16 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_wraith_band",
 	"item_power_treads",
 	"item_magic_wand",
-	"item_ultimate_scepter",
 	"item_diffusal_blade",
 	"item_manta",--
 	"item_heart",--
 	"item_skadi",--
+	"item_ultimate_scepter",
 	"item_disperser",--
 	"item_ultimate_scepter_2",
+	"item_moon_shard",
 	"item_butterfly",--
 	sAbyssalBloodthorn,--
-	"item_moon_shard",
 	"item_aghanims_shard",
 }
 

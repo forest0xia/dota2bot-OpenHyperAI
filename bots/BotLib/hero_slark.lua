@@ -34,6 +34,29 @@ local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 local sRoleItemsBuyList = {}
 
 sRoleItemsBuyList['pos_1'] = {
+	
+	"item_melee_carry_outfit",
+--	"item_wraith_band",
+	"item_diffusal_blade",
+	"item_yasha",
+	"item_broadsword",
+	"item_blitz_knuckles",
+	"item_invis_sword",
+	"item_sange_and_yasha",--
+	"item_aghanims_shard",
+	"item_black_king_bar",--
+	"item_travel_boots",
+	"item_abyssal_blade",--
+	"item_silver_edge",--
+    "item_disperser",--
+	"item_ultimate_scepter",
+	"item_ultimate_scepter_2",
+	"item_moon_shard",
+	"item_butterfly",--
+	"item_travel_boots_2",--
+}
+
+sRoleItemsBuyList['pos_2'] = {
 	"item_tango",
 	"item_double_branches",
 	"item_quelling_blade",
@@ -58,22 +81,21 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_nullifier",--
 }
 
-sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
-
-sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_1']
-
-sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_1']
-
 sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_1']
+
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_2']
+
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_2']
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 X['sSellList'] = {
+	"item_broadsword",
 	"item_quelling_blade",
 	"item_wraith_band",
-	"item_power_treads",
 	"item_magic_wand",
 	"item_echo_sabre",
+	-- "item_power_treads",
 }
 
 
@@ -463,7 +485,7 @@ function X.ConsiderAS()
 			if J.IsValid( npcEnemy )
 				and J.CanCastOnMagicImmune( npcEnemy )
 				and npcEnemy:GetAttackTarget() == bot
-				and bot:WasRecentlyDamagedByHero( npcEnemy )
+				and bot:WasRecentlyDamagedByHero( npcEnemy, 1.0 )
 			then
 				hCastTarget = J.GetFaceTowardDistanceLocation( bot, 300 )
 				sCastMotive = 'AS-隐藏'

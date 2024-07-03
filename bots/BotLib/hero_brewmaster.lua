@@ -24,7 +24,7 @@ local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 
 local sRoleItemsBuyList = {}
 
-local sUtility = {"item_crimson_guard", "item_pipe", "item_lotus_orb"}
+local sUtility = {"item_crimson_guard", "item_pipe"} --, "item_lotus_orb"}
 local sCrimsonPipeLotus = sUtility[RandomInt(1, #sUtility)]
 
 sRoleItemsBuyList['pos_1'] = {

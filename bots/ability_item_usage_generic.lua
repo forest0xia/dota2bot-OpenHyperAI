@@ -265,6 +265,8 @@ end
 
 local function BuybackUsageComplement()
 
+	if bot:IsAlive() then return end
+
 	X.SetTalkMessage()
 
 	if bot:GetLevel() <= 15
@@ -286,7 +288,7 @@ local function BuybackUsageComplement()
 
 	if not bot:HasBuyback() then return end
 
-	if bot:GetRespawnTime() < 60 then
+	if bot:GetRespawnTime() < 40 then
 		return
 	end
 

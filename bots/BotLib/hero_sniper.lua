@@ -34,32 +34,40 @@ local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 local sRoleItemsBuyList = {}
 
 sRoleItemsBuyList['pos_1'] = {
-	"item_tango",
-	"item_double_branches",
-	"item_slippers",
-	"item_circlet",
-
-	"item_wraith_band",
-	"item_wraith_band",
-	"item_power_treads",
-	"item_magic_wand",
-	
-	"item_mask_of_madness",
+	"item_ranged_carry_outfit",
 	"item_dragon_lance",
-	"item_lesser_crit",
-	"item_hurricane_pike",--
+	"item_mask_of_madness",
 	"item_aghanims_shard",
-	"item_greater_crit",--
-	"item_skadi",--
-	"item_butterfly",--
+	"item_maelstrom",
+	"item_hurricane_pike",--
+	"item_ultimate_scepter",
 	"item_travel_boots",
+	"item_skadi",--
+	"item_mjollnir",--
+	"item_broken_satanic",--
 	"item_moon_shard",
-	"item_satanic",--
 	"item_travel_boots_2",--
 	"item_ultimate_scepter_2",
+	"item_butterfly",--
 }
 
-sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
+sRoleItemsBuyList['pos_2'] = {
+	"item_mid_outfit",
+	"item_dragon_lance",
+	"item_mask_of_madness",
+	"item_aghanims_shard",
+	"item_maelstrom",
+	"item_hurricane_pike",--
+	"item_ultimate_scepter",
+	"item_travel_boots",
+	"item_skadi",--
+	"item_mjollnir",--
+	"item_broken_satanic",--
+	"item_moon_shard",
+	"item_travel_boots_2",--
+	"item_ultimate_scepter_2",
+	"item_butterfly",--
+}
 
 sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_1']
 
@@ -70,9 +78,17 @@ sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_1']
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 X['sSellList'] = {
-	"item_wraith_band",
+	"item_hurricane_pike",
+	"item_urn_of_shadows",
+
+	"item_mjollnir",
 	"item_magic_wand",
-	"item_mask_of_madness",
+
+	"item_hand_of_midas",
+	"item_urn_of_shadows",
+
+	"item_greater_crit", 
+	"item_hand_of_midas",
 }
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_mid' }, {} end

@@ -66,17 +66,27 @@ sRoleItemsBuyList['pos_1'] = {
 }
 
 sRoleItemsBuyList['pos_2'] = {
-	"item_mage_outfit",
-	"item_ancient_janggo",
-	"item_glimmer_cape",
-	"item_boots_of_bearing",
-	"item_pipe",
-	"item_aghanims_shard",
-	"item_veil_of_discord",
-	"item_cyclone",
-	"item_sheepstick",
-	"item_wind_waker",
+    "item_tango",
+    "item_double_branches",
+    "item_faerie_fire",
+
+    "item_bottle",
+    "item_boots",
+    "item_magic_wand",
+
+	"item_arcane_boots",
+	"item_orchid",
+	"item_black_king_bar",--
+	"item_bloodthorn",--
+	"item_maelstrom",
+	"item_gungir",--
+	"item_invis_sword",
+	"item_silver_edge",--
+	"item_sheepstick",--
 	"item_moon_shard",
+	"item_travel_boots",
+	"item_travel_boots_2",--
+	"item_ultimate_scepter",
 	"item_ultimate_scepter_2",
 }
 
@@ -123,37 +133,16 @@ sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_4']
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 
-Pos1SellList = {
-	"item_magic_wand",
-	"item_falcon_blade",
-}
-
-Pos2SellList = {
-	"item_bottle",
-	"item_null_talisman",
-	"item_magic_wand",
-}
-
 X['sSellList'] = {
 	"item_bottle",
 	"item_null_talisman",
 	"item_magic_wand",
 	"item_ultimate_scepter",
 	"item_magic_wand",
-	
+	"item_arcane_boots",
 	"item_cyclone",
 	"item_magic_wand",
 }
-
-if sRole == "pos_1"
-then
-    X['sSellList'] = Pos1SellList
-elseif sRole == "pos_2"
-then
-    X['sSellList'] = Pos2SellList
-else
-    X['sSellList'] = Pos1SellList
-end
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_mage' }, {} end
 

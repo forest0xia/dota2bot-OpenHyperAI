@@ -68,7 +68,6 @@ sRoleItemsBuyList['pos_3'] = {
 sRoleItemsBuyList['pos_4'] = {
 	"item_blood_grenade",
 	"item_priest_outfit",
-	"item_urn_of_shadows",
 	"item_mekansm",
 	"item_glimmer_cape",
 	"item_aghanims_shard",
@@ -547,6 +546,7 @@ function X.ConsiderE()
 end
 
 function X.ConsiderAS()
+	if abilityAS == nil then return 0 end
 
 	if not abilityAS:IsTrained() or not abilityAS:IsFullyCastable() then return 0 end
 

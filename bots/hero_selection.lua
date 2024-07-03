@@ -639,7 +639,15 @@ local OneVoneLaneAssignment = {
 function X.OverrideTeamHeroes()
 	if GetTeam() == TEAM_RADIANT
 	then
-		return sSelectList
+		return {
+			
+			[1] = "npc_dota_hero_chaos_knight",
+			[2] = "npc_dota_hero_sniper",
+			[3] = "npc_dota_hero_axe",
+		    [4] = "npc_dota_hero_zuus",
+			[5] = "npc_dota_hero_warlock",
+
+		}
 	else
 		return {
 
@@ -650,7 +658,14 @@ function X.OverrideTeamHeroes()
 			-- [4] = tSelectPoolList[4][RandomInt( 1, #tSelectPoolList[4] )],
 			-- [5] = tSelectPoolList[5][RandomInt( 1, #tSelectPoolList[5] )],
 
-			-- Rubick mid, and good team fights
+			
+			[1] = "npc_dota_hero_chaos_knight",
+			[2] = "npc_dota_hero_sniper",
+			[3] = "npc_dota_hero_axe",
+		    [4] = "npc_dota_hero_zuus",
+			[5] = "npc_dota_hero_warlock",
+
+			-- -- Rubick mid, and good team fights
 			-- [1] = "npc_dota_hero_clinkz",
 			-- [2] = "npc_dota_hero_rubick",
 			-- [3] = "npc_dota_hero_enigma",
@@ -687,15 +702,15 @@ function X.OverrideTeamHeroes()
 
 
 			-- Test buggy heroes:
-			[1] = 'npc_dota_hero_muerta',
-			[2] = 'npc_dota_hero_tinker',
-			-- [2] = 'npc_dota_hero_primal_beast',
-			-- [2] = tSelectPoolList[2][RandomInt( 1, #tSelectPoolList[2] )],
-			[3] = 'npc_dota_hero_marci', -- DOES NOT WORK. marci works as pos1.
-			-- [3] = tSelectPoolList[3][RandomInt( 1, #tSelectPoolList[3] )],
-			[4] = "npc_dota_hero_dark_willow", -- dark_willow does not work over half of the time.
-			-- [4] = tSelectPoolList[4][RandomInt( 1, #tSelectPoolList[4] )],
-			[5] = 'npc_dota_hero_hoodwink',
+			-- [1] = 'npc_dota_hero_muerta',
+			-- [2] = 'npc_dota_hero_tinker',
+			-- -- [2] = 'npc_dota_hero_primal_beast',
+			-- -- [2] = tSelectPoolList[2][RandomInt( 1, #tSelectPoolList[2] )],
+			-- [3] = 'npc_dota_hero_marci', -- DOES NOT WORK. marci works as pos1.
+			-- -- [3] = tSelectPoolList[3][RandomInt( 1, #tSelectPoolList[3] )],
+			-- [4] = "npc_dota_hero_dark_willow", -- dark_willow does not work over half of the time.
+			-- -- [4] = tSelectPoolList[4][RandomInt( 1, #tSelectPoolList[4] )],
+			-- [5] = 'npc_dota_hero_hoodwink',
 		    
 			-- All Pandas/spirits
 			-- [1] = "npc_dota_hero_void_spirit",
@@ -889,12 +904,12 @@ function AllPickHeros()
 	do
 		if IsPlayerBot( id ) and GetSelectedHeroName( id ) == "" and GameTime() >= fLastSlectTime + GetTeam() * 2
 		then
-			if X.IsRepeatHero( sSelectList[i] )
-			then
-				sSelectHero = X.GetNotRepeatHero( tSelectPoolList[i] )
-			else
+			-- if X.IsRepeatHero( sSelectList[i] )
+			-- then
+			-- 	sSelectHero = X.GetNotRepeatHero( tSelectPoolList[i] )
+			-- else
 				sSelectHero = sSelectList[i]
-			end
+			-- end
 			SelectHero( id, sSelectHero )
 			-- print('Selected hero for idx='..i..', id='..id..', bot='..sSelectHero)
 			if Role["bLobbyGame"] == false then Role["bLobbyGame"] = true end

@@ -39,26 +39,42 @@ sRoleItemsBuyList['pos_1'] = {
 
 	"item_ring_of_basilius",
 	"item_power_treads",
-	"item_manta",
+	"item_manta",--
+	"item_ultimate_scepter",
+	"item_skadi",--
+	"item_hurricane_pike",--
 	"item_butterfly",--
 	"item_greater_crit",--
-	"item_skadi",--
-	"item_monkey_king_bar",--
 	"item_travel_boots",
 	"item_aghanims_shard",
 	"item_disperser",--
 	"item_moon_shard",
-	"item_travel_boots_2",--
 	"item_ultimate_scepter_2",
 }
 
-sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
+sRoleItemsBuyList['pos_2'] = {
+	"item_medusa_outfit",
+	"item_ultimate_scepter",
+	"item_aghanims_shard",
+	"item_dragon_lance",
+	"item_manta",--
+	"item_mjollnir",--
+	"item_hurricane_pike", --
+	"item_travel_boots",
+	"item_skadi",--
+--	"item_sphere",	
+	"item_ultimate_scepter_2",
+	"item_moon_shard",
+	"item_butterfly",--
+	"item_travel_boots_2",--
+	
+}
 
-sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_1']
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_2']
 
-sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_1']
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_2']
 
-sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_1']
+sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_2']
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 
@@ -66,6 +82,7 @@ X['sSellList'] = {
 	"item_magic_wand",
 	"item_ring_of_basilius",
 	"item_manta",
+	"item_power_treads",
 }
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_mid' }, {} end

@@ -1,4 +1,6 @@
 local bot = GetBot()
+local botTeam = bot:GetTeam()
+local enemyTeam = botTeam == TEAM_RADIANT and TEAM_DIRE or TEAM_RADIANT
 local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
 
 local Tormentor = nil
@@ -15,18 +17,27 @@ if bot.wasAttackingTormentor == nil then bot.wasAttackingTormentor = false end
 
 local NoTormentorAfterThisTime = 35 * 60 -- do not do tormentor again since it's late and doing tormentor only slows down the game more.
 
-local WisdomRuneSpawned = false
+local WisdomRuneSpawned = {
+	[TEAM_RADIANT] = false,
+	[TEAM_DIRE] = false
+}
+
 local ClosestAllyToWisdomRune
-local TeamWisdomRune
-local RWR = Vector( -8126, -320, 256 )
-local DWR = Vector( 8319, 266, 256 )
+local ClosestAllyToEnemyRune
+local TeamWisdomRune = {
+	[TEAM_RADIANT] = Vector( -8126, -320, 256 ),
+	[TEAM_DIRE] = Vector( 8319, 266, 256 )
+}
+-- local RWR = Vector( -8126, -320, 256 )
+-- local DWR = Vector( 8319, 266, 256 )
 local LastWisdomRuneTime = 0
 local TeamWisdomTimer = 0
-local WisdomRuneTimeGap = 420 - 5 -- which is 7 mins - 5 seconds
+local EnemyWisdomTimer = 0
+local WisdomRuneTimeGap = 420 - 5
 
 function GetDesire()
 	local wisdomRuneDesire = WisdomRuneDesire()
-	if wisdomRuneDesire > 0 then
+	if wisdomRuneDesire > 0 and (WisdomRuneSpawned[botTeam] or WisdomRuneSpawned[enemyTeam]) then
 		return wisdomRuneDesire
 	end
 	
@@ -430,14 +441,15 @@ end
 
 local humanSideTimeGap = WisdomRuneTimeGap
 local function CheckWisdomRuneAvailability()
-	if not WisdomRuneSpawned then
+	if not WisdomRuneSpawned[botTeam] then
 		if humanSideTimeGap ~= WisdomRuneTimeGap and J.IsHumanPlayerInTeam() then
 			humanSideTimeGap = WisdomRuneTimeGap + 90
 		end
 
 		if DotaTime() - LastWisdomRuneTime >= humanSideTimeGap then
 			LastWisdomRuneTime = DotaTime()
-			WisdomRuneSpawned = true
+			WisdomRuneSpawned[botTeam] = true
+			WisdomRuneSpawned[enemyTeam] = true
 		end
 	end
 end
@@ -452,24 +464,28 @@ local function GetClosestAllyToWisdomRune()
 			end
 		end
 	else
-		local ClosestAlly = bot
-		local ClosestDistance = 99999
+		local ClosestAllyToTheirRune = bot
+		local ClosestAllyToEnemyRune = bot
+		local ClosestDistanceToTheirRune = 99999
+		local ClosestDistanceToEnemyRune = 99999
 		
 		for v, Ally in pairs(Allies) do
 			if Ally:IsAlive() and J.IsValidHero(Ally) and not Ally:IsIllusion() then
-				local dist = GetUnitToLocationDistance(Ally, TeamWisdomRune)
-				if dist < ClosestDistance then
-					ClosestAlly = Ally
-					ClosestDistance = dist
+				local dist = GetUnitToLocationDistance(Ally, TeamWisdomRune[botTeam])
+				if dist < ClosestDistanceToTheirRune then
+					ClosestAllyToTheirRune = Ally
+					ClosestDistanceToTheirRune = dist
+				end
+				
+				local dist2 = GetUnitToLocationDistance(Ally, TeamWisdomRune[enemyTeam])
+				if dist2 < ClosestDistanceToEnemyRune then
+					ClosestAllyToEnemyRune = Ally
+					ClosestDistanceToEnemyRune = dist
 				end
 			end
 		end
-
-		if (ClosestDistance >= 3200) then
-			return nil -- too far. bots may be group pushing.
-		end
 		
-		return ClosestAlly
+		return ClosestAllyToTheirRune, ClosestAllyToEnemyRune
 	end
 	
 	return bot
@@ -480,33 +496,56 @@ function WisdomRuneDesire()
 	if J.IsHumanPlayerInTeam() then
 		return 0
 	end
-
-	if bot:GetTeam() == TEAM_RADIANT then
-		TeamWisdomRune = RWR
-	elseif bot:GetTeam() == TEAM_DIRE then
-		TeamWisdomRune = DWR
-	end
 	
 	CheckWisdomRuneAvailability()
 	
-	if WisdomRuneSpawned then
-		ClosestAllyToWisdomRune = GetClosestAllyToWisdomRune()
+	if WisdomRuneSpawned[botTeam] then
+		ClosestAllyToWisdomRune, ClosestAllyToEnemyRune = GetClosestAllyToWisdomRune()
 		if ClosestAllyToWisdomRune ~= nil then
-			if GetUnitToLocationDistance(ClosestAllyToWisdomRune, TeamWisdomRune) > 200 then
+			if GetUnitToLocationDistance(ClosestAllyToWisdomRune, TeamWisdomRune[botTeam]) > 600 then
 				TeamWisdomTimer = DotaTime()
 			else
-				if (DotaTime() - TeamWisdomTimer) > 1 then
-					WisdomRuneSpawned = false
+				if (DotaTime() - TeamWisdomTimer) > 3 then
+					WisdomRuneSpawned[botTeam] = false
 				end
 			end
 		end
 	end
+
+	-- not working yet
+	-- if ClosestAllyToEnemyRune ~= nil then
+	-- 	local distance = GetUnitToLocationDistance(ClosestAllyToEnemyRune, TeamWisdomRune[enemyTeam])
+	-- 	if distance < 2000 and distance > 200 then
+	-- 		EnemyWisdomTimer = DotaTime()
+	-- 	else
+	-- 		if (DotaTime() - EnemyWisdomTimer) > 3 then
+	-- 			WisdomRuneSpawned[enemyTeam] = false
+	-- 		end
+	-- 	end
+	-- end
 	
-	if ClosestAllyToWisdomRune == bot and bot:GetLevel() < 25 then
-		if WisdomRuneSpawned then
-			return RemapValClamped(GetUnitToLocationDistance(ClosestAllyToWisdomRune, TeamWisdomRune), 6400, 0, BOT_ACTION_DESIRE_VERYLOW, BOT_ACTION_DESIRE_VERYHIGH )
+	local botLvl = bot:GetLevel()
+	if ClosestAllyToWisdomRune == bot then
+		if WisdomRuneSpawned[botTeam] then
+			local distance = GetUnitToLocationDistance(ClosestAllyToWisdomRune, TeamWisdomRune[botTeam])
+			if botLvl < 12 then
+				return RemapValClamped(distance, 6400, 100, BOT_ACTION_DESIRE_HIGH, BOT_ACTION_DESIRE_ABSOLUTE  )
+			elseif botLvl < 18 then
+				return RemapValClamped(distance, 6400, 100, BOT_ACTION_DESIRE_HIGH , BOT_ACTION_DESIRE_VERYHIGH   )
+			elseif botLvl < 25 then
+				return RemapValClamped(distance, 6400, 100, BOT_ACTION_DESIRE_MODERATE, BOT_ACTION_DESIRE_VERYHIGH  )
+			elseif botLvl < 30 then
+				return RemapValClamped(distance, 6400, 100, BOT_ACTION_DESIRE_LOW , BOT_ACTION_DESIRE_HIGH  )
+			end
 		end
 	end
+
+	-- not working yet
+	-- if ClosestAllyToEnemyRune == bot then
+	-- 	local distance = GetUnitToLocationDistance(ClosestAllyToEnemyRune, TeamWisdomRune[enemyTeam])
+	-- 	return RemapValClamped(distance, 6400, 100, BOT_ACTION_DESIRE_HIGH, BOT_ACTION_DESIRE_ABSOLUTE  )
+	-- end
+
 	return 0
 end
 
@@ -516,17 +555,19 @@ function WisdomRuneThink()
 		return 0
 	end
 
-	if bot:GetTeam() == TEAM_RADIANT then
-		TeamWisdomRune = RWR
-	elseif bot:GetTeam() == TEAM_DIRE then
-		TeamWisdomRune = DWR
-	end
-	
-	if WisdomRuneSpawned then
+	if WisdomRuneSpawned[botTeam] then
 		if ClosestAllyToWisdomRune == bot then
-			bot:Action_MoveToLocation(TeamWisdomRune)
+			bot:Action_MoveToLocation(TeamWisdomRune[botTeam])
 			return 1
 		end
 	end
+	
+	if WisdomRuneSpawned[enemyTeam] then
+		if ClosestAllyToEnemyRune == bot then
+			bot:Action_MoveToLocation(TeamWisdomRune[enemyTeam])
+			return 1
+		end
+	end
+
 	return 0
 end

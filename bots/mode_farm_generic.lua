@@ -168,7 +168,12 @@ function GetDesire()
 	
 	local hEnemyHeroList = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE);
 	local hNearbyAttackAllyHeroList  = J.GetNearbyHeroes(bot,1600, false,BOT_MODE_ATTACK);
-	
+
+	-- 如果在打高地 就别撤退去打钱了
+	local nAllyList = J.GetNearbyHeroes(bot,1600,false,BOT_MODE_NONE);
+	if #nAllyList >= 2 and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 1300 then
+		return BOT_MODE_DESIRE_NONE;
+	end
 	
 	if #hEnemyHeroList > 0 or #hNearbyAttackAllyHeroList > 0
 	then

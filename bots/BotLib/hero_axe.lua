@@ -24,7 +24,7 @@ local tTalentTreeList = {
 }
 
 local tAllAbilityBuildList = {
-						{2,3,3,1,3,6,3,1,1,1,6,2,2,2,6},--pos3
+	{2,3,1,3,3,6,3,2,2,2,6,1,1,1,6},--pos3
 }
 
 local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
@@ -36,25 +36,25 @@ local sRoleItemsBuyList = {}
 sRoleItemsBuyList['pos_1'] = {
 	"item_sven_outfit",
 	"item_blade_mail",--
-	"item_black_king_bar",--
-	"item_aghanims_shard",
 	"item_blink",
+	"item_aghanims_shard",
+	"item_black_king_bar",--
 	"item_ultimate_scepter",
 	"item_travel_boots",
 	"item_overwhelming_blink",--
 	"item_abyssal_blade",--
 	"item_ultimate_scepter_2",
-	"item_heart",--
 	"item_moon_shard",
+	"item_heart",--
 	"item_travel_boots_2",--
 }
 
 sRoleItemsBuyList['pos_3'] = {
 
 	"item_tank_outfit",
+	"item_crimson_guard",--
 	"item_blade_mail",--
 	"item_blink",
-	"item_crimson_guard",--
 	"item_aghanims_shard",
 	"item_heavens_halberd",--
 	"item_travel_boots",

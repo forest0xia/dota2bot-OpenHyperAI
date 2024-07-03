@@ -260,37 +260,16 @@ function CDOTA_Bot_Script:ActionImmediate_SwapItems(intnSlot1, intnSlot2)
     return nil
 end
 
--- local originalGetUnitToLocationDistance = CDOTA_Bot_Script.GetUnitToLocationDistance
--- -- Cache duration in seconds
--- local cacheDuration = 0.03 -- 30 milliseconds
--- -- Override the GetUnitToLocationDistance function with caching
--- function CDOTA_Bot_Script:GetUnitToLocationDistance(unit, location)
---     if not unit.distanceCache then
---         unit.distanceCache = {}
---     end
-
---     local cacheKey = tostring(location.x) .. "_" .. tostring(location.y) .. "_" .. tostring(location.z)
---     local currentTime = GameTime()
-
---     -- Check if we have a cached result and it's still valid
---     local cachedResult = unit.distanceCache[cacheKey]
---     if cachedResult and (currentTime - cachedResult.timestamp <= cacheDuration) then
---         return cachedResult.distance
---     end
-
---     -- Call the original function to get the distance
---     local distance = originalGetUnitToLocationDistance(self, unit, location)
-
---     -- Update the cache directly in the unit object
---     if cachedResult then
---         cachedResult.distance = distance
---         cachedResult.timestamp = currentTime
---     else
---         unit.distanceCache[cacheKey] = {distance = distance, timestamp = currentTime}
---     end
-
---     return distance
--- end
+local originalGetUnitToLocationDistance = CDOTA_Bot_Script.GetUnitToLocationDistance
+-- Override the GetUnitToLocationDistance function with caching
+function CDOTA_Bot_Script:GetUnitToLocationDistance(unit, location)
+    if location == nil then
+		print("GetUnitToLocationDistance error arg.")
+		print("Stack Trace:", debug.traceback())
+		return 200
+	end
+    return originalGetUnitToLocationDistance(self, unit, location)
+end
 
 
 local X = {

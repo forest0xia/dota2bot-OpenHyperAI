@@ -34,46 +34,59 @@ local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 local sRoleItemsBuyList = {}
 
 sRoleItemsBuyList['pos_1'] = {
-	"item_tango",
-	"item_double_branches",
-	"item_quelling_blade",
-	"item_gauntlets",
-	"item_circlet",
-
-	"item_bracer",
-	"item_boots",
-	"item_magic_wand",
-	"item_power_treads",
+	"item_bristleback_outfit",
 	"item_armlet",
-	"item_echo_sabre",
-	"item_black_king_bar",--
-	"item_heart",--
 	"item_aghanims_shard",
-	"item_bloodthorn",--
-	"item_assault",--
+--	"item_blade_mail",
+	"item_heavens_halberd",--
+	"item_manta",--
 	"item_travel_boots",
-	"item_nullifier",--
-	"item_travel_boots_2",--
+	"item_bloodthorn",--
+	"item_heart",--
+	"item_satanic",--
 	"item_moon_shard",
+	"item_travel_boots_2",--
 	"item_ultimate_scepter_2",
 }
 
 sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
 
-sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_1']
+sRoleItemsBuyList['pos_3'] = {
+	"item_tank_outfit",
+	"item_aghanims_shard",
+	"item_crimson_guard",--
+	"item_armlet",
+	"item_heavens_halberd",--
+	"item_assault",--
+	"item_travel_boots",
+	"item_manta",--
+	"item_heart",--
+	"item_moon_shard",
+	"item_travel_boots_2",--
+	"item_ultimate_scepter_2",
+}
 
-sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_1']
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_3']
 
-sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_1']
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_3']
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 X['sSellList'] = {
+	"item_power_treads",
 	"item_quelling_blade",
-	"item_bracer",
+
+	'item_travel_boots',
+	'item_armlet',
+
+	"item_assault",
 	"item_magic_wand",
-	"item_armlet",
-	"item_echo_sabre",
+	
+	"item_travel_boots",
+	"item_magic_wand",
+
+	"item_assault",
+	"item_ancient_janggo",
 }
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_tank' }, {"item_power_treads", 'item_quelling_blade'} end

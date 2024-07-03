@@ -580,9 +580,10 @@ function ItemPurchaseThink()
 
 
 	--死前如果会损失金钱则购买额外TP
-	if botGold >= GetItemCost( "item_tpscroll" )
+	local tpCost = GetItemCost( "item_tpscroll" )
+	if botGold >= tpCost
 		and bot:IsAlive()
-		and botGold < ( GetItemCost( "item_tpscroll" ) + botWorth / 40 )
+		and botGold < ( tpCost + botWorth / 40 )
 		and botHP < 0.08
 		and bot:GetHealth() >= 1
 		and bot:WasRecentlyDamagedByAnyHero( 3.1 )
@@ -597,16 +598,16 @@ function ItemPurchaseThink()
 	--正常买备用tp
 	if currentTime > 4 * 60
 		and bot:GetCourierValue() <= 100
-		and botGold >= GetItemCost( "item_tpscroll" )
+		and botGold >= tpCost
 		and not Item.HasItem( bot, 'item_travel_boots' )
 		and not Item.HasItem( bot, 'item_travel_boots_2' )
-		and not bot:GetUnitName() == "npc_dota_hero_meepo" -- don't let meepo buy tp
+		and bot:GetUnitName() ~= "npc_dota_hero_meepo" -- don't let meepo buy tp
 	then
 		local tCharges = Item.GetItemCharges( bot, 'item_tpscroll' )
 		if bot:HasModifier("modifier_teleporting") then tCharges = tCharges - 1 end
-		if tCharges <= 1 or ( botLevel >= 18 and tCharges <= 2 )
+		if tCharges <= 0 or ( botLevel >= 18 and tCharges <= 1 )
 		then
-			if botGold >= GetItemCost( "item_tpscroll" ) * 2 then
+			if botGold >= tpCost * 2 and currentTime > 25 * 60 then
 				bot:ActionImmediate_PurchaseItem( "item_tpscroll" )
 			end
 			bot:ActionImmediate_PurchaseItem( "item_tpscroll" )
@@ -700,45 +701,23 @@ function ItemPurchaseThink()
 	--出售过度装备
 	if currentTime > sell_time + 0.5
 		and ( bot:GetItemInSlot( 6 ) ~= nil or bot:GetItemInSlot( 7 ) ~= nil or bot:GetItemInSlot( 8 ) ~= nil )
-		and ( J.IsModeTurbo() or (bot:DistanceFromFountain() <= 100 or bot:DistanceFromSecretShop() <= 100 ))
+		and ( bot:DistanceFromFountain() <= 100 or bot:DistanceFromSecretShop() <= 100 )
 	then
 		sell_time = currentTime
 
-		-- bug: 不见得新旧物品挨着放
-		-- for i = 2 , #sItemSellList, 2
-		-- do
-		-- 	local nNewSlot = bot:FindItemSlot( sItemSellList[i - 1] )
-		-- 	local nOldSlot = bot:FindItemSlot( sItemSellList[i] )
-		-- 	if nNewSlot >= 0 and nOldSlot >= 0
-		-- 	then
-		-- 		bot:ActionImmediate_SellItem( bot:GetItemInSlot( nOldSlot ) )
-		-- 		return
-		-- 	end
-		-- end
-
-		-- 如果游戏时间过了30或者加速模式的20分钟，满格了就卖
-		if currentTime > 1800 or (J.IsModeTurbo() and currentTime > 1200) then
-			for i = 1 , #sItemSellList, 1
-			do
-				local slot = bot:FindItemSlot( sItemSellList[i] )
-				if slot and slot>= 0 then
-					bot:ActionImmediate_SellItem( bot:GetItemInSlot( slot ) )
-				end
-			end
-		else
-			-- bug: 不见得过渡装备一定在 6 7 8 格
-			for i = 1 , #sItemSellList, 1
-			do
-				local slot = bot:FindItemSlot( sItemSellList[i] )
-				if slot == 6 or slot == 7 or slot == 8
-				then
-					bot:ActionImmediate_SellItem( bot:GetItemInSlot( slot ) )
-					return
-				end
+		for i = 2 , #sItemSellList, 2
+		do
+			local nNewSlot = bot:FindItemSlot( sItemSellList[i - 1] )
+			local nOldSlot = bot:FindItemSlot( sItemSellList[i] )
+			if nNewSlot >= 0 and nOldSlot >= 0
+			then
+				bot:ActionImmediate_SellItem( bot:GetItemInSlot( nOldSlot ) )
+				return
 			end
 		end
 
-		if ( Item.HasItem( bot, "item_travel_boots" ) or Item.HasItem( bot, "item_travel_boots_2" ) )
+		if currentTime > 18 * 60
+			and ( Item.HasItem( bot, "item_travel_boots" ) or Item.HasItem( bot, "item_travel_boots_2" ) )
 		then
 			for i = 1, #Item['tEarlyBoots']
 			do
@@ -750,14 +729,68 @@ function ItemPurchaseThink()
 				end
 			end
 		end
+	end
+
+	-- if currentTime > sell_time + 0.5
+	-- 	and ( bot:GetItemInSlot( 6 ) ~= nil or bot:GetItemInSlot( 7 ) ~= nil or bot:GetItemInSlot( 8 ) ~= nil )
+	-- 	and ( J.IsModeTurbo() or (bot:DistanceFromFountain() <= 100 or bot:DistanceFromSecretShop() <= 100 ))
+	-- then
+	-- 	sell_time = currentTime
+
+	-- 	-- bug: 不见得新旧物品挨着放
+	-- 	-- for i = 2 , #sItemSellList, 2
+	-- 	-- do
+	-- 	-- 	local nNewSlot = bot:FindItemSlot( sItemSellList[i - 1] )
+	-- 	-- 	local nOldSlot = bot:FindItemSlot( sItemSellList[i] )
+	-- 	-- 	if nNewSlot >= 0 and nOldSlot >= 0
+	-- 	-- 	then
+	-- 	-- 		bot:ActionImmediate_SellItem( bot:GetItemInSlot( nOldSlot ) )
+	-- 	-- 		return
+	-- 	-- 	end
+	-- 	-- end
+
+	-- 	-- 如果游戏时间过了30或者加速模式的20分钟，满格了就卖
+	-- 	if currentTime > 1800 or (J.IsModeTurbo() and currentTime > 1200) then
+	-- 		for i = 1 , #sItemSellList, 1
+	-- 		do
+	-- 			local slot = bot:FindItemSlot( sItemSellList[i] )
+	-- 			if slot and slot>= 0 then
+	-- 				bot:ActionImmediate_SellItem( bot:GetItemInSlot( slot ) )
+	-- 			end
+	-- 		end
+	-- 	else
+	-- 		-- bug: 不见得过渡装备一定在 6 7 8 格
+	-- 		for i = 1 , #sItemSellList, 1
+	-- 		do
+	-- 			local slot = bot:FindItemSlot( sItemSellList[i] )
+	-- 			if slot == 6 or slot == 7 or slot == 8
+	-- 			then
+	-- 				bot:ActionImmediate_SellItem( bot:GetItemInSlot( slot ) )
+	-- 				return
+	-- 			end
+	-- 		end
+		-- end
+
+		-- if ( Item.HasItem( bot, "item_travel_boots" ) or Item.HasItem( bot, "item_travel_boots_2" ) )
+		-- then
+		-- 	for i = 1, #Item['tEarlyBoots']
+		-- 	do
+		-- 		local bootsSlot = bot:FindItemSlot( Item['tEarlyBoots'][i] )
+		-- 		if bootsSlot >= 0
+		-- 		then
+		-- 			bot:ActionImmediate_SellItem( bot:GetItemInSlot( bootsSlot ) )
+		-- 			return
+		-- 		end
+		-- 	end
+		-- end
 
 		if  Item.HasItem(bot, 'item_mask_of_madness')
 		and Item.HasItem(bot, 'item_satanic')
 		then
 			bot:ActionImmediate_SellItem(bot:GetItemInSlot(bot:FindItemSlot('item_mask_of_madness')))
-			return
+			-- return
 		end
-	end
+	-- end
 
 	if #bot.itemToBuy == 0 then bot:SetNextItemPurchaseValue( 0 ) return end
 
