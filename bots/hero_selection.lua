@@ -904,12 +904,12 @@ function AllPickHeros()
 	do
 		if IsPlayerBot( id ) and GetSelectedHeroName( id ) == "" and GameTime() >= fLastSlectTime + GetTeam() * 2
 		then
-			-- if X.IsRepeatHero( sSelectList[i] )
-			-- then
-			-- 	sSelectHero = X.GetNotRepeatHero( tSelectPoolList[i] )
-			-- else
+			if X.IsRepeatHero( sSelectList[i] )
+			then
+				sSelectHero = X.GetNotRepeatHero( tSelectPoolList[i] )
+			else
 				sSelectHero = sSelectList[i]
-			-- end
+			end
 			SelectHero( id, sSelectHero )
 			-- print('Selected hero for idx='..i..', id='..id..', bot='..sSelectHero)
 			if Role["bLobbyGame"] == false then Role["bLobbyGame"] = true end
