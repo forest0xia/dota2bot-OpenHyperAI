@@ -86,22 +86,21 @@ function GetDesire()
 		beHighFarmer = J.GetPosition(bot) == 2
 		beVeryHighFarmer = J.GetPosition(bot) == 1
 	end
-	
-	-- if bot.isBuggyHero == nil then
-	-- 	bot.isBuggyHero = Utils.BuggyHeroesDueToValveTooLazy[bot:GetUnitName()] ~= nil
-	-- end
-	-- if bot.isBuggyHero and DotaTime() < 0.5 * 60
-	-- then
-	-- 	return 0.369
-	-- end
 
-	-- local nMode = bot:GetActiveMode()
-	-- local nModeDesire = bot:GetActiveModeDesire()
-	-- if  (nMode == BOT_MODE_DEFEND_TOWER_TOP or nMode == BOT_MODE_DEFEND_TOWER_MID or nMode == BOT_MODE_DEFEND_TOWER_BOT)
-	-- and nModeDesire > BOT_MODE_DESIRE_MODERATE
-    -- then
-    --     return BOT_ACTION_DESIRE_NONE
-    -- end
+	local nMode = bot:GetActiveMode()
+	local nModeDesire = bot:GetActiveModeDesire()
+	if  (nMode == BOT_MODE_DEFEND_TOWER_TOP or nMode == BOT_MODE_DEFEND_TOWER_MID or nMode == BOT_MODE_DEFEND_TOWER_BOT)
+	and nModeDesire > BOT_MODE_DESIRE_MODERATE
+    then
+        return BOT_ACTION_DESIRE_NONE
+    end
+
+	if Utils.ActuallyBuggedHeroes[botName] ~= nil then
+		if nMode == BOT_MODE_ROAM then
+			return 1
+		end
+		return 0.446
+	end
 
 	local TormentorLocation = J.GetTormentorLocation(GetTeam())
 	local nNeutralCreeps = bot:GetNearbyNeutralCreeps(700)
@@ -459,39 +458,56 @@ function Think()
 	if DotaTime() - bot.lastFarmFrameProcessTime < FrameProcessTime then return end
 	bot.lastFarmFrameProcessTime = DotaTime()
 
+	-- pretend to be in laning
+	if Utils.ActuallyBuggedHeroes[botName] ~= nil and DotaTime() < 10 * 60 then
+		local mostFarmDesireLane = bot:GetAssignedLane();
+		local tpLoc = GetLaneFrontLocation(GetTeam(), mostFarmDesireLane, 0);
 
-	-- if bot.isBuggyHero == nil then
-	-- 	bot.isBuggyHero = Utils.BuggyHeroesDueToValveTooLazy[bot:GetUnitName()] ~= nil
-	-- end
-	-- if bot.isBuggyHero and DotaTime() < 0.5 * 60
-	-- then
-	-- 	local mostFarmDesireLane = bot:GetAssignedLane();
-	-- 	local tpLoc = GetLaneFrontLocation(GetTeam(),mostFarmDesireLane,0);
-	-- 	bot:Action_MoveToLocation(tpLoc);
-	-- 	return
-	-- end
+		if bot:NumQueuedActions() <= 1 then
+			bot:ActionQueue_AttackMove(tpLoc + RandomVector(200));
+			return
+		end
+		if bot:WasRecentlyDamagedByTower(1) then
+			bot:ActionPush_MoveToLocation(J.GetTeamFountain());
+			return
+		end
 
-	-- if bot.isBuggyHero == nil then
-	-- 	bot.isBuggyHero = J.Utils.BuggyHeroesDueToValveTooLazy[bot:GetUnitName()] ~= nil
-	-- end
-	-- if bot.isBuggyHero and DotaTime() < 3 * 60
-	-- then
-	-- 	local closestHero, closestHeroDistance = J.GetClosestAllyHero(bot)
-	-- 	if closestHeroDistance > 800 then
-	-- 		bot:Action_ClearActions(true);
-	-- 		bot:ActionQueue_AttackMove(closestHero:GetLocation())
-	-- 		print('[ERROR] Relocating the buggy bot: '..botName..'. Sending it to the lane# it was originally assigned: '..tostring(bot:GetAssignedLane()))
-	-- 	end
+		local runModeTowers = bot:GetNearbyTowers(800, true);
+		if #runModeTowers >= 1 then
+			bot:ActionPush_MoveToLocation(J.GetTeamFountain());
+			return
+		end
 
-		-- local laningLoc = GetLaneFrontLocation(GetTeam(), bot:GetAssignedLane(), 0)
-		-- local diffDistance = J.GetLocationToLocationDistance( laningLoc, bot:GetLocation())
-		-- if diffDistance > 1500 then
-		-- 	bot:Action_ClearActions(true);
-		-- 	bot:ActionQueue_AttackMove(laningLoc)
-		-- 	-- print('[ERROR] Relocating the buggy bot: '..botName..'. Sending it to the lane# it was originally assigned: '..tostring(bot:GetAssignedLane()))
-		-- 	return
-		-- end
-	-- end
+		hLaneCreepList = bot:GetNearbyLaneCreeps(500, true);
+		-- local nEnemyHeroes = J.GetNearbyHeroes(bot, 800, true, BOT_MODE_NONE);
+		-- local nAllyHeroes = J.GetNearbyHeroes(bot, 800, false, BOT_MODE_NONE);
+		local target = J.GetProperTarget( bot )
+
+		if target ~= nil and target:IsHero() and J.GetHP(bot) > J.GetHP(target) then
+			if bot:NumQueuedActions() <= 1 then
+				bot:ActionPush_AttackUnit(target, true);
+				return
+			end
+		end
+
+		if J.GetHP(bot) < 0.5 and bot:WasRecentlyDamagedByAnyHero(3) then
+			if bot:NumQueuedActions() <= 1 then
+				bot:ActionPush_MoveToLocation(J.GetTeamFountain());
+				return
+			end
+			return
+		end
+
+		if #hLaneCreepList >= 2 and bot:WasRecentlyDamagedByCreep(0.5) then
+			local hAllyLaneCreeps = bot:GetNearbyLaneCreeps(500, false);
+			if #hAllyLaneCreeps >= 1 and not bot:WasRecentlyDamagedByAnyHero(2) then
+				bot:ActionPush_MoveToLocation(tpLoc + RandomVector(300));
+			else
+				bot:ActionPush_MoveToLocation(J.GetTeamFountain());
+			end
+			return
+		end
+	end
 	
 	if runMode then
 	
@@ -997,9 +1013,9 @@ function X.ShouldRun(bot)
 		and bot:GetActiveModeDesire() > 0.4
 		and #hAllyHeroList <= 1
 		and J.IsValid(hEnemyHeroList[1])
-		and bot:GetUnitName() ~= "npc_dota_hero_riki"
-		and bot:GetUnitName() ~= "npc_dota_hero_bounty_hunter"
-		and bot:GetUnitName() ~= "npc_dota_hero_slark"
+		and botName ~= "npc_dota_hero_riki"
+		and botName ~= "npc_dota_hero_bounty_hunter"
+		and botName ~= "npc_dota_hero_slark"
 		and J.GetDistanceFromAncient(bot,false) < J.GetDistanceFromAncient(hEnemyHeroList[1], false)
 	then
 		return 5;

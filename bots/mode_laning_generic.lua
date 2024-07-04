@@ -31,18 +31,18 @@ function GetDesire()
 		return 1
 	end
 
-	-- if bot.isBuggyHero == nil then
-	-- 	bot.isBuggyHero = Utils.BuggyHeroesDueToValveTooLazy[bot:GetUnitName()] ~= nil
-	-- end
-	-- if bot.isBuggyHero -- and DotaTime() < 3 * 60
-	-- then
-	-- 	local assignedLaneLoc = GetLaneFrontLocation(GetTeam(), bot:GetAssignedLane(), 0)
-	-- 	if GetUnitToLocationDistance(bot, assignedLaneLoc) > 1000 then
-	-- 		bot:Action_MoveToLocation(assignedLaneLoc)
-	-- 		return 0
-	-- 	end
-	-- 	return 0.228
-	-- end
+	-- note if bot has 0 desire for laning, they perform like idle - stand still, direct move or simple attack.
+	local botName = bot:GetUnitName()
+	if Utils.ActuallyBuggedHeroes[botName] ~= nil then return 0 end
+	if bot.isBuggyHero == nil then bot.isBuggyHero = Utils.BuggyHeroesDueToValveTooLazy[botName] ~= nil end
+	if bot.isBuggyHero then
+		local assignedLaneLoc = GetLaneFrontLocation(GetTeam(), bot:GetAssignedLane(), 0)
+		if GetUnitToLocationDistance(bot, assignedLaneLoc) > 1000 then
+			print('[ERROR] '..botName..' is actually bugged.')
+			Utils.ActuallyBuggedHeroes[botName] = true
+		end
+		return 0
+	end
 
 	local currentTime = DotaTime()
 	local botLV = bot:GetLevel()
@@ -72,28 +72,3 @@ function GetDesire()
 	return 0
 
 end
-
--- if bot.isBuggyHero == nil then
--- 	bot.isBuggyHero = Utils.BuggyHeroesDueToValveTooLazy[bot:GetUnitName()] ~= nil
--- end
--- if bot.isBuggyHero
--- then
--- 	local assignedLaneLoc = GetLaneFrontLocation(GetTeam(), bot:GetAssignedLane(), 0)
--- 	if GetUnitToLocationDistance(bot, assignedLaneLoc) > 1000
--- 	then
--- 		function Think()
--- 			bot:Action_MoveToLocation(assignedLaneLoc)
--- 		end
--- 	end
-	
-	-- function Think()
-	-- 	local mostFarmDesireLane = bot:GetAssignedLane()
-	-- 	local tpLoc = GetLaneFrontLocation(GetTeam(), mostFarmDesireLane, 0)
-	-- 	local enemyHeroes = bot:GetNearbyHeroes(900, true, BOT_MODE_NONE)
-	-- 	local runModeTowers = bot:GetNearbyTowers(700, true)
-	-- 	local enemyLaneCreeps = bot:GetNearbyLaneCreeps(550, true);
-	-- 	if #enemyHeroes <= 0 and #runModeTowers <= 0 and #enemyLaneCreeps <= 2 then
-	-- 		bot:Action_MoveToLocation(tpLoc)
-	-- 	end
-	-- end
--- end

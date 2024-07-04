@@ -13,6 +13,7 @@ local BuggyHeroesDueToValveTooLazy = {
     ['npc_dota_hero_elder_titan'] = true,
     ['npc_dota_hero_hoodwink'] = true,
 }
+local ActuallyBuggedHeroes = { } -- used to record the acutal bugged heroes in this game.
 
 function X.PrintTable(tbl, indent)
 	if not indent then indent = 0 end
@@ -288,5 +289,6 @@ end
 
 
 X.BuggyHeroesDueToValveTooLazy = BuggyHeroesDueToValveTooLazy
+X.ActuallyBuggedHeroes = ActuallyBuggedHeroes
 
 return X

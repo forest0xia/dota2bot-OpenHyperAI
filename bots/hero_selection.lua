@@ -641,11 +641,11 @@ function X.OverrideTeamHeroes()
 	then
 		return {
 			
-			[1] = "npc_dota_hero_chaos_knight",
-			[2] = "npc_dota_hero_sniper",
-			[3] = "npc_dota_hero_axe",
-		    [4] = "npc_dota_hero_zuus",
-			[5] = "npc_dota_hero_warlock",
+			[1] = tSelectPoolList[1][RandomInt( 1, #tSelectPoolList[1] )],
+			[2] = tSelectPoolList[2][RandomInt( 1, #tSelectPoolList[2] )],
+			[3] = tSelectPoolList[3][RandomInt( 1, #tSelectPoolList[3] )],
+			[4] = tSelectPoolList[4][RandomInt( 1, #tSelectPoolList[4] )],
+			[5] = tSelectPoolList[5][RandomInt( 1, #tSelectPoolList[5] )],
 
 		}
 	else
@@ -659,11 +659,11 @@ function X.OverrideTeamHeroes()
 			-- [5] = tSelectPoolList[5][RandomInt( 1, #tSelectPoolList[5] )],
 
 			
-			[1] = "npc_dota_hero_chaos_knight",
-			[2] = "npc_dota_hero_sniper",
-			[3] = "npc_dota_hero_axe",
-		    [4] = "npc_dota_hero_zuus",
-			[5] = "npc_dota_hero_warlock",
+			-- [1] = "npc_dota_hero_chaos_knight",
+			-- [2] = "npc_dota_hero_sniper",
+			-- [3] = "npc_dota_hero_axe",
+		    -- [4] = "npc_dota_hero_zuus",
+			-- [5] = "npc_dota_hero_warlock",
 
 			-- -- Rubick mid, and good team fights
 			-- [1] = "npc_dota_hero_clinkz",
@@ -702,15 +702,15 @@ function X.OverrideTeamHeroes()
 
 
 			-- Test buggy heroes:
-			-- [1] = 'npc_dota_hero_muerta',
+			[1] = 'npc_dota_hero_muerta',
 			-- [2] = 'npc_dota_hero_tinker',
-			-- -- [2] = 'npc_dota_hero_primal_beast',
-			-- -- [2] = tSelectPoolList[2][RandomInt( 1, #tSelectPoolList[2] )],
-			-- [3] = 'npc_dota_hero_marci', -- DOES NOT WORK. marci works as pos1.
-			-- -- [3] = tSelectPoolList[3][RandomInt( 1, #tSelectPoolList[3] )],
-			-- [4] = "npc_dota_hero_dark_willow", -- dark_willow does not work over half of the time.
-			-- -- [4] = tSelectPoolList[4][RandomInt( 1, #tSelectPoolList[4] )],
-			-- [5] = 'npc_dota_hero_hoodwink',
+			[2] = 'npc_dota_hero_primal_beast',
+			-- [2] = tSelectPoolList[2][RandomInt( 1, #tSelectPoolList[2] )],
+			[3] = 'npc_dota_hero_marci', -- DOES NOT WORK. 
+			-- [3] = tSelectPoolList[3][RandomInt( 1, #tSelectPoolList[3] )],
+			[4] = "npc_dota_hero_dark_willow", -- dark_willow does not work over half of the time.
+			-- [4] = tSelectPoolList[4][RandomInt( 1, #tSelectPoolList[4] )],
+			[5] = 'npc_dota_hero_hoodwink',
 		    
 			-- All Pandas/spirits
 			-- [1] = "npc_dota_hero_void_spirit",

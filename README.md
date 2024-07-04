@@ -44,7 +44,7 @@ There is currently a bug where subscribing to recent bot scripts will NOT work w
 1. Bots will say what their roles are once loaded into the game.
 
 ### What's next
-1. This is a script mainly based on the code from Tinkering About (by ryndrb). But the code has diverged significantly due to some roles and item selection support, as well as the local support with Fretbots. So the future maintenance will keep diverging.
+1. This is a script derived from Tinkering About (by @ryndrb). But the code has diverged significantly w.r.t roles, item selection, farming, laning, rosh/runes strategies, as well as the local support with Fretbots. So the future maintenance will keep diverging.
 2. More heroes support.
 3. Better decision making on pushing and ganking.
 4. Better spell casting for certain heroes like Invoker, Rubick, etc.

@@ -180,7 +180,10 @@ local bysideEnemeyHeroes
 function X.SkillsComplement()
     if J.CanNotUseAbility(bot) then return end
 
-    if bot:HasModifier('modifier_primal_beast_pulverize_self') then return end
+    if bot:HasModifier('modifier_primal_beast_pulverize_self')
+    or bot:IsCastingAbility()
+    or bot:IsUsingAbility()
+    or bot:IsChanneling() then return end
 
     botTarget = J.GetProperTarget(bot)
 	nEnemyHeroes = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE)

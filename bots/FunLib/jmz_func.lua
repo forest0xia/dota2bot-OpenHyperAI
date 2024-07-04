@@ -1131,6 +1131,9 @@ end
 
 
 function J.IsLaning( bot )
+	if J.Utils.ActuallyBuggedHeroes[bot:GetUnitName()] ~= nil then
+		return true
+	end
 
 	local mode = bot:GetActiveMode()
 

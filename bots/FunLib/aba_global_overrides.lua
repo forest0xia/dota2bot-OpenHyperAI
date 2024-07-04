@@ -231,6 +231,24 @@ end
 --     return original_Action_MoveToLocation(self, vLocation )
 -- end
 
+local original_Action_AttackMove = CDOTA_Bot_Script.Action_AttackMove
+function CDOTA_Bot_Script:Action_AttackMove(vLocation)
+	if self.isBuggyHero == nil then
+		self.isBuggyHero = Utils.BuggyHeroesDueToValveTooLazy[self:GetUnitName()] ~= nil
+	end
+	if self.isBuggyHero
+	then
+		self:Action_ClearActions(true);
+		print('Override buggy hero movement, make it go assigned lane front with Action_AttackMove.'..self:GetUnitName())
+		local assignedLaneLoc = GetLaneFrontLocation(GetTeam(), self:GetAssignedLane(), 0)
+		if Utils.GetLocationToLocationDistance(assignedLaneLoc, vLocation) > 1000 and DotaTime() < 2*60 then
+			return original_Action_AttackMove(self, assignedLaneLoc )
+		end
+	end
+    return original_Action_AttackMove(self, vLocation )
+end
+
+
 -- CDOTA_AttackRecordManager::GetRecordByIndex - Could not find attack record (-1)!
 -- local originalGetRecordByIndex = CDOTA_AttackRecordManager.GetRecordByIndex
 -- function CDOTA_AttackRecordManager:GetRecordByIndex(idx)
