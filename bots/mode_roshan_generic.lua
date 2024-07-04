@@ -34,7 +34,7 @@ function GetDesire()
     end
 
     -- if Roshan is about to get killed, kill it unless there are other absolute actions.
-    if Roshan ~= nil and Roshan:CanBeSeen() and Roshan:IsAlive() then
+    if Roshan ~= nil and type(Roshan) == 'table' and Roshan:CanBeSeen() and Roshan:IsAlive() then
         local roshHP = Roshan:GetHealth()/Roshan:GetMaxHealth()
         if roshHP < 0.8 then
             return RemapValClamped(roshHP, 100, 0, BOT_MODE_DESIRE_MODERATE, BOT_MODE_DESIRE_ABSOLUTE )
@@ -104,7 +104,7 @@ function GetDesire()
 
     -- 如果在打高地 就别撤退去rosh了
 	local nAllyList = J.GetNearbyHeroes(bot,1600,false,BOT_MODE_NONE);
-	if #nAllyList >= 3 and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 2500 then
+	if #nAllyList >= 3 and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 3500 then
 		return BOT_ACTION_DESIRE_NONE;
 	end
 

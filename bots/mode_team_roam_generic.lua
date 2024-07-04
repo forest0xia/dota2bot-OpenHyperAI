@@ -82,6 +82,13 @@ function GetDesire()
 		return nDesire
 	end
 
+	-- 如果自己在上高，对面人活着，队友活着却不在附近，赶紧溜去其他地方游走
+	local nAllyList = J.GetNearbyHeroes(bot,1600,false,BOT_MODE_NONE);
+	if #nAllyList <= 1 and J.GetNumOfAliveHeroes(true) > 1 and J.GetNumOfAliveHeroes(false) > 3
+	and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 3500 then
+		return BOT_MODE_DESIRE_VERYHIGH
+	end
+
 	if not bot:IsAlive() or bot:GetCurrentActionType() == BOT_ACTION_TYPE_DELAY then
 		return BOT_MODE_DESIRE_NONE
 	end
@@ -232,21 +239,35 @@ function Think()
 		or bot:HasModifier('modifier_dazzle_poison_touch')
 		or bot:HasModifier('modifier_slark_essence_shift_debuff') -- 防止不停被小鱼偷属性
 		then
-			if J.GetHP(bot) < 0.9 and bot:WasRecentlyDamagedByAnyHero(1.0)
+			if J.GetHP(bot) < 0.9 and bot:WasRecentlyDamagedByAnyHero(2.0)
 			then
 				bot:Action_MoveToLocation(J.GetTeamFountain() + RandomVector(1000))
 			end
 		end
 	end
 
-	if  shouldHarass
+	-- 如果自己在上高，对面人活着，队友却不在，赶紧溜
+	local nAllyList = J.GetNearbyHeroes(bot,1600,false,BOT_MODE_NONE);
+	if #nAllyList <= 1 and J.GetNumOfAliveHeroes(true) > 1 and J.GetNumOfAliveHeroes(false) > 3
+	and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 3500 then
+		for i, id in pairs( GetTeamPlayers( GetTeam() ) )
+		do
+			if IsHeroAlive( id )
+			then
+				local member = GetTeamMember(id)
+				bot:Action_MoveToLocation(member:GetLocation() + RandomVector(500))
+			end
+		end
+	end
+
+	if shouldHarass
 	and harassTarget ~= nil
 	then
 		bot:Action_AttackUnit(harassTarget, false)
 		return
 	end
 
-	if  ShouldAttackSpecialUnit
+	if ShouldAttackSpecialUnit
 	and SpecialUnitTarget ~= nil
 	then
 		bot:Action_AttackUnit(SpecialUnitTarget, false)
@@ -343,7 +364,7 @@ function X.SupportFindTarget()
 		and not enemyCourier:IsInvulnerable()
 		and J.GetHP(bot) > 0.3 and not J.IsRetreating(bot)
 	then
-		return enemyCourier,BOT_MODE_DESIRE_ABSOLUTE * 1.5; 
+		return enemyCourier,BOT_MODE_DESIRE_ABSOLUTE * 1.5;
 	end		
 	
 	
@@ -355,7 +376,7 @@ function X.SupportFindTarget()
 	    nTarget = X.WeakestUnitCanBeAttacked(true, true, nAttackRange + 50, bot)
 		if nTarget ~= nil 
 		then 
-		    return nTarget,BOT_MODE_DESIRE_ABSOLUTE * 1.09; 
+		    return nTarget,BOT_MODE_DESIRE_ABSOLUTE * 1.09;
 		end			    
 	end
 		

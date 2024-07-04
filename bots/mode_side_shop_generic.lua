@@ -53,6 +53,11 @@ function TormentorDesire()
         return BOT_ACTION_DESIRE_NONE
     end
 
+	if J.GetHP(bot) < 0.1 then
+		bot:Action_MoveToLocation(J.GetTeamFountain())
+        return BOT_ACTION_DESIRE_NONE
+	end
+
 	TormentorLocation = J.GetTormentorLocation(GetTeam())
 
     local nAllyInLoc = J.GetAlliesNearLoc(TormentorLocation, 700)
@@ -245,7 +250,7 @@ function Think()
 				if creepOrTormentor:GetUnitName() == "npc_dota_miniboss"
 				then
 					Tormentor = creepOrTormentor
-	
+
 					if IsEnoughAllies()
 					and J.GetHP(bot) > 0.25
 					then

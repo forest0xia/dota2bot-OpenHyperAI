@@ -116,13 +116,19 @@ function GetDesire()
 
 	-- 如果在打高地 就别撤退去打钱了
 	local nAllyList = J.GetNearbyHeroes(bot,1600,false,BOT_MODE_NONE);
-	if #nAllyList >= 2 and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 2000 then
+	if #nAllyList >= 2 and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 3500 then
 		return BOT_MODE_DESIRE_NONE;
 	end
 	-- 如果在打推塔 就别撤退去打钱了
 	local nEnemyTowers = bot:GetNearbyTowers(1200, true);
 	if #nAllyList >= 2 and nEnemyTowers ~= nil and #nEnemyTowers > 0 and GetUnitToLocationDistance(bot, nEnemyTowers[1]:GetLocation()) < 1300 then
 		return BOT_MODE_DESIRE_NONE;
+	end
+
+	-- 如果自己在上高，对面人活着，队友却不在，赶紧溜去farm
+	if #nAllyList <= 1 and J.GetNumOfAliveHeroes(true) > 1
+	and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 3500 then
+		return BOT_MODE_DESIRE_VERYHIGH
 	end
 	
 	if teamPlayers == nil then teamPlayers = GetTeamPlayers(GetTeam()) end
@@ -565,8 +571,8 @@ function Think()
 			end		
 		end
 	end
-	
-		
+
+
 	if hLaneCreepList ~= nil and #hLaneCreepList > 0 then
 		local farmTarget = J.Site.GetFarmLaneTarget(hLaneCreepList);
 		local nSearchRange = bot:GetAttackRange() + 180
@@ -682,7 +688,7 @@ function Think()
 					local nAllies = J.GetAlliesNearLoc(tpLoc, 1400);
 					if mostFarmDesire > BOT_MODE_DESIRE_VERYHIGH 
 						and J.IsLocHaveTower(1850,false,tpLoc)
-						and bestTpLoc ~= nil					
+						and bestTpLoc ~= nil
 						and #nAllies == 0
 					then
 						if tps ~= nil and tps:IsFullyCastable() 
@@ -693,7 +699,7 @@ function Think()
 							bot:Action_UseAbilityOnLocation(tps, bestTpLoc);
 							return;
 						end
-					end	
+					end
 					
 					local tBoots = J.IsItemAvailable("item_travel_boots_2");
 					if tBoots == nil then tBoots = J.IsItemAvailable("item_travel_boots"); end;
@@ -708,9 +714,9 @@ function Think()
 							preferedCamp = nil;
 							J.Role['lastFarmTpTime'] = DotaTime();
 							bot:Action_UseAbilityOnLocation(tBoots, tpLoc);
-							return;							
+							return
 						end
-					end					
+					end
 				end
 				
 				if hLaneCreepList[1] ~= nil 
