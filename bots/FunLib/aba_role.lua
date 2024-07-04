@@ -2526,6 +2526,12 @@ function X.IsUserSetSup( bot )
 end
 
 function X.GetPositionForCM(bot)
+	if GetTeam() ~= bot:GetTeam() then
+		print('[WARNING] Cannot determine the role of an enemy bot. Return default pos as 3')
+		print("Stack Trace:", debug.traceback())
+		return 3
+	end
+
 	local lane = bot:GetAssignedLane()
 	local role
 	if lane == LANE_MID then

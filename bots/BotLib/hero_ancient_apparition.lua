@@ -65,7 +65,22 @@ sRoleItemsBuyList['pos_4'] = {
 
 }
 
-sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_4']
+sRoleItemsBuyList['pos_5'] = {
+
+	"item_mage_outfit",
+	"item_ancient_janggo",
+	"item_glimmer_cape",--
+	"item_boots_of_bearing",--
+	"item_pipe",--
+	--"item_holy_locket",
+	"item_ultimate_scepter",
+	"item_aghanims_shard",
+	"item_mystic_staff",--
+	"item_ultimate_scepter_2",
+	"item_sheepstick",--
+	"item_cyclone",
+    "item_wind_waker",--
+}
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 
@@ -79,7 +94,6 @@ Pos5SellList = {
 
 X['sSellList'] = {
 	"item_magic_wand",
-    "item_arcane_boots",
 	"item_ultimate_scepter",
 }
 

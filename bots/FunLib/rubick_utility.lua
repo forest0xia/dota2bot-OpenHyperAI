@@ -105,16 +105,6 @@ function X.ConsiderSpellBehavior(ability)
     -- local nDamage2 = ability:GetSpecialValueInt( "AbilityDamage" )
     -- local nInRangeEnemyList = J.GetNearbyHeroes(bot, nCastRange -80, true, BOT_MODE_NONE )
 
-    -- local nBehaviorFlags = ability:GetBehavior()
-    -- local nTargetTypeFlags = ability:GetTargetType()
-    -- local nTargetTeamFlags = ability:GetTargetTeam()
-    -- print("Rubick considering... nBehaviorFlags ".. nBehaviorFlags)
-    -- print("Rubick considering... nTargetTypeFlags ".. nTargetTypeFlags)
-    -- print("Rubick considering... nTargetTeamFlags ".. nTargetTeamFlags)
-    -- print("Rubick considering... DOTA_ABILITY_BEHAVIOR_UNIT_TARGET ==. ".. bit.band( DOTA_ABILITY_BEHAVIOR_UNIT_TARGET, nBehaviorFlags ) ~= 0)
-    -- print("Rubick considering... DOTA_ABILITY_BEHAVIOR_NO_TARGET ==. ".. bit.band( DOTA_ABILITY_BEHAVIOR_NO_TARGET, nBehaviorFlags ) ~= 0)
-    -- print("Rubick considering... DOTA_ABILITY_BEHAVIOR_POINT ==. ".. bit.band( DOTA_ABILITY_BEHAVIOR_POINT, nBehaviorFlags ) ~= 0)
-
     if X.IsAbilityForTargetEnemy(ability) then
         -- print("Rubick considering using a spell to enemy team...")
         botTarget = J.GetProperTarget(bot)

@@ -498,7 +498,7 @@ function X.ConsiderNetherSwap()
     for _, allyHero in pairs(nAllyHeroes)
     do
         if  J.IsValidHero(allyHero)
-        and J.IsCore(allyHero)
+        -- and J.IsCore(allyHero)
         and not J.IsSuspiciousIllusion(allyHero)
         then
             if allyHero:HasModifier('modifier_faceless_void_chronosphere_freeze')

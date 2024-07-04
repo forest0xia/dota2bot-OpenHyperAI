@@ -1,11 +1,3 @@
-----------------------------------------------------------------------------------------------------
---- The Creation Come From: BOT EXPERIMENT Credit:FURIOUSPUPPY
---- BOT EXPERIMENT Author: Arizona Fauzie 2018.11.21
---- Link:http://steamcommunity.com/sharedfiles/filedetails/?id=837040016
---- Refactor: 决明子 Email: dota2jmz@163.com 微博@Dota2_决明子
---- Link:http://steamcommunity.com/sharedfiles/filedetails/?id=1573671599
---- Link:http://steamcommunity.com/sharedfiles/filedetails/?id=1627071163
-----------------------------------------------------------------------------------------------------
 if GetBot():IsInvulnerable() or not GetBot():IsHero() or not string.find(GetBot():GetUnitName(), "hero") or  GetBot():IsIllusion() then
 	return;
 end
@@ -13,27 +5,47 @@ end
 local J = require(GetScriptDirectory()..'/FunLib/jmz_func')
 
 local bot = GetBot();
+local botTeam = bot:GetTeam()
+local enemyTeam = botTeam == TEAM_RADIANT and TEAM_DIRE or TEAM_RADIANT
 local X = {}
 local preferedShop = nil;
 local RAD_SECRET_SHOP = GetShopLocation(GetTeam(), SHOP_SECRET )
 local DIRE_SECRET_SHOP = GetShopLocation(GetTeam(), SHOP_SECRET2 )
 local hasItemToSell = false;
 
+local ClosestAllyToEnemyRune
+local WisdomRuneSpawned = {
+	[TEAM_RADIANT] = false,
+	[TEAM_DIRE] = false
+}
+local TeamWisdomRune = {
+	[TEAM_RADIANT] = Vector( -8126, -320, 256 ),
+	[TEAM_DIRE] = Vector( 8319, 266, 256 )
+}
+local WisdomRuneTimeGap = 420 - 5
+local LastWisdomRuneTime = 0
+local EnemyWisdomTimer = 0
+
 function GetDesire()
-		
-	if not X.IsSuitableToBuy() 
+
+	local wisdomRuneDesire = WisdomRuneDesire()
+	if wisdomRuneDesire > 0 and WisdomRuneSpawned[enemyTeam] then
+		return wisdomRuneDesire
+	end
+
+	if not X.IsSuitableToBuy()
 	then
 		return BOT_MODE_DESIRE_NONE;
 	end
-	
+
 	local invFull = true;
-	
-	for i=0,8 do 
+
+	for i=0,8 do
 		if bot:GetItemInSlot(i) == nil then
 			invFull = false;
-		end	
+		end
 	end
-	
+
 	if invFull then
 		if bot:GetLevel() > 11 and bot:FindItemSlot("item_aegis") < 0 then
 			hasItemToSell, itemSlot = X.HaveItemToSell();
@@ -73,6 +85,66 @@ function OnEnd()
 
 end
 
+local function GetClosestAllyToWisdomRune()
+	local Allies = GetUnitList(UNIT_LIST_ALLIED_HEROES)
+	local ClosestDistanceToEnemyRune = 99999
+	for v, Ally in pairs(Allies) do
+		if Ally:IsAlive() and J.IsValidHero(Ally) and not Ally:IsIllusion() then
+			local dist2 = GetUnitToLocationDistance(Ally, TeamWisdomRune[enemyTeam])
+			if dist2 ~= nil and dist2 < ClosestDistanceToEnemyRune then
+				ClosestAllyToEnemyRune = Ally
+				ClosestDistanceToEnemyRune = dist2
+			end
+		end
+	end
+	return ClosestAllyToEnemyRune
+end
+
+local function CheckWisdomRuneAvailability()
+	if DotaTime() - LastWisdomRuneTime >= WisdomRuneTimeGap then
+		LastWisdomRuneTime = DotaTime()
+		WisdomRuneSpawned[enemyTeam] = true
+	end
+end
+
+function WisdomRuneDesire()
+
+	CheckWisdomRuneAvailability()
+
+	ClosestAllyToEnemyRune = GetClosestAllyToWisdomRune()
+
+	if ClosestAllyToEnemyRune ~= nil then
+		if GetUnitToLocationDistance(ClosestAllyToEnemyRune, TeamWisdomRune[enemyTeam]) > 600 then
+			EnemyWisdomTimer = DotaTime()
+		else
+			if (DotaTime() - EnemyWisdomTimer) > 3 then
+				WisdomRuneSpawned[enemyTeam] = false
+			end
+		end
+	end
+
+	if ClosestAllyToEnemyRune == bot then
+		local nNearbyEnemyHeroes = J.GetNearbyHeroes(bot, 1200, true, BOT_MODE_NONE)
+		if #nNearbyEnemyHeroes >= 1 then
+			-- no pick rune if enemey near by. deal with enemy first.
+			return BOT_MODE_DESIRE_NONE
+		end
+
+		-- no pick rune if t1 towers still alive, too dangerous and can turn to feed in early games. don't want to use near-by-towers neither which is too dumb.
+		local towers = { TOWER_BOT_1, TOWER_TOP_1, }
+		for _, t in pairs(towers) do
+			local tower = GetTower(GetOpposingTeam(), t);
+			if tower ~= nil and tower:IsAlive() then
+				return BOT_MODE_DESIRE_NONE
+			end
+		end
+		local distance = GetUnitToLocationDistance(ClosestAllyToEnemyRune, TeamWisdomRune[enemyTeam])
+		return RemapValClamped(distance, 6400, 100, BOT_ACTION_DESIRE_HIGH, BOT_ACTION_DESIRE_ABSOLUTE  )
+	end
+
+	return 0
+end
+
 function Think()
 
 	if  bot:IsChanneling() 
@@ -80,6 +152,10 @@ function Think()
 		or bot:IsCastingAbility()
 		or bot:IsUsingAbility()
 	then 
+		return
+	end
+
+	if WisdomRuneThink() >= 1 then
 		return
 	end
 	
@@ -95,6 +171,17 @@ function Think()
 		return;
 	end
 	
+end
+
+function WisdomRuneThink()
+	if WisdomRuneSpawned[enemyTeam] then
+		if ClosestAllyToEnemyRune == bot then
+			bot:Action_MoveToLocation(TeamWisdomRune[enemyTeam] + RandomVector(50))
+			return 1
+		end
+	end
+
+	return 0
 end
 
 --这些是AI会主动走到商店出售的物品
@@ -161,4 +248,3 @@ function X.IsStronger(bot, enemy)
 	local EPower = enemy:GetEstimatedDamageToTarget(true, bot, 4.0, DAMAGE_TYPE_ALL);
 	return EPower > BPower;
 end
--- dota2jmz@163.com QQ:2462331592..

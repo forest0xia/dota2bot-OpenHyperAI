@@ -457,7 +457,7 @@ function X.ConsiderFiendsGate()
             if  J.IsValidTarget(allyTarget)
             and J.IsInRange(allyHero, allyTarget, 800)
             and J.GetHP(allyHero) > 0.5
-            and J.IsCore(allyTarget)
+            -- and J.IsCore(allyTarget)
             and not J.IsSuspiciousIllusion(allyTarget)
             then
                 local nTargetInRangeAlly = J.GetNearbyHeroes(allyTarget, 800, false, BOT_MODE_NONE)
@@ -516,19 +516,19 @@ function X.ConsiderFiendsGate()
     then
         if GetUnitToLocationDistance(bot, GetLaneFrontLocation(GetTeam(), LANE_TOP, 0)) > 4000
         then
-            return BOT_ACTION_DESIRE_HIGH, GetUnitToLocationDistance(GetTeam(), LANE_TOP, 0)
+            return BOT_ACTION_DESIRE_HIGH, GetLaneFrontLocation(GetTeam(), LANE_TOP, 0)
         end
     elseif pushCount[2] ~= nil and pushCount[2] >= 3 and (aveDist[2] / pushCount[2]) <= 1200
     then
         if GetUnitToLocationDistance(bot, GetLaneFrontLocation(GetTeam(), LANE_MID, 0)) > 4000
         then
-            return BOT_ACTION_DESIRE_HIGH, GetUnitToLocationDistance(GetTeam(), LANE_MID, 0)
+            return BOT_ACTION_DESIRE_HIGH, GetLaneFrontLocation(GetTeam(), LANE_MID, 0)
         end
     elseif pushCount[3] ~= nil and pushCount[3] >= 3 and (aveDist[3] / pushCount[3]) <= 1200
     then
         if GetUnitToLocationDistance(bot, GetLaneFrontLocation(GetTeam(), LANE_BOT, 0)) > 4000
         then
-            return BOT_ACTION_DESIRE_HIGH, GetUnitToLocationDistance(GetTeam(), LANE_BOT, 0)
+            return BOT_ACTION_DESIRE_HIGH, GetLaneFrontLocation(GetTeam(), LANE_BOT, 0)
         end
     end
 

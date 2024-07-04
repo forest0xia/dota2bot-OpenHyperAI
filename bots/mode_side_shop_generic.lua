@@ -1,6 +1,5 @@
 local bot = GetBot()
 local botTeam = bot:GetTeam()
-local enemyTeam = botTeam == TEAM_RADIANT and TEAM_DIRE or TEAM_RADIANT
 local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
 
 local Tormentor = nil
@@ -23,21 +22,18 @@ local WisdomRuneSpawned = {
 }
 
 local ClosestAllyToWisdomRune
-local ClosestAllyToEnemyRune
 local TeamWisdomRune = {
 	[TEAM_RADIANT] = Vector( -8126, -320, 256 ),
 	[TEAM_DIRE] = Vector( 8319, 266, 256 )
 }
--- local RWR = Vector( -8126, -320, 256 )
--- local DWR = Vector( 8319, 266, 256 )
+
 local LastWisdomRuneTime = 0
 local TeamWisdomTimer = 0
-local EnemyWisdomTimer = 0
 local WisdomRuneTimeGap = 420 - 5
 
 function GetDesire()
 	local wisdomRuneDesire = WisdomRuneDesire()
-	if wisdomRuneDesire > 0 and (WisdomRuneSpawned[botTeam] or WisdomRuneSpawned[enemyTeam]) then
+	if wisdomRuneDesire > 0 and WisdomRuneSpawned[botTeam] then
 		return wisdomRuneDesire
 	end
 	
@@ -239,22 +235,22 @@ function Think()
 	if DotaTime() <= NoTormentorAfterThisTime then
 		if GetUnitToLocationDistance(bot, TormentorLocation) > 100
 		then
-			bot:Action_MoveToLocation(TormentorLocation)
+			bot:Action_MoveToLocation(TormentorLocation + RandomVector(200))
 			return
 		else
 			local nCreeps = bot:GetNearbyNeutralCreeps(700)
 	
-			for _, c in pairs(nCreeps)
+			for _, creepOrTormentor in pairs(nCreeps)
 			do
-				if c:GetUnitName() == "npc_dota_miniboss"
+				if creepOrTormentor:GetUnitName() == "npc_dota_miniboss"
 				then
-					Tormentor = c
+					Tormentor = creepOrTormentor
 	
 					if IsEnoughAllies()
-					and J.GetHP(c) > 0.25
+					and J.GetHP(bot) > 0.25
 					then
 						bot.wasAttackingTormentor = true
-						bot:Action_AttackUnit(c, false)
+						bot:Action_AttackUnit(creepOrTormentor, false)
 					end
 	
 					if  (DotaTime() - tormentorMessageTime) > 15
@@ -262,7 +258,7 @@ function Think()
 					then
 						tormentorMessageTime = DotaTime()
 						bot:ActionImmediate_Chat("Let's try tormentor?", false)
-						bot:ActionImmediate_Ping(c:GetLocation().x, c:GetLocation().y, true)
+						bot:ActionImmediate_Ping(creepOrTormentor:GetLocation().x, creepOrTormentor:GetLocation().y, true)
 					end
 				end
 			end
@@ -301,7 +297,7 @@ function IsEnoughAllies()
 		and member:IsAlive()
 		and not member:IsIllusion()
 		and not member:HasModifier("modifier_arc_warden_tempest_double")
-		and GetUnitToLocationDistance(member, TormentorLocation) <= 700
+		and GetUnitToLocationDistance(member, TormentorLocation) <= 800
 		then
             if J.IsCore(member)
             then
@@ -312,7 +308,7 @@ function IsEnoughAllies()
 		end
 	end
 	
-	local nInRangeEnemy = J.GetNearbyHeroes(bot, 1600, false)
+	local nInRangeEnemy = J.GetNearbyHeroes(bot, 900, false)
 
 	return #nInRangeEnemy >= 3 and bot.lastKillTime >= 0 and heroCount >= 4 and coreCount >= 2
 end
@@ -449,7 +445,6 @@ local function CheckWisdomRuneAvailability()
 		if DotaTime() - LastWisdomRuneTime >= humanSideTimeGap then
 			LastWisdomRuneTime = DotaTime()
 			WisdomRuneSpawned[botTeam] = true
-			WisdomRuneSpawned[enemyTeam] = true
 		end
 	end
 end
@@ -459,33 +454,26 @@ local function GetClosestAllyToWisdomRune()
 	
 	if J.IsLaning(bot) then
 		for v, Ally in pairs(Allies) do
-			if Ally:IsAlive() and J.IsValidHero(Ally) and not Ally:IsIllusion() and J.GetPosition(Ally) >= 3 then
+			if Ally:IsAlive() and J.IsValidHero(Ally) and not Ally:IsIllusion() and J.GetPosition(Ally) > 3 then
 				return Ally
 			end
 		end
 	else
-		local ClosestAllyToTheirRune = bot
-		local ClosestAllyToEnemyRune = bot
+		local ClosestAllyToTeamRune = bot
 		local ClosestDistanceToTheirRune = 99999
-		local ClosestDistanceToEnemyRune = 99999
 		
 		for v, Ally in pairs(Allies) do
 			if Ally:IsAlive() and J.IsValidHero(Ally) and not Ally:IsIllusion() then
 				local dist = GetUnitToLocationDistance(Ally, TeamWisdomRune[botTeam])
 				if dist < ClosestDistanceToTheirRune then
-					ClosestAllyToTheirRune = Ally
+					ClosestAllyToTeamRune = Ally
 					ClosestDistanceToTheirRune = dist
 				end
 				
-				local dist2 = GetUnitToLocationDistance(Ally, TeamWisdomRune[enemyTeam])
-				if dist2 < ClosestDistanceToEnemyRune then
-					ClosestAllyToEnemyRune = Ally
-					ClosestDistanceToEnemyRune = dist
-				end
 			end
 		end
 		
-		return ClosestAllyToTheirRune, ClosestAllyToEnemyRune
+		return ClosestAllyToTeamRune
 	end
 	
 	return bot
@@ -500,7 +488,7 @@ function WisdomRuneDesire()
 	CheckWisdomRuneAvailability()
 	
 	if WisdomRuneSpawned[botTeam] then
-		ClosestAllyToWisdomRune, ClosestAllyToEnemyRune = GetClosestAllyToWisdomRune()
+		ClosestAllyToWisdomRune = GetClosestAllyToWisdomRune()
 		if ClosestAllyToWisdomRune ~= nil then
 			if GetUnitToLocationDistance(ClosestAllyToWisdomRune, TeamWisdomRune[botTeam]) > 600 then
 				TeamWisdomTimer = DotaTime()
@@ -512,18 +500,6 @@ function WisdomRuneDesire()
 		end
 	end
 
-	-- not working yet
-	-- if ClosestAllyToEnemyRune ~= nil then
-	-- 	local distance = GetUnitToLocationDistance(ClosestAllyToEnemyRune, TeamWisdomRune[enemyTeam])
-	-- 	if distance < 2000 and distance > 200 then
-	-- 		EnemyWisdomTimer = DotaTime()
-	-- 	else
-	-- 		if (DotaTime() - EnemyWisdomTimer) > 3 then
-	-- 			WisdomRuneSpawned[enemyTeam] = false
-	-- 		end
-	-- 	end
-	-- end
-	
 	local botLvl = bot:GetLevel()
 	if ClosestAllyToWisdomRune == bot then
 		if WisdomRuneSpawned[botTeam] then
@@ -540,12 +516,6 @@ function WisdomRuneDesire()
 		end
 	end
 
-	-- not working yet
-	-- if ClosestAllyToEnemyRune == bot then
-	-- 	local distance = GetUnitToLocationDistance(ClosestAllyToEnemyRune, TeamWisdomRune[enemyTeam])
-	-- 	return RemapValClamped(distance, 6400, 100, BOT_ACTION_DESIRE_HIGH, BOT_ACTION_DESIRE_ABSOLUTE  )
-	-- end
-
 	return 0
 end
 
@@ -557,14 +527,7 @@ function WisdomRuneThink()
 
 	if WisdomRuneSpawned[botTeam] then
 		if ClosestAllyToWisdomRune == bot then
-			bot:Action_MoveToLocation(TeamWisdomRune[botTeam])
-			return 1
-		end
-	end
-	
-	if WisdomRuneSpawned[enemyTeam] then
-		if ClosestAllyToEnemyRune == bot then
-			bot:Action_MoveToLocation(TeamWisdomRune[enemyTeam])
+			bot:Action_MoveToLocation(TeamWisdomRune[botTeam] + RandomVector(50))
 			return 1
 		end
 	end

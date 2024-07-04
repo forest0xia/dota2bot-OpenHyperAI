@@ -1665,6 +1665,8 @@ end
 function X.ShouldNotRetreat(bot)
 	
 	if bot:HasModifier("modifier_skeleton_king_reincarnation_scepter_active")
+		or bot:HasModifier("modifier_skeleton_king_death_delay")
+		or bot:HasModifier("modifier_skeleton_king_reincarnation_death_delay")
 	   or bot:HasModifier("modifier_item_satanic_unholy")
 	   or bot:HasModifier("modifier_abaddon_borrowed_time")
 	   or ( bot:GetCurrentMovementSpeed() < 240 and not bot:HasModifier("modifier_arc_warden_spark_wraith_purge") )

@@ -18,10 +18,32 @@ local sinceRoshAliveTime = 0
 local roshTimeFlag = false
 local initDPSFlag = false
 
+local Roshan
+
 function GetDesire()
+
+    if Roshan == nil then
+        local nCreeps = bot:GetNearbyNeutralCreeps(700)
+        for _, creepOrRoshan in pairs(nCreeps)
+        do
+            if creepOrRoshan:GetUnitName() == "npc_dota_roshan"
+            then
+                Roshan = creepOrRoshan
+            end
+        end
+    end
+
+    -- if Roshan is about to get killed, kill it unless there are other absolute actions.
+    if Roshan ~= nil and Roshan:CanBeSeen() and Roshan:IsAlive() then
+        local roshHP = Roshan:GetHealth()/Roshan:GetMaxHealth()
+        if roshHP < 0.8 then
+            return RemapValClamped(roshHP, 100, 0, BOT_MODE_DESIRE_MODERATE, BOT_MODE_DESIRE_ABSOLUTE )
+        end
+    end
+
     local aliveAlly = J.GetNumOfAliveHeroes(false)
     local aliveEnemy = J.GetNumOfAliveHeroes(true)
-    local hasSameOrMoreHero = aliveAlly >= aliveEnemy + 2
+    local hasSameOrMoreHero = aliveAlly >= aliveEnemy + 1
     if not hasSameOrMoreHero then
         return BOT_ACTION_DESIRE_NONE
     end
@@ -79,6 +101,12 @@ function GetDesire()
     then
         return BOT_ACTION_DESIRE_NONE
     end
+
+    -- 如果在打高地 就别撤退去rosh了
+	local nAllyList = J.GetNearbyHeroes(bot,1600,false,BOT_MODE_NONE);
+	if #nAllyList >= 3 and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 2500 then
+		return BOT_ACTION_DESIRE_NONE;
+	end
 
     if  shouldKillRoshan
     and initDPSFlag

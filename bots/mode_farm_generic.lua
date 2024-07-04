@@ -114,6 +114,17 @@ function GetDesire()
 			return BOT_ACTION_DESIRE_NONE
 		end
 	end
+
+	-- 如果在打高地 就别撤退去打钱了
+	local nAllyList = J.GetNearbyHeroes(bot,1600,false,BOT_MODE_NONE);
+	if #nAllyList >= 2 and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 2000 then
+		return BOT_MODE_DESIRE_NONE;
+	end
+	-- 如果在打推塔 就别撤退去打钱了
+	local nEnemyTowers = bot:GetNearbyTowers(1200, true);
+	if #nAllyList >= 2 and nEnemyTowers ~= nil and #nEnemyTowers > 0 and GetUnitToLocationDistance(bot, nEnemyTowers[1]:GetLocation()) < 1300 then
+		return BOT_MODE_DESIRE_NONE;
+	end
 	
 	if teamPlayers == nil then teamPlayers = GetTeamPlayers(GetTeam()) end
 	
@@ -168,12 +179,6 @@ function GetDesire()
 	
 	local hEnemyHeroList = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE);
 	local hNearbyAttackAllyHeroList  = J.GetNearbyHeroes(bot,1600, false,BOT_MODE_ATTACK);
-
-	-- 如果在打高地 就别撤退去打钱了
-	local nAllyList = J.GetNearbyHeroes(bot,1600,false,BOT_MODE_NONE);
-	if #nAllyList >= 2 and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 1300 then
-		return BOT_MODE_DESIRE_NONE;
-	end
 	
 	if #hEnemyHeroList > 0 or #hNearbyAttackAllyHeroList > 0
 	then

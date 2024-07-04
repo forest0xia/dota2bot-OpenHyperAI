@@ -346,8 +346,7 @@ function ItemPurchaseThink()
 	end
 
 	--买小净化
-	if botLevel < 15
-	and J.GetMP(bot) < 0.3
+	if J.GetMP(bot) < 0.3
 	and bot:DistanceFromFountain() > 2000
 	and GetItemStockCount('item_clarity') > 1
 	and Item.GetItemCharges(bot, 'item_clarity') <= 0
@@ -476,14 +475,14 @@ function ItemPurchaseThink()
 	end
 
 	-- Observer and Sentry Wards
-	if (J.GetPosition(bot) == 4)
+	if (J.GetPosition(bot) == 4) and DotaTime() > 300
 	then
 		local wardType = 'item_ward_sentry'
 
 		if  GetItemStockCount(wardType) > 1
 		and botGold >= GetItemCost(wardType)
 		and Item.GetEmptyInventoryAmount(bot) >= 1
-		and Item.GetItemCharges(bot, wardType) < 2
+		and Item.GetItemCharges(bot, wardType) < 1
 		and bot:GetCourierValue() == 0
 		then
 			bot:ActionImmediate_PurchaseItem(wardType)

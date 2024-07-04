@@ -194,15 +194,17 @@ function X.SkillsComplement()
     StolenSpell1 = bot:GetAbilityInSlot(3)
     StolenSpell2 = bot:GetAbilityInSlot(4)
 
+    -- consider using whatever it has first
+    X.ConsiderStolenSpell1()
+    X.ConsiderStolenSpell2()
+
+    -- consdier stealing
     SpellStealDesire, SpellStealTarget = X.ConsiderSpellSteal()
     if SpellStealDesire > 0
     then
         bot:Action_UseAbilityOnEntity(SpellSteal, SpellStealTarget)
         return
     end
-
-    X.ConsiderStolenSpell1()
-    X.ConsiderStolenSpell2()
 
     TelekinesisDesire, TelekinesisTarget = X.ConsiderTelekinesis()
     if TelekinesisDesire > 0
