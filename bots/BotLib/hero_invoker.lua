@@ -2,6 +2,7 @@ local X = {}
 local bot = GetBot()
 
 local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
+local Utils = require( GetScriptDirectory()..'/FunLib/utils' )
 local Minion = dofile( GetScriptDirectory()..'/FunLib/aba_minion' )
 local sTalentList = J.Skill.GetTalentList( bot )
 local sAbilityList = J.Skill.GetAbilityList( bot )
@@ -95,12 +96,19 @@ sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_2']
 sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_2']
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
-if sRole == 'pos_2'
-and RandomInt( 1, 9 ) > 3
-then
-    X['sBuyList'] = sRoleItemsBuyList['pos_2_qe']
-    nAbilityBuildList = tQEAbilityBuildList
-    nTalentBuildList = J.Skill.GetTalentBuild( tQETalentTreeList )
+
+if Utils['GameStates']['invoker'] == nil then
+    if sRole == 'pos_2' and RandomInt( 1, 9 ) > 2 then
+        Utils['GameStates']['invoker'] = { roleType = 'pos_2_qe' }
+    else
+        Utils['GameStates']['invoker'] = { roleType = 'pos_2' }
+    end
+else
+    if Utils['GameStates']['invoker'].roleType == 'pos_2_qe' then
+        X['sBuyList'] = sRoleItemsBuyList['pos_2_qe']
+        nAbilityBuildList = tQEAbilityBuildList
+        nTalentBuildList = J.Skill.GetTalentBuild( tQETalentTreeList )
+    end
 end
 
 X['sSellList'] = {
@@ -322,7 +330,14 @@ function X.SkillsComplement()
     ------- 尝试把连招串联起来，判断是否用了可以连招的前置技能 -------
     -- 如果前置技能进入cd，且距离使用它的时间刚刚过去delta时间之内，则可以试试是否能马上切或放下一个连招技能
     local deltaTime = 2
-    
+
+    -- 雷的等级大于4级优先考虑磁暴消耗
+    if Wex:GetLevel() >= 4 then
+        TornadoDesire, TornadoLocation = X.ConsiderTornado()
+        if TornadoDesire > 0 then X.CastInvokerSpell(Tornado, TornadoLocation) return end
+        EMPDesire, EMPLocation = X.ConsiderEMP()
+        if EMPDesire > 0 then  X.CastInvokerSpell(EMP, EMPLocation) return end
+    end
 
     -- 火的等级大于4级优先考虑陨石连招
     if Exort:GetLevel() >= 4 then
@@ -336,7 +351,6 @@ function X.SkillsComplement()
         if DeafeningBlastDesire > 0 then X.CastInvokerSpell(DeafeningBlast, DeafeningBlastLocation) return end
     end
 
-    
     if DotaTime() - AbilityCastedTimes['Tornado'] <= deltaTime then
         EMPDesire, EMPLocation = X.ConsiderEMP()
         if EMPDesire > 0 then  X.CastInvokerSpell(EMP, EMPLocation) return end
@@ -435,7 +449,7 @@ function X.SkillsComplement()
     and not J.IsInTeamFight(bot, 1200) then
 		local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(300, true)
 		local nEnemyTowers = bot:GetNearbyTowers(700, true)
-		if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 3 and nEnemyTowers ~= nil and #nEnemyTowers >= 1
+		if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps > 3 and nEnemyTowers ~= nil and #nEnemyTowers >= 1
         then
 			return
 		end
@@ -444,31 +458,13 @@ function X.SkillsComplement()
         do
             if J.IsValidHero(enemyHero)
             and J.GetHP(bot) >= J.GetHP(enemyHero)
-            and (bot:HasModifier(modifier_invoker_alacrity)
-            or enemyHero:HasModifier(modifier_invoker_cold_snap_freeze))
+            and bot:GetAttackTarget() ~= enemyHero
+            and (bot:HasModifier(modifier_invoker_alacrity) or enemyHero:HasModifier(modifier_invoker_cold_snap_freeze))
             then
                 bot:ActionQueue_AttackUnit(enemyHero, true)
                 return
             end
             
-            if J.IsValidHero(enemyHero)
-            and J.GetHP(bot) >= J.GetHP(enemyHero)
-            and J.CanCastOnNonMagicImmune(enemyHero)
-            and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
-            and not enemyHero:HasModifier('modifier_faceless_void_chronosphere_freeze')
-            and not enemyHero:HasModifier('modifier_enigma_black_hole_pull')
-            and not J.IsSuspiciousIllusion(enemyHero)
-            then
-                local nInRangeAlly = J.GetNearbyHeroes(enemyHero, 1400, true)
-                local nInRangeEnemy = J.GetNearbyHeroes(enemyHero, 1400, false)
-    
-                if nInRangeEnemy ~= nil and #nInRangeEnemy <= 1
-                or (nInRangeAlly ~= nil and nInRangeEnemy ~= nil and #nInRangeAlly >= #nInRangeEnemy)
-                then
-                    bot:ActionQueue_AttackUnit(enemyHero, true)
-                    return
-                end
-            end
         end
     end
 end
@@ -548,11 +544,11 @@ function X.ConsiderPreInvoke()
         and Invoke:IsFullyCastable() then
             if nEnemyHeroes == nil or #nEnemyHeroes <= 0 then
                 if X.CanAbilityPossiblyBeCasted(Tornado) and not X.IsAbilityAvailableOnSlots(Tornado) then
-                    print('Invoke Tornado as idel spell')
+                    DebugPrint('Invoke Tornado as idel spell')
                     X.InvokeActualSpell(Tornado)
                 end
                 if X.CanAbilityPossiblyBeCasted(ColdSnap) and not X.IsAbilityAvailableOnSlots(ColdSnap) then
-                    print('Invoke ColdSnap as idel spell')
+                    DebugPrint('Invoke ColdSnap as idel spell')
                     X.InvokeActualSpell(ColdSnap)
                 end
 
@@ -633,16 +629,16 @@ function X.ConsiderClearActions()
 
     if nActions > 0 then
         if nActions >= 6 then
-            print("Clear Invokers queued actions")
+            DebugPrint("Clear Invokers queued actions")
             bot:Action_ClearActions(false)
             return
         end
 
         for i=1, nActions do
             local aType = bot:GetQueuedActionType(i)
-            print("Enqueued actions i="..i..", type="..tostring(aType))
+            DebugPrint("Enqueued actions i="..i..", type="..tostring(aType))
             if aType == -1 then
-                print("Invokers has queued invalid action (-1). Clear action queue.")
+                DebugPrint("Invokers has queued invalid action (-1). Clear action queue.")
                 bot:Action_ClearActions(false)
                 return
             end
@@ -650,7 +646,7 @@ function X.ConsiderClearActions()
 
         -- -- 只有当第一个action是 -1 时才clean queue。以免导致它之前的动作被撤销
         -- if bot:GetQueuedActionType(1) == -1 then
-        --     print("Invokers has queued invalid action (-1). Clear action queue.")
+        --     DebugPrint("Invokers has queued invalid action (-1). Clear action queue.")
         --     bot:Action_ClearActions(false)
         -- end
     end
@@ -666,13 +662,13 @@ function X.CastInvokerSpell(ability, target)
         abilityName = ability:GetName()
     end
     
-    -- print(DotaTime()..' - Invoker checking to cast '..abilityName) -- can be annoying since this line gets printed a lot if e.g. no enough mana or before invoker trains all elements
+    -- DebugPrint(DotaTime()..' - Invoker checking to cast '..abilityName) -- can be annoying since this line gets printed a lot if e.g. no enough mana or before invoker trains all elements
 
     if X.IsAbilityReadyForInvoke(ability) then
         X.InvokeActualSpell(ability)
     elseif X.IsAbilityReadyForCast(ability)
     then
-        print(DotaTime()..' - Invoker has it on slot, going to cast '..abilityName)
+        DebugPrint(DotaTime()..' - Invoker has it on slot, going to cast '..abilityName)
 
         -- bot:ActionPush_Delay(ability:GetCastPoint())
         if abilityName == Cataclysm then
@@ -694,12 +690,12 @@ function X.CastInvokerSpell(ability, target)
             or ability == ColdSnap then
                 bot:ActionPush_UseAbilityOnEntity(ability, target)
         else
-            print(DotaTime()..' - [ERROR] Tried to cast unsupported spell: '..abilityName)
-            print("Stack Trace:", debug.traceback())
+            DebugPrint(DotaTime()..' - [ERROR] Tried to cast unsupported spell: '..abilityName)
+            DebugPrint("Stack Trace:", debug.traceback())
         end
-        print(DotaTime()..' - Invoker tried to cast '..abilityName)
+        DebugPrint(DotaTime()..' - Invoker tried to cast '..abilityName)
     else
-        -- print(DotaTime()..' - Invoker trying to cast a spell that is not ready: '..abilityName)
+        -- DebugPrint(DotaTime()..' - Invoker trying to cast a spell that is not ready: '..abilityName)
     end
 end
 
@@ -736,14 +732,7 @@ function X.ConsiderColdSnap()
         and J.IsInRange(bot, botTarget, nCastRange + castDeltaRange)
         and not J.IsSuspiciousIllusion(botTarget)
 		then
-            local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1400, true)
-            local nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1400, false)
-
-            if nInRangeEnemy ~= nil and #nInRangeEnemy <= 2
-            or (nInRangeAlly ~= nil and nInRangeEnemy ~= nil and #nInRangeAlly >= #nInRangeEnemy)
-            then
-                return BOT_ACTION_DESIRE_HIGH, botTarget
-            end
+            return BOT_ACTION_DESIRE_HIGH, botTarget
 		end
 	end
 
@@ -797,16 +786,25 @@ function X.ConsiderColdSnap()
 end
 
 function X.ConsiderGhostWalk()
+    if X.IsAbilityReadyForCast(GhostWalk) and J.GetHP(bot) <= 0.3 and #nEnemyHeroes then
+        return BOT_ACTION_DESIRE_HIGH
+    end
+
+    if J.IsStunProjectileIncoming( bot, 1200 ) then
+        return BOT_ACTION_DESIRE_HIGH
+    end
+
     if not X.CanAbilityPossiblyBeCasted(GhostWalk) then
         return BOT_ACTION_DESIRE_NONE
     end
 
-    if (
-        (J.IsRetreating(bot) and J.GetHP(bot) <= 0.6)
-        or (J.GetHP(bot) <= 0.3 and bot:WasRecentlyDamagedByAnyHero(1))
-    ) and #nEnemyHeroes >= 1 then
-        return BOT_ACTION_DESIRE_HIGH
+    -- if there are still enemey can try to kill invoker.
+    if #nEnemyHeroes >= 1 and bot:WasRecentlyDamagedByAnyHero(3) then
+        if J.IsRetreating(bot) and J.GetHP(bot) < 0.6 then
+            return BOT_ACTION_DESIRE_HIGH
+        end
     end
+
     return BOT_ACTION_DESIRE_NONE
 end
 
@@ -835,6 +833,15 @@ function X.ConsiderTornado()
             return BOT_ACTION_DESIRE_HIGH, J.GetCenterOfUnits(nInRangeEnemy)
 		end
 	end
+
+    -- 打断技能
+    if botTarget ~= nil and botTarget:IsChanneling()
+    and J.IsValidHero(botTarget)
+    and J.CanCastOnNonMagicImmune(botTarget)
+    and J.IsInRange(bot, botTarget, nCastRange)
+    then
+        return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
+    end
 
     if J.IsGoingOnSomeone(bot) then
 		if  J.IsValidHero(botTarget)
@@ -871,7 +878,7 @@ function X.ConsiderTornado()
 		end
 	end
 
-    if J.IsRetreating(bot) then
+    if J.IsRetreating(bot) and J.GetHP(bot) < 0.3 then
         local enemyHero
         if nEnemyHeroes ~= nil and #nEnemyHeroes >= 1 and nEnemyHeroes[1] ~= nil then enemyHero = nEnemyHeroes[1] else return BOT_ACTION_DESIRE_NONE, 0 end
         if J.IsValidHero(enemyHero)
@@ -937,11 +944,9 @@ function X.ConsiderEMP()
 	if J.IsInTeamFight(bot, 1300)
 	then
 		local nLocationAoE = bot:FindAoELocation(true, true, bot:GetLocation(), nCastRange, nRadius, nCastPoint, 0)
-
 		if nLocationAoE.count >= 2
         then
             local realEnemyCount = J.GetEnemiesNearLoc(nLocationAoE.targetloc, nRadius)
-
             if realEnemyCount ~= nil and #realEnemyCount >= 2
             then
                 return BOT_ACTION_DESIRE_HIGH, nLocationAoE.targetloc
@@ -958,29 +963,13 @@ function X.ConsiderEMP()
         and not botTarget:HasModifier('modifier_brewmaster_storm_cyclone')
         and not botTarget:HasModifier('modifier_eul_cyclone')
 		then
-            local nInRangeAlly = J.GetNearbyHeroes(bot, nCastRange, false)
-            local nInRangeEnemy = J.GetNearbyHeroes(bot, nCastRange, true)
-
-            if (nInRangeAlly ~= nil and #nInRangeAlly >= 1)
-            or (nInRangeEnemy ~= nil and nInRangeAlly ~= nil and #nInRangeAlly >= #nInRangeEnemy)
-            or (nInRangeEnemy ~= nil and #nInRangeEnemy == 0)
+            local nLocationAoE = bot:FindAoELocation(true, true, bot:GetLocation(), nCastRange, nRadius, nCastPoint, 0)
+            if nLocationAoE.count >= 1
             then
-                nInRangeEnemy = J.GetEnemiesNearLoc(botTarget:GetLocation(), nRadius)
-
-                if botTarget:HasModifier(modifier_invoker_tornado) then
-                    if nInRangeEnemy ~= nil and #nInRangeEnemy >= 2
-                        then
-                            return BOT_ACTION_DESIRE_HIGH, J.GetCenterOfUnits(nInRangeEnemy)
-                        else
-                            return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
-                        end
-                else
-                    if nInRangeEnemy ~= nil and #nInRangeEnemy >= 2
-                    then
-                        return BOT_ACTION_DESIRE_HIGH, J.GetCenterOfUnits(nInRangeEnemy)
-                    else
-                        return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
-                    end
+                local realEnemyCount = J.GetEnemiesNearLoc(nLocationAoE.targetloc, nRadius)
+                if realEnemyCount ~= nil and #realEnemyCount >= 1
+                then
+                    return BOT_ACTION_DESIRE_HIGH, nLocationAoE.targetloc
                 end
             end
 		end
@@ -1019,6 +1008,7 @@ function X.ConsiderAlacrity()
 	for _, allyHero in pairs(nAllyHeroes)
 	do
 		if  J.IsValidHero(allyHero)
+        and J.IsAttacking(allyHero)
         and not allyHero:IsIllusion()
         and not J.IsDisabled(allyHero)
         and not J.IsWithoutTarget(allyHero)
@@ -1076,9 +1066,11 @@ function X.ConsiderAlacrity()
 
 	--对线
 	if J.IsLaning( bot )
+    and bot:GetMana() - Alacrity:GetManaCost() >= saveManaInLaning
 	then
 		local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(1000, true)
 		if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 2
+        and J.IsAttacking(bot)
         then
 			return BOT_ACTION_DESIRE_HIGH, bot
 		end
@@ -1089,7 +1081,6 @@ function X.ConsiderAlacrity()
         if J.IsValidHero(enemyHero)
         and J.CanCastOnNonMagicImmune(enemyHero)
         and J.IsAttacking(bot)
-        and bot:GetMana() - Alacrity:GetManaCost() >= saveManaInLaning
 		then
             return BOT_ACTION_DESIRE_HIGH, bot, "对线消耗:"..J.Chat.GetNormName( enemyHero )
 		end
@@ -1146,14 +1137,22 @@ function X.ConsiderChaosMeteor()
         and J.IsInRange(bot, enemyHero, nCastRange)
         and not J.IsSuspiciousIllusion(enemyHero)
         and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
+        and J.GetHP(enemyHero) <= 0.85
         and (enemyHero:IsStunned()
         or enemyHero:IsRooted()
         or enemyHero:IsHexed()
         or enemyHero:IsNightmared()
         or enemyHero:IsChanneling()
         or X.IsUnderLongDurationStun(enemyHero)
-        or J.IsTaunted(enemyHero)
-        or J.GetHP(enemyHero) <= 0.75) then
+        or J.IsTaunted(enemyHero)) then
+
+            local nLocationAoE = bot:FindAoELocation(true, true, bot:GetLocation(), nCastRange, nRadius + 100, nLandTime + nCastPoint, 0)
+            if  nLocationAoE.count >= 2 then
+                local realEnemyCount = J.GetEnemiesNearLoc(nLocationAoE.targetloc, nRadius + 300)
+                if realEnemyCount ~= nil and #realEnemyCount >= 1 then
+                    return BOT_ACTION_DESIRE_HIGH, nLocationAoE.targetloc
+                end
+            end
 
             -- if hero is under temp damage immute control
             local nDelay = nLandTime
@@ -1181,6 +1180,7 @@ function X.ConsiderChaosMeteor()
 		and J.IsInRange(bot, botTarget, nCastRange)
         and not J.IsSuspiciousIllusion(botTarget)
         and not botTarget:HasModifier('modifier_abaddon_borrowed_time')
+        and J.GetHP(botTarget) <= 0.85
 		then
 
             -- if hero is under temp damage immute control
@@ -1290,6 +1290,7 @@ function X.ConsiderChaosMeteor()
         and J.CanCastOnNonMagicImmune(enemyHero)
         and J.IsInRange(bot, enemyHero, nCastRange)
         and not J.IsSuspiciousIllusion(enemyHero)
+        and J.GetHP(enemyHero) <= 0.7
 		then
             if J.IsRunning(enemyHero) then
                 return BOT_ACTION_DESIRE_HIGH, enemyHero:GetExtrapolatedLocation(nLandTime + nCastPoint), "对线消耗:"..J.Chat.GetNormName( enemyHero )
@@ -1326,7 +1327,7 @@ function X.CheckTempModifiers(modifierNames, botTarget, nDelay)
         if botTarget:HasModifier(mName) then
             countMo = countMo + 1
             local remaining = J.GetModifierTime(botTarget, mName)
-            print(DotaTime().." - Target has modifier "..mName..", the remaining time: " .. tostring(remaining) .. " seconds, delay: "..tostring(nDelay))
+            DebugPrint(DotaTime().." - Target has modifier "..mName..", the remaining time: " .. tostring(remaining) .. " seconds, delay: "..tostring(nDelay))
             if remaining ~= nil and (DotaTime() >= DotaTime() + remaining - nDelay )
             then
                 return BOT_ACTION_DESIRE_HIGH
@@ -1368,7 +1369,7 @@ function X.ConsiderCataclysm()
         end
 
         if J.IsValidHero(botTarget)
-        and J.GetHP(botTarget) <= 0.99
+        and J.GetHP(botTarget) <= 0.75
         and not J.IsSuspiciousIllusion(botTarget)
         and not botTarget:HasModifier('modifier_abaddon_borrowed_time')
         and not botTarget:HasModifier('modifier_brewmaster_storm_cyclone')
@@ -1379,9 +1380,7 @@ function X.ConsiderCataclysm()
         and (botTarget:IsStunned()
             or botTarget:IsRooted()
             or botTarget:IsHexed()
-            or botTarget:IsNightmared()
-            or X.IsUnderLongDurationStun(botTarget)
-            or J.IsTaunted(botTarget))
+            or X.IsUnderLongDurationStun(botTarget))
         then
             return BOT_ACTION_DESIRE_HIGH, 0
         end
@@ -1453,9 +1452,9 @@ function X.ConsiderSunstrike()
     local nEnemyHeroes = GetUnitList(UNIT_LIST_ENEMY_HEROES)
     for _, enemyHero in pairs(nEnemyHeroes)
     do
-        -- 敌人可以被天火击杀
+        -- 敌人可能可以被天火击杀
         if J.IsValidHero(enemyHero)
-        and (J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_PURE) or J.GetHP(enemyHero) < 0.2)
+        and J.CanKillTarget(enemyHero, nDamage * 2, DAMAGE_TYPE_PURE)
         and not J.IsSuspiciousIllusion(enemyHero)
         and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
         and not enemyHero:HasModifier('modifier_oracle_false_promise_timer')
@@ -1473,11 +1472,23 @@ function X.ConsiderSunstrike()
                 return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation()
             end
 
-            if J.IsRunning(enemyHero)
+            if J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_PURE) -- 击中则敌人肯定可以被天火击杀
+            or J.GetNearbyHeroes(enemyHero, 500, true) >= 2 -- if our allys are near by the target, assuming allys will deal with enough dmg within the delay of sunstrike
             then
-                return BOT_ACTION_DESIRE_HIGH, enemyHero:GetExtrapolatedLocation(nDelay + nCastPoint)
-            else
-                return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation()
+                if J.IsRunning(enemyHero)
+                then
+                    return BOT_ACTION_DESIRE_HIGH, enemyHero:GetExtrapolatedLocation(nDelay + nCastPoint)
+                else
+                    return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation()
+                end
+            end
+
+            -- 敌人是否有即将结束的无敌状态 并且有可能在被天火击中后被击杀
+            if J.IsValidHero(enemyHero)
+            and not J.IsSuspiciousIllusion(enemyHero) then
+                if X.CheckTempModifiers(TempNonMovableModifierNames, botTarget, (nDelay + nCastPoint)) > 0 then
+                    return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
+                end
             end
         end
 
@@ -1485,9 +1496,12 @@ function X.ConsiderSunstrike()
         if enemyHero:HasModifier( 'modifier_teleporting' )
         and J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_PURE) then
             local remaining = J.GetModifierTime(enemyHero, 'modifier_teleporting')
-            if remaining ~= nil and remaining >= 2
+            if remaining ~= nil and remaining > nDelay + 0.1
             then
                 return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation()
+            else
+                -- tp 马上完成，则天火对方泉水
+                return BOT_ACTION_DESIRE_HIGH, Utils.GetEnemyFountainTpPoint()
             end
         end
 
@@ -1496,15 +1510,6 @@ function X.ConsiderSunstrike()
         and not J.IsSuspiciousIllusion(enemyHero)
         and X.IsUnderLongDurationStun(enemyHero) then
             return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation()
-        end
-
-        -- 敌人是否有即将结束的无敌状态能在天火延迟后被击杀
-        if J.IsValidHero(enemyHero)
-        and J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_PURE)
-        and not J.IsSuspiciousIllusion(enemyHero) then
-            if X.CheckTempModifiers(TempNonMovableModifierNames, botTarget, (nDelay + nCastPoint)) > 0 then
-                return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
-            end
         end
     end
 
@@ -1519,11 +1524,6 @@ function X.ConsiderSunstrike()
         end
     end
 
-    
-	--对线消耗
-	-- if J.IsLaning( bot )
-	-- end
-    
     if J.IsDoingRoshan(bot)
     then
         if J.IsRoshan(botTarget)
@@ -1615,18 +1615,14 @@ function X.ConsiderIceWall()
         and not J.IsSuspiciousIllusion(botTarget)
         and not J.IsDisabled(botTarget)
 		then
-            if ((nAllyHeroes ~= nil and #nAllyHeroes >= 1) or (#nEnemyHeroes ~= nil and #nEnemyHeroes == 0))
-            or (nEnemyHeroes ~= nil and nAllyHeroes ~= nil and #nAllyHeroes >= #nEnemyHeroes)
-            then
-                return BOT_ACTION_DESIRE_HIGH
-            end
+            return BOT_ACTION_DESIRE_HIGH
 		end
 	end
     
     if J.IsInTeamFight(bot) then
         local nLocationAoE = bot:FindAoELocation(true, true, bot:GetLocation(), nCastRange + 200, nRadius, 0, 0)
 
-        if  nLocationAoE.count >= 2
+        if nLocationAoE.count >= 2
         then
             local realEnemyCount = J.GetEnemiesNearLoc(nLocationAoE.targetloc, nRadius)
 
@@ -1701,18 +1697,27 @@ function X.ConsiderDeafeningBlast()
     then
         return BOT_ACTION_DESIRE_NONE, 0
     end
-
+    
 	local nCastRange = J.GetProperCastRange(false, bot, DeafeningBlast:GetCastRange())
     local nCastPoint = DeafeningBlast:GetCastPoint()
     local nDamage = DeafeningBlast:GetSpecialValueInt('damage')
 	local nRadius = DeafeningBlast:GetSpecialValueInt('radius_end')
     local nSpeed = DeafeningBlast:GetSpecialValueInt('travel_speed')
+
     if (nSpeed == nil) then
         nSpeed = 1000
     end
+    
+    local nLocationAoE = bot:FindAoELocation(true, true, bot:GetLocation(), nCastRange, nRadius, nCastPoint, 0)
+
+    if X.IsAbilityAvailableOnSlots(ChaosMeteor) then
+        local nInRangeEnemy = J.GetEnemiesNearLoc(nLocationAoE.targetloc, nRadius)
+        if #nInRangeEnemy >= 1 then
+            return BOT_ACTION_DESIRE_HIGH, J.GetCenterOfUnits(nInRangeEnemy)
+        end
+    end
 
     if J.IsInTeamFight(bot, 1500) then
-		local nLocationAoE = bot:FindAoELocation(true, true, bot:GetLocation(), nCastRange, nRadius, nCastPoint, 0)
         local nInRangeEnemy = J.GetEnemiesNearLoc(nLocationAoE.targetloc, nRadius)
 
 		if  nInRangeEnemy ~= nil and #nInRangeEnemy >= 2
@@ -1746,28 +1751,6 @@ function X.ConsiderDeafeningBlast()
                 return BOT_ACTION_DESIRE_HIGH, botTarget:GetExtrapolatedLocation(nDelay)
             end
             return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
-		end
-	end
-    
-	--对线
-	if J.IsLaning( bot ) then
-        local enemyHero
-        if nEnemyHeroes ~= nil and #nEnemyHeroes <= 2 and nEnemyHeroes[1] ~= nil then enemyHero = nEnemyHeroes[1] else return BOT_ACTION_DESIRE_NONE, nil end
-
-        local nDelay = (GetUnitToUnitDistance(bot, enemyHero) / nSpeed) + nCastPoint
-
-        if J.IsValidHero(enemyHero)
-        and J.CanCastOnNonMagicImmune(enemyHero)
-        and J.IsInRange(bot, enemyHero, nCastRange)
-        and not J.IsSuspiciousIllusion(enemyHero)
-        and not J.IsDisabled(enemyHero)
-        and not J.IsTaunted(enemyHero)
-		then
-            if J.IsRunning(enemyHero) then
-                return BOT_ACTION_DESIRE_HIGH, enemyHero:GetExtrapolatedLocation(nDelay), "对线消耗:"..J.Chat.GetNormName( enemyHero )
-            else
-                return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation(), "对线消耗:"..J.Chat.GetNormName( enemyHero )
-            end
 		end
 	end
 
@@ -1811,7 +1794,7 @@ function X.InvokeActualSpell(ability)
         abilityName = ability:GetName()
     end
 
-    print(DotaTime()..' - Invoker going to invoke '..abilityName)
+    DebugPrint(DotaTime()..' - Invoker going to invoke '..abilityName)
 
     if abilityName == Cataclysm or ability == Sunstrike then
         X.InvokeSpell(Exort, Exort, Exort)
@@ -1834,10 +1817,10 @@ function X.InvokeActualSpell(ability)
     elseif ability == ColdSnap then
         X.InvokeSpell(Quas, Quas, Quas)
     else
-        print('[ERROR] Tried to invoke unsupported ability: '..abilityName)
-		print("Stack Trace:", debug.traceback())
+        DebugPrint('[ERROR] Tried to invoke unsupported ability: '..abilityName)
+		DebugPrint("Stack Trace:", debug.traceback())
     end
-    print(DotaTime()..' - Invoker tried to invoke '..abilityName)
+    DebugPrint(DotaTime()..' - Invoker tried to invoke '..abilityName)
 end
 
 function X.InvokeSpell(Orb1, Orb2, Orb3)
@@ -1863,6 +1846,7 @@ end
 
 -- check if the ability could be casted if assuming it's available on slots right now, so we can consider invoke it or cast it.
 function X.CanAbilityPossiblyBeCasted(ability)
+    if X.IsAbilityReadyForCast(ability) then return true end
     if not X.HaveElementsTrainedToInvokeAbility(ability) then return false end
 
     local sAbility, tAbility
@@ -1873,7 +1857,7 @@ function X.CanAbilityPossiblyBeCasted(ability)
         sAbility = AbilityNameMap[ability:GetName()]
         tAbility = ability
     end
-    return DotaTime() >= AbilityCastedTimes[sAbility] + AbilityCooldownTimes[sAbility] and bot:GetMana() >= tAbility:GetManaCost()
+    return DotaTime() >= (AbilityCastedTimes[sAbility] + AbilityCooldownTimes[sAbility]) and bot:GetMana() >= tAbility:GetManaCost()
 end
 
 -- check if Invoker has trained the required basic elements for invoking the spell
@@ -1901,8 +1885,8 @@ function X.HaveElementsTrainedToInvokeAbility(ability)
     elseif ability == ColdSnap then
         return Quas:IsTrained()
     else
-        print('[ERROR] Checks invokability on an unsupported ability')
-		print("Stack Trace:", debug.traceback())
+        DebugPrint('[ERROR] Checks invokability on an unsupported ability')
+		DebugPrint("Stack Trace:", debug.traceback())
     end
     
     return nil
@@ -1933,7 +1917,7 @@ function CheckAbilityUsage()
                 local deltaMana = previouslyRecordedMana - ability:GetManaCost()
                 local manaRange = 20 -- 后期回蓝太快可能导致使用情况的计算错漏。设置太大值的话前中期碰到同时被消蓝的情况也可能有计算错漏
                 if bot:GetMana() <= deltaMana + manaRange and bot:GetMana() >= deltaMana - manaRange then
-                    print(DotaTime()..' - Invoker just used ability ' .. sAbility .. ', reset the cooldown tracking time.')
+                    DebugPrint(DotaTime()..' - Invoker just used ability ' .. sAbility .. ', reset the cooldown tracking time.')
                     AbilityCastedTimes[sAbility] = DotaTime()
                     AbilityLastRecordedCastTimes[sAbility] = DotaTime()
                 end
@@ -1978,6 +1962,12 @@ function CheckForCooldownReductions()
     end
 
     -- 中立物品也得查
+end
+
+function DebugPrint(msg)
+    if Utils.DebugMode then
+        print(msg)
+    end
 end
 
 return X

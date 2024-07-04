@@ -44,12 +44,15 @@ local beNormalFarmer = false;
 local beHighFarmer = false;
 local beVeryHighFarmer = false;
 
+local defendPingTime = 0
 local isWelcomeMessageDone = false
 local isChangePosMessageDone = false
 
 if bot.farmLocation == nil then bot.farmLocation = bot:GetLocation() end
 
 function GetDesire()
+	Utils.PrintPings(0.3)
+
 	if GetGameMode() ~= GAMEMODE_CM then
 		if GetGameState() == GAME_STATE_PRE_GAME
 		and (bot.announcedRole == nil or bot.announcedRole ~= J.GetPosition(bot)) then
@@ -131,6 +134,46 @@ function GetDesire()
 		return BOT_MODE_DESIRE_VERYHIGH
 	end
 	
+	-- 判断是否要提醒回防
+	if GetDefendLaneDesire(LANE_TOP) > 0.85
+	   or GetDefendLaneDesire(LANE_MID) > 0.80
+	   or GetDefendLaneDesire(LANE_BOT) > 0.85
+	then
+		local nDefendLane, nDefendDesire = J.GetMostDefendLaneDesire();
+		local nDefendLoc  = GetLaneFrontLocation(GetTeam(),nDefendLane,-600);
+		local nDefendAllies = J.GetAlliesNearLoc(nDefendLoc, 2200);
+
+		if Utils.GetLocationToLocationDistance(nDefendLoc, J.GetTeamFountain()) < 3500
+		and DotaTime() - defendPingTime > 5 and #nDefendAllies < J.GetNumOfAliveHeroes(false) then
+			defendPingTime = DotaTime()
+			bot:ActionImmediate_Chat("Let's defend base", false)
+			bot:ActionImmediate_Ping(nDefendLoc.x, nDefendLoc.y, false)
+		end
+		
+		local nNeutrals = bot:GetNearbyNeutralCreeps( bot:GetAttackRange() );
+		
+		if #nNeutrals == 0 and #nDefendAllies >= 2 and (not beVeryHighFarmer or bot:GetLevel() >= 13)
+		then
+		    teamTime = DotaTime();
+		end
+	end
+
+	-- if pinged to defend base.
+	local ping = Utils.IsPingedToDefenseByAnyPlayer(bot, 4)
+	if ping ~= nil then
+		local tps = bot:GetItemInSlot(nTpSolt)
+		local bestTpLoc = J.GetNearbyLocationToTp(ping)
+		if tps ~= nil and tps:IsFullyCastable()
+			and GetUnitToLocationDistance(bot, bestTpLoc) > 3000
+		then
+			bot:Action_UseAbilityOnLocation(tps, bestTpLoc + RandomVector(200))
+		else
+			bot:Action_MoveToLocation(tps + RandomVector(200));
+		end
+		
+		return 0.3
+	end
+
 	if teamPlayers == nil then teamPlayers = GetTeamPlayers(GetTeam()) end
 	
 	if bot:IsAlive() --For sometime to run
@@ -302,30 +345,16 @@ function GetDesire()
 	   or (bot:GetLevel() >= 20 and nAlliesCount >= 3)
 	   or GetRoshanDesire() > BOT_MODE_DESIRE_VERYHIGH
 	then
-		local nNeutrals = bot:GetNearbyNeutralCreeps( bot:GetAttackRange() ); 
-		if #nNeutrals == 0 
-		then 
-		    teamTime = DotaTime();
-		end
-	end	
-	if GetDefendLaneDesire(LANE_TOP) > 0.85
-	   or GetDefendLaneDesire(LANE_MID) > 0.80
-	   or GetDefendLaneDesire(LANE_BOT) > 0.85
-	then
-		local nDefendLane,nDefendDesire = J.GetMostDefendLaneDesire();
-		local nDefendLoc  = GetLaneFrontLocation(GetTeam(),nDefendLane,-600);
-		local nDefendAllies = J.GetAlliesNearLoc(nDefendLoc, 2200);
-		
-		local nNeutrals = bot:GetNearbyNeutralCreeps( bot:GetAttackRange() ); 
-		
-		if #nNeutrals == 0 and #nDefendAllies >= 2 and (not beVeryHighFarmer or bot:GetLevel() >= 13)
-		then 
+		local nNeutrals = bot:GetNearbyNeutralCreeps( bot:GetAttackRange() );
+		if #nNeutrals == 0
+		then
 		    teamTime = DotaTime();
 		end
 	end
+
 	if teamTime > DotaTime() - 3.0 then return BOT_MODE_DESIRE_NONE; end;
 	
-	if beNormalFarmer 
+	if beNormalFarmer
 	then
 		if bot:GetActiveMode() == BOT_MODE_ASSEMBLE then assembleTime = DotaTime(); end
 		

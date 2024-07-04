@@ -392,7 +392,7 @@ function X.GetXUnitsTowardsLocation( hUnit, vLocation, nDistance)
 end
 
 function X.CountDesire(base_desire, dist, maxDist)
-	 return base_desire + math.floor((RemapValClamped( dist, maxDist, 0, 0, 1 - base_desire))*40)/40
+	 return base_desire / 2 + math.floor((RemapValClamped( dist, maxDist, 0, 0, 1 - base_desire))*40)/40
 end
 
 function X.GetBotClosestRune()

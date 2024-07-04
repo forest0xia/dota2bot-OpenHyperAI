@@ -1,11 +1,5 @@
-----------------------------------------------------------------------------------------------------
---- The Creation Come From: BOT EXPERIMENT Credit:FURIOUSPUPPY
---- BOT EXPERIMENT Author: Arizona Fauzie 2018.11.21
---- Link:http://steamcommunity.com/sharedfiles/filedetails/?id=837040016
---- Refactor: 决明子 Email: dota2jmz@163.com 微博@Dota2_决明子
---- Link:http://steamcommunity.com/sharedfiles/filedetails/?id=1573671599
---- Link:http://steamcommunity.com/sharedfiles/filedetails/?id=1627071163
-----------------------------------------------------------------------------------------------------
+local Utils = require( GetScriptDirectory()..'/FunLib/utils' )
+
 if GetBot():IsInvulnerable() or not GetBot():IsHero() or not string.find(GetBot():GetUnitName(), "hero") or  GetBot():IsIllusion() then
 	return;
 end
@@ -48,6 +42,8 @@ local SpecialUnitTarget = nil
 local shouldHarass = false
 local harassTarget = nil
 local lastIdleStateCheck = -1
+local defendPingTime = 0
+local nTpSolt = 15
 
 local TormentorLocation
 if GetTeam() == TEAM_RADIANT
@@ -131,6 +127,34 @@ function GetDesire()
 	TrySwapInvItemForRefresherShard()
 
 	if J.Role['bStopAction'] then return 2.0 end
+
+	-- 判断是否要提醒回防
+	local nDefendLane, nDefendDesire = J.GetMostDefendLaneDesire();
+	local nDefendLoc = GetLaneFrontLocation(GetTeam(),nDefendLane,-600);
+	local nDefendAllies = J.GetAlliesNearLoc(nDefendLoc, 2200);
+	if nDefendDesire > 0.8
+	and Utils.GetLocationToLocationDistance(nDefendLoc, J.GetTeamFountain()) < 3500
+	and DotaTime() - defendPingTime > 5 and #nDefendAllies < J.GetNumOfAliveHeroes(false) then
+		defendPingTime = DotaTime()
+		bot:ActionImmediate_Chat("Let's defend base", false)
+		bot:ActionImmediate_Ping(nDefendLoc.x, nDefendLoc.y, false)
+		
+	end
+
+	-- if pinged to defend base.
+	local ping = Utils.IsPingedToDefenseByAnyPlayer(bot, 4)
+	if ping ~= nil then
+		local tps = bot:GetItemInSlot(nTpSolt);
+		local bestTpLoc = J.GetNearbyLocationToTp(ping)
+		if tps ~= nil and tps:IsFullyCastable()
+			and GetUnitToLocationDistance(bot, bestTpLoc) > 3000
+		then
+			bot:Action_UseAbilityOnLocation(tps, bestTpLoc + RandomVector(200))
+		else
+			bot:Action_MoveToLocation(tps + RandomVector(200));
+		end
+		return 0.3
+	end
 
 	if  J.IsPushing(bot)
 	and bot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH
@@ -255,7 +279,9 @@ function Think()
 			if IsHeroAlive( id )
 			then
 				local member = GetTeamMember(id)
-				bot:Action_MoveToLocation(member:GetLocation() + RandomVector(500))
+				if member ~= nil then
+					bot:Action_MoveToLocation(member:GetLocation() + RandomVector(500))
+				end
 			end
 		end
 	end
@@ -956,7 +982,8 @@ function X.CarryFindTarget()
 		local nEnemysCreeps = bot:GetNearbyCreeps(1600,true)
 		local nAttackAlly = J.GetSpecialModeAllies(bot, 2500, BOT_MODE_ATTACK);
 		local nTeamFightLocation = J.GetTeamFightLocation(bot);
-		local nDefendLane,nDefendDesire = J.GetMostDefendLaneDesire();
+		local nDefendLane, nDefendDesire = J.GetMostDefendLaneDesire();
+
 		if  X.CanBeAttacked(nEnemysCreeps[1])
 		and bot:GetHealth() > 300
 		and not X.IsAllysTarget(nEnemysCreeps[1])

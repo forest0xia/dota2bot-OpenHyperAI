@@ -45,7 +45,6 @@ sRoleItemsBuyList['pos_4'] = {
     "item_blood_grenade",
 
 	"item_priest_outfit",
-	"item_urn_of_shadows",
 	"item_mekansm",
     "item_vladmir",--
 	"item_glimmer_cape",--

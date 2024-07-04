@@ -1,7 +1,18 @@
--- Simple utils that should be able to be imported to any other lua files without causing any circular dependency.
--- This lua file should NOT have any dependency libs or files is possible.
+
+--[[
+
+Simple utils that should be able to be imported to any other lua files without causing any circular dependency.
+This lua file should NOT have any dependency libs or files is possible.
+
+Anything that can be shared in any files without worrying about nested or circular dependency can be added to this file. Can gradually migrate functions into this file as well.
+
+]]
 
 local X = { }
+local DebugMode = true
+
+local RadiantFountainTpPoint = Vector(-7172, -6652, 384 )
+local DireFountainTpPoint = Vector(6982, 6422, 392)
 
 -- This heroes bugged because Valve was too lazy to add them with the correct laning target point. No high desired lane.
 local BuggyHeroesDueToValveTooLazy = {
@@ -15,7 +26,11 @@ local BuggyHeroesDueToValveTooLazy = {
 }
 local ActuallyBuggedHeroes = { } -- used to record the acutal bugged heroes in this game.
 
+X['GameStates'] = { } -- A gaming state keeper to keep a record of different states to avoid recomupte or anything.
+
 function X.PrintTable(tbl, indent)
+    if not DebugMode then return end
+
 	if not indent then indent = 0 end
     for k, v in pairs(tbl) do
         formatting = string.rep("  ", indent) .. k .. ": "
@@ -32,6 +47,58 @@ function X.PrintTable(tbl, indent)
     end
 end
 
+function X.PrintPings(pingTimeGap)
+    if not DebugMode then return end
+
+	local listPings = {}
+	local nTeamPlayers = GetTeamPlayers(GetTeam())
+	for i, id in pairs(nTeamPlayers)
+	do
+        local allyHero = GetTeamMember(i)
+		if allyHero ~= nil and not allyHero:IsIllusion()
+        then
+			local ping = allyHero:GetMostRecentPing()
+            if ping.time ~= 0 and GameTime() - ping.time < pingTimeGap then
+                table.insert(listPings, ping)
+            end
+		end
+	end
+	X.PrintTable(listPings)
+end
+
+function X.GetEnemyFountainTpPoint()
+	if GetTeam() == TEAM_DIRE
+	then
+		return RadiantFountainTpPoint
+	else
+		return DireFountainTpPoint
+	end
+end
+
+function X.IsPingedToDefenseByAnyPlayer(bot, pingTimeGap)
+	local listPings = {}
+	local nTeamPlayers = GetTeamPlayers(GetTeam())
+	for i, id in pairs(nTeamPlayers)
+	do
+        local allyHero = GetTeamMember(i)
+		if allyHero ~= nil and not allyHero:IsIllusion()
+        -- and allyHero ~= bot
+        then
+			local ping = allyHero:GetMostRecentPing()
+			table.insert(listPings, ping)
+		end
+	end
+
+	for _,ping in pairs(listPings)
+	do
+		if ping ~= nil and not ping.normal_ping and X.GetLocationToLocationDistance(ping.location, bot:GetLocation()) > 2000
+        and GameTime() - ping.time < pingTimeGap and ping.player_id ~= -1 then
+            print('Bot '..bot:GetUnitName()..' is pinged to defend')
+			return ping
+		end
+	end
+	return nil
+end
 
 -- Function to perform a deep copy of a table
 function X.Deepcopy(orig)
@@ -101,7 +168,7 @@ function X.GetLocationToLocationDistance( fLoc, sLoc )
 	local x2 = sLoc.x
 	local y1 = fLoc.y
 	local y2 = sLoc.y
-	return math.sqrt( math.pow( ( y2-y1 ), 2 ) + math.pow( ( x2-x1 ), 2 ) )
+    return math.sqrt((y2-y1) * (y2-y1) + (x2-x1) * (x2-x1))
 end
 
 -- Set-like operation
@@ -290,5 +357,46 @@ end
 
 X.BuggyHeroesDueToValveTooLazy = BuggyHeroesDueToValveTooLazy
 X.ActuallyBuggedHeroes = ActuallyBuggedHeroes
+X.DebugMode = DebugMode
 
 return X
+
+
+
+--[[
+
+Coding notes to Dota2 script: 
+- Valve dota2 scripting: https://developer.valvesoftware.com/wiki/Dota_Bot_Scripting
+- Valve dota2 abaility names: https://developer.valvesoftware.com/wiki/Dota_2_Workshop_Tools/Scripting/Built-In_Ability_Names
+- dota2 internal names: https://developer.valvesoftware.com/wiki/Dota_2_Workshop_Tools/Scripting/Heroes_internal_names
+- dota2 modifiers: https://developer.valvesoftware.com/wiki/Dota_2_Workshop_Tools/Scripting/Built-In_Modifier_Names
+- Dota 2 Workshop debugging with Lua script: https://developer.valvesoftware.com/wiki/Dota_2_Workshop_Tools/Scripting/Debugging_Lua_scripts
+
+========================= Modes =========================
+Action Desires
+These can be useful for making sure all action desires are using a common language for talking about their desire.
+
+BOT_ACTION_DESIRE_NONE - 0.0
+BOT_ACTION_DESIRE_VERYLOW - 0.1
+BOT_ACTION_DESIRE_LOW - 0.25
+BOT_ACTION_DESIRE_MODERATE - 0.5
+BOT_ACTION_DESIRE_HIGH - 0.75
+BOT_ACTION_DESIRE_VERYHIGH - 0.9
+BOT_ACTION_DESIRE_ABSOLUTE - 1.0
+
+Mode Desires
+These can be useful for making sure all mode desires as using a common language for talking about their desire.
+
+BOT_MODE_DESIRE_NONE - 0
+BOT_MODE_DESIRE_VERYLOW - 0.1
+BOT_MODE_DESIRE_LOW - 0.25
+BOT_MODE_DESIRE_MODERATE - 0.5
+BOT_MODE_DESIRE_HIGH - 0.75
+BOT_MODE_DESIRE_VERYHIGH - 0.9
+BOT_MODE_DESIRE_ABSOLUTE - 1.0
+
+
+
+
+
+]]

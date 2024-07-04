@@ -23,8 +23,8 @@ local DIRE_GAME_START_2 = Vector(-4000, 4000, 128) -- dire top river enterance b
 -- local DIRE_GAME_START_2 = Vector(-3519, 3018, 128) -- dire top river enterance to jungle.
 
 -- Laning Phase
-local DIRE_LANE_PHASE_1 = Vector(-5217, 2501, 128) -- radian ward near t1 on the left side of the river top left enterance.
-local DIRE_LANE_PHASE_2 = Vector(-2462, 1534, 0)
+local DIRE_LANE_PHASE_1 = Vector(-5183, 3780, 128) -- radian ward near t1 on the left side of the river top left enterance.
+local DIRE_LANE_PHASE_2 = Vector(-773, 1135, 0) 
 local DIRE_LANE_PHASE_3 = Vector(3851, -4636, 353)
 
 local nTowerList = {
@@ -45,7 +45,7 @@ local nTowerList = {
 local WardSpotAliveTeamTowerRadiant = {
 	[TOWER_TOP_1] = {
 						Vector(-3290, 5302, 128),
-						Vector(-5217, 2463, 128),
+						Vector(-5183, 3780, 128),
 					},
 	[TOWER_MID_1] = {
 						Vector(-3048, 1779, 128),

@@ -115,7 +115,6 @@ sRoleItemsBuyList['pos_3'] = {
 sRoleItemsBuyList['pos_4'] = {
 	
 	"item_priest_outfit",
-	"item_urn_of_shadows",
 	"item_mekansm",
 	"item_glimmer_cape",
 	"item_aghanims_shard",

@@ -5,7 +5,6 @@
 --- Link:http://steamcommunity.com/sharedfiles/filedetails/?id=1627071163
 ---------------------------------------------------------------------------
 local Utils = require( GetScriptDirectory()..'/FunLib/utils')
-local overrides = require( GetScriptDirectory()..'/FunLib/aba_global_overrides')
 
 if GetBot():IsInvulnerable() or not GetBot():IsHero() or not string.find(GetBot():GetUnitName(), "hero") or GetBot():IsIllusion() then
 	return
@@ -13,18 +12,6 @@ end
 
 local X = {}
 local bot = GetBot()
-
---[[
-	Mode Desires - These can be useful for making sure all mode desires as using a common language for talking about their desire.
-	BOT_MODE_DESIRE_NONE - 0
-	BOT_MODE_DESIRE_VERYLOW - 0.1
-	BOT_MODE_DESIRE_LOW - 0.25
-	BOT_MODE_DESIRE_MODERATE - 0.5
-	BOT_MODE_DESIRE_HIGH - 0.75
-	BOT_MODE_DESIRE_VERYHIGH - 0.9
-	BOT_MODE_DESIRE_ABSOLUTE - 1.0
-]]
-
 
 function GetDesire()
 	if GetGameMode() == GAMEMODE_1V1MID or GetGameMode() == GAMEMODE_MO then

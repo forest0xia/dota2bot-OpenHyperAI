@@ -238,7 +238,7 @@ function Think()
 	end
 
 	if DotaTime() <= NoTormentorAfterThisTime then
-		if GetUnitToLocationDistance(bot, TormentorLocation) > 100
+		if GetUnitToLocationDistance(bot, TormentorLocation) > 240
 		then
 			bot:Action_MoveToLocation(TormentorLocation + RandomVector(200))
 			return

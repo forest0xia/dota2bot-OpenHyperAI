@@ -44,7 +44,6 @@ sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
 sRoleItemsBuyList['pos_3'] = {
     "item_blood_grenade",
 	"item_priest_outfit",
-	"item_urn_of_shadows",
 	"item_mekansm",
 	"item_glimmer_cape",
 	"item_guardian_greaves",

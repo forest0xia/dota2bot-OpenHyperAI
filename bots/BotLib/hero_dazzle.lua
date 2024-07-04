@@ -68,7 +68,6 @@ sRoleItemsBuyList['pos_2'] = {
 
 sRoleItemsBuyList['pos_4'] = {
 	'item_priest_outfit',
-	"item_urn_of_shadows",
 	"item_mekansm",
 	"item_glimmer_cape",
 	"item_aghanims_shard",
@@ -84,7 +83,6 @@ sRoleItemsBuyList['pos_4'] = {
 
 sRoleItemsBuyList['pos_5'] = {
 	'item_priest_outfit',
-	"item_urn_of_shadows",
 	"item_mekansm",
 	"item_glimmer_cape",
 	"item_aghanims_shard",

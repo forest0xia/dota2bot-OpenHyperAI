@@ -93,7 +93,7 @@ X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 X['sSellList'] = {
     "item_blight_stone",
-    "item_power_treads",
+    -- "item_power_treads",
     "item_magic_wand",
 }
 

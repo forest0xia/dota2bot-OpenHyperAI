@@ -166,7 +166,7 @@ modifier_jakiro_macropyre_burn
 local abilityQ = bot:GetAbilityByName( sAbilityList[1] )
 local abilityW = bot:GetAbilityByName( sAbilityList[2] )
 local abilityE = bot:GetAbilityByName( sAbilityList[3] )
-local abilityAS = bot:GetAbilityByName( sAbilityList[4] )
+local abilityAS = bot:GetAbilityByName("jakiro_liquid_frost")
 local abilityR = bot:GetAbilityByName( sAbilityList[6] )
 
 
