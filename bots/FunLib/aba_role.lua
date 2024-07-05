@@ -13,7 +13,7 @@ end
 
 ----------------------------------------------------------------------------------------------------
 
--- The index in the list is the pick order, value is the role. by default #1 pick is mid, #2 is pos3, #3 is pos1, #4 is pos 5, #5 is pos 4.
+-- The index in the list is the pick order, value is the role.
 -- X.roleAssignment = { 2, 3, 1, 5, 4 }
 X.roleAssignment = {
 	TEAM_RADIANT = { 1, 2, 3, 4, 5 },

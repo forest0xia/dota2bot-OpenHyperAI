@@ -641,11 +641,11 @@ function X.OverrideTeamHeroes()
 	then
 		return {
 			
-			[1] = "npc_dota_hero_antimage",
-			[2] = 'npc_dota_hero_invoker',
-			[3] = "npc_dota_hero_tidehunter",
-		    [4] = "npc_dota_hero_nyx_assassin",
-			[5] = "npc_dota_hero_earth_spirit",
+			[1] = "npc_dota_hero_arc_warden",
+			[2] = 'npc_dota_hero_medusa',
+			[3] = "npc_dota_hero_legion_commander",
+		    [4] = "npc_dota_hero_lina",
+			[5] = "npc_dota_hero_silencer",
 
 		}
 	else
@@ -685,11 +685,19 @@ function X.OverrideTeamHeroes()
 		    -- [4] = "npc_dota_hero_zuus",
 			-- [5] = "npc_dota_hero_techies",
 			
-			[1] = "npc_dota_hero_antimage",
-			[2] = 'npc_dota_hero_invoker',
-			[3] = "npc_dota_hero_tidehunter",
-		    [4] = "npc_dota_hero_nyx_assassin",
-			[5] = "npc_dota_hero_earth_spirit",
+			
+			[1] = "npc_dota_hero_arc_warden",
+			[2] = 'npc_dota_hero_medusa',
+			[3] = "npc_dota_hero_legion_commander",
+		    [4] = "npc_dota_hero_lina",
+			[5] = "npc_dota_hero_silencer",
+
+			
+			-- [1] = "npc_dota_hero_antimage",
+			-- [2] = 'npc_dota_hero_invoker',
+			-- [3] = "npc_dota_hero_tidehunter",
+		    -- [4] = "npc_dota_hero_nyx_assassin",
+			-- [5] = "npc_dota_hero_earth_spirit",
 			
 			-- Muerta pos1 and Hoodwink pos5, both go top.
 			-- muerta be pos 1 has smaller chance for bug, 
@@ -723,7 +731,7 @@ function X.OverrideTeamHeroes()
 end
 
 -- 这行代码为了人工挑选想要的阵容。如果想让电脑自己随机英雄，则注释掉这行
--- sSelectList = X.OverrideTeamHeroes() 
+-- sSelectList = X.OverrideTeamHeroes()
 
 function X.ShuffleArray(array)
 	if type(array) ~= "table" then
@@ -986,7 +994,7 @@ local function handleCommand(command, PlayerID, bTeamOnly)
         print("Selecting pos " .. text)
 		local sTeamName = GetTeamForPlayer(PlayerID) == TEAM_RADIANT and 'TEAM_RADIANT' or 'TEAM_DIRE'
 		local remainingPos = RemainingPos[sTeamName]
-		if HasValue(remainingPos, text) then
+		if Utils.HasValue(remainingPos, text) then
 			local role = tonumber(text)
 			
 			local playerIndex = PlayerID + 1 -- each team player id starts with 0, to 4 as the last player. 
@@ -1039,17 +1047,6 @@ function Think()
 
 		AllPickHeros()
 	end
-end
-
--- check if a table contains a value
-function HasValue(tab, val)
-    for index, value in ipairs(tab) do
-        if value == val then
-            return true
-        end
-    end
-
-    return false
 end
 
 --function to get hero name that match the expression

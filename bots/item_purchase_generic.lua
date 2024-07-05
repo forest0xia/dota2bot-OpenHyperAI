@@ -1,6 +1,7 @@
 local Item = require( GetScriptDirectory()..'/FunLib/aba_item' )
 local Role = require( GetScriptDirectory()..'/FunLib/aba_role' )
 local J = require( GetScriptDirectory()..'/FunLib/jmz_func')
+local Utils = require( GetScriptDirectory()..'/FunLib/utils')
 
 local bot = GetBot()
 
@@ -27,7 +28,11 @@ local sPurchaseList = BotBuild['sBuyList']
 local sItemSellList = BotBuild['sSellList']
 
 
-if sPurchaseList == nil then print("Can't load purchase list for: " .. bot:GetUnitName()) end
+if sPurchaseList == nil then
+	print("[ERROR] Can't load purchase list for: " .. bot:GetUnitName())
+	print("Stack Trace:", debug.traceback())
+	return
+end
 
 for i = 1, #sPurchaseList
 do
@@ -319,6 +324,22 @@ function ItemPurchaseThink()
 		return
 	end
 
+	-- 以防因任何原因失去了对出装的跟踪
+	-- if bot.itemToBuy == nil or #bot.itemToBuy == 0 or bot.itemToBuy[0] == nil then
+	-- 	local idx = 1
+	-- 	for i = 1, #sPurchaseList
+	-- 	do
+	-- 		local item = sPurchaseList[#sPurchaseList - i + 1]
+	-- 		if not Item.HasItem(bot, item)
+	-- 		and not Utils.HasValue(sItemSellList, item)
+	-- 		and GetItemCost(item) > 600 then
+	-- 			bot.itemToBuy[idx] = sPurchaseList[#sPurchaseList - i + 1]
+	-- 			idx = idx + 1
+	-- 		end
+	-- 	end
+	-- end
+	
+
 	--------*******----------------*******----------------*******--------
 	local currentTime = DotaTime()
 	local botName = bot:GetUnitName()
@@ -414,7 +435,6 @@ function ItemPurchaseThink()
 						and GetItemStockCount('item_flask') > 1
 						then
 							bot:ActionImmediate_PurchaseItem('item_flask')
-							return
 						end
 					else
 						if  Item.GetItemCharges(bot, 'item_flask') <= 0
@@ -424,7 +444,6 @@ function ItemPurchaseThink()
 							or (J.HasItem(bot, 'item_bottle') and Item.GetItemCharges(bot, 'item_bottle') <= 0))
 						then
 							bot:ActionImmediate_PurchaseItem('item_flask')
-							return
 						end
 					end
 				else
@@ -433,7 +452,6 @@ function ItemPurchaseThink()
 					and GetItemStockCount('item_flask') > 1
 					then
 						bot:ActionImmediate_PurchaseItem('item_flask')
-						return
 					end
 				end
 			else
@@ -449,7 +467,6 @@ function ItemPurchaseThink()
 						and GetItemStockCount('item_flask') > 1
 						then
 							bot:ActionImmediate_PurchaseItem('item_tango')
-							return
 						end
 					else
 						if  Item.GetItemCharges(bot, 'item_flask') <= 0
@@ -459,7 +476,6 @@ function ItemPurchaseThink()
 							or (J.HasItem(bot, 'item_bottle') and Item.GetItemCharges(bot, 'item_bottle') <= 0))
 						then
 							bot:ActionImmediate_PurchaseItem('item_flask')
-							return
 						end
 					end
 				else
@@ -467,7 +483,6 @@ function ItemPurchaseThink()
 					and botGold >= GetItemCost('item_tango')
 					then
 						bot:ActionImmediate_PurchaseItem('item_tango')
-						return
 					end
 				end
 			end
@@ -486,7 +501,6 @@ function ItemPurchaseThink()
 		and bot:GetCourierValue() == 0
 		then
 			bot:ActionImmediate_PurchaseItem(wardType)
-			return
 		end
 	end
 
@@ -501,7 +515,6 @@ function ItemPurchaseThink()
 		and bot:GetCourierValue() == 0
 		then
 			bot:ActionImmediate_PurchaseItem(wardType)
-			return
 		end
 	end
 
@@ -531,13 +544,11 @@ function ItemPurchaseThink()
 			if not hasSmoke
 			then
 				bot:ActionImmediate_PurchaseItem('item_smoke_of_deceit')
-				return
 			end
 		else
 			if not J.IsInLaningPhase()
 			then
 				bot:ActionImmediate_PurchaseItem('item_smoke_of_deceit')
-				return
 			end
 		end
 	end
@@ -553,7 +564,6 @@ function ItemPurchaseThink()
 	and bot:GetStashValue() > 0
 	then
 		bot:ActionImmediate_PurchaseItem('item_blood_grenade')
-		return
 	end
 
 	--为自己购买魔晶
@@ -562,9 +572,7 @@ function ItemPurchaseThink()
 		and botGold >= 1400
 	then
 		hasBuyShard = true
-
 		bot:ActionImmediate_PurchaseItem( "item_aghanims_shard" )
-
 		return
 	end
 
@@ -671,7 +679,7 @@ function ItemPurchaseThink()
 		end
 
 
-		if botWorth > 9999 
+		if botWorth > 10000
 			and bot:GetItemInSlot( 6 ) ~= nil
 			and bot:GetItemInSlot( 7 ) ~= nil
 		then
@@ -697,9 +705,14 @@ function ItemPurchaseThink()
 		fullInvCheck = currentTime
 	end
 
+	local countEmptyBackpack = 3
+	if bot:GetItemInSlot( 6 ) ~= nil then countEmptyBackpack = countEmptyBackpack - 1 end
+	if bot:GetItemInSlot( 7 ) ~= nil then countEmptyBackpack = countEmptyBackpack - 1 end
+	if bot:GetItemInSlot( 8 ) ~= nil then countEmptyBackpack = countEmptyBackpack - 1 end
+
 	--出售过度装备
 	if currentTime > sell_time + 0.5
-		and ( bot:GetItemInSlot( 6 ) ~= nil or bot:GetItemInSlot( 7 ) ~= nil or bot:GetItemInSlot( 8 ) ~= nil )
+		and countEmptyBackpack <= 1
 		and ( bot:DistanceFromFountain() <= 100 or bot:DistanceFromSecretShop() <= 100 )
 	then
 		sell_time = currentTime
@@ -709,6 +722,7 @@ function ItemPurchaseThink()
 			local nNewSlot = bot:FindItemSlot( sItemSellList[i - 1] )
 			local nOldSlot = bot:FindItemSlot( sItemSellList[i] )
 			if nNewSlot >= 0 and nOldSlot >= 0
+			and not Utils.HasValue(Item['tEarlyBoots'], sItemSellList[i]) -- dont sell boots too early.
 			then
 				bot:ActionImmediate_SellItem( bot:GetItemInSlot( nOldSlot ) )
 				return
@@ -783,7 +797,7 @@ function ItemPurchaseThink()
 		-- 	end
 		-- end
 
-		if  Item.HasItem(bot, 'item_mask_of_madness')
+		if Item.HasItem(bot, 'item_mask_of_madness')
 		and Item.HasItem(bot, 'item_satanic')
 		then
 			bot:ActionImmediate_SellItem(bot:GetItemInSlot(bot:FindItemSlot('item_mask_of_madness')))
@@ -797,7 +811,15 @@ function ItemPurchaseThink()
 	if bot.currentItemToBuy == nil
 		and #bot.currListItemToBuy == 0
 	then
-		bot.currentItemToBuy = bot.itemToBuy[#bot.itemToBuy]
+		local retryCount = 0
+		repeat
+			bot.currentItemToBuy = bot.itemToBuy[#bot.itemToBuy - retryCount]
+			retryCount = retryCount + 1
+			-- print('[INFO] bot.currentItemToBuy='..bot.currentItemToBuy..', retryCount='..retryCount)
+		until( bot.currentItemToBuy ~= nil or retryCount >= #bot.itemToBuy - 1)
+
+		-- bot.currentItemToBuy = bot.itemToBuy[#bot.itemToBuy]
+		-- print('bot.currentItemToBuy='..bot.currentItemToBuy..', #bot.itemToBuy='..#bot.itemToBuy)
 		local tempTable = Item.GetBasicItems( { bot.currentItemToBuy } )
 		for i = 1, math.ceil( #tempTable / 2 )
 		do
@@ -805,8 +827,6 @@ function ItemPurchaseThink()
 			bot.currListItemToBuy[#tempTable-i+1] = tempTable[i]
 		end
 	end
-	
-	
 	
 	if #bot.currListItemToBuy == 0 and currentTime > lastInvCheck + 1.0
 	then

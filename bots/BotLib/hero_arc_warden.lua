@@ -66,15 +66,18 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_boots",
 	"item_magic_wand",
 	"item_hand_of_midas",
+	"item_diffusal_blade",
 	"item_maelstrom",
 	"item_gungir",--
 	"item_travel_boots",
 	"item_manta",--
-	"item_sheepstick",--
+	"item_black_king_bar",--
 	"item_bloodthorn",--
-	"item_skadi",--
-	"item_travel_boots_2",--
 	"item_moon_shard",
+	"item_sheepstick",--
+	"item_disperser",--
+	-- "item_skadi",--
+	"item_travel_boots_2",--
 	"item_aghanims_shard",
 	"item_ultimate_scepter_2",
 }
@@ -122,10 +125,10 @@ else
 		"item_orchid",
 		"item_manta",--
 		"item_greater_crit",--
-		"item_skadi",--
 		"item_bloodthorn",--
-		"item_travel_boots_2",--
 		"item_moon_shard",
+		"item_skadi",--
+		"item_travel_boots_2",--
 		"item_aghanims_shard",
 		"item_ultimate_scepter_2",
 	}

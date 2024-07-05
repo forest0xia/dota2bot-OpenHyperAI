@@ -26,64 +26,46 @@ local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 local sRoleItemsBuyList = {}
 
 sRoleItemsBuyList['pos_4'] = {
-	"item_tango",
-	"item_tango",
-	"item_double_branches",
-	"item_faerie_fire",
-	"item_enchanted_mango",
 	"item_blood_grenade",
 
-	"item_boots",
-	"item_magic_wand",
-	"item_solar_crest",--
-	"item_aghanims_shard",
-	"item_glimmer_cape",--
-	"item_boots_of_bearing",--
-	"item_force_staff",--
-	"item_sheepstick",--
-	"item_aeon_disk",--
-	"item_ultimate_scepter_2",
+	'item_mage_outfit',
+	'item_ancient_janggo',
+	'item_glimmer_cape',
+	'item_boots_of_bearing',
+	'item_pipe',
+	'item_veil_of_discord',
+	'item_cyclone',
+	'item_sheepstick',
+	"item_wind_waker",
 	"item_moon_shard",
+	"item_ultimate_scepter_2",
 }
 
 sRoleItemsBuyList['pos_5'] = {
-	"item_tango",
-	"item_tango",
-	"item_double_branches",
-	"item_faerie_fire",
-	"item_enchanted_mango",
-	"item_blood_grenade",
-
-	"item_boots",
-	"item_magic_wand",
-	"item_solar_crest",--
-	"item_aghanims_shard",
-	"item_glimmer_cape",--
-	"item_guardian_greaves",--
-	"item_force_staff",--
-	"item_sheepstick",--
-	"item_aeon_disk",--
-	"item_ultimate_scepter_2",
+	"item_priest_outfit",
+	"item_urn_of_shadows",
+	"item_mekansm",
+	"item_glimmer_cape",
+	"item_guardian_greaves",
+	"item_spirit_vessel",
+--	"item_wraith_pact",
+	"item_shivas_guard",
+	"item_sheepstick",
 	"item_moon_shard",
+	"item_ultimate_scepter_2",
 }
 
 sRoleItemsBuyList['pos_3'] = {
-	"item_tango",
-	"item_tango",
-	"item_double_branches",
-	"item_faerie_fire",
-
-	"item_boots",
-	"item_magic_wand",
-	"item_solar_crest",--
-	"item_aghanims_shard",
-	"item_glimmer_cape",--
-	"item_boots_of_bearing",--
-	"item_force_staff",--
-	"item_sheepstick",--
-	"item_octarine_core",--
-	"item_ultimate_scepter_2",
+	"item_mage_outfit",
+	"item_shadow_amulet",
+	"item_veil_of_discord",
+	"item_cyclone",
+	"item_glimmer_cape",
+	"item_sheepstick",
+	"item_bloodthorn",
+	"item_wind_waker",
 	"item_moon_shard",
+	"item_ultimate_scepter_2",
 }
 
 sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']

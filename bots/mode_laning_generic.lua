@@ -1,9 +1,5 @@
----------------------------------------------------------------------------
---- The Creation Come From: A Beginner AI 
---- Author: 决明子 Email: dota2jmz@163.com 微博@Dota2_决明子
---- Link:http://steamcommunity.com/sharedfiles/filedetails/?id=1573671599
---- Link:http://steamcommunity.com/sharedfiles/filedetails/?id=1627071163
----------------------------------------------------------------------------
+
+local J = require( GetScriptDirectory()..'/FunLib/jmz_func')
 local Utils = require( GetScriptDirectory()..'/FunLib/utils')
 
 if GetBot():IsInvulnerable() or not GetBot():IsHero() or not string.find(GetBot():GetUnitName(), "hero") or GetBot():IsIllusion() then
@@ -12,10 +8,26 @@ end
 
 local X = {}
 local bot = GetBot()
+local nTpSolt = 15
 
 function GetDesire()
 	if GetGameMode() == GAMEMODE_1V1MID or GetGameMode() == GAMEMODE_MO then
 		return 1
+	end
+	
+	-- if pinged to defend base.
+	local ping = Utils.IsPingedToDefenseByAnyPlayer(bot, 4)
+	if ping ~= nil then
+		local tps = bot:GetItemInSlot(nTpSolt)
+		local bestTpLoc = J.GetNearbyLocationToTp(ping.location)
+		if tps ~= nil and tps:IsFullyCastable()
+			and GetUnitToLocationDistance(bot, bestTpLoc) > 2000
+		then
+			bot:Action_UseAbilityOnLocation(tps, bestTpLoc + RandomVector(200))
+		else
+			bot:Action_MoveToLocation(bestTpLoc + RandomVector(200));
+		end
+		return 0.1
 	end
 
 	-- note if bot has 0 desire for laning, they perform like idle - stand still, direct move or simple attack.

@@ -186,6 +186,17 @@ function X.SetContains(set, key)
     return set[key] ~= nil
 end
 
+-- check if a table contains a value
+function X.HasValue(tab, val)
+    for index, value in ipairs(tab) do
+        if value == val then
+            return true
+        end
+    end
+
+    return false
+end
+
 local function FloatEqual(a, b)
     return math.abs(a - b) < 0.000001
 end

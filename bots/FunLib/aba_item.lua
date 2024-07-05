@@ -346,6 +346,20 @@ Item['tEarlyItem'] = {
 	 'item_blood_grenade',
 }
 
+Item['tEarlyConsumableItem'] = {
+	 'item_clarity',
+	 'item_faerie_fire',
+	 'item_tango',
+	 'item_flask',
+	 'item_infused_raindrop',
+	 'item_magic_stick',
+	 -- 'item_magic_wand',
+	 'item_blood_grenade',
+	--  'item_dust',
+	--  'item_ward_sentry',
+	--  'item_ward_observer',
+}
+
 Item['tEarlyBoots'] = {
 	'item_boots',
 	'item_phase_boots',
@@ -1352,17 +1366,17 @@ end
 
 -- returns pos_1, pos_2, pos_3, depends on the roles...
 function Item.GetRoleItemsBuyList( bot )
-	local nTeamPlayerIDs = GetTeamPlayers( GetTeam() )
-	for i = 1, 5
-	do
-		local memberID = nTeamPlayerIDs[i]
-		if bot:GetPlayerID() == memberID
-		then
-			local team = GetTeam() == TEAM_RADIANT and 'TEAM_RADIANT' or 'TEAM_DIRE'
-			return 'pos_'..tostring(Role.roleAssignment[team][i])
-		end
-	end
-	return 'pos_1'
+	-- local nTeamPlayerIDs = GetTeamPlayers( GetTeam() )
+	-- for i = 1, 5
+	-- do
+	-- 	local memberID = nTeamPlayerIDs[i]
+	-- 	if bot:GetPlayerID() == memberID
+	-- 	then
+	-- 		local team = GetTeam() == TEAM_RADIANT and 'TEAM_RADIANT' or 'TEAM_DIRE'
+	-- 		return 'pos_'..tostring(Role.roleAssignment[team][i])
+	-- 	end
+	-- end
+	return 'pos_'..Role.GetPosition(bot)
 end
 
 function Item.GetItemWardSolt()

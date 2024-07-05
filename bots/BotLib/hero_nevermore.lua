@@ -56,26 +56,23 @@ sRoleItemsBuyList['pos_1'] = {
 }
 
 sRoleItemsBuyList['pos_2'] = {
-	"item_tango",
-	"item_double_branches",
-	"item_faerie_fire",
-	"item_enchanted_mango",
-	"item_enchanted_mango",
 	
-	"item_bottle",
-	"item_power_treads",
-	"item_magic_wand",
-	"item_dragon_lance",
-	"item_black_king_bar",--
-	"item_hurricane_pike",--
-	"item_butterfly",--
+	"item_mid_outfit",
+	"item_point_booster",
 	"item_aghanims_shard",
-	"item_greater_crit",--
-	"item_satanic",--
+	"item_ultimate_scepter",
+	"item_orchid",
+	"item_black_king_bar",
 	"item_travel_boots",
+	"item_bloodthorn",
+	"item_sheepstick",
+	"item_monkey_king_bar",
 	"item_moon_shard",
-	"item_travel_boots_2",--
+	"item_travel_boots_2",
+	"item_ultimate_orb",
 	"item_ultimate_scepter_2",
+	"item_sphere",
+
 }
 
 sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_1']
@@ -88,6 +85,12 @@ X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 X['sSellList'] = {
 	"item_bottle",
+	"item_magic_wand",
+
+	"item_ultimate_scepter",
+	"item_urn_of_shadows",
+
+	"item_sheepstick",
 	"item_magic_wand",
 }
 

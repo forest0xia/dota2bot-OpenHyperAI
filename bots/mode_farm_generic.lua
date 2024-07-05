@@ -44,14 +44,13 @@ local beNormalFarmer = false;
 local beHighFarmer = false;
 local beVeryHighFarmer = false;
 
-local defendPingTime = 0
 local isWelcomeMessageDone = false
 local isChangePosMessageDone = false
 
 if bot.farmLocation == nil then bot.farmLocation = bot:GetLocation() end
 
 function GetDesire()
-	Utils.PrintPings(0.3)
+	Utils.PrintPings(0.15)
 
 	if GetGameMode() ~= GAMEMODE_CM then
 		if GetGameState() == GAME_STATE_PRE_GAME
@@ -79,6 +78,79 @@ function GetDesire()
 				bot:ActionImmediate_Chat("Position selection closed.", true)
 				isChangePosMessageDone = true
 			end
+		end
+	end
+
+	-- 如果在打高地 就别撤退去打钱了
+	local nAllyList = J.GetNearbyHeroes(bot,1600,false,BOT_MODE_NONE);
+	if #nAllyList >= 2 and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 3500 then
+		return BOT_MODE_DESIRE_NONE;
+	end
+	-- 如果在打推塔 就别撤退去打钱了
+	local nEnemyTowers = bot:GetNearbyTowers(1200, true);
+	if #nAllyList >= 2 and nEnemyTowers ~= nil and #nEnemyTowers > 0 and GetUnitToLocationDistance(bot, nEnemyTowers[1]:GetLocation()) < 1300 then
+		return BOT_MODE_DESIRE_NONE;
+	end
+
+	-- 如果自己在上高，对面人活着，队友却不在，赶紧溜去farm
+	if #nAllyList <= 1 and J.GetNumOfAliveHeroes(true) > 1
+	and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 3500 then
+		return BOT_MODE_DESIRE_VERYHIGH
+	end
+
+	-- if pinged to defend base.
+	local ping = Utils.IsPingedToDefenseByAnyPlayer(bot, 4)
+	if ping ~= nil then
+		local tps = bot:GetItemInSlot(nTpSolt)
+		local bestTpLoc = J.GetNearbyLocationToTp(ping.location)
+		if tps ~= nil and tps:IsFullyCastable()
+			and GetUnitToLocationDistance(bot, bestTpLoc) > 2000
+		then
+			bot:Action_UseAbilityOnLocation(tps, bestTpLoc + RandomVector(200))
+		else
+			bot:Action_MoveToLocation(bestTpLoc + RandomVector(200));
+		end
+		return 0.1
+	end
+	
+	-- 判断是否要提醒回防
+	Utils['GameStates']['defendPings'] = Utils['GameStates']['defendPings'] ~= nil and Utils['GameStates']['defendPings'] or { pingedTime = GameTime() }
+	if GameTime() - Utils['GameStates']['defendPings'].pingedTime > 5 then
+		local towers = {
+			TOWER_TOP_3,
+			TOWER_MID_3,
+			TOWER_BOT_3,
+			TOWER_BASE_1,
+			TOWER_BASE_2
+		}
+		local enemeyPushingBase = false
+		local nDefendLoc
+		for _, t in pairs( towers )
+		do
+			local tower = GetTower( GetTeam(), t )
+			if tower ~= nil and tower:GetHealth()/tower:GetMaxHealth() < 0.8
+			and J.GetNumOfHeroesNearLocation( true, tower:GetLocation(), 1000 ) >= 1
+			then
+				nDefendLoc = tower:GetLocation() + RandomVector(100)
+				enemeyPushingBase = true
+			end
+		end
+		if not enemeyPushingBase and not GetTower( GetTeam(), TOWER_BASE_1 ):IsAlive()
+		and J.GetNumOfHeroesNearLocation( true, J.GetTeamFountain(), 1000 ) >= 1 then
+			nDefendLoc = J.GetTeamFountain() + RandomVector(100) -- GetLaneFrontLocation(GetTeam(), nDefendLane, 100) + RandomVector(100)
+			enemeyPushingBase = true
+		end
+	
+		if enemeyPushingBase then
+			local nDefendAllies = J.GetAlliesNearLoc(nDefendLoc, 1600);
+		
+			if #nDefendAllies < J.GetNumOfAliveHeroes(false) then
+				Utils['GameStates']['defendPings'].pingedTime = GameTime()
+				
+				bot:ActionImmediate_Chat("Please come defending", false)
+				bot:ActionImmediate_Ping(nDefendLoc.x, nDefendLoc.y, false)
+			end
+			return 0.1
 		end
 	end
 
@@ -116,62 +188,12 @@ function GetDesire()
 			return BOT_ACTION_DESIRE_NONE
 		end
 	end
-
-	-- 如果在打高地 就别撤退去打钱了
-	local nAllyList = J.GetNearbyHeroes(bot,1600,false,BOT_MODE_NONE);
-	if #nAllyList >= 2 and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 3500 then
-		return BOT_MODE_DESIRE_NONE;
-	end
-	-- 如果在打推塔 就别撤退去打钱了
-	local nEnemyTowers = bot:GetNearbyTowers(1200, true);
-	if #nAllyList >= 2 and nEnemyTowers ~= nil and #nEnemyTowers > 0 and GetUnitToLocationDistance(bot, nEnemyTowers[1]:GetLocation()) < 1300 then
-		return BOT_MODE_DESIRE_NONE;
-	end
-
-	-- 如果自己在上高，对面人活着，队友却不在，赶紧溜去farm
-	if #nAllyList <= 1 and J.GetNumOfAliveHeroes(true) > 1
-	and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 3500 then
-		return BOT_MODE_DESIRE_VERYHIGH
-	end
 	
-	-- 判断是否要提醒回防
-	if GetDefendLaneDesire(LANE_TOP) > 0.85
-	   or GetDefendLaneDesire(LANE_MID) > 0.80
-	   or GetDefendLaneDesire(LANE_BOT) > 0.85
+	local nNeutrals = bot:GetNearbyNeutralCreeps( bot:GetAttackRange() );
+	local nDefendLane, nDefendDesire = J.GetMostDefendLaneDesire();
+	if nDefendDesire > 0.8 and #nNeutrals == 0 and (not beVeryHighFarmer or bot:GetLevel() >= 13)
 	then
-		local nDefendLane, nDefendDesire = J.GetMostDefendLaneDesire();
-		local nDefendLoc  = GetLaneFrontLocation(GetTeam(),nDefendLane,-600);
-		local nDefendAllies = J.GetAlliesNearLoc(nDefendLoc, 2200);
-
-		if Utils.GetLocationToLocationDistance(nDefendLoc, J.GetTeamFountain()) < 3500
-		and DotaTime() - defendPingTime > 5 and #nDefendAllies < J.GetNumOfAliveHeroes(false) then
-			defendPingTime = DotaTime()
-			bot:ActionImmediate_Chat("Let's defend base", false)
-			bot:ActionImmediate_Ping(nDefendLoc.x, nDefendLoc.y, false)
-		end
-		
-		local nNeutrals = bot:GetNearbyNeutralCreeps( bot:GetAttackRange() );
-		
-		if #nNeutrals == 0 and #nDefendAllies >= 2 and (not beVeryHighFarmer or bot:GetLevel() >= 13)
-		then
-		    teamTime = DotaTime();
-		end
-	end
-
-	-- if pinged to defend base.
-	local ping = Utils.IsPingedToDefenseByAnyPlayer(bot, 4)
-	if ping ~= nil then
-		local tps = bot:GetItemInSlot(nTpSolt)
-		local bestTpLoc = J.GetNearbyLocationToTp(ping)
-		if tps ~= nil and tps:IsFullyCastable()
-			and GetUnitToLocationDistance(bot, bestTpLoc) > 3000
-		then
-			bot:Action_UseAbilityOnLocation(tps, bestTpLoc + RandomVector(200))
-		else
-			bot:Action_MoveToLocation(tps + RandomVector(200));
-		end
-		
-		return 0.3
+		teamTime = DotaTime();
 	end
 
 	if teamPlayers == nil then teamPlayers = GetTeamPlayers(GetTeam()) end

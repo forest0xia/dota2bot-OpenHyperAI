@@ -3275,6 +3275,24 @@ function J.GetNumOfAliveHeroes( bEnemy )
 
 end
 
+function J.GetNumOfHeroesNearLocation( bEnemy, location, distance )
+
+	local count = 0
+	local nTeam = GetTeam()
+	if bEnemy then nTeam = GetOpposingTeam() end
+
+	for i, id in pairs( GetTeamPlayers( nTeam ) )
+	do
+		local member = GetTeamMember(i)
+		if IsHeroAlive( id ) and GetUnitToLocationDistance(member, location) <= distance
+		then
+			count = count + 1
+		end
+	end
+
+	return count
+
+end
 
 function J.GetAverageLevel( bEnemy )
 

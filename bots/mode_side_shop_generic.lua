@@ -94,6 +94,13 @@ function TormentorDesire()
 		bot.tormentorState = true
 	end
 
+	if  J.GetHP(bot) < 0.3
+	and J.IsTormentor(Tormentor)
+	and J.GetHP(Tormentor) > 0.2
+	then
+		return BOT_ACTION_DESIRE_NONE
+	end
+
 	for i = 1, 5
 	do
 		local member = GetTeamMember(i)
@@ -183,8 +190,8 @@ function TormentorDesire()
 		if  bot.tormentorState
 		and aveCoreLevel > 12.9
 		and aveSuppLevel > 9.9
-		and (((bot.lastKillTime == 0 and aliveAlly >= 5)
-			or (bot.lastKillTime > 0 and aliveAlly >= 3)
+		and (((bot.lastKillTime == 0 and aliveAlly >= 3)
+			or (bot.lastKillTime > 0 and aliveAlly >= 2)
 			or (GetAttackingCount() >= 3 and J.GetAliveAllyCoreCount() >= 2)))
 		then
 			if not IsTeamHealthy
@@ -193,13 +200,6 @@ function TormentorDesire()
 			end
 
 			canDoTormentor = IsTeamHealthy
-
-			if  J.GetHP(bot) < 0.3
-			and J.IsTormentor(Tormentor)
-			and J.GetHP(Tormentor) > 0.2
-			then
-				return BOT_ACTION_DESIRE_NONE
-			end
 
 			if IsEnoughAllies()
 			then
@@ -313,9 +313,9 @@ function IsEnoughAllies()
 		end
 	end
 	
-	local nInRangeEnemy = J.GetNearbyHeroes(bot, 900, false)
+	local nInRangeAlly = J.GetNearbyHeroes(bot, 900, false)
 
-	return #nInRangeEnemy >= 3 and bot.lastKillTime >= 0 and heroCount >= 4 and coreCount >= 2
+	return #nInRangeAlly >= 3 and bot.lastKillTime >= 0 and heroCount >= 4 and coreCount >= 2
 end
 
 function DoesAllHaveShard()

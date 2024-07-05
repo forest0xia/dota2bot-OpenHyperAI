@@ -365,20 +365,21 @@ function X.ConsiderShukuchi()
     --     end
     -- end
 
-    if J.IsDefending(bot)
-    then
-        local nInRangeAlly = J.GetNearbyHeroes(bot,1000, false, BOT_MODE_NONE)
-        local nInRangeEnemy = J.GetNearbyHeroes(bot,1000, true, BOT_MODE_NONE)
-        local eta = (GetUnitToLocationDistance(bot, GetLaneFrontLocation(GetTeam(), bot.laneToDefend, 0)) / nSpeed)
+    -- if J.IsDefending(bot)
+    -- then
+    --     local nInRangeAlly = J.GetNearbyHeroes(bot,1000, false, BOT_MODE_NONE)
+    --     local nInRangeEnemy = J.GetNearbyHeroes(bot,1000, true, BOT_MODE_NONE)
+        
+    --     local eta = (GetUnitToLocationDistance(bot, GetLaneFrontLocation(GetTeam(), bot.laneToDefend, 0)) / nSpeed)
 
-        if  J.GetMP(bot) > 0.33
-        and nInRangeAlly ~= nil and #nInRangeAlly == 0
-        and nInRangeEnemy ~= nil and #nInRangeEnemy == 0
-        and eta > nDuration
-        then
-            return  BOT_ACTION_DESIRE_HIGH
-        end
-    end
+    --     if  J.GetMP(bot) > 0.33
+    --     and nInRangeAlly ~= nil and #nInRangeAlly == 0
+    --     and nInRangeEnemy ~= nil and #nInRangeEnemy == 0
+    --     and eta > nDuration
+    --     then
+    --         return  BOT_ACTION_DESIRE_HIGH
+    --     end
+    -- end
 
     
     if J.IsFarming(bot)

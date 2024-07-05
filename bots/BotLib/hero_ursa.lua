@@ -34,12 +34,14 @@ sRoleItemsBuyList['pos_1'] = {
 
     "item_phase_boots",
     "item_magic_wand",
-    "item_bfury",--
+	"item_diffusal_blade",
+    -- "item_bfury",--
     "item_blink",
     "item_basher",
     "item_black_king_bar",--
     "item_abyssal_blade",--
     "item_ultimate_scepter",
+	"item_disperser",--
     "item_satanic",--
     "item_swift_blink",--
     "item_ultimate_scepter_2",

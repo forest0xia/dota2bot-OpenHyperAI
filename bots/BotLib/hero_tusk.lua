@@ -33,7 +33,7 @@ sRoleItemsBuyList['pos_4'] = {
     "item_magic_wand",
     "item_blink",
     -- "item_ultimate_scepter",
-    "item_solar_crest",--
+    "item_crimson_guard",--
     "item_cyclone",
     "item_boots_of_bearing",--
     "item_aghanims_shard",
@@ -55,7 +55,7 @@ sRoleItemsBuyList['pos_5'] = {
     "item_magic_wand",
     "item_blink",
     -- "item_ultimate_scepter",
-    "item_solar_crest",--
+    "item_crimson_guard",--
     "item_cyclone",
     "item_guardian_greaves",--
     "item_aghanims_shard",
@@ -76,7 +76,7 @@ sRoleItemsBuyList['pos_1'] = {
     "item_magic_wand",
     "item_blink",
     -- "item_ultimate_scepter",
-    "item_solar_crest",--
+    "item_crimson_guard",--
     "item_cyclone",
     "item_boots_of_bearing",--
     "item_aghanims_shard",

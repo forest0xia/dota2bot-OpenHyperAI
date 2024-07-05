@@ -16,6 +16,8 @@ if bot:IsInvulnerable() or not bot:IsHero() or bot:IsIllusion()
 then return end
 
 local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
+local Utils = require( GetScriptDirectory()..'/FunLib/utils' )
+local Item = require( GetScriptDirectory()..'/FunLib/aba_item' )
 local BotBuild = dofile( GetScriptDirectory().."/BotLib/"..string.gsub( bot:GetUnitName(), "npc_dota_", "" ) )
 
 if BotBuild == nil then return end
@@ -33,6 +35,7 @@ local roshanRadiantLoc  = Vector(7625, -7511, 1092)
 local roshanDireLoc     = Vector(-7549, 7562, 1107)
 local RadiantFountain = Vector(-6619, -6336, 384)
 local DireFountain = Vector(6928, 6372, 392)
+local lastCheckDropTime = 0
 
 local function AbilityLevelUpComplement()
 
@@ -264,7 +267,7 @@ end
 
 
 local function BuybackUsageComplement()
-
+	if J.IsMeepoClone(bot) then return end
 	if bot:IsAlive() then return end
 
 	X.SetTalkMessage()
@@ -359,6 +362,38 @@ local function CourierUsageComplement()
 	local useCourierCD = 2.3
 	local protectCourierCD = 5.0
 	--------* * * * * * * ----------------* * * * * * * ----------------* * * * * * * --------
+
+
+	if DotaTime() > 0 and DotaTime() - lastCheckDropTime > 3
+	then
+		lastCheckDropTime = DotaTime()
+		if bot:GetItemInSlot(6) ~= nil and bot:GetItemInSlot(7) ~= nil and bot:GetItemInSlot(8) ~= nil then
+			for i = 1, #Item['tEarlyConsumableItem']
+			do
+				local itemName = Item['tEarlyConsumableItem'][i]
+				local itemSlot = bot:FindItemSlot( itemName )
+				if itemSlot >= 0 and itemSlot <= 8
+				then
+					bot:Action_DropItem( bot:GetItemInSlot( itemSlot ), bot:GetLocation() )
+				end
+			end
+		else
+			local dropItemList = GetDroppedItemList()
+			local tryPickCount = 0
+			for _, tDropItem in pairs( dropItemList )
+			do
+				if tDropItem.item ~= nil and (tryPickCount == 0 or not Utils.HasValue(Item['tEarlyConsumableItem'], tDropItem.item:GetName()))
+				then
+					local nDropOwner = tDropItem.owner
+					tryPickCount = tryPickCount + 1
+					if nDropOwner ~= nil and nDropOwner == bot
+					then
+						bot:Action_PickUpItem(nDropOwner)
+					end
+				end
+			end
+		end
+	end
 
 
 	if cState == COURIER_STATE_DEAD then return	end
@@ -5610,6 +5645,19 @@ end
 
 --缚灵索
 X.ConsiderItemDesire["item_gungir"] = function( hItem )
+	local nInRangeEnemy = J.GetEnemiesNearLoc(bot:GetLocation(), 1000)
+	for _, enemyHero in pairs(nInRangeEnemy)
+	do
+		if  J.IsValidTarget(enemyHero)
+		and J.IsUnitWillGoInvisible(enemyHero)
+		and J.IsClosestToDustLocation(bot, enemyHero:GetLocation())
+		and not J.HasInvisCounterBuff(enemyHero)
+		and not J.IsSuspiciousIllusion(enemyHero)
+		then
+			if hItem:GetName() == "item_gungir" then hEffectTarget = enemyHero:GetLocation() end
+			return BOT_ACTION_DESIRE_HIGH, hEffectTarget, 'unit', 'Stop invis'
+		end	
+	end	
 
 	return X.ConsiderItemDesire["item_rod_of_atos"]( hItem )
 

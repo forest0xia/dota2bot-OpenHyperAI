@@ -45,18 +45,32 @@ sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
 sRoleItemsBuyList['pos_3'] = {
 	"item_tank_outfit",
 	"item_crimson_guard",--
-    "item_guardian_greaves",--
 	"item_aghanims_shard",
 	"item_heavens_halberd",--
-	"item_travel_boots",
+    "item_shivas_guard",--
 	"item_assault",--
+	"item_travel_boots",
 	"item_ultimate_scepter_2",
 	"item_moon_shard",
 	"item_heart",--
 	"item_travel_boots_2",--
 }
 
-sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_3']
+sRoleItemsBuyList['pos_4'] = {
+	"item_tank_outfit",
+	"item_echo_sabre",
+	"item_aghanims_shard",
+	"item_crimson_guard",
+	"item_ultimate_scepter",
+	"item_heavens_halberd",
+	"item_assault",
+	"item_travel_boots",
+	"item_moon_shard",
+	"item_refresher",
+	"item_travel_boots_2",
+	"item_ultimate_scepter_2",
+	"item_sheepstick",
+}
 
 sRoleItemsBuyList['pos_5'] = {
     "item_double_tango",
@@ -67,11 +81,11 @@ sRoleItemsBuyList['pos_5'] = {
 
     "item_arcane_boots",
     "item_magic_wand",
-    "item_solar_crest",--
-    "item_heart",--
-    "item_ultimate_scepter",
+    "item_crimson_guard",--
     "item_force_staff",--
     "item_guardian_greaves",--
+    "item_ultimate_scepter",
+    "item_heart",--
     "item_lotus_orb",--
     "item_shivas_guard",--
     "item_aghanims_shard",
@@ -89,6 +103,16 @@ X['sSellList'] = {
 	"item_ring_of_protection",
 	"item_vanguard",
 	"item_power_treads",
+
+	"item_black_king_bar",
+	
+	"item_ultimate_scepter",
+	"item_echo_sabre",
+
+	"item_travel_boots",
+
+	"item_assault",
+	"item_ancient_janggo",
 }
 
 

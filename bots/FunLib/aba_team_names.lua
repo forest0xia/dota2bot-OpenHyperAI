@@ -3,6 +3,7 @@ local Dota2Teams = {}
 -- Keep track of picked teams
 -- This actually will not work due to Dire and Radiant runs the script at the same time in different sand box so they don't share data, not even the global vars.
 local pickedTeams = {}
+local defaultPostfix = 'OHA' -- Open Hyper AI.
 
 -- List should have a least 4 teams for better performance.
 local defaultTeams = {
@@ -53,7 +54,7 @@ local function generateTeam(availableTeams, overrides, teamType)
         if overrides and #overrides > 0 then
             table.insert(team, table.remove(playerList, 1))
         else
-            table.insert(team, teamName .. "." .. table.remove(playerList))
+            table.insert(team, teamName .. "." .. table.remove(playerList)..'.'..defaultPostfix)
         end
     end
     return team

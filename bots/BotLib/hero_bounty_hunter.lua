@@ -58,7 +58,7 @@ sRoleItemsBuyList['pos_1'] = {
 --	'item_medallion_of_courage',
 	'item_vanguard',
 	"item_aghanims_shard",
-	"item_solar_crest",
+	"item_crimson_guard",
 	"item_black_king_bar",
 	"item_ultimate_scepter",
 	"item_travel_boots",

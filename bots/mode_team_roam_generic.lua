@@ -128,34 +128,6 @@ function GetDesire()
 
 	if J.Role['bStopAction'] then return 2.0 end
 
-	-- 判断是否要提醒回防
-	local nDefendLane, nDefendDesire = J.GetMostDefendLaneDesire();
-	local nDefendLoc = GetLaneFrontLocation(GetTeam(),nDefendLane,-600);
-	local nDefendAllies = J.GetAlliesNearLoc(nDefendLoc, 2200);
-	if nDefendDesire > 0.8
-	and Utils.GetLocationToLocationDistance(nDefendLoc, J.GetTeamFountain()) < 3500
-	and DotaTime() - defendPingTime > 5 and #nDefendAllies < J.GetNumOfAliveHeroes(false) then
-		defendPingTime = DotaTime()
-		bot:ActionImmediate_Chat("Let's defend base", false)
-		bot:ActionImmediate_Ping(nDefendLoc.x, nDefendLoc.y, false)
-		
-	end
-
-	-- if pinged to defend base.
-	local ping = Utils.IsPingedToDefenseByAnyPlayer(bot, 4)
-	if ping ~= nil then
-		local tps = bot:GetItemInSlot(nTpSolt);
-		local bestTpLoc = J.GetNearbyLocationToTp(ping)
-		if tps ~= nil and tps:IsFullyCastable()
-			and GetUnitToLocationDistance(bot, bestTpLoc) > 3000
-		then
-			bot:Action_UseAbilityOnLocation(tps, bestTpLoc + RandomVector(200))
-		else
-			bot:Action_MoveToLocation(tps + RandomVector(200));
-		end
-		return 0.3
-	end
-
 	if  J.IsPushing(bot)
 	and bot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH
 	then

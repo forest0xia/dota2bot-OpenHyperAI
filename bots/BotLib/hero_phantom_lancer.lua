@@ -31,8 +31,8 @@ local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
 
 local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 
--- local sRandomItem_1 = RandomInt( 1, 9 ) > 6 and "item_satanic" or "item_butterfly"
-local sAbyssalBloodthorn = RandomInt( 1, 2 ) == 1 and "item_abyssal_blade" or "item_bloodthorn"
+local sRandomItem_1 = RandomInt( 1, 9 ) > 5 and "item_monkey_king_bar" or "item_abyssal_blade"
+local sAbyssalBloodthorn = RandomInt( 1, 9 ) > 4 and "item_bloodthorn" or "item_butterfly"
 
 local sRoleItemsBuyList = {}
 
@@ -54,7 +54,7 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_disperser",--
 	"item_ultimate_scepter_2",
 	"item_moon_shard",
-	"item_butterfly",--
+	sRandomItem_1,--
 	sAbyssalBloodthorn,--
 	"item_aghanims_shard",
 }
