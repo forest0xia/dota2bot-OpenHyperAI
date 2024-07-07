@@ -7,16 +7,15 @@ This script is based on Valve's default bot script and many other people's work 
 
 Bot script in Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=3246316298
 
-If you'd like to buy me a coffee: https://www.buymeacoffee.com/forest.dota
-
 ### Why it's enjoyable
-0. Support 7.36
-1. Support 115+ heroes. (I personally don't take much of the credit for this because it's many peoples work to make this possible). Kudos to Tinkering ABout (by ryndrb) for making a lot of improvements on recent hero supporting.
-1. All supported heroes can play any position roles. Heroes will go to any lane they are assigned. The laning or pos of the bot heroes will seem random in the game, but it's deterministic - check the Bot roles section below.
+0. Support 7.36[/b]
+1. Support 115+ heroes. I personally don't take much of the credit for this because it's many peoples work to make this possible, and we should continue to have open source support to share the improvements to keep the bots enjoyable.
+1. All supported heroes in this script can play any position roles. Heroes will go to any lane they are assigned. The laning or pos of the bot heroes will seem random in the game, but it's deterministic - check the Bot roles section below.
 1. Dynamic difficulty. If you ever feel all existing bot scripts lack excitement. This script boosts bots with huge unfair advantages to make bot games a lot more challenging. You will need to copy the script into your local vscripts folder and then enable the Fretbots mode for this feature. See instructions below.
 1. Support multiple modes: All Pick, Turbo, Captain Mode, Random Draft, Single Draft, All Random, Mid Only, Least Played, and 1V1 mid. 
-   1. Notes for 1V1 mid: Enemy will pick the same hero after your pick. This way you can play 1:1 SF mid, or any mid heroes you like to practice against bot with the same hero.
-   1. Notes for 1V1 mid: Other bots, if you have any other empty slots filled with bots, will all go to top.
+   1. For 1V1 mid: Enemy will pick the same hero after your pick. This way you can play 1:1 SF mid, or any mid heroes you like to practice against bot with the same hero.
+   1. For 1V1 mid: Other bots, if you have any other empty slots filled with bots, will all go to top.
+   1. For Captain mode, the role swap "!pos X" is not supported. Follow lobby order and be the captain.
 1. Improved code structure & general logic for decision making for ability and item usages as well as roaming and farming.
 1. Fixed tons of bugs. Bugs that can cause bots to stay idle or cancel it's own channeling spells or stuck on weird state.
 1. Enhanced AI Chatbot. You can chat with bots in the game as if they were real and optimistic players. Integrated with ChatGPT. [Note: you need to enable Fretbot mode for this, check out How to Install section below.]
@@ -37,11 +36,15 @@ There is currently a bug where subscribing to recent bot scripts will NOT work w
    * Make sure to launch Dota 2 with the console enabled. When creating the lobby game, ensure that `Enable Cheat` is checked;
    * When the lobby game gets started, e.g. in the hero selection phase. Open the console, and input `sv_cheats 1; script_reload_code bots/fretbots`
 
-### Bots' roles and positioning
-1. The positioning are determined by the slot order in the lobby, so the roles 1 to 5 are the order of lobby slots from top to bottom. The pick order will get shuffled in the game but it won't affect their roles.
-1. In hero selection phase, you can type `!pick XXX` to pick heros for ally bots, or type `/all !pick XXX` for enemy bots. For example `/all !pick puck`
-1. In pre-game phase, you can type `!pos X` to pick/swap the position with bot, this will also swap the lane. For example `!pos 2`
-1. Bots will say what their roles are once loaded into the game.
+### Bot roles, lanings and positioning
+1. In local lobby, the positions of the bots are the same as the order of the slots: 1, 2, 3, 4, 5 from top to bottom in the lobby.
+1. During hero selection phase, you can type: `!pick XXX` to pick a hero. For example: `!pick puck` to pick puck as ally.
+1.  You can type: `/all !pick XXX` to pick hero for enemy. For example: `/all !pick puck` to pick puck as enemy.
+   1. For complex hero names or names that may apply to multiple heroes, please use the full internal code name. For example: `!pick npc_dota_hero_keeper_of_the_light` .
+   1. You can find a list of hero names here: https://developer.valvesoftware.com/wiki/Dota_2_Workshop_Tools/Scripting/Heroes_internal_names
+   1. Do not manually pick bots from any of the Not-Yet-Supported-Heroes: Dark Willow, Elder Titan, Hoodwink, io, Lone Druid, Marci, Muerta, Primal Beast. Note that they are buggy due to problems on the Valves side, not script developers.
+1. You can type: `!pos X` to swap the position with a bot. For example: `!pos 2` to swap role and lane with the bot that's going to mid.
+1. Pos1 and Pos5 bots go to safe lane. Pos3 and Pos4 bots go offlane. Pos2 bot goes to mid lane.
 
 ### What's next
 1. This is a script derived from Tinkering About (by @ryndrb). But the code has diverged significantly w.r.t roles, item selection, farming, laning, rosh/runes strategies, as well as the local support with Fretbots. So the future maintenance will keep diverging.
@@ -51,34 +54,8 @@ There is currently a bug where subscribing to recent bot scripts will NOT work w
 5. More code bug fixes.
 6. Better laning logic to avoid bots feeding too much in the early game.
 
-### Some Recent Fixes
-1. Added new hero support for Primal Beast to play position 2.
-1. Bots are now more flexible with different laning or roles. They were not able to purchase items if they were assigned with different role or laning.
-1. Added/Improved a bunch of hero support so bots can have better performance on more heroes with better strategy of the ability usage, item purchase, etc, such as Invoker casting abilities and making combos.
-1. Added a canary logic to keep checking if any bot gets stuck or stays idle for some time. If such a bot is detected, it's current action or all queued actions will get cleaned and it will be forced to push.
-1. When Fretbots is enabled. A list of unfair settings get applied in addition to what was provided by Fretbots originally:
-   * The bots get bonus mana/hp regens and provide less exp on death.
-   * When a player kills a bot, the player who made the kill receives a reduction in gold. This does not affect assisting players.
-1. Bots with refresher won't directly use refresher immediately, this is to prevent e.g. Void, Enigma using ult immediately twice. The logic is now also overridable in each bot files.
-1. Enigma will keep casting ult instead of stopping casting it immediately by itself doing something else.
-1. [updated, need to test] Don't kill couriers if bot is targeting a dying hero or is retreating.
-1. [updated, need to test] Don't focus on some minions over heroes.
-1. Bots won't stay on some ability effects for lone. e.g. jakiro_macropyre_burn, dark_seer_wall, sandking_sand_storm, warlock_upheaval, etc. Bots have the intension to run away from those effects.
-1. Carry large HP and mana potions. Swap slots.
-1. Swap slots to use moonshard
-1. Bots should have regens in laning phase. Don't stay in lane if ph is too low. e.g. not calling in regen like omni would have 1400 hp and sit in lane on 200 till they tp back and take a free kill
-1. Better Tormentor strategy with human players. [Partially improved]
-1. Randomly selected warding locations from good warding locations. [Improved for game start warding]
-1. Use item_force_staff to break through trees from furion_sprout. Note that GetNearbyTrees api does not work for furion_sprout trees as of 5/12/2024.
-
-### Credits to
-- New beginner ai (by dota2jmz@163.com).
-- Tinkering ABout (by ryndrb: https://github.com/ryndrb/dota2bot or https://steamcommunity.com/sharedfiles/filedetails/?id=3139791706)
-- Ranked Matchmaking AI (by adamqqq)
-- fretbots (by fretmute)
-- BOT Experiment (by Furiospuppy)
-- ExtremePush (https://github.com/insraq/dota2bots)
-- All other bot script authors/contributors that had made bot scripts interesting.
+### Supporting me
+If you'd like to buy me a coffee: https://www.buymeacoffee.com/forest.dota
 
 ### Useful resources:
 - Posts shared by Ranked Matchmaking AI author: https://www.adamqqq.com/ai/dota2-ai-devlopment-tutorial.html
@@ -88,6 +65,15 @@ There is currently a bug where subscribing to recent bot scripts will NOT work w
 - Lua APIs, modes, and enum values: https://moddota.com/api/#!/vscripts/dotaunitorder_t
 - Bot modifier names: https://developer.valvesoftware.com/wiki/Dota_2_Workshop_Tools/Scripting/Built-In_Modifier_Names
 - Dota2 data mining (details of items, abilities, heroes): https://github.com/muk-as/DOTA2_WEB/blob/master/dota2_web/Items_cn.json
+
+### Credits to
+- New beginner ai (by dota2jmz@163.com).
+- Tinkering ABout (by ryndrb: https://github.com/ryndrb/dota2bot or https://steamcommunity.com/sharedfiles/filedetails/?id=3139791706)
+- Ranked Matchmaking AI (by adamqqq)
+- fretbots (by fretmute)
+- BOT Experiment (by Furiospuppy)
+- ExtremePush (https://github.com/insraq/dota2bots)
+- All other bot script authors/contributors that had made bot scripts interesting.
 
 ### Things to be updated (not ranked by priority, ChatGPT translated to English):
 - AM in place blink
@@ -131,7 +117,6 @@ There is currently a bug where subscribing to recent bot scripts will NOT work w
 - In the first 5 minutes, don't roam, especially as a mid-laner.
 - If being attacked by a tower, and there's a small creep nearby, and all are within tower range, attack the enemy's small creep.
 - If no enemy heroes nearby and your side's status is below 75, don't get attacked by the tower.
-
 - Random ward locations.
 - If Carl, don't use Ashes to heal, even if very low on health, unless there are many charges.
 - Roshan cannot be seen. Check Roshan's status only when within attack range.
