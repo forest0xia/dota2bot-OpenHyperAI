@@ -52,8 +52,8 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_disperser",--
 	"item_abyssal_blade",--
 	"item_ultimate_scepter_2",
-	"item_monkey_king_bar",--
 	"item_moon_shard",
+	"item_monkey_king_bar",--
 	"item_aghanims_shard",
 }
 

@@ -156,8 +156,7 @@ local function GeneralPurchase()
 	then
 		cost = itemCost
 	end
-	
-	
+
 	--从第12分钟起存钱买魔晶
 	if not hasBuyShard
 		and DotaTime() > 12 * 60
@@ -168,19 +167,17 @@ local function GeneralPurchase()
 			cost = cost + 1400
 		else
 			cost = cost + 1400 * ( 1 - shardCDTime / 300 )
-		end		
+		end
 	end
-	
-	
+
 	--开始购买魔晶
 	if bot.currentComponentToBuy == "item_aghanims_shard"
 	then
 		hasBuyShard = false
 		bot.currentComponentToBuy = nil
 		bot.currListItemToBuy[#bot.currListItemToBuy] = nil
-		return	
+		return
 	end
-	
 
 	--达到金钱需要时购物
 	if bot:GetGold() >= cost
@@ -213,6 +210,11 @@ local function GeneralPurchase()
 		then
 			bot.SecretShop = true
 		else
+			if Utils.CountBackpackEmptySpace(bot) <= 0 -- no empty slot
+			then
+				return
+			end
+
 			if bot:ActionImmediate_PurchaseItem( bot.currentComponentToBuy ) == PURCHASE_ITEM_SUCCESS
 			then
 				bot.currentComponentToBuy = nil
@@ -220,7 +222,15 @@ local function GeneralPurchase()
 				bot.SecretShop = false
 				return
 			else
-				print( bot:GetUnitName().." 未能购买物品 "..bot.currentComponentToBuy.." : "..tostring( bot:ActionImmediate_PurchaseItem( bot.currentComponentToBuy ) ) )
+				if GetItemStockCount(bot.currentComponentToBuy ) < 1 then
+					-- out of stock, skip that item.
+					-- print( bot:GetUnitName().." failed to purchase item - "..bot.currentComponentToBuy.." : out of stock.")
+					bot.currentComponentToBuy = nil
+					bot.currListItemToBuy[#bot.currListItemToBuy] = nil
+					bot.SecretShop = false
+				else
+					print( bot:GetUnitName().." 未能购买物品 "..bot.currentComponentToBuy.." : "..tostring( bot:ActionImmediate_PurchaseItem( bot.currentComponentToBuy ) ) )
+				end
 			end
 		end
 	else
@@ -268,20 +278,16 @@ local function TurboModeGeneralPurchase()
 			cost = cost + 1400
 		else
 			cost = cost + 1400 * ( 1 - shardCDTime / 180 )
-		end		
+		end
 	end
-	
-	
 
 	if bot.currentComponentToBuy == "item_aghanims_shard"
 	then
 		hasBuyShard = false
 		bot.currentComponentToBuy = nil
 		bot.currListItemToBuy[#bot.currListItemToBuy] = nil
-		return	
+		return
 	end
-	
-
 
 	if bot:GetGold() >= cost
 		and bot:GetItemInSlot( 14 ) == nil
@@ -292,7 +298,14 @@ local function TurboModeGeneralPurchase()
 			bot.currListItemToBuy[#bot.currListItemToBuy] = nil
 			return
 		else
-			print( bot:GetUnitName().." 未能购买物品 "..bot.currentComponentToBuy.." : "..tostring( bot:ActionImmediate_PurchaseItem( bot.currentComponentToBuy ) ) )
+			if GetItemStockCount(bot.currentComponentToBuy ) < 1 then
+				-- out of stock, skip that item.
+				-- print( bot:GetUnitName().." failed to purchase item - "..bot.currentComponentToBuy.." : out of stock.")
+				bot.currentComponentToBuy = nil
+				bot.currListItemToBuy[#bot.currListItemToBuy] = nil
+			else
+				print( bot:GetUnitName().." 未能购买物品 "..bot.currentComponentToBuy.." : "..tostring( bot:ActionImmediate_PurchaseItem( bot.currentComponentToBuy ) ) )
+			end
 		end
 	end
 end
@@ -705,12 +718,8 @@ function ItemPurchaseThink()
 		fullInvCheck = currentTime
 	end
 
-	local countEmptyBackpack = 3
-	if bot:GetItemInSlot( 6 ) ~= nil then countEmptyBackpack = countEmptyBackpack - 1 end
-	if bot:GetItemInSlot( 7 ) ~= nil then countEmptyBackpack = countEmptyBackpack - 1 end
-	if bot:GetItemInSlot( 8 ) ~= nil then countEmptyBackpack = countEmptyBackpack - 1 end
-
 	--出售过度装备
+	local countEmptyBackpack = Utils.CountBackpackEmptySpace(bot)
 	if currentTime > sell_time + 0.5
 		and countEmptyBackpack <= 1
 		and ( bot:DistanceFromFountain() <= 100 or bot:DistanceFromSecretShop() <= 100 )

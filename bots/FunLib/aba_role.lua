@@ -16,8 +16,8 @@ end
 -- The index in the list is the pick order, value is the role.
 -- X.roleAssignment = { 2, 3, 1, 5, 4 }
 X.roleAssignment = {
-	TEAM_RADIANT = { 1, 2, 3, 4, 5 },
-	TEAM_DIRE = { 1, 2, 3, 4, 5 }
+	TEAM_RADIANT = { 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5 },
+	TEAM_DIRE = { 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5 }
 }
 
 

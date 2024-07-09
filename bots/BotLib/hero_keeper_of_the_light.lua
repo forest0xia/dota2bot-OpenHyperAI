@@ -117,19 +117,7 @@ Pos2SellList = {
     "item_spirit_vessel",
 }
 
-Pos4SellList = {
-
-}
-
-Pos5SellList = {
-
-}
-
 X['sSellList'] = Pos2SellList
-
-if sRole == "pos_2" then X['sSellList'] = Pos2SellList end
-if sRole == "pos_4" then X['sSellList'] = Pos4SellList end
-if sRole == "pos_5" then X['sSellList'] = Pos5SellList end
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_mid' }, {} end
 

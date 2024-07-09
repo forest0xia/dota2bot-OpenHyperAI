@@ -315,9 +315,6 @@ Item['sTopItems'] = {
 	'item_revenants_brooch',
 	'item_boots_of_bearing',
 	'item_wraith_pact',
-	
-	
-	
 }
 
 local tTopItemList = {}
@@ -344,17 +341,30 @@ Item['tEarlyItem'] = {
 	 'item_refresher_shard',
 	 'item_cheese',
 	 'item_blood_grenade',
+	 'item_branches',
+	 'item_gauntlets',
+	 'item_slippers',
+	 'item_circlet',
+	 'item_mantle',
 }
 
 Item['tEarlyConsumableItem'] = {
 	 'item_clarity',
 	 'item_faerie_fire',
 	 'item_tango',
+	 'item_enchanted_mango',
 	 'item_flask',
 	 'item_infused_raindrop',
 	 'item_magic_stick',
+	 'item_quelling_blade',
+	 'item_branches',
 	 -- 'item_magic_wand',
 	 'item_blood_grenade',
+	 'item_gauntlets',
+	 'item_slippers',
+	 'item_circlet',
+	 'item_mantle',
+	 'item_magic_wand',
 	--  'item_dust',
 	--  'item_ward_sentry',
 	--  'item_ward_observer',

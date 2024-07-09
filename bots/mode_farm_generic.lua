@@ -5,6 +5,8 @@ if GetBot():IsInvulnerable() or not GetBot():IsHero() or not string.find(GetBot(
 end
 
 local bot = GetBot();
+local team = GetTeam()
+
 local X = {}
 local J = require( GetScriptDirectory()..'/FunLib/jmz_func')
 local RB = Vector(-7174.000000, -6671.00000, 0.000000)
@@ -112,7 +114,7 @@ function GetDesire()
 		end
 		return 0.1
 	end
-	
+
 	-- 判断是否要提醒回防
 	Utils['GameStates']['defendPings'] = Utils['GameStates']['defendPings'] ~= nil and Utils['GameStates']['defendPings'] or { pingedTime = GameTime() }
 	if GameTime() - Utils['GameStates']['defendPings'].pingedTime > 5 then
@@ -127,7 +129,7 @@ function GetDesire()
 		local nDefendLoc
 		for _, t in pairs( towers )
 		do
-			local tower = GetTower( GetTeam(), t )
+			local tower = GetTower( team, t )
 			if tower ~= nil and tower:GetHealth()/tower:GetMaxHealth() < 0.8
 			and J.GetNumOfHeroesNearLocation( true, tower:GetLocation(), 1000 ) >= 1
 			then
@@ -135,9 +137,9 @@ function GetDesire()
 				enemeyPushingBase = true
 			end
 		end
-		if not enemeyPushingBase and not GetTower( GetTeam(), TOWER_BASE_1 ):IsAlive()
-		and J.GetNumOfHeroesNearLocation( true, J.GetTeamFountain(), 1000 ) >= 1 then
-			nDefendLoc = J.GetTeamFountain() + RandomVector(100) -- GetLaneFrontLocation(GetTeam(), nDefendLane, 100) + RandomVector(100)
+		if not enemeyPushingBase and not GetTower( team, TOWER_BASE_1 ):IsAlive()
+		and J.GetNumOfHeroesNearLocation( true, GetAncient(team):GetLocation(), 1000 ) >= 1 then
+			nDefendLoc = GetAncient(team):GetLocation() + RandomVector(100) -- GetLaneFrontLocation(team, nDefendLane, 100) + RandomVector(100)
 			enemeyPushingBase = true
 		end
 	
@@ -177,7 +179,7 @@ function GetDesire()
 		return 0.446
 	end
 
-	local TormentorLocation = J.GetTormentorLocation(GetTeam())
+	local TormentorLocation = J.GetTormentorLocation(team)
 	local nNeutralCreeps = bot:GetNearbyNeutralCreeps(700)
 	for _, c in pairs(nNeutralCreeps)
 	do
@@ -196,7 +198,7 @@ function GetDesire()
 		teamTime = DotaTime();
 	end
 
-	if teamPlayers == nil then teamPlayers = GetTeamPlayers(GetTeam()) end
+	if teamPlayers == nil then teamPlayers = GetTeamPlayers(team) end
 	
 	if bot:IsAlive() --For sometime to run
 	then
@@ -224,7 +226,7 @@ function GetDesire()
 	
 	if DotaTime() < 50 then return 0.0 end
 	
-	if X.IsUnitAroundLocation(GetAncient(GetTeam()):GetLocation(), 3000) then
+	if X.IsUnitAroundLocation(GetAncient(team):GetLocation(), 3000) then
 		return BOT_MODE_DESIRE_NONE;
 	end
 	
@@ -518,7 +520,7 @@ function Think()
 	-- pretend to be in laning
 	if Utils.ActuallyBuggedHeroes[botName] ~= nil and DotaTime() < 10 * 60 then
 		local mostFarmDesireLane = bot:GetAssignedLane();
-		local tpLoc = GetLaneFrontLocation(GetTeam(), mostFarmDesireLane, 0);
+		local tpLoc = GetLaneFrontLocation(team, mostFarmDesireLane, 0);
 
 		if bot:NumQueuedActions() <= 1 then
 			bot:ActionQueue_AttackMove(tpLoc + RandomVector(200));
@@ -601,7 +603,7 @@ function Think()
 	
 		if J.IsInAllyArea(bot) or J.GetDistanceFromEnemyFountain(bot) < 2600
 		then	
-			if bot:GetTeam() == TEAM_RADIANT
+			if team == TEAM_RADIANT
 			then
 				bot:Action_MoveToLocation(RB);
 				return;
@@ -610,7 +612,7 @@ function Think()
 				return;
 			end
 		else
-			if bot:GetTeam() == TEAM_RADIANT
+			if team == TEAM_RADIANT
 			then
 			    local mLoc = J.GetLocationTowardDistanceLocation(bot,DB,-700);
 				bot:Action_MoveToLocation(mLoc);
@@ -631,14 +633,14 @@ function Think()
 		local nNeutrals = bot:GetNearbyNeutralCreeps(nSearchRange);
 		if farmTarget ~= nil and #nNeutrals == 0 then
 						
-			if farmTarget:GetTeam() == bot:GetTeam() 
+			if farmTarget:GetTeam() == team
 			   and J.IsInAllyArea(farmTarget)
 			then
 				bot:Action_MoveToLocation(farmTarget:GetLocation() + RandomVector(300));
 				return
 			end
 			
-			if farmTarget:GetTeam() ~= bot:GetTeam()
+			if farmTarget:GetTeam() ~= team
 			then
 				--如果小兵正在被友方小兵攻击且生命值略高于自己的击杀线则S自己的出手
 				local allyTower = bot:GetNearbyTowers(1000,true)[1];
@@ -734,7 +736,7 @@ function Think()
 				then
 					local mostFarmDesireLane,mostFarmDesire = J.GetMostFarmLaneDesire(bot);
 					local tps = bot:GetItemInSlot(nTpSolt);
-					local tpLoc = GetLaneFrontLocation(GetTeam(),mostFarmDesireLane,0);
+					local tpLoc = GetLaneFrontLocation(team,mostFarmDesireLane,0);
 					local bestTpLoc = J.GetNearbyLocationToTp(tpLoc);
 					local nAllies = J.GetAlliesNearLoc(tpLoc, 1400);
 					if mostFarmDesire > BOT_MODE_DESIRE_VERYHIGH 
@@ -756,7 +758,7 @@ function Think()
 					if tBoots == nil then tBoots = J.IsItemAvailable("item_travel_boots"); end;
 					if tBoots ~= nil and tBoots:IsFullyCastable()
 					then
-						local tpLoc = GetLaneFrontLocation(GetTeam(),mostFarmDesireLane,-600);
+						local tpLoc = GetLaneFrontLocation(team,mostFarmDesireLane,-600);
 						local nAllies = J.GetAlliesNearLoc(tpLoc, 1600);
 						if mostFarmDesire > BOT_MODE_DESIRE_HIGH * 1.12		
 						   and #nAllies == 0
@@ -861,7 +863,7 @@ function X.IsNearLaneFront( bot )
 	local testDist = 1600;
 	for _,lane in pairs(nLaneList)
 	do
-		local tFLoc = GetLaneFrontLocation(GetTeam(), lane, 0);
+		local tFLoc = GetLaneFrontLocation(team, lane, 0);
 		if GetUnitToLocationDistance(bot,tFLoc) <= testDist
 		then
 		    return true;

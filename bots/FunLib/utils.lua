@@ -9,7 +9,7 @@ Anything that can be shared in any files without worrying about nested or circul
 ]]
 
 local X = { }
-local DebugMode = true
+local DebugMode = false
 
 local RadiantFountainTpPoint = Vector(-7172, -6652, 384 )
 local DireFountainTpPoint = Vector(6982, 6422, 392)
@@ -116,6 +116,7 @@ function X.Deepcopy(orig)
     return copy
 end
 
+-- Combine 2 tables into a unique table.
 function X.CombineTablesUnique(tbl1, tbl2)
     -- Create a set to track unique values
     local set = {}
@@ -137,6 +138,18 @@ function X.CombineTablesUnique(tbl1, tbl2)
     end
     
     return result
+end
+
+-- Merge two lists into one and return it
+function X.MergeLists(list1, list2)
+    local mergedList = {}
+    for _, v in ipairs(list1) do
+        table.insert(mergedList, v)
+    end
+    for _, v in ipairs(list2) do
+        table.insert(mergedList, v)
+    end
+    return mergedList
 end
 
 function X.RemoveValueFromTable(tbl, valueToRemove)
@@ -195,6 +208,23 @@ function X.HasValue(tab, val)
     end
 
     return false
+end
+
+-- for debug. Print Unit Muldifiers
+function X.PrintUnitMuldifiers(unit)
+    local npcModifier = unit:NumModifiers()
+	for i = 0, npcModifier
+	do
+        print('Unit: '..unit:GetUnitName()..' has modifier '.. unit:GetModifierName(i) .. ' with stack count: '.. unit:GetModifierStackCount(i))
+	end
+end
+
+function X.CountBackpackEmptySpace(bot)
+	local countEmptyBackpack = 3
+	if bot:GetItemInSlot( 6 ) ~= nil then countEmptyBackpack = countEmptyBackpack - 1 end
+	if bot:GetItemInSlot( 7 ) ~= nil then countEmptyBackpack = countEmptyBackpack - 1 end
+	if bot:GetItemInSlot( 8 ) ~= nil then countEmptyBackpack = countEmptyBackpack - 1 end
+    return countEmptyBackpack
 end
 
 local function FloatEqual(a, b)

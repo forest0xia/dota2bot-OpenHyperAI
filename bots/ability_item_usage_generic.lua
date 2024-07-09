@@ -10,6 +10,7 @@
 
 local X = {}
 local bot = GetBot()
+local team = GetTeam()
 local bDebugMode = ( 1 == 10 )
 
 if bot:IsInvulnerable() or not bot:IsHero() or bot:IsIllusion()
@@ -22,7 +23,7 @@ local BotBuild = dofile( GetScriptDirectory().."/BotLib/"..string.gsub( bot:GetU
 
 if BotBuild == nil then return end
 
-if GetTeam() ~= TEAM_DIRE
+if team ~= TEAM_DIRE
 then
 	print( '&&&&&&&&&&&&&&&&&&&&&&'..J.Chat.GetNormName( bot )..': Hello, Dota2 World!' )
 end
@@ -314,7 +315,7 @@ local function BuybackUsageComplement()
 		return
 	end
 
-	local ancient = GetAncient( GetTeam() )
+	local ancient = GetAncient( team )
 
 	if ancient ~= nil
 	then
@@ -363,33 +364,37 @@ local function CourierUsageComplement()
 	local protectCourierCD = 5.0
 	--------* * * * * * * ----------------* * * * * * * ----------------* * * * * * * --------
 
+	--提前/及时的 出售过度装备
+	-- 先尝试捡起自己的物品
+	local dropItemList = GetDroppedItemList()
+	local tryPickCount = 0
+	for _, tDropItem in pairs( dropItemList )
+	do
+		if tDropItem.item ~= nil and (tryPickCount == 0 and not Utils.HasValue(Item['tEarlyConsumableItem'], tDropItem.item:GetName()))
+		then
+			local nDropOwner = tDropItem.owner
+			tryPickCount = tryPickCount + 1
+			if nDropOwner ~= nil and nDropOwner == bot
+			then
+				bot:Action_PickUpItem(nDropOwner)
+			end
+		end
+	end
 
 	if DotaTime() > 0 and DotaTime() - lastCheckDropTime > 3
 	then
 		lastCheckDropTime = DotaTime()
-		if bot:GetItemInSlot(6) ~= nil and bot:GetItemInSlot(7) ~= nil and bot:GetItemInSlot(8) ~= nil then
+
+		-- 再尝试丢/卖掉自己的物品
+		if Utils.CountBackpackEmptySpace(bot) <= 1 and bot:DistanceFromFountain() <= 300 then
 			for i = 1, #Item['tEarlyConsumableItem']
 			do
 				local itemName = Item['tEarlyConsumableItem'][i]
 				local itemSlot = bot:FindItemSlot( itemName )
 				if itemSlot >= 0 and itemSlot <= 8
 				then
-					bot:Action_DropItem( bot:GetItemInSlot( itemSlot ), bot:GetLocation() )
-				end
-			end
-		else
-			local dropItemList = GetDroppedItemList()
-			local tryPickCount = 0
-			for _, tDropItem in pairs( dropItemList )
-			do
-				if tDropItem.item ~= nil and (tryPickCount == 0 or not Utils.HasValue(Item['tEarlyConsumableItem'], tDropItem.item:GetName()))
-				then
-					local nDropOwner = tDropItem.owner
-					tryPickCount = tryPickCount + 1
-					if nDropOwner ~= nil and nDropOwner == bot
-					then
-						bot:Action_PickUpItem(nDropOwner)
-					end
+					bot:ActionImmediate_SellItem( bot:GetItemInSlot( itemSlot ))
+					-- bot:Action_DropItem( bot:GetItemInSlot( itemSlot ), bot:GetLocation() )
 				end
 			end
 		end
@@ -453,7 +458,7 @@ local function CourierUsageComplement()
 					or ( cState == COURIER_STATE_IDLE and npcCourier:DistanceFromFountain() < 800 ) )
 		then
 			local nMSlot = X.GetNumStashItem( bot )
-			if nMSlot > 0
+			if nMSlot > 0 and (bot:GetItemInSlot(6) == nil or bot:GetItemInSlot(7) == nil or bot:GetItemInSlot(8) == nil)
 			then
 				if ( bot.currListItemToBuy ~= nil and #bot.currListItemToBuy == 0 )
 					or ( bot.currentComponentToBuy ~= nil
@@ -487,6 +492,7 @@ local function CourierUsageComplement()
 			and ( not X.IsInvFull( bot ) or ( X.GetNumStashItem( bot ) == 0 and bot.currListItemToBuy ~= nil and #bot.currListItemToBuy == 0 ) )
 			and ( npcCourier:DistanceFromFountain() < 4000 + botLV * 200 or GetUnitToUnitDistance( bot, npcCourier ) < 1800 )
 			and currentTime > courierTime + useCourierCD
+			and (bot:GetItemInSlot(6) == nil or bot:GetItemInSlot(7) == nil or bot:GetItemInSlot(8) == nil)
 		then
 			J.SetReportMotive( bDebugCourier, "信使运输背包中的东西" )
 			bot:ActionImmediate_Courier( npcCourier, COURIER_ACTION_TRANSFER_ITEMS )
@@ -678,11 +684,11 @@ end
 
 function X.IsEnemyHeroAroundSecretShop()
 
-	local vRadiantShop = GetShopLocation( GetTeam(), SHOP_SECRET )
-	local vDireShop = GetShopLocation( GetTeam(), SHOP_SECRET2 )
-	local vTeamSecretShop = GetTeam() == TEAM_DIRE and vDireShop or vRadiantShop
+	local vRadiantShop = GetShopLocation( team, SHOP_SECRET )
+	local vDireShop = GetShopLocation( team, SHOP_SECRET2 )
+	local vTeamSecretShop = team == TEAM_DIRE and vDireShop or vRadiantShop
 
-	local vCenterLocation = ( vTeamSecretShop + GetAncient( GetTeam() ):GetLocation() ) * 0.5
+	local vCenterLocation = ( vTeamSecretShop + GetAncient( team ):GetLocation() ) * 0.5
 
 	if J.IsEnemyHeroAroundLocation( vCenterLocation, 2000 )
 	then
@@ -1189,14 +1195,14 @@ X.ConsiderItemDesire["item_blink"] = function( hItem )
 
 	if J.IsStuck(bot)
 	then
-		local loc = J.GetLocationTowardDistanceLocation(bot, GetAncient(GetTeam()):GetLocation(), 1100)
+		local loc = J.GetLocationTowardDistanceLocation(bot, GetAncient(team):GetLocation(), 1100)
 		return BOT_ACTION_DESIRE_HIGH, loc, 'ground', nil
 	end
 
 	if  J.IsRetreating(bot)
 	and bot:GetActiveModeDesire() > BOT_MODE_DESIRE_MODERATE
 	then
-		local bLocation = J.GetLocationTowardDistanceLocation(bot, GetAncient(GetTeam()):GetLocation(), 1199)
+		local bLocation = J.GetLocationTowardDistanceLocation(bot, GetAncient(team):GetLocation(), 1199)
 		local nInRangeAlly = J.GetNearbyHeroes(bot,660, false, BOT_MODE_ATTACK)
 		local nInRangeEnemy = J.GetEnemiesNearLoc(bot:GetLocation(), 1200)
 
@@ -1248,7 +1254,7 @@ X.ConsiderItemDesire["item_blink"] = function( hItem )
 		or not botTarget:IsHero()
 		or not J.IsInRange(bot, botTarget, bot:GetAttackRange() + 100))
 	then
-		local loc = J.GetLocationTowardDistanceLocation(bot, GetAncient(GetTeam()):GetLocation(), 1199)
+		local loc = J.GetLocationTowardDistanceLocation(bot, GetAncient(team):GetLocation(), 1199)
 		return BOT_ACTION_DESIRE_HIGH, loc, 'ground', nil
 	end
 
@@ -2005,7 +2011,7 @@ X.ConsiderItemDesire["item_force_staff"] = function( hItem )
 			if #nNearAllysEnemyList >= 1
 				and not npcAlly:IsInvisible()
 				and npcAlly:GetActiveMode() == BOT_MODE_RETREAT
-				and npcAlly:IsFacingLocation( GetAncient( GetTeam() ):GetLocation(), 30 )
+				and npcAlly:IsFacingLocation( GetAncient( team ):GetLocation(), 30 )
 				and npcAlly:DistanceFromFountain() > 600
 				and npcAlly:WasRecentlyDamagedByAnyHero( 4.0 )
 			then
@@ -2071,8 +2077,8 @@ X.ConsiderItemDesire["item_force_staff"] = function( hItem )
 		do
 			if J.IsValidHero( npcEnemy )
 				and J.CanCastOnMagicImmune( npcEnemy )
-				and npcEnemy:IsFacingLocation( GetAncient( GetTeam() ):GetLocation(), 40 )
-				and GetUnitToLocationDistance( npcEnemy, GetAncient( GetTeam() ):GetLocation() ) < 1200
+				and npcEnemy:IsFacingLocation( GetAncient( team ):GetLocation(), 40 )
+				and GetUnitToLocationDistance( npcEnemy, GetAncient( team ):GetLocation() ) < 1200
 			then
 				hEffectTarget = npcEnemy
 				sCastMotive = '推人入泉'..J.Chat.GetNormName( hEffectTarget )
@@ -2536,7 +2542,7 @@ X.ConsiderItemDesire["item_hurricane_pike"] = function( hItem )
 			end
 		end
 
-		if bot:IsFacingLocation( GetAncient( GetTeam() ):GetLocation(), 20 )
+		if bot:IsFacingLocation( GetAncient( team ):GetLocation(), 20 )
 			and bot:DistanceFromFountain() > 600
 			and #hNearbyEnemyHeroList >= 1
 		then
@@ -4248,7 +4254,6 @@ function X.GetLaningTPLocation( bot, nMinTPDistance, botLocation )
 
 	local laneToTP
 	local tp = false
-	local team = GetTeam()
 	local position = J.GetPosition(bot)
 
 	if team == TEAM_RADIANT then
@@ -4274,25 +4279,25 @@ function X.GetLaningTPLocation( bot, nMinTPDistance, botLocation )
 	end
 
 	local botAmount = GetAmountAlongLane(laneToTP, botLocation)
-	local laneFront = GetLaneFrontAmount(GetTeam(), laneToTP, false)
+	local laneFront = GetLaneFrontAmount(team, laneToTP, false)
 	if botAmount.distance > nMinTPDistance
 	or botAmount.amount < laneFront / 5
 	then
 		tp = true
 	end
 
-	return GetLaneFrontLocation(GetTeam(), laneToTP, 100), tp
+	return GetLaneFrontLocation(team, laneToTP, 100), tp
 end
 
 function X.GetDefendTPLocation( nLane )
 
-	return GetLaneFrontLocation( GetTeam(), nLane, -950 )
+	return GetLaneFrontLocation( team, nLane, -950 )
 
 end
 
 function X.GetPushTPLocation( nLane )
 
-	local laneFront = GetLaneFrontLocation( GetTeam(), nLane, 0 )
+	local laneFront = GetLaneFrontLocation( team, nLane, 0 )
 	local bestTpLoc = J.GetNearbyLocationToTp( laneFront )
 	if J.GetLocationToLocationDistance( laneFront, bestTpLoc ) < 2000
 	then
@@ -4391,7 +4396,7 @@ function X.IsFarmingAlways( bot )
 		and nTarget:GetTeam() == TEAM_NEUTRAL
 		and not J.IsRoshan( nTarget )
 		and not J.IsKeyWordUnit( "warlock", nTarget )
-		and X.GetNumEnemyNearby( GetAncient( GetTeam() ) ) >= 2
+		and X.GetNumEnemyNearby( GetAncient( team ) ) >= 2
 	then
 		return true
 	end
@@ -4408,7 +4413,7 @@ function X.IsFarmingAlways( bot )
 		return true
 	end
 
-	if X.GetNumEnemyNearby( GetAncient( GetTeam() ) ) >= 4
+	if X.GetNumEnemyNearby( GetAncient( team ) ) >= 4
 		and bot:DistanceFromFountain() >= 4800
 		and #nNearAllyList < 2
 	then
@@ -4422,7 +4427,7 @@ function X.IsBaseTowerDestroyed()
 
 	for i = 9, 10, 1
 	do
-		local tower = GetTower( GetTeam(), i )
+		local tower = GetTower( team, i )
 		if tower == nil
 			or tower:GetHealth() / tower:GetMaxHealth() < 0.99
 		then
@@ -4555,7 +4560,7 @@ X.ConsiderItemDesire["item_tpscroll"] = function( hItem )
 	-- 		roshanLoc = Vector(-7549, 7562, 1107)
 	-- 	end
 
-	-- 	local laneFront = GetLaneFrontLocation( GetTeam(), lane, 0 )
+	-- 	local laneFront = GetLaneFrontLocation( team, lane, 0 )
 	-- 	hEffectTarget = J.GetNearbyLocationToTp(roshanLoc)
 	-- 	sCastMotive = 'roshan'
 	-- 	if J.GetLocationToLocationDistance( bot:GetLocation(), roshanLoc ) > 6000
@@ -4572,7 +4577,7 @@ X.ConsiderItemDesire["item_tpscroll"] = function( hItem )
 		or not J.IsGoingOnSomeone(bot)
 		or not J.IsDefending(bot))
 	then
-		local loc = J.GetTormentorLocation(GetTeam())
+		local loc = J.GetTormentorLocation(team)
 
 		hEffectTarget = J.GetNearbyLocationToTp(loc)
 		sCastMotive = 'tormentor'
@@ -4605,7 +4610,7 @@ X.ConsiderItemDesire["item_tpscroll"] = function( hItem )
 		if nMode == BOT_MODE_DEFEND_TOWER_BOT then nDefendLane, sLane = LANE_BOT, 'tower_bot' end
 
 		local botAmount = GetAmountAlongLane( nDefendLane, botLocation )
-		local laneFront = GetLaneFrontAmount( GetTeam(), nDefendLane, false )
+		local laneFront = GetLaneFrontAmount( team, nDefendLane, false )
 		if botAmount.distance > nMinTPDistance
 			or botAmount.amount < laneFront / 5
 		then
@@ -4645,7 +4650,7 @@ X.ConsiderItemDesire["item_tpscroll"] = function( hItem )
 		if nMode == BOT_MODE_PUSH_TOWER_BOT then nPushLane, sLane = LANE_BOT, 'tower_bot' end
 
 		local botAmount = GetAmountAlongLane( nPushLane, botLocation )
-		local laneFront = GetLaneFrontAmount( GetTeam(), nPushLane, false )
+		local laneFront = GetLaneFrontAmount( team, nPushLane, false )
 		if botAmount.distance > nMinTPDistance
 			or botAmount.amount < laneFront / 5
 		then
@@ -4847,7 +4852,7 @@ X.ConsiderItemDesire["item_tpscroll"] = function( hItem )
 
 		if mostFarmDesire > 0.1
 		then
-			farmTpLoc = GetLaneFrontLocation( GetTeam(), mostFarmDesireLane, 0 )
+			farmTpLoc = GetLaneFrontLocation( team, mostFarmDesireLane, 0 )
 			local bestTpLoc = J.GetNearbyLocationToTp( farmTpLoc )
 			if bestTpLoc ~= nil and farmTpLoc ~= nil
 				and J.IsLocHaveTower( 2000, false, farmTpLoc )
@@ -4888,7 +4893,7 @@ X.ConsiderItemDesire["item_tpscroll"] = function( hItem )
 		and J.Role.ShouldTpToFarm()
 		and not J.Role.IsAllyHaveAegis()
 		and not J.Role.CanBeSupport( bot:GetUnitName() )
-		and not J.IsEnemyHeroAroundLocation( GetAncient( GetTeam() ):GetLocation(), 3300 )
+		and not J.IsEnemyHeroAroundLocation( GetAncient( team ):GetLocation(), 3300 )
 	then
 		local nAttackAllyList = J.GetNearbyHeroes(bot, 1600, false, BOT_MODE_ATTACK )
 		local nNearEnemyList = J.GetNearbyHeroes(bot, 1400, true, BOT_MODE_NONE )
@@ -4910,7 +4915,7 @@ X.ConsiderItemDesire["item_tpscroll"] = function( hItem )
 
 			if isTravelBootsAvailable
 			then
-				tpLoc = GetLaneFrontLocation( GetTeam(), mostFarmDesireLane, - 600 )
+				tpLoc = GetLaneFrontLocation( team, mostFarmDesireLane, - 600 )
 				local nNearAllyList = J.GetAlliesNearLoc( tpLoc, 1600 )
 				if GetUnitToLocationDistance( bot, tpLoc ) > nMinTPDistance - 1500
 					and #nNearAllyList == 0
@@ -4934,7 +4939,7 @@ X.ConsiderItemDesire["item_tpscroll"] = function( hItem )
 				end
 			end
 
-			tpLoc = GetLaneFrontLocation( GetTeam(), mostFarmDesireLane, 0 )
+			tpLoc = GetLaneFrontLocation( team, mostFarmDesireLane, 0 )
 			local bestTpLoc = J.GetNearbyLocationToTp( tpLoc )
 			local nNearAllyList = J.GetAlliesNearLoc( tpLoc, 1600 )
 			if bestTpLoc ~= nil
@@ -5040,7 +5045,7 @@ X.ConsiderItemDesire["item_tpscroll"] = function( hItem )
 		end
 
 		--守护遗迹
-		local nAncient = GetAncient( GetTeam() )
+		local nAncient = GetAncient( team )
 		if bot:GetLevel() >= 15	
 			and #nNearEnemyList == 0
 			and J.Role.ShouldTpToFarm()
@@ -5071,8 +5076,8 @@ X.ConsiderItemDesire["item_tpscroll"] = function( hItem )
 				return BOT_ACTION_DESIRE_HIGH, nAncient:GetLocation(), sCastType, sCastMotive
 			end
 			
-			local ancientTower1 = GetTower(GetTeam(), 9)
-			local ancientTower2 = GetTower(GetTeam(), 10)
+			local ancientTower1 = GetTower(team, 9)
+			local ancientTower2 = GetTower(team, 10)
 			if ancientTower1 == nil and ancientTower2 == nil
 --				and nAncient:WasRecentlyDamagedByCreep( 5.0 )
 			then
@@ -5187,7 +5192,7 @@ X.ConsiderItemDesire["item_tpscroll"] = function( hItem )
 	--处理特殊情况一
 	if X.IsFarmingAlways( bot )
 	then
-		tpLoc = GetAncient( GetTeam() ):GetLocation()
+		tpLoc = GetAncient( team ):GetLocation()
 		sCastMotive = '处理特殊情况一'
 
 		if bot:GetUnitName() == 'npc_dota_hero_furion'
@@ -5208,7 +5213,7 @@ X.ConsiderItemDesire["item_tpscroll"] = function( hItem )
 	--处理特殊情况二
 	if J.IsStuck( bot ) --and nEnemyCount == 0
 	then
-		tpLoc = GetAncient( GetTeam() ):GetLocation()
+		tpLoc = GetAncient( team ):GetLocation()
 		sCastMotive = '处理特殊情况二'
 
 		if bot:GetUnitName() == 'npc_dota_hero_furion'
@@ -5229,7 +5234,7 @@ X.ConsiderItemDesire["item_tpscroll"] = function( hItem )
 	if  J.Role.ShouldTpToDefend()
 	and bot:DistanceFromFountain() > 3800
 	then
-		tpLoc = GetAncient( GetTeam() ):GetLocation()
+		tpLoc = GetAncient( team ):GetLocation()
 		sCastMotive = '立即TP守家'
 		return BOT_ACTION_DESIRE_HIGH, tpLoc, sCastType, sCastMotive
 	end
@@ -5554,7 +5559,7 @@ X.ConsiderItemDesire["item_fallen_sky"] = function( hItem )
 	if J.IsRetreating( bot )
 		and bot:WasRecentlyDamagedByAnyHero( 3.0 )
 	then
-		local bLocation = J.GetLocationTowardDistanceLocation( bot, GetAncient( GetTeam() ):GetLocation(), 1600 )
+		local bLocation = J.GetLocationTowardDistanceLocation( bot, GetAncient( team ):GetLocation(), 1600 )
 		local nAttackAllyList = J.GetNearbyHeroes(bot, 800, false, BOT_MODE_ATTACK )
 		if bot:DistanceFromFountain() > 800
 			and IsLocationPassable( bLocation )
@@ -5690,7 +5695,7 @@ X.ConsiderItemDesire["item_pogo_stick"] = function( hItem )
 	if ( nMode == BOT_MODE_RETREAT and bot:GetActiveModeDesire() > BOT_MODE_DESIRE_HIGH )
 	then
 		
-		if bot:IsFacingLocation( GetAncient( GetTeam() ):GetLocation(), 20 )
+		if bot:IsFacingLocation( GetAncient( team ):GetLocation(), 20 )
 			and bot:DistanceFromFountain() > 600
 			and #nInRangeEnmyList >= 1
 		then
@@ -6268,7 +6273,7 @@ X.ConsiderItemDesire['item_dust'] = function(item)
 			and J.IsClosestToDustLocation(bot, dInfo.location)
 			then	
 				local loc = J.GetXUnitsTowardsLocation2(dInfo.location, DireFountain, 200)
-				if GetTeam() == TEAM_DIRE
+				if team == TEAM_DIRE
 				then
 					loc = J.GetXUnitsTowardsLocation2(dInfo.location, RadiantFountain, 200)
 				end
@@ -6733,7 +6738,7 @@ X.ConsiderItemDesire["item_ninja_gear"] = function(hItem)
 		if nMode == BOT_MODE_PUSH_TOWER_TOP then nLane = LANE_TOP end
 		if nMode == BOT_MODE_PUSH_TOWER_BOT then nLane = LANE_BOT end
 
-		local nPushLoc = GetLaneFrontLocation(GetTeam(), nLane, 0)
+		local nPushLoc = GetLaneFrontLocation(team, nLane, 0)
 		if GetUnitToLocationDistance(bot, nPushLoc) > 3200
 		then
 			return BOT_ACTION_DESIRE_HIGH, bot, 'none', nil
@@ -6973,8 +6978,8 @@ X.ConsiderItemDesire["item_force_boots"] = function( hItem )
 		do
 			if  J.IsValidHero(enemyHero)
 			and J.CanCastOnMagicImmune(enemyHero)
-			and enemyHero:IsFacingLocation(GetAncient(GetTeam()):GetLocation(), 30)
-			and GetUnitToLocationDistance(enemyHero, GetAncient(GetTeam()):GetLocation()) < 1600
+			and enemyHero:IsFacingLocation(GetAncient(team):GetLocation(), 30)
+			and GetUnitToLocationDistance(enemyHero, GetAncient(team):GetLocation()) < 1600
 			and not J.IsSuspiciousIllusion(enemyHero)
 			then
 				local nInRangeAlly = J.GetNearbyHeroes(bot,1000, false, BOT_MODE_NONE)
@@ -7189,7 +7194,7 @@ local function UseGlyph()
 
 	for _, t in pairs( T1 )
 	do
-		local tower = GetTower( GetTeam(), t )
+		local tower = GetTower( team, t )
 		if tower ~= nil and tower:GetHealth() > 0
 			and tower:GetHealth() / tower:GetMaxHealth() < 0.36
 			and tower:CanBeSeen()
@@ -7209,7 +7214,7 @@ local function UseGlyph()
 
 	for _, b in pairs( MeleeBarrack )
 	do
-		local barrack = GetBarracks( GetTeam(), b )
+		local barrack = GetBarracks( team, b )
 		if barrack ~= nil and barrack:GetHealth() > 0
 			and barrack:GetHealth() / barrack:GetMaxHealth() < 0.5
 			and X.IsTargetedByEnemy( barrack )
@@ -7219,7 +7224,7 @@ local function UseGlyph()
 		end
 	end
 
-	local Ancient = GetAncient( GetTeam() )
+	local Ancient = GetAncient( team )
 	if Ancient ~= nil and Ancient:GetHealth() > 0
 		and Ancient:GetHealth() / Ancient:GetMaxHealth() < 0.5
 		and X.IsTargetedByEnemy( Ancient )

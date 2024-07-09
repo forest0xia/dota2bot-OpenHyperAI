@@ -1,9 +1,12 @@
+local Utils = require( GetScriptDirectory()..'/FunLib/utils' )
+
 local Dota2Teams = {}
 
 -- Keep track of picked teams
 -- This actually will not work due to Dire and Radiant runs the script at the same time in different sand box so they don't share data, not even the global vars.
 local pickedTeams = {}
 local defaultPostfix = 'OHA' -- Open Hyper AI.
+local maxTeamSize = 12
 
 -- List should have a least 4 teams for better performance.
 local defaultTeams = {
@@ -13,13 +16,21 @@ local defaultTeams = {
         Liquid = {"miCKe", "MATUMBAMAN", "qojqva", "Boxi", "Insania"},
         OG = {"ana", "Topson", "Ceb", "N0tail", "JerAx"},
         Nigma = {"Miracle-", "w33", "MinD_ContRoL", "KuroKy", "GH"},
+        Additionals = {
+            "Azazel", "Lucifer", "Belial", "Lilith", "Diablo", "Mephisto", "Asmodeus", "Beelzebub", "Samael", "Abaddon", "Mammon", "Astaroth",
+            -- "Leviathan", "Moloch", "Belphegor", "Apollyon", "Gorgoth", "Zaganthar", "Nyxoloth", "Malphas"
+        }
     },
     Dire = {
         Secret = {"Nisha", "MATUMBAMAN", "zai", "Puppey", "YapzOr"},
         VirtusPro = {"RAMZES666", "No[o]ne", "9pasha", "Solo", "RodjER"},
         Fnatic = {"Raven", "Abed", "iceiceice", "DJ", "Jabz"},
         PSG_LGD = {"Ame", "Somnus丶M", "Chalice", "Fy", "xNova"},
-        Aster = {"Monet", "Ori", "Xxs", "BoBoKa", "LaNm"}
+        Aster = {"Monet", "Ori", "Xxs", "BoBoKa", "LaNm"},
+        Additionals = {
+            "Inferno", "Darkfire", "Shadowblade", "Nightmare", "Hellspawn", "Bloodlust", "Doombringer", "Soulreaper", "Deathbringer", "Lightbringer", "Celestial", "Heavenly",
+            -- "Seraphim", "Radiant", "Divinity", "Archangel", "Gloriosa", "Holystone", "Etherealis", "Heavenfire"
+        }
     }
 }
 
@@ -39,22 +50,22 @@ local function generateTeam(availableTeams, overrides, teamType)
         playerList = overrides
         teamName = teamType
     else
-        -- repeat
+        repeat
             randomNum = RandomInt(1, #availableTeams)
             teamName = table.remove(availableTeams, randomNum)
-        -- -- ensure a team can only pick from certain team names.
-        -- until not pickedTeams[teamName]
-        -- pickedTeams[teamName] = true
-        playerList = defaultTeams[teamType][teamName]
+        -- ensure a team can only pick from certain team names.
+        until not pickedTeams[teamName] and teamName ~= 'Additionals'
+        pickedTeams[teamName] = true
+        playerList = Utils.MergeLists(defaultTeams[teamType][teamName], defaultTeams[teamType].Additionals)
     end
 
-    shuffle(playerList)
+    -- shuffle(playerList)
     local team = {}
-    for i = 1, 5 do
+    for i = 1, maxTeamSize do
         if overrides and #overrides > 0 then
             table.insert(team, table.remove(playerList, 1))
         else
-            table.insert(team, teamName .. "." .. table.remove(playerList)..'.'..defaultPostfix)
+            table.insert(team, teamName .. "." .. table.remove(playerList, 1)..'.'..defaultPostfix)
         end
     end
     return team

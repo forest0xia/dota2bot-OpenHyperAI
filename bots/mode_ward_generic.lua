@@ -15,6 +15,7 @@ local SmokeOfDeceit = nil
 local WardCastTime = J.IsModeTurbo() and -45 or -90
 local ItemSwapTime = J.IsModeTurbo() and -45 or -90
 local EnemyTeam = nil
+local RetryWardingGap = 3 * 60 -- 降低warding 欲望，不要一直带着眼占格子
 
 bot.ward = false
 bot.steal = false
@@ -66,6 +67,10 @@ function GetDesire()
 	-- else
 	-- 	bot.steal = false
 	-- end
+
+	if bot.lastWardingTime ~= nil and DotaTime() - bot.lastWardingTime < RetryWardingGap then
+		return BOT_MODE_DESIRE_NONE
+	end
 
 	ItemWard = Ward.GetItemWard(bot)
 
@@ -172,6 +177,7 @@ function Think()
 			then
 				bot:Action_UseAbilityOnLocation(ItemWard, WardTargetLocation)
 				WardCastTime = DotaTime()
+				bot.lastWardingTime = DotaTime()
 				return
 			else
 				if WardTargetLocation.x == Vector(-2948, 769, 0)
