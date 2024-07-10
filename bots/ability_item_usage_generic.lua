@@ -370,13 +370,20 @@ local function CourierUsageComplement()
 	local tryPickCount = 0
 	for _, tDropItem in pairs( dropItemList )
 	do
-		if tDropItem.item ~= nil and (tryPickCount == 0 and not Utils.HasValue(Item['tEarlyConsumableItem'], tDropItem.item:GetName()))
+		if tDropItem.item ~= nil and (tryPickCount <= 3 and not Utils.HasValue(Item['tEarlyConsumableItem'], tDropItem.item:GetName()))
 		then
 			local nDropOwner = tDropItem.owner
-			tryPickCount = tryPickCount + 1
-			if nDropOwner ~= nil and nDropOwner == bot
+			if nDropOwner ~= nil and nDropOwner == bot and not string.find(tDropItem.item:GetName(), 'token')
 			then
-				bot:Action_PickUpItem(nDropOwner)
+				local distance = GetUnitToLocationDistance(bot, tDropItem.location)
+				if distance > 200
+				then
+					bot:Action_MoveToLocation(tDropItem.location)
+				elseif distance <= 100 then
+					tryPickCount = tryPickCount + 1
+					bot:Action_PickUpItem(tDropItem.item)
+					return
+				end
 			end
 		end
 	end
@@ -391,7 +398,7 @@ local function CourierUsageComplement()
 			do
 				local itemName = Item['tEarlyConsumableItem'][i]
 				local itemSlot = bot:FindItemSlot( itemName )
-				if itemSlot >= 0 and itemSlot <= 8
+				if itemSlot >= 6 and itemSlot <= 8
 				then
 					bot:ActionImmediate_SellItem( bot:GetItemInSlot( itemSlot ))
 					-- bot:Action_DropItem( bot:GetItemInSlot( itemSlot ), bot:GetLocation() )

@@ -17,14 +17,8 @@ function Timers:start()
 	Timers = self
 	self.timers = {}
 
-	-- local ent = Entities:CreateByClassname("info_target") -- Entities:FindByClassname(nil, 'CWorld')
-	if SpawnEntityFromTableSynchronous ~= nil
-	then
-		local ent = SpawnEntityFromTableSynchronous("info_target", {targetname="timers_lua_thinker"})
-		ent:SetThink("Think", self, "timers", TIMERS_THINK)
-	else
-		print("!!! Error: can not start timers")
-	end
+	local ent = SpawnEntityFromTableSynchronous("info_target", {targetname="timers_lua_thinker"})
+	ent:SetThink("Think", self, "timers", TIMERS_THINK)
 end
 
 function Timers:Think()
@@ -185,9 +179,5 @@ end
 if not Timers.timers then Timers:start() end
 
 -- Attach to Gamerules
-if GameRules == nil then 
-	GameRules = {} 
-	print("!!! Error: GameRules is nil.")
-end
 GameRules.Timers = Timers
 

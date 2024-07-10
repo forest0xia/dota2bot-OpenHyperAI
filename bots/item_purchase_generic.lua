@@ -58,6 +58,7 @@ end
 local sell_time = -90
 local check_time = -90
 
+local countInvCheck = 0
 
 local lastItemToBuy = nil
 local bPurchaseFromSecret = false
@@ -84,7 +85,8 @@ local function GeneralPurchase()
 	then
 		if GetItemStockCount( bot.currentComponentToBuy ) <= 0
 		then
-			return	
+			ClearBuyList()
+			return
 		end
 	end
 
@@ -174,8 +176,7 @@ local function GeneralPurchase()
 	if bot.currentComponentToBuy == "item_aghanims_shard"
 	then
 		hasBuyShard = false
-		bot.currentComponentToBuy = nil
-		bot.currListItemToBuy[#bot.currListItemToBuy] = nil
+		ClearBuyList()
 		return
 	end
 
@@ -197,8 +198,7 @@ local function GeneralPurchase()
 		then
 			if courier:ActionImmediate_PurchaseItem( bot.currentComponentToBuy ) == PURCHASE_ITEM_SUCCESS
 			then
-				bot.currentComponentToBuy = nil
-				bot.currListItemToBuy[#bot.currListItemToBuy] = nil
+				ClearBuyList()
 				bot.SecretShop = false
 				return
 			end
@@ -210,26 +210,22 @@ local function GeneralPurchase()
 		then
 			bot.SecretShop = true
 		else
-			if Utils.CountBackpackEmptySpace(bot) <= 0 -- no empty slot
+			if Utils.CountBackpackEmptySpace(bot) > 0 -- has empty slot
 			then
-				return
-			end
-
-			if bot:ActionImmediate_PurchaseItem( bot.currentComponentToBuy ) == PURCHASE_ITEM_SUCCESS
-			then
-				bot.currentComponentToBuy = nil
-				bot.currListItemToBuy[#bot.currListItemToBuy] = nil
-				bot.SecretShop = false
-				return
-			else
-				if GetItemStockCount(bot.currentComponentToBuy ) < 1 then
-					-- out of stock, skip that item.
-					-- print( bot:GetUnitName().." failed to purchase item - "..bot.currentComponentToBuy.." : out of stock.")
-					bot.currentComponentToBuy = nil
-					bot.currListItemToBuy[#bot.currListItemToBuy] = nil
+				if bot:ActionImmediate_PurchaseItem( bot.currentComponentToBuy ) == PURCHASE_ITEM_SUCCESS
+				then
+					ClearBuyList()
 					bot.SecretShop = false
+					return
 				else
-					print( bot:GetUnitName().." 未能购买物品 "..bot.currentComponentToBuy.." : "..tostring( bot:ActionImmediate_PurchaseItem( bot.currentComponentToBuy ) ) )
+					if GetItemStockCount(bot.currentComponentToBuy ) < 1 then
+						-- out of stock, skip that item.
+						-- print( bot:GetUnitName().." failed to purchase item - "..bot.currentComponentToBuy.." : out of stock.")
+						ClearBuyList()
+						bot.SecretShop = false
+					else
+						print( bot:GetUnitName().." 未能购买物品 "..bot.currentComponentToBuy.." : "..tostring( bot:ActionImmediate_PurchaseItem( bot.currentComponentToBuy ) ) )
+					end
 				end
 			end
 		end
@@ -255,6 +251,7 @@ local function TurboModeGeneralPurchase()
 	then
 		if GetItemStockCount( bot.currentComponentToBuy ) <= 0
 		then
+			ClearBuyList()
 			return
 		end
 	end
@@ -284,8 +281,7 @@ local function TurboModeGeneralPurchase()
 	if bot.currentComponentToBuy == "item_aghanims_shard"
 	then
 		hasBuyShard = false
-		bot.currentComponentToBuy = nil
-		bot.currListItemToBuy[#bot.currListItemToBuy] = nil
+		ClearBuyList()
 		return
 	end
 
@@ -294,15 +290,13 @@ local function TurboModeGeneralPurchase()
 	then
 		if bot:ActionImmediate_PurchaseItem( bot.currentComponentToBuy ) == PURCHASE_ITEM_SUCCESS
 		then
-			bot.currentComponentToBuy = nil
-			bot.currListItemToBuy[#bot.currListItemToBuy] = nil
+			ClearBuyList()
 			return
 		else
 			if GetItemStockCount(bot.currentComponentToBuy ) < 1 then
 				-- out of stock, skip that item.
 				-- print( bot:GetUnitName().." failed to purchase item - "..bot.currentComponentToBuy.." : out of stock.")
-				bot.currentComponentToBuy = nil
-				bot.currListItemToBuy[#bot.currListItemToBuy] = nil
+				ClearBuyList()
 			else
 				print( bot:GetUnitName().." 未能购买物品 "..bot.currentComponentToBuy.." : "..tostring( bot:ActionImmediate_PurchaseItem( bot.currentComponentToBuy ) ) )
 			end
@@ -399,7 +393,6 @@ function ItemPurchaseThink()
 		then
 			hasBuyClarity = true
 			bot:ActionImmediate_PurchaseItem( "item_clarity" )
-			return
 		elseif botLevel >= 5
 			and Role['invisEnemyExist'] == true
 			and buyBootsStatus == true
@@ -410,7 +403,6 @@ function ItemPurchaseThink()
 			and not J.HasItem(bot, 'item_ward_sentry')
 		then
 			bot:ActionImmediate_PurchaseItem( "item_dust" )
-			return
 		end
 	end
 
@@ -503,7 +495,7 @@ function ItemPurchaseThink()
 	end
 
 	-- Observer and Sentry Wards
-	if (J.GetPosition(bot) == 4) and DotaTime() > 300
+	if (J.GetPosition(bot) == 4) and DotaTime() > 300 and botWorth < 20000
 	then
 		local wardType = 'item_ward_sentry'
 
@@ -517,7 +509,7 @@ function ItemPurchaseThink()
 		end
 	end
 
-	if (J.GetPosition(bot) == 5)
+	if (J.GetPosition(bot) == 5) and botWorth < 20000
 	then
 		local wardType = 'item_ward_observer'
 
@@ -532,7 +524,7 @@ function ItemPurchaseThink()
 	end
 
 	-- Smoke of Deceit
-	if  (J.GetPosition(bot) == 4 or J.GetPosition(bot) == 5)
+	if  (J.GetPosition(bot) == 4 or J.GetPosition(bot) == 5) and botWorth < 20000
 	and GetItemStockCount('item_smoke_of_deceit') > 1
 	and botGold >= GetItemCost('item_smoke_of_deceit')
 	and Item.GetEmptyInventoryAmount(bot) >= 3
@@ -550,7 +542,6 @@ function ItemPurchaseThink()
 				and J.HasItem(allyHero, 'item_smoke_of_deceit')
 				then
 					hasSmoke = true
-					break
 				end
 			end
 
@@ -586,7 +577,6 @@ function ItemPurchaseThink()
 	then
 		hasBuyShard = true
 		bot:ActionImmediate_PurchaseItem( "item_aghanims_shard" )
-		return
 	end
 
 
@@ -612,7 +602,6 @@ function ItemPurchaseThink()
 		and Item.GetItemCharges( bot, 'item_tpscroll' ) <= 2
 	then
 		bot:ActionImmediate_PurchaseItem( "item_tpscroll" )
-		return
 	end
 	
 	--正常买备用tp
@@ -645,7 +634,6 @@ function ItemPurchaseThink()
 		and Item.GetItemCharges( bot, 'item_dust' ) <= 1
 	then
 		bot:ActionImmediate_PurchaseItem( "item_dust" )
-		return
 	end
 
 	--交换魂泪的位置避免过早被破坏
@@ -664,7 +652,6 @@ function ItemPurchaseThink()
 		then
 			switchTime = currentTime
 			bot:ActionImmediate_SwapItems( raindrop, 6 )
-			return
 		end
 	end
 
@@ -712,13 +699,29 @@ function ItemPurchaseThink()
 		if slotToSell ~= nil
 		then
 			bot:ActionImmediate_SellItem( bot:GetItemInSlot( slotToSell ) )
-			return
 		end
 
 		fullInvCheck = currentTime
 	end
 
-	--出售过度装备
+	--出售廉价装备, 可能偶然卖掉components
+	-- if bot:GetLevel() >= 10 and currentTime > sell_time + 1
+	-- and ( bot:DistanceFromFountain() <= 200 or bot:DistanceFromSecretShop() <= 100 ) then
+	-- 	for i = 1, 8
+	-- 	do
+	-- 		local item = bot:GetItemInSlot(i)
+	-- 		local itemName = item:GetName()
+	-- 		if item ~= nil and GetItemCost(itemName) <= 150
+	-- 		and itemName ~= 'item_ward_sentry'
+	-- 		and itemName ~= 'item_ward_observer'
+	-- 		and itemName ~= 'item_smoke_of_deceit'
+	-- 		and itemName ~= 'item_dust' then
+	-- 			bot:ActionImmediate_SellItem(item)
+	-- 		end
+	-- 	end
+	-- end
+
+	--出售过渡装备
 	local countEmptyBackpack = Utils.CountBackpackEmptySpace(bot)
 	if currentTime > sell_time + 0.5
 		and countEmptyBackpack <= 1
@@ -734,11 +737,10 @@ function ItemPurchaseThink()
 			and not Utils.HasValue(Item['tEarlyBoots'], sItemSellList[i]) -- dont sell boots too early.
 			then
 				bot:ActionImmediate_SellItem( bot:GetItemInSlot( nOldSlot ) )
-				return
 			end
 		end
 
-		if currentTime > 18 * 60
+		if (currentTime > 18 * 60 or botWorth > 20000)
 			and ( Item.HasItem( bot, "item_travel_boots" ) or Item.HasItem( bot, "item_travel_boots_2" ) )
 		then
 			for i = 1, #Item['tEarlyBoots']
@@ -747,7 +749,6 @@ function ItemPurchaseThink()
 				if bootsSlot >= 0
 				then
 					bot:ActionImmediate_SellItem( bot:GetItemInSlot( bootsSlot ) )
-					return
 				end
 			end
 		end
@@ -810,11 +811,14 @@ function ItemPurchaseThink()
 		and Item.HasItem(bot, 'item_satanic')
 		then
 			bot:ActionImmediate_SellItem(bot:GetItemInSlot(bot:FindItemSlot('item_mask_of_madness')))
-			-- return
 		end
 	-- end
 
-	if #bot.itemToBuy == 0 then bot:SetNextItemPurchaseValue( 0 ) return end
+	if #bot.itemToBuy == 0 then
+		ClearBuyList()
+		bot:SetNextItemPurchaseValue( 0 )
+		return
+	end
 
 	
 	if bot.currentItemToBuy == nil
@@ -841,11 +845,15 @@ function ItemPurchaseThink()
 	then
 		if Item.IsItemInHero( bot.currentItemToBuy )
 			or bot.currentItemToBuy == "item_aghanims_shard"
+			or (countInvCheck >= 8 * 60 -- if can't finish the item for a long time
+			and bot:GetGold() >= 6000) -- and can't finish even with lots of gold
 		then
+			countInvCheck = 0
 			bot.currentItemToBuy = nil
 			bot.itemToBuy[#bot.itemToBuy] = nil
 		else
 			lastInvCheck = currentTime
+			countInvCheck = countInvCheck + 1
 		end
 	elseif #bot.currListItemToBuy > 0
 	then
@@ -862,6 +870,12 @@ function ItemPurchaseThink()
 		end
 	end
 
+end
+
+function ClearBuyList()
+	countInvCheck = 0
+	bot.currentComponentToBuy = nil
+	bot.currListItemToBuy[#bot.currListItemToBuy] = nil
 end
 
 function IsThereHealingInStash(unit)

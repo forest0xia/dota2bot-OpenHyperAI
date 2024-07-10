@@ -91,7 +91,7 @@
 			-- ignore clamps?
 			clampOverride 		= false,
 			-- scales (per role) for multipliers if necessary
-			scale 				= {1.2, 1.1, 1.0, 0.8, 0.6},
+			scale 				= {1.2, 1.1, 1.0, 0.9, 0.9},
 			-- Add this to the max clamp per minute
 			perMinuteScale 		= 0.5
 		},
@@ -102,7 +102,7 @@
 			variance 			= {1, 1},
 			clamp 				= {0, 25},
 			clampOverride 		= false,
-			scale 				= {1.2, 1.1, 1.0, 0.8, 0.6},
+			scale 				= {1.2, 1.1, 1.0, 0.9, 0.9},
 			perMinuteScale		= 0.5
 		},
 		deathBonus =
@@ -221,11 +221,11 @@
 			accrue =
 			{
 				gold 			= true,
-				armor 			= false,
-				magicResist 	= false,
+				armor 			= true,
+				magicResist 	= true,
 				levels 			= false,
 				neutral 		= false,
-				stats 			= false
+				stats 			= true
 			},
 			-- flat offsets for bonus per type
 			offset =
@@ -291,8 +291,8 @@
 			scaleEnabled =
 			{
 				gold 			= true,
-				armor 			= false,
-				magicResist 	= false,
+				armor 			= true,
+				magicResist 	= true,
 				levels 			= true,
 				neutral 		= true,
 				stats 			= true
@@ -301,9 +301,9 @@
 			timeGate =
 			{
 				gold 			= -100,
-				armor 			= 1800,
-				magicResist 	= 1800,
-				levels 			=  360,
+				armor 			= -100,
+				magicResist 	= -100,
+				levels 			=  120,
 				neutral 		= -100,
 				stats 			= -100,
 			},
@@ -326,8 +326,8 @@
 		awardCap =
 		{
 			gold 				= 30000,
-			armor 				= 20,
-			magicResist 		= 20,
+			armor 				= 25,
+			magicResist 		= 25,
 			levels 				= 10,
 			neutral 			= 1200,
 			stats 				= 25,
@@ -351,7 +351,7 @@
 				-- Set to false to disable adjustments based on kills.
 				enabled	= true,
 				-- if the bots are this many kills behind, begin adjusting
-				advantageThreshold = 1,
+				advantageThreshold = 2,
 				-- Awards scaled by scale amount every <this many> kills beyond the threshold
 				incrementEvery = 1,
 				-- base bonus increased by this much when over threshold

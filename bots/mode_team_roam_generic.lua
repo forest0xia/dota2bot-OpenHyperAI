@@ -6,6 +6,7 @@ end
 
 
 local bot = GetBot();
+local team = GetTeam()
 local bDebugMode = ( 1 == 10 )
 local X = {}
 
@@ -46,7 +47,7 @@ local defendPingTime = 0
 local nTpSolt = 15
 
 local TormentorLocation
-if GetTeam() == TEAM_RADIANT
+if team == TEAM_RADIANT
 then
 	TormentorLocation = Vector(-8075, -1148, 1000)
 else
@@ -67,6 +68,55 @@ function GetDesire()
 		IsHeroCore = J.IsCore(bot)
 		IsSupport = not J.IsCore(bot)
 	end
+
+
+	-- if pinged to defend base.
+	local ping = Utils.IsPingedToDefenseByAnyPlayer(bot, 3)
+	if ping ~= nil then
+		return 2
+	end
+
+	-- 判断是否要提醒回防
+	Utils['GameStates']['defendPings'] = Utils['GameStates']['defendPings'] ~= nil and Utils['GameStates']['defendPings'] or { pingedTime = GameTime() }
+	if GameTime() - Utils['GameStates']['defendPings'].pingedTime > 5 then
+		local towers = {
+			TOWER_TOP_3,
+			TOWER_MID_3,
+			TOWER_BOT_3,
+			TOWER_BASE_1,
+			TOWER_BASE_2
+		}
+		local enemeyPushingBase = false
+		local nDefendLoc
+		for _, t in pairs( towers )
+		do
+			local tower = GetTower( team, t )
+			if tower ~= nil and tower:GetHealth()/tower:GetMaxHealth() < 0.8
+			and J.GetNumOfHeroesNearLocation( true, tower:GetLocation(), 800 ) >= 1
+			then
+				nDefendLoc = tower:GetLocation() + RandomVector(100)
+				enemeyPushingBase = true
+			end
+		end
+		if not enemeyPushingBase and J.GetNumOfHeroesNearLocation( true, GetAncient(team):GetLocation(), 800 ) >= 1 then
+			nDefendLoc = GetAncient(team):GetLocation() + RandomVector(100) -- GetLaneFrontLocation(team, nDefendLane, 100) + RandomVector(100)
+			enemeyPushingBase = true
+		end
+	
+		if enemeyPushingBase then
+			enemeyPushingBase = false
+			local nDefendAllies = J.GetAlliesNearLoc(nDefendLoc, 2000);
+		
+			if #nDefendAllies < J.GetNumOfAliveHeroes(false) then
+				Utils['GameStates']['defendPings'].pingedTime = GameTime()
+				
+				bot:ActionImmediate_Chat("Please come defending", false)
+				bot:ActionImmediate_Ping(nDefendLoc.x, nDefendLoc.y, false)
+			end
+			return 2
+		end
+	end
+
 
 	local nDesire = 0
 
@@ -202,9 +252,42 @@ function OnEnd()
 end
 
 local FrameProcessTime = 0.08
+local reactedToDefendPingTime = 0
 function Think()
 
 	if J.CanNotUseAction(bot) then return end
+
+	-- if pinged to defend base.
+	if DotaTime() - reactedToDefendPingTime > 2 then
+		reactedToDefendPingTime = DotaTime()
+		local ping = Utils.IsPingedToDefenseByAnyPlayer(bot, 4)
+		if ping ~= nil then
+			local tps = bot:GetItemInSlot(nTpSolt)
+			local bestTpLoc = J.GetNearbyLocationToTp(ping.location)
+			local distance = GetUnitToLocationDistance(bot, bestTpLoc)
+			if tps ~= nil and tps:IsFullyCastable() then
+				if distance > 3500 and not bot:WasRecentlyDamagedByAnyHero(2) then
+					bot:Action_UseAbilityOnLocation(tps, bestTpLoc + RandomVector(200))
+				elseif distance > 1200 and distance <= 2000 and not bot:WasRecentlyDamagedByAnyHero(5) then
+					bot:Action_MoveToLocation(bestTpLoc + RandomVector(200));
+				elseif distance >= 900 and bot:GetTarget() == nil then
+					local hNearbyEnemyHeroList = J.GetHeroesNearLocation( true, bestTpLoc, 1300 )
+					for _, npcEnemy in pairs( hNearbyEnemyHeroList )
+					do
+						if npcEnemy ~= nil and npcEnemy:CanBeSeen()
+							and J.CanCastOnNonMagicImmune( npcEnemy )
+							and GetUnitToUnitDistance( npcEnemy, bot ) <= 1300
+							and J.CanCastOnNonMagicImmune( npcEnemy )
+						then
+							bot:SetTarget( npcEnemy )
+						end
+					end
+				end
+			end
+			return
+		end
+	end
+
 
 	if bot.lastTeamRoamFrameProcessTime == nil then bot.lastTeamRoamFrameProcessTime = DotaTime() end
 	if DotaTime() - bot.lastTeamRoamFrameProcessTime < FrameProcessTime then return end
@@ -246,7 +329,7 @@ function Think()
 	local nAllyList = J.GetNearbyHeroes(bot,1600,false,BOT_MODE_NONE);
 	if #nAllyList <= 1 and J.GetNumOfAliveHeroes(true) > 1 and J.GetNumOfAliveHeroes(false) > 3
 	and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 3500 then
-		for i, id in pairs( GetTeamPlayers( GetTeam() ) )
+		for i, id in pairs( GetTeamPlayers( team ) )
 		do
 			if IsHeroAlive( id )
 			then
@@ -278,13 +361,14 @@ function Think()
 		return
 	end
 
-	if PickedItem ~= nil and not Utils.HasValue(Item['tEarlyConsumableItem'], PickedItem.item:GetName())
+	if PickedItem ~= nil and not Utils.HasValue(Item['tEarlyConsumableItem'], PickedItem.item:GetName()) and not string.find(PickedItem.item:GetName(), 'token')
 	then
-		if GetUnitToLocationDistance(bot, PickedItem.location) > 100
+		local distance = GetUnitToLocationDistance(bot, PickedItem.location)
+		if distance > 200
 		then
 			bot:Action_MoveToLocation(PickedItem.location)
 			return
-		else
+		elseif distance <= 100 then
 			bot:Action_PickUpItem(PickedItem.item)
 			return
 		end
@@ -1096,9 +1180,9 @@ function X.CanBeAttacked(unit)
 			and not unit:IsAttackImmune()
 			and not unit:IsInvulnerable()
 			and not unit:HasModifier("modifier_fountain_glyph")
-			and (unit:GetTeam() == GetTeam() 
+			and (unit:GetTeam() == team 
 					or not unit:HasModifier("modifier_crystal_maiden_frostbite") )
-			and (unit:GetTeam() ~= GetTeam() 
+			and (unit:GetTeam() ~= team 
 			     or ( unit:GetUnitName() ~= "npc_dota_wraith_king_skeleton_warrior" 
 					  and unit:GetHealth()/unit:GetMaxHealth() < 0.5 ) )
 
@@ -1685,8 +1769,6 @@ end
 function X.ShouldNotRetreat(bot)
 	
 	if bot:HasModifier("modifier_skeleton_king_reincarnation_scepter_active")
-		-- or bot:HasModifier("modifier_skeleton_king_death_delay")
-		-- or bot:HasModifier("modifier_skeleton_king_reincarnation_death_delay")
 	   or bot:HasModifier("modifier_item_satanic_unholy")
 	   or bot:HasModifier("modifier_abaddon_borrowed_time")
 	   or ( bot:GetCurrentMovementSpeed() < 240 and not bot:HasModifier("modifier_arc_warden_spark_wraith_purge") )
@@ -1754,7 +1836,7 @@ function X.HasHumanAlly( bot )
 
 	if bHumanAlly == nil 
 	then
-		local teamPlayerIDList = GetTeamPlayers( GetTeam() )
+		local teamPlayerIDList = GetTeamPlayers( team )
 		for i = 1, #teamPlayerIDList
 		do 
 			if not IsPlayerBot( teamPlayerIDList[i] )

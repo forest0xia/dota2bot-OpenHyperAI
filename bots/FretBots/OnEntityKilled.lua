@@ -37,7 +37,7 @@ function EntityKilled:OnEntityKilled(event)
 	-- Do Table Update
 	DataTables:DoDeathUpdate(victim, killer);
 	if Settings.difficultyScale >= 0.6 then
-		print('Enabled bots with bonus on death for diffculty scale = '..Settings.difficultyScale)
+		-- print('Enabled bots with bonus on death for diffculty scale = '..Settings.difficultyScale)
 		-- Dynamic Adjustment (maybe)
 		DynamicDifficulty:Adjust(victim)
 		-- Give Awards (maybe)
@@ -74,13 +74,13 @@ function EntityKilled:GetEntityKilledEventData(event)
 		isHero = true;
 
 		if Settings.difficultyScale >= 1 then
-			print('Enabled human killer gold reduction for diffculty scale = '..Settings.difficultyScale)
+			-- print('Enabled human killer gold reduction for diffculty scale = '..Settings.difficultyScale)
 			-- 当击杀者是人类玩家时，给与击杀惩罚
 			if killer == nil or killer.stats == nil or killer.stats.isBot then return end
 
 			-- TODO: check if victim is SNK or was with SNK's ult available - the first death was not a real death don't modify real player gold.
 			if victim:HasModifier("modifier_skeleton_king_reincarnation") or victim:HasModifier("modifier_aegis_regen") then
-				print("Entity got killed, but not truly dead yet.")
+				-- print("Entity got killed, but not truly dead yet.")
 				return
 			end
 

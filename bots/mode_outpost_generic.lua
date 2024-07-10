@@ -265,6 +265,8 @@ function GetDesire()
 	-- Outpost
 	----------
 
+	if bot:GetUnitName() == 'npc_dota_hero_invoker' then return BOT_ACTION_DESIRE_NONE end
+
 	if not IsEnemyTier2Down then return BOT_ACTION_DESIRE_NONE end
 
 	if not DidWeGetOutpost

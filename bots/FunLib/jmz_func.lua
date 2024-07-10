@@ -3276,21 +3276,27 @@ function J.GetNumOfAliveHeroes( bEnemy )
 end
 
 function J.GetNumOfHeroesNearLocation( bEnemy, location, distance )
-
 	local count = 0
-	local nTeam = GetTeam()
-	if bEnemy then nTeam = GetOpposingTeam() end
-
-	for i, id in pairs( GetTeamPlayers( nTeam ) )
+	local heroList = bEnemy and GetUnitList( UNIT_LIST_ENEMY_HEROES ) or GetUnitList( UNIT_LIST_ALLIED_HEROES )
+	for _, hero in pairs( heroList )
 	do
-		local member = GetTeamMember(i)
-		if IsHeroAlive( id ) and GetUnitToLocationDistance(member, location) <= distance
-		then
+		if hero ~= nil and hero:IsAlive() and hero:CanBeSeen() and GetUnitToLocationDistance(hero, location) <= distance then
 			count = count + 1
 		end
 	end
-
 	return count
+end
+
+function J.GetHeroesNearLocation( bEnemy, location, distance )
+	local heroes = { }
+	local heroList = bEnemy and GetUnitList( UNIT_LIST_ENEMY_HEROES ) or GetUnitList( UNIT_LIST_ALLIED_HEROES )
+	for _, hero in pairs( heroList )
+	do
+		if hero ~= nil and hero:IsAlive() and hero:CanBeSeen() and GetUnitToLocationDistance(hero, location) <= distance then
+			table.insert(heroes, hero)
+		end
+	end
+	return heroes
 
 end
 

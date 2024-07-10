@@ -100,62 +100,6 @@ function GetDesire()
 		return BOT_MODE_DESIRE_VERYHIGH
 	end
 
-	-- if pinged to defend base.
-	local ping = Utils.IsPingedToDefenseByAnyPlayer(bot, 4)
-	if ping ~= nil then
-		local tps = bot:GetItemInSlot(nTpSolt)
-		local bestTpLoc = J.GetNearbyLocationToTp(ping.location)
-		if tps ~= nil and tps:IsFullyCastable()
-			and GetUnitToLocationDistance(bot, bestTpLoc) > 2000
-		then
-			bot:Action_UseAbilityOnLocation(tps, bestTpLoc + RandomVector(200))
-		else
-			bot:Action_MoveToLocation(bestTpLoc + RandomVector(200));
-		end
-		return 0.1
-	end
-
-	-- 判断是否要提醒回防
-	Utils['GameStates']['defendPings'] = Utils['GameStates']['defendPings'] ~= nil and Utils['GameStates']['defendPings'] or { pingedTime = GameTime() }
-	if GameTime() - Utils['GameStates']['defendPings'].pingedTime > 5 then
-		local towers = {
-			TOWER_TOP_3,
-			TOWER_MID_3,
-			TOWER_BOT_3,
-			TOWER_BASE_1,
-			TOWER_BASE_2
-		}
-		local enemeyPushingBase = false
-		local nDefendLoc
-		for _, t in pairs( towers )
-		do
-			local tower = GetTower( team, t )
-			if tower ~= nil and tower:GetHealth()/tower:GetMaxHealth() < 0.8
-			and J.GetNumOfHeroesNearLocation( true, tower:GetLocation(), 1000 ) >= 1
-			then
-				nDefendLoc = tower:GetLocation() + RandomVector(100)
-				enemeyPushingBase = true
-			end
-		end
-		if not enemeyPushingBase and not GetTower( team, TOWER_BASE_1 ):IsAlive()
-		and J.GetNumOfHeroesNearLocation( true, GetAncient(team):GetLocation(), 1000 ) >= 1 then
-			nDefendLoc = GetAncient(team):GetLocation() + RandomVector(100) -- GetLaneFrontLocation(team, nDefendLane, 100) + RandomVector(100)
-			enemeyPushingBase = true
-		end
-	
-		if enemeyPushingBase then
-			local nDefendAllies = J.GetAlliesNearLoc(nDefendLoc, 1600);
-		
-			if #nDefendAllies < J.GetNumOfAliveHeroes(false) then
-				Utils['GameStates']['defendPings'].pingedTime = GameTime()
-				
-				bot:ActionImmediate_Chat("Please come defending", false)
-				bot:ActionImmediate_Ping(nDefendLoc.x, nDefendLoc.y, false)
-			end
-			return 0.1
-		end
-	end
-
 	if not bInitDone
 	then
 		bInitDone = true
