@@ -55,6 +55,7 @@ sRoleItemsBuyList['pos_1'] = {
     "item_aghanims_shard",
     "item_black_king_bar",--
     "item_bloodthorn",--
+    "item_force_staff",
     "item_hurricane_pike",--
     "item_greater_crit",--
     "item_moon_shard",
@@ -77,6 +78,7 @@ sRoleItemsBuyList['pos_2'] = {
     "item_aghanims_shard",
     "item_black_king_bar",--
     "item_bloodthorn",--
+    "item_force_staff",
     "item_hurricane_pike",--
     "item_sheepstick",--
     "item_moon_shard",

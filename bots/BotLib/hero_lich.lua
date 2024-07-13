@@ -387,32 +387,33 @@ function X.ConsiderQ()
 			end
 		end
 
-		local nEnemyCreeps = bot:GetNearbyLaneCreeps( 800, true )
-		for _, creep in pairs( nEnemyCreeps )
-		do
-			if J.IsValid( creep )
-				and not creep:HasModifier( 'modifier_fountain_glyph' )
-			then
-				if J.IsKeyWordUnit( 'ranged', creep )
-					and bot:GetMana() > 330
-					--and not J.IsOtherAllysTarget( creep )
-					and J.WillKillTarget( creep, nDamage, nDamageType, nCastPoint )
-					and not J.IsAllysTarget( creep )
+		if #hAllyList <= 1 or J.IsCore(bot) then
+			local nEnemyCreeps = bot:GetNearbyLaneCreeps( 800, true )
+			for _, creep in pairs( nEnemyCreeps )
+			do
+				if J.IsValid( creep )
+					and not creep:HasModifier( 'modifier_fountain_glyph' )
 				then
-					return BOT_ACTION_DESIRE_HIGH, creep, "Q-对线补刀远程"
-				end
-
-				if #hAllyList <= 1 and bot:GetMana() > 400
-					and J.IsKeyWordUnit( 'melee', creep )
-					and J.WillKillTarget( creep, nDamage, nDamageType, nCastPoint )
-					and not J.WillKillTarget( creep, nDamage * 0.5, nDamageType, nCastPoint )
-					and not J.IsAllysTarget( creep )
-				then
-					return BOT_ACTION_DESIRE_HIGH, creep, "Q-对线补刀近战"
+					if J.IsKeyWordUnit( 'ranged', creep )
+						and bot:GetMana() > 330
+						--and not J.IsOtherAllysTarget( creep )
+						and J.WillKillTarget( creep, nDamage, nDamageType, nCastPoint )
+						and not J.IsAllysTarget( creep )
+					then
+						return BOT_ACTION_DESIRE_HIGH, creep, "Q-对线补刀远程"
+					end
+	
+					if #hAllyList <= 1 and bot:GetMana() > 400
+						and J.IsKeyWordUnit( 'melee', creep )
+						and J.WillKillTarget( creep, nDamage, nDamageType, nCastPoint )
+						and not J.WillKillTarget( creep, nDamage * 0.5, nDamageType, nCastPoint )
+						and not J.IsAllysTarget( creep )
+					then
+						return BOT_ACTION_DESIRE_HIGH, creep, "Q-对线补刀近战"
+					end
 				end
 			end
 		end
-
 
 	end
 

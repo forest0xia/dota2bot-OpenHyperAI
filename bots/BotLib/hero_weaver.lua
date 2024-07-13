@@ -42,6 +42,7 @@ sRoleItemsBuyList['pos_1'] = {
     "item_black_king_bar",--
     "item_aghanims_shard",
     "item_greater_crit",--
+    "item_force_staff",
     "item_hurricane_pike",--
     "item_satanic",--
     nItemRandom,--

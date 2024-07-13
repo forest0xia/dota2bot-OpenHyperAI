@@ -41,10 +41,11 @@ sRoleItemsBuyList['pos_2'] = {
     "item_greater_crit",--
     "item_aghanims_shard",
     "item_black_king_bar",--
+    "item_force_staff",
     "item_hurricane_pike",--
     "item_sheepstick",--
-    "item_travel_boots_2",--
     "item_moon_shard",
+    "item_travel_boots_2",--
     "item_ultimate_scepter_2",
 }
 
@@ -64,10 +65,11 @@ sRoleItemsBuyList['pos_1'] = {
     "item_greater_crit",--
     "item_aghanims_shard",
     "item_black_king_bar",--
+    "item_force_staff",
     "item_hurricane_pike",--
     "item_sheepstick",--
-    "item_travel_boots_2",--
     "item_moon_shard",
+    "item_travel_boots_2",--
     "item_ultimate_scepter_2",
 }
 

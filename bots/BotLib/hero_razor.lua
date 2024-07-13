@@ -66,8 +66,8 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_satanic",--
 	"item_assault",--
 	"item_skadi",--
-	"item_refresher",--
 	"item_moon_shard",
+	"item_refresher",--
 	"item_ultimate_scepter_2",
 }
 
@@ -90,8 +90,8 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_shivas_guard",--
 	"item_assault",--
 	"item_refresher",--
-	"item_satanic",--
 	"item_moon_shard",
+	"item_satanic",--
 	"item_ultimate_scepter_2",
 }
 

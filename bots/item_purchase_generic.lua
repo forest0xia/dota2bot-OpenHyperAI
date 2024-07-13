@@ -55,27 +55,27 @@ then
 end
 
 
-local sell_time = -90
+bot.sell_time = -90
 local check_time = -90
 
-local countInvCheck = 0
+bot.countInvCheck = 0
 
-local lastItemToBuy = nil
-local bPurchaseFromSecret = false
+bot.lastItemToBuy = nil
+bot.bPurchaseFromSecret = false
+bot.hasBuyShard = true
 local itemCost = 0
 local courier = nil
 local t3AlreadyDamaged = false
 local t3Check = -90
-local hasBuyShard = true
 
 local function GeneralPurchase()
 
 	
-	if lastItemToBuy ~= bot.currentComponentToBuy
+	if bot.lastItemToBuy ~= bot.currentComponentToBuy
 	then
-		lastItemToBuy = bot.currentComponentToBuy
+		bot.lastItemToBuy = bot.currentComponentToBuy
 		bot:SetNextItemPurchaseValue( GetItemCost( bot.currentComponentToBuy ) )
-		bPurchaseFromSecret = IsItemPurchasedFromSecretShop( bot.currentComponentToBuy )
+		bot.bPurchaseFromSecret = IsItemPurchasedFromSecretShop( bot.currentComponentToBuy )
 		itemCost = GetItemCost( bot.currentComponentToBuy )
 	end
 
@@ -93,7 +93,7 @@ local function GeneralPurchase()
 	local cost = itemCost
 
 
-	if lastItemToBuy == 'item_boots'
+	if bot.lastItemToBuy == 'item_boots'
 		and bot.currentItemToBuy == 'item_travel_boots'
 		and Item.HasBootsInMainSolt( bot )
 	then
@@ -160,7 +160,7 @@ local function GeneralPurchase()
 	end
 
 	--从第12分钟起存钱买魔晶
-	if not hasBuyShard
+	if not bot.hasBuyShard
 		and DotaTime() > 12 * 60
 	then
 		local shardCDTime = 15 * 60 - DotaTime()
@@ -175,7 +175,7 @@ local function GeneralPurchase()
 	--开始购买魔晶
 	if bot.currentComponentToBuy == "item_aghanims_shard"
 	then
-		hasBuyShard = false
+		bot.hasBuyShard = false
 		ClearBuyList()
 		return
 	end
@@ -205,7 +205,7 @@ local function GeneralPurchase()
 		end
 
 		--决定是否在神秘购物
-		if bPurchaseFromSecret
+		if bot.bPurchaseFromSecret
 			and bot:DistanceFromSecretShop() > 0
 		then
 			bot.SecretShop = true
@@ -238,12 +238,12 @@ end
 --加速模式购物逻辑
 local function TurboModeGeneralPurchase()
 
-	if lastItemToBuy ~= bot.currentComponentToBuy
+	if bot.lastItemToBuy ~= bot.currentComponentToBuy
 	then
-		lastItemToBuy = bot.currentComponentToBuy
+		bot.lastItemToBuy = bot.currentComponentToBuy
 		bot:SetNextItemPurchaseValue( GetItemCost( bot.currentComponentToBuy ) )
 		itemCost = GetItemCost( bot.currentComponentToBuy )
-		lastItemToBuy = bot.currentComponentToBuy
+		bot.lastItemToBuy = bot.currentComponentToBuy
 	end
 
 	if bot.currentComponentToBuy == "item_infused_raindrop"
@@ -258,7 +258,7 @@ local function TurboModeGeneralPurchase()
 
 	local cost = itemCost
 
-	if lastItemToBuy == 'item_boots'
+	if bot.lastItemToBuy == 'item_boots'
 		and bot.currentItemToBuy == 'item_travel_boots'
 		and Item.HasBootsInMainSolt( bot )
 	then
@@ -266,7 +266,7 @@ local function TurboModeGeneralPurchase()
 	end
 	
 
-	if not hasBuyShard
+	if not bot.hasBuyShard
 		and DotaTime() > 6 * 60
 	then
 		local shardCDTime = 10 * 60 - DotaTime()
@@ -280,7 +280,7 @@ local function TurboModeGeneralPurchase()
 
 	if bot.currentComponentToBuy == "item_aghanims_shard"
 	then
-		hasBuyShard = false
+		bot.hasBuyShard = false
 		ClearBuyList()
 		return
 	end
@@ -305,17 +305,17 @@ local function TurboModeGeneralPurchase()
 end
 
 
-local lastInvCheck = -90
-local fullInvCheck = -90
+bot.lastInvCheck = -90
+bot.fullInvCheck = -90
+bot.switchTime = 0
+bot.hasBuyClarity = false
 local lastBootsCheck = -90
 local buyBootsStatus = false
 local buyRD = false
 
-local switchTime = 0
 local buyWardTime = -999
 
 local buyBookTime = 0
-local hasBuyClarity = false
 
 local initSmoke = false
 
@@ -380,18 +380,18 @@ function ItemPurchaseThink()
 	and Item.GetItemCharges(bot, 'item_clarity') <= 0
 	and botGold >= GetItemCost( "item_clarity" )
 	then
-		hasBuyClarity = true
+		bot.hasBuyClarity = true
 		bot:ActionImmediate_PurchaseItem( "item_clarity" )
 	end
 
 	--辅助定位英雄购买辅助物品
 	if bot.theRole == 'support'
 	then
-		if currentTime > 30 and not hasBuyClarity
+		if currentTime > 30 and not bot.hasBuyClarity
 			and botGold >= GetItemCost( "item_clarity" )
 			and not Role.IsPvNMode()
 		then
-			hasBuyClarity = true
+			bot.hasBuyClarity = true
 			bot:ActionImmediate_PurchaseItem( "item_clarity" )
 		elseif botLevel >= 5
 			and Role['invisEnemyExist'] == true
@@ -495,7 +495,7 @@ function ItemPurchaseThink()
 	end
 
 	-- Observer and Sentry Wards
-	if (J.GetPosition(bot) == 4) and DotaTime() > 300 and botWorth < 20000
+	if (J.GetPosition(bot) == 4) and DotaTime() > 300 and botWorth < 15000
 	then
 		local wardType = 'item_ward_sentry'
 
@@ -509,7 +509,7 @@ function ItemPurchaseThink()
 		end
 	end
 
-	if (J.GetPosition(bot) == 5) and botWorth < 20000
+	if (J.GetPosition(bot) == 5) and botWorth < 15000
 	then
 		local wardType = 'item_ward_observer'
 
@@ -524,7 +524,7 @@ function ItemPurchaseThink()
 	end
 
 	-- Smoke of Deceit
-	if  (J.GetPosition(bot) == 4 or J.GetPosition(bot) == 5) and botWorth < 20000
+	if  (J.GetPosition(bot) == 4 or J.GetPosition(bot) == 5) and botWorth < 15000
 	and GetItemStockCount('item_smoke_of_deceit') > 1
 	and botGold >= GetItemCost('item_smoke_of_deceit')
 	and Item.GetEmptyInventoryAmount(bot) >= 3
@@ -571,11 +571,11 @@ function ItemPurchaseThink()
 	end
 
 	--为自己购买魔晶
-	if not hasBuyShard
+	if not bot.hasBuyShard
 		and GetItemStockCount( "item_aghanims_shard" ) > 0
 		and botGold >= 1400
 	then
-		hasBuyShard = true
+		bot.hasBuyShard = true
 		bot:ActionImmediate_PurchaseItem( "item_aghanims_shard" )
 	end
 
@@ -639,7 +639,7 @@ function ItemPurchaseThink()
 	--交换魂泪的位置避免过早被破坏
 	if currentTime > 180
 		and currentTime < 1800
-		and switchTime < currentTime - 5.6
+		and bot.switchTime < currentTime - 5.6
 	then
 		local raindrop = bot:FindItemSlot( "item_infused_raindrop" )
 		local raindropCharge = Item.GetItemCharges( bot, "item_infused_raindrop" )
@@ -650,14 +650,14 @@ function ItemPurchaseThink()
 				or bot:WasRecentlyDamagedByAnyHero( 3.1 ) )
 			and ( raindropCharge == 1 or raindropCharge >= 7 )
 		then
-			switchTime = currentTime
+			bot.switchTime = currentTime
 			bot:ActionImmediate_SwapItems( raindrop, 6 )
 		end
 	end
 
-	if ( GetGameMode() ~= 23 and botLevel > 6 and currentTime > fullInvCheck + 1.0
+	if ( GetGameMode() ~= 23 and botLevel > 6 and currentTime > bot.fullInvCheck + 1.0
 		and (bot:DistanceFromFountain() <= 200 or bot:DistanceFromSecretShop() <= 200 ))
-		or ( GetGameMode() == 23 and botLevel > 9 and currentTime > fullInvCheck + 1.0 )
+		or ( GetGameMode() == 23 and botLevel > 9 and currentTime > bot.fullInvCheck + 1.0 )
 	then
 		local emptySlot = Item.GetEmptyInventoryAmount( bot )
 		local slotToSell = nil
@@ -701,11 +701,11 @@ function ItemPurchaseThink()
 			bot:ActionImmediate_SellItem( bot:GetItemInSlot( slotToSell ) )
 		end
 
-		fullInvCheck = currentTime
+		bot.fullInvCheck = currentTime
 	end
 
 	--出售廉价装备, 可能偶然卖掉components
-	-- if bot:GetLevel() >= 10 and currentTime > sell_time + 1
+	-- if bot:GetLevel() >= 10 and currentTime > bot.sell_time + 1
 	-- and ( bot:DistanceFromFountain() <= 200 or bot:DistanceFromSecretShop() <= 100 ) then
 	-- 	for i = 1, 8
 	-- 	do
@@ -723,11 +723,11 @@ function ItemPurchaseThink()
 
 	--出售过渡装备
 	local countEmptyBackpack = Utils.CountBackpackEmptySpace(bot)
-	if currentTime > sell_time + 0.5
+	if currentTime > bot.sell_time + 0.5
 		and countEmptyBackpack <= 1
 		and ( bot:DistanceFromFountain() <= 100 or bot:DistanceFromSecretShop() <= 100 )
 	then
-		sell_time = currentTime
+		bot.sell_time = currentTime
 
 		for i = 2 , #sItemSellList, 2
 		do
@@ -754,11 +754,11 @@ function ItemPurchaseThink()
 		end
 	end
 
-	-- if currentTime > sell_time + 0.5
+	-- if currentTime > bot.sell_time + 0.5
 	-- 	and ( bot:GetItemInSlot( 6 ) ~= nil or bot:GetItemInSlot( 7 ) ~= nil or bot:GetItemInSlot( 8 ) ~= nil )
 	-- 	and ( J.IsModeTurbo() or (bot:DistanceFromFountain() <= 100 or bot:DistanceFromSecretShop() <= 100 ))
 	-- then
-	-- 	sell_time = currentTime
+	-- 	bot.sell_time = currentTime
 
 	-- 	-- bug: 不见得新旧物品挨着放
 	-- 	-- for i = 2 , #sItemSellList, 2
@@ -841,19 +841,19 @@ function ItemPurchaseThink()
 		end
 	end
 	
-	if #bot.currListItemToBuy == 0 and currentTime > lastInvCheck + 1.0
+	if #bot.currListItemToBuy == 0 and currentTime > bot.lastInvCheck + 1.0
 	then
 		if Item.IsItemInHero( bot.currentItemToBuy )
 			or bot.currentItemToBuy == "item_aghanims_shard"
-			or (countInvCheck >= 8 * 60 -- if can't finish the item for a long time
-			and bot:GetGold() >= 6000) -- and can't finish even with lots of gold
+			or (bot.countInvCheck >= 8 * 60 -- if can't finish the item for a long time
+			and bot:GetGold() >= 7000) -- and can't finish even with lots of gold
 		then
-			countInvCheck = 0
+			bot.countInvCheck = 0
 			bot.currentItemToBuy = nil
 			bot.itemToBuy[#bot.itemToBuy] = nil
 		else
-			lastInvCheck = currentTime
-			countInvCheck = countInvCheck + 1
+			bot.lastInvCheck = currentTime
+			bot.countInvCheck = bot.countInvCheck + 1
 		end
 	elseif #bot.currListItemToBuy > 0
 	then
@@ -873,7 +873,7 @@ function ItemPurchaseThink()
 end
 
 function ClearBuyList()
-	countInvCheck = 0
+	bot.countInvCheck = 0
 	bot.currentComponentToBuy = nil
 	bot.currListItemToBuy[#bot.currListItemToBuy] = nil
 end

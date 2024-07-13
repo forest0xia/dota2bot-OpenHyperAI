@@ -47,6 +47,7 @@ sRoleItemsBuyList['pos_1'] = {
     "item_manta",--
     "item_aghanims_shard",
     "item_harpoon",--
+	"item_orchid",
     "item_black_king_bar",--
     "item_bloodthorn",--
     "item_skadi",--
@@ -70,6 +71,7 @@ sRoleItemsBuyList['pos_2'] = {
     "item_aghanims_shard",
     "item_harpoon",--
     "item_black_king_bar",--
+	"item_orchid",
     "item_bloodthorn",--
     "item_travel_boots",
     "item_skadi",--

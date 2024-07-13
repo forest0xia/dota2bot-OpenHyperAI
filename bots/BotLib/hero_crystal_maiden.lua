@@ -62,6 +62,7 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_cyclone",
 	"item_glimmer_cape",
 	"item_sheepstick",
+	"item_orchid",
 	"item_bloodthorn",
 	"item_wind_waker",
 	"item_moon_shard",

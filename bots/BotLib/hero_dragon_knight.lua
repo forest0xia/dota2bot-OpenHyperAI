@@ -99,13 +99,14 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_black_king_bar",--
 	"item_assault",--
 	"item_octarine_core",--
+	"item_orchid",
+	"item_moon_shard",
 	"item_bloodthorn",--
 	"item_ultimate_scepter_2",
 	"item_travel_boots",
 	"item_overwhelming_blink",--
 	"item_travel_boots_2",--
 
-	"item_moon_shard",
 	"item_aghanims_shard",
 }
 

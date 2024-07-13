@@ -73,7 +73,7 @@ function GetDesire()
 	-- if pinged to defend base.
 	local ping = Utils.IsPingedToDefenseByAnyPlayer(bot, 3)
 	if ping ~= nil then
-		return 2
+		return BOT_MODE_DESIRE_VERYHIGH
 	end
 
 	-- 判断是否要提醒回防
@@ -113,7 +113,7 @@ function GetDesire()
 				bot:ActionImmediate_Chat("Please come defending", false)
 				bot:ActionImmediate_Ping(nDefendLoc.x, nDefendLoc.y, false)
 			end
-			return 2
+			return BOT_MODE_DESIRE_VERYHIGH
 		end
 	end
 
@@ -129,7 +129,7 @@ function GetDesire()
 	end
 
 	-- 如果自己在上高，对面人活着，队友活着却不在附近，赶紧溜去其他地方游走
-	local nAllyList = J.GetNearbyHeroes(bot,1600,false,BOT_MODE_NONE);
+	local nAllyList = J.GetNearbyHeroes(bot, 1600, false, BOT_MODE_NONE);
 	if #nAllyList <= 1 and J.GetNumOfAliveHeroes(true) > 1 and J.GetNumOfAliveHeroes(false) > 3
 	and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 3500 then
 		return BOT_MODE_DESIRE_VERYHIGH
@@ -258,34 +258,36 @@ function Think()
 	if J.CanNotUseAction(bot) then return end
 
 	-- if pinged to defend base.
-	if DotaTime() - reactedToDefendPingTime > 2 then
+	-- if DotaTime() - reactedToDefendPingTime > 2 then
 		reactedToDefendPingTime = DotaTime()
-		local ping = Utils.IsPingedToDefenseByAnyPlayer(bot, 4)
+		local ping = Utils.IsPingedToDefenseByAnyPlayer(bot, 2)
 		if ping ~= nil then
 			local tps = bot:GetItemInSlot(nTpSolt)
-			local bestTpLoc = J.GetNearbyLocationToTp(ping.location)
-			local distance = GetUnitToLocationDistance(bot, bestTpLoc)
-			if tps ~= nil and tps:IsFullyCastable() then
-				if distance > 3500 and not bot:WasRecentlyDamagedByAnyHero(2) then
-					bot:Action_UseAbilityOnLocation(tps, bestTpLoc + RandomVector(200))
-				elseif distance > 1200 and distance <= 2000 and not bot:WasRecentlyDamagedByAnyHero(5) then
-					bot:Action_MoveToLocation(bestTpLoc + RandomVector(200));
-				elseif distance >= 900 and bot:GetTarget() == nil then
-					local hNearbyEnemyHeroList = J.GetHeroesNearLocation( true, bestTpLoc, 1300 )
-					for _, npcEnemy in pairs( hNearbyEnemyHeroList )
-					do
-						if npcEnemy ~= nil and npcEnemy:CanBeSeen()
-							and J.CanCastOnNonMagicImmune( npcEnemy )
-							and GetUnitToUnitDistance( npcEnemy, bot ) <= 1300
-							and J.CanCastOnNonMagicImmune( npcEnemy )
-						then
-							bot:SetTarget( npcEnemy )
-						end
+			local saferLoc = J.AdjustLocationWithOffsetTowardsFountain(ping.location, 600)
+			local bestTpLoc = J.GetNearbyLocationToTp(saferLoc)
+			local distance = GetUnitToLocationDistance(bot, ping.location)
+			if distance > 3500 and not bot:WasRecentlyDamagedByAnyHero(2) then
+				if tps ~= nil and tps:IsFullyCastable() then
+					bot:Action_UseAbilityOnLocation(tps, bestTpLoc + RandomVector(30))
+				else
+					bot:Action_AttackMove(ping.location + RandomVector(30));
+				end
+			end
+			if distance > 2000 and distance <= 3000 and not bot:WasRecentlyDamagedByAnyHero(3) then
+				bot:Action_AttackMove(ping.location + RandomVector(30));
+			elseif distance <= 2000 and bot:GetTarget() == nil then
+				local hNearbyEnemyHeroList = J.GetHeroesNearLocation( true, ping.location, 1300 )
+				for _, npcEnemy in pairs( hNearbyEnemyHeroList )
+				do
+					if npcEnemy ~= nil and npcEnemy:CanBeSeen()
+					then
+						bot:SetTarget( npcEnemy )
+						return
 					end
 				end
 			end
 			return
-		end
+		-- end
 	end
 
 
@@ -325,8 +327,8 @@ function Think()
 		end
 	end
 
-	-- 如果自己在上高，对面人活着，队友却不在，赶紧溜
-	local nAllyList = J.GetNearbyHeroes(bot,1600,false,BOT_MODE_NONE);
+	-- 如果自己在上高，对面人活着，队友却不在，赶紧去找队友
+	local nAllyList = J.GetNearbyHeroes(bot, 1600, false, BOT_MODE_NONE);
 	if #nAllyList <= 1 and J.GetNumOfAliveHeroes(true) > 1 and J.GetNumOfAliveHeroes(false) > 3
 	and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 3500 then
 		for i, id in pairs( GetTeamPlayers( team ) )

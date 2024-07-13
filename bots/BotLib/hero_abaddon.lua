@@ -82,7 +82,8 @@ sRoleItemsBuyList['pos_5'] = {
     "item_arcane_boots",
     "item_magic_wand",
     "item_crimson_guard",--
-    "item_force_staff",--
+    "item_force_staff",
+	"item_hurricane_pike",--
     "item_guardian_greaves",--
     "item_ultimate_scepter",
     "item_heart",--

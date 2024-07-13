@@ -43,7 +43,7 @@ local playersLoadedTimerName = 'playersLoadedTimerName'
 local isAllPlayersSpawned = false
 local playerSpawnCount = 0
 -- if game time goes past this point, then assume all players loaded
-local playerLoadFailSafe = -75
+local playerLoadFailSafe = -35
 -- Time at which we force a difficulty scale setting for DataTables:Initialize()
 local dataTablesTimeout = 30
 -- Time at which to stop the BotRoleDetermination timer and declare roles
@@ -105,7 +105,7 @@ function FretBots:PlayersLoadedTimer()
 		Debug:Print('Spawn timer limit exceeded.  Proceeding.')
 		isAllPlayersSpawned = true
 	end
-	--Debug:Print('Waiting for players to spawn: '..math.ceil(gameTime)..' : '..playerLoadFailSafe)
+	-- Debug:Print('Waiting for players to spawn: '..math.ceil(gameTime)..' : '..playerLoadFailSafe)
 	return 1
 end
 

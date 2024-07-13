@@ -56,6 +56,7 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_force_staff",
 	"item_black_king_bar",
 	"item_hurricane_pike",
+	"item_orchid",
 	"item_bloodthorn",
 	"item_aghanims_shard",
 	"item_ultimate_scepter",

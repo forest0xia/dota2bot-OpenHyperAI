@@ -22,9 +22,6 @@ local nAbilityBuildList = J.Skill.GetRandomBuild(tAllAbilityBuildList)
 
 local nTalentBuildList = J.Skill.GetTalentBuild(tTalentTreeList)
 
-local sUtility = {"item_crimson_guard", "item_pipe", "item_lotus_orb", "item_heavens_halberd"}
-local nUtility = sUtility[RandomInt(1, #sUtility)]
-
 local sRoleItemsBuyList = {}
 
 sRoleItemsBuyList['pos_3'] = {
@@ -40,7 +37,7 @@ sRoleItemsBuyList['pos_3'] = {
     "item_desolator",--
     "item_aghanims_shard",
     "item_black_king_bar",--
-    nUtility,--
+    "item_heavens_halberd",--
     "item_assault",--
     "item_harpoon",--
     "item_abyssal_blade",--

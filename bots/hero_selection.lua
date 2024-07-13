@@ -213,6 +213,8 @@ local sPos2List = {
 	"npc_dota_hero_invoker",
 	"npc_dota_hero_invoker", -- increase the chance of having mid Invoker.
 	"npc_dota_hero_invoker",
+	"npc_dota_hero_rubick",
+	"npc_dota_hero_rubick",
 	"npc_dota_hero_keeper_of_the_light",
 	"npc_dota_hero_kunkka",
 	"npc_dota_hero_leshrac",
@@ -641,11 +643,11 @@ function X.OverrideTeamHeroes()
 	then
 		return {
 			
-			[1] = "npc_dota_hero_arc_warden",
-			[2] = 'npc_dota_hero_medusa',
-			[3] = "npc_dota_hero_legion_commander",
-		    [4] = "npc_dota_hero_lina",
-			[5] = "npc_dota_hero_silencer",
+			[1] = tSelectPoolList[1][RandomInt( 1, #tSelectPoolList[1] )],
+			[2] = tSelectPoolList[2][RandomInt( 1, #tSelectPoolList[2] )],
+			[3] = tSelectPoolList[3][RandomInt( 1, #tSelectPoolList[3] )],
+			[4] = tSelectPoolList[4][RandomInt( 1, #tSelectPoolList[4] )],
+			[5] = tSelectPoolList[5][RandomInt( 1, #tSelectPoolList[5] )],
 
 		}
 	else
@@ -686,18 +688,18 @@ function X.OverrideTeamHeroes()
 			-- [5] = "npc_dota_hero_techies",
 			
 			
-			[1] = "npc_dota_hero_arc_warden",
-			[2] = 'npc_dota_hero_medusa',
-			[3] = "npc_dota_hero_legion_commander",
-		    [4] = "npc_dota_hero_lina",
-			[5] = "npc_dota_hero_silencer",
+			-- [1] = "npc_dota_hero_arc_warden",
+			-- [2] = 'npc_dota_hero_medusa',
+			-- [3] = "npc_dota_hero_legion_commander",
+		    -- [4] = "npc_dota_hero_lina",
+			-- [5] = "npc_dota_hero_silencer",
 
 			
-			-- [1] = "npc_dota_hero_antimage",
-			-- [2] = 'npc_dota_hero_invoker',
-			-- [3] = "npc_dota_hero_tidehunter",
-		    -- [4] = "npc_dota_hero_nyx_assassin",
-			-- [5] = "npc_dota_hero_earth_spirit",
+			[1] = "npc_dota_hero_tidehunter",
+			[2] = 'npc_dota_hero_invoker',
+			[3] = "npc_dota_hero_enigma",
+		    [4] = "npc_dota_hero_nyx_assassin",
+			[5] = "npc_dota_hero_earth_spirit",
 			
 			-- Muerta pos1 and Hoodwink pos5, both go top.
 			-- muerta be pos 1 has smaller chance for bug, 

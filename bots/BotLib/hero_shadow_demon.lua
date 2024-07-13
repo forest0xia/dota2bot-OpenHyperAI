@@ -462,9 +462,9 @@ function X.ConsiderShadowPoison()
 
         if not J.IsInLaningPhase()
         then
+            local nInRangeAlly = J.GetNearbyHeroes(bot,1200, false, BOT_MODE_NONE)
             local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nCastRange, true)
-
-            if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 3
+            if #nInRangeAlly <= 1 and nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 3
             then
                 return BOT_ACTION_DESIRE_HIGH, J.GetCenterOfUnits(nEnemyLaneCreeps)
             end

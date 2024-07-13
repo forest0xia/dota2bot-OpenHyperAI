@@ -58,6 +58,7 @@ sRoleItemsBuyList['pos_2'] = {
 	"item_power_treads",
 	"item_magic_wand",
 	"item_witch_blade",
+    "item_force_staff",
 	"item_hurricane_pike",--
 	"item_aghanims_shard",
 	"item_black_king_bar",--
@@ -66,6 +67,7 @@ sRoleItemsBuyList['pos_2'] = {
 	"item_travel_boots",
 	"item_moon_shard",
 	"item_ultimate_scepter_2",
+	"item_orchid",
 	"item_bloodthorn",--
 	"item_travel_boots_2",--
 }
@@ -79,12 +81,14 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_power_treads",
 	"item_magic_wand",
 	"item_witch_blade",
+    "item_force_staff",
 	"item_hurricane_pike",--
 	"item_aghanims_shard",
 	"item_black_king_bar",--
 	"item_sheepstick",--
 	"item_devastator",--
 	"item_travel_boots",
+	"item_orchid",
 	"item_bloodthorn",--
 	"item_travel_boots_2",--
 	"item_moon_shard",
@@ -96,6 +100,7 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_aghanims_shard",
 	"item_force_staff",
 	"item_rod_of_atos",
+    "item_force_staff",
 	"item_hurricane_pike",--
 	"item_black_king_bar",--
 	"item_sheepstick",--
@@ -103,6 +108,7 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_moon_shard",
 	"item_ultimate_scepter",
 	"item_ultimate_scepter_2",
+	"item_orchid",
 	"item_bloodthorn",--
 	"item_travel_boots",
 	"item_travel_boots_2",--
@@ -122,9 +128,11 @@ sRoleItemsBuyList['pos_4'] = {
 	"item_glimmer_cape",--
 	"item_boots_of_bearing",--
 	"item_aghanims_shard",
+    "item_force_staff",
 	"item_hurricane_pike",--
 	"item_sheepstick",--
 	"item_refresher",--
+	"item_orchid",
 	"item_bloodthorn",--
 	"item_moon_shard",
 	"item_ultimate_scepter_2",
@@ -144,8 +152,10 @@ sRoleItemsBuyList['pos_5'] = {
 	"item_glimmer_cape",--
 	"item_guardian_greaves",--
 	"item_aghanims_shard",
+    "item_force_staff",
 	"item_hurricane_pike",--
 	"item_refresher",--
+	"item_orchid",
 	"item_bloodthorn",--
 	"item_sheepstick",--
 	"item_moon_shard",

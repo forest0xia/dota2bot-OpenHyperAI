@@ -297,7 +297,7 @@ function GetDesire()
 			end
 		end
 
-		return RemapValClamped(GetUnitToUnitDistance(bot, ClosestOutpost), 3500, 0, BOT_ACTION_DESIRE_MODERATE, BOT_ACTION_DESIRE_VERYHIGH)
+		return RemapValClamped(GetUnitToUnitDistance(bot, ClosestOutpost), 5000, 0, BOT_ACTION_DESIRE_VERYLOW, BOT_ACTION_DESIRE_VERYHIGH )
 	end
 
 	return BOT_ACTION_DESIRE_NONE

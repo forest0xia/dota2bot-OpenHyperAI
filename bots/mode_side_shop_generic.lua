@@ -54,16 +54,31 @@ function TormentorDesire()
     end
 
 	if J.GetHP(bot) < 0.1 then
+		bot:Action_ClearActions(false)
 		bot:Action_MoveToLocation(J.GetTeamFountain())
         return BOT_ACTION_DESIRE_NONE
 	end
 
+	if  J.GetHP(bot) < 0.3
+	and J.IsTormentor(Tormentor)
+	and J.GetHP(Tormentor) > 0.2
+	then
+		bot:Action_ClearActions(false)
+		bot:Action_MoveToLocation(J.GetTeamFountain())
+		return BOT_ACTION_DESIRE_NONE
+	end
+
 	TormentorLocation = J.GetTormentorLocation(GetTeam())
+
+	if not IsEnoughAllies()
+	then
+		return BOT_ACTION_DESIRE_NONE
+	end
 
     local nAllyInLoc = J.GetAlliesNearLoc(TormentorLocation, 700)
 	local aliveAlly = J.GetNumOfAliveHeroes(false)
 	-- local aveDistance, heroCount = GetAveTeamDistance()
-	local spawnTime = J.IsModeTurbo() and 15 or 25 -- give bots more time. original: 10 or 20
+	local spawnTime = J.IsModeTurbo() and 18 or 28 -- give bots more time. original: 10 or 20
 	local topFrontP = GetLaneFrontAmount(GetOpposingTeam(), LANE_TOP, true)
 	local midFrontP = GetLaneFrontAmount(GetOpposingTeam(), LANE_MID, true)
 	local botFrontP = GetLaneFrontAmount(GetOpposingTeam(), LANE_BOT, true)
@@ -92,13 +107,6 @@ function TormentorDesire()
 	if DidSomeoneSeeTormentorAlive()
 	then
 		bot.tormentorState = true
-	end
-
-	if  J.GetHP(bot) < 0.3
-	and J.IsTormentor(Tormentor)
-	and J.GetHP(Tormentor) > 0.2
-	then
-		return BOT_ACTION_DESIRE_NONE
 	end
 
 	for i = 1, 5
@@ -201,11 +209,6 @@ function TormentorDesire()
 
 			canDoTormentor = IsTeamHealthy
 
-			if IsEnoughAllies()
-			then
-				return BOT_ACTION_DESIRE_VERYHIGH
-			end
-
 			if nAllyInLoc ~= nil and #nAllyInLoc >= 3
 			or IsHumanInLoc()
 			then
@@ -228,7 +231,7 @@ end
 
 local FrameProcessTime = 0.08
 function Think()
-	
+
 	if bot.lastSideShopFrameProcessTime == nil then bot.lastSideShopFrameProcessTime = DotaTime() end
 	if DotaTime() - bot.lastSideShopFrameProcessTime < FrameProcessTime then return end
 	bot.lastSideShopFrameProcessTime = DotaTime()
@@ -237,37 +240,8 @@ function Think()
 		return
 	end
 
-	if DotaTime() <= NoTormentorAfterThisTime then
-		if GetUnitToLocationDistance(bot, TormentorLocation) > 240
-		then
-			bot:Action_MoveToLocation(TormentorLocation + RandomVector(200))
-			return
-		else
-			local nCreeps = bot:GetNearbyNeutralCreeps(700)
-	
-			for _, creepOrTormentor in pairs(nCreeps)
-			do
-				if creepOrTormentor:GetUnitName() == "npc_dota_miniboss"
-				then
-					Tormentor = creepOrTormentor
-
-					if IsEnoughAllies()
-					and J.GetHP(bot) > 0.25
-					then
-						bot.wasAttackingTormentor = true
-						bot:Action_AttackUnit(creepOrTormentor, false)
-					end
-	
-					if  (DotaTime() - tormentorMessageTime) > 15
-					and canDoTormentor
-					then
-						tormentorMessageTime = DotaTime()
-						bot:ActionImmediate_Chat("Let's try tormentor?", false)
-						bot:ActionImmediate_Ping(creepOrTormentor:GetLocation().x, creepOrTormentor:GetLocation().y, true)
-					end
-				end
-			end
-		end
+	if TormentorThink() >= 1 then
+		return
 	end
 end
 
@@ -537,5 +511,49 @@ function WisdomRuneThink()
 		end
 	end
 
+	return 0
+end
+
+function TormentorThink()
+	if  J.GetHP(bot) < 0.2
+	then
+		bot:Action_ClearActions(false)
+		bot:Action_MoveToLocation(J.GetTeamFountain())
+		return 1
+	end
+
+	if DotaTime() <= NoTormentorAfterThisTime then
+		if GetUnitToLocationDistance(bot, TormentorLocation) > 300
+		then
+			bot:Action_MoveToLocation(TormentorLocation + RandomVector(200))
+			return 1
+		else
+			local nCreeps = bot:GetNearbyNeutralCreeps(700)
+
+			for _, creepOrTormentor in pairs(nCreeps)
+			do
+				if creepOrTormentor:GetUnitName() == "npc_dota_miniboss"
+				then
+					Tormentor = creepOrTormentor
+
+					if IsEnoughAllies()
+					and J.GetHP(bot) > 0.25
+					then
+						bot.wasAttackingTormentor = true
+						bot:Action_AttackUnit(creepOrTormentor, false)
+					end
+
+					if (DotaTime() - tormentorMessageTime) > 15
+					and canDoTormentor
+					then
+						tormentorMessageTime = DotaTime()
+						bot:ActionImmediate_Chat("Let's try tormentor?", false)
+						bot:ActionImmediate_Ping(creepOrTormentor:GetLocation().x, creepOrTormentor:GetLocation().y, true)
+					end
+					return 1
+				end
+			end
+		end
+	end
 	return 0
 end

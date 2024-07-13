@@ -42,6 +42,7 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_manta",--
 	"item_ultimate_scepter",
 	"item_skadi",--
+    "item_force_staff",
 	"item_hurricane_pike",--
 	"item_butterfly",--
 	"item_greater_crit",--
@@ -59,6 +60,7 @@ sRoleItemsBuyList['pos_2'] = {
 	"item_dragon_lance",
 	"item_manta",--
 	"item_mjollnir",--
+    "item_force_staff",
 	"item_hurricane_pike", --
 	"item_travel_boots",
 	"item_skadi",--

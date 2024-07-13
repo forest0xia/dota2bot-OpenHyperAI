@@ -682,7 +682,6 @@ function X.ConsiderBlackHole()
             local nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1200, false, BOT_MODE_NONE)
 
             if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
-            and not (#nInRangeAlly + 3 >= #nInRangeEnemy)
             then
                 if  #nInRangeEnemy >= #nInRangeAlly
                 and #nInRangeEnemy <= 1
@@ -710,13 +709,13 @@ function X.ConsiderBlackHole()
                 if  #nInRangeAlly >= #nInRangeEnemy
                 -- and J.IsCore(botTarget)
                 then
-                    if  #nInRangeAlly == 0
-                    and J.CanKillTarget(botTarget, nDamage * nDuration, DAMAGE_TYPE_PURE)
+                    if  #nInRangeAlly <= 1
+                    and J.CanKillTarget(botTarget, nDamage * 1.1 * nDuration, DAMAGE_TYPE_PURE)
                     then
                         return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
                     else
                         nInRangeEnemy = J.GetEnemiesNearLoc(botTarget:GetLocation(), nRadius)
-                        if nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
+                        if nInRangeEnemy ~= nil and #nInRangeEnemy >= 2
                         then
                             return BOT_ACTION_DESIRE_HIGH, J.GetCenterOfUnits(nInRangeEnemy)
                         else

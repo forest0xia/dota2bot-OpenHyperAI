@@ -3624,11 +3624,15 @@ function J.WeAreStronger(bot, radius)
     local enemyPower = 0;
   
     for _, h in pairs(mates) do
-        ourPower = ourPower + h:GetOffensivePower();
+		if not J.IsSuspiciousIllusion(h) then
+			ourPower = ourPower + h:GetOffensivePower();
+		end
     end
   
     for _, h in pairs(enemies) do
-        enemyPower = enemyPower + h:GetRawOffensivePower();
+		if not J.IsSuspiciousIllusion(h) then
+        	enemyPower = enemyPower + h:GetRawOffensivePower();
+		end
     end
   
     return #mates > #enemies and ourPower > enemyPower;
@@ -4256,6 +4260,32 @@ function J.AdjustLocationWithOffset(vLoc, offset, target)
 	local offsetY = offset * math.sin(facingDir)
 
 	targetLoc = targetLoc + Vector(offsetX, offsetY)
+
+	return targetLoc
+end
+
+function J.AdjustLocationWithOffsetTowardsFountain(targetLoc, distance)
+	return J.AdjustLocationWithOffsetTowardsSourceLocation(targetLoc, J.GetTeamFountain(), distance)
+end
+
+-- return an offsetted location that's ndistance away from the target towards the source location that at worest case returns the source location.
+function J.AdjustLocationWithOffsetTowardsSourceLocation(targetLoc, sourceLoc, distance)
+
+	local offset = Vector(distance, distance)
+
+	if GetTeam() == TEAM_RADIANT then
+		offset = Vector(-distance, -distance)
+	end
+
+	targetLoc = targetLoc + offset
+
+	if GetTeam() == TEAM_RADIANT then
+		targetLoc.x = math.max(targetLoc.x, sourceLoc.x)
+		targetLoc.y = math.max(targetLoc.y, sourceLoc.y)
+	else
+		targetLoc.x = math.min(targetLoc.x, sourceLoc.x)
+		targetLoc.y = math.min(targetLoc.y, sourceLoc.y)
+	end
 
 	return targetLoc
 end

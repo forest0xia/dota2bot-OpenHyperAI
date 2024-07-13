@@ -44,6 +44,7 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_magic_wand",
 	"item_dragon_lance",
 	"item_black_king_bar",--
+    "item_force_staff",
 	"item_hurricane_pike",--
 	"item_butterfly",--
 	"item_aghanims_shard",

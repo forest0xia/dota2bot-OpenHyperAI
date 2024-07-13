@@ -50,6 +50,7 @@ sRoleItemsBuyList['pos_2'] = {
     "item_power_treads",
     "item_soul_ring",
     "item_magic_wand",
+	"item_orchid",
     "item_bloodthorn",--
     "item_black_king_bar",--
     "item_sheepstick",--
@@ -70,6 +71,7 @@ sRoleItemsBuyList['pos_3'] = {
     "item_power_treads",
     "item_soul_ring",
     "item_magic_wand",
+	"item_orchid",
     "item_bloodthorn",--
     "item_black_king_bar",--
     "item_assault",--

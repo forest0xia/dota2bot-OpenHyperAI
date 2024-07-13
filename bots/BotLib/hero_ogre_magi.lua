@@ -349,7 +349,7 @@ function X.ConsiderQ()
 
 	--对线期间对线上小兵使用
 	if bot:GetActiveMode() == BOT_MODE_LANING
-		or ( nLV <= 7 and #hAllyList <= 2 and #hEnemyList == 0 )
+		or ( (#hAllyList <= 1 or J.IsCore(bot)) and #hEnemyList == 0 )
 	then
 		local nLaneCreeps = bot:GetNearbyLaneCreeps( nCastRange + 200, true )
 		local keyWord = "ranged"

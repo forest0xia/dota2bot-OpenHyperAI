@@ -66,6 +66,7 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_power_treads",
 	"item_mage_slayer",--
 	"item_dragon_lance",
+    "item_force_staff",
 	"item_hurricane_pike",--
 	"item_orchid",
 	"item_bloodthorn",--
@@ -94,6 +95,7 @@ sRoleItemsBuyList['pos_2'] = {
 	"item_orchid",
 	"item_bloodthorn",--
 	"item_dragon_lance",
+    "item_force_staff",
 	"item_hurricane_pike",--
 	"item_aghanims_shard",
 	"item_kaya_and_sange",--

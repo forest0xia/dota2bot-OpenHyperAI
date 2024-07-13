@@ -9,13 +9,14 @@ Anything that can be shared in any files without worrying about nested or circul
 ]]
 
 local X = { }
-local DebugMode = false
+X['DebugMode'] = false
 
 local RadiantFountainTpPoint = Vector(-7172, -6652, 384 )
 local DireFountainTpPoint = Vector(6982, 6422, 392)
+local orig_print = print
 
 -- This heroes bugged because Valve was too lazy to add them with the correct laning target point. No high desired lane.
-local BuggyHeroesDueToValveTooLazy = {
+X['BuggyHeroesDueToValveTooLazy'] = {
     ['npc_dota_hero_muerta'] = true,
     ['npc_dota_hero_marci'] = true,
     ['npc_dota_hero_lone_druid'] = true,
@@ -24,13 +25,25 @@ local BuggyHeroesDueToValveTooLazy = {
     ['npc_dota_hero_elder_titan'] = true,
     ['npc_dota_hero_hoodwink'] = true,
 }
-local ActuallyBuggedHeroes = { } -- used to record the acutal bugged heroes in this game.
+
+X['ActuallyBuggedHeroes'] = { } -- used to record the acutal bugged heroes in this game.
 
 X['GameStates'] = { } -- A gaming state keeper to keep a record of different states to avoid recomupte or anything.
 
-function X.PrintTable(tbl, indent)
-    if not DebugMode then return end
+-- Override the print function
+function print(...)
+    if not X.DebugMode then return end
 
+    local args = {...}
+    for i, v in ipairs(args) do
+        args[i] = tostring(v) -- Convert all arguments to strings
+    end
+    local output = table.concat(args, "\t") -- Concatenate with tab as separator
+
+    orig_print(output)
+end
+
+function X.PrintTable(tbl, indent)
 	if not indent then indent = 0 end
     for k, v in pairs(tbl) do
         formatting = string.rep("  ", indent) .. k .. ": "
@@ -48,8 +61,6 @@ function X.PrintTable(tbl, indent)
 end
 
 function X.PrintPings(pingTimeGap)
-    if not DebugMode then return end
-
 	local listPings = {}
 	local nTeamPlayers = GetTeamPlayers(GetTeam())
 	for i, id in pairs(nTeamPlayers)
@@ -73,6 +84,13 @@ function X.GetEnemyFountainTpPoint()
 	else
 		return DireFountainTpPoint
 	end
+end
+
+function X.Shuffle(tbl)
+    for i = #tbl, 2, -1 do
+        local j = RandomInt(1, i)
+        tbl[i], tbl[j] = tbl[j], tbl[i]
+    end
 end
 
 function X.IsPingedToDefenseByAnyPlayer(bot, pingTimeGap)
@@ -394,11 +412,9 @@ function X.StopCoroutine(thread)
     X.Remove_Modify(coroutineRegistry, thread)
 end
 
-
-
-X.BuggyHeroesDueToValveTooLazy = BuggyHeroesDueToValveTooLazy
-X.ActuallyBuggedHeroes = ActuallyBuggedHeroes
-X.DebugMode = DebugMode
+function X.RecentlyTookDamage(bot, interval)
+    return bot:WasRecentlyDamagedByAnyHero(interval) or bot:WasRecentlyDamagedByTower(interval) or bot:WasRecentlyDamagedByCreep(interval)
+end
 
 return X
 

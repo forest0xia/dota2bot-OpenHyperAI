@@ -6,7 +6,6 @@ if GetBot():IsInvulnerable() or not GetBot():IsHero() or not string.find(GetBot(
 	return
 end
 
-local X = {}
 local bot = GetBot()
 local nTpSolt = 15
 
@@ -28,19 +27,6 @@ function GetDesire()
 			bot:Action_MoveToLocation(bestTpLoc + RandomVector(200));
 		end
 		return 0.1
-	end
-
-	-- note if bot has 0 desire for laning, they perform like idle - stand still, direct move or simple attack.
-	local botName = bot:GetUnitName()
-	if Utils.ActuallyBuggedHeroes[botName] ~= nil then return 0 end
-	if bot.isBuggyHero == nil then bot.isBuggyHero = Utils.BuggyHeroesDueToValveTooLazy[botName] ~= nil end
-	if bot.isBuggyHero then
-		local assignedLaneLoc = GetLaneFrontLocation(GetTeam(), bot:GetAssignedLane(), 0)
-		if GetUnitToLocationDistance(bot, assignedLaneLoc) > 1000 then
-			print('[ERROR] '..botName..' is actually bugged.')
-			Utils.ActuallyBuggedHeroes[botName] = true
-		end
-		return 0
 	end
 
 	local currentTime = DotaTime()
@@ -71,3 +57,4 @@ function GetDesire()
 	return 0
 
 end
+

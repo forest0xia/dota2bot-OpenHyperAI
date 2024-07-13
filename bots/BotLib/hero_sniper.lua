@@ -39,6 +39,7 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_mask_of_madness",
 	"item_aghanims_shard",
 	"item_maelstrom",
+    "item_force_staff",
 	"item_hurricane_pike",--
 	"item_ultimate_scepter",
 	"item_travel_boots",
@@ -57,6 +58,7 @@ sRoleItemsBuyList['pos_2'] = {
 	"item_mask_of_madness",
 	"item_aghanims_shard",
 	"item_maelstrom",
+    "item_force_staff",
 	"item_hurricane_pike",--
 	"item_ultimate_scepter",
 	"item_travel_boots",

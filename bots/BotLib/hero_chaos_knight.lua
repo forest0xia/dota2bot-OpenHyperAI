@@ -40,8 +40,9 @@ sRoleItemsBuyList['pos_1'] = {
 --	"item_blade_mail",
 	"item_heavens_halberd",--
 	"item_manta",--
-	"item_travel_boots",
+	"item_orchid",
 	"item_bloodthorn",--
+	"item_travel_boots",
 	"item_heart",--
 	"item_satanic",--
 	"item_moon_shard",

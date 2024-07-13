@@ -52,6 +52,7 @@ sRoleItemsBuyList['pos_3'] = {
     "item_power_treads",
     "item_magic_wand",
     "item_mage_slayer",--
+    "item_force_staff",
     "item_hurricane_pike",--
     nUtility,--
     "item_pipe",--
@@ -70,6 +71,7 @@ sRoleItemsBuyList['pos_4'] = {
 
     "item_magic_wand",
     "item_boots",
+    "item_force_staff",
     "item_hurricane_pike",--
     "item_aghanims_shard",
     "item_mage_slayer",--
@@ -88,6 +90,7 @@ sRoleItemsBuyList['pos_5'] = {
 
     "item_magic_wand",
     "item_boots",
+    "item_force_staff",
     "item_hurricane_pike",--
     "item_aghanims_shard",
     "item_mage_slayer",--
@@ -102,6 +105,7 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_ranged_carry_outfit",
 	"item_dragon_lance",
 	"item_point_booster",
+    "item_force_staff",
 	"item_hurricane_pike", --
 	"item_black_king_bar",--
 	"item_travel_boots",

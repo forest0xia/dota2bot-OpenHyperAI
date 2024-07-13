@@ -393,15 +393,19 @@ local function CourierUsageComplement()
 		lastCheckDropTime = DotaTime()
 
 		-- 再尝试丢/卖掉自己的物品
-		if Utils.CountBackpackEmptySpace(bot) <= 1 and bot:DistanceFromFountain() <= 300 then
+		if Utils.CountBackpackEmptySpace(bot) <= 1 then
 			for i = 1, #Item['tEarlyConsumableItem']
 			do
 				local itemName = Item['tEarlyConsumableItem'][i]
 				local itemSlot = bot:FindItemSlot( itemName )
 				if itemSlot >= 6 and itemSlot <= 8
 				then
-					bot:ActionImmediate_SellItem( bot:GetItemInSlot( itemSlot ))
-					-- bot:Action_DropItem( bot:GetItemInSlot( itemSlot ), bot:GetLocation() )
+					local distance = bot:DistanceFromFountain()
+					if distance <= 300 then
+						bot:ActionImmediate_SellItem( bot:GetItemInSlot( itemSlot ))
+					elseif bot:GetNetWorth() >= 15000 and distance >= 3000 then
+						bot:Action_DropItem( bot:GetItemInSlot( itemSlot ), bot:GetLocation() )
+					end
 				end
 			end
 		end
@@ -465,7 +469,8 @@ local function CourierUsageComplement()
 					or ( cState == COURIER_STATE_IDLE and npcCourier:DistanceFromFountain() < 800 ) )
 		then
 			local nMSlot = X.GetNumStashItem( bot )
-			if nMSlot > 0 and (bot:GetItemInSlot(6) == nil or bot:GetItemInSlot(7) == nil or bot:GetItemInSlot(8) == nil)
+			if nMSlot > 0
+			-- and Utils.CountBackpackEmptySpace(bot) >= 1
 			then
 				if ( bot.currListItemToBuy ~= nil and #bot.currListItemToBuy == 0 )
 					or ( bot.currentComponentToBuy ~= nil
@@ -499,7 +504,7 @@ local function CourierUsageComplement()
 			and ( not X.IsInvFull( bot ) or ( X.GetNumStashItem( bot ) == 0 and bot.currListItemToBuy ~= nil and #bot.currListItemToBuy == 0 ) )
 			and ( npcCourier:DistanceFromFountain() < 4000 + botLV * 200 or GetUnitToUnitDistance( bot, npcCourier ) < 1800 )
 			and currentTime > courierTime + useCourierCD
-			and (bot:GetItemInSlot(6) == nil or bot:GetItemInSlot(7) == nil or bot:GetItemInSlot(8) == nil)
+			-- and Utils.CountBackpackEmptySpace(bot) >= 1
 		then
 			J.SetReportMotive( bDebugCourier, "信使运输背包中的东西" )
 			bot:ActionImmediate_Courier( npcCourier, COURIER_ACTION_TRANSFER_ITEMS )
@@ -3149,9 +3154,7 @@ end
 
 --银月
 X.ConsiderItemDesire["item_moon_shard"] = function( hItem )
-
-	if bot:GetNetWorth() < 18000
-		or ( bot:GetItemInSlot( 6 ) == nil and bot:GetItemInSlot( 7 ) == nil and bot:GetItemInSlot( 8 ) == nil )
+	if bot:GetNetWorth() < 18000 or Utils.CountBackpackEmptySpace(bot) >= 3
 	then
 		return BOT_ACTION_DESIRE_NONE
 	end

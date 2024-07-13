@@ -47,6 +47,7 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_yasha",
 	"item_manta",
 	"item_ultimate_scepter",
+    "item_force_staff",
 	"item_hurricane_pike",--
 	RandomItem,--
 	"item_butterfly",--
