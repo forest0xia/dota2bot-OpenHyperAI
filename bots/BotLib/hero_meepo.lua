@@ -34,18 +34,18 @@ sRoleItemsBuyList['pos_1'] = {
     "item_magic_wand",
     "item_power_treads",
     "item_diffusal_blade",
-    "item_blink",
-    "item_ultimate_scepter",
     "item_aghanims_shard",
     "item_disperser",--
     "item_skadi",--
+    "item_blink",
     "item_basher",
+    "item_ultimate_scepter",
     "item_sheepstick",--
     "item_ultimate_scepter_2",
     "item_abyssal_blade",--
     "item_swift_blink",--
-    "item_travel_boots_2",--
     "item_moon_shard",
+    "item_travel_boots_2",--
 }
 
 sRoleItemsBuyList['pos_2'] = {
@@ -58,17 +58,17 @@ sRoleItemsBuyList['pos_2'] = {
     "item_magic_wand",
     "item_power_treads",
     "item_diffusal_blade",
-    "item_blink",
-    "item_ultimate_scepter",
     "item_aghanims_shard",
     "item_disperser",--
     "item_skadi",--
+    "item_blink",
+    "item_ultimate_scepter",
     "item_sheepstick",--
     "item_ultimate_scepter_2",
     "item_nullifier",--
     "item_swift_blink",--
-    "item_travel_boots_2",--
     "item_moon_shard",
+    "item_travel_boots_2",--
 }
 
 sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_1']

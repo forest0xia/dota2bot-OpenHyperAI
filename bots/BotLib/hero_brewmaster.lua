@@ -71,6 +71,7 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_black_king_bar",--
 	"item_travel_boots",
 	"item_assault",--
+	"item_veil_of_discord",
     "item_shivas_guard",--
     "item_ultimate_scepter_2",
 	"item_refresher",--

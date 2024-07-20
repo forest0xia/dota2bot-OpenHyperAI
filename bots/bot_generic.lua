@@ -1,9 +1,4 @@
-----------------------------------------------------------------------------------------------------
---- The Creation Come From: A Beginner AI 
---- Author: 决明子 Email: dota2jmz@163.com 微博@Dota2_决明子
---- Link:http://steamcommunity.com/sharedfiles/filedetails/?id=1573671599
---- Link:http://steamcommunity.com/sharedfiles/filedetails/?id=1627071163
-----------------------------------------------------------------------------------------------------
+require( GetScriptDirectory()..'/FunLib/utils' )
 
 local bot = GetBot()
 local botName = bot:GetUnitName()
@@ -16,18 +11,22 @@ then
 	return
 end
 
-local BotBuild = dofile(GetScriptDirectory() .. "/BotLib/" .. string.gsub(bot:GetUnitName(), "npc_dota_", ""));
+local function IsValidUnit(unit)
+	return unit ~= nil
+	   and not unit:IsNull()
+	   and unit:IsAlive()
+end
+
+local BotBuild = dofile(GetScriptDirectory() .. "/BotLib/" .. string.gsub(botName, "npc_dota_", ""));
 
 if BotBuild == nil
 then
-	print('[ERROR] No build config file found for bot: '..bot:GetUnitName())
+	print('[ERROR] No build config file found for bot: '..botName)
 	return
 end
 
 function MinionThink(hMinionUnit)
+	if not IsValidUnit(hMinionUnit) then return end
+	
 	BotBuild.MinionThink(hMinionUnit)
 end
-
--- if botName == 'npc_dota_hero_muerta' then
--- 	Think = BotBuild.Think
--- end

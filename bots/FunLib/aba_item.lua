@@ -365,6 +365,8 @@ Item['tEarlyConsumableItem'] = {
 	 'item_circlet',
 	 'item_mantle',
 	 'item_magic_wand',
+	 'item_recipe_magic_wand',
+	 'item_magic_stick',
 	--  'item_dust',
 	--  'item_ward_sentry',
 	--  'item_ward_observer',
@@ -628,7 +630,7 @@ Item['item_orchid']	= GetItemComponents( 'item_orchid' )[1]
 
 Item['item_pers']	= GetItemComponents( 'item_pers' )[1]
 
-Item['item_phase_boots']	= { 'item_boots', 'item_blades_of_attack', 'item_chainmail' }
+Item['item_phase_boots']	= { 'item_blades_of_attack', 'item_boots', 'item_chainmail' }
 
 Item['item_pipe']	= GetItemComponents( 'item_pipe' )[1]
 
@@ -1052,11 +1054,22 @@ function Item.HasItem( bot, itemName )
 
 end
 
+function Item.HasItemWithName( bot, iname )
+	for i = 0, 8 do
+		local item = bot:GetItemInSlot( i )
+		if item ~= nil then
+			if string.find(item:GetName(), iname) then return true end
+		end
+	end
+	return false
+end
+
 
 function Item.IsItemInHero( sItemName )
+	return Item.IsItemInTargetHero( sItemName, GetBot() )
+end
 
-	local bot = GetBot()
-	
+function Item.IsItemInTargetHero( sItemName, bot )
 	--7.33
 	if sItemName == 'item_double_flask'
 	then return Item.IsItemInHero( 'item_flask' ) end
@@ -1082,7 +1095,6 @@ function Item.IsItemInHero( sItemName )
 	local nItemSolt = bot:FindItemSlot( sItemName )
 
 	return nItemSolt >= 0 and ( nItemSolt <= 8 or Item.IsTopItem( sItemName ) )
-
 end
 
 --获取物品当前不重复基础构造
@@ -1312,6 +1324,18 @@ function Item.HasBootsInMainSolt( bot )
 
 end
 
+function Item.GetItemTotalWorthInSlots(unit)
+	local totalValue = 0
+	for i = 0, 16
+	do
+		local item = unit:GetItemInSlot( i )
+		if item ~= nil
+		then
+			totalValue = totalValue + GetItemCost(item:GetName())
+		end
+	end
+	return totalValue
+end
 
 function Item.GetTheItemSolt( bot, nSlotMin, nSlotMax, bMaxCost )
 

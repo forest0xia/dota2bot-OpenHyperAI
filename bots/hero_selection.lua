@@ -170,7 +170,7 @@ local sPos1List = {
 	"npc_dota_hero_medusa",
 	"npc_dota_hero_meepo",
 	"npc_dota_hero_morphling",
-	-- "npc_dota_hero_muerta", -- DOESN'T WORK
+	"npc_dota_hero_muerta", -- Weak
 	"npc_dota_hero_naga_siren",
 	"npc_dota_hero_nevermore",
 	"npc_dota_hero_phantom_assassin",
@@ -189,6 +189,7 @@ local sPos1List = {
 	"npc_dota_hero_weaver",
 	"npc_dota_hero_windrunner",
 	"npc_dota_hero_invoker",
+	"npc_dota_hero_lone_druid",
 }
 
 local sPos2List = {
@@ -219,7 +220,6 @@ local sPos2List = {
 	"npc_dota_hero_kunkka",
 	"npc_dota_hero_leshrac",
 	"npc_dota_hero_lina",
-	-- "npc_dota_hero_lone_druid", -- DOESN'T WORK
 	"npc_dota_hero_lycan",
 	"npc_dota_hero_meepo",
 	"npc_dota_hero_monkey_king",
@@ -253,6 +253,7 @@ local sPos2List = {
 	"npc_dota_hero_windrunner",
 	-- "npc_dota_hero_winter_wyvern", -- TOO WEAK
 	"npc_dota_hero_zuus",
+	"npc_dota_hero_lone_druid",
 }
 
 local sPos3List = {
@@ -305,6 +306,7 @@ local sPos3List = {
 	"npc_dota_hero_visage",
 	"npc_dota_hero_windrunner",
 	"npc_dota_hero_invoker",
+	"npc_dota_hero_lone_druid",
 	-- "npc_dota_hero_winter_wyvern", -- TOO WEAK
 }
 
@@ -328,7 +330,7 @@ local sPos4List = {
 	"npc_dota_hero_furion",
 	"npc_dota_hero_grimstroke",
 	"npc_dota_hero_gyrocopter",
-	-- "npc_dota_hero_hoodwink", -- DOESN'T WORK
+	-- "npc_dota_hero_hoodwink", -- Weak
 	"npc_dota_hero_jakiro",
 	"npc_dota_hero_keeper_of_the_light",
 	"npc_dota_hero_lich",
@@ -386,7 +388,7 @@ local sPos5List = {
 	"npc_dota_hero_furion",
 	"npc_dota_hero_grimstroke",
 	"npc_dota_hero_gyrocopter",
-	-- "npc_dota_hero_hoodwink", -- DOESN'T WORK
+	"npc_dota_hero_hoodwink", -- Weak
 	"npc_dota_hero_jakiro",
 	"npc_dota_hero_keeper_of_the_light",
 	"npc_dota_hero_lich",
@@ -642,13 +644,11 @@ function X.OverrideTeamHeroes()
 	if GetTeam() == TEAM_RADIANT
 	then
 		return {
-			
 			[1] = tSelectPoolList[1][RandomInt( 1, #tSelectPoolList[1] )],
 			[2] = tSelectPoolList[2][RandomInt( 1, #tSelectPoolList[2] )],
 			[3] = tSelectPoolList[3][RandomInt( 1, #tSelectPoolList[3] )],
 			[4] = tSelectPoolList[4][RandomInt( 1, #tSelectPoolList[4] )],
 			[5] = tSelectPoolList[5][RandomInt( 1, #tSelectPoolList[5] )],
-
 		}
 	else
 		return {
@@ -695,10 +695,10 @@ function X.OverrideTeamHeroes()
 			-- [5] = "npc_dota_hero_silencer",
 
 			
-			[1] = "npc_dota_hero_tidehunter",
-			[2] = 'npc_dota_hero_invoker',
-			[3] = "npc_dota_hero_enigma",
-		    [4] = "npc_dota_hero_nyx_assassin",
+			[1] = "npc_dota_hero_invoker",
+			[2] = 'npc_dota_hero_lone_druid',
+			[3] = "npc_dota_hero_tidehunter",
+		    [4] = "npc_dota_hero_techies",
 			[5] = "npc_dota_hero_earth_spirit",
 			
 			-- Muerta pos1 and Hoodwink pos5, both go top.

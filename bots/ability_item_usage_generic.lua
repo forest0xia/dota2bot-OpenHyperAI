@@ -89,6 +89,8 @@ local function AbilityLevelUpComplement()
 			bot:ActionImmediate_LevelAbility( sAbilityLevelUpList[1] )
 			table.remove( sAbilityLevelUpList, 1 )
 			return
+		else
+			bot:ActionImmediate_LevelAbility('special_bonus_attributes')
 		end
 	end
 
@@ -379,7 +381,7 @@ local function CourierUsageComplement()
 				if distance > 200
 				then
 					bot:Action_MoveToLocation(tDropItem.location)
-				elseif distance <= 100 then
+				elseif distance <= 100 and GetItemCost(tDropItem.item:GetName()) > 400 then
 					tryPickCount = tryPickCount + 1
 					bot:Action_PickUpItem(tDropItem.item)
 					return
@@ -7255,7 +7257,7 @@ end
 
 function AbilityUsageThink()
 	if bot.lastAbilityFrameProcessTime == nil then bot.lastAbilityFrameProcessTime = DotaTime() end
-	if DotaTime() - bot.lastAbilityFrameProcessTime < FrameProcessTime then return end
+	if DotaTime() - bot.lastAbilityFrameProcessTime < FrameProcessTime and bot.isBear == nil then return end
 	bot.lastAbilityFrameProcessTime = DotaTime()
 	BotBuild.SkillsComplement()
 end

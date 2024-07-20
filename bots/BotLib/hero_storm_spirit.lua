@@ -41,6 +41,7 @@ sRoleItemsBuyList['pos_2'] = {
 	"item_devastator",--
     "item_black_king_bar",--
     "item_ultimate_scepter",
+    "item_veil_of_discord",
     "item_shivas_guard",--
     "item_aghanims_shard",
     "item_sheepstick",--
@@ -63,6 +64,7 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_devastator",--
     "item_black_king_bar",--
     "item_ultimate_scepter",
+    "item_veil_of_discord",
     "item_shivas_guard",--
     "item_aghanims_shard",
     "item_sheepstick",--

@@ -68,6 +68,7 @@ sRoleItemsBuyList['pos_2'] = {
 	"item_heart",--
 	"item_ultimate_scepter",
 	"item_kaya_and_sange",--
+    "item_veil_of_discord",
 	"item_shivas_guard",--
 	"item_octarine_core",--
 	"item_moon_shard",
@@ -92,6 +93,7 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_heart",--
 	"item_ultimate_scepter",
 	sHalberdPipe,--
+    "item_veil_of_discord",
 	"item_shivas_guard",--
 	"item_lotus_orb",--
 	"item_moon_shard",

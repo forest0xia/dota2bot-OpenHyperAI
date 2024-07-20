@@ -72,6 +72,7 @@ sRoleItemsBuyList['pos_5'] = {
 	"item_ultimate_scepter",
 	"item_octarine_core",--
 	"item_gungir",--
+    "item_veil_of_discord",
 	"item_shivas_guard",--
 	"item_ultimate_scepter_2",
 	"item_moon_shard",

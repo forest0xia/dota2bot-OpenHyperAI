@@ -39,8 +39,6 @@ do
 	bot.itemToBuy[i] = sPurchaseList[#sPurchaseList - i + 1]
 end
 
-
-
 if Role.IsBanShadow()
 then
 
@@ -70,7 +68,6 @@ local t3Check = -90
 
 local function GeneralPurchase()
 
-	
 	if bot.lastItemToBuy ~= bot.currentComponentToBuy
 	then
 		bot.lastItemToBuy = bot.currentComponentToBuy
@@ -324,6 +321,81 @@ function ItemPurchaseThink()
 	if ( GetGameState() ~= GAME_STATE_PRE_GAME and GetGameState() ~= GAME_STATE_GAME_IN_PROGRESS )
 	then return	end
 
+	
+	if bot == Utils['LoneDruid'].hero then
+		local bear = Utils['LoneDruid'].bear
+		if bear ~= nil then
+			local hEnemyList = J.GetNearbyHeroes(bot, 1000, true, BOT_MODE_NONE)
+			if #hEnemyList >= 1 then return end
+	
+			if not bear:IsAlive() or bear:IsChanneling() or bear:IsUsingAbility() or Utils.CountBackpackEmptySpace(bear) <= 0 then return end
+			if bear:HasModifier('modifier_item_ultimate_scepter_consumed') then return end
+
+			local bearNetworth = Item.GetItemTotalWorthInSlots(bear)
+			if GetUnitToUnitDistance(bot, bear) < 400 then
+				for i = 0, 9
+				do
+					local item = bot:GetItemInSlot( i )
+					if item ~= nil
+					then
+						local itemName = item:GetName()
+						if Utils.HasValue(Item['tEarlyConsumableItem'], itemName)
+						or Utils.HasValue(Item['item_ultimate_scepter'], itemName)
+						or (string.find(itemName, 'boot') and bearNetworth > 600)
+						or itemName == 'item_tpscroll' and Item.HasItem(bear, 'item_tpscroll')
+						then
+							-- do nothing, keep it.
+						elseif Utils.CountBackpackEmptySpace(bear) >= 1 then
+							bot:Action_DropItem(item, bear:GetLocation())
+						end
+					end
+				end
+			end
+		end
+	end
+	if Utils.IsBear(bot) and bot:IsAlive() then
+		local dropItemList = GetDroppedItemList()
+		for _, tDropItem in pairs( dropItemList )
+		do
+			if tDropItem.owner == Utils['LoneDruid'].hero and not string.find(tDropItem.item:GetName(), 'token')
+			and not (string.find(tDropItem.item:GetName(), 'boot') and Item.HasItemWithName(bot, 'boot')) then
+				local distance = GetUnitToLocationDistance(bot, tDropItem.location)
+				if distance > 200 and distance < 1000 and tDropItem.owner == bot
+				then
+					bot:Action_MoveToLocation(tDropItem.location)
+				elseif distance <= 100 then
+					bot:Action_PickUpItem(tDropItem.item)
+					return
+				end
+			end
+		end
+	end
+
+	--[[
+	if bot == Utils['LoneDruid'].hero then
+		local bear = Utils['LoneDruid'].bear
+		if bear ~= nil then
+			local bearNetworth = Item.GetItemTotalWorthInSlots(bear)
+			local heroNetworth = Item.GetItemTotalWorthInSlots(bot)
+			if bearNetworth < 15000 and heroNetworth > 500 then
+				return
+			end
+		end
+	end
+	if Utils.IsBear(bot) then
+		if not bot:IsAlive() then return end
+
+		local distanceToFountain = bot:DistanceFromFountain()
+		-- local bearNetworth = Item.GetItemTotalWorthInSlots(bear)
+		if Utils['LoneDruid'].hero:DistanceFromFountain() < 800 then
+			return
+		end
+		if distanceToFountain > 300 then
+			return
+		end
+	end
+	]]
+
 	if bot:HasModifier( 'modifier_arc_warden_tempest_double' )
 	or (DotaTime() > 0 and J.IsMeepoClone(bot))
 	then
@@ -376,6 +448,7 @@ function ItemPurchaseThink()
 	--买小净化
 	if J.GetMP(bot) < 0.3
 	and bot:DistanceFromFountain() > 2000
+	and bot:GetCourierValue() == 0
 	and GetItemStockCount('item_clarity') > 1
 	and Item.GetItemCharges(bot, 'item_clarity') <= 0
 	and botGold >= GetItemCost( "item_clarity" )
@@ -390,6 +463,7 @@ function ItemPurchaseThink()
 		if currentTime > 30 and not bot.hasBuyClarity
 			and botGold >= GetItemCost( "item_clarity" )
 			and not Role.IsPvNMode()
+			and Utils.CountBackpackEmptySpace(bot) >= 2
 		then
 			bot.hasBuyClarity = true
 			bot:ActionImmediate_PurchaseItem( "item_clarity" )
@@ -411,6 +485,7 @@ function ItemPurchaseThink()
 	then
 		if botLevel < 6
 		and bot:IsAlive()
+		and bot:GetCourierValue() == 0
 		and bot:FindItemSlot('item_flask') < 0
 		and bot:FindItemSlot('item_tango') < 0
 		and bot:DistanceFromFountain() > 2000
@@ -495,13 +570,13 @@ function ItemPurchaseThink()
 	end
 
 	-- Observer and Sentry Wards
-	if (J.GetPosition(bot) == 4) and DotaTime() > 300 and botWorth < 15000
+	if (J.GetPosition(bot) == 4) and DotaTime() > 300
 	then
 		local wardType = 'item_ward_sentry'
 
 		if  GetItemStockCount(wardType) > 1
 		and botGold >= GetItemCost(wardType)
-		and Item.GetEmptyInventoryAmount(bot) >= 1
+		and Item.GetEmptyInventoryAmount(bot) >= 2
 		and Item.GetItemCharges(bot, wardType) < 1
 		and bot:GetCourierValue() == 0
 		then
@@ -509,13 +584,13 @@ function ItemPurchaseThink()
 		end
 	end
 
-	if (J.GetPosition(bot) == 5) and botWorth < 15000
+	if (J.GetPosition(bot) == 5)
 	then
 		local wardType = 'item_ward_observer'
 
 		if  GetItemStockCount(wardType) > 1
 		and botGold >= GetItemCost(wardType)
-		and Item.GetEmptyInventoryAmount(bot) >= 1
+		and Item.GetEmptyInventoryAmount(bot) >= 2
 		and Item.GetItemCharges(bot, wardType) < 2
 		and bot:GetCourierValue() == 0
 		then
@@ -524,7 +599,8 @@ function ItemPurchaseThink()
 	end
 
 	-- Smoke of Deceit
-	if  (J.GetPosition(bot) == 4 or J.GetPosition(bot) == 5) and botWorth < 15000
+	if J.GetPosition(bot) == 5
+	and Utils.CountBackpackEmptySpace(bot) >= 2
 	and GetItemStockCount('item_smoke_of_deceit') > 1
 	and botGold >= GetItemCost('item_smoke_of_deceit')
 	and Item.GetEmptyInventoryAmount(bot) >= 3
@@ -611,6 +687,7 @@ function ItemPurchaseThink()
 		and not Item.HasItem( bot, 'item_travel_boots' )
 		and not Item.HasItem( bot, 'item_travel_boots_2' )
 		and bot:GetUnitName() ~= "npc_dota_hero_meepo" -- don't let meepo buy tp
+		and bot:GetUnitName() ~= "npc_dota_hero_lone_druid_bear"
 	then
 		local tCharges = Item.GetItemCharges( bot, 'item_tpscroll' )
 		if bot:HasModifier("modifier_teleporting") then tCharges = tCharges - 1 end
@@ -632,6 +709,7 @@ function ItemPurchaseThink()
 		and botHP < 0.06
 		and bot:WasRecentlyDamagedByAnyHero( 3.1 )
 		and Item.GetItemCharges( bot, 'item_dust' ) <= 1
+		and Utils.CountBackpackEmptySpace(bot) >= 2
 	then
 		bot:ActionImmediate_PurchaseItem( "item_dust" )
 	end
@@ -845,8 +923,9 @@ function ItemPurchaseThink()
 	then
 		if Item.IsItemInHero( bot.currentItemToBuy )
 			or bot.currentItemToBuy == "item_aghanims_shard"
-			or (bot.countInvCheck >= 8 * 60 -- if can't finish the item for a long time
-			and bot:GetGold() >= 7000) -- and can't finish even with lots of gold
+			or (bot == Utils['LoneDruid'].hero and Utils['LoneDruid'].bear ~= nil and Item.IsItemInTargetHero(bot.currentItemToBuy, Utils['LoneDruid'].bear))
+			or (bot.countInvCheck > 10 * 60 -- if can't finish the item for a long time
+			and bot:GetGold() > 7000) -- and can't finish even with lots of gold
 		then
 			bot.countInvCheck = 0
 			bot.currentItemToBuy = nil

@@ -57,6 +57,7 @@ sRoleItemsBuyList['pos_4'] = {
     sGlimmerSolarCrest,--
     "item_aghanims_shard",
     "item_boots_of_bearing",-- 
+    "item_veil_of_discord",
     "item_shivas_guard",--
     "item_heavens_halberd",--
     "item_ultimate_scepter",
@@ -79,6 +80,7 @@ sRoleItemsBuyList['pos_5'] = {
     sGlimmerSolarCrest,--
     "item_aghanims_shard",
     "item_guardian_greaves",-- 
+    "item_veil_of_discord",
     "item_shivas_guard",--
     "item_heavens_halberd",--
     "item_ultimate_scepter",

@@ -4264,30 +4264,8 @@ function J.AdjustLocationWithOffset(vLoc, offset, target)
 	return targetLoc
 end
 
-function J.AdjustLocationWithOffsetTowardsFountain(targetLoc, distance)
-	return J.AdjustLocationWithOffsetTowardsSourceLocation(targetLoc, J.GetTeamFountain(), distance)
-end
-
--- return an offsetted location that's ndistance away from the target towards the source location that at worest case returns the source location.
-function J.AdjustLocationWithOffsetTowardsSourceLocation(targetLoc, sourceLoc, distance)
-
-	local offset = Vector(distance, distance)
-
-	if GetTeam() == TEAM_RADIANT then
-		offset = Vector(-distance, -distance)
-	end
-
-	targetLoc = targetLoc + offset
-
-	if GetTeam() == TEAM_RADIANT then
-		targetLoc.x = math.max(targetLoc.x, sourceLoc.x)
-		targetLoc.y = math.max(targetLoc.y, sourceLoc.y)
-	else
-		targetLoc.x = math.min(targetLoc.x, sourceLoc.x)
-		targetLoc.y = math.min(targetLoc.y, sourceLoc.y)
-	end
-
-	return targetLoc
+function J.AdjustLocationWithOffsetTowardsFountain(loc, distance)
+	return J.Utils.GetOffsetLocationTowardsTargetLocation(loc, J.GetTeamFountain(), distance)
 end
 
 function J.IsInLaningPhase()

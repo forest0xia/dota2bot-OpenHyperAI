@@ -53,6 +53,7 @@ sRoleItemsBuyList['pos_2'] = {
     "item_blink",
     "item_black_king_bar",--
     "item_octarine_core",--
+	"item_veil_of_discord",
     "item_shivas_guard",--
     "item_ultimate_scepter",
     "item_refresher",--

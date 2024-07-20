@@ -36,7 +36,6 @@ function GetDesire()
 	if wisdomRuneDesire > 0 and WisdomRuneSpawned[botTeam] then
 		return wisdomRuneDesire
 	end
-	
 	local tormentorDesire = TormentorDesire()
 	if tormentorDesire > 0 then
 		return tormentorDesire
@@ -76,7 +75,6 @@ function TormentorDesire()
 	end
 
     local nAllyInLoc = J.GetAlliesNearLoc(TormentorLocation, 700)
-	local aliveAlly = J.GetNumOfAliveHeroes(false)
 	-- local aveDistance, heroCount = GetAveTeamDistance()
 	local spawnTime = J.IsModeTurbo() and 18 or 28 -- give bots more time. original: 10 or 20
 	local topFrontP = GetLaneFrontAmount(GetOpposingTeam(), LANE_TOP, true)
@@ -460,12 +458,18 @@ end
 
 function WisdomRuneDesire()
 	-- don't worry about wisdom rune if human player exist in the team.
-	if J.IsHumanPlayerInTeam() then
-		return 0
+	if J.IsHumanPlayerInTeam() or J.IsCore(bot) then
+		return BOT_MODE_DESIRE_NONE
 	end
-	
+
+	-- 先杀小兵，别带着小兵去吃符，过程中可能攻击tormentor因为那东西在代码里也是Creep
+	local nCreeps = bot:GetNearbyLaneCreeps(700, true)
+	if #nCreeps > 1 then
+		return BOT_MODE_DESIRE_NONE
+	end
+
 	CheckWisdomRuneAvailability()
-	
+
 	if WisdomRuneSpawned[botTeam] then
 		ClosestAllyToWisdomRune = GetClosestAllyToWisdomRune()
 		if ClosestAllyToWisdomRune ~= nil then
@@ -495,7 +499,7 @@ function WisdomRuneDesire()
 		end
 	end
 
-	return 0
+	return BOT_MODE_DESIRE_NONE
 end
 
 function WisdomRuneThink()

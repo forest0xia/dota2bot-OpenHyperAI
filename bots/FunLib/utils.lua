@@ -9,7 +9,7 @@ Anything that can be shared in any files without worrying about nested or circul
 ]]
 
 local X = { }
-X['DebugMode'] = false
+X['DebugMode'] = true
 
 local RadiantFountainTpPoint = Vector(-7172, -6652, 384 )
 local DireFountainTpPoint = Vector(6982, 6422, 392)
@@ -19,16 +19,18 @@ local orig_print = print
 X['BuggyHeroesDueToValveTooLazy'] = {
     ['npc_dota_hero_muerta'] = true,
     ['npc_dota_hero_marci'] = true,
-    ['npc_dota_hero_lone_druid'] = true,
+    ['npc_dota_hero_lone_druid_bear'] = true,
     ['npc_dota_hero_primal_beast'] = true,
     ['npc_dota_hero_dark_willow'] = true,
     ['npc_dota_hero_elder_titan'] = true,
     ['npc_dota_hero_hoodwink'] = true,
+    ['npc_dota_hero_wisp'] = true,
 }
 
 X['ActuallyBuggedHeroes'] = { } -- used to record the acutal bugged heroes in this game.
 
 X['GameStates'] = { } -- A gaming state keeper to keep a record of different states to avoid recomupte or anything.
+X['LoneDruid'] = { }
 
 -- Override the print function
 function print(...)
@@ -414,6 +416,19 @@ end
 
 function X.RecentlyTookDamage(bot, interval)
     return bot:WasRecentlyDamagedByAnyHero(interval) or bot:WasRecentlyDamagedByTower(interval) or bot:WasRecentlyDamagedByCreep(interval)
+end
+
+function X.IsUnitWithName(unit, name)
+    return string.find(unit:GetUnitName(), name)
+end
+
+function X.IsBear(unit)
+    return X.IsUnitWithName(unit, 'lone_druid_bear')
+end
+
+function X.GetOffsetLocationTowardsTargetLocation(initLoc, targetLoc, offsetDist)
+    local dir = (targetLoc - initLoc):Normalized()
+    return initLoc + dir * offsetDist
 end
 
 return X

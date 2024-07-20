@@ -43,7 +43,8 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_hurricane_pike",--
 	"item_aghanims_shard",
 	"item_greater_crit",--
-	"item_skadi",--
+	"item_invis_sword",
+	"item_silver_edge",--
 	"item_butterfly",--
 	"item_travel_boots",
 	"item_moon_shard",
@@ -428,7 +429,7 @@ function X.ConsiderR()
 
     if J.IsRetreating( bot )
 	then
-		if bot:WasRecentlyDamagedByAnyHero( 2.0 ) and #nEnemyHeroes > 0 and J.GetHP(bot) < 0.3
+		if bot:WasRecentlyDamagedByAnyHero( 2.0 ) and #nEnemyHeroes > 0 and J.GetHP(bot) < 0.5
 		then
 			return BOT_ACTION_DESIRE_MODERATE
 		end
@@ -462,7 +463,7 @@ function X.ConsiderR()
     and not bot:IsInvulnerable()
     and J.IsInTeamFight(bot)
 	then
-        if J.GetEnemyCount(bot, 850) >= 2
+        if J.GetEnemyCount(bot, 1000) >= 2
 		then
 			return BOT_ACTION_DESIRE_HIGH
 		end

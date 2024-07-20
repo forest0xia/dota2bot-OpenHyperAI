@@ -78,6 +78,7 @@ sRoleItemsBuyList['pos_4'] = {
 	"item_sheepstick",
 	"item_mystic_staff",
 	"item_ultimate_scepter_2",
+    "item_veil_of_discord",
 	"item_shivas_guard",
 }
 
@@ -93,6 +94,7 @@ sRoleItemsBuyList['pos_5'] = {
 	"item_sheepstick",
 	"item_mystic_staff",
 	"item_ultimate_scepter_2",
+    "item_veil_of_discord",
 	"item_shivas_guard",
 }
 

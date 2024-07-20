@@ -341,7 +341,7 @@ function X.ConsiderWaveOfTerror()
         and not enemyHero:HasModifier('modifier_oracle_false_promise_timer')
         and not enemyHero:HasModifier('modifier_templar_assassin_refraction_absorb')
         then
-            local nTargetInRangeAlly = J.GetEnemiesNearLoc(target:GetLocation(), nRadius)
+            local nTargetInRangeAlly = J.GetEnemiesNearLoc(botTarget:GetLocation(), nRadius)
 
             if nTargetInRangeAlly ~= nil and #nTargetInRangeAlly >= 1
             then

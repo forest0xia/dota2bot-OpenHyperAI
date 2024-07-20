@@ -108,6 +108,9 @@ local function CheckWisdomRuneAvailability()
 end
 
 function WisdomRuneDesire()
+	if J.IsCore(bot) then
+		return BOT_MODE_DESIRE_NONE
+	end
 
 	CheckWisdomRuneAvailability()
 
@@ -142,7 +145,7 @@ function WisdomRuneDesire()
 		return RemapValClamped(distance, 6400, 100, BOT_ACTION_DESIRE_HIGH, BOT_ACTION_DESIRE_ABSOLUTE  )
 	end
 
-	return 0
+	return BOT_MODE_DESIRE_NONE
 end
 
 function Think()

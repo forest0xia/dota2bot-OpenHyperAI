@@ -478,7 +478,7 @@ end
 
 function X.ConsiderTerrorize()
     if not Terrorize:IsFullyCastable()
-    or DotaTime() - BedlamTime() <= 5
+    or DotaTime() - BedlamTime <= 5
     then
         return BOT_ACTION_DESIRE_NONE, 0
     end

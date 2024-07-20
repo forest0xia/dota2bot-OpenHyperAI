@@ -37,27 +37,23 @@ local sRoleItemsBuyList = { }
 
 -- 冰雷核
 sRoleItemsBuyList['pos_2'] = {
-    "item_tango",
-    "item_double_branches",
-    "item_double_circlet",
-
-    "item_bracer",
-    "item_urn_of_shadows",
-    "item_boots",
+	"item_ranged_carry_outfit",
     "item_magic_wand",
+    "item_urn_of_shadows",
     "item_spirit_vessel",
+	"item_dragon_lance",
     "item_witch_blade",
     "item_travel_boots",
     "item_black_king_bar",--6
     "item_orchid",
+	"item_hurricane_pike",--3
     "item_aghanims_shard",
     "item_ultimate_scepter",
     "item_bloodthorn",--5
     "item_devastator",--4
-    "item_ultimate_scepter_2",
-    "item_refresher",--3
-    "item_moon_shard",
     "item_sheepstick",--2
+    "item_ultimate_scepter_2",
+    "item_moon_shard",
     "item_travel_boots_2",--1
 }
 
@@ -65,22 +61,22 @@ sRoleItemsBuyList['pos_2'] = {
 sRoleItemsBuyList['pos_2_qe'] = {
     "item_tango",
     "item_double_branches",
-    "item_double_circlet",
 
     "item_bracer",
     "item_boots",
     "item_hand_of_midas",
-    "item_magic_wand",
+    "item_power_treads",
     -- "item_cyclone", --瞎吹还喜欢走到吹起的点上，以后再改
-    "item_travel_boots",
-    "item_black_king_bar",--
     "item_orchid",
+    "item_black_king_bar",--
     "item_ultimate_scepter",
     "item_bloodthorn",--
-    "item_aghanims_shard",
-    "item_ultimate_scepter_2",
-    "item_octarine_core",--
+	-- "item_hurricane_pike",--
     "item_sheepstick",--
+    "item_aghanims_shard",
+    "item_octarine_core",--
+    "item_travel_boots",
+    "item_ultimate_scepter_2",
     "item_refresher",--
     -- "item_wind_waker",--
     "item_travel_boots_2",--
@@ -98,7 +94,7 @@ sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_2']
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 if Utils['GameStates']['invoker'] == nil then
-    if sRole == 'pos_2' and RandomInt( 1, 9 ) > 2 then
+    if (sRole == 'pos_2' or sRole == 'pos_1') and RandomInt( 1, 9 ) > 3 then
         Utils['GameStates']['invoker'] = { roleType = 'pos_2_qe' }
     else
         Utils['GameStates']['invoker'] = { roleType = 'pos_2' }
@@ -129,7 +125,41 @@ X['bDeafaultAbility'] = false
 X['bDeafaultItem'] = false
 
 function X.MinionThink(hMinionUnit)
-    Minion.MinionThink(hMinionUnit)
+    if Utils.IsUnitWithName(hMinionUnit, 'forged_spirit') then
+        local botTarget = J.GetProperTarget(bot)
+        local unitTarget = hMinionUnit:GetAttackTarget()
+        if unitTarget == nil then hMinionUnit:GetTarget() end
+        
+        -- 如果没塔 或者 目标血量低，则攻击目标
+        local nEnemyTowers = bot:GetNearbyTowers(700, true)
+        if botTarget ~= nil and (#nEnemyTowers < 1 or J.GetHP(botTarget) < 0.2) then
+            if botTarget ~= nil then
+                hMinionUnit:Action_AttackUnit(botTarget, false)
+                return
+            end
+        end
+        -- 可带线push
+        if unitTarget ~= nil and (#nEnemyTowers < 1 or J.GetHP(unitTarget) < 0.2) then
+            if unitTarget ~= nil then
+                hMinionUnit:Action_AttackUnit(unitTarget, false)
+                return
+            end
+            -- 没固定目标，fallback
+            Minion.MinionThink(hMinionUnit)
+        end
+
+        -- 没合适目标进攻，回到卡尔身边
+        -- todo: 小心巫妖大
+        if J.IsLaning(bot) or J.IsFarming(bot) then
+            if GetUnitToUnitDistance(hMinionUnit, bot) > 220 then
+                hMinionUnit:Action_MoveToLocation(bot:GetLocation())
+            else
+                hMinionUnit:Action_MoveToLocation(bot:GetLocation() + RandomVector(220))
+            end
+        end
+    else
+        Minion.MinionThink(hMinionUnit)
+    end
 end
 
 local Quas      = bot:GetAbilityByName('invoker_quas')
@@ -665,13 +695,15 @@ function X.CastInvokerSpell(ability, target)
         abilityName = ability:GetName()
     end
     
-    -- print(DotaTime()..' - Invoker checking to cast '..abilityName) -- can be annoying since this line gets printed a lot if e.g. no enough mana or before invoker trains all elements
+    print(DotaTime()..' - Invoker checking to cast '..abilityName) -- can be annoying since this line gets printed a lot if e.g. no enough mana or before invoker trains all elements
 
     if X.IsAbilityReadyForInvoke(ability) then
         X.InvokeActualSpell(ability)
-    elseif X.IsAbilityReadyForCast(ability)
+    end
+    if X.IsAbilityReadyForCast(ability)
     then
         print(DotaTime()..' - Invoker has it on slot, going to cast '..abilityName)
+        bot:Action_ClearActions(false)
 
         -- bot:ActionPush_Delay(ability:GetCastPoint())
         if abilityName == Cataclysm then
@@ -679,9 +711,6 @@ function X.CastInvokerSpell(ability, target)
         elseif ability == ForgeSpirit
             or ability == IceWall
             or ability == GhostWalk then
-                if ability == GhostWalk then
-                    bot:Action_ClearActions(false)
-                end
                 bot:ActionPush_UseAbility(ability)
         elseif ability == DeafeningBlast
             or ability == Sunstrike
@@ -698,7 +727,7 @@ function X.CastInvokerSpell(ability, target)
         end
         print(DotaTime()..' - Invoker tried to cast '..abilityName)
     else
-        -- print(DotaTime()..' - Invoker trying to cast a spell that is not ready: '..abilityName)
+        -- print(DotaTime()..' - Invoker trying to cast a spell that is not ready: '..abilityName..', '.. tostring(X.IsAbilityAvailableOnSlots(ability)) ..', '..tostring(ability:IsFullyCastable()))
     end
 end
 
@@ -818,7 +847,7 @@ function X.ConsiderTornado()
     local deltaTime = 1.5
     if not X.CanAbilityPossiblyBeCasted(Tornado)
         -- 同时也确保不要在刚刚放了陨石或者推波之后马上用吹风
-        and (DotaTime() - AbilityCastedTimes['ChaosMeteor'] <= deltaTime and DotaTime() - AbilityCastedTimes['DeafeningBlast'] <= deltaTime)
+        or (DotaTime() - AbilityCastedTimes['ChaosMeteor'] <= deltaTime and DotaTime() - AbilityCastedTimes['DeafeningBlast'] <= deltaTime)
     then
         return BOT_ACTION_DESIRE_NONE, 0
     end
@@ -1148,7 +1177,7 @@ function X.ConsiderChaosMeteor()
 
             local nLocationAoE = bot:FindAoELocation(true, true, bot:GetLocation(), nTravelDistance, nRadius + 100, nLandTime, 0)
             if  nLocationAoE.count >= 2 then
-                return BOT_ACTION_DESIRE_HIGH, X.AdjustCMLocation(nLocationAoE.targetloc)
+                return BOT_ACTION_DESIRE_HIGH, X.AdjustCMLocation(nLocationAoE.targetloc, enemyHero)
             end
 
             -- if hero is under temp damage immute control
@@ -1162,9 +1191,9 @@ function X.ConsiderChaosMeteor()
             end
 
             if J.IsRunning(enemyHero) then
-                return BOT_ACTION_DESIRE_HIGH, X.AdjustCMLocation(J.GetCorrectLoc(enemyHero, nDelay))
+                return BOT_ACTION_DESIRE_HIGH, X.AdjustCMLocation(J.GetCorrectLoc(enemyHero, nDelay), enemyHero)
             else
-                return BOT_ACTION_DESIRE_HIGH, X.AdjustCMLocation(enemyHero:GetLocation())
+                return BOT_ACTION_DESIRE_HIGH, X.AdjustCMLocation(enemyHero:GetLocation(), enemyHero)
             end
         end
     end
@@ -1183,10 +1212,10 @@ function X.ConsiderChaosMeteor()
             if botTarget:HasModifier(modifier_invoker_tornado) then
                 if DotaTime() >= AbilityCastedTimes['Tornado'] + TornadoLiftTime - nDelay
                 then
-                    return BOT_ACTION_DESIRE_HIGH, X.AdjustCMLocation(botTarget:GetLocation())
+                    return BOT_ACTION_DESIRE_HIGH, X.AdjustCMLocation(botTarget:GetLocation(), botTarget)
                 end
             elseif X.CheckTempModifiers(TempNonMovableModifierNames, botTarget, nDelay) > 0 then
-                return BOT_ACTION_DESIRE_HIGH, X.AdjustCMLocation(botTarget:GetLocation())
+                return BOT_ACTION_DESIRE_HIGH, X.AdjustCMLocation(botTarget:GetLocation(), botTarget)
             end
 
             if botTarget:IsStunned()
@@ -1201,17 +1230,17 @@ function X.ConsiderChaosMeteor()
             if J.IsValidHero(botTarget) then
                 local nLocationAoE = bot:FindAoELocation(true, true, bot:GetLocation(), nCastRange, nRadius + 300, nDelay, 0)
                 if  nLocationAoE.count >= 2 then
-                    return BOT_ACTION_DESIRE_HIGH, X.AdjustCMLocation(nLocationAoE.targetloc)
+                    return BOT_ACTION_DESIRE_HIGH, X.AdjustCMLocation(nLocationAoE.targetloc, botTarget)
                 end
             end
-            return BOT_ACTION_DESIRE_HIGH, X.AdjustCMLocation(botTarget:GetLocation())
+            return BOT_ACTION_DESIRE_HIGH, X.AdjustCMLocation(botTarget:GetLocation(), botTarget)
 		end
 	end
 
     if J.IsInTeamFight(bot) then
         local nLocationAoE = bot:FindAoELocation(true, true, bot:GetLocation(), nCastRange, nRadius + 300, nDelay, 0)
         if  nLocationAoE.count >= 2 then
-            return BOT_ACTION_DESIRE_HIGH, X.AdjustCMLocation(nLocationAoE.targetloc)
+            return BOT_ACTION_DESIRE_HIGH, X.AdjustCMLocation(nLocationAoE.targetloc, nil)
         end
         
         for _, enemyHero in pairs(nEnemyHeroes) do
@@ -1224,16 +1253,16 @@ function X.ConsiderChaosMeteor()
                 if enemyHero:HasModifier(modifier_invoker_tornado) then
                     if DotaTime() >= AbilityCastedTimes['Tornado'] + TornadoLiftTime - nDelay
                     then
-                        return BOT_ACTION_DESIRE_HIGH, X.AdjustCMLocation(enemyHero:GetLocation(), bot:GetLocation(), 200)
+                        return BOT_ACTION_DESIRE_HIGH, X.AdjustCMLocation(enemyHero:GetLocation(), enemyHero)
                     end
                 elseif X.CheckTempModifiers(TempNonMovableModifierNames, enemyHero, nDelay) > 0 then
-                    return BOT_ACTION_DESIRE_HIGH, X.AdjustCMLocation(enemyHero:GetLocation())
+                    return BOT_ACTION_DESIRE_HIGH, X.AdjustCMLocation(enemyHero:GetLocation(), enemyHero)
                 end
     
                 if J.IsRunning(enemyHero) then
-                    return BOT_ACTION_DESIRE_HIGH, X.AdjustCMLocation(J.GetCorrectLoc(enemyHero, nDelay))
+                    return BOT_ACTION_DESIRE_HIGH, X.AdjustCMLocation(J.GetCorrectLoc(enemyHero, nDelay), enemyHero)
                 else
-                    return BOT_ACTION_DESIRE_HIGH, X.AdjustCMLocation(enemyHero:GetLocation())
+                    return BOT_ACTION_DESIRE_HIGH, X.AdjustCMLocation(enemyHero:GetLocation(), enemyHero)
                 end
             end
         end
@@ -1252,7 +1281,7 @@ function X.ConsiderChaosMeteor()
                 local locationAoEHurt = bot:FindAoELocation( true, false, bot:GetLocation(), nCastRange, nRadius + 100, 0, 0 )
                 if locationAoEHurt.count >= 4
                 then
-                    return BOT_ACTION_DESIRE_HIGH, X.AdjustCMLocation(locationAoEHurt.targetloc)
+                    return BOT_ACTION_DESIRE_HIGH, X.AdjustCMLocation(locationAoEHurt.targetloc, nil)
                 end
             end
         end
@@ -1265,7 +1294,7 @@ function X.ConsiderChaosMeteor()
         then
 			local locationAoEKill = bot:FindAoELocation( true, false, bot:GetLocation(), nCastRange, nRadius, 0, 500 )
 			if locationAoEKill.count >= 3 then
-				return BOT_ACTION_DESIRE_HIGH, X.AdjustCMLocation(locationAoEKill.targetloc)
+				return BOT_ACTION_DESIRE_HIGH, X.AdjustCMLocation(locationAoEKill.targetloc, nil)
 			end
 		end
 
@@ -1279,9 +1308,9 @@ function X.ConsiderChaosMeteor()
         and J.GetHP(enemyHero) <= 0.7
 		then
             if J.IsRunning(enemyHero) then
-                return BOT_ACTION_DESIRE_HIGH, X.AdjustCMLocation(J.GetCorrectLoc(enemyHero, nDelay))
+                return BOT_ACTION_DESIRE_HIGH, X.AdjustCMLocation(J.GetCorrectLoc(enemyHero, nDelay), enemyHero)
             else
-                return BOT_ACTION_DESIRE_HIGH, X.AdjustCMLocation(enemyHero:GetLocation())
+                return BOT_ACTION_DESIRE_HIGH, X.AdjustCMLocation(enemyHero:GetLocation(), enemyHero)
             end
 		end
 	end
@@ -1291,7 +1320,7 @@ function X.ConsiderChaosMeteor()
 		and J.IsInRange(bot, botTarget, nCastRange)
         and J.IsAttacking(bot)
 		then
-			return BOT_ACTION_DESIRE_HIGH, X.AdjustCMLocation(botTarget:GetLocation())
+			return BOT_ACTION_DESIRE_HIGH, X.AdjustCMLocation(botTarget:GetLocation(), botTarget)
 		end
 	end
 
@@ -1300,15 +1329,26 @@ function X.ConsiderChaosMeteor()
 		and J.IsInRange(bot, botTarget, 700)
         and J.IsAttacking(bot)
 		then
-			return BOT_ACTION_DESIRE_HIGH, X.AdjustCMLocation(botTarget:GetLocation())
+			return BOT_ACTION_DESIRE_HIGH, X.AdjustCMLocation(botTarget:GetLocation(), botTarget)
 		end
 	end
 
     return BOT_ACTION_DESIRE_NONE, 0
 end
 
-function X.AdjustCMLocation(targetLoc)
-    return J.AdjustLocationWithOffsetTowardsSourceLocation(targetLoc, bot:GetLocation(), 200)
+-- 稍微调整陨石目标位置，吃多一点砸中和滚中的伤害。也能让石头多滚一会，多一点时间切/放其他技能连击
+function X.AdjustCMLocation(loc, target)
+    if target == nil or J.IsChasingTarget(bot, target) then
+        return loc
+    end
+
+    local distance = GetUnitToUnitDistance(bot, target)
+    -- 被追逐，往自己身前放
+    if J.IsChasingTarget(target, bot) and distance < 300 then
+        return Utils.GetOffsetLocationTowardsTargetLocation(target:GetLocation(), bot:GetLocation(), distance + 200)
+    end
+
+    return Utils.GetOffsetLocationTowardsTargetLocation(loc, bot:GetLocation(), 200)
 end
 
 function X.CheckTempModifiers(modifierNames, botTarget, nDelay)
@@ -1563,7 +1603,7 @@ function X.ConsiderForgeSpirit()
 
 	if J.IsDoingRoshan(bot)
 	then
-		if J.IsRoshan(target)
+		if J.IsRoshan(botTarget)
         and J.IsAttacking(bot)
 		then
 			return BOT_ACTION_DESIRE_HIGH
@@ -1572,7 +1612,7 @@ function X.ConsiderForgeSpirit()
 
     if J.IsDoingTormentor(bot)
 	then
-		if J.IsTormentor(target)
+		if J.IsTormentor(botTarget)
         and J.IsAttacking(bot)
 		then
 			return BOT_ACTION_DESIRE_HIGH
@@ -1651,7 +1691,7 @@ function X.ConsiderIceWall()
 
     if J.IsDoingRoshan(bot)
 	then
-		if  J.IsRoshan(target)
+		if  J.IsRoshan(botTarget)
         and J.IsInRange(bot, botTarget, nSpawnDistance)
         and J.IsAttacking(bot)
 		then
@@ -1661,7 +1701,7 @@ function X.ConsiderIceWall()
 
     if J.IsDoingTormentor(bot)
 	then
-		if  J.IsTormentor(target)
+		if  J.IsTormentor(botTarget)
         and J.IsInRange(bot, botTarget, nSpawnDistance)
         and J.IsAttacking(bot)
 		then
@@ -1825,21 +1865,21 @@ function X.IsAbilityReadyForCast(ability)
 end
 
 -- check if the ability could be casted if assuming it's available on slots right now, so we can consider invoke it or cast it.
-function X.CanAbilityPossiblyBeCasted(ability)
+function X.CanAbilityPossiblyBeCasted(_ability)
     local sAbility, tAbility
-    if type(ability) == "string" and ability == 'Cataclysm' then
-        sAbility = ability
+    if type(_ability) == "string" and _ability == 'Cataclysm' then
+        sAbility = _ability
         tAbility = Sunstrike
     else
-        sAbility = AbilityNameMap[ability:GetName()]
-        tAbility = ability
+        sAbility = AbilityNameMap[_ability:GetName()]
+        tAbility = _ability
     end
 
-    -- update verified cd.
-    AbilityCooldownTimes.Verified[sAbility] = tAbility:GetCooldown()
+    -- update verified cd. except Cataclysm.
+    AbilityCooldownTimes.Verified[sAbility] = sAbility == 'Cataclysm' and AbilityCooldownTimes[sAbility] or tAbility:GetCooldown()
 
-    if X.IsAbilityReadyForCast(ability) then return true end
-    if not X.HaveElementsTrainedToInvokeAbility(ability) then return false end
+    if not X.HaveElementsTrainedToInvokeAbility(_ability) then return false end
+    if X.IsAbilityReadyForCast(tAbility) then return true end
 
     return DotaTime() >= (AbilityCastedTimes[sAbility] + math.min(AbilityCooldownTimes[sAbility], AbilityCooldownTimes.Verified[sAbility])) and bot:GetMana() >= tAbility:GetManaCost()
 end
@@ -1880,7 +1920,8 @@ end
 function X.IsAbilityAvailableOnSlots(ability)
     local abilityD = bot:GetAbilityInSlot(3)  -- First invoked slot
     local abilityF = bot:GetAbilityInSlot(4)  -- Second invoked slot
-    return ability == abilityD or ability == abilityF
+    -- print('slot 3 ab name='..abilityD:GetName()..', 4 ab name='..abilityF:GetName()..', tar ab name='..ability:GetName())
+    return (ability:GetName() == abilityD:GetName()) or (ability:GetName() == abilityF:GetName())
 end
 
 -- don't need to worry about the use of refresher here, this only need to keep tracking on the usage of the ability.
@@ -1901,6 +1942,9 @@ function CheckAbilityUsage()
                 local deltaMana = previouslyRecordedMana - ability:GetManaCost()
                 local manaRange = 20 -- 后期回蓝太快可能导致使用情况的计算错漏。设置太大值的话前中期碰到同时被消蓝的情况也可能有计算错漏
                 if bot:GetMana() <= deltaMana + manaRange and bot:GetMana() >= deltaMana - manaRange then
+                    if ability == Sunstrike and ability:GetCooldownTimeRemaining() > 50 then
+                        sAbility = 'Cataclysm'
+                    end
                     print(DotaTime()..' - Invoker just used ability ' .. sAbility .. ', reset the cooldown tracking time.')
                     AbilityCastedTimes[sAbility] = DotaTime()
                     AbilityLastRecordedCastTimes[sAbility] = DotaTime()

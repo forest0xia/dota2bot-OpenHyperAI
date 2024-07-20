@@ -204,6 +204,15 @@ function CDOTA_Bot_Script:GetNearbyCreeps( nRadius, bEnemies)
     return originalGetNearbyCreeps(self, math.min(nRadius, 1600), bEnemies)
 end
 
+local originalGetUnitName = CDOTA_Bot_Script.GetUnitName
+function CDOTA_Bot_Script:GetUnitName()
+	local uName = originalGetUnitName(self)
+	if string.find( uName, "lone_druid_bear" ) then
+		uName = 'npc_dota_hero_lone_druid_bear'
+	end
+	return uName
+end
+
 local originalGetAttackRange = CDOTA_Bot_Script.GetAttackRange
 function CDOTA_Bot_Script:GetAttackRange()
     if not self:CanBeSeen() then
@@ -214,39 +223,22 @@ function CDOTA_Bot_Script:GetAttackRange()
     return originalGetAttackRange(self)
 end
 
--- local original_Action_MoveToLocation = CDOTA_Bot_Script.Action_MoveToLocation
--- function CDOTA_Bot_Script:Action_MoveToLocation(vLocation)
+-- local original_Action_AttackMove = CDOTA_Bot_Script.Action_AttackMove
+-- function CDOTA_Bot_Script:Action_AttackMove(vLocation)
 -- 	if self.isBuggyHero == nil then
 -- 		self.isBuggyHero = Utils.BuggyHeroesDueToValveTooLazy[self:GetUnitName()] ~= nil
 -- 	end
 -- 	if self.isBuggyHero
 -- 	then
 -- 		self:Action_ClearActions(true);
--- 		print('Override buggy hero movement, make it go assigned lane front with Action_MoveToLocation.'..self:GetUnitName())
+-- 		print('Override buggy hero movement, make it go assigned lane front with Action_AttackMove.'..self:GetUnitName())
 -- 		local assignedLaneLoc = GetLaneFrontLocation(GetTeam(), self:GetAssignedLane(), 0)
 -- 		if Utils.GetLocationToLocationDistance(assignedLaneLoc, vLocation) > 1000 and DotaTime() < 2*60 then
--- 			return original_Action_MoveToLocation(self, assignedLaneLoc )
+-- 			return original_Action_AttackMove(self, assignedLaneLoc )
 -- 		end
 -- 	end
---     return original_Action_MoveToLocation(self, vLocation )
+--     return original_Action_AttackMove(self, vLocation )
 -- end
-
-local original_Action_AttackMove = CDOTA_Bot_Script.Action_AttackMove
-function CDOTA_Bot_Script:Action_AttackMove(vLocation)
-	if self.isBuggyHero == nil then
-		self.isBuggyHero = Utils.BuggyHeroesDueToValveTooLazy[self:GetUnitName()] ~= nil
-	end
-	if self.isBuggyHero
-	then
-		self:Action_ClearActions(true);
-		print('Override buggy hero movement, make it go assigned lane front with Action_AttackMove.'..self:GetUnitName())
-		local assignedLaneLoc = GetLaneFrontLocation(GetTeam(), self:GetAssignedLane(), 0)
-		if Utils.GetLocationToLocationDistance(assignedLaneLoc, vLocation) > 1000 and DotaTime() < 2*60 then
-			return original_Action_AttackMove(self, assignedLaneLoc )
-		end
-	end
-    return original_Action_AttackMove(self, vLocation )
-end
 
 
 -- CDOTA_AttackRecordManager::GetRecordByIndex - Could not find attack record (-1)!

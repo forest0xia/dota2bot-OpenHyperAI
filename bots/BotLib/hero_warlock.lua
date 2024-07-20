@@ -46,6 +46,7 @@ sRoleItemsBuyList['pos_4'] = {
 	"item_aghanims_shard",
 	"item_force_staff",--
 	"item_ultimate_scepter",
+    "item_veil_of_discord",
 	"item_shivas_guard",--
 	"item_boots_of_bearing",--
 	"item_refresher",--
@@ -66,6 +67,7 @@ sRoleItemsBuyList['pos_5'] = {
 	"item_aghanims_shard",
 	"item_force_staff",--
 	"item_ultimate_scepter",
+    "item_veil_of_discord",
 	"item_shivas_guard",--
 	"item_guardian_greaves",--
 	"item_refresher",--

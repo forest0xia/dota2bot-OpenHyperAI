@@ -52,6 +52,7 @@ sRoleItemsBuyList['pos_4'] = {
 	"item_guardian_greaves",--
 	"item_spirit_vessel",--
 --	"item_wraith_pact",
+	"item_veil_of_discord",
 	"item_shivas_guard",--
 	"item_sheepstick",--
     "item_ultimate_scepter_2",

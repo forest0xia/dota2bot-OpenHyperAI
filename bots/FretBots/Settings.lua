@@ -70,7 +70,7 @@ local announcementList = {
 	{"#F39C12", "* If difficulty >= 5, when a player kills a bot, the player who made the kill receives a reduction in gold. This does not affect assisting players. Bots also provide less exp on death."},
 	{"#7FB3D5", "* The higher the difficulty you vote, the more bonus the bots will get which can make the game more challenging." },
 	{"#E74C3C", "* High difficulty can be overwhelming or even frustrating, please choose the right difficulty for you and your team." },
-	{"#D4AC0D", "* Kudos to BeginnerAI, Fretbots, and ryndrb@; and thanks to Toph, hiro1134, -Calculated, Karma, Psychdoctor for sharing ideas." },
+	{"#D4AC0D", "* Script link: https://github.com/forest0xia/dota2bot-OpenHyperAI. Kudos to BeginnerAI, Fretbots, and ryndrb@; and thanks all for sharing your ideas." },
 	-- {"#D4AC0D", "There are commands to play certain sounds like `ps love` or `ps dylm`. You can also explore other commands like `getroles`, `networth`, etc." }
 }
 

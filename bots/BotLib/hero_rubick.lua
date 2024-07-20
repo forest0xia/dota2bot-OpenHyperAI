@@ -42,6 +42,7 @@ sRoleItemsBuyList['pos_2'] = {
     "item_octarine_core",--
     "item_dagon_5",--
     "item_ultimate_scepter_2",
+    "item_veil_of_discord",
     "item_shivas_guard",
     "item_travel_boots_2",--
     "item_ethereal_blade",--

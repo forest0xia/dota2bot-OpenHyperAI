@@ -4,13 +4,44 @@ BotsInit = require( "game/botsinit" )
 local X = BotsInit.CreateGeneric()
 
 local bot = GetBot()
-
+local botName = bot:GetUnitName()
 
 function X.OnStart() end
 function X.OnEnd() end
 
 function X.GetDesire()
+	-- print('Run bug desire laning for '..botName)
 
+	if GetGameMode() == GAMEMODE_1V1MID or GetGameMode() == GAMEMODE_MO then
+		return 1
+	end
+
+	local currentTime = DotaTime()
+	local botLV = bot:GetLevel()
+
+	if currentTime <= 10
+	then
+		return 0.268
+	end
+	
+	if currentTime <= 9 * 60
+		and botLV <= 7
+	then
+		return 0.446
+	end
+	
+	if currentTime <= 12 * 60
+		and botLV <= 11
+	then
+		return 0.369
+	end
+	
+	if botLV <= 17
+	then
+		return 0.228
+	end
+
+	return 0
 end
 
 
@@ -81,7 +112,6 @@ local function HarassEnemyHero(hEnemyList)
 end
 
 function X.Think()
-    print('3333 [ERROR] '..botName..' is actually bugged.')
     if not bot:IsAlive() or J.CanNotUseAction(bot) then return end
 
 	local LowHealthThreshold = 0.35
@@ -123,9 +153,34 @@ function X.Think()
 		return
 	end
 
-	local vLaneFront = GetLaneFrontLocation(GetTeam(), bot:GetAssignedLane(), -(bot:GetAttackRange() - 50))
-	local vEnemyLaneFront = GetLaneFrontLocation(GetOpposingTeam(), bot:GetAssignedLane(), -(bot:GetAttackRange() - 50))
-	local nEnemyLaneAmount = 1 - GetLaneFrontAmount(GetOpposingTeam(), bot:GetAssignedLane(), true)
+	local assignedLane = bot:GetAssignedLane()
+	if GetTeam() == TEAM_RADIANT then
+		if J.GetPosition(bot) == 2 then
+			assignedLane = LANE_MID
+		end
+		if J.GetPosition(bot) == 1 or J.GetPosition(bot) == 5 then
+			assignedLane = LANE_BOT
+		end
+		if J.GetPosition(bot) == 3 or J.GetPosition(bot) == 4 then
+			assignedLane = LANE_TOP
+		end
+	else
+		if J.GetPosition(bot) == 2 then
+			assignedLane = LANE_MID
+		end
+		if J.GetPosition(bot) == 1 or J.GetPosition(bot) == 5 then
+			assignedLane = LANE_TOP
+		end
+		if J.GetPosition(bot) == 3 or J.GetPosition(bot) == 4 then
+			assignedLane = LANE_BOT
+		end
+	end
+
+	-- print('Bug laning think, '..botName..', assignedLane='..tostring(assignedLane)..', pos='..J.GetPosition(bot))
+
+	local vLaneFront = GetLaneFrontLocation(GetTeam(), assignedLane, -(bot:GetAttackRange() - 50))
+	local vEnemyLaneFront = GetLaneFrontLocation(GetOpposingTeam(), assignedLane, -(bot:GetAttackRange() - 50))
+	local nEnemyLaneAmount = 1 - GetLaneFrontAmount(GetOpposingTeam(), assignedLane, true)
 
 	if J.GetDistance(vLaneFront, vEnemyLaneFront) <= 100
 	and nEnemyLaneAmount > 0
@@ -146,7 +201,7 @@ function X.Think()
 			bot:Action_MoveToLocation(vLaneFront + RandomVector(200))
 		end
 	else
-		vLaneFront = GetLaneFrontLocation(GetTeam(), bot:GetAssignedLane(), -RemapValClamped(J.GetHP(bot), 0, 1, 1200, bot:GetAttackRange()))
+		vLaneFront = GetLaneFrontLocation(GetTeam(), assignedLane, -RemapValClamped(J.GetHP(bot), 0, 1, 1200, bot:GetAttackRange()))
 		bot:Action_MoveToLocation(vLaneFront)
 	end
 end

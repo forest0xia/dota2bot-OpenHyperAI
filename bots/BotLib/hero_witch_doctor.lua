@@ -44,6 +44,7 @@ sRoleItemsBuyList['pos_4'] = {
 	"item_magic_wand",
 	"item_aghanims_shard",
 	"item_glimmer_cape",--
+    'item_veil_of_discord',
 	"item_shivas_guard",--
 	"item_ultimate_scepter",
 	"item_guardian_greaves",--
@@ -87,6 +88,7 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_magic_wand",
 	"item_aghanims_shard",
 	"item_glimmer_cape",--
+    'item_veil_of_discord',
 	"item_shivas_guard",--
 	"item_ultimate_scepter",
 	"item_guardian_greaves",--

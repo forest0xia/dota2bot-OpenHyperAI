@@ -2,14 +2,22 @@
 local J = require( GetScriptDirectory()..'/FunLib/jmz_func')
 local Utils = require( GetScriptDirectory()..'/FunLib/utils')
 
-if GetBot():IsInvulnerable() or not GetBot():IsHero() or not string.find(GetBot():GetUnitName(), "hero") or GetBot():IsIllusion() then
+local bot = GetBot()
+local botName = bot:GetUnitName()
+local local_mode_laning_generic
+if bot:IsInvulnerable() or not bot:IsHero() or not string.find(botName, "hero") or bot:IsIllusion() then
 	return
 end
 
-local bot = GetBot()
 local nTpSolt = 15
 
+if Utils.BuggyHeroesDueToValveTooLazy[botName] then
+	local_mode_laning_generic = dofile( GetScriptDirectory().."/FunLib/bugged_heroes_generic/mode_laning_generic" )
+end
+
 function GetDesire()
+	if local_mode_laning_generic ~= nil then return local_mode_laning_generic.GetDesire() end
+
 	if GetGameMode() == GAMEMODE_1V1MID or GetGameMode() == GAMEMODE_MO then
 		return 1
 	end
@@ -58,3 +66,6 @@ function GetDesire()
 
 end
 
+if local_mode_laning_generic ~= nil then
+	function Think() return local_mode_laning_generic.Think() end
+end

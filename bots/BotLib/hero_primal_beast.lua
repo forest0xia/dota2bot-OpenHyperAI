@@ -55,6 +55,7 @@ sRoleItemsBuyList['pos_2'] = {
     "item_magic_wand",
     "item_phase_boots",
     "item_blink",
+    "item_veil_of_discord",
     "item_shivas_guard",--
     "item_black_king_bar",--
     "item_ultimate_scepter",

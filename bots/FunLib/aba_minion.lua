@@ -667,10 +667,10 @@ function X.CastThink(minion, ability)
 				end
 			end
 		else
-			minion.castDesire, target = X.ConsiderUnitTarget(minion, ability);
+			minion.castDesire, botTarget = X.ConsiderUnitTarget(minion, ability);
 			if minion.castDesire > 0 then
 				--print(minion:GetUnitName()..tostring(minion.castDesire).." Use Ability "..ability:GetName())
-				minion:Action_UseAbilityOnEntity(ability, target);
+				minion:Action_UseAbilityOnEntity(ability, botTarget);
 				return
 			end
 		end
@@ -729,7 +729,7 @@ function X.MinionWithSkillThink(hMinionUnit)
 			Desire, Target = V.ConsiderMagicMissile(hMinionUnit, hMinionUnit.abilities[1])
 			if Desire > 0
 			then
-				hMinionUnit:Action_UseAbilityOnEntity(hMinionUnit.abilities[1], target)
+				hMinionUnit:Action_UseAbilityOnEntity(hMinionUnit.abilities[1], botTarget)
 				return
 			end
 		end
@@ -749,7 +749,7 @@ function X.MinionWithSkillThink(hMinionUnit)
 			Desire, Target = V.ConsiderMagicMissile(hMinionUnit, hMinionUnit.abilities[6])
 			if Desire > 0
 			then
-				hMinionUnit:Action_UseAbilityOnEntity(hMinionUnit.abilities[6], target)
+				hMinionUnit:Action_UseAbilityOnEntity(hMinionUnit.abilities[6], botTarget)
 				return
 			end
 		end

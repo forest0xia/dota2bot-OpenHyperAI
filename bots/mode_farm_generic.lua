@@ -9,8 +9,8 @@ local team = GetTeam()
 
 local X = {}
 local J = require( GetScriptDirectory()..'/FunLib/jmz_func')
-local RB = Vector(-7174.000000, -6671.00000, 0.000000)
-local DB = Vector(7023.000000, 6450.000000, 0.000000)
+local RadiantBase = Vector(-7174.000000, -6671.00000, 0.000000)
+local DireBase = Vector(7023.000000, 6450.000000, 0.000000)
 
 local botName = bot:GetUnitName();
 local minute = 0;
@@ -55,7 +55,7 @@ function GetDesire()
 	Utils.PrintPings(0.15)
 
 	if GetGameMode() ~= GAMEMODE_CM then
-		if GetGameState() == GAME_STATE_PRE_GAME
+		if GetGameState() == GAME_STATE_PRE_GAME and bot.isBear == nil
 		and (bot.announcedRole == nil or bot.announcedRole ~= J.GetPosition(bot)) then
 			bot.announcedRole = J.GetPosition(bot)
 			bot:ActionImmediate_Chat('I will play position '..J.GetPosition(bot), false)
@@ -63,8 +63,9 @@ function GetDesire()
 	
 		if not isWelcomeMessageDone
 		and J.GetPosition(bot) == 5
+		and DotaTime() < 0
 		then
-			if J.IsModeTurbo() and DotaTime() > -45 or DotaTime() > -55
+			if (J.IsModeTurbo() and DotaTime() > -45) or DotaTime() > -55
 			then
 				bot:ActionImmediate_Chat("You can type !pos X to swap position with a bot. For example, type: `!pos 2` to go mid lane.", false)
 				isWelcomeMessageDone = true
@@ -85,7 +86,7 @@ function GetDesire()
 
 	-- 如果在打高地 就别撤退去打钱了
 	local nAllyList = J.GetNearbyHeroes(bot,1600,false,BOT_MODE_NONE);
-	if #nAllyList >= 2 and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 3500 then
+	if #nAllyList >= 2 and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 4000 then
 		return BOT_MODE_DESIRE_NONE;
 	end
 	-- 如果在打推塔 就别撤退去打钱了
@@ -96,8 +97,8 @@ function GetDesire()
 
 	-- 如果自己在上高，对面人活着，队友却不在，赶紧溜去farm
 	if #nAllyList <= 1 and J.GetNumOfAliveHeroes(true) > 1
-	and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 3500 then
-		return BOT_MODE_DESIRE_VERYHIGH
+	and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 4000 then
+		return BOT_MODE_DESIRE_ABSOLUTE
 	end
 
 	if not bInitDone
@@ -549,20 +550,20 @@ function Think()
 		then	
 			if team == TEAM_RADIANT
 			then
-				bot:Action_MoveToLocation(RB);
+				bot:Action_MoveToLocation(RadiantBase);
 				return;
 			else
-				bot:Action_MoveToLocation(DB);
+				bot:Action_MoveToLocation(DireBase);
 				return;
 			end
 		else
 			if team == TEAM_RADIANT
 			then
-			    local mLoc = J.GetLocationTowardDistanceLocation(bot,DB,-700);
+			    local mLoc = J.GetLocationTowardDistanceLocation(bot,DireBase,-700);
 				bot:Action_MoveToLocation(mLoc);
 				return;
 			else
-			    local mLoc = J.GetLocationTowardDistanceLocation(bot,RB,-700);
+			    local mLoc = J.GetLocationTowardDistanceLocation(bot,RadiantBase,-700);
 				bot:Action_MoveToLocation(mLoc);
 				return;
 			end		
@@ -781,7 +782,7 @@ function Think()
 	
 	
 	bot:SetTarget(nil);
-	bot:Action_MoveToLocation( ( RB + DB )/2 );
+	bot:Action_MoveToLocation( ( RadiantBase + DireBase )/2 );
 	return;
 end
 

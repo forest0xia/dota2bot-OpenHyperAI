@@ -69,10 +69,18 @@ function GetDesire()
 		IsSupport = not J.IsCore(bot)
 	end
 
-
+	local nMode = bot:GetActiveMode()
+	local isDefendMode = nMode == BOT_MODE_DEFEND_TOWER_TOP or nMode == BOT_MODE_DEFEND_TOWER_MID or nMode == BOT_MODE_DEFEND_TOWER_BOT
 	-- if pinged to defend base.
 	local ping = Utils.IsPingedToDefenseByAnyPlayer(bot, 3)
 	if ping ~= nil then
+		
+		-- 如果本来就是要去防守的
+		if isDefendMode and bot:GetActiveModeDesire() > BOT_MODE_DESIRE_MODERATE
+		then
+			return BOT_ACTION_DESIRE_NONE
+		end
+
 		return BOT_MODE_DESIRE_VERYHIGH
 	end
 
@@ -102,16 +110,19 @@ function GetDesire()
 			nDefendLoc = GetAncient(team):GetLocation() + RandomVector(100) -- GetLaneFrontLocation(team, nDefendLane, 100) + RandomVector(100)
 			enemeyPushingBase = true
 		end
-	
+
 		if enemeyPushingBase then
 			enemeyPushingBase = false
 			local nDefendAllies = J.GetAlliesNearLoc(nDefendLoc, 2000);
-		
 			if #nDefendAllies < J.GetNumOfAliveHeroes(false) then
 				Utils['GameStates']['defendPings'].pingedTime = GameTime()
-				
 				bot:ActionImmediate_Chat("Please come defending", false)
 				bot:ActionImmediate_Ping(nDefendLoc.x, nDefendLoc.y, false)
+			end
+
+			if isDefendMode and bot:GetActiveModeDesire() > BOT_MODE_DESIRE_MODERATE
+			then
+				return BOT_ACTION_DESIRE_NONE
 			end
 			return BOT_MODE_DESIRE_VERYHIGH
 		end

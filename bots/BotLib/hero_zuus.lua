@@ -60,6 +60,7 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_glimmer_cape",--
 	"item_aghanims_shard",
 	"item_kaya_and_sange",--
+    'item_veil_of_discord',
 	"item_shivas_guard",--
 	"item_cyclone",
 	"item_ultimate_scepter",

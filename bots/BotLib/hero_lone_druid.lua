@@ -1,15 +1,14 @@
--- Currently "bugged" internally. Adding him here.
--- He won't be selected.
-
 local X = {}
-local bDebugMode = ( 1 == 10 )
 local bot = GetBot()
 
+local Utils = require( GetScriptDirectory()..'/FunLib/utils' )
 local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
 local Minion = dofile( GetScriptDirectory()..'/FunLib/aba_minion' )
 local sTalentList = J.Skill.GetTalentList( bot )
 local sAbilityList = J.Skill.GetAbilityList( bot )
 local sRole = J.Item.GetRoleItemsBuyList( bot )
+
+if Utils['LoneDruid'].hero == nil then Utils['LoneDruid'].hero = bot end
 
 local tTalentTreeList = {--pos2
                         ['t25'] = {0, 10},
@@ -19,8 +18,11 @@ local tTalentTreeList = {--pos2
 }
 
 local tAllAbilityBuildList = {
-                        {1,2,1,2,1,6,1,2,2,3,6,3,3,3,6},--pos2
+                        -- {1,2,1,2,1,6,1,2,2,3,6,3,3,3,6},--pos2
+                        {2,2,6,2,2,3,6,3,3,3,6,1,1,1,1},--no bear
 }
+
+local nAbilityBuildListWithBear = {1,2,1,3,1,6,1,2,2,2,6,3,3,3,6} --pos2
 
 local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
 
@@ -28,23 +30,89 @@ local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 
 local sRoleItemsBuyList = {}
 
-sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_1']
-
-sRoleItemsBuyList['pos_2'] = {
-    "item_four_branches",
+sRoleItemsBuyList['pos_1'] = {
+	"item_ranged_carry_outfit",
+	-- "item_dragon_lance",
+	"item_mask_of_madness",
+    "item_maelstrom",
+    "item_mjollnir",--
+	-- "item_hurricane_pike",--
+    "item_basher",
+    "item_monkey_king_bar",--
+    "item_black_king_bar",--
+    "item_abyssal_blade",--
+	"item_skadi",--
+	"item_travel_boots",
+	"item_moon_shard",
+    "item_ultimate_scepter",
+    "item_ultimate_scepter_2",
+    
+	"item_travel_boots_2",--
 }
 
-sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_3']
+sRoleItemsBuyList['pos_1_w_bear'] = {
+    "item_tango",
+    "item_phase_boots",
+    "item_quelling_blade",
+    "item_magic_wand",
+    "item_mask_of_madness",
+    "item_maelstrom",
+    'item_boots',
+    "item_mjollnir",--
+    "item_ultimate_scepter",
+    "item_basher",
+    "item_black_king_bar",--
+    "item_abyssal_blade",--
+    "item_assault",--
+    "item_monkey_king_bar",--
+	"item_moon_shard",
+    "item_moon_shard",
+    "item_ultimate_scepter_2",
+    "item_aghanims_shard",
 
-sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_4']
 
-sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_5']
+    "item_travel_boots",
+    "item_skadi",--
+    "item_black_king_bar",--
+    "item_monkey_king_bar",--
+    "item_greater_crit",--
+    "item_satanic",--
+    "item_ultimate_scepter",
+    "item_ultimate_scepter_2",
+    "item_travel_boots_2",--
+}
+
+sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
+
+sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_1']
+
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_1']
+
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_1']
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 X['sSellList'] = {
-
+    "item_quelling_blade",
+    "item_branches",
+    "item_magic_wand",
+    "item_orb_of_venom",
+    "item_phase_boots",
 }
+
+if Utils['LoneDruid'].roleType == nil then
+    if RandomInt( 1, 9 ) >= 3 then
+        Utils['LoneDruid'].roleType = 'pos_1'
+    else
+        Utils['LoneDruid'].roleType = 'pos_1_w_bear'
+    end
+else
+    if Utils['LoneDruid'].roleType == 'pos_1_w_bear' then
+        X['sBuyList'] = sRoleItemsBuyList['pos_1_w_bear']
+        nAbilityBuildList = nAbilityBuildListWithBear
+    end
+end
+
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_antimage' }, {} end
 
@@ -56,7 +124,6 @@ X['bDeafaultAbility'] = false
 X['bDeafaultItem'] = false
 
 function X.MinionThink(hMinionUnit)
-    print(hMinionUnit:GetUnitName())
     Minion.MinionThink(hMinionUnit)
 end
 
@@ -99,23 +166,12 @@ function X.SkillsComplement()
 end
 
 function X.ConsiderSummonSpiritBear()
-    if not SummonSpiritBear:IsFullyCastable()
+    if not SummonSpiritBear:IsFullyCastable() or Utils['LoneDruid'].roleType ~= 'pos_1_w_bear'
     then
         return BOT_ACTION_DESIRE_NONE
     end
 
-    local IsBearAlive = false
-
-	for _, unit in pairs(GetUnitList(UNIT_LIST_ALLIES))
-	do
-		if string.find(unit:GetUnitName(), 'npc_dota_lone_druid_bear')
-        then
-			IsBearAlive = true
-            break
-		end
-	end
-
-	if not IsBearAlive
+	if Utils['LoneDruid'].bear == nil or not Utils['LoneDruid'].bear:IsAlive()
     then
 		return BOT_ACTION_DESIRE_HIGH
 	end

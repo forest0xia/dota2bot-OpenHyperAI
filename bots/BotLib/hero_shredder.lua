@@ -42,6 +42,7 @@ sRoleItemsBuyList['pos_2'] = {
 	"item_blink",
     "item_kaya_and_sange",--
     "item_eternal_shroud",--
+    "item_veil_of_discord",
 	"item_shivas_guard",--
     "item_aghanims_shard",
 	"item_cyclone",

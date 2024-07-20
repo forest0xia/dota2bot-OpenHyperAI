@@ -43,6 +43,7 @@ sRoleItemsBuyList['pos_4'] = {
 	"item_spirit_vessel",
 	"item_ultimate_scepter",
 --	"item_wraith_pact",
+    "item_veil_of_discord",
 	"item_shivas_guard",
 	"item_moon_shard",
 	"item_octarine_core",
