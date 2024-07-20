@@ -262,7 +262,6 @@ function OnEnd()
 	harassTarget = nil
 end
 
-local FrameProcessTime = 0.08
 local reactedToDefendPingTime = 0
 function Think()
 
@@ -303,7 +302,7 @@ function Think()
 
 
 	if bot.lastTeamRoamFrameProcessTime == nil then bot.lastTeamRoamFrameProcessTime = DotaTime() end
-	if DotaTime() - bot.lastTeamRoamFrameProcessTime < FrameProcessTime then return end
+	if DotaTime() - bot.lastTeamRoamFrameProcessTime < Utils.FrameProcessTime then return end
 	bot.lastTeamRoamFrameProcessTime = DotaTime()
 
 	-- Disperse from Lich, Jakiro Ultimate

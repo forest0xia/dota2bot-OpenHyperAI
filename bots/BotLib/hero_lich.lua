@@ -292,7 +292,7 @@ function X.ConsiderQ()
 	--击杀
 	for _, npcEnemy in pairs( nInBonusEnemyList )
 	do
-		if J.IsValid( npcEnemy )
+		if J.IsValidHero( npcEnemy )
 			and J.CanCastOnNonMagicImmune( npcEnemy )
 			and J.CanCastOnTargetAdvanced( npcEnemy )
 			and J.WillMagicKillTarget( bot, npcEnemy, nDamage, nCastPoint )
@@ -303,7 +303,7 @@ function X.ConsiderQ()
 				local nAllEnemyUnits = J.CombineTwoTable( nInRangeEnemyList, nEmemysCreepsInRange )
 				for _, enemy in pairs( nAllEnemyUnits )
 				do
-					if J.IsValid( enemy )
+					if J.IsValidHero( enemy )
 						and J.IsInRange( npcEnemy, enemy, nRadius )
 						and J.CanCastOnNonMagicImmune( enemy )
 						and J.CanCastOnTargetAdvanced( enemy )
@@ -378,7 +378,7 @@ function X.ConsiderQ()
 		then
 			for _, npcEnemy in pairs( nInRangeEnemyList )
 			do
-				if J.IsValid( npcEnemy )
+				if J.IsValidHero( npcEnemy )
 					and J.CanCastOnNonMagicImmune( npcEnemy )
 					and J.CanCastOnTargetAdvanced( npcEnemy )
 					and J.GetAttackEnemysAllyCreepCount( npcEnemy, 1400 ) >= 3
@@ -404,7 +404,7 @@ function X.ConsiderQ()
 						return BOT_ACTION_DESIRE_HIGH, creep, "Q-对线补刀远程"
 					end
 	
-					if #hAllyList <= 1 and bot:GetMana() > 400
+					if bot:GetMana() > 400
 						and J.IsKeyWordUnit( 'melee', creep )
 						and J.WillKillTarget( creep, nDamage, nDamageType, nCastPoint )
 						and not J.WillKillTarget( creep, nDamage * 0.5, nDamageType, nCastPoint )
@@ -455,7 +455,7 @@ function X.ConsiderQ()
 	if J.IsFarming( bot ) and nSkillLV >= 3
 		and J.IsAllowedToSpam( bot, nManaCost )
 		and #hEnemyList == 0
-		and #hAllyList <= 2
+		and (#hAllyList <= 1 or J.IsCore(bot))
 		and not ( J.IsPushing( bot ) or J.IsDefending( bot ) )
 	then
 		local nNeutralCreeps = bot:GetNearbyNeutralCreeps( nCastRange + 100 )
@@ -481,7 +481,7 @@ function X.ConsiderQ()
 		and J.IsAllowedToSpam( bot, 30 )
 		and nSkillLV >= 3
 		and #hEnemyList == 0
-		and #hAllyList <= 2
+		and #hAllyList <= 1 or J.IsCore(bot)
 	then
 		local nEnemyCreeps = bot:GetNearbyLaneCreeps( 999, true )
 		local nAllyCreeps = bot:GetNearbyLaneCreeps( 888, false )

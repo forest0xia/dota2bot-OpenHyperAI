@@ -644,9 +644,9 @@ function X.OverrideTeamHeroes()
 	if GetTeam() == TEAM_RADIANT
 	then
 		return {
-			[1] = tSelectPoolList[1][RandomInt( 1, #tSelectPoolList[1] )],
-			[2] = tSelectPoolList[2][RandomInt( 1, #tSelectPoolList[2] )],
-			[3] = tSelectPoolList[3][RandomInt( 1, #tSelectPoolList[3] )],
+			[1] = 'npc_dota_hero_muerta',
+			[2] = 'npc_dota_hero_invoker',
+			[3] = 'npc_dota_hero_hoodwink',
 			[4] = tSelectPoolList[4][RandomInt( 1, #tSelectPoolList[4] )],
 			[5] = tSelectPoolList[5][RandomInt( 1, #tSelectPoolList[5] )],
 		}
@@ -694,12 +694,12 @@ function X.OverrideTeamHeroes()
 		    -- [4] = "npc_dota_hero_lina",
 			-- [5] = "npc_dota_hero_silencer",
 
-			
-			[1] = "npc_dota_hero_invoker",
-			[2] = 'npc_dota_hero_lone_druid',
-			[3] = "npc_dota_hero_tidehunter",
-		    [4] = "npc_dota_hero_techies",
-			[5] = "npc_dota_hero_earth_spirit",
+
+			[1] = 'npc_dota_hero_muerta',
+			[2] = 'npc_dota_hero_invoker',
+			[3] = 'npc_dota_hero_hoodwink',
+		    [4] = tSelectPoolList[4][RandomInt( 1, #tSelectPoolList[4] )],
+			[5] = tSelectPoolList[5][RandomInt( 1, #tSelectPoolList[5] )],
 			
 			-- Muerta pos1 and Hoodwink pos5, both go top.
 			-- muerta be pos 1 has smaller chance for bug, 
@@ -733,7 +733,7 @@ function X.OverrideTeamHeroes()
 end
 
 -- 这行代码为了人工挑选想要的阵容。如果想让电脑自己随机英雄，则注释掉这行
--- sSelectList = X.OverrideTeamHeroes()
+sSelectList = X.OverrideTeamHeroes()
 
 function X.ShuffleArray(array)
 	if type(array) ~= "table" then

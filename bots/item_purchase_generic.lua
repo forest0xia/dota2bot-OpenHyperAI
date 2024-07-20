@@ -208,6 +208,7 @@ local function GeneralPurchase()
 			bot.SecretShop = true
 		else
 			if Utils.CountBackpackEmptySpace(bot) > 0 -- has empty slot
+			or bot:DistanceFromSecretShop() > 700
 			then
 				if bot:ActionImmediate_PurchaseItem( bot.currentComponentToBuy ) == PURCHASE_ITEM_SUCCESS
 				then
@@ -371,53 +372,12 @@ function ItemPurchaseThink()
 		end
 	end
 
-	--[[
-	if bot == Utils['LoneDruid'].hero then
-		local bear = Utils['LoneDruid'].bear
-		if bear ~= nil then
-			local bearNetworth = Item.GetItemTotalWorthInSlots(bear)
-			local heroNetworth = Item.GetItemTotalWorthInSlots(bot)
-			if bearNetworth < 15000 and heroNetworth > 500 then
-				return
-			end
-		end
-	end
-	if Utils.IsBear(bot) then
-		if not bot:IsAlive() then return end
-
-		local distanceToFountain = bot:DistanceFromFountain()
-		-- local bearNetworth = Item.GetItemTotalWorthInSlots(bear)
-		if Utils['LoneDruid'].hero:DistanceFromFountain() < 800 then
-			return
-		end
-		if distanceToFountain > 300 then
-			return
-		end
-	end
-	]]
-
 	if bot:HasModifier( 'modifier_arc_warden_tempest_double' )
 	or (DotaTime() > 0 and J.IsMeepoClone(bot))
 	then
 		bot.itemToBuy = {}
 		return
 	end
-
-	-- 以防因任何原因失去了对出装的跟踪
-	-- if bot.itemToBuy == nil or #bot.itemToBuy == 0 or bot.itemToBuy[0] == nil then
-	-- 	local idx = 1
-	-- 	for i = 1, #sPurchaseList
-	-- 	do
-	-- 		local item = sPurchaseList[#sPurchaseList - i + 1]
-	-- 		if not Item.HasItem(bot, item)
-	-- 		and not Utils.HasValue(sItemSellList, item)
-	-- 		and GetItemCost(item) > 600 then
-	-- 			bot.itemToBuy[idx] = sPurchaseList[#sPurchaseList - i + 1]
-	-- 			idx = idx + 1
-	-- 		end
-	-- 	end
-	-- end
-	
 
 	--------*******----------------*******----------------*******--------
 	local currentTime = DotaTime()
@@ -570,7 +530,7 @@ function ItemPurchaseThink()
 	end
 
 	-- Observer and Sentry Wards
-	if (J.GetPosition(bot) == 4) and DotaTime() > 300
+	if J.GetPosition(bot) == 4 and DotaTime() > 300 and botWorth < 10000
 	then
 		local wardType = 'item_ward_sentry'
 
@@ -584,7 +544,7 @@ function ItemPurchaseThink()
 		end
 	end
 
-	if (J.GetPosition(bot) == 5)
+	if J.GetPosition(bot) == 5 and botWorth < 10000
 	then
 		local wardType = 'item_ward_observer'
 
@@ -599,7 +559,7 @@ function ItemPurchaseThink()
 	end
 
 	-- Smoke of Deceit
-	if J.GetPosition(bot) == 5
+	if J.GetPosition(bot) == 5 and botWorth < 10000
 	and Utils.CountBackpackEmptySpace(bot) >= 2
 	and GetItemStockCount('item_smoke_of_deceit') > 1
 	and botGold >= GetItemCost('item_smoke_of_deceit')
@@ -832,65 +792,11 @@ function ItemPurchaseThink()
 		end
 	end
 
-	-- if currentTime > bot.sell_time + 0.5
-	-- 	and ( bot:GetItemInSlot( 6 ) ~= nil or bot:GetItemInSlot( 7 ) ~= nil or bot:GetItemInSlot( 8 ) ~= nil )
-	-- 	and ( J.IsModeTurbo() or (bot:DistanceFromFountain() <= 100 or bot:DistanceFromSecretShop() <= 100 ))
-	-- then
-	-- 	bot.sell_time = currentTime
-
-	-- 	-- bug: 不见得新旧物品挨着放
-	-- 	-- for i = 2 , #sItemSellList, 2
-	-- 	-- do
-	-- 	-- 	local nNewSlot = bot:FindItemSlot( sItemSellList[i - 1] )
-	-- 	-- 	local nOldSlot = bot:FindItemSlot( sItemSellList[i] )
-	-- 	-- 	if nNewSlot >= 0 and nOldSlot >= 0
-	-- 	-- 	then
-	-- 	-- 		bot:ActionImmediate_SellItem( bot:GetItemInSlot( nOldSlot ) )
-	-- 	-- 		return
-	-- 	-- 	end
-	-- 	-- end
-
-	-- 	-- 如果游戏时间过了30或者加速模式的20分钟，满格了就卖
-	-- 	if currentTime > 1800 or (J.IsModeTurbo() and currentTime > 1200) then
-	-- 		for i = 1 , #sItemSellList, 1
-	-- 		do
-	-- 			local slot = bot:FindItemSlot( sItemSellList[i] )
-	-- 			if slot and slot>= 0 then
-	-- 				bot:ActionImmediate_SellItem( bot:GetItemInSlot( slot ) )
-	-- 			end
-	-- 		end
-	-- 	else
-	-- 		-- bug: 不见得过渡装备一定在 6 7 8 格
-	-- 		for i = 1 , #sItemSellList, 1
-	-- 		do
-	-- 			local slot = bot:FindItemSlot( sItemSellList[i] )
-	-- 			if slot == 6 or slot == 7 or slot == 8
-	-- 			then
-	-- 				bot:ActionImmediate_SellItem( bot:GetItemInSlot( slot ) )
-	-- 				return
-	-- 			end
-	-- 		end
-		-- end
-
-		-- if ( Item.HasItem( bot, "item_travel_boots" ) or Item.HasItem( bot, "item_travel_boots_2" ) )
-		-- then
-		-- 	for i = 1, #Item['tEarlyBoots']
-		-- 	do
-		-- 		local bootsSlot = bot:FindItemSlot( Item['tEarlyBoots'][i] )
-		-- 		if bootsSlot >= 0
-		-- 		then
-		-- 			bot:ActionImmediate_SellItem( bot:GetItemInSlot( bootsSlot ) )
-		-- 			return
-		-- 		end
-		-- 	end
-		-- end
-
-		if Item.HasItem(bot, 'item_mask_of_madness')
-		and Item.HasItem(bot, 'item_satanic')
-		then
-			bot:ActionImmediate_SellItem(bot:GetItemInSlot(bot:FindItemSlot('item_mask_of_madness')))
-		end
-	-- end
+	if Item.HasItem(bot, 'item_mask_of_madness')
+	and Item.HasItem(bot, 'item_satanic')
+	then
+		bot:ActionImmediate_SellItem(bot:GetItemInSlot(bot:FindItemSlot('item_mask_of_madness')))
+	end
 
 	if #bot.itemToBuy == 0 then
 		ClearBuyList()
@@ -898,19 +804,10 @@ function ItemPurchaseThink()
 		return
 	end
 
-	
 	if bot.currentItemToBuy == nil
-		and #bot.currListItemToBuy == 0
+	and #bot.currListItemToBuy == 0
 	then
-		local retryCount = 0
-		repeat
-			bot.currentItemToBuy = bot.itemToBuy[#bot.itemToBuy - retryCount]
-			retryCount = retryCount + 1
-			-- print('[INFO] bot.currentItemToBuy='..bot.currentItemToBuy..', retryCount='..retryCount)
-		until( bot.currentItemToBuy ~= nil or retryCount >= #bot.itemToBuy - 1)
-
-		-- bot.currentItemToBuy = bot.itemToBuy[#bot.itemToBuy]
-		-- print('bot.currentItemToBuy='..bot.currentItemToBuy..', #bot.itemToBuy='..#bot.itemToBuy)
+		bot.currentItemToBuy = bot.itemToBuy[#bot.itemToBuy]
 		local tempTable = Item.GetBasicItems( { bot.currentItemToBuy } )
 		for i = 1, math.ceil( #tempTable / 2 )
 		do
@@ -924,15 +821,18 @@ function ItemPurchaseThink()
 		if Item.IsItemInHero( bot.currentItemToBuy )
 			or bot.currentItemToBuy == "item_aghanims_shard"
 			or (bot == Utils['LoneDruid'].hero and Utils['LoneDruid'].bear ~= nil and Item.IsItemInTargetHero(bot.currentItemToBuy, Utils['LoneDruid'].bear))
-			or (bot.countInvCheck > 10 * 60 -- if can't finish the item for a long time
-			and bot:GetGold() > 7000) -- and can't finish even with lots of gold
+			or bot.countInvCheck > 5 * 60 -- if can't finish the item for a long time
 		then
 			bot.countInvCheck = 0
 			bot.currentItemToBuy = nil
 			bot.itemToBuy[#bot.itemToBuy] = nil
 		else
 			bot.lastInvCheck = currentTime
-			bot.countInvCheck = bot.countInvCheck + 1
+
+			-- and can't finish even with lots of gold
+			if bot:GetGold() > 7000 or bot:GetGold() > GetItemCost(bot.currentItemToBuy) * 2 then
+				bot.countInvCheck = bot.countInvCheck + 1
+			end
 		end
 	elseif #bot.currListItemToBuy > 0
 	then

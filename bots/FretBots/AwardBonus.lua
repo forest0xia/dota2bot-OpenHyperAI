@@ -363,7 +363,7 @@ end
 -- this is either strictly multiplicative, or additive
 function AwardBonus:GetMultiplier(skill, scale, variance)
 	if Settings.isMultiplicative then
-		return skill * scale * variance * Settings.difficultyScale
+		return skill * scale * variance * Settings.difficultyScale * 3
 	else
 		return skill + scale + variance + Settings.difficultyScale - 3
 	end
@@ -401,7 +401,14 @@ function AwardBonus:GetSpecificPerMinuteBonus(bot, pmBot, roleTable, settings)
 	local debugTable = {}
 	-- Ensure there is a target amount for this bot
 	if roleTable[bot.stats.role] == nil then
-		return 0, 'No human counterpart for '..bot.stats.name..'.'
+		Debug:Print(bot.stats.name..', with role'..bot.stats.role..', does not have a corresponding human player for the same role')
+		-- Pick one player
+		local idx = 1
+		repeat
+			roleTable[bot.stats.role] = roleTable[idx]
+			idx = idx + 1
+		until(roleTable[bot.stats.role] ~= nil or idx >= 5)
+		-- return 0, 'No human counterpart for '..bot.stats.name..'.'
 	end
 	-- counterparts PM
 	local pmPlayer = roleTable[bot.stats.role]

@@ -227,11 +227,10 @@ function TormentorDesire()
 	return BOT_ACTION_DESIRE_NONE
 end
 
-local FrameProcessTime = 0.08
 function Think()
 
 	if bot.lastSideShopFrameProcessTime == nil then bot.lastSideShopFrameProcessTime = DotaTime() end
-	if DotaTime() - bot.lastSideShopFrameProcessTime < FrameProcessTime then return end
+	if DotaTime() - bot.lastSideShopFrameProcessTime < J.Utils.FrameProcessTime then return end
 	bot.lastSideShopFrameProcessTime = DotaTime()
 
 	if WisdomRuneThink() >= 1 then

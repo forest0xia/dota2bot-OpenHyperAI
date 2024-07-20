@@ -4,7 +4,7 @@ if GetBot():IsInvulnerable() or not GetBot():IsHero() or not string.find(GetBot(
 	return;
 end
 
-local bot = GetBot();
+local bot = GetBot()
 local team = GetTeam()
 
 local X = {}
@@ -95,10 +95,10 @@ function GetDesire()
 		return BOT_MODE_DESIRE_NONE;
 	end
 
-	-- 如果自己在上高，对面人活着，队友却不在，赶紧溜去farm
-	if #nAllyList <= 1 and J.GetNumOfAliveHeroes(true) > 1
-	and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 4000 then
-		return BOT_MODE_DESIRE_ABSOLUTE
+	-- 如果自己在上高，对面人活着，队友却不够，赶紧溜去farm
+	if J.GetNumOfAliveHeroes(true) > #nAllyList - 1
+	and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 6000 then
+		return BOT_MODE_DESIRE_VERYHIGH
 	end
 
 	if not bInitDone
@@ -454,12 +454,11 @@ function OnEnd()
 end
 
 
-local FrameProcessTime = 0.08
 function Think()
 	if J.CanNotUseAction(bot) then return end
 
 	if bot.lastFarmFrameProcessTime == nil then bot.lastFarmFrameProcessTime = DotaTime() end
-	if DotaTime() - bot.lastFarmFrameProcessTime < FrameProcessTime then return end
+	if DotaTime() - bot.lastFarmFrameProcessTime < Utils.FrameProcessTime then return end
 	bot.lastFarmFrameProcessTime = DotaTime()
 
 	-- pretend to be in laning

@@ -142,10 +142,9 @@ function GetDesire()
 			return BOT_ACTION_DESIRE_VERYHIGH
 		end
 	end
-	
 
 	-- 别轻易上高送
-	if J.GetNumOfAliveHeroes(true) > 1 and J.GetNumOfAliveHeroes(true) >= #mates - 1 and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 4000 then
+	if J.GetNumOfAliveHeroes(true) >= #mates - 1 and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 6000 then
 		return BOT_ACTION_DESIRE_VERYHIGH
 	end
 
@@ -158,7 +157,7 @@ function GetDesire()
 	-- if halfway back to fountain
 	if bot:DistanceFromFountain() < 5000
 	and botName ~= 'npc_dota_hero_huskar'
-	and (J.GetHP(bot) < 0.7 or J.GetMP(bot) < 0.5)
+	and (J.GetHP(bot) < 0.5 or J.GetMP(bot) < 0.3)
 	and bot:GetActiveModeDesire() <= BOT_ACTION_DESIRE_HIGH then
         return BOT_ACTION_DESIRE_HIGH
 	end
@@ -175,8 +174,9 @@ function GetDesire()
 	retreatDesire = retreatDesire + RemapValClamped(enemyPower / ourPower, 0, 3, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_VERYHIGH )
 	retreatDesire = retreatDesire + RemapValClamped(nearbyEnemies - nearbyAllies, 0, 5, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_VERYHIGH )
 	retreatDesire = retreatDesire + RemapValClamped(#uniqueEnemies - #uniqueMates, 0, 2, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_VERYHIGH )
-	retreatDesire = retreatDesire + RemapValClamped(J.GetHP(bot), 1, 0.3, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_VERYHIGH * 2 )
-	possibleMaxDesire = BOT_ACTION_DESIRE_VERYHIGH * 4
+	retreatDesire = retreatDesire + RemapValClamped(J.GetHP(bot), 1, 0.2, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_VERYHIGH * 2 )
+	possibleMaxDesire = BOT_ACTION_DESIRE_VERYHIGH * 4 / 3 -- make it tighter, any peak from one of the factor can have more impact. dont get too tight to cause passive.
+
 	if J.IsValidTarget(enemies[1]) and J.GetHP(bot) < J.GetHP(enemies[1]) then
 		retreatDesire = retreatDesire + RemapValClamped(GetUnitToUnitDistance(enemies[1], bot) - bot:GetAttackRange(), 0, -bot:GetAttackRange(), BOT_ACTION_DESIRE_VERYLOW, BOT_ACTION_DESIRE_VERYHIGH * 2 )
 		possibleMaxDesire = possibleMaxDesire + BOT_ACTION_DESIRE_VERYHIGH

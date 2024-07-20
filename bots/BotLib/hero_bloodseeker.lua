@@ -54,11 +54,13 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_phase_boots",
 	"item_maelstrom",
 	"item_magic_wand",
-	"item_black_king_bar",--
+    "item_yasha",
+    "item_black_king_bar",--
+    "item_sange_and_yasha",--
 	"item_mjollnir",--
 	"item_basher",
 	"item_aghanims_shard",
-	"item_butterfly",--
+	-- "item_butterfly",--
 	"item_abyssal_blade",--
 	"item_skadi",--
 	"item_monkey_king_bar",--
@@ -78,11 +80,13 @@ sRoleItemsBuyList['pos_2'] = {
 	"item_phase_boots",
 	"item_maelstrom",
 	"item_magic_wand",
-	"item_black_king_bar",--
+    "item_yasha",
+    "item_black_king_bar",--
+    "item_sange_and_yasha",--
 	"item_mjollnir",--
 	"item_basher",
 	"item_aghanims_shard",
-	"item_butterfly",--
+	-- "item_butterfly",--
 	"item_sheepstick",--
 	"item_travel_boots",
 	"item_abyssal_blade",--

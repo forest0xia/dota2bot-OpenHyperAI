@@ -394,6 +394,7 @@ end
 function X.CountDesire(base_desire, dist, maxDist)
 	-- return RemapValClamped(dist, 6000, 0, 0, 1)
 	local rebase_desire = base_desire
+	if J.IsCore(bot) then rebase_desire = rebase_desire / 3 end
 	if bot:GetLevel() > 10 * 60 and bot:GetLevel() < 20 * 60 then rebase_desire = rebase_desire / 2 end
 	if bot:GetLevel() > 20 * 60 then rebase_desire = rebase_desire / 3 end
 	 return rebase_desire + math.floor((RemapValClamped( dist, maxDist, 0, 0, 1 - rebase_desire))*40)/40

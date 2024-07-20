@@ -326,12 +326,11 @@ function X.SkillsComplement()
     CheckAbilityUsage()
     if J.CanNotUseAbility(bot) then return end
 
-    nEnemyHeroes = J.GetNearbyHeroes(bot, 1400, true)
-    nAllyHeroes = J.GetNearbyHeroes(bot, 1400, false)
+    nEnemyHeroes = J.GetNearbyHeroes(bot, 1600, true)
+    nAllyHeroes = J.GetNearbyHeroes(bot, 1600, false)
 
     if bot:HasModifier(modifier_invoker_ghost_walk_self)
-    and J.GetHP(bot) <= 0.8
-    and #nEnemyHeroes >= 1 then
+    and (J.GetHP(bot) <= 0.8 or #nEnemyHeroes >= #nAllyHeroes + 2) then
         return
     end
 
@@ -778,7 +777,7 @@ function X.ConsiderColdSnap()
 
         if J.IsValidHero(enemyHero)
         and J.CanCastOnNonMagicImmune(enemyHero)
-        and J.IsInRange(bot, enemyHero, bot:GetAttackRange())
+        and J.IsInRange(bot, enemyHero, bot:GetAttackRange() - 150)
         and not J.IsSuspiciousIllusion(enemyHero)
         and bot:GetMana() - ColdSnap:GetManaCost() >= saveManaInLaning
 		then

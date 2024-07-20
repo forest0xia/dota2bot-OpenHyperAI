@@ -31,6 +31,7 @@ X['ActuallyBuggedHeroes'] = { } -- used to record the acutal bugged heroes in th
 
 X['GameStates'] = { } -- A gaming state keeper to keep a record of different states to avoid recomupte or anything.
 X['LoneDruid'] = { }
+X['FrameProcessTime'] = 0.05
 
 -- Override the print function
 function print(...)
@@ -47,6 +48,8 @@ end
 
 function X.PrintTable(tbl, indent)
 	if not indent then indent = 0 end
+    if tbl == nil then print(tostring(tbl)); return end
+
     for k, v in pairs(tbl) do
         formatting = string.rep("  ", indent) .. k .. ": "
         if type(v) == "table" then

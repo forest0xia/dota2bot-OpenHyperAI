@@ -91,7 +91,7 @@
 			-- ignore clamps?
 			clampOverride 		= false,
 			-- scales (per role) for multipliers if necessary
-			scale 				= {1.2, 1.1, 1.0, 0.9, 0.9},
+			scale 				= {1.2, 1.1, 1.0, 0.9, 0.8},
 			-- Add this to the max clamp per minute
 			perMinuteScale 		= 0.5
 		},
@@ -102,7 +102,7 @@
 			variance 			= {1, 1},
 			clamp 				= {0, 25},
 			clampOverride 		= false,
-			scale 				= {1.2, 1.1, 1.0, 0.9, 0.9},
+			scale 				= {1.2, 1.1, 1.0, 0.9, 0.8},
 			perMinuteScale		= 0.5
 		},
 		deathBonus =
@@ -280,12 +280,12 @@
 			-- Awards multiplied by this (per role) if enabled
 			scale =
 			{
-				gold 			= {1.2, 1.1, 1.0, 0.8, 0.6},
-				armor 			= {1.2, 1.1, 1.0, 0.4, 0.2},
-				magicResist 	= {1.2, 1.1, 1.0, 0.4, 0.2},
-				levels 			= {1.2, 1.1, 1.0, 0.8, 0.6},
-				neutral 		= {1.2, 1.1, 1.0, 0.8, 0.6},
-				stats 			= {1.2, 1.1, 1.0, 0.8, 0.6}
+				gold 			= {1.2, 1.1, 1.0, 0.9, 0.8},
+				armor 			= {1.2, 1.1, 1.0, 0.9, 0.8},
+				magicResist 	= {1.2, 1.1, 1.0, 0.9, 0.8},
+				levels 			= {1.2, 1.1, 1.0, 0.9, 0.8},
+				neutral 		= {1.2, 1.1, 1.0, 0.9, 0.8},
+				stats 			= {1.2, 1.1, 1.0, 0.9, 0.8},
 			},
 			-- Enable role scaling?
 			scaleEnabled =

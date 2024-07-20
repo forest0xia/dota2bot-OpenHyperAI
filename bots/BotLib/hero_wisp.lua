@@ -33,6 +33,7 @@ sRoleItemsBuyList['pos_4'] = {
     'item_boots_of_bearing',
     'item_pipe',
     'item_veil_of_discord',
+    "item_shivas_guard",
     'item_cyclone',
     'item_sheepstick',
     "item_wind_waker",
@@ -47,6 +48,7 @@ sRoleItemsBuyList['pos_5'] = {
     "item_glimmer_cape",
     "item_guardian_greaves",
     "item_spirit_vessel",
+    "item_veil_of_discord",
     "item_shivas_guard",
     "item_sheepstick",
     "item_moon_shard",
@@ -57,6 +59,7 @@ sRoleItemsBuyList['pos_3'] = {
     "item_mage_outfit",
     "item_shadow_amulet",
     "item_veil_of_discord",
+    "item_shivas_guard",
     "item_cyclone",
     "item_glimmer_cape",
     "item_sheepstick",
@@ -126,9 +129,9 @@ function X.SkillsComplement()
         return
     end
 
-    castOverchargeDesire, castOverchargeTarget = X.ConsiderOvercharge()
+    castOverchargeDesire = X.ConsiderOvercharge()
     if castOverchargeDesire > 0 then
-        bot:Action_UseAbilityOnEntity( abilityOvercharge, castOverchargeTarget )
+        bot:Action_UseAbility( abilityOvercharge )
         return
     end
 
@@ -150,10 +153,14 @@ function X.ConsiderTether()
     local nAllies = bot:GetNearbyHeroes( nCastRange, false, BOT_MODE_NONE )
     for _, ally in pairs(nAllies) do
         if ally ~= nil and ally:IsAlive() and not ally:IsMagicImmune() then
-            if ally:GetHealth() / ally:GetMaxHealth() < 0.6 then
+            if J.GetHP(ally) < 0.6 then
                 return BOT_ACTION_DESIRE_HIGH, ally
             end
         end
+    end
+
+    if nAllies[2] ~= nil and J.IsInRange(bot, nAllies[2], nCastRange) then
+        return BOT_ACTION_DESIRE_HIGH, nAllies[2]
     end
 
     return BOT_ACTION_DESIRE_NONE, nil
@@ -174,19 +181,14 @@ end
 
 function X.ConsiderOvercharge()
     if not abilityOvercharge:IsFullyCastable() then
-        return BOT_ACTION_DESIRE_NONE, nil
+        return BOT_ACTION_DESIRE_NONE
     end
 
-    local nAllies = bot:GetNearbyHeroes( 700, false, BOT_MODE_NONE )
-    for _, ally in pairs(nAllies) do
-        if ally ~= nil and ally:IsAlive() and not ally:IsMagicImmune() then
-            if ally:GetHealth() / ally:GetMaxHealth() < 0.5 then
-                return BOT_ACTION_DESIRE_HIGH, ally
-            end
-        end
+    if bot:HasModifier('modifier_wisp_tether') then
+        return BOT_ACTION_DESIRE_HIGH
     end
 
-    return BOT_ACTION_DESIRE_NONE, nil
+    return BOT_ACTION_DESIRE_NONE
 end
 
 function X.ConsiderRelocate()
