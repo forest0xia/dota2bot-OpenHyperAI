@@ -9,7 +9,7 @@ Bot script in Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails
 
 ### Why it's enjoyable
 0. Support 7.36
-1. Support 120+ heroes. You will see bots playing Invoker, Techies, Meepo, Lone Druid, Dark Willow, Hoodwink, io, Muerta, Primal Beast, etc!
+1. Support ALL 124 heroes! You will see bots playing Invoker, Techies, Meepo, Lone Druid, Dark Willow, Hoodwink, io, Muerta, Primal Beast, etc. Just note that some of the newly added ones are not very strong and in progress to be further enhanced.
 1. All supported heroes in this script can play any position roles. Heroes will go to any lane they are assigned. The laning or pos of the bot heroes will seem random in the game, but it's deterministic - check the Bot roles section below.
 1. Dynamic difficulty. If you ever feel all existing bot scripts lack excitement. This script boosts bots with huge unfair advantages to make bot games a lot more challenging. You will need to copy the script into your local vscripts folder and then enable the Fretbots mode for this feature. See instructions below.
 1. Support multiple modes: All Pick, Turbo, Captain Mode, Random Draft, Single Draft, All Random, Mid Only, Least Played, and 1V1 mid. 
@@ -42,7 +42,6 @@ There is currently a bug where subscribing to recent bot scripts will NOT work w
 1.  You can type: `/all !pick XXX` to pick hero for enemy. For example: `/all !pick puck` to pick puck as enemy.
    1. For complex hero names or names that may apply to multiple heroes, please use the full internal code name. For example: `!pick npc_dota_hero_keeper_of_the_light` .
    1. You can find a list of hero names here: https://developer.valvesoftware.com/wiki/Dota_2_Workshop_Tools/Scripting/Heroes_internal_names
-   1. Do not manually pick bots from any of the Not-Yet-Supported-Heroes: Elder Titan, and Marci. Note that they are buggy due to problems on the Valves side, not script developers. Another note, Dark Willow, Hoodwink, io, Lone Druid, Muerta, Primal Beast are heroes that with critial overrides due to Valve side issues so they may perform weaker than other bots.
 1. You can type: `!pos X` to swap the position with a bot. For example: `!pos 2` to swap role and lane with the bot that's going to mid.
 1. Pos1 and Pos5 bots go to safe lane. Pos3 and Pos4 bots go offlane. Pos2 bot goes to mid lane.
 
@@ -53,6 +52,7 @@ There is currently a bug where subscribing to recent bot scripts will NOT work w
 4. Better spell casting for certain heroes like Invoker, Rubick, etc.
 5. More code bug fixes.
 6. Better laning logic to avoid bots feeding too much in the early game.
+7. Figure out how to better support the Bugged-Heroes: Dark Willow, Elder Titan, Hoodwink, io, Lone Druid, Marci, Muerta, Primal Beast. Note that they are buggy due to problems on the Valves side, not script developers.
 
 ### Supporting me
 If you'd like to buy me a coffee: https://www.buymeacoffee.com/forest.dota
