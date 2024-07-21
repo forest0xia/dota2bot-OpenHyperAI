@@ -401,13 +401,13 @@ function AwardBonus:GetSpecificPerMinuteBonus(bot, pmBot, roleTable, settings)
 	local debugTable = {}
 	-- Ensure there is a target amount for this bot
 	if roleTable[bot.stats.role] == nil then
-		Debug:Print(bot.stats.name..', with role'..bot.stats.role..', does not have a corresponding human player for the same role')
+		Debug:Print(bot.stats.name..', with role '..bot.stats.role..', does not have a corresponding human player for the same role')
 		-- Pick one player
-		local idx = 1
-		repeat
-			roleTable[bot.stats.role] = roleTable[idx]
-			idx = idx + 1
-		until(roleTable[bot.stats.role] ~= nil or idx >= 5)
+		-- local idx = 1
+		-- repeat
+		-- 	roleTable[bot.stats.role] = roleTable[idx]
+		-- 	idx = idx + 1
+		-- until(roleTable[bot.stats.role] ~= nil or idx >= 5)
 		-- return 0, 'No human counterpart for '..bot.stats.name..'.'
 	end
 	-- counterparts PM
@@ -419,7 +419,7 @@ function AwardBonus:GetSpecificPerMinuteBonus(bot, pmBot, roleTable, settings)
 			defaultScale = 300
 		end
 		pmPlayer = Settings.difficultyScale * defaultScale
-		Debug:Print(bot.stats.name..', with role'..bot.stats.role..' now use default per mins amount: '..pmPlayer..' based on difficulty scale: '..Settings.difficultyScale )
+		Debug:Print(bot.stats.name..', with role '..bot.stats.role..' now use default per mins amount: '..pmPlayer..' based on difficulty scale: '..Settings.difficultyScale )
 	end
 	-- add offset to get the target
 	local pmTarget = pmPlayer + settings.offset
