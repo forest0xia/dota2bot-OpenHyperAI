@@ -62,7 +62,7 @@ function HeroLoneDruid:BearSpawnTimer()
 	local isFound = false
 	local bear = HeroLoneDruid:FindBear()
 	-- bear found, do stuff and then stop this timer
-	if bear ~= nil then
+	if bear ~= nil and bear:IsAlive() then
 		Debug:Print('HeroLoneDruid: Bear Found. Starting LoneDruid item event watcher.')
 		-- cache bear entity for convenience
 		HeroLoneDruid.Bear = bear

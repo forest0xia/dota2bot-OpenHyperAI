@@ -281,16 +281,20 @@ end
 -- Sets all bots to find tier 1 items.
 function NeutralItems:InitializeFindTimings()
 	for team = 2, 3 do
-	for _, bot in ipairs(AllBots[team]) do
-		local variance = Utilities:GetIntegerVariance(Settings.neutralItems.variance)
-		local difficultyShift = NeutralItems:GetTimingDifficultyScaleShift(1)
-			bot.stats.neutralsFound = 0
-			bot.stats.neutralTiming = Settings.neutralItems.timings[1] + variance + difficultyShift
-		if bot.stats.neutralTiming < 0 then bot.stats.neutralTiming = 0 end
-		local msg = bot.stats.name..': Initialized Neutral Timing for Tier 1: '..bot.stats.neutralTiming..' (shift: '..difficultyShift..', var: '..variance..')'
-		Debug:Print(msg)
+		for _, bot in ipairs(AllBots[team]) do
+			if type(bot) == "table" then
+				local variance = Utilities:GetIntegerVariance(Settings.neutralItems.variance)
+				local difficultyShift = NeutralItems:GetTimingDifficultyScaleShift(1)
+					bot.stats.neutralsFound = 0
+					bot.stats.neutralTiming = Settings.neutralItems.timings[1] + variance + difficultyShift
+				if bot.stats.neutralTiming < 0 then bot.stats.neutralTiming = 0 end
+				local msg = bot.stats.name..': Initialized Neutral Timing for Tier 1: '..bot.stats.neutralTiming..' (shift: '..difficultyShift..', var: '..variance..')'
+				Debug:Print(msg)
+			else
+				print('[ERROR] failed to process bot: '..tostring(bot)..', team: '..team)
+			end
+		end
 	end
-end
 end
 
 -- sets a particular bot for a timing to find a specific tier

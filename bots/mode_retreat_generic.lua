@@ -9,19 +9,24 @@ local Utils = require( GetScriptDirectory()..'/FunLib/utils' )
 local J = require( GetScriptDirectory()..'/FunLib/jmz_func')
 
 local targetBot = J.GetProperTarget( bot )
+local nAllyHeroes, nEnemyHeroes, ourPower, enemyPower, uniqueMates, uniqueEnemies, nearbyEnemies, nearbyAllies, retreatDesire, possibleMaxDesire
+local maxDesireReduceRate = 1.5 -- can make max smaller so any peak from one of the factor can have more impact. dont get too small to cause bots being passive.
 
 function GetDesire()
+	if not bot:IsAlive() then return BOT_ACTION_DESIRE_NONE end
 
 	-- 有特殊增益状态不要跑
-	if not bot:IsAlive()
-	or J.IsHaveAegis( bot )
-	or bot:HasModifier('modifier_skeleton_king_reincarnation_scepter_active')
-	or bot:HasModifier('modifier_item_satanic_unholy')
-	or bot:HasModifier('modifier_abaddon_borrowed_time')
-	or J.GetModifierTime(bot, "modifier_muerta_pierce_the_veil") > 0.5
-	or J.GetModifierTime(bot, 'modifier_dazzle_shallow_grave') > 0.5
-	or J.GetModifierTime(bot, 'modifier_oracle_false_promise_timer') > 0.5
-	or ( bot:GetCurrentMovementSpeed() < 240 and not bot:HasModifier("modifier_arc_warden_spark_wraith_purge") )
+	if J.GetHP(bot) > 0.1
+	and (
+		J.IsHaveAegis( bot )
+		or bot:HasModifier('modifier_skeleton_king_reincarnation_scepter_active')
+		or bot:HasModifier('modifier_item_satanic_unholy')
+		or bot:HasModifier('modifier_abaddon_borrowed_time')
+		or J.GetModifierTime(bot, "modifier_muerta_pierce_the_veil") > 0.5
+		or J.GetModifierTime(bot, 'modifier_dazzle_shallow_grave') > 0.5
+		or J.GetModifierTime(bot, 'modifier_oracle_false_promise_timer') > 0.5
+	)
+	or (bot:GetCurrentMovementSpeed() < 240 and not bot:HasModifier("modifier_arc_warden_spark_wraith_purge"))
 	then
 		return BOT_ACTION_DESIRE_NONE
 	end
@@ -39,20 +44,21 @@ function GetDesire()
     --     return BOT_ACTION_DESIRE_HIGH
     -- end
 
-    local mates = J.GetNearbyHeroes(bot, 1400, false, BOT_MODE_NONE)
-    local enemies = J.GetNearbyHeroes(bot, 1400, true, BOT_MODE_NONE)
+    nAllyHeroes = J.GetNearbyHeroes(bot, 1600, false, BOT_MODE_NONE)
+    nEnemyHeroes = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE)
+	targetBot = J.GetProperTarget( bot )
+	
+    ourPower = 0
+    enemyPower = 0
+	uniqueMates = { }
+	uniqueEnemies = { }
+	nearbyEnemies = CountNearByUnits(true)
+	nearbyAllies = CountNearByUnits(false)
+	retreatDesire = 0
+	possibleMaxDesire = 0
 
-    local ourPower = 0;
-    local enemyPower = 0;
-	local uniqueMates = { }
-	local uniqueEnemies = { }
-	local nearbyEnemies = CountNearByUnits(true)
-	local nearbyAllies = CountNearByUnits(false)
-	local retreatDesire = 0
-	local possibleMaxDesire = 0
-
-	if #mates > 0 then
-		for _, hero in pairs(mates) do
+	if #nAllyHeroes > 0 then
+		for _, hero in pairs(nAllyHeroes) do
 			if not hero:IsIllusion()
 			and not J.IsMeepoClone(hero)
 			and not hero:HasModifier("modifier_arc_warden_tempest_double") then
@@ -61,8 +67,8 @@ function GetDesire()
 			end
 		end
 	end
-	if #enemies > 0 then
-		for _, hero in pairs(enemies) do
+	if #nEnemyHeroes > 0 then
+		for _, hero in pairs(nEnemyHeroes) do
 			if not J.IsSuspiciousIllusion(hero)
 			and not J.IsMeepoClone(hero)
 			and not hero:HasModifier("modifier_arc_warden_tempest_double") then
@@ -85,7 +91,7 @@ function GetDesire()
 		end
 
 		-- 别被近战近身
-		for _, enemy in pairs(enemies) do
+		for _, enemy in pairs(nEnemyHeroes) do
 			if enemy ~= nil
 			and enemy:GetAttackRange() < 400
 			and bot:GetAttackRange() > 400
@@ -144,7 +150,7 @@ function GetDesire()
 	end
 
 	-- 别轻易上高送
-	if J.GetNumOfAliveHeroes(true) >= #mates - 1 and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 6000 then
+	if J.GetNumOfAliveHeroes(true) >= #nAllyHeroes - 1 and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 6000 then
 		return BOT_ACTION_DESIRE_VERYHIGH
 	end
 
@@ -165,7 +171,6 @@ function GetDesire()
 	if J.GetHP(bot) < 0.15
 	and (targetBot == nil or J.GetHP(targetBot) > J.GetHP(bot) or Utils.RecentlyTookDamage(bot, 3))
 	then
-		bot:Action_ClearActions(false)
 		return BOT_ACTION_DESIRE_VERYHIGH
 	end
 
@@ -174,14 +179,15 @@ function GetDesire()
 	retreatDesire = retreatDesire + RemapValClamped(enemyPower / ourPower, 0, 3, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_VERYHIGH )
 	retreatDesire = retreatDesire + RemapValClamped(nearbyEnemies - nearbyAllies, 0, 5, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_VERYHIGH )
 	retreatDesire = retreatDesire + RemapValClamped(#uniqueEnemies - #uniqueMates, 0, 2, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_VERYHIGH )
-	retreatDesire = retreatDesire + RemapValClamped(J.GetHP(bot), 1, 0.2, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_VERYHIGH * 2 )
-	possibleMaxDesire = BOT_ACTION_DESIRE_VERYHIGH * 4 / 3 -- make it tighter, any peak from one of the factor can have more impact. dont get too tight to cause passive.
+	retreatDesire = retreatDesire + RemapValClamped(J.GetHP(bot), 1, 0.1, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_VERYHIGH * 1.3 )
+	possibleMaxDesire = BOT_ACTION_DESIRE_VERYHIGH * 4
 
-	if J.IsValidTarget(enemies[1]) and J.GetHP(bot) < J.GetHP(enemies[1]) then
-		retreatDesire = retreatDesire + RemapValClamped(GetUnitToUnitDistance(enemies[1], bot) - bot:GetAttackRange(), 0, -bot:GetAttackRange(), BOT_ACTION_DESIRE_VERYLOW, BOT_ACTION_DESIRE_VERYHIGH * 2 )
+	if J.IsValidTarget(nEnemyHeroes[1]) and J.GetHP(bot) < J.GetHP(nEnemyHeroes[1]) then
+		retreatDesire = retreatDesire + RemapValClamped(GetUnitToUnitDistance(nEnemyHeroes[1], bot) - bot:GetAttackRange(), 0, -bot:GetAttackRange(), BOT_ACTION_DESIRE_VERYLOW, BOT_ACTION_DESIRE_VERYHIGH * 2 )
 		possibleMaxDesire = possibleMaxDesire + BOT_ACTION_DESIRE_VERYHIGH
 	end
-	
+	possibleMaxDesire = possibleMaxDesire / maxDesireReduceRate
+
 	local clampedDesire = RemapValClamped(retreatDesire, 0, possibleMaxDesire, 0, 1)
 
 	-- print('Retreat mode, bot: '..botName..', clamped desire: ' .. tostring(clampedDesire))
@@ -214,7 +220,7 @@ function CountNearByUnits(bEnemy)
 			if string.find(unit:GetUnitName(), 'spiderling') then nearbyEnemies = nearbyEnemies + 0.1 end
 			if string.find(unit:GetUnitName(), 'eidolon') then nearbyEnemies = nearbyEnemies + 0.3 end
 			if string.find(unit:GetUnitName(), 'lone_druid_bear') then nearbyEnemies = nearbyEnemies + 1 end
-			if string.find(unit:GetUnitName(), 'tower') then nearbyEnemies = nearbyEnemies + 1.6 end
+			if string.find(unit:GetUnitName(), 'tower') then nearbyEnemies = nearbyEnemies + 2 end
 			if string.find(unit:GetUnitName(), 'warlock_golem') then
 				local delta = 1.5
 				if DotaTime() < 10 * 60 then delta = 3

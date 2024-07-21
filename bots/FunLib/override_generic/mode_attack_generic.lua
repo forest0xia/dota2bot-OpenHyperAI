@@ -7,6 +7,7 @@ local bot = GetBot()
 local botName = bot:GetUnitName()
 local botTarget, nEnemyHeroes, nAllyHeroes, nEnemyTowers, nEnemyCreeps, nAllyCreeps
 local MaxTrackingDistance = 3000
+local attackDeltaDistance = 600
 
 function X.OnStart() end
 function X.OnEnd() end
@@ -33,14 +34,11 @@ function X.GetDesire()
 	-- sync with nearby ally's target if any
 	if nAllyHeroes ~= nil and #nAllyHeroes >= 2 then
 		local ally = nAllyHeroes[2]
-		if J.IsInRange(ally, bot, 1600) and J.IsGoingOnSomeone(ally) then
+		if J.IsValidHero(ally) and J.IsInRange(ally, bot, 1600) and J.IsGoingOnSomeone(ally) then
 			bot:SetTarget(J.GetProperTarget(ally))
 			return ally:GetActiveModeDesire()
 		end
 	end
-	-- if nEnemyHeroes == nil or #nEnemyHeroes == 0 then
-	-- 	nEnemyHeroes = J.GetNearbyHeroes(bot, 1400, true)
-	-- end
 
 	if J.GetModifierTime(bot, "modifier_muerta_pierce_the_veil") > 0.5
 	then
@@ -56,10 +54,10 @@ function X.GetDesire()
 		end
 	end
 
-	-- has an enemy hero nearby in attack range
+	-- has an enemy hero nearby in attack range + some delta distance
 	if #nEnemyHeroes >= 1
 	and J.IsValidHero(nEnemyHeroes[1])
-	and J.IsInRange(nEnemyHeroes[1], bot, bot:GetAttackRange())
+	and J.IsInRange(nEnemyHeroes[1], bot, bot:GetAttackRange() + attackDeltaDistance)
 	and J.CanBeAttacked(nEnemyHeroes[1]) then
 		bot:SetTarget(nEnemyHeroes[1])
 		return RemapValClamped(J.GetHP(bot), 0, 1, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_VERYHIGH )
@@ -79,11 +77,6 @@ function X.GetDesire()
 end
 
 function X.Think()
-	-- if nEnemyTowers ~= nil and #nEnemyTowers >= 1 then
-	-- 	bot:Action_ClearActions(false)
-	-- 	bot:ActionPush_MoveToLocation(J.GetTeamFountain())
-	-- end
-
 	-- has a target already
 	botTarget = J.GetProperTarget(bot)
 	if botTarget ~= nil and botTarget:IsAlive() and J.IsInRange(botTarget, bot, MaxTrackingDistance) then
@@ -97,10 +90,8 @@ function X.Think()
 		end
 	end
 
-
     nEnemyHeroes = J.GetNearbyHeroes(bot, 1600, true)
     nAllyHeroes = J.GetNearbyHeroes(bot, 1600, false)
-	nEnemyTowers = bot:GetNearbyTowers(800, true)
 
 	ChooseAndAttackEnemyHero(nEnemyHeroes)
 	if bot:GetTarget() == nil then
@@ -119,7 +110,7 @@ function X.Think()
 end
 
 function ChooseAndAttackEnemyHero(hEnemyList)
-	local nInAttackRangeWeakestEnemyHero = J.GetAttackableWeakestUnit( bot, bot:GetAttackRange(), true, true )
+	local nInAttackRangeWeakestEnemyHero = J.GetAttackableWeakestUnit( bot, bot:GetAttackRange() + attackDeltaDistance, true, true )
 	if nInAttackRangeWeakestEnemyHero ~= nil then
 		bot:SetTarget(nInAttackRangeWeakestEnemyHero)
 		bot:Action_AttackUnit(nInAttackRangeWeakestEnemyHero, true)

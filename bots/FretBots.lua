@@ -1,3 +1,7 @@
+-- Version information
+require 'bots.FretBots.Version'
+-- Print version to console
+print('Starting Fretbot. Version: ' .. version)
 -- Dependencies
 -- global debug flag
 require 'bots.FretBots.Debug'
@@ -9,8 +13,6 @@ require 'bots.FretBots.DataTables'
 require 'bots.FretBots.OnEntityKilled'
 -- Entity hurt monitors damage and updates stat tables accordingly
 require 'bots.FretBots.OnEntityHurt'
--- Version information
-require 'bots.FretBots.Version'
 -- Timers for periodic bonuses
 require 'bots.FretBots.BonusTimers'
 -- Utilities
@@ -55,6 +57,7 @@ local BotRoleDeterminationTime = 60
 -- timer method to monitor for all players being loaded, which will in turn
 -- initialize the data tables
 function FretBots:Initialize()
+	Debug:Print('Initializing FretBots')
 	-- Randomize!
 	FretBots:SetRandomSeed()
 	-- Register the listener that will check for all players spawning and then init datatables
@@ -65,6 +68,7 @@ end
 
 -- Runs until all players are loaded in and then initializes the DataTables
 function FretBots:PlayersLoadedTimer()
+	Debug:Print('Initializing PlayersLoadedTimer')
 	-- if all players are loaded, initialize datatables and stop timer
 	if isAllPlayersSpawned then
 		-- I'm Bad made DataTables:Initialize() depend on difficultyScale existing,
@@ -127,8 +131,6 @@ end
 
 -- Start things up (only once)
 if not Flags.isFretBotsInitialized then
-	-- Print version to console
-	print('Version: ' .. version)
 	-- Welcome Message
 	Utilities:Print('FretBots enabled! Version: ' .. version, MSG_GOOD, MATCH_READY)
 	-- Register the listener that will run Initialize() once the game starts

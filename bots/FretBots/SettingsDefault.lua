@@ -82,7 +82,7 @@
 		gpm =
 		{
 			-- offset is a flat offset for the target award relative to the player with the same role
-			offset 				= 0,
+			offset 				= 100,
 			-- award multiplied by a random number between these values
 			variance 			= {1, 1},
 			-- awards are clamped to these numbers. Note that if you make the minimum non-zero, then the
@@ -98,7 +98,7 @@
 		-- see gpm, same idea
 		xpm =
 		{
-			offset 				= 0,
+			offset 				= 100,
 			variance 			= {1, 1},
 			clamp 				= {0, 25},
 			clampOverride 		= false,

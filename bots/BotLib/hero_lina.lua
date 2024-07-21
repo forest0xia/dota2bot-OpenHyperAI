@@ -96,7 +96,6 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_double_branches",
 	"item_faerie_fire",
 
-	"item_bottle",
 	"item_null_talisman",
 	"item_boots",
 	"item_magic_wand",

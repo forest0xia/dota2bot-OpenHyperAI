@@ -216,7 +216,7 @@ local sPos2List = {
 	"npc_dota_hero_invoker",
 	"npc_dota_hero_rubick",
 	"npc_dota_hero_rubick",
-	"npc_dota_hero_keeper_of_the_light",
+	-- "npc_dota_hero_keeper_of_the_light",
 	"npc_dota_hero_kunkka",
 	"npc_dota_hero_leshrac",
 	"npc_dota_hero_lina",
@@ -230,7 +230,7 @@ local sPos2List = {
 	"npc_dota_hero_ogre_magi",
 	"npc_dota_hero_omniknight",
 	"npc_dota_hero_pangolier",
-	-- "npc_dota_hero_primal_beast", -- still passive
+	"npc_dota_hero_primal_beast", -- still passive
 	"npc_dota_hero_puck",
 	"npc_dota_hero_pugna",
 	"npc_dota_hero_pudge",
@@ -244,14 +244,14 @@ local sPos2List = {
 	"npc_dota_hero_spirit_breaker",
 	"npc_dota_hero_storm_spirit",
 	"npc_dota_hero_templar_assassin",
-	-- "npc_dota_hero_tinker", -- TOO WEAK
+	"npc_dota_hero_tinker", -- TOO WEAK
 	"npc_dota_hero_tiny",
 	"npc_dota_hero_tusk",
 	"npc_dota_hero_viper",
 	"npc_dota_hero_visage",
 	"npc_dota_hero_void_spirit",
 	"npc_dota_hero_windrunner",
-	-- "npc_dota_hero_winter_wyvern", -- TOO WEAK
+	"npc_dota_hero_winter_wyvern", -- TOO WEAK
 	"npc_dota_hero_zuus",
 	"npc_dota_hero_lone_druid",
 }
@@ -318,7 +318,7 @@ local sPos4List = {
 	"npc_dota_hero_bounty_hunter",
 	"npc_dota_hero_chen",
 	"npc_dota_hero_crystal_maiden",
-	-- "npc_dota_hero_dark_willow", -- DOESN'T WORK
+	"npc_dota_hero_dark_willow", -- DOESN'T WORK
 	"npc_dota_hero_dawnbreaker",
 	"npc_dota_hero_dazzle",
 	"npc_dota_hero_disruptor",
@@ -330,7 +330,7 @@ local sPos4List = {
 	"npc_dota_hero_furion",
 	"npc_dota_hero_grimstroke",
 	"npc_dota_hero_gyrocopter",
-	-- "npc_dota_hero_hoodwink", -- Weak
+	"npc_dota_hero_hoodwink", -- Weak
 	"npc_dota_hero_jakiro",
 	"npc_dota_hero_keeper_of_the_light",
 	"npc_dota_hero_lich",
@@ -341,7 +341,7 @@ local sPos4List = {
 	"npc_dota_hero_ogre_magi",
 	"npc_dota_hero_omniknight",
 	"npc_dota_hero_oracle",
-	-- "npc_dota_hero_phoenix",  -- TOO WEAK
+	"npc_dota_hero_phoenix",  -- TOO WEAK
 	"npc_dota_hero_pudge",
 	"npc_dota_hero_pugna",
 	"npc_dota_hero_rattletrap",
@@ -362,10 +362,11 @@ local sPos4List = {
 	"npc_dota_hero_warlock",
 	"npc_dota_hero_weaver",
 	"npc_dota_hero_windrunner",
-	-- "npc_dota_hero_winter_wyvern", -- TOO WEAK
+	"npc_dota_hero_winter_wyvern", -- TOO WEAK
 	"npc_dota_hero_witch_doctor",
 	"npc_dota_hero_zuus",
 	"npc_dota_hero_invoker",
+	"npc_dota_hero_wisp",
 }
 
 local sPos5List = {
@@ -376,7 +377,7 @@ local sPos5List = {
 	"npc_dota_hero_bounty_hunter",
 	"npc_dota_hero_chen",
 	"npc_dota_hero_crystal_maiden",
-	-- "npc_dota_hero_dark_willow", -- DOESN'T WORK
+	"npc_dota_hero_dark_willow", -- DOESN'T WORK
 	"npc_dota_hero_dawnbreaker",
 	"npc_dota_hero_dazzle",
 	"npc_dota_hero_disruptor",
@@ -399,7 +400,7 @@ local sPos5List = {
 	"npc_dota_hero_ogre_magi",
 	"npc_dota_hero_omniknight",
 	"npc_dota_hero_oracle",
-	-- "npc_dota_hero_phoenix",  -- TOO WEAK
+	"npc_dota_hero_phoenix",  -- TOO WEAK
 	"npc_dota_hero_pudge",
 	"npc_dota_hero_pugna",
 	"npc_dota_hero_rattletrap",
@@ -424,6 +425,25 @@ local sPos5List = {
 	"npc_dota_hero_witch_doctor",
 	"npc_dota_hero_zuus",
 }
+
+-- A list of to be improved heroes. They maybe selected for bots, but shouldn't have more than one in a team to ensure the bar of gaming experience for human players.
+local WeakHeroes = {
+	'npc_dota_hero_chen',
+	'npc_dota_hero_keeper_of_the_light',
+	'npc_dota_hero_winter_wyvern',
+	'npc_dota_hero_ancient_apparition',
+	'npc_dota_hero_phoenix',
+	'npc_dota_hero_elder_titan',
+	'npc_dota_hero_hoodwink',
+	'npc_dota_hero_dark_willow',
+	'npc_dota_hero_primal_beast',
+	'npc_dota_hero_wisp',
+	'npc_dota_hero_muerta',
+	'npc_dota_hero_marci',
+	'npc_dota_hero_lone_druid',
+	'npc_dota_hero_tinker',
+}
+local SelectedWeakHero = 0
 
 -- Combine hero list
 SupportedHeroes = Utils.CombineTablesUnique(SupportedHeroes, sPos1List)
@@ -644,9 +664,9 @@ function X.OverrideTeamHeroes()
 	if GetTeam() == TEAM_RADIANT
 	then
 		return {
-			[1] = 'npc_dota_hero_muerta',
-			[2] = 'npc_dota_hero_invoker',
-			[3] = 'npc_dota_hero_hoodwink',
+			[1] = tSelectPoolList[1][RandomInt( 1, #tSelectPoolList[1] )],
+			[2] = tSelectPoolList[2][RandomInt( 1, #tSelectPoolList[2] )],
+			[3] = tSelectPoolList[3][RandomInt( 1, #tSelectPoolList[3] )],
 			[4] = tSelectPoolList[4][RandomInt( 1, #tSelectPoolList[4] )],
 			[5] = tSelectPoolList[5][RandomInt( 1, #tSelectPoolList[5] )],
 		}
@@ -695,8 +715,8 @@ function X.OverrideTeamHeroes()
 			-- [5] = "npc_dota_hero_silencer",
 
 
-			[1] = 'npc_dota_hero_muerta',
-			[2] = 'npc_dota_hero_invoker',
+			[1] = 'npc_dota_hero_marci',
+			[2] = tSelectPoolList[2][RandomInt( 1, #tSelectPoolList[2] )],
 			[3] = 'npc_dota_hero_hoodwink',
 		    [4] = tSelectPoolList[4][RandomInt( 1, #tSelectPoolList[4] )],
 			[5] = tSelectPoolList[5][RandomInt( 1, #tSelectPoolList[5] )],
@@ -733,7 +753,7 @@ function X.OverrideTeamHeroes()
 end
 
 -- 这行代码为了人工挑选想要的阵容。如果想让电脑自己随机英雄，则注释掉这行
-sSelectList = X.OverrideTeamHeroes()
+-- sSelectList = X.OverrideTeamHeroes()
 
 function X.ShuffleArray(array)
 	if type(array) ~= "table" then
@@ -849,6 +869,7 @@ function X.IsRepeatHero( sHero )
 		if ( IsTeamPlayer( id ) and GetSelectedHeroName( id ) == sHero )
 			or ( IsCMBannedHero( sHero ) )
 			or ( X.IsBanByChat( sHero ) )
+			or (SelectedWeakHero >= 1 and Utils.HasValue(WeakHeroes, sHero))
 		then
 			return true
 		end
@@ -921,6 +942,7 @@ function AllPickHeros()
 				sSelectHero = sSelectList[i]
 			end
 			SelectHero( id, sSelectHero )
+			if Utils.HasValue(WeakHeroes, sSelectHero) then SelectedWeakHero = SelectedWeakHero + 1 end
 			-- print('Selected hero for idx='..i..', id='..id..', bot='..sSelectHero)
 			if Role["bLobbyGame"] == false then Role["bLobbyGame"] = true end
 			fLastSlectTime = GameTime()
@@ -976,6 +998,7 @@ local function handleCommand(command, PlayerID, bTeamOnly)
 				do
 					if IsPlayerBot(id) and IsPlayerInHeroSelectionControl(id) and GetSelectedHeroName(id) == "" then
 						SelectHero(id, hero);
+						if Utils.HasValue(WeakHeroes, hero) then SelectedWeakHero = SelectedWeakHero + 1 end
 						break;
 					end
 				end
@@ -984,6 +1007,7 @@ local function handleCommand(command, PlayerID, bTeamOnly)
 				do
 					if IsPlayerBot(id) and IsPlayerInHeroSelectionControl(id) and GetSelectedHeroName(id) == "" then
 						SelectHero(id, hero);
+						if Utils.HasValue(WeakHeroes, hero) then SelectedWeakHero = SelectedWeakHero + 1 end
 						break;
 					end
 				end
@@ -1175,6 +1199,7 @@ function OneVsOneLogic()
 			if hero ~= nil then
 				SelectHero(i, hero);
 				oboselect = true;
+				if Utils.HasValue(WeakHeroes, hero) then SelectedWeakHero = SelectedWeakHero + 1 end
 			end
 			return
 		elseif oboselect and IsPlayerBot(i) and IsPlayerInHeroSelectionControl(i) and GetSelectedHeroName(i) == ""

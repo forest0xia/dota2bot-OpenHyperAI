@@ -26,6 +26,21 @@ local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 local sRoleItemsBuyList = {}
 
 sRoleItemsBuyList['pos_4'] = {
+	"item_priest_outfit",
+	"item_urn_of_shadows",
+	"item_mekansm",
+	"item_glimmer_cape",
+	"item_guardian_greaves",
+	"item_spirit_vessel",
+--	"item_wraith_pact",
+	"item_veil_of_discord",
+	"item_shivas_guard",
+	"item_sheepstick",
+	"item_moon_shard",
+	"item_ultimate_scepter_2",
+}
+
+sRoleItemsBuyList['pos_5'] = {
 	"item_blood_grenade",
 
 	'item_mage_outfit',
@@ -38,21 +53,6 @@ sRoleItemsBuyList['pos_4'] = {
 	'item_cyclone',
 	'item_sheepstick',
 	"item_wind_waker",
-	"item_moon_shard",
-	"item_ultimate_scepter_2",
-}
-
-sRoleItemsBuyList['pos_5'] = {
-	"item_priest_outfit",
-	"item_urn_of_shadows",
-	"item_mekansm",
-	"item_glimmer_cape",
-	"item_guardian_greaves",
-	"item_spirit_vessel",
---	"item_wraith_pact",
-	"item_veil_of_discord",
-	"item_shivas_guard",
-	"item_sheepstick",
 	"item_moon_shard",
 	"item_ultimate_scepter_2",
 }

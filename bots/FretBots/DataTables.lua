@@ -671,34 +671,37 @@ end
 
 -- Sorts the bots table by role
 function DataTables:SortBotsByRole()
-	local sortedData = {}
-	for i = 1,#AllBots[RADIANT] do
-		table.insert(sortedData,i)
+	local sortedData = { }
+	--local maxBotsInATeam = 12 + 1 -- 12 for 12 v 12, 1 for Lone Druid bear.
+
+	for i = 1, #AllBots[RADIANT] do
+		table.insert(sortedData, i)
 	end
-	for _,bot in pairs(AllBots[RADIANT]) do
+	for _, bot in pairs(AllBots[RADIANT]) do
 		if type(bot) == 'table' then
-		sortedData[bot.stats.role] = bot
+			sortedData[bot.stats.role] = bot
 		end
 	end
+	
 	-- ensure all slots are bots
-	for i=5,1,-1 do
+	for i = #AllBots[RADIANT], 1, -1 do
 			if type(sortedData[i]) ~= 'table' then
 			table.remove(sortedData, i)
 		end
 	end
 	AllBots[RADIANT] = sortedData
 
-	sortedData = {}
-	for i = 1,#AllBots[DIRE] do
+	sortedData = { }
+	for i = 1, #AllBots[DIRE] do
 		table.insert(sortedData,i)
 	end
-	for _,bot in pairs(AllBots[DIRE]) do
+	for _, bot in pairs(AllBots[DIRE]) do
 		if type(bot) == 'table' then
 		sortedData[bot.stats.role] = bot
 		end
 	end
 	-- ensure all slots are bots
-	for i=5,1,-1 do
+	for i = #AllBots[DIRE], 1, -1 do
 			if type(sortedData[i]) ~= 'table' then
 			table.remove(sortedData, i)
 		end

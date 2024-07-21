@@ -61,8 +61,8 @@ sRoleItemsBuyList['pos_1_w_bear'] = {
     "item_mjollnir",--
     "item_ultimate_scepter",
     "item_basher",
-    "item_black_king_bar",--
     "item_abyssal_blade",--
+    "item_black_king_bar",--
     "item_assault",--
     "item_monkey_king_bar",--
 	"item_moon_shard",
@@ -101,7 +101,7 @@ X['sSellList'] = {
 }
 
 if Utils['LoneDruid'].roleType == nil then
-    if RandomInt( 1, 9 ) >= 3 then
+    if RandomInt( 1, 9 ) >= 2 then
         Utils['LoneDruid'].roleType = 'pos_1'
     else
         Utils['LoneDruid'].roleType = 'pos_1_w_bear'

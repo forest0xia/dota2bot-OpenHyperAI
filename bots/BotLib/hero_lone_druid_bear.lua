@@ -6,7 +6,7 @@ local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
 local Minion = dofile( GetScriptDirectory()..'/FunLib/aba_minion' )
 
 if Utils['LoneDruid'].bear == nil or not Utils['LoneDruid'].bear:IsAlive() then Utils['LoneDruid'].bear = bear end
-bear.assignedRole = math.min(1, Utils['LoneDruid'].hero.assignedRole - 1)
+bear.assignedRole = Utils['LoneDruid'].hero.assignedRole -- math.min(1, Utils['LoneDruid'].hero.assignedRole - 1)
 bear.isBear = true
 
 local sTalentList = J.Skill.GetTalentList( bear )
@@ -88,7 +88,7 @@ function X.SkillsComplement()
 
     if Utils['LoneDruid'].hero:IsAlive() and not (J.GetHP(bear) < 0.3 or J.IsRetreating(bear))
     and not (bear:IsChanneling() or bear:IsUsingAbility() or hasUltimateScepter) then
-        if distanceFromHero > 900 then
+        if distanceFromHero > 1000 then
             bear:Action_ClearActions(false)
             bear:Action_MoveToLocation(Utils['LoneDruid'].hero:GetLocation())
         -- elseif distanceFromHero < 1000 and distanceFromHero > 400 and not (J.IsAttacking(bear) or J.IsGoingOnSomeone(bear)) then
@@ -96,8 +96,8 @@ function X.SkillsComplement()
         end
     end
 
-    hEnemyList = J.GetNearbyHeroes(bear, 1600, true, BOT_MODE_NONE)
-    hAllyList = J.GetNearbyHeroes(bear, 1600, false, BOT_MODE_NONE)
+    -- hEnemyList = J.GetNearbyHeroes(bear, 1600, true, BOT_MODE_NONE)
+    -- hAllyList = J.GetNearbyHeroes(bear, 1600, false, BOT_MODE_NONE)
 
     castQDesire = X.ConsiderQ()
     if castQDesire > 0 then
@@ -115,11 +115,22 @@ end
 
 function X.ConsiderQ()
     if not abilityQ:IsFullyCastable() then return 0 end
+    if not Utils['LoneDruid'].hero:IsAlive() then return 0 end
 
-    if Utils['LoneDruid'].hero:IsAlive()
-    and distanceFromHero > 3000
+    -- too far from hero
+    if distanceFromHero > 3000
     and not J.Item.HasItem( bear, 'item_ultimate_scepter' ) then
         return BOT_ACTION_DESIRE_HIGH
+    end
+
+    -- hero is being attacked
+    if Utils['LoneDruid'].hero:WasRecentlyDamagedByAnyHero(2)
+    and J.GetHP(Utils['LoneDruid'].hero) < 0.9
+    and distanceFromHero > 3000 then
+        local nInRangeEnemy = J.GetNearbyHeroes(Utils['LoneDruid'].hero, 1000, true, BOT_MODE_NONE)
+        if #nInRangeEnemy >= 1 then
+            return BOT_ACTION_DESIRE_HIGH
+        end
     end
 
     return BOT_ACTION_DESIRE_NONE
@@ -137,16 +148,7 @@ function X.ConsiderSavageRoar()
         and not J.IsSuspiciousIllusion(botTarget)
         and not botTarget:HasModifier('modifier_necrolyte_reapers_scythe')
 		then
-            local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1200, true, BOT_MODE_NONE)
-            local nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1200, false, BOT_MODE_NONE)
-
-            if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
-            and #nInRangeAlly >= #nInRangeEnemy
-            and #nInRangeAlly >= 1
-            and not (#nInRangeAlly >= #nInRangeEnemy + 2)
-            then
-                return BOT_ACTION_DESIRE_HIGH
-            end
+            return BOT_ACTION_DESIRE_HIGH
 		end
 	end
 
@@ -157,18 +159,11 @@ function X.ConsiderSavageRoar()
         do
             if  J.IsValidHero(enemyHero)
             and J.IsChasingTarget(enemyHero, bear)
+            and J.IsInRange(bear, enemyHero, nRadius)
             and not J.IsSuspiciousIllusion(enemyHero)
             and not J.IsDisabled(enemyHero)
             then
-                local nInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, true, BOT_MODE_NONE)
-                local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
-
-                if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
-                and ((#nTargetInRangeAlly > #nInRangeAlly)
-                    or bear:WasRecentlyDamagedByAnyHero(2))
-                then
-                    return BOT_ACTION_DESIRE_HIGH
-                end
+                return BOT_ACTION_DESIRE_HIGH
             end
         end
 	end

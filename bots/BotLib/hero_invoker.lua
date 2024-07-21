@@ -138,6 +138,7 @@ function X.MinionThink(hMinionUnit)
                 return
             end
         end
+
         -- 可带线push
         if unitTarget ~= nil and (#nEnemyTowers < 1 or J.GetHP(unitTarget) < 0.2) then
             if unitTarget ~= nil then
@@ -147,13 +148,17 @@ function X.MinionThink(hMinionUnit)
             -- 没固定目标，fallback
             Minion.MinionThink(hMinionUnit)
         end
+        
+        -- 如果不是冒死也要杀死目前的情况，不要送
+        if J.GetHP(hMinionUnit) < 0.2 then
+            hMinionUnit:Action_MoveToLocation(J.GetTeamFountain())
+            return
+        end
 
         -- 没合适目标进攻，回到卡尔身边
-        -- todo: 小心巫妖大
+        -- todo: 小心巫妖大，或者卡自己位
         if J.IsLaning(bot) or J.IsFarming(bot) then
-            if GetUnitToUnitDistance(hMinionUnit, bot) > 220 then
-                hMinionUnit:Action_MoveToLocation(bot:GetLocation())
-            else
+            if GetUnitToUnitDistance(hMinionUnit, bot) > 500 then
                 hMinionUnit:Action_MoveToLocation(bot:GetLocation() + RandomVector(220))
             end
         end

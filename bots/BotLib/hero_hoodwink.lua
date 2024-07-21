@@ -28,47 +28,39 @@ local nTalentBuildList = J.Skill.GetTalentBuild(tTalentTreeList)
 local sRoleItemsBuyList = {}
 
 sRoleItemsBuyList['pos_4'] = {
-    "item_tango",
-    "item_double_branches",
-    "item_blood_grenade",
-    "item_blight_stone",
-
-    "item_tranquil_boots",
-    "item_magic_wand",
-    "item_mage_slayer",--
+	"item_enchanted_mango",
+	"item_blood_grenade",
+	"item_priest_outfit",
+	"item_mekansm",
+	"item_glimmer_cape",--
     "item_maelstrom",
-    "item_force_staff",
+	"item_guardian_greaves",--
     "item_gungir",--
-    "item_boots_of_bearing",--
-    "item_ultimate_scepter",
-    "item_sheepstick",--
-    "item_aghanims_shard",
-    "item_greater_crit",--
-    "item_ultimate_scepter_2",
-    "item_hurricane_pike",--
-    "item_moon_shard",
+    "item_veil_of_discord",
+	"item_shivas_guard",--
+	"item_aghanims_shard",
+	"item_ultimate_scepter",
+	"item_ultimate_scepter_2",
+	"item_sheepstick",--
+	"item_moon_shard",
+	"item_octarine_core",--
 }
 
 sRoleItemsBuyList['pos_5'] = {
-    "item_tango",
-    "item_double_branches",
-    "item_blood_grenade",
-    "item_blight_stone",
+	"item_blood_grenade",
 
-    "item_arcane_boots",
-    "item_magic_wand",
-    "item_mage_slayer",--
-    "item_maelstrom",
-    "item_force_staff",
-    "item_gungir",--
-    "item_guardian_greaves",--
-    "item_ultimate_scepter",
-    "item_sheepstick",--
-    "item_aghanims_shard",
-    "item_greater_crit",--
-    "item_ultimate_scepter_2",
-    "item_hurricane_pike",--
-    "item_moon_shard",
+	'item_mage_outfit',
+	'item_ancient_janggo',
+	'item_glimmer_cape',
+	'item_boots_of_bearing',
+	'item_pipe',
+	'item_veil_of_discord',
+	"item_shivas_guard",
+	'item_cyclone',
+	'item_sheepstick',
+	"item_wind_waker",
+	"item_moon_shard",
+	"item_ultimate_scepter_2",
 }
 
 sRoleItemsBuyList['pos_3'] = {
@@ -85,16 +77,33 @@ sRoleItemsBuyList['pos_3'] = {
     "item_boots_of_bearing",--
     "item_ultimate_scepter",
     "item_sheepstick",--
-    "item_aghanims_shard",
-    "item_greater_crit",--
-    "item_ultimate_scepter_2",
     "item_hurricane_pike",--
+    "item_aghanims_shard",
+    "item_ultimate_scepter_2",
+    "item_greater_crit",--
     "item_moon_shard",
 }
 
-sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
+sRoleItemsBuyList['pos_1'] = {
+	"item_ranged_carry_outfit",
+	"item_dragon_lance",
+	"item_rod_of_atos",
+	"item_maelstrom",
+	"item_black_king_bar",
+	"item_gungir",
+	"item_travel_boots",
+	"item_orchid",
+	"item_bloodthorn",
+    "item_force_staff",
+	"item_hurricane_pike",
+	"item_ultimate_scepter",
+	"item_moon_shard",
+	"item_travel_boots_2",
+	"item_ultimate_scepter_2",
+	"item_butterfly",
+}
 
-sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_3']
+sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 

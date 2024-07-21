@@ -412,6 +412,15 @@ function AwardBonus:GetSpecificPerMinuteBonus(bot, pmBot, roleTable, settings)
 	end
 	-- counterparts PM
 	local pmPlayer = roleTable[bot.stats.role]
+	if pmPlayer == nil or #AllBots[bot.stats.team] < 5 then
+		-- in case no human player detected, just based on difficultyScale.
+		local defaultScale = 600 -- gpm or xpm
+		if #AllBots[bot.stats.team] < 5 then -- less for human side bots
+			defaultScale = 300
+		end
+		pmPlayer = Settings.difficultyScale * defaultScale
+		Debug:Print(bot.stats.name..', with role'..bot.stats.role..' now use default per mins amount: '..pmPlayer..' based on difficulty scale: '..Settings.difficultyScale )
+	end
 	-- add offset to get the target
 	local pmTarget = pmPlayer + settings.offset
 	-- Get individual multipliers
