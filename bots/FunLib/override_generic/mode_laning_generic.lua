@@ -15,6 +15,7 @@ function X.OnEnd() end
 function X.Think()
     if not bot:IsAlive() or J.CanNotUseAction(bot) then return end
 
+	local AttackRange = bot:GetAttackRange()
 	local LowHealthThreshold = 0.35
 	local RetreatThreshold = 0.15
 
@@ -54,8 +55,8 @@ function X.Think()
 
 	-- print('Bug laning think, '..botName..', assignedLane='..tostring(assignedLane)..', pos='..J.GetPosition(bot))
 
-	local vLaneFront = GetLaneFrontLocation(GetTeam(), assignedLane, -(bot:GetAttackRange() - 50))
-	local vEnemyLaneFront = GetLaneFrontLocation(GetOpposingTeam(), assignedLane, -(bot:GetAttackRange() - 50))
+	local vLaneFront = GetLaneFrontLocation(GetTeam(), assignedLane, -AttackRange - 100)
+	local vEnemyLaneFront = GetLaneFrontLocation(GetOpposingTeam(), assignedLane, -AttackRange - 100)
 	local nEnemyLaneAmount = 1 - GetLaneFrontAmount(GetOpposingTeam(), assignedLane, true)
 
 	if J.GetDistance(vLaneFront, vEnemyLaneFront) <= 100
@@ -66,9 +67,9 @@ function X.Think()
 
 	if J.GetHP(bot) > LowHealthThreshold
 	then
-		bot:Action_MoveToLocation(vLaneFront + RandomVector(200))
+		bot:Action_MoveToLocation(vLaneFront + RandomVector(300))
 	else
-		vLaneFront = GetLaneFrontLocation(GetTeam(), assignedLane, -RemapValClamped(J.GetHP(bot), 0, 1, 1200, bot:GetAttackRange()))
+		vLaneFront = GetLaneFrontLocation(GetTeam(), assignedLane, -RemapValClamped(J.GetHP(bot), 0, 1, 1200, AttackRange))
 		bot:Action_MoveToLocation(vLaneFront)
 	end
 end

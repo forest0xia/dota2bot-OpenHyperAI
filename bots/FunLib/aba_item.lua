@@ -1131,7 +1131,9 @@ function Item.GetBasicItems( sItemList )
 
 end
 
-
+-- function Item.ItemBasicItemsNotInHeroSlots(finalItem, bot)
+	
+-- end
 
 function Item.GetMainInvLessValItemSlot( bot )
 

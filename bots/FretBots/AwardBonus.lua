@@ -363,7 +363,7 @@ end
 -- this is either strictly multiplicative, or additive
 function AwardBonus:GetMultiplier(skill, scale, variance)
 	if Settings.isMultiplicative then
-		return skill * scale * variance * Settings.difficultyScale * 3
+		return skill * scale * variance * Settings.difficultyScale
 	else
 		return skill + scale + variance + Settings.difficultyScale - 3
 	end
@@ -414,12 +414,12 @@ function AwardBonus:GetSpecificPerMinuteBonus(bot, pmBot, roleTable, settings)
 	local pmPlayer = roleTable[bot.stats.role]
 	if pmPlayer == nil or #AllBots[bot.stats.team] < 5 then
 		-- in case no human player detected, just based on difficultyScale.
-		local defaultScale = 600 -- gpm or xpm
+		local defaultScale = 100 -- gpm or xpm
 		if #AllBots[bot.stats.team] < 5 then -- less for human side bots
-			defaultScale = 300
+			defaultScale = defaultScale / 1.5
 		end
-		pmPlayer = Settings.difficultyScale * defaultScale
-		Debug:Print(bot.stats.name..', with role '..bot.stats.role..' now use default per mins amount: '..pmPlayer..' based on difficulty scale: '..Settings.difficultyScale )
+		pmPlayer = Settings.difficulty * defaultScale
+		Debug:Print(bot.stats.name..', with role '..bot.stats.role..' now use default per mins amount: '..pmPlayer..' based on difficulty: '..Settings.difficulty )
 	end
 	-- add offset to get the target
 	local pmTarget = pmPlayer + settings.offset
@@ -428,7 +428,7 @@ function AwardBonus:GetSpecificPerMinuteBonus(bot, pmBot, roleTable, settings)
 	local scale = settings.scale[bot.stats.role]
 	local variance = Utilities:GetVariance(settings.variance)
 	-- Get total multiplier
-	local multiplier = AwardBonus:GetMultiplier(skill, scale, variance)
+	local multiplier = AwardBonus:GetMultiplier(skill, scale, variance) * 2
 	-- multiply
 	pmTarget = Utilities:Round(pmTarget * multiplier)
 	-- if the bot is already better than this, do not give award

@@ -55,16 +55,18 @@ sRoleItemsBuyList['pos_1_w_bear'] = {
     "item_phase_boots",
     "item_quelling_blade",
     "item_magic_wand",
-    "item_mask_of_madness",
-    "item_maelstrom",
+    "item_mask_of_madness",--1
+    -- "item_maelstrom",
     'item_boots',
-    "item_mjollnir",--
+    "item_mjollnir",--1
+    'item_boots',
+    -- "item_basher",
     "item_ultimate_scepter",
-    "item_basher",
-    "item_abyssal_blade",--
-    "item_black_king_bar",--
-    "item_assault",--
-    "item_monkey_king_bar",--
+    "item_abyssal_blade",--1
+    "item_black_king_bar",--1
+    "item_assault",--1
+    "item_black_king_bar",--2
+    "item_monkey_king_bar",--1
 	"item_moon_shard",
     "item_moon_shard",
     "item_ultimate_scepter_2",
@@ -72,14 +74,13 @@ sRoleItemsBuyList['pos_1_w_bear'] = {
 
 
     "item_travel_boots",
-    "item_skadi",--
-    "item_black_king_bar",--
-    "item_monkey_king_bar",--
-    "item_greater_crit",--
-    "item_satanic",--
+    "item_skadi",--2
+    "item_monkey_king_bar",--2
+    "item_greater_crit",--2
+    "item_satanic",--2
     "item_ultimate_scepter",
     "item_ultimate_scepter_2",
-    "item_travel_boots_2",--
+    "item_travel_boots_2",--2
 }
 
 sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']

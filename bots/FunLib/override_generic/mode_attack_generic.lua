@@ -5,7 +5,7 @@ local X = BotsInit.CreateGeneric()
 
 local bot = GetBot()
 local botName = bot:GetUnitName()
-local botTarget, nEnemyHeroes, nAllyHeroes, nEnemyTowers, nEnemyCreeps, nAllyCreeps
+local botTarget, nEnemyHeroes, nAllyHeroes, nEnemyTowers, nEnemyCreeps, nAllyCreeps, nAttackRange
 local MaxTrackingDistance = 3000
 local attackDeltaDistance = 600
 
@@ -30,13 +30,15 @@ function X.GetDesire()
     nEnemyHeroes = J.GetNearbyHeroes(bot, 1600, true)
     nAllyHeroes = J.GetNearbyHeroes(bot, 1600, false)
 	nEnemyCreeps = bot:GetNearbyCreeps(800, true)
-	
+	nEnemyTowers = bot:GetNearbyTowers(800, true )
+	nAttackRange = bot:GetAttackRange()
+
 	-- sync with nearby ally's target if any
 	if nAllyHeroes ~= nil and #nAllyHeroes >= 2 then
 		local ally = nAllyHeroes[2]
 		if J.IsValidHero(ally) and J.IsInRange(ally, bot, 1600) and J.IsGoingOnSomeone(ally) then
 			bot:SetTarget(J.GetProperTarget(ally))
-			return ally:GetActiveModeDesire()
+			return GetDesireBasedOnHp()
 		end
 	end
 
@@ -50,17 +52,17 @@ function X.GetDesire()
 	then
 		botTarget = J.GetProperTarget(bot)
 		if botTarget ~= nil and J.IsInRange(botTarget, bot, MaxTrackingDistance) then
-			return RemapValClamped(J.GetHP(bot), 0, 1, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_VERYHIGH )
+			return GetDesireBasedOnHp()
 		end
 	end
 
 	-- has an enemy hero nearby in attack range + some delta distance
 	if #nEnemyHeroes >= 1
 	and J.IsValidHero(nEnemyHeroes[1])
-	and J.IsInRange(nEnemyHeroes[1], bot, bot:GetAttackRange() + attackDeltaDistance)
+	and J.IsInRange(nEnemyHeroes[1], bot, nAttackRange + attackDeltaDistance)
 	and J.CanBeAttacked(nEnemyHeroes[1]) then
 		bot:SetTarget(nEnemyHeroes[1])
-		return RemapValClamped(J.GetHP(bot), 0, 1, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_VERYHIGH )
+		return GetDesireBasedOnHp()
 	end
 
 	-- time to direct attack any hp creeps
@@ -70,10 +72,21 @@ function X.GetDesire()
 				return BOT_ACTION_DESIRE_NONE
 			end
 		end
-		return RemapValClamped(J.GetHP(bot), 0, 1, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_VERYHIGH )
+		return GetDesireBasedOnHp()
 	end
 
 	return BOT_ACTION_DESIRE_NONE
+end
+
+function GetDesireBasedOnHp()
+	if #nEnemyTowers >= 1 then
+		if bot:GetLevel() < 5 then
+			return BOT_ACTION_DESIRE_NONE
+		else
+			return RemapValClamped(J.GetHP(bot), 0, 1, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_HIGH )
+		end
+	end
+	return RemapValClamped(J.GetHP(bot), 0, 1, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_VERYHIGH )
 end
 
 function X.Think()
@@ -81,7 +94,7 @@ function X.Think()
 	botTarget = J.GetProperTarget(bot)
 	if botTarget ~= nil and botTarget:IsAlive() and J.IsInRange(botTarget, bot, MaxTrackingDistance) then
 		local distance = GetUnitToUnitDistance(bot, botTarget)
-		if distance <= bot:GetAttackRange() then
+		if distance <= nAttackRange + attackDeltaDistance then
 			bot:Action_AttackUnit(botTarget, true)
 			return
 		else
@@ -101,7 +114,7 @@ function X.Think()
 	if bot:GetTarget() == nil then
 		local units = GetUnitList(UNIT_LIST_ENEMIES)
 		for _, unit in pairs(units) do
-			if GetUnitToUnitDistance(bot, unit) <= 600 then
+			if GetUnitToUnitDistance(bot, unit) <= nAttackRange + attackDeltaDistance then
 				bot:Action_AttackUnit(botTarget, true)
 				return
 			end
@@ -110,7 +123,7 @@ function X.Think()
 end
 
 function ChooseAndAttackEnemyHero(hEnemyList)
-	local nInAttackRangeWeakestEnemyHero = J.GetAttackableWeakestUnit( bot, bot:GetAttackRange() + attackDeltaDistance, true, true )
+	local nInAttackRangeWeakestEnemyHero = J.GetAttackableWeakestUnit( bot, nAttackRange + attackDeltaDistance, true, true )
 	if nInAttackRangeWeakestEnemyHero ~= nil then
 		bot:SetTarget(nInAttackRangeWeakestEnemyHero)
 		bot:Action_AttackUnit(nInAttackRangeWeakestEnemyHero, true)
@@ -124,7 +137,7 @@ function ChooseAndAttackEnemyHero(hEnemyList)
 		and not J.IsSuspiciousIllusion(enemyHero)
         then
 			if J.IsValidHero(enemyHero)
-			and J.IsInRange(bot, enemyHero, bot:GetAttackRange())
+			and J.IsInRange(bot, enemyHero, nAttackRange + attackDeltaDistance)
 			then
 				bot:SetTarget(enemyHero)
 				bot:Action_AttackUnit(enemyHero, true)
@@ -135,8 +148,8 @@ function ChooseAndAttackEnemyHero(hEnemyList)
 end
 
 function LastHitCreeps()
-	nAllyCreeps = bot:GetNearbyCreeps(800, false)
-	nEnemyCreeps = bot:GetNearbyCreeps(800, true)
+	nAllyCreeps = bot:GetNearbyCreeps(nAttackRange + attackDeltaDistance, false)
+	nEnemyCreeps = bot:GetNearbyCreeps(nAttackRange + attackDeltaDistance, true)
 
 	local hitCreep = GetBestLastHitCreep(nEnemyCreeps)
 	if J.IsValid(hitCreep)

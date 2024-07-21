@@ -269,13 +269,7 @@ function X.ConsiderQ()
     then
         botTarget = target
         local loc = J.GetCorrectLoc(botTarget, (GetUnitToUnitDistance(bot, botTarget) / nOnslaughtSpeed) + nAssumeOnslaughtDelay)
-
-        if IsStoneInPath(loc, GetUnitToUnitDistance(bot, botTarget))
-        then
-            return BOT_ACTION_DESIRE_HIGH, loc, false
-        else
-            return BOT_ACTION_DESIRE_HIGH, loc, true
-        end
+        return BOT_ACTION_DESIRE_HIGH, loc
     end
 
     -- gank

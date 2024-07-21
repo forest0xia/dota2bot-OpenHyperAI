@@ -38,7 +38,7 @@ local votingTimeElapsed = -1
 -- The playerID of the host.  Used to whitelist chat commands.
 local hostID = -1
 -- default difficulty if no one votes
-noVoteDifficulty = 2
+noVoteDifficulty = 1
 -- Is repurcussion timer started?
 local isRepurcussionTimerStarted = false
 -- can players freely enter cheating commands?
@@ -491,11 +491,11 @@ end
 	end
 	roundedNetWorth = Utilities:Round(playerTeamNetWorth, -2)
 	roundedNetWorth = roundedNetWorth / 1000
-	msg = 'Player Team Net Worth: '..tostring(roundedNetWorth)..'k'
+	msg = 'Players Total Net Worth: '..tostring(roundedNetWorth)..'k'
 	Utilities:Print(msg, MSG_CONSOLE_GOOD)
 	roundedNetWorth = Utilities:Round(botTeamNetWorth, -2)
 	roundedNetWorth = roundedNetWorth / 1000
-	msg = 'Bot Team Net Worth: '..tostring(roundedNetWorth)..'k'
+	msg = 'Bots Total Net Worth: '..tostring(roundedNetWorth)..'k'
 	Utilities:Print(msg, MSG_CONSOLE_BAD)
 end
 

@@ -267,15 +267,13 @@ end
 -- two tiers behind.
 -- This method preserves the previous tier's variance and neutral
 -- award subtractions.
-function NeutralItems:CloseBotFindTier(tier)
-	for team = 2, 3 do
+function NeutralItems:CloseBotFindTier(tier, team)
 	for _, bot in ipairs(AllBots[team]) do
 		-- if this is the case, the bot is behind and needs to be updated to new tier.
 		if bot.stats.neutralsFound < tier then
 			NeutralItems:SetBotFindTier(bot, tier + 1)
 		end
 	end
-end
 end
 
 -- Sets all bots to find tier 1 items.

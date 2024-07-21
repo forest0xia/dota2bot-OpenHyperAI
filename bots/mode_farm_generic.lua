@@ -94,11 +94,10 @@ function GetDesire()
 	if #nAllyList >= 2 and nEnemyTowers ~= nil and #nEnemyTowers > 0 and GetUnitToLocationDistance(bot, nEnemyTowers[1]:GetLocation()) < 1300 then
 		return BOT_MODE_DESIRE_NONE;
 	end
-
 	-- 如果自己在上高，对面人活着，队友却不够，赶紧溜去farm
-	if J.GetNumOfAliveHeroes(true) > #nAllyList - 1
-	and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 6000 then
-		return BOT_MODE_DESIRE_VERYHIGH
+	if #nAllyList <= 3 and #nAllyList <= J.GetNumOfAliveHeroes(true) - 1
+	and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 5500 then
+		return BOT_ACTION_DESIRE_VERYHIGH
 	end
 
 	if not bInitDone

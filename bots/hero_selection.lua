@@ -166,7 +166,6 @@ local sPos1List = {
 	"npc_dota_hero_lina",
 	"npc_dota_hero_luna",
 	"npc_dota_hero_lycan",
-	-- "npc_dota_hero_marci", -- DOESN'T WORK
 	"npc_dota_hero_medusa",
 	"npc_dota_hero_meepo",
 	"npc_dota_hero_morphling",
@@ -230,7 +229,7 @@ local sPos2List = {
 	"npc_dota_hero_ogre_magi",
 	"npc_dota_hero_omniknight",
 	"npc_dota_hero_pangolier",
-	"npc_dota_hero_primal_beast", -- still passive
+	-- "npc_dota_hero_primal_beast", -- still passive
 	"npc_dota_hero_puck",
 	"npc_dota_hero_pugna",
 	"npc_dota_hero_pudge",
@@ -284,14 +283,14 @@ local sPos3List = {
 	"npc_dota_hero_legion_commander",
 	"npc_dota_hero_lycan",
 	"npc_dota_hero_magnataur",
-	-- "npc_dota_hero_marci", -- DOESN'T WORK
+	"npc_dota_hero_marci", -- still passive
 	"npc_dota_hero_mars",
 	"npc_dota_hero_necrolyte",
 	"npc_dota_hero_night_stalker",
 	"npc_dota_hero_ogre_magi",
 	"npc_dota_hero_omniknight",
 	"npc_dota_hero_pangolier",
-	-- "npc_dota_hero_primal_beast", -- DOESN'T WORK
+	"npc_dota_hero_primal_beast", -- still passive
 	"npc_dota_hero_pudge",
 	"npc_dota_hero_razor",
 	"npc_dota_hero_sand_king",
@@ -318,13 +317,13 @@ local sPos4List = {
 	"npc_dota_hero_bounty_hunter",
 	"npc_dota_hero_chen",
 	"npc_dota_hero_crystal_maiden",
-	"npc_dota_hero_dark_willow", -- DOESN'T WORK
+	"npc_dota_hero_dark_willow", -- still passive
 	"npc_dota_hero_dawnbreaker",
 	"npc_dota_hero_dazzle",
 	"npc_dota_hero_disruptor",
 	"npc_dota_hero_earthshaker",
 	'npc_dota_hero_earth_spirit',
-	-- "npc_dota_hero_elder_titan", -- DOESN'T WORK
+	"npc_dota_hero_elder_titan", -- still passive
 	"npc_dota_hero_enchantress",
 	"npc_dota_hero_enigma",
 	"npc_dota_hero_furion",
@@ -377,13 +376,13 @@ local sPos5List = {
 	"npc_dota_hero_bounty_hunter",
 	"npc_dota_hero_chen",
 	"npc_dota_hero_crystal_maiden",
-	"npc_dota_hero_dark_willow", -- DOESN'T WORK
+	"npc_dota_hero_dark_willow", -- still passive
 	"npc_dota_hero_dawnbreaker",
 	"npc_dota_hero_dazzle",
 	"npc_dota_hero_disruptor",
 	"npc_dota_hero_earthshaker",
 	"npc_dota_hero_earth_spirit",
-	-- "npc_dota_hero_elder_titan", -- DOESN'T WORK
+	-- "npc_dota_hero_elder_titan", -- still passive
 	"npc_dota_hero_enchantress",
 	"npc_dota_hero_enigma",
 	"npc_dota_hero_furion",
@@ -427,12 +426,17 @@ local sPos5List = {
 }
 
 -- A list of to be improved heroes. They maybe selected for bots, but shouldn't have more than one in a team to ensure the bar of gaming experience for human players.
+-- Weak due to 1, some have bugs from Valve side, I try my best to improve. 2, I'm not familir with the hero game play itself, or it's not easy hero in terms of do it with coding.
 local WeakHeroes = {
+	-- Weaks, meaning they are too far from being able to apply their power:
 	'npc_dota_hero_chen',
 	'npc_dota_hero_keeper_of_the_light',
 	'npc_dota_hero_winter_wyvern',
 	'npc_dota_hero_ancient_apparition',
 	'npc_dota_hero_phoenix',
+	'npc_dota_hero_tinker',
+
+	-- Buggys, meaning they have bugs on Valves side, as of (still) 2024/7/21:
 	'npc_dota_hero_elder_titan',
 	'npc_dota_hero_hoodwink',
 	'npc_dota_hero_dark_willow',
@@ -441,9 +445,9 @@ local WeakHeroes = {
 	'npc_dota_hero_muerta',
 	'npc_dota_hero_marci',
 	'npc_dota_hero_lone_druid',
-	'npc_dota_hero_tinker',
 }
 local SelectedWeakHero = 0
+local MaxWeakHeroCount = 1
 
 -- Combine hero list
 SupportedHeroes = Utils.CombineTablesUnique(SupportedHeroes, sPos1List)
@@ -717,8 +721,8 @@ function X.OverrideTeamHeroes()
 
 			[1] = 'npc_dota_hero_marci',
 			[2] = tSelectPoolList[2][RandomInt( 1, #tSelectPoolList[2] )],
-			[3] = 'npc_dota_hero_hoodwink',
-		    [4] = tSelectPoolList[4][RandomInt( 1, #tSelectPoolList[4] )],
+			[3] = 'npc_dota_hero_invoker',
+		    [4] = 'npc_dota_hero_elder_titan',
 			[5] = tSelectPoolList[5][RandomInt( 1, #tSelectPoolList[5] )],
 			
 			-- Muerta pos1 and Hoodwink pos5, both go top.
@@ -869,7 +873,7 @@ function X.IsRepeatHero( sHero )
 		if ( IsTeamPlayer( id ) and GetSelectedHeroName( id ) == sHero )
 			or ( IsCMBannedHero( sHero ) )
 			or ( X.IsBanByChat( sHero ) )
-			or (SelectedWeakHero >= 1 and Utils.HasValue(WeakHeroes, sHero))
+			or (SelectedWeakHero >= MaxWeakHeroCount and Utils.HasValue(WeakHeroes, sHero))
 		then
 			return true
 		end

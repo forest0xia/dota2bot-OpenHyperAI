@@ -181,7 +181,7 @@ function BonusTimers:NeutralItemFindTimer()
 			end
 			-- Close the tier if we hit the limit
 			if tierAwards[team][tier] >= Settings.neutralItems.maxPerTier[tier] then
-				NeutralItems:CloseBotFindTier(tier)
+				NeutralItems:CloseBotFindTier(tier, team)
 			end
 		end
 	end

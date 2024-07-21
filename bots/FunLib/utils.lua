@@ -434,6 +434,14 @@ function X.GetOffsetLocationTowardsTargetLocation(initLoc, targetLoc, offsetDist
     return initLoc + dir * offsetDist
 end
 
+function X.TimeNeedToHealHP(bot)
+    return (bot:GetMaxHealth() - bot:GetHealth()) / bot:GetHealthRegen()
+end
+
+function X.TimeNeedToHealMP(bot)
+    return (bot:GetMaxMana() - bot:GetMana()) / bot:GetManaRegen()
+end
+
 return X
 
 

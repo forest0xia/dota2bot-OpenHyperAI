@@ -820,7 +820,12 @@ function ItemPurchaseThink()
 	then
 		if Item.IsItemInHero( bot.currentItemToBuy )
 			or bot.currentItemToBuy == "item_aghanims_shard"
-			or (bot == Utils['LoneDruid'].hero and Utils['LoneDruid'].bear ~= nil and Item.IsItemInTargetHero(bot.currentItemToBuy, Utils['LoneDruid'].bear))
+			or (
+				bot == Utils['LoneDruid'].hero
+				and Utils['LoneDruid'].bear ~= nil
+				and Item.GetItemTotalWorthInSlots(Utils['LoneDruid'].bear) < 28000
+				and Item.IsItemInTargetHero(bot.currentItemToBuy, Utils['LoneDruid'].bear)
+			)
 			or bot.countInvCheck > 5 * 60 -- if can't finish the item for a long time
 		then
 			bot.countInvCheck = 0
@@ -830,7 +835,7 @@ function ItemPurchaseThink()
 			bot.lastInvCheck = currentTime
 
 			-- and can't finish even with lots of gold
-			if bot:GetGold() > 7000 or bot:GetGold() > GetItemCost(bot.currentItemToBuy) * 2 then
+			if bot:GetGold() > 7000 or bot:GetGold() > GetItemCost(bot.currentItemToBuy) * 3 then
 				bot.countInvCheck = bot.countInvCheck + 1
 			end
 		end
