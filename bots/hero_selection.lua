@@ -12,6 +12,7 @@ local bUserMode = false
 local bLaneAssignActive = true
 local bLineupReserve = false
 
+local MU = require( GetScriptDirectory()..'/FunLib/aba_matchups' )
 local Role = require( GetScriptDirectory()..'/FunLib/aba_role' )
 local Chat = require( GetScriptDirectory()..'/FunLib/aba_chat' )
 local Utils = require( GetScriptDirectory()..'/FunLib/utils' )
@@ -435,6 +436,9 @@ local WeakHeroes = {
 	'npc_dota_hero_ancient_apparition',
 	'npc_dota_hero_phoenix',
 	'npc_dota_hero_tinker',
+	'npc_dota_hero_treant',
+	'npc_dota_hero_pangolier',
+	'npc_dota_hero_furion',
 
 	-- Buggys, meaning they have bugs on Valves side, as of (still) 2024/7/21:
 	'npc_dota_hero_elder_titan',
@@ -873,13 +877,19 @@ function X.IsRepeatHero( sHero )
 		if ( IsTeamPlayer( id ) and GetSelectedHeroName( id ) == sHero )
 			or ( IsCMBannedHero( sHero ) )
 			or ( X.IsBanByChat( sHero ) )
-			or (SelectedWeakHero >= MaxWeakHeroCount and Utils.HasValue(WeakHeroes, sHero))
+			or ( X.SkipPickingWeakHeroes(sHero) )
 		then
 			return true
 		end
 	end
 
 	return false
+end
+
+-- limit the number and chance the weak heroes can be picked.
+function X.SkipPickingWeakHeroes(sHero)
+	return Utils.HasValue(WeakHeroes, sHero)
+	and (RandomInt(1, 2) >= 2 or SelectedWeakHero >= MaxWeakHeroCount)
 end
 
 if bUserMode and HeroSet['JinYongAI'] ~= nil
@@ -906,6 +916,87 @@ function X.IsBanByChat( sHero )
 end
 
 local sTeamName = GetTeam() == TEAM_RADIANT and 'TEAM_RADIANT' or 'TEAM_DIRE'
+
+function X.GetCurrentTeam(nTeam, bEnemy)
+	local nHeroList = {}
+	for i, id in pairs(GetTeamPlayers(nTeam))
+	do
+		local hName = GetSelectedHeroName(id)
+		if hName ~= nil and hName ~= ''
+		then
+			if bEnemy then
+				table.insert(nHeroList, {name=hName, pos=Role.GetBestEffortSuitableRole(hName)})
+			else
+				table.insert(nHeroList, {name=hName, pos=Role.roleAssignment[sTeamName][i] })
+			end
+		end
+	end
+
+	return nHeroList
+end
+
+function X.GetBestHeroFromPool(i, nTeamList)
+	local sBestHero = ''
+	local nHeroes = {}
+
+	for j = 1, #nTeamList
+	do
+		local hName = nTeamList[j].name
+		for _, sName in pairs(tSelectPoolList[i])
+		do
+			if  (MU.IsSynergy(hName, sName) or MU.IsSynergy(sName, hName))
+			and not X.IsRepeatHero(sName)
+			then
+				if nHeroes[sName] == nil then nHeroes[sName] = {} end
+				if nHeroes[sName]['count'] == nil then nHeroes[sName]['count'] = 1 end
+				nHeroes[sName]['count'] = nHeroes[sName]['count'] + 1
+			end
+		end
+	end
+
+	local c = -1
+	for k1, v1 in pairs(nHeroes)
+	do
+		for k2, v2 in pairs(nHeroes[k1])
+		do
+			if not X.IsRepeatHero(k1)
+			then
+				if  v2 > 0 and c > 0 and v2 == c
+				and RandomInt(1, 2) == 1
+				then
+					sBestHero = k1
+				end
+
+				if v2 > c
+				then
+					c = v2
+					sBestHero = k1
+				end
+			end
+		end
+	end
+
+	if sBestHero ~= ''
+	then
+		print('synergy ', sBestHero)
+		return sBestHero
+	else
+		return X.GetNotRepeatHero(tSelectPoolList[i])
+	end
+end
+
+function X.GetCurrEnmCores(nEnmTeam)
+	local nCurrCores = {}
+	for i = 1, #nEnmTeam
+	do
+		if nEnmTeam[i].pos >= 1 and nEnmTeam[i].pos <= 3
+		then
+			table.insert(nCurrCores, nEnmTeam[i].name)
+		end
+	end
+
+	return nCurrCores
+end
 
 local ShuffledPickOrder = {
 	TEAM_RADIANT = false,
@@ -934,6 +1025,9 @@ function AllPickHeros()
 		X.ShufflePickOrder(teamPlayers)
 		ShuffledPickOrder[sTeamName] = true
 	end
+	
+	local nOwnTeam = X.GetCurrentTeam(GetTeam(), false)
+	local nEnmTeam = X.GetCurrentTeam(GetOpposingTeam(), true)
 
 	for i, id in pairs( teamPlayers )
 	do
@@ -943,8 +1037,46 @@ function AllPickHeros()
 			then
 				sSelectHero = X.GetNotRepeatHero( tSelectPoolList[i] )
 			else
-				sSelectHero = sSelectList[i]
+				-- sSelectHero = sSelectList[i]
+
+				local didExhaust = false
+				local nCurrEnmCores = X.GetCurrEnmCores(nEnmTeam)
+
+				-- Pick a random core in the current enemy comp to counter
+				local nHeroToCounter = nCurrEnmCores[RandomInt(1, #nCurrEnmCores)]
+				local sPoolList = Utils.Deepcopy(tSelectPoolList[i])
+
+				for j = 1, #tSelectPoolList[i], 1
+				do
+					local idx = RandomInt(1, #sPoolList)
+					local heroName = sPoolList[idx]
+					if not X.IsRepeatHero(heroName)
+					and MU.IsCounter(heroName, nHeroToCounter) -- so it's not 'samey'; since bots don't really put pressure like a human would
+					then
+						print('counter pick. ', heroName, nHeroToCounter)
+						sSelectHero = heroName
+						break
+					end
+
+					table.remove(sPoolList, idx)
+					if j == #tSelectPoolList[i] or #sPoolList == 0 then didExhaust = true; return end
+				end
+
+				if didExhaust then
+					local heroName = X.GetBestHeroFromPool(i, nOwnTeam)
+					if heroName ~= nil
+					then
+						sSelectHero = heroName
+					end
+				end
+				
 			end
+			
+			if X.IsRepeatHero(sSelectHero)
+			then
+				sSelectHero = X.GetNotRepeatHero( tSelectPoolList[i] )
+			end
+
 			SelectHero( id, sSelectHero )
 			if Utils.HasValue(WeakHeroes, sSelectHero) then SelectedWeakHero = SelectedWeakHero + 1 end
 			-- print('Selected hero for idx='..i..', id='..id..', bot='..sSelectHero)

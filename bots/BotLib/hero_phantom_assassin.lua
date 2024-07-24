@@ -80,7 +80,7 @@ X['sSkillList'] = J.Skill.GetSkillList( sAbilityList, nAbilityBuildList, sTalent
 X['bDeafaultAbility'] = false
 X['bDeafaultItem'] = false
 
-function X.MinionThink( hMinionUnit )
+function X.MinionThink(hMinionUnit, bot)
 
 	if Minion.IsValidUnit( hMinionUnit )
 	then

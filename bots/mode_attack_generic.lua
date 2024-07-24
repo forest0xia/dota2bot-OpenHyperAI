@@ -1,5 +1,3 @@
-
-local J = require( GetScriptDirectory()..'/FunLib/jmz_func')
 local Utils = require( GetScriptDirectory()..'/FunLib/utils')
 
 local bot = GetBot()

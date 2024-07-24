@@ -58,7 +58,7 @@ function AwardBonus:gold(bot, bonus)
 	if bot.stats.awards.gold < Settings.awardCap.gold and bonus > 0 then
 		PlayerResource:ModifyGold(bot.stats.id, bonus, false, 0)
 		bot.stats.awards.gold = bot.stats.awards.gold + bonus
-		--Debug:Print('Awarding gold to '..bot.stats.name..'.')
+		Debug:Print('Awarding gold to '..bot.stats.name..'.')
 		return true
 	end
 	return false
@@ -73,7 +73,7 @@ function AwardBonus:stats(bot, bonus)
 		bot:ModifyAgility(clamped)
 		bot:ModifyIntellect(clamped)
 		bot.stats.awards.stats = bot.stats.awards.stats + clamped
-		--Debug:Print('Awarding stats to '..bot.stats.name..'.')
+		Debug:Print('Awarding stats to '..bot.stats.name..'.')
 		return true
 	end
 	return false
@@ -88,7 +88,7 @@ function AwardBonus:armor(bot, bonus)
 		local base = bot:GetAgility() * (1/6)
 		bot:SetPhysicalArmorBaseValue(armor - base + clamped)
 		bot.stats.awards.armor = bot.stats.awards.armor + clamped
-		--Debug:Print('Awarding armor to '..bot.stats.name..'.')
+		Debug:Print('Awarding armor to '..bot.stats.name..'.')
 		return true
 	end
 	return false
@@ -102,7 +102,7 @@ function AwardBonus:magicResist(bot, bonus)
 		resistance = bot:GetBaseMagicalResistanceValue()
 		bot:SetBaseMagicalResistanceValue(resistance + clamped)
 		bot.stats.awards.magicResist = bot.stats.awards.magicResist + clamped
-		--Debug:Print('Awarding magic resist to '..bot.stats.name..'.')
+		Debug:Print('Awarding magic resist to '..bot.stats.name..'.')
 		return true
 	end
 	return false
@@ -131,7 +131,7 @@ function AwardBonus:levels(bot, levels)
 		local awardXP = Utilities:Round(averageXP * levels)
 		bot:AddExperience(awardXP, 0, false, true)
 		bot.stats.awards.levels = bot.stats.awards.levels + levels
-		--Debug:Print('Awarding levels  to '..bot.stats.name..'.')
+		Debug:Print('Awarding levels  to '..bot.stats.name..'.')
 		return true
 	end
 	return false
@@ -159,7 +159,7 @@ end
 function AwardBonus:Experience(bot, bonus)
 	if bonus > 0 then
 		bot:AddExperience(bonus, 0, false, true)
-		--Debug:Print('Awarding experience to '..bot.stats.name..'.')
+		Debug:Print('Awarding experience to '..bot.stats.name..'.')
 	end
 end
 
@@ -414,7 +414,7 @@ function AwardBonus:GetSpecificPerMinuteBonus(bot, pmBot, roleTable, settings)
 	local pmPlayer = roleTable[bot.stats.role]
 	if pmPlayer == nil or #AllBots[bot.stats.team] < 5 then
 		-- in case no human player detected, just based on difficultyScale.
-		local defaultScale = 100 -- gpm or xpm
+		local defaultScale = 80 -- gpm or xpm
 		if #AllBots[bot.stats.team] < 5 then -- less for human side bots
 			defaultScale = defaultScale / 1.5
 		end
@@ -428,7 +428,7 @@ function AwardBonus:GetSpecificPerMinuteBonus(bot, pmBot, roleTable, settings)
 	local scale = settings.scale[bot.stats.role]
 	local variance = Utilities:GetVariance(settings.variance)
 	-- Get total multiplier
-	local multiplier = AwardBonus:GetMultiplier(skill, scale, variance) * 2
+	local multiplier = AwardBonus:GetMultiplier(skill, scale, variance) * 1.4
 	-- multiply
 	pmTarget = Utilities:Round(pmTarget * multiplier)
 	-- if the bot is already better than this, do not give award

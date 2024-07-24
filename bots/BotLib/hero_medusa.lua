@@ -35,6 +35,10 @@ local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 local sRoleItemsBuyList = {}
 
 sRoleItemsBuyList['pos_1'] = {
+	'item_tango',
+	'item_double_branches',
+	'item_null_talisman',
+	'item_null_talisman',
 	"item_magic_wand",
 
 	"item_ring_of_basilius",
@@ -98,7 +102,7 @@ X['bDeafaultAbility'] = false
 X['bDeafaultItem'] = false
 
 
-function X.MinionThink( hMinionUnit )
+function X.MinionThink(hMinionUnit, bot)
 
 	if Minion.IsValidUnit( hMinionUnit )
 	then

@@ -2,7 +2,7 @@
 --[[
 
 Simple utils that should be able to be imported to any other lua files without causing any circular dependency.
-This lua file should NOT have any dependency libs or files is possible.
+This lua file should NOT have any dependency libs or files if possible.
 
 Anything that can be shared in any files without worrying about nested or circular dependency can be added to this file. Can gradually migrate functions into this file as well.
 
@@ -26,8 +26,6 @@ X['BuggyHeroesDueToValveTooLazy'] = {
     ['npc_dota_hero_hoodwink'] = true,
     ['npc_dota_hero_wisp'] = true,
 }
-
-X['ActuallyBuggedHeroes'] = { } -- used to record the acutal bugged heroes in this game.
 
 X['GameStates'] = { } -- A gaming state keeper to keep a record of different states to avoid recomupte or anything.
 X['LoneDruid'] = { }
@@ -98,7 +96,21 @@ function X.Shuffle(tbl)
     end
 end
 
-function X.IsPingedToDefenseByAnyPlayer(bot, pingTimeGap)
+function X.GetHumanPing()
+	local ping = nil
+	local nTeamPlayers = GetTeamPlayers(GetTeam())
+	for i, id in pairs(nTeamPlayers)
+	do
+		local member = GetTeamMember(i)
+		if member ~= nil and not member:IsBot()
+		then
+			return member, member:GetMostRecentPing()
+		end
+	end
+	return nil, ping
+end
+
+function X.IsPingedByAnyPlayer(bot, pingTimeGap)
 	local listPings = {}
 	local nTeamPlayers = GetTeamPlayers(GetTeam())
 	for i, id in pairs(nTeamPlayers)
@@ -114,10 +126,29 @@ function X.IsPingedToDefenseByAnyPlayer(bot, pingTimeGap)
 
 	for _,ping in pairs(listPings)
 	do
-		if ping ~= nil and not ping.normal_ping and X.GetLocationToLocationDistance(ping.location, bot:GetLocation()) > 2000
+		if ping ~= nil and X.GetLocationToLocationDistance(ping.location, bot:GetLocation()) > 1500
         and GameTime() - ping.time < pingTimeGap and ping.player_id ~= -1 then
-            print('Bot '..bot:GetUnitName()..' is pinged to defend')
+            print('Bot '..bot:GetUnitName()..' noticed the ping')
 			return ping
+		end
+	end
+	return nil
+end
+
+function X.IsValidUnit(nTarget)
+	return nTarget ~= nil
+		and not nTarget:IsNull()
+		and nTarget:CanBeSeen()
+		and nTarget:IsAlive()
+end
+
+function X.FindAllyWithName(sName)
+	for _, allyHero in pairs(GetUnitList(UNIT_LIST_ALLIED_HEROES))
+	do
+		if X.IsValidUnit(allyHero) and allyHero:IsHero()
+		and string.find(allyHero:GetUnitName(), sName)
+		then
+			return allyHero
 		end
 	end
 	return nil

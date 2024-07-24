@@ -15,7 +15,7 @@ local SmokeOfDeceit = nil
 local WardCastTime = J.IsModeTurbo() and -45 or -90
 local ItemSwapTime = J.IsModeTurbo() and -45 or -90
 local EnemyTeam = nil
-local RetryWardingGap = 3 * 60 -- 降低warding 欲望，不要一直带着眼占格子
+local RetryWardingGap = 5 * 60 -- 降低warding 欲望，不要一直带着眼占格子
 
 bot.ward = false
 bot.steal = false

@@ -30,6 +30,9 @@ local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 
 local sRoleItemsBuyList = {}
 
+local sUtility = {"item_mjollnir", "item_radiance"}
+local nUtility = sUtility[RandomInt(1, #sUtility)]
+
 sRoleItemsBuyList['pos_1'] = {
 	"item_ranged_carry_outfit",
 	-- "item_dragon_lance",
@@ -58,11 +61,11 @@ sRoleItemsBuyList['pos_1_w_bear'] = {
     "item_mask_of_madness",--1
     -- "item_maelstrom",
     'item_boots',
-    "item_mjollnir",--1
+    nUtility,--1
     'item_boots',
     -- "item_basher",
-    "item_ultimate_scepter",
     "item_abyssal_blade",--1
+    "item_ultimate_scepter",
     "item_black_king_bar",--1
     "item_assault",--1
     "item_black_king_bar",--2
@@ -124,8 +127,8 @@ X['sSkillList'] = J.Skill.GetSkillList( sAbilityList, nAbilityBuildList, sTalent
 X['bDeafaultAbility'] = false
 X['bDeafaultItem'] = false
 
-function X.MinionThink(hMinionUnit)
-    Minion.MinionThink(hMinionUnit)
+function X.MinionThink(hMinionUnit, bot)
+    Minion.MinionThink(hMinionUnit, bot)
 end
 
 local SummonSpiritBear  = bot:GetAbilityByName('lone_druid_spirit_bear')

@@ -7,7 +7,6 @@ end
 
 local bot = GetBot();
 local team = GetTeam()
-local bDebugMode = ( 1 == 10 )
 local X = {}
 
 local J = require( GetScriptDirectory()..'/FunLib/jmz_func')
@@ -43,8 +42,6 @@ local SpecialUnitTarget = nil
 local shouldHarass = false
 local harassTarget = nil
 local lastIdleStateCheck = -1
-local defendPingTime = 0
-local nTpSolt = 15
 
 local TormentorLocation
 if team == TEAM_RADIANT
@@ -65,67 +62,8 @@ function GetDesire()
 	then
 		beInitDone = true
 		bePvNMode = J.Role.IsPvNMode()
-		IsHeroCore = J.IsCore(bot)
-		IsSupport = not J.IsCore(bot)
-	end
-
-	local nMode = bot:GetActiveMode()
-	local isDefendMode = nMode == BOT_MODE_DEFEND_TOWER_TOP or nMode == BOT_MODE_DEFEND_TOWER_MID or nMode == BOT_MODE_DEFEND_TOWER_BOT
-	-- if pinged to defend base.
-	local ping = Utils.IsPingedToDefenseByAnyPlayer(bot, 3)
-	if ping ~= nil then
-		
-		-- 如果本来就是要去防守的
-		if isDefendMode and bot:GetActiveModeDesire() > BOT_MODE_DESIRE_MODERATE
-		then
-			return BOT_ACTION_DESIRE_NONE
-		end
-
-		return BOT_MODE_DESIRE_VERYHIGH
-	end
-
-	-- 判断是否要提醒回防
-	Utils['GameStates']['defendPings'] = Utils['GameStates']['defendPings'] ~= nil and Utils['GameStates']['defendPings'] or { pingedTime = GameTime() }
-	if GameTime() - Utils['GameStates']['defendPings'].pingedTime > 5 then
-		local towers = {
-			TOWER_TOP_3,
-			TOWER_MID_3,
-			TOWER_BOT_3,
-			TOWER_BASE_1,
-			TOWER_BASE_2
-		}
-		local enemeyPushingBase = false
-		local nDefendLoc
-		for _, t in pairs( towers )
-		do
-			local tower = GetTower( team, t )
-			if tower ~= nil and tower:GetHealth()/tower:GetMaxHealth() < 0.8
-			and J.GetNumOfHeroesNearLocation( true, tower:GetLocation(), 800 ) >= 1
-			then
-				nDefendLoc = tower:GetLocation() + RandomVector(100)
-				enemeyPushingBase = true
-			end
-		end
-		if not enemeyPushingBase and J.GetNumOfHeroesNearLocation( true, GetAncient(team):GetLocation(), 800 ) >= 1 then
-			nDefendLoc = GetAncient(team):GetLocation() + RandomVector(100) -- GetLaneFrontLocation(team, nDefendLane, 100) + RandomVector(100)
-			enemeyPushingBase = true
-		end
-
-		if enemeyPushingBase then
-			enemeyPushingBase = false
-			local nDefendAllies = J.GetAlliesNearLoc(nDefendLoc, 2000);
-			if #nDefendAllies < J.GetNumOfAliveHeroes(false) then
-				Utils['GameStates']['defendPings'].pingedTime = GameTime()
-				bot:ActionImmediate_Chat("Please come defending", false)
-				bot:ActionImmediate_Ping(nDefendLoc.x, nDefendLoc.y, false)
-			end
-
-			if isDefendMode and bot:GetActiveModeDesire() > BOT_MODE_DESIRE_MODERATE
-			then
-				return BOT_ACTION_DESIRE_NONE
-			end
-			return BOT_MODE_DESIRE_VERYHIGH
-		end
+		IsHeroCore = X.IsSpecialCore(bot)
+		IsSupport = X.IsSpecialSupport(bot)
 	end
 
 
@@ -262,44 +200,9 @@ function OnEnd()
 	harassTarget = nil
 end
 
-local reactedToDefendPingTime = 0
 function Think()
 
 	if J.CanNotUseAction(bot) then return end
-
-	-- if pinged to defend base.
-	-- if DotaTime() - reactedToDefendPingTime > 2 then
-		reactedToDefendPingTime = DotaTime()
-		local ping = Utils.IsPingedToDefenseByAnyPlayer(bot, 2)
-		if ping ~= nil then
-			local tps = bot:GetItemInSlot(nTpSolt)
-			local saferLoc = J.AdjustLocationWithOffsetTowardsFountain(ping.location, 600)
-			local bestTpLoc = J.GetNearbyLocationToTp(saferLoc)
-			local distance = GetUnitToLocationDistance(bot, ping.location)
-			if distance > 3500 and not bot:WasRecentlyDamagedByAnyHero(2) then
-				if tps ~= nil and tps:IsFullyCastable() then
-					bot:Action_UseAbilityOnLocation(tps, bestTpLoc + RandomVector(30))
-				else
-					bot:Action_AttackMove(ping.location + RandomVector(30));
-				end
-			end
-			if distance > 2000 and distance <= 3000 and not bot:WasRecentlyDamagedByAnyHero(3) then
-				bot:Action_AttackMove(ping.location + RandomVector(30));
-			elseif distance <= 2000 and bot:GetTarget() == nil then
-				local hNearbyEnemyHeroList = J.GetHeroesNearLocation( true, ping.location, 1300 )
-				for _, npcEnemy in pairs( hNearbyEnemyHeroList )
-				do
-					if npcEnemy ~= nil and npcEnemy:CanBeSeen()
-					then
-						bot:SetTarget( npcEnemy )
-						return
-					end
-				end
-			end
-			return
-		-- end
-	end
-
 
 	if bot.lastTeamRoamFrameProcessTime == nil then bot.lastTeamRoamFrameProcessTime = DotaTime() end
 	if DotaTime() - bot.lastTeamRoamFrameProcessTime < Utils.FrameProcessTime then return end
@@ -1680,6 +1583,157 @@ function X.UpdateCommonCamp(creep, AvailableCamp)
 	end
 	return AvailableCamp;
 end
+
+function X.IsSpecialCore(bot)
+    if J.GetPosition(bot) == 1
+	or J.GetPosition(bot) == 2
+	or J.GetPosition(bot) == 3
+	then
+		local botName = bot:GetUnitName();
+		
+		local tSpecialCarryList = {
+			["npc_dota_hero_abyssal_underlord"] = true,
+			["npc_dota_hero_alchemist"] = true,
+			["npc_dota_hero_antimage"] = true,
+			["npc_dota_hero_arc_warden"] = true,
+			["npc_dota_hero_axe"] = true,
+			["npc_dota_hero_batrider"] = true,
+			["npc_dota_hero_beastmaster"] = true,
+			["npc_dota_hero_brewmaster"] = true,
+			["npc_dota_hero_bloodseeker"] = true,
+			["npc_dota_hero_bounty_hunter"] = true,
+			["npc_dota_hero_bristleback"] = true,
+			["npc_dota_hero_broodmother"] = true,
+			["npc_dota_hero_centaur"] = true,
+			["npc_dota_hero_chaos_knight"] = true,
+			["npc_dota_hero_clinkz"] = true,
+			["npc_dota_hero_dark_seer"] = true,
+			["npc_dota_hero_dawnbreaker"] = true,
+			["npc_dota_hero_death_prophet"] = true,
+			["npc_dota_hero_doom_bringer"] = true,
+			["npc_dota_hero_dragon_knight"] = true,
+			["npc_dota_hero_drow_ranger"] = true,
+			["npc_dota_hero_earth_spirit"] = true,
+			["npc_dota_hero_ember_spirit"] = true,
+			["npc_dota_hero_enigma"] = true,
+			["npc_dota_hero_faceless_void"] = true,
+			["npc_dota_hero_furion"] = true,
+			["npc_dota_hero_gyrocopter"] = true,
+			["npc_dota_hero_huskar"] = true,
+			["npc_dota_hero_invoker"] = true,
+			["npc_dota_hero_juggernaut"] = true,
+			["npc_dota_hero_keeper_of_the_light"] = true,
+			["npc_dota_hero_kunkka"] = true,
+			["npc_dota_hero_legion_commander"] = true,
+			["npc_dota_hero_leshrac"] = true,
+			["npc_dota_hero_life_stealer"] = true,
+			["npc_dota_hero_lina"] = true,
+			["npc_dota_hero_lone_druid"] = true,
+			["npc_dota_hero_luna"] = true,
+			["npc_dota_hero_lycan"] = true,
+			["npc_dota_hero_magnataur"] = true,
+			["npc_dota_hero_marci"] = true,
+			["npc_dota_hero_mars"] = true,
+			["npc_dota_hero_medusa"] = true,
+			["npc_dota_hero_meepo"] = true,
+			["npc_dota_hero_mirana"] = true,
+			["npc_dota_hero_monkey_king"] = true,
+			["npc_dota_hero_morphling"] = true,
+			["npc_dota_hero_muerta"] = true,
+			["npc_dota_hero_naga_siren"] = true,
+			["npc_dota_hero_necrolyte"] = true,
+			["npc_dota_hero_nevermore"] = true,
+			["npc_dota_hero_night_stalker"] = true,
+			["npc_dota_hero_obsidian_destroyer"] = true,
+			["npc_dota_hero_ogre_magi"] = true,
+			["npc_dota_hero_omniknight"] = true,
+			["npc_dota_hero_pangolier"] = true,
+			["npc_dota_hero_phantom_assassin"] = true,
+			["npc_dota_hero_phantom_lancer"] = true,
+			["npc_dota_hero_puck"] = true,
+			["npc_dota_hero_pudge"] = true,
+			["npc_dota_hero_queenofpain"] = true,
+			["npc_dota_hero_razor"] = true,
+			["npc_dota_hero_riki"] = true,
+			["npc_dota_hero_skeleton_king"] = true,
+			["npc_dota_hero_sand_king"] = true,
+			["npc_dota_hero_shredder"] = true,
+			["npc_dota_hero_slardar"] = true,
+			["npc_dota_hero_slark"] = true,
+			["npc_dota_hero_snapfire"] = true,
+			["npc_dota_hero_sniper"] = true,
+			["npc_dota_hero_spectre"] = true,
+			["npc_dota_hero_spirit_breaker"] = true,
+			["npc_dota_hero_storm_spirit"] = true,
+			["npc_dota_hero_sven"] = true,
+			["npc_dota_hero_templar_assassin"] = true,
+			["npc_dota_hero_terrorblade"] = true,
+			["npc_dota_hero_tidehunter"] = true,
+			["npc_dota_hero_tinker"] = true,
+			["npc_dota_hero_tiny"] = true,
+			["npc_dota_hero_troll_warlord"] = true,
+			["npc_dota_hero_ursa"] = true,
+			["npc_dota_hero_viper"] = true,
+			["npc_dota_hero_visage"] = true,
+			["npc_dota_hero_void_spirit"] = true,
+			["npc_dota_hero_weaver"] = true,
+			["npc_dota_hero_windrunner"] = true,
+			["npc_dota_hero_zuus"] = true,
+		}
+
+		return tSpecialCarryList[botName] == true
+	end
+
+	return false
+end
+
+
+function X.IsSpecialSupport(bot)
+    
+	local botName = bot:GetUnitName();
+	
+	local tSpecialSupportList = {	  
+		["npc_dota_hero_crystal_maiden"] = true,
+		["npc_dota_hero_jakiro"] = true,
+		["npc_dota_hero_lich"] = true,
+		["npc_dota_hero_oracle"] = true,
+		["npc_dota_hero_pugna"] = true,
+		["npc_dota_hero_shadow_shaman"] = true,
+		["npc_dota_hero_silencer"] = true,
+		["npc_dota_hero_skywrath_mage"] = true,
+		["npc_dota_hero_warlock"] = true,
+		["npc_dota_hero_witch_doctor"] = true,
+		["npc_dota_hero_lion"] = true,
+		["npc_dota_hero_dazzle"] = true,
+		["npc_dota_hero_bane"] = true,
+
+		["npc_dota_hero_abaddon"] = true,
+		["npc_dota_hero_ancient_apparition"] = true,
+		["npc_dota_hero_chen"] = true,
+		["npc_dota_hero_rattletrap"] = true,
+		["npc_dota_hero_dark_willow"] = true,
+		["npc_dota_hero_disruptor"] = true,
+		["npc_dota_hero_earthshaker"] = true,
+		["npc_dota_hero_elder_titan"] = true,
+		["npc_dota_hero_enchantress"] = true,
+		["npc_dota_hero_grimstroke"] = true,
+		["npc_dota_hero_hoodwink"] = true,
+		["npc_dota_hero_nyx_assassin"] = true,
+		["npc_dota_hero_phoenix"] = true,
+		["npc_dota_hero_rubick"] = true,
+		["npc_dota_hero_shadow_demon"] = true,
+		["npc_dota_hero_techies"] = true,
+		["npc_dota_hero_treant"] = true,
+		["npc_dota_hero_tusk"] = true,
+		["npc_dota_hero_undying"] = true,
+		["npc_dota_hero_vengefulspirit"] = true,
+		["npc_dota_hero_venomancer"] = true,
+		["npc_dota_hero_winter_wyvern"] = true,
+	}
+	
+	return tSpecialSupportList[botName] == true
+			
+end 
 
 local fLastReturnTime = 0
 function X.ShouldAttackTowerCreep(bot)

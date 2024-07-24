@@ -88,8 +88,8 @@ X['sSkillList'] = J.Skill.GetSkillList( sAbilityList, nAbilityBuildList, sTalent
 X['bDeafaultAbility'] = false
 X['bDeafaultItem'] = false
 
-function X.MinionThink(hMinionUnit)
-    Minion.MinionThink(hMinionUnit)
+function X.MinionThink(hMinionUnit, bot)
+    Minion.MinionThink(hMinionUnit, bot)
 end
 
 local Disruption            = bot:GetAbilityByName('shadow_demon_disruption')

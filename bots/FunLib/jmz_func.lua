@@ -1132,10 +1132,6 @@ end
 
 
 function J.IsLaning( bot )
-	if J.Utils.ActuallyBuggedHeroes[bot:GetUnitName()] ~= nil then
-		return true
-	end
-
 	local mode = bot:GetActiveMode()
 
 	return mode == BOT_MODE_LANING
@@ -2747,9 +2743,9 @@ end
 
 function J.GetMostDefendLaneDesire()
 
-	local nTopDesire = GetDefendLaneDesire( LANE_TOP )
-	local nMidDesire = GetDefendLaneDesire( LANE_MID )
-	local nBotDesire = GetDefendLaneDesire( LANE_BOT )
+	local nTopDesire = J.GetDefendLaneDesire( LANE_TOP )
+	local nMidDesire = J.GetDefendLaneDesire( LANE_MID )
+	local nBotDesire = J.GetDefendLaneDesire( LANE_BOT )
 
 	if nTopDesire > nMidDesire and nTopDesire > nBotDesire
 	then
@@ -2765,6 +2761,75 @@ function J.GetMostDefendLaneDesire()
 
 end
 
+function J.GetDefendLaneDesire(lane)
+	if GetBot().DefendLaneDesire ~= nil
+	then
+		return GetBot().DefendLaneDesire[lane]
+	end
+	return GetDefendLaneDesire(lane)
+end
+
+function J.IsT3TowerDown(team, lane)
+	local t3 = {
+		[LANE_TOP] = TOWER_TOP_3,
+		[LANE_MID] = TOWER_MID_3,
+		[LANE_BOT] = TOWER_BOT_3,
+	}
+
+	return GetTower(team, t3[lane]) == nil
+end
+
+local tower_list = {
+	[TOWER_TOP_1] = {lane = LANE_TOP, isTower = true},
+	[TOWER_MID_1] = {lane = LANE_MID, isTower = true},
+	[TOWER_BOT_1] = {lane = LANE_BOT, isTower = true},
+	[TOWER_TOP_2] = {lane = LANE_TOP, isTower = true},
+	[TOWER_MID_2] = {lane = LANE_MID, isTower = true},
+	[TOWER_BOT_2] = {lane = LANE_BOT, isTower = true},
+	[TOWER_TOP_3] = {lane = LANE_TOP, isTower = true},
+	[TOWER_MID_3] = {lane = LANE_MID, isTower = true},
+	[TOWER_BOT_3] = {lane = LANE_BOT, isTower = true},
+	[TOWER_BASE_1] = {lane = LANE_MID, isTower = true},
+	[TOWER_BASE_2] = {lane = LANE_MID, isTower = true},
+	[BARRACKS_TOP_MELEE] = {lane = LANE_TOP, isTower = false},
+	[BARRACKS_TOP_RANGED] = {lane = LANE_TOP, isTower = false},
+	[BARRACKS_MID_MELEE] = {lane = LANE_MID, isTower = false},
+	[BARRACKS_MID_RANGED] = {lane = LANE_MID, isTower = false},
+	[BARRACKS_BOT_MELEE] = {lane = LANE_BOT, isTower = false},
+	[BARRACKS_BOT_RANGED] = {lane = LANE_BOT, isTower = false},
+	['ancient'] = {lane = LANE_MID, isTower = false},
+}
+function J.IsPingCloseToValidTower(team, ping)
+	for k, v in pairs(tower_list)
+	do
+		local building = nil
+		if k == 'ancient'
+		then
+			building = GetAncient(team)
+		elseif v.isTower
+		then
+			building = GetTower(team, k)
+		else
+			building = GetBarracks(team, k)
+		end
+
+		if building ~= nil
+		and building:CanBeSeen()
+		and not building:IsInvulnerable()
+		and not building:HasModifier('modifier_backdoor_protection')
+		and not building:HasModifier('modifier_backdoor_protection_in_base')
+		and not building:HasModifier('modifier_backdoor_protection_active')
+		and J.GetDistance(building:GetLocation(), ping.location) <= 800
+		then
+			return true, v.lane
+		end
+	end
+	return false, nil
+end
+
+function J.IsRoshanCloseToChangingSides()
+    return DotaTime() % 300 >= 300 - 30
+end
 
 function J.GetMostPushLaneDesire()
 
@@ -3021,15 +3086,16 @@ end
 
 
 function J.IsHaveAegis( bot )
-
 	return bot:FindItemSlot( "item_aegis" ) >= 0
-
 end
 
-function J.DoesTeamHaveAegis( units )
-	for _, allies in pairs(units)
+function J.DoesTeamHaveAegis()
+	local numPlayer = GetTeamPlayers( GetTeam() )
+	for i = 1, #numPlayer
 	do
-		if allies:FindItemSlot("item_aegis") >= 0
+		local member = GetTeamMember(i)
+		if J.IsValidHero(member)
+		and J.IsHaveAegis(member)
 		then
 			return true
 		end
@@ -4269,7 +4335,11 @@ function J.AdjustLocationWithOffsetTowardsFountain(loc, distance)
 end
 
 function J.IsInLaningPhase()
-	return (J.IsModeTurbo() and DotaTime() < 8 * 60) or DotaTime() < 12 * 60
+	return (
+		(J.IsModeTurbo() and DotaTime() < 8 * 60)
+		or DotaTime() < 12 * 60
+	)
+	and GetBot():GetNetWorth() < 3000
 end
 
 function J.IsTormentor(nTarget)

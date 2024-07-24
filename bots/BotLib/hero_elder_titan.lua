@@ -116,8 +116,9 @@ local botTarget
 
 local touchedUnits = { }
 
-function X.MinionThink(hMinionUnit)
-	if hMinionUnit:GetUnitName() == "npc_dota_elder_titan_ancestral_spirit" then
+function X.MinionThink(hMinionUnit, aBot)
+	if J.Utils.IsUnitWithName(hMinionUnit, 'elder_titan_ancestral_spirit') then
+		if bot ~= J.Utils.FindAllyWithName('elder_titan') then return end
 		if not AstralSpirit:IsHidden() then return end
 		if EchoStomp:IsInAbilityPhase() or bot:IsChanneling() then bot:Action_ClearActions(false); return end
 		if bot:IsUsingAbility() or bot:IsCastingAbility() then return end
@@ -129,7 +130,9 @@ function X.MinionThink(hMinionUnit)
 		then
             for _, enemy in pairs(nInRangeEnemy)
             do
-                if J.IsValid(enemy) and (not J.Utils.HasValue(touchedUnits, enemy)) and (J.Utils.GetLocationToLocationDistance(hMinionUnit:GetLocation(), enemy:GetLocation()) > 30) then
+                if J.IsValid(enemy)
+				and (not J.Utils.HasValue(touchedUnits, enemy))
+				and J.Utils.GetLocationToLocationDistance(hMinionUnit:GetLocation(), enemy:GetLocation()) > 30 then
                     hMinionUnit:Action_MoveToLocation(enemy:GetLocation())
                 else
                     table.insert(touchedUnits, enemy)
@@ -142,13 +145,13 @@ function X.MinionThink(hMinionUnit)
             return
         end
         
-		if ConsiderReturnMinion(nInRangeEnemy) then
+		if ConsiderReturnMinion(nInRangeEnemy) > 0 then
 			bot:Action_UseAbility(ReturnAstralSpirit)
             return
         end
 	end
 
-    Minion.MinionThink(hMinionUnit)
+    Minion.MinionThink(hMinionUnit, bot)
 end
 
 function X.SkillsComplement()
@@ -206,7 +209,7 @@ function ConsiderEarthSplitter()
 end
 
 function ConsiderMoveMinion(hMinionUnit, nInRangeEnemy)
-    if #nInRangeEnemy > 1 and #touchedUnits == 0 then
+    if #nInRangeEnemy >= 1 and #touchedUnits < 1 then
         return BOT_ACTION_DESIRE_MODERATE
     end
 	return BOT_ACTION_DESIRE_NONE
@@ -218,6 +221,8 @@ function ConsiderReturnMinion(nInRangeEnemy)
     if #touchedUnits == #nInRangeEnemy then
         return BOT_ACTION_DESIRE_HIGH
     end
+
+	-- there seems to be a bug where the spirit can not be moved, so return it.
     if #touchedUnits >= 1 then
         return BOT_ACTION_DESIRE_MODERATE
     end

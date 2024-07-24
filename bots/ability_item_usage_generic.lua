@@ -2929,7 +2929,7 @@ X.ConsiderItemDesire["item_mjollnir"] = function( hItem )
 	local nNearbyAllyList = J.GetNearbyHeroes(bot, nCastRange + 100, false, BOT_MODE_NONE);
 
 	--团战中对被攻击频率最高的用
-	if J.IsInTeamFight( bot, 800 )
+	if J.IsInTeamFight( bot, 900 )
 	then
 		local targetAlly = nil
 		local maxTargetCount = 1
@@ -4465,6 +4465,7 @@ X.ConsiderItemDesire["item_tpscroll"] = function( hItem )
 		or ( bot:HasModifier( "modifier_oracle_false_promise_timer" ) and J.GetModifierTime( bot, "modifier_oracle_false_promise_timer" ) <= 3.2 )
 		or ( bot:HasModifier( "modifier_jakiro_macropyre_burn" ) and J.GetModifierTime( bot, "modifier_jakiro_macropyre_burn" ) >= 1.4 )
 		or ( bot:HasModifier( "modifier_arc_warden_tempest_double" ) and bot:GetRemainingLifespan() < 3.3 )
+		or (J.IsDoingRoshan(bot) and GetUnitToLocationDistance(bot, J.GetCurrentRoshanLocation()) <= 2800)
 	then return BOT_ACTION_DESIRE_NONE end
 
 	if bot:GetHealth() < 240
@@ -4548,39 +4549,35 @@ X.ConsiderItemDesire["item_tpscroll"] = function( hItem )
 	end
 
 	-- Roshan
-	-- if bot:GetActiveMode() == BOT_MODE_ROSHAN
-	-- and not J.IsInTeamFight(bot, 1600)
-	-- and nEnemyCount == 0
-	-- then
-	-- 	local lane = nil
-	-- 	local roshanLoc = nil
+	if J.IsDoingRoshan(bot)
+	and nEnemyCount == 0
+	and not J.IsRoshanCloseToChangingSides()
+	then
+		local roshanLoc = J.GetCurrentRoshanLocation()
+		local targetLoc = J.GetNearbyLocationToTp(roshanLoc)
 
-	-- 	local timeOfDay, time = J.CheckTimeOfDay()
-	-- 	if timeOfDay == "day" and time > 270 then
-	-- 		lane = LANE_TOP
-	-- 		roshanLoc = Vector(-7549, 7562, 1107)
-	-- 	elseif timeOfDay == "day" then
-	-- 		lane = LANE_BOT
-	-- 		roshanLoc = Vector(7625, -7511, 1092)
-	-- 	end
-	
-	-- 	if timeOfDay == "night" and time > 50 then
-	-- 		lane = LANE_BOT
-	-- 		roshanLoc = Vector(7625, -7511, 1092)
-	-- 	elseif timeOfDay == "night" then
-	-- 		lane = LANE_TOP
-	-- 		roshanLoc = Vector(-7549, 7562, 1107)
-	-- 	end
+		local tpLocDist = GetUnitToLocationDistance(bot, targetLoc)
+		local roshanLocDist = GetUnitToLocationDistance(bot, roshanLoc)
 
-	-- 	local laneFront = GetLaneFrontLocation( team, lane, 0 )
-	-- 	hEffectTarget = J.GetNearbyLocationToTp(roshanLoc)
-	-- 	sCastMotive = 'roshan'
-	-- 	if J.GetLocationToLocationDistance( bot:GetLocation(), roshanLoc ) > 6000
-	-- 	and J.GetLocationToLocationDistance( bot:GetLocation(), laneFront ) > 3000
-	-- 	then
-	-- 		return BOT_ACTION_DESIRE_HIGH, hEffectTarget, sCastType, sCastMotive
-	-- 	end
-	-- end
+		if tpLocDist > 5000
+		and roshanLocDist > 5000
+		and roshanLocDist > tpLocDist
+		then
+			if bot:GetUnitName() == 'npc_dota_hero_furion'
+			then
+				local Teleportation = bot:GetAbilityByName('furion_teleportation')
+				if  Teleportation:IsTrained()
+				and Teleportation:IsFullyCastable()
+				then
+					bot.useProphetTP = true
+					bot.ProphetTPLocation = targetLoc
+					return BOT_ACTION_DESIRE_NONE
+				end
+			end
+
+			return BOT_ACTION_DESIRE_HIGH, targetLoc, 'ground', 'tp_roshan'
+		end
+	end
 
 	--Tormentor
 	if  bot:GetActiveMode() == BOT_MODE_SIDE_SHOP
@@ -7262,10 +7259,10 @@ function AbilityUsageThink()
 end
 
 function BuybackUsageThink()
+	BuybackUsageComplement()
 	if bot.lastBuybackFrameProcessTime == nil then bot.lastBuybackFrameProcessTime = DotaTime() end
 	if DotaTime() - bot.lastBuybackFrameProcessTime < Utils.FrameProcessTime then return end
 	bot.lastBuybackFrameProcessTime = DotaTime()
-	BuybackUsageComplement()
 	UseGlyph()
 end
 

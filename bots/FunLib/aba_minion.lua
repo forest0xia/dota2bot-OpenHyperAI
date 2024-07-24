@@ -1169,12 +1169,9 @@ function X.AttackWardThink(hMinionUnit)
 end
 
 -- MINION THINK
-function X.MinionThink(hMinionUnit)
-	if bot == nil
-	then
-		bot = GetBot()
-	end
-
+function X.MinionThink(hMinionUnit, aBot)
+	bot = aBot
+	
 	if X.IsValidUnit(hMinionUnit)
 	then
 		if J.IsValidHero(hMinionUnit)

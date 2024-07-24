@@ -1,10 +1,11 @@
 local Utils = require( GetScriptDirectory()..'/FunLib/utils' )
 
-if GetBot():IsInvulnerable() or not GetBot():IsHero() or not string.find(GetBot():GetUnitName(), "hero") or GetBot():IsIllusion() then
+local bot = GetBot()
+
+if bot:IsInvulnerable() or not bot:IsHero() or not string.find(bot:GetUnitName(), "hero") or bot:IsIllusion() then
 	return;
 end
 
-local bot = GetBot()
 local team = GetTeam()
 
 local X = {}
@@ -95,17 +96,18 @@ function GetDesire()
 		return BOT_MODE_DESIRE_NONE;
 	end
 	-- 如果自己在上高，对面人活着，队友却不够，赶紧溜去farm
-	if #nAllyList <= 3 and #nAllyList <= J.GetNumOfAliveHeroes(true) - 1
-	and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 5500 then
+	if #nAllyList <= 2 and #nAllyList + 1 <= J.GetNumOfAliveHeroes(true)
+	and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 5500
+	and bot:GetActiveModeDesire() <= BOT_ACTION_DESIRE_HIGH then
 		return BOT_ACTION_DESIRE_VERYHIGH
 	end
 
 	if not bInitDone
 	then
 		bInitDone = true
-		beNormalFarmer = J.GetPosition(bot) == 3
-		beHighFarmer = J.GetPosition(bot) == 2
-		beVeryHighFarmer = J.GetPosition(bot) == 1
+		beNormalFarmer = X.IsNormalFarmer(bot)
+		beHighFarmer = X.IsHighFarmer(bot)
+		beVeryHighFarmer = X.IsVeryHighFarmer(bot)
 	end
 
 	local nMode = bot:GetActiveMode()
@@ -115,13 +117,6 @@ function GetDesire()
     then
         return BOT_ACTION_DESIRE_NONE
     end
-
-	if Utils.ActuallyBuggedHeroes[botName] ~= nil then
-		if nMode == BOT_MODE_ROAM then
-			return 1
-		end
-		return 0.446
-	end
 
 	local TormentorLocation = J.GetTormentorLocation(team)
 	local nNeutralCreeps = bot:GetNearbyNeutralCreeps(700)
@@ -313,13 +308,27 @@ function GetDesire()
 	   or (bot:GetLevel() >= 20 and nAlliesCount >= 3)
 	   or GetRoshanDesire() > BOT_MODE_DESIRE_VERYHIGH
 	then
-		local nNeutrals = bot:GetNearbyNeutralCreeps( bot:GetAttackRange() );
+		local nNeutrals = bot:GetNearbyNeutralCreeps( bot:GetAttackRange() ); 
 		if #nNeutrals == 0
 		then
 		    teamTime = DotaTime();
 		end
 	end
-
+	if GetDefendLaneDesire(LANE_TOP) > 0.85
+	   or GetDefendLaneDesire(LANE_MID) > 0.80
+	   or GetDefendLaneDesire(LANE_BOT) > 0.85
+	then
+		local nDefendLane,nDefendDesire = J.GetMostDefendLaneDesire();
+		local nDefendLoc  = GetLaneFrontLocation(GetTeam(),nDefendLane,-600);
+		local nDefendAllies = J.GetAlliesNearLoc(nDefendLoc, 2200);
+		
+		local nNeutrals = bot:GetNearbyNeutralCreeps( bot:GetAttackRange() );
+		
+		if #nNeutrals == 0 and #nDefendAllies >= 2 and (not beVeryHighFarmer or bot:GetLevel() >= 13)
+		then 
+		    teamTime = DotaTime();
+		end
+	end
 	if teamTime > DotaTime() - 3.0 then return BOT_MODE_DESIRE_NONE; end;
 	
 	if beNormalFarmer
@@ -459,57 +468,6 @@ function Think()
 	if bot.lastFarmFrameProcessTime == nil then bot.lastFarmFrameProcessTime = DotaTime() end
 	if DotaTime() - bot.lastFarmFrameProcessTime < Utils.FrameProcessTime then return end
 	bot.lastFarmFrameProcessTime = DotaTime()
-
-	-- pretend to be in laning
-	if Utils.ActuallyBuggedHeroes[botName] ~= nil and DotaTime() < 10 * 60 then
-		local mostFarmDesireLane = bot:GetAssignedLane();
-		local tpLoc = GetLaneFrontLocation(team, mostFarmDesireLane, 0);
-
-		if bot:NumQueuedActions() <= 1 then
-			bot:ActionQueue_AttackMove(tpLoc + RandomVector(200));
-			return
-		end
-		if bot:WasRecentlyDamagedByTower(1) then
-			bot:ActionPush_MoveToLocation(J.GetTeamFountain());
-			return
-		end
-
-		local runModeTowers = bot:GetNearbyTowers(800, true);
-		if #runModeTowers >= 1 then
-			bot:ActionPush_MoveToLocation(J.GetTeamFountain());
-			return
-		end
-
-		hLaneCreepList = bot:GetNearbyLaneCreeps(500, true);
-		-- local nEnemyHeroes = J.GetNearbyHeroes(bot, 800, true, BOT_MODE_NONE);
-		-- local nAllyHeroes = J.GetNearbyHeroes(bot, 800, false, BOT_MODE_NONE);
-		local target = J.GetProperTarget( bot )
-
-		if target ~= nil and target:IsHero() and J.GetHP(bot) > J.GetHP(target) then
-			if bot:NumQueuedActions() <= 1 then
-				bot:ActionPush_AttackUnit(target, true);
-				return
-			end
-		end
-
-		if J.GetHP(bot) < 0.5 and bot:WasRecentlyDamagedByAnyHero(3) then
-			if bot:NumQueuedActions() <= 1 then
-				bot:ActionPush_MoveToLocation(J.GetTeamFountain());
-				return
-			end
-			return
-		end
-
-		if #hLaneCreepList >= 2 and bot:WasRecentlyDamagedByCreep(0.5) then
-			local hAllyLaneCreeps = bot:GetNearbyLaneCreeps(500, false);
-			if #hAllyLaneCreeps >= 1 and not bot:WasRecentlyDamagedByAnyHero(2) then
-				bot:ActionPush_MoveToLocation(tpLoc + RandomVector(300));
-			else
-				bot:ActionPush_MoveToLocation(J.GetTeamFountain());
-			end
-			return
-		end
-	end
 	
 	if runMode then
 	
@@ -1205,6 +1163,151 @@ function X.IsLocCanBeSeen(vLoc)
 	       and IsLocationVisible(tempLocUp) 
 		   and IsLocationVisible(tempLocDown)
 
+end
+
+function X.IsNormalFarmer(bot)
+	local botName = bot:GetUnitName()
+
+	return (J.GetPosition(bot) == 3)
+	and (
+	botName == "npc_dota_hero_bristleback"
+	or botName == "npc_dota_hero_chaos_knight"
+	or botName == "npc_dota_hero_dragon_knight"
+	or botName == "npc_dota_hero_kunkka"
+	or botName == "npc_dota_hero_ogre_magi"
+	or botName == "npc_dota_hero_skeleton_king"
+	or botName == "npc_dota_hero_sand_king"
+	or botName == "npc_dota_hero_bounty_hunter"
+	or botName == "npc_dota_hero_slardar"
+	or botName == "npc_dota_hero_legion_commander"
+	or botName == "npc_dota_hero_omniknight"
+	or botName == "npc_dota_hero_axe"
+	or botName == "npc_dota_hero_razor"
+	or botName == "npc_dota_hero_viper"
+	or botName == "npc_dota_hero_necrolyte"
+	or botName == "npc_dota_hero_tidehunter"
+	or botName == "npc_dota_hero_death_prophet"
+	or botName == "npc_dota_hero_shredder"
+	or botName == "npc_dota_hero_mars"
+	or botName == "npc_dota_hero_batrider"
+	or botName == "npc_dota_hero_beastmaster"
+	or botName == "npc_dota_hero_brewmaster"
+	or botName == "npc_dota_hero_broodmother"
+	or botName == "npc_dota_hero_centaur"
+	or botName == "npc_dota_hero_dark_seer"
+	or botName == "npc_dota_hero_dawnbreaker"
+	or botName == "npc_dota_hero_doom_bringer"
+	or botName == "npc_dota_hero_enigma"
+	or botName == "npc_dota_hero_leshrac"
+	or botName == "npc_dota_hero_lycan"
+	or botName == "npc_dota_hero_magnataur"
+	or botName == "npc_dota_hero_marci"
+	or botName == "npc_dota_hero_furion"
+	or botName == "npc_dota_hero_night_stalker"
+	or botName == "npc_dota_hero_pangolier"
+	or botName == "npc_dota_hero_primal_beast"
+	or botName == "npc_dota_hero_pudge"
+	or botName == "npc_dota_hero_spirit_breaker"
+	or botName == "npc_dota_hero_abyssal_underlord"
+	or botName == "npc_dota_hero_visage"
+	or botName == "npc_dota_hero_windrunner"
+	)
+end
+
+function X.IsHighFarmer(bot)
+	local botName = bot:GetUnitName()
+
+	return (J.GetPosition(bot) == 2)
+	and (
+	botName == "npc_dota_hero_templar_assassin"
+	or botName == "npc_dota_hero_arc_warden"
+	or botName == "npc_dota_hero_mirana"
+	or botName == "npc_dota_hero_razor"
+	or botName == "npc_dota_hero_sniper"
+	or botName == "npc_dota_hero_viper"
+	or botName == "npc_dota_hero_nevermore"
+	or botName == "npc_dota_hero_lina"
+	or botName == "npc_dota_hero_dragon_knight"
+	or botName == "npc_dota_hero_kunkka"
+	or botName == "npc_dota_hero_queenofpain"
+	or botName == "npc_dota_hero_necrolyte"
+	or botName == "npc_dota_hero_huskar"
+	or botName == "npc_dota_hero_ogre_magi"
+	or botName == "npc_dota_hero_bounty_hunter"
+	or botName == "npc_dota_hero_death_prophet"
+	or botName == "npc_dota_hero_zuus"
+	or botName == "npc_dota_hero_storm_spirit"
+	or botName == "npc_dota_hero_ember_spirit"
+	or botName == "npc_dota_hero_void_spirit"
+	or botName == "npc_dota_hero_earth_spirit"
+	or botName == "npc_dota_hero_tiny"
+	or botName == "npc_dota_hero_batrider"
+	or botName == "npc_dota_hero_broodmother"
+	or botName == "npc_dota_hero_clinkz"
+	or botName == "npc_dota_hero_doom_bringer"
+	or botName == "npc_dota_hero_invoker"
+	or botName == "npc_dota_hero_keeper_of_the_light"
+	or botName == "npc_dota_hero_leshrac"
+	or botName == "npc_dota_hero_meepo"
+	or botName == "npc_dota_hero_monkey_king"
+	or botName == "npc_dota_hero_morphling"
+	or botName == "npc_dota_hero_obsidian_destroyer"
+	or botName == "npc_dota_hero_pangolier"
+	or botName == "npc_dota_hero_primal_beast"
+	or botName == "npc_dota_hero_puck"
+	or botName == "npc_dota_hero_pudge"
+	or botName == "npc_dota_hero_snapfire"
+	or botName == "npc_dota_hero_windrunner"
+	or botName == "npc_dota_hero_lone_druid"
+	or botName == "npc_dota_hero_tinker"
+	)
+end
+
+function X.IsVeryHighFarmer(bot)
+	local botName = bot:GetUnitName()
+
+	return (J.GetPosition(bot) == 1)
+	and (
+	botName == "npc_dota_hero_antimage"
+	or botName == "npc_dota_hero_arc_warden"
+	or botName == "npc_dota_hero_bloodseeker"
+	or botName == "npc_dota_hero_bristleback"
+	or botName == "npc_dota_hero_chaos_knight"
+	or botName == "npc_dota_hero_drow_ranger"
+	or botName == "npc_dota_hero_luna"
+	or botName == "npc_dota_hero_medusa"
+	or botName == "npc_dota_hero_phantom_assassin"
+	or botName == "npc_dota_hero_phantom_lancer"
+	or botName == "npc_dota_hero_razor"
+	or botName == "npc_dota_hero_skeleton_king"
+	or botName == "npc_dota_hero_sniper"
+	or botName == "npc_dota_hero_sven"
+	or botName == "npc_dota_hero_templar_assassin"
+	or botName == "npc_dota_hero_riki"
+	or botName == "npc_dota_hero_slark"
+	or botName == "npc_dota_hero_juggernaut"
+	or botName == "npc_dota_hero_naga_siren"
+	or botName == "npc_dota_hero_nevermore"
+	or botName == "npc_dota_hero_lina"
+	or botName == "npc_dota_hero_faceless_void"
+	or botName == "npc_dota_hero_alchemist"
+	or botName == "npc_dota_hero_terrorblade"
+	or botName == "npc_dota_hero_ursa"
+	or botName == "npc_dota_hero_tiny"
+	or botName == "npc_dota_hero_clinkz"
+	or botName == "npc_dota_hero_gyrocopter"
+	or botName == "npc_dota_hero_life_stealer"
+	or botName == "npc_dota_hero_marci"
+	or botName == "npc_dota_hero_meepo"
+	or botName == "npc_dota_hero_monkey_king"
+	or botName == "npc_dota_hero_morphling"
+	or botName == "npc_dota_hero_muerta"
+	or botName == "npc_dota_hero_furion"
+	or botName == "npc_dota_hero_spectre"
+	or botName == "npc_dota_hero_troll_warlord"
+	or botName == "npc_dota_hero_weaver"
+	or botName == "npc_dota_hero_windrunner"
+	)
 end
 
 function X.SetPushBonus( bot )

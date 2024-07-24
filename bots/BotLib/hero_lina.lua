@@ -154,7 +154,7 @@ X['bDeafaultAbility'] = false
 X['bDeafaultItem'] = true
 
 
-function X.MinionThink( hMinionUnit )
+function X.MinionThink(hMinionUnit, bot)
 
 	if Minion.IsValidUnit( hMinionUnit )
 	then

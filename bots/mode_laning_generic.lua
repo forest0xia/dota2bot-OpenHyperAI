@@ -23,7 +23,7 @@ function GetDesire()
 	end
 	
 	-- if pinged to defend base.
-	local ping = Utils.IsPingedToDefenseByAnyPlayer(bot, 4)
+	local ping = Utils.IsPingedByAnyPlayer(bot, 4)
 	if ping ~= nil then
 		local tps = bot:GetItemInSlot(nTpSolt)
 		local bestTpLoc = J.GetNearbyLocationToTp(ping.location)

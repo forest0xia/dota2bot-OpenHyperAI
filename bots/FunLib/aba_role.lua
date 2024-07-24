@@ -1923,6 +1923,21 @@ function X.GetCurrentSuitableRole( bot, hero )
 
 end
 
+-- best guess for e.g. enemy heroes
+function X.GetBestEffortSuitableRole(hero)
+	if X.CanBeSupport(hero) then
+		return 4
+	elseif X.CanBeMidlaner(hero) then
+		return 2
+	elseif X.CanBeSafeLaneCarry(hero) then
+		return 1
+	elseif X.CanBeOfflaner(hero) then
+		return 3
+	else
+		return 3
+	end
+end
+
 function X.CountValue( hero, role )
 	local highest = 0
 	local TeamMember = GetTeamPlayers( GetTeam() )

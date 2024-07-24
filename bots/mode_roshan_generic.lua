@@ -34,7 +34,7 @@ function GetDesire()
     end
 
     -- if Roshan is about to get killed, kill it unless there are other absolute actions.
-    if Roshan ~= nil and type(Roshan) == 'table' and Roshan:CanBeSeen() and Roshan:IsAlive() then
+    if J.Utils.IsValidUnit(Roshan) then
         local roshHP = Roshan:GetHealth()/Roshan:GetMaxHealth()
         if roshHP < 0.8 then
             return RemapValClamped(roshHP, 100, 0, BOT_MODE_DESIRE_MODERATE, BOT_MODE_DESIRE_ABSOLUTE )
@@ -44,6 +44,7 @@ function GetDesire()
     local aliveAlly = J.GetNumOfAliveHeroes(false)
     local aliveEnemy = J.GetNumOfAliveHeroes(true)
     local hasSameOrMoreHero = aliveAlly >= aliveEnemy + 1
+    
     if not hasSameOrMoreHero then
         return BOT_ACTION_DESIRE_NONE
     end
@@ -93,6 +94,17 @@ function GetDesire()
             then
                 return BOT_ACTION_DESIRE_NONE
             end
+        end
+    end
+
+    if J.IsRoshanCloseToChangingSides()
+    then
+        local botTarget = J.GetProperTarget(bot)
+        if J.IsRoshan(botTarget) then
+            return RemapValClamped(J.GetHP(botTarget), 1, 0, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_VERYHIGH )
+        end
+        if not J.IsValid(botTarget) or not J.IsRoshan(botTarget) then
+            return BOT_ACTION_DESIRE_NONE
         end
     end
 

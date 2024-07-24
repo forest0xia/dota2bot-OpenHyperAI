@@ -17,9 +17,8 @@ function X.GetDesire()
 
 	if bot:GetActiveMode() == BOT_MODE_ATTACK then
 		botTarget = bot:GetTarget()
-		if botTarget == nil
-		or botTarget:IsNull()
-		or not J.CanBeAttacked(botTarget)
+		if J.IsValidHero(botTarget)
+		and not J.CanBeAttacked(botTarget)
 		or not J.IsInRange(botTarget, bot, MaxTrackingDistance) then
 			bot:SetTarget(nil)
 			-- print('Clear assigned attack target')
@@ -92,7 +91,7 @@ end
 function X.Think()
 	-- has a target already
 	botTarget = J.GetProperTarget(bot)
-	if botTarget ~= nil and botTarget:IsAlive() and J.IsInRange(botTarget, bot, MaxTrackingDistance) then
+	if J.IsValidHero(botTarget) and J.IsInRange(botTarget, bot, MaxTrackingDistance) then
 		local distance = GetUnitToUnitDistance(bot, botTarget)
 		if distance <= nAttackRange + attackDeltaDistance then
 			bot:Action_AttackUnit(botTarget, true)
@@ -107,15 +106,19 @@ function X.Think()
     nAllyHeroes = J.GetNearbyHeroes(bot, 1600, false)
 
 	ChooseAndAttackEnemyHero(nEnemyHeroes)
+
+	-- if no direct target, try last hitting creeps
 	if bot:GetTarget() == nil then
 		LastHitCreeps()
 	end
 
+	-- if again no direct target, try hitting any unit
 	if bot:GetTarget() == nil then
 		local units = GetUnitList(UNIT_LIST_ENEMIES)
 		for _, unit in pairs(units) do
-			if GetUnitToUnitDistance(bot, unit) <= nAttackRange + attackDeltaDistance then
-				bot:Action_AttackUnit(botTarget, true)
+			if J.Utils.IsValidUnit(unit)
+			and GetUnitToUnitDistance(bot, unit) <= nAttackRange + attackDeltaDistance then
+				bot:Action_AttackUnit(unit, true)
 				return
 			end
 		end
@@ -136,8 +139,7 @@ function ChooseAndAttackEnemyHero(hEnemyList)
 		and J.CanBeAttacked(enemyHero)
 		and not J.IsSuspiciousIllusion(enemyHero)
         then
-			if J.IsValidHero(enemyHero)
-			and J.IsInRange(bot, enemyHero, nAttackRange + attackDeltaDistance)
+			if J.IsInRange(bot, enemyHero, nAttackRange + attackDeltaDistance)
 			then
 				bot:SetTarget(enemyHero)
 				bot:Action_AttackUnit(enemyHero, true)

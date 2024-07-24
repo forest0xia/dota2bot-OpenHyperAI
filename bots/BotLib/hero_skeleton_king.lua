@@ -107,7 +107,7 @@ X['sSkillList'] = J.Skill.GetSkillList( sAbilityList, nAbilityBuildList, sTalent
 X['bDeafaultAbility'] = true
 X['bDeafaultItem'] = false
 
-function X.MinionThink( hMinionUnit )
+function X.MinionThink(hMinionUnit, bot)
 
 	if Minion.IsValidUnit( hMinionUnit )
 		and hMinionUnit:GetUnitName() ~= "npc_dota_wraith_king_skeleton_warrior"

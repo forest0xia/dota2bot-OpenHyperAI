@@ -46,6 +46,7 @@ local isAllPlayersSpawned = false
 local playerSpawnCount = 0
 -- if game time goes past this point, then assume all players loaded
 local playerLoadFailSafe = -35
+local playerLoadFailSafeDelta = 3
 -- Time at which we force a difficulty scale setting for DataTables:Initialize()
 local dataTablesTimeout = 30
 -- Time at which to stop the BotRoleDetermination timer and declare roles
@@ -71,6 +72,7 @@ function FretBots:PlayersLoadedTimer()
 	Debug:Print('Initializing PlayersLoadedTimer')
 	-- if all players are loaded, initialize datatables and stop timer
 	if isAllPlayersSpawned then
+		isAllPlayersSpawned = false
 		-- I'm Bad made DataTables:Initialize() depend on difficultyScale existing,
 		-- so idle until that happens or it's been more than 30s
 		if not Flags.isSettingsFinalized then
@@ -97,17 +99,26 @@ function FretBots:PlayersLoadedTimer()
 		Timers:RemoveTimer(playersLoadedTimerName)
 		return nil
 	end
+
 	-- Check once per second until all players have loaded
-	local count = Utilities:GetPlayerCount()
-	if playerSpawnCount == count then
-		Debug:Print('All players have spawned.')
-		isAllPlayersSpawned = true
-	end
-	-- Check if we're past the load timeout
-	local gameTime = Utilities:GetAbsoluteTime()
-	if gameTime > playerLoadFailSafe then
-		Debug:Print('Spawn timer limit exceeded.  Proceeding.')
-		isAllPlayersSpawned = true
+	if not isAllPlayersSpawned then
+		local count = Utilities:GetPlayerCount()
+		if playerSpawnCount == count then
+			Debug:Print('All players have spawned.')
+			isAllPlayersSpawned = true
+		elseif playerSpawnCount >= count * 0.6 then
+			playerLoadFailSafeDelta = playerLoadFailSafeDelta - 1
+			if playerLoadFailSafeDelta <= 0 then
+				Debug:Print('All players should be ready in game as most were ready a while ago.  Proceeding.')
+				isAllPlayersSpawned = true
+			end
+		end
+		-- Check if we're past the load timeout
+		local gameTime = Utilities:GetAbsoluteTime()
+		if gameTime > playerLoadFailSafe then
+			Debug:Print('Spawn timer limit exceeded.  Proceeding.')
+			isAllPlayersSpawned = true
+		end
 	end
 	-- Debug:Print('Waiting for players to spawn: '..math.ceil(gameTime)..' : '..playerLoadFailSafe)
 	return 1
