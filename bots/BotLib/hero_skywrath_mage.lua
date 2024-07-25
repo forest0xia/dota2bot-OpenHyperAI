@@ -40,28 +40,6 @@ sRoleItemsBuyList['pos_4'] = {
 	"item_faerie_fire",
 	"item_blood_grenade",
 
-	"item_tranquil_boots",
-	"item_magic_wand",
-	"item_rod_of_atos",
-	"item_glimmer_cape",--
-	"item_aether_lens",--
-	"item_aghanims_shard",
-	"item_boots_of_bearing",--
-	"item_ultimate_scepter",
-	"item_octarine_core",--
-	"item_gungir",--
-	"item_sheepstick",--
-	"item_ultimate_scepter_2",
-	"item_moon_shard",
-}
-
-sRoleItemsBuyList['pos_5'] = {
-	"item_tango",
-	"item_tango",
-	"item_double_branches",
-	"item_faerie_fire",
-	"item_blood_grenade",
-
 	"item_arcane_boots",
 	"item_magic_wand",
 	"item_rod_of_atos",
@@ -74,6 +52,28 @@ sRoleItemsBuyList['pos_5'] = {
 	"item_gungir",--
     "item_veil_of_discord",
 	"item_shivas_guard",--
+	"item_ultimate_scepter_2",
+	"item_moon_shard",
+}
+
+sRoleItemsBuyList['pos_5'] = {
+	"item_tango",
+	"item_tango",
+	"item_double_branches",
+	"item_faerie_fire",
+	"item_blood_grenade",
+
+	"item_tranquil_boots",
+	"item_magic_wand",
+	"item_rod_of_atos",
+	"item_glimmer_cape",--
+	"item_aether_lens",--
+	"item_aghanims_shard",
+	"item_boots_of_bearing",--
+	"item_ultimate_scepter",
+	"item_octarine_core",--
+	"item_gungir",--
+	"item_sheepstick",--
 	"item_ultimate_scepter_2",
 	"item_moon_shard",
 }

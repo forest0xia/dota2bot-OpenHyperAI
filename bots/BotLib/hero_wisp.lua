@@ -26,6 +26,20 @@ local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 local sRoleItemsBuyList = {}
 
 sRoleItemsBuyList['pos_4'] = {
+    "item_priest_outfit",
+    "item_urn_of_shadows",
+    "item_mekansm",
+    "item_glimmer_cape",
+    "item_guardian_greaves",
+    "item_spirit_vessel",
+    "item_veil_of_discord",
+    "item_shivas_guard",
+    "item_sheepstick",
+    "item_moon_shard",
+    "item_ultimate_scepter_2",
+}
+
+sRoleItemsBuyList['pos_5'] = {
     "item_blood_grenade",
     'item_mage_outfit',
     'item_ancient_janggo',
@@ -41,33 +55,27 @@ sRoleItemsBuyList['pos_4'] = {
     "item_ultimate_scepter_2",
 }
 
-sRoleItemsBuyList['pos_5'] = {
-    "item_priest_outfit",
-    "item_urn_of_shadows",
-    "item_mekansm",
-    "item_glimmer_cape",
-    "item_guardian_greaves",
-    "item_spirit_vessel",
-    "item_veil_of_discord",
-    "item_shivas_guard",
-    "item_sheepstick",
-    "item_moon_shard",
-    "item_ultimate_scepter_2",
-}
-
 sRoleItemsBuyList['pos_3'] = {
-    "item_mage_outfit",
-    "item_shadow_amulet",
-    "item_veil_of_discord",
-    "item_shivas_guard",
-    "item_cyclone",
-    "item_glimmer_cape",
-    "item_sheepstick",
-    "item_orchid",
-    "item_bloodthorn",
-    "item_wind_waker",
-    "item_moon_shard",
-    "item_ultimate_scepter_2",
+	"item_tango",
+	"item_faerie_fire",
+	"item_gauntlets",
+	"item_gauntlets",
+	"item_gauntlets",
+
+	"item_boots",
+	"item_armlet",
+	"item_black_king_bar",--
+	"item_sange",
+	"item_ultimate_scepter",
+	"item_heavens_halberd",--
+	"item_travel_boots",
+	"item_satanic",--
+	"item_aghanims_shard",
+	"item_assault",--
+	"item_travel_boots_2",--
+	"item_ultimate_scepter_2",
+	"item_sheepstick",--
+	"item_moon_shard",
 }
 
 sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']

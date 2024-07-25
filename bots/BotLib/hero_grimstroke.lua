@@ -43,6 +43,33 @@ sRoleItemsBuyList['pos_1'] = {
 sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
 
 sRoleItemsBuyList['pos_3'] = {
+	"item_tango",
+	"item_double_branches",
+	"item_faerie_fire",
+	"item_circlet",
+
+	"item_boots",
+	"item_ring_of_basilius",
+	"item_arcane_boots",
+	"item_magic_wand",
+    "item_veil_of_discord",
+	"item_shivas_guard",--
+	"item_rod_of_atos",
+	"item_gungir",--
+	"item_cyclone",
+	"item_eternal_shroud",--
+	"item_black_king_bar",--
+	"item_aghanims_shard",
+	'item_heavens_halberd',--
+    "item_wind_waker",
+	"item_refresher",--
+    "item_travel_boots",
+    "item_travel_boots_2",--
+	"item_moon_shard",
+	"item_ultimate_scepter_2",
+}
+
+sRoleItemsBuyList['pos_4'] = {
     "item_blood_grenade",
 	"item_priest_outfit",
 	"item_mekansm",
@@ -58,9 +85,23 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_ultimate_scepter_2",
 }
 
-sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_3']
+sRoleItemsBuyList['pos_5'] = {
+    "item_blood_grenade",
+	"item_mage_outfit",
+	"item_ancient_janggo",
+	"item_glimmer_cape",
+	"item_boots_of_bearing",
+	"item_pipe",
+    "item_ultimate_scepter",
+	"item_spirit_vessel",
+--	"item_wraith_pact",
+    "item_veil_of_discord",
+	"item_shivas_guard",
+	"item_sheepstick",
+	"item_moon_shard",
+	"item_ultimate_scepter_2",
+}
 
-sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_3']
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 X['sSellList'] = {

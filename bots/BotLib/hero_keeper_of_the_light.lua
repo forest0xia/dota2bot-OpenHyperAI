@@ -77,11 +77,11 @@ sRoleItemsBuyList['pos_4'] = {
 
     "item_boots",
     "item_urn_of_shadows",
-    "item_tranquil_boots",
+    "item_arcane_boots",
+    "item_glimmer_cape",--
     "item_spirit_vessel",--
 	"item_kaya_and_sange",--
-    "item_glimmer_cape",--
-    "item_boots_of_bearing",--
+    "item_guardian_greaves",--
     "item_octarine_core",--
     "item_sheepstick",--
     "item_aghanims_shard",
@@ -97,11 +97,11 @@ sRoleItemsBuyList['pos_5'] = {
 
     "item_boots",
     "item_urn_of_shadows",
-    "item_arcane_boots",
-    "item_glimmer_cape",--
+    "item_tranquil_boots",
     "item_spirit_vessel",--
 	"item_kaya_and_sange",--
-    "item_guardian_greaves",--
+    "item_glimmer_cape",--
+    "item_boots_of_bearing",--
     "item_octarine_core",--
     "item_sheepstick",--
     "item_aghanims_shard",

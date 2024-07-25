@@ -73,9 +73,9 @@ sRoleItemsBuyList['pos_4'] = {
     "item_magic_wand",
     "item_boots",
     "item_vladmir",--
-    "item_tranquil_boots",
+    "item_arcane_boots",
     "item_blink",
-    "item_boots_of_bearing",--
+    "item_guardian_greaves",--
     "item_black_king_bar",--
     "item_pipe",--
     "item_refresher",--
@@ -95,9 +95,9 @@ sRoleItemsBuyList['pos_5'] = {
     "item_magic_wand",
     "item_boots",
     "item_vladmir",--
-    "item_arcane_boots",
+    "item_tranquil_boots",
     "item_blink",
-    "item_guardian_greaves",--
+    "item_boots_of_bearing",--
     "item_black_king_bar",--
     "item_pipe",--
     "item_refresher",--

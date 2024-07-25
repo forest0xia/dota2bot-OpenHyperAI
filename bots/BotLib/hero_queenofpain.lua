@@ -83,9 +83,51 @@ sRoleItemsBuyList['pos_1'] = {
 
 sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_1']
 
-sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_1']
+sRoleItemsBuyList['pos_4'] = {
+	"item_tango",
+	"item_tango",
+	"item_double_branches",
+	"item_enchanted_mango",
+	"item_blood_grenade",
 
-sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_1']
+	"item_boots",
+	"item_arcane_boots",
+	"item_magic_wand",
+	"item_glimmer_cape",--
+	"item_aether_lens",--
+	"item_aghanims_shard",
+	"item_force_staff",--
+	"item_guardian_greaves",--
+	"item_cyclone",
+    "item_lotus_orb",--
+	"item_gungir",--
+	"item_moon_shard",
+	"item_wind_waker",--
+	"item_ultimate_scepter_2",
+}
+
+sRoleItemsBuyList['pos_5'] = {
+	"item_tango",
+	"item_tango",
+	"item_double_branches",
+	"item_enchanted_mango",
+	"item_blood_grenade",
+
+	"item_boots",
+	"item_tranquil_boots",
+	"item_magic_wand",
+	"item_glimmer_cape",--
+	"item_aether_lens",--
+	"item_aghanims_shard",
+	"item_force_staff",--
+	"item_boots_of_bearing",--
+	"item_cyclone",
+    "item_lotus_orb",--
+	"item_gungir",--
+	"item_moon_shard",
+	"item_wind_waker",--
+	"item_ultimate_scepter_2",
+}
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 

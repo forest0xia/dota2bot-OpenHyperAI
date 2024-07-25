@@ -65,9 +65,38 @@ sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
 
 sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_3']
 
-sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_3']
+sRoleItemsBuyList['pos_4'] = {
+	"item_priest_outfit",
+	"item_mekansm",
+	"item_glimmer_cape",
+	"item_aghanims_shard",
+	"item_guardian_greaves",
+	"item_spirit_vessel",
+--	"item_wraith_pact",
+	"item_ultimate_scepter",
+    "item_veil_of_discord",
+	"item_shivas_guard",
+	"item_moon_shard",
+	"item_ultimate_scepter_2",
+	"item_sheepstick",
+}
 
-sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_3']
+sRoleItemsBuyList['pos_5'] = {
+    "item_blood_grenade",
+	"item_mage_outfit",
+	"item_ancient_janggo",
+	"item_glimmer_cape",
+	"item_boots_of_bearing",
+	"item_pipe",
+    "item_ultimate_scepter",
+	"item_cyclone",
+--	"item_wraith_pact",
+    "item_veil_of_discord",
+	"item_shivas_guard",
+	"item_sheepstick",
+	"item_moon_shard",
+	"item_ultimate_scepter_2",
+}
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 

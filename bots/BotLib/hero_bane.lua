@@ -33,38 +33,6 @@ local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 
 local sRoleItemsBuyList = {}
 
-sRoleItemsBuyList['pos_4'] = {
-	"item_priest_outfit",
-	"item_mekansm",
-	"item_shadow_amulet",
---	"item_aghanims_shard",
-	"item_guardian_greaves",
-	"item_spirit_vessel",
-	"item_glimmer_cape",
---	"item_wraith_pact",
-    "item_veil_of_discord",
-	"item_shivas_guard",
-	"item_mystic_staff",
-	"item_sheepstick",
-	"item_ultimate_scepter_2",
-}
-
-sRoleItemsBuyList['pos_5'] = {
-	"item_priest_outfit",
-	"item_mekansm",
-	"item_shadow_amulet",
-	"item_aghanims_shard",
-	"item_guardian_greaves",
-	"item_spirit_vessel",
-	"item_glimmer_cape",
---	"item_wraith_pact",
-    "item_veil_of_discord",
-	"item_shivas_guard",
-	"item_mystic_staff",
-	"item_sheepstick",
-	"item_ultimate_scepter_2",
-}
-
 sRoleItemsBuyList['pos_1'] = {
 
 	"item_crystal_maiden_outfit",
@@ -120,6 +88,38 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_mystic_staff",
 	"item_ultimate_scepter_2",
 	"item_sheepstick",
+}
+
+sRoleItemsBuyList['pos_4'] = {
+	"item_priest_outfit",
+	"item_mekansm",
+	"item_shadow_amulet",
+--	"item_aghanims_shard",
+	"item_guardian_greaves",
+	"item_spirit_vessel",
+	"item_glimmer_cape",
+--	"item_wraith_pact",
+    "item_veil_of_discord",
+	"item_shivas_guard",
+	"item_mystic_staff",
+	"item_sheepstick",
+	"item_ultimate_scepter_2",
+}
+
+sRoleItemsBuyList['pos_5'] = {
+	"item_priest_outfit",
+	"item_mekansm",
+	"item_shadow_amulet",
+	"item_glimmer_cape",
+	"item_pipe",
+	"item_spirit_vessel",
+--	"item_wraith_pact",
+	"item_shivas_guard",
+	"item_aghanims_shard",
+	"item_mystic_staff",
+	"item_sheepstick",
+	"item_octarine_core",--
+	"item_ultimate_scepter_2",
 }
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]

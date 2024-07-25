@@ -30,18 +30,20 @@ sRoleItemsBuyList['pos_4'] = {
     "item_faerie_fire",
     "item_blood_grenade",
 
-    "item_tranquil_boots",
+    "item_arcane_boots",
     "item_magic_wand",
     "item_pavise",
-    "item_force_staff",--
+    "item_force_staff",
+    "item_pavise",
     "item_solar_crest",--
     "item_glimmer_cape",--
-    "item_boots_of_bearing",--
+	"item_guardian_greaves",--
+    "item_hurricane_pike",--
     "item_sheepstick",--
     "item_wind_waker",--
     "item_aghanims_shard",
-    "item_ultimate_scepter_2",
     "item_moon_shard",
+    "item_ultimate_scepter_2",
 }
 
 sRoleItemsBuyList['pos_5'] = {
@@ -50,18 +52,21 @@ sRoleItemsBuyList['pos_5'] = {
     "item_faerie_fire",
     "item_blood_grenade",
 
-    "item_arcane_boots",
+    "item_tranquil_boots",
     "item_magic_wand",
     "item_pavise",
-    "item_force_staff",--
+    "item_force_staff",
+    "item_pavise",
     "item_solar_crest",--
     "item_glimmer_cape",--
-    "item_guardian_greaves",--
+	"item_pipe",--
+    "item_boots_of_bearing",--
+    "item_hurricane_pike",--
     "item_sheepstick",--
-    "item_wind_waker",--
+    -- "item_wind_waker",--
     "item_aghanims_shard",
-    "item_ultimate_scepter_2",
     "item_moon_shard",
+    "item_ultimate_scepter_2",
 }
 
 sRoleItemsBuyList['pos_3'] = {
@@ -72,15 +77,17 @@ sRoleItemsBuyList['pos_3'] = {
     "item_arcane_boots",
     "item_magic_wand",
     "item_pavise",
-    "item_force_staff",--
+    "item_force_staff",
+    "item_pavise",
     "item_solar_crest",--
     "item_glimmer_cape",--
     "item_guardian_greaves",--
+    "item_hurricane_pike",--
     "item_sheepstick",--
     "item_wind_waker",--
     "item_aghanims_shard",
-    "item_ultimate_scepter_2",
     "item_moon_shard",
+    "item_ultimate_scepter_2",
 }
 
 sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']

@@ -75,6 +75,7 @@ sRoleItemsBuyList['pos_4'] = {
 	"item_heavens_halberd",
 	"item_lotus_orb",
 	"item_aghanims_shard",
+	"item_gungir",--
 	"item_travel_boots",
 	"item_assault",
 	"item_heart",
@@ -84,7 +85,21 @@ sRoleItemsBuyList['pos_4'] = {
 
 }
 
-sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_4']
+sRoleItemsBuyList['pos_5'] = {
+	'item_mage_outfit',
+	"item_ancient_janggo",
+	"item_glimmer_cape",--
+	"item_boots_of_bearing",--
+	"item_pipe",--
+	"item_aghanims_shard",
+	"item_cyclone",
+    "item_shivas_guard",--
+	"item_sheepstick",--
+    "item_heart",--
+	"item_octarine_core",--
+	"item_moon_shard",
+	"item_ultimate_scepter_2",
+}
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 

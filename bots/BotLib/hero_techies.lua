@@ -36,9 +36,9 @@ sRoleItemsBuyList['pos_4'] = {
 
     "item_boots",
     "item_magic_wand",
-    "item_tranquil_boots",
+    "item_arcane_boots",
     "item_glimmer_cape",--
-    "item_boots_of_bearing",--
+    "item_guardian_greaves",--
     "item_force_staff",--
     nUtility,--
     "item_octarine_core",--
@@ -56,9 +56,9 @@ sRoleItemsBuyList['pos_5'] = {
 
     "item_boots",
     "item_magic_wand",
-    "item_arcane_boots",
+    "item_tranquil_boots",
     "item_glimmer_cape",--
-    "item_guardian_greaves",--
+    "item_boots_of_bearing",--
     "item_force_staff",--
     nUtility,--
     "item_octarine_core",--

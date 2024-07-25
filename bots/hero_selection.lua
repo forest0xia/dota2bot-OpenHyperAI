@@ -983,20 +983,14 @@ function X.GetBestHeroFromPool(i, nTeamList)
 		end
 	end
 
-	if sBestHero ~= ''
-	then
-		print('synergy ', sBestHero)
-		return sBestHero
-	else
-		return X.GetNotRepeatHero(tSelectPoolList[i])
-	end
+	return sBestHero
 end
 
 function X.GetCurrEnmCores(nEnmTeam)
 	local nCurrCores = {}
 	for i = 1, #nEnmTeam
 	do
-		if nEnmTeam[i].pos >= 1 and nEnmTeam[i].pos <= 3
+		if nEnmTeam[i].pos >= 1 and nEnmTeam[i].pos <= 2
 		then
 			table.insert(nCurrCores, nEnmTeam[i].name)
 		end
@@ -1047,44 +1041,44 @@ function AllPickHeros()
 				sSelectHero = sSelectList[i]
 
 				if not overridePicks then
-					local didExhaust = false
-					local nCurrEnmCores = X.GetCurrEnmCores(nEnmTeam)
-	
-					-- Pick a random core in the current enemy comp to counter
-					local nHeroToCounter = nCurrEnmCores[RandomInt(1, #nCurrEnmCores)]
-	
-					for j = 1, #tSelectPoolList[i], 1
-					do
-						local idx = RandomInt(1, #tSelectPoolList[i])
-						local heroName = tSelectPoolList[i][idx]
-						if not X.IsRepeatHero(heroName)
-						and MU.IsCounter(heroName, nHeroToCounter) -- so it's not 'samey'; since bots don't really put pressure like a human would
-						then
-							print('counter pick. ', heroName, nHeroToCounter)
-							sSelectHero = heroName
-							break
+					if RandomInt(1, 4) >= 2 then
+						local nCurrEnmCores = X.GetCurrEnmCores(nEnmTeam)
+						local selectCounter = nil
+		
+						-- Pick a random core in the current enemy comp to counter
+						local nHeroToCounter = nCurrEnmCores[RandomInt(1, #nCurrEnmCores)]
+		
+						for j = 1, #tSelectPoolList[i], 1
+						do
+							local idx = RandomInt(1, #tSelectPoolList[i])
+							local heroName = tSelectPoolList[i][idx]
+							if not X.IsRepeatHero(heroName)
+							and MU.IsCounter(heroName, nHeroToCounter) -- so it's not 'samey'; since bots don't really put pressure like a human would
+							then
+								print('Counter pick. ', 'Selected: '..heroName, ' to counter: '..nHeroToCounter)
+								selectCounter = heroName
+								break
+							end
 						end
-	
-						didExhaust = true
-					end
-	
-					if didExhaust then
-						local heroName = X.GetBestHeroFromPool(i, nOwnTeam)
-						if heroName ~= nil
-						then
-							sSelectHero = heroName
+		
+						if selectCounter ~= nil then
+							sSelectHero = selectCounter
+						else
+							local synergy = X.GetBestHeroFromPool(i, nOwnTeam)
+							if synergy ~= '' and synergy ~= nil then
+								print('Synergy pick. ', 'Selected: '..synergy)
+								sSelectHero = synergy
+							end
 						end
+					else
+						print('Skip picking counter/synergy heroes. For more chance to see any heroes')
 					end
 				end
-				
 			end
 			
-			if X.IsRepeatHero(sSelectHero)
-			then
-				sSelectHero = X.GetNotRepeatHero( tSelectPoolList[i] )
-			end
-
+			if X.IsRepeatHero(sSelectHero) then sSelectHero = X.GetNotRepeatHero( tSelectPoolList[i] ) end
 			SelectHero( id, sSelectHero )
+
 			if Utils.HasValue(WeakHeroes, sSelectHero) then SelectedWeakHero = SelectedWeakHero + 1 end
 			-- print('Selected hero for idx='..i..', id='..id..', bot='..sSelectHero)
 			if Role["bLobbyGame"] == false then Role["bLobbyGame"] = true end

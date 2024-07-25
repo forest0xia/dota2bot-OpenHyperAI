@@ -53,7 +53,26 @@ sRoleItemsBuyList['pos_4'] = {
 	"item_moon_shard",
 }
 
-sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_4']
+sRoleItemsBuyList['pos_5'] = {
+    "item_double_tango",
+    "item_faerie_fire",
+    "item_clarity",
+    "item_blood_grenade",
+
+    "item_boots",
+    "item_urn_of_shadows",
+    "item_tranquil_boots",
+    "item_spirit_vessel",--
+    "item_glimmer_cape",--
+    "item_pavise",
+    "item_solar_crest",--
+    "item_boots_of_bearing",--
+    "item_octarine_core",--
+    "item_sheepstick",--
+    "item_aghanims_shard",
+    "item_ultimate_scepter_2",
+    "item_moon_shard",
+}
 
 sRoleItemsBuyList['pos_3'] = {
 	'item_mage_outfit',

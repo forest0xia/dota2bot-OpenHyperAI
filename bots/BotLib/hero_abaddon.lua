@@ -67,33 +67,26 @@ sRoleItemsBuyList['pos_4'] = {
 	"item_assault",
 	"item_travel_boots",
 	"item_moon_shard",
-	"item_refresher",
-	"item_travel_boots_2",
-	"item_ultimate_scepter_2",
 	"item_sheepstick",
+	"item_ultimate_scepter_2",
+	"item_octarine_core",
+	"item_travel_boots_2",
 }
 
 sRoleItemsBuyList['pos_5'] = {
-    "item_double_tango",
-    "item_double_enchanted_mango",
-    "item_double_branches",
-    "item_faerie_fire",
-    "item_blood_grenade",
-
-    "item_arcane_boots",
-    "item_magic_wand",
-    "item_crimson_guard",--
-    "item_force_staff",
-	"item_hurricane_pike",--
-    "item_guardian_greaves",--
-    "item_ultimate_scepter",
-    "item_heart",--
-    "item_lotus_orb",--
-    "item_veil_of_discord",
+	'item_mage_outfit',
+	"item_ancient_janggo",
+	"item_glimmer_cape",--
+	"item_boots_of_bearing",--
+	"item_pipe",--
+	"item_aghanims_shard",
+	"item_cyclone",
     "item_shivas_guard",--
-    "item_aghanims_shard",
-    "item_ultimate_scepter_2",
-    "item_moon_shard"
+	"item_sheepstick",--
+    "item_heart",--
+	"item_octarine_core",--
+	"item_moon_shard",
+	"item_ultimate_scepter_2",
 }
 
 

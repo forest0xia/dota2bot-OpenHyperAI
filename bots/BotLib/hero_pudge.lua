@@ -99,24 +99,20 @@ sRoleItemsBuyList['pos_3'] = {
 }
 
 sRoleItemsBuyList['pos_4'] = {
-    "item_tango",
-    "item_flask",
-    "item_enchanted_mango",
-    "item_wind_lace",
-    "item_blood_grenade",
-
-    "item_tranquil_boots",
-    "item_magic_wand",
-    "item_blink",
-    "item_aether_lens",--
-    "item_force_staff",
-    "item_boots_of_bearing",--
-    "item_pipe",--
-    "item_lotus_orb",--
-    "item_overwhelming_blink",--
-    "item_wind_waker",--
-    "item_aghanims_shard",
-    "item_ultimate_scepter_2",
+	'item_priest_outfit',
+	"item_mekansm",
+	"item_glimmer_cape",
+	"item_aghanims_shard",
+	"item_guardian_greaves",
+	"item_spirit_vessel",
+	"item_lotus_orb",
+	"item_gungir",--
+	--"item_holy_locket",
+	"item_sheepstick",
+	"item_mystic_staff",
+	"item_ultimate_scepter_2",
+    "item_veil_of_discord",
+	"item_shivas_guard",
     "item_moon_shard",
 }
 
@@ -135,6 +131,7 @@ sRoleItemsBuyList['pos_5'] = {
     "item_force_staff",
     "item_pipe",--
     "item_lotus_orb",--
+	"item_gungir",--
     "item_overwhelming_blink",--
     "item_wind_waker",--
     "item_aghanims_shard",

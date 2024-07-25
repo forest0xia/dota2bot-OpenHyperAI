@@ -41,15 +41,15 @@ sRoleItemsBuyList['pos_4'] = {
 	"item_blood_grenade",
 
 	"item_boots",
-	"item_tranquil_boots",
+	"item_arcane_boots",
 	"item_magic_wand",
 	"item_glimmer_cape",--
 	"item_aether_lens",--
 	"item_aghanims_shard",
 	"item_force_staff",--
-	"item_boots_of_bearing",--
+	"item_guardian_greaves",--
 	"item_cyclone",
-	"item_lotus_orb",--
+	"item_sheepstick",
 	"item_wind_waker",--
 	"item_ultimate_scepter_2",
 	"item_moon_shard",
@@ -63,25 +63,89 @@ sRoleItemsBuyList['pos_5'] = {
 	"item_blood_grenade",
 
 	"item_boots",
-	"item_arcane_boots",
+	"item_tranquil_boots",
 	"item_magic_wand",
 	"item_glimmer_cape",--
 	"item_aether_lens",--
 	"item_aghanims_shard",
 	"item_force_staff",--
-	"item_guardian_greaves",--
+	"item_boots_of_bearing",--
 	"item_cyclone",
-	"item_lotus_orb",--
-	"item_wind_waker",--
+    "item_lotus_orb",--
+	"item_sheepstick",
 	"item_ultimate_scepter_2",
 	"item_moon_shard",
 }
 
-sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_4']
+sRoleItemsBuyList['pos_1'] = {
+    "item_tango",
+    "item_double_branches",
+    "item_faerie_fire",
 
-sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_4']
+    "item_boots",
+    "item_magic_wand",
+    "item_dagon_2",
+    "item_travel_boots",
+    "item_aghanims_shard",
+    "item_cyclone",
+    "item_ultimate_scepter",
+    "item_octarine_core",--
+    "item_dagon_5",--
+    "item_ultimate_scepter_2",
+    "item_veil_of_discord",
+    "item_shivas_guard",
+    "item_travel_boots_2",--
+    "item_ethereal_blade",--
+    "item_wind_waker",--
+    "item_moon_shard",
+}
 
-sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_4']
+sRoleItemsBuyList['pos_2'] = {
+    "item_tango",
+    "item_double_branches",
+    "item_faerie_fire",
+
+    "item_bottle",
+    "item_boots",
+    "item_magic_wand",
+    "item_dagon_2",
+    "item_travel_boots",
+    "item_aghanims_shard",
+    "item_cyclone",
+    "item_ultimate_scepter",
+    "item_octarine_core",--
+    "item_dagon_5",--
+    "item_ultimate_scepter_2",
+    "item_veil_of_discord",
+    "item_shivas_guard",
+    "item_travel_boots_2",--
+    "item_ethereal_blade",--
+    "item_wind_waker",--
+    "item_moon_shard",
+}
+
+sRoleItemsBuyList['pos_3'] = {
+    "item_tango",
+    "item_double_branches",
+    "item_magic_stick",
+    "item_ring_of_protection",
+
+    "item_boots",
+    "item_magic_wand",
+    "item_phase_boots",
+    "item_lotus_orb",--
+    "item_veil_of_discord",
+	"item_gungir",--
+    "item_eternal_shroud",--
+    "item_ultimate_scepter",
+    "item_shivas_guard",--
+	"item_sheepstick",
+    "item_travel_boots",
+    "item_moon_shard",
+    "item_travel_boots_2",--
+    "item_aghanims_shard",
+    "item_ultimate_scepter_2",
+}
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 

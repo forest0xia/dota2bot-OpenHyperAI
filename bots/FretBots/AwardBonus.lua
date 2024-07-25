@@ -387,9 +387,9 @@ function AwardBonus:GetPerMinuteBonus(bot, gpm, xpm)
 		-- 增加基础回蓝，按照难度和分钟数翻倍
 		-- print('Enabled bots with extra regens for diffculty scale = '..Settings.difficultyScale)
 		if Utilities:IsTurboMode() then
-			bot:SetBaseManaRegen((0.6 + Settings.difficultyScale) * Utilities:GetAbsoluteTime() / 60)
+			bot:SetBaseManaRegen((0.4 + Settings.difficultyScale) * Utilities:GetAbsoluteTime() / 60)
 		else
-			bot:SetBaseManaRegen((0.3 + Settings.difficultyScale) * Utilities:GetAbsoluteTime() / 60)
+			bot:SetBaseManaRegen((0.2 + Settings.difficultyScale) * Utilities:GetAbsoluteTime() / 60)
 		end
 	end
 
@@ -414,7 +414,7 @@ function AwardBonus:GetSpecificPerMinuteBonus(bot, pmBot, roleTable, settings)
 	local pmPlayer = roleTable[bot.stats.role]
 	if pmPlayer == nil or #AllBots[bot.stats.team] < 5 then
 		-- in case no human player detected, just based on difficultyScale.
-		local defaultScale = 120 -- gpm or xpm
+		local defaultScale = 90 -- gpm or xpm
 		if #AllBots[bot.stats.team] < 5 then -- less for human side bots
 			defaultScale = defaultScale / 1.5
 		end

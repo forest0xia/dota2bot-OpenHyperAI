@@ -75,7 +75,7 @@ sRoleItemsBuyList['pos_4'] = {
     "item_hurricane_pike",--
     "item_aghanims_shard",
     "item_mage_slayer",--
-    "item_boots_of_bearing",--
+    "item_guardian_greaves",--
     "item_moon_shard",--
     "item_bloodthorn",--
     "item_sheepstick",--
@@ -91,10 +91,11 @@ sRoleItemsBuyList['pos_5'] = {
     "item_magic_wand",
     "item_boots",
     "item_force_staff",
+    "item_pavise",
+    "item_solar_crest",--
     "item_hurricane_pike",--
     "item_aghanims_shard",
-    "item_mage_slayer",--
-    "item_guardian_greaves",--
+    "item_boots_of_bearing",--
     "item_moon_shard",--
     "item_bloodthorn",--
     "item_sheepstick",--

@@ -54,7 +54,8 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_ancient_janggo",
 	"item_glimmer_cape",
 	"item_boots_of_bearing",
-	"item_pipe",
+	"item_rod_of_atos",
+	"item_gungir",--
 	"item_aghanims_shard",
 	"item_veil_of_discord",
 	"item_cyclone",
@@ -63,7 +64,6 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_wind_waker",
 	"item_moon_shard",
 	"item_ultimate_scepter_2",
-
 }
 
 sRoleItemsBuyList['pos_4'] = {
@@ -84,7 +84,22 @@ sRoleItemsBuyList['pos_4'] = {
 
 }
 
-sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_4']
+sRoleItemsBuyList['pos_5'] = {
+	"item_blood_grenade",
+
+	'item_mage_outfit',
+	'item_ancient_janggo',
+	'item_glimmer_cape',
+	'item_boots_of_bearing',
+	'item_pipe',
+	'item_veil_of_discord',
+	"item_shivas_guard",
+	'item_cyclone',
+	'item_sheepstick',
+	"item_wind_waker",
+	"item_moon_shard",
+	"item_ultimate_scepter_2",
+}
 
 sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
 

@@ -32,13 +32,14 @@ sRoleItemsBuyList['pos_4'] = {
     "item_tranquil_boots",
     "item_magic_wand",
     "item_blink",
-    -- "item_ultimate_scepter",
     "item_crimson_guard",--
     "item_cyclone",
     "item_boots_of_bearing",--
+    "item_ultimate_scepter",
     "item_aghanims_shard",
     "item_black_king_bar",--
     "item_lotus_orb",--
+	"item_gungir",--
     "item_wind_waker",--
     -- "item_ultimate_scepter_2",
     "item_overwhelming_blink",--
@@ -54,13 +55,15 @@ sRoleItemsBuyList['pos_5'] = {
     "item_arcane_boots",
     "item_magic_wand",
     "item_blink",
-    -- "item_ultimate_scepter",
     "item_crimson_guard",--
     "item_cyclone",
     "item_guardian_greaves",--
+    "item_ultimate_scepter",
     "item_aghanims_shard",
-    "item_black_king_bar",--
+    "item_pavise",
+    "item_solar_crest",--
     "item_lotus_orb",--
+	"item_gungir",--
     "item_wind_waker",--
     -- "item_ultimate_scepter_2",
     "item_overwhelming_blink",--
@@ -69,24 +72,19 @@ sRoleItemsBuyList['pos_5'] = {
 }
 
 sRoleItemsBuyList['pos_1'] = {
-    "item_double_tango",
-    "item_wind_lace",
-
-    "item_tranquil_boots",
-    "item_magic_wand",
-    "item_blink",
-    -- "item_ultimate_scepter",
-    "item_crimson_guard",--
-    "item_cyclone",
-    "item_boots_of_bearing",--
-    "item_aghanims_shard",
-    "item_black_king_bar",--
-    "item_lotus_orb",--
-    "item_wind_waker",--
-    -- "item_ultimate_scepter_2",
-    "item_overwhelming_blink",--
-    "item_ultimate_scepter_2",
-    "item_moon_shard",
+	"item_tank_outfit",
+	"item_echo_sabre",
+	"item_crimson_guard",--
+	"item_ultimate_scepter",
+	"item_heavens_halberd",--
+	"item_assault",--
+	"item_travel_boots",
+	"item_aghanims_shard",
+	"item_satanic",--
+	"item_ultimate_scepter_2",
+	"item_moon_shard",
+	"item_heart",--
+	"item_travel_boots_2",--
 }
 
 sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']

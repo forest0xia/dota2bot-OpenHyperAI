@@ -72,8 +72,8 @@ sRoleItemsBuyList['pos_2'] = {
 	"item_kaya_and_sange",--
 	"item_octarine_core",--
 	"item_refresher",--
-	"item_ultimate_scepter_2",
 	"item_moon_shard",
+	"item_ultimate_scepter_2",
 }
 
 sRoleItemsBuyList['pos_3'] = {
@@ -88,15 +88,16 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_magic_wand",
     "item_veil_of_discord",
 	"item_shivas_guard",--
+	"item_guardian_greaves",--
 	"item_cyclone",
 	"item_eternal_shroud",--
 	"item_black_king_bar",--
 	"item_aghanims_shard",
 	sPipeHalberd,--
-	"item_guardian_greaves",--
+    "item_wind_waker",
 	"item_refresher",--
-	"item_ultimate_scepter_2",
 	"item_moon_shard",
+	"item_ultimate_scepter_2",
 }
 
 sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']

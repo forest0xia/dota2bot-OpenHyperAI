@@ -29,13 +29,13 @@ local sCrimsonPipe = RandomInt(1, 2) == 1 and "item_crimson_guard" or "item_pipe
 sRoleItemsBuyList['pos_1'] = {
 	"item_bristleback_outfit",
 	"item_heavens_halberd",--
-	"item_black_king_bar",--
-    "item_blink",
 	"item_travel_boots",
+	"item_assault",--
 	"item_abyssal_blade",--
+    "item_blink",
+	"item_black_king_bar",--
 	"item_aghanims_shard",
 	"item_overwhelming_blink",--
-    "item_refresher",--
 	"item_moon_shard",
     "item_ultimate_scepter_2",
 	"item_travel_boots_2",--
@@ -48,12 +48,13 @@ sRoleItemsBuyList['pos_3'] = {
     sCrimsonPipe,--
 	"item_aghanims_shard",
 	"item_heavens_halberd",
-	"item_blink",
 	"item_travel_boots",
 	"item_assault",--
+	"item_blink",
 	"item_heart",--
 	"item_overwhelming_blink",--
 	"item_moon_shard",
+    "item_refresher",--
     "item_ultimate_scepter_2",
 	"item_travel_boots_2",--
 }

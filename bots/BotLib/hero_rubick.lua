@@ -50,7 +50,7 @@ sRoleItemsBuyList['pos_2'] = {
     "item_moon_shard",
 }
 
-sRoleItemsBuyList['pos_4'] = {
+sRoleItemsBuyList['pos_5'] = {
     "item_double_tango",
     "item_double_branches",
     "item_blood_grenade",
@@ -75,7 +75,7 @@ sRoleItemsBuyList['pos_4'] = {
     "item_moon_shard",
 }
 
-sRoleItemsBuyList['pos_5'] = {
+sRoleItemsBuyList['pos_4'] = {
     "item_double_tango",
     "item_double_branches",
     "item_blood_grenade",
@@ -99,7 +99,28 @@ sRoleItemsBuyList['pos_5'] = {
     "item_ultimate_scepter_2",
     "item_moon_shard",
 }
-sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_2']
+sRoleItemsBuyList['pos_1'] = {
+    "item_tango",
+    "item_double_branches",
+    "item_faerie_fire",
+
+    "item_boots",
+    "item_magic_wand",
+    "item_dagon_2",
+    "item_travel_boots",
+    "item_aghanims_shard",
+    "item_cyclone",
+    "item_ultimate_scepter",
+    "item_octarine_core",--
+    "item_dagon_5",--
+    "item_ultimate_scepter_2",
+    "item_veil_of_discord",
+    "item_shivas_guard",
+    "item_travel_boots_2",--
+    "item_ethereal_blade",--
+    "item_wind_waker",--
+    "item_moon_shard",
+}
 
 sRoleItemsBuyList['pos_3'] = {
     "item_tango",

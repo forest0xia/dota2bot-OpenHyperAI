@@ -40,7 +40,7 @@ sRoleItemsBuyList['pos_4'] = {
 	"item_double_branches",
 	"item_blood_grenade",
 
-	"item_tranquil_boots",
+	"item_arcane_boots",
 	"item_magic_wand",
 	"item_glimmer_cape",--
 	"item_aghanims_shard",
@@ -48,7 +48,7 @@ sRoleItemsBuyList['pos_4'] = {
 	"item_ultimate_scepter",
     "item_veil_of_discord",
 	"item_shivas_guard",--
-	"item_boots_of_bearing",--
+	"item_guardian_greaves",--
 	"item_refresher",--
 	"item_octarine_core",--
 	"item_ultimate_scepter_2",
@@ -61,7 +61,7 @@ sRoleItemsBuyList['pos_5'] = {
 	"item_double_branches",
 	"item_blood_grenade",
 
-	"item_arcane_boots",
+	"item_tranquil_boots",
 	"item_magic_wand",
 	"item_glimmer_cape",--
 	"item_aghanims_shard",
@@ -69,7 +69,7 @@ sRoleItemsBuyList['pos_5'] = {
 	"item_ultimate_scepter",
     "item_veil_of_discord",
 	"item_shivas_guard",--
-	"item_guardian_greaves",--
+	"item_boots_of_bearing",--
 	"item_refresher",--
 	"item_octarine_core",--
 	"item_ultimate_scepter_2",
