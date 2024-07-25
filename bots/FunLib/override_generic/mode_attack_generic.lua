@@ -17,29 +17,28 @@ function X.GetDesire()
 
 	if bot:GetActiveMode() == BOT_MODE_ATTACK then
 		botTarget = bot:GetTarget()
-		if J.IsValidHero(botTarget)
-		and not J.CanBeAttacked(botTarget)
-		or not J.IsInRange(botTarget, bot, MaxTrackingDistance) then
+		if not J.IsValidHero(botTarget)
+		or not J.CanBeAttacked(botTarget)
+		or not J.IsInRange(bot, botTarget, MaxTrackingDistance) then
 			bot:SetTarget(nil)
-			-- print('Clear assigned attack target')
 			return BOT_ACTION_DESIRE_NONE
 		end
 	end
 
     nEnemyHeroes = J.GetNearbyHeroes(bot, 1600, true)
     nAllyHeroes = J.GetNearbyHeroes(bot, 1600, false)
+	nEnemyTowers = bot:GetNearbyTowers(1000, true )
 	nEnemyCreeps = bot:GetNearbyCreeps(800, true)
-	nEnemyTowers = bot:GetNearbyTowers(800, true )
 	nAttackRange = bot:GetAttackRange()
 
 	-- sync with nearby ally's target if any
-	if nAllyHeroes ~= nil and #nAllyHeroes >= 2 then
-		local ally = nAllyHeroes[2]
-		if J.IsValidHero(ally) and J.IsInRange(ally, bot, 1600) and J.IsGoingOnSomeone(ally) then
-			bot:SetTarget(J.GetProperTarget(ally))
-			return GetDesireBasedOnHp()
-		end
-	end
+	-- if nAllyHeroes ~= nil and #nAllyHeroes >= 2 then
+	-- 	local ally = nAllyHeroes[2]
+	-- 	if J.IsValidHero(ally) and J.IsInRange(ally, bot, 1600) and J.IsGoingOnSomeone(ally) then
+	-- 		bot:SetTarget(J.GetProperTarget(ally))
+	-- 		return GetDesireBasedOnHp()
+	-- 	end
+	-- end
 
 	if J.GetModifierTime(bot, "modifier_muerta_pierce_the_veil") > 0.5
 	then
@@ -64,7 +63,7 @@ function X.GetDesire()
 		return GetDesireBasedOnHp()
 	end
 
-	-- time to direct attack any hp creeps
+	-- time to direct attack any creeps
 	if #nEnemyCreeps > 0 then
 		if J.IsInLaningPhase() then
 			if not J.IsCore(bot) and #nAllyHeroes > 1 then

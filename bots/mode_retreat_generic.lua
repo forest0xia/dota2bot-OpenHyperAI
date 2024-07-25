@@ -12,6 +12,7 @@ local targetBot = J.GetProperTarget( bot )
 local nAllyHeroes, nEnemyHeroes, ourPower, enemyPower, uniqueMates, uniqueEnemies, nearbyEnemyUnits, nearbyAllyUnits, retreatDesire, possibleMaxDesire
 local maxDesireReduceRate = 1.5 -- can make max smaller so any peak from one of the factor can have more impact. dont get too small to cause bots being passive.
 
+if Utils.BuggyHeroesDueToValveTooLazy[botName] then
 function GetDesire()
 	if not bot:IsAlive() then return BOT_ACTION_DESIRE_NONE end
     if J.GetHP(bot) > 0.2 and (bot:IsUsingAbility() or bot:IsChanneling()) then return BOT_ACTION_DESIRE_NONE end
@@ -192,7 +193,7 @@ function GetDesire()
 
 	-- General cases:
 
-	retreatDesire = retreatDesire + RemapValClamped(enemyPower / ourPower, 0, 3, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_VERYHIGH )
+	retreatDesire = retreatDesire + RemapValClamped(enemyPower / ourPower, 0, 2, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_VERYHIGH )
 	retreatDesire = retreatDesire + RemapValClamped(nearbyEnemyUnits - nearbyAllyUnits, 0, 5, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_VERYHIGH )
 	retreatDesire = retreatDesire + RemapValClamped(#uniqueEnemies - #uniqueMates, 0, 2, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_VERYHIGH )
 	retreatDesire = retreatDesire + RemapValClamped(J.GetHP(bot), 1, 0.1, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_VERYHIGH * 1.3 )
@@ -214,6 +215,8 @@ function GetDesire()
 	end
 
     return BOT_ACTION_DESIRE_NONE
+end
+
 end
 
 function CountNearByUnits(bEnemy, range)

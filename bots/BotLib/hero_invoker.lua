@@ -150,7 +150,7 @@ function X.MinionThink(hMinionUnit, bot)
         end
         
         -- 如果不是冒死也要杀死目前的情况，不要送
-        if J.GetHP(hMinionUnit) < 0.2 then
+        if J.GetHP(hMinionUnit) < 0.5 and botTarget ~= nil and J.IsInRange(hMinionUnit, botTarget, botTarget:GetAttackRange()) then
             hMinionUnit:Action_MoveToLocation(J.GetTeamFountain())
             return
         end

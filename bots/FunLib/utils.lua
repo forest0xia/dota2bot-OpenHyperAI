@@ -214,6 +214,20 @@ function X.RemoveValueFromTable(tbl, valueToRemove)
     end
 end
 
+function X.HasActionTypeInQueue(bot, actionType)
+    local nActions = bot:NumQueuedActions()
+    if nActions > 0 then
+        for i=1, nActions do
+            local aType = bot:GetQueuedActionType(i)
+            if aType == actionType then
+                return true
+            end
+            -- print('Bot '..bot:GetUnitName().." has enqueued actions i="..i..", type="..tostring(aType))
+        end
+    end
+    return false
+end
+
 -- count the number of human vs bot players in the team. returns: #humen, #bots
 function X.NumHumanBotPlayersInTeam(team)
 	local nHuman, nBot = 0, 0
@@ -510,7 +524,19 @@ BOT_MODE_DESIRE_VERYHIGH - 0.9
 BOT_MODE_DESIRE_ABSOLUTE - 1.0
 
 
+Action Types
 
-
+BOT_ACTION_TYPE_NONE
+BOT_ACTION_TYPE_IDLE
+BOT_ACTION_TYPE_MOVE_TO
+BOT_ACTION_TYPE_MOVE_TO_DIRECTLY
+BOT_ACTION_TYPE_ATTACK
+BOT_ACTION_TYPE_ATTACKMOVE
+BOT_ACTION_TYPE_USE_ABILITY
+BOT_ACTION_TYPE_PICK_UP_RUNE
+BOT_ACTION_TYPE_PICK_UP_ITEM
+BOT_ACTION_TYPE_DROP_ITEM
+BOT_ACTION_TYPE_SHRINE
+BOT_ACTION_TYPE_DELAY
 
 ]]

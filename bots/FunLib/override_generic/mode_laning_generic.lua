@@ -5,30 +5,21 @@ local X = BotsInit.CreateGeneric()
 
 local bot = GetBot()
 local botName = bot:GetUnitName()
+local LowHealthThreshold = 0.4
+local safeAmountFromFront = 300
 
 function X.OnStart() end
 function X.OnEnd() end
 
 -- function X.GetDesire()
 -- end
+local botTarget, nEnemyHeroes, nAllyHeroes, nEnemyTowers, nEnemyCreeps, nAllyCreeps, nAttackRange
+
 
 function X.Think()
     if not bot:IsAlive() or J.CanNotUseAction(bot) then return end
 
 	local AttackRange = bot:GetAttackRange()
-	local LowHealthThreshold = 0.35
-	local RetreatThreshold = 0.15
-
-	local nEnemyHeroes = bot:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
-	local nAllyHeroes = bot:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
-
-	if (J.GetHP(bot) < RetreatThreshold and nEnemyHeroes ~= nil and #nEnemyHeroes > 0)
-	or (bot:WasRecentlyDamagedByAnyHero(2) and (bot:GetAttackTarget() ~= nil and not (bot:GetAttackTarget()):IsHero()))
-	or (J.GetHP(bot) < RetreatThreshold and (bot:WasRecentlyDamagedByCreep(2) or bot:WasRecentlyDamagedByTower(2)))
-	then
-		bot:Action_MoveToLocation(J.GetTeamFountain() + RandomVector(600))
-		return
-	end
 
 	local assignedLane = bot:GetAssignedLane()
 	if GetTeam() == TEAM_RADIANT then
@@ -55,22 +46,30 @@ function X.Think()
 
 	-- print('Bug laning think, '..botName..', assignedLane='..tostring(assignedLane)..', pos='..J.GetPosition(bot))
 
-	local vLaneFront = GetLaneFrontLocation(GetTeam(), assignedLane, -AttackRange - 100)
-	local vEnemyLaneFront = GetLaneFrontLocation(GetOpposingTeam(), assignedLane, -AttackRange - 100)
-	local nEnemyLaneAmount = 1 - GetLaneFrontAmount(GetOpposingTeam(), assignedLane, true)
+	local safeAmountWithAttackRange = -AttackRange - safeAmountFromFront
+	local vLaneFront = GetLaneFrontLocation(GetTeam(), assignedLane, safeAmountWithAttackRange)
 
-	if J.GetDistance(vLaneFront, vEnemyLaneFront) <= 100
-	and nEnemyLaneAmount > 0
-	then
-		vLaneFront = vEnemyLaneFront
+	nEnemyTowers = bot:GetNearbyTowers(1000, true )
+	nEnemyCreeps = bot:GetNearbyCreeps(400, true)
+
+	if (#nEnemyTowers >= 1 and J.IsInRange(bot, nEnemyTowers[1], 800))
+	or (#nEnemyCreeps >= 2 and bot:WasRecentlyDamagedByCreep(2) )
+	or bot:WasRecentlyDamagedByTower(2) then
+		if bot:GetLevel() < 5 then
+			vLaneFront = GetLaneFrontLocation(GetTeam(), assignedLane, RemapValClamped(J.GetHP(bot), 0, 1, -1000 + safeAmountWithAttackRange, safeAmountWithAttackRange))
+			bot:Action_MoveToLocation(vLaneFront)
+			return
+		end
 	end
 
 	if J.GetHP(bot) > LowHealthThreshold
 	then
-		bot:Action_MoveToLocation(vLaneFront + RandomVector(300))
+		bot:Action_MoveToLocation(vLaneFront + RandomVector(240))
+		return
 	else
-		vLaneFront = GetLaneFrontLocation(GetTeam(), assignedLane, -RemapValClamped(J.GetHP(bot), 0, 1, 1200, AttackRange))
+		vLaneFront = GetLaneFrontLocation(GetTeam(), assignedLane, RemapValClamped(J.GetHP(bot), 0, 1, -1000 + safeAmountWithAttackRange, safeAmountWithAttackRange))
 		bot:Action_MoveToLocation(vLaneFront)
+		return
 	end
 end
 

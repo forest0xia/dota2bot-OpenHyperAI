@@ -12,7 +12,7 @@ end
 --     Defend.DefendThink(bot, LANE_MID)
 -- end
 
-if Utils.BuggyHeroesDueToValveTooLazy[botName] then
-	function GetDesire() return Defend.GetDefendDesire(bot, LANE_MID) end
-	function Think() return Defend.DefendThink(bot, LANE_MID) end
-end
+function GetDesire() return Defend.GetDefendDesire(bot, LANE_MID) end
+function Think() return Defend.DefendThink(bot, LANE_MID) end
+-- if Utils.BuggyHeroesDueToValveTooLazy[botName] then
+-- end

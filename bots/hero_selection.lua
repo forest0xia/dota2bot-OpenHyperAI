@@ -11,6 +11,7 @@ local tLaneAssignList = {}
 local bUserMode = false
 local bLaneAssignActive = true
 local bLineupReserve = false
+local overridePicks = false
 
 local MU = require( GetScriptDirectory()..'/FunLib/aba_matchups' )
 local Role = require( GetScriptDirectory()..'/FunLib/aba_role' )
@@ -236,7 +237,6 @@ local sPos2List = {
 	"npc_dota_hero_pudge",
 	"npc_dota_hero_queenofpain",
 	"npc_dota_hero_razor",
-	"npc_dota_hero_riki",
 	"npc_dota_hero_silencer",
 	"npc_dota_hero_slardar",
 	"npc_dota_hero_snapfire",
@@ -301,6 +301,7 @@ local sPos3List = {
 	"npc_dota_hero_spirit_breaker",
 	"npc_dota_hero_tidehunter",
 	"npc_dota_hero_tiny",
+	"npc_dota_hero_riki",
 	"npc_dota_hero_tusk",
 	"npc_dota_hero_viper",
 	"npc_dota_hero_visage",
@@ -439,6 +440,10 @@ local WeakHeroes = {
 	'npc_dota_hero_treant',
 	'npc_dota_hero_pangolier',
 	'npc_dota_hero_furion',
+	'npc_dota_hero_tusk',
+	'npc_dota_hero_morphling',
+	'npc_dota_hero_visage',
+	'npc_dota_hero_void_spirit',
 
 	-- Buggys, meaning they have bugs on Valves side, as of (still) 2024/7/21:
 	'npc_dota_hero_elder_titan',
@@ -448,7 +453,7 @@ local WeakHeroes = {
 	'npc_dota_hero_wisp',
 	'npc_dota_hero_muerta',
 	'npc_dota_hero_marci',
-	'npc_dota_hero_lone_druid',
+	-- 'npc_dota_hero_lone_druid',
 }
 local SelectedWeakHero = 0
 local MaxWeakHeroCount = 1
@@ -669,6 +674,8 @@ local OneVoneLaneAssignment = {
 
 -- Modify the code below to manually choose the heroes you'd like bots to play. Don't forget to uncomment this line below: sSelectList = X.OverrideTeamHeroes()
 function X.OverrideTeamHeroes()
+	overridePicks = true
+
 	if GetTeam() == TEAM_RADIANT
 	then
 		return {
@@ -889,7 +896,7 @@ end
 -- limit the number and chance the weak heroes can be picked.
 function X.SkipPickingWeakHeroes(sHero)
 	return Utils.HasValue(WeakHeroes, sHero)
-	and (RandomInt(1, 2) >= 2 or SelectedWeakHero >= MaxWeakHeroCount)
+	and SelectedWeakHero >= MaxWeakHeroCount
 end
 
 if bUserMode and HeroSet['JinYongAI'] ~= nil
@@ -1037,36 +1044,36 @@ function AllPickHeros()
 			then
 				sSelectHero = X.GetNotRepeatHero( tSelectPoolList[i] )
 			else
-				-- sSelectHero = sSelectList[i]
+				sSelectHero = sSelectList[i]
 
-				local didExhaust = false
-				local nCurrEnmCores = X.GetCurrEnmCores(nEnmTeam)
-
-				-- Pick a random core in the current enemy comp to counter
-				local nHeroToCounter = nCurrEnmCores[RandomInt(1, #nCurrEnmCores)]
-				local sPoolList = Utils.Deepcopy(tSelectPoolList[i])
-
-				for j = 1, #tSelectPoolList[i], 1
-				do
-					local idx = RandomInt(1, #sPoolList)
-					local heroName = sPoolList[idx]
-					if not X.IsRepeatHero(heroName)
-					and MU.IsCounter(heroName, nHeroToCounter) -- so it's not 'samey'; since bots don't really put pressure like a human would
-					then
-						print('counter pick. ', heroName, nHeroToCounter)
-						sSelectHero = heroName
-						break
+				if not overridePicks then
+					local didExhaust = false
+					local nCurrEnmCores = X.GetCurrEnmCores(nEnmTeam)
+	
+					-- Pick a random core in the current enemy comp to counter
+					local nHeroToCounter = nCurrEnmCores[RandomInt(1, #nCurrEnmCores)]
+	
+					for j = 1, #tSelectPoolList[i], 1
+					do
+						local idx = RandomInt(1, #tSelectPoolList[i])
+						local heroName = tSelectPoolList[i][idx]
+						if not X.IsRepeatHero(heroName)
+						and MU.IsCounter(heroName, nHeroToCounter) -- so it's not 'samey'; since bots don't really put pressure like a human would
+						then
+							print('counter pick. ', heroName, nHeroToCounter)
+							sSelectHero = heroName
+							break
+						end
+	
+						didExhaust = true
 					end
-
-					table.remove(sPoolList, idx)
-					if j == #tSelectPoolList[i] or #sPoolList == 0 then didExhaust = true; return end
-				end
-
-				if didExhaust then
-					local heroName = X.GetBestHeroFromPool(i, nOwnTeam)
-					if heroName ~= nil
-					then
-						sSelectHero = heroName
+	
+					if didExhaust then
+						local heroName = X.GetBestHeroFromPool(i, nOwnTeam)
+						if heroName ~= nil
+						then
+							sSelectHero = heroName
+						end
 					end
 				end
 				
@@ -1134,7 +1141,6 @@ local function handleCommand(command, PlayerID, bTeamOnly)
 				do
 					if IsPlayerBot(id) and IsPlayerInHeroSelectionControl(id) and GetSelectedHeroName(id) == "" then
 						SelectHero(id, hero);
-						if Utils.HasValue(WeakHeroes, hero) then SelectedWeakHero = SelectedWeakHero + 1 end
 						break;
 					end
 				end
@@ -1143,7 +1149,6 @@ local function handleCommand(command, PlayerID, bTeamOnly)
 				do
 					if IsPlayerBot(id) and IsPlayerInHeroSelectionControl(id) and GetSelectedHeroName(id) == "" then
 						SelectHero(id, hero);
-						if Utils.HasValue(WeakHeroes, hero) then SelectedWeakHero = SelectedWeakHero + 1 end
 						break;
 					end
 				end

@@ -119,8 +119,23 @@ X['bDeafaultItem'] = true
 function X.MinionThink(hMinionUnit, bot)
 
 	if Minion.IsValidUnit( hMinionUnit )
-		and ( not J.IsKeyWordUnit( 'npc_dota_warlock_minor_imp', hMinionUnit ) )
 	then
+		if string.find(hMinionUnit:GetUnitName(), "warlock_golem") then
+			local target = J.GetProperTarget( bot )
+		
+			if target ~= nil then
+				hMinionUnit:Action_AttackUnit(target, false)
+				return
+			elseif bot:IsAlive() then
+				if GetUnitToUnitDistance(hMinionUnit, bot) > 200 then
+					hMinionUnit:Action_MoveToLocation(bot:GetLocation())
+				else
+					hMinionUnit:Action_MoveToLocation(bot:GetLocation() + RandomVector(200))
+				end
+				return
+			end
+		end
+
 		Minion.IllusionThink( hMinionUnit )
 	end
 

@@ -25,11 +25,11 @@ function Defend.GetDefendDesireHelper(bot, lane)
 	end
 
 	local botLevel = bot:GetLevel()
-	if J.GetPosition(bot) == 1 and botLevel < 8
+	if J.GetPosition(bot) == 1 and botLevel < 6
 	or J.GetPosition(bot) == 2 and botLevel < 6
-	or J.GetPosition(bot) == 3 and botLevel < 7
+	or J.GetPosition(bot) == 3 and botLevel < 5
 	or J.GetPosition(bot) == 4 and botLevel < 4
-	or J.GetPosition(bot) == 5 and botLevel < 5
+	or J.GetPosition(bot) == 5 and botLevel < 4
 	then
 		return BOT_MODE_DESIRE_NONE
 	end
@@ -40,7 +40,7 @@ function Defend.GetDefendDesireHelper(bot, lane)
 		local isPinged, pingedLane = J.IsPingCloseToValidTower(team, ping)
 		if isPinged and lane == pingedLane
 		then
-			return BOT_ACTION_DESIRE_ABSOLUTE * 0.99
+			return 0.92
 		end
 	end
 
@@ -99,14 +99,44 @@ function Defend.GetDefendDesireHelper(bot, lane)
 		nDefendDesire = Clamp(GetDefendLaneDesire(lane), 0.1, 1) * mul
 	end
 
-	return Clamp(nDefendDesire, 0, 0.98)
+	return Clamp(nDefendDesire, 0, 0.92)
 end
+
+local nTpSolt = 15
 
 function Defend.DefendThink(bot, lane)
     if J.CanNotUseAction(bot) then return end
 
-	local attackRange = bot:GetAttackRange()
 	local vDefendLane = GetLaneFrontLocation(GetTeam(), lane, 0)
+
+	local tps = bot:GetItemInSlot(nTpSolt)
+	local saferLoc = J.AdjustLocationWithOffsetTowardsFountain(vDefendLane, 800)
+	local bestTpLoc = J.GetNearbyLocationToTp(saferLoc)
+	local distance = GetUnitToLocationDistance(bot, vDefendLane)
+	if distance > 3500 and not bot:WasRecentlyDamagedByAnyHero(2) then
+		if tps ~= nil and tps:IsFullyCastable() then
+			bot:Action_UseAbilityOnLocation(tps, bestTpLoc + RandomVector(30))
+			return
+		else
+			bot:Action_AttackMove(saferLoc + RandomVector(30));
+			return
+		end
+	end
+	if distance > 2000 and distance <= 3000 and not bot:WasRecentlyDamagedByAnyHero(3) then
+		bot:Action_AttackMove(saferLoc + RandomVector(30));
+	elseif distance <= 2000 and bot:GetTarget() == nil then
+		local hNearbyEnemyHeroList = J.GetHeroesNearLocation( true, vDefendLane, 1300 )
+		for _, npcEnemy in pairs( hNearbyEnemyHeroList )
+		do
+			if J.IsValidHero(npcEnemy)
+			then
+				bot:SetTarget( npcEnemy )
+				return
+			end
+		end
+	end
+
+	local attackRange = bot:GetAttackRange()
 	local nSearchRange = attackRange < 900 and 900 or math.min(attackRange, 1600)
 
 	local nAllyHeroes = bot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)

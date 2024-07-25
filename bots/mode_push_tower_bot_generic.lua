@@ -5,11 +5,6 @@ local bot = GetBot()
 local botName = bot:GetUnitName()
 
 if Utils.BuggyHeroesDueToValveTooLazy[botName] then
-    function GetDesire()
-        return Push.GetPushDesire(bot, LANE_BOT)
-    end
-
-    function Think()
-        Push.PushThink(bot, LANE_BOT)
-    end
+    function GetDesire() return Push.GetPushDesire(bot, LANE_BOT) end
+    function Think() Push.PushThink(bot, LANE_BOT) end
 end
