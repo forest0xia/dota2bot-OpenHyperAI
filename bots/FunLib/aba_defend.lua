@@ -35,7 +35,7 @@ function Defend.GetDefendDesireHelper(bot, lane)
 	end
 
 	-- if pinged by bots or players to defend.
-	local ping = J.Utils.IsPingedByAnyPlayer(bot, pingTimeDelta)
+	local ping = J.Utils.IsPingedByAnyPlayer(bot, pingTimeDelta, nil, nil)
 	if ping ~= nil then
 		local isPinged, pingedLane = J.IsPingCloseToValidTower(team, ping)
 		if isPinged and lane == pingedLane
@@ -60,24 +60,26 @@ function Defend.GetDefendDesireHelper(bot, lane)
 		do
 			local tower = GetTower( team, t )
 			if tower ~= nil and tower:GetHealth()/tower:GetMaxHealth() < 0.8
-			and J.GetNumOfHeroesNearLocation( true, tower:GetLocation(), 800 ) >= 1
+			and J.GetNumOfHeroesNearLocation( true, tower:GetLocation(), 1200 ) >= 1
 			then
-				nDefendLoc = tower:GetLocation() + RandomVector(100)
+				nDefendLoc = tower:GetLocation()
 				enemeyPushingBase = true
 			end
 		end
-		if not enemeyPushingBase and J.GetNumOfHeroesNearLocation( true, GetAncient(team):GetLocation(), 800 ) >= 1 then
-			nDefendLoc = GetAncient(team):GetLocation() + RandomVector(100) -- GetLaneFrontLocation(team, nDefendLane, 100) + RandomVector(100)
+		if not enemeyPushingBase and J.GetNumOfHeroesNearLocation( true, GetAncient(team):GetLocation(), 1200 ) >= 1 then
+			nDefendLoc = GetAncient(team):GetLocation() -- GetLaneFrontLocation(team, nDefendLane, 100)
 			enemeyPushingBase = true
 		end
 
-		if enemeyPushingBase then
+		if nDefendLoc ~= nil and enemeyPushingBase then
+			local saferLoc = J.AdjustLocationWithOffsetTowardsFountain(nDefendLoc, 800) + RandomVector(50)
+
 			enemeyPushingBase = false
-			local nDefendAllies = J.GetAlliesNearLoc(nDefendLoc, 2000);
+			local nDefendAllies = J.GetAlliesNearLoc(saferLoc, 2000);
 			if #nDefendAllies < J.GetNumOfAliveHeroes(false) then
 				J.Utils['GameStates']['defendPings'].pingedTime = GameTime()
 				bot:ActionImmediate_Chat("Please come defending", false)
-				bot:ActionImmediate_Ping(nDefendLoc.x, nDefendLoc.y, false)
+				bot:ActionImmediate_Ping(saferLoc.x, saferLoc.y, false)
 			end
 
 			nDefendDesire = 0.966
@@ -110,7 +112,7 @@ function Defend.DefendThink(bot, lane)
 	local vDefendLane = GetLaneFrontLocation(GetTeam(), lane, 0)
 
 	local tps = bot:GetItemInSlot(nTpSolt)
-	local saferLoc = J.AdjustLocationWithOffsetTowardsFountain(vDefendLane, 800)
+	local saferLoc = J.AdjustLocationWithOffsetTowardsFountain(vDefendLane, 150)
 	local bestTpLoc = J.GetNearbyLocationToTp(saferLoc)
 	local distance = GetUnitToLocationDistance(bot, vDefendLane)
 	if distance > 3500 and not bot:WasRecentlyDamagedByAnyHero(2) then
@@ -118,12 +120,12 @@ function Defend.DefendThink(bot, lane)
 			bot:Action_UseAbilityOnLocation(tps, bestTpLoc + RandomVector(30))
 			return
 		else
-			bot:Action_AttackMove(saferLoc + RandomVector(30));
+			bot:Action_MoveToLocation(saferLoc + RandomVector(30));
 			return
 		end
 	end
 	if distance > 2000 and distance <= 3000 and not bot:WasRecentlyDamagedByAnyHero(3) then
-		bot:Action_AttackMove(saferLoc + RandomVector(30));
+		bot:Action_MoveToLocation(saferLoc + RandomVector(30));
 	elseif distance <= 2000 and bot:GetTarget() == nil then
 		local hNearbyEnemyHeroList = J.GetHeroesNearLocation( true, vDefendLane, 1300 )
 		for _, npcEnemy in pairs( hNearbyEnemyHeroList )

@@ -9,8 +9,6 @@ local GlyphDuration = 7
 local ShoulNotPushTower = false
 local TowerPushCooldown = 0
 
-local pingTimeDelta = 5
-
 function Push.GetPushDesire(bot, lane)
     if bot.laneToPush == nil then bot.laneToPush = lane end
     if bot.PushLaneDesire == nil then bot.PushLaneDesire = {0, 0, 0} end
@@ -40,16 +38,6 @@ function Push.GetPushDesireHelper(bot, lane)
 		local member = GetTeamMember(i)
         if member ~= nil and member:GetLevel() < 8 then return BOT_MODE_DESIRE_NONE end
     end
-
-	-- if pinged by bots or players to defend.
-	local ping = J.Utils.IsPingedByAnyPlayer(bot, pingTimeDelta)
-	if ping ~= nil then
-		local isPinged, pingedLane = J.IsPingCloseToValidTower(GetOpposingTeam(), ping)
-		if isPinged and lane == pingedLane
-		then
-			return BOT_ACTION_DESIRE_ABSOLUTE * 0.95
-		end
-	end
 
     if ShoulNotPushTower
     then

@@ -21,21 +21,6 @@ function GetDesire()
 	if GetGameMode() == GAMEMODE_1V1MID or GetGameMode() == GAMEMODE_MO then
 		return 1
 	end
-	
-	-- if pinged to defend base.
-	local ping = Utils.IsPingedByAnyPlayer(bot, 4)
-	if ping ~= nil then
-		local tps = bot:GetItemInSlot(nTpSolt)
-		local bestTpLoc = J.GetNearbyLocationToTp(ping.location)
-		if tps ~= nil and tps:IsFullyCastable()
-			and GetUnitToLocationDistance(bot, bestTpLoc) > 2000
-		then
-			bot:Action_UseAbilityOnLocation(tps, bestTpLoc + RandomVector(200))
-		else
-			bot:Action_MoveToLocation(bestTpLoc + RandomVector(200));
-		end
-		return 0.1
-	end
 
 	local currentTime = DotaTime()
 	local botLV = bot:GetLevel()

@@ -105,10 +105,10 @@ X['sSellList'] = {
 }
 
 if Utils['LoneDruid'].roleType == nil then
-    if RandomInt( 1, 9 ) >= 2 then
-        Utils['LoneDruid'].roleType = 'pos_1'
-    else
+    if RandomInt(1, 3) >= 2 then
         Utils['LoneDruid'].roleType = 'pos_1_w_bear'
+    else
+        Utils['LoneDruid'].roleType = 'pos_1'
     end
 else
     if Utils['LoneDruid'].roleType == 'pos_1_w_bear' then

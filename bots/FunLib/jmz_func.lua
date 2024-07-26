@@ -16,8 +16,8 @@ local tAllyIDList = GetTeamPlayers( GetTeam() )
 local tAllyHeroList = {}
 local tAllyHumanList = {}
 
-local RB = Vector( -6619, -6336, 384 )
-local DB = Vector( 6928, 6372, 392 )
+local RadiantBase = Vector( -6619, -6336, 384 )
+local DireBase = Vector( 6928, 6372, 392 )
 local roshanRadiantLoc  = Vector(7625, -7511, 1092)
 local roshanDireLoc = Vector(-7549, 7562, 1107)
 local RadiantTormentorLoc = Vector(-8075, -1148, 1000)
@@ -1176,9 +1176,9 @@ function J.GetTeamFountain()
 	local Team = GetTeam()
 	if Team == TEAM_DIRE
 	then
-		return DB
+		return DireBase
 	else
-		return RB
+		return RadiantBase
 	end
 
 end
@@ -1190,9 +1190,9 @@ function J.GetEnemyFountain()
 
 	if Team == TEAM_DIRE
 	then
-		return RB
+		return RadiantBase
 	else
-		return DB
+		return DireBase
 	end
 
 end
@@ -1722,9 +1722,9 @@ function J.GetEscapeLoc()
 	else
 		if team == TEAM_DIRE
 		then
-			return DB
+			return DireBase
 		else
-			return RB
+			return RadiantBase
 		end
 	end
 

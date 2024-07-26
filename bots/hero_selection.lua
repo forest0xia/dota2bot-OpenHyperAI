@@ -437,7 +437,6 @@ local WeakHeroes = {
 	'npc_dota_hero_ancient_apparition',
 	'npc_dota_hero_phoenix',
 	'npc_dota_hero_tinker',
-	'npc_dota_hero_treant',
 	'npc_dota_hero_pangolier',
 	'npc_dota_hero_furion',
 	'npc_dota_hero_tusk',
@@ -1041,7 +1040,7 @@ function AllPickHeros()
 				sSelectHero = sSelectList[i]
 
 				if not overridePicks then
-					if RandomInt(1, 4) >= 2 then
+					if RandomInt(1, 4) >= 3 then
 						local nCurrEnmCores = X.GetCurrEnmCores(nEnmTeam)
 						local selectCounter = nil
 		

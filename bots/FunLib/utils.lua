@@ -110,9 +110,14 @@ function X.GetHumanPing()
 	return nil, ping
 end
 
-function X.IsPingedByAnyPlayer(bot, pingTimeGap)
+function X.IsPingedByAnyPlayer(bot, pingTimeGap, minDistance, maxDistance)
+    if not bot:IsAlive() then return nil end
+
 	local listPings = {}
 	local nTeamPlayers = GetTeamPlayers(GetTeam())
+    minDistance = minDistance ~= nil and minDistance or 1500
+    maxDistance = maxDistance ~= nil and maxDistance or 10000
+
 	for i, id in pairs(nTeamPlayers)
 	do
         local allyHero = GetTeamMember(i)
@@ -120,17 +125,25 @@ function X.IsPingedByAnyPlayer(bot, pingTimeGap)
         -- and allyHero ~= bot
         then
 			local ping = allyHero:GetMostRecentPing()
-			table.insert(listPings, ping)
+            if ping ~= nil then
+                table.insert(listPings, ping)
+            end
 		end
 	end
 
-	for _,ping in pairs(listPings)
+	for _, ping in pairs(listPings)
 	do
-		if ping ~= nil and X.GetLocationToLocationDistance(ping.location, bot:GetLocation()) > 1500
-        and GameTime() - ping.time < pingTimeGap and ping.player_id ~= -1 then
-            print('Bot '..bot:GetUnitName()..' noticed the ping')
-			return ping
-		end
+        if ping ~= nil then
+            local distanceToLoc = X.GetLocationToLocationDistance(ping.location, bot:GetLocation())
+            if  distanceToLoc >= minDistance
+            and distanceToLoc <= maxDistance
+            and GameTime() - ping.time < pingTimeGap
+            -- and ping.player_id ~= -1
+            then
+                print('Bot '..bot:GetUnitName()..' noticed the ping')
+                return ping
+            end
+        end
 	end
 	return nil
 end

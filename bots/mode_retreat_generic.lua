@@ -30,12 +30,6 @@ function GetDesire()
 		return BOT_ACTION_DESIRE_NONE
 	end
 
-	-- if pinged to defend base.
-	local ping = Utils.IsPingedByAnyPlayer(bot, 3)
-	if ping ~= nil then
-		return BOT_ACTION_DESIRE_VERYHIGH
-	end
-
     -- if J.GetHP(bot) <= 0.3
 	-- and Utils.RecentlyTookDamage(bot, 3)
 	-- and botName ~= 'npc_dota_hero_huskar'

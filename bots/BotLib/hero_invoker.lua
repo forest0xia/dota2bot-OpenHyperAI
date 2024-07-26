@@ -67,6 +67,7 @@ sRoleItemsBuyList['pos_2_qe'] = {
     "item_hand_of_midas",
     "item_power_treads",
     -- "item_cyclone", --瞎吹还喜欢走到吹起的点上，以后再改
+    "item_sphere",
     "item_orchid",
     "item_black_king_bar",--
     "item_ultimate_scepter",
@@ -74,7 +75,7 @@ sRoleItemsBuyList['pos_2_qe'] = {
 	-- "item_hurricane_pike",--
     "item_sheepstick",--
     "item_aghanims_shard",
-    "item_octarine_core",--
+    -- "item_octarine_core",--
     "item_travel_boots",
     "item_ultimate_scepter_2",
     "item_refresher",--

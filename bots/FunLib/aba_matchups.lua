@@ -10,11 +10,9 @@ local Heroes = {
             'npc_dota_hero_axe',
             'npc_dota_hero_legion_commander',
             'npc_dota_hero_earth_spirit',
-            'npc_dota_hero_pangolier',
             'npc_dota_hero_sand_king',
             'npc_dota_hero_monkey_king',
             'npc_dota_hero_ursa',
-            'npc_dota_hero_elder_titan',
             'npc_dota_hero_rubick',
             'npc_dota_hero_rattletrap',
         },
@@ -22,10 +20,8 @@ local Heroes = {
             'npc_dota_hero_axe',
             'npc_dota_hero_bounty_hunter',
             'npc_dota_hero_silencer',
-            'npc_dota_hero_puck',
             'npc_dota_hero_arc_warden',
             'npc_dota_hero_skeleton_king',
-            'npc_dota_hero_brewmaster',
             'npc_dota_hero_spectre',
             'npc_dota_hero_earth_spirit',
             'npc_dota_hero_bane',
@@ -36,7 +32,6 @@ local Heroes = {
         ['synergy'] = {
             'npc_dota_hero_doom_bringer',
             'npc_dota_hero_shredder',
-            'npc_dota_hero_tusk',
             'npc_dota_hero_mars',
             'npc_dota_hero_chaos_knight',
             'npc_dota_hero_rattletrap',
@@ -51,7 +46,6 @@ local Heroes = {
             'npc_dota_hero_riki',
             'npc_dota_hero_phantom_lancer',
             'npc_dota_hero_meepo',
-            'npc_dota_hero_tinker',
             'npc_dota_hero_wisp',
             'npc_dota_hero_spirit_breaker',
             'npc_dota_hero_tiny',
@@ -64,7 +58,6 @@ local Heroes = {
             'npc_dota_hero_arc_warden',
             'npc_dota_hero_outworld_destroyer',
             'npc_dota_hero_chaos_knight',
-            'npc_dota_hero_tusk',
             'npc_dota_hero_earth_spirit',
             'npc_dota_hero_dark_seer',
             'npc_dota_hero_oracle',
@@ -88,7 +81,6 @@ local Heroes = {
 
     ['npc_dota_hero_ancient_apparition'] = {
         ['synergy'] = {
-            'npc_dota_hero_brewmaster',
             'npc_dota_hero_visage',
             'npc_dota_hero_skeleton_king',
             'npc_dota_hero_shadow_shaman',
@@ -96,13 +88,11 @@ local Heroes = {
             'npc_dota_hero_meepo',
             'npc_dota_hero_centaur',
             'npc_dota_hero_pudge',
-            'npc_dota_hero_morphling',
             'npc_dota_hero_storm_spirit',
         },
         ['counter'] = {
             'npc_dota_hero_huskar',
             'npc_dota_hero_leshrac',
-            'npc_dota_hero_chen',
             'npc_dota_hero_necrophos',
             'npc_dota_hero_death_prophet',
             'npc_dota_hero_slark',
@@ -115,7 +105,6 @@ local Heroes = {
 
     ['npc_dota_hero_antimage'] = {
         ['synergy'] = {
-            'npc_dota_hero_chen',
             'npc_dota_hero_snapfire',
             'npc_dota_hero_winter_wyvern',
             'npc_dota_hero_axe',
@@ -129,20 +118,17 @@ local Heroes = {
         ['counter'] = {
             'npc_dota_hero_medusa',
             'npc_dota_hero_phantom_lancer',
-            'npc_dota_hero_morphling',
             'npc_dota_hero_ancient_apparition',
             'npc_dota_hero_abaddon',
             'npc_dota_hero_storm_spirit',
             'npc_dota_hero_doom_bringer',
             'npc_dota_hero_chaos_knight',
             'npc_dota_hero_muerta',
-            'npc_dota_hero_tinker',
         },
     },
 
     ['npc_dota_hero_arc_warden'] = {
         ['synergy'] = {
-            'npc_dota_hero_chen',
             'npc_dota_hero_beastmaster',
             'npc_dota_hero_alchemist',
             'npc_dota_hero_naga_siren',
@@ -156,7 +142,6 @@ local Heroes = {
         ['counter'] = {
             'npc_dota_hero_huskar',
             'npc_dota_hero_silencer',
-            'npc_dota_hero_chen',
             'npc_dota_hero_night_stalker',
             'npc_dota_hero_necrolyte',
             'npc_dota_hero_weaver',
@@ -197,20 +182,14 @@ local Heroes = {
     ['npc_dota_hero_bane'] = {
         ['synergy'] = {
             'npc_dota_hero_meepo',
-            'npc_dota_hero_brewmaster',
             'npc_dota_hero_leshrac',
-            'npc_dota_hero_pangolier',
             'npc_dota_hero_naga_siren',
             'npc_dota_hero_beastmaster',
             'npc_dota_hero_muerta',
-            'npc_dota_hero_morphling',
             'npc_dota_hero_visage',
-            'npc_dota_hero_tinker',
         },
         ['counter'] = {
-            'npc_dota_hero_tinker',
             'npc_dota_hero_ember_spirit',
-            'npc_dota_hero_morphling',
             'npc_dota_hero_storm_spirit',
             'npc_dota_hero_alchemist',
             'npc_dota_hero_batrider',
@@ -229,13 +208,10 @@ local Heroes = {
             'npc_dota_hero_templar_assassin',
             'npc_dota_hero_wisp',
             'npc_dota_hero_leshrac',
-            'npc_dota_hero_morphling',
             'npc_dota_hero_oracle',
-            'npc_dota_hero_chen',
             'npc_dota_hero_terrorblade',
         },
         ['counter'] = {
-            'npc_dota_hero_chen',
             'npc_dota_hero_lycan',
             'npc_dota_hero_shredder',
             'npc_dota_hero_marci',
@@ -264,8 +240,6 @@ local Heroes = {
         ['counter'] = {
             'npc_dota_hero_visage',
             'npc_dota_hero_naga_siren',
-            'npc_dota_hero_tinker',
-            'npc_dota_hero_elder_titan',
             'npc_dota_hero_arc_warden',
             'npc_dota_hero_phantom_lancer',
             'npc_dota_hero_night_stalker',
@@ -281,7 +255,6 @@ local Heroes = {
             'npc_dota_hero_death_prophet',
             'npc_dota_hero_riki',
             'npc_dota_hero_chaos_knight',
-            'npc_dota_hero_chen',
             'npc_dota_hero_juggernaut',
             'npc_dota_hero_omniknight',
             'npc_dota_hero_abyssal_underlord',
@@ -293,7 +266,6 @@ local Heroes = {
             'npc_dota_hero_slark',
             'npc_dota_hero_night_stalker',
             'npc_dota_hero_primal_beast',
-            'npc_dota_hero_pangolier',
             'npc_dota_hero_phoenix',
             'npc_dota_hero_phantom_lancer',
             'npc_dota_hero_bane',
@@ -305,18 +277,15 @@ local Heroes = {
     ['npc_dota_hero_bounty_hunter'] = {
         ['synergy'] = {
             'npc_dota_hero_axe',
-            'npc_dota_hero_pangolier',
             'npc_dota_hero_spectre',
             'npc_dota_hero_phantom_lancer',
             'npc_dota_hero_muerta',
             'npc_dota_hero_legion_commander',
-            'npc_dota_hero_tinker',
             'npc_dota_hero_hoodwink',
             'npc_dota_hero_void_spirit',
             'npc_dota_hero_obsidian_destroyer',
         },
         ['counter'] = {
-            'npc_dota_hero_chen',
             'npc_dota_hero_clinkz',
             'npc_dota_hero_leshrac',
             'npc_dota_hero_visage',
@@ -335,7 +304,6 @@ local Heroes = {
             'npc_dota_hero_chaos_knight',
             'npc_dota_hero_broodmother',
             'npc_dota_hero_naga_siren',
-            'npc_dota_hero_tinker',
             'npc_dota_hero_dark_willow',
             'npc_dota_hero_dawnbreaker',
             'npc_dota_hero_monkey_king',
@@ -350,7 +318,6 @@ local Heroes = {
             'npc_dota_hero_dark_seer',
             'npc_dota_hero_ancient_apparition',
             'npc_dota_hero_shredder',
-            'npc_dota_hero_elder_titan',
             'npc_dota_hero_troll_warlord',
             'npc_dota_hero_lone_druid',
         },
@@ -366,7 +333,6 @@ local Heroes = {
             'npc_dota_hero_axe',
             'npc_dota_hero_nyx_assassin',
             'npc_dota_hero_mars',
-            'npc_dota_hero_brewmaster',
             'npc_dota_hero_meepo',
         },
         ['counter'] = {
@@ -377,7 +343,6 @@ local Heroes = {
             'npc_dota_hero_witch_doctor',
             'npc_dota_hero_arc_warden',
             'npc_dota_hero_leshrac',
-            'npc_dota_hero_tinker',
             'npc_dota_hero_sven',
             'npc_dota_hero_death_prophet',
         },
@@ -385,7 +350,6 @@ local Heroes = {
 
     ['npc_dota_hero_broodmother'] = {
         ['synergy'] = {
-            'npc_dota_hero_brewmaster',
             'npc_dota_hero_dawnbreaker',
             'npc_dota_hero_earthshaker',
             'npc_dota_hero_batrider',
@@ -398,12 +362,10 @@ local Heroes = {
         },
         ['counter'] = {
             'npc_dota_hero_arc_warden',
-            'npc_dota_hero_chen',
             'npc_dota_hero_furion',
             'npc_dota_hero_silencer',
             'npc_dota_hero_invoker',
             'npc_dota_hero_void_spirit',
-            'npc_dota_hero_morphling',
             'npc_dota_hero_earth_spirit',
             'npc_dota_hero_obsidian_destroyer',
             'npc_dota_hero_skywrath_mage',
@@ -414,7 +376,6 @@ local Heroes = {
         ['synergy'] = {
             'npc_dota_hero_beastmaster',
             'npc_dota_hero_bristleback',
-            'npc_dota_hero_elder_titan',
             'npc_dota_hero_huskar',
             'npc_dota_hero_omniknight',
             'npc_dota_hero_dark_seer',
@@ -431,7 +392,6 @@ local Heroes = {
             'npc_dota_hero_phantom_assassin',
             'npc_dota_hero_riki',
             'npc_dota_hero_muerta',
-            'npc_dota_hero_morphling',
             'npc_dota_hero_drow_ranger',
             'npc_dota_hero_gyrocopter',
         },
@@ -459,7 +419,6 @@ local Heroes = {
             'npc_dota_hero_wisp',
             'npc_dota_hero_broodmother',
             'npc_dota_hero_vengefulspirit',
-            'npc_dota_hero_morphling',
             'npc_dota_hero_pugna',
         },
     },
@@ -473,7 +432,6 @@ local Heroes = {
             'npc_dota_hero_batrider',
             'npc_dota_hero_arc_warden',
             'npc_dota_hero_primal_beast',
-            'npc_dota_hero_morphling',
             'npc_dota_hero_mars',
             'npc_dota_hero_wisp',
         },
@@ -483,9 +441,7 @@ local Heroes = {
             'npc_dota_hero_sven',
             'npc_dota_hero_muerta',
             'npc_dota_hero_beastmaster',
-            'npc_dota_hero_pangolier',
             'npc_dota_hero_batrider',
-            'npc_dota_hero_brewmaster',
             'npc_dota_hero_anti-mage',
             'npc_dota_hero_phoenix',
         },
@@ -493,7 +449,6 @@ local Heroes = {
 
     ['npc_dota_hero_clinkz'] = {
         ['synergy'] = {
-            'npc_dota_hero_morphling',
             'npc_dota_hero_keeper_of_the_light',
             'npc_dota_hero_arc_warden',
             'npc_dota_hero_beastmaster',
@@ -511,8 +466,6 @@ local Heroes = {
             'npc_dota_hero_death_prophet',
             'npc_dota_hero_huskar',
             'npc_dota_hero_rubick',
-            'npc_dota_hero_tinker',
-            'npc_dota_hero_pangolier',
             'npc_dota_hero_doom_bringer',
             'npc_dota_hero_sand_king',
         },
@@ -524,18 +477,15 @@ local Heroes = {
             'npc_dota_hero_silencer',
             'npc_dota_hero_lycan',
             'npc_dota_hero_pudge',
-            'npc_dota_hero_pangolier',
             'npc_dota_hero_drow_ranger',
             'npc_dota_hero_alchemist',
             'npc_dota_hero_bristleback',
-            'npc_dota_hero_elder_titan',
             'npc_dota_hero_meepo',
         },
         ['counter'] = {
             'npc_dota_hero_phantom_lancer',
             'npc_dota_hero_meepo',
             'npc_dota_hero_enchantress',
-            'npc_dota_hero_chen',
             'npc_dota_hero_lycan',
             'npc_dota_hero_wisp',
             'npc_dota_hero_bounty_hunter',
@@ -547,19 +497,16 @@ local Heroes = {
 
     ['npc_dota_hero_dark_seer'] = {
         ['synergy'] = {
-            'npc_dota_hero_brewmaster',
             'npc_dota_hero_doom_bringer',
             'npc_dota_hero_primal_beast',
             'npc_dota_hero_naga_siren',
             'npc_dota_hero_centaur',
             'npc_dota_hero_bristleback',
-            'npc_dota_hero_pangolier',
             'npc_dota_hero_dawnbreaker',
             'npc_dota_hero_earth_spirit',
             'npc_dota_hero_spirit_breaker',
         },
         ['counter'] = {
-            'npc_dota_hero_chen',
             'npc_dota_hero_medusa',
             'npc_dota_hero_meepo',
             'npc_dota_hero_terrorblade',
@@ -589,14 +536,9 @@ local Heroes = {
         },
         ['counter'] = {
             'npc_dota_hero_naga_siren',
-            'npc_dota_hero_tinker',
-            'npc_dota_hero_chen',
             'npc_dota_hero_shadow_demon',
-            'npc_dota_hero_brewmaster',
             'npc_dota_hero_treant',
             'npc_dota_hero_troll_warlord',
-            'npc_dota_hero_tusk',
-            'npc_dota_hero_morphling',
             'npc_dota_hero_abaddon',
         },
     },
@@ -605,7 +547,6 @@ local Heroes = {
         ['synergy'] = {
             'npc_dota_hero_broodmother',
             'npc_dota_hero_marci',
-            'npc_dota_hero_elder_titan',
             'npc_dota_hero_tidehunter',
             'npc_dota_hero_visage',
             'npc_dota_hero_primal_beast',
@@ -615,7 +556,6 @@ local Heroes = {
             'npc_dota_hero_shadow_demon',
         },
         ['counter'] = {
-            'npc_dota_hero_chen',
             'npc_dota_hero_naga_siren',
             'npc_dota_hero_visage',
             'npc_dota_hero_spectre',
@@ -646,7 +586,6 @@ local Heroes = {
             'npc_dota_hero_slark',
             'npc_dota_hero_magnataur',
             'npc_dota_hero_batrider',
-            'npc_dota_hero_pangolier',
             'npc_dota_hero_wisp',
             'npc_dota_hero_spectre',
             'npc_dota_hero_primal_beast',
@@ -657,10 +596,8 @@ local Heroes = {
 
     ['npc_dota_hero_death_prophet'] = {
         ['synergy'] = {
-            'npc_dota_hero_brewmaster',
             'npc_dota_hero_meepo',
             'npc_dota_hero_lycan',
-            'npc_dota_hero_morphling',
             'npc_dota_hero_treant',
             'npc_dota_hero_enchantress',
             'npc_dota_hero_chaos_knight',
@@ -676,7 +613,6 @@ local Heroes = {
             'npc_dota_hero_wisp',
             'npc_dota_hero_meepo',
             'npc_dota_hero_huskar',
-            'npc_dota_hero_pangolier',
             'npc_dota_hero_omniknight',
             'npc_dota_hero_life_stealer',
         },
@@ -685,11 +621,9 @@ local Heroes = {
     ['npc_dota_hero_doom_bringer'] = {
         ['synergy'] = {
             'npc_dota_hero_meepo',
-            'npc_dota_hero_chen',
             'npc_dota_hero_beastmaster',
             'npc_dota_hero_sand_king',
             'npc_dota_hero_dark_seer',
-            'npc_dota_hero_tusk',
             'npc_dota_hero_furion',
             'npc_dota_hero_sven',
             'npc_dota_hero_night_stalker',
@@ -698,7 +632,6 @@ local Heroes = {
         ['counter'] = {
             'npc_dota_hero_omniknight',
             'npc_dota_hero_necrolyte',
-            'npc_dota_hero_brewmaster',
             'npc_dota_hero_enchantress',
             'npc_dota_hero_axe',
             'npc_dota_hero_oracle',
@@ -713,7 +646,6 @@ local Heroes = {
         ['synergy'] = {
             'npc_dota_hero_primal_beast',
             'npc_dota_hero_mars',
-            'npc_dota_hero_elder_titan',
             'npc_dota_hero_abyssal_underlord',
             'npc_dota_hero_earthshaker',
             'npc_dota_hero_centaur',
@@ -723,7 +655,6 @@ local Heroes = {
             'npc_dota_hero_sand_king',
         },
         ['counter'] = {
-            'npc_dota_hero_puck',
             'npc_dota_hero_lycan',
             'npc_dota_hero_bristleback',
             'npc_dota_hero_skywrath_mage',
@@ -731,7 +662,6 @@ local Heroes = {
             'npc_dota_hero_wisp',
             'npc_dota_hero_skeleton_king',
             'npc_dota_hero_templar_assassin',
-            'npc_dota_hero_chen',
             'npc_dota_hero_void_spirit',
         },
     },
@@ -750,7 +680,6 @@ local Heroes = {
             'npc_dota_hero_beastmaster',
         },
         ['counter'] = {
-            'npc_dota_hero_chen',
             'npc_dota_hero_necrolyte',
             'npc_dota_hero_weaver',
             'npc_dota_hero_bristleback',
@@ -765,7 +694,6 @@ local Heroes = {
 
     ['npc_dota_hero_earth_spirit'] = {
         ['synergy'] = {
-            'npc_dota_hero_elder_titan',
             'npc_dota_hero_enigma',
             'npc_dota_hero_beastmaster',
             'npc_dota_hero_treant',
@@ -777,9 +705,7 @@ local Heroes = {
             'npc_dota_hero_wisp',
         },
         ['counter'] = {
-            'npc_dota_hero_tusk',
             'npc_dota_hero_abyssal_underlord',
-            'npc_dota_hero_morphling',
             'npc_dota_hero_keeper_of_the_light',
             'npc_dota_hero_beastmaster',
             'npc_dota_hero_sniper',
@@ -793,7 +719,6 @@ local Heroes = {
     ['npc_dota_hero_earthshaker'] = {
         ['synergy'] = {
             'npc_dota_hero_night_stalker',
-            'npc_dota_hero_chen',
             'npc_dota_hero_visage',
             'npc_dota_hero_naga_siren',
             'npc_dota_hero_broodmother',
@@ -801,14 +726,12 @@ local Heroes = {
             'npc_dota_hero_omniknight',
             'npc_dota_hero_dragon_knight',
             'npc_dota_hero_shredder',
-            'npc_dota_hero_morphling',
         },
         ['counter'] = {
             'npc_dota_hero_meepo',
             'npc_dota_hero_broodmother',
             'npc_dota_hero_naga_siren',
             'npc_dota_hero_phantom_lancer',
-            'npc_dota_hero_brewmaster',
             'npc_dota_hero_chaos_knight',
             'npc_dota_hero_arc_warden',
             'npc_dota_hero_visage',
@@ -821,14 +744,12 @@ local Heroes = {
 
     ['npc_dota_hero_ember_spirit'] = {
         ['synergy'] = {
-            'npc_dota_hero_chen',
             'npc_dota_hero_dark_seer',
             'npc_dota_hero_pugna',
             'npc_dota_hero_treant',
             'npc_dota_hero_alchemist',
             'npc_dota_hero_bane',
             'npc_dota_hero_bounty_hunter',
-            'npc_dota_hero_brewmaster',
             'npc_dota_hero_bloodseeker',
             'npc_dota_hero_hoodwink',
         },
@@ -863,10 +784,8 @@ local Heroes = {
             'npc_dota_hero_visage',
             'npc_dota_hero_venomancer',
             'npc_dota_hero_death_prophet',
-            'npc_dota_hero_elder_titan',
             'npc_dota_hero_sven',
             'npc_dota_hero_faceless_void',
-            'npc_dota_hero_chen',
             'npc_dota_hero_batrider',
             'npc_dota_hero_huskar',
             'npc_dota_hero_spectre',
@@ -875,7 +794,6 @@ local Heroes = {
 
     ['npc_dota_hero_enigma'] = {
         ['synergy'] = {
-            'npc_dota_hero_chen',
             'npc_dota_hero_batrider',
             'npc_dota_hero_earth_spirit',
             'npc_dota_hero_leshrac',
@@ -890,7 +808,6 @@ local Heroes = {
             'npc_dota_hero_batrider',
             'npc_dota_hero_beastmaster',
             'npc_dota_hero_meepo',
-            'npc_dota_hero_brewmaster',
             'npc_dota_hero_wisp',
             'npc_dota_hero_razor',
             'npc_dota_hero_obsidian_destroyer',
@@ -911,7 +828,6 @@ local Heroes = {
             'npc_dota_hero_nyx_assassin',
             'npc_dota_hero_abyssal_underlord',
             'npc_dota_hero_enchantress',
-            'npc_dota_hero_tusk',
         },
         ['counter'] = {
             'npc_dota_hero_weaver',
@@ -929,12 +845,10 @@ local Heroes = {
 
     ['npc_dota_hero_furion'] = {
         ['synergy'] = {
-            'npc_dota_hero_brewmaster',
             'npc_dota_hero_doom_bringer',
             'npc_dota_hero_enchantress',
             'npc_dota_hero_necrolyte',
             'npc_dota_hero_sand_king',
-            'npc_dota_hero_morphling',
             'npc_dota_hero_death_prophet',
             'npc_dota_hero_obsidian_destroyer',
             'npc_dota_hero_night_stalker',
@@ -945,7 +859,6 @@ local Heroes = {
             'npc_dota_hero_keeper_of_the_light',
             'npc_dota_hero_windrunner',
             'npc_dota_hero_lone_druid',
-            'npc_dota_hero_brewmaster',
             'npc_dota_hero_bloodseeker',
             'npc_dota_hero_leshrac',
             'npc_dota_hero_venomancer',
@@ -956,9 +869,7 @@ local Heroes = {
 
     ['npc_dota_hero_grimstroke'] = {
         ['synergy'] = {
-            'npc_dota_hero_tinker',
             'npc_dota_hero_visage',
-            'npc_dota_hero_chen',
             'npc_dota_hero_beastmaster',
             'npc_dota_hero_alchemist',
             'npc_dota_hero_batrider',
@@ -968,7 +879,6 @@ local Heroes = {
             'npc_dota_hero_broodmother',
         },
         ['counter'] = {
-            'npc_dota_hero_pangolier',
             'npc_dota_hero_shredder',
             'npc_dota_hero_primal_beast',
             'npc_dota_hero_omniknight',
@@ -976,7 +886,6 @@ local Heroes = {
             'npc_dota_hero_necrolyte',
             'npc_dota_hero_broodmother',
             'npc_dota_hero_storm_spirit',
-            'npc_dota_hero_puck',
             'npc_dota_hero_faceless_void',
         },
     },
@@ -988,7 +897,6 @@ local Heroes = {
             'npc_dota_hero_storm_spirit',
             'npc_dota_hero_wisp',
             'npc_dota_hero_beastmaster',
-            'npc_dota_hero_morphling',
             'npc_dota_hero_primal_beast',
             'npc_dota_hero_lone_druid',
             'npc_dota_hero_oracle',
@@ -998,12 +906,10 @@ local Heroes = {
             'npc_dota_hero_batrider',
             'npc_dota_hero_dazzle',
             'npc_dota_hero_undying',
-            'npc_dota_hero_elder_titan',
             'npc_dota_hero_wisp',
             'npc_dota_hero_dawnbreaker',
             'npc_dota_hero_grimstroke',
             'npc_dota_hero_sven',
-            'npc_dota_hero_chen',
             'npc_dota_hero_enigma',
         },
     },
@@ -1019,12 +925,10 @@ local Heroes = {
             'npc_dota_hero_oracle',
             'npc_dota_hero_enigma',
             'npc_dota_hero_magnataur',
-            'npc_dota_hero_chen',
             'npc_dota_hero_phoenix',
             'npc_dota_hero_bristleback',
         },
         ['counter'] = {
-            'npc_dota_hero_pangolier',
             'npc_dota_hero_anti-mage',
             'npc_dota_hero_void_spirit',
             'npc_dota_hero_ember_spirit',
@@ -1053,7 +957,6 @@ local Heroes = {
         ['counter'] = {
             'npc_dota_hero_medusa',
             'npc_dota_hero_viper',
-            'npc_dota_hero_elder_titan',
             'npc_dota_hero_death_prophet',
             'npc_dota_hero_abyssal_underlord',
             'npc_dota_hero_visage',
@@ -1086,7 +989,6 @@ local Heroes = {
             'npc_dota_hero_dawnbreaker',
             'npc_dota_hero_visage',
             'npc_dota_hero_enigma',
-            'npc_dota_hero_brewmaster',
             'npc_dota_hero_riki',
         },
     },
@@ -1111,7 +1013,6 @@ local Heroes = {
             'npc_dota_hero_bloodseeker',
             'npc_dota_hero_kunkka',
             'npc_dota_hero_viper',
-            'npc_dota_hero_tinker',
             'npc_dota_hero_dark_willow',
             'npc_dota_hero_phoenix',
             'npc_dota_hero_spectre',
@@ -1134,7 +1035,6 @@ local Heroes = {
         ['counter'] = {
             'npc_dota_hero_dark_seer',
             'npc_dota_hero_warlock',
-            'npc_dota_hero_elder_titan',
             'npc_dota_hero_abaddon',
             'npc_dota_hero_lone_druid',
             'npc_dota_hero_bloodseeker',
@@ -1154,7 +1054,6 @@ local Heroes = {
             'npc_dota_hero_lycan',
             'npc_dota_hero_slark',
             'npc_dota_hero_huskar',
-            'npc_dota_hero_morphling',
             'npc_dota_hero_sven',
             'npc_dota_hero_bristleback',
         },
@@ -1204,8 +1103,6 @@ local Heroes = {
             'npc_dota_hero_enigma',
             'npc_dota_hero_magnataur',
             'npc_dota_hero_bane',
-            'npc_dota_hero_elder_titan',
-            'npc_dota_hero_morphling',
             'npc_dota_hero_treant',
             'npc_dota_hero_ancient_apparition',
             'npc_dota_hero_mirana',
@@ -1217,7 +1114,6 @@ local Heroes = {
             'npc_dota_hero_necrolyte',
             'npc_dota_hero_phantom_lancer',
             'npc_dota_hero_naga_siren',
-            'npc_dota_hero_tinker',
             'npc_dota_hero_omniknight',
             'npc_dota_hero_riki',
             'npc_dota_hero_axe',
@@ -1245,7 +1141,6 @@ local Heroes = {
             'npc_dota_hero_terrorblade',
             'npc_dota_hero_naga_siren',
             'npc_dota_hero_chaos_knight',
-            'npc_dota_hero_tusk',
             'npc_dota_hero_monkey_king',
             'npc_dota_hero_marci',
             'npc_dota_hero_arc_warden',
@@ -1260,9 +1155,7 @@ local Heroes = {
             'npc_dota_hero_axe',
             'npc_dota_hero_primal_beast',
             'npc_dota_hero_dark_willow',
-            'npc_dota_hero_puck',
             'npc_dota_hero_invoker',
-            'npc_dota_hero_elder_titan',
             'npc_dota_hero_earth_spirit',
             'npc_dota_hero_gyrocopter',
         },
@@ -1283,10 +1176,8 @@ local Heroes = {
     ['npc_dota_hero_lina'] = {
         ['synergy'] = {
             'npc_dota_hero_naga_siren',
-            'npc_dota_hero_tusk',
             'npc_dota_hero_meepo',
             'npc_dota_hero_storm_spirit',
-            'npc_dota_hero_elder_titan',
             'npc_dota_hero_riki',
             'npc_dota_hero_void_spirit',
             'npc_dota_hero_warlock',
@@ -1294,7 +1185,6 @@ local Heroes = {
             'npc_dota_hero_undying',
         },
         ['counter'] = {
-            'npc_dota_hero_elder_titan',
             'npc_dota_hero_naga_siren',
             'npc_dota_hero_lone_druid',
             'npc_dota_hero_phoenix',
@@ -1309,7 +1199,6 @@ local Heroes = {
 
     ['npc_dota_hero_lion'] = {
         ['synergy'] = {
-            'npc_dota_hero_chen',
             'npc_dota_hero_lycan',
             'npc_dota_hero_meepo',
             'npc_dota_hero_naga_siren',
@@ -1322,7 +1211,6 @@ local Heroes = {
         },
         ['counter'] = {
             'npc_dota_hero_naga_siren',
-            'npc_dota_hero_morphling',
             'npc_dota_hero_batrider',
             'npc_dota_hero_troll_warlord',
             'npc_dota_hero_legion_commander',
@@ -1350,7 +1238,6 @@ local Heroes = {
             'npc_dota_hero_broodmother',
             'npc_dota_hero_night_stalker',
             'npc_dota_hero_omniknight',
-            'npc_dota_hero_pangolier',
             'npc_dota_hero_mars',
             'npc_dota_hero_void_spirit',
             'npc_dota_hero_primal_beast',
@@ -1360,10 +1247,7 @@ local Heroes = {
             'npc_dota_hero_night_stalker',
             'npc_dota_hero_slardar',
             'npc_dota_hero_undying',
-            'npc_dota_hero_pangolier',
             'npc_dota_hero_lycan',
-            'npc_dota_hero_tinker',
-            'npc_dota_hero_morphling',
             'npc_dota_hero_sven',
             'npc_dota_hero_wisp',
             'npc_dota_hero_weaver',
@@ -1372,9 +1256,7 @@ local Heroes = {
 
     ['npc_dota_hero_lycan'] = {
         ['synergy'] = {
-            'npc_dota_hero_elder_titan',
             'npc_dota_hero_batrider',
-            'npc_dota_hero_pangolier',
             'npc_dota_hero_death_prophet',
             'npc_dota_hero_magnataur',
             'npc_dota_hero_nevermore',
@@ -1388,7 +1270,6 @@ local Heroes = {
             'npc_dota_hero_night_stalker',
             'npc_dota_hero_death_prophet',
             'npc_dota_hero_skywrath_mage',
-            'npc_dota_hero_brewmaster',
             'npc_dota_hero_silencer',
             'npc_dota_hero_arc_warden',
             'npc_dota_hero_ancient_apparition',
@@ -1400,8 +1281,6 @@ local Heroes = {
     ['npc_dota_hero_magnataur'] = {
         ['synergy'] = {
             'npc_dota_hero_beastmaster',
-            'npc_dota_hero_brewmaster',
-            'npc_dota_hero_elder_titan',
             'npc_dota_hero_leshrac',
             'npc_dota_hero_lycan',
             'npc_dota_hero_slardar',
@@ -1412,7 +1291,6 @@ local Heroes = {
         },
         ['counter'] = {
             'npc_dota_hero_shadow_demon',
-            'npc_dota_hero_chen',
             'npc_dota_hero_marci',
             'npc_dota_hero_beastmaster',
             'npc_dota_hero_wisp',
@@ -1435,11 +1313,9 @@ local Heroes = {
 
     ['npc_dota_hero_mars'] = {
         ['synergy'] = {
-            'npc_dota_hero_brewmaster',
             'npc_dota_hero_lone_druid',
             'npc_dota_hero_dawnbreaker',
             'npc_dota_hero_slardar',
-            'npc_dota_hero_chen',
             'npc_dota_hero_night_stalker',
             'npc_dota_hero_tidehunter',
             'npc_dota_hero_dragon_knight',
@@ -1471,7 +1347,6 @@ local Heroes = {
             'npc_dota_hero_chaos_knight',
             'npc_dota_hero_void_spirit',
             'npc_dota_hero_keeper_of_the_light',
-            'npc_dota_hero_elder_titan',
         },
         ['counter'] = {
             'npc_dota_hero_beastmaster',
@@ -1493,9 +1368,7 @@ local Heroes = {
             'npc_dota_hero_monkey_king',
             'npc_dota_hero_doom_bringer',
             'npc_dota_hero_winter_wyvern',
-            'npc_dota_hero_elder_titan',
             'npc_dota_hero_medusa',
-            'npc_dota_hero_brewmaster',
             'npc_dota_hero_terrorblade',
             'npc_dota_hero_dark_willow',
             'npc_dota_hero_batrider',
@@ -1505,7 +1378,6 @@ local Heroes = {
             'npc_dota_hero_void_spirit',
             'npc_dota_hero_anti-mage',
             'npc_dota_hero_phantom_lancer',
-            'npc_dota_hero_chen',
             'npc_dota_hero_storm_spirit',
             'npc_dota_hero_faceless_void',
             'npc_dota_hero_clinkz',
@@ -1516,7 +1388,6 @@ local Heroes = {
 
     ['npc_dota_hero_mirana'] = {
         ['synergy'] = {
-            'npc_dota_hero_elder_titan',
             'npc_dota_hero_meepo',
             'npc_dota_hero_leshrac',
             'npc_dota_hero_viper',
@@ -1533,7 +1404,6 @@ local Heroes = {
             'npc_dota_hero_death_prophet',
             'npc_dota_hero_visage',
             'npc_dota_hero_keeper_of_the_light',
-            'npc_dota_hero_pangolier',
             'npc_dota_hero_phoenix',
             'npc_dota_hero_razor',
             'npc_dota_hero_weaver',
@@ -1549,19 +1419,16 @@ local Heroes = {
             'npc_dota_hero_gyrocopter',
             'npc_dota_hero_death_prophet',
             'npc_dota_hero_naga_siren',
-            'npc_dota_hero_tusk',
             'npc_dota_hero_visage',
             'npc_dota_hero_leshrac',
             'npc_dota_hero_doom_bringer',
         },
         ['counter'] = {
-            'npc_dota_hero_pangolier',
             'npc_dota_hero_terrorblade',
             'npc_dota_hero_visage',
             'npc_dota_hero_sniper',
             'npc_dota_hero_viper',
             'npc_dota_hero_enigma',
-            'npc_dota_hero_chen',
             'npc_dota_hero_juggernaut',
             'npc_dota_hero_bloodseeker',
             'npc_dota_hero_furion',
@@ -1571,9 +1438,7 @@ local Heroes = {
     ['npc_dota_hero_monkey_king'] = {
         ['synergy'] = {
             'npc_dota_hero_meepo',
-            'npc_dota_hero_tusk',
             'npc_dota_hero_alchemist',
-            'npc_dota_hero_brewmaster',
             'npc_dota_hero_batrider',
             'npc_dota_hero_treant',
             'npc_dota_hero_oracle',
@@ -1585,7 +1450,6 @@ local Heroes = {
             'npc_dota_hero_lone_druid',
             'npc_dota_hero_meepo',
             'npc_dota_hero_wisp',
-            'npc_dota_hero_pangolier',
             'npc_dota_hero_naga_siren',
             'npc_dota_hero_broodmother',
             'npc_dota_hero_ember_spirit',
@@ -1597,10 +1461,8 @@ local Heroes = {
 
     ['npc_dota_hero_muerta'] = {
         ['synergy'] = {
-            'npc_dota_hero_puck',
             'npc_dota_hero_tidehunter',
             'npc_dota_hero_necrolyte',
-            'npc_dota_hero_tusk',
             'npc_dota_hero_marci',
             'npc_dota_hero_grimstroke',
             'npc_dota_hero_death_prophet',
@@ -1612,7 +1474,6 @@ local Heroes = {
             'npc_dota_hero_kunkka',
             'npc_dota_hero_enchantress',
             'npc_dota_hero_keeper_of_the_light',
-            'npc_dota_hero_tinker',
             'npc_dota_hero_medusa',
             'npc_dota_hero_lina',
             'npc_dota_hero_void_spirit',
@@ -1625,7 +1486,6 @@ local Heroes = {
     ['npc_dota_hero_naga_siren'] = {
         ['synergy'] = {
             'npc_dota_hero_nyx_assassin',
-            'npc_dota_hero_morphling',
             'npc_dota_hero_bristleback',
             'npc_dota_hero_earth_spirit',
             'npc_dota_hero_lina',
@@ -1636,11 +1496,9 @@ local Heroes = {
             'npc_dota_hero_jakiro',
         },
         ['counter'] = {
-            'npc_dota_hero_chen',
             'npc_dota_hero_lycan',
             'npc_dota_hero_night_stalker',
             'npc_dota_hero_chaos_knight',
-            'npc_dota_hero_brewmaster',
             'npc_dota_hero_broodmother',
             'npc_dota_hero_viper',
             'npc_dota_hero_clinkz',
@@ -1653,7 +1511,6 @@ local Heroes = {
         ['synergy'] = {
             'npc_dota_hero_riki',
             'npc_dota_hero_kunkka',
-            'npc_dota_hero_elder_titan',
             'npc_dota_hero_mars',
             'npc_dota_hero_omniknight',
             'npc_dota_hero_furion',
@@ -1687,7 +1544,6 @@ local Heroes = {
             'npc_dota_hero_night_stalker',
             'npc_dota_hero_dazzle',
             'npc_dota_hero_phantom_assassin',
-            'npc_dota_hero_tusk',
         },
         ['counter'] = {
             'npc_dota_hero_meepo',
@@ -1695,7 +1551,6 @@ local Heroes = {
             'npc_dota_hero_oracle',
             'npc_dota_hero_ember_spirit',
             'npc_dota_hero_anti-mage',
-            'npc_dota_hero_chen',
             'npc_dota_hero_huskar',
             'npc_dota_hero_slark',
             'npc_dota_hero_lone_druid',
@@ -1706,7 +1561,6 @@ local Heroes = {
     ['npc_dota_hero_night_stalker'] = {
         ['synergy'] = {
             'npc_dota_hero_dawnbreaker',
-            'npc_dota_hero_chen',
             'npc_dota_hero_beastmaster',
             'npc_dota_hero_primal_beast',
             'npc_dota_hero_earthshaker',
@@ -1717,15 +1571,12 @@ local Heroes = {
             'npc_dota_hero_dragon_knight',
         },
         ['counter'] = {
-            'npc_dota_hero_puck',
             'npc_dota_hero_juggernaut',
             'npc_dota_hero_shredder',
-            'npc_dota_hero_morphling',
             'npc_dota_hero_storm_spirit',
             'npc_dota_hero_queenofpain',
             'npc_dota_hero_earth_spirit',
             'npc_dota_hero_void_spirit',
-            'npc_dota_hero_tinker',
             'npc_dota_hero_drow_ranger',
         },
     },
@@ -1746,9 +1597,7 @@ local Heroes = {
         ['counter'] = {
             'npc_dota_hero_medusa',
             'npc_dota_hero_muerta',
-            'npc_dota_hero_morphling',
             'npc_dota_hero_weaver',
-            'npc_dota_hero_puck',
             'npc_dota_hero_enigma',
             'npc_dota_hero_sniper',
             'npc_dota_hero_storm_spirit',
@@ -1786,7 +1635,6 @@ local Heroes = {
 
     ['npc_dota_hero_ogre_magi'] = {
         ['synergy'] = {
-            'npc_dota_hero_elder_titan',
             'npc_dota_hero_keeper_of_the_light',
             'npc_dota_hero_sniper',
             'npc_dota_hero_warlock',
@@ -1794,7 +1642,6 @@ local Heroes = {
             'npc_dota_hero_juggernaut',
             'npc_dota_hero_troll_warlord',
             'npc_dota_hero_sven',
-            'npc_dota_hero_tinker',
             'npc_dota_hero_tiny',
         },
         ['counter'] = {
@@ -1814,19 +1661,16 @@ local Heroes = {
     ['npc_dota_hero_omniknight'] = {
         ['synergy'] = {
             'npc_dota_hero_bristleback',
-            'npc_dota_hero_elder_titan',
             'npc_dota_hero_abyssal_underlord',
             'npc_dota_hero_visage',
             'npc_dota_hero_shredder',
             'npc_dota_hero_muerta',
             'npc_dota_hero_legion_commander',
-            'npc_dota_hero_chen',
             'npc_dota_hero_bloodseeker',
             'npc_dota_hero_primal_beast',
         },
         ['counter'] = {
             'npc_dota_hero_legion_commander',
-            'npc_dota_hero_chen',
             'npc_dota_hero_meepo',
             'npc_dota_hero_slark',
             'npc_dota_hero_keeper_of_the_light',
@@ -1843,8 +1687,6 @@ local Heroes = {
             'npc_dota_hero_visage',
             'npc_dota_hero_huskar',
             'npc_dota_hero_hoodwink',
-            'npc_dota_hero_elder_titan',
-            'npc_dota_hero_pangolier',
             'npc_dota_hero_windrunner',
             'npc_dota_hero_sand_king',
             'npc_dota_hero_rubick',
@@ -1853,13 +1695,11 @@ local Heroes = {
         },
         ['counter'] = {
             'npc_dota_hero_legion_commander',
-            'npc_dota_hero_puck',
             'npc_dota_hero_skywrath_mage',
             'npc_dota_hero_centaur',
             'npc_dota_hero_necrolyte',
             'npc_dota_hero_bloodseeker',
             'npc_dota_hero_dark_seer',
-            'npc_dota_hero_brewmaster',
             'npc_dota_hero_troll_warlord',
             'npc_dota_hero_storm_spirit',
         },
@@ -1867,22 +1707,18 @@ local Heroes = {
 
     ['npc_dota_hero_pangolier'] = {
         ['synergy'] = {
-            'npc_dota_hero_brewmaster',
             'npc_dota_hero_beastmaster',
-            'npc_dota_hero_chen',
             'npc_dota_hero_meepo',
             'npc_dota_hero_razor',
             'npc_dota_hero_oracle',
             'npc_dota_hero_lycan',
             'npc_dota_hero_luna',
-            'npc_dota_hero_puck',
             'npc_dota_hero_phantom_lancer',
         },
         ['counter'] = {
             'npc_dota_hero_life_stealer',
             'npc_dota_hero_dawnbreaker',
             'npc_dota_hero_enigma',
-            'npc_dota_hero_tinker',
             'npc_dota_hero_oracle',
             'npc_dota_hero_leshrac',
             'npc_dota_hero_chaos_knight',
@@ -1900,7 +1736,6 @@ local Heroes = {
             'npc_dota_hero_lone_druid',
             'npc_dota_hero_skywrath_mage',
             'npc_dota_hero_bane',
-            'npc_dota_hero_pangolier',
             'npc_dota_hero_arc_warden',
             'npc_dota_hero_keeper_of_the_light',
             'npc_dota_hero_witch_doctor',
@@ -1953,10 +1788,8 @@ local Heroes = {
             'npc_dota_hero_beastmaster',
             'npc_dota_hero_terrorblade',
             'npc_dota_hero_enigma',
-            'npc_dota_hero_elder_titan',
             'npc_dota_hero_wisp',
             'npc_dota_hero_marci',
-            'npc_dota_hero_brewmaster',
             'npc_dota_hero_huskar',
         },
         ['counter'] = {
@@ -1967,7 +1800,6 @@ local Heroes = {
             'npc_dota_hero_treant',
             'npc_dota_hero_sven',
             'npc_dota_hero_templar_assassin',
-            'npc_dota_hero_tusk',
             'npc_dota_hero_broodmother',
             'npc_dota_hero_tiny',
         },
@@ -1984,12 +1816,8 @@ local Heroes = {
 
     ['npc_dota_hero_puck'] = {
         ['synergy'] = {
-            'npc_dota_hero_chen',
-            'npc_dota_hero_brewmaster',
             'npc_dota_hero_terrorblade',
             'npc_dota_hero_snapfire',
-            'npc_dota_hero_tusk',
-            'npc_dota_hero_pangolier',
             'npc_dota_hero_life_stealer',
             'npc_dota_hero_gyrocopter',
             'npc_dota_hero_bounty_hunter',
@@ -1997,10 +1825,7 @@ local Heroes = {
         },
         ['counter'] = {
             'npc_dota_hero_phantom_lancer',
-            'npc_dota_hero_brewmaster',
             'npc_dota_hero_enchantress',
-            'npc_dota_hero_chen',
-            'npc_dota_hero_elder_titan',
             'npc_dota_hero_terrorblade',
             'npc_dota_hero_mars',
             'npc_dota_hero_storm_spirit',
@@ -2052,14 +1877,12 @@ local Heroes = {
         ['counter'] = {
             'npc_dota_hero_shredder',
             'npc_dota_hero_storm_spirit',
-            'npc_dota_hero_brewmaster',
             'npc_dota_hero_omniknight',
             'npc_dota_hero_necrolyte',
             'npc_dota_hero_grimstroke',
             'npc_dota_hero_winter_wyvern',
             'npc_dota_hero_queenofpain',
             'npc_dota_hero_bane',
-            'npc_dota_hero_puck',
         },
     },
 
@@ -2080,7 +1903,6 @@ local Heroes = {
             'npc_dota_hero_razor',
             'npc_dota_hero_keeper_of_the_light',
             'npc_dota_hero_monkey_king',
-            'npc_dota_hero_brewmaster',
             'npc_dota_hero_rattletrap',
             'npc_dota_hero_dark_seer',
             'npc_dota_hero_shadow_demon',
@@ -2092,7 +1914,6 @@ local Heroes = {
 
     ['npc_dota_hero_rattletrap'] = {
         ['synergy'] = {
-            'npc_dota_hero_elder_titan',
             'npc_dota_hero_beastmaster',
             'npc_dota_hero_bloodseeker',
             'npc_dota_hero_naga_siren',
@@ -2119,20 +1940,16 @@ local Heroes = {
 
     ['npc_dota_hero_razor'] = {
         ['synergy'] = {
-            'npc_dota_hero_chen',
             'npc_dota_hero_faceless_void',
-            'npc_dota_hero_pangolier',
             'npc_dota_hero_dawnbreaker',
             'npc_dota_hero_bloodseeker',
             'npc_dota_hero_keeper_of_the_light',
             'npc_dota_hero_obsidian_destroyer',
             'npc_dota_hero_spirit_breaker',
             'npc_dota_hero_abyssal_underlord',
-            'npc_dota_hero_elder_titan',
         },
         ['counter'] = {
             'npc_dota_hero_troll_warlord',
-            'npc_dota_hero_pangolier',
             'npc_dota_hero_tidehunter',
             'npc_dota_hero_dazzle',
             'npc_dota_hero_life_stealer',
@@ -2146,7 +1963,6 @@ local Heroes = {
 
     ['npc_dota_hero_riki'] = {
         ['synergy'] = {
-            'npc_dota_hero_chen',
             'npc_dota_hero_silencer',
             'npc_dota_hero_luna',
             'npc_dota_hero_necrolyte',
@@ -2158,13 +1974,10 @@ local Heroes = {
             'npc_dota_hero_bristleback',
         },
         ['counter'] = {
-            'npc_dota_hero_puck',
-            'npc_dota_hero_chen',
             'npc_dota_hero_storm_spirit',
             'npc_dota_hero_clinkz',
             'npc_dota_hero_witch_doctor',
             'npc_dota_hero_ursa',
-            'npc_dota_hero_brewmaster',
             'npc_dota_hero_queenofpain',
             'npc_dota_hero_oracle',
             'npc_dota_hero_juggernaut',
@@ -2175,10 +1988,8 @@ local Heroes = {
         ['synergy'] = {
             'npc_dota_hero_oracle',
             'npc_dota_hero_naga_siren',
-            'npc_dota_hero_brewmaster',
             'npc_dota_hero_wisp',
             'npc_dota_hero_beastmaster',
-            'npc_dota_hero_tusk',
             'npc_dota_hero_life_stealer',
             'npc_dota_hero_broodmother',
             'npc_dota_hero_keeper_of_the_light',
@@ -2200,7 +2011,6 @@ local Heroes = {
 
     ['npc_dota_hero_sand_king'] = {
         ['synergy'] = {
-            'npc_dota_hero_elder_titan',
             'npc_dota_hero_omniknight',
             'npc_dota_hero_abaddon',
             'npc_dota_hero_doom_bringer',
@@ -2230,21 +2040,15 @@ local Heroes = {
             'npc_dota_hero_terrorblade',
             'npc_dota_hero_visage',
             'npc_dota_hero_lone_druid',
-            'npc_dota_hero_brewmaster',
-            'npc_dota_hero_elder_titan',
             'npc_dota_hero_dark_seer',
             'npc_dota_hero_wisp',
             'npc_dota_hero_bloodseeker',
-            'npc_dota_hero_tusk',
             'npc_dota_hero_dark_willow',
         },
         ['counter'] = {
-            'npc_dota_hero_chen',
             'npc_dota_hero_oracle',
             'npc_dota_hero_abaddon',
-            'npc_dota_hero_elder_titan',
             'npc_dota_hero_arc_warden',
-            'npc_dota_hero_tinker',
             'npc_dota_hero_huskar',
             'npc_dota_hero_muerta',
             'npc_dota_hero_obsidian_destroyer',
@@ -2254,11 +2058,9 @@ local Heroes = {
 
     ['npc_dota_hero_shadow_shaman'] = {
         ['synergy'] = {
-            'npc_dota_hero_chen',
             'npc_dota_hero_keeper_of_the_light',
             'npc_dota_hero_beastmaster',
             'npc_dota_hero_enigma',
-            'npc_dota_hero_tinker',
             'npc_dota_hero_tidehunter',
             'npc_dota_hero_medusa',
             'npc_dota_hero_earth_spirit',
@@ -2268,7 +2070,6 @@ local Heroes = {
         ['counter'] = {
             'npc_dota_hero_death_prophet',
             'npc_dota_hero_storm_spirit',
-            'npc_dota_hero_elder_titan',
             'npc_dota_hero_lycan',
             'npc_dota_hero_ursa',
             'npc_dota_hero_bloodseeker',
@@ -2284,7 +2085,6 @@ local Heroes = {
             'npc_dota_hero_tidehunter',
             'npc_dota_hero_lone_druid',
             'npc_dota_hero_omniknight',
-            'npc_dota_hero_brewmaster',
             'npc_dota_hero_legion_commander',
             'npc_dota_hero_visage',
             'npc_dota_hero_dawnbreaker',
@@ -2323,7 +2123,6 @@ local Heroes = {
             'npc_dota_hero_leshrac',
             'npc_dota_hero_shredder',
             'npc_dota_hero_shadow_shaman',
-            'npc_dota_hero_elder_titan',
             'npc_dota_hero_storm_spirit',
             'npc_dota_hero_death_prophet',
             'npc_dota_hero_bane',
@@ -2335,7 +2134,6 @@ local Heroes = {
 
     ['npc_dota_hero_skeleton_king'] = {
         ['synergy'] = {
-            'npc_dota_hero_elder_titan',
             'npc_dota_hero_arc_warden',
             'npc_dota_hero_enigma',
             'npc_dota_hero_bloodseeker',
@@ -2350,7 +2148,6 @@ local Heroes = {
             'npc_dota_hero_silencer',
             'npc_dota_hero_riki',
             'npc_dota_hero_enigma',
-            'npc_dota_hero_elder_titan',
             'npc_dota_hero_huskar',
             'npc_dota_hero_skywrath_mage',
             'npc_dota_hero_muerta',
@@ -2367,10 +2164,8 @@ local Heroes = {
             'npc_dota_hero_troll_warlord',
             'npc_dota_hero_beastmaster',
             'npc_dota_hero_phantom_lancer',
-            'npc_dota_hero_chen',
             'npc_dota_hero_visage',
             'npc_dota_hero_arc_warden',
-            'npc_dota_hero_brewmaster',
             'npc_dota_hero_medusa',
         },
         ['counter'] = {
@@ -2383,7 +2178,6 @@ local Heroes = {
             'npc_dota_hero_leshrac',
             'npc_dota_hero_juggernaut',
             'npc_dota_hero_shredder',
-            'npc_dota_hero_chen',
         },
     },
 
@@ -2392,7 +2186,6 @@ local Heroes = {
             'npc_dota_hero_dawnbreaker',
             'npc_dota_hero_mars',
             'npc_dota_hero_bristleback',
-            'npc_dota_hero_elder_titan',
             'npc_dota_hero_alchemist',
             'npc_dota_hero_sand_king',
             'npc_dota_hero_muerta',
@@ -2401,13 +2194,11 @@ local Heroes = {
             'npc_dota_hero_primal_beast',
         },
         ['counter'] = {
-            'npc_dota_hero_chen',
             'npc_dota_hero_life_stealer',
             'npc_dota_hero_anti-mage',
             'npc_dota_hero_leshrac',
             'npc_dota_hero_pudge',
             'npc_dota_hero_clinkz',
-            'npc_dota_hero_elder_titan',
             'npc_dota_hero_centaur',
             'npc_dota_hero_ember_spirit',
             'npc_dota_hero_ursa',
@@ -2424,12 +2215,10 @@ local Heroes = {
             'npc_dota_hero_bristleback',
             'npc_dota_hero_lich',
             'npc_dota_hero_grimstroke',
-            'npc_dota_hero_pangolier',
             'npc_dota_hero_jakiro',
         },
         ['counter'] = {
             'npc_dota_hero_bristleback',
-            'npc_dota_hero_brewmaster',
             'npc_dota_hero_troll_warlord',
             'npc_dota_hero_ember_spirit',
             'npc_dota_hero_broodmother',
@@ -2446,20 +2235,15 @@ local Heroes = {
             'npc_dota_hero_meepo',
             'npc_dota_hero_visage',
             'npc_dota_hero_beastmaster',
-            'npc_dota_hero_puck',
-            'npc_dota_hero_tinker',
             'npc_dota_hero_void_spirit',
             'npc_dota_hero_marci',
             'npc_dota_hero_huskar',
             'npc_dota_hero_lone_druid',
-            'npc_dota_hero_pangolier',
         },
         ['counter'] = {
             'npc_dota_hero_earth_spirit',
             'npc_dota_hero_pugna',
-            'npc_dota_hero_tinker',
             'npc_dota_hero_beastmaster',
-            'npc_dota_hero_chen',
             'npc_dota_hero_visage',
             'npc_dota_hero_dawnbreaker',
             'npc_dota_hero_abyssal_underlord',
@@ -2478,14 +2262,12 @@ local Heroes = {
             'npc_dota_hero_slark',
             'npc_dota_hero_skeleton_king',
             'npc_dota_hero_slardar',
-            'npc_dota_hero_tusk',
             'npc_dota_hero_chaos_knight',
         },
         ['counter'] = {
             'npc_dota_hero_sand_king',
             'npc_dota_hero_medusa',
             'npc_dota_hero_leshrac',
-            'npc_dota_hero_chen',
             'npc_dota_hero_enigma',
             'npc_dota_hero_keeper_of_the_light',
             'npc_dota_hero_templar_assassin',
@@ -2497,7 +2279,6 @@ local Heroes = {
 
     ['npc_dota_hero_spectre'] = {
         ['synergy'] = {
-            'npc_dota_hero_morphling',
             'npc_dota_hero_medusa',
             'npc_dota_hero_bristleback',
             'npc_dota_hero_clinkz',
@@ -2506,7 +2287,6 @@ local Heroes = {
             'npc_dota_hero_keeper_of_the_light',
             'npc_dota_hero_omniknight',
             'npc_dota_hero_muerta',
-            'npc_dota_hero_pangolier',
         },
         ['counter'] = {
             'npc_dota_hero_sniper',
@@ -2531,7 +2311,6 @@ local Heroes = {
             'npc_dota_hero_warlock',
             'npc_dota_hero_alchemist',
             'npc_dota_hero_earthshaker',
-            'npc_dota_hero_chen',
             'npc_dota_hero_kunkka',
             'npc_dota_hero_keeper_of_the_light',
         },
@@ -2579,13 +2358,11 @@ local Heroes = {
     ['npc_dota_hero_sven'] = {
         ['synergy'] = {
             'npc_dota_hero_beastmaster',
-            'npc_dota_hero_chen',
             'npc_dota_hero_omniknight',
             'npc_dota_hero_bloodseeker',
             'npc_dota_hero_doom_bringer',
             'npc_dota_hero_leshrac',
             'npc_dota_hero_muerta',
-            'npc_dota_hero_tusk',
             'npc_dota_hero_slardar',
             'npc_dota_hero_necrolyte',
         },
@@ -2597,7 +2374,6 @@ local Heroes = {
             'npc_dota_hero_beastmaster',
             'npc_dota_hero_broodmother',
             'npc_dota_hero_ember_spirit',
-            'npc_dota_hero_pangolier',
             'npc_dota_hero_phantom_lancer',
             'npc_dota_hero_lone_druid',
         },
@@ -2608,9 +2384,6 @@ local Heroes = {
             'npc_dota_hero_naga_siren',
             'npc_dota_hero_arc_warden',
             'npc_dota_hero_lone_druid',
-            'npc_dota_hero_pangolier',
-            'npc_dota_hero_morphling',
-            'npc_dota_hero_chen',
             'npc_dota_hero_bane',
             'npc_dota_hero_visage',
             'npc_dota_hero_broodmother',
@@ -2639,7 +2412,6 @@ local Heroes = {
             'npc_dota_hero_lone_druid',
             'npc_dota_hero_batrider',
             'npc_dota_hero_dawnbreaker',
-            'npc_dota_hero_chen',
             'npc_dota_hero_broodmother',
             'npc_dota_hero_skywrath_mage',
         },
@@ -2650,7 +2422,6 @@ local Heroes = {
             'npc_dota_hero_slardar',
             'npc_dota_hero_templar_assassin',
             'npc_dota_hero_anti-mage',
-            'npc_dota_hero_tusk',
             'npc_dota_hero_chaos_knight',
             'npc_dota_hero_viper',
             'npc_dota_hero_beastmaster',
@@ -2660,11 +2431,9 @@ local Heroes = {
     ['npc_dota_hero_templar_assassin'] = {
         ['synergy'] = {
             'npc_dota_hero_beastmaster',
-            'npc_dota_hero_brewmaster',
             'npc_dota_hero_oracle',
             'npc_dota_hero_vengefulspirit',
             'npc_dota_hero_snapfire',
-            'npc_dota_hero_elder_titan',
             'npc_dota_hero_abyssal_underlord',
             'npc_dota_hero_mars',
             'npc_dota_hero_muerta',
@@ -2679,7 +2448,6 @@ local Heroes = {
             'npc_dota_hero_nyx_assassin',
             'npc_dota_hero_shredder',
             'npc_dota_hero_night_stalker',
-            'npc_dota_hero_elder_titan',
             'npc_dota_hero_oracle',
         },
     },
@@ -2689,7 +2457,6 @@ local Heroes = {
             'npc_dota_hero_shredder',
             'npc_dota_hero_bloodseeker',
             'npc_dota_hero_arc_warden',
-            'npc_dota_hero_elder_titan',
             'npc_dota_hero_alchemist',
             'npc_dota_hero_marci',
             'npc_dota_hero_nyx_assassin',
@@ -2707,7 +2474,6 @@ local Heroes = {
             'npc_dota_hero_meepo',
             'npc_dota_hero_visage',
             'npc_dota_hero_phantom_lancer',
-            'npc_dota_hero_brewmaster',
         },
     },
 
@@ -2721,7 +2487,6 @@ local Heroes = {
             'npc_dota_hero_furion',
             'npc_dota_hero_gyrocopter',
             'npc_dota_hero_kunkka',
-            'npc_dota_hero_brewmaster',
             'npc_dota_hero_rattletrap',
         },
         ['counter'] = {
@@ -2740,10 +2505,7 @@ local Heroes = {
 
     ['npc_dota_hero_tiny'] = {
         ['synergy'] = {
-            'npc_dota_hero_brewmaster',
             'npc_dota_hero_dark_seer',
-            'npc_dota_hero_elder_titan',
-            'npc_dota_hero_chen',
             'npc_dota_hero_ancient_apparition',
             'npc_dota_hero_dawnbreaker',
             'npc_dota_hero_magnataur',
@@ -2754,7 +2516,6 @@ local Heroes = {
         ['counter'] = {
             'npc_dota_hero_antimage',
             'npc_dota_hero_naga_siren',
-            'npc_dota_hero_puck',
             'npc_dota_hero_riki',
             'npc_dota_hero_axe',
             'npc_dota_hero_beastmaster',
@@ -2779,7 +2540,6 @@ local Heroes = {
             'npc_dota_hero_lycan',
         },
         ['counter'] = {
-            'npc_dota_hero_chen',
             'npc_dota_hero_mirana',
             'npc_dota_hero_enigma',
             'npc_dota_hero_skeleton_king',
@@ -2801,12 +2561,10 @@ local Heroes = {
             'npc_dota_hero_lycan',
             'npc_dota_hero_night_stalker',
             'npc_dota_hero_meepo',
-            'npc_dota_hero_tinker',
             'npc_dota_hero_nevermore',
             'npc_dota_hero_marci',
         },
         ['counter'] = {
-            'npc_dota_hero_elder_titan',
             'npc_dota_hero_meepo',
             'npc_dota_hero_lycan',
             'npc_dota_hero_wisp',
@@ -2825,15 +2583,12 @@ local Heroes = {
             'npc_dota_hero_monkey_king',
             'npc_dota_hero_muerta',
             'npc_dota_hero_abyssal_underlord',
-            'npc_dota_hero_puck',
-            'npc_dota_hero_morphling',
             'npc_dota_hero_shadow_demon',
             'npc_dota_hero_mars',
             'npc_dota_hero_bristleback',
             'npc_dota_hero_sven',
         },
         ['counter'] = {
-            'npc_dota_hero_brewmaster',
             'npc_dota_hero_sven',
             'npc_dota_hero_legion_commander',
             'npc_dota_hero_clinkz',
@@ -2855,7 +2610,6 @@ local Heroes = {
             'npc_dota_hero_windrunner',
             'npc_dota_hero_mars',
             'npc_dota_hero_legion_commander',
-            'npc_dota_hero_pangolier',
             'npc_dota_hero_sand_king',
             'npc_dota_hero_disruptor',
         },
@@ -2902,7 +2656,6 @@ local Heroes = {
 
     ['npc_dota_hero_vengefulspirit'] = {
         ['synergy'] = {
-            'npc_dota_hero_chen',
             'npc_dota_hero_lone_druid',
             'npc_dota_hero_drow_ranger',
             'npc_dota_hero_templar_assassin',
@@ -2929,7 +2682,6 @@ local Heroes = {
 
     ['npc_dota_hero_venomancer'] = {
         ['synergy'] = {
-            'npc_dota_hero_elder_titan',
             'npc_dota_hero_pudge',
             'npc_dota_hero_earth_spirit',
             'npc_dota_hero_drow_ranger',
@@ -2937,7 +2689,6 @@ local Heroes = {
             'npc_dota_hero_void_spirit',
             'npc_dota_hero_arc_warden',
             'npc_dota_hero_obsidian_destroyer',
-            'npc_dota_hero_tusk',
             'npc_dota_hero_centaur',
         },
         ['counter'] = {
@@ -2956,8 +2707,6 @@ local Heroes = {
 
     ['npc_dota_hero_viper'] = {
         ['synergy'] = {
-            'npc_dota_hero_chen',
-            'npc_dota_hero_brewmaster',
             'npc_dota_hero_faceless_void',
             'npc_dota_hero_naga_siren',
             'npc_dota_hero_omniknight',
@@ -2970,7 +2719,6 @@ local Heroes = {
         ['counter'] = {
             'npc_dota_hero_huskar',
             'npc_dota_hero_bristleback',
-            'npc_dota_hero_chen',
             'npc_dota_hero_beastmaster',
             'npc_dota_hero_tiny',
             'npc_dota_hero_dragon_knight',
@@ -2986,16 +2734,13 @@ local Heroes = {
             'npc_dota_hero_terrorblade',
             'npc_dota_hero_batrider',
             'npc_dota_hero_luna',
-            'npc_dota_hero_tusk',
             'npc_dota_hero_shadow_demon',
             'npc_dota_hero_meepo',
             'npc_dota_hero_grimstroke',
             'npc_dota_hero_broodmother',
             'npc_dota_hero_omniknight',
-            'npc_dota_hero_chen',
         },
         ['counter'] = {
-            'npc_dota_hero_elder_titan',
             'npc_dota_hero_leshrac',
             'npc_dota_hero_shadow_demon',
             'npc_dota_hero_life_stealer',
@@ -3010,7 +2755,6 @@ local Heroes = {
 
     ['npc_dota_hero_void_spirit'] = {
         ['synergy'] = {
-            'npc_dota_hero_elder_titan',
             'npc_dota_hero_medusa',
             'npc_dota_hero_keeper_of_the_light',
             'npc_dota_hero_ancient_apparition',
@@ -3067,7 +2811,6 @@ local Heroes = {
             'npc_dota_hero_muerta',
             'npc_dota_hero_bloodseeker',
             'npc_dota_hero_luna',
-            'npc_dota_hero_chen',
             'npc_dota_hero_visage',
             'npc_dota_hero_spectre',
             'npc_dota_hero_sand_king',
@@ -3083,7 +2826,6 @@ local Heroes = {
             'npc_dota_hero_razor',
             'npc_dota_hero_venomancer',
             'npc_dota_hero_lone_druid',
-            'npc_dota_hero_pangolier',
             'npc_dota_hero_dazzle',
             'npc_dota_hero_lycan',
         },
@@ -3096,9 +2838,7 @@ local Heroes = {
             'npc_dota_hero_abaddon',
             'npc_dota_hero_undying',
             'npc_dota_hero_batrider',
-            'npc_dota_hero_morphling',
             'npc_dota_hero_warlock',
-            'npc_dota_hero_brewmaster',
             'npc_dota_hero_sven',
             'npc_dota_hero_venomancer',
         },
@@ -3137,7 +2877,6 @@ local Heroes = {
             'npc_dota_hero_troll_warlord',
             'npc_dota_hero_medusa',
             'npc_dota_hero_dawnbreaker',
-            'npc_dota_hero_pangolier',
             'npc_dota_hero_magnataur',
             'npc_dota_hero_templar_assassin',
         },
@@ -3184,11 +2923,9 @@ local Heroes = {
             'npc_dota_hero_legion_commander',
             'npc_dota_hero_spirit_breaker',
             'npc_dota_hero_storm_spirit',
-            'npc_dota_hero_morphling',
             'npc_dota_hero_wisp',
             'npc_dota_hero_void_spirit',
             'npc_dota_hero_juggernaut',
-            'npc_dota_hero_chen',
             'npc_dota_hero_riki',
             'npc_dota_hero_witch_doctor',
         },
@@ -3197,8 +2934,6 @@ local Heroes = {
             'npc_dota_hero_monkey_king',
             'npc_dota_hero_riki',
             'npc_dota_hero_terrorblade',
-            'npc_dota_hero_tinker',
-            'npc_dota_hero_morphling',
             'npc_dota_hero_windrunner',
             'npc_dota_hero_doom_bringer',
             'npc_dota_hero_drow_ranger',
