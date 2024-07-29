@@ -13,7 +13,7 @@ function X.OnStart() end
 function X.OnEnd() end
 
 function X.GetDesire()
-    if not bot:IsAlive() or J.CanNotUseAction(bot) or bot:IsUsingAbility() or bot:IsChanneling() then return BOT_ACTION_DESIRE_NONE end
+    if not bot:IsAlive() or J.CanNotUseAction(bot) or bot:IsUsingAbility() or bot:IsChanneling() or bot:IsDisarmed() then return BOT_ACTION_DESIRE_NONE end
 
 	if bot:GetActiveMode() == BOT_MODE_ATTACK then
 		botTarget = bot:GetTarget()

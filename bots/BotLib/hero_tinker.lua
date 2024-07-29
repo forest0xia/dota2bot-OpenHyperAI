@@ -1185,28 +1185,28 @@ function X.ConsiderRearm()
 		end
 	end
 
-    if  J.IsPushing(bot)
-    and bot:GetActiveModeDesire() > 0.5
-    then
-        if  GetUnitToLocationDistance(bot, GetLaneFrontLocation(GetTeam(), bot.laneToPush, 0)) > 4000
-        and KeenConveyance:IsTrained() and KeenConveyance:GetCooldownTimeRemaining() > 5
-        then
-            return BOT_ACTION_DESIRE_HIGH
-        end
+    -- if  J.IsPushing(bot)
+    -- and bot:GetActiveModeDesire() > 0.5
+    -- then
+    --     if  GetUnitToLocationDistance(bot, GetLaneFrontLocation(GetTeam(), bot.laneToPush, 0)) > 4000
+    --     and KeenConveyance:IsTrained() and KeenConveyance:GetCooldownTimeRemaining() > 5
+    --     then
+    --         return BOT_ACTION_DESIRE_HIGH
+    --     end
 
-        if Laser:GetCooldownTimeRemaining() > Rearm:GetChannelTime()
-        then
-            return BOT_ACTION_DESIRE_HIGH
-        end
+    --     if Laser:GetCooldownTimeRemaining() > Rearm:GetChannelTime()
+    --     then
+    --         return BOT_ACTION_DESIRE_HIGH
+    --     end
 
-        local nLocationAoE = bot:FindAoELocation(true, true, bot:GetLocation(), 1500, 1500, 0, 0)
-        nInRangeEnemy = J.GetEnemiesNearLoc(nLocationAoE.targetloc, 1500)
-        if  nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
-        and MarchOfTheMachines:GetCooldownTimeRemaining() > Rearm:GetChannelTime()
-        then
-            return BOT_ACTION_DESIRE_HIGH
-        end
-    end
+    --     local nLocationAoE = bot:FindAoELocation(true, true, bot:GetLocation(), 1500, 1500, 0, 0)
+    --     nInRangeEnemy = J.GetEnemiesNearLoc(nLocationAoE.targetloc, 1500)
+    --     if  nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
+    --     and MarchOfTheMachines:GetCooldownTimeRemaining() > Rearm:GetChannelTime()
+    --     then
+    --         return BOT_ACTION_DESIRE_HIGH
+    --     end
+    -- end
 
     -- if  J.IsDefending(bot)
     -- and bot:GetActiveModeDesire() > 0.5

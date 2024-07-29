@@ -1,5 +1,4 @@
 
-local J = require( GetScriptDirectory()..'/FunLib/jmz_func')
 local Utils = require( GetScriptDirectory()..'/FunLib/utils')
 
 local bot = GetBot()
@@ -8,8 +7,6 @@ local local_mode_laning_generic
 if bot:IsInvulnerable() or not bot:IsHero() or not string.find(botName, "hero") or bot:IsIllusion() then
 	return
 end
-
-local nTpSolt = 15
 
 if Utils.BuggyHeroesDueToValveTooLazy[botName] then
 	local_mode_laning_generic = dofile( GetScriptDirectory().."/FunLib/override_generic/mode_laning_generic" )

@@ -428,7 +428,7 @@ function AwardBonus:GetSpecificPerMinuteBonus(bot, pmBot, roleTable, settings)
 	local scale = settings.scale[bot.stats.role]
 	local variance = Utilities:GetVariance(settings.variance)
 	-- Get total multiplier
-	local multiplier = AwardBonus:GetMultiplier(skill, scale, variance) * 1.4
+	local multiplier = AwardBonus:GetMultiplier(skill, scale, variance) * 1.25
 	-- multiply
 	pmTarget = Utilities:Round(pmTarget * multiplier)
 	-- if the bot is already better than this, do not give award

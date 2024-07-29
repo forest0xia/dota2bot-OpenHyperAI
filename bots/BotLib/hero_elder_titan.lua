@@ -7,11 +7,19 @@ local sTalentList   = J.Skill.GetTalentList( bot )
 local sAbilityList  = J.Skill.GetAbilityList( bot )
 local sRole   = J.Item.GetRoleItemsBuyList( bot )
 
-local tTalentTreeList = {--pos4,5
-                        ['t25'] = {10, 10},
-                        ['t20'] = {10, 10},
-                        ['t15'] = {10, 10},
-                        ['t10'] = {10, 10},
+local tTalentTreeList = {
+	{--pos4,5
+	['t25'] = {0, 10},
+	['t20'] = {10, 0},
+	['t15'] = {0, 10},
+	['t10'] = {10, 0},
+},
+	{--pos1,3
+	['t25'] = {0, 10},
+	['t20'] = {0, 10},
+	['t15'] = {10, 0},
+	['t10'] = {10, 0},
+}
 }
 
 local tAllAbilityBuildList = {
@@ -22,7 +30,7 @@ local tAllAbilityBuildList = {
 
 local nAbilityBuildList
 
-local nTalentBuildList = J.Skill.GetTalentBuild(tTalentTreeList)
+local nTalentBuildList = J.Skill.GetTalentBuild(tTalentTreeList[1])
 
 if sRole == "pos_1"
 then
@@ -144,14 +152,12 @@ local ReturnAstralSpirit    = bot:GetAbilityByName('elder_titan_return_spirit')
 local NaturalOrder          = bot:GetAbilityByName('elder_titan_natural_order')
 local EarthSplitter         = bot:GetAbilityByName('elder_titan_earth_splitter')
 
-local ReturnDesire = 0
-
 local botTarget
 
-local lastCastSpirit = 0 -- fallback to prevent idle
 local touchedUnits = { }
 bot.theAstralSpirit = nil
 local targetTouchUnits = nil
+local nEnemyHeroes, nAllyHeroes
 
 function X.MinionThink(hMinionUnit, aBot)
 	if J.Utils.IsUnitWithName(hMinionUnit, 'elder_titan_ancestral_spirit') and SpiritShouldBeAvailable() then
@@ -161,7 +167,7 @@ function X.MinionThink(hMinionUnit, aBot)
 		if bot:IsUsingAbility() or bot:IsCastingAbility() then return end
 		if hMinionUnit:IsUsingAbility() or hMinionUnit:IsCastingAbility() then return end
 
-        if ConsiderEchoStomp(hMinionUnit) > 0 then
+        if ConsiderEchoStomp(bot.theAstralSpirit) > 0 then
             bot:Action_UseAbility(EchoStomp)
             return
         end
@@ -176,15 +182,22 @@ function X.MinionThink(hMinionUnit, aBot)
 end
 
 function X.SkillsComplement()
-	if J.CanNotUseAbility(bot) then return end
+	if J.CanNotUseAbility(bot) or bot:IsCastingAbility() or bot:IsChanneling() then return end
+
+    nEnemyHeroes = J.GetNearbyHeroes(bot, 1600, true)
+    nAllyHeroes = J.GetNearbyHeroes(bot, 1600, false)
 
     botTarget = J.GetProperTarget(bot)
+
+	if ConsiderEchoStomp(bot) > 0 then
+		bot:Action_UseAbility(EchoStomp)
+		return
+	end
 
     local AstralSpiritDesire, AstralSpiritLocation = ConsiderAstralSpirit()
     if AstralSpiritDesire > 0 then
 		J.SetQueuePtToINT(bot, false)
 		touchedUnits = { }
-		lastCastSpirit = DotaTime()
         targetTouchUnits = nil
 		bot:ActionQueue_UseAbilityOnLocation(AstralSpirit, AstralSpiritLocation)
     end
@@ -206,16 +219,17 @@ end
 function ConsiderAstralSpirit()
 	if not AstralSpirit:IsFullyCastable() then return BOT_ACTION_DESIRE_NONE end
     if bot:IsUsingAbility() or bot:IsCastingAbility() then return BOT_ACTION_DESIRE_NONE end
+	if bot:HasModifier('modifier_elder_titan_ancestral_spirit_buff') then return BOT_ACTION_DESIRE_NONE end
 
 	local nCastRange = AstralSpirit:GetSpecialValueInt('AbilityCastRange')
-    
+
 	if J.IsValidTarget(botTarget) and (J.IsInTeamFight(bot, 1600) or J.IsGoingOnSomeone(bot) or J.IsPushing(bot))
 	then
         if J.IsInRange(bot, botTarget, nCastRange) then
-            local targetLoc = J.Site.GetXUnitsTowardsLocation(bot, botTarget:GetLocation(), nCastRange)
-            if #J.GetHeroesNearLocation(true, targetLoc, 800) >= 1 then
-                return BOT_ACTION_DESIRE_HIGH, targetLoc
-            end
+			local locationAoE = bot:FindAoELocation(true, true, bot:GetLocation(), nCastRange, 500, 0, 0)
+			if locationAoE.count >= #nEnemyHeroes - 1 then
+                return BOT_ACTION_DESIRE_HIGH, locationAoE.targetloc
+			end
         end
 	end
 	return BOT_ACTION_DESIRE_NONE
@@ -230,9 +244,8 @@ function ConsiderMoveAstralSpirit()
     if not SpiritShouldBeAvailable() then return BOT_ACTION_DESIRE_NONE end
 
     if targetTouchUnits == nil then
-        local nInRangeEnemy = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE)
         local enemyCreeps = bot:GetNearbyCreeps(1600, true);
-        targetTouchUnits = J.Utils.CombineTablesUnique(nInRangeEnemy, enemyCreeps)
+        targetTouchUnits = J.Utils.CombineTablesUnique(nEnemyHeroes, enemyCreeps)
     end
 
     if targetTouchUnits ~= nil then
@@ -269,8 +282,8 @@ function ConsiderEarthSplitter()
         end
 
         if J.IsValidHero( botTarget )
+			and #nEnemyHeroes >= #nAllyHeroes
 			and J.CanCastOnNonMagicImmune( botTarget )
-			and X.IsWithoutSpellShield( botTarget )
 			and J.CanKillTarget( botTarget, botTarget:GetMaxHealth() * 0.4, DAMAGE_TYPE_MAGICAL )
 		then
             local loc = J.GetCorrectLoc(botTarget, crack_time)
@@ -288,36 +301,37 @@ function ConsiderReturnMinion()
         return BOT_ACTION_DESIRE_HIGH
     end
 
-	-- there seems to be a bug where the spirit can not be moved, so return it.
-    -- if #touchedUnits >= 1 or lastCastSpirit > 2 then
-    --     return BOT_ACTION_DESIRE_MODERATE
-    -- end
-
 	return BOT_ACTION_DESIRE_NONE
 end
 
-function ConsiderEchoStomp(hMinionUnit)
+function ConsiderEchoStomp(eveluator)
 	if not EchoStomp:IsFullyCastable() then return BOT_ACTION_DESIRE_NONE end
 
 	local nRadius = EchoStomp:GetSpecialValueInt("radius");
 	local nDamage = EchoStomp:GetSpecialValueInt("stomp_damage");
 
-	local tableNearbyEnemyHeroes = hMinionUnit:GetNearbyHeroes(nRadius, true, BOT_MODE_NONE);
-	for _, npcEnemy in pairs(tableNearbyEnemyHeroes) do
-		if npcEnemy:IsChanneling()
+	if eveluator == nil then eveluator = bot end
+	local nInEchoRangeEnemyHeroes = eveluator:GetNearbyHeroes(nRadius, true, BOT_MODE_NONE)
+
+	for _, npcEnemy in pairs(nInEchoRangeEnemyHeroes) do
+		if npcEnemy:IsChanneling() -- 打断技能
 		then
-			return BOT_ACTION_DESIRE_MODERATE
+			return BOT_ACTION_DESIRE_HIGH
 		end
+	end
+
+	if #nInEchoRangeEnemyHeroes >= 3 then
+        return BOT_ACTION_DESIRE_HIGH
 	end
 
 	if J.IsRetreating(bot)
 	then
-		for _, npcEnemy in pairs(tableNearbyEnemyHeroes) do
-			if bot:WasRecentlyDamagedByHero(npcEnemy, 2)
+		for _, npcEnemy in pairs(nInEchoRangeEnemyHeroes) do
+			if J.IsValidHero(npcEnemy) and bot:WasRecentlyDamagedByHero(npcEnemy, 2)
 			then
 				if J.CanCastOnNonMagicImmune(npcEnemy)
 				then
-					return BOT_ACTION_DESIRE_MODERATE
+					return BOT_ACTION_DESIRE_HIGH
 				end
 			end
 		end
@@ -325,16 +339,19 @@ function ConsiderEchoStomp(hMinionUnit)
 
 	if J.IsInTeamFight(bot, 1200) or J.IsGoingOnSomeone(bot) or J.IsPushing(bot) or J.IsDefending(bot)
 	then
-		local locationAoE = hMinionUnit:FindAoELocation(true, true, hMinionUnit:GetLocation(), 0, nRadius, 0, 0)
+		if J.IsValidHero(botTarget)
+		and J.IsChasingTarget(bot, botTarget)
+		and J.IsInRange(eveluator, botTarget, nRadius) then
+			return BOT_ACTION_DESIRE_HIGH
+		end
+
+		local locationAoE = bot:FindAoELocation(true, true, bot:GetLocation(), 0, nRadius, 0, 0)
 		if locationAoE.count >= 3 then
-            if bot:GetMana() / bot:GetMaxMana() < 0.7 and J.IsInLaningPhase() then
-                return BOT_ACTION_DESIRE_NONE
-            end
-            return BOT_ACTION_DESIRE_MODERATE
+			return BOT_ACTION_DESIRE_HIGH
 		end
 	end
 
-	return BOT_ACTION_DESIRE_NONE;
+	return BOT_ACTION_DESIRE_NONE
 
 end
 

@@ -26,7 +26,7 @@ if Timers == nil then
     --end
 
     -- Track game time, since the dt passed in to think is actually wall-clock time not simulation time.
-    local now = GameRules:GetGameTime()
+    -- local now = GameRules:GetGameTime()
 
     -- Process timers
     for k,v in pairs(Timers.timers) do

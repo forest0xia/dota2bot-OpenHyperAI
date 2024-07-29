@@ -517,6 +517,7 @@ function X.CantBeControlled(unit_name)
 		or unit_name == "npc_dota_phoenix_sun"
 		or unit_name == "npc_dota_techies_minefield_sign"
 		or unit_name == "npc_dota_treant_eyes"
+		or unit_name == 'npc_dota_warlock_minor_imp'
 		or unit_name == "dota_death_prophet_exorcism_spirit"
 		or unit_name == "npc_dota_dark_willow_creature";
 end

@@ -27,15 +27,6 @@ local IsHeroCore = false
 local beFirstStop = false
 local bePvNMode = false
 
-local DroppedShardTime = -90
-local DroppedCheeseTime = -90
-local SwappedCheeseTime = -90
-local SwappedClarityTime = -90
-local SwappedFlaskTime = -90
-local SwappedRefresherShardTime = -90
-local SwappedMoonshardTime = -90
-local PickedItem = nil
-
 local ShouldAttackSpecialUnit = false
 local SpecialUnitTarget = nil
 
@@ -101,30 +92,6 @@ function GetDesire()
 		return BOT_MODE_DESIRE_ABSOLUTE * 0.98
 	end
 
-	-- -- Pickup Neutral Item Tokens
-	-- nDesire = TryPickupDroppedNeutralItemTokens()
-	-- if nDesire > 0
-	-- then
-	-- 	return nDesire
-	-- end
-
-	-- Pickup Roshan Dropped Items
-	nDesire = TryPickupRefresherShard()
-	if nDesire > 0
-	then
-		return nDesire
-	end
-
-	nDesire = TryPickupCheese()
-	if nDesire > 0
-	then
-		return nDesire
-	end
-
-	TrySwapInvItemForCheese()
-
-	TrySwapInvItemForRefresherShard()
-
 	if J.Role['bStopAction'] then return 2.0 end
 
 	if  J.IsPushing(bot)
@@ -178,10 +145,6 @@ function GetDesire()
 		end
 	end
 	
-	TrySwapInvItemForClarity()
-	TrySwapInvItemForFlask()
-	TrySwapInvItemForMoonshard()
-	
 	return 0.0;
 	
 end
@@ -193,7 +156,6 @@ function OnStart()
 end
 
 function OnEnd()
-	PickedItem = nil
 	towerTime = 0
 	towerCreepMode = false
 	bot:SetTarget(nil)
@@ -274,19 +236,6 @@ function Think()
 	then
 		bot:Action_AttackUnit(towerCreep, false)
 		return
-	end
-
-	if PickedItem ~= nil and not Utils.HasValue(Item['tEarlyConsumableItem'], PickedItem.item:GetName()) and not string.find(PickedItem.item:GetName(), 'token')
-	then
-		local distance = GetUnitToLocationDistance(bot, PickedItem.location)
-		if distance > 200
-		then
-			bot:Action_MoveToLocation(PickedItem.location)
-			return
-		elseif distance <= 100 then
-			bot:Action_PickUpItem(PickedItem.item)
-			return
-		end
 	end
 
 	if  (IsHeroCore or IsSupport)
@@ -2115,211 +2064,6 @@ function ConsiderHarassInLaningPhase()
 	shouldHarass = false
 
 	return BOT_ACTION_DESIRE_NONE
-end
-
--- Do not want to use this code because it makes bot dumb that bots spend time to walk which is damgious to pick up items they are not able to use at all.
--- function TryPickupDroppedNeutralItemTokens()
--- 	local item = nil
--- 	local droppedItem = GetDroppedItemList()
-
--- 	for _, drop in pairs(droppedItem)
--- 	do
--- 		if drop.item:GetName() == 'item_tier1_token'
--- 		or drop.item:GetName() == 'item_tier2_token'
--- 		or drop.item:GetName() == 'item_tier3_token'
--- 		or drop.item:GetName() == 'item_tier4_token'
--- 		or drop.item:GetName() == 'item_tier5_token'
--- 		then
--- 			item = drop
--- 			break
--- 		end
--- 	end
-
--- 	if  item ~= nil and item.location ~= nil
--- 	and J.GetLocationToLocationDistance(item.location, J.GetTeamFountain()) > 900
--- 	and Item.GetEmptyInventoryAmount(bot) > 0
--- 	then
--- 		PickedItem = item
--- 		return BOT_ACTION_DESIRE_VERYHIGH
--- 	else
--- 		PickedItem = nil
--- 	end
-
--- 	return BOT_ACTION_DESIRE_NONE
--- end
-
--- Pickup Refresher Shard
-function TryPickupRefresherShard()
-	if DotaTime() >= DroppedShardTime + 2.0
-	then
-		local mostCDHero = J.GetMostUltimateCDUnit()
-
-		if  mostCDHero ~= nil
-		and mostCDHero:IsBot()
-		and bot == mostCDHero
-		and J.Item.GetEmptyInventoryAmount(bot) > 0
-		then
-			local refreshShard = nil
-			local nDroppedItem = GetDroppedItemList()
-
-			for _, item in pairs(nDroppedItem)
-			do
-				if item.item:GetName() == 'item_refresher_shard'
-				then
-					refreshShard = item.item
-					break
-				end
-			end
-
-			if refreshShard ~= nil
-			then
-				PickedItem = refreshShard
-				return BOT_MODE_DESIRE_VERYHIGH
-			else
-				PickedItem = nil
-			end
-		end
-
-		DroppedShardTime = DotaTime()
-	end
-
-	return BOT_ACTION_DESIRE_NONE
-end
-
--- Pickup Cheese
-function TryPickupCheese()
-	if DotaTime() >= DroppedCheeseTime + 2.0
-	then
-		local pos = J.GetPosition(bot)
-
-		if  (pos == 3 or pos == 2 or pos == 1)
-		and J.Item.GetEmptyInventoryAmount(bot) > 0
-		and not J.HasItem(bot, 'item_aegis')
-		then
-			local cheese = nil
-			local nDroppedItem = GetDroppedItemList()
-
-			for _, item in pairs(nDroppedItem)
-			do
-				if item.item:GetName() == 'item_cheese'
-				then
-					cheese = item.item
-					break
-				end
-			end
-
-			if cheese ~= nil
-			then
-				PickedItem = cheese
-				return BOT_MODE_DESIRE_VERYHIGH
-			else
-				PickedItem = nil
-			end
-		end
-
-		DroppedCheeseTime = DotaTime()
-	end
-
-	return BOT_ACTION_DESIRE_NONE
-end
-
--- Swap Items for healing
-function TrySwapInvItemForClarity()
-	if 	DotaTime() >= SwappedClarityTime + 6.0
-	and bot:GetActiveMode() ~= BOT_MODE_WARD 
-	then
-		local cSlot = bot:FindItemSlot('item_clarity')
-		if cSlot and bot:GetItemSlotType(cSlot) == ITEM_SLOT_TYPE_BACKPACK
-		then
-			local lessValItem = J.Item.GetMainInvLessValItemSlot(bot)
-
-			if lessValItem ~= -1
-			then
-				bot:ActionImmediate_SwapItems(cSlot, lessValItem)
-			end
-		end
-
-		SwappedClarityTime = DotaTime()
-	end
-end
-function TrySwapInvItemForFlask()
-	if 	DotaTime() >= SwappedFlaskTime + 6.0
-	and bot:GetActiveMode() ~= BOT_MODE_WARD 
-	then
-		local cSlot = bot:FindItemSlot('item_flask')
-		if cSlot and bot:GetItemSlotType(cSlot) == ITEM_SLOT_TYPE_BACKPACK
-		then
-			local lessValItem = J.Item.GetMainInvLessValItemSlot(bot)
-
-			if lessValItem ~= -1
-			then
-				bot:ActionImmediate_SwapItems(cSlot, lessValItem)
-			end
-		end
-
-		SwappedFlaskTime = DotaTime()
-	end
-end
-
--- Swap Items for moonshard
-function TrySwapInvItemForMoonshard()
-	if DotaTime() >= SwappedMoonshardTime + 10.0
-	and bot:GetActiveMode() ~= BOT_MODE_WARD 
-	then
-		local cSlot = bot:FindItemSlot('item_moon_shard')
-		if cSlot and bot:GetItemSlotType(cSlot) == ITEM_SLOT_TYPE_BACKPACK
-		then
-			local lessValItem = J.Item.GetMainInvLessValItemSlot(bot)
-
-			if lessValItem ~= -1
-			then
-				bot:ActionImmediate_SwapItems(cSlot, lessValItem)
-			end
-		end
-		SwappedMoonshardTime = DotaTime()
-	end
-end
-
--- Swap Items for Cheese
-function TrySwapInvItemForCheese()
-	if 	DotaTime() >= SwappedCheeseTime + 2.0
-	and bot:GetActiveMode() ~= BOT_MODE_WARD 
-	then
-		local cSlot = bot:FindItemSlot('item_cheese')
-
-		if bot:GetItemSlotType(cSlot) == ITEM_SLOT_TYPE_BACKPACK
-		then
-			local lessValItem = J.Item.GetMainInvLessValItemSlot(bot)
-
-			if lessValItem ~= -1
-			then
-				bot:ActionImmediate_SwapItems(cSlot, lessValItem)
-			end
-		end
-
-		SwappedCheeseTime = DotaTime()
-	end
-end
-
--- Swap Items for Refresher Shard
-function TrySwapInvItemForRefresherShard()
-	if 	DotaTime() >= SwappedRefresherShardTime + 2.0
-	and bot:GetActiveMode() ~= BOT_MODE_WARD 
-	then
-		local rSlot = bot:FindItemSlot('item_refresher_shard')
-
-		if bot:GetItemSlotType(rSlot) == ITEM_SLOT_TYPE_BACKPACK
-		then
-			local lessValItem = J.Item.GetMainInvLessValItemSlot(bot)
-
-			if lessValItem ~= -1
-			then
-				bot:ActionImmediate_SwapItems(rSlot, lessValItem)
-			end
-		end
-
-		SwappedRefresherShardTime = DotaTime()
-	end
 end
 
 function IsDoingTormentor()

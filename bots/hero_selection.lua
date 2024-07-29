@@ -443,17 +443,11 @@ local WeakHeroes = {
 	'npc_dota_hero_morphling',
 	'npc_dota_hero_visage',
 	'npc_dota_hero_void_spirit',
-
-	-- Buggys, meaning they have bugs on Valves side, as of (still) 2024/7/21:
-	'npc_dota_hero_elder_titan',
-	'npc_dota_hero_hoodwink',
-	'npc_dota_hero_dark_willow',
-	'npc_dota_hero_primal_beast',
-	'npc_dota_hero_wisp',
-	'npc_dota_hero_muerta',
-	'npc_dota_hero_marci',
-	-- 'npc_dota_hero_lone_druid',
 }
+
+-- Buggys, meaning they have bugs on Valves side, as of (still) 2024/7/21:
+WeakHeroes = Utils.CombineTablesUnique(WeakHeroes, Utils.BuggyHeroesDueToValveTooLazy)
+
 local SelectedWeakHero = 0
 local MaxWeakHeroCount = 1
 
@@ -730,9 +724,9 @@ function X.OverrideTeamHeroes()
 
 
 			[1] = 'npc_dota_hero_marci',
-			[2] = tSelectPoolList[2][RandomInt( 1, #tSelectPoolList[2] )],
-			[3] = 'npc_dota_hero_invoker',
-		    [4] = 'npc_dota_hero_elder_titan',
+			[2] = 'npc_dota_hero_invoker',
+			[3] = "npc_dota_hero_elder_titan",
+		    [4] = 'npc_dota_hero_warlock',
 			[5] = tSelectPoolList[5][RandomInt( 1, #tSelectPoolList[5] )],
 			
 			-- Muerta pos1 and Hoodwink pos5, both go top.

@@ -18,7 +18,6 @@ then return end
 
 local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
 local Utils = require( GetScriptDirectory()..'/FunLib/utils' )
-local Item = require( GetScriptDirectory()..'/FunLib/aba_item' )
 local BotBuild = dofile( GetScriptDirectory().."/BotLib/"..string.gsub( bot:GetUnitName(), "npc_dota_", "" ) )
 
 if BotBuild == nil then return end
@@ -36,7 +35,6 @@ local roshanRadiantLoc  = Vector(7625, -7511, 1092)
 local roshanDireLoc     = Vector(-7549, 7562, 1107)
 local RadiantFountain = Vector(-6619, -6336, 384)
 local DireFountain = Vector(6928, 6372, 392)
-local lastCheckDropTime = 0
 
 local function AbilityLevelUpComplement()
 
@@ -365,54 +363,6 @@ local function CourierUsageComplement()
 	local useCourierCD = 2.3
 	local protectCourierCD = 5.0
 	--------* * * * * * * ----------------* * * * * * * ----------------* * * * * * * --------
-
-	--提前/及时的 出售过度装备
-	-- 先尝试捡起自己的物品
-	local dropItemList = GetDroppedItemList()
-	local tryPickCount = 0
-	for _, tDropItem in pairs( dropItemList )
-	do
-		if tDropItem.item ~= nil and (tryPickCount <= 3 and not Utils.HasValue(Item['tEarlyConsumableItem'], tDropItem.item:GetName()))
-		then
-			local nDropOwner = tDropItem.owner
-			if nDropOwner ~= nil and nDropOwner == bot and not string.find(tDropItem.item:GetName(), 'token')
-			then
-				local distance = GetUnitToLocationDistance(bot, tDropItem.location)
-				if distance > 200
-				then
-					bot:Action_MoveToLocation(tDropItem.location)
-				elseif distance <= 100 and GetItemCost(tDropItem.item:GetName()) > 400 then
-					tryPickCount = tryPickCount + 1
-					bot:Action_PickUpItem(tDropItem.item)
-					return
-				end
-			end
-		end
-	end
-
-	if DotaTime() > 0 and DotaTime() - lastCheckDropTime > 3
-	then
-		lastCheckDropTime = DotaTime()
-
-		-- 再尝试丢/卖掉自己的物品
-		if Utils.CountBackpackEmptySpace(bot) <= 1 then
-			for i = 1, #Item['tEarlyConsumableItem']
-			do
-				local itemName = Item['tEarlyConsumableItem'][i]
-				local itemSlot = bot:FindItemSlot( itemName )
-				if itemSlot >= 6 and itemSlot <= 8
-				then
-					local distance = bot:DistanceFromFountain()
-					if distance <= 300 then
-						bot:ActionImmediate_SellItem( bot:GetItemInSlot( itemSlot ))
-					elseif bot:GetNetWorth() >= 15000 and distance >= 3000 then
-						bot:Action_DropItem( bot:GetItemInSlot( itemSlot ), bot:GetLocation() )
-					end
-				end
-			end
-		end
-	end
-
 
 	if cState == COURIER_STATE_DEAD then return	end
 

@@ -213,6 +213,36 @@ function CDOTA_Bot_Script:GetUnitName()
 	return uName
 end
 
+local originalAction_UseAbility = CDOTA_Bot_Script.Action_UseAbility
+function CDOTA_Bot_Script:Action_UseAbility(hAbility)
+    if hAbility:IsHidden() then
+		print("Action_UseAbility has been called on ability that's hidden")
+		print("Stack Trace:", debug.traceback())
+		return nil
+	end
+    return originalAction_UseAbility(self, hAbility)
+end
+
+local originalActionPush_UseAbility = CDOTA_Bot_Script.ActionPush_UseAbility
+function CDOTA_Bot_Script:ActionPush_UseAbility(hAbility)
+    if hAbility:IsHidden() then
+		print("ActionPush_UseAbility has been called on ability that's hidden")
+		print("Stack Trace:", debug.traceback())
+		return nil
+	end
+    return originalActionPush_UseAbility(self, hAbility)
+end
+
+-- local originalAction_AttackUnit = CDOTA_Bot_Script.Action_AttackUnit
+-- function CDOTA_Bot_Script:Action_AttackUnit(hUnit, bOnce)
+--     if hUnit:GetUnitName() == 'npc_dota_warlock_minor_imp' then
+-- 		print("Action_AttackUnit has been called on entity npc_dota_warlock_minor_imp")
+-- 		print("Stack Trace:", debug.traceback())
+-- 		return nil
+-- 	end
+--     return originalAction_AttackUnit(self, hUnit, bOnce)
+-- end
+
 local originalGetAttackRange = CDOTA_Bot_Script.GetAttackRange
 function CDOTA_Bot_Script:GetAttackRange()
     if not self:CanBeSeen() then

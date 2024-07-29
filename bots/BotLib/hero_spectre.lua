@@ -633,6 +633,7 @@ end
 function X.ConsiderHaunt()
     if not Haunt:IsTrained()
     or not Haunt:IsFullyCastable()
+    or Haunt:IsHidden()
     or ShadowStep:IsFullyCastable()
     or J.IsInLaningPhase()
     then

@@ -265,12 +265,11 @@ function GetDesire()
 	-- Outpost
 	----------
 
-	if bot:GetUnitName() == 'npc_dota_hero_invoker' then return BOT_ACTION_DESIRE_NONE end
-
 	if not IsEnemyTier2Down then return BOT_ACTION_DESIRE_NONE end
 
 	if not DidWeGetOutpost
 	then
+		if bot:GetUnitName() == 'npc_dota_hero_invoker' then return BOT_ACTION_DESIRE_NONE end
 		for _, unit in pairs(GetUnitList(UNIT_LIST_ALL))
 		do
 			if unit:GetUnitName() == '#DOTA_OutpostName_North'
@@ -345,6 +344,7 @@ function Think()
 				end
 
 				if  TPScroll ~= nil
+				and not TPScroll:IsNull()
 				and TPScroll:IsFullyCastable()
 				then
 					bot:Action_UseAbilityOnLocation(TPScroll, J.GetTeamFountain())

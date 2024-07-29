@@ -25,11 +25,11 @@ function Defend.GetDefendDesireHelper(bot, lane)
 	end
 
 	local botLevel = bot:GetLevel()
-	if J.GetPosition(bot) == 1 and botLevel < 6
+	if J.GetPosition(bot) == 1 and botLevel < 8
 	or J.GetPosition(bot) == 2 and botLevel < 6
-	or J.GetPosition(bot) == 3 and botLevel < 5
-	or J.GetPosition(bot) == 4 and botLevel < 4
-	or J.GetPosition(bot) == 5 and botLevel < 4
+	or J.GetPosition(bot) == 3 and botLevel < 6
+	or J.GetPosition(bot) == 4 and botLevel < 5
+	or J.GetPosition(bot) == 5 and botLevel < 5
 	then
 		return BOT_MODE_DESIRE_NONE
 	end
@@ -105,14 +105,18 @@ function Defend.GetDefendDesireHelper(bot, lane)
 end
 
 local nTpSolt = 15
+local enemySearchRange = 1400
 
 function Defend.DefendThink(bot, lane)
     if J.CanNotUseAction(bot) then return end
 
 	local vDefendLane = GetLaneFrontLocation(GetTeam(), lane, 0)
 
+	local attackRange = bot:GetAttackRange()
+	local nSearchRange = attackRange < 600 and 600 or math.min(attackRange + 100, enemySearchRange)
+
 	local tps = bot:GetItemInSlot(nTpSolt)
-	local saferLoc = J.AdjustLocationWithOffsetTowardsFountain(vDefendLane, 150)
+	local saferLoc = J.AdjustLocationWithOffsetTowardsFountain(vDefendLane, 260)
 	local bestTpLoc = J.GetNearbyLocationToTp(saferLoc)
 	local distance = GetUnitToLocationDistance(bot, vDefendLane)
 	if distance > 3500 and not bot:WasRecentlyDamagedByAnyHero(2) then
@@ -138,51 +142,39 @@ function Defend.DefendThink(bot, lane)
 		end
 	end
 
-	local attackRange = bot:GetAttackRange()
-	local nSearchRange = attackRange < 900 and 900 or math.min(attackRange, 1600)
+	if distance < enemySearchRange then
+		local nInRangeEnemy = bot:GetNearbyHeroes(nSearchRange, true, BOT_MODE_NONE)
+		
+		if J.IsValidHero(nInRangeEnemy[1])
+		then
+			bot:SetTarget( nInRangeEnemy[1] )
+			return
+		end
 
-	local nAllyHeroes = bot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
-	local nEnemyHeroes = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+		local nEnemyLaneCreeps = bot:GetNearbyCreeps(900, true)
+		if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps > 0
+		then
+			local targetCreep = nil
+			local attackDMG = 0
+			for _, creep in pairs(nEnemyLaneCreeps)
+			do
+				if J.IsValid(creep)
+				and J.CanBeAttacked(creep)
+				and creep:GetAttackDamage() > attackDMG
+				then
+					attackDMG = creep:GetAttackDamage()
+					targetCreep = creep
+				end
 
-	local nInRangeEnemy = bot:GetNearbyHeroes(nSearchRange, true, BOT_MODE_NONE)
-	if J.IsValidHero(nInRangeEnemy[1])
-	then
-		bot:Action_AttackUnit(nInRangeEnemy[1], true)
-		return
-	end
-
-	local nEnemyLaneCreeps = bot:GetNearbyCreeps(900, true)
-	if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps > 0
-	then
-		local targetCreep = nil
-		local attackDMG = 0
-		for _, creep in pairs(nEnemyLaneCreeps)
-		do
-			if J.IsValid(creep)
-			and J.CanBeAttacked(creep)
-			and creep:GetAttackDamage() > attackDMG
-			then
-				attackDMG = creep:GetAttackDamage()
-				targetCreep = creep
-			end
-
-			if targetCreep ~= nil
-			then
-				bot:Action_AttackUnit(creep, true)
-				return
+				if targetCreep ~= nil
+				then
+					bot:Action_AttackUnit(creep, true)
+					return
+				end
 			end
 		end
 	end
-
-	if nAllyHeroes ~= nil and nEnemyHeroes ~= nil
-	and J.IsValidHero(nEnemyHeroes[1])
-	and (#nEnemyHeroes > #nAllyHeroes or not J.WeAreStronger(bot, 1600))
-	then
-		bot:Action_MoveToLocation(J.GetXUnitsTowardsLocation2(vDefendLane, nEnemyHeroes[1]:GetLocation(), 1000) + RandomVector(75))
-		return
-	end
-
-	bot:Action_MoveToLocation(vDefendLane + RandomVector(attackRange))
+	bot:Action_MoveToLocation(saferLoc + RandomVector(75))
 end
 
 function Defend.GetFurthestBuildingOnLane(lane)

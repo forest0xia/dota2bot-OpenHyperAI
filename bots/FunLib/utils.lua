@@ -9,7 +9,7 @@ Anything that can be shared in any files without worrying about nested or circul
 ]]
 
 local X = { }
-X['DebugMode'] = false
+X['DebugMode'] = true
 
 local RadiantFountainTpPoint = Vector(-7172, -6652, 384 )
 local DireFountainTpPoint = Vector(6982, 6422, 392)
@@ -74,6 +74,14 @@ function X.PrintPings(pingTimeGap)
 			local ping = allyHero:GetMostRecentPing()
             if ping.time ~= 0 and GameTime() - ping.time < pingTimeGap then
                 table.insert(listPings, ping)
+
+                -- -- print near by units
+                -- for _, unit in pairs(GetUnitList(UNIT_LIST_ALL))
+                -- do
+                --     if X.GetLocationToLocationDistance(ping.location, unit:GetLocation()) < 400 then
+                --         print(unit:GetUnitName())
+                --     end
+                -- end
             end
 		end
 	end

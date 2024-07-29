@@ -530,7 +530,7 @@ function ItemPurchaseThink()
 	end
 
 	-- Observer and Sentry Wards
-	if J.GetPosition(bot) == 4 and DotaTime() > 300 and botWorth < 10000
+	if J.GetPosition(bot) == 4 and DotaTime() > 300 and botWorth < 25000
 	then
 		local wardType = 'item_ward_sentry'
 
@@ -544,7 +544,7 @@ function ItemPurchaseThink()
 		end
 	end
 
-	if J.GetPosition(bot) == 5 and botWorth < 10000
+	if J.GetPosition(bot) == 5 and botWorth < 25000
 	then
 		local wardType = 'item_ward_observer'
 

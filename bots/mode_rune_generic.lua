@@ -11,8 +11,6 @@ if GetBot():IsInvulnerable() or not GetBot():IsHero() or not string.find(GetBot(
 	return
 end
 
-
-
 local X = {}
 local Role = require( GetScriptDirectory()..'/FunLib/aba_role')
 local Chat = require( GetScriptDirectory()..'/FunLib/aba_chat' )
@@ -37,8 +35,6 @@ then
 	bFWQ = true
 end
 
-
-
 local runeLocation = nil
 local nStopWaitTime = Role.GetRuneActionTime()
 
@@ -61,8 +57,6 @@ if bFWQ then
 	}
 end
 
-
-
 local vWaitRuneLocList = {
 
 	[1] = Vector(-4450, 1952, 0), --天辉中
@@ -72,43 +66,7 @@ local vWaitRuneLocList = {
 	
 }
 
-
-local lastCheckDropTime = 0
-local hasTaunt = false
-
 function GetDesire()
-
-	if not hasTaunt
-		and bot == GetTeamMember( 1 )
-		and lastCheckDropTime + 0.4 < DotaTime()
-	then
-		lastCheckDropTime = DotaTime()
-
-		local  dropItemList = GetDroppedItemList()
-		for _, tDropItem in pairs( dropItemList )
-		do
-			if tDropItem.item ~= nil
-			then
-				local sDropName = tDropItem.item:GetName()
-				local nDropOwner = tDropItem.owner
-				if nDropOwner ~= nil
-					and not nDropOwner:IsBot()
-					and sDropName == 'item_flask'
-				then
-					hasTaunt = true
-					local sDropHero = Chat.GetNormName( nDropOwner )
-					bot:ActionImmediate_Chat(sDropHero.."Yeah, be more confident and dont't try to phishing (-_-)", true)
-				end
-			end
-		end
-	end
-
-	if bot:IsInvulnerable()
-		and bot:GetHealth() / bot:GetMaxHealth() > 0.96
-		and bot:DistanceFromFountain() < 100
-	then
-		return 1.0
-	end
 
 	if GetGameMode() == GAMEMODE_1V1MID
 		or ( GetGameMode() == GAMEMODE_MO and DotaTime() <= 0 )
@@ -392,16 +350,7 @@ function X.GetXUnitsTowardsLocation( hUnit, vLocation, nDistance)
 end
 
 function X.CountDesire(base_desire, dist, maxDist)
-	-- return RemapValClamped(dist, 6000, 0, 0, 1)
-	local rebase_desire = base_desire
-	if not J.IsInLaningPhase() then
-		if J.IsCore(bot) then
-			rebase_desire = rebase_desire / 2
-		elseif bot:GetLevel() > 20 * 60 then
-			rebase_desire = rebase_desire / 2
-		end
-	end
-	return rebase_desire + math.floor((RemapValClamped( dist, maxDist, 0, 0, 1 - rebase_desire))*40)/40
+	return base_desire + math.floor((RemapValClamped( dist, maxDist, 0, 0, 1 - base_desire))*40)/40
 end
 
 function X.GetBotClosestRune()

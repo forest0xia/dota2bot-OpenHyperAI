@@ -116,18 +116,50 @@ X['sSkillList'] = J.Skill.GetSkillList( sAbilityList, nAbilityBuildList, sTalent
 X['bDeafaultAbility'] = false
 X['bDeafaultItem'] = true
 
+
+local abilityQ = bot:GetAbilityByName( sAbilityList[1] )
+local abilityW = bot:GetAbilityByName( sAbilityList[2] )
+local abilityE = bot:GetAbilityByName( sAbilityList[3] )
+local abilityR = bot:GetAbilityByName( sAbilityList[6] )
+local talent2 = bot:GetAbilityByName( sTalentList[2] )
+local talent6 = bot:GetAbilityByName( sTalentList[6] )
+
+
+local castQDesire, castQTarget
+local castWDesire, castWTarget
+local castEDesire, castELocation
+local castRDesire, castRLocation
+local castRFRDesire, castRFRLocation
+
+local nKeepMana, nMP, nHP, nLV, hEnemyHeroList
+local aetherRange = 0
+
+local abilityRef = nil
+
+
 function X.MinionThink(hMinionUnit, bot)
 
 	if Minion.IsValidUnit( hMinionUnit )
 	then
 		if string.find(hMinionUnit:GetUnitName(), "warlock_golem") then
 			local target = J.GetProperTarget( bot )
+			local hMinionUnitTarget = hMinionUnit:GetTarget()
 		
 			if target ~= nil then
 				hMinionUnit:Action_AttackUnit(target, false)
 				return
-			elseif bot:IsAlive() then
-				if GetUnitToUnitDistance(hMinionUnit, bot) > 200 then
+			end
+			if hMinionUnitTarget ~= nil then
+				hMinionUnit:Action_AttackUnit(hMinionUnitTarget, false)
+				return
+			end
+
+			if hEnemyHeroList == nil then
+				hEnemyHeroList = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
+			end
+			
+			if bot:IsAlive() and #hEnemyHeroList <= 0 then
+				if GetUnitToUnitDistance(hMinionUnit, bot) > 500 then
 					hMinionUnit:Action_MoveToLocation(bot:GetLocation())
 				else
 					hMinionUnit:Action_MoveToLocation(bot:GetLocation() + RandomVector(200))
@@ -136,7 +168,7 @@ function X.MinionThink(hMinionUnit, bot)
 			end
 		end
 
-		Minion.IllusionThink( hMinionUnit )
+		Minion.MinionThink(hMinionUnit, bot)
 	end
 
 end
@@ -175,43 +207,8 @@ modifier_warlock_golem_permanent_immolation_debuff
 --]]
 
 
-local abilityQ = bot:GetAbilityByName( sAbilityList[1] )
-local abilityW = bot:GetAbilityByName( sAbilityList[2] )
-local abilityE = bot:GetAbilityByName( sAbilityList[3] )
-local abilityR = bot:GetAbilityByName( sAbilityList[6] )
-local talent2 = bot:GetAbilityByName( sTalentList[2] )
-local talent6 = bot:GetAbilityByName( sTalentList[6] )
-
-
-local castQDesire, castQTarget
-local castWDesire, castWTarget
-local castEDesire, castELocation
-local castRDesire, castRLocation
-local castRFRDesire, castRFRLocation
-
-
-local nKeepMana, nMP, nHP, nLV, hEnemyHeroList
-local aetherRange = 0
-
-
-
-local abilityRef = nil
-
 function X.SkillsComplement()
-
-
-
-
-	if X.ConsiderStop() == true
-	then
-		bot:Action_ClearActions( true )
-		return
-	end
-
-
 	if J.CanNotUseAbility( bot ) or bot:IsInvisible() then return end
-
-
 
 	nKeepMana = 400
 	aetherRange = 0
@@ -221,7 +218,12 @@ function X.SkillsComplement()
 	hEnemyHeroList = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 	abilityRef = J.IsItemAvailable( "item_refresher" )
 
-
+	if X.ConsiderStop() == true
+	then
+		bot:Action_ClearActions( true )
+		bot:Action_MoveToLocation(J.GetTeamFountain())
+		return
+	end
 
 	local aether = J.IsItemAvailable( "item_aether_lens" )
 	if aether ~= nil then aetherRange = 250 end
@@ -294,20 +296,12 @@ function X.ConsiderStop()
 	if bot:IsChanneling()
 		and not bot:HasModifier( "modifier_teleporting" )
 		and bot:GetActiveMode() ~= BOT_MODE_SIDE_SHOP
-		and abilityE:IsTrained() and not abilityE:IsFullyCastable()
+		and #hEnemyHeroList >= 1
+		and bot:WasRecentlyDamagedByAnyHero(3)
+		and J.GetHP(bot) < 0.5
 	then
-		local tableEnemyHeroes = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
-		local tableAllyHeroes = J.GetNearbyHeroes(bot, 1600, false, BOT_MODE_NONE )
-		if abilityR:IsFullyCastable()
-			or abilityQ:IsFullyCastable()
-			or abilityW:IsFullyCastable()
-			or #tableEnemyHeroes == 0
-			or #tableAllyHeroes == 1
-		then
-			return true
-		end
+		return true
 	end
-
 
 	return false
 end

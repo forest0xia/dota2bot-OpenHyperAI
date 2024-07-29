@@ -1220,6 +1220,22 @@ function Item.GetEmptyInventoryAmount( bot )
 
 end
 
+function Item.GetEmptyNonBackpackInventoryAmount( bot )
+
+	local amount = 0
+	for i = 0, 5
+	do
+		local item = bot:GetItemInSlot( i )
+		if item == nil
+		then
+			amount = amount + 1
+		end
+	end
+
+	return amount
+
+end
+
 
 function Item.GetEmptyNeutralBackpackAmount( bot )
 
@@ -1238,6 +1254,16 @@ function Item.GetEmptyNeutralBackpackAmount( bot )
 
 end
 
+function Item.GetEmptyBackpackSlot( bot )
+	for i = 6, 8
+	do
+		if bot:GetItemInSlot( i ) == nil
+		then
+			return i
+		end
+	end
+	return -1
+end
 
 function Item.GetItemCount( unit, itemName )
 

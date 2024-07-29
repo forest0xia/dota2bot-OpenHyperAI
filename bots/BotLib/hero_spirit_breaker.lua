@@ -97,7 +97,7 @@ if bot.chargeRetreat == nil then bot.chargeRetreat = false end
 function X.SkillsComplement()
 	if J.CanNotUseAbility(bot) then return end
 
-    if bot:HasModifier('modifier_spirit_breaker_charge_of_darkness') then return end
+    if bot:HasModifier('modifier_spirit_breaker_charge_of_darkness') or bot:IsChanneling() or bot:IsUsingAbility() then return end
 
     ChargeOfDarknessDesire, ChargeOfDarknessTarget = X.ConsiderChargeOfDarkness()
     if ChargeOfDarknessDesire > 0
