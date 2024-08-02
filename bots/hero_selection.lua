@@ -443,10 +443,17 @@ local WeakHeroes = {
 	'npc_dota_hero_morphling',
 	'npc_dota_hero_visage',
 	'npc_dota_hero_void_spirit',
-}
 
--- Buggys, meaning they have bugs on Valves side, as of (still) 2024/7/21:
-WeakHeroes = Utils.CombineTablesUnique(WeakHeroes, Utils.BuggyHeroesDueToValveTooLazy)
+	-- Buggys, meaning they have bugs on Valves side, as of (still) 2024/8/1:
+    'npc_dota_hero_muerta',
+    'npc_dota_hero_marci',
+    'npc_dota_hero_lone_druid',
+    'npc_dota_hero_primal_beast',
+    'npc_dota_hero_dark_willow',
+    'npc_dota_hero_elder_titan',
+    'npc_dota_hero_hoodwink',
+    'npc_dota_hero_wisp',
+}
 
 local SelectedWeakHero = 0
 local MaxWeakHeroCount = 1
@@ -1070,9 +1077,9 @@ function AllPickHeros()
 			end
 			
 			if X.IsRepeatHero(sSelectHero) then sSelectHero = X.GetNotRepeatHero( tSelectPoolList[i] ) end
+			if Utils.HasValue(WeakHeroes, sSelectHero) then SelectedWeakHero = SelectedWeakHero + 1 end
 			SelectHero( id, sSelectHero )
 
-			if Utils.HasValue(WeakHeroes, sSelectHero) then SelectedWeakHero = SelectedWeakHero + 1 end
 			-- print('Selected hero for idx='..i..', id='..id..', bot='..sSelectHero)
 			if Role["bLobbyGame"] == false then Role["bLobbyGame"] = true end
 			fLastSlectTime = GameTime()

@@ -297,7 +297,7 @@ local function BuybackUsageComplement()
 
 	if not bot:HasBuyback() then return end
 
-	if bot:GetRespawnTime() < 30 then
+	if bot:GetRespawnTime() < 60 then
 		return
 	end
 
@@ -315,7 +315,7 @@ local function BuybackUsageComplement()
 		end
 	end
 
-	if nRespawnTime < 50
+	if nRespawnTime < 40
 	then
 		return
 	end
@@ -7236,9 +7236,9 @@ end
 
 function BuybackUsageThink()
 	BuybackUsageComplement()
-	if bot.lastBuybackFrameProcessTime == nil then bot.lastBuybackFrameProcessTime = DotaTime() end
-	if DotaTime() - bot.lastBuybackFrameProcessTime < Utils.FrameProcessTime then return end
-	bot.lastBuybackFrameProcessTime = DotaTime()
+	-- if bot.lastBuybackFrameProcessTime == nil then bot.lastBuybackFrameProcessTime = DotaTime() end
+	-- if DotaTime() - bot.lastBuybackFrameProcessTime < Utils.FrameProcessTime then return end
+	-- bot.lastBuybackFrameProcessTime = DotaTime()
 	UseGlyph()
 end
 

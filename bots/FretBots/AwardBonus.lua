@@ -415,7 +415,7 @@ function AwardBonus:GetSpecificPerMinuteBonus(bot, pmBot, roleTable, settings)
 	local scale = settings.scale[bot.stats.role]
 	if pmPlayer == nil or #AllBots[bot.stats.team] < 5 then
 		-- in case no human player detected, just based on difficultyScale.
-		local defaultScale = 90 * scale -- gpm or xpm
+		local defaultScale = (100 - bot.stats.role * 10) * scale -- gpm or xpm
 		if #AllBots[bot.stats.team] < 5 then -- less for human side bots
 			defaultScale = defaultScale / 1.5
 		end

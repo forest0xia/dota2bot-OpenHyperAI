@@ -198,47 +198,49 @@ end
 
 -- Manages giving items to bots from the stash
 function BonusTimers:NeutralItemDoleTimer()
-	repeat
-		-- Do we have something to do?
-		for team = 2, 3 do
-		local itemToDole = BonusTimers:GetNextItemToDole(team)
-		if itemToDole ~= nil then
-			-- Items in stash only get one chance to be doled, so remove it whether
-			-- we actually assign it or not
-			BonusTimers:RemoveItemFromStash(itemToDole, team)
-			-- try to find a bot that wants it
-			for _, bot in ipairs(AllBots[team]) do
-				-- Bot wants?
-				local botWants, newDesire, currentDesire = NeutralItems:DoesBotPreferItem(bot, itemToDole)
-				if botWants then
+	pcall(function ()
+		repeat
+			-- Do we have something to do?
+			for team = 2, 3 do
+			local itemToDole = BonusTimers:GetNextItemToDole(team)
+			if itemToDole ~= nil then
+				-- Items in stash only get one chance to be doled, so remove it whether
+				-- we actually assign it or not
+				BonusTimers:RemoveItemFromStash(itemToDole, team)
+				-- try to find a bot that wants it
+				for _, bot in ipairs(AllBots[team]) do
+					-- Bot wants?
+					local botWants, newDesire, currentDesire = NeutralItems:DoesBotPreferItem(bot, itemToDole)
+					if botWants then
 
-					--Debug:Print(bot.stats.name..': Wants '..itemToDole.realName..': '..newDesire..', '..currentDesire)
-					-- update assignment table
-					bot.stats.assignedNeutral = itemToDole
-					-- Give item, check for replacement
-					local replacedItemName = NeutralItems:GiveToUnit(bot, itemToDole)
-					-- if bot had an item . . .
-					if replacedItemName ~= nil then
-						local item = BonusTimers:GetItemFromName(replacedItemName)
-						-- announce, maybe
-						if Settings.neutralItems.announce then
-							--##Temporarily disabled because it's annoying
-							--Utilities:AnnounceNeutral(bot, item, MSG_NEUTRAL_RETURN)
+						--Debug:Print(bot.stats.name..': Wants '..itemToDole.realName..': '..newDesire..', '..currentDesire)
+						-- update assignment table
+						bot.stats.assignedNeutral = itemToDole
+						-- Give item, check for replacement
+						local replacedItemName = NeutralItems:GiveToUnit(bot, itemToDole)
+						-- if bot had an item . . .
+						if replacedItemName ~= nil then
+							local item = BonusTimers:GetItemFromName(replacedItemName)
+							-- announce, maybe
+							if Settings.neutralItems.announce then
+								--##Temporarily disabled because it's annoying
+								--Utilities:AnnounceNeutral(bot, item, MSG_NEUTRAL_RETURN)
+							end
+							-- return old item to stash
+							table.insert(NeutralStash[team][item.tier], item)
 						end
-						-- return old item to stash
-						table.insert(NeutralStash[team][item.tier], item)
+						-- announce item taking, maybe
+						if Settings.neutralItems.announce then
+							Utilities:AnnounceNeutral(bot, itemToDole, MSG_NEUTRAL_TAKE)
+						end
+						break
 					end
-					-- announce item taking, maybe
-					if Settings.neutralItems.announce then
-						Utilities:AnnounceNeutral(bot, itemToDole, MSG_NEUTRAL_TAKE)
-					end
-					break
+				end
 				end
 			end
-			end
-		end
-	until itemToDole == nil
-	return neutralDolenterval
+		until itemToDole == nil
+		return neutralDolenterval
+	end)
 end
 
 -- Returns the next item to dole, or nil

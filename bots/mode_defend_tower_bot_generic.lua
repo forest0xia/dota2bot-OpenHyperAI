@@ -8,12 +8,8 @@ if bot:IsInvulnerable() or not bot:IsHero() or not string.find(botName, "hero") 
 	return
 end
 
--- function Think()
---     Defend.DefendThink(bot, LANE_BOT)
--- end
-
 function GetDesire() return Defend.GetDefendDesire(bot, LANE_BOT) end
-function Think() return Defend.DefendThink(bot, LANE_BOT) end
 function OnEnd() Defend.OnEnd(bot, LANE_BOT) end
--- if Utils.BuggyHeroesDueToValveTooLazy[botName] then
--- end
+if Utils.BuggyHeroesDueToValveTooLazy[botName] then
+	function Think() return Defend.DefendThink(bot, LANE_BOT) end
+end
