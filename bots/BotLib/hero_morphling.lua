@@ -67,15 +67,7 @@ sRoleItemsBuyList['pos_1'] = {
 }
 
 sRoleItemsBuyList['pos_2'] = {
-    "item_tango",
-    "item_double_branches",
-    "item_faerie_fire",
-
-    "item_wraith_band",
-    "item_bottle",
-    "item_magic_wand",
-    "item_boots_of_elves",
-    "item_power_treads",
+	"item_mid_outfit",
     "item_lifesteal",
     "item_manta",--
     "item_angels_demise",--

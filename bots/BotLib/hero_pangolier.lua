@@ -153,9 +153,6 @@ local EndRollUpDesire
 local RollingThunderDesire
 local EndRollingThunderDesire
 
-if bot.rollingThunderTeamFight then bot.rollingThunderTeamFight = false end
-if bot.rollingThunderRetreat then bot.rollingThunderRetreat = false end
-
 function X.SkillsComplement()
     if J.CanNotUseAbility(bot) then return end
 
@@ -674,6 +671,7 @@ end
 
 function X.ConsiderRollingThunder()
     if not RollingThunder:IsFullyCastable()
+    or bot:HasModifier('modifier_bloodseeker_rupture')
     then
         return BOT_ACTION_DESIRE_NONE
     end
@@ -684,12 +682,9 @@ function X.ConsiderRollingThunder()
 
         if realEnemyCount ~= nil and #realEnemyCount >= 2
         then
-            bot.rollingThunderTeamFight = true
             return BOT_ACTION_DESIRE_HIGH
         end
 	end
-
-    bot.rollingThunderTeamFight = false
 
     if J.IsRetreating(bot)
     then
@@ -708,13 +703,10 @@ function X.ConsiderRollingThunder()
             and ((#nTargetInRangeAlly > #nInRangeAlly)
             and (J.GetHP(bot) < 0.55 and bot:WasRecentlyDamagedByAnyHero(2)))
             then
-                bot.rollingThunderRetreat = true
 		        return BOT_ACTION_DESIRE_HIGH
             end
         end
     end
-
-    bot.rollingThunderRetreat = false
 
     return BOT_ACTION_DESIRE_NONE
 end

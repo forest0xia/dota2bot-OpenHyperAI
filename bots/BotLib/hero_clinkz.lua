@@ -65,13 +65,8 @@ sRoleItemsBuyList['pos_1'] = {
 }
 
 sRoleItemsBuyList['pos_2'] = {
-    "item_tango",
-    "item_double_branches",
-    "item_magic_stick",
-
-    "item_bottle",
-    "item_magic_wand",
-    "item_power_treads",
+	"item_mid_outfit",
+	"item_dragon_lance",
     "item_desolator",--
     "item_orchid",
     "item_dragon_lance",

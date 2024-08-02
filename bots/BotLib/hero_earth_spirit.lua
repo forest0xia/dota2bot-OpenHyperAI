@@ -431,7 +431,7 @@ function X.ConsiderRollingBoulder()
 	if J.IsStuck(bot)
 	then
 		local loc = J.GetEscapeLoc()
-		return BOT_ACTION_DESIRE_HIGH, J.Site.GetXUnitsTowardsLocation(bot, loc, nDistance)
+		return BOT_ACTION_DESIRE_HIGH, J.Site.GetXUnitsTowardsLocation(bot, loc, nDistance), false
 	end
 
 	if nStone >= 1
@@ -457,7 +457,8 @@ function X.ConsiderRollingBoulder()
 		if  target ~= nil
 		and not J.IsSuspiciousIllusion(target)
 		then
-			return BOT_ACTION_DESIRE_HIGH, target, false
+			local loc = J.GetCorrectLoc(target, (GetUnitToUnitDistance(bot, target) / nSpeed) + nDelay)
+			return BOT_ACTION_DESIRE_HIGH, loc, false
 		end
 	end
 

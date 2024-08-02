@@ -22,10 +22,7 @@ local WisdomRuneSpawned = {
 }
 
 local ClosestAllyToWisdomRune
-local TeamWisdomRune = {
-	[TEAM_RADIANT] = Vector( -8126, -320, 256 ),
-	[TEAM_DIRE] = Vector( 8319, 266, 256 )
-}
+local TeamWisdomRune = J.Utils.WisdomRunes
 
 local LastWisdomRuneTime = 0
 local TeamWisdomTimer = 0

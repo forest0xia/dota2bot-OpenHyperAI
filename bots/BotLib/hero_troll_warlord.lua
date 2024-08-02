@@ -10,13 +10,14 @@ local sRole = J.Item.GetRoleItemsBuyList( bot )
 
 local tTalentTreeList = {
 						['t25'] = {10, 0},
-						['t20'] = {10, 0},
+						['t20'] = {0, 10},
 						['t15'] = {0, 10},
 						['t10'] = {10, 0},
 }
 
 local tAllAbilityBuildList = {
-						{2,1,4,2,2,6,2,1,1,1,6,4,4,4,6},--pos1
+						-- {2,1,4,2,2,6,2,1,1,1,6,4,4,4,6},--pos1, errored in 7.37
+						{2,5,4,2,2,6,2,5,5,5,6,4,4,4,6},--pos1
 }
 
 local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
@@ -73,6 +74,7 @@ function X.MinionThink(hMinionUnit, bot)
     Minion.MinionThink(hMinionUnit, bot)
 end
 
+local BattleStance          = bot:GetAbilityInSlot(0)
 local BerserkersRage        = bot:GetAbilityByName('troll_warlord_berserkers_rage')
 local WhirlingAxesRanged    = bot:GetAbilityByName('troll_warlord_whirling_axes_ranged')
 local WhirlingAxesMelee     = bot:GetAbilityByName('troll_warlord_whirling_axes_melee')
@@ -98,7 +100,11 @@ function X.SkillsComplement()
         return
     end
 
-    BerserkersRageDesire = X.ConsiderBerserkersRage()
+    if BattleStance:IsFullyCastable() and BattleStance:IsTrained() then
+        BerserkersRage = BattleStance
+    end
+
+    BerserkersRageDesire = X.ConsiderBerserkersRage(BerserkersRage)
     if BerserkersRageDesire > 0
     then
         bot:Action_UseAbility(BerserkersRage)
@@ -120,7 +126,7 @@ function X.SkillsComplement()
     end
 end
 
-function X.ConsiderBerserkersRage()
+function X.ConsiderBerserkersRage(BerserkersRage)
     if not BerserkersRage:IsFullyCastable()
     then
         return BOT_ACTION_DESIRE_NONE
@@ -671,6 +677,17 @@ function X.ConsiderBattleTrance()
     then
         return BOT_ACTION_DESIRE_NONE
     end
+
+	--团战
+	if J.IsInTeamFight( bot, 1200 )
+	then
+        local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1200, true, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1200, false, BOT_MODE_NONE)
+        if J.GetHP(bot) < 0.4
+        and #nInRangeEnemy >= #nInRangeAlly then
+            return BOT_ACTION_DESIRE_MODERATE
+        end
+	end
 
     local nDuration = BattleTrance:GetSpecialValueInt('trance_duration')
 

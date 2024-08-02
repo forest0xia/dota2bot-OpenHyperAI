@@ -79,13 +79,15 @@ function X.MinionThink(hMinionUnit, bot)
 end
 
 local LucentBeam 	= bot:GetAbilityByName('luna_lucent_beam')
-local MoonGlaives 	= bot:GetAbilityByName('luna_moon_glaive')
+-- local MoonGlaives 	= bot:GetAbilityByName('luna_moon_glaive')
+local LunarOrbit    = bot:GetAbilityByName("luna_lunar_orbit")
 -- local LunarBlessing = bot:GetAbilityByName('luna_lunar_blessing')
 local Eclipse 		= bot:GetAbilityByName('luna_eclipse')
 local talent6 		= bot:GetAbilityByName(sTalentList[6])
 
 local LucentBeamDesire, LucentBeamTarget
 local MoonGlaivesDesire
+local LunarOrbitDesire
 local EclipseDesire
 
 local talent6BonusDamage = 0
@@ -100,10 +102,16 @@ function X.SkillsComplement()
 
 	if talent6:IsTrained() then talent6BonusDamage = talent6:GetSpecialValueInt('value') end
 
-	MoonGlaivesDesire = X.ConsiderMoonGlaives()
-	if MoonGlaivesDesire > 0
+	-- MoonGlaivesDesire = X.ConsiderMoonGlaives()
+	-- if MoonGlaivesDesire > 0
+	-- then
+	-- 	bot:Action_UseAbility(MoonGlaives)
+	-- 	return
+	-- end
+	LunarOrbitDesire = X.ConsiderLunarOrbit()
+	if LunarOrbitDesire > 0
 	then
-		bot:Action_UseAbility(MoonGlaives)
+		bot:Action_UseAbility(LunarOrbit)
 		return
 	end
 
@@ -362,6 +370,74 @@ function X.ConsiderLucentBeam()
 
 	return BOT_ACTION_DESIRE_NONE, nil
 end
+function X.ConsiderLunarOrbit()
+	if not LunarOrbit:IsTrained()
+	or not LunarOrbit:IsFullyCastable()
+	then
+		return BOT_ACTION_DESIRE_NONE
+	end
+
+	local nRadius = LunarOrbit:GetSpecialValueInt('rotating_glaives_movement_radius')
+	local nEnemyHeroes = J.GetNearbyHeroes(bot,700, true, BOT_MODE_NONE)
+
+	if  J.GetHP(bot) < 0.5
+	and bot:WasRecentlyDamagedByAnyHero(1)
+	and nEnemyHeroes ~= nil and #nEnemyHeroes >= 1
+	then
+		return BOT_ACTION_DESIRE_HIGH
+	end
+
+	if J.IsGoingOnSomeone(bot)
+	then
+		if  J.IsValidTarget(botTarget)
+		and J.IsInRange(bot, botTarget, nRadius)
+		and bot:WasRecentlyDamagedByAnyHero(1)
+		and not J.IsDisabled(botTarget)
+		then
+			return BOT_ACTION_DESIRE_HIGH, botTarget
+		end
+	end
+
+	if J.IsRetreating(bot)
+    then
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,1200, true, BOT_MODE_NONE)
+        for _, enemyHero in pairs(nInRangeEnemy)
+        do
+            if  J.IsValidHero(enemyHero)
+            and J.IsChasingTarget(enemyHero, bot)
+			and J.IsInRange(bot, enemyHero, 700)
+            and not J.IsSuspiciousIllusion(enemyHero)
+            and not J.IsDisabled(enemyHero)
+            then
+                local nInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, true, BOT_MODE_NONE)
+                local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
+
+                if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+                and ((#nTargetInRangeAlly > #nInRangeAlly)
+                    or bot:WasRecentlyDamagedByAnyHero(1.5))
+                then
+                    return BOT_ACTION_DESIRE_HIGH
+                end
+            end
+        end
+    end
+
+	if J.IsFarming(bot)
+	then
+		local nCreeps = bot:GetNearbyCreeps(nRadius, true)
+
+		if  nCreeps ~= nil
+		and (#nCreeps >= 3 or (#nCreeps >= 2 and nCreeps[1]:IsAncientCreep()))
+		and J.CanBeAttacked(nCreeps[1])
+		and J.IsAttacking(bot)
+		and J.GetManaAfter(LunarOrbit:GetManaCost()) * bot:GetMana() > Eclipse:GetManaCost() * 2
+		then
+			return BOT_ACTION_DESIRE_HIGH
+		end
+	end
+
+	return BOT_ACTION_DESIRE_NONE
+end
 
 function X.ConsiderMoonGlaives()
 	if not MoonGlaives:IsTrained()
@@ -428,28 +504,6 @@ function X.ConsiderMoonGlaives()
 			return BOT_ACTION_DESIRE_HIGH
 		end
 	end
-
-	if J.IsDoingRoshan(bot)
-    then
-        if  J.IsRoshan(botTarget)
-        and J.CanCastOnNonMagicImmune(botTarget)
-        and J.IsInRange(bot, botTarget, nRadius)
-		and J.IsAttacking(bot)
-        and not J.IsDisabled(botTarget)
-        then
-            return BOT_ACTION_DESIRE_HIGH
-        end
-    end
-
-    if J.IsDoingTormentor(bot)
-    then
-        if  J.IsTormentor(botTarget)
-        and J.IsInRange(bot, botTarget, nRadius)
-        and J.IsAttacking(bot)
-        then
-            return BOT_ACTION_DESIRE_HIGH
-        end
-    end
 
 	return BOT_ACTION_DESIRE_NONE
 end

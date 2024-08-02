@@ -18,10 +18,7 @@ local WisdomRuneSpawned = {
 	[TEAM_RADIANT] = false,
 	[TEAM_DIRE] = false
 }
-local TeamWisdomRune = {
-	[TEAM_RADIANT] = Vector( -8126, -320, 256 ),
-	[TEAM_DIRE] = Vector( 8319, 266, 256 )
-}
+local TeamWisdomRune = J.Utils.WisdomRunes
 local WisdomRuneTimeGap = 420 - 5
 local LastWisdomRuneTime = 0
 local EnemyWisdomTimer = 0

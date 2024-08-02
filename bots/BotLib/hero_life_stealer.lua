@@ -8,14 +8,15 @@ local sAbilityList = J.Skill.GetAbilityList( bot )
 local sRole = J.Item.GetRoleItemsBuyList( bot )
 
 local tTalentTreeList = {
-						['t25'] = {10, 0},
+						['t25'] = {0, 10},
 						['t20'] = {10, 0},
 						['t15'] = {10, 0},
 						['t10'] = {10, 0},
 }
 
 local tAllAbilityBuildList = {
-						{2,3,1,3,3,6,3,2,2,2,1,6,1,1,6},--pos1
+						{2,3,1,3,3,6,3,2,2,2,1,6,1,1,6},--pos1, bugged in 7.37 as the facet can't get auto selected for this bot.
+						-- {2,3,3,3,6,3,2,2,2,6,6},--pos1
 }
 
 local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
@@ -112,11 +113,13 @@ function X.SkillsComplement()
         return
     end
 
-    RageDesire = X.ConsiderRage()
-    if RageDesire > 0
-    then
-        bot:Action_UseAbility(Rage)
-        return
+    if Rage ~= nil then
+        RageDesire = X.ConsiderRage()
+        if RageDesire > 0
+        then
+            bot:Action_UseAbility(Rage)
+            return
+        end
     end
 
     OpenWoundsDesire, OpenWoundsTarget = X.ConsiderOpenWounds()
@@ -135,7 +138,7 @@ function X.ConsiderRage()
     end
 
     local nCastRange = 1000
-	local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
+	local nEnemyHeroes = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE)
 
 	if  nEnemyHeroes ~= nil and #nEnemyHeroes > 0
     and not bot:IsMagicImmune()

@@ -196,7 +196,7 @@ function X.SkillsComplement()
 
 		J.SetQueuePtToINT( bot, true )
 
-		bot:ActionQueue_UseAbilityOnEntity( abilityR, castRTarget )
+		bot:ActionQueue_UseAbilityOnLocation( abilityR, castRTarget )
 		return
 	end
 	
@@ -762,7 +762,7 @@ function X.ConsiderR()
 		then
 			hCastTarget = bot
 			sCastMotive = 'R-辅助攻击:'..J.Chat.GetNormName( botTarget )
-			return BOT_ACTION_DESIRE_HIGH, hCastTarget, sCastMotive					
+			return BOT_ACTION_DESIRE_HIGH, hCastTarget:GetLocation(), sCastMotive					
 		end
 	end
 	
@@ -800,7 +800,7 @@ function X.ConsiderR()
 					then
 						hCastTarget = npcAlly
 						sCastMotive = 'R-攻击时辅助防御:'..J.Chat.GetNormName( hCastTarget )
-						return BOT_ACTION_DESIRE_HIGH, hCastTarget, sCastMotive	
+						return BOT_ACTION_DESIRE_HIGH, hCastTarget:GetLocation(), sCastMotive	
 					end
 				end
 			end
@@ -813,7 +813,7 @@ function X.ConsiderR()
 				then
 					hCastTarget = npcAlly
 					sCastMotive = 'R-逃跑时辅助攻击:'..J.Chat.GetNormName( hCastTarget )
-					return BOT_ACTION_DESIRE_HIGH, hCastTarget, sCastMotive	
+					return BOT_ACTION_DESIRE_HIGH, hCastTarget:GetLocation(), sCastMotive	
 				end
 			end
 		end

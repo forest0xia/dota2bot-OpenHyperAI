@@ -18,6 +18,10 @@ local ignorePickupList = { }
 local tryPickCount = 0
 local lastCheckBotToDropTime = 0
 
+local RuneLocations = { }
+
+table.insert(RuneLocations, J.Utils.WisdomRunes[TEAM_DIRE])
+table.insert(RuneLocations, J.Utils.WisdomRunes[TEAM_RADIANT])
 
 function GetDesire()
 
@@ -70,6 +74,14 @@ function GetDesire()
 	TrySwapInvItemForClarity()
 	TrySwapInvItemForFlask()
 	TrySwapInvItemForMoonshard()
+
+	-- -- can't take runes normally
+	-- for _, runeLoc in pairs( RuneLocations )
+	-- do
+	-- 	if J.Utils.GetLocationToLocationDistance(runeLoc, bot:GetLocation()) < 300 then
+	-- 		return BOT_ACTION_DESIRE_VERYHIGH
+	-- 	end
+	-- end
 
 	return BOT_MODE_DESIRE_NONE
 end
@@ -186,6 +198,7 @@ function Think()
 			Utils.AddToSet(ignorePickupList, PickedItem.item)
 		end
 
+		-- 先尝试捡起
 		if not Utils.SetContains(itemName) and not Utils.HasValue(Item['tEarlyConsumableItem'], itemName)
 		then
 			if J.Item.GetEmptyInventoryAmount(bot) > 0 then
@@ -206,7 +219,7 @@ function Think()
 	then
 		lastCheckBotToDropTime = DotaTime()
 
-		-- 再尝试丢/卖掉自己的物品
+		-- 再尝试丢/卖掉
 		if Utils.CountBackpackEmptySpace(bot) <= 1 then
 			for i = 1, #Item['tEarlyConsumableItem']
 			do

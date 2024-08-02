@@ -1163,6 +1163,33 @@ function Item.GetMainInvLessValItemSlot( bot )
 
 end
 
+function Item.GetBodyInvLessValItemSlot( bot )
+	local minPrice = 10000
+	local minSlot = - 1
+	for i = 0, 8
+	do
+		local item = bot:GetItemInSlot( i )
+		
+		if item == nil
+		then
+			return i, -1
+		end
+		
+		if item ~= nil
+			and not Item.IsCanNotSwitchItem( item:GetName() )
+		then
+			local cost = GetItemCost( item:GetName() )
+			if cost < minPrice then
+				minPrice = cost
+				minSlot = i
+			end
+		end
+	end
+
+	return minSlot, minPrice
+
+end
+
 
 function Item.GetItemCharges( bot, itemName )
 

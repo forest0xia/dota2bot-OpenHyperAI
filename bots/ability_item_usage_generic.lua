@@ -75,21 +75,26 @@ local function AbilityLevelUpComplement()
 		bot.stuckLoc = nil
 	end
 
-	if bot:GetAbilityPoints() > 0
-		and #sAbilityLevelUpList >= 1
+	if #sAbilityLevelUpList >= 1
+	and bot:GetAbilityPoints() > 0
 	then
 		local abilityToLevelup = bot:GetAbilityByName( sAbilityLevelUpList[1] )
 		if abilityToLevelup ~= nil
-			and not abilityToLevelup:IsHidden() --fix kunkka bug
+			and not abilityToLevelup:IsHidden()
+		    and bot:GetLevel() >= abilityToLevelup:GetHeroLevelRequiredToUpgrade()
 			and abilityToLevelup:CanAbilityBeUpgraded()
 			and abilityToLevelup:GetLevel() < abilityToLevelup:GetMaxLevel()
 		then
-			bot:ActionImmediate_LevelAbility( sAbilityLevelUpList[1] )
+			bot:ActionImmediate_LevelAbility(abilityToLevelup:GetName())
 			table.remove( sAbilityLevelUpList, 1 )
-			return
 		else
-			bot:ActionImmediate_LevelAbility('special_bonus_attributes')
+			-- still try it
+			bot:ActionImmediate_LevelAbility(sAbilityLevelUpList[1])
+			print("[WARN] Level up ability "..sAbilityLevelUpList[1].." for "..bot:GetUnitName().." may fail because it was called on ability that's not available or can't get upgraded anymore.")
+			table.remove( sAbilityLevelUpList, 1 )
+			-- bot:ActionImmediate_LevelAbility('special_bonus_attributes')
 		end
+		return
 	end
 
 end
@@ -292,7 +297,7 @@ local function BuybackUsageComplement()
 
 	if not bot:HasBuyback() then return end
 
-	if bot:GetRespawnTime() < 40 then
+	if bot:GetRespawnTime() < 30 then
 		return
 	end
 
@@ -6494,6 +6499,27 @@ X.ConsiderItemDesire["item_light_collector"] = function(hItem)
 		if nInRangeTrees ~= nil and #nInRangeTrees >= 3
 		then
 			return BOT_ACTION_DESIRE_HIGH, bot, 'none', nil
+		end
+	end
+
+	return BOT_ACTION_DESIRE_NONE
+end
+
+-- Iron Talon
+X.ConsiderItemDesire["item_iron_talon"] = function(hItem)
+	local nCastRange = 350
+
+	-- Only use it for creeps
+	if J.IsFarming(bot)
+	then
+		local nCreep = bot:GetNearbyNeutralCreeps(nCastRange)
+		if #nCreep <= 0 then return 0 end
+
+		local creepTarget = J.GetMostHpUnit(nCreep)
+		if J.CanBeAttacked(creepTarget)
+		and J.GetHP(creepTarget) > 0.5
+		then
+			return BOT_ACTION_DESIRE_HIGH, creepTarget, 'unit', nil
 		end
 	end
 

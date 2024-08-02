@@ -9,11 +9,15 @@ Anything that can be shared in any files without worrying about nested or circul
 ]]
 
 local X = { }
-X['DebugMode'] = true
+X['DebugMode'] = false
 
 local RadiantFountainTpPoint = Vector(-7172, -6652, 384 )
 local DireFountainTpPoint = Vector(6982, 6422, 392)
-local orig_print = print
+
+X['WisdomRunes'] = {
+	[TEAM_RADIANT] = Vector( -8126, -320, 256 ),
+	[TEAM_DIRE] = Vector( 8319, 266, 256 )
+}
 
 -- This heroes bugged because Valve was too lazy to add them with the correct laning target point. No high desired lane.
 X['BuggyHeroesDueToValveTooLazy'] = {
@@ -32,6 +36,7 @@ X['LoneDruid'] = { }
 X['FrameProcessTime'] = 0.05
 
 -- Override the print function
+local orig_print = print
 function print(...)
     if not X.DebugMode then return end
 
@@ -82,6 +87,32 @@ function X.PrintPings(pingTimeGap)
                 --         print(unit:GetUnitName())
                 --     end
                 -- end
+
+                -- local zoneRadious = 400
+                -- local zone = AddAvoidanceZone(Vector(ping.location.x, ping.location.y, zoneRadious), 10)
+                -- print('Added zone: ..'..tostring(zone))
+                -- -- print Avoidance Zones
+                -- local badAOEZones = { }
+                -- NOTE: an aoe will be table with { "location", "ability", "caster", "radius", "playerid" }.
+                -- local success, result = pcall(function()
+                --     for _, avoidZones in pairs(GetAvoidanceZones()) do
+                --         table.insert(badAOEZones, avoidZones)
+                --     end
+                --     return true
+                -- end)
+                -- print('All Avoidance Zones: ', tostring(success), result)
+                -- X.PrintTable(badAOEZones)
+
+                -- -- print linear projectiles
+                -- local linearProjectiles = { }
+                -- for _, pr in pairs(GetLinearProjectiles()) do
+                --     if X.GetLocationToLocationDistance(pr.location, ping.location) < 500 then
+                --         table.insert(linearProjectiles, pr)
+                --     end
+                -- end
+                -- print('All near linear projectiles:')
+                -- X.PrintTable(linearProjectiles)
+
             end
 		end
 	end
@@ -263,6 +294,14 @@ function X.NumHumanBotPlayersInTeam(team)
 	end
 
 	return nHuman, nBot
+end
+
+function X.IsWithoutSpellShield( npcEnemy )
+
+	return not npcEnemy:HasModifier( "modifier_item_sphere_target" )
+			and not npcEnemy:HasModifier( "modifier_antimage_spell_shield" )
+			and not npcEnemy:HasModifier( "modifier_item_lotus_orb_active" )
+
 end
 
 function X.GetLocationToLocationDistance( fLoc, sLoc )

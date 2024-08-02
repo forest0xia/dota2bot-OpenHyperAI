@@ -175,7 +175,7 @@ local abilityQ = bot:GetAbilityByName( sAbilityList[1] )
 local abilityW = bot:GetAbilityByName( sAbilityList[2] )
 local abilityE = bot:GetAbilityByName( sAbilityList[3] )
 local abilityE2 = bot:GetAbilityByName( 'kunkka_return' )
-local abilityD = bot:GetAbilityByName( sAbilityList[4] )
+-- local abilityD = bot:GetAbilityByName( sAbilityList[4] )
 local abilityAS = bot:GetAbilityByName( sAbilityList[5] )
 local abilityR = bot:GetAbilityByName( sAbilityList[6] )
 
@@ -322,15 +322,15 @@ function X.SkillsComplement()
 	end
 
 	--浪
-	castDDesire, castDLocation = X.ConsiderD()
-	if castDDesire > 0
-	then
-		J.SetQueuePtToINT( bot, true )
+	-- castDDesire, castDLocation = X.ConsiderD()
+	-- if castDDesire > 0
+	-- then
+	-- 	J.SetQueuePtToINT( bot, true )
 
-		bot:ActionQueue_UseAbilityOnLocation( abilityD, bot:GetLocation() )
-		return
+	-- 	bot:ActionQueue_UseAbilityOnLocation( abilityD, bot:GetLocation() )
+	-- 	return
 
-	end
+	-- end
 	
 	--魔晶
 	castASDesire, castASTarget = X.ConsiderAS()
@@ -485,41 +485,41 @@ function X.ConsiderCombo3()
 	return BOT_ACTION_DESIRE_NONE, nil, {}
 end
 
-function X.ConsiderD()
+-- function X.ConsiderD()
 
-	if not abilityD:IsFullyCastable()
-		or not bot:HasScepter()
-	then
-		return BOT_ACTION_DESIRE_NONE
-	end
+-- 	if not abilityD:IsFullyCastable()
+-- 		or not bot:HasScepter()
+-- 	then
+-- 		return BOT_ACTION_DESIRE_NONE
+-- 	end
 
-	if J.IsGoingOnSomeone( bot )
-	then
-		local npcTarget = J.GetProperTarget( bot )
-		if J.IsValidHero( npcTarget )
-			and J.IsInRange( bot, npcTarget, 300 )
-			and J.CanCastOnNonMagicImmune( npcTarget )
-		then
-			return BOT_ACTION_DESIRE_HIGH
-		end
-	end
+-- 	if J.IsGoingOnSomeone( bot )
+-- 	then
+-- 		local npcTarget = J.GetProperTarget( bot )
+-- 		if J.IsValidHero( npcTarget )
+-- 			and J.IsInRange( bot, npcTarget, 300 )
+-- 			and J.CanCastOnNonMagicImmune( npcTarget )
+-- 		then
+-- 			return BOT_ACTION_DESIRE_HIGH
+-- 		end
+-- 	end
 
-	if J.IsRetreating( bot ) or J.IsInTeamFight( bot, 1200 )
-	then
-		local nEnemyHeroList = J.GetEnemyList( bot, 1100 )
-		for _, enemy in pairs(nEnemyHeroList) do
-			if #nEnemyHeroList >= 3
-				or ( #nEnemyHeroList >= 2 and nHP <= 0.5 )
-				or ( #nEnemyHeroList >= 1 and nHP <= 0.4 and bot:WasRecentlyDamagedByHero( enemy, 3.0 ) )
-			then
-				return BOT_ACTION_DESIRE_HIGH
-			end
-		end
-	end
+-- 	if J.IsRetreating( bot ) or J.IsInTeamFight( bot, 1200 )
+-- 	then
+-- 		local nEnemyHeroList = J.GetEnemyList( bot, 1100 )
+-- 		for _, enemy in pairs(nEnemyHeroList) do
+-- 			if #nEnemyHeroList >= 3
+-- 				or ( #nEnemyHeroList >= 2 and nHP <= 0.5 )
+-- 				or ( #nEnemyHeroList >= 1 and nHP <= 0.4 and bot:WasRecentlyDamagedByHero( enemy, 3.0 ) )
+-- 			then
+-- 				return BOT_ACTION_DESIRE_HIGH
+-- 			end
+-- 		end
+-- 	end
 
-	return BOT_ACTION_DESIRE_NONE
+-- 	return BOT_ACTION_DESIRE_NONE
 
-end
+-- end
 
 
 function X.ConsiderQ()

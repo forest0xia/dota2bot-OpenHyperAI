@@ -1,6 +1,6 @@
 local X = {}
 local sSelectHero = "npc_dota_hero_zuus"
-local fLastSlectTime, fLastRand = -100, 0
+local fLastSlectTime, fLastRand = 5, 0
 local nDelayTime = nil
 local nHumanCount = 0
 local sBanList = {}
@@ -672,10 +672,10 @@ function X.OverrideTeamHeroes()
 	if GetTeam() == TEAM_RADIANT
 	then
 		return {
-			[1] = tSelectPoolList[1][RandomInt( 1, #tSelectPoolList[1] )],
-			[2] = tSelectPoolList[2][RandomInt( 1, #tSelectPoolList[2] )],
-			[3] = tSelectPoolList[3][RandomInt( 1, #tSelectPoolList[3] )],
-			[4] = tSelectPoolList[4][RandomInt( 1, #tSelectPoolList[4] )],
+			[1] = 'npc_dota_hero_marci',
+			[2] = 'npc_dota_hero_invoker',
+			[3] = "npc_dota_hero_elder_titan",
+		    [4] = 'npc_dota_hero_spirit_breaker',
 			[5] = tSelectPoolList[5][RandomInt( 1, #tSelectPoolList[5] )],
 		}
 	else
@@ -726,7 +726,7 @@ function X.OverrideTeamHeroes()
 			[1] = 'npc_dota_hero_marci',
 			[2] = 'npc_dota_hero_invoker',
 			[3] = "npc_dota_hero_elder_titan",
-		    [4] = 'npc_dota_hero_warlock',
+		    [4] = 'npc_dota_hero_spirit_breaker',
 			[5] = tSelectPoolList[5][RandomInt( 1, #tSelectPoolList[5] )],
 			
 			-- Muerta pos1 and Hoodwink pos5, both go top.

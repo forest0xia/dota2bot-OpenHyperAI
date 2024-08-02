@@ -17,10 +17,13 @@ local roshanDireLoc     = Vector(-7549, 7562, 1107)
 local sinceRoshAliveTime = 0
 local roshTimeFlag = false
 local initDPSFlag = false
+local considerRoshGap = 0
 
 local Roshan
 
 function GetDesire()
+    if DotaTime() - considerRoshGap < 5 then return end
+    considerRoshGap = DotaTime()
 
     if Roshan == nil then
         local nCreeps = bot:GetNearbyNeutralCreeps(700)
@@ -51,10 +54,19 @@ function GetDesire()
     
     local timeOfDay = J.CheckTimeOfDay()
 
+    local nCoreWithNoEmptySlot = 0
     local aliveHeroesList = {}
     for _, h in pairs(GetUnitList(UNIT_LIST_ALLIED_HEROES)) do
         if h:IsAlive()
         then
+            if J.Utils.CountBackpackEmptySpace(h) <= 0 and J.IsCore(h) then
+                nCoreWithNoEmptySlot = nCoreWithNoEmptySlot + 1
+            end
+
+            -- do not take rosh if the cores do not have any empty slot, it may get dropped on ground.
+            if nCoreWithNoEmptySlot >= 2 then
+                return BOT_ACTION_DESIRE_NONE
+            end
             table.insert(aliveHeroesList, h)
         end
     end

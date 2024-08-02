@@ -14,5 +14,6 @@ end
 
 function GetDesire() return Defend.GetDefendDesire(bot, LANE_TOP) end
 function Think() return Defend.DefendThink(bot, LANE_TOP) end
+function OnEnd() Defend.OnEnd(bot, LANE_TOP) end
 -- if Utils.BuggyHeroesDueToValveTooLazy[botName] then
 -- end

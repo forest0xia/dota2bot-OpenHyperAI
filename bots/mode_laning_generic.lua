@@ -4,6 +4,13 @@ local Utils = require( GetScriptDirectory()..'/FunLib/utils')
 local bot = GetBot()
 local botName = bot:GetUnitName()
 local local_mode_laning_generic
+
+local skipLaningState = {
+	count = 0,
+	lastCheckTime = 0,
+	checkGap = 3,
+}
+
 if bot:IsInvulnerable() or not bot:IsHero() or not string.find(botName, "hero") or bot:IsIllusion() then
 	return
 end
@@ -13,6 +20,16 @@ if Utils.BuggyHeroesDueToValveTooLazy[botName] then
 end
 
 function GetDesire()
+	if DotaTime() - skipLaningState.lastCheckTime < skipLaningState.checkGap then
+		if skipLaningState.count > 6 then
+			print('[WARN] Bot ' ..botName.. ' switching modes too often, now stop it for laning to avoid conflicts.')
+			return 0
+		end
+	else
+		skipLaningState.lastCheckTime = DotaTime()
+		skipLaningState.count = 0
+	end
+
 	if local_mode_laning_generic ~= nil and local_mode_laning_generic.GetDesire ~= nil then return local_mode_laning_generic.GetDesire() end
 
 	if GetGameMode() == GAMEMODE_1V1MID or GetGameMode() == GAMEMODE_MO then
@@ -46,6 +63,10 @@ function GetDesire()
 
 	return 0
 
+end
+
+function OnStart()
+	skipLaningState.count = skipLaningState.count + 1
 end
 
 if local_mode_laning_generic ~= nil then

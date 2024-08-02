@@ -49,14 +49,8 @@ if sRole == 'pos_5' then nTalentBuildList = J.Skill.GetTalentBuild(tTalentTreeLi
 local sRoleItemsBuyList = {}
 
 sRoleItemsBuyList['pos_2'] = {
-	"item_tango",
-	"item_double_branches",
-	"item_faerie_fire",
-	"item_enchanted_mango",
-
-	"item_bottle",
-	"item_power_treads",
-	"item_magic_wand",
+	"item_mid_outfit",
+	"item_dragon_lance",
 	"item_witch_blade",
     "item_force_staff",
 	"item_hurricane_pike",--

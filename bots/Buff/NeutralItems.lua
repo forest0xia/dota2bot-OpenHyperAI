@@ -12,7 +12,7 @@ local isTierFiveDone  = false
 local Tier1NeutralItems = {
     --[[Trusty Shovel]]         "item_trusty_shovel",
     --[[Arcane Ring]]           "item_arcane_ring",
-    --[[Fairy's Trinket]]       "item_mysterious_hat",
+    -- --[[Fairy's Trinket]]       "item_mysterious_hat",
     --[[Pig Pole]]              "item_unstable_wand",
     --[[Safety Bubble]]         "item_safety_bubble",
     --[[Seeds of Serenity]]     "item_seeds_of_serenity",
@@ -23,13 +23,13 @@ local Tier1NeutralItems = {
     --[[Royal Jelly]]           "item_royal_jelly",
     --[[Faded Broach]]          "item_faded_broach",
     --[[Spark Of Courage]]      "item_spark_of_courage",
+    --[[Ironwood Tree]]         "item_ironwood_tree",
 }
 
 local Tier2NeutralItems = {
     --[[Dragon Scale]]          "item_dragon_scale",
     --[[Whisper of the Dread]]  "item_whisper_of_the_dread",
     --[[Pupil's Gift]]          "item_pupils_gift",
-    --[[Vambrace]]              "item_vambrace",
     --[[Grove Bow]]             "item_grove_bow",
     --[[Philosopher's Stone]]   "item_philosophers_stone",
     --[[Bullwhip]]              "item_bullwhip",
@@ -39,6 +39,7 @@ local Tier2NeutralItems = {
     --[[Vampire Fangs]]         "item_vampire_fangs",
     --[[Gossamer's Cape]]       "item_gossamer_cape",
     --[[Light Collector]]       "item_light_collector",
+    --[[Iron Talon]]            "item_iron_talon",
 }
 
 local Tier3NeutralItems = {
@@ -53,8 +54,8 @@ local Tier3NeutralItems = {
     --[[Cloack of Flames]]      "item_cloak_of_flames",
     --[[Ceremonial Robe]]       "item_ceremonial_robe",
     --[[Psychic Headband]]      "item_psychic_headband",
-    --[[Ogre Seal Totem]]       "item_ogre_seal_totem",
     --[[Doubloon]]              "item_doubloon",
+    --[[Vambrace]]              "item_vambrace",
 }
 
 local Tier4NeutralItems = {
@@ -68,8 +69,9 @@ local Tier4NeutralItems = {
     --[[Ancient Guardian]]      "item_ancient_guardian",
     --[[Havoc Hammer]]          "item_havoc_hammer",
     --[[Mind Breaker]]          "item_mind_breaker",
-    --[[Martyr's Plate]]        "item_martyrs_plate",
+    -- --[[Martyr's Plate]]        "item_martyrs_plate",
     --[[Rattlecage]]            "item_rattlecage",
+    --[[Ogre Seal Totem]]       "item_ogre_seal_totem",
 }
 
 local Tier5NeutralItems = {
@@ -144,7 +146,7 @@ function NeutralItems.GiveNeutralItems(TeamRadiant, TeamDire)
     end
 
     -- Tier 4 Neutral Items
-    if (isTurboMode and Helper.DotaTime() >= (18 * 60 + 20) or Helper.DotaTime() >= 37 * 60)
+    if (isTurboMode and Helper.DotaTime() >= 18.5 * 60 or Helper.DotaTime() >= 37 * 60)
     and not isTierFourDone
     then
         GameRules:SendCustomMessage('Bots receiving Tier 4 Neutral Items...', 0, 0)

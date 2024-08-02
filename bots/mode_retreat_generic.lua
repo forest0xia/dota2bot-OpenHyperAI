@@ -71,20 +71,25 @@ function GetDesire()
 			if J.IsValidHero(hero)
 			and not J.IsSuspiciousIllusion(hero)
 			and not J.IsMeepoClone(hero)
-			and not hero:HasModifier("modifier_arc_warden_tempest_double") then
+			and not hero:HasModifier("modifier_arc_warden_tempest_double")
+			then
 				table.insert(uniqueEnemies, hero)
-				enemyPower = enemyPower + hero:GetRawOffensivePower()
+				if hero:IsFacingLocation(bot:GetLocation(), 8) then
+					enemyPower = enemyPower + hero:GetRawOffensivePower()
+				else
+					enemyPower = enemyPower + hero:GetRawOffensivePower() / 2
+				end
 			end
 		end
 	end
 
 	local weAreStronger = ourPower >= enemyPower
 
-	if J.IsLaning( bot ) or bot:GetLevel() <= 10 then
+	-- if J.IsLaning( bot ) or bot:GetLevel() <= 10 then
 		if not weAreStronger and J.GetHP(bot) < 0.7 then
 			if bot:HasModifier('modifier_maledict') -- 防止中了巫医毒还继续吃伤害
 			or bot:HasModifier('modifier_dazzle_poison_touch')
-			or bot:HasModifier('modifier_slark_essence_shift_debuff') -- 防止不停被小鱼偷属性
+			-- or bot:HasModifier('modifier_slark_essence_shift_debuff') -- 防止不停被小鱼偷属性, 其实不被近身也算防止了
 			-- or bot:HasModifier('modifier_razor_static_link_debuff') -- 电棍静电链接
 			then
 				return BOT_ACTION_DESIRE_VERYHIGH
@@ -101,7 +106,7 @@ function GetDesire()
 				return BOT_ACTION_DESIRE_VERYHIGH
 			end
 		end
-	end
+	-- end
 
 	-- 别遛进塔
 	local nTowers = {
@@ -131,16 +136,15 @@ function GetDesire()
 		local distanceToTower = GetUnitToUnitDistance(bot, towers[1])
 		local deltaRange = 300
 		if towerType == TOWER_TOP_1 or towerType == TOWER_MID_1 or towerType == TOWER_BOT_1 then
-			if J.IsValid(targetBot) then
-				local distanceToTarget = GetUnitToUnitDistance( bot, targetBot )
-				if distanceToTower < towers[1]:GetAttackRange() + deltaRange
-				and distanceToTarget > bot:GetAttackRange() + deltaRange
-				and J.GetHP(targetBot) > 0.2
-				and not (bot:IsStunned() or bot:IsHexed() or J.IsInRange(bot, targetBot, bot:GetAttackRange())) then
-					bot:Action_ClearActions(false)
-					return BOT_ACTION_DESIRE_VERYHIGH
-				end
-			elseif distanceToTower < towers[1]:GetAttackRange() + deltaRange then
+			if J.IsValid(targetBot)
+			and distanceToTower < towers[1]:GetAttackRange() + deltaRange
+			and GetUnitToUnitDistance( bot, targetBot ) > bot:GetAttackRange() + deltaRange
+			and J.GetHP(targetBot) > 0.2
+			and not (bot:IsStunned() or bot:IsHexed() or J.IsInRange(bot, targetBot, bot:GetAttackRange())) then
+				bot:Action_ClearActions(false)
+				return BOT_ACTION_DESIRE_VERYHIGH
+			end
+			if distanceToTower < towers[1]:GetAttackRange() + deltaRange then
 				bot:Action_ClearActions(false)
 				return BOT_ACTION_DESIRE_VERYHIGH
 			end
@@ -184,6 +188,14 @@ function GetDesire()
 		return BOT_ACTION_DESIRE_VERYHIGH
 	end
 
+	local closestEnemy, closestAlly = nEnemyHeroes[1], nAllyHeroes[1]
+
+	-- enemy may going for nearby ally. dont retreat.
+	-- if J.IsValidHero(closestEnemy)
+	-- and not closestEnemy:IsFacingLocation(bot:GetLocation(), 8) then
+	-- 	return BOT_ACTION_DESIRE_NONE
+	-- end
+
 	-- General cases:
 
 	retreatDesire = retreatDesire + RemapValClamped(enemyPower / ourPower, 0, 2, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_VERYHIGH )
@@ -192,7 +204,6 @@ function GetDesire()
 	retreatDesire = retreatDesire + RemapValClamped(J.GetHP(bot), 1, 0.1, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_VERYHIGH * 1.3 )
 	possibleMaxDesire = BOT_ACTION_DESIRE_VERYHIGH * 4
 
-	local closestEnemy = nEnemyHeroes[1]
 	if J.IsValid(closestEnemy) and J.GetHP(bot) < J.GetHP(closestEnemy) then
 		retreatDesire = retreatDesire + RemapValClamped(GetUnitToUnitDistance(closestEnemy, bot) - bot:GetAttackRange(), 0, -bot:GetAttackRange(), BOT_ACTION_DESIRE_VERYLOW, BOT_ACTION_DESIRE_VERYHIGH * 2 )
 		possibleMaxDesire = possibleMaxDesire + BOT_ACTION_DESIRE_VERYHIGH
@@ -229,20 +240,24 @@ function CountNearByUnits(bEnemy, range)
 	local uList = bEnemy and UNIT_LIST_ENEMIES or UNIT_LIST_ALLIES
 	local units = GetUnitList(uList)
 	for _, unit in pairs(units) do
-		if Utils.IsValidUnit(unit) and GetUnitToUnitDistance(bot, unit) <= range then
-			if string.find(unit:GetUnitName(), 'spiderling') then nearbyEnemies = nearbyEnemies + 0.1 end
-			if string.find(unit:GetUnitName(), 'eidolon') then nearbyEnemies = nearbyEnemies + 0.3 end
-			if string.find(unit:GetUnitName(), 'lone_druid_bear') then nearbyEnemies = nearbyEnemies + 1 end
-			if string.find(unit:GetUnitName(), 'tower') then nearbyEnemies = nearbyEnemies + 3 end
+		if Utils.IsValidUnit(unit)
+		and GetUnitToUnitDistance(bot, unit) <= range
+		then
+			local deltaEnemy = 1
+			if string.find(unit:GetUnitName(), 'spiderling') then deltaEnemy = 0.1 end
+			if string.find(unit:GetUnitName(), 'eidolon') then deltaEnemy = 0.3 end
+			if string.find(unit:GetUnitName(), 'lone_druid_bear') then deltaEnemy = 1 end
+			if string.find(unit:GetUnitName(), 'tower') then deltaEnemy = 3 end
 			if string.find(unit:GetUnitName(), 'warlock_golem') then
-				local delta = 1.5
-				if DotaTime() < 10 * 60 then delta = 3
-				elseif DotaTime() < 20 * 60 then delta = 2.5
-				elseif DotaTime() < 30 * 60 then delta = 2
+				if DotaTime() < 10 * 60 then deltaEnemy = 3
+				elseif DotaTime() < 20 * 60 then deltaEnemy = 2.5
+				elseif DotaTime() < 30 * 60 then deltaEnemy = 2
 				end
-				nearbyEnemies = nearbyEnemies + delta
 			end
-			if string.find(unit:GetUnitName(), "tombstone") then nearbyEnemies = nearbyEnemies + 2 end
+			if string.find(unit:GetUnitName(), "tombstone") then deltaEnemy = 2 end
+
+			if not unit:IsFacingLocation(bot:GetLocation(), 8) then deltaEnemy = deltaEnemy/2 end
+			nearbyEnemies = nearbyEnemies + deltaEnemy
 		end
 	end
 	return nearbyEnemies

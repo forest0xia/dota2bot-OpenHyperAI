@@ -18,7 +18,7 @@ local sRole = J.Item.GetRoleItemsBuyList( bot )
 
 local tTalentTreeList = {
 						['t25'] = {10, 0},
-						['t20'] = {10, 0},
+						['t20'] = {0, 10},
 						['t15'] = {0, 10},
 						['t10'] = {10, 0},
 }
@@ -146,12 +146,13 @@ local abilityW = bot:GetAbilityByName( sAbilityList[2] )
 local abilityE = bot:GetAbilityByName( sAbilityList[3] )
 local abilityR = bot:GetAbilityByName( sAbilityList[6] )
 local abilityM = nil
+local GorgonGrasp = bot:GetAbilityByName('medusa_gorgon_grasp')
 
 local castQDesire
 local castWDesire, castWTarget
 local castEDesire
 local castRDesire
-
+local GorgonGraspDesire, GorgonGraspLocation
 
 local nKeepMana, nMP, nHP, nLV, hEnemyHeroList
 local lastToggleTime = 0
@@ -193,6 +194,14 @@ function X.SkillsComplement()
 
 	end
 	
+	GorgonGraspDesire, GorgonGraspLocation = X.ConsiderGorgonGrasp()
+	if GorgonGraspDesire > 0
+	then
+		J.SetQueuePtToINT(bot, false)
+		bot:ActionQueue_UseAbilityOnLocation(GorgonGrasp, GorgonGraspLocation)
+		return
+	end
+
 	castQDesire = X.ConsiderQ()
 	if castQDesire > 0
 	then
@@ -200,6 +209,112 @@ function X.SkillsComplement()
 		return
 	end
 
+end
+
+function X.ConsiderGorgonGrasp()
+	if not GorgonGrasp:IsFullyCastable()
+	then
+		return BOT_ACTION_DESIRE_NONE, 0
+	end
+
+	local nCastRange = J.GetProperCastRange(false, bot, GorgonGrasp:GetCastRange())
+	local nCastPoint = GorgonGrasp:GetCastPoint()
+	-- local nRadius = GorgonGrasp:GetSpecialValueInt('radius')
+	-- local nRadiusGrow = GorgonGrasp:GetSpecialValueInt('radius_grow')
+	local nDelay = GorgonGrasp:GetSpecialValueInt('delay')
+	-- local nVolleyInterval = GorgonGrasp:GetSpecialValueInt('volley_interval')
+	local nDamage = GorgonGrasp:GetSpecialValueInt('damage')
+	local nDPS = GorgonGrasp:GetSpecialValueInt('damage_pers')
+	local nDuration = GorgonGrasp:GetSpecialValueInt('duration')
+	local botTarget = J.GetProperTarget(bot)
+
+	local tAllyHeroes = bot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
+	local tEnemyHeroes = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+
+	local eta = nCastPoint + nDelay
+
+	for _, enemyHero in pairs(tEnemyHeroes)
+	do
+		if J.IsValidHero(enemyHero)
+		and J.IsInRange(bot, enemyHero, nCastRange)
+		and J.CanCastOnNonMagicImmune(enemyHero)
+		then
+			if enemyHero:IsChanneling()
+			then
+				return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation()
+			end
+
+			if J.CanKillTarget(enemyHero, nDamage + nDPS * nDuration, DAMAGE_TYPE_PHYSICAL)
+			and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
+			and not enemyHero:HasModifier('modifier_dazzle_shallow_grave')
+			and not enemyHero:HasModifier('modifier_enigma_black_hole_pull')
+			and not enemyHero:HasModifier('modifier_faceless_void_chronosphere_freeze')
+			and not enemyHero:HasModifier('modifier_necrolyte_reapers_scythe')
+			then
+				return BOT_ACTION_DESIRE_HIGH, J.GetCorrectLoc(enemyHero, eta)
+			end
+		end
+	end
+
+	if J.IsGoingOnSomeone(bot)
+	then
+		if J.IsValidHero(botTarget)
+		and J.CanCastOnNonMagicImmune(botTarget)
+		and J.IsInRange(bot, botTarget, nCastRange)
+		and not J.IsDisabled(botTarget)
+		and not botTarget:HasModifier('modifier_enigma_black_hole_pull')
+		and not botTarget:HasModifier('modifier_faceless_void_chronosphere_freeze')
+		and not botTarget:HasModifier('modifier_necrolyte_reapers_scythe')
+		then
+			return BOT_ACTION_DESIRE_HIGH, J.GetCorrectLoc(botTarget, eta)
+		end
+	end
+
+	if J.IsRetreating(bot)
+	and not J.IsRealInvisible(bot)
+	then
+		for _, enemyHero in pairs(tEnemyHeroes)
+		do
+			if J.IsValidHero(enemyHero)
+			and J.IsInRange(bot, enemyHero, nCastRange)
+			and bot:WasRecentlyDamagedByHero(enemyHero, 2.5)
+			and (J.IsChasingTarget(enemyHero, bot) or J.GetHP(bot) < 0.5)
+			and J.CanCastOnNonMagicImmune(enemyHero)
+			and not J.IsDisabled(enemyHero)
+			and not enemyHero:HasModifier('modifier_enigma_black_hole_pull')
+			and not enemyHero:HasModifier('modifier_faceless_void_chronosphere_freeze')
+			and not enemyHero:HasModifier('modifier_necrolyte_reapers_scythe')
+			then
+				return BOT_ACTION_DESIRE_HIGH, (bot:GetLocation() + enemyHero:GetLocation()) / 2
+			end
+		end
+	end
+
+	for _, allyHero in pairs(tAllyHeroes)
+    do
+        if  J.IsValidHero(allyHero)
+        and J.IsRetreating(allyHero)
+        and allyHero:GetActiveModeDesire() >= 0.7
+        and allyHero:WasRecentlyDamagedByAnyHero(3)
+        and not allyHero:IsIllusion()
+        then
+            local nAllyInRangeEnemy = allyHero:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+
+            if J.IsValidHero(nAllyInRangeEnemy[1])
+            and J.CanCastOnNonMagicImmune(nAllyInRangeEnemy[1])
+            and J.IsInRange(bot, nAllyInRangeEnemy[1], nCastRange)
+            and J.IsChasingTarget(nAllyInRangeEnemy[1], allyHero)
+            and not J.IsDisabled(nAllyInRangeEnemy[1])
+            and not nAllyInRangeEnemy[1]:HasModifier('modifier_enigma_black_hole_pull')
+            and not nAllyInRangeEnemy[1]:HasModifier('modifier_faceless_void_chronosphere_freeze')
+            and not nAllyInRangeEnemy[1]:HasModifier('modifier_necrolyte_reapers_scythe')
+            then
+                return BOT_ACTION_DESIRE_HIGH, J.GetCorrectLoc(nAllyInRangeEnemy[1], eta)
+            end
+        end
+    end
+
+	return BOT_ACTION_DESIRE_NONE, 0
 end
 
 function X.ConsiderQ()

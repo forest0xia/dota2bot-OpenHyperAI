@@ -31,15 +31,6 @@ function X.GetDesire()
 	nEnemyCreeps = bot:GetNearbyCreeps(800, true)
 	nAttackRange = bot:GetAttackRange()
 
-	-- sync with nearby ally's target if any
-	-- if nAllyHeroes ~= nil and #nAllyHeroes >= 2 then
-	-- 	local ally = nAllyHeroes[2]
-	-- 	if J.IsValidHero(ally) and J.IsInRange(ally, bot, 1600) and J.IsGoingOnSomeone(ally) then
-	-- 		bot:SetTarget(J.GetProperTarget(ally))
-	-- 		return GetDesireBasedOnHp()
-	-- 	end
-	-- end
-
 	if J.GetModifierTime(bot, "modifier_muerta_pierce_the_veil") > 0.5
 	then
 		return BOT_MODE_DESIRE_VERYHIGH
@@ -49,8 +40,9 @@ function X.GetDesire()
 	if J.IsGoingOnSomeone(bot)
 	then
 		botTarget = J.GetProperTarget(bot)
-		if botTarget ~= nil and J.IsInRange(botTarget, bot, MaxTrackingDistance) then
-			return GetDesireBasedOnHp()
+		if J.IsValidHero(botTarget)
+		and J.IsInRange(botTarget, bot, MaxTrackingDistance) then
+			return GetDesireBasedOnHp(botTarget)
 		end
 	end
 
@@ -60,7 +52,7 @@ function X.GetDesire()
 	and J.IsInRange(nEnemyHeroes[1], bot, nAttackRange + attackDeltaDistance)
 	and J.CanBeAttacked(nEnemyHeroes[1]) then
 		bot:SetTarget(nEnemyHeroes[1])
-		return GetDesireBasedOnHp()
+		return GetDesireBasedOnHp(nEnemyHeroes[1])
 	end
 
 	-- time to direct attack any creeps
@@ -70,24 +62,37 @@ function X.GetDesire()
 				return BOT_ACTION_DESIRE_NONE
 			end
 		end
-		return GetDesireBasedOnHp()
+		return GetDesireBasedOnHp(nil)
 	end
 
 	return BOT_ACTION_DESIRE_NONE
 end
 
-function GetDesireBasedOnHp()
+function GetDesireBasedOnHp(target)
+	-- check if can/already hit by creeps
+	if target ~= nil
+	and J.IsInLaningPhase()
+	and bot:WasRecentlyDamagedByCreep(2)
+	and #nEnemyCreeps >= 3
+	and J.GetHP(bot) < J.GetHP(target) then
+		return BOT_ACTION_DESIRE_NONE
+	end
+
+	-- check if can be hit by tower
 	if #nEnemyTowers >= 1 then
 		if bot:GetLevel() < 5 then
 			return BOT_ACTION_DESIRE_NONE
-		else
-			return RemapValClamped(J.GetHP(bot), 0, 1, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_HIGH )
 		end
 	end
 	return RemapValClamped(J.GetHP(bot), 0, 1, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_VERYHIGH )
 end
 
 function X.Think()
+	
+	if bot.lastAttackFrameProcessTime == nil then bot.lastAttackFrameProcessTime = DotaTime() end
+	if DotaTime() - bot.lastAttackFrameProcessTime < J.Utils.FrameProcessTime then return end
+	bot.lastAttackFrameProcessTime = DotaTime()
+
 	-- has a target already
 	botTarget = J.GetProperTarget(bot)
 	if J.IsValidHero(botTarget) and J.IsInRange(botTarget, bot, MaxTrackingDistance) then
@@ -104,15 +109,23 @@ function X.Think()
     nEnemyHeroes = J.GetNearbyHeroes(bot, 1600, true)
     nAllyHeroes = J.GetNearbyHeroes(bot, 1600, false)
 
-	ChooseAndAttackEnemyHero(nEnemyHeroes)
+	botTarget = ChooseAndAttackEnemyHero(nEnemyHeroes)
 
 	-- if no direct target, try last hitting creeps
-	if bot:GetTarget() == nil then
+	if botTarget == nil or J.GetHP(botTarget) > 0.5 then
 		LastHitCreeps()
 	end
 
 	-- if again no direct target, try hitting any unit
 	if bot:GetTarget() == nil then
+		-- don't hit high hp creeps during laning time in the lane.
+		if J.IsInLaningPhase() then
+			local vLaneFront = GetLaneFrontLocation(GetTeam(), bot:GetAssignedLane(), 0)
+			if GetUnitToLocationDistance(bot, vLaneFront) < 700 then
+				return
+			end
+		end
+
 		local units = GetUnitList(UNIT_LIST_ENEMIES)
 		for _, unit in pairs(units) do
 			if J.Utils.IsValidUnit(unit)
@@ -129,7 +142,7 @@ function ChooseAndAttackEnemyHero(hEnemyList)
 	if nInAttackRangeWeakestEnemyHero ~= nil then
 		bot:SetTarget(nInAttackRangeWeakestEnemyHero)
 		bot:Action_AttackUnit(nInAttackRangeWeakestEnemyHero, true)
-		return
+		return nInAttackRangeWeakestEnemyHero
 	end
 
     for _, enemyHero in pairs(hEnemyList)
@@ -142,10 +155,11 @@ function ChooseAndAttackEnemyHero(hEnemyList)
 			then
 				bot:SetTarget(enemyHero)
 				bot:Action_AttackUnit(enemyHero, true)
-				break
+				return enemyHero
 			end
         end
     end
+	return nil
 end
 
 function LastHitCreeps()

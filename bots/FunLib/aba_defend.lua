@@ -9,6 +9,9 @@ function Defend.GetDefendDesire(bot, lane)
 
 	local mostDesireLane, desire = J.GetMostDefendLaneDesire()
 	bot.laneToDefend = mostDesireLane
+	if mostDesireLane ~= lane then
+		return bot.DefendLaneDesire[lane] * 0.8
+	end
 	return bot.DefendLaneDesire[lane]
 end
 
@@ -16,7 +19,7 @@ function Defend.GetDefendDesireHelper(bot, lane)
 	local nDefendDesire = 0
 	local nInRangeEnemy = J.GetEnemiesNearLoc(bot:GetLocation(), 2200)
 	local team = GetTeam()
-	if #nInRangeEnemy > 0 and GetUnitToLocationDistance(bot, GetLaneFrontLocation(team, lane, 0)) < 1200
+	if #nInRangeEnemy > 0 and GetUnitToLocationDistance(bot, GetLaneFrontLocation(team, lane, 0)) < 1000
 	or (bot:GetAssignedLane() ~= lane and J.GetPosition(bot) == 1 and J.IsInLaningPhase()) -- reduce carry feeds
 	or (J.IsDoingRoshan(bot) and #J.GetAlliesNearLoc(J.GetCurrentRoshanLocation(), 2800) >= 3)
 	or (J.IsDoingTormentor(bot) and #J.GetAlliesNearLoc(J.GetTormentorLocation(team), 900) >= 2 and #J.GetEnemiesAroundAncient() == 0)
@@ -386,6 +389,10 @@ function Defend.GetEnemyCountInLane(lane, isHero)
 	end
 
 	return #units
+end
+
+function Defend.OnEnd(bot, lane)
+	bot.DefendLaneDesire[lane] = 0
 end
 
 return Defend

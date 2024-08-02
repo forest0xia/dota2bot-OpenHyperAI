@@ -2747,6 +2747,10 @@ function J.GetMostDefendLaneDesire()
 	local nMidDesire = J.GetDefendLaneDesire( LANE_MID )
 	local nBotDesire = J.GetDefendLaneDesire( LANE_BOT )
 
+	if nMidDesire > nTopDesire and nMidDesire > nBotDesire then
+		return LANE_MID, nMidDesire
+	end
+
 	if nTopDesire > nMidDesire and nTopDesire > nBotDesire
 	then
 		return LANE_TOP, nTopDesire
@@ -2762,11 +2766,12 @@ function J.GetMostDefendLaneDesire()
 end
 
 function J.GetDefendLaneDesire(lane)
-	if GetBot().DefendLaneDesire ~= nil
+	local defaultDefDesire, newDefDesire = GetDefendLaneDesire(lane), GetBot().DefendLaneDesire
+	if newDefDesire ~= nil and newDefDesire[lane] > defaultDefDesire
 	then
-		return GetBot().DefendLaneDesire[lane]
+		return newDefDesire[lane]
 	end
-	return GetDefendLaneDesire(lane)
+	return defaultDefDesire
 end
 
 function J.IsT3TowerDown(team, lane)
@@ -4524,19 +4529,10 @@ end
 function J.GetEnemiesAroundAncient()
 	local nUnitList = {}
 
-	for _, unit in pairs(GetUnitList(UNIT_LIST_ENEMY_HEROES))
+	for _, unit in pairs(GetUnitList(UNIT_LIST_ENEMIES))
 	do
-		if  J.IsValidHero(unit)
-		and GetUnitToUnitDistance(unit, GetAncient(GetTeam())) < 1600
-		then
-			table.insert(nUnitList, unit)
-		end
-	end
-
-	for _, creep in pairs(GetUnitList(UNIT_LIST_ENEMY_CREEPS))
-	do
-		if  J.IsValid(creep)
-		and GetUnitToUnitDistance(creep, GetAncient(GetTeam())) < 1600
+		if J.IsValid(unit)
+		and GetUnitToUnitDistance(unit, GetAncient(GetTeam())) <= 1600
 		then
 			table.insert(nUnitList, creep)
 		end
