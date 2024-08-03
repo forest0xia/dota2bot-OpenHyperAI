@@ -88,12 +88,29 @@ end
 
 function X.GetAbilityList( bot )
 
-	local sAbilityList = {}
-	for slot = 0, 6
+	local sAbilityList = { }
+	local totalUpgradeableAbilities = 6
+	for slot = 0, totalUpgradeableAbilities
 	do
-		table.insert( sAbilityList, bot:GetAbilityInSlot( slot ):GetName() )
+		local name = bot:GetAbilityInSlot( slot ):GetName()
+		-- print(bot:GetUnitName()..' has ability name= '..name..', at idx= '..slot)
+		if name == 'generic_hidden' then
+			-- if we dont check slots but just checking generic_hidden, it can cause some others fail to learn abilities correctly, e.g. chen.
+			if slot == 5 then
+				print('[WARN] It seems the ult ability is '..name..' for '..bot:GetUnitName())
+			elseif slot == 0 then
+				print('[WARN] It seems the first ability is '..name..' for '..bot:GetUnitName())
+			else
+				table.insert(sAbilityList, name)
+			end
+		else
+			table.insert(sAbilityList, name)
+		end
 	end
 
+	if #sAbilityList < totalUpgradeableAbilities then
+		table.insert(sAbilityList, 4, 'generic_hidden')
+	end
 	return sAbilityList
 
 end

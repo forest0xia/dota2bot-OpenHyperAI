@@ -89,6 +89,8 @@ local TimeWalkReverseDesire
 
 local TimeWalkPrevLocation
 
+local announceCount, lastAnnouncedTime = 0, GameTime()
+
 local botTarget
 
 function X.SkillsComplement()
@@ -124,11 +126,30 @@ function X.SkillsComplement()
 		return
 	end
 
-	ChronosphereDesire, ChronosphereLocation = X.ConsiderChronosphere()
-    if ChronosphereDesire > 0
-	then
-		bot:Action_UseAbilityOnLocation(Chronosphere, ChronosphereLocation)
-		return
+	Chronosphere = bot:GetAbilityByName('faceless_void_chronosphere')
+	if Chronosphere and not Chronosphere:IsNull() and not Chronosphere:IsHidden() then
+		if bot.needRefreshAbilitiesFor737 then
+			Chronosphere = bot:GetAbilityByName('faceless_void_chronosphere')
+			sAbilityList = J.Skill.GetAbilityList( bot )
+			J.Utils.PrintTable(sAbilityList)
+			X['sSkillList'] = J.Skill.GetSkillList( sAbilityList, nAbilityBuildList, sTalentList, nTalentBuildList )
+			bot:ActionImmediate_Chat( "I now have my Chronosphere back. Thanks!", true )
+			bot.needRefreshAbilitiesFor737 = false
+		end
+
+		ChronosphereDesire, ChronosphereLocation = X.ConsiderChronosphere()
+		if ChronosphereDesire > 0
+		then
+			bot:Action_UseAbilityOnLocation(Chronosphere, ChronosphereLocation)
+			return
+		end
+	else
+		bot.needRefreshAbilitiesFor737 = true
+		if announceCount <= 2 and GameTime() - lastAnnouncedTime > 10 + bot:GetPlayerID() then
+			lastAnnouncedTime = GameTime()
+			announceCount = announceCount + 1
+			bot:ActionImmediate_Chat( "Due to Valve bug in 7.37. I lost Chronosphere. Please enable Fretbots mode in this script to fix this problem. Check Workshop page if you need help.", true )
+		end
 	end
 end
 
@@ -573,7 +594,9 @@ end
 
 --Helper Funcs
 function IsAllowedToCast(manaCost)
-	if  Chronosphere:IsTrained()
+	if Chronosphere ~= nil
+	and not Chronosphere:IsNull()
+	and Chronosphere:IsTrained()
 	and Chronosphere:IsFullyCastable()
 	then
 		local ultCost = Chronosphere:GetManaCost()

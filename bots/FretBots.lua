@@ -27,6 +27,8 @@ require 'bots.FretBots.Timers'
 require 'bots.FretBots.HeroLoneDruid'
 -- Role Determination
 require 'bots.FretBots.RoleDetermination'
+-- Neutral items
+require 'bots.FretBots.NeutralItems'
 
 -- Instantiate ourself
 if FretBots == nil then
@@ -43,10 +45,11 @@ local isDebug = Debug.IsDebug() and thisDebug;
 -- other local vars
 local playersLoadedTimerName = 'playersLoadedTimerName'
 local isAllPlayersSpawned = false
+local isDataTablesInitialized = false
 local playerSpawnCount = 0
 -- if game time goes past this point, then assume all players loaded
 local playerLoadFailSafe = -35
-local playerLoadFailSafeDelta = 3
+local playerLoadFailSafeDelta = 5
 -- Time at which we force a difficulty scale setting for DataTables:Initialize()
 local dataTablesTimeout = 30
 -- Time at which to stop the BotRoleDetermination timer and declare roles
@@ -70,17 +73,23 @@ end
 -- Runs until all players are loaded in and then initializes the DataTables
 function FretBots:PlayersLoadedTimer()
 	Debug:Print('Initializing PlayersLoadedTimer')
+	if not isDataTablesInitialized and not isAllPlayersSpawned then FretBots:CheckBots() end
 	-- if all players are loaded, initialize datatables and stop timer
 	if isAllPlayersSpawned then
 		isAllPlayersSpawned = false
-		-- I'm Bad made DataTables:Initialize() depend on difficultyScale existing,
-		-- so idle until that happens or it's been more than 30s
+
+		if not isDataTablesInitialized then
+			isDataTablesInitialized = true
+			DataTables:Initialize()
+			Debug:Print('DataTables initialized.')
+		end
+
 		if not Flags.isSettingsFinalized then
-			Debug:Print('DataTables are not initialized! Waiting.')
+			Debug:Print('Settings not finalized yet! Waiting.')
 			return 1
 		end
-		DataTables:Initialize()
-		Debug:Print('DataTables initialized.')
+		-- Set all bots to find tier 1 neutrals
+		NeutralItems:InitializeFindTimings()
 		-- Set the host ID for whitelisting settings chat commands
 		Settings:SetHostPlayerID()
 		-- Start bonus timers (they require DataTables to exist)
@@ -126,6 +135,24 @@ end
 
 function FretBots:OnPlayerSpawned(event)
 	playerSpawnCount = playerSpawnCount + 1
+end
+
+function FretBots:CheckBots()
+    local playerCount = PlayerResource:GetPlayerCount()
+
+    for playerID = 0, playerCount - 1 do
+        local player = PlayerResource:GetPlayer(playerID)
+        local hero = player:GetAssignedHero()
+        if hero ~= nil then
+            if PlayerResource:GetSteamID(hero:GetMainControllingPlayer()) == PlayerResource:GetSteamID(100) then
+				playerLoadFailSafeDelta = playerLoadFailSafeDelta - 1
+				if playerLoadFailSafeDelta <= 0 then
+					Debug:Print('All bots should be ready in game as most were ready a while ago.  Proceeding.')
+					isAllPlayersSpawned = true
+				end
+            end
+        end
+    end
 end
 
 -- Sets the random seed for the game, and burns off the initial bad random number

@@ -119,6 +119,19 @@ function X.PrintPings(pingTimeGap)
 	X.PrintTable(listPings)
 end
 
+function X.PrintAllAbilities(bot)
+    print('Get all abilities of bot '..bot:GetUnitName())
+    print('Abilities Count='..tostring(bot:GetAbilityCount()))
+    for i = 1, bot:GetAbilityCount() do
+        local ability = unit:GetAbilityByIndex(i)
+        if ability ~= nil and not ability:IsNull() then
+            print('Ability At Index '..tostring(i)..': '..ability:GetName())
+        else
+            print('Ability At Index '..tostring(i)..' is nil.')
+        end
+    end
+end
+
 function X.GetEnemyFountainTpPoint()
 	if GetTeam() == TEAM_DIRE
 	then

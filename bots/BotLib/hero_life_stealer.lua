@@ -88,6 +88,8 @@ local OpenWounds    = bot:GetAbilityByName('life_stealer_open_wounds')
 local Infest        = bot:GetAbilityByName('life_stealer_infest')
 local Consume       = bot:GetAbilityByName('life_stealer_consume')
 
+local announceCount, lastAnnouncedTime = 0, GameTime()
+
 local RageDesire
 local OpenWoundsDesire, OpenWoundsTarget
 local InfestDesire, InfestTarget
@@ -113,13 +115,30 @@ function X.SkillsComplement()
         return
     end
 
-    if Rage ~= nil then
+    Rage = bot:GetAbilityByName('life_stealer_rage')
+    if Rage and not Rage:IsNull() and not Rage:IsHidden() then
+		if bot.needRefreshAbilitiesFor737 then
+			Chronosphere = bot:GetAbilityByName('life_stealer_rage')
+			sAbilityList = J.Skill.GetAbilityList( bot )
+			J.Utils.PrintTable(sAbilityList)
+			X['sSkillList'] = J.Skill.GetSkillList( sAbilityList, nAbilityBuildList, sTalentList, nTalentBuildList )
+			bot:ActionImmediate_Chat( "I now have my Rage back. Thanks!", true )
+			bot.needRefreshAbilitiesFor737 = false
+		end
+
         RageDesire = X.ConsiderRage()
         if RageDesire > 0
         then
             bot:Action_UseAbility(Rage)
             return
         end
+    elseif not bot:HasModifier('modifier_life_stealer_infest') then
+		bot.needRefreshAbilitiesFor737 = true
+		if announceCount <= 2 and GameTime() - lastAnnouncedTime > 10 + bot:GetPlayerID() then
+			lastAnnouncedTime = GameTime()
+			announceCount = announceCount + 1
+            bot:ActionImmediate_Chat( "Due to Valve bug in 7.37. I lost Rage. Please enable Fretbots mode in this script to fix this problem. Check Workshop page if you need help.", true )
+		end
     end
 
     OpenWoundsDesire, OpenWoundsTarget = X.ConsiderOpenWounds()

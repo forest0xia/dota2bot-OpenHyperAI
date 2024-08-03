@@ -75,6 +75,11 @@ local function AbilityLevelUpComplement()
 		bot.stuckLoc = nil
 	end
 
+	if bot.needRefreshAbilitiesFor737 ~= nil then
+		sAbilityLevelUpList = BotBuild['sSkillList']
+		if not bot.needRefreshAbilitiesFor737 then bot.needRefreshAbilitiesFor737 = nil end
+	end
+
 	if #sAbilityLevelUpList >= 1
 	and bot:GetAbilityPoints() > 0
 	then
@@ -85,12 +90,13 @@ local function AbilityLevelUpComplement()
 			and abilityToLevelup:CanAbilityBeUpgraded()
 			and abilityToLevelup:GetLevel() < abilityToLevelup:GetMaxLevel()
 		then
+			-- print('Trying to upgrade '..abilityToLevelup:GetName())
 			bot:ActionImmediate_LevelAbility(abilityToLevelup:GetName())
 			table.remove( sAbilityLevelUpList, 1 )
 		else
 			-- still try it
-			bot:ActionImmediate_LevelAbility(sAbilityLevelUpList[1])
 			print("[WARN] Level up ability "..sAbilityLevelUpList[1].." for "..bot:GetUnitName().." may fail because it was called on ability that's not available or can't get upgraded anymore.")
+			bot:ActionImmediate_LevelAbility(sAbilityLevelUpList[1])
 			table.remove( sAbilityLevelUpList, 1 )
 			-- bot:ActionImmediate_LevelAbility('special_bonus_attributes')
 		end

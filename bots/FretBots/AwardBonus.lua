@@ -401,7 +401,7 @@ function AwardBonus:GetSpecificPerMinuteBonus(bot, pmBot, roleTable, settings)
 	local debugTable = {}
 	-- Ensure there is a target amount for this bot
 	if roleTable[bot.stats.role] == nil then
-		Debug:Print(bot.stats.name..', with role '..bot.stats.role..', does not have a corresponding human player for the same role')
+		-- Debug:Print(bot.stats.name..', with role '..bot.stats.role..', does not have a corresponding human player for the same role')
 		-- Pick one player
 		-- local idx = 1
 		-- repeat
@@ -420,7 +420,7 @@ function AwardBonus:GetSpecificPerMinuteBonus(bot, pmBot, roleTable, settings)
 			defaultScale = defaultScale / 1.5
 		end
 		pmPlayer = Settings.difficulty * defaultScale
-		Debug:Print(bot.stats.name..', with role '..bot.stats.role..' now use default per mins amount: '..pmPlayer..' based on difficulty: '..Settings.difficulty )
+		-- Debug:Print(bot.stats.name..', with role '..bot.stats.role..' now use default per mins amount: '..pmPlayer..' based on difficulty: '..Settings.difficulty )
 	end
 	-- add offset to get the target
 	local pmTarget = pmPlayer + settings.offset

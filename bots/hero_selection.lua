@@ -453,6 +453,10 @@ local WeakHeroes = {
     'npc_dota_hero_elder_titan',
     'npc_dota_hero_hoodwink',
     'npc_dota_hero_wisp',
+
+	-- Lost some abilities due to Facet updates in 7.37 that they do not select a default facet that defines the ability.
+	'npc_dota_hero_faceless_void',
+	'npc_dota_hero_magnataur',
 }
 
 local SelectedWeakHero = 0
@@ -679,11 +683,11 @@ function X.OverrideTeamHeroes()
 	if GetTeam() == TEAM_RADIANT
 	then
 		return {
-			[1] = 'npc_dota_hero_marci',
-			[2] = 'npc_dota_hero_invoker',
-			[3] = "npc_dota_hero_elder_titan",
-		    [4] = 'npc_dota_hero_spirit_breaker',
-			[5] = tSelectPoolList[5][RandomInt( 1, #tSelectPoolList[5] )],
+			[1] = 'npc_dota_hero_faceless_void',
+			[2] = tSelectPoolList[2][RandomInt( 1, #tSelectPoolList[2] )],
+			[3] = "npc_dota_hero_life_stealer",
+		    [4] = tSelectPoolList[4][RandomInt( 1, #tSelectPoolList[4] )],
+			[5] = 'npc_dota_hero_magnataur',
 		}
 	else
 		return {

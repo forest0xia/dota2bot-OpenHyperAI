@@ -11,8 +11,6 @@ require 'bots.FretBots.BuffUnit'
 require 'bots.FretBots.Settings'
 -- Convenience Utilities
 require 'bots.FretBots.Utilities'
--- Neutral items
-require 'bots.FretBots.NeutralItems'
 
 local role 			= require('bots.FretBots.RoleUtility')
 local radiantTowers	= dofile('bots.FretBots.RadiantTowers')
@@ -87,18 +85,29 @@ function DataTables:Initialize()
 	AllHumanPlayers = {}
 	AllUnits = {}
 	for i, unit in pairs(Units) do
-		-- local id = PlayerResource:GetSteamID(unit:GetMainControllingPlayer());
-		-- local isFret = Debug:IsFret(id);
-		-- -- Buff Fret for Debug purposes
-		-- if isFret and not Flags.isDebugBuffed and isBuff then
-		-- 	BuffUnit:Hero(unit)
-		-- 	Flags.isDebugBuffed = true
-		-- 	end
 		-- Initialize data tables for this unit
 		DataTables:GenerateStatsTables(unit)
+
+		-- To fix heroes that have bugs in v7.37
+		if unit:IsHero() then
+			if unit:GetUnitName() == "npc_dota_hero_faceless_void" then
+				if not unit:HasAbility("faceless_void_chronosphere") then
+					print("Fix Faceless void's Chronosphere in 7.37")
+					unit:AddAbility("faceless_void_chronosphere")
+					DataTables:MoveAbilityByName(unit, 'faceless_void_chronosphere', 6)
+				end
+			elseif unit:GetUnitName() == "npc_dota_hero_life_stealer" then
+				if not unit:HasAbility("life_stealer_rage") then
+					print("Fix LifeStealer's Rage in 7.37")
+					unit:AddAbility("life_stealer_rage")
+					DataTables:MoveAbilityByName(unit, 'life_stealer_rage', 1)
+				end
+			end
+		end
 	end
 	Debug:Print('There are '..#AllBots[RADIANT]..' Radiant bots!')
 	Debug:Print('There are '..#AllBots[DIRE]..' Dire bots!')
+	
 
 	-- Purge human side bots
 	-- DataTables:PurgeHumanSideBots()
@@ -109,8 +118,6 @@ function DataTables:Initialize()
 	DataTables:AssignBotRoles()
 	-- Sort Bots Table by role for convenience
 	AllBots = DataTables:SortBotsByRole()
-	-- Set all bots to find tier 1 neutrals
-	NeutralItems:InitializeFindTimings()
 	-- Set Initialized Flag
 	Flags.isStatsInitialized = true
 
@@ -135,6 +142,68 @@ function DataTables:Initialize()
 
 	end
 
+end
+
+function DataTables:PrintAllAbilities(unit)
+    print('Get all abilities of unit '..unit:GetUnitName())
+    print('Abilities Count = '..tostring(unit:GetAbilityCount()))
+    for i = 0, unit:GetAbilityCount() - 1 do
+        local ability = unit:GetAbilityByIndex(i)
+        if ability ~= nil and not ability:IsNull() then
+			print('Ability at index '..tostring(i)..': '..ability:GetName())
+        else
+			print('Ability at index '..tostring(i)..' is nil.')
+        end
+    end
+end
+
+-- Function to move an ability in the unit's ability list by its name using SwapAbilities
+function DataTables:MoveAbilityByName(unit, abilityName, toIndex)
+    local abilityCount = unit:GetAbilityCount()
+    local fromIndex = nil
+
+    -- Find the current index of the ability
+    for i = 0, abilityCount - 1 do
+        local ability = unit:GetAbilityByIndex(i)
+		if ability and not ability:IsNull() then
+			-- print('Ability at index '..tostring(i)..': '..ability:GetName())
+			if ability:GetAbilityName() == abilityName then
+				fromIndex = i
+				break
+			end
+		else
+			print('Ability at index '..tostring(i)..' is nil.')
+		end
+    end
+
+    -- Ensure the ability was found
+    if fromIndex == nil then
+        print("Ability not found")
+        return
+    end
+
+    -- Move the ability to the new index using swaps
+    if fromIndex < toIndex then
+        for i = fromIndex, toIndex - 1 do
+            local ability1 = unit:GetAbilityByIndex(i)
+            local ability2 = unit:GetAbilityByIndex(i + 1)
+			local hidden1, hidden2 = ability1:IsHidden(), ability2:IsHidden()
+            unit:SwapAbilities(ability1:GetAbilityName(), ability2:GetAbilityName(),
+			(ability1 and (not ability1:IsNull())) and ability1:IsHidden() or false, (ability2 and (not ability2:IsNull())) and ability2:IsHidden() or false)
+			ability1:SetHidden(hidden1)
+			ability2:SetHidden(hidden2)
+        end
+    elseif fromIndex > toIndex then
+        for i = fromIndex, toIndex + 1, -1 do
+            local ability1 = unit:GetAbilityByIndex(i)
+            local ability2 = unit:GetAbilityByIndex(i - 1)
+			local hidden1, hidden2 = ability1:IsHidden(), ability2:IsHidden()
+            unit:SwapAbilities(ability1:GetAbilityName(), ability2:GetAbilityName(),
+			(ability1 and (not ability1:IsNull())) and ability1:IsHidden() or false, (ability2 and (not ability2:IsNull())) and ability2:IsHidden() or false)
+			ability1:SetHidden(hidden1)
+			ability2:SetHidden(hidden2)
+        end
+    end
 end
 
 -- Gets tower entities
