@@ -294,7 +294,7 @@ local heroSounds =
 			attitude 	=	VoAttitudes.NEUTRAL,
 		},
 
-		PHANTOMASSASIN =
+		PHANTOMASSASSIN =
 		{
 			sound 		=	'announcer_dlc_cavej_cavej_ann_phantom_assassin_02',
 			type 		=	VoTypes.HEROSELECT,

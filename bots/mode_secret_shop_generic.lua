@@ -124,7 +124,7 @@ function WisdomRuneDesire()
 	end
 
 	if ClosestAllyToEnemyRune == bot then
-		local nNearbyEnemyHeroes = J.GetNearbyHeroes(bot, 1200, true, BOT_MODE_NONE)
+		local nNearbyEnemyHeroes = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE)
 		if #nNearbyEnemyHeroes >= 1 then
 			-- no pick rune if enemey near by. deal with enemy first.
 			return BOT_MODE_DESIRE_NONE

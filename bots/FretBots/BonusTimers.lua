@@ -124,60 +124,63 @@ function BonusTimers:NeutralItemFindTimer()
 				tierAwards[team][tier] = tierAwards[team][tier] + 1
 				-- Get the neediest bot
 				local neediest = NeutralItems:NeediestBotForToken(tier)
-				------ 7.33 Edits - This is now obsolete
-				------ Based on settings, award this bot a suitable item directly, or
-				------ just roll one randomly and leave it for the doler
-				----local item
-				----if Settings.neutralItems.assignRandomly then
-				----  item = NeutralItems:SelectRandomItem(tier)
-				------ harder: just get the bot an item we know they like
-				----else
-				----  item = NeutralItems:SelectRandomItem(tier, neediest)
-				----end
-				------ End 7.33 Edits
-				-- Get the table for this tier for this bot
-				local items = NeutralItems:GetTokenTableForTier(tier)
-				-- sanity check
-				if items ~= nil then
-					-- Debug
-					for _, item in ipairs(items) do
-						local desire = NeutralItems:GetBotDesireForItem(neediest, item)
-						Debug:Print(neediest.stats.name..': '..' item: '..item.realName.. ' : '..desire)
-					end
-					-- Select the best item
-					local bestItem
-					local bestDesire = 0
-					for _, item in ipairs(items) do
-						if bestItem == nil then
-							bestItem = item
-							bestDesire = NeutralItems:GetBotDesireForItem(neediest, item)
-							Debug:Print(neediest.stats.name..': '..item.realName..': '..tostring(bestDesire))
-						else
+				if neediest ~= nil then
+					------ 7.33 Edits - This is now obsolete
+					------ Based on settings, award this bot a suitable item directly, or
+					------ just roll one randomly and leave it for the doler
+					----local item
+					----if Settings.neutralItems.assignRandomly then
+					----  item = NeutralItems:SelectRandomItem(tier)
+					------ harder: just get the bot an item we know they like
+					----else
+					----  item = NeutralItems:SelectRandomItem(tier, neediest)
+					----end
+					------ End 7.33 Edits
+					-- Get the table for this tier for this bot
+					local items = NeutralItems:GetTokenTableForTier(tier)
+					-- sanity check
+					if items ~= nil then
+						-- Debug
+						for _, item in ipairs(items) do
 							local desire = NeutralItems:GetBotDesireForItem(neediest, item)
-							Debug:Print(neediest.stats.name..': '..item.realName..': '..tostring(desire))
-							if desire > bestDesire then
+							Debug:Print(neediest.stats.name..': '..' item: '..item.realName.. ' : '..desire)
+						end
+						-- Select the best item
+						local bestItem
+						local bestDesire = 0
+						for _, item in ipairs(items) do
+							if bestItem == nil then
 								bestItem = item
-								bestDesire = desire
+								bestDesire = NeutralItems:GetBotDesireForItem(neediest, item)
+								Debug:Print(neediest.stats.name..': '..item.realName..': '..tostring(bestDesire))
+							else
+								local desire = NeutralItems:GetBotDesireForItem(neediest, item)
+								Debug:Print(neediest.stats.name..': '..item.realName..': '..tostring(desire))
+								if desire > bestDesire then
+									bestItem = item
+									bestDesire = desire
+								end
 							end
 						end
+						-- Give it
+						NeutralItems:GiveToUnit(neediest, bestItem)
+						-- perhaps announce the item has been found
+						if Settings.neutralItems.announce then
+							Utilities:AnnounceNeutral(neediest, bestItem, MSG_NEUTRAL_FIND)
+						end
+						-- put the item in the stash
+						--table.insert(NeutralStash[tier], item)
+						-- add the item to the list of awarded items
+						-- ##TODO: Query returns to make sure we only put items in the stash
+						-- that we created, rather than items the bot may have picked up
+						-- on its own in game.  This would probably have holes anyway, since
+						-- we can't tell items apart
+						--table.insert(AwardedNeutrals, item)
 					end
-					-- Give it
-					NeutralItems:GiveToUnit(neediest, bestItem)
-					-- perhaps announce the item has been found
-					if Settings.neutralItems.announce then
-						Utilities:AnnounceNeutral(neediest, bestItem, MSG_NEUTRAL_FIND)
-					end
-					-- put the item in the stash
-					--table.insert(NeutralStash[tier], item)
-					-- add the item to the list of awarded items
-					-- ##TODO: Query returns to make sure we only put items in the stash
-					-- that we created, rather than items the bot may have picked up
-					-- on its own in game.  This would probably have holes anyway, since
-					-- we can't tell items apart
-					--table.insert(AwardedNeutrals, item)
+				
+					-- Set time for next find
+					NeutralItems:SetBotFindTier(bot, tier + 1)
 				end
-				-- Set time for next find
-				NeutralItems:SetBotFindTier(bot, tier + 1)
 			end
 			-- Close the tier if we hit the limit
 			if tierAwards[team][tier] >= Settings.neutralItems.maxPerTier[tier] then
@@ -310,7 +313,7 @@ function BonusTimers:GameStartBonus()
 	for team = 2, 3 do
 	local msg = 'Bots given starting bonuses:'
 	local awarded = false
-	if Settings.difficultyScale >= 0.6 then
+	if Settings.difficulty >= 1 then
 		for _, bot in pairs(AllBots[team]) do
 			-- HP regen
 			bot:SetBaseHealthRegen(3 * Settings.difficultyScale)

@@ -443,6 +443,7 @@ local WeakHeroes = {
 	'npc_dota_hero_morphling',
 	'npc_dota_hero_visage',
 	'npc_dota_hero_void_spirit',
+	'npc_dota_hero_pudge',
 
 	-- Buggys, meaning they have bugs on Valves side, as of (still) 2024/8/1:
     'npc_dota_hero_muerta',
@@ -683,9 +684,9 @@ function X.OverrideTeamHeroes()
 	if GetTeam() == TEAM_RADIANT
 	then
 		return {
-			[1] = 'npc_dota_hero_faceless_void',
+			[1] = tSelectPoolList[1][RandomInt( 1, #tSelectPoolList[1] )],
 			[2] = tSelectPoolList[2][RandomInt( 1, #tSelectPoolList[2] )],
-			[3] = "npc_dota_hero_life_stealer",
+			[3] = "npc_dota_hero_huskar",
 		    [4] = tSelectPoolList[4][RandomInt( 1, #tSelectPoolList[4] )],
 			[5] = 'npc_dota_hero_magnataur',
 		}
@@ -869,6 +870,7 @@ function X.GetNotRepeatHero( nTable )
 			if ( IsTeamPlayer( id ) and GetSelectedHeroName( id ) == sHero )
 				or ( IsCMBannedHero( sHero ) )
 				or ( X.IsBanByChat( sHero ) )
+				or ( X.SkipPickingWeakHeroes(sHero) )
 			then
 				bRepeated = true
 				table.remove( nTable, nRand )
@@ -1038,45 +1040,39 @@ function AllPickHeros()
 	do
 		if IsPlayerBot( id ) and GetSelectedHeroName( id ) == "" and GameTime() >= fLastSlectTime + GetTeam() * 2
 		then
-			if X.IsRepeatHero( sSelectList[i] )
-			then
-				sSelectHero = X.GetNotRepeatHero( tSelectPoolList[i] )
-			else
-				sSelectHero = sSelectList[i]
-
-				if not overridePicks then
-					if RandomInt(1, 4) >= 3 then
-						local nCurrEnmCores = X.GetCurrEnmCores(nEnmTeam)
-						local selectCounter = nil
-		
-						-- Pick a random core in the current enemy comp to counter
-						local nHeroToCounter = nCurrEnmCores[RandomInt(1, #nCurrEnmCores)]
-		
-						for j = 1, #tSelectPoolList[i], 1
-						do
-							local idx = RandomInt(1, #tSelectPoolList[i])
-							local heroName = tSelectPoolList[i][idx]
-							if not X.IsRepeatHero(heroName)
-							and MU.IsCounter(heroName, nHeroToCounter) -- so it's not 'samey'; since bots don't really put pressure like a human would
-							then
-								print('Counter pick. ', 'Selected: '..heroName, ' to counter: '..nHeroToCounter)
-								selectCounter = heroName
-								break
-							end
+			sSelectHero = sSelectList[i]
+			if not overridePicks then
+				if RandomInt(1, 4) >= 3 then
+					local nCurrEnmCores = X.GetCurrEnmCores(nEnmTeam)
+					local selectCounter = nil
+	
+					-- Pick a random core in the current enemy comp to counter
+					local nHeroToCounter = nCurrEnmCores[RandomInt(1, #nCurrEnmCores)]
+	
+					for j = 1, #tSelectPoolList[i], 1
+					do
+						local idx = RandomInt(1, #tSelectPoolList[i])
+						local heroName = tSelectPoolList[i][idx]
+						if not X.IsRepeatHero(heroName)
+						and MU.IsCounter(heroName, nHeroToCounter) -- so it's not 'samey'; since bots don't really put pressure like a human would
+						then
+							print('Counter pick. ', 'Selected: '..heroName, ' to counter: '..nHeroToCounter)
+							selectCounter = heroName
+							break
 						end
-		
-						if selectCounter ~= nil then
-							sSelectHero = selectCounter
-						else
-							local synergy = X.GetBestHeroFromPool(i, nOwnTeam)
-							if synergy ~= '' and synergy ~= nil then
-								print('Synergy pick. ', 'Selected: '..synergy)
-								sSelectHero = synergy
-							end
-						end
-					else
-						print('Skip picking counter/synergy heroes. For more chance to see any heroes')
 					end
+	
+					if selectCounter ~= nil then
+						sSelectHero = selectCounter
+					else
+						local synergy = X.GetBestHeroFromPool(i, nOwnTeam)
+						if synergy ~= '' and synergy ~= nil then
+							print('Synergy pick. ', 'Selected: '..synergy)
+							sSelectHero = synergy
+						end
+					end
+				else
+					print('Skip picking counter/synergy heroes. For more chance to see any heroes')
 				end
 			end
 			

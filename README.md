@@ -21,20 +21,8 @@ Bot script in Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails
 1. Enhanced AI Chatbot. You can chat with bots in the game as if they were real and optimistic players. Integrated with ChatGPT. [Note: you need to enable Fretbot mode for this, check out How to Install section below.]
 
 ### How to install this script?
-There is currently a bug where subscribing to recent bot scripts will NOT work when selecting them in the custom game lobby. They will revert back to default bots when you close out of the settings menu. In order to fix this, you must manually install this script:
-1. Subscribe to the bot script "Open Hyper AI" in Dota2 client.
-   1. Navigate to `\Steam\steamapps\workshop\content\570\3246316298`
-   1. Copy the contents of this folder.
-1. Or, download the file content of this github repo.
-   1. Copy all of the files in the `bots` folder in this repo.
-1. Navigate to `\Steam\steamapps\common\dota 2 beta\game\dota\scripts\vscripts`
-1. Create a folder called `bots` if you do not already have one (back this folder up if you already have another bot in here!).
-1. Paste all the contents you've copied into this folder.
-1. Create a lobby in Dota2, select `Local Dev Script` when you are choosing the bot script for teams. 
-1. Select `Local Host` as your server location or else this script will not load.
-1. [**Additional Challenging bot**] Enable `Fretbots`:
-   * Make sure to launch Dota 2 with the console enabled. When creating the lobby game, ensure that `Enable Cheat` is checked;
-   * When the lobby game gets started, e.g. in the hero selection phase. Open the console, and input `sv_cheats 1; script_reload_code bots/fretbots`
+1. There is currently a bug on Valve side that new bot scripts can only work in Custom Lobby with "Local Host" as the Server Location.
+2. This script can boost bots with huge unfair advantage that make the game much harder. You must manually install this script, please follow the instruction here: https://steamcommunity.com/workshop/filedetails/discussion/3246316298/6197594023017709799/
 
 ### Bot roles, lanings and positioning
 1. In local lobby, the positions of the bots are the same as the order of the slots: 1, 2, 3, 4, 5 from top to bottom in the lobby.

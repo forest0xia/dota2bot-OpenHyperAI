@@ -36,7 +36,7 @@ function EntityKilled:OnEntityKilled(event)
 	if not isHero then return end;
 	-- Do Table Update
 	DataTables:DoDeathUpdate(victim, killer);
-	if Settings.difficultyScale >= 0.6 then
+	if Settings.difficulty >= 1 then
 		-- print('Enabled bots with bonus on death for diffculty scale = '..Settings.difficultyScale)
 		-- Dynamic Adjustment (maybe)
 		DynamicDifficulty:Adjust(victim)
@@ -59,6 +59,25 @@ function EntityKilled:OnCombatlog(event)
 	-- DeepPrintTable(event)
 end
 
+-- Event Listener
+function EntityKilled:OnLevelUp(event)
+	local hero = EntIndexToHScript(event.hero_entindex)
+	if hero ~= nil and PlayerResource:GetSteamID(event.player_id) == PlayerResource:GetSteamID(100) then
+		if Settings.difficulty >= 5 then
+			local orig, new = hero:GetDeathXP(), 0
+			-- 减少死亡经验奖励
+			if Utilities:IsTurboMode() then
+				new = math.floor(hero:GetDeathXP() * 0.35)
+			else
+				new = math.floor(hero:GetDeathXP() * 0.55)
+			end
+			hero.newDeathXp = new
+			hero:SetCustomDeathXP(new)
+			Debug:Print("[OnLevelUp: to lvl "..event.level.."] Changed death xp "..hero:GetUnitName().." from ".. orig .. ' to ' .. new)
+		end
+	end
+end
+
 -- returns useful data about the kill event
 function EntityKilled:GetEntityKilledEventData(event)
 	-- Victim
@@ -73,7 +92,7 @@ function EntityKilled:GetEntityKilledEventData(event)
 	if victim:IsHero() and victim:IsRealHero() and not victim:IsIllusion() and not victim:IsClone() then
 		isHero = true;
 
-		if Settings.difficultyScale >= 1 then
+		if Settings.difficulty >= 5 then
 			-- print('Enabled human killer gold reduction for diffculty scale = '..Settings.difficultyScale)
 			-- 当击杀者是人类玩家时，给与击杀惩罚
 			if killer == nil or killer.stats == nil or killer.stats.isBot then return end
@@ -85,6 +104,9 @@ function EntityKilled:GetEntityKilledEventData(event)
 			end
 
 			local goldPerLevel = -26
+			if Utilities:IsTurboMode() then
+				goldPerLevel = goldPerLevel * 1.5
+			end
 			local heroLevel = victim:GetLevel()
 			-- 基于基础惩罚，死亡单位的等级，和难度来确定惩罚额度
 			local goldBounty = math.floor(goldPerLevel * heroLevel/4 * (Settings.difficultyScale * 3) - math.random(1, 30))
@@ -104,6 +126,8 @@ function EntityKilled:RegisterEvents()
 	if not Flags.isEntityKilledRegistered then
 		ListenToGameEvent('entity_killed', Dynamic_Wrap(EntityKilled, 'OnEntityKilled'), EntityKilled)
 		ListenToGameEvent("dota_combatlog", Dynamic_Wrap(EntityKilled, 'OnCombatlog'), EntityKilled)
+		ListenToGameEvent("dota_player_gained_level", Dynamic_Wrap(EntityKilled, 'OnLevelUp'), EntityKilled)
+
 		Flags.isEntityKilledRegistered = true;
 		if true then
 			print('EntityKilled Event Listener Registered.')

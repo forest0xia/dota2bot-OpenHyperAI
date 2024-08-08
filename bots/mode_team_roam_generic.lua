@@ -101,11 +101,10 @@ function GetDesire()
 		return BOT_ACTION_DESIRE_VERYHIGH
 	end
 
-	-- Disperse from Lich, Jakiro Ultimate
-	if bot:HasModifier('modifier_lich_chainfrost_slow')
-	or bot:HasModifier('modifier_jakiro_macropyre_burn')
-	then
-		return BOT_MODE_DESIRE_ABSOLUTE * 0.98
+	if ShouldAvoidAbilityZone() then
+		local botLoc = bot:GetLocation()
+		J.AddAvoidanceZone(Vector(botLoc.x, botLoc.y, 100.0), 5)
+		return RemapValClamped(J.GetHP(bot), 1, 0, BOT_MODE_DESIRE_MODERATE, BOT_ACTION_DESIRE_ABSOLUTE)
 	end
 
 	if J.Role['bStopAction'] then return 2.0 end
@@ -163,6 +162,25 @@ function GetDesire()
 	
 	return 0.0;
 	
+end
+
+-- Leave from the area that's affected by some spells like ults of Lich, Jakiro, etc.
+function ShouldAvoidAbilityZone()
+	return bot:HasModifier('modifier_jakiro_macropyre_burn') -- 可能无视魔免的技能
+	or bot:HasModifier('modifier_dark_seer_wall_slow')
+	or ( -- 不无视魔免的技能
+		(bot:HasModifier('modifier_warlock_upheaval')
+		or bot:HasModifier('modifier_sandking_sand_storm_slow')
+		or bot:HasModifier('modifier_sand_king_epicenter_slow')
+		or bot:HasModifier('modifier_lich_chainfrost_slow'))
+		and (not bot:HasModifier("modifier_black_king_bar_immune") or not bot:HasModifier("modifier_magic_immune") or not bot:HasModifier("modifier_omniknight_repel"))
+	)
+	or (J.IsInLaningPhase() and -- 一些对线期避免碰到的情况
+		(bot:HasModifier('modifier_maledict') -- 防止中了巫医毒还继续吃伤害
+		or bot:HasModifier('modifier_dazzle_poison_touch')
+		or bot:HasModifier('modifier_slark_essence_shift_debuff') -- 防止不停被小鱼偷属性
+		)
+	)
 end
 
 function ItemOpsDesire()
@@ -238,22 +256,10 @@ function Think()
 	if DotaTime() - bot.lastTeamRoamFrameProcessTime < Utils.FrameProcessTime then return end
 	bot.lastTeamRoamFrameProcessTime = DotaTime()
 
-	-- Disperse from Lich, Jakiro Ultimate
-	if bot:HasModifier('modifier_jakiro_macropyre_burn') -- 可能无视魔免的技能
-	or bot:HasModifier('modifier_dark_seer_wall_slow')
-	or ( -- 不无视魔免的技能
-		(bot:HasModifier('modifier_warlock_upheaval')
-		or bot:HasModifier('modifier_sandking_sand_storm_slow')
-		or bot:HasModifier('modifier_sand_king_epicenter_slow')
-		or bot:HasModifier('modifier_lich_chainfrost_slow'))
-		and (not bot:HasModifier("modifier_black_king_bar_immune") or not bot:HasModifier("modifier_magic_immune") or not bot:HasModifier("modifier_omniknight_repel"))
-	)
-	then
-		if J.GetHP(bot) < 0.95 and bot:WasRecentlyDamagedByAnyHero(1.5)
+	if ShouldAvoidAbilityZone() then
+		if J.GetHP(bot) < 0.95 and bot:WasRecentlyDamagedByAnyHero(3)
 		then
-			-- local botLoc = bot:GetLocation()
-			-- J.AddAvoidanceZone(Vector(botLoc.x, botLoc.y, 800.0), 5)
-			bot:Action_MoveToLocation(J.GetTeamFountain() + RandomVector(1000))
+			bot:Action_MoveToLocation(Utils.GetOffsetLocationTowardsTargetLocation(bot:GetLocation(), J.GetTeamFountain(), 500) + RandomVector(200))
 		end
 		return
 	end
@@ -265,7 +271,7 @@ function Think()
 		then
 			if J.GetHP(bot) < 0.9 and bot:WasRecentlyDamagedByAnyHero(2.0)
 			then
-				bot:Action_MoveToLocation(J.GetTeamFountain() + RandomVector(1000))
+				bot:Action_MoveToLocation(J.GetTeamFountain())
 			end
 		end
 	end
@@ -2140,8 +2146,8 @@ function ConsiderHarassInLaningPhase()
 					and nInRangeAlly ~= nil and nInRangeEnemy
 					and #nInRangeAlly >= #nInRangeEnemy
 					then
-						local nInRangeTower = bot:GetNearbyTowers(700, true)
-						local nTargetInRangeTower = nInRangeEnemy[1]:GetNearbyTowers(700, false)
+						local nInRangeTower = bot:GetNearbyTowers(1000, true)
+						local nTargetInRangeTower = nInRangeEnemy[1]:GetNearbyTowers(850, false)
 
 						if (nInRangeTower ~= nil and #nInRangeTower == 0
 							or nTargetInRangeTower ~= nil and #nTargetInRangeTower == 0)

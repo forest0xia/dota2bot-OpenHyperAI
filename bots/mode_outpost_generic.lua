@@ -23,7 +23,8 @@ local cAbility = nil
 local ShouldMoveCloseTowerForEdict = false
 local EdictTowerTarget = nil
 
-local ShouldHuskarMoveOutsideFountain = false
+local ShouldMoveOutsideFountain = false
+local ShouldMoveOutsideFountainCheckTime = 0
 
 function GetDesire()
 	if not IsEnemyTier2Down
@@ -50,16 +51,15 @@ function GetDesire()
 		return BOT_ACTION_DESIRE_ABSOLUTE
 	end
 
-	ShouldHuskarMoveOutsideFountain = ConsiderHuskarMoveOutsideFountain()
-	if ShouldHuskarMoveOutsideFountain
-	then
+	if DotaTime() > 0 and DotaTime() - ShouldMoveOutsideFountainCheckTime < 2 then
 		return bot:GetActiveModeDesire() + 0.2
+	else
+		ShouldMoveOutsideFountain = false
 	end
 
-	-- If in item mode
-	ShouldHeroMoveOutsideFountain = ConsiderHeroMoveOutsideFountain()
-	if ShouldHeroMoveOutsideFountain
-	then
+	if ConsiderHeroMoveOutsideFountain() then
+		ShouldMoveOutsideFountain = true
+		ShouldMoveOutsideFountainCheckTime = DotaTime()
 		return bot:GetActiveModeDesire() + 0.2
 	end
 
@@ -315,7 +315,14 @@ function Think()
 	if J.CanNotUseAction(bot) then return end
 
 	-- Huskar
-	if ShouldHuskarMoveOutsideFountain
+	if ShouldMoveOutsideFountain
+	then
+		bot:Action_MoveToLocation(J.GetEnemyFountain())
+		return
+	end
+
+	-- Get out of fountain if in item mode
+	if ShouldMoveOutsideFountain
 	then
 		bot:Action_MoveToLocation(J.GetEnemyFountain())
 		return
@@ -369,7 +376,7 @@ function Think()
 	end
 
 	-- Tinker
-	if bot.healInBase
+	if TinkerShouldWaitInBaseToHeal
 	then
 		if J.GetHP(bot) < 0.8 or J.GetMP(bot) < 0.8
 		then
@@ -378,7 +385,23 @@ function Think()
 		end
 	end
 
-	-- Batrider, Rubick
+	-- Spirit Breaker
+	if bot:HasModifier('modifier_spirit_breaker_charge_of_darkness')
+	then
+		bot:Action_ClearActions(false)
+		local nInRangeEnemy = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+
+		if  bot.chargeRetreat
+		and nInRangeEnemy ~= nil and #nInRangeEnemy == 0
+		then
+			bot:Action_MoveToLocation(bot:GetLocation() + RandomVector(150))
+			bot.chargeRetreat = false
+		end
+
+		return
+	end
+
+	-- Batrider
 	if bot:HasModifier('modifier_batrider_flaming_lasso_self')
 	then
 		bot:Action_MoveToLocation(J.GetTeamFountain())
@@ -703,24 +726,14 @@ function ConsiderWaitInBaseToHeal()
 	return false
 end
 
-function ConsiderHuskarMoveOutsideFountain()
-	if bot:GetUnitName() == 'npc_dota_hero_huskar'
-	then
-		if  bot:HasModifier('modifier_fountain_aura_buff')
-		and J.GetHP(bot) > 0.95
-		then
-			return true
-		end
-	end
-
-	return false
-end
-
 function ConsiderHeroMoveOutsideFountain()
-	if bot:GetActiveMode() == BOT_MODE_ITEM
-	and bot:HasModifier('modifier_fountain_aura_buff')
-	and J.GetHP(bot) > 0.95
-	and J.GetMP(bot) > 0.95
+	if DotaTime() < 0 then return false end
+
+	if (bot:HasModifier('modifier_fountain_aura_buff') -- in fountain with high hp
+		and J.GetHP(bot) > 0.95)
+	and (bot:GetUnitName() == 'npc_dota_hero_huskar' -- is huskar (ignore mana)
+		or (bot:GetActiveMode() == BOT_MODE_ITEM -- is stuck in item mode
+			and J.GetMP(bot) > 0.95))
 	then
 		return true
 	end

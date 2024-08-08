@@ -1,3 +1,8 @@
+-- Version information
+local Version = require 'bots.FunLib.version'
+-- Print version to console
+print('Starting Buff. Version: ' .. Version.number)
+
 dofile('bots/Buff/Timers')
 dofile('bots/Buff/Experience')
 dofile('bots/Buff/GPM')
@@ -6,7 +11,7 @@ dofile('bots/Buff/Helper')
 
 local InitTimerName = 'InitTimer'
 local initDelay = 0
-local initDelayDuration = 6
+local initDelayDuration = 5
 
 if Buff == nil
 then
@@ -35,25 +40,29 @@ function Buff:AddBotsToTable()
                 table.insert(botTable[team], hero)
             end
         else
-            print('[WARN] Failed to add player '.. playerID .. ' to bots list. Spectator?')
+            -- print('[WARN] Failed to add player '.. playerID .. ' to bots list. Spectator?')
         end
     end
 end
 
 function Buff:Init()
+    if Helper.IsTurboMode() == nil then
+        return 1
+    end
+
     if initDelay < initDelayDuration then
         if GameRules:State_Get() > 6 then initDelay = initDelay + 1 end
-        print('Wait to init Buff - wait for all heroes to be loaded in game...')
+        -- print('[Buff] Wait for all heroes to be loaded in game...')
         return 1
     end
     Timers:RemoveTimer(InitTimerName)
-    print('Initing Buff...')
+    print('[Buff] Initing Buff...')
 
     Buff:AddBotsToTable()
     local TeamRadiant = botTable[DOTA_TEAM_GOODGUYS]
     local TeamDire = botTable[DOTA_TEAM_BADGUYS]
-    print('Number of bots in TeamRadiant: ' .. #TeamRadiant)
-    print('Number of bots in TeamDire: ' .. #TeamDire)
+    print('[Buff] Number of bots in TeamRadiant: ' .. #TeamRadiant)
+    print('[Buff] Number of bots in TeamDire: ' .. #TeamDire)
 
     Timers:CreateTimer(function()
         NeutralItems.GiveNeutralItems(TeamRadiant, TeamDire)
@@ -64,20 +73,16 @@ function Buff:Init()
                 then
                     GPM.UpdateBotGold(h)
                 end
-
                 XP.UpdateXP(h, TeamRadiant)
             end
-
             for _, h in pairs(TeamDire) do
                 if Helper.IsCore(h, TeamDire)
                 then
                     GPM.UpdateBotGold(h)
                 end
-
                 XP.UpdateXP(h, TeamDire)
             end
         end
-
         return 1
     end)
 end

@@ -31,7 +31,7 @@ function EntityHurt:OnEntityHurt(event)
 	victim.stats.damageTable[damageType] = victim.stats.damageTable[damageType] + damage
 	-- Debug Print
 	if isDebug then
-		print('Damage Table for ' .. victim.stats.name)
+		-- print('Damage Table for ' .. victim.stats.name)
 		DeepPrintTable(victim.stats.damageTable)
 	end
 end

@@ -1,7 +1,7 @@
 -- Version information
-require 'bots.FretBots.Version'
+local Version = require 'bots.FunLib.version'
 -- Print version to console
-print('Starting Fretbot. Version: ' .. version)
+print('Starting Fretbot. Version: ' .. Version.number)
 -- Dependencies
 -- global debug flag
 require 'bots.FretBots.Debug'
@@ -35,25 +35,12 @@ if FretBots == nil then
 	FretBots = {}
 end
 
--- local debug flag
-local thisDebug = false;
--- set true to prevent initialize from returning when it realizes
--- that it has already been run once
-local isAllowMultipleStarts = false;
-local isDebug = Debug.IsDebug() and thisDebug;
-
 -- other local vars
 local playersLoadedTimerName = 'playersLoadedTimerName'
 local isAllPlayersSpawned = false
 local isDataTablesInitialized = false
 local playerSpawnCount = 0
--- if game time goes past this point, then assume all players loaded
-local playerLoadFailSafe = -35
 local playerLoadFailSafeDelta = 5
--- Time at which we force a difficulty scale setting for DataTables:Initialize()
-local dataTablesTimeout = 30
--- Time at which to stop the BotRoleDetermination timer and declare roles
-local BotRoleDeterminationTime = 60
 
 -- Starting this script is largely handled by the requires, as separate pieces start
 -- themselves. DataTables cannot be initialized until all players have loaded, so
@@ -72,18 +59,18 @@ end
 
 -- Runs until all players are loaded in and then initializes the DataTables
 function FretBots:PlayersLoadedTimer()
+    if Utilities:IsTurboMode() == nil then
+        return 1
+    end
 	Debug:Print('Initializing PlayersLoadedTimer')
 	if not isDataTablesInitialized and not isAllPlayersSpawned then FretBots:CheckBots() end
+	
 	-- if all players are loaded, initialize datatables and stop timer
 	if isAllPlayersSpawned then
-		isAllPlayersSpawned = false
-
 		if not isDataTablesInitialized then
 			isDataTablesInitialized = true
 			DataTables:Initialize()
-			Debug:Print('DataTables initialized.')
 		end
-
 		if not Flags.isSettingsFinalized then
 			Debug:Print('Settings not finalized yet! Waiting.')
 			return 1
@@ -108,28 +95,6 @@ function FretBots:PlayersLoadedTimer()
 		Timers:RemoveTimer(playersLoadedTimerName)
 		return nil
 	end
-
-	-- Check once per second until all players have loaded
-	if not isAllPlayersSpawned then
-		local count = Utilities:GetPlayerCount()
-		if playerSpawnCount == count then
-			Debug:Print('All players have spawned.')
-			isAllPlayersSpawned = true
-		elseif playerSpawnCount >= count * 0.6 then
-			playerLoadFailSafeDelta = playerLoadFailSafeDelta - 1
-			if playerLoadFailSafeDelta <= 0 then
-				Debug:Print('All players should be ready in game as most were ready a while ago.  Proceeding.')
-				isAllPlayersSpawned = true
-			end
-		end
-		-- Check if we're past the load timeout
-		local gameTime = Utilities:GetAbsoluteTime()
-		if gameTime > playerLoadFailSafe then
-			Debug:Print('Spawn timer limit exceeded.  Proceeding.')
-			isAllPlayersSpawned = true
-		end
-	end
-	-- Debug:Print('Waiting for players to spawn: '..math.ceil(gameTime)..' : '..playerLoadFailSafe)
 	return 1
 end
 
@@ -170,7 +135,7 @@ end
 -- Start things up (only once)
 if not Flags.isFretBotsInitialized then
 	-- Welcome Message
-	Utilities:Print('FretBots enabled! Version: ' .. version, MSG_GOOD, MATCH_READY)
+	Utilities:Print('FretBots enabled! Version: ' .. Version.number, MSG_GOOD, MATCH_READY)
 	-- Register the listener that will run Initialize() once the game starts
 	Utilities:RegsiterGameStateListener(FretBots, 'Initialize', DOTA_GAMERULES_STATE_PRE_GAME )
 	Flags.isFretBotsInitialized = true

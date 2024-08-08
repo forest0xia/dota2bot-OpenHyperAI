@@ -7,22 +7,18 @@ require 'bots.FretBots.Flags'
 require 'bots.FretBots.Timers'
  -- Utilities
 require 'bots.FretBots.Utilities'
--- Version
-require 'bots.FretBots.Version'
 -- HeroSounds
 require('bots.FretBots.HeroSounds')
 -- HeroSounds
 local Chat = require('bots.FretBots.Chat')
 
--- local debug flag
-local thisDebug = false;
-local isDebug = Debug.IsDebug() and thisDebug;
+-- default difficulty if no one votes
+local DefaultDifficulty = 2
+
 Settings = nil
 
 -- Other local variables
 local settingsTimerName = 'settingsTimerName'
--- number of human players
-local players = 0
 -- table to keep track of player votes
 local playerVoted = {}
 -- is voting closed
@@ -37,8 +33,6 @@ local maxVotes = DOTA_MAX_PLAYERS
 local votingTimeElapsed = -1
 -- The playerID of the host.  Used to whitelist chat commands.
 local hostID = -1
--- default difficulty if no one votes
-noVoteDifficulty = 2
 -- Is repurcussion timer started?
 local isRepurcussionTimerStarted = false
 -- can players freely enter cheating commands?
@@ -70,13 +64,13 @@ local announcementList = {
 	{"#F39C12", "* If difficulty >= 5, when a player kills a bot, the player who made the kill receives a reduction in gold. This does not affect assisting players. Bots also provide less exp on death."},
 	{"#7FB3D5", "* The higher the difficulty you vote, the more bonus the bots will get which can make the game more challenging." },
 	{"#E74C3C", "* High difficulty can be overwhelming or even frustrating, please choose the right difficulty for you and your team." },
-	{"#D4AC0D", "* Script link: https://github.com/forest0xia/dota2bot-OpenHyperAI. Kudos to BeginnerAI, Fretbots, and ryndrb@; and thanks all for sharing your ideas." },
+	{"#D4AC0D", "* Script link: https://github.com/forest0xia/dota2bot-OpenHyperAI . Kudos to BeginnerAI, Fretbots, and ryndrb@; and thanks all for sharing your ideas." },
 	-- {"#D4AC0D", "There are commands to play certain sounds like `ps love` or `ps dylm`. You can also explore other commands like `getroles`, `networth`, etc." }
 }
 
 
 -- Difficulty values voted for
-difficulties = {}
+local VotedDifficulties = {}
 
 -- Valid commands for altering settings from chat
 local chatCommands =
@@ -169,14 +163,12 @@ function Settings:DifficultySelectTimer()
 		return nil
 	end
 	-- If voting not yet open, display directions
-	if not isVotingOpen then
-		-- local msg = 'Fret Bots! Now with more branding! Version: '..version..'\n'
-		-- Utilities:Print(msg, MSG_GOOD)
-		local msg = 'Difficulty voting is now open!'..' Default difficulty is currently: '..tostring(noVoteDifficulty)
+	if not isVotingOpened then
+		local msg = 'Difficulty voting is now open!'..' Default difficulty is currently: '..tostring(DefaultDifficulty)
 		Utilities:Print(msg, MSG_GOOD)
 		msg = 'Enter a number (0 through 10) in chat to vote.'
 		Utilities:Print(msg, MSG_GOOD)
-		isVotingOpen = true
+		isVotingOpened = true
 		
 	end
 
@@ -204,15 +196,15 @@ end
 function Settings:ApplyVoteSettings()
 	local difficulty
 	-- edge case: no one voted
-	if #difficulties == 0 then
-		difficulty = noVoteDifficulty
+	if #VotedDifficulties == 0 then
+		difficulty = DefaultDifficulty
 	-- otherwise, average the votes
 	else
 		local total = 0
-		for _, value in ipairs(difficulties) do
+		for _, value in ipairs(VotedDifficulties) do
 			total = total + value
 		end
-		difficulty = total / #difficulties
+		difficulty = total / #VotedDifficulties
 		difficulty = Utilities:Round(difficulty, 1)
 	end
 	local msg = 'Difficulty Selected: '..difficulty
@@ -730,7 +722,7 @@ function Settings:DoChatVoteParse(playerID, text)
 			end
 			difficulty = Utilities:Round(difficulty, 1)
 			-- save voted value
-			table.insert(difficulties, difficulty)
+			table.insert(VotedDifficulties, difficulty)
 			-- increment number of votes
 			numVotes = numVotes + 1
 			-- let players know the vote counted

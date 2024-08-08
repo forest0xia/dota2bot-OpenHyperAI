@@ -102,11 +102,13 @@ function DataTables:Initialize()
 					unit:AddAbility("life_stealer_rage")
 					DataTables:MoveAbilityByName(unit, 'life_stealer_rage', 1)
 				end
+			-- elseif unit:GetUnitName() == "npc_dota_hero_visage" then
+			-- 	-- later.
 			end
 		end
 	end
-	Debug:Print('There are '..#AllBots[RADIANT]..' Radiant bots!')
-	Debug:Print('There are '..#AllBots[DIRE]..' Dire bots!')
+	print('[Fretbots] There are '..#AllBots[RADIANT]..' Radiant bots!')
+	print('[Fretbots] There are '..#AllBots[DIRE]..' Dire bots!')
 	
 
 	-- Purge human side bots
@@ -142,6 +144,7 @@ function DataTables:Initialize()
 
 	end
 
+	Debug:Print('DataTables initialized.')
 end
 
 function DataTables:PrintAllAbilities(unit)

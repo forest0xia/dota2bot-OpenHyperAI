@@ -22,6 +22,8 @@ end
 
 function Helper.IsTurboMode()
     local courier = Entities:FindByName(nil, 'npc_dota_courier')
+    if courier == nil then return nil end
+
     local moveSpeed = courier:GetMoveSpeedModifier(courier:GetBaseMoveSpeed(), true)
 
     if moveSpeed == 1100

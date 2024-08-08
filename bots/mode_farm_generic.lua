@@ -1,4 +1,5 @@
 local Utils = require( GetScriptDirectory()..'/FunLib/utils' )
+local Version = require(GetScriptDirectory()..'/FunLib/version')
 
 local bot = GetBot()
 
@@ -47,13 +48,36 @@ local beNormalFarmer = false;
 local beHighFarmer = false;
 local beVeryHighFarmer = false;
 
-local isWelcomeMessageDone = false
 local isChangePosMessageDone = false
+
+local AnnounceMessages = { -- {sMessage, bGlobalMessage, bEnabled}
+	{"Welcome to Open Hyper AI (OHA): " .. Version.number, true, true},
+	{"If you have any feedback, please post a comment to script's Workshop or Github repo.", false, true},
+	{"You can type !pos X to swap position with a bot. For example, type: `!pos 2` to go mid lane.", false, GetGameMode() ~= GAMEMODE_CM},
+}
+local lastAnnouncePrintedTime = 0
+local numberAnnouncePrinted = 1
+local announcementGap = 6
 
 if bot.farmLocation == nil then bot.farmLocation = bot:GetLocation() end
 
 function GetDesire()
 	Utils.PrintPings(0.15)
+
+	if ((J.IsModeTurbo() and DotaTime() > -50 + team * 2) or (not J.IsModeTurbo() and DotaTime() > -75 + team * 2))
+	and numberAnnouncePrinted < #AnnounceMessages + 1
+	and J.GetPosition(bot) == 5
+	and DotaTime() < 0
+	then
+		if GameTime() - lastAnnouncePrintedTime >= announcementGap then
+			local msg = AnnounceMessages[numberAnnouncePrinted]
+			if msg ~= nil and msg[3] then
+				bot:ActionImmediate_Chat(msg[1], msg[2])
+			end
+			numberAnnouncePrinted = numberAnnouncePrinted + 1
+			lastAnnouncePrintedTime = GameTime()
+		end
+	end
 
 	if GetGameMode() ~= GAMEMODE_CM then
 		if GetGameState() == GAME_STATE_PRE_GAME and bot.isBear == nil
@@ -61,18 +85,6 @@ function GetDesire()
 			bot.announcedRole = J.GetPosition(bot)
 			bot:ActionImmediate_Chat('I will play position '..J.GetPosition(bot), false)
 		end
-	
-		if not isWelcomeMessageDone
-		and J.GetPosition(bot) == 5
-		and DotaTime() < 0
-		then
-			if (J.IsModeTurbo() and DotaTime() > -45) or DotaTime() > -55
-			then
-				bot:ActionImmediate_Chat("You can type !pos X to swap position with a bot. For example, type: `!pos 2` to go mid lane.", false)
-				isWelcomeMessageDone = true
-			end
-		end
-	
 		if not isChangePosMessageDone
 		and J.GetPosition(bot) == 5
 		then

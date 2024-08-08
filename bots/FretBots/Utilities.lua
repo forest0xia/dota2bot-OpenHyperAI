@@ -7,7 +7,7 @@ end
 -- Hero Names
 local heroNames = require('bots.FretBots.HeroNames')
 -- sweet DeepPrint function I cadged from GitHub
-local inspect = require('bots.FretBots.inspect')
+local inspect = require('bots.FretBots.Inspect')
 
 if Utilities == nil then
 	Utilities =
@@ -578,6 +578,7 @@ end
 
 function Utilities:IsTurboMode()
     local courier = Entities:FindByName(nil, 'npc_dota_courier')
+    if courier == nil then return nil end
     local moveSpeed = courier:GetMoveSpeedModifier(courier:GetBaseMoveSpeed(), true)
 
     if moveSpeed == 1100

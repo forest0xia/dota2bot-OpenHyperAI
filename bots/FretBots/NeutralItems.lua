@@ -232,6 +232,8 @@ end
 
 -- Returns the 'goodness' of an item for a bot, higher is better
 function NeutralItems:GetBotDesireForItem(bot, item)
+	if bot == nil then return 0 end
+	
 	local attackTypeScore = 0
 	-- Bots are never willing to take an item of the wrong attack type
 	if not bot.stats.isMelee then

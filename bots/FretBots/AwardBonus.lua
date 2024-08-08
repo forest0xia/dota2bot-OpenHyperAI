@@ -362,10 +362,14 @@ end
 -- Returns total multiplier for the bonus
 -- this is either strictly multiplicative, or additive
 function AwardBonus:GetMultiplier(skill, scale, variance)
+	local turboMultiplier = 1
+	if Utilities:IsTurboMode() then -- turbo is too ez for players, in fact the higher difficulty in turbo the easier the game becomes. so so be making it harder for players.
+		turboMultiplier = 1.5
+	end
 	if Settings.isMultiplicative then
-		return skill * scale * variance * Settings.difficultyScale
+		return skill * scale * variance * Settings.difficultyScale * turboMultiplier
 	else
-		return skill + scale + variance + Settings.difficultyScale - 3
+		return skill + scale + variance + Settings.difficultyScale + turboMultiplier - 3
 	end
 end
 
@@ -377,13 +381,11 @@ function AwardBonus:GetPerMinuteBonus(bot, gpm, xpm)
 	local botXPM = Utilities:Round(PlayerResource:GetXPPerMin(bot.stats.id))
 	local xpmBonus, debugTable = AwardBonus:GetSpecificPerMinuteBonus(bot, botXPM, xpm, Settings.xpm)
 
-	if Settings.difficultyScale >= 1 then
-		-- 减少死亡经验奖励
-		-- print('Enabled death xp deduction for diffculty scale = '..Settings.difficultyScale)
-		bot:SetCustomDeathXP(math.floor(bot:GetDeathXP() * 0.70))
+	if bot.newDeathXp ~= nil and bot:GetDeathXP() ~= bot.newDeathXp then
+		bot:SetCustomDeathXP(bot.newDeathXp)
 	end
 
-	if Settings.difficultyScale >= 0.6 then
+	if Settings.difficulty >= 1 then
 		-- 增加基础回蓝，按照难度和分钟数翻倍
 		-- print('Enabled bots with extra regens for diffculty scale = '..Settings.difficultyScale)
 		if Utilities:IsTurboMode() then
@@ -401,27 +403,32 @@ function AwardBonus:GetSpecificPerMinuteBonus(bot, pmBot, roleTable, settings)
 	local debugTable = {}
 	-- Ensure there is a target amount for this bot
 	if roleTable[bot.stats.role] == nil then
+		-- In case no player with the same role, pick the first available player (first one, highest one)
+		local idx = 1
+		repeat
+			roleTable[bot.stats.role] = roleTable[idx]
+			idx = idx + 1
+		until(roleTable[bot.stats.role] ~= nil or idx >= 5)
 		-- Debug:Print(bot.stats.name..', with role '..bot.stats.role..', does not have a corresponding human player for the same role')
-		-- Pick one player
-		-- local idx = 1
-		-- repeat
-		-- 	roleTable[bot.stats.role] = roleTable[idx]
-		-- 	idx = idx + 1
-		-- until(roleTable[bot.stats.role] ~= nil or idx >= 5)
-		-- return 0, 'No human counterpart for '..bot.stats.name..'.'
+
+		-- -- return 0, 'No human counterpart for '..bot.stats.name..'.'
 	end
+
+	local scale = settings.scale[bot.stats.role]
+	
+	-- In case no human player detected at all or bonus below base line, just base on difficulty scale.
+	local defaultScale = (100 - bot.stats.role * 10) * scale -- gpm or xpm
+	if #AllBots[bot.stats.team] < 5 then -- less for human side bots
+		defaultScale = defaultScale / 1.2
+	end
+	local baseLineBonus = Settings.difficulty * defaultScale
+	if roleTable[bot.stats.role] == nil or roleTable[bot.stats.role] < baseLineBonus then
+		-- Debug:Print(bot.stats.name..', with role '..bot.stats.role..' now use default per mins amount: '..pmPlayer..' based on difficulty: '..Settings.difficulty )
+		roleTable[bot.stats.role] = baseLineBonus
+	end
+
 	-- counterparts PM
 	local pmPlayer = roleTable[bot.stats.role]
-	local scale = settings.scale[bot.stats.role]
-	if pmPlayer == nil or #AllBots[bot.stats.team] < 5 then
-		-- in case no human player detected, just based on difficultyScale.
-		local defaultScale = (100 - bot.stats.role * 10) * scale -- gpm or xpm
-		if #AllBots[bot.stats.team] < 5 then -- less for human side bots
-			defaultScale = defaultScale / 1.5
-		end
-		pmPlayer = Settings.difficulty * defaultScale
-		-- Debug:Print(bot.stats.name..', with role '..bot.stats.role..' now use default per mins amount: '..pmPlayer..' based on difficulty: '..Settings.difficulty )
-	end
 	-- add offset to get the target
 	local pmTarget = pmPlayer + settings.offset
 	-- Get individual multipliers

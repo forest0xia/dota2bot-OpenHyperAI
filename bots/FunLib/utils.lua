@@ -9,6 +9,7 @@ Anything that can be shared in any files without worrying about nested or circul
 ]]
 
 local X = { }
+
 X['DebugMode'] = false
 
 local RadiantFountainTpPoint = Vector(-7172, -6652, 384 )
