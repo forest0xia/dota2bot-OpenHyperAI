@@ -3,7 +3,7 @@
 This is a place for you to customize the Open Hyper AI bots.
 
 Be very careful to the punctuation and variable modification - it's very easy to cause syntax errors and could be hard for you to debug.
-In the case you see the bots are having some random names, it means you made some mistakes/errors while modifying this file. 
+In the case you saw the bots having some random names (names without "OHA" suffix), that means you had made some mistakes/errors while modifying this file. 
 In any case this file got messed up and caused the bots to malfunction, you can try to restore the file. Either you have a copy to replace, or resubscribe the script, or download from github.
 
 Workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=3246316298
@@ -21,6 +21,7 @@ Customize['Enable'] = true
 -- Hero name ref: https://developer.valvesoftware.com/wiki/Dota_2_Workshop_Tools/Scripting/Heroes_internal_names
 Customize['Ban'] = {
     'npc_dota_hero_wisp',
+    'npc_dota_hero_marci',
 }
 
 -- Set the heroes you want Radiant bots to pick. Don't need to provide a value for all 5 bots, any empty value will fallback to a Random value.
@@ -29,6 +30,8 @@ Customize['Radiant_Heros'] = {
     [1] = 'Random',
     [2] = 'Random',
     [3] = 'Random',
+    [4] = 'Random',
+    [5] = 'Random',
 }
 
 -- Set the heroes you want Dire bots to pick. Don't need to provide a value for all 5 bots, any empty value will fallback to a Random value.
@@ -86,9 +89,6 @@ Customize['Radiant_Names'] = {
 Customize['Dire_Names'] = {
     'EZ',
 }
-
--- If true, the customized bot names will NOT have the team name prefix and suffix.
-Customize['No_Team_Name_Affix'] = true
 
 
 return Customize
