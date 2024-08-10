@@ -20,6 +20,7 @@ local Utils = require( GetScriptDirectory()..'/FunLib/utils' )
 local Dota2Teams = require( GetScriptDirectory()..'/FunLib/aba_team_names' )
 local Overrides = require( GetScriptDirectory()..'/FunLib/aba_global_overrides' )
 local CM = require( GetScriptDirectory()..'/FunLib/captain_mode' )
+local Customize = require( GetScriptDirectory()..'/Customize/general' )
 local HeroSet = {}
 local SupportedHeroes = {}
 
@@ -470,6 +471,8 @@ SupportedHeroes = Utils.CombineTablesUnique(SupportedHeroes, sPos3List)
 SupportedHeroes = Utils.CombineTablesUnique(SupportedHeroes, sPos4List)
 SupportedHeroes = Utils.CombineTablesUnique(SupportedHeroes, sPos5List)
 
+if Customize and not Customize.Enable then Customize = nil end
+
 -- Role weight for now, heroes synergy later
 -- Might take DotaBuff or others role weights once other pos are added
 function X.GetAdjustedPool(heroList, pos)
@@ -677,103 +680,23 @@ local OneVoneLaneAssignment = {
 	[5] = LANE_TOP,
 };
 
--- Modify the code below to manually choose the heroes you'd like bots to play. Don't forget to uncomment this line below: sSelectList = X.OverrideTeamHeroes()
-function X.OverrideTeamHeroes()
-	overridePicks = true
-
-	if GetTeam() == TEAM_RADIANT
-	then
-		return {
-			[1] = tSelectPoolList[1][RandomInt( 1, #tSelectPoolList[1] )],
-			[2] = tSelectPoolList[2][RandomInt( 1, #tSelectPoolList[2] )],
-			[3] = "npc_dota_hero_huskar",
-		    [4] = tSelectPoolList[4][RandomInt( 1, #tSelectPoolList[4] )],
-			[5] = 'npc_dota_hero_magnataur',
-		}
-	else
-		return {
-
-			-- All random
-			-- [1] = tSelectPoolList[1][RandomInt( 1, #tSelectPoolList[1] )],
-			-- [2] = tSelectPoolList[2][RandomInt( 1, #tSelectPoolList[2] )],
-			-- [3] = tSelectPoolList[3][RandomInt( 1, #tSelectPoolList[3] )],
-			-- [4] = tSelectPoolList[4][RandomInt( 1, #tSelectPoolList[4] )],
-			-- [5] = tSelectPoolList[5][RandomInt( 1, #tSelectPoolList[5] )],
-
-			
-			-- [1] = "npc_dota_hero_chaos_knight",
-			-- [2] = "npc_dota_hero_sniper",
-			-- [3] = "npc_dota_hero_axe",
-		    -- [4] = "npc_dota_hero_zuus",
-			-- [5] = "npc_dota_hero_warlock",
-
-			-- -- Rubick mid, and good team fights
-			-- [1] = "npc_dota_hero_clinkz",
-			-- [2] = "npc_dota_hero_rubick",
-			-- [3] = "npc_dota_hero_enigma",
-		    -- [4] = "npc_dota_hero_earth_spirit",
-			-- [5] = "npc_dota_hero_techies",
-			
-			-- Invoker mid, strong pos3 with combos, and good other team members.
-			-- [1] = "npc_dota_hero_arc_warden",
-			-- [2] = 'npc_dota_hero_invoker',
-			-- [3] = "npc_dota_hero_enigma",
-		    -- [4] = "npc_dota_hero_nyx_assassin",
-			-- [5] = "npc_dota_hero_shadow_demon",
-			
-			-- [1] = "npc_dota_hero_nyx_assassin",
-			-- [2] = 'npc_dota_hero_invoker',
-			-- [3] = "npc_dota_hero_enigma",
-		    -- [4] = "npc_dota_hero_zuus",
-			-- [5] = "npc_dota_hero_techies",
-			
-			
-			-- [1] = "npc_dota_hero_arc_warden",
-			-- [2] = 'npc_dota_hero_medusa',
-			-- [3] = "npc_dota_hero_legion_commander",
-		    -- [4] = "npc_dota_hero_lina",
-			-- [5] = "npc_dota_hero_silencer",
-
-
-			[1] = 'npc_dota_hero_marci',
-			[2] = 'npc_dota_hero_invoker',
-			[3] = "npc_dota_hero_elder_titan",
-		    [4] = 'npc_dota_hero_spirit_breaker',
-			[5] = tSelectPoolList[5][RandomInt( 1, #tSelectPoolList[5] )],
-			
-			-- Muerta pos1 and Hoodwink pos5, both go top.
-			-- muerta be pos 1 has smaller chance for bug, 
-			-- hoodwink does not work over half of the time.
-			-- [1] = "npc_dota_hero_muerta",
-			-- [2] = tSelectPoolList[2][RandomInt( 1, #tSelectPoolList[2] )],
-			-- [3] = 'npc_dota_hero_enigma',
-			-- [4] = 'npc_dota_hero_lycan',
-			-- [5] = 'npc_dota_hero_lycan',
-
-
-			-- Test buggy heroes:
-			-- [1] = 'npc_dota_hero_muerta',
-			-- -- [2] = 'npc_dota_hero_tinker',
-			-- [2] = 'npc_dota_hero_primal_beast',
-			-- -- [2] = tSelectPoolList[2][RandomInt( 1, #tSelectPoolList[2] )],
-			-- [3] = 'npc_dota_hero_marci', -- DOES NOT WORK. 
-			-- -- [3] = tSelectPoolList[3][RandomInt( 1, #tSelectPoolList[3] )],
-			-- [4] = "npc_dota_hero_dark_willow", -- dark_willow does not work over half of the time.
-			-- -- [4] = tSelectPoolList[4][RandomInt( 1, #tSelectPoolList[4] )],
-			-- [5] = 'npc_dota_hero_hoodwink',
-		    
-			-- All Pandas/spirits
-			-- [1] = "npc_dota_hero_void_spirit",
-			-- [2] = "npc_dota_hero_storm_spirit",
-			-- [3] = "npc_dota_hero_ember_spirit",
-			-- [4] = "npc_dota_hero_brewmaster",
-			-- [5] = "npc_dota_hero_earth_spirit",
-		}
+if Customize then
+	if GetTeam() == TEAM_RADIANT and Customize.Radiant_Heros then
+		for i = 1, #Customize.Radiant_Heros do
+			local hero = Customize.Radiant_Heros[i]
+			if hero and hero ~= 'Random' and Utils.HasValue(SupportedHeroes, hero) then
+				sSelectList[i] = hero
+			end
+		end
+	elseif GetTeam() == TEAM_DIRE and Customize.Dire_Heros then
+		for i = 1, #Customize.Dire_Heros do
+			local hero = Customize.Dire_Heros[i]
+			if hero and hero ~= 'Random' and Utils.HasValue(SupportedHeroes, hero) then
+				sSelectList[i] = hero
+			end
+		end
 	end
 end
-
--- 这行代码为了人工挑选想要的阵容。如果想让电脑自己随机英雄，则注释掉这行
--- sSelectList = X.OverrideTeamHeroes()
 
 function X.ShuffleArray(array)
 	if type(array) ~= "table" then
@@ -869,7 +792,7 @@ function X.GetNotRepeatHero( nTable )
 		do
 			if ( IsTeamPlayer( id ) and GetSelectedHeroName( id ) == sHero )
 				or ( IsCMBannedHero( sHero ) )
-				or ( X.IsBanByChat( sHero ) )
+				or ( X.IsBannedHero( sHero ) )
 				or ( X.SkipPickingWeakHeroes(sHero) )
 			then
 				bRepeated = true
@@ -889,7 +812,7 @@ function X.IsRepeatHero( sHero )
 	do
 		if ( IsTeamPlayer( id ) and GetSelectedHeroName( id ) == sHero )
 			or ( IsCMBannedHero( sHero ) )
-			or ( X.IsBanByChat( sHero ) )
+			or ( X.IsBannedHero( sHero ) )
 			or ( X.SkipPickingWeakHeroes(sHero) )
 		then
 			return true
@@ -905,16 +828,16 @@ function X.SkipPickingWeakHeroes(sHero)
 	and SelectedWeakHero >= MaxWeakHeroCount
 end
 
-if bUserMode and HeroSet['JinYongAI'] ~= nil
+if Customize and Customize.Ban
 then
-	sBanList = Chat.GetHeroSelectList( HeroSet['JinYongAI'] )
+	sBanList = Customize.Ban
 end
 
 function X.SetChatHeroBan( sChatText )
 	sBanList[#sBanList + 1] = string.lower( sChatText )
 end
 
-function X.IsBanByChat( sHero )
+function X.IsBannedHero( sHero )
 
 	for i = 1, #sBanList
 	do
@@ -1041,41 +964,41 @@ function AllPickHeros()
 		if IsPlayerBot( id ) and GetSelectedHeroName( id ) == "" and GameTime() >= fLastSlectTime + GetTeam() * 2
 		then
 			sSelectHero = sSelectList[i]
-			if not overridePicks then
-				if RandomInt(1, 4) >= 3 then
-					local nCurrEnmCores = X.GetCurrEnmCores(nEnmTeam)
-					local selectCounter = nil
-	
-					-- Pick a random core in the current enemy comp to counter
-					local nHeroToCounter = nCurrEnmCores[RandomInt(1, #nCurrEnmCores)]
-	
-					for j = 1, #tSelectPoolList[i], 1
-					do
-						local idx = RandomInt(1, #tSelectPoolList[i])
-						local heroName = tSelectPoolList[i][idx]
-						if not X.IsRepeatHero(heroName)
-						and MU.IsCounter(heroName, nHeroToCounter) -- so it's not 'samey'; since bots don't really put pressure like a human would
-						then
-							print('Counter pick. ', 'Selected: '..heroName, ' to counter: '..nHeroToCounter)
-							selectCounter = heroName
-							break
-						end
+
+			-- Give a chance to pick counter/synergy heroes
+			if RandomInt(1, 4) >= 3 then
+				local nCurrEnmCores = X.GetCurrEnmCores(nEnmTeam)
+				local selectCounter = nil
+
+				-- Pick a random core in the current enemy comp to counter
+				local nHeroToCounter = nCurrEnmCores[RandomInt(1, #nCurrEnmCores)]
+
+				for j = 1, #tSelectPoolList[i], 1
+				do
+					local idx = RandomInt(1, #tSelectPoolList[i])
+					local heroName = tSelectPoolList[i][idx]
+					if not X.IsRepeatHero(heroName)
+					and MU.IsCounter(heroName, nHeroToCounter) -- so it's not 'samey'; since bots don't really put pressure like a human would
+					then
+						print('Counter pick. ', 'Selected: '..heroName, ' to counter: '..nHeroToCounter)
+						selectCounter = heroName
+						break
 					end
-	
-					if selectCounter ~= nil then
-						sSelectHero = selectCounter
-					else
-						local synergy = X.GetBestHeroFromPool(i, nOwnTeam)
-						if synergy ~= '' and synergy ~= nil then
-							print('Synergy pick. ', 'Selected: '..synergy)
-							sSelectHero = synergy
-						end
-					end
-				else
-					print('Skip picking counter/synergy heroes. For more chance to see any heroes')
 				end
+
+				if selectCounter ~= nil then
+					sSelectHero = selectCounter
+				else
+					local synergy = X.GetBestHeroFromPool(i, nOwnTeam)
+					if synergy ~= '' and synergy ~= nil then
+						print('Synergy pick. ', 'Selected: '..synergy)
+						sSelectHero = synergy
+					end
+				end
+			else
+				print('Skip picking counter/synergy heroes. For more chance to see any heroes')
 			end
-			
+
 			if X.IsRepeatHero(sSelectHero) then sSelectHero = X.GetNotRepeatHero( tSelectPoolList[i] ) end
 			if Utils.HasValue(WeakHeroes, sSelectHero) then SelectedWeakHero = SelectedWeakHero + 1 end
 			SelectHero( id, sSelectHero )
@@ -1149,7 +1072,22 @@ local function handleCommand(command, PlayerID, bTeamOnly)
 			end
 			userSwitchedRole = true
 		else
-			print("Hero name not found or not supported! Please refer to hero_selection.lua of this script for list of heroes's name");
+			print("Hero name not found or not supported! Please refer to the list of names here: https://developer.valvesoftware.com/wiki/Dota_2_Workshop_Tools/Scripting/Heroes_internal_names");
+		end
+    elseif action == "!ban" and GetGameState() == GAME_STATE_HERO_SELECTION then
+        print("Banning hero " .. text)
+
+		local hero = GetHumanChatHero(text);
+		if hero ~= "" then
+			if X.IsRepeatHero(hero) then
+				print('Hero has already been picked')
+				return
+			end
+			X.SetChatHeroBan( hero )
+			print("Banned hero " .. hero.. '. Banned list:')
+			Utils.PrintTable(sBanList)
+		else
+			print("Hero name not found or not supported! Please refer to the list of names here: https://developer.valvesoftware.com/wiki/Dota_2_Workshop_Tools/Scripting/Heroes_internal_names");
 		end
     elseif action == "!pos" and GetGameState() == GAME_STATE_PRE_GAME then
         print("Selecting pos " .. text)
@@ -1232,8 +1170,23 @@ end
 
 -- Example of overrides with specific player names for Radiant
 local playerNameOverrides = {
-    -- Radiant = {"p1", "p2", "p3", "p4", "p5"}
+    Radiant = {},
+    Dire = {}
 }
+
+if Customize then
+	for i = 1, #Customize.Radiant_Names do
+		if Customize.Radiant_Names[i] ~= nil then
+			playerNameOverrides.Radiant[i] = Customize.Radiant_Names[i]
+		end
+	end
+	for i = 1, #Customize.Dire_Names do
+		if Customize.Dire_Names[i] ~= nil then
+			playerNameOverrides.Dire[i] = Customize.Dire_Names[i]
+		end
+	end
+end
+
 local teamPlayerNames = Dota2Teams.generateTeams(playerNameOverrides)
 
 function GetBotNames()
@@ -1286,7 +1239,6 @@ function UpdateLaneAssignments()
 	end
 
 	if GetGameState() == GAME_STATE_HERO_SELECTION or GetGameState() == GAME_STATE_STRATEGY_TIME or GetGameState() == GAME_STATE_PRE_GAME then
-		-- InstallChatCallback(function ( tChat ) X.SetChatHeroBan( tChat.string ) end )
 		InstallChatCallback(function (attr) SelectHeroChatCallback(attr.player_id, attr.string, attr.team_only); end);
 	end
 

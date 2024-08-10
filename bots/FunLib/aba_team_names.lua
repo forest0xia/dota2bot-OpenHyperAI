@@ -37,25 +37,30 @@ local defaultTeams = {
 
 local function generateTeam(overrides)
     local playerList = { }
+    local overriddenNames = { }
     local randomNum = 0
-    
+    repeat
+        randomNum = RandomInt(1, #defaultTeams)
+    -- ensure a team can only pick from certain team names.
+    until randomNum % 2 == GetTeam() - 2 and defaultTeams[randomNum].name ~= 'Additionals'
+    -- print('randomNum='..tostring(randomNum)..', team name='..tostring(defaultTeams[randomNum].name)..', for team='..tostring(GetTeam()))
+    playerList = Utils.MergeLists(defaultTeams[randomNum].players, defaultTeams[#defaultTeams].players)
     if overrides and #overrides > 0 then
-        playerList = overrides
-    else
-        repeat
-            randomNum = RandomInt(1, #defaultTeams)
-        -- ensure a team can only pick from certain team names.
-        until randomNum % 2 == GetTeam() - 2 and defaultTeams[randomNum].name ~= 'Additionals'
-        -- print('randomNum='..tostring(randomNum)..', team name='..tostring(defaultTeams[randomNum].name)..', for team='..tostring(GetTeam()))
-        playerList = Utils.MergeLists(defaultTeams[randomNum].players, defaultTeams[#defaultTeams].players)
+        for i = 1, #overrides do
+            if overrides[i] and overrides[i] ~= 'Random' then
+                playerList[i] = overrides[i]
+                table.insert(overriddenNames, overrides[i])
+            end
+        end
     end
 
     local team = { }
     for i = 1, maxTeamSize do
-        if overrides and #overrides > 0 then
-            table.insert(team, table.remove(playerList, 1))
+        local pName = table.remove(playerList, 1)
+        if Utils.HasValue(overriddenNames, pName) then
+            table.insert(team, pName)
         else
-            table.insert(team, defaultTeams[randomNum].name .. "." .. table.remove(playerList, 1)..'.'..defaultPostfix)
+            table.insert(team, defaultTeams[randomNum].name .. "." .. pName ..'.'..defaultPostfix)
         end
     end
     return team

@@ -19,6 +19,7 @@ Bot script in Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails
 1. Improved code structure & general logic for decision making for ability and item usages as well as roaming and farming.
 1. Fixed tons of bugs. Bugs that can cause bots to stay idle or cancel it's own channeling spells or stuck on weird state.
 1. Enhanced AI Chatbot. You can chat with bots in the game as if they were real and optimistic players. Integrated with ChatGPT. [Note: you need to enable Fretbot mode for this, check out How to Install section below.]
+1. Bots are customizable easily. E.g. you can change bot names, bot ban/picks, etc. Check out the file in `bots/Customize/general.lua`
 
 ### How to install this script?
 1. There is currently a bug on Valve side that new bot scripts can only work in Custom Lobby with "Local Host" as the Server Location.
@@ -30,6 +31,7 @@ Bot script in Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails
 1.  You can type: `/all !pick XXX` to pick hero for enemy. For example: `/all !pick puck` to pick puck as enemy.
    1. For complex hero names or names that may apply to multiple heroes, please use the full internal code name. For example: `!pick npc_dota_hero_keeper_of_the_light` .
    1. You can find a list of hero names here: https://developer.valvesoftware.com/wiki/Dota_2_Workshop_Tools/Scripting/Heroes_internal_names
+1. You can type: `!ban XXX` to ban a hero so the bots won't pick that hero. For example: `!ban puck` to prevent any bots from picking puck.
 1. You can type: `!pos X` to swap the position with a bot. For example: `!pos 2` to swap role and lane with the bot that's going to mid.
 1. Pos1 and Pos5 bots go to safe lane. Pos3 and Pos4 bots go offlane. Pos2 bot goes to mid lane.
 

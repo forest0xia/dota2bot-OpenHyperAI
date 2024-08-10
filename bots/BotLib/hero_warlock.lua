@@ -140,36 +140,42 @@ local abilityRef = nil
 function X.MinionThink(hMinionUnit, bot)
 
 	if Minion.IsValidUnit( hMinionUnit )
+		and ( not J.IsKeyWordUnit( 'npc_dota_warlock_minor_imp', hMinionUnit ) )
 	then
-		if string.find(hMinionUnit:GetUnitName(), "warlock_golem") then
-			local target = J.GetProperTarget( bot )
-			local hMinionUnitTarget = hMinionUnit:GetTarget()
-		
-			if target ~= nil then
-				hMinionUnit:Action_AttackUnit(target, false)
-				return
-			end
-			if hMinionUnitTarget ~= nil then
-				hMinionUnit:Action_AttackUnit(hMinionUnitTarget, false)
-				return
-			end
-
-			if hEnemyHeroList == nil then
-				hEnemyHeroList = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
-			end
-			
-			if bot:IsAlive() and #hEnemyHeroList <= 0 then
-				if GetUnitToUnitDistance(hMinionUnit, bot) > 500 then
-					hMinionUnit:Action_MoveToLocation(bot:GetLocation())
-				else
-					hMinionUnit:Action_MoveToLocation(bot:GetLocation() + RandomVector(200))
-				end
-				return
-			end
-		end
-
-		Minion.MinionThink(hMinionUnit, bot)
+		Minion.IllusionThink( hMinionUnit )
 	end
+
+	-- if Minion.IsValidUnit( hMinionUnit )
+	-- then
+	-- 	if string.find(hMinionUnit:GetUnitName(), "warlock_golem") then
+	-- 		local target = J.GetProperTarget( bot )
+	-- 		local hMinionUnitTarget = hMinionUnit:GetTarget()
+		
+	-- 		if target ~= nil then
+	-- 			hMinionUnit:Action_AttackUnit(target, false)
+	-- 			return
+	-- 		end
+	-- 		if hMinionUnitTarget ~= nil then
+	-- 			hMinionUnit:Action_AttackUnit(hMinionUnitTarget, false)
+	-- 			return
+	-- 		end
+
+	-- 		if hEnemyHeroList == nil then
+	-- 			hEnemyHeroList = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
+	-- 		end
+			
+	-- 		if bot:IsAlive() and #hEnemyHeroList <= 0 then
+	-- 			if GetUnitToUnitDistance(hMinionUnit, bot) > 500 then
+	-- 				hMinionUnit:Action_MoveToLocation(bot:GetLocation())
+	-- 			else
+	-- 				hMinionUnit:Action_MoveToLocation(bot:GetLocation() + RandomVector(200))
+	-- 			end
+	-- 			return
+	-- 		end
+	-- 	end
+
+	-- 	Minion.MinionThink(hMinionUnit, bot)
+	-- end
 
 end
 
