@@ -1584,7 +1584,7 @@ function X.ConsiderIceWall()
         and J.IsChasingTarget(nEnemyHeroes[1], bot)
         and not J.IsSuspiciousIllusion(nEnemyHeroes[1])
         and not J.IsDisabled(nEnemyHeroes[1])
-        and bot:WasRecentlyDamagedByAnyHero(2)
+        and J.GetHP(bot) < 0.7
 		then
             return BOT_ACTION_DESIRE_HIGH
 		end

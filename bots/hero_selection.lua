@@ -943,15 +943,26 @@ local ShuffledPickOrder = {
 	TEAM_DIRE = false,
 }
 local CorrectDireAssignedLanes = false
+local CorrectDirePlayerIndexToLaneIndex = { }
 
-function CorrectDireLaneAssignment(currentLaning)
+function CorrectDireLaneAssignment()
 	if GetTeam() == TEAM_DIRE and not CorrectDireAssignedLanes then
-		for i, oid in pairs( Overrides.orig_GetTeamPlayers(TEAM_DIRE) ) do
-			for j, id in pairs( GetTeamPlayers(TEAM_DIRE) ) do
-				if id == oid then
-					-- print('['..i..', ' ..j.. ']. assign idx '.. i .. ' to '.. currentLaning[j])
-					tLaneAssignList.TEAM_DIRE[i] = currentLaning[j]
-				end
+		-- lazy assignment, all humen on top of the list, bots on bottom.
+		local index = 1
+		for i, id in pairs( GetTeamPlayers(TEAM_DIRE) ) do
+			local role = Role.roleAssignment['TEAM_DIRE'][i]
+			if not IsPlayerBot( id ) then
+				tLaneAssignList.TEAM_DIRE[index] = tDefaultLaningDire[role]
+				CorrectDirePlayerIndexToLaneIndex[i] = index
+				index = index + 1
+			end
+		end
+		for i, id in pairs( GetTeamPlayers(TEAM_DIRE) ) do
+			local role = Role.roleAssignment['TEAM_DIRE'][i]
+			if IsPlayerBot( id ) then
+				tLaneAssignList.TEAM_DIRE[index] = tDefaultLaningDire[role]
+				CorrectDirePlayerIndexToLaneIndex[i] = index
+				index = index + 1
 			end
 		end
 		CorrectDireAssignedLanes = true
@@ -1105,7 +1116,6 @@ local function handleCommand(command, PlayerID, bTeamOnly)
 		local remainingPos = RemainingPos[sTeamName]
 		if Utils.HasValue(remainingPos, text) then
 			local role = tonumber(text)
-			
 			local playerIndex = PlayerID + 1 -- each team player id starts with 0, to 4 as the last player. 
 			-- this index can be differnt if the player choose a slot in lobby that has empty slots before the one the player chooses.
 			for idx, id in pairs(teamPlayers) do
@@ -1119,8 +1129,15 @@ local function handleCommand(command, PlayerID, bTeamOnly)
 						-- remove so can't re-swap
 						-- table.remove(RemainingPos[team], role)
 						Role.roleAssignment[sTeamName][playerIndex], Role.roleAssignment[sTeamName][index] = role, Role.roleAssignment[sTeamName][playerIndex]
-						tLaneAssignList[sTeamName][playerIndex], tLaneAssignList[sTeamName][index] = tLaneAssignList[sTeamName][index], tLaneAssignList[sTeamName][playerIndex]
-						print('Switch role successfully. Team: '..sTeamName..', playerId: '..PlayerID..', new role: '..Role.roleAssignment[sTeamName][playerIndex])
+						if GetTeamForPlayer(PlayerID) == TEAM_DIRE then
+							tLaneAssignList[sTeamName][CorrectDirePlayerIndexToLaneIndex[playerIndex]], tLaneAssignList[sTeamName][CorrectDirePlayerIndexToLaneIndex[index]] =
+								tLaneAssignList[sTeamName][CorrectDirePlayerIndexToLaneIndex[index]], tLaneAssignList[sTeamName][CorrectDirePlayerIndexToLaneIndex[playerIndex]]
+						else
+							tLaneAssignList[sTeamName][playerIndex], tLaneAssignList[sTeamName][index] = tLaneAssignList[sTeamName][index], tLaneAssignList[sTeamName][playerIndex]
+						end
+						print('Switch role successfully. Team: '..sTeamName..
+						'. Player Id: '..PlayerID..', idx: '..playerIndex..', new role: '..Role.roleAssignment[sTeamName][playerIndex]..
+						'; Player Id: '..id..', idx: '..index..', new role: '..Role.roleAssignment[sTeamName][index])
 					else
 						print('Switch role failed, the target role belongs to human player. Ask the player directly to switch role.')
 					end
@@ -1136,7 +1153,6 @@ local function handleCommand(command, PlayerID, bTeamOnly)
 end
 
 function Think()
-	CorrectDireLaneAssignment(tDefaultLaningDire)
 	if GetGameMode() == GAMEMODE_CM then
 		CM.CaptainModeLogic(SupportedHeroes);
 		CM.AddToList();
@@ -1228,6 +1244,7 @@ GAMEMODE_TURBO = 23
 ]]
 
 function UpdateLaneAssignments()
+
 	local team = GetTeam() == TEAM_RADIANT and 'TEAM_RADIANT' or 'TEAM_DIRE'
 
 	if GetGameMode() == GAMEMODE_MO then
@@ -1252,6 +1269,7 @@ function UpdateLaneAssignments()
 		InstallChatCallback(function (attr) SelectHeroChatCallback(attr.player_id, attr.string, attr.team_only); end);
 	end
 
+	CorrectDireLaneAssignment()
 	-- print('lane for team: '..team)
 	-- Utils.PrintTable(tLaneAssignList[team])
 	return tLaneAssignList[team]

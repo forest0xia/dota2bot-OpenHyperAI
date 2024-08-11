@@ -295,7 +295,15 @@ function X.HasActionTypeInQueue(bot, actionType)
 end
 
 -- count the number of human vs bot players in the team. returns: #humen, #bots
+local humenBotCounts = {
+    [TEAM_DIRE] = nil,
+    [TEAM_RADIANT] = nil
+}
 function X.NumHumanBotPlayersInTeam(team)
+    if humenBotCounts[team] then
+        return humenBotCounts[team][0], humenBotCounts[team][1]
+    end
+
 	local nHuman, nBot = 0, 0
 	for _, member in pairs(GetTeamPlayers(team))
 	do
@@ -307,6 +315,7 @@ function X.NumHumanBotPlayersInTeam(team)
 		end
 	end
 
+    humenBotCounts[team] = {nHuman, nBot}
 	return nHuman, nBot
 end
 
