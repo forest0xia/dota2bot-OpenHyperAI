@@ -19,6 +19,7 @@ function Defend.GetDefendDesireHelper(bot, lane)
 	local nDefendDesire = 0
 	local nInRangeEnemy = J.GetEnemiesNearLoc(bot:GetLocation(), 2200)
 	local team = GetTeam()
+
 	if #nInRangeEnemy > 0 and GetUnitToLocationDistance(bot, GetLaneFrontLocation(team, lane, 0)) < 1000
 	or (bot:GetAssignedLane() ~= lane and J.GetPosition(bot) == 1 and J.IsInLaningPhase()) -- reduce carry feeds
 	or (J.IsDoingRoshan(bot) and #J.GetAlliesNearLoc(J.GetCurrentRoshanLocation(), 2800) >= 3)
@@ -75,7 +76,7 @@ function Defend.GetDefendDesireHelper(bot, lane)
 		end
 
 		if nDefendLoc ~= nil and enemeyPushingBase then
-			local saferLoc = J.AdjustLocationWithOffsetTowardsFountain(nDefendLoc, 800) + RandomVector(50)
+			local saferLoc = J.AdjustLocationWithOffsetTowardsFountain(nDefendLoc, 850) + RandomVector(50)
 
 			enemeyPushingBase = false
 			local nDefendAllies = J.GetAlliesNearLoc(saferLoc, 2000);
@@ -92,6 +93,7 @@ function Defend.GetDefendDesireHelper(bot, lane)
 	local mul = Defend.GetEnemyAmountMul(lane)
 	local nEnemies = J.GetEnemiesAroundAncient()
 
+	local defAcientDesire = BOT_MODE_DESIRE_ABSOLUTE
 	if  nEnemies ~= nil and #nEnemies >= 1
 	and (GetTower(team, TOWER_MID_3) == nil
 		or (GetTower(team, TOWER_TOP_3) == nil
@@ -99,12 +101,12 @@ function Defend.GetDefendDesireHelper(bot, lane)
 			and GetTower(team, TOWER_BOT_3) == nil))
 	and lane == LANE_MID
 	then
-		return BOT_MODE_DESIRE_ABSOLUTE
+		nDefendDesire = nDefendDesire + defAcientDesire
 	elseif nDefendDesire ~= 0.966 then
 		nDefendDesire = Clamp(GetDefendLaneDesire(lane), 0.1, 1) * mul
 	end
 
-	return Clamp(nDefendDesire, 0, 0.92)
+	return Clamp(nDefendDesire, 0, 1.25)
 end
 
 local nTpSolt = 15

@@ -4532,7 +4532,7 @@ function J.GetEnemiesAroundAncient()
 	for _, unit in pairs(GetUnitList(UNIT_LIST_ENEMIES))
 	do
 		if J.IsValid(unit)
-		and GetUnitToUnitDistance(unit, GetAncient(GetTeam())) <= 1600
+		and GetUnitToUnitDistance(unit, GetAncient(GetTeam())) <= 2500
 		then
 			table.insert(nUnitList, creep)
 		end

@@ -79,21 +79,19 @@ function GetDesire()
 		end
 	end
 
-	if GetGameMode() ~= GAMEMODE_CM then
-		if GetGameState() == GAME_STATE_PRE_GAME and bot.isBear == nil
-		and (bot.announcedRole == nil or bot.announcedRole ~= J.GetPosition(bot)) then
-			bot.announcedRole = J.GetPosition(bot)
-			bot:ActionImmediate_Chat('I will play position '..J.GetPosition(bot), false)
-		end
-		if not isChangePosMessageDone
-		and J.GetPosition(bot) == 5
+	if GetGameState() == GAME_STATE_PRE_GAME and bot.isBear == nil
+	and (bot.announcedRole == nil or bot.announcedRole ~= J.GetPosition(bot)) then
+		bot.announcedRole = J.GetPosition(bot)
+		bot:ActionImmediate_Chat('I will play position '..J.GetPosition(bot), false)
+	end
+	if not isChangePosMessageDone
+	and J.GetPosition(bot) == 5
+	then
+		local nH, nB = J.NumHumanBotPlayersInTeam()
+		if DotaTime() >= 0 and nH > 0 and nB > 0
 		then
-			local nH, nB = J.NumHumanBotPlayersInTeam()
-			if DotaTime() >= 0 and nH > 0 and nB > 0
-			then
-				bot:ActionImmediate_Chat("Position selection closed.", true)
-				isChangePosMessageDone = true
-			end
+			bot:ActionImmediate_Chat("Position selection closed.", true)
+			isChangePosMessageDone = true
 		end
 	end
 

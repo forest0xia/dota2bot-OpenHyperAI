@@ -1,9 +1,9 @@
 ### We love bot games!
 
+We love bot games! There is currently a Valve side bug, [CRITICAL] in order to play the script you need to create a Lobby and select "Local Host" as Server Location. To enable enhanced challenging mode, follow the steps on Workshop page to correctly install this script. The bots in game should have names with suffix ".OHA" when installed correctly.
 Thanks and kudos to all that contributed to make bot games fun and exciting.
-The goal of this script is to share the most up to date functionalities that we've implemented or fixed to keep the bot games challenging.
 
-This script is based on Valve's default bot script and many other people's work and their scripts. That being said, this is a partial override not completely take over bot script. It takes the advantages of some other existing bot scripts and aims to be a better off script than the existing ones. We hope the bot's decision making and team strategies are more effective and brings more joy to you.
+The goal of this script is to share the most up to date functionalities that we've implemented or fixed to keep the bot games challenging. And for players to have fun with chill by playing/practicing against the bots that can play ALL Dota2 heroes.
 
 Bot script in Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=3246316298
 
@@ -12,14 +12,11 @@ Bot script in Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails
 1. Support ALL 124 heroes! You will see bots playing Invoker, Techies, Meepo, Lone Druid, Dark Willow, Hoodwink, io, Muerta, Primal Beast, etc. Just note that some of the newly added ones are not very strong and in progress to be further enhanced.
 1. All supported heroes in this script can play any position roles. Heroes will go to any lane they are assigned. The laning or pos of the bot heroes will seem random in the game, but it's deterministic - check the Bot roles section below.
 1. Dynamic difficulty. If you ever feel all existing bot scripts lack excitement. This script boosts bots with huge unfair advantages to make bot games a lot more challenging. You will need to copy the script into your local vscripts folder and then enable the Fretbots mode for this feature. See instructions below.
-1. Support multiple modes: All Pick, Turbo, Captain Mode, Random Draft, Single Draft, All Random, Mid Only, Least Played, and 1V1 mid. 
-   1. For 1V1 mid: Enemy will pick the same hero after your pick. This way you can play 1:1 SF mid, or any mid heroes you like to practice against bot with the same hero.
-   1. For 1V1 mid: Other bots, if you have any other empty slots filled with bots, will all go to top.
-   1. For Captain mode, the role swap "!pos X" is not supported. Follow lobby order and be the captain.
-1. Improved code structure & general logic for decision making for ability and item usages as well as roaming and farming.
-1. Fixed tons of bugs. Bugs that can cause bots to stay idle or cancel it's own channeling spells or stuck on weird state.
+1. Support almost ALL game modes: https://steamcommunity.com/workshop/filedetails/discussion/3246316298/4334231305373971730/
+1. Improved code structure & general logic for decision making for ability casting, item usages, defending, roaming as well as farming.
 1. Enhanced AI Chatbot. You can chat with bots in the game as if they were real and optimistic players. Integrated with ChatGPT. [Note: you need to enable Fretbot mode for this, check out How to Install section below.]
-1. Bots are customizable easily. E.g. you can change bot names, bot ban/picks, etc. Check out the file in `bots/Customize/general.lua`
+1. Bots are customizable easily. E.g. you can change bot names, bot ban/picks, etc. Check out the file in [bots/Customize/general.lua](bots/Customize/general.lua)
+1. Fixed tons of bugs. Bugs that can cause bots to stay idle or cancel it's own channeling spells or stuck on weird states.
 
 ### How to install this script?
 1. There is currently a bug on Valve side that new bot scripts can only work in Custom Lobby with "Local Host" as the Server Location.
@@ -27,12 +24,16 @@ Bot script in Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails
 
 ### Bot roles, lanings and positioning
 1. In local lobby, the positions of the bots are the same as the order of the slots: 1, 2, 3, 4, 5 from top to bottom in the lobby.
-1. During hero selection phase, you can type: `!pick XXX` to pick a hero. For example: `!pick puck` to pick puck as ally.
-1.  You can type: `/all !pick XXX` to pick hero for enemy. For example: `/all !pick puck` to pick puck as enemy.
-   1. For complex hero names or names that may apply to multiple heroes, please use the full internal code name. For example: `!pick npc_dota_hero_keeper_of_the_light` .
-   1. You can find a list of hero names here: https://developer.valvesoftware.com/wiki/Dota_2_Workshop_Tools/Scripting/Heroes_internal_names
-1. You can type: `!ban XXX` to ban a hero so the bots won't pick that hero. For example: `!ban puck` to prevent any bots from picking puck.
-1. You can type: `!pos X` to swap the position with a bot. For example: `!pos 2` to swap role and lane with the bot that's going to mid.
+1. Support multiple in-game commands:
+   1. `!pos X` You can type: `!pos X` to swap the position with a bot. For example: `!pos 2` to swap role and lane with the bot that's going to mid.
+   1. `!pick XXX` During hero selection phase, you can type: `!pick XXX` to pick a hero. For example: `!pick puck` to pick puck as ally.
+      1. You can type: `/all !pick XXX` to pick hero for enemy. For example: `/all !pick puck` to pick puck as enemy.
+      1. For complex hero names or names that may apply to multiple heroes, please use the full internal code name. For example: `!pick npc_dota_hero_keeper_of_the_light` .
+      1. You can find a list of hero names here: https://developer.valvesoftware.com/wiki/Dota_2_Workshop_Tools/Scripting/Heroes_internal_names
+   1. `!ban XXX` You can type: `!ban XXX` to ban a hero so the bots won't pick that hero. For example: `!ban puck` to prevent any bots from picking puck.
+      1. For complex hero names or names that may apply to multiple heroes, please use the full internal code name. For example: `!ban npc_dota_hero_keeper_of_the_light` .
+      1. You can find a list of hero names here: https://developer.valvesoftware.com/wiki/Dota_2_Workshop_Tools/Scripting/Heroes_internal_names
+1. You can change bot ban/picks, and roles, etc easily and permanently. Check out the file in [bots/Customize/general.lua](bots/Customize/general.lua)
 1. Pos1 and Pos5 bots go to safe lane. Pos3 and Pos4 bots go offlane. Pos2 bot goes to mid lane.
 
 ### What's next
@@ -44,8 +45,8 @@ Bot script in Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails
 6. Better laning logic to avoid bots feeding too much in the early game.
 7. Figure out how to better support the Bugged-Heroes: Dark Willow, Elder Titan, Hoodwink, io, Lone Druid, Marci, Muerta, Primal Beast. Note that they are buggy due to problems on the Valves side, not script developers.
 
-### Supporting me
-If you'd like to buy me a coffee: https://www.buymeacoffee.com/forest.dota
+### Support the script
+If you'd like to buy me a coffee: https://steamcommunity.com/workshop/filedetails/discussion/3246316298/6553383644012991605/
 
 ### Useful resources:
 - Posts shared by Ranked Matchmaking AI author: https://www.adamqqq.com/ai/dota2-ai-devlopment-tutorial.html
@@ -57,6 +58,8 @@ If you'd like to buy me a coffee: https://www.buymeacoffee.com/forest.dota
 - Dota2 data mining (details of items, abilities, heroes): https://github.com/muk-as/DOTA2_WEB/blob/master/dota2_web/Items_cn.json
 
 ### Credits to
+This script is based on Valve's default bot script and many other people's work and their scripts. That being said, this is a partial override not completely take over bot script. It takes the advantages of some other existing bot scripts and aims to be a better off script than the existing ones. We hope the bot's decision making and team strategies are more effective and brings more joy to you.
+
 - New beginner ai (by dota2jmz@163.com).
 - Tinkering ABout (by ryndrb: https://github.com/ryndrb/dota2bot or https://steamcommunity.com/sharedfiles/filedetails/?id=3139791706)
 - Ranked Matchmaking AI (by adamqqq)
@@ -66,7 +69,6 @@ If you'd like to buy me a coffee: https://www.buymeacoffee.com/forest.dota
 - All other bot script authors/contributors that had made bot scripts interesting.
 
 ### Things to be updated (not ranked by priority, ChatGPT translated to English):
-- AM in place blink
 - less farming, more group push in late games.
 - focus more on tower and base in push.
 - use tango or something to escape from Prophet first spell trees
@@ -120,6 +122,5 @@ If you'd like to buy me a coffee: https://www.buymeacoffee.com/forest.dota
 - Don't go to outpost alone or use smoke.
 - Bots should be able to dynamically change the item-build-list and skill-talent-build list to refect the role swapping with player - in case player uses !pos to swap roles.
 - Fix `!pos X` command for Dire side when player skips some slots in local lobby and still wants to swap role with a bot.
-- Better support for role switching in captain mode.
 
 

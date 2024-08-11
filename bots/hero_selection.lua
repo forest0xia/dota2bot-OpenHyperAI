@@ -2,28 +2,25 @@ local X = {}
 local sSelectHero = "npc_dota_hero_zuus"
 local fLastSlectTime, fLastRand = 5, 0
 local nDelayTime = nil
-local nHumanCount = 0
 local sBanList = {}
 local sSelectList = {}
 local tSelectPoolList = {}
 local tLaneAssignList = {}
-
-local bUserMode = false
-local bLaneAssignActive = true
 local bLineupReserve = false
-local overridePicks = false
 
 local MU = require( GetScriptDirectory()..'/FunLib/aba_matchups' )
 local Role = require( GetScriptDirectory()..'/FunLib/aba_role' )
-local Chat = require( GetScriptDirectory()..'/FunLib/aba_chat' )
 local Utils = require( GetScriptDirectory()..'/FunLib/utils' )
 local Dota2Teams = require( GetScriptDirectory()..'/FunLib/aba_team_names' )
 local Overrides = require( GetScriptDirectory()..'/FunLib/aba_global_overrides' )
 local CM = require( GetScriptDirectory()..'/FunLib/captain_mode' )
 local Customize = require( GetScriptDirectory()..'/Customize/general' )
-local HeroSet = {}
 local SupportedHeroes = {}
 local UseCustomizedPicks = false
+
+local CorrectRadiantAssignedLanes = false
+local CorrectDireAssignedLanes = false
+local CorrectDirePlayerIndexToLaneIndex = { }
 
 --[[
 'npc_dota_hero_abaddon',
@@ -646,6 +643,13 @@ sSelectList = {
 	[5] = tSelectPoolList[5][RandomInt( 1, #tSelectPoolList[5] )],
 }
 
+local tDefaultLaningRadiant = {
+	[1] = LANE_BOT,
+	[2] = LANE_MID,
+	[3] = LANE_TOP,
+	[4] = LANE_TOP,
+	[5] = LANE_BOT,
+}
 local tDefaultLaningDire = {
 	[1] = LANE_TOP,
 	[2] = LANE_MID,
@@ -656,13 +660,7 @@ local tDefaultLaningDire = {
 
 tLaneAssignList = {
 	-- 天辉夜宴的上下路相反
-	TEAM_RADIANT = {
-		[1] = LANE_BOT,
-		[2] = LANE_MID,
-		[3] = LANE_TOP,
-		[4] = LANE_TOP,
-		[5] = LANE_BOT,
-	},
+	TEAM_RADIANT = Utils.Deepcopy(tDefaultLaningRadiant),
 	TEAM_DIRE = Utils.Deepcopy(tDefaultLaningDire)
 }
 
@@ -942,11 +940,15 @@ local ShuffledPickOrder = {
 	TEAM_RADIANT = false,
 	TEAM_DIRE = false,
 }
-local CorrectDireAssignedLanes = false
-local CorrectDirePlayerIndexToLaneIndex = { }
 
-function CorrectDireLaneAssignment()
-	if GetTeam() == TEAM_DIRE and not CorrectDireAssignedLanes then
+function CorrectPotentialLaneAssignment()
+	if GetTeam() == TEAM_RADIANT and not CorrectRadiantAssignedLanes then
+		for i, id in pairs( GetTeamPlayers(TEAM_RADIANT) ) do
+			local role = Role.roleAssignment['TEAM_RADIANT'][i]
+			tLaneAssignList.TEAM_RADIANT[i] = tDefaultLaningRadiant[role]
+		end
+		CorrectRadiantAssignedLanes = true
+	elseif GetTeam() == TEAM_DIRE and not CorrectDireAssignedLanes then
 		-- lazy assignment, all humen on top of the list, bots on bottom.
 		local index = 1
 		for i, id in pairs( GetTeamPlayers(TEAM_DIRE) ) do
@@ -1056,10 +1058,10 @@ local function handleCommand(command, PlayerID, bTeamOnly)
 		print('[WARN] Invalid command: '..tostring(command))
 		return
 	end
-	if GetGameMode() == GAMEMODE_CM then
-		print('[WARN] Captain mode does not support commands')
-		return
-	end
+	-- if GetGameMode() == GAMEMODE_CM then
+	-- 	print('[WARN] Captain mode does not support commands')
+	-- 	return
+	-- end
 
 	local teamPlayers = GetTeamPlayers(GetTeam())
 
@@ -1135,9 +1137,8 @@ local function handleCommand(command, PlayerID, bTeamOnly)
 						else
 							tLaneAssignList[sTeamName][playerIndex], tLaneAssignList[sTeamName][index] = tLaneAssignList[sTeamName][index], tLaneAssignList[sTeamName][playerIndex]
 						end
-						print('Switch role successfully. Team: '..sTeamName..
-						'. Player Id: '..PlayerID..', idx: '..playerIndex..', new role: '..Role.roleAssignment[sTeamName][playerIndex]..
-						'; Player Id: '..id..', idx: '..index..', new role: '..Role.roleAssignment[sTeamName][index])
+						print('Switch role successfully. Team: '..sTeamName.. '. Player Id: '..PlayerID..', idx: '..playerIndex..', new role: '..Role.roleAssignment[sTeamName][playerIndex])
+						print('Switch role successfully. Team: '..sTeamName.. '. Player Id: '..id..', idx: '..index..', new role: '..Role.roleAssignment[sTeamName][index])
 					else
 						print('Switch role failed, the target role belongs to human player. Ask the player directly to switch role.')
 					end
@@ -1219,12 +1220,6 @@ function GetBotNames()
 	return GetTeam() == TEAM_RADIANT and teamPlayerNames.Radiant or teamPlayerNames.Dire
 end
 
-local CMSupportAlreadyAssigned = {
-	TEAM_RADIANT = false,
-	TEAM_DIRE = false
-};
-
-
 --[[ Game Modes
 GAMEMODE_NONE
 GAMEMODE_AP = 1 -- All Pick
@@ -1257,19 +1252,13 @@ function UpdateLaneAssignments()
 
 	if GetGameMode() == GAMEMODE_CM then
 		tLaneAssignList[team] = CM.CMLaneAssignment(Role.roleAssignment, userSwitchedRole)
-		-- print('role assigment:')
-		-- Utils.PrintTable(Role.roleAssignment.TEAM_RADIANT)
-		-- print('lane assigment:' ..userSwitchedRole)
-		-- Utils.PrintTable(CM.CMLaneAssignment(Role.roleAssignment, userSwitchedRole))
-		-- AlignLanesBasedOnRoles(team)
-		-- return tLaneAssignList[team]
 	end
 
 	if GetGameState() == GAME_STATE_HERO_SELECTION or GetGameState() == GAME_STATE_STRATEGY_TIME or GetGameState() == GAME_STATE_PRE_GAME then
 		InstallChatCallback(function (attr) SelectHeroChatCallback(attr.player_id, attr.string, attr.team_only); end);
 	end
 
-	CorrectDireLaneAssignment()
+	CorrectPotentialLaneAssignment()
 	-- print('lane for team: '..team)
 	-- Utils.PrintTable(tLaneAssignList[team])
 	return tLaneAssignList[team]

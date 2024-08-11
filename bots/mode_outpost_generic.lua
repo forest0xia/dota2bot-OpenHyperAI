@@ -52,7 +52,7 @@ function GetDesire()
 	end
 
 	if DotaTime() > 0 and DotaTime() - ShouldMoveOutsideFountainCheckTime < 2 then
-		return bot:GetActiveModeDesire() + 0.2
+		return Clamp(bot:GetActiveModeDesire() + 0.2, 0, 1.1)
 	else
 		ShouldMoveOutsideFountain = false
 	end
@@ -60,7 +60,7 @@ function GetDesire()
 	if ConsiderHeroMoveOutsideFountain() then
 		ShouldMoveOutsideFountain = true
 		ShouldMoveOutsideFountainCheckTime = DotaTime()
-		return bot:GetActiveModeDesire() + 0.2
+		return Clamp(bot:GetActiveModeDesire() + 0.2, 0, 1.1)
 	end
 
 	-- Leshrac
