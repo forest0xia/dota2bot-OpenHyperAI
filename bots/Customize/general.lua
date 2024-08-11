@@ -26,19 +26,17 @@ Customize['Ban'] = {
 
 -- Set the heroes you want Radiant bots to pick. Don't need to provide a value for all 5 bots, any empty/missing value will fallback to a Random value.
 -- Hero name ref: https://developer.valvesoftware.com/wiki/Dota_2_Workshop_Tools/Scripting/Heroes_internal_names
+-- The position is ranked by the order of the names you put in the below list, pos 1 - 5, from top to down.
 Customize['Radiant_Heros'] = {
     'Random',
-    'npc_dota_hero_rubick',
-    'Random',
-    'npc_dota_hero_zuus',
     'Random',
 }
 
 -- Set the heroes you want Dire bots to pick. Don't need to provide a value for all 5 bots, any empty/missing value will fallback to a Random value.
 -- Hero name ref: https://developer.valvesoftware.com/wiki/Dota_2_Workshop_Tools/Scripting/Heroes_internal_names
+-- The position is ranked by the order of the names you put in the below list, pos 1 - 5, from top to down.
 Customize['Dire_Heros'] = {
     'Random',
-    'npc_dota_hero_necrolyte',
 
     -- -- Some sample picks: -- --
 
