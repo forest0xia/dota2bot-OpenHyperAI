@@ -60,7 +60,6 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_glimmer_cape",--
 	"item_aghanims_shard",
 	"item_kaya_and_sange",--
-    'item_veil_of_discord',
 	"item_shivas_guard",--
 	"item_cyclone",
 	"item_ultimate_scepter",
@@ -100,7 +99,6 @@ sRoleItemsBuyList['pos_4'] = {
 	"item_spirit_vessel",--
 --	"item_wraith_pact",
 	"item_ultimate_scepter",
-    "item_veil_of_discord",
 	"item_shivas_guard",--
 	"item_ethereal_blade",--
 	"item_moon_shard",
@@ -118,7 +116,6 @@ sRoleItemsBuyList['pos_5'] = {
     "item_ultimate_scepter",
 	"item_cyclone",
 --	"item_wraith_pact",
-    "item_veil_of_discord",
 	"item_shivas_guard",
 	"item_ethereal_blade",--
 	"item_sheepstick",--

@@ -87,7 +87,6 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_manta",--
 	"item_black_king_bar",--
 	"item_aghanims_shard",
-    "item_veil_of_discord",
 	"item_shivas_guard",--
 	"item_assault",--
 	"item_refresher",--

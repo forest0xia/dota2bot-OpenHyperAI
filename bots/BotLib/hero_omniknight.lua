@@ -53,7 +53,6 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_blink",
 	sCrimsonPipeHalberd,--
 	"item_black_king_bar",--
-    "item_veil_of_discord",
 	"item_shivas_guard",--
 	"item_guardian_greaves",--
 	"item_overwhelming_blink",--
@@ -74,7 +73,6 @@ sRoleItemsBuyList['pos_4'] = {
 	"item_spirit_vessel",
 --	"item_wraith_pact",
 	"item_ultimate_scepter",
-    "item_veil_of_discord",
 	"item_shivas_guard",
 	"item_moon_shard",
 	"item_ultimate_scepter_2",
@@ -91,7 +89,6 @@ sRoleItemsBuyList['pos_5'] = {
     "item_ultimate_scepter",
 	"item_cyclone",
 --	"item_wraith_pact",
-    "item_veil_of_discord",
 	"item_shivas_guard",
 	"item_sheepstick",
 	"item_moon_shard",

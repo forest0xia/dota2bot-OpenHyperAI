@@ -53,7 +53,6 @@ sRoleItemsBuyList['pos_2'] = {
     "item_blink",
     "item_black_king_bar",--
     "item_octarine_core",--
-	"item_veil_of_discord",
     "item_shivas_guard",--
     "item_ultimate_scepter",
     "item_refresher",--
@@ -74,7 +73,6 @@ sRoleItemsBuyList['pos_3'] = {
     "item_boots",
     "item_magic_wand",
     "item_wind_lace",
-    "item_veil_of_discord",
     "item_blink",
     "item_black_king_bar",--
     "item_travel_boots",

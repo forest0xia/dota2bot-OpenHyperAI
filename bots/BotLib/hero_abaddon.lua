@@ -47,7 +47,6 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_crimson_guard",--
 	"item_aghanims_shard",
 	"item_heavens_halberd",--
-    "item_veil_of_discord",
     "item_shivas_guard",--
 	"item_assault",--
 	"item_travel_boots",

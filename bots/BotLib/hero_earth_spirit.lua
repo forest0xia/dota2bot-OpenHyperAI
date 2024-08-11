@@ -39,7 +39,6 @@ sRoleItemsBuyList['pos_2'] = {
     "item_heart",--
     "item_black_king_bar",--
     "item_travel_boots",
-    "item_veil_of_discord",
     "item_shivas_guard",--
     "item_octarine_core",--
     "item_ultimate_scepter_2",
@@ -64,7 +63,6 @@ sRoleItemsBuyList['pos_1'] = {
     "item_heart",--
     "item_black_king_bar",--
     "item_travel_boots",
-    "item_veil_of_discord",
     "item_shivas_guard",--
     "item_octarine_core",--
     "item_ultimate_scepter_2",
@@ -101,7 +99,6 @@ sRoleItemsBuyList['pos_4'] = {
 	"item_sheepstick",
 	"item_mystic_staff",
 	"item_ultimate_scepter_2",
-    "item_veil_of_discord",
 	"item_shivas_guard",
     "item_moon_shard",
     "item_wind_waker",

@@ -2,8 +2,8 @@
 
 This is a place for you to customize the Open Hyper AI bots.
 
-Be very careful to the punctuation and variable modification - it's very easy to cause syntax errors and could be hard for you to debug.
-In the case you saw the bots having some random names (names without "OHA" suffix), that means you had made some mistakes/errors while modifying this file. 
+When modiftying this file, be very careful to the spelling, punctuation and variable names - it's very easy to cause syntax errors and could be hard for you to debug.
+In the case you saw the bots having some random names or picks (heroes not what you have set or without "OHA" name suffix), that means you had made some mistakes/errors while modifying this file. 
 In any case this file got messed up and caused the bots to malfunction, you can try to restore the file. Either you have a copy to replace, or resubscribe the script, or download from github.
 
 Workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=3246316298
@@ -24,71 +24,74 @@ Customize['Ban'] = {
     'npc_dota_hero_marci',
 }
 
--- Set the heroes you want Radiant bots to pick. Don't need to provide a value for all 5 bots, any empty value will fallback to a Random value.
+-- Set the heroes you want Radiant bots to pick. Don't need to provide a value for all 5 bots, any empty/missing value will fallback to a Random value.
 -- Hero name ref: https://developer.valvesoftware.com/wiki/Dota_2_Workshop_Tools/Scripting/Heroes_internal_names
 Customize['Radiant_Heros'] = {
-    [1] = 'Random',
-    [2] = 'Random',
-    [3] = 'Random',
-    [4] = 'Random',
-    [5] = 'Random',
+    'Random',
+    'npc_dota_hero_rubick',
+    'Random',
+    'npc_dota_hero_zuus',
+    'Random',
 }
 
--- Set the heroes you want Dire bots to pick. Don't need to provide a value for all 5 bots, any empty value will fallback to a Random value.
+-- Set the heroes you want Dire bots to pick. Don't need to provide a value for all 5 bots, any empty/missing value will fallback to a Random value.
 -- Hero name ref: https://developer.valvesoftware.com/wiki/Dota_2_Workshop_Tools/Scripting/Heroes_internal_names
 Customize['Dire_Heros'] = {
-    [1] = 'Random',
-    [4] = 'Random',
-    [5] = 'Random',
+    'Random',
+    'npc_dota_hero_necrolyte',
 
     -- -- Some sample picks: -- --
 
     -- -- All Pandas/spirits
-    -- [1] = "npc_dota_hero_void_spirit",
-    -- [2] = "npc_dota_hero_storm_spirit",
-    -- [3] = "npc_dota_hero_ember_spirit",
-    -- [4] = "npc_dota_hero_brewmaster",
-    -- [5] = "npc_dota_hero_earth_spirit",
+    -- "npc_dota_hero_void_spirit",
+    -- "npc_dota_hero_storm_spirit",
+    -- "npc_dota_hero_ember_spirit",
+    -- "npc_dota_hero_brewmaster",
+    -- "npc_dota_hero_earth_spirit",
 
     -- -- Traditional
-    -- [1] = "npc_dota_hero_chaos_knight",
-    -- [2] = "npc_dota_hero_sniper",
-    -- [3] = "npc_dota_hero_axe",
-    -- [4] = "npc_dota_hero_zuus",
-    -- [5] = "npc_dota_hero_warlock",
+    -- "npc_dota_hero_chaos_knight",
+    -- "npc_dota_hero_sniper",
+    -- "npc_dota_hero_axe",
+    -- "npc_dota_hero_zuus",
+    -- "npc_dota_hero_warlock",
 
     -- -- Rubick mid, and good team fights
-    -- [1] = "npc_dota_hero_clinkz",
-    -- [2] = "npc_dota_hero_rubick",
-    -- [3] = "npc_dota_hero_enigma",
-    -- [4] = "npc_dota_hero_earth_spirit",
-    -- [5] = "npc_dota_hero_techies",
+    -- "npc_dota_hero_clinkz",
+    -- "npc_dota_hero_rubick",
+    -- "npc_dota_hero_enigma",
+    -- "npc_dota_hero_earth_spirit",
+    -- "npc_dota_hero_techies",
 
     -- -- Invoker mid 1, and good team fights
-    -- [1] = "npc_dota_hero_chaos_knight",
-    -- [2] = 'npc_dota_hero_invoker',
-    -- [3] = "npc_dota_hero_legion_commander",
-    -- [4] = "npc_dota_hero_nyx_assassin",
-    -- [5] = "npc_dota_hero_zuus",
+    -- "npc_dota_hero_chaos_knight",
+    -- 'npc_dota_hero_invoker',
+    -- "npc_dota_hero_legion_commander",
+    -- "npc_dota_hero_nyx_assassin",
+    -- "npc_dota_hero_zuus",
 
     -- -- Invoker mid 2, and good team fights
-    -- [1] = "npc_dota_hero_chaos_knight",
-    -- [2] = 'npc_dota_hero_invoker',
-    -- [3] = "npc_dota_hero_enigma",
-    -- [4] = "npc_dota_hero_zuus",
-    -- [5] = "npc_dota_hero_techies",
+    -- "npc_dota_hero_chaos_knight",
+    -- 'npc_dota_hero_invoker',
+    -- "npc_dota_hero_enigma",
+    -- "npc_dota_hero_zuus",
+    -- "npc_dota_hero_techies",
 }
 
--- Set the names of the heroes for Radiant bots. Don't need to provide a value for all 5 bots, any empty value will fallback to a Random value.
+-- Set the names of the heroes for Radiant bots. Don't need to provide a value for all 5 bots, any empty/missing value will fallback to a Random value.
 Customize['Radiant_Names'] = {
     'Hello World',
     'Random',
 }
 
--- Set the names of the heroes for Dire bots. Don't need to provide a value for all 5 bots, any empty value will fallback to a Random value.
+-- Set the names of the heroes for Dire bots. Don't need to provide a value for all 5 bots, any empty/missing value will fallback to a Random value.
 Customize['Dire_Names'] = {
-    'EZ',
+    'Random',
 }
+
+-- Set whether or not allowing bots to pick same/repeated heroes. 
+-- By setting it to true, you can have bots picking all pudges, techies for example, or the same set of heroes for both teams. 
+Customize['Allow_Repeated_Heroes'] = false
 
 
 return Customize

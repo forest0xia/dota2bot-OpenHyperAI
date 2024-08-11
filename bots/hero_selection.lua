@@ -23,6 +23,7 @@ local CM = require( GetScriptDirectory()..'/FunLib/captain_mode' )
 local Customize = require( GetScriptDirectory()..'/Customize/general' )
 local HeroSet = {}
 local SupportedHeroes = {}
+local UseCustomizedPicks = false
 
 --[[
 'npc_dota_hero_abaddon',
@@ -686,6 +687,7 @@ if Customize then
 			local hero = Customize.Radiant_Heros[i]
 			if hero and hero ~= 'Random' and Utils.HasValue(SupportedHeroes, hero) then
 				sSelectList[i] = hero
+				UseCustomizedPicks = true
 			end
 		end
 	elseif GetTeam() == TEAM_DIRE and Customize.Dire_Heros then
@@ -693,6 +695,7 @@ if Customize then
 			local hero = Customize.Dire_Heros[i]
 			if hero and hero ~= 'Random' and Utils.HasValue(SupportedHeroes, hero) then
 				sSelectList[i] = hero
+				UseCustomizedPicks = true
 			end
 		end
 	end
@@ -807,6 +810,9 @@ function X.GetNotRepeatHero( nTable )
 end
 
 function X.IsRepeatHero( sHero )
+	if Customize and Customize.Allow_Repeated_Heroes then
+		return false
+	end
 
 	for id = 0, 20
 	do
@@ -824,6 +830,10 @@ end
 
 -- limit the number and chance the weak heroes can be picked.
 function X.SkipPickingWeakHeroes(sHero)
+	if Customize and Customize.Allow_Repeated_Heroes then
+		return false
+	end
+
 	return Utils.HasValue(WeakHeroes, sHero)
 	and SelectedWeakHero >= MaxWeakHeroCount
 end
@@ -966,7 +976,7 @@ function AllPickHeros()
 			sSelectHero = sSelectList[i]
 
 			-- Give a chance to pick counter/synergy heroes
-			if RandomInt(1, 4) >= 3 then
+			if not UseCustomizedPicks and RandomInt(1, 4) >= 3 then
 				local nCurrEnmCores = X.GetCurrEnmCores(nEnmTeam)
 				local selectCounter = nil
 
@@ -980,7 +990,7 @@ function AllPickHeros()
 					if not X.IsRepeatHero(heroName)
 					and MU.IsCounter(heroName, nHeroToCounter) -- so it's not 'samey'; since bots don't really put pressure like a human would
 					then
-						print('Counter pick. ', 'Selected: '..heroName, ' to counter: '..nHeroToCounter)
+						print('Team '..GetTeam()..'. Counter pick. ', 'Selected: '..heroName, ' to counter: '..nHeroToCounter)
 						selectCounter = heroName
 						break
 					end
@@ -991,12 +1001,12 @@ function AllPickHeros()
 				else
 					local synergy = X.GetBestHeroFromPool(i, nOwnTeam)
 					if synergy ~= '' and synergy ~= nil then
-						print('Synergy pick. ', 'Selected: '..synergy)
+						print('Team '..GetTeam()..'. Synergy pick. ', 'Selected: '..synergy)
 						sSelectHero = synergy
 					end
 				end
 			else
-				print('Skip picking counter/synergy heroes. For more chance to see any heroes')
+				print('Team '..GetTeam()..'. Skip picking counter/synergy heroes. For more chance to see any heroes')
 			end
 
 			if X.IsRepeatHero(sSelectHero) then sSelectHero = X.GetNotRepeatHero( tSelectPoolList[i] ) end

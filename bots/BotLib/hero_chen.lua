@@ -56,7 +56,6 @@ sRoleItemsBuyList['pos_1'] = {
     "item_octarine_core",--
     "item_dagon_5",--
     "item_ultimate_scepter_2",
-    "item_veil_of_discord",
     "item_shivas_guard",
     "item_travel_boots_2",--
     "item_ethereal_blade",--
@@ -74,7 +73,6 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_rod_of_atos",
 	"item_gungir",--
 	"item_aghanims_shard",
-	"item_veil_of_discord",
 	"item_cyclone",
 	"item_shivas_guard",
 	"item_sheepstick",
@@ -94,7 +92,6 @@ sRoleItemsBuyList['pos_4'] = {
 	"item_guardian_greaves",--
 	"item_spirit_vessel",--
 --	"item_wraith_pact",
-	"item_veil_of_discord",
 	"item_shivas_guard",--
 	"item_sheepstick",--
     "item_ultimate_scepter_2",

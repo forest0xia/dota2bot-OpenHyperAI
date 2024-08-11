@@ -27,7 +27,6 @@ local sRoleItemsBuyList = {}
 sRoleItemsBuyList['pos_1'] = {
 	"item_mage_outfit",
 	"item_shadow_amulet",
-	"item_veil_of_discord",
 	"item_shivas_guard",
 	"item_cyclone",
 	"item_glimmer_cape",
@@ -52,7 +51,6 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_ring_of_basilius",
 	"item_arcane_boots",
 	"item_magic_wand",
-    "item_veil_of_discord",
 	"item_shivas_guard",--
 	"item_rod_of_atos",
 	"item_gungir",--
@@ -78,7 +76,6 @@ sRoleItemsBuyList['pos_4'] = {
     "item_ultimate_scepter",
 	"item_spirit_vessel",
 --	"item_wraith_pact",
-    "item_veil_of_discord",
 	"item_shivas_guard",
 	"item_sheepstick",
 	"item_moon_shard",
@@ -95,7 +92,6 @@ sRoleItemsBuyList['pos_5'] = {
     "item_ultimate_scepter",
 	"item_spirit_vessel",
 --	"item_wraith_pact",
-    "item_veil_of_discord",
 	"item_shivas_guard",
 	"item_sheepstick",
 	"item_moon_shard",

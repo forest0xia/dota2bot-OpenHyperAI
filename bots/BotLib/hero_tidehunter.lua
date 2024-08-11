@@ -49,7 +49,6 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_blink",
 	"item_aghanims_shard",
 	"item_pipe",--
-    "item_veil_of_discord",
 	"item_shivas_guard",--
 	sLotusHalberd,--
 	"item_ultimate_scepter",

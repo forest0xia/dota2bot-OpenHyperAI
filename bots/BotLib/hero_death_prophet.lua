@@ -63,7 +63,6 @@ sRoleItemsBuyList['pos_2'] = {
 	"item_ring_of_basilius",
 	"item_arcane_boots",
 	"item_magic_wand",
-    "item_veil_of_discord",
 	"item_shivas_guard",--
 	"item_cyclone",
 	"item_eternal_shroud",--

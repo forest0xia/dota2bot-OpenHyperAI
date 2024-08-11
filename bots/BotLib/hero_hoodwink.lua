@@ -36,7 +36,6 @@ sRoleItemsBuyList['pos_4'] = {
     "item_maelstrom",
 	"item_guardian_greaves",--
     "item_gungir",--
-    "item_veil_of_discord",
 	"item_shivas_guard",--
 	"item_aghanims_shard",
 	"item_ultimate_scepter",
@@ -54,7 +53,6 @@ sRoleItemsBuyList['pos_5'] = {
 	'item_glimmer_cape',
 	'item_boots_of_bearing',
 	'item_pipe',
-	'item_veil_of_discord',
 	"item_shivas_guard",
 	'item_cyclone',
 	'item_sheepstick',
