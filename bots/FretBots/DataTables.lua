@@ -107,8 +107,8 @@ function DataTables:Initialize()
 			end
 		end
 	end
-	print('[Fretbots] There are '..#AllBots[RADIANT]..' Radiant bots!')
-	print('[Fretbots] There are '..#AllBots[DIRE]..' Dire bots!')
+	print('There are '..#AllBots[RADIANT]..' Radiant bots!')
+	print('There are '..#AllBots[DIRE]..' Dire bots!')
 	
 
 	-- Purge human side bots

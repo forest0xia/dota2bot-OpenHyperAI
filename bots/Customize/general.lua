@@ -89,8 +89,8 @@ Customize['Dire_Names'] = {
 
 -- Set whether or not allowing bots to pick same/repeated heroes. 
 -- By setting it to true, you can have bots picking all pudges, techies for example, or the same set of heroes for both teams. 
--- WARNING: Setting this to true CAN reduce the gaming experience due to the fact some heroes are kind of buggy or weak at the moment and 
---          are intentionally having reduced chances to get picked by bots. Set this to true will break this blocker.
+-- WARNING: Setting this to true CAN reduce the gaming experience due to the fact some heroes are kind of buggy or weak at the moment (listed below) and 
+--          are currently intentionally having reduced chances to get picked by bots. Set this to true will break this blocker.
 Customize['Allow_Repeated_Heroes'] = false
 
 
@@ -100,11 +100,15 @@ return Customize
 
 --[[
 
-A list of to be improved heroes below. They maybe selected for bots, but shouldn't have more than one in a team to ensure the bar of gaming experience for human players.
-Weak due to:
-1, Some have bugs from Valve side, which I've tried a lot of effrot to improve and fix. 
-2, I do not play some of those heroes a lot myself so can't make good bots, 
-3, It's not easy easy to implement the hero in a good way in terms of doing it via coding.
+A list of to be improved heroes below, as of 2024/8/11. They are relatively weaker than others and can still get selected by bots, 
+but there shouldn't have more than one of those in a team to ensure the bar of gaming experience for human players.
+
+Those are weak due to:
+1, Some have bugs from Valve side, which I've spent a lot of effrot with to improve and fix things. 
+2, It's not easy to implement the hero in a good way in terms of doing it via coding with the code base we have.
+3, I do not play some of those heroes a lot myself so can't make good bots, 
+It's a matter of time to get everything improved, but I don't have a lot of time on this. 
+So I put them here, and hopefully make it easy for you to use and learn. I'd appreciate any actual help from you to make the bots better together.
 
 -- -- List A. Weak ones, meaning they are too far from being able to apply their power:
 	'npc_dota_hero_chen',
@@ -121,7 +125,7 @@ Weak due to:
 	'npc_dota_hero_void_spirit',
 	'npc_dota_hero_pudge',
 
--- -- List B. Buggy ones, meaning they have bugs on Valves side, as of (still) 2024/8/11:
+-- -- List B. Buggy ones, meaning they have bugs on Valves side:
     'npc_dota_hero_muerta',
     'npc_dota_hero_marci',
     'npc_dota_hero_lone_druid',
@@ -131,7 +135,7 @@ Weak due to:
     'npc_dota_hero_hoodwink',
     'npc_dota_hero_wisp',
 
--- -- List C. As of (still) 2024/8/11, they still don't have some abilities due to Facet updates in 7.37. For now you can enable Frebots mode to fix this problem.
+-- -- List C. They don't have some abilities due to Facet updates in 7.37. For now you can enable Frebots mode to fix this problem.
 	'npc_dota_hero_faceless_void',
 	'npc_dota_hero_magnataur',
 

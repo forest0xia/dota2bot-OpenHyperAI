@@ -58,7 +58,7 @@ function AwardBonus:gold(bot, bonus)
 	if bot.stats.awards.gold < Settings.awardCap.gold and bonus > 0 then
 		PlayerResource:ModifyGold(bot.stats.id, bonus, false, 0)
 		bot.stats.awards.gold = bot.stats.awards.gold + bonus
-		Debug:Print('Awarding gold to '..bot.stats.name..'.')
+		Debug:Print('Awarding '..tostring(bonus)..' gold to '..bot.stats.name..'.')
 		return true
 	end
 	return false
@@ -73,7 +73,7 @@ function AwardBonus:stats(bot, bonus)
 		bot:ModifyAgility(clamped)
 		bot:ModifyIntellect(clamped)
 		bot.stats.awards.stats = bot.stats.awards.stats + clamped
-		Debug:Print('Awarding stats to '..bot.stats.name..'.')
+		Debug:Print('Awarding '..tostring(clamped)..' stats to '..bot.stats.name..'.')
 		return true
 	end
 	return false
@@ -88,7 +88,7 @@ function AwardBonus:armor(bot, bonus)
 		local base = bot:GetAgility() * (1/6)
 		bot:SetPhysicalArmorBaseValue(armor - base + clamped)
 		bot.stats.awards.armor = bot.stats.awards.armor + clamped
-		Debug:Print('Awarding armor to '..bot.stats.name..'.')
+		Debug:Print('Awarding '..tostring(clamped)..' armor to '..bot.stats.name..'.')
 		return true
 	end
 	return false
@@ -102,7 +102,7 @@ function AwardBonus:magicResist(bot, bonus)
 		resistance = bot:GetBaseMagicalResistanceValue()
 		bot:SetBaseMagicalResistanceValue(resistance + clamped)
 		bot.stats.awards.magicResist = bot.stats.awards.magicResist + clamped
-		Debug:Print('Awarding magic resist to '..bot.stats.name..'.')
+		Debug:Print('Awarding '..tostring(clamped)..' magic resist to '..bot.stats.name..'.')
 		return true
 	end
 	return false
@@ -131,7 +131,7 @@ function AwardBonus:levels(bot, levels)
 		local awardXP = Utilities:Round(averageXP * levels)
 		bot:AddExperience(awardXP, 0, false, true)
 		bot.stats.awards.levels = bot.stats.awards.levels + levels
-		Debug:Print('Awarding levels  to '..bot.stats.name..'.')
+		Debug:Print('Awarding '..tostring(levels)..' levels to '..bot.stats.name..'.')
 		return true
 	end
 	return false
@@ -159,7 +159,7 @@ end
 function AwardBonus:Experience(bot, bonus)
 	if bonus > 0 then
 		bot:AddExperience(bonus, 0, false, true)
-		Debug:Print('Awarding experience to '..bot.stats.name..'.')
+		Debug:Print('Awarding '..tostring(bonus)..' experience to '..bot.stats.name..'.')
 	end
 end
 
@@ -169,7 +169,7 @@ function AwardBonus:Death(bot)
 	table.insert(awardsTable, bot)
 	-- Drop out for edge cases (LD bear, AW clone)
 	if not DataTables:IsRealHero(bot) then
-		Debug:Print(bot:GetName()..' is not a real hero unit.  No Death Award given.')
+		Debug:Print(bot:GetName()..' is not a real hero unit. No Death Award given.')
 		return
 	end
 	-- to be printed to players

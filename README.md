@@ -15,7 +15,7 @@ Bot script in Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails
 1. Support almost ALL game modes: https://steamcommunity.com/workshop/filedetails/discussion/3246316298/4334231305373971730/
 1. Improved code structure & general logic for decision making for ability casting, item usages, defending, roaming as well as farming.
 1. Enhanced AI Chatbot. You can chat with bots in the game as if they were real and optimistic players. Integrated with ChatGPT. [Note: you need to enable Fretbot mode for this, check out How to Install section below.]
-1. Bots are customizable easily. E.g. you can change bot names, bot ban/picks, etc. Check out the file in [bots/Customize/general.lua](bots/Customize/general.lua)
+1. Bots are customizable easily. E.g. you can change bot names, bot ban/picks, etc. Check out the file in [bots/Customize/general.lua](bots/Customize/general.lua), or in local Workshop directory: `<steam folder>\steamapps\workshop\content\570\3246316298\Customize\general.lua`
 1. Fixed tons of bugs. Bugs that can cause bots to stay idle or cancel it's own channeling spells or stuck on weird states.
 
 ### How to install this script?
@@ -121,6 +121,5 @@ This script is based on Valve's default bot script and many other people's work 
 - Bots won't immediately use items from their backpack. Better backpack managment needed to 1, swap items for e.g. healings and swap back when used.
 - Don't go to outpost alone or use smoke.
 - Bots should be able to dynamically change the item-build-list and skill-talent-build list to refect the role swapping with player - in case player uses !pos to swap roles.
-- Fix `!pos X` command for Dire side when player skips some slots in local lobby and still wants to swap role with a bot.
 
 

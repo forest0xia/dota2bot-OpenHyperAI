@@ -1,6 +1,6 @@
 local X = { }
 
-X['number'] = "0.7.37 - 2024/8/11"
+X['number'] = "0.7.37 - 2024/8/12"
 
 X['recentChangeLogs'] = {
     "GLHF"

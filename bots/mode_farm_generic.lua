@@ -50,50 +50,24 @@ local beVeryHighFarmer = false;
 
 local isChangePosMessageDone = false
 
-local AnnounceMessages = { -- {sMessage, bGlobalMessage, bEnabled}
+local MessagesToBeAnnounced = { -- {sMessage, bGlobalMessage, bEnabled}
 	{"Welcome to Open Hyper AI (OHA): " .. Version.number, true, true},
 	{"If you have any feedback, please post a comment to script's Workshop or Github repo.", false, true},
-	{"You can type !pos X to swap position with a bot. For example, type: `!pos 2` to go mid lane.", false, GetGameMode() ~= GAMEMODE_CM},
+	{"You can type !pos X to swap position with a bot. For example, type: `!pos 2` to go mid lane.", false, true},
 }
+
 local lastAnnouncePrintedTime = 0
 local numberAnnouncePrinted = 1
 local announcementGap = 6
+local hasPickedOneAnnouncer = false
 
 if bot.farmLocation == nil then bot.farmLocation = bot:GetLocation() end
 
 function GetDesire()
 	Utils.PrintPings(0.15)
 
-	if ((J.IsModeTurbo() and DotaTime() > -50 + team * 2) or (not J.IsModeTurbo() and DotaTime() > -75 + team * 2))
-	and numberAnnouncePrinted < #AnnounceMessages + 1
-	and J.GetPosition(bot) == 5
-	and DotaTime() < 0
-	then
-		if GameTime() - lastAnnouncePrintedTime >= announcementGap then
-			local msg = AnnounceMessages[numberAnnouncePrinted]
-			if msg ~= nil and msg[3] then
-				bot:ActionImmediate_Chat(msg[1], msg[2])
-			end
-			numberAnnouncePrinted = numberAnnouncePrinted + 1
-			lastAnnouncePrintedTime = GameTime()
-		end
-	end
-
-	if GetGameState() == GAME_STATE_PRE_GAME and bot.isBear == nil
-	and (bot.announcedRole == nil or bot.announcedRole ~= J.GetPosition(bot)) then
-		bot.announcedRole = J.GetPosition(bot)
-		bot:ActionImmediate_Chat('I will play position '..J.GetPosition(bot), false)
-	end
-	if not isChangePosMessageDone
-	and J.GetPosition(bot) == 5
-	then
-		local nH, nB = J.NumHumanBotPlayersInTeam()
-		if DotaTime() >= 0 and nH > 0 and nB > 0
-		then
-			bot:ActionImmediate_Chat("Position selection closed.", true)
-			isChangePosMessageDone = true
-		end
-	end
+	PickOneAnnouncer()
+	AnnounceMessages()
 
 	-- 如果在打高地 就别撤退去打钱了
 	local nAllyList = J.GetNearbyHeroes(bot,1600,false,BOT_MODE_NONE);
@@ -151,7 +125,7 @@ function GetDesire()
 	
 	if bot:IsAlive() --For sometime to run
 	then
-		if runTime ~= 0 
+		if runTime ~= 0
 			and DotaTime() < runTime + shouldRunTime
 		then
 			return BOT_MODE_DESIRE_ABSOLUTE * 1.1;
@@ -455,7 +429,6 @@ function GetDesire()
 	return BOT_MODE_DESIRE_NONE;
 	
 end
-
 
 function OnStart()
 
@@ -1352,6 +1325,52 @@ function X.SetPushBonus( bot )
 		return
 	end
 	
+end
+
+function PickOneAnnouncer()
+	if not hasPickedOneAnnouncer then
+		for i, id in pairs(GetTeamPlayers(GetTeam())) do
+			local hero = GetTeamMember(i)
+			if hero ~= nil and hero.isAnnouncer then return end
+		end
+		bot.isAnnouncer = true
+		hasPickedOneAnnouncer = true
+		return
+	end
+end
+
+function AnnounceMessages()
+	if ((J.IsModeTurbo() and DotaTime() > -50 + team * 2) or (not J.IsModeTurbo() and DotaTime() > -75 + team * 2))
+	and numberAnnouncePrinted < #MessagesToBeAnnounced + 1
+	and bot.isAnnouncer
+	and DotaTime() < 0
+	then
+		if GameTime() - lastAnnouncePrintedTime >= announcementGap then
+			local msg = MessagesToBeAnnounced[numberAnnouncePrinted]
+			if msg ~= nil and msg[3] then
+				bot:ActionImmediate_Chat(msg[1], msg[2])
+			end
+			numberAnnouncePrinted = numberAnnouncePrinted + 1
+			lastAnnouncePrintedTime = GameTime()
+		end
+	end
+
+	if GetGameMode() ~= GAMEMODE_1V1MID and GetGameState() == GAME_STATE_PRE_GAME and bot.isBear == nil
+	and (bot.announcedRole == nil or bot.announcedRole ~= J.GetPosition(bot)) then
+		bot.announcedRole = J.GetPosition(bot)
+		bot:ActionImmediate_Chat('I will play position '..J.GetPosition(bot), false)
+	end
+	if GetGameMode() ~= GAMEMODE_1V1MID
+	and not isChangePosMessageDone
+	and bot.isAnnouncer
+	then
+		local nH, nB = J.NumHumanBotPlayersInTeam()
+		if DotaTime() >= 0 and nH > 0 and nB > 0
+		then
+			bot:ActionImmediate_Chat("Position selection closed.", true)
+			isChangePosMessageDone = true
+		end
+	end
 end
 
 X.GetDesire = GetDesire

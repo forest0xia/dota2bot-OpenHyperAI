@@ -1410,41 +1410,40 @@ function X.ConsiderSunstrike()
     local nEnemyHeroes = GetUnitList(UNIT_LIST_ENEMY_HEROES)
     for _, enemyHero in pairs(nEnemyHeroes)
     do
-        -- 敌人可能可以被天火击杀
-        if J.IsValidHero(enemyHero)
-        and J.CanKillTarget(enemyHero, nDamage * 2, DAMAGE_TYPE_PURE)
-        and not J.IsSuspiciousIllusion(enemyHero)
-        then
-            -- 杀掉残血tp
-            if enemyHero:HasModifier( 'modifier_teleporting' )
-            and J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_PURE) then
-                local remaining = J.GetModifierTime(enemyHero, 'modifier_teleporting')
-                if remaining ~= nil and remaining > nDelay + 0.05
+        if J.IsValidHero(enemyHero) and not J.IsSuspiciousIllusion(enemyHero) then
+            -- 敌人可能可以被天火击杀
+            if J.CanKillTarget(enemyHero, nDamage * 2, DAMAGE_TYPE_PURE) then
+                if J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_PURE) then
+                    -- 杀掉残血tp
+                    if enemyHero:HasModifier( 'modifier_teleporting' ) then
+                        local remaining = J.GetModifierTime(enemyHero, 'modifier_teleporting')
+                        if remaining ~= nil and remaining > nDelay + 0.05
+                        then
+                            return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation()
+                        else
+                            -- tp 马上完成，则天火对方泉水
+                            return BOT_ACTION_DESIRE_HIGH, Utils.GetEnemyFountainTpPoint()
+                        end
+                    end
+                    return BOT_ACTION_DESIRE_HIGH, J.GetCorrectLoc(enemyHero, nDelay + nCastPoint)
+                end
+
+                -- if our allys are near by the target, assuming allys will deal with enough dmg within the delay of sunstrike
+                if J.GetNearbyHeroes(enemyHero, 500, true) >= 2
                 then
-                    return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation()
-                else
-                    -- tp 马上完成，则天火对方泉水
-                    return BOT_ACTION_DESIRE_HIGH, Utils.GetEnemyFountainTpPoint()
+                    return BOT_ACTION_DESIRE_HIGH, J.GetCorrectLoc(enemyHero, nDelay + nCastPoint)
+                end
+
+                -- 敌人是否有即将结束的无敌状态 并且有可能在被天火击中后被击杀
+                if X.CheckTempModifiers(TempNonMovableModifierNames, enemyHero, (nDelay + nCastPoint)) > 0 then
+                    return BOT_ACTION_DESIRE_HIGH, J.GetCorrectLoc(enemyHero, nDelay + nCastPoint)
                 end
             end
-            
-            if J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_PURE) -- 击中则敌人肯定可以被天火击杀
-            or J.GetNearbyHeroes(enemyHero, 500, true) >= 2 -- if our allys are near by the target, assuming allys will deal with enough dmg within the delay of sunstrike
-            then
-                return BOT_ACTION_DESIRE_HIGH, J.GetCorrectLoc(enemyHero, nDelay + nCastPoint)
-            end
 
-            -- 敌人是否有即将结束的无敌状态 并且有可能在被天火击中后被击杀
-            if X.CheckTempModifiers(TempNonMovableModifierNames, enemyHero, (nDelay + nCastPoint)) > 0 then
-                return BOT_ACTION_DESIRE_HIGH, J.GetCorrectLoc(enemyHero, nDelay + nCastPoint)
+            -- 敌人被长时间大招控制
+            if X.IsUnderLongDurationStun(enemyHero) then
+                return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation()
             end
-        end
-
-        -- 敌人被长时间大招控制
-        if J.IsValidHero(enemyHero)
-        and not J.IsSuspiciousIllusion(enemyHero)
-        and X.IsUnderLongDurationStun(enemyHero) then
-            return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation()
         end
     end
 

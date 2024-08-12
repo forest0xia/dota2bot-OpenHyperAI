@@ -79,7 +79,7 @@ function Defend.GetDefendDesireHelper(bot, lane)
 			local saferLoc = J.AdjustLocationWithOffsetTowardsFountain(nDefendLoc, 850) + RandomVector(50)
 
 			enemeyPushingBase = false
-			local nDefendAllies = J.GetAlliesNearLoc(saferLoc, 2000);
+			local nDefendAllies = J.GetAlliesNearLoc(saferLoc, 2500);
 			if #nDefendAllies < J.GetNumOfAliveHeroes(false) then
 				J.Utils['GameStates']['defendPings'].pingedTime = GameTime()
 				bot:ActionImmediate_Chat("Please come defending", false)
