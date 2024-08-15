@@ -106,7 +106,7 @@ function Defend.GetDefendDesireHelper(bot, lane)
 		nDefendDesire = Clamp(GetDefendLaneDesire(lane), 0.1, 1) * mul
 	end
 
-	return Clamp(nDefendDesire, 0, 1.25)
+	return RemapValClamped(J.GetHP(bot), 1, 0, Clamp(nDefendDesire, 0, 1.25), BOT_ACTION_DESIRE_NONE)
 end
 
 local nTpSolt = 15

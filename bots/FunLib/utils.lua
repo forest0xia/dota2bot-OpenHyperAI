@@ -149,6 +149,13 @@ function X.Shuffle(tbl)
     end
 end
 
+function X.SetFrameProcessTime(bot)
+    if bot.frameProcessTime == nil then
+        -- a time that diffs for each bot based on their ids but not much difference and shift the same amount for both teams.
+        bot.frameProcessTime = X.FrameProcessTime + math.fmod(bot:GetPlayerID()/1000, X.FrameProcessTime / 10) * 2
+    end
+end
+
 function X.GetHumanPing()
 	local ping = nil
 	local nTeamPlayers = GetTeamPlayers(GetTeam())

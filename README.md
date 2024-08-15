@@ -37,13 +37,12 @@ Bot script in Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails
 1. Pos1 and Pos5 bots go to safe lane. Pos3 and Pos4 bots go offlane. Pos2 bot goes to mid lane.
 
 ### What's next
-1. This is a script derived from Tinkering About (by @ryndrb). But the code has diverged significantly w.r.t roles, item selection, farming, laning, rosh/runes strategies, as well as the local support with Fretbots. So the future maintenance will keep diverging.
-2. More heroes support.
-3. Better decision making on pushing and ganking.
-4. Better spell casting for certain heroes like Invoker, Rubick, etc.
-5. More code bug fixes.
-6. Better laning logic to avoid bots feeding too much in the early game.
-7. Figure out how to better support the Bugged-Heroes: Dark Willow, Elder Titan, Hoodwink, io, Lone Druid, Marci, Muerta, Primal Beast. Note that they are buggy due to problems on the Valves side, not script developers.
+1. This is a script derived from Tinkering About (by @ryndrb). But the code has diverged significantly w.r.t roles, item selection, farming, laning, roaming, push, defend, rosh/runes strategies, as well as the local support with Fretbots. Presumably the future maintenance will keep diverging even more.
+1. Better decision making on pushing and ganking.
+1. Better spell casting for certain heroes like Invoker, Rubick, etc.
+1. More code bug fixes.
+1. Better laning logic to avoid bots feeding too much in the early game.
+1. Figure out how to better support the Bugged-Heroes: Dark Willow, Elder Titan, Hoodwink, io, Lone Druid, Marci, Muerta, Primal Beast. Note that they are buggy due to problems on the Valves side, not script developers.
 
 ### Support the script
 If you'd like to buy me a coffee: https://steamcommunity.com/workshop/filedetails/discussion/3246316298/6553383644012991605/

@@ -9,7 +9,7 @@ require 'bots.FretBots.GameState'
 require 'bots.FretBots.Utilities'
 
 -- local debug flag
-local thisDebug = true;
+local thisDebug = false;
 local isDebug = Debug.IsDebug() and thisDebug;
 
 
@@ -435,7 +435,7 @@ function AwardBonus:GetSpecificPerMinuteBonus(bot, pmBot, roleTable, settings)
 	local skill = bot.stats.skill
 	local variance = Utilities:GetVariance(settings.variance)
 	-- Get total multiplier
-	local multiplier = AwardBonus:GetMultiplier(skill, scale, variance) * 1.25
+	local multiplier = AwardBonus:GetMultiplier(skill, scale, variance) * 1.35
 	-- multiply
 	pmTarget = Utilities:Round(pmTarget * multiplier)
 	-- if the bot is already better than this, do not give award

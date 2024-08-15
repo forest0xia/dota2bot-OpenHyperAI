@@ -7228,14 +7228,14 @@ end
 
 function ItemUsageThink()
 	if bot.lastItemFrameProcessTime == nil then bot.lastItemFrameProcessTime = DotaTime() end
-	if DotaTime() - bot.lastItemFrameProcessTime < Utils.FrameProcessTime then return end
+	if DotaTime() - bot.lastItemFrameProcessTime < bot.frameProcessTime then return end
 	bot.lastItemFrameProcessTime = DotaTime()
 	ItemUsageComplement()
 end
 
 function AbilityUsageThink()
 	if bot.lastAbilityFrameProcessTime == nil then bot.lastAbilityFrameProcessTime = DotaTime() end
-	if DotaTime() - bot.lastAbilityFrameProcessTime < Utils.FrameProcessTime and bot.isBear == nil then return end
+	if DotaTime() - bot.lastAbilityFrameProcessTime < bot.frameProcessTime and bot.isBear == nil then return end
 	bot.lastAbilityFrameProcessTime = DotaTime()
 	BotBuild.SkillsComplement()
 end
@@ -7243,21 +7243,21 @@ end
 function BuybackUsageThink()
 	BuybackUsageComplement()
 	-- if bot.lastBuybackFrameProcessTime == nil then bot.lastBuybackFrameProcessTime = DotaTime() end
-	-- if DotaTime() - bot.lastBuybackFrameProcessTime < Utils.FrameProcessTime then return end
+	-- if DotaTime() - bot.lastBuybackFrameProcessTime < bot.frameProcessTime then return end
 	-- bot.lastBuybackFrameProcessTime = DotaTime()
 	UseGlyph()
 end
 
 function CourierUsageThink()
 	if bot.lastCourierFrameProcessTime == nil then bot.lastCourierFrameProcessTime = DotaTime() end
-	if DotaTime() - bot.lastCourierFrameProcessTime < Utils.FrameProcessTime then return end
+	if DotaTime() - bot.lastCourierFrameProcessTime < bot.frameProcessTime then return end
 	bot.lastCourierFrameProcessTime = DotaTime()
 	CourierUsageComplement()
 end
 
 function AbilityLevelUpThink()
 	if bot.lastLevelUpFrameProcessTime == nil then bot.lastLevelUpFrameProcessTime = DotaTime() end
-	if DotaTime() - bot.lastLevelUpFrameProcessTime < Utils.FrameProcessTime then return end
+	if DotaTime() - bot.lastLevelUpFrameProcessTime < bot.frameProcessTime then return end
 	bot.lastLevelUpFrameProcessTime = DotaTime()
 	AbilityLevelUpComplement()
 end

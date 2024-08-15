@@ -52,6 +52,7 @@ local isChangePosMessageDone = false
 
 local MessagesToBeAnnounced = { -- {sMessage, bGlobalMessage, bEnabled}
 	{"Welcome to Open Hyper AI (OHA): " .. Version.number, true, true},
+	{"You can pre-define the heroes for bots to pick, e.g. 10 same heroes or your dream teams. Just modify the Customize/general file.", false, true},
 	{"If you have any feedback, please post a comment to script's Workshop or Github repo.", false, true},
 	{"You can type !pos X to swap position with a bot. For example, type: `!pos 2` to go mid lane.", false, true},
 }
@@ -449,7 +450,7 @@ function Think()
 	if J.CanNotUseAction(bot) then return end
 
 	if bot.lastFarmFrameProcessTime == nil then bot.lastFarmFrameProcessTime = DotaTime() end
-	if DotaTime() - bot.lastFarmFrameProcessTime < Utils.FrameProcessTime then return end
+	if DotaTime() - bot.lastFarmFrameProcessTime < bot.frameProcessTime then return end
 	bot.lastFarmFrameProcessTime = DotaTime()
 	
 	if runMode then

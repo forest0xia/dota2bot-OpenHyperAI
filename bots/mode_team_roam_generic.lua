@@ -59,6 +59,8 @@ else
 end
 
 function GetDesire()
+	Utils.SetFrameProcessTime(bot)
+
 	-- check if bot is idle
 	if DotaTime() - lastIdleStateCheck >= 2 then
 		J.CheckBotIdleState()
@@ -72,7 +74,6 @@ function GetDesire()
 		IsHeroCore = X.IsSpecialCore(bot)
 		IsSupport = X.IsSpecialSupport(bot)
 	end
-
 
 	local nDesire = 0
 
@@ -253,7 +254,7 @@ function Think()
 	ItemOpsThink()
 
 	if bot.lastTeamRoamFrameProcessTime == nil then bot.lastTeamRoamFrameProcessTime = DotaTime() end
-	if DotaTime() - bot.lastTeamRoamFrameProcessTime < Utils.FrameProcessTime then return end
+	if DotaTime() - bot.lastTeamRoamFrameProcessTime < bot.frameProcessTime then return end
 	bot.lastTeamRoamFrameProcessTime = DotaTime()
 
 	if ShouldAvoidAbilityZone() then

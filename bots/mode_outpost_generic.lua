@@ -317,14 +317,14 @@ function Think()
 	-- Huskar
 	if ShouldMoveOutsideFountain
 	then
-		bot:Action_AttackMove(J.Utils.GetOffsetLocationTowardsTargetLocation(J.GetTeamFountain(), J.GetEnemyFountain(), 900))
+		bot:Action_AttackMove(J.Utils.GetOffsetLocationTowardsTargetLocation(J.GetTeamFountain(), J.GetEnemyFountain(), 1300))
 		return
 	end
 
 	-- Get out of fountain if in item mode
 	if ShouldMoveOutsideFountain
 	then
-		bot:Action_AttackMove(J.Utils.GetOffsetLocationTowardsTargetLocation(J.GetTeamFountain(), J.GetEnemyFountain(), 900))
+		bot:Action_AttackMove(J.Utils.GetOffsetLocationTowardsTargetLocation(J.GetTeamFountain(), J.GetEnemyFountain(), 1300))
 		return
 	end
 
@@ -728,7 +728,7 @@ end
 
 function ConsiderHeroMoveOutsideFountain()
 	if DotaTime() < 0 then return false end
-	if bot:DistanceFromFountain() > 850 then return false end
+	if bot:DistanceFromFountain() > 1300 then return false end
 
 	if (bot:HasModifier('modifier_fountain_aura_buff') -- in fountain with high hp
 		and J.GetHP(bot) > 0.95)

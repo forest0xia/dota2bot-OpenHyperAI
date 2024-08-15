@@ -227,7 +227,7 @@ end
 function Think()
 
 	if bot.lastSideShopFrameProcessTime == nil then bot.lastSideShopFrameProcessTime = DotaTime() end
-	if DotaTime() - bot.lastSideShopFrameProcessTime < J.Utils.FrameProcessTime then return end
+	if DotaTime() - bot.lastSideShopFrameProcessTime < bot.frameProcessTime then return end
 	bot.lastSideShopFrameProcessTime = DotaTime()
 
 	if WisdomRuneThink() >= 1 then

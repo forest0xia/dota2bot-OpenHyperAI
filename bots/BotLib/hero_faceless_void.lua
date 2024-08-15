@@ -145,7 +145,7 @@ function X.SkillsComplement()
 		end
 	else
 		bot.needRefreshAbilitiesFor737 = true
-		if announceCount <= 2 and GameTime() - lastAnnouncedTime > 10 + bot:GetPlayerID() then
+		if announceCount <= 2 and GameTime() - lastAnnouncedTime > 15 + bot:GetPlayerID() then
 			lastAnnouncedTime = GameTime()
 			announceCount = announceCount + 1
 			bot:ActionImmediate_Chat( "Due to Valve bug in 7.37. I lost Chronosphere. Please enable Fretbots mode in this script to fix this problem. Check Workshop page if you need help.", true )

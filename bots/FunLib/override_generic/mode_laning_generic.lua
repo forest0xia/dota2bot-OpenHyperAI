@@ -17,7 +17,7 @@ local botTarget, nEnemyHeroes, nAllyHeroes, nEnemyTowers, nEnemyCreeps, nAllyCre
 
 
 function X.Think()
-    if not bot:IsAlive() or J.CanNotUseAction(bot) then return end
+    if not bot:IsAlive() or J.CanNotUseAction(bot) or bot:IsUsingAbility() or bot:IsChanneling() or bot:IsDisarmed() then return BOT_ACTION_DESIRE_NONE end
 
 	local AttackRange = bot:GetAttackRange()
 

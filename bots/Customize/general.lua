@@ -37,10 +37,11 @@ Customize['Radiant_Heros'] = {
 -- The position is ranked by the order of the names you put in the below list, pos 1 - 5, from top to down.
 Customize['Dire_Heros'] = {
     'Random',
+    'Random',
 
     -- -- Some sample picks: -- --
 
-    -- -- All Pandas/spirits
+    -- -- All Spirits/Pandas
     -- "npc_dota_hero_void_spirit",
     -- "npc_dota_hero_storm_spirit",
     -- "npc_dota_hero_ember_spirit",
@@ -61,20 +62,19 @@ Customize['Dire_Heros'] = {
     -- "npc_dota_hero_earth_spirit",
     -- "npc_dota_hero_techies",
 
-    -- -- Invoker mid 1, and good team fights -- --
-    -- "npc_dota_hero_chaos_knight",
-    -- 'npc_dota_hero_invoker',
-    -- "npc_dota_hero_legion_commander",
-    -- "npc_dota_hero_nyx_assassin",
-    -- "npc_dota_hero_zuus",
-
-    -- -- Invoker mid 2, and good team fights -- --
-    -- "npc_dota_hero_chaos_knight",
+    -- -- Invoker mid, and good team fights -- --
+    -- "npc_dota_hero_arc_warden",
     -- 'npc_dota_hero_invoker',
     -- "npc_dota_hero_enigma",
+    -- "npc_dota_hero_nyx_assassin",
     -- "npc_dota_hero_zuus",
-    -- "npc_dota_hero_techies",
 }
+
+-- Set whether or not allowing bots to pick same/repeated heroes. 
+-- By setting it to true, you can have bots picking all pudges, techies for example, or the same set of heroes for both teams. 
+-- WARNING: Setting this to true CAN reduce the gaming experience due to the fact some heroes are kind of buggy or weak at the moment (listed below) and 
+--          are currently intentionally having reduced chances to get picked by bots. Set this to true will break this blocker.
+Customize['Allow_Repeated_Heroes'] = false
 
 -- Set the names of the heroes for Radiant bots. Don't need to provide a value for all 5 bots, any empty/missing value will fallback to a Random value.
 Customize['Radiant_Names'] = {
@@ -87,12 +87,6 @@ Customize['Dire_Names'] = {
     'Random',
 }
 
--- Set whether or not allowing bots to pick same/repeated heroes. 
--- By setting it to true, you can have bots picking all pudges, techies for example, or the same set of heroes for both teams. 
--- WARNING: Setting this to true CAN reduce the gaming experience due to the fact some heroes are kind of buggy or weak at the moment (listed below) and 
---          are currently intentionally having reduced chances to get picked by bots. Set this to true will break this blocker.
-Customize['Allow_Repeated_Heroes'] = false
-
 
 return Customize
 
@@ -100,15 +94,19 @@ return Customize
 
 --[[
 
-A list of to be improved heroes below, as of 2024/8/11. They are relatively weaker than others and can still get selected by bots, 
-but there shouldn't have more than one of those in a team to ensure the bar of gaming experience for human players.
+Appendix:
+
+Below is a few lists of to-be-improved heroes, as of 2024/8/11. They are relatively weaker than others and can still get selected by bots, 
+but there SHOULD NOT have more than 1 of those in a team to ensure the bar of gaming experience for human players.
 
 Those are weak due to:
 1, Some have bugs from Valve side, which I've spent a lot of effrot with to improve and fix things. 
 2, It's not easy to implement the hero in a good way in terms of doing it via coding with the code base we have.
 3, I do not play some of those heroes a lot myself so can't make good bots, 
+
 It's a matter of time to get everything improved, but I don't have a lot of time on this. 
-So I put them here, and hopefully make it easy for you to use and learn. I'd appreciate any actual help from you to make the bots better together.
+So I put them here, and hopefully make it easy for you to use, or learn, or improve them. 
+I'd appreciate any actual help from you to make the bots better, and I'm certain we can achieve it by contributing together.
 
 -- -- List A. Weak ones, meaning they are too far from being able to apply their power:
 	'npc_dota_hero_chen',

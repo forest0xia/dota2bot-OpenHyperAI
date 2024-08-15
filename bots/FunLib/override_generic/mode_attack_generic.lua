@@ -46,6 +46,11 @@ function X.GetDesire()
 		end
 	end
 
+	if J.WeAreStronger(bot, 1200) then
+		bot:SetTarget(nEnemyHeroes[1])
+		return GetDesireBasedOnHp(nEnemyHeroes[1])
+	end
+
 	-- has an enemy hero nearby in attack range + some delta distance
 	if #nEnemyHeroes >= 1
 	and J.IsValidHero(nEnemyHeroes[1])
@@ -53,6 +58,24 @@ function X.GetDesire()
 	and J.CanBeAttacked(nEnemyHeroes[1]) then
 		bot:SetTarget(nEnemyHeroes[1])
 		return GetDesireBasedOnHp(nEnemyHeroes[1])
+	end
+
+	-- check if any near allies are in or about to be in a fight.
+	for _, allyHero in pairs(GetUnitList(UNIT_LIST_ALLIED_HEROES))
+	do
+		if J.IsValidHero(allyHero)
+		and J.IsInRange(allyHero, bot, MaxTrackingDistance)
+		-- and not J.IsInRange(allyHero, bot, 800)
+		and not allyHero:IsIllusion()
+		then
+			local nEnemyHeroesNearAlly = J.GetNearbyHeroes(allyHero, 800, true)
+			if #nEnemyHeroesNearAlly > 0
+			and J.IsValidHero(nEnemyHeroesNearAlly[1])
+			and not J.IsSuspiciousIllusion(nEnemyHeroesNearAlly[1]) then
+				bot:SetTarget(nEnemyHeroesNearAlly[1])
+				return GetDesireBasedOnHp(nEnemyHeroesNearAlly[1])
+			end
+		end
 	end
 
 	-- time to direct attack any creeps
@@ -84,13 +107,13 @@ function GetDesireBasedOnHp(target)
 			return BOT_ACTION_DESIRE_NONE
 		end
 	end
-	return RemapValClamped(J.GetHP(bot), 0, 1, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_VERYHIGH )
+	return RemapValClamped(J.GetHP(bot), 0, 1, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_ABSOLUTE * 1.7 )
 end
 
 function X.Think()
 	
 	if bot.lastAttackFrameProcessTime == nil then bot.lastAttackFrameProcessTime = DotaTime() end
-	if DotaTime() - bot.lastAttackFrameProcessTime < J.Utils.FrameProcessTime then return end
+	if DotaTime() - bot.lastAttackFrameProcessTime < bot.frameProcessTime then return end
 	bot.lastAttackFrameProcessTime = DotaTime()
 
 	-- has a target already

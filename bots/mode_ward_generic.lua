@@ -164,7 +164,7 @@ function Think()
 	end
 	
 	if bot.lastWardFrameProcessTime == nil then bot.lastWardFrameProcessTime = DotaTime() end
-	if DotaTime() - bot.lastWardFrameProcessTime < J.Utils.FrameProcessTime then return end
+	if DotaTime() - bot.lastWardFrameProcessTime < bot.frameProcessTime then return end
 	bot.lastWardFrameProcessTime = DotaTime()
 
 	if bot.ward
