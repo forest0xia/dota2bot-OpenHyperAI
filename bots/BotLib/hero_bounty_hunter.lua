@@ -98,11 +98,17 @@ sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_3']
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 X['sSellList'] = {
-	"item_quelling_blade",
-	"item_magic_wand",
-	"item_bottle",
-	"item_ancient_janggo",
 	"item_power_treads",
+	"item_quelling_blade",
+
+	"item_heavens_halberd",
+	"item_quelling_blade",
+
+	"item_abyssal_blade",
+	"item_magic_wand",
+
+	"item_assault",
+	"item_ancient_janggo",
 }
 
 if J.Role.IsPvNMode() then X['sBuyList'], X['sSellList'] = { 'PvN_BH' }, {"item_power_treads", 'item_quelling_blade'} end

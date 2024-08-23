@@ -105,7 +105,14 @@ Pos3SellList = {
 	"item_magic_wand",
 }
 
-X['sSellList'] = {}
+X['sSellList'] = {
+    "item_shivas_guard",
+    "item_branches",
+    "item_shivas_guard",
+	"item_bottle",
+    "item_black_king_bar",
+    "item_magic_wand",
+}
 
 if sRole == "pos_2"
 then

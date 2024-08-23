@@ -761,6 +761,20 @@ function J.CanCastAbilityOnTarget( npcTarget, bIgnoreMagicImmune )
 
 end
 
+function J.CanCastAbility(ability)
+	if ability == nil
+	or ability:IsNull()
+	or ability:IsPassive()
+	or ability:IsHidden()
+	or not ability:IsTrained()
+	or not ability:IsFullyCastable()
+	or not ability:IsActivated()
+	then
+		return false
+	end
+
+	return true
+end
 
 function J.CanCastOnMagicImmune( npcTarget )
 

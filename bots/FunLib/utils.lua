@@ -10,7 +10,7 @@ Anything that can be shared in any files without worrying about nested or circul
 
 local X = { }
 
-X['DebugMode'] = false
+X['DebugMode'] = true
 
 local RadiantFountainTpPoint = Vector(-7172, -6652, 384 )
 local DireFountainTpPoint = Vector(6982, 6422, 392)
@@ -85,7 +85,12 @@ function X.PrintPings(pingTimeGap)
                 -- for _, unit in pairs(GetUnitList(UNIT_LIST_ALL))
                 -- do
                 --     if X.GetLocationToLocationDistance(ping.location, unit:GetLocation()) < 400 then
-                --         print(unit:GetUnitName())
+                --         print('found unit:' .. unit:GetUnitName())
+                --     end
+                --     if unit:IsHero() then
+                --         for j = 0, 6 do
+                --             print('unit hero '..unit:GetUnitName()..' with abilities: ' .. unit:GetAbilityInSlot(j):GetName())
+                --         end
                 --     end
                 -- end
 

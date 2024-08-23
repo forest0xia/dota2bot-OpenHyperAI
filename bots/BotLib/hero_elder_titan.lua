@@ -113,24 +113,11 @@ sRoleItemsBuyList['pos_5'] = {
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 X['sSellList'] = {
-
-	"item_power_treads",
+	"item_travel_boots",
 	"item_quelling_blade",
 
-	"item_vanguard",
-	"item_assault",
-	"item_magic_wand",
-	
 	"item_abyssal_blade",
 	"item_magic_wand",
-	
-	"item_assault",
-	"item_ancient_janggo",
-
-    "item_quelling_blade",
-    "item_bracer",
-    "item_soul_ring",
-    "item_magic_wand",
 }
 
 

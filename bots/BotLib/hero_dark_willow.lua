@@ -99,22 +99,10 @@ sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_3']
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 
-Pos4SellList = {
+X['sSellList'] = {
+	"item_ultimate_scepter",
 	"item_magic_wand",
 }
-
-Pos5SellList = {
-	"item_magic_wand",
-}
-
-X['sSellList'] = {}
-
-if sRole == "pos_5"
-then
-    X['sSellList'] = Pos5SellList
-else
-    X['sSellList'] = Pos4SellList
-end
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_antimage' }, {} end
 

@@ -108,30 +108,38 @@ sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_3']
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 
-Pos1SellList = {
-    "item_bracer",
-    "item_magic_wand",
-    "item_ring_of_basilius",
+X['sSellList'] = {
+
+	"item_black_king_bar",
+	"item_quelling_blade",
+
+	"item_ultimate_scepter",
+	"item_magic_wand",
+
+	"item_cyclone",
+	"item_magic_wand",
+
+	"item_shivas_guard",
+	'item_magic_wand',
+	
+	"item_power_treads",
+	"item_quelling_blade",
+
+	"item_lotus_orb",
+	"item_quelling_blade",
+
+	"item_assault",
+	"item_magic_wand",
+	
+	"item_travel_boots",
+	"item_magic_wand",
+
+	"item_assault",
+	"item_ancient_janggo",
+	
+	"item_vladmir",
+	"item_magic_wand",
 }
-
-Pos2SellList = {
-    "item_bottle",
-    "item_bracer",
-    "item_magic_wand",
-    "item_ring_of_basilius",
-}
-
-Pos3SellList = {
-    "item_quelling_blade",
-    "item_magic_wand",
-    "item_ancient_janggo",
-}
-
-X['sSellList'] = Pos3SellList
-
-if sRole == "pos_1" then X['sSellList'] = Pos1SellList end
-if sRole == "pos_2" then X['sSellList'] = Pos2SellList end
-if sRole == "pos_3" then X['sSellList'] = Pos3SellList end
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_mid' }, {} end
 

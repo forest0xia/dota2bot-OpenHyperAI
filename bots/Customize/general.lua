@@ -30,7 +30,7 @@ Customize['Ban'] = {
 -- The position is ranked by the order of the names you put in the below list, pos 1 - 5, from top to down.
 Customize['Radiant_Heros'] = {
     'Random',
-    'Random',
+    'npc_dota_hero_storm_spirit',
 }
 
 -- Set the heroes you want Dire bots to pick. Don't need to provide a value for all 5 bots, any empty/missing value will fallback to a Random value.
