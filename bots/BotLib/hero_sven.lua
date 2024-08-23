@@ -586,7 +586,7 @@ function X.SvenConsiderTarget()
 
 	if J.IsValidHero( nInAttackRangeWeakestEnemyHero )
 		and J.CanBeAttacked( nInAttackRangeWeakestEnemyHero )
-		and ( GetUnitToUnitDistance( npcTarget, bot ) >  350 or U.HasForbiddenModifier( npcTarget ) )
+		and ( GetUnitToUnitDistance( npcTarget, bot ) >  350 or J.HasForbiddenModifier( npcTarget ) )
 	then
 		--更改目标为
 		bot:SetTarget( nInAttackRangeWeakestEnemyHero )

@@ -604,12 +604,6 @@ function X.ConsiderQ()
 		end
 	end
 
-
-	local skThere, skLoc = J.IsSandKingThere( bot, 1000, 2.0 )
-	if skThere then
-		return BOT_ACTION_DESIRE_MODERATE, skLoc
-	end
-
 	return BOT_ACTION_DESIRE_NONE, {}
 end
 

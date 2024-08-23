@@ -30,7 +30,7 @@ Customize['Ban'] = {
 -- The position is ranked by the order of the names you put in the below list, pos 1 - 5, from top to down.
 Customize['Radiant_Heros'] = {
     'Random',
-    'npc_dota_hero_storm_spirit',
+    'Random',
 }
 
 -- Set the heroes you want Dire bots to pick. Don't need to provide a value for all 5 bots, any empty/missing value will fallback to a Random value.
@@ -138,8 +138,5 @@ I'd appreciate any actual help from you to make the bots better, and I'm certain
 -- -- List C. They don't have some abilities due to Facet updates in 7.37. For now you can enable Frebots mode to fix this problem.
     'npc_dota_hero_faceless_void',
     'npc_dota_hero_magnataur',
-
--- -- List D. Valve has not allowed bots to pick these yet
-    'npc_dota_hero_ringmaster',
 
 ]]--

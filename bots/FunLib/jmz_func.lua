@@ -141,6 +141,7 @@ function J.CanNotUseAction( bot )
 			or bot:IsChanneling()
 			or bot:IsStunned()
 			or bot:IsNightmared()
+			or bot:HasModifier( 'modifier_ringmaster_the_box_buff' )
 			or bot:HasModifier( 'modifier_item_forcestaff_active' )
 			or bot:HasModifier( 'modifier_phantom_lancer_phantom_edge_boost' )
 			or bot:HasModifier( 'modifier_tinker_rearm' )
@@ -159,6 +160,7 @@ function J.CanNotUseAbility( bot )
 			or bot:IsStunned()
 			or bot:IsHexed()
 			or bot:IsNightmared()
+			or bot:HasModifier( 'modifier_ringmaster_the_box_buff' )
 			or bot:HasModifier( "modifier_doom_bringer_doom" )
 			or bot:HasModifier( 'modifier_item_forcestaff_active' )
 
@@ -550,13 +552,6 @@ function J.IsAllyHeroBetweenAllyAndEnemy( hAlly, hEnemy, vLoc, nRadius )
 			end
 		end
 	end
-
-	return false
-
-end
-
-
-function J.IsSandKingThere( bot, nCastRange, fTime )
 
 	return false
 

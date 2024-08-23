@@ -2941,6 +2941,14 @@ local Heroes = {
         },
     },
 
+    ['npc_dota_hero_ringmaster'] = {
+        ['synergy'] = {
+
+        },
+        ['counter'] = {
+
+        },
+    },
 }
 
 function X.CreateLUT(nList)

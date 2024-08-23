@@ -367,7 +367,7 @@ local sPos4List = {
 	"npc_dota_hero_zuus",
 	"npc_dota_hero_invoker",
 	"npc_dota_hero_wisp",
-	-- "npc_dota_hero_ringmaster", -- Valve has not enabled bots to pick it yet
+	"npc_dota_hero_ringmaster",
 }
 
 local sPos5List = {
@@ -425,7 +425,7 @@ local sPos5List = {
 	"npc_dota_hero_winter_wyvern",
 	"npc_dota_hero_witch_doctor",
 	"npc_dota_hero_zuus",
-	-- "npc_dota_hero_ringmaster", -- Valve has not enabled bots to pick it yet
+	"npc_dota_hero_ringmaster",
 }
 
 -- A list of to be improved heroes. They maybe selected for bots, but shouldn't have more than one in a team to ensure the bar of gaming experience for human players.
@@ -794,7 +794,6 @@ function X.GetNotRepeatHero( nTable )
 		for id = 0, 20
 		do
 			if ( IsTeamPlayer( id ) and GetSelectedHeroName( id ) == sHero )
-				or ( IsCMBannedHero( sHero ) )
 				or ( X.IsBannedHero( sHero ) )
 				or ( X.SkipPickingWeakHeroes(sHero) )
 			then
@@ -817,7 +816,6 @@ function X.IsRepeatHero( sHero )
 	for id = 0, 20
 	do
 		if ( IsTeamPlayer( id ) and GetSelectedHeroName( id ) == sHero )
-			or ( IsCMBannedHero( sHero ) )
 			or ( X.IsBannedHero( sHero ) )
 			or ( X.SkipPickingWeakHeroes(sHero) )
 		then
@@ -848,6 +846,10 @@ function X.SetChatHeroBan( sChatText )
 end
 
 function X.IsBannedHero( sHero )
+
+	if GetGameMode() == GAMEMODE_CM and IsCMBannedHero(sHero) then
+		return true
+	end
 
 	for i = 1, #sBanList
 	do
