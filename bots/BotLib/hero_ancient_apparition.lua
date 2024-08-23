@@ -15,7 +15,7 @@ local tTalentTreeList = {
 }
 
 local tAllAbilityBuildList = {
-						{3,1,2,2,2,6,2,1,1,1,6,3,3,3,6},--pos4,5
+						{3,1,3,2,3,6,2,1,3,1,6,2,1,2,6},--pos4,5
 }
 
 local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
@@ -168,7 +168,7 @@ function X.SkillsComplement()
 
             if nLocationAoE.count >= 2
             then
-                bot:Action_UseAbilityOnLocation(ColdFeet, nLocationAoE.targetLoc)
+                bot:Action_UseAbilityOnLocation(ColdFeet, nLocationAoE.targetloc)
             else
                 bot:Action_UseAbilityOnEntity(ColdFeet, ColdFeetTarget)
             end

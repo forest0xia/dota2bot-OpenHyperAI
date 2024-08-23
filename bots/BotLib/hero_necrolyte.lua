@@ -64,10 +64,10 @@ sRoleItemsBuyList['pos_2'] = {
 	"item_bracer",
 	"item_magic_wand",
 	"item_travel_boots",
+	"item_kaya_and_sange",--
 	"item_aghanims_shard",
 	"item_heart",--
 	"item_ultimate_scepter",
-	"item_kaya_and_sange",--
 	"item_shivas_guard",--
 	"item_octarine_core",--
 	"item_moon_shard",
@@ -77,27 +77,20 @@ sRoleItemsBuyList['pos_2'] = {
 }
 
 sRoleItemsBuyList['pos_3'] = {
-	"item_tango",
-	"item_double_branches",
-	"item_faerie_fire",
-	"item_circlet",
-	"item_circlet",
-
-	"item_bracer",
-	"item_boots",
-	"item_bracer",
-	"item_magic_wand",
-	"item_travel_boots",
+	"item_mage_outfit",
+	"item_shadow_amulet",
+	"item_veil_of_discord",
+	sHalberdPipe,--
+	"item_glimmer_cape",--
+	"item_shivas_guard",--
+	"item_kaya_and_sange",--
 	"item_aghanims_shard",
 	"item_heart",--
-	"item_ultimate_scepter",
-	sHalberdPipe,--
-	"item_shivas_guard",--
-	"item_lotus_orb",--
+	"item_sheepstick",--
+	-- "item_wind_waker",--
 	"item_moon_shard",
-	"item_travel_boots_2",--
 	"item_ultimate_scepter_2",
-	"item_wind_waker",--
+	"item_travel_boots_2",--
 }
 
 sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
@@ -565,8 +558,9 @@ end
 
 function X.ConsiderAS()
 
-	if not abilityAS:IsTrained()
-		or not abilityAS:IsFullyCastable() 
+	if abilityAS == nil
+	or not abilityAS:IsTrained()
+	or not abilityAS:IsFullyCastable()
 	then
 		return BOT_ACTION_DESIRE_NONE, 0
 	end
@@ -577,8 +571,6 @@ function X.ConsiderAS()
 	local nManaCost = abilityAS:GetManaCost()
 
 	local tableNearbyEnemyHeroes = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
-	
-	
 
 	if J.IsInTeamFight( bot, 1400 )
 		and #tableNearbyEnemyHeroes >= 3

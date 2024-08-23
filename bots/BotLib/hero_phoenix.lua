@@ -245,7 +245,7 @@ function X.ConsiderIcarusDive()
 	if J.IsStuck(bot)
 	then
 		local loc = J.GetEscapeLoc()
-		return BOT_ACTION_DESIRE_HIGH, bot:GetXUnitsTowardsLocation(bot, loc, nDiveLength)
+		return BOT_ACTION_DESIRE_HIGH, J.Site.GetXUnitsTowardsLocation(bot, loc, nDiveLength)
 	end
 
 	if J.IsInTeamFight(bot, 1200)

@@ -22,11 +22,6 @@ local BotBuild = dofile( GetScriptDirectory().."/BotLib/"..string.gsub( bot:GetU
 
 if BotBuild == nil then return end
 
-if team ~= TEAM_DIRE
-then
-	print( '&&&&&&&&&&&&&&&&&&&&&&'..J.Chat.GetNormName( bot )..': Hello, Dota2 World!' )
-end
-
 local bDeafaultAbilityHero = BotBuild['bDeafaultAbility']
 local bDeafaultItemHero = BotBuild['bDeafaultItem']
 local sAbilityLevelUpList = BotBuild['sSkillList']
@@ -83,7 +78,8 @@ local function AbilityLevelUpComplement()
 	if #sAbilityLevelUpList >= 1
 	and bot:GetAbilityPoints() > 0
 	then
-		local abilityToLevelup = bot:GetAbilityByName( sAbilityLevelUpList[1] )
+		local abilityName = sAbilityLevelUpList[1]
+		local abilityToLevelup = bot:GetAbilityByName( abilityName )
 		if abilityToLevelup ~= nil
 			and not abilityToLevelup:IsHidden()
 		    and bot:GetLevel() >= abilityToLevelup:GetHeroLevelRequiredToUpgrade()
@@ -93,10 +89,17 @@ local function AbilityLevelUpComplement()
 			-- print('Trying to upgrade '..abilityToLevelup:GetName())
 			bot:ActionImmediate_LevelAbility(abilityToLevelup:GetName())
 			table.remove( sAbilityLevelUpList, 1 )
+		elseif abilityName == 'generic_hidden' then
+			local nextAbility = sAbilityLevelUpList[2]
+			print("[WARN] Level up ability "..abilityName.." for "..bot:GetUnitName().." does not make sense. try to upgrade the next ability: "..tostring(nextAbility))
+			table.remove( sAbilityLevelUpList, 1 )
+			if nextAbility then
+				bot:ActionImmediate_LevelAbility(nextAbility)
+			end
 		else
 			-- still try it
-			print("[WARN] Level up ability "..sAbilityLevelUpList[1].." for "..bot:GetUnitName().." may fail because it was called on ability that's not available or can't get upgraded anymore.")
-			bot:ActionImmediate_LevelAbility(sAbilityLevelUpList[1])
+			print("[WARN] Level up ability "..abilityName.." for "..bot:GetUnitName().." may fail because it was called on ability that's not available or can't get upgraded anymore.")
+			bot:ActionImmediate_LevelAbility(abilityName)
 			table.remove( sAbilityLevelUpList, 1 )
 			-- bot:ActionImmediate_LevelAbility('special_bonus_attributes')
 		end

@@ -200,7 +200,7 @@ function X.ConsiderIllusoryOrb()
 	if J.IsStuck(bot)
 	then
 		local loc = J.GetEscapeLoc()
-		return BOT_ACTION_DESIRE_HIGH, bot:GetXUnitsTowardsLocation(bot, loc, nCastRange)
+		return BOT_ACTION_DESIRE_HIGH, J.Site.GetXUnitsTowardsLocation(bot, loc, nCastRange)
 	end
 
     if J.IsGoingOnSomeone(bot)
@@ -382,7 +382,7 @@ function X.ConsiderWaningRift()
 	if J.IsStuck(bot)
 	then
 		local loc = J.GetEscapeLoc()
-		return BOT_ACTION_DESIRE_HIGH, bot:GetXUnitsTowardsLocation(bot, loc, nRadius)
+		return BOT_ACTION_DESIRE_HIGH, J.Site.GetXUnitsTowardsLocation(bot, loc, nRadius)
 	end
 
     if J.IsInTeamFight(bot, 1200)

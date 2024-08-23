@@ -510,11 +510,6 @@ function X.ConsiderLittleFriends()
 
     if J.IsGoingOnSomeone(bot, 1200)
     then
-        local botTarget = J.GetStrongestUnit(nCastRange, bot, true, false, nDuration)
-        local nTargetInRangeEnemy = J.GetNearbyHeroes(botTarget, nRadius, true, BOT_MODE_NONE)
-        local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange + 150, false, BOT_MODE_NONE)
-        local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
-
         if  J.IsValidTarget(botTarget)
         and nInRangeAlly ~= nil and nInRangeEnemy
         and #nInRangeAlly >= #nInRangeEnemy
@@ -523,6 +518,10 @@ function X.ConsiderLittleFriends()
         and not botTarget:HasModifier('modifier_abaddon_borrowed_time')
         and not botTarget:HasModifier('modifier_faceless_void_chronosphere')
         then
+            local botTarget = J.GetStrongestUnit(nCastRange, bot, true, false, nDuration)
+            local nTargetInRangeEnemy = J.GetNearbyHeroes(botTarget, nRadius, true, BOT_MODE_NONE)
+            local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange + 150, false, BOT_MODE_NONE)
+            local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
             return BOT_ACTION_DESIRE_HIGH, botTarget
         end
     end

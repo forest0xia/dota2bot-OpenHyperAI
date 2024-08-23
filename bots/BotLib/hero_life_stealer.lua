@@ -120,7 +120,6 @@ function X.SkillsComplement()
 		if bot.needRefreshAbilitiesFor737 then
 			Chronosphere = bot:GetAbilityByName('life_stealer_rage')
 			sAbilityList = J.Skill.GetAbilityList( bot )
-			J.Utils.PrintTable(sAbilityList)
 			X['sSkillList'] = J.Skill.GetSkillList( sAbilityList, nAbilityBuildList, sTalentList, nTalentBuildList )
 			bot:ActionImmediate_Chat( "I now have my Rage back. Thanks!", true )
 			bot.needRefreshAbilitiesFor737 = false

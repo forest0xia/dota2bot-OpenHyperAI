@@ -367,6 +367,7 @@ local sPos4List = {
 	"npc_dota_hero_zuus",
 	"npc_dota_hero_invoker",
 	"npc_dota_hero_wisp",
+	-- "npc_dota_hero_ringmaster", -- Valve has not enabled bots to pick it yet
 }
 
 local sPos5List = {
@@ -424,6 +425,7 @@ local sPos5List = {
 	"npc_dota_hero_winter_wyvern",
 	"npc_dota_hero_witch_doctor",
 	"npc_dota_hero_zuus",
+	-- "npc_dota_hero_ringmaster", -- Valve has not enabled bots to pick it yet
 }
 
 -- A list of to be improved heroes. They maybe selected for bots, but shouldn't have more than one in a team to ensure the bar of gaming experience for human players.

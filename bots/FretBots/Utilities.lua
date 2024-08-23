@@ -1,5 +1,7 @@
 -- Provides for common Utilities
 
+-- Version information
+local Version = require 'bots.FunLib.version'
 -- Sound constants
 if Sounds == nil then
 	Sounds = dofile('bots.FretBots.Soundboard')
@@ -597,7 +599,7 @@ function Utilities:GetPInfo(difficulty)
         if connectionState == DOTA_CONNECTION_STATE_CONNECTED then
 			local steamId = PlayerResource:GetSteamID(playerID)
 			local name = PlayerResource:GetPlayerName(playerID)
-			table.insert(pSteamInfoList, { name = name, steamId = tostring(steamId), fretbots_difficulty = difficulty })
+			table.insert(pSteamInfoList, { name = name, steamId = tostring(steamId), fretbots_difficulty = difficulty, version = Version.number })
 		end
 	end
 	return pSteamInfoList
