@@ -57,3 +57,6 @@ game/
 
 # Built Visual Studio Code Extensions
 *.vsix
+
+.idea
+node_modules

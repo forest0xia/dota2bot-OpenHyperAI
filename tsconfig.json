@@ -1,0 +1,18 @@
+{
+  "$schema": "https://raw.githubusercontent.com/TypeScriptToLua/TypeScriptToLua/master/tsconfig-schema.json",
+  "tstl": {
+    "luaTarget": "5.1",
+    "noImplicitSelf": true
+  },
+  "compilerOptions": {
+    "baseUrl": "./",
+    "lib": [
+      "ES2020"
+    ],
+    "strict": true,
+    "types": [
+      "node",
+      "@typescript-to-lua/language-extensions"
+    ]
+  }
+}
