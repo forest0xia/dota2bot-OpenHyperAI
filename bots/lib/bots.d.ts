@@ -1,4 +1,4 @@
-import { Ability, Talent } from "bots/lib/dota";
+import { Ability, Talent } from 'bots/lib/dota'
 
 export interface BotBehavior {
     sBuyList: string[]
@@ -13,3 +13,5 @@ export interface BotBehavior {
 }
 
 export type BotRole = 'pos_1' | 'pos_2' | 'pos_3' | 'pos_4' | 'pos_5'
+
+export type ItemBuilds = { [key in BotRole]: string[] }

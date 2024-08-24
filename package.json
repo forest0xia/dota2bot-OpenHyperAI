@@ -13,6 +13,7 @@
     },
     "scripts": {
         "build": "tstl",
-        "dev": "tstl --watch"
+        "dev": "tstl --watch",
+        "prettier": "prettier ./bots --write"
     }
 }

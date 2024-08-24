@@ -1,7 +1,7 @@
 // @ts-ignore
 import * as jmz from '../FunLib/jmz_func.lua'
-import { BotBehavior, BotRole } from 'bots/lib/bots'
-import { Talent, Unit } from "bots/lib/dota";
+import { BotBehavior, BotRole, ItemBuilds } from 'bots/lib/bots'
+import { Location, Talent, Unit } from 'bots/lib/dota'
 
 const bot = GetBot()
 // @ts-ignore
@@ -25,10 +25,10 @@ const abilityBuild = jmz.Skill.GetRandomBuild(AllAbilityBuilds)
 const talentBuildList = jmz.Skill.GetTalentBuild(talentTreeList)
 
 const skillBuildList = jmz.Skill.GetSkillList(
-        AbilityList,
-        abilityBuild,
-        talentList,
-        talentBuildList
+    AbilityList,
+    abilityBuild,
+    talentList,
+    talentBuildList
 )
 
 const role: BotRole = jmz.Item.GetRoleItemsBuyList(bot)
@@ -88,7 +88,7 @@ const roleItemBuyList: { [key in BotRole]: string[] } = {
         'item_moon_shard',
         'item_ultimate_scepter_2',
     ],
-}
+} satisfies ItemBuilds
 
 function HasHealingEffect(hero: Unit) {
     const modifiers = [
@@ -112,10 +112,10 @@ let stateTetheredHero: Unit | null = null
 function ShouldUseOvercharge(ally: Unit) {
     const isAttacking = GameTime() - ally.GetLastAttackTime() < 0.33
     return (
-            jmz.IsGoingOnSomeone(ally) ||
-            (ally.GetAttackTarget().GetTeam() === GetOpposingTeam() &&
-                    isAttacking) ||
-            ally.GetNearbyCreeps(200, true).length > 2
+        jmz.IsGoingOnSomeone(ally) ||
+        (ally.GetAttackTarget().GetTeam() === GetOpposingTeam() &&
+            isAttacking) ||
+        ally.GetNearbyCreeps(200, true).length > 2
     )
 }
 
@@ -128,21 +128,21 @@ function considerTether(): [number, Unit | null] {
 
     for (const ally of allies) {
         const canTargetAlly =
-                ally != bot && ally.IsAlive() && !ally.IsMagicImmune()
+            ally != bot && ally.IsAlive() && !ally.IsMagicImmune()
         if (!canTargetAlly) {
             continue
         }
-        if (jmz.IsRetreating(bot)) {
+        if (jmz.IsRetreating(bot) || jmz.GetHP(bot) < 0.25) {
             if (jmz.IsRetreating(ally)) {
                 return [BOT_ACTION_DESIRE_HIGH, ally]
             }
             continue
         }
         if (
-                jmz.GetHP(ally) < 0.75 ||
-                jmz.GetMP(bot) > 0.8 ||
-                HasHealingEffect(bot) ||
-                ShouldUseOvercharge(ally)
+            jmz.GetHP(ally) < 0.75 ||
+            jmz.GetMP(bot) > 0.8 ||
+            HasHealingEffect(bot) ||
+            ShouldUseOvercharge(ally)
         ) {
             return [BOT_ACTION_DESIRE_HIGH, ally]
         }
@@ -156,13 +156,38 @@ function considerOvercharge(): number {
         return BOT_ACTION_DESIRE_NONE
     }
     if (
-            bot.HasModifier('modifier_wisp_tether') &&
-            stateTetheredHero !== null &&
-            ShouldUseOvercharge(stateTetheredHero)
+        bot.HasModifier('modifier_wisp_tether') &&
+        stateTetheredHero !== null &&
+        ShouldUseOvercharge(stateTetheredHero)
     ) {
         return BOT_ACTION_DESIRE_HIGH
     }
     return BOT_ACTION_DESIRE_NONE
+}
+
+function considerSpirits(): number {
+    if (!abilitySpirits.IsFullyCastable()) {
+        return BOT_ACTION_DESIRE_NONE
+    }
+    const nearbyEnemies = bot.GetNearbyHeroes(800, true, BOT_MODE_NONE)
+    if (nearbyEnemies.length >= 1) {
+        return BOT_ACTION_DESIRE_HIGH
+    }
+    return BOT_ACTION_DESIRE_NONE
+}
+
+function considerRelocate(): [number, Location | null] {
+    return [BOT_ACTION_DESIRE_NONE, null]
+    // Default implementation doesn't seem to do anything useful
+    // if (!abilityRelocate.IsFullyCastable()) {
+    //     return [BOT_ACTION_DESIRE_NONE, null]
+    // }
+    // const nearbyEnemies = bot.GetNearbyHeroes(1200, true, BOT_MODE_NONE)
+    // const nearbyAllies = bot.GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+    // if (nearbyEnemies.length >= 3 && nearbyAllies.length >= 2) {
+    //     return [BOT_ACTION_DESIRE_HIGH, nearbyEnemies[0].GetLocation()]
+    // }
+    // return [BOT_ACTION_DESIRE_NONE, null]
 }
 
 export = {
@@ -182,7 +207,15 @@ export = {
             bot.Action_UseAbility(abilityOvercharge)
             return
         }
-        // TODO: Relocate and Spirits implementation
+        const spiritsDesire = considerSpirits()
+        if (spiritsDesire > 0) {
+            bot.Action_UseAbility(abilitySpirits)
+            return
+        }
+        const [relocateDesire, relocateTarget] = considerRelocate()
+        if (relocateDesire && relocateTarget !== null) {
+            bot.Action_UseAbilityOnLocation(abilityRelocate, relocateTarget)
+        }
     },
     sSellList: ['item_magic_wand'],
     sBuyList: roleItemBuyList[role],

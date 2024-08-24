@@ -116,7 +116,7 @@ local function considerTether()
                     __continue9 = true
                     break
                 end
-                if jmz.IsRetreating(bot) then
+                if jmz.IsRetreating(bot) or jmz.GetHP(bot) < 0.25 then
                     if jmz.IsRetreating(ally) then
                         return {BOT_ACTION_DESIRE_HIGH, ally}
                     end
@@ -144,6 +144,19 @@ local function considerOvercharge()
     end
     return BOT_ACTION_DESIRE_NONE
 end
+local function considerSpirits()
+    if not abilitySpirits:IsFullyCastable() then
+        return BOT_ACTION_DESIRE_NONE
+    end
+    local nearbyEnemies = bot:GetNearbyHeroes(800, true, BOT_MODE_NONE)
+    if #nearbyEnemies >= 1 then
+        return BOT_ACTION_DESIRE_HIGH
+    end
+    return BOT_ACTION_DESIRE_NONE
+end
+local function considerRelocate()
+    return {BOT_ACTION_DESIRE_NONE, nil}
+end
 local ____exports = {
     SkillsComplement = function()
         if jmz.CanNotUseAbility(bot) or bot:IsInvisible() then
@@ -159,6 +172,15 @@ local ____exports = {
         if overchargeDesire > 0 then
             bot:Action_UseAbility(abilityOvercharge)
             return
+        end
+        local spiritsDesire = considerSpirits()
+        if spiritsDesire > 0 then
+            bot:Action_UseAbility(abilitySpirits)
+            return
+        end
+        local relocateDesire, relocateTarget = unpack(considerRelocate())
+        if relocateDesire and relocateTarget ~= nil then
+            bot:Action_UseAbilityOnLocation(abilityRelocate, relocateTarget)
         end
     end,
     sSellList = {"item_magic_wand"},

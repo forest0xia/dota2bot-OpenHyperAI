@@ -1,4 +1,4 @@
-import { Unit } from "bots/lib/dota/interfaces";
+import { Unit } from 'bots/lib/dota/interfaces'
 
 declare global {
     function GetBot(): Unit
@@ -9,7 +9,7 @@ declare global {
 
     const BOT_ACTION_DESIRE_NONE: number
     const BOT_ACTION_DESIRE_HIGH: number
-    
+
     const BOT_MODE_NONE: undefined
 }
 

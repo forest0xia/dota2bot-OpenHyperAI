@@ -1,3 +1,5 @@
+export interface Location {}
+
 export interface Unit {
     GetAbilityByName(name: string): Ability
 
@@ -13,13 +15,17 @@ export interface Unit {
 
     GetNearbyCreeps(range: number, enemy: boolean): undefined[]
 
+    GetLocation(): Location
+
     GetNearbyHeroes(
-            range: number,
-            includeEnemies: boolean,
-            mode: undefined
+        range: number,
+        includeEnemies: boolean,
+        mode: undefined
     ): Unit[]
 
     Action_UseAbilityOnEntity(ability: Ability, target: Unit): void
+
+    Action_UseAbilityOnLocation(ability: Ability, location: Location): void
 
     Action_UseAbility(ability: Ability): void
 
@@ -36,5 +42,4 @@ export interface Ability {
     GetCastRange(): number
 }
 
-export interface Talent {
-}
+export interface Talent {}
