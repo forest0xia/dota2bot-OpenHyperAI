@@ -189,7 +189,7 @@ local ____exports = {
     end,
     sSellList = {"item_magic_wand"},
     sBuyList = roleItemBuyList[role],
-    MinionThink = function(hMinionUnit, bot)
+    MinionThink = function(hMinionUnit, _)
         if Minion.IsValidUnit(hMinionUnit) then
             Minion.IllusionThink(hMinionUnit)
         end
