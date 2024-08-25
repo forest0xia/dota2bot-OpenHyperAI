@@ -177,7 +177,7 @@ local TameTheBeastsCastTime
 local botTarget, botLevel
 
 function X.SkillsComplement()
-	if J.CanNotUseAbility(bot) then return end
+	if J.CanNotUseAbility(bot) or bot:IsCastingAbility() or bot:IsChanneling() then return end
 
     TameTheBeasts         = bot:GetAbilityByName('ringmaster_tame_the_beasts')
     TameTheBeastsCrack    = bot:GetAbilityByName('ringmaster_tame_the_beasts_crack')
