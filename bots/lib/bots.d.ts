@@ -1,3 +1,7 @@
+/*
+ * Internal/Project type definitions
+ */
+
 import { Ability, Talent } from 'bots/lib/dota'
 
 export interface BotBehavior {

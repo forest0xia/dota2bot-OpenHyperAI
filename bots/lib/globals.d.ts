@@ -1,3 +1,7 @@
+/*
+ * Dota 2 scripting API globals functions and constants
+ */
+
 import { Unit } from 'bots/lib/dota/interfaces'
 
 declare global {
