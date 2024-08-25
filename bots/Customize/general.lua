@@ -3,7 +3,7 @@
 This is a place for you to customize the Open Hyper AI bots.
 
 When modiftying this file, be very careful to the spelling, punctuation and variable names - it's very easy to cause syntax errors and could be hard for you to debug.
-In the case you saw the bots having some random names or picks (heroes not what you have set or without "OHA" name suffix), that means you had made some mistakes/errors while modifying this file. 
+In the case you saw the bots having some random names or picks (heroes not what you have set or without "OHA" name suffix), that means you had made some mistakes/errors while modifying this file.
 In any case this file got messed up and caused the bots to malfunction, you can try to restore the file. Either you have a copy to replace, or resubscribe the script, or download from github.
 
 Workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=3246316298
@@ -20,7 +20,6 @@ Customize['Enable'] = true
 -- Set the heroes you DON'T want the bots to pick. Use hero internal names.
 -- Hero name ref: https://developer.valvesoftware.com/wiki/Dota_2_Workshop_Tools/Scripting/Heroes_internal_names
 Customize['Ban'] = {
-    'npc_dota_hero_wisp',
     'npc_dota_hero_marci',
     'npc_dota_hero_hoodwink',
 }
@@ -31,6 +30,9 @@ Customize['Ban'] = {
 Customize['Radiant_Heros'] = {
     'Random',
     'Random',
+    'Random',
+    'Random',
+    'npc_dota_hero_wisp',
 }
 
 -- Set the heroes you want Dire bots to pick. Don't need to provide a value for all 5 bots, any empty/missing value will fallback to a Random value.
@@ -70,9 +72,9 @@ Customize['Dire_Heros'] = {
     -- "npc_dota_hero_zuus",
 }
 
--- Set whether or not allowing bots to pick same/repeated heroes. 
--- By setting it to true, you can have bots picking all pudges, techies for example, or the same set of heroes for both teams. 
--- WARNING: Setting this to true CAN reduce the gaming experience due to the fact some heroes are kind of buggy or weak at the moment (listed below) and 
+-- Set whether or not allowing bots to pick same/repeated heroes.
+-- By setting it to true, you can have bots picking all pudges, techies for example, or the same set of heroes for both teams.
+-- WARNING: Setting this to true CAN reduce the gaming experience due to the fact some heroes are kind of buggy or weak at the moment (listed below) and
 --          are currently intentionally having reduced chances to get picked by bots. Set this to true will break this blocker.
 Customize['Allow_Repeated_Heroes'] = false
 
@@ -98,16 +100,16 @@ return Customize
 |                                        --- Appendix ---                                          |
 ----------------------------------------------------------------------------------------------------
 
-Below is a few lists of to-be-improved heroes, as of 2024/8/23. They are relatively weaker than others and can still get selected by bots, 
+Below is a few lists of to-be-improved heroes, as of 2024/8/23. They are relatively weaker than others and can still get selected by bots,
 but there SHOULD NOT have more than 1 of those in a team to ensure the bar of gaming experience for human players.
 
 Those are weak due to:
-1, Some have bugs from Valve side, which I've spent a lot of effrot with to improve and fix things. 
+1, Some have bugs from Valve side, which I've spent a lot of effrot with to improve and fix things.
 2, It's not easy to implement the hero in a good way in terms of doing it via coding with the code base we have.
-3, I do not play some of those heroes a lot myself so can't make good bots, 
+3, I do not play some of those heroes a lot myself so can't make good bots,
 
-It's a matter of time to get everything improved, but I don't have a lot of time to do everything to make bots better. 
-So I put them here, and hopefully make it easy for you to use, or learn, or improve the script. 
+It's a matter of time to get everything improved, but I don't have a lot of time to do everything to make bots better.
+So I put them here, and hopefully make it easy for you to use, or learn, or improve the script.
 I'd appreciate any actual help from you to make the bots better, and I'm certain we can achieve it by contributing together.
 
 -- -- List A. Weak ones, meaning they are too far from being able to apply their power:

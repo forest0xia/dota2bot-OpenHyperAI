@@ -1,3 +1,5 @@
+import { BotMode } from 'bots/lib/dota/enums'
+
 export interface Location {}
 
 export interface Unit {
@@ -20,7 +22,7 @@ export interface Unit {
     GetNearbyHeroes(
         range: number,
         includeEnemies: boolean,
-        mode: undefined
+        mode: BotMode
     ): Unit[]
 
     Action_UseAbilityOnEntity(ability: Ability, target: Unit): void
@@ -29,7 +31,7 @@ export interface Unit {
 
     Action_UseAbility(ability: Ability): void
 
-    GetAttackTarget(): Unit
+    GetAttackTarget(): Unit | null
 
     GetTeam(): number
 

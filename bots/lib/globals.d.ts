@@ -10,11 +10,6 @@ declare global {
     function GameTime(): number
 
     function GetScriptDirectory(): string
-
-    const BOT_ACTION_DESIRE_NONE: number
-    const BOT_ACTION_DESIRE_HIGH: number
-
-    const BOT_MODE_NONE: undefined
 }
 
 export {}

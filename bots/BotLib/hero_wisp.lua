@@ -1,5 +1,8 @@
 --[[ Generated with https://github.com/TypeScriptToLua/TypeScriptToLua ]]
 local jmz = require("bots.FunLib.jmz_func")
+local ____dota = require("bots.lib.dota.index")
+local BotActionDesire = ____dota.BotActionDesire
+local BotMode = ____dota.BotMode
 local bot = GetBot()
 local Minion = dofile("bots/FunLib/aba_minion")
 local talentList = jmz.Skill.GetTalentList(bot)
@@ -99,14 +102,15 @@ end
 local stateTetheredHero = nil
 local function ShouldUseOvercharge(ally)
     local isAttacking = GameTime() - ally:GetLastAttackTime() < 0.33
-    return jmz.IsGoingOnSomeone(ally) or ally:GetAttackTarget():GetTeam() == GetOpposingTeam() and isAttacking or #ally:GetNearbyCreeps(200, true) > 2
+    local attackTarget = ally:GetAttackTarget()
+    return jmz.IsGoingOnSomeone(ally) or attackTarget and attackTarget:GetTeam() == GetOpposingTeam() and isAttacking or #ally:GetNearbyCreeps(200, true) > 2
 end
 local function considerTether()
     if not abilityTether:IsFullyCastable() then
-        return {BOT_ACTION_DESIRE_NONE, nil}
+        return {BotActionDesire.None, nil}
     end
     local castRange = abilityTether:GetCastRange()
-    local allies = bot:GetNearbyHeroes(castRange, false, BOT_MODE_NONE)
+    local allies = bot:GetNearbyHeroes(castRange, false, BotMode.None)
     for ____, ally in ipairs(allies) do
         do
             local __continue9
@@ -118,13 +122,13 @@ local function considerTether()
                 end
                 if jmz.IsRetreating(bot) or jmz.GetHP(bot) < 0.25 then
                     if jmz.IsRetreating(ally) then
-                        return {BOT_ACTION_DESIRE_HIGH, ally}
+                        return {BotActionDesire.High, ally}
                     end
                     __continue9 = true
                     break
                 end
                 if jmz.GetHP(ally) < 0.75 or jmz.GetMP(bot) > 0.8 or HasHealingEffect(bot) or ShouldUseOvercharge(ally) then
-                    return {BOT_ACTION_DESIRE_HIGH, ally}
+                    return {BotActionDesire.High, ally}
                 end
                 __continue9 = true
             until true
@@ -133,29 +137,29 @@ local function considerTether()
             end
         end
     end
-    return {BOT_ACTION_DESIRE_NONE, nil}
+    return {BotActionDesire.None, nil}
 end
 local function considerOvercharge()
     if not abilityOvercharge:IsFullyCastable() then
-        return BOT_ACTION_DESIRE_NONE
+        return BotActionDesire.None
     end
     if bot:HasModifier("modifier_wisp_tether") and stateTetheredHero ~= nil and ShouldUseOvercharge(stateTetheredHero) then
-        return BOT_ACTION_DESIRE_HIGH
+        return BotActionDesire.High
     end
-    return BOT_ACTION_DESIRE_NONE
+    return BotActionDesire.None
 end
 local function considerSpirits()
     if not abilitySpirits:IsFullyCastable() then
-        return BOT_ACTION_DESIRE_NONE
+        return BotActionDesire.None
     end
-    local nearbyEnemies = bot:GetNearbyHeroes(800, true, BOT_MODE_NONE)
+    local nearbyEnemies = bot:GetNearbyHeroes(800, true, BotMode.None)
     if #nearbyEnemies >= 1 then
-        return BOT_ACTION_DESIRE_HIGH
+        return BotActionDesire.High
     end
-    return BOT_ACTION_DESIRE_NONE
+    return BotActionDesire.None
 end
 local function considerRelocate()
-    return {BOT_ACTION_DESIRE_NONE, nil}
+    return {BotActionDesire.None, nil}
 end
 local ____exports = {
     SkillsComplement = function()

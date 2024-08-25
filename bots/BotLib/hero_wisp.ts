@@ -1,7 +1,7 @@
 // @ts-ignore
 import * as jmz from '../FunLib/jmz_func.lua'
 import { BotBehavior, BotRole, ItemBuilds } from 'bots/lib/bots'
-import { Location, Talent, Unit } from 'bots/lib/dota'
+import { BotActionDesire, BotMode, Location, Talent, Unit } from 'bots/lib/dota'
 
 const bot = GetBot()
 // @ts-ignore
@@ -111,9 +111,11 @@ let stateTetheredHero: Unit | null = null
 
 function ShouldUseOvercharge(ally: Unit) {
     const isAttacking = GameTime() - ally.GetLastAttackTime() < 0.33
+    const attackTarget = ally.GetAttackTarget()
     return (
         jmz.IsGoingOnSomeone(ally) ||
-        (ally.GetAttackTarget().GetTeam() === GetOpposingTeam() &&
+        (attackTarget &&
+            attackTarget.GetTeam() === GetOpposingTeam() &&
             isAttacking) ||
         ally.GetNearbyCreeps(200, true).length > 2
     )
@@ -121,10 +123,10 @@ function ShouldUseOvercharge(ally: Unit) {
 
 function considerTether(): [number, Unit | null] {
     if (!abilityTether.IsFullyCastable()) {
-        return [BOT_ACTION_DESIRE_NONE, null]
+        return [BotActionDesire.None, null]
     }
     const castRange = abilityTether.GetCastRange()
-    const allies = bot.GetNearbyHeroes(castRange, false, BOT_MODE_NONE)
+    const allies = bot.GetNearbyHeroes(castRange, false, BotMode.None)
 
     for (const ally of allies) {
         const canTargetAlly =
@@ -134,7 +136,7 @@ function considerTether(): [number, Unit | null] {
         }
         if (jmz.IsRetreating(bot) || jmz.GetHP(bot) < 0.25) {
             if (jmz.IsRetreating(ally)) {
-                return [BOT_ACTION_DESIRE_HIGH, ally]
+                return [BotActionDesire.High, ally]
             }
             continue
         }
@@ -144,40 +146,40 @@ function considerTether(): [number, Unit | null] {
             HasHealingEffect(bot) ||
             ShouldUseOvercharge(ally)
         ) {
-            return [BOT_ACTION_DESIRE_HIGH, ally]
+            return [BotActionDesire.High, ally]
         }
     }
 
-    return [BOT_ACTION_DESIRE_NONE, null]
+    return [BotActionDesire.None, null]
 }
 
 function considerOvercharge(): number {
     if (!abilityOvercharge.IsFullyCastable()) {
-        return BOT_ACTION_DESIRE_NONE
+        return BotActionDesire.None
     }
     if (
         bot.HasModifier('modifier_wisp_tether') &&
         stateTetheredHero !== null &&
         ShouldUseOvercharge(stateTetheredHero)
     ) {
-        return BOT_ACTION_DESIRE_HIGH
+        return BotActionDesire.High
     }
-    return BOT_ACTION_DESIRE_NONE
+    return BotActionDesire.None
 }
 
 function considerSpirits(): number {
     if (!abilitySpirits.IsFullyCastable()) {
-        return BOT_ACTION_DESIRE_NONE
+        return BotActionDesire.None
     }
-    const nearbyEnemies = bot.GetNearbyHeroes(800, true, BOT_MODE_NONE)
+    const nearbyEnemies = bot.GetNearbyHeroes(800, true, BotMode.None)
     if (nearbyEnemies.length >= 1) {
-        return BOT_ACTION_DESIRE_HIGH
+        return BotActionDesire.High
     }
-    return BOT_ACTION_DESIRE_NONE
+    return BotActionDesire.None
 }
 
 function considerRelocate(): [number, Location | null] {
-    return [BOT_ACTION_DESIRE_NONE, null]
+    return [BotActionDesire.None, null]
     // Default implementation doesn't seem to do anything useful
     // if (!abilityRelocate.IsFullyCastable()) {
     //     return [BOT_ACTION_DESIRE_NONE, null]
