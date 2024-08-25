@@ -36,6 +36,16 @@ declare const BOT_MODE_ROSHAN: number
 declare const BOT_MODE_ITEM: number
 declare const BOT_MODE_WARD: number
 
+declare const TEAM_RADIANT: number
+declare const TEAM_DIRE: number
+declare const TEAM_NEUTRAL: number
+declare const TEAM_NONE: number
+
+declare const LANE_NONE: number
+declare const LANE_TOP: number
+declare const LANE_MID: number
+declare const LANE_BOT: number
+
 export enum BotActionDesire {
     None = BOT_ACTION_DESIRE_NONE,
     VeryLow = BOT_ACTION_DESIRE_VERYLOW,
@@ -78,4 +88,18 @@ export enum BotMode {
     Roshan = BOT_MODE_ROSHAN,
     Item = BOT_MODE_ITEM,
     Ward = BOT_MODE_WARD,
+}
+
+export enum Team {
+    Radiant = TEAM_RADIANT,
+    Dire = TEAM_DIRE,
+    Neutral = TEAM_NEUTRAL,
+    None = TEAM_NONE,
+}
+
+export enum Lane {
+    Top = LANE_TOP,
+    Mid = LANE_MID,
+    Bot = LANE_BOT,
+    None = LANE_NONE,
 }
