@@ -107,7 +107,7 @@ local function ShouldUseOvercharge(ally)
 end
 local function considerTether()
     if not abilityTether:IsFullyCastable() then
-        return {BotActionDesire.None, nil}
+        return BotActionDesire.None, nil
     end
     local castRange = abilityTether:GetCastRange()
     local allies = bot:GetNearbyHeroes(castRange, false, BotMode.None)
@@ -122,13 +122,13 @@ local function considerTether()
                 end
                 if jmz.IsRetreating(bot) or jmz.GetHP(bot) < 0.25 then
                     if jmz.IsRetreating(ally) then
-                        return {BotActionDesire.High, ally}
+                        return BotActionDesire.High, ally
                     end
                     __continue9 = true
                     break
                 end
                 if jmz.GetHP(ally) < 0.75 or jmz.GetMP(bot) > 0.8 or HasHealingEffect(bot) or ShouldUseOvercharge(ally) then
-                    return {BotActionDesire.High, ally}
+                    return BotActionDesire.High, ally
                 end
                 __continue9 = true
             until true
@@ -137,7 +137,7 @@ local function considerTether()
             end
         end
     end
-    return {BotActionDesire.None, nil}
+    return BotActionDesire.None, nil
 end
 local function considerOvercharge()
     if not abilityOvercharge:IsFullyCastable() then
@@ -159,14 +159,14 @@ local function considerSpirits()
     return BotActionDesire.None
 end
 local function considerRelocate()
-    return {BotActionDesire.None, nil}
+    return BotActionDesire.None, nil
 end
 local ____exports = {
     SkillsComplement = function()
         if jmz.CanNotUseAbility(bot) or bot:IsInvisible() then
             return
         end
-        local tetherDesire, tetherLocation = unpack(considerTether())
+        local tetherDesire, tetherLocation = considerTether()
         if tetherDesire > 0 and tetherLocation then
             bot:Action_UseAbilityOnEntity(abilityTether, tetherLocation)
             stateTetheredHero = tetherLocation
@@ -182,7 +182,7 @@ local ____exports = {
             bot:Action_UseAbility(abilitySpirits)
             return
         end
-        local relocateDesire, relocateTarget = unpack(considerRelocate())
+        local relocateDesire, relocateTarget = considerRelocate()
         if relocateDesire and relocateTarget ~= nil then
             bot:Action_UseAbilityOnLocation(abilityRelocate, relocateTarget)
         end

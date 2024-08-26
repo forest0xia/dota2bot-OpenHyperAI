@@ -121,9 +121,9 @@ function ShouldUseOvercharge(ally: Unit) {
     )
 }
 
-function considerTether(): [number, Unit | null] {
+function considerTether(): LuaMultiReturn<[number, Unit | null]> {
     if (!abilityTether.IsFullyCastable()) {
-        return [BotActionDesire.None, null]
+        return $multi(BotActionDesire.None, null)
     }
     const castRange = abilityTether.GetCastRange()
     const allies = bot.GetNearbyHeroes(castRange, false, BotMode.None)
@@ -136,7 +136,7 @@ function considerTether(): [number, Unit | null] {
         }
         if (jmz.IsRetreating(bot) || jmz.GetHP(bot) < 0.25) {
             if (jmz.IsRetreating(ally)) {
-                return [BotActionDesire.High, ally]
+                return $multi(BotActionDesire.High, ally)
             }
             continue
         }
@@ -146,11 +146,11 @@ function considerTether(): [number, Unit | null] {
             HasHealingEffect(bot) ||
             ShouldUseOvercharge(ally)
         ) {
-            return [BotActionDesire.High, ally]
+            return $multi(BotActionDesire.High, ally)
         }
     }
 
-    return [BotActionDesire.None, null]
+    return $multi(BotActionDesire.None, null)
 }
 
 function considerOvercharge(): number {
@@ -178,8 +178,8 @@ function considerSpirits(): number {
     return BotActionDesire.None
 }
 
-function considerRelocate(): [number, Location | null] {
-    return [BotActionDesire.None, null]
+function considerRelocate(): LuaMultiReturn<[number, Location | null]> {
+    return $multi(BotActionDesire.None, null)
     // Default implementation doesn't seem to do anything useful
     // if (!abilityRelocate.IsFullyCastable()) {
     //     return [BOT_ACTION_DESIRE_NONE, null]
