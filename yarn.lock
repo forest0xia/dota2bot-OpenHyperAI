@@ -46,6 +46,11 @@ is-core-module@^2.13.0:
   dependencies:
     hasown "^2.0.2"
 
+lua-types@^2.13.1:
+  version "2.13.1"
+  resolved "https://registry.yarnpkg.com/lua-types/-/lua-types-2.13.1.tgz#8df705ae47617d4a2f189d727f075ca36e690bdb"
+  integrity sha512-rRwtvX6kS+5MpuO3xpvKsnYjdSDDI064Qq1OqX8gY+r+0l7m3dFLiZPDFoHqH22jaBpEvcHcPs6+WD7qkdmFsA==
+
 path-parse@^1.0.7:
   version "1.0.7"
   resolved "https://registry.yarnpkg.com/path-parse/-/path-parse-1.0.7.tgz#fbc114b60ca42b30d9daf5858e4bd68bbedb6735"

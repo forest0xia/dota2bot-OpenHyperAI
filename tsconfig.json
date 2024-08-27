@@ -9,14 +9,17 @@
     "lib": [
       "ES2020"
     ],
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "target": "ES6",
     "noImplicitReturns": true,
     "noImplicitOverride": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "strict": true,
     "types": [
-      "node",
-      "@typescript-to-lua/language-extensions"
+      "@typescript-to-lua/language-extensions",
+      "lua-types/5.1"
     ]
   }
 }

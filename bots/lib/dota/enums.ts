@@ -46,6 +46,19 @@ declare const LANE_TOP: number
 declare const LANE_MID: number
 declare const LANE_BOT: number
 
+declare const UNIT_LIST_ALL: number
+declare const UNIT_LIST_ALLIES: number
+declare const UNIT_LIST_ALLIED_HEROES: number
+declare const UNIT_LIST_ALLIED_CREEPS: number
+declare const UNIT_LIST_ALLIED_WARDS: number
+declare const UNIT_LIST_ALLIED_BUILDINGS: number
+declare const UNIT_LIST_ENEMIES: number
+declare const UNIT_LIST_ENEMY_HEROES: number
+declare const UNIT_LIST_ENEMY_CREEPS: number
+declare const UNIT_LIST_ENEMY_WARDS: number
+declare const UNIT_LIST_NEUTRAL_CREEPS: number
+declare const UNIT_LIST_ENEMY_BUILDINGS: number
+
 export enum BotActionDesire {
     None = BOT_ACTION_DESIRE_NONE,
     VeryLow = BOT_ACTION_DESIRE_VERYLOW,
@@ -102,4 +115,23 @@ export enum Lane {
     Mid = LANE_MID,
     Bot = LANE_BOT,
     None = LANE_NONE,
+}
+
+export enum UnitType {
+    All = UNIT_LIST_ALL,
+    Allies = UNIT_LIST_ALLIES,
+    AlliedHeroes = UNIT_LIST_ALLIED_HEROES,
+    AlliedCreeps = UNIT_LIST_ALLIED_CREEPS,
+    AlliedWards = UNIT_LIST_ALLIED_WARDS,
+    AlliedBuildings = UNIT_LIST_ALLIED_BUILDINGS,
+    Enemies = UNIT_LIST_ENEMIES,
+    EnemyHeroes = UNIT_LIST_ENEMY_HEROES,
+    EnemyCreeps = UNIT_LIST_ENEMY_CREEPS,
+    EnemyWards = UNIT_LIST_ENEMY_WARDS,
+    NeutralCreeps = UNIT_LIST_NEUTRAL_CREEPS,
+    EnemyBuildings = UNIT_LIST_ENEMY_BUILDINGS,
+}
+
+export enum BotActionType {
+    None = 0, // TODO: Add Actions
 }
