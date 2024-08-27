@@ -1,4 +1,5 @@
 import * as jmz from "bots/FunLib/jmz_func";
+import { TalentTreeBuild } from "bots/FunLib/jmz_func";
 import { BotBehavior, BotRole, ItemBuilds } from "bots/lib/bots";
 import {
     BotActionDesire,
@@ -7,7 +8,8 @@ import {
     Talent,
     Unit,
 } from "bots/lib/dota";
-import { TalentTreeBuild } from "bots/FunLib/jmz_func";
+import { hero_is_healing } from "bots/FunLib/aba_buff";
+import { HasAnyEffect } from "bots/FunLib/utils";
 
 const bot = GetBot();
 // @ts-ignore
@@ -97,20 +99,7 @@ const roleItemBuyList: { [key in BotRole]: string[] } = {
 } satisfies ItemBuilds;
 
 function HasHealingEffect(hero: Unit) {
-    const modifiers = [
-        "modifier_tango_heal",
-        "modifier_flask_healing",
-        "modifier_clarity_potion", // Kinda useful for wisp's tether
-        "modifier_item_urn_heal",
-        "modifier_item_spirit_vessel_heal",
-        "modifier_bottle_regeneration",
-    ];
-    for (const name of modifiers) {
-        if (hero.HasModifier(name)) {
-            return true;
-        }
-    }
-    return false;
+    return HasAnyEffect(hero, "modifier_tango_heal", ...hero_is_healing);
 }
 
 let stateTetheredHero: Unit | null = null;

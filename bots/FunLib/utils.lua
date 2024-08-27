@@ -7,6 +7,7 @@ local __TS__Iterator = ____lualib.__TS__Iterator
 local Set = ____lualib.Set
 local __TS__New = ____lualib.__TS__New
 local __TS__ArrayConcat = ____lualib.__TS__ArrayConcat
+local __TS__ArraySome = ____lualib.__TS__ArraySome
 local ____exports = {}
 local print, orig_print
 local ____dota = require("bots.lib.dota.index")
@@ -406,5 +407,12 @@ function ____exports.TimeNeedToHealHP(bot)
 end
 function ____exports.TimeNeedToHealMP(bot)
     return (bot:GetMaxMana() - bot:GetMana()) / bot:GetManaRegen()
+end
+function ____exports.HasAnyEffect(unit, ...)
+    local effects = {...}
+    return __TS__ArraySome(
+        effects,
+        function(____, effect) return unit:HasModifier(effect) end
+    )
 end
 return ____exports

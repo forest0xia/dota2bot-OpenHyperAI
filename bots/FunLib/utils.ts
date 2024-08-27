@@ -424,3 +424,7 @@ export function TimeNeedToHealHP(bot: Unit): number {
 export function TimeNeedToHealMP(bot: Unit): number {
     return (bot.GetMaxMana() - bot.GetMana()) / bot.GetManaRegen();
 }
+
+export function HasAnyEffect(unit: Unit, ...effects: string[]) {
+    return effects.some(effect => unit.HasModifier(effect));
+}

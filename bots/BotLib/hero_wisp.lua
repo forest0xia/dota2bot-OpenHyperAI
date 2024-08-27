@@ -3,6 +3,10 @@ local jmz = require("bots.FunLib.jmz_func")
 local ____dota = require("bots.lib.dota.index")
 local BotActionDesire = ____dota.BotActionDesire
 local BotMode = ____dota.BotMode
+local ____aba_buff = require("bots.FunLib.aba_buff")
+local hero_is_healing = ____aba_buff.hero_is_healing
+local ____utils = require("bots.FunLib.utils")
+local HasAnyEffect = ____utils.HasAnyEffect
 local bot = GetBot()
 local Minion = dofile("bots/FunLib/aba_minion")
 local talentList = jmz.Skill.GetTalentList(bot)
@@ -84,20 +88,11 @@ local roleItemBuyList = {
     }
 }
 local function HasHealingEffect(hero)
-    local modifiers = {
+    return HasAnyEffect(
+        hero,
         "modifier_tango_heal",
-        "modifier_flask_healing",
-        "modifier_clarity_potion",
-        "modifier_item_urn_heal",
-        "modifier_item_spirit_vessel_heal",
-        "modifier_bottle_regeneration"
-    }
-    for ____, name in ipairs(modifiers) do
-        if hero:HasModifier(name) then
-            return true
-        end
-    end
-    return false
+        unpack(hero_is_healing)
+    )
 end
 local stateTetheredHero = nil
 local function ShouldUseOvercharge(ally)
@@ -113,26 +108,26 @@ local function considerTether()
     local allies = bot:GetNearbyHeroes(castRange, false, BotMode.None)
     for ____, ally in ipairs(allies) do
         do
-            local __continue9
+            local __continue6
             repeat
                 local canTargetAlly = ally ~= bot and ally:IsAlive() and not ally:IsMagicImmune()
                 if not canTargetAlly then
-                    __continue9 = true
+                    __continue6 = true
                     break
                 end
                 if jmz.IsRetreating(bot) or jmz.GetHP(bot) < 0.25 then
                     if jmz.IsRetreating(ally) then
                         return BotActionDesire.High, ally
                     end
-                    __continue9 = true
+                    __continue6 = true
                     break
                 end
                 if jmz.GetHP(ally) < 0.75 or jmz.GetMP(bot) > 0.8 or HasHealingEffect(bot) or ShouldUseOvercharge(ally) then
                     return BotActionDesire.High, ally
                 end
-                __continue9 = true
+                __continue6 = true
             until true
-            if not __continue9 then
+            if not __continue6 then
                 break
             end
         end
