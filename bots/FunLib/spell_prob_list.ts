@@ -109,8 +109,8 @@ const SpellList: { [key: string]: number } = {
 
     rubick_empty1: 1,
     rubick_empty2: 1,
-}
+};
 
 export function GetSpellReplaceWeight(ability: string): number {
-    return SpellList[ability] ?? 1
+    return SpellList[ability] ?? 1;
 }

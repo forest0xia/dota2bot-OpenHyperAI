@@ -355,12 +355,11 @@ end
 local everySecondsCallRegistry = {}
 local function EveryManySeconds(second, oldFunction)
     local functionName = tostring(oldFunction)
-    local callTable = {
+    everySecondsCallRegistry[functionName] = {
         lastCallTime = DotaTime() + RandomInt(0, second * 1000) / 1000,
         interval = second,
         startup = true
     }
-    everySecondsCallRegistry[functionName] = callTable
     return function(...)
         local callTable = everySecondsCallRegistry[functionName]
         if callTable.startup then

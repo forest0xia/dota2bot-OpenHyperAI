@@ -1,48 +1,48 @@
-import { Talent, Unit } from 'bots/lib/dota'
-import { BotRole } from 'bots/lib/bots'
+import { Talent, Unit } from "bots/lib/dota";
+import { BotRole } from "bots/lib/bots";
 
 /** @noSelf **/
 export interface TalentTreeBuild {
-    t10: [number, number]
-    t15: [number, number]
-    t20: [number, number]
-    t25: [number, number]
+    t10: [number, number];
+    t15: [number, number];
+    t20: [number, number];
+    t25: [number, number];
 }
 
 /** @noSelf **/
 interface ISkill {
-    GetRandomBuild(builds: number[][]): number[]
+    GetRandomBuild(builds: number[][]): number[];
 
-    GetTalentBuild(talents: TalentTreeBuild): number[]
+    GetTalentBuild(talents: TalentTreeBuild): number[];
 
-    GetTalentList(bot: Unit): Talent[]
+    GetTalentList(bot: Unit): Talent[];
 
-    GetAbilityList(bot: Unit): string[]
+    GetAbilityList(bot: Unit): string[];
 
     GetSkillList(
         abilities: string[],
         abilityBuild: number[],
         talentList: Talent[],
         talentBuild: number[]
-    ): string[]
+    ): string[];
 }
 
 /** @noSelf **/
 interface IItem {
-    GetRoleItemsBuyList(bot: Unit): BotRole
+    GetRoleItemsBuyList(bot: Unit): BotRole;
 }
 
-declare function IsInTeamFight(bot: Unit, radius: number): boolean
+declare function IsInTeamFight(bot: Unit, radius: number): boolean;
 
-declare function IsRetreating(bot: Unit): boolean
+declare function IsRetreating(bot: Unit): boolean;
 
-declare function IsGoingOnSomeone(bot: Unit): boolean
+declare function IsGoingOnSomeone(bot: Unit): boolean;
 
-declare function CanNotUseAbility(bot: Unit): boolean
+declare function CanNotUseAbility(bot: Unit): boolean;
 
-declare function GetMP(bot: Unit): number
+declare function GetMP(bot: Unit): number;
 
-declare function GetHP(bot: Unit): number
+declare function GetHP(bot: Unit): number;
 
-declare const Skill: ISkill
-declare const Item: IItem
+declare const Skill: ISkill;
+declare const Item: IItem;
