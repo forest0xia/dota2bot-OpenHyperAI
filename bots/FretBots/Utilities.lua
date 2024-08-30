@@ -280,6 +280,11 @@ function Utilities:ActuallyPlaySound(sound)
 	return result
 end
 
+-- returns true if exactly one (but not both) of two conditions is true
+function Utilities:xor(a, b)
+	return not (not a == not b)
+end
+
 -- clamps a number
 function Utilities:Clamp(number, minimum, maximum)
 	if number < minimum then return minimum end

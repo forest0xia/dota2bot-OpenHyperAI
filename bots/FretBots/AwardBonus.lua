@@ -415,12 +415,9 @@ function AwardBonus:GetSpecificPerMinuteBonus(bot, pmBot, roleTable, settings)
 	end
 
 	local scale = settings.scale[bot.stats.role]
-	
+
 	-- In case no human player detected at all or bonus below base line, just base on difficulty scale.
 	local defaultScale = (100 - bot.stats.role * 10) * scale -- gpm or xpm
-	if #AllBots[bot.stats.team] < 5 then -- less for human side bots
-		defaultScale = defaultScale / 1.2
-	end
 	local baseLineBonus = Settings.difficulty * defaultScale
 	if roleTable[bot.stats.role] == nil or roleTable[bot.stats.role] < baseLineBonus then
 		-- Debug:Print(bot.stats.name..', with role '..bot.stats.role..' now use default per mins amount: '..pmPlayer..' based on difficulty: '..Settings.difficulty )
@@ -466,6 +463,12 @@ function AwardBonus:GetSpecificPerMinuteBonus(bot, pmBot, roleTable, settings)
 		bonus = Utilities:Round(bonus)
 		Debug:Print(bot.stats.name..': Throttled award: '..pmBot..': '..throttle)
 	end
+
+	-- nerf human ally bots, if voted.
+	if Settings.allyScale ~= nil and bot.stats.team == Settings.allyScaleTeam then
+		bonus = bonus * Settings.allyScale
+	end
+
 	-- debug data
 	debugTable.name = bot.stats.name
 	debugTable.role = bot.stats.role
@@ -479,6 +482,7 @@ function AwardBonus:GetSpecificPerMinuteBonus(bot, pmBot, roleTable, settings)
 	debugTable.adjustedClamp = adjustedClamp
 	debugTable.pmClamped = pmClamped
 	debugTable.bonus = bonus
+
 	return bonus, debugTable
 end
 
