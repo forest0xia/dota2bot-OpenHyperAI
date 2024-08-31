@@ -708,6 +708,7 @@ function X.ConsiderBattleTrance()
 
 	--团战
 	if J.IsInTeamFight( bot, 1200 )
+    and J.IsValidTarget(botTarget)
 	then
         local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1200, true, BOT_MODE_NONE)
         local nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1200, false, BOT_MODE_NONE)

@@ -20,7 +20,7 @@ X['WisdomRunes'] = {
 	[TEAM_DIRE] = Vector( 8319, 266, 256 )
 }
 
--- This heroes bugged because Valve was too lazy to add them with the correct laning target point. No high desired lane.
+-- This heroes bugged because Valve was too lazy to add them with the correct laning target point. They cannot properly inherit any of the default bot modes from Valve.
 X['BuggyHeroesDueToValveTooLazy'] = {
     ['npc_dota_hero_muerta'] = true,
     ['npc_dota_hero_marci'] = true,
@@ -127,9 +127,8 @@ end
 
 function X.PrintAllAbilities(bot)
     print('Get all abilities of bot '..bot:GetUnitName())
-    print('Abilities Count='..tostring(bot:GetAbilityCount()))
-    for i = 1, bot:GetAbilityCount() do
-        local ability = unit:GetAbilityByIndex(i)
+    for i = 0, 10 do
+		local ability = bot:GetAbilityInSlot( i )
         if ability ~= nil and not ability:IsNull() then
             print('Ability At Index '..tostring(i)..': '..ability:GetName())
         else
@@ -433,6 +432,12 @@ function X.Remove_Modify(tb, item)
             i = i + 1
         end
     end
+end
+
+function X.AbilityBehaviorHasFlag(behavior, flag)
+    local res = bit.band(behavior, flag) == flag
+    -- print('Check if ability behavior: '.. tostring(behavior) .. ' contains ' .. tostring(flag) .. ', result: ' .. tostring(res))
+    return res
 end
 
 -- coroutine

@@ -32,8 +32,8 @@ local tTalentTreeList = {
 }
 
 local tAllAbilityBuildList = {
-						{3,2,2,1,2,7,2,1,1,1,7,3,3,3,7},--pos2
-						{2,1,2,3,2,7,3,1,1,1,7,3,3,2,7},--pos3
+						{3,2,2,1,2,6,2,1,1,1,6,3,3,3,6},--pos2
+						{2,1,2,3,2,6,3,1,1,1,6,3,3,2,6},--pos3
 }
 
 local nAbilityBuildList

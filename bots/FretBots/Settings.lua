@@ -18,7 +18,7 @@ local allyScaleMax = 1
 
 -- default difficulty if no one votes
 local DefaultDifficulty = 2 -- [0, 10]
-local DefaultAllyScale = 0.75 -- [0, 1]
+local DefaultAllyScale = 0.7 -- [0, 1]
 
 Settings = nil
 
@@ -71,7 +71,7 @@ local announcementList = {
 	{"#7FB3D5", "* The higher the difficulty you vote, the more bonus the bots will get which can make the game more challenging." },
 	{"#E74C3C", "* High difficulty can be overwhelming or even frustrating, please choose the right difficulty for you and your team." },
 	{"#D4AC0D", "* Bot link: https://steamcommunity.com/sharedfiles/filedetails/?id=3246316298 . Kudos to BeginnerAI, Fretbots, and ryndrb@; and thanks all for sharing your ideas." },
-	{"#839192", "* You can use simple commands like `info` to view difficulty info, or `getroles`, or other interesting commands - check bot's Workshop page for details." },
+	{"#839192", "* You can use simple commands like `info` to view difficulty info, or `getroles`, or other interesting commands - check script's Workshop page for details." },
 	-- {"#D4AC0D", "There are commands to play certain sounds like `ps love` or `ps dylm`. You can also explore other commands like `getroles`, `networth`, etc." }
 }
 
@@ -172,9 +172,11 @@ function IsTimeToVoteForAllyBonusScale()
 		local team = PlayerResource:GetTeam(playerID)
 		if PlayerResource:GetSteamID(playerID) == PlayerResource:GetSteamID(100) then
 			table.insert(bots[team], player)
-		else
+		elseif team >= 2 and team <= 3 then
 			table.insert(humans[team], player)
 			allyTeam = team
+		else
+			print('Cannot start voting for ally bonus. Invalid player team: '..team)
 		end
 	end
 
