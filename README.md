@@ -37,11 +37,12 @@ Bot script in Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails
 1. Pos1 and Pos5 bots go to safe lane. Pos3 and Pos4 bots go offlane. Pos2 bot goes to mid lane.
 
 ### What's next
-1. This is a script derived from Tinkering About (by @ryndrb). But the code has diverged significantly w.r.t roles, item selection, farming, laning, roaming, push, defend, rosh/runes strategies, as well as the local support with Fretbots. Presumably the future maintenance will keep diverging even more.
-1. Better decision making on pushing and ganking.
+1. Follow up on https://www.reddit.com/r/DotA2/comments/1ezxpav/a_note_to_valve_official_regarding_bot_scripts/
+1. Maybe traning machine learning AI.
+1. Better decision making on laning, pushing and ganking.
 1. Better spell casting for certain heroes like Invoker, Rubick, etc.
+1. Support all game modes.
 1. More code bug fixes.
-1. Better laning logic to avoid bots feeding too much in the early game.
 1. Figure out how to better support the Bugged-Heroes: Dark Willow, Elder Titan, Hoodwink, io, Lone Druid, Marci, Muerta, Primal Beast. Note that they are buggy due to problems on the Valves side, not script developers.
 
 ### Support the script
@@ -59,8 +60,8 @@ If you'd like to buy me a coffee: https://steamcommunity.com/workshop/filedetail
 ### Credits to
 This script is based on Valve's default bot script and many other people's work and their scripts. That being said, this is a partial override not completely take over bot script. It takes the advantages of some other existing bot scripts and aims to be a better off script than the existing ones. We hope the bot's decision making and team strategies are more effective and brings more joy to you.
 
+- Tinkering ABout (by @ryndrb: https://github.com/ryndrb/dota2bot or https://steamcommunity.com/sharedfiles/filedetails/?id=3139791706). This is a script derived from Tinkering ABout. But the code has diverged significantly w.r.t roles, item selection, farming, laning, roaming, push, defend, rosh/runes strategies, as well as the local support with Fretbots. Presumably the future maintenance will keep diverging even more.
 - New beginner ai (by dota2jmz@163.com).
-- Tinkering ABout (by ryndrb: https://github.com/ryndrb/dota2bot or https://steamcommunity.com/sharedfiles/filedetails/?id=3139791706)
 - Ranked Matchmaking AI (by adamqqq)
 - fretbots (by fretmute)
 - BOT Experiment (by Furiospuppy)

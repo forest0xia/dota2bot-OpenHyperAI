@@ -3336,6 +3336,27 @@ function J.IsEnemyHeroAroundLocation( vLoc, nRadius )
 
 end
 
+function J.GetLastSeenEnemiesNearLoc(vLoc, nRadius)
+	local enemies = {}
+
+	for i, id in pairs( GetTeamPlayers( GetOpposingTeam() ) )
+	do
+		if IsHeroAlive( id ) then
+			local info = GetHeroLastSeenInfo( id )
+			if info ~= nil then
+				local dInfo = info[1]
+				if dInfo ~= nil
+					and J.GetLocationToLocationDistance( vLoc, dInfo.location ) <= nRadius
+					and dInfo.time_since_seen < 5.0
+				then
+					table.insert(enemies, enemyHero)
+				end
+			end
+		end
+	end
+
+	return enemies
+end
 
 function J.GetNumOfAliveHeroes( bEnemy )
 

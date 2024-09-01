@@ -139,7 +139,7 @@ function WisdomRuneDesire()
 			end
 		end
 		local distance = GetUnitToLocationDistance(ClosestAllyToEnemyRune, TeamWisdomRune[enemyTeam])
-		return RemapValClamped(distance, 6400, 100, BOT_ACTION_DESIRE_HIGH, BOT_ACTION_DESIRE_ABSOLUTE  )
+		return RemapValClamped(distance, 6400, 100, BOT_MODE_DESIRE_MODERATE, BOT_ACTION_DESIRE_ABSOLUTE) * 0.9
 	end
 
 	return BOT_MODE_DESIRE_NONE

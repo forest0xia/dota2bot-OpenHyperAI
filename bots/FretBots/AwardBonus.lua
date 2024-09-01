@@ -12,6 +12,7 @@ require 'bots.FretBots.Utilities'
 local thisDebug = false;
 local isDebug = Debug.IsDebug() and thisDebug;
 
+local baseBonusRef = 150
 
 -- Instantiate ourself
 if AwardBonus == nil then
@@ -226,7 +227,7 @@ function AwardBonus:Death(bot)
 						msg = msg .. ' '..award..': '..name
 					end
 					if isDebug then
-						--print(bot.stats.name..': Awarded '..award..': '..value)
+						-- print(bot.stats.name..': Awarded '..award..': '..value)
 					end
 					-- Clear the chance for this award (if accrued)
 					if Settings.deathBonus.accrue[award] then
@@ -315,6 +316,12 @@ function AwardBonus:GetValue(bot, award)
 		clamped = Utilities:Round(clamped, Settings.deathBonus.round[award])
 		Debug:Print(bot.stats.name..': Throttled '..award..' award: '..throttle..' * '..preThrottle)
 	end
+
+	-- nerf human ally bots, if voted.
+	if Settings.allyScale ~= nil and bot.stats.team == Settings.allyScaleTeam then
+		clamped = clamped * Settings.allyScale
+	end
+
 	debugTable.clamped = clamped
 	-- set isLoud
 	isLoud = (Settings.deathBonus.isClampLoud[award] and clamped == Settings.deathBonus.clamp[award][2])
@@ -417,7 +424,7 @@ function AwardBonus:GetSpecificPerMinuteBonus(bot, pmBot, roleTable, settings)
 	local scale = settings.scale[bot.stats.role]
 
 	-- In case no human player detected at all or bonus below base line, just base on difficulty scale.
-	local defaultScale = (100 - bot.stats.role * 10) * scale -- gpm or xpm
+	local defaultScale = (baseBonusRef - bot.stats.role * 10) * scale -- gpm or xpm
 	local baseLineBonus = Settings.difficulty * defaultScale
 	if roleTable[bot.stats.role] == nil or roleTable[bot.stats.role] < baseLineBonus then
 		-- Debug:Print(bot.stats.name..', with role '..bot.stats.role..' now use default per mins amount: '..pmPlayer..' based on difficulty: '..Settings.difficulty )
@@ -432,7 +439,7 @@ function AwardBonus:GetSpecificPerMinuteBonus(bot, pmBot, roleTable, settings)
 	local skill = bot.stats.skill
 	local variance = Utilities:GetVariance(settings.variance)
 	-- Get total multiplier
-	local multiplier = AwardBonus:GetMultiplier(skill, scale, variance) * 1.315
+	local multiplier = AwardBonus:GetMultiplier(skill, scale, variance) * 1.25
 	-- multiply
 	pmTarget = Utilities:Round(pmTarget * multiplier)
 	-- if the bot is already better than this, do not give award

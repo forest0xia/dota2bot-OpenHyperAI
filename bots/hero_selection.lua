@@ -993,7 +993,7 @@ function AllPickHeros()
 			sSelectHero = sSelectList[i]
 
 			-- Give a chance to pick counter/synergy heroes
-			if not UseCustomizedPicks and RandomInt(1, 4) >= 3 then
+			if not UseCustomizedPicks and RandomInt(1, 5) >= 4 then
 				local nCurrEnmCores = X.GetCurrEnmCores(nEnmTeam)
 				local selectCounter = nil
 

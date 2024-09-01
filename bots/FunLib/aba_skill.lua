@@ -88,31 +88,31 @@ function X.GetAbilityList( bot )
 		if ability then
 			local name = ability:GetName()
 			local unitName = bot:GetUnitName()
-			print(unitName..' has ability name= '..name..', at slot idx= '..slot)
+			--print(unitName..' has ability name= '..name..', at slot idx= '..slot)
 			if name == generic_hidden then
 				-- if we dont check slots but just dropping generic_hidden, it can cause some others fail to learn abilities correctly, e.g. chen.
 				if slot ~= 0 then
-					print('[WARN] The ability '..name..' on slot '..slot..' cannot be accessed for hero: '..unitName)
+					--print('[WARN] The ability '..name..' on slot '..slot..' cannot be accessed for hero: '..unitName)
 					table.insert(sAbilityList, generic_hidden)
 				else
 					print('[WARN] The ability '..name..' on slot '..slot..' does not make sense. Check if there is anything wrong with this hero: '..unitName)
 				end
 			elseif Utils.AbilityBehaviorHasFlag(ability:GetBehavior(), DOTA_ABILITY_BEHAVIOR_NOT_LEARNABLE) and ability:IsHidden() then
-				print('[WARN] The ability '..name..' on slot '..slot..' is not learnable (e.g. innate like) for hero: '..unitName)
+				--print('[WARN] The ability '..name..' on slot '..slot..' is not learnable (e.g. innate like) for hero: '..unitName)
 			elseif ability:IsUltimate() and slot >= 4 then
 				-- print('[INFO] The ability '..name..' on slot '..slot..' is the ultimate for hero: '..unitName)
 				if Utils.AbilityBehaviorHasFlag(ability:GetBehavior(), DOTA_ABILITY_BEHAVIOR_NOT_LEARNABLE) or ability:IsHidden() then
 					print('[WARN] The ability '..name..' on slot '..slot..' seems to be an ultimate for hero: '..unitName..'. But it is not learnable OR hidden. Check if there is anything wrong with this hero.')
 				else
 					sAbilityList[6] = name
-					print(unitName..' loaded ultimate ability with name= '..name..', at idx= '..slot)
+					--print(unitName..' loaded ultimate ability with name= '..name..', at idx= '..slot)
 				end
-				if slot > 5 then
-					print('[WARN] The ability '..name..' on slot '..slot..' is another ultimate for hero: '..unitName..'. Wrong slot detected. Check if there is anything wrong with this hero.')
-				end
+				-- if slot > 5 then
+				-- 	print('[WARN] The ability '..name..' on slot '..slot..' is another ultimate for hero: '..unitName..'. Wrong slot detected. Check if there is anything wrong with this hero.')
+				-- end
 			elseif not ability:IsTalent() then
 				table.insert(sAbilityList, name)
-				print(unitName..' loaded ability with name= '..name..', at idx= '..slot)
+				--print(unitName..' loaded ability with name= '..name..', at idx= '..slot)
 			else
 				print(unitName..' failed to load ability with name= '..name..', at idx= '..slot)
 			end

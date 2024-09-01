@@ -857,7 +857,7 @@ function X.ConsiderToggleMovement()
 
     if J.IsGoingOnSomeone(bot)
 	then
-		if sunRayTarget ~= nil
+		if sunRayTarget ~= nil and J.IsValidTarget(sunRayTarget)
 		then
             if GetUnitToUnitDistance(bot, sunRayTarget) > bot:GetAttackRange()
             then
