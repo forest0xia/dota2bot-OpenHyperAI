@@ -596,18 +596,22 @@ function Utilities:IsTurboMode()
     return false
 end
 
-function Utilities:GetPInfo(difficulty)
-    local playerCount = PlayerResource:GetPlayerCount()
+function Utilities:GetPInfo()
+    local pCount = PlayerResource:GetPlayerCount()
 	local pSteamInfoList = { }
-    for playerID = 0, playerCount - 1 do
-        local connectionState = PlayerResource:GetConnectionState(playerID)
+    for pID = 0, pCount - 1 do
+        local connectionState = PlayerResource:GetConnectionState(pID)
         if connectionState == DOTA_CONNECTION_STATE_CONNECTED then
-			local steamId = PlayerResource:GetSteamID(playerID)
-			local name = PlayerResource:GetPlayerName(playerID)
-			table.insert(pSteamInfoList, { name = name, steamId = tostring(steamId), fretbots_difficulty = difficulty, version = Version.number })
+			local steamId = PlayerResource:GetSteamID(pID)
+			local name = PlayerResource:GetPlayerName(pID)
+			table.insert(pSteamInfoList, { name = name, steamId = tostring(steamId) } )
 		end
 	end
-	return pSteamInfoList
+	return {
+		version = Version.number,
+		pinfo = pSteamInfoList,
+		fretbots = { difficulty = Settings.difficulty, allyScale = Settings.allyScale},
+	}
 end
 
 -- GameStateListener class for registering functions that will run once when

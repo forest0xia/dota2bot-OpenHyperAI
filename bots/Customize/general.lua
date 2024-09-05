@@ -141,9 +141,4 @@ return Customize
         'npc_dota_hero_elder_titan',
         'npc_dota_hero_hoodwink',
         'npc_dota_hero_wisp',
-
-    -- -- List C. They don't have some abilities due to Facet updates in 7.37. For now you can enable Frebots mode to fix this problem.
-        'npc_dota_hero_faceless_void',
-        'npc_dota_hero_magnataur',
-
 ]]--

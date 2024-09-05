@@ -1,5 +1,8 @@
 local json = require('bots.FretBots.dkjson')
 local heroNames = require('bots.FretBots.HeroNames')
+require 'bots.FretBots.Utilities'
+require 'bots.FretBots.Timers'
+
 local Chat = { }
 -- OpenAI ApiKey
 local API_KEY = ''
@@ -7,6 +10,9 @@ local API_KEY = ''
 local recordedMessages = {}
 local maxpromptsLength = 3
 local inGameBots = {}
+local countErrorMsg = 0
+local chatTimerName = "chat"
+local chatVersionDetermineTime = -45
 
 function Chat:SendMessageToBackend(inputText, playerInfo)
     local inputContent
@@ -17,7 +23,7 @@ function Chat:SendMessageToBackend(inputText, playerInfo)
     Chat:SendHttpRequest('chat', inputData)
 end
 
-function Chat:SendHttpRequest(api, inputData)
+function Chat:SendHttpRequest(api, inputData, callback)
     local jsonString = json.encode(inputData)
 
     -- local request = CreateHTTPRequest("POST", "http://127.0.0.1:5000/"..api)
@@ -35,6 +41,7 @@ function Chat:SendHttpRequest(api, inputData)
                 handleFailMessage(resJsonObj.error.type .. " : " .. resJsonObj.error.message .. " " .. tostring(resJsonObj.error.code), false)
             else
                 handleResponseMessage(jsonString, res)
+                if callback then callback(resJsonObj) end
             end
         else
             local success, resJsonObj = pcall(function() return json.decode(res) end)
@@ -44,8 +51,24 @@ function Chat:SendHttpRequest(api, inputData)
                 handleFailMessage('Error occurred! Please try again later.', false)
             end
         end
-        
     end)
+end
+
+function Chat.StartCallback(resJsonObj)
+	if resJsonObj.updates_behind > 0 then
+        print('Script is out of date.')
+        Timers:CreateTimer(chatTimerName, {endTime = 1, callback = Chat['NotifyUpdate']} )
+    end
+end
+
+function Chat:NotifyUpdate()
+	local gameTime = Utilities:GetAbsoluteTime()
+	if GameRules:State_Get() == DOTA_GAMERULES_STATE_PRE_GAME and gameTime > chatVersionDetermineTime then
+        Utilities:Print('New version of the script is available! Feel free to update your script later. Check out Open Hyper AI (OHA) Workshop page if you need help.', MSG_WARNING)
+		Timers:RemoveTimer(chatTimerName)
+        return nil
+    end
+	return 1
 end
 
 local function botNameListInTheGame()
@@ -110,9 +133,8 @@ local function splitHeroNameFromMessage(message)
     end
 end
 
-local countErrorMsg = 0
 function handleFailMessage(message, isBotSay)
-    -- print("API Failure: " .. message)
+    print("API Failure: " .. message)
     countErrorMsg = countErrorMsg + 1
     if isBotSay and countErrorMsg <= 2 then
         local aBot = getRandomBot()
