@@ -10,11 +10,15 @@ Anything that can be shared in any files without worrying about nested or circul
 
 local X = { }
 
-X['DebugMode'] = false
+X.ScriptID = 3246316298
 
-local RadiantFountainTpPoint = Vector(-7172, -6652, 384 )
-local DireFountainTpPoint = Vector(6982, 6422, 392)
+X.DebugMode = false
 
+X.RadiantFountainTpPoint = Vector(-7172, -6652, 384 )
+X.DireFountainTpPoint = Vector(6982, 6422, 392)
+
+if not TEAM_RADIANT then TEAM_RADIANT = 2 end
+if not TEAM_DIRE then TEAM_DIRE = 3 end
 X['WisdomRunes'] = {
 	[TEAM_RADIANT] = Vector( -8126, -320, 256 ),
 	[TEAM_DIRE] = Vector( 8319, 266, 256 )
@@ -140,9 +144,9 @@ end
 function X.GetEnemyFountainTpPoint()
 	if GetTeam() == TEAM_DIRE
 	then
-		return RadiantFountainTpPoint
+		return X.RadiantFountainTpPoint
 	else
-		return DireFountainTpPoint
+		return X.DireFountainTpPoint
 	end
 end
 

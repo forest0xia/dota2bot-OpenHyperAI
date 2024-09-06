@@ -1,9 +1,10 @@
+if GetScriptDirectory == nil then GetScriptDirectory = function () return "bots" end end
 local Utils = require( GetScriptDirectory()..'/FunLib/utils' )
 
-local Dota2Teams = {}
+local Dota2Teams = { }
 
-local defaultPostfix = 'OHA' -- Open Hyper AI.
-local maxTeamSize = 12 -- e.g. for 12 v 12
+Dota2Teams.defaultPostfix = 'OHA' -- Open Hyper AI.
+Dota2Teams.maxTeamSize = 12 -- e.g. for 12 v 12
 
 -- List should have a least 4 teams for better performance.
 local defaultTeams = {
@@ -55,12 +56,12 @@ local function generateTeam(overrides)
     end
 
     local team = { }
-    for i = 1, maxTeamSize do
+    for i = 1, Dota2Teams.maxTeamSize do
         local pName = table.remove(playerList, 1)
         if Utils.HasValue(overriddenNames, pName) then
             table.insert(team, pName)
         else
-            table.insert(team, defaultTeams[randomNum].name .. "." .. pName ..'.'..defaultPostfix)
+            table.insert(team, defaultTeams[randomNum].name .. "." .. pName ..'.'..Dota2Teams.defaultPostfix)
         end
     end
     return team
