@@ -17,19 +17,32 @@ local sAbilityList = J.Skill.GetAbilityList( bot )
 local sRole = J.Item.GetRoleItemsBuyList( bot )
 
 local tTalentTreeList = {
-						['t25'] = {10, 0},
-						['t20'] = {0, 10},
-						['t15'] = {0, 10},
-						['t10'] = {10, 0},
+                        {--pos1
+                            ['t25'] = {10, 0},
+                            ['t20'] = {0, 10},
+                            ['t15'] = {0, 10},
+                            ['t10'] = {10, 0},
+                        },
+                        {--pos2
+                            ['t25'] = {10, 0},
+                            ['t20'] = {0, 10},
+                            ['t15'] = {10, 0},
+                            ['t10'] = {0, 10},
+                        },
 }
 
 local tAllAbilityBuildList = {
-						{1,4,1,4,1,4,1,4,6,5,6,5,5,5,6},--pos1,2
+						{1,5,1,5,1,5,1,5,6,4,6,4,4,4,6}, -- starting with armor reduction is better, souls aslo give him more damage for better last hit
 }
 
-local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
+local nAbilityBuildList = tAllAbilityBuildList[1]
+local nTalentBuildList
 
-local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
+if sRole == "pos_1" or sRole == "pos_3" then
+    nTalentBuildList = J.Skill.GetTalentBuild(tTalentTreeList[1])
+else
+    nTalentBuildList = J.Skill.GetTalentBuild(tTalentTreeList[2])
+end
 
 local sRoleItemsBuyList = {}
 
@@ -40,45 +53,54 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_enchanted_mango",
 	"item_enchanted_mango",
 
-	"item_power_treads",
+	"item_phase_boots", -- faster than power threads
 	"item_magic_wand",
+	"item_null_talisman",
 	"item_dragon_lance",
 	"item_black_king_bar",--
-    "item_force_staff",
-	"item_hurricane_pike",--
-	"item_butterfly",--
+	"item_monkey_king_bar",-- physical + magical (for agility heroes and pa, wr)
+	"item_silver_edge",-- sf can use this to escape + it breaks passives of the enemies (good against pa, bb, am)
 	"item_aghanims_shard",
 	"item_greater_crit",--
 	"item_moon_shard",
 	"item_satanic",--
-	"item_travel_boots",
 	"item_travel_boots_2",--
 	"item_ultimate_scepter_2",
 }
 
 sRoleItemsBuyList['pos_2'] = {
-	
-	"item_mid_outfit",
-	"item_point_booster",
-	"item_aghanims_shard",
-	"item_ultimate_scepter",
-	"item_orchid",
-	"item_black_king_bar",
-	"item_travel_boots",
-	"item_bloodthorn",
-	"item_monkey_king_bar",
-	"item_moon_shard",
-	"item_sheepstick",
-	"item_travel_boots_2",
-	"item_ultimate_orb",
-	"item_ultimate_scepter_2",
-	"item_sphere",
+	"item_tango",
+	"item_enchanted_mango",
+	"item_enchanted_mango",
+	"item_enchanted_mango",
+	"item_clarity",
+	"item_clarity",
+	"item_flask",
+	"item_faerie_fire",
+	"item_quelling_blade",
 
+	"item_bottle",
+	"item_boots",
+	"item_cyclone", -- prevent enemies to teleport
+	"item_invis_sword", -- sf escaping with this
+	"item_kaya", -- fix mana problem & increase magical damage
+	"item_blink", -- chase enemy for last hit
+	"item_yasha",
+	"item_ultimate_scepter",
+	"item_travel_boots", -- teleport faster
+	"item_silver_edge",
+	"item_ultimate_scepter_2",
+	"item_octarine_core",
+	"item_aghanims_shard",
+	"item_overwhelming_blink", -- for more magical damage + health, sf doesn't require others
+	"item_wind_waker",
+	"item_travel_boots_2",
+	"item_moon_shard",
 }
 
-sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_1']
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_2']
 
-sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_1']
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_2']
 
 sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_1']
 
@@ -89,10 +111,10 @@ X['sSellList'] = {
 	"item_black_king_bar",
 	"item_quelling_blade",
 
-	"item_ultimate_scepter",
+	"item_null_talisman",
 	"item_magic_wand",
 
-	"item_cyclone",
+	"item_bottle",
 	"item_magic_wand",
 
 	"item_shivas_guard",
@@ -186,24 +208,40 @@ local nKeepMana, nMP, nHP, nLV, hEnemyHeroList, botTarget
 
 
 function X.SkillsComplement()
-
-
 	J.ConsiderTarget()
-
-
-	if J.CanNotUseAbility( bot ) or bot:IsInvisible() then return end
-
+	if J.CanNotUseAbility( bot ) then return end
 
 	nKeepMana = 340
 	nLV = bot:GetLevel()
-	nMP = bot:GetMana()/bot:GetMaxMana()
-	nHP = bot:GetHealth()/bot:GetMaxHealth()
-	hEnemyHeroList = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
+	nMP = bot:GetMana() / bot:GetMaxMana()
+	nHP = bot:GetHealth() / bot:GetMaxHealth()
+	hEnemyHeroList = J.GetNearbyHeroes(bot, 1800, true, BOT_MODE_NONE)
 	botTarget = J.GetProperTarget(bot)
 
+	castRDesire = X.ConsiderR()
+	if castRDesire > 0
+	then
 
-	
+		J.SetQueuePtToINT( bot, false )
 
+		bot:ActionQueue_UseAbility ( abilityR )
+		return
+
+	end
+
+	-- invis ult can be a good combo
+	if bot:IsInvisible() then return end
+
+	-- this one is more important
+	castXDesire = X.Consider( abilityX, 450 )
+	if castXDesire > 0
+	then
+
+		J.SetQueuePtToINT( bot, true )
+
+		bot:ActionQueue_UseAbility( abilityX )
+		return
+	end
 
 	castCDesire = X.Consider( abilityC, 700 )
 	if castCDesire > 0
@@ -212,24 +250,6 @@ function X.SkillsComplement()
 		J.SetQueuePtToINT( bot, true )
 
 		bot:ActionQueue_UseAbility( abilityC )
-		return
-	end
-
-	FeastOfSoulsDesire = X.ConsiderFeastOfSouls()
-	if FeastOfSoulsDesire > 0
-	then
-		J.SetQueuePtToINT(bot, false)
-		bot:ActionQueue_UseAbility(FeastOfSouls)
-		return
-	end
-
-	castXDesire = X.Consider( abilityX, 450 )
-	if castXDesire > 0
-	then
-
-		J.SetQueuePtToINT( bot, true )
-
-		bot:ActionQueue_UseAbility( abilityX )
 		return
 	end
 
@@ -243,18 +263,6 @@ function X.SkillsComplement()
 		return
 
 	end
-
-	castRDesire = X.ConsiderR()
-	if castRDesire > 0
-	then
-
-		J.SetQueuePtToINT( bot, false )
-
-		bot:ActionQueue_UseAbility ( abilityR )
-		return
-
-	end
-	
 	
 	castNDesire, castNTarget = X.ConsiderN()
 	if castNDesire > 0
@@ -265,9 +273,14 @@ function X.SkillsComplement()
 
 	end
 	
-	
+	FeastOfSoulsDesire = X.ConsiderFeastOfSouls()
+	if FeastOfSoulsDesire > 0
+	then
+		J.SetQueuePtToINT(bot, false)
+		bot:ActionQueue_UseAbility(FeastOfSouls)
+		return
+	end
 end
-
 
 function X.ConsiderN()
 
@@ -292,18 +305,15 @@ function X.ConsiderN()
 end
 
 function X.ConsiderR()
-
-
-	if not abilityR:IsFullyCastable()
-		or ( bot:WasRecentlyDamagedByAnyHero( 1.5 ) and not bot:HasModifier( "modifier_black_king_bar_immune" ) and nHP < 0.62 )
-	then return 0 end
-
+	if not abilityR:IsFullyCastable() or (not bot:IsInvisible() and bot:WasRecentlyDamagedByAnyHero(2.0) and not bot:HasModifier("modifier_black_king_bar_immune") and nHP < 0.66) or (bot:IsInvisible() and bot:WasRecentlyDamagedByAnyHero(4.0) and nHP < 0.33) then
+		return 0
+	end
 
 	local nRadius = 1000
 
-	local nEnemysHerosInLong	 = J.GetEnemyList( bot, 1400 )
-	local nEnemysHerosInSkillRange = J.GetEnemyList( bot, 850 )
-	local nEnemysHerosNearby	 = J.GetEnemyList( bot, 400 )
+	local nEnemysHerosInLong	 = J.GetEnemyList( bot, 1200 )
+	local nEnemysHerosInSkillRange = J.GetEnemyList( bot, 750 )
+	local nEnemysHerosNearby	 = J.GetEnemyList( bot, 350 )
 
 	for _, enemy in pairs( nEnemysHerosNearby )
 	do
@@ -316,7 +326,7 @@ function X.ConsiderR()
 		end
 	end
 
-	if J.IsInTeamFight( bot, 1200 ) or J.IsGoingOnSomeone( bot )
+	if J.IsInTeamFight( bot, 1000 ) or J.IsGoingOnSomeone( bot )
 	then
 		if #nEnemysHerosInSkillRange >= 3
 			or ( #nEnemysHerosNearby >= 1 and #nEnemysHerosInSkillRange >= 2 )
@@ -478,7 +488,7 @@ function X.ConsiderFeastOfSouls()
 	local nSoulCount = bot:GetModifierStackCount(bot:GetModifierByName('modifier_nevermore_necromastery'))
 	local nManaAfter = J.GetManaAfter(FeastOfSouls:GetManaCost()) * bot:GetMana()
 
-	if nSoulCount < 5 then return BOT_ACTION_DESIRE_NONE end
+	if nSoulCount < 25 then return BOT_ACTION_DESIRE_NONE end
 
 	if J.IsGoingOnSomeone(bot)
 	then

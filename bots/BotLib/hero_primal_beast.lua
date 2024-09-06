@@ -39,57 +39,51 @@ else
     nTalentBuildList    = J.Skill.GetTalentBuild(tTalentTreeList[2])
 end
 
-local sUtility = {"item_pipe", "item_lotus_orb", "item_crimson_guard"}
-local nUtility = sUtility[RandomInt(1, #sUtility)]
-
 local sRoleItemsBuyList = {}
 
 sRoleItemsBuyList['pos_2'] = {
     "item_tango",
-    "item_quelling_blade",
-    "item_double_branches",
+	"item_enchanted_mango",
+	"item_enchanted_mango",
+	"item_enchanted_mango",
+	"item_clarity",
+	"item_clarity",
+	"item_flask",
+	"item_faerie_fire",
+	"item_quelling_blade",
 
-    "item_bracer",
+    "item_tranquil_boots",
     "item_bottle",
-    "item_boots",
-    "item_magic_wand",
-    "item_phase_boots",
-    "item_blink",
-    "item_shivas_guard",--
-    "item_black_king_bar",--
-    "item_ultimate_scepter",
-    "item_heart",--
-    "item_overwhelming_blink",--
-    "item_ultimate_scepter_2",
-    "item_travel_boots",
-    "item_travel_boots_2",--
-    "item_moon_shard",
+    "item_blade_mail",
+    "item_vanguard",
+    "item_talisman_of_evasion",
+    "item_radiance", -- ks = more gold
+    "item_kaya_and_sange",
+    "item_heart",
+    "item_crimson_guard",
+    "item_boots_of_bearing",
     "item_aghanims_shard",
-    "item_kaya_and_sange",--
+    "item_ultimate_scepter_2",
+    "item_moon_shard",
 }
 
 sRoleItemsBuyList['pos_3'] = {
     "item_tango",
     "item_double_branches",
     "item_magic_stick",
-    "item_ring_of_protection",
 
-    "item_helm_of_iron_will",
-    "item_boots",
     "item_magic_wand",
-    "item_phase_boots",
-    "item_veil_of_discord",
-    "item_eternal_shroud",--
-    "item_ultimate_scepter",
-    "item_blink",
-    "item_shivas_guard",--
-    nUtility,--
-    "item_black_king_bar",--
-    "item_travel_boots",
-    "item_overwhelming_blink",--
-    "item_ultimate_scepter_2",
-    "item_travel_boots_2",--
+    "item_tranquil_boots",
+    "item_talisman_of_evasion",
+    "item_radiance", -- ks = more gold
+    "item_blade_mail",
+    "item_vanguard",
+    "item_kaya_and_sange",
+    "item_heart",
+    "item_crimson_guard",
+    "item_boots_of_bearing",
     "item_aghanims_shard",
+    "item_ultimate_scepter_2",
     "item_moon_shard",
 }
 
@@ -226,8 +220,8 @@ function X.SkillsComplement()
     or bot:IsChanneling() then return end
 
     botTarget = J.GetProperTarget(bot)
-	nEnemyHeroes = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE)
-	nInRangeAlly = J.GetNearbyHeroes(bot,1600, false, BOT_MODE_NONE)
+	nEnemyHeroes = J.GetNearbyHeroes(bot, 1800, true, BOT_MODE_NONE)
+	nInRangeAlly = J.GetNearbyHeroes(bot, 1800, false, BOT_MODE_NONE)
 
     bysideEnemeyHeroes = J.GetNearbyHeroes(bot,nTrampleRadius, true, BOT_MODE_NONE)
 
@@ -282,6 +276,16 @@ function X.ConsiderQ()
 		return BOT_ACTION_DESIRE_NONE, 0, false
 	end
 
+	-- retreat
+	if J.IsRetreating(bot) and (J.GetHP(bot) < 0.6 or (nInRangeAlly ~= nil and nEnemyHeroes ~= nil and #nEnemyHeroes > #nInRangeAlly))
+	then
+		return BOT_ACTION_DESIRE_HIGH, J.GetTeamFountain(), false
+	end
+
+	if J.GetHP(bot) < 0.66 then
+        return BOT_ACTION_DESIRE_NONE, 0, false
+    end
+
 	nOnslaughtDamage = Onslaught:GetSpecialValueInt('knockback_damage') + 200
 
     -- 打断技能
@@ -323,12 +327,6 @@ function X.ConsiderQ()
 			local loc = J.GetCorrectLoc(botTarget, nAssumeOnslaughtDelay)
 			return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation(), false
 		end
-	end
-
-    -- retreat
-	if J.IsRetreating(bot) and (J.GetHP(bot) < 0.5 or (nInRangeAlly ~= nil and nEnemyHeroes ~= nil and #nEnemyHeroes > #nInRangeAlly))
-	then
-		return BOT_ACTION_DESIRE_HIGH, J.GetTeamFountain(), false
 	end
 
 	return BOT_ACTION_DESIRE_NONE, 0, false
@@ -380,7 +378,7 @@ function X.ConsiderW()
         for _, enemyHero in pairs(bysideEnemeyHeroes)
         do
             if J.IsValidHero(enemyHero)
-            and J.IsInRange(bot, enemyHero, nTrampleRadius)
+            and bot:GetMana() > (bot:GetMaxMana() / 3) --and J.IsInRange(bot, enemyHero, nTrampleRadius) -- free magic resist while escaping + anti body block
             and (J.CanCastOnNonMagicImmune(enemyHero) or #bysideEnemeyHeroes >= 2)
             and not J.IsSuspiciousIllusion(enemyHero)
             and not J.HasMovableUndyingModifier(enemyHero, 0.1)
@@ -390,7 +388,7 @@ function X.ConsiderW()
         end
     end
 
-    if J.IsPushing(bot) or J.IsDefending(bot)
+    --[[if J.IsPushing(bot) or J.IsDefending(bot)
     then
         local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nTrampleRadius, true)
 
@@ -484,7 +482,7 @@ function X.ConsiderW()
                 return BOT_ACTION_DESIRE_HIGH
             end
         end
-    end
+    end]]--
 
     return BOT_ACTION_DESIRE_NONE
 end
