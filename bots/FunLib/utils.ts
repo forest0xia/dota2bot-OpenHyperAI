@@ -347,6 +347,14 @@ export function Remove_Modify(table_: any, item: any) {
     }
 }
 
+export function AbilityBehaviorHasFlag(
+    behavior: number,
+    flag: number
+): boolean {
+    // @ts-ignore
+    return bit.band(behavior, flag) == flag;
+}
+
 interface RegistryMember {
     lastCallTime: number;
     interval: number;

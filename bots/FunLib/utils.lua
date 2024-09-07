@@ -349,6 +349,9 @@ function ____exports.Remove_Modify(table_, item)
         end
     end
 end
+function ____exports.AbilityBehaviorHasFlag(behavior, flag)
+    return bit.band(behavior, flag) == flag
+end
 local everySecondsCallRegistry = {}
 local function EveryManySeconds(second, oldFunction)
     local functionName = tostring(oldFunction)
