@@ -3,7 +3,7 @@
 We love bot games! There is currently a Valve side bug, [CRITICAL] in order to play the script you need to create a Lobby and select "Local Host" as Server Location. To enable enhanced challenging mode, follow the steps on Workshop page to correctly install this script. The bots in game should have names with suffix ".OHA" when installed correctly.
 Thanks and kudos to all that contributed to make bot games fun and exciting.
 
-The goal of this script is to share the most up to date functionalities that we've implemented or fixed to keep the bot games challenging. And for players to have fun with chill by playing/practicing against the bots that can play ALL Dota2 heroes.
+The goal of this script is to: 1. Share the most up to date functionalities that we've implemented/fixed to keep the bot games challenging, 2. For players to have fun with chill by playing/practicing against the bots that can play ALL Dota2 heroes.
 
 Bot script in Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=3246316298
 
@@ -37,6 +37,7 @@ Bot script in Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails
 1. Pos1 and Pos5 bots go to safe lane. Pos3 and Pos4 bots go offlane. Pos2 bot goes to mid lane.
 
 ### What's next
+0. Ultimately, the bots play style is static/fixed with the current AI approach provided by Valve at the moment. We need machine learning AI bots! Just like the AIs we’ve seen from OpenAI Five.
 1. Follow up on https://www.reddit.com/r/DotA2/comments/1ezxpav/a_note_to_valve_official_regarding_bot_scripts/
 1. Maybe traning machine learning AI.
 1. Better decision making on laning, pushing and ganking.

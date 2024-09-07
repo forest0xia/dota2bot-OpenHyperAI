@@ -1,15 +1,14 @@
-import * as jmz from "bots/FunLib/jmz_func";
-import { TalentTreeBuild } from "bots/FunLib/jmz_func";
-import { BotBehavior, BotRole, ItemBuilds } from "bots/lib/bots";
+import * as jmz from "../FunLib/jmz_func";
+import { BotBehavior, BotRole, ItemBuilds } from "../ts_libs/bots";
 import {
     BotActionDesire,
     BotMode,
     Location,
     Talent,
     Unit,
-} from "bots/lib/dota";
-import { hero_is_healing } from "bots/FunLib/aba_buff";
-import { HasAnyEffect } from "bots/FunLib/utils";
+} from "../ts_libs/dota";
+import { hero_is_healing } from "../FunLib/aba_buff";
+import { HasAnyEffect } from "../FunLib/utils";
 
 const bot = GetBot();
 // @ts-ignore
@@ -23,7 +22,7 @@ const talentTreeList = {
     t20: [10, 0],
     t15: [0, 10],
     t10: [0, 10],
-} satisfies TalentTreeBuild;
+} satisfies jmz.TalentTreeBuild;
 const AllAbilityBuilds = [
     [1, 3, 1, 3, 1, 6, 1, 3, 3, 2, 6, 2, 2, 2, 6], // Pos 5 Build
 ];

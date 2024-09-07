@@ -1,5 +1,5 @@
-import { Talent, Unit } from "bots/lib/dota";
-import { BotRole } from "bots/lib/bots";
+import { Talent, Unit } from "../ts_libs/dota";
+import { BotRole } from "../ts_libs/bots";
 
 /** @noSelf **/
 export interface TalentTreeBuild {

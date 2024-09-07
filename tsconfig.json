@@ -2,10 +2,12 @@
   "$schema": "https://raw.githubusercontent.com/TypeScriptToLua/TypeScriptToLua/master/tsconfig-schema.json",
   "tstl": {
     "luaTarget": "5.1",
-    "noImplicitSelf": true
+    "noImplicitSelf": true,
+    "tstlVerbose": true,
+    "noResolvePaths":["../FunLib/jmz_func"],
   },
   "compilerOptions": {
-    "baseUrl": "./",
+    "baseUrl": "./typescript",
     "lib": [
       "ES2020"
     ],
@@ -17,9 +19,13 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "strict": true,
+    "outDir": "./",
+    "rootDir": "./typescript",
     "types": [
       "@typescript-to-lua/language-extensions",
       "lua-types/5.1"
     ]
-  }
+  },
+  "exclude": [ "bots", "node_modules", "game" ],
+  "include": [ "typescript" ]
 }

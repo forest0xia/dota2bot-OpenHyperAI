@@ -1,4 +1,4 @@
-import { BotActionType, BotMode } from "bots/lib/dota/enums";
+import { BotActionType, BotMode } from "./enums";
 
 export interface Location {}
 

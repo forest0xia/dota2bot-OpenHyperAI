@@ -2,7 +2,7 @@
  * Internal/Project type definitions
  */
 
-import { Ability, Talent } from "bots/lib/dota";
+import { Ability, Talent } from "./dota";
 
 export interface BotBehavior {
     sBuyList: string[];

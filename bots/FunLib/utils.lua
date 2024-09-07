@@ -10,7 +10,7 @@ local __TS__ArrayConcat = ____lualib.__TS__ArrayConcat
 local __TS__ArraySome = ____lualib.__TS__ArraySome
 local ____exports = {}
 local print, orig_print
-local ____dota = require("bots.lib.dota.index")
+local ____dota = require("bots.ts_libs.dota.index")
 local Team = ____dota.Team
 local UnitType = ____dota.UnitType
 function print(...)

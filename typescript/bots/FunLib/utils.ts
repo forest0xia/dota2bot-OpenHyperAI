@@ -1,4 +1,4 @@
-import { BotActionType, Ping, Team, Unit, UnitType } from "bots/lib/dota";
+import { BotActionType, Ping, Team, Unit, UnitType } from "../ts_libs/dota";
 
 export let DebugMode = false;
 

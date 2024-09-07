@@ -1,6 +1,6 @@
 --[[ Generated with https://github.com/TypeScriptToLua/TypeScriptToLua ]]
-local jmz = require("bots.FunLib.jmz_func")
-local ____dota = require("bots.lib.dota.index")
+local jmz = require("../FunLib/jmz_func")
+local ____dota = require("bots.ts_libs.dota.index")
 local BotActionDesire = ____dota.BotActionDesire
 local BotMode = ____dota.BotMode
 local ____aba_buff = require("bots.FunLib.aba_buff")

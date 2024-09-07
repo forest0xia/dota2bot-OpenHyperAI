@@ -2,8 +2,8 @@
  * Dota 2 scripting API globals functions and constants
  */
 
-import { Unit } from "bots/lib/dota/interfaces";
-import { Team, UnitType } from "bots/lib/dota";
+import { Unit } from "./dota/interfaces";
+import { Team, UnitType } from "./dota";
 
 declare global {
     function GetBot(): Unit;
