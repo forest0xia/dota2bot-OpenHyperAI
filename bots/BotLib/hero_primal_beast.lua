@@ -220,8 +220,8 @@ function X.SkillsComplement()
     or bot:IsChanneling() then return end
 
     botTarget = J.GetProperTarget(bot)
-	nEnemyHeroes = J.GetNearbyHeroes(bot, 1800, true, BOT_MODE_NONE)
-	nInRangeAlly = J.GetNearbyHeroes(bot, 1800, false, BOT_MODE_NONE)
+	nEnemyHeroes = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE)
+	nInRangeAlly = J.GetNearbyHeroes(bot, 1600, false, BOT_MODE_NONE)
 
     bysideEnemeyHeroes = J.GetNearbyHeroes(bot,nTrampleRadius, true, BOT_MODE_NONE)
 

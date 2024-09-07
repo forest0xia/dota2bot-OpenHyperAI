@@ -215,7 +215,7 @@ function X.SkillsComplement()
 	nLV = bot:GetLevel()
 	nMP = bot:GetMana() / bot:GetMaxMana()
 	nHP = bot:GetHealth() / bot:GetMaxHealth()
-	hEnemyHeroList = J.GetNearbyHeroes(bot, 1800, true, BOT_MODE_NONE)
+	hEnemyHeroList = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE)
 	botTarget = J.GetProperTarget(bot)
 
 	castRDesire = X.ConsiderR()
