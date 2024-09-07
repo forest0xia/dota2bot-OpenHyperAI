@@ -109,8 +109,33 @@ sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_3']
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 X['sSellList'] = {
+
+	"item_black_king_bar",
+	"item_quelling_blade",
+
+	"item_ultimate_scepter",
 	"item_magic_wand",
-	"item_boots_of_bearing"
+
+	"item_cyclone",
+	"item_magic_wand",
+
+	"item_shivas_guard",
+	'item_magic_wand',
+	
+	"item_power_treads",
+	"item_quelling_blade",
+
+	"item_lotus_orb",
+	"item_quelling_blade",
+
+	"item_assault",
+	"item_magic_wand",
+	
+	"item_travel_boots",
+	"item_magic_wand",
+
+	"item_assault",
+	"item_ancient_janggo",
 }
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_priest' }, {} end

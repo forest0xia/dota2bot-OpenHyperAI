@@ -141,6 +141,7 @@ function J.CanNotUseAction( bot )
 			or bot:IsChanneling()
 			or bot:IsStunned()
 			or bot:IsNightmared()
+			or bot:HasModifier( 'modifier_ringmaster_the_box_buff' )
 			or bot:HasModifier( 'modifier_item_forcestaff_active' )
 			or bot:HasModifier( 'modifier_phantom_lancer_phantom_edge_boost' )
 			or bot:HasModifier( 'modifier_tinker_rearm' )
@@ -159,6 +160,7 @@ function J.CanNotUseAbility( bot )
 			or bot:IsStunned()
 			or bot:IsHexed()
 			or bot:IsNightmared()
+			or bot:HasModifier( 'modifier_ringmaster_the_box_buff' )
 			or bot:HasModifier( "modifier_doom_bringer_doom" )
 			or bot:HasModifier( 'modifier_item_forcestaff_active' )
 
@@ -556,13 +558,6 @@ function J.IsAllyHeroBetweenAllyAndEnemy( hAlly, hEnemy, vLoc, nRadius )
 end
 
 
-function J.IsSandKingThere( bot, nCastRange, fTime )
-
-	return false
-
-end
-
-
 function J.GetUltimateAbility( bot )
 
 	return bot:GetAbilityInSlot( 5 )
@@ -761,6 +756,20 @@ function J.CanCastAbilityOnTarget( npcTarget, bIgnoreMagicImmune )
 
 end
 
+function J.CanCastAbility(ability)
+	if ability == nil
+	or ability:IsNull()
+	or ability:IsPassive()
+	or ability:IsHidden()
+	or not ability:IsTrained()
+	or not ability:IsFullyCastable()
+	or not ability:IsActivated()
+	then
+		return false
+	end
+
+	return true
+end
 
 function J.CanCastOnMagicImmune( npcTarget )
 
@@ -3327,6 +3336,27 @@ function J.IsEnemyHeroAroundLocation( vLoc, nRadius )
 
 end
 
+function J.GetLastSeenEnemiesNearLoc(vLoc, nRadius)
+	local enemies = {}
+
+	for i, id in pairs( GetTeamPlayers( GetOpposingTeam() ) )
+	do
+		if IsHeroAlive( id ) then
+			local info = GetHeroLastSeenInfo( id )
+			if info ~= nil then
+				local dInfo = info[1]
+				if dInfo ~= nil
+					and J.GetLocationToLocationDistance( vLoc, dInfo.location ) <= nRadius
+					and dInfo.time_since_seen < 5.0
+				then
+					table.insert(enemies, enemyHero)
+				end
+			end
+		end
+	end
+
+	return enemies
+end
 
 function J.GetNumOfAliveHeroes( bEnemy )
 

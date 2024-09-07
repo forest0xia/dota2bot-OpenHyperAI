@@ -60,10 +60,10 @@ sRoleItemsBuyList['pos_5'] = {
     "item_aghanims_shard",
     "item_blink",
     "item_glimmer_cape",--
-    "item_guardian_greaves",--
     "item_pipe",--
+    "item_maelstrom",
+	"item_gungir",--
     "item_sheepstick",--
-	"item_guardian_greaves",--
     "item_overwhelming_blink",--
     "item_ultimate_scepter_2",
     "item_moon_shard",
@@ -82,10 +82,10 @@ sRoleItemsBuyList['pos_3'] = {
     "item_aghanims_shard",
     "item_blink",
     "item_glimmer_cape",--
-    "item_guardian_greaves",--
     "item_pipe",--
+    "item_maelstrom",
+	"item_gungir",--
     "item_sheepstick",--
-	"item_guardian_greaves",--
     "item_overwhelming_blink",--
     "item_ultimate_scepter_2",
     "item_moon_shard",
@@ -111,24 +111,38 @@ sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 
-Pos4SellList = {
-    "item_magic_wand",
+X['sSellList'] = {
+
+	"item_black_king_bar",
+	"item_quelling_blade",
+
+	"item_ultimate_scepter",
+	"item_magic_wand",
+
+	"item_cyclone",
+	"item_magic_wand",
+
+	"item_shivas_guard",
+	'item_magic_wand',
+	
+	"item_power_treads",
+	"item_quelling_blade",
+
+	"item_lotus_orb",
+	"item_quelling_blade",
+
+	"item_assault",
+	"item_magic_wand",
+	
+	"item_travel_boots",
+	"item_magic_wand",
+
+	"item_assault",
+	"item_ancient_janggo",
+	
+	"item_vladmir",
+	"item_magic_wand",
 }
-
-Pos5SellList = {
-    "item_magic_wand",
-    "item_wind_lace",
-}
-
-X['sSellList'] = Pos4SellList
-
-if sRole == "pos_4"
-then
-    X['sSellList'] = Pos4SellList
-elseif sRole == "pos_5"
-then
-    X['sSellList'] = Pos5SellList
-end
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_antimage' }, {} end
 

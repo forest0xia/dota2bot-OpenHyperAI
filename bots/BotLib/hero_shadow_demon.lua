@@ -74,7 +74,8 @@ sRoleItemsBuyList['pos_3'] = {
     "item_aghanims_shard",
     "item_ultimate_scepter",
     "item_force_staff",
-    "item_guardian_greaves",--
+    "item_maelstrom",
+	"item_gungir",--
     "item_cyclone",
 	"item_hurricane_pike",--
     "item_sheepstick",--

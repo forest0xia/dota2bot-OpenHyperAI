@@ -107,11 +107,18 @@ else
 end
 
 X['sSellList'] = {
-    "item_circlet",
-    "item_bracer",
-    "item_magic_wand",
-    "item_hand_of_midas",
-    "item_spirit_vessel",
+
+	"item_black_king_bar",
+	"item_quelling_blade",
+
+	"item_ultimate_scepter",
+	"item_magic_wand",
+
+	"item_cyclone",
+	"item_magic_wand",
+
+	"item_shivas_guard",
+	'item_magic_wand',
 }
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_antimage' }, {} end
@@ -1541,8 +1548,9 @@ function X.ConsiderIceWall()
             return BOT_ACTION_DESIRE_HIGH
 		end
 
-        if X.CheckTempModifiers(TempNonMovableModifierNames, botTarget, 1) > 0 and
-        J.IsInRange(bot, botTarget, nSpawnDistance)
+        if X.CheckTempModifiers(TempNonMovableModifierNames, botTarget, 1) > 0
+        and nEnemyHeroes ~= nil and #nEnemyHeroes >= 1
+        and J.IsInRange(bot, botTarget, nSpawnDistance)
         and J.CanCastOnNonMagicImmune(botTarget)
         and bot:IsFacingLocation(botTarget:GetLocation(), 30) then
             return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
@@ -1551,7 +1559,7 @@ function X.ConsiderIceWall()
     
     if J.IsInTeamFight(bot) then
         local nLocationAoE = bot:FindAoELocation(true, true, bot:GetLocation(), nRadius, nCastRange, 0, 0)
-        if nLocationAoE.count >= 2
+        if nLocationAoE.count >= 2 and nEnemyHeroes ~= nil and #nEnemyHeroes >= 1
         then
             return BOT_ACTION_DESIRE_HIGH, nLocationAoE.targetloc
         end

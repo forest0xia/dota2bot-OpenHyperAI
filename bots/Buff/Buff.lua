@@ -18,6 +18,15 @@ then
     Buff = {}
 end
 
+local Colors =
+{
+	good				= '#00ff00',
+	warning			= '#fbff00',
+	bad					= '#ff0000',
+	consoleGood = '#1ce8b5',
+	consoleBad  = '#e68d39',
+}
+
 local botTable = {
     [DOTA_TEAM_GOODGUYS]    = {},
     [DOTA_TEAM_BADGUYS]     = {}
@@ -87,4 +96,19 @@ function Buff:Init()
     end)
 end
 
+function Buff:Print(msg, color)
+	local message = msg
+    if color ~= nil then
+      message = Buff:ColorString(msg, color)
+    end
+	GameRules:SendCustomMessage(message, 0, 0)
+end
+
+-- returns html encoding to change the text of msg the appropriate color
+function Buff:ColorString(msg, color)
+	return '<font color="'..color..'">'..msg..'</font>'
+end
+
+Buff:Print('Buff mode initialized. Version: ' .. Version.number, Colors.good)
+Buff:Print("Bot link for any feedback: https://steamcommunity.com/sharedfiles/filedetails/?id=3246316298 . Kudos to BeginnerAI, Fretbots, and ryndrb@; and thanks all for sharing your ideas.", Colors.consoleGood)
 Timers:CreateTimer(InitTimerName, {endTime = 1, callback = Buff['Init']} )

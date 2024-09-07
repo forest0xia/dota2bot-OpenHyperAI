@@ -2941,6 +2941,33 @@ local Heroes = {
         },
     },
 
+    ['npc_dota_hero_ringmaster'] = {
+        ['synergy'] = {
+            'npc_dota_hero_skeleton_king',
+            'npc_dota_hero_storm_spirit',
+            'npc_dota_hero_omniknight',
+            'npc_dota_hero_juggernaut',
+            'npc_dota_hero_meepo',
+            'npc_dota_hero_puck',
+            'npc_dota_hero_mars',
+            'npc_dota_hero_medusa',
+            'npc_dota_hero_legion_commander',
+            'npc_dota_hero_sand_king',
+        },
+        ['counter'] = {
+            'npc_dota_hero_ember_spirit',
+            'npc_dota_hero_slark',
+            'npc_dota_hero_primal_beast',
+            'npc_dota_hero_sven',
+            'npc_dota_hero_troll_warlord',
+            'npc_dota_hero_dark_seer',
+            'npc_dota_hero_phantom_lancer',
+            'npc_dota_hero_tiny',
+            'npc_dota_hero_axe',
+            'npc_dota_hero_leshrac',
+            'npc_dota_hero_dragon_knight',
+        },
+    },
 }
 
 function X.CreateLUT(nList)

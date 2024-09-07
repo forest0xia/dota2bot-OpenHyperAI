@@ -242,6 +242,7 @@ function X.ConsiderAstralImprisonment()
         do
             if  J.IsValidHero(allyHero)
             and not allyHero:IsIllusion()
+            and allyHero:WasRecentlyDamagedByAnyHero(1)
             then
                 if allyHero:HasModifier('modifier_enigma_black_hole_pull')
                 or allyHero:HasModifier('modifier_faceless_void_chronosphere_freeze')
@@ -388,6 +389,7 @@ function X.ConsiderAstralImprisonment()
 
         if  J.IsRetreating(allyHero)
         and allyHero:WasRecentlyDamagedByAnyHero(1.6)
+        and not allyHero:IsChanneling()
         and not allyHero:IsIllusion()
         and J.GetMP(bot) > 0.31
         then

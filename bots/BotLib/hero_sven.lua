@@ -68,10 +68,17 @@ sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_1']
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 X['sSellList'] = {
+	"item_echo_sabre",
 	"item_quelling_blade",
+
+	"item_travel_boots",
 	"item_magic_wand",
-	"item_mask_of_madness",
-	"item_power_treads",
+
+	"item_greater_crit",
+	"item_hand_of_midas",
+
+	"item_overwhelming_blink",
+	"item_echo_sabre",
 }
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_str_carry' }, {"item_power_treads", 'item_quelling_blade'} end
@@ -579,7 +586,7 @@ function X.SvenConsiderTarget()
 
 	if J.IsValidHero( nInAttackRangeWeakestEnemyHero )
 		and J.CanBeAttacked( nInAttackRangeWeakestEnemyHero )
-		and ( GetUnitToUnitDistance( npcTarget, bot ) >  350 or U.HasForbiddenModifier( npcTarget ) )
+		and ( GetUnitToUnitDistance( npcTarget, bot ) >  350 or J.HasForbiddenModifier( npcTarget ) )
 	then
 		--更改目标为
 		bot:SetTarget( nInAttackRangeWeakestEnemyHero )

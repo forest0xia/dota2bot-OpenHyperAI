@@ -2,6 +2,8 @@ import { BotActionType, Ping, Team, Unit, UnitType } from "bots/lib/dota";
 
 export let DebugMode = false;
 
+export const ScriptID = 3246316298;
+
 const RadiantFountainTpPoint = new Vector(-7172, -6652, 384);
 const DireFountainTpPoint = new Vector(6982, 6422, 392);
 
@@ -74,9 +76,8 @@ export function PrintPings(pingTimeGap: number): void {
 
 export function PrintAllAbilities(unit: Unit) {
     print(`Get all abilities of bot ${unit.GetUnitName()}`);
-    print(`Abilities Count=${unit.GetAbilityCount()}`);
-    for (let index = 1; index < unit.GetAbilityCount(); index++) {
-        const ability = unit.GetAbilityByIndex(index);
+    for (let index of $range(0, 10)) {
+        const ability = unit.GetAbilityInSlot(index);
         if (ability && !ability.IsNull()) {
             print(`Ability At Index ${index}: ${ability.GetName()}`);
         } else {

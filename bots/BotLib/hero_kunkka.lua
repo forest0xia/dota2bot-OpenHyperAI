@@ -109,11 +109,33 @@ sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_3']
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 X['sSellList'] = {
+
+	"item_black_king_bar",
 	"item_quelling_blade",
-	"item_bottle",
-	"item_bracer",
+
+	"item_ultimate_scepter",
 	"item_magic_wand",
-	"item_blade_mail",
+
+	"item_cyclone",
+	"item_magic_wand",
+
+	"item_shivas_guard",
+	'item_magic_wand',
+	
+	"item_power_treads",
+	"item_quelling_blade",
+
+	"item_lotus_orb",
+	"item_quelling_blade",
+
+	"item_assault",
+	"item_magic_wand",
+	
+	"item_travel_boots",
+	"item_magic_wand",
+
+	"item_assault",
+	"item_ancient_janggo",
 }
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_tank' }, {"item_power_treads", 'item_quelling_blade'} end
@@ -174,7 +196,7 @@ local abilityW = bot:GetAbilityByName( sAbilityList[2] )
 local abilityE = bot:GetAbilityByName( sAbilityList[3] )
 local abilityE2 = bot:GetAbilityByName( 'kunkka_return' )
 -- local abilityD = bot:GetAbilityByName( sAbilityList[4] )
-local abilityAS = bot:GetAbilityByName( sAbilityList[5] )
+local kunkka_tidal_wave = bot:GetAbilityByName( 'kunkka_tidal_wave' )
 local abilityR = bot:GetAbilityByName( sAbilityList[6] )
 
 
@@ -337,7 +359,7 @@ function X.SkillsComplement()
 		
 		J.SetQueuePtToINT( bot, true )
 
-		bot:ActionQueue_UseAbilityOnLocation( abilityAS, castASTarget )
+		bot:ActionQueue_UseAbilityOnLocation( kunkka_tidal_wave, castASTarget )
 		return
 
 	end
@@ -582,12 +604,6 @@ function X.ConsiderQ()
 		end
 	end
 
-
-	local skThere, skLoc = J.IsSandKingThere( bot, 1000, 2.0 )
-	if skThere then
-		return BOT_ACTION_DESIRE_MODERATE, skLoc
-	end
-
 	return BOT_ACTION_DESIRE_NONE, {}
 end
 
@@ -743,16 +759,16 @@ end
 
 function X.ConsiderAS()
 
-	if not abilityAS:IsTrained()
-		or not abilityAS:IsFullyCastable() 
+	if not kunkka_tidal_wave:IsTrained()
+		or not kunkka_tidal_wave:IsFullyCastable() 
 	then
 		return BOT_ACTION_DESIRE_NONE, 0
 	end
 
 	local nRadius = 350
 	local nCastRange = 750
-	local nCastPoint = abilityAS:GetCastPoint()
-	local nManaCost = abilityAS:GetManaCost()
+	local nCastPoint = kunkka_tidal_wave:GetCastPoint()
+	local nManaCost = kunkka_tidal_wave:GetManaCost()
 
 	if J.IsRetreating( bot )
 	then

@@ -88,32 +88,14 @@ function DataTables:Initialize()
 		-- Initialize data tables for this unit
 		DataTables:GenerateStatsTables(unit)
 
-		-- To fix heroes that have bugs in v7.37
-		if unit:IsHero() then
-			if unit:GetUnitName() == "npc_dota_hero_faceless_void" then
-				if not unit:HasAbility("faceless_void_chronosphere") then
-					print("Fix Faceless void's Chronosphere in 7.37")
-					unit:AddAbility("faceless_void_chronosphere")
-					DataTables:MoveAbilityByName(unit, 'faceless_void_chronosphere', 6)
-				end
-			elseif unit:GetUnitName() == "npc_dota_hero_life_stealer" then
-				if not unit:HasAbility("life_stealer_rage") then
-					print("Fix LifeStealer's Rage in 7.37")
-					unit:AddAbility("life_stealer_rage")
-					DataTables:MoveAbilityByName(unit, 'life_stealer_rage', 1)
-				end
-			-- elseif unit:GetUnitName() == "npc_dota_hero_visage" then
-			-- 	-- later.
-			end
-		end
+		-- DataTables:FixBuggedHeroAbilities()
 	end
 	print('There are '..#AllBots[RADIANT]..' Radiant bots!')
 	print('There are '..#AllBots[DIRE]..' Dire bots!')
-	
 
 	-- Purge human side bots
 	-- DataTables:PurgeHumanSideBots()
-	
+
 	-- Get Towers (Used for determining bot role, eventually)
 	DataTables:GetTowers()
 	-- Assign roles to bots
@@ -145,6 +127,27 @@ function DataTables:Initialize()
 	end
 
 	Debug:Print('DataTables initialized.')
+end
+
+function DataTables:FixBuggedHeroAbilities()
+	-- To fix heroes that have bugs in v7.37
+	if unit:IsHero() then
+		if unit:GetUnitName() == "npc_dota_hero_faceless_void" then
+			if not unit:HasAbility("faceless_void_chronosphere") then
+				print("Fix Faceless void's Chronosphere in 7.37")
+				unit:AddAbility("faceless_void_chronosphere")
+				DataTables:MoveAbilityByName(unit, 'faceless_void_chronosphere', 6)
+			end
+		elseif unit:GetUnitName() == "npc_dota_hero_life_stealer" then
+			if not unit:HasAbility("life_stealer_rage") then
+				print("Fix LifeStealer's Rage in 7.37")
+				unit:AddAbility("life_stealer_rage")
+				DataTables:MoveAbilityByName(unit, 'life_stealer_rage', 1)
+			end
+		-- elseif unit:GetUnitName() == "npc_dota_hero_visage" then
+		-- 	-- later.
+		end
+	end
 end
 
 function DataTables:PrintAllAbilities(unit)

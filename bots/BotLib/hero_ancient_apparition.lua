@@ -93,8 +93,8 @@ Pos5SellList = {
 }
 
 X['sSellList'] = {
-	"item_magic_wand",
 	"item_ultimate_scepter",
+	"item_magic_wand",
 }
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_antimage' }, {} end

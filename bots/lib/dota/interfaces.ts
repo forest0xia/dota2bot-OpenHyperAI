@@ -28,6 +28,7 @@ export interface Unit {
     GetAbilityCount(): number;
 
     GetAbilityByIndex(index: number): Ability | null;
+    GetAbilityInSlot(index: number): Ability | null;
 
     IsInvisible(): boolean;
 

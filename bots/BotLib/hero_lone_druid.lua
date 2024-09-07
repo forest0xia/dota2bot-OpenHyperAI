@@ -97,11 +97,36 @@ sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_1']
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 X['sSellList'] = {
-    "item_quelling_blade",
-    "item_branches",
-    "item_magic_wand",
-    "item_orb_of_venom",
-    "item_phase_boots",
+
+	"item_black_king_bar",
+	"item_quelling_blade",
+
+	"item_ultimate_scepter",
+	"item_magic_wand",
+
+	"item_cyclone",
+	"item_magic_wand",
+
+	"item_shivas_guard",
+	'item_magic_wand',
+	
+	"item_power_treads",
+	"item_quelling_blade",
+
+	"item_lotus_orb",
+	"item_quelling_blade",
+
+	"item_assault",
+	"item_magic_wand",
+	
+	"item_travel_boots",
+	"item_magic_wand",
+
+	"item_assault",
+	"item_ancient_janggo",
+	
+	"item_vladmir",
+	"item_magic_wand",
 }
 
 if Utils['LoneDruid'].roleType == nil then

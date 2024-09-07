@@ -46,6 +46,37 @@ const abilitySpirits = bot.GetAbilityByName(AbilityList[1]);
 const abilityOvercharge = bot.GetAbilityByName(AbilityList[2]);
 const abilityRelocate = bot.GetAbilityByName(AbilityList[5]);
 
+const sellList = [
+    "item_black_king_bar",
+    "item_quelling_blade",
+
+    "item_ultimate_scepter",
+    "item_magic_wand",
+
+    "item_cyclone",
+    "item_magic_wand",
+
+    "item_shivas_guard",
+    "item_magic_wand",
+
+    "item_power_treads",
+    "item_quelling_blade",
+
+    "item_lotus_orb",
+    "item_quelling_blade",
+
+    "item_assault",
+    "item_magic_wand",
+
+    "item_travel_boots",
+    "item_magic_wand",
+
+    "item_assault",
+    "item_ancient_janggo",
+
+    "item_vladmir",
+    "item_magic_wand",
+];
 const defaultBuild = [
     "item_tango",
     "item_faerie_fire",
@@ -214,7 +245,7 @@ export = {
             bot.Action_UseAbilityOnLocation(abilityRelocate, relocateTarget);
         }
     },
-    sSellList: ["item_magic_wand"],
+    sSellList: sellList,
     sBuyList: roleItemBuyList[role],
     MinionThink(hMinionUnit: any, _: any) {
         if (Minion.IsValidUnit(hMinionUnit)) {

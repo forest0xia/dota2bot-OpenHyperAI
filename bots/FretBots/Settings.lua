@@ -12,8 +12,13 @@ require('bots.FretBots.HeroSounds')
 -- HeroSounds
 local Chat = require('bots.FretBots.Chat')
 
+-- max scales to vote
+local difficultyMax = 10
+local allyScaleMax = 1
+
 -- default difficulty if no one votes
-local DefaultDifficulty = 2
+local DefaultDifficulty = 2 -- [0, 10]
+local DefaultAllyScale = 0.7 -- [0, 1]
 
 Settings = nil
 
@@ -37,6 +42,7 @@ local hostID = -1
 local isRepurcussionTimerStarted = false
 -- can players freely enter cheating commands?
 local allowPlayersToCheat = false
+local isVoteForAllyScale = false
 
 -- Instantiate ourself
 if Settings == nil then
@@ -57,14 +63,15 @@ local announcementGap = 2
 -- RGB color and text. sample color pick web: https://htmlcolorcodes.com/
 local announcementList = {
 	{"#C0392B", "GLHF! Default bot scripts lack excitement. This script boosts bots with unfair advantages to make bot games more challenging:"},
-	{"#9B59B6", "* You can vote for difficulty scale from 0 to 10, which affects the amount of bonus the bots will receive." },
+	{"#9B59B6", "* You can vote for difficulty scale from 0 to "..difficultyMax..", which affects the amount of bonus the bots will receive." },
 	{"#2980B9", "* If difficulty >= 0, bots get bonus neutral items, and get fair bonus in gold, exp, stats, etc every minute."},
 	{"#E59866", "* If difficulty >= 1, bots get above bonus upon their death; and also get new bonus in mana/hp regens."},
 	{"#1ABC9C", "* As difficulty increments, bots get neutral items sooner and higher bonus amount."},
 	{"#F39C12", "* If difficulty >= 5, when a player kills a bot, the player who made the kill receives a reduction in gold. This does not affect assisting players. Bots also provide less exp on death."},
 	{"#7FB3D5", "* The higher the difficulty you vote, the more bonus the bots will get which can make the game more challenging." },
 	{"#E74C3C", "* High difficulty can be overwhelming or even frustrating, please choose the right difficulty for you and your team." },
-	{"#D4AC0D", "* Script link: https://steamcommunity.com/sharedfiles/filedetails/?id=3246316298 . Kudos to BeginnerAI, Fretbots, and ryndrb@; and thanks all for sharing your ideas." },
+	{"#D4AC0D", "* Bot link for any feedback: https://steamcommunity.com/sharedfiles/filedetails/?id=3246316298 . Kudos to BeginnerAI, Fretbots, and ryndrb@; and thanks all for sharing your ideas." },
+	{"#839192", "* You can use simple commands like `info` to view difficulty info, or `getroles`, or other interesting commands - check script's Workshop page for details." },
 	-- {"#D4AC0D", "There are commands to play certain sounds like `ps love` or `ps dylm`. You can also explore other commands like `getroles`, `networth`, etc." }
 }
 
@@ -98,7 +105,8 @@ local chatCommands =
 	'me',				-- play a sound from your hero
 	'vo',				-- 'voiceover': play a sound from another hero
 	'voc',				-- does the same thing as 'vo c': plays caster voiceovers
-	'enablecheat'       -- enable players to cheat without getting punishment.
+	'enablecheat',      -- enable players to cheat without getting punishment.
+	'info',             -- basic info of the current difficulty and stats.
 }
 
 -- Sets difficulty value
@@ -106,12 +114,12 @@ function Settings:Initialize(difficulty)
 	-- no argument implies default, do nothing
 	if difficulty == nil then return end
 	-- Adjust bot skill values by the difficulty value
-	Settings.difficultyScale = 1 + ((difficulty - 5) / 10)
+	Settings.difficultyScale = 1 + ((difficulty - 5) / difficultyMax)
 	-- increase diff scale for diffculty > 5.
-	if difficulty > 5 and difficulty < 10 then
-		Settings.difficultyScale = 1 + ((difficulty - 3) / 10)
-	elseif difficulty >= 10 then
-		Settings.difficultyScale = 1 + (difficulty / 10)
+	if difficulty > difficultyMax/2 and difficulty < difficultyMax then
+		Settings.difficultyScale = 1 + ((difficulty - 3) / difficultyMax)
+	elseif difficulty >= difficultyMax then
+		Settings.difficultyScale = 1 + (difficulty / difficultyMax)
 	end
 	Settings.difficultyScale = Utilities:Round(Settings.difficultyScale, 2)
 	-- Print
@@ -152,24 +160,52 @@ function Settings:RepurcussionTimer()
 	return 1
 end
 
+-- Check whether it's time to vote for ally bots bonus scale. 
+-- Should only work if there are bots in one and only one team with humans - wont't make sense to nurf ally bots again for both sides after picking the difficulty.
+function IsTimeToVoteForAllyBonusScale()
+	local bots, humans = {[2]={},[3]={}}, {[2]={},[3]={}}
+    local playerCount = PlayerResource:GetPlayerCount()
+	-- since all humans should be in 1 team when this feature takes effect, safe to use any human's team.
+	local allyTeam = 2
+    for playerID = 0, playerCount - 1 do
+        local player = PlayerResource:GetPlayer(playerID)
+		local team = PlayerResource:GetTeam(playerID)
+		if PlayerResource:GetSteamID(playerID) == PlayerResource:GetSteamID(100) then
+			table.insert(bots[team], player)
+		elseif team >= 2 and team <= 3 then
+			table.insert(humans[team], player)
+			allyTeam = team
+		else
+			print('Cannot start voting for ally bonus. Invalid player team: '..team)
+		end
+	end
+
+	local isRadiantMixedTeam = #bots[2] > 0 and #humans[2] > 0
+	local isDireMixedTeam = #bots[3] > 0 and #humans[3] > 0
+	local isOnlyOneTeamMixed = Utilities:xor(isRadiantMixedTeam, isDireMixedTeam)
+
+	Settings.allyScaleTeam = allyTeam
+
+	return isOnlyOneTeamMixed
+end
+
 -- Periodically checks to see if settings have been chosen
 function Settings:DifficultySelectTimer()
 	-- increment elapsed time
 	votingTimeElapsed = votingTimeElapsed + 1
 	-- If voting is closed, apply settings, remove timer
 	if isVotingClosed then
-		Settings:ApplyVoteSettings()
 		Timers:RemoveTimer(settingsTimerName)
+		Settings:ApplyVoteSettings()
 		return nil
 	end
 	-- If voting not yet open, display directions
 	if not isVotingOpened then
-		local msg = 'Difficulty voting is now open!'..' Default difficulty is currently: '..tostring(DefaultDifficulty)
+		local msg = 'Difficulty voting is now open!'..' Default difficulty is: '..tostring(DefaultDifficulty)
 		Utilities:Print(msg, MSG_GOOD)
-		msg = 'Enter a number (0 through 10) in chat to vote.'
+		msg = 'Enter a number (0 through '..difficultyMax..') in chat to vote.'
 		Utilities:Print(msg, MSG_GOOD)
 		isVotingOpened = true
-		
 	end
 
 	if numberAnnouncePrinted < #announcementList + 1 then
@@ -194,6 +230,30 @@ end
 
 -- Determine winner of voting and applies settings (or applies default difficulty)
 function Settings:ApplyVoteSettings()
+	if isVoteForAllyScale then
+		local allyScale
+		-- edge case: no one voted
+		if #VotedDifficulties == 0 then
+			allyScale = DefaultAllyScale
+		-- otherwise, average the votes
+		else
+			local total = 0
+			for _, value in ipairs(VotedDifficulties) do
+				total = total + value
+			end
+			allyScale = total / #VotedDifficulties
+			allyScale = Utilities:Round(allyScale, 3)
+		end
+
+		local msg = 'Ally bots bonus scale selected: '..allyScale
+		Debug:Print(msg)
+		Utilities:Print(msg, MSG_GOOD)
+		Settings.allyScale = allyScale
+
+		Chat:SendHttpRequest('start', Utilities:GetPInfo(), Chat.StartCallback)
+		return
+	end
+
 	local difficulty
 	-- edge case: no one voted
 	if #VotedDifficulties == 0 then
@@ -207,13 +267,34 @@ function Settings:ApplyVoteSettings()
 		difficulty = total / #VotedDifficulties
 		difficulty = Utilities:Round(difficulty, 1)
 	end
-	local msg = 'Difficulty Selected: '..difficulty
+
+	local msg = 'Difficulty selected: '..difficulty
 	Debug:Print(msg)
 	Utilities:Print(msg, MSG_GOOD)
 	Settings:Initialize(difficulty)
 	Settings.difficulty = difficulty
 
-    Chat:SendHttpRequest('hello', Utilities:GetPInfo(difficulty))
+	-- Vote again for ally bot difficulty scale.
+	if IsTimeToVoteForAllyBonusScale() then
+		isVoteForAllyScale = true
+		isVotingClosed = false
+		Settings.voteEndState = DOTA_GAMERULES_STATE_GAME_IN_PROGRESS
+		Settings.voteEndTime = 30
+		votingTimeElapsed = -1
+		VotedDifficulties = {}
+		numVotes = 0
+		playerVoted = {}
+
+		msg = 'Now vote for the bonus scale for ally bots in your team comparing to the other side. The default scale is: '..tostring(DefaultAllyScale)
+		Utilities:Print(msg, MSG_WARNING)
+		msg = 'Enter a number (0 through '..tostring(allyScaleMax)..')  e.g. vote 0.5 means your ally bots get half of the bonus amount vs the bonus for enemy bots.'
+		Utilities:Print(msg, MSG_WARNING)
+
+		Timers:CreateTimer(settingsTimerName, {endTime = 1, callback =  Settings['DifficultySelectTimer']} )
+	else
+		Settings.allyScale = DefaultAllyScale
+		Chat:SendHttpRequest('start', Utilities:GetPInfo(), Chat.StartCallback)
+	end
 end
 
 -- Returns true if voting should close due to game state
@@ -345,6 +426,16 @@ function Settings:DoUserChatCommandParse(text, id)
 	-- get prints a setting to chat
 	if command == 'get' then
 		Settings:DoGetCommand(tokens)
+		return true
+	end
+	-- print info
+	if command == 'info' then
+		Settings:DoDisplayNetWorth()
+		local msg = 'Selected difficulty: '..tostring(Settings.difficulty)
+		if Settings.allyScale ~= nil then
+			msg = msg .. '. Ally bots bonus scale: ' .. Settings.allyScale
+		end
+		Utilities:Print(msg, MSG_GOOD)
 		return true
 	end
 	-- print stats
@@ -705,7 +796,12 @@ end
 
 -- Parses chat message for valid settings votes and handles them.
 function Settings:DoChatVoteParse(playerID, text)
-		-- return if the player is not on a team
+	local min, max = 0, difficultyMax
+	if isVoteForAllyScale then
+		max = allyScaleMax
+	end
+
+	-- return if the player is not on a team
 	if not Utilities:IsTeamPlayer(playerID) then return end
 	-- if no vote from the player, check if he's voting for a difficulty
 	if playerVoted[tostring(playerID)] == nil then
@@ -715,10 +811,10 @@ function Settings:DoChatVoteParse(playerID, text)
 			-- players can only vote once
 			playerVoted[tostring(playerID)] = true
 			-- coerce (if necessary)
-			if difficulty > 10 then
-				 difficulty = 10
-			elseif difficulty < 0 then
-				difficulty = 0
+			if difficulty > max then
+				 difficulty = max
+			elseif difficulty < min then
+				difficulty = min
 			end
 			difficulty = Utilities:Round(difficulty, 1)
 			-- save voted value

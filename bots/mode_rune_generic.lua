@@ -350,7 +350,11 @@ function X.GetXUnitsTowardsLocation( hUnit, vLocation, nDistance)
 end
 
 function X.CountDesire(base_desire, dist, maxDist)
-	return base_desire + math.floor((RemapValClamped( dist, maxDist, 0, 0, 1 - base_desire))*40)/40
+	local desire = base_desire + math.floor((RemapValClamped( dist, maxDist, 0, 0, 1 - base_desire))*40)/40
+	if bot:GetNetWorth() < 15000 then
+		return desire
+	end
+	return desire * 0.7
 end
 
 function X.GetBotClosestRune()

@@ -33,6 +33,7 @@ sRoleItemsBuyList['pos_4'] = {
     "item_magic_wand",
     "item_dagon_2",
     "item_aghanims_shard",
+    "item_guardian_greaves",--
     "item_blink",
     "item_force_staff",--
     "item_boots_of_bearing",--
@@ -52,10 +53,10 @@ sRoleItemsBuyList['pos_5'] = {
     "item_arcane_boots",
     "item_magic_wand",
     "item_dagon_2",
+    "item_pipe",
     "item_aghanims_shard",
     "item_blink",
     "item_force_staff",--
-    "item_guardian_greaves",--
     "item_octarine_core",--
     "item_ultimate_scepter",
     "item_dagon_5",--

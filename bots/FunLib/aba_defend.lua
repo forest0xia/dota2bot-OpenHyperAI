@@ -17,7 +17,7 @@ end
 
 function Defend.GetDefendDesireHelper(bot, lane)
 	local nDefendDesire = 0
-	local nInRangeEnemy = J.GetEnemiesNearLoc(bot:GetLocation(), 2200)
+	local nInRangeEnemy = J.GetLastSeenEnemiesNearLoc( bot:GetLocation(), 2200 )
 	local team = GetTeam()
 
 	if #nInRangeEnemy > 0 and GetUnitToLocationDistance(bot, GetLaneFrontLocation(team, lane, 0)) < 1000
@@ -64,13 +64,13 @@ function Defend.GetDefendDesireHelper(bot, lane)
 		do
 			local tower = GetTower( team, t )
 			if tower ~= nil and tower:GetHealth()/tower:GetMaxHealth() < 0.8
-			and J.GetNumOfHeroesNearLocation( true, tower:GetLocation(), 1200 ) >= 1
+			and #J.GetLastSeenEnemiesNearLoc( tower:GetLocation(), 1200 ) >= 1
 			then
 				nDefendLoc = tower:GetLocation()
 				enemeyPushingBase = true
 			end
 		end
-		if not enemeyPushingBase and J.GetNumOfHeroesNearLocation( true, GetAncient(team):GetLocation(), 1200 ) >= 1 then
+		if not enemeyPushingBase and #J.GetLastSeenEnemiesNearLoc( GetAncient(team):GetLocation(), 1200 ) >= 1 then
 			nDefendLoc = GetAncient(team):GetLocation() -- GetLaneFrontLocation(team, nDefendLane, 100)
 			enemeyPushingBase = true
 		end

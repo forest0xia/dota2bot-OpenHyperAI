@@ -145,36 +145,15 @@ sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_1']
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 
-Pos1SellList = {
-	"item_wraith_band",
-	"item_magic_wand",
+X['sSellList'] = {
+
+	'item_travel_boots',
+	'item_magic_wand',
+
+	"item_sheepstick",
 	"item_hand_of_midas",
+
 }
-
-if flag1 == 'Magical'
-then
-	sTempList = {
-		"item_circlet",
-		"item_bottle",
-		"item_magic_wand",
-		"item_spirit_vessel",
-		"item_hand_of_midas",
-	}
-else
-	sTempList = {
-		"item_circlet",
-		"item_spirit_vessel",
-		"item_magic_wand",
-		"item_hand_of_midas",
-	}
-end
-
-Pos2SellList = sTempList
-
-X['sSellList'] = Pos1SellList
-
-if sRole == "pos_1" then X['sSellList'] = Pos1SellList end
-if sRole == "pos_2" then X['sSellList'] = Pos2SellList end
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_ranged_carry' }, {} end
 
