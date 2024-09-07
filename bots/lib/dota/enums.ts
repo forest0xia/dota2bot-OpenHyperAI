@@ -59,77 +59,85 @@ declare const UNIT_LIST_ENEMY_WARDS: number;
 declare const UNIT_LIST_NEUTRAL_CREEPS: number;
 declare const UNIT_LIST_ENEMY_BUILDINGS: number;
 
+const DESIRE_NONE = 0.0;
+const DESIRE_VERY_LOW = 0.1;
+const DESIRE_LOW = 0.25;
+const DESIRE_MODERATE = 0.5;
+const DESIRE_HIGH = 0.75;
+const DESIRE_VERY_HIGH = 0.9;
+const DESIRE_ABSOLUTE = 1.0;
+
 export enum BotActionDesire {
-    None = BOT_ACTION_DESIRE_NONE,
-    VeryLow = BOT_ACTION_DESIRE_VERYLOW,
-    Low = BOT_ACTION_DESIRE_LOW,
-    Moderate = BOT_ACTION_DESIRE_MODERATE,
-    High = BOT_ACTION_DESIRE_HIGH,
-    VeryHigh = BOT_ACTION_DESIRE_VERYHIGH,
-    Absolute = BOT_ACTION_DESIRE_ABSOLUTE,
+    None = BOT_ACTION_DESIRE_NONE || DESIRE_NONE,
+    VeryLow = BOT_ACTION_DESIRE_VERYLOW || DESIRE_VERY_LOW,
+    Low = BOT_ACTION_DESIRE_LOW || DESIRE_LOW,
+    Moderate = BOT_ACTION_DESIRE_MODERATE || DESIRE_MODERATE,
+    High = BOT_ACTION_DESIRE_HIGH || DESIRE_HIGH,
+    VeryHigh = BOT_ACTION_DESIRE_VERYHIGH || DESIRE_VERY_HIGH,
+    Absolute = BOT_ACTION_DESIRE_ABSOLUTE || DESIRE_ABSOLUTE,
 }
 
 export enum BotModeDesire {
-    None = BOT_MODE_DESIRE_NONE,
-    VeryLow = BOT_MODE_DESIRE_VERYLOW,
-    Low = BOT_MODE_DESIRE_LOW,
-    Moderate = BOT_MODE_DESIRE_MODERATE,
-    High = BOT_MODE_DESIRE_HIGH,
-    VeryHigh = BOT_MODE_DESIRE_VERYHIGH,
-    Absolute = BOT_MODE_DESIRE_ABSOLUTE,
+    None = BOT_MODE_DESIRE_NONE || DESIRE_NONE,
+    VeryLow = BOT_MODE_DESIRE_VERYLOW || DESIRE_VERY_LOW,
+    Low = BOT_MODE_DESIRE_LOW || DESIRE_LOW,
+    Moderate = BOT_MODE_DESIRE_MODERATE || DESIRE_MODERATE,
+    High = BOT_MODE_DESIRE_HIGH || DESIRE_HIGH,
+    VeryHigh = BOT_MODE_DESIRE_VERYHIGH || DESIRE_VERY_HIGH,
+    Absolute = BOT_MODE_DESIRE_ABSOLUTE || DESIRE_ABSOLUTE,
 }
 
 export enum BotMode {
-    None = BOT_MODE_NONE,
-    Laning = BOT_MODE_LANING,
-    Attack = BOT_MODE_ATTACK,
-    Roam = BOT_MODE_ROAM,
-    Retreat = BOT_MODE_RETREAT,
-    SecretShop = BOT_MODE_SECRET_SHOP,
-    SideShop = BOT_MODE_SIDE_SHOP,
-    PushTowerTop = BOT_MODE_PUSH_TOWER_TOP,
-    PushTowerMid = BOT_MODE_PUSH_TOWER_MID,
-    PushTowerBot = BOT_MODE_PUSH_TOWER_BOT,
-    DefendTowerTop = BOT_MODE_DEFEND_TOWER_TOP,
-    DefendTowerMid = BOT_MODE_DEFEND_TOWER_MID,
-    DefendTowerBot = BOT_MODE_DEFEND_TOWER_BOT,
-    Assemble = BOT_MODE_ASSEMBLE,
-    TeamRoam = BOT_MODE_TEAM_ROAM,
-    Farm = BOT_MODE_FARM,
-    DefendAlly = BOT_MODE_DEFEND_ALLY,
-    EvasiveManeuvers = BOT_MODE_EVASIVE_MANEUVERS,
-    Roshan = BOT_MODE_ROSHAN,
-    Item = BOT_MODE_ITEM,
-    Ward = BOT_MODE_WARD,
+    None = BOT_MODE_NONE || 0,
+    Laning = BOT_MODE_LANING || 1,
+    Attack = BOT_MODE_ATTACK || 2,
+    Roam = BOT_MODE_ROAM || 3,
+    Retreat = BOT_MODE_RETREAT || 4,
+    SecretShop = BOT_MODE_SECRET_SHOP || 5,
+    SideShop = BOT_MODE_SIDE_SHOP || 6,
+    PushTowerTop = BOT_MODE_PUSH_TOWER_TOP || 9,
+    PushTowerMid = BOT_MODE_PUSH_TOWER_MID || 9,
+    PushTowerBot = BOT_MODE_PUSH_TOWER_BOT || 10,
+    DefendTowerTop = BOT_MODE_DEFEND_TOWER_TOP || 11,
+    DefendTowerMid = BOT_MODE_DEFEND_TOWER_MID || 12,
+    DefendTowerBot = BOT_MODE_DEFEND_TOWER_BOT || 13,
+    Assemble = BOT_MODE_ASSEMBLE || 14,
+    TeamRoam = BOT_MODE_TEAM_ROAM || 16,
+    Farm = BOT_MODE_FARM || 17,
+    DefendAlly = BOT_MODE_DEFEND_ALLY || 18,
+    EvasiveManeuvers = BOT_MODE_EVASIVE_MANEUVERS || 19,
+    Roshan = BOT_MODE_ROSHAN || 20,
+    Item = BOT_MODE_ITEM || 21,
+    Ward = BOT_MODE_WARD || 22,
 }
 
 export enum Team {
-    Radiant = TEAM_RADIANT,
-    Dire = TEAM_DIRE,
-    Neutral = TEAM_NEUTRAL,
-    None = TEAM_NONE,
+    Radiant = TEAM_RADIANT || 2,
+    Dire = TEAM_DIRE || 3,
+    Neutral = TEAM_NEUTRAL || 4,
+    None = TEAM_NONE || 5,
 }
 
 export enum Lane {
-    Top = LANE_TOP,
-    Mid = LANE_MID,
-    Bot = LANE_BOT,
-    None = LANE_NONE,
+    None = LANE_NONE || 0,
+    Top = LANE_TOP || 1,
+    Mid = LANE_MID || 2,
+    Bot = LANE_BOT || 3,
 }
 
 export enum UnitType {
-    All = UNIT_LIST_ALL,
-    Allies = UNIT_LIST_ALLIES,
-    AlliedHeroes = UNIT_LIST_ALLIED_HEROES,
-    AlliedCreeps = UNIT_LIST_ALLIED_CREEPS,
-    AlliedWards = UNIT_LIST_ALLIED_WARDS,
-    AlliedBuildings = UNIT_LIST_ALLIED_BUILDINGS,
-    Enemies = UNIT_LIST_ENEMIES,
-    EnemyHeroes = UNIT_LIST_ENEMY_HEROES,
-    EnemyCreeps = UNIT_LIST_ENEMY_CREEPS,
-    EnemyWards = UNIT_LIST_ENEMY_WARDS,
-    NeutralCreeps = UNIT_LIST_NEUTRAL_CREEPS,
-    EnemyBuildings = UNIT_LIST_ENEMY_BUILDINGS,
+    All = UNIT_LIST_ALL || 0,
+    Allies = UNIT_LIST_ALLIES || 1,
+    AlliedHeroes = UNIT_LIST_ALLIED_HEROES || 2,
+    AlliedCreeps = UNIT_LIST_ALLIED_CREEPS || 3,
+    AlliedWards = UNIT_LIST_ALLIED_WARDS || 4,
+    AlliedBuildings = UNIT_LIST_ALLIED_BUILDINGS || 5,
+    Enemies = UNIT_LIST_ENEMIES || 7,
+    EnemyHeroes = UNIT_LIST_ENEMY_HEROES || 8,
+    EnemyCreeps = UNIT_LIST_ENEMY_CREEPS || 9,
+    EnemyWards = UNIT_LIST_ENEMY_WARDS || 10,
+    EnemyBuildings = UNIT_LIST_ENEMY_BUILDINGS || 11,
+    NeutralCreeps = UNIT_LIST_NEUTRAL_CREEPS || 13,
 }
 
 export enum BotActionType {
