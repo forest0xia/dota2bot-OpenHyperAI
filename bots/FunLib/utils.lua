@@ -35,6 +35,7 @@ function ____exports.GetLocationToLocationDistance(fLoc, sLoc)
     return math.sqrt((y2 - y1) * (y2 - y1) + (x2 - x1) * (x2 - x1))
 end
 ____exports.DebugMode = false
+____exports.ScriptID = 3246316298
 local RadiantFountainTpPoint = Vector(-7172, -6652, 384)
 local DireFountainTpPoint = Vector(6982, 6422, 392)
 ____exports.WisdomRunes = {
@@ -117,17 +118,12 @@ function ____exports.PrintPings(pingTimeGap)
 end
 function ____exports.PrintAllAbilities(unit)
     print("Get all abilities of bot " .. unit:GetUnitName())
-    print("Abilities Count=" .. tostring(unit:GetAbilityCount()))
-    do
-        local index = 1
-        while index < unit:GetAbilityCount() do
-            local ability = unit:GetAbilityByIndex(index)
-            if ability and not ability:IsNull() then
-                print((("Ability At Index " .. tostring(index)) .. ": ") .. ability:GetName())
-            else
-                print(("Ability At Index " .. tostring(index)) .. " is nil")
-            end
-            index = index + 1
+    for index = 0, 10 do
+        local ability = unit:GetAbilityInSlot(index)
+        if ability and not ability:IsNull() then
+            print((("Ability At Index " .. tostring(index)) .. ": ") .. ability:GetName())
+        else
+            print(("Ability At Index " .. tostring(index)) .. " is nil")
         end
     end
 end

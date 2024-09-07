@@ -37,6 +37,28 @@ local abilityTether = bot:GetAbilityByName(AbilityList[1])
 local abilitySpirits = bot:GetAbilityByName(AbilityList[2])
 local abilityOvercharge = bot:GetAbilityByName(AbilityList[3])
 local abilityRelocate = bot:GetAbilityByName(AbilityList[6])
+local sellList = {
+    "item_black_king_bar",
+    "item_quelling_blade",
+    "item_ultimate_scepter",
+    "item_magic_wand",
+    "item_cyclone",
+    "item_magic_wand",
+    "item_shivas_guard",
+    "item_magic_wand",
+    "item_power_treads",
+    "item_quelling_blade",
+    "item_lotus_orb",
+    "item_quelling_blade",
+    "item_assault",
+    "item_magic_wand",
+    "item_travel_boots",
+    "item_magic_wand",
+    "item_assault",
+    "item_ancient_janggo",
+    "item_vladmir",
+    "item_magic_wand"
+}
 local defaultBuild = {
     "item_tango",
     "item_faerie_fire",
@@ -182,7 +204,7 @@ local ____exports = {
             bot:Action_UseAbilityOnLocation(abilityRelocate, relocateTarget)
         end
     end,
-    sSellList = {"item_magic_wand"},
+    sSellList = sellList,
     sBuyList = roleItemBuyList[role],
     MinionThink = function(hMinionUnit, _)
         if Minion.IsValidUnit(hMinionUnit) then
