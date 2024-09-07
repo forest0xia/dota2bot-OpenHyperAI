@@ -95,7 +95,7 @@ export enum BotMode {
     Retreat = BOT_MODE_RETREAT || 4,
     SecretShop = BOT_MODE_SECRET_SHOP || 5,
     SideShop = BOT_MODE_SIDE_SHOP || 6,
-    PushTowerTop = BOT_MODE_PUSH_TOWER_TOP || 9,
+    PushTowerTop = BOT_MODE_PUSH_TOWER_TOP || 8,
     PushTowerMid = BOT_MODE_PUSH_TOWER_MID || 9,
     PushTowerBot = BOT_MODE_PUSH_TOWER_BOT || 10,
     DefendTowerTop = BOT_MODE_DEFEND_TOWER_TOP || 11,
