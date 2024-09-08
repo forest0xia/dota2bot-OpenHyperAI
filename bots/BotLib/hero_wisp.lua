@@ -8,7 +8,7 @@ local hero_is_healing = ____aba_buff.hero_is_healing
 local ____utils = require("bots.FunLib.utils")
 local HasAnyEffect = ____utils.HasAnyEffect
 local bot = GetBot()
-local Minion = dofile("bots/FunLib/aba_minion")
+local minion = dofile("bots/FunLib/aba_minion")
 local role = jmz.Item.GetRoleItemsBuyList(bot)
 local defaultAbilityBuild = {
     1,
@@ -199,8 +199,8 @@ local function SkillsComplement()
     end
 end
 local function MinionThink(hMinionUnit, _)
-    if Minion.IsValidUnit(hMinionUnit) then
-        Minion.IllusionThink(hMinionUnit)
+    if minion.IsValidUnit(hMinionUnit) then
+        minion.IllusionThink(hMinionUnit)
     end
 end
 local ____exports = {
