@@ -458,9 +458,9 @@ local WeakHeroes = {
     'npc_dota_hero_hoodwink',
     'npc_dota_hero_wisp',
 
-	-- Lost some abilities due to Facet updates in 7.37 that they do not select a default facet that defines the ability.
-	'npc_dota_hero_faceless_void',
-	'npc_dota_hero_magnataur',
+	-- Fixed by Valve. Lost some abilities due to Facet updates in 7.37 that they do not select a default facet that defines the ability.
+	-- 'npc_dota_hero_faceless_void',
+	-- 'npc_dota_hero_magnataur',
 }
 
 local SelectedWeakHero = 0

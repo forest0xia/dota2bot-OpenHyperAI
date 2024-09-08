@@ -41,7 +41,7 @@ luac.out
 
 # Dota
 bots_example/
-game/
+temp_build/
 
 # .vscode
 .vscode
@@ -58,3 +58,6 @@ game/
 # Built Visual Studio Code Extensions
 *.vsix
 *.7z
+
+.idea
+node_modules

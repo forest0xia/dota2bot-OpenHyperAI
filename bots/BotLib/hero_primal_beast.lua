@@ -131,15 +131,6 @@ X['sSellList'] = {
 	"item_vanguard",
 	"item_quelling_blade",
 
-	"item_kaya_and_sange",
-	"item_magic_wand",
-
-	"item_cyclone",
-	"item_magic_wand",
-
-	"item_heart",
-	'item_bottle',
-
 }
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_mid' }, {} end

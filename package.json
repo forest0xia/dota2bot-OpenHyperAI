@@ -1,0 +1,20 @@
+{
+    "name": "open-hyper-ai",
+    "version": "0.0.1",
+    "repository": "https://github.com/forest0xia/dota2bot-OpenHyperAI",
+    "author": "",
+    "license": "MIT",
+    "dependencies": {},
+    "devDependencies": {
+        "@types/node": "^22.5.4",
+        "lua-types": "^2.13.1",
+        "prettier": "^3.3.3",
+        "typescript": "^5.5.4",
+        "typescript-to-lua": "^1.26.2"
+    },
+    "scripts": {
+        "build": "tstl",
+        "dev": "tstl --watch",
+        "prettier": "prettier ./bots --write"
+    }
+}

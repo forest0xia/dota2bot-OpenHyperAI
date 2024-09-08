@@ -1,242 +1,213 @@
-local X = {}
-local bDebugMode = ( 1 == 10 )
+--[[ Generated with https://github.com/TypeScriptToLua/TypeScriptToLua ]]
+local jmz = require("bots.FunLib.jmz_func")
+local ____dota = require("bots.ts_libs.dota.index")
+local BotActionDesire = ____dota.BotActionDesire
+local BotMode = ____dota.BotMode
+local ____aba_buff = require("bots.FunLib.aba_buff")
+local hero_is_healing = ____aba_buff.hero_is_healing
+local ____utils = require("bots.FunLib.utils")
+local HasAnyEffect = ____utils.HasAnyEffect
 local bot = GetBot()
-
-local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
-local Minion = dofile( GetScriptDirectory()..'/FunLib/aba_minion' )
-local sTalentList = J.Skill.GetTalentList( bot )
-local sAbilityList = J.Skill.GetAbilityList( bot )
-local sRole = J.Item.GetRoleItemsBuyList( bot )
-
-local tTalentTreeList = {
-                        ['t25'] = {0, 10},
-                        ['t20'] = {10, 0},
-                        ['t15'] = {0, 10},
-                        ['t10'] = {0, 10},
+local Minion = dofile("bots/FunLib/aba_minion")
+local role = jmz.Item.GetRoleItemsBuyList(bot)
+local defaultAbilityBuild = {
+    1,
+    3,
+    1,
+    3,
+    1,
+    6,
+    1,
+    3,
+    3,
+    2,
+    6,
+    2,
+    2,
+    2,
+    6
 }
-
-local tAllAbilityBuildList = {
-                             {1,2,3,2,2,6,2,1,1,1,6,3,3,3,6},
+local allAbilitiesList = jmz.Skill.GetAbilityList(bot)
+local roleSkillBuildList = {
+    pos_1 = defaultAbilityBuild,
+    pos_2 = defaultAbilityBuild,
+    pos_3 = defaultAbilityBuild,
+    pos_4 = defaultAbilityBuild,
+    pos_5 = defaultAbilityBuild
 }
-
-local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
-
-local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
-
-local sRoleItemsBuyList = {}
-
-sRoleItemsBuyList['pos_4'] = {
-    "item_priest_outfit",
-    "item_mekansm",
-    "item_glimmer_cape",
-    "item_guardian_greaves",
-    "item_spirit_vessel",
-    "item_shivas_guard",
-    "item_sheepstick",
-    "item_moon_shard",
+local skillBuildList = roleSkillBuildList[role]
+local allTalentsList = jmz.Skill.GetTalentList(bot)
+local defaultTalentTree = {t25 = {10, 0}, t20 = {10, 0}, t15 = {0, 10}, t10 = {0, 10}}
+local roleTalentBuildList = {
+    pos_1 = defaultTalentTree,
+    pos_2 = defaultTalentTree,
+    pos_3 = defaultTalentTree,
+    pos_4 = defaultTalentTree,
+    pos_5 = defaultTalentTree
+}
+local talentBuildList = jmz.Skill.GetTalentBuild(roleTalentBuildList[role])
+local fullSkillBuildList = jmz.Skill.GetSkillList(allAbilitiesList, skillBuildList, allTalentsList, talentBuildList)
+local defaultBuild = {
+    "item_tango",
+    "item_faerie_fire",
+    "item_gauntlets",
+    "item_gauntlets",
+    "item_gauntlets",
+    "item_boots",
+    "item_armlet",
+    "item_black_king_bar",
+    "item_sange",
+    "item_ultimate_scepter",
+    "item_heavens_halberd",
+    "item_travel_boots",
+    "item_satanic",
+    "item_aghanims_shard",
+    "item_assault",
+    "item_travel_boots_2",
     "item_ultimate_scepter_2",
+    "item_moon_shard"
 }
-
-sRoleItemsBuyList['pos_5'] = {
-    "item_blood_grenade",
-    'item_mage_outfit',
-    'item_ancient_janggo',
-    'item_glimmer_cape',
-    'item_boots_of_bearing',
-    'item_pipe',
-    "item_shivas_guard",
-    'item_cyclone',
-    'item_sheepstick',
-    "item_wind_waker",
-    "item_moon_shard",
-    "item_ultimate_scepter_2",
+local roleItemBuyList = {
+    pos_1 = defaultBuild,
+    pos_2 = defaultBuild,
+    pos_3 = defaultBuild,
+    pos_4 = {
+        "item_priest_outfit",
+        "item_mekansm",
+        "item_glimmer_cape",
+        "item_guardian_greaves",
+        "item_spirit_vessel",
+        "item_shivas_guard",
+        "item_sheepstick",
+        "item_moon_shard",
+        "item_ultimate_scepter_2"
+    },
+    pos_5 = {
+        "item_blood_grenade",
+        "item_mage_outfit",
+        "item_ancient_janggo",
+        "item_glimmer_cape",
+        "item_boots_of_bearing",
+        "item_pipe",
+        "item_shivas_guard",
+        "item_cyclone",
+        "item_sheepstick",
+        "item_wind_waker",
+        "item_moon_shard",
+        "item_ultimate_scepter_2"
+    }
 }
-
-sRoleItemsBuyList['pos_3'] = {
-	"item_tango",
-	"item_faerie_fire",
-	"item_gauntlets",
-	"item_gauntlets",
-	"item_gauntlets",
-
-	"item_boots",
-	"item_armlet",
-	"item_black_king_bar",--
-	"item_sange",
-	"item_ultimate_scepter",
-	"item_heavens_halberd",--
-	"item_travel_boots",
-	"item_satanic",--
-	"item_aghanims_shard",
-	"item_assault",--
-	"item_travel_boots_2",--
-	"item_ultimate_scepter_2",
-	"item_sheepstick",--
-	"item_moon_shard",
-}
-
-sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
-
-sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_3']
-
-X['sBuyList'] = sRoleItemsBuyList[sRole]
-
-X['sSellList'] = {
-
-	"item_black_king_bar",
-	"item_quelling_blade",
-
-	"item_ultimate_scepter",
-	"item_magic_wand",
-
-	"item_cyclone",
-	"item_magic_wand",
-
-	"item_shivas_guard",
-	'item_magic_wand',
-	
-	"item_power_treads",
-	"item_quelling_blade",
-
-	"item_lotus_orb",
-	"item_quelling_blade",
-
-	"item_assault",
-	"item_magic_wand",
-	
-	"item_travel_boots",
-	"item_magic_wand",
-
-	"item_assault",
-	"item_ancient_janggo",
-	
-	"item_vladmir",
-	"item_magic_wand",
-}
-
-if J.Role.IsPvNMode() or J.Role.IsAllShadow() then
-    X['sBuyList'], X['sSellList'] = { 'PvN_mage' }, {}
+local itemBuildList = roleItemBuyList[role]
+local sellList = {"item_black_king_bar", "item_quelling_blade"}
+local abilityTether = bot:GetAbilityByName(allAbilitiesList[1])
+local abilitySpirits = bot:GetAbilityByName(allAbilitiesList[2])
+local abilityOvercharge = bot:GetAbilityByName(allAbilitiesList[3])
+local abilityRelocate = bot:GetAbilityByName(allAbilitiesList[6])
+local abilityBreakTether = bot:GetAbilityByName("wisp_tether_break")
+local function HasHealingEffect(hero)
+    return HasAnyEffect(
+        hero,
+        "modifier_tango_heal",
+        unpack(hero_is_healing)
+    )
 end
-
-nAbilityBuildList, nTalentBuildList, X['sBuyList'], X['sSellList'] = J.SetUserHeroInit( nAbilityBuildList, nTalentBuildList, X['sBuyList'], X['sSellList'] )
-
-X['sSkillList'] = J.Skill.GetSkillList( sAbilityList, nAbilityBuildList, sTalentList, nTalentBuildList )
-
-X['bDeafaultAbility'] = true
-X['bDeafaultItem'] = true
-
-function X.MinionThink(hMinionUnit, bot)
-
-    if Minion.IsValidUnit( hMinionUnit ) then
-        Minion.IllusionThink( hMinionUnit )
-    end
-
+local stateTetheredHero = nil
+local function ShouldUseOvercharge(ally)
+    local isAttacking = GameTime() - ally:GetLastAttackTime() < 0.33
+    local attackTarget = ally:GetAttackTarget()
+    return jmz.IsGoingOnSomeone(ally) or attackTarget and attackTarget:GetTeam() == GetOpposingTeam() and isAttacking or #ally:GetNearbyCreeps(200, true) > 2
 end
-
-local abilityTether = bot:GetAbilityByName( sAbilityList[1] )
-local abilitySpirits = bot:GetAbilityByName( sAbilityList[2] )
-local abilityOvercharge = bot:GetAbilityByName( sAbilityList[3] )
-local abilityRelocate = bot:GetAbilityByName( sAbilityList[6] )
-
-local castTetherDesire, castTetherTarget = 0
-local castSpiritsDesire, castSpiritsTarget = 0
-local castOverchargeDesire, castOverchargeTarget = 0
-local castRelocateDesire, castRelocateLocation = 0
-
-function X.SkillsComplement()
-
-    if J.CanNotUseAbility( bot ) or bot:IsInvisible() then return end
-
-    local aether = J.IsItemAvailable( 'item_aether_lens' )
-    local aetherRange = 0
-    if aether ~= nil then aetherRange = 250 end
-
-    castTetherDesire, castTetherTarget = X.ConsiderTether()
-    if castTetherDesire > 0 then
-        bot:Action_UseAbilityOnEntity( abilityTether, castTetherTarget )
-        return
+local function considerTether()
+    if not abilityTether:IsFullyCastable() or not abilityBreakTether:IsHidden() then
+        return BotActionDesire.None, nil
     end
-
-    castSpiritsDesire = X.ConsiderSpirits()
-    if castSpiritsDesire > 0 then
-        bot:Action_UseAbility( abilitySpirits )
-        return
-    end
-
-    castOverchargeDesire = X.ConsiderOvercharge()
-    if castOverchargeDesire > 0 then
-        bot:Action_UseAbility( abilityOvercharge )
-        return
-    end
-
-    castRelocateDesire, castRelocateLocation = X.ConsiderRelocate()
-    if castRelocateDesire > 0 then
-        bot:Action_UseAbilityOnLocation( abilityRelocate, castRelocateLocation )
-        return
-    end
-
-end
-
-function X.ConsiderTether()
-    if not abilityTether:IsFullyCastable() then
-        return BOT_ACTION_DESIRE_NONE, nil
-    end
-
-    local nCastRange = abilityTether:GetCastRange()
-
-    local nAllies = bot:GetNearbyHeroes( nCastRange, false, BOT_MODE_NONE )
-    for _, ally in pairs(nAllies) do
-        if ally ~= nil and ally:IsAlive() and not ally:IsMagicImmune() then
-            if J.GetHP(ally) < 0.6 then
-                return BOT_ACTION_DESIRE_HIGH, ally
+    local castRange = abilityTether:GetCastRange()
+    local allies = bot:GetNearbyHeroes(castRange, false, BotMode.None)
+    for ____, ally in ipairs(allies) do
+        do
+            local __continue6
+            repeat
+                local canTargetAlly = ally ~= bot and ally:IsAlive() and not ally:IsMagicImmune()
+                if not canTargetAlly then
+                    __continue6 = true
+                    break
+                end
+                if jmz.IsRetreating(bot) or jmz.GetHP(bot) < 0.25 then
+                    if jmz.IsRetreating(ally) then
+                        return BotActionDesire.High, ally
+                    end
+                    __continue6 = true
+                    break
+                end
+                if jmz.GetHP(ally) < 0.75 or jmz.GetMP(bot) > 0.8 or HasHealingEffect(bot) or ShouldUseOvercharge(ally) then
+                    return BotActionDesire.High, ally
+                end
+                __continue6 = true
+            until true
+            if not __continue6 then
+                break
             end
         end
     end
-
-    if nAllies[2] ~= nil and J.IsInRange(bot, nAllies[2], nCastRange) then
-        return BOT_ACTION_DESIRE_HIGH, nAllies[2]
-    end
-
-    return BOT_ACTION_DESIRE_NONE, nil
+    return BotActionDesire.None, nil
 end
-
-function X.ConsiderSpirits()
-    if not abilitySpirits:IsFullyCastable() then
-        return BOT_ACTION_DESIRE_NONE
-    end
-
-    local nEnemies = bot:GetNearbyHeroes( 800, true, BOT_MODE_NONE )
-    if #nEnemies >= 1 then
-        return BOT_ACTION_DESIRE_HIGH
-    end
-
-    return BOT_ACTION_DESIRE_NONE
-end
-
-function X.ConsiderOvercharge()
+local function considerOvercharge()
     if not abilityOvercharge:IsFullyCastable() then
-        return BOT_ACTION_DESIRE_NONE
+        return BotActionDesire.None
     end
-
-    if bot:HasModifier('modifier_wisp_tether') then
-        return BOT_ACTION_DESIRE_HIGH
+    if bot:HasModifier("modifier_wisp_tether") and stateTetheredHero ~= nil and ShouldUseOvercharge(stateTetheredHero) then
+        return BotActionDesire.High
     end
-
-    return BOT_ACTION_DESIRE_NONE
+    return BotActionDesire.None
 end
-
-function X.ConsiderRelocate()
-    if not abilityRelocate:IsFullyCastable() then
-        return BOT_ACTION_DESIRE_NONE, nil
+local function considerSpirits()
+    if not abilitySpirits:IsFullyCastable() then
+        return BotActionDesire.None
     end
-
-    local nEnemies = bot:GetNearbyHeroes( 1200, true, BOT_MODE_NONE )
-    local nAllies = bot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE )
-    if #nEnemies >= 3 and #nAllies >= 2 then
-        return BOT_ACTION_DESIRE_HIGH, nEnemies[1]:GetLocation()
+    local nearbyEnemies = bot:GetNearbyHeroes(800, true, BotMode.None)
+    if #nearbyEnemies >= 1 then
+        return BotActionDesire.High
     end
-
-    return BOT_ACTION_DESIRE_NONE, nil
+    return BotActionDesire.None
 end
-
-return X
+local function considerRelocate()
+    return BotActionDesire.None, nil
+end
+local function SkillsComplement()
+    if jmz.CanNotUseAbility(bot) or bot:IsInvisible() then
+        return
+    end
+    local tetherDesire, tetherLocation = considerTether()
+    if tetherDesire > 0 and tetherLocation then
+        bot:Action_UseAbilityOnEntity(abilityTether, tetherLocation)
+        stateTetheredHero = tetherLocation
+        return
+    end
+    local overchargeDesire = considerOvercharge()
+    if overchargeDesire > 0 then
+        bot:Action_UseAbility(abilityOvercharge)
+        return
+    end
+    local spiritsDesire = considerSpirits()
+    if spiritsDesire > 0 then
+        bot:Action_UseAbility(abilitySpirits)
+        return
+    end
+    local relocateDesire, relocateTarget = considerRelocate()
+    if relocateDesire and relocateTarget ~= nil then
+        bot:Action_UseAbilityOnLocation(abilityRelocate, relocateTarget)
+    end
+end
+local function MinionThink(hMinionUnit, _)
+    if Minion.IsValidUnit(hMinionUnit) then
+        Minion.IllusionThink(hMinionUnit)
+    end
+end
+local ____exports = {
+    SkillsComplement = SkillsComplement,
+    MinionThink = MinionThink,
+    sSellList = sellList,
+    sBuyList = itemBuildList,
+    sSkillList = fullSkillBuildList
+}
+return ____exports
