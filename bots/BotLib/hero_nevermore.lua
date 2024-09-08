@@ -133,6 +133,7 @@ X['sSellList'] = {
 
 	"item_black_king_bar",
 	"item_quelling_blade",
+	"item_null_talisman",
 
 }
 
