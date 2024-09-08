@@ -131,8 +131,19 @@ X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 X['sSellList'] = {
 
-	"item_black_king_bar",
+	"item_kaya",
 	"item_quelling_blade",
+
+	"item_force_staff",
+	"item_magic_wand",
+
+	"item_blink",
+	"item_magic_wand",
+
+	"item_ultimate_scepter",
+	"item_bottle",
+
+	"item_octarine_core",
 	"item_null_talisman",
 
 }
