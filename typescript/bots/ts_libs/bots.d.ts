@@ -4,18 +4,23 @@
 
 import { Ability, Talent } from "./dota";
 
-export interface BotBehavior {
+export interface BotSetup {
     sBuyList: string[];
     sSellList: string[];
-    bDefaultItem: boolean;
-    bDefaultAbility: boolean;
     sSkillList: Array<Talent | Ability>;
-
     SkillsComplement(this: void): void;
-
     MinionThink(this: void, hMinionUnit: any, bot: any): void;
+}
+
+export interface TalentTreeBuild {
+    t10: [number, number];
+    t15: [number, number];
+    t20: [number, number];
+    t25: [number, number];
 }
 
 export type BotRole = "pos_1" | "pos_2" | "pos_3" | "pos_4" | "pos_5";
 
 export type ItemBuilds = { [key in BotRole]: string[] };
+export type SkillBuilds = { [key in BotRole]: number[] };
+export type TalentBuilds = { [key in BotRole]: TalentTreeBuild };

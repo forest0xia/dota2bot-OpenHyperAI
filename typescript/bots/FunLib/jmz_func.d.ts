@@ -1,13 +1,6 @@
 import { Talent, Unit } from "../ts_libs/dota";
-import { BotRole } from "../ts_libs/bots";
+import { BotRole, TalentTreeBuild } from "../ts_libs/bots";
 
-/** @noSelf **/
-export interface TalentTreeBuild {
-    t10: [number, number];
-    t15: [number, number];
-    t20: [number, number];
-    t25: [number, number];
-}
 
 /** @noSelf **/
 interface ISkill {
