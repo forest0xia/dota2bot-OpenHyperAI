@@ -98,9 +98,32 @@ sRoleItemsBuyList['pos_2'] = {
 	"item_moon_shard",
 }
 
-sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_2']
+sRoleItemsBuyList['pos_4'] = {
+	"item_tango",
+	"item_tango",
+	"item_double_branches",
+	"item_clarity",
+	"item_clarity",
+	"item_flask",
 
-sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_2']
+	"item_magic_wand",
+	"item_tranquil_boots",
+	"item_null_talisman",
+	"item_cyclone",
+	"item_glimmer_cape",
+	"item_kaya",
+	"item_force_staff",
+	"item_sange",
+	"item_boots_of_bearing",
+	"item_octarine_core",
+	"item_hurricane_pike"
+	"item_aghanims_shard",
+	"item_wind_waker",
+	"item_ultimate_scepter_2",
+	"item_moon_shard",
+}
+
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_4']
 
 sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_1']
 
