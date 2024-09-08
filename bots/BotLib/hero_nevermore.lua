@@ -332,6 +332,10 @@ function X.ConsiderR()
 		return 0
 	end
 
+	-- less souls = no fear
+	local nSoulCount = bot:GetModifierStackCount(bot:GetModifierByName('modifier_nevermore_necromastery'))
+	if nSoulCount < 10 then return 0 end
+
 	local nRadius = 1000
 
 	local nEnemysHerosInLong	 = J.GetEnemyList( bot, 1200 )
