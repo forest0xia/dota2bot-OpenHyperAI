@@ -2,10 +2,12 @@
  * Dota 2 scripting API globals functions and constants
  */
 
-import { Unit } from "./dota/interfaces";
+import { Unit, Vector } from "./dota/interfaces";
 import { Team, UnitType } from "./dota";
 
 declare global {
+    function print(...args: any[]): void;
+    
     function GetBot(): Unit;
 
     function GetOpposingTeam(): Team;
@@ -26,20 +28,18 @@ declare global {
 
     function GetScriptDirectory(): string;
 
-    /** @customConstructor Vector */
-    class Vector {
-        public x: number;
-        public y: number;
-        public z: number;
+    function Vector(x: number, y: number, z: number): Vector;
 
-        constructor(x: number, y: number, z: number);
-
-        Normalized(): Vector;
-    }
-
-    //**
-    // Returns the game time. Matches game clock. Pauses with game pause. */
     function DotaTime(): number;
+
+    function GetHeroLevel(playerId: number): number;
+    function GetTower(team: Team, tower: number): Unit | undefined;
+    function GetUnitToUnitDistance(unit1: Unit, unit2: Unit): number;
+    function GetUnitToLocationDistance(unit: Unit, location: Vector): number;
+    function GetAncient(team: Team): Unit;
+    function GetHeroKills(playerId: number): number;
+    function GetHeroDeaths(playerId: number): number;
+    function GetNeutralSpawners(): any;
 }
 
 export {};

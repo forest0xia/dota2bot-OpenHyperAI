@@ -390,6 +390,45 @@ Item['sCanNotSwitchItems'] = {
 		'item_black_king_bar', -- prevent keep swapping with critical items in other settings
 		-- 'item_ward_sentry', -- prevent keep swapping with critical items in other settings
 }
+
+Item['sSellList'] = {
+	"item_black_king_bar",
+	"item_quelling_blade",
+
+	"item_ultimate_scepter",
+	"item_magic_wand",
+
+	"item_cyclone",
+	"item_magic_wand",
+
+	"item_shivas_guard",
+	'item_magic_wand',
+
+	"item_power_treads",
+	"item_quelling_blade",
+
+	"item_lotus_orb",
+	"item_quelling_blade",
+
+	"item_assault",
+	"item_magic_wand",
+
+	"item_travel_boots",
+	"item_magic_wand",
+
+	"item_travel_boots",
+	"item_phase_boots",
+
+	"item_travel_boots",
+	"item_arcane_boots",
+
+	"item_assault",
+	"item_ancient_janggo",
+
+	"item_vladmir",
+	"item_magic_wand",
+}
+
 local tCanNotSwitchItemList = {}
 for _, sItem in pairs( Item['sCanNotSwitchItems'] )
 do
@@ -422,7 +461,6 @@ for _, sItem in pairs( sConsumableList )
 do
 	tConsumableItemList[sItem] = true
 end
-
 
 local sNotSellItemList = {
 	'item_abyssal_blade',

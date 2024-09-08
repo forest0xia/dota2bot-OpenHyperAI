@@ -40,7 +40,6 @@ function Chat:SendHttpRequest(api, inputData, callback)
 
         if response.StatusCode == 200 then
             local success, resJsonObj = pcall(function() return json.decode(res) end)
-            DeepPrintTable(resJsonObj)
             if success and resJsonObj and resJsonObj.error then
                 Chat:HandleFailMessage(tostring(resJsonObj.error.type) .. " : " .. tostring(resJsonObj.error.message) .. " " .. tostring(resJsonObj.error.code), false)
             else

@@ -1,15 +1,6 @@
 local X = {}
 
-local sBotVersion = "New"
--- local sBotVersion = "Mid"
-local sVersionDate = " 7.35, 2024/03/09"
-
-local Overrides = require( GetScriptDirectory()..'/FunLib/aba_global_overrides' )
 local Utils = require( GetScriptDirectory()..'/FunLib/utils' )
-
-function X.GetBotVersion()
-	return sBotVersion, sVersionDate
-end
 
 ----------------------------------------------------------------------------------------------------
 

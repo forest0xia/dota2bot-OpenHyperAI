@@ -70,15 +70,6 @@ X['sSellList'] = {
 
 	"item_black_king_bar",
 	"item_quelling_blade",
-
-	"item_ultimate_scepter",
-	"item_magic_wand",
-
-	"item_cyclone",
-	"item_magic_wand",
-
-	"item_shivas_guard",
-	'item_magic_wand',
 }
 
 

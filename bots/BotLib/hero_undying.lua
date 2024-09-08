@@ -90,15 +90,6 @@ X['sSellList'] = {
 
 	"item_power_treads",
 	"item_quelling_blade",
-
-	"item_assault",
-	"item_magic_wand",
-	
-	"item_abyssal_blade",
-	"item_magic_wand",
-	
-	"item_assault",
-	"item_ancient_janggo",
 }
 
 

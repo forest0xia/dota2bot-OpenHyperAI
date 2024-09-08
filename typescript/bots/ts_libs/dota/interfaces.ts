@@ -1,6 +1,15 @@
-import { BotActionType, BotMode } from "./enums";
+import { BotActionType, BotMode, Team } from "./enums";
 
 export interface Location {}
+
+// https://developer.valvesoftware.com/wiki/Category:Vector
+// update for add/sub/div later.
+export interface Vector {
+    x: number;
+    y: number;
+    z: number;
+    Normalized(): Vector;
+}
 
 export interface Ping {
     time: number;
@@ -9,17 +18,18 @@ export interface Ping {
     player_id: number;
 }
 
-export interface Item {}
+export interface Item {
+    GetName(): string;
+}
 
 export interface Unit {
     // Seems to be internal to bot script?
     frameProcessTime: number | null;
+    assignedRole: number | null;
 
     IsNull(): boolean;
 
     CanBeSeen(): boolean;
-
-    GetAbilityByName(name: string): Ability;
 
     GetPlayerID(): number;
 
@@ -33,6 +43,8 @@ export interface Unit {
     IsInvisible(): boolean;
 
     IsAlive(): boolean;
+    
+    IsBuilding(): boolean;
 
     IsHero(): boolean;
 
@@ -44,7 +56,9 @@ export interface Unit {
 
     NumModifiers(): number;
 
-    HasModifier(name: string): boolean;
+    GetModifierName(nModifier: number): number;
+
+    GetModifierStackCount(nModifier: number): number;
 
     GetNearbyCreeps(range: number, enemy: boolean): undefined[];
 
@@ -71,7 +85,7 @@ export interface Unit {
 
     GetAttackTarget(): Unit | null;
 
-    GetTeam(): number;
+    GetTeam(): Team;
 
     GetLastAttackTime(): number;
     WasRecentlyDamagedByAnyHero(delta: number): boolean;
@@ -83,16 +97,38 @@ export interface Unit {
     GetMaxMana(): number;
     GetMana(): number;
     GetManaRegen(): number;
+
+    
+    GetLevel(): number;
+    IsAncientCreep(): boolean;
+    HasModifier(modifierName: string): boolean;
+    GetActiveMode(): number;
+    GetAbilityByName(abilityName: string): Ability;
+    GetAttackRange(): number;
+    GetCurrentVisionRange(): number;
+    GetNetWorth(): number;
+    FindItemSlot(itemName: string): number;
+    GetNearbyLaneCreeps(radius: number, enemyTeam: boolean): Unit[];
+    GetNearbyTowers(radius: number, enemyTeam: boolean): Unit[];
+    GetAttackDamage(): number;
+    GetActiveModeDesire(): number;
+    GetGold(): number;
+    GetCurrentMovementSpeed(): number;
+
 }
 
 export interface Ability {
     IsFullyCastable(): boolean;
+    IsHidden(): boolean;
 
     GetCastRange(): number;
 
     IsNull(): boolean;
 
     GetName(): string;
+    
+    IsTrained(): boolean;
+    GetManaCost(): number;
 }
 
 export interface Talent {}

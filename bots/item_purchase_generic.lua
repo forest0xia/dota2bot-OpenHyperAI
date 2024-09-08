@@ -767,16 +767,10 @@ function ItemPurchaseThink()
 	then
 		bot.sell_time = currentTime
 
-		for i = 2 , #sItemSellList, 2
-		do
-			local nNewSlot = bot:FindItemSlot( sItemSellList[i - 1] )
-			local nOldSlot = bot:FindItemSlot( sItemSellList[i] )
-			if nNewSlot >= 0 and nOldSlot >= 0
-			and not Utils.HasValue(Item['tEarlyBoots'], sItemSellList[i]) -- dont sell boots too early.
-			then
-				bot:ActionImmediate_SellItem( bot:GetItemInSlot( nOldSlot ) )
-			end
-		end
+		-- default list
+		SetPairedItems(Item.sSellList)
+		-- specific list
+		SetPairedItems(sItemSellList)
 
 		if (currentTime > 18 * 60 or botWorth > 20000)
 			and ( Item.HasItem( bot, "item_travel_boots" ) or Item.HasItem( bot, "item_travel_boots_2" ) )
@@ -854,6 +848,18 @@ function ItemPurchaseThink()
 		end
 	end
 
+end
+
+function SetPairedItems(itemList)
+	for i = 2 , #itemList, 2
+	do
+		local nNewSlot = bot:FindItemSlot( itemList[i - 1] )
+		local nOldSlot = bot:FindItemSlot( itemList[i] )
+		if nNewSlot >= 0 and nOldSlot >= 0
+		then
+			bot:ActionImmediate_SellItem( bot:GetItemInSlot( nOldSlot ) )
+		end
+	end
 end
 
 function ClearBuyList()

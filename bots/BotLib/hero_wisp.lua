@@ -1,5 +1,5 @@
 --[[ Generated with https://github.com/TypeScriptToLua/TypeScriptToLua ]]
-local jmz = require("../FunLib/jmz_func")
+local jmz = require("bots.FunLib.jmz_func")
 local ____dota = require("bots.ts_libs.dota.index")
 local BotActionDesire = ____dota.BotActionDesire
 local BotMode = ____dota.BotMode
@@ -37,28 +37,8 @@ local abilityTether = bot:GetAbilityByName(AbilityList[1])
 local abilitySpirits = bot:GetAbilityByName(AbilityList[2])
 local abilityOvercharge = bot:GetAbilityByName(AbilityList[3])
 local abilityRelocate = bot:GetAbilityByName(AbilityList[6])
-local sellList = {
-    "item_black_king_bar",
-    "item_quelling_blade",
-    "item_ultimate_scepter",
-    "item_magic_wand",
-    "item_cyclone",
-    "item_magic_wand",
-    "item_shivas_guard",
-    "item_magic_wand",
-    "item_power_treads",
-    "item_quelling_blade",
-    "item_lotus_orb",
-    "item_quelling_blade",
-    "item_assault",
-    "item_magic_wand",
-    "item_travel_boots",
-    "item_magic_wand",
-    "item_assault",
-    "item_ancient_janggo",
-    "item_vladmir",
-    "item_magic_wand"
-}
+local abilityBreakTether = bot:GetAbilityByName("wisp_tether_break")
+local sellList = {"item_black_king_bar", "item_quelling_blade"}
 local defaultBuild = {
     "item_tango",
     "item_faerie_fire",
@@ -123,7 +103,7 @@ local function ShouldUseOvercharge(ally)
     return jmz.IsGoingOnSomeone(ally) or attackTarget and attackTarget:GetTeam() == GetOpposingTeam() and isAttacking or #ally:GetNearbyCreeps(200, true) > 2
 end
 local function considerTether()
-    if not abilityTether:IsFullyCastable() then
+    if not abilityTether:IsFullyCastable() or not abilityBreakTether:IsHidden() then
         return BotActionDesire.None, nil
     end
     local castRange = abilityTether:GetCastRange()

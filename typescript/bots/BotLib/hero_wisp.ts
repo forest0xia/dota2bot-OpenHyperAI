@@ -44,37 +44,11 @@ const abilityTether = bot.GetAbilityByName(AbilityList[0]);
 const abilitySpirits = bot.GetAbilityByName(AbilityList[1]);
 const abilityOvercharge = bot.GetAbilityByName(AbilityList[2]);
 const abilityRelocate = bot.GetAbilityByName(AbilityList[5]);
+const abilityBreakTether = bot.GetAbilityByName('wisp_tether_break')
 
 const sellList = [
     "item_black_king_bar",
     "item_quelling_blade",
-
-    "item_ultimate_scepter",
-    "item_magic_wand",
-
-    "item_cyclone",
-    "item_magic_wand",
-
-    "item_shivas_guard",
-    "item_magic_wand",
-
-    "item_power_treads",
-    "item_quelling_blade",
-
-    "item_lotus_orb",
-    "item_quelling_blade",
-
-    "item_assault",
-    "item_magic_wand",
-
-    "item_travel_boots",
-    "item_magic_wand",
-
-    "item_assault",
-    "item_ancient_janggo",
-
-    "item_vladmir",
-    "item_magic_wand",
 ];
 const defaultBuild = [
     "item_tango",
@@ -147,7 +121,7 @@ function ShouldUseOvercharge(ally: Unit) {
 }
 
 function considerTether(): LuaMultiReturn<[number, Unit | null]> {
-    if (!abilityTether.IsFullyCastable()) {
+    if (!abilityTether.IsFullyCastable() || !abilityBreakTether.IsHidden()) {
         return $multi(BotActionDesire.None, null);
     }
     const castRange = abilityTether.GetCastRange();
@@ -204,17 +178,7 @@ function considerSpirits(): number {
 }
 
 function considerRelocate(): LuaMultiReturn<[number, Location | null]> {
-    return $multi(BotActionDesire.None, null);
-    // Default implementation doesn't seem to do anything useful
-    // if (!abilityRelocate.IsFullyCastable()) {
-    //     return [BOT_ACTION_DESIRE_NONE, null]
-    // }
-    // const nearbyEnemies = bot.GetNearbyHeroes(1200, true, BOT_MODE_NONE)
-    // const nearbyAllies = bot.GetNearbyHeroes(1200, false, BOT_MODE_NONE)
-    // if (nearbyEnemies.length >= 3 && nearbyAllies.length >= 2) {
-    //     return [BOT_ACTION_DESIRE_HIGH, nearbyEnemies[0].GetLocation()]
-    // }
-    // return [BOT_ACTION_DESIRE_NONE, null]
+    return $multi(BotActionDesire.None, null)
 }
 
 export = {

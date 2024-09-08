@@ -36,6 +36,11 @@ Bot script in Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails
 1. You can change bot ban/picks, and roles, etc easily and permanently. Check out the file in [bots/Customize/general.lua](bots/Customize/general.lua)
 1. Pos1 and Pos5 bots go to safe lane. Pos3 and Pos4 bots go offlane. Pos2 bot goes to mid lane.
 
+### If you want to contribute to this script
+1. Please feel very welcome to contribute to the Github repo any time you like. Just update the logic and create a pull request.
+1. Future development work for this script will be written in typescript as possible: [typescript/README](typescript/README.md).
+1. The typescipt source code is as well work-in-progress, feel free to convert more lua files to ts, and add libs/modules as you feel necessary.
+
 ### What's next
 0. Ultimately, the bots play style is static/fixed with the current AI approach provided by Valve at the moment. We need machine learning AI bots! Just like the AIs we’ve seen from OpenAI Five.
 1. Follow up on https://www.reddit.com/r/DotA2/comments/1ezxpav/a_note_to_valve_official_regarding_bot_scripts/

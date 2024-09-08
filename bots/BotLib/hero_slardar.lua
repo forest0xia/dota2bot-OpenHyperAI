@@ -79,19 +79,6 @@ X['sBuyList'] = sRoleItemsBuyList[sRole]
 X['sSellList'] = {
 	"item_power_treads",
 	"item_quelling_blade",
-
-	"item_assault",
-	"item_magic_wand",
-
-	-- "item_heart",
-	-- "item_armlet",
-	
-	"item_travel_boots",
-	"item_magic_wand",
-	
-	
-	"item_assault",
-	"item_ancient_janggo",
 }
 
 

@@ -4,7 +4,6 @@
     "luaTarget": "5.1",
     "noImplicitSelf": true,
     "tstlVerbose": true,
-    "noResolvePaths":["../FunLib/jmz_func"],
   },
   "compilerOptions": {
     "baseUrl": "./typescript",

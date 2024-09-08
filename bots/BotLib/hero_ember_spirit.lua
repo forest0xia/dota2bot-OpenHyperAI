@@ -509,6 +509,7 @@ function X.ConsiderActivateFireRemnant()
 		for _, u in pairs(GetUnitList(UNIT_LIST_ALLIES))
 		do
 			if  u ~= nil
+			and J.IsValidTarget(botTarget)
 			and u:GetUnitName() == 'npc_dota_ember_spirit_remnant'
 			then
 				local dist = GetUnitToUnitDistance(u, botTarget)

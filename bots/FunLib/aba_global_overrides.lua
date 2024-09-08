@@ -53,6 +53,20 @@ function GetTeamPlayers(nTeam)
 	return nIDs
 end
 
+-- Override the print function
+local orig_print = print
+function print(...)
+    if not Utils.DebugMode then return end
+
+    local args = {...}
+    for i, v in ipairs(args) do
+        args[i] = tostring(v) -- Convert all arguments to strings
+    end
+    local output = table.concat(args, "\t") -- Concatenate with tab as separator
+
+    orig_print(output)
+end
+
 local original_GetUnitToUnitDistance = GetUnitToUnitDistance
 function GetUnitToUnitDistance(unit1, unit2)
 	if not unit1 then

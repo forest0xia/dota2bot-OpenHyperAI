@@ -1,6 +1,4 @@
 local ____lualib = require("lualib_bundle")
-local __TS__ArrayMap = ____lualib.__TS__ArrayMap
-local __TS__ArrayJoin = ____lualib.__TS__ArrayJoin
 local __TS__ObjectEntries = ____lualib.__TS__ObjectEntries
 local __TS__ArrayEntries = ____lualib.__TS__ArrayEntries
 local __TS__Iterator = ____lualib.__TS__Iterator
@@ -9,24 +7,9 @@ local __TS__New = ____lualib.__TS__New
 local __TS__ArrayConcat = ____lualib.__TS__ArrayConcat
 local __TS__ArraySome = ____lualib.__TS__ArraySome
 local ____exports = {}
-local print, orig_print
 local ____dota = require("bots.ts_libs.dota.index")
 local Team = ____dota.Team
 local UnitType = ____dota.UnitType
-function print(...)
-    local args = {...}
-    if not ____exports.DebugMode then
-        return
-    end
-    local output = __TS__ArrayJoin(
-        __TS__ArrayMap(
-            args,
-            function(____, v) return tostring(v) end
-        ),
-        "\t"
-    )
-    orig_print(output)
-end
 function ____exports.GetLocationToLocationDistance(fLoc, sLoc)
     local x1 = fLoc.x
     local x2 = sLoc.x
@@ -55,7 +38,6 @@ ____exports.BuggyHeroesDueToValveTooLazy = {
 ____exports.GameStates = {}
 ____exports.LoneDruid = {}
 ____exports.FrameProcessTime = 0.05
-orig_print = print
 function ____exports.PrintTable(tbl, indent)
     if indent == nil then
         indent = 0
@@ -67,26 +49,28 @@ function ____exports.PrintTable(tbl, indent)
     for ____, ____value in ipairs(__TS__ObjectEntries(tbl)) do
         local key = ____value[1]
         local value = ____value[2]
-        do
-            local __continue7
-            repeat
-                local prefix = (string.rep("  ", indent) .. tostring(key)) .. ": "
-                if type(value) ~= "table" then
-                    print(prefix .. tostring(value))
-                    __continue7 = true
-                    break
-                end
-                if indent <= 2 then
-                    print(prefix)
-                    ____exports.PrintTable(value, indent + 1)
-                else
-                    print(prefix .. "[WARN] Table has deep nested tables in it, stop printing more nested tables.")
-                end
-                __continue7 = true
-            until true
-            if not __continue7 then
-                break
+        local prefix = (string.rep("  ", indent) .. tostring(key)) .. ": "
+        if type(value) == "table" then
+            if indent < 3 then
+                print(prefix)
+                ____exports.PrintTable(value, indent + 1)
+            else
+                print(prefix .. "[WARN] Table has deep nested tables in it, stop printing more nested tables.")
             end
+        else
+            print(prefix .. tostring(value))
+        end
+    end
+end
+function ____exports.PrintUnitModifiers(unit)
+    local modifierCount = unit:NumModifiers()
+    do
+        local i = 0
+        while i < modifierCount do
+            local modifierName = unit:GetModifierName(i)
+            local stackCount = unit:GetModifierStackCount(i)
+            print((((("Unit " .. unit:GetUnitName()) .. " has modifier ") .. tostring(modifierName)) .. " with stack count ") .. tostring(stackCount))
+            i = i + 1
         end
     end
 end
@@ -172,6 +156,8 @@ function ____exports.IsPingedByAnyPlayer(bot, pingTimeGap, minDistance, maxDista
     end
     local pings = {}
     local teamPlayerIds = GetTeamPlayers(GetTeam())
+    minDistance = minDistance or 1500
+    maxDistance = maxDistance or 10000
     for ____, ____value in __TS__Iterator(__TS__ArrayEntries(teamPlayerIds)) do
         local index = ____value[1]
         local _ = ____value[2]
@@ -201,7 +187,7 @@ function ____exports.IsPingedByAnyPlayer(bot, pingTimeGap, minDistance, maxDista
         )
         local withinRange = minDistance <= distanceToBot and distanceToBot <= maxDistance
         local withinTimeRange = GameTime() - ping.time < pingTimeGap
-        if withinRange and withinTimeRange and ping.player_id ~= -1 then
+        if withinRange and withinTimeRange then
             print(("Bot " .. bot:GetUnitName()) .. " noticed the ping")
             return ping
         end
@@ -211,9 +197,19 @@ end
 function ____exports.IsValidUnit(target)
     return target ~= nil and not target:IsNull() and target:CanBeSeen() and target:IsAlive()
 end
+function ____exports.IsValidHero(target)
+    return ____exports.IsValidUnit(target) and target:IsHero()
+end
+function ____exports.IsValidBuilding(target)
+    return ____exports.IsValidUnit(target) and target:IsBuilding()
+end
+function ____exports.HasItem(bot, itemName)
+    local slot = bot:FindItemSlot(itemName)
+    return slot >= 0 and slot <= 8
+end
 function ____exports.FindAllyWithName(name)
     for ____, ally in ipairs(GetUnitList(UnitType.AlliedHeroes)) do
-        if ____exports.IsValidUnit(ally) and ally:IsHero() and ({string.find(
+        if ____exports.IsValidHero(ally) and ({string.find(
             ally:GetUnitName(),
             name
         )}) then
@@ -224,19 +220,21 @@ function ____exports.FindAllyWithName(name)
 end
 function ____exports.Deepcopy(orig)
     local originalType = type(orig)
-    if originalType ~= "table" then
-        return orig
+    local copy
+    if originalType == "table" then
+        copy = {}
+        for ____, ____value in ipairs(__TS__ObjectEntries(orig)) do
+            local key = ____value[1]
+            local value = ____value[2]
+            copy[____exports.Deepcopy(key)] = ____exports.Deepcopy(value)
+        end
+        setmetatable(
+            copy,
+            ____exports.Deepcopy(getmetatable(orig))
+        )
+    else
+        copy = orig
     end
-    local copy = {}
-    for ____, ____value in ipairs(__TS__ObjectEntries(orig)) do
-        local key = ____value[1]
-        local value = ____value[2]
-        copy[____exports.Deepcopy(key)] = ____exports.Deepcopy(value)
-    end
-    setmetatable(
-        copy,
-        ____exports.Deepcopy(getmetatable(orig))
-    )
     return copy
 end
 function ____exports.CombineTablesUnique(tbl1, tbl2)
@@ -294,6 +292,9 @@ function ____exports.NumHumanBotPlayersInTeam(team)
 end
 function ____exports.IsWithoutSpellShield(npcEnemy)
     return not npcEnemy:HasModifier("modifier_item_sphere_target") and not npcEnemy:HasModifier("modifier_antimage_spell_shield") and not npcEnemy:HasModifier("modifier_item_lotus_orb_active")
+end
+function ____exports.SetContains(set, key)
+    return set[key] ~= nil
 end
 function ____exports.AddToSet(set, key)
     set[key] = true
@@ -413,5 +414,13 @@ function ____exports.HasAnyEffect(unit, ...)
         effects,
         function(____, effect) return unit:HasModifier(effect) end
     )
+end
+function ____exports.IsModeTurbo()
+    for ____, u in ipairs(GetUnitList(UnitType.Allies)) do
+        if u and u:GetUnitName() == "npc_dota_courier" and u:GetCurrentMovementSpeed() == 1100 then
+            return true
+        end
+    end
+    return false
 end
 return ____exports
