@@ -10,6 +10,10 @@ local ____exports = {}
 local ____dota = require("bots.ts_libs.dota.index")
 local Team = ____dota.Team
 local UnitType = ____dota.UnitType
+local ____native_2Doperators = require("bots.ts_libs.utils.native-operators")
+local add = ____native_2Doperators.add
+local multiply = ____native_2Doperators.multiply
+local sub = ____native_2Doperators.sub
 function ____exports.GetLocationToLocationDistance(fLoc, sLoc)
     local x1 = fLoc.x
     local x2 = sLoc.x
@@ -35,7 +39,7 @@ ____exports.BuggyHeroesDueToValveTooLazy = {
     npc_dota_hero_hoodwink = true,
     npc_dota_hero_wisp = true
 }
-____exports.GameStates = {}
+____exports.GameStates = {defendPings = nil}
 ____exports.LoneDruid = {}
 ____exports.FrameProcessTime = 0.05
 function ____exports.PrintTable(tbl, indent)
@@ -386,20 +390,11 @@ end
 function ____exports.IsBear(unit)
     return ____exports.IsUnitWithName(unit, "lone_druid_bear")
 end
-local function subVectors(a, b)
-    return a - b
-end
-local function addVectors(a, b)
-    return a + b
-end
-local function multiplyVectors(a, b)
-    return a * b
-end
 function ____exports.GetOffsetLocationTowardsTargetLocation(initLoc, targetLoc, offsetDist)
-    local direrction = subVectors(targetLoc, initLoc):Normalized()
-    return addVectors(
+    local direrction = sub(targetLoc, initLoc):Normalized()
+    return add(
         initLoc,
-        multiplyVectors(direrction, offsetDist)
+        multiply(direrction, offsetDist)
     )
 end
 function ____exports.TimeNeedToHealHP(bot)

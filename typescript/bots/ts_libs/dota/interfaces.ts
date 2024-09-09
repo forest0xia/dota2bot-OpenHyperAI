@@ -1,4 +1,4 @@
-import { BotActionType, BotMode, Team } from "./enums";
+import { BotActionType, BotMode, Lane, Team } from "./enums";
 
 export interface Location {}
 
@@ -26,6 +26,8 @@ export interface Unit {
     // Seems to be internal to bot script?
     frameProcessTime: number | null;
     assignedRole: number | null;
+    DefendLaneDesire: number[] | null;
+    laneToDefend: Lane;
 
     IsNull(): boolean;
 
@@ -43,7 +45,7 @@ export interface Unit {
     IsInvisible(): boolean;
 
     IsAlive(): boolean;
-    
+
     IsBuilding(): boolean;
 
     IsHero(): boolean;
@@ -60,7 +62,7 @@ export interface Unit {
 
     GetModifierStackCount(nModifier: number): number;
 
-    GetNearbyCreeps(range: number, enemy: boolean): undefined[];
+    GetNearbyCreeps(range: number, enemy: boolean): Unit[];
 
     GetMostRecentPing(): Ping;
 
@@ -79,11 +81,18 @@ export interface Unit {
 
     Action_UseAbilityOnEntity(ability: Ability, target: Unit): void;
 
-    Action_UseAbilityOnLocation(ability: Ability, location: Location): void;
+    Action_UseAbilityOnLocation(
+        ability: Ability | Item,
+        location: Location
+    ): void;
 
     Action_UseAbility(ability: Ability): void;
+    Action_MoveToLocation(location: Vector): void;
+    Action_AttackUnit(unit: Unit, once: boolean): void;
 
     GetAttackTarget(): Unit | null;
+    GetTarget(): Unit | null;
+    SetTarget(unit: Unit): void;
 
     GetTeam(): Team;
 
@@ -98,7 +107,6 @@ export interface Unit {
     GetMana(): number;
     GetManaRegen(): number;
 
-    
     GetLevel(): number;
     IsAncientCreep(): boolean;
     HasModifier(modifierName: string): boolean;
@@ -114,7 +122,13 @@ export interface Unit {
     GetActiveModeDesire(): number;
     GetGold(): number;
     GetCurrentMovementSpeed(): number;
-
+    GetAssignedLane(): Lane;
+    ActionImmediate_Chat(message: string, globalChat: boolean): void;
+    ActionImmediate_Ping(
+        xCoord: number,
+        yCoord: number,
+        pingType: boolean // ???
+    ): void;
 }
 
 export interface Ability {
@@ -126,7 +140,7 @@ export interface Ability {
     IsNull(): boolean;
 
     GetName(): string;
-    
+
     IsTrained(): boolean;
     GetManaCost(): number;
 }
