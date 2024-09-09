@@ -58,27 +58,4 @@ declare global {
     function GetDefendLaneDesire(lane: Lane): number;
 }
 
-declare global {
-    // TODO(Doctor): I declared tower enum globally for now,
-    //  will move them into a proper enum later
-    const TOWER_TOP_1: number;
-    const TOWER_TOP_2: number;
-    const TOWER_TOP_3: number;
-    const TOWER_MID_1: number;
-    const TOWER_MID_2: number;
-    const TOWER_MID_3: number;
-    const TOWER_BOT_1: number;
-    const TOWER_BOT_2: number;
-    const TOWER_BOT_3: number;
-    const TOWER_BASE_1: number;
-    const TOWER_BASE_2: number;
-
-    const BARRACKS_TOP_MELEE: number;
-    const BARRACKS_TOP_RANGED: number;
-    const BARRACKS_MID_MELEE: number;
-    const BARRACKS_MID_RANGED: number;
-    const BARRACKS_BOT_MELEE: number;
-    const BARRACKS_BOT_RANGED: number;
-}
-
 export {};

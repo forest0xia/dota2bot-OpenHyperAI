@@ -7,6 +7,7 @@ local ____dota = require("bots.ts_libs.dota.index")
 local BotActionDesire = ____dota.BotActionDesire
 local BotMode = ____dota.BotMode
 local BotModeDesire = ____dota.BotModeDesire
+local BotScriptEnums = ____dota.BotScriptEnums
 local Lane = ____dota.Lane
 local UnitType = ____dota.UnitType
 local ____utils = require("bots.FunLib.utils")

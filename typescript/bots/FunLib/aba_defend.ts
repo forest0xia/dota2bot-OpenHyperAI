@@ -3,6 +3,7 @@ import {
     BotActionDesire,
     BotMode,
     BotModeDesire,
+    BotScriptEnums,
     Lane,
     Unit,
     UnitType,
@@ -18,27 +19,36 @@ import { add } from "bots/ts_libs/utils/native-operators";
 const furthestBuildings = {
     [Lane.Top]: {
         towers: [
-            { id: TOWER_TOP_1, mulMax: 0.5, mulMin: 1 },
-            { id: TOWER_TOP_2, mulMax: 1, mulMin: 2 },
-            { id: TOWER_TOP_3, mulMax: 1.5, mulMin: 2 },
+            { id: BotScriptEnums.TOWER_TOP_1, mulMax: 0.5, mulMin: 1 },
+            { id: BotScriptEnums.TOWER_TOP_2, mulMax: 1, mulMin: 2 },
+            { id: BotScriptEnums.TOWER_TOP_3, mulMax: 1.5, mulMin: 2 },
         ],
-        barracks: [BARRACKS_TOP_MELEE, BARRACKS_TOP_RANGED],
+        barracks: [
+            BotScriptEnums.BARRACKS_TOP_MELEE,
+            BotScriptEnums.BARRACKS_TOP_RANGED,
+        ],
     },
     [Lane.Bot]: {
         towers: [
-            { id: TOWER_BOT_1, mulMax: 0.5, mulMin: 1 },
-            { id: TOWER_BOT_2, mulMax: 1, mulMin: 2 },
-            { id: TOWER_BOT_3, mulMax: 1.5, mulMin: 2 },
+            { id: BotScriptEnums.TOWER_BOT_1, mulMax: 0.5, mulMin: 1 },
+            { id: BotScriptEnums.TOWER_BOT_2, mulMax: 1, mulMin: 2 },
+            { id: BotScriptEnums.TOWER_BOT_3, mulMax: 1.5, mulMin: 2 },
         ],
-        barracks: [BARRACKS_BOT_MELEE, BARRACKS_BOT_RANGED],
+        barracks: [
+            BotScriptEnums.BARRACKS_BOT_MELEE,
+            BotScriptEnums.BARRACKS_BOT_RANGED,
+        ],
     },
     [Lane.Mid]: {
         towers: [
-            { id: TOWER_MID_1, mulMax: 0.5, mulMin: 1 },
-            { id: TOWER_MID_2, mulMax: 1, mulMin: 2 },
-            { id: TOWER_MID_3, mulMax: 1.5, mulMin: 2 },
+            { id: BotScriptEnums.TOWER_MID_1, mulMax: 0.5, mulMin: 1 },
+            { id: BotScriptEnums.TOWER_MID_2, mulMax: 1, mulMin: 2 },
+            { id: BotScriptEnums.TOWER_MID_3, mulMax: 1.5, mulMin: 2 },
         ],
-        barracks: [BARRACKS_MID_MELEE, BARRACKS_MID_RANGED],
+        barracks: [
+            BotScriptEnums.BARRACKS_MID_MELEE,
+            BotScriptEnums.BARRACKS_MID_RANGED,
+        ],
     },
 };
 
@@ -118,11 +128,11 @@ export function GetDefendDesireHelper(bot: Unit, lane: Lane): BotModeDesire {
     };
     if (GameTime() - GameStates.defendPings.pingedTime > PING_TIME_DELTA) {
         const highGroundTowers = [
-            TOWER_TOP_3,
-            TOWER_MID_3,
-            TOWER_BOT_3,
-            TOWER_BASE_1,
-            TOWER_BASE_2,
+            BotScriptEnums.TOWER_TOP_3,
+            BotScriptEnums.TOWER_MID_3,
+            BotScriptEnums.TOWER_BOT_3,
+            BotScriptEnums.TOWER_BASE_1,
+            BotScriptEnums.TOWER_BASE_2,
         ];
         let enemyIsPushingBase = false;
         let defendLocation: Vector | null = null;
@@ -171,10 +181,11 @@ export function GetDefendDesireHelper(bot: Unit, lane: Lane): BotModeDesire {
     }
     const enemiesAroundAncient = jmz.GetEnemiesAroundAncient();
     let ancientDefendDesire = BotModeDesire.Absolute;
-    const midTowerDestroyed = GetTower(team, TOWER_MID_3) === null;
+    const midTowerDestroyed =
+        GetTower(team, BotScriptEnums.TOWER_MID_3) === null;
     const laneTowersDestroyed =
-        GetTower(team, TOWER_TOP_3) === null &&
-        GetTower(team, TOWER_BOT_3) === null;
+        GetTower(team, BotScriptEnums.TOWER_TOP_3) === null &&
+        GetTower(team, BotScriptEnums.TOWER_BOT_3) === null;
     if (
         enemiesAroundAncient.length >= 1 &&
         (midTowerDestroyed || laneTowersDestroyed) &&
