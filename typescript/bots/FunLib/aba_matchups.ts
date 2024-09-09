@@ -1,4 +1,4 @@
-import { HeroMatchups } from "bots/ts_libs/matchups";
+import { HeroMatchups } from "bots/ts_libs/bots";
 
 const heroes: HeroMatchups = {
     npc_dota_hero_abaddon: {

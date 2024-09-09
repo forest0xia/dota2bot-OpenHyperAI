@@ -7,7 +7,6 @@
 --- Link:http://steamcommunity.com/sharedfiles/filedetails/?id=1627071163
 ----------------------------------------------------------------------------------------------------
 local X = {}
-local bDebugMode = ( 1 == 10 )
 local bot = GetBot()
 
 local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
@@ -116,7 +115,7 @@ sRoleItemsBuyList['pos_4'] = {
 	"item_sange",
 	"item_boots_of_bearing",
 	"item_octarine_core",
-	"item_hurricane_pike"
+	"item_hurricane_pike",
 	"item_aghanims_shard",
 	"item_wind_waker",
 	"item_ultimate_scepter_2",
@@ -200,9 +199,7 @@ local castNDesire, castNTarget
 local FeastOfSoulsDesire
 local castRDesire
 
-local nKeepMana, nMP, nHP, nLV, hEnemyHeroList, botTarget
-
-
+local nKeepMana, nMP, nHP, nLV, nInRangeEnemy, botTarget
 
 function X.SkillsComplement()
 	J.ConsiderTarget()
@@ -212,7 +209,7 @@ function X.SkillsComplement()
 	nLV = bot:GetLevel()
 	nMP = bot:GetMana() / bot:GetMaxMana()
 	nHP = bot:GetHealth() / bot:GetMaxHealth()
-	hEnemyHeroList = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE)
+	nInRangeEnemy = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE)
 	botTarget = J.GetProperTarget(bot)
 
 	castRDesire = X.ConsiderR()
@@ -535,7 +532,6 @@ function X.ConsiderFeastOfSouls()
 
     if J.IsPushing(bot) or J.IsDefending(bot)
     then
-		local nInRangeEnemy = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE)
         local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(1000, true)
 
         if  nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 4

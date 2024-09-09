@@ -1,3 +1,7 @@
+/**
+ * The Dota2 bot scriping interfaces from Valve. https://developer.valvesoftware.com/wiki/Dota_Bot_Scripting
+ */
+
 import { BotActionType, BotMode, Team } from "./enums";
 
 export interface Location {}
