@@ -1,5 +1,25 @@
-local ____lualib = require("lualib_bundle")
-local __TS__ArrayIncludes = ____lualib.__TS__ArrayIncludes
+--[[ Generated with https://github.com/TypeScriptToLua/TypeScriptToLua ]]
+-- Lua Library inline imports
+local function __TS__ArrayIncludes(self, searchElement, fromIndex)
+    if fromIndex == nil then
+        fromIndex = 0
+    end
+    local len = #self
+    local k = fromIndex
+    if fromIndex < 0 then
+        k = len + fromIndex
+    end
+    if k < 0 then
+        k = 0
+    end
+    for i = k + 1, len do
+        if self[i] == searchElement then
+            return true
+        end
+    end
+    return false
+end
+-- End of Lua Library inline imports
 local ____exports = {}
 local heroes = {
     npc_dota_hero_abaddon = {synergy = {
