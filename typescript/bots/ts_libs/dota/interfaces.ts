@@ -128,10 +128,12 @@ export interface Unit {
     GetCurrentMovementSpeed(): number;
     GetAssignedLane(): Lane;
     ActionImmediate_Chat(message: string, globalChat: boolean): void;
+
+    /** @param pingType Ping type, "!" if false, "X" otherwise, essentially works as ALT key */
     ActionImmediate_Ping(
         xCoord: number,
         yCoord: number,
-        pingType: boolean // ???
+        pingType: boolean
     ): void;
 }
 
