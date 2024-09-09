@@ -1,7 +1,7 @@
 /**
  * The enums from Dota2 bot scriping, and the enums we defined in this script on top of bot scriping.
- * 
- * Official enums list, see: https://developer.valvesoftware.com/wiki/Dota_Bot_Scripting, 
+ *
+ * Official enums list, see: https://developer.valvesoftware.com/wiki/Dota_Bot_Scripting,
  * note this may not be up to date to the enums available in game since Vavle has not updated website for many years.
  */
 

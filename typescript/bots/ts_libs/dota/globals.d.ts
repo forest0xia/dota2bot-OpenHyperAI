@@ -3,7 +3,7 @@
  */
 
 import { Unit, Vector } from "./interfaces";
-import { Team, UnitType } from ".";
+import { Lane, Team, UnitType } from ".";
 
 declare global {
     function print(...args: any[]): void;
