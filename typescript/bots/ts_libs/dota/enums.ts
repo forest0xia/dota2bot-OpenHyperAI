@@ -467,41 +467,41 @@ export enum BotActionType {
 }
 
 export enum Tower {
-    Top1 = BotScriptEnums.TOWER_TOP_1,
-    Top2 = BotScriptEnums.TOWER_TOP_2,
-    Top3 = BotScriptEnums.TOWER_TOP_3,
-    Mid1 = BotScriptEnums.TOWER_MID_1,
-    Mi2 = BotScriptEnums.TOWER_MID_2,
-    Mid3 = BotScriptEnums.TOWER_MID_3,
-    Bot1 = BotScriptEnums.TOWER_BOT_1,
-    Bot2 = BotScriptEnums.TOWER_BOT_2,
-    Bot3 = BotScriptEnums.TOWER_BOT_3,
-    Base1 = BotScriptEnums.TOWER_BASE_1,
-    Base2 = BotScriptEnums.TOWER_BASE_2,
+    Top1 = BotScriptEnums.TOWER_TOP_1 || 0,
+    Top2 = BotScriptEnums.TOWER_TOP_2 || 1,
+    Top3 = BotScriptEnums.TOWER_TOP_3 || 2,
+    Mid1 = BotScriptEnums.TOWER_MID_1 || 3,
+    Mid2 = BotScriptEnums.TOWER_MID_2 || 4,
+    Mid3 = BotScriptEnums.TOWER_MID_3 || 5,
+    Bot1 = BotScriptEnums.TOWER_BOT_1 || 6,
+    Bot2 = BotScriptEnums.TOWER_BOT_2 || 7,
+    Bot3 = BotScriptEnums.TOWER_BOT_3 || 8,
+    Base1 = BotScriptEnums.TOWER_BASE_1 || 9,
+    Base2 = BotScriptEnums.TOWER_BASE_2 || 10,
 }
 
 export enum Barracks {
-    TopMelee = BotScriptEnums.BARRACKS_TOP_MELEE,
-    TopRanged = BotScriptEnums.BARRACKS_TOP_RANGED,
-    MidMelee = BotScriptEnums.BARRACKS_MID_MELEE,
-    MidRanged = BotScriptEnums.BARRACKS_MID_RANGED,
-    BotMelee = BotScriptEnums.BARRACKS_BOT_MELEE,
-    BotRanged = BotScriptEnums.BARRACKS_BOT_RANGED,
+    TopMelee = BotScriptEnums.BARRACKS_TOP_MELEE || 0,
+    TopRanged = BotScriptEnums.BARRACKS_TOP_RANGED || 1,
+    MidMelee = BotScriptEnums.BARRACKS_MID_MELEE || 2,
+    MidRanged = BotScriptEnums.BARRACKS_MID_RANGED || 3,
+    BotMelee = BotScriptEnums.BARRACKS_BOT_MELEE || 4,
+    BotRanged = BotScriptEnums.BARRACKS_BOT_RANGED || 5,
 }
 
 export enum Rune {
-    Power1 = BotScriptEnums.RUNE_POWERUP_1,
-    Power2 = BotScriptEnums.RUNE_POWERUP_2,
-    Bounty1 = BotScriptEnums.RUNE_BOUNTY_1,
-    Bounty2 = BotScriptEnums.RUNE_BOUNTY_2,
-    Bounty3 = BotScriptEnums.RUNE_BOUNTY_3,
-    Bounty4 = BotScriptEnums.RUNE_BOUNTY_4,
+    Power1 = BotScriptEnums.RUNE_POWERUP_1 || 0,
+    Power2 = BotScriptEnums.RUNE_POWERUP_2 || 1,
+    Bounty1 = BotScriptEnums.RUNE_BOUNTY_1 || 2,
+    Bounty2 = BotScriptEnums.RUNE_BOUNTY_2 || 3,
+    Bounty3 = BotScriptEnums.RUNE_BOUNTY_3 || 4,
+    Bounty4 = BotScriptEnums.RUNE_BOUNTY_4 || 5,
 }
 
 export enum Shop {
-    Home = BotScriptEnums.SHOP_HOME,
-    Side = BotScriptEnums.SHOP_SIDE,
-    Secret = BotScriptEnums.SHOP_SECRET,
-    Side2 = BotScriptEnums.SHOP_SIDE2,
-    Secret2 = BotScriptEnums.SHOP_SECRET2,
+    Home = BotScriptEnums.SHOP_HOME || 0,
+    Side = BotScriptEnums.SHOP_SIDE || 1,
+    Secret = BotScriptEnums.SHOP_SECRET || 2,
+    Side2 = BotScriptEnums.SHOP_SIDE2 || 4,
+    Secret2 = BotScriptEnums.SHOP_SECRET2 || 5,
 }
