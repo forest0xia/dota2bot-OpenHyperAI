@@ -1,79 +1,90 @@
-import { BotModeDesire, Unit, UnitType, Vector, BotMode, BotScriptEnums, Team } from "../ts_libs/dota";
-import { HasItem, GetLocationToLocationDistance, GetOffsetLocationTowardsTargetLocation, IsModeTurbo } from "../FunLib/utils";
+import {
+    BotModeDesire,
+    Unit,
+    UnitType,
+    Vector,
+    BotMode,
+    BotScriptEnums,
+    Team,
+} from "../ts_libs/dota";
+import {
+    HasItem,
+    GetLocationToLocationDistance,
+    GetOffsetLocationTowardsTargetLocation,
+    IsModeTurbo,
+} from "../FunLib/utils";
 
-const visionRad = 2000 //--假眼查重范围
-const trueSightRad = 1000 //--真眼查重范围
+const visionRad = 2000; //--假眼查重范围
+const trueSightRad = 1000; //--真眼查重范围
 
-const RADIANT_RUNE_WARD = Vector( 2606, -1547, 0 )
+const RADIANT_RUNE_WARD = Vector(2606, -1547, 0);
 
-const RADIANT_T3TOPFALL = Vector( -6600.000000, -3072.000000, 0.000000 ) //--高地防御眼
-const RADIANT_T3MIDFALL = Vector( -4314.000000, -3887.000000, 0.000000 )
-const RADIANT_T3BOTFALL = Vector( -3586.000000, -6131.000000, 0.000000 )
+const RADIANT_T3TOPFALL = Vector(-6600.0, -3072.0, 0.0); //--高地防御眼
+const RADIANT_T3MIDFALL = Vector(-4314.0, -3887.0, 0.0);
+const RADIANT_T3BOTFALL = Vector(-3586.0, -6131.0, 0.0);
 
-const RADIANT_T2TOPFALL = Vector( -4345, -1018, 663 )  //--二塔野区高台
-const RADIANT_T2MIDFALL = Vector( 1283, -5109, 655 ) //--天辉下路野区高台
-const RADIANT_T2BOTFALL = Vector( -514, -3321, 655 )  //--下路野区内高台
+const RADIANT_T2TOPFALL = Vector(-4345, -1018, 663); //--二塔野区高台
+const RADIANT_T2MIDFALL = Vector(1283, -5109, 655); //--天辉下路野区高台
+const RADIANT_T2BOTFALL = Vector(-514, -3321, 655); //--下路野区内高台
 
-const RADIANT_T1TOPFALL = Vector( -4089, 1544, 535 )  //--天辉上路野区高台
-const RADIANT_T1MIDFALL = Vector( 2818, -3047, 655 )  //--下方河道野区高台
-const RADIANT_T1BOTFALL = Vector( 5253, -4844, 0 ) //--下路野区十字路口
+const RADIANT_T1TOPFALL = Vector(-4089, 1544, 535); //--天辉上路野区高台
+const RADIANT_T1MIDFALL = Vector(2818, -3047, 655); //--下方河道野区高台
+const RADIANT_T1BOTFALL = Vector(5253, -4844, 0); //--下路野区十字路口
 
-const RADIANT_MANDATE1 = Vector( -1243, -200, 0 )   //---天辉中路河道眼       
-const RADIANT_MANDATE2 = RADIANT_RUNE_WARD  //---天辉看符眼
+const RADIANT_MANDATE1 = Vector(-1243, -200, 0); //---天辉中路河道眼
+const RADIANT_MANDATE2 = RADIANT_RUNE_WARD; //---天辉看符眼
 
 //---DIRE WARDING SPOT
-const DIRE_RUNE_WARD = Vector( 2606, -1547, 0 )
+const DIRE_RUNE_WARD = Vector(2606, -1547, 0);
 
-const DIRE_T3TOPFALL = Vector( 3087.000000, 5690.000000, 0.000000 )
-const DIRE_T3MIDFALL = Vector( 4024.000000, 3445.000000, 0.000000 )
-const DIRE_T3BOTFALL = Vector( 6354.000000, 2606.000000, 0.000000 )
+const DIRE_T3TOPFALL = Vector(3087.0, 5690.0, 0.0);
+const DIRE_T3MIDFALL = Vector(4024.0, 3445.0, 0.0);
+const DIRE_T3BOTFALL = Vector(6354.0, 2606.0, 0.0);
 
-const DIRE_T2TOPFALL = Vector( 514, 4107, 655 )  //--夜魇上路野区高台
-const DIRE_T2MIDFALL = Vector( 2047, -769, 655 )  //--夜魇中路河道野区入口
-const DIRE_T2BOTFALL = Vector( 4620, 788, 655 ) //--夜魇下路高台
+const DIRE_T2TOPFALL = Vector(514, 4107, 655); //--夜魇上路野区高台
+const DIRE_T2MIDFALL = Vector(2047, -769, 655); //--夜魇中路河道野区入口
+const DIRE_T2BOTFALL = Vector(4620, 788, 655); //--夜魇下路高台
 
-const DIRE_T1TOPFALL = Vector( -2815, 3565, 256 )   //--夜魇上路野区河道路口
-const DIRE_T1MIDFALL = Vector( -760, 2053, 655 )    //--夜魇中路一塔野区入口高台
-const DIRE_T1BOTFALL = Vector( 5122, -1930, 527 )   //--夜魇下路一塔高台
+const DIRE_T1TOPFALL = Vector(-2815, 3565, 256); //--夜魇上路野区河道路口
+const DIRE_T1MIDFALL = Vector(-760, 2053, 655); //--夜魇中路一塔野区入口高台
+const DIRE_T1BOTFALL = Vector(5122, -1930, 527); //--夜魇下路一塔高台
 
-const DIRE_MANDATE1 =  DIRE_RUNE_WARD       //--夜魇看符眼      
-const DIRE_MANDATE2 =  Vector( -463, 447, 0 )   //--夜魇中路河道眼      
+const DIRE_MANDATE1 = DIRE_RUNE_WARD; //--夜魇看符眼
+const DIRE_MANDATE2 = Vector(-463, 447, 0); //--夜魇中路河道眼
 
-const RADIANT_AGGRESSIVETOP  = DIRE_T2TOPFALL //--夜魇上路野区高台
-const RADIANT_AGGRESSIVEMID1 = DIRE_T1MIDFALL //--夜魇中路一塔野区入口高台
-const RADIANT_AGGRESSIVEMID2 = DIRE_T2MIDFALL //--夜魇中路河道野区入口
-const RADIANT_AGGRESSIVEBOT  = DIRE_T2BOTFALL //--夜魇下路高台
+const RADIANT_AGGRESSIVETOP = DIRE_T2TOPFALL; //--夜魇上路野区高台
+const RADIANT_AGGRESSIVEMID1 = DIRE_T1MIDFALL; //--夜魇中路一塔野区入口高台
+const RADIANT_AGGRESSIVEMID2 = DIRE_T2MIDFALL; //--夜魇中路河道野区入口
+const RADIANT_AGGRESSIVEBOT = DIRE_T2BOTFALL; //--夜魇下路高台
 
-const DIRE_AGGRESSIVETOP  = RADIANT_T1TOPFALL //--天辉上路野区高台
-const DIRE_AGGRESSIVEMID1 = RADIANT_T2TOPFALL //--天辉二塔野区高台
-const DIRE_AGGRESSIVEMID2 = RADIANT_T2MIDFALL //--天辉下路野区高台
-const DIRE_AGGRESSIVEBOT  = RADIANT_T2BOTFALL //--天辉下路野区内高台
-
+const DIRE_AGGRESSIVETOP = RADIANT_T1TOPFALL; //--天辉上路野区高台
+const DIRE_AGGRESSIVEMID1 = RADIANT_T2TOPFALL; //--天辉二塔野区高台
+const DIRE_AGGRESSIVEMID2 = RADIANT_T2MIDFALL; //--天辉下路野区高台
+const DIRE_AGGRESSIVEBOT = RADIANT_T2BOTFALL; //--天辉下路野区内高台
 
 const WardSpotTowerFallRadiant = [
-	RADIANT_T1TOPFALL,
-	RADIANT_T1MIDFALL,
-	RADIANT_T1BOTFALL,
-	RADIANT_T2TOPFALL,
-	RADIANT_T2MIDFALL,
-	RADIANT_T2BOTFALL,
-	RADIANT_T3TOPFALL,
-	RADIANT_T3MIDFALL,
-	RADIANT_T3BOTFALL
-]
-
+    RADIANT_T1TOPFALL,
+    RADIANT_T1MIDFALL,
+    RADIANT_T1BOTFALL,
+    RADIANT_T2TOPFALL,
+    RADIANT_T2MIDFALL,
+    RADIANT_T2BOTFALL,
+    RADIANT_T3TOPFALL,
+    RADIANT_T3MIDFALL,
+    RADIANT_T3BOTFALL,
+];
 
 const WardSpotTowerFallDire = [
-	DIRE_T1TOPFALL,
-	DIRE_T1MIDFALL,
-	DIRE_T1BOTFALL,
-	DIRE_T2TOPFALL,
-	DIRE_T2MIDFALL,
-	DIRE_T2BOTFALL,
-	DIRE_T3TOPFALL,
-	DIRE_T3MIDFALL,
-	DIRE_T3BOTFALL
-]
+    DIRE_T1TOPFALL,
+    DIRE_T1MIDFALL,
+    DIRE_T1BOTFALL,
+    DIRE_T2TOPFALL,
+    DIRE_T2MIDFALL,
+    DIRE_T2BOTFALL,
+    DIRE_T3TOPFALL,
+    DIRE_T3MIDFALL,
+    DIRE_T3BOTFALL,
+];
 
 const CStackLoc = [
     Vector(1854, -4469, 0),
@@ -96,14 +107,16 @@ const CStackLoc = [
     Vector(4136, -1753, 0),
 ];
 
-
 let nWatchTower_1: Unit | null = null;
 let nWatchTower_2: Unit | null = null;
 
 const allUnitList = GetUnitList(UnitType.All);
 
 for (const v of allUnitList) {
-    if (v.GetUnitName() === "#DOTA_OutpostName_North" || v.GetUnitName() === "#DOTA_OutpostName_South") {
+    if (
+        v.GetUnitName() === "#DOTA_OutpostName_North" ||
+        v.GetUnitName() === "#DOTA_OutpostName_South"
+    ) {
         if (nWatchTower_1 === null) {
             nWatchTower_1 = v;
         } else {
@@ -131,8 +144,8 @@ export const nTowerList = [
 export const nRuneList = [
     BotScriptEnums.RUNE_POWERUP_1, //--上
     BotScriptEnums.RUNE_POWERUP_2, //--下
-    BotScriptEnums.RUNE_BOUNTY_1, 	//--天辉上  --天辉神秘符
-    BotScriptEnums.RUNE_BOUNTY_2, 	//--夜魇下  --天辉优势路符
+    BotScriptEnums.RUNE_BOUNTY_1, //--天辉上  --天辉神秘符
+    BotScriptEnums.RUNE_BOUNTY_2, //--夜魇下  --天辉优势路符
     // RUNE_BOUNTY_3, 	--天辉下 --夜魇神秘符
     // RUNE_BOUNTY_4, 	--夜魇上 --夜魇优势路符
 ];
@@ -140,9 +153,9 @@ export const nRuneList = [
 export const nShopList = [
     BotScriptEnums.SHOP_HOME, //--家里商店
     BotScriptEnums.SHOP_SIDE, //--天辉下路商店
-    BotScriptEnums.SHOP_SIDE2, 	//--夜魇上路商店
-    BotScriptEnums.SHOP_SECRET, 	//--天辉上路神秘
-    BotScriptEnums.SHOP_SECRET2, 	//--夜魇下路神秘
+    BotScriptEnums.SHOP_SIDE2, //--夜魇上路商店
+    BotScriptEnums.SHOP_SECRET, //--天辉上路神秘
+    BotScriptEnums.SHOP_SECRET2, //--夜魇下路神秘
 ];
 
 export const top_power_rune = Vector(-1767, 1233, 0);
@@ -160,12 +173,23 @@ export const GetDistance = function (s: Vector, t: Vector): number {
     return GetLocationToLocationDistance(s, t);
 };
 
-export const GetXUnitsTowardsLocation = function (hUnit: Unit, vLocation: Vector, nDistance: number): Vector {
-    return GetOffsetLocationTowardsTargetLocation(hUnit.GetLocation(), vLocation, nDistance)
+export const GetXUnitsTowardsLocation = function (
+    hUnit: Unit,
+    vLocation: Vector,
+    nDistance: number
+): Vector {
+    return GetOffsetLocationTowardsTargetLocation(
+        hUnit.GetLocation(),
+        vLocation,
+        nDistance
+    );
 };
 
 export const GetNearestWatchTower = function (bot: Unit): Unit | null {
-    if (GetUnitToUnitDistance(bot, nWatchTower_1!) < GetUnitToUnitDistance(bot, nWatchTower_2!)) {
+    if (
+        GetUnitToUnitDistance(bot, nWatchTower_1!) <
+        GetUnitToUnitDistance(bot, nWatchTower_2!)
+    ) {
         return nWatchTower_1;
     }
     return nWatchTower_2;
@@ -181,16 +205,26 @@ export const GetMandatorySpot = function (): Vector[] {
 
     // 2分钟前只插中路线眼
     if (DotaTime() < 2 * 60) {
-        return GetTeam() == Team.Radiant
-            ? [RADIANT_MANDATE1]
-            : [DIRE_MANDATE2];
+        return GetTeam() == Team.Radiant ? [RADIANT_MANDATE1] : [DIRE_MANDATE2];
     }
 
     // 12分钟后加入一塔眼
     if (DotaTime() > 12 * 60) {
         return GetTeam() == Team.Radiant
-            ? [RADIANT_MANDATE1, RADIANT_MANDATE2, RADIANT_T1TOPFALL, RADIANT_T1MIDFALL, RADIANT_T1BOTFALL]
-            : [DIRE_MANDATE1, DIRE_MANDATE2, DIRE_T1TOPFALL, DIRE_T1MIDFALL, DIRE_T1BOTFALL];
+            ? [
+                  RADIANT_MANDATE1,
+                  RADIANT_MANDATE2,
+                  RADIANT_T1TOPFALL,
+                  RADIANT_T1MIDFALL,
+                  RADIANT_T1BOTFALL,
+              ]
+            : [
+                  DIRE_MANDATE1,
+                  DIRE_MANDATE2,
+                  DIRE_T1TOPFALL,
+                  DIRE_T1MIDFALL,
+                  DIRE_T1BOTFALL,
+              ];
     }
 
     return GetTeam() == Team.Radiant ? MandatorySpotRadiant : MandatorySpotDire;
@@ -201,15 +235,27 @@ export const GetWardSpotWhenTowerFall = function (): Vector[] {
         const tower = GetTower(GetTeam(), nTowerList[i]);
         if (!tower) {
             wardSpot.push(
-                GetTeam() == Team.Radiant ? WardSpotTowerFallRadiant[i] : WardSpotTowerFallDire[i]
+                GetTeam() == Team.Radiant
+                    ? WardSpotTowerFallRadiant[i]
+                    : WardSpotTowerFallDire[i]
             );
         }
     }
     return wardSpot;
 };
 export const GetAggressiveSpot = function (): Vector[] {
-    const AggressiveDire = [DIRE_AGGRESSIVETOP, DIRE_AGGRESSIVEMID1, DIRE_AGGRESSIVEMID2, DIRE_AGGRESSIVEBOT];
-    const AggressiveRadiant = [RADIANT_AGGRESSIVETOP, RADIANT_AGGRESSIVEMID1, RADIANT_AGGRESSIVEMID2, RADIANT_AGGRESSIVEBOT];
+    const AggressiveDire = [
+        DIRE_AGGRESSIVETOP,
+        DIRE_AGGRESSIVEMID1,
+        DIRE_AGGRESSIVEMID2,
+        DIRE_AGGRESSIVEBOT,
+    ];
+    const AggressiveRadiant = [
+        RADIANT_AGGRESSIVETOP,
+        RADIANT_AGGRESSIVEMID1,
+        RADIANT_AGGRESSIVEMID2,
+        RADIANT_AGGRESSIVEBOT,
+    ];
 
     return GetTeam() === Team.Radiant ? AggressiveRadiant : AggressiveDire;
 };
@@ -217,7 +263,12 @@ export const GetAggressiveSpot = function (): Vector[] {
 export const GetItemWard = function (bot: Unit): any | null {
     for (let i = 0; i < 9; i++) {
         const item = bot.GetItemInSlot(i);
-        if (item && (item.GetName() === 'item_ward_observer' || item.GetName() === 'item_ward_sentry' || item.GetName() === 'item_ward_dispenser')) {
+        if (
+            item &&
+            (item.GetName() === "item_ward_observer" ||
+                item.GetName() === "item_ward_sentry" ||
+                item.GetName() === "item_ward_dispenser")
+        ) {
             return item;
         }
     }
@@ -246,7 +297,10 @@ export const GetAvailableSpot = function (bot: Unit): Vector[] {
     // 10分钟后计算进攻眼位
     if (DotaTime() > 10 * 60) {
         GetAggressiveSpot().forEach((s: any) => {
-            if (GetUnitToLocationDistance(bot, s) <= 1200 && !IsCloseToAvailableWard(s)) {
+            if (
+                GetUnitToLocationDistance(bot, s) <= 1200 &&
+                !IsCloseToAvailableWard(s)
+            ) {
                 temp.push(s);
             }
         });
@@ -258,7 +312,10 @@ export const GetAvailableSpot = function (bot: Unit): Vector[] {
 export const IsCloseToAvailableWard = function (wardLoc: Vector): boolean {
     const WardList = GetUnitList(UnitType.AlliedWards);
     for (const ward of WardList) {
-        if (IsObserver(ward) && GetUnitToLocationDistance(ward, wardLoc) <= visionRad) {
+        if (
+            IsObserver(ward) &&
+            GetUnitToLocationDistance(ward, wardLoc) <= visionRad
+        ) {
             return true;
         }
     }
@@ -268,7 +325,10 @@ export const IsCloseToAvailableWard = function (wardLoc: Vector): boolean {
 export const IsLocationHaveTrueSight = function (vLocation: Vector): boolean {
     const WardList = GetUnitList(UnitType.AlliedWards);
     for (const ward of WardList) {
-        if (IsSentry(ward) && GetUnitToLocationDistance(ward, vLocation) <= trueSightRad) {
+        if (
+            IsSentry(ward) &&
+            GetUnitToLocationDistance(ward, vLocation) <= trueSightRad
+        ) {
             return true;
         }
     }
@@ -282,7 +342,10 @@ export const IsLocationHaveTrueSight = function (vLocation: Vector): boolean {
     return false;
 };
 
-export const GetClosestSpot = function (bot: Unit, spotList: Vector[]): LuaMultiReturn<[Vector | null, number]> {
+export const GetClosestSpot = function (
+    bot: Unit,
+    spotList: Vector[]
+): LuaMultiReturn<[Vector | null, number]> {
     let closestSpot: Vector | null = null;
     let closestDist = 100000;
 
@@ -336,7 +399,9 @@ export const IsLargeCamp = function (camp: any): boolean {
     return camp.type === "large";
 };
 
-export const RefreshCamp = function (bot: Unit): LuaMultiReturn<[any[], number]> {
+export const RefreshCamp = function (
+    bot: Unit
+): LuaMultiReturn<[any[], number]> {
     const camps = GetNeutralSpawners();
     const allCampList: any[] = [];
     let totalSum = 0;
@@ -349,10 +414,19 @@ export const RefreshCamp = function (bot: Unit): LuaMultiReturn<[any[], number]>
     const averageLevel = totalSum / count;
 
     for (const aCamp of Object.values(camps)) {
-        const camp = aCamp as any
-        if ((averageLevel <= 7 || bot.GetAttackDamage() <= 80) && !IsEnemyCamp(camp) && !IsLargeCamp(camp) && !IsAncientCamp(camp)) {
+        const camp = aCamp as any;
+        if (
+            (averageLevel <= 7 || bot.GetAttackDamage() <= 80) &&
+            !IsEnemyCamp(camp) &&
+            !IsLargeCamp(camp) &&
+            !IsAncientCamp(camp)
+        ) {
             allCampList.push({ idx: camp.idx, cattr: camp });
-        } else if (averageLevel <= 11 && !IsEnemyCamp(camp) && !IsAncientCamp(camp)) {
+        } else if (
+            averageLevel <= 11 &&
+            !IsEnemyCamp(camp) &&
+            !IsAncientCamp(camp)
+        ) {
             allCampList.push({ idx: camp.idx, cattr: camp });
         } else if (averageLevel <= 14 && !IsEnemyCamp(camp)) {
             allCampList.push({ idx: camp.idx, cattr: camp });
@@ -364,8 +438,8 @@ export const RefreshCamp = function (bot: Unit): LuaMultiReturn<[any[], number]>
     return $multi(allCampList, allCampList.length);
 };
 export const GetPosition = function (bot: Unit): number {
-    if (bot['assignedRole']) {
-        return bot['assignedRole'];
+    if (bot["assignedRole"]) {
+        return bot["assignedRole"];
     }
     return 1;
 };
@@ -376,18 +450,27 @@ export const IsShouldFarmHero = function (bot: Unit): boolean {
     return GetPosition(bot) <= 1;
 };
 export const IsValidCreep = function (nUnit: Unit | undefined): boolean {
-    return nUnit !== undefined &&
-           nUnit.IsAlive() &&
-           nUnit.GetHealth() < 5000 &&
-           (GetBot().GetLevel() > 9 || !nUnit.IsAncientCreep());
+    return (
+        nUnit !== undefined &&
+        nUnit.IsAlive() &&
+        nUnit.GetHealth() < 5000 &&
+        (GetBot().GetLevel() > 9 || !nUnit.IsAncientCreep())
+    );
 };
 export const HasArmorReduction = function (nUnit: Unit): boolean {
-    return nUnit.HasModifier("modifier_templar_assassin_meld_armor") ||
-           nUnit.HasModifier("modifier_item_medallion_of_courage_armor_reduction") ||
-           nUnit.HasModifier("modifier_item_solar_crest_armor_reduction") ||
-           nUnit.HasModifier("modifier_slardar_amplify_damage");
+    return (
+        nUnit.HasModifier("modifier_templar_assassin_meld_armor") ||
+        nUnit.HasModifier(
+            "modifier_item_medallion_of_courage_armor_reduction"
+        ) ||
+        nUnit.HasModifier("modifier_item_solar_crest_armor_reduction") ||
+        nUnit.HasModifier("modifier_slardar_amplify_damage")
+    );
 };
-export const GetClosestNeutralSpwan = function (bot: Unit, availableCampList: any[]): any | null {
+export const GetClosestNeutralSpwan = function (
+    bot: Unit,
+    availableCampList: any[]
+): any | null {
     let minDist = 15000;
     let closestCamp: any | null = null;
 
@@ -395,7 +478,11 @@ export const GetClosestNeutralSpwan = function (bot: Unit, availableCampList: an
         let dist = GetUnitToLocationDistance(bot, camp.cattr.location);
         if (IsEnemyCamp(camp)) dist *= 1.5;
 
-        if (IsTheClosestOne(bot, camp.cattr.location) && dist < minDist && (bot.GetLevel() >= 10 || !IsAncientCamp(camp))) {
+        if (
+            IsTheClosestOne(bot, camp.cattr.location) &&
+            dist < minDist &&
+            (bot.GetLevel() >= 10 || !IsAncientCamp(camp))
+        ) {
             minDist = dist;
             closestCamp = camp;
         }
@@ -410,7 +497,11 @@ export const IsTheClosestOne = function (bot: Unit, loc: Vector): boolean {
 
     for (const id of GetTeamPlayers(GetTeam())) {
         const member = GetTeamMember(id);
-        if (member && member.IsAlive() && member.GetActiveMode() === BotMode.Farm) {
+        if (
+            member &&
+            member.IsAlive() &&
+            member.GetActiveMode() === BotMode.Farm
+        ) {
             const memberDist = GetUnitToLocationDistance(member, loc);
             if (memberDist < minDist) {
                 minDist = memberDist;
@@ -472,9 +563,9 @@ export const FindFarmNeutralTarget = function (creepList: Unit[]): Unit | null {
 
     if (ConsiderFarmNeutralType[botName] !== undefined) {
         const farmType = ConsiderFarmNeutralType[botName]();
-        if (farmType === 'nearest') {
+        if (farmType === "nearest") {
             targetCreep = GetNearestCreep(creepList);
-        } else if (farmType === 'maxHP') {
+        } else if (farmType === "maxHP") {
             targetCreep = GetMaxHPCreep(creepList);
         } else {
             targetCreep = GetMinHPCreep(creepList);
@@ -482,10 +573,10 @@ export const FindFarmNeutralTarget = function (creepList: Unit[]): Unit | null {
     }
 
     if (
-        HasItem(bot, 'item_bfury') ||
-        HasItem(bot, 'item_maelstrom') ||
-        HasItem(bot, 'item_mjollnir') ||
-        HasItem(bot, 'item_radiance')
+        HasItem(bot, "item_bfury") ||
+        HasItem(bot, "item_maelstrom") ||
+        HasItem(bot, "item_mjollnir") ||
+        HasItem(bot, "item_radiance")
     ) {
         targetCreep = GetMaxHPCreep(creepList);
     }
@@ -494,48 +585,49 @@ export const FindFarmNeutralTarget = function (creepList: Unit[]): Unit | null {
 };
 
 export const ConsiderFarmNeutralType = {
-        npc_dota_hero_templar_assassin: () => 'nearest',
-        npc_dota_hero_sven: () => 'nearest',
-        npc_dota_hero_drow_ranger: () => 'nearest',
-        npc_dota_hero_phantom_lancer: () => 'nearest',
-        npc_dota_hero_naga_siren: () => 'maxHP',
-        npc_dota_hero_viper: () => 'maxHP',
-        npc_dota_hero_huskar: () => 'maxHP',
-        npc_dota_hero_phantom_assassin: () => {
-            const bot = GetBot();
-            return HasItem(bot, "item_bfury") ? 'nearest' : 'minHP';
-        },
-        npc_dota_hero_medusa: () => {
-            const bot = GetBot();
-            const farmAbility = bot.GetAbilityByName("medusa_split_shot");
-            return farmAbility.IsTrained() ? 'maxHP' : 'minHP';
-        },
-        npc_dota_hero_luna: () => {
-            const bot = GetBot();
-            const farmAbility = bot.GetAbilityByName('luna_moon_glaive');
-            return farmAbility.IsTrained() ? 'maxHP' : 'minHP';
-        },
-        npc_dota_hero_tidehunter: () => {
-            const bot = GetBot();
-            const farmAbility = bot.GetAbilityByName("tidehunter_anchor_smash");
-            const ultimateAbility = bot.GetAbilityByName("tidehunter_ravage");
+    npc_dota_hero_templar_assassin: () => "nearest",
+    npc_dota_hero_sven: () => "nearest",
+    npc_dota_hero_drow_ranger: () => "nearest",
+    npc_dota_hero_phantom_lancer: () => "nearest",
+    npc_dota_hero_naga_siren: () => "maxHP",
+    npc_dota_hero_viper: () => "maxHP",
+    npc_dota_hero_huskar: () => "maxHP",
+    npc_dota_hero_phantom_assassin: () => {
+        const bot = GetBot();
+        return HasItem(bot, "item_bfury") ? "nearest" : "minHP";
+    },
+    npc_dota_hero_medusa: () => {
+        const bot = GetBot();
+        const farmAbility = bot.GetAbilityByName("medusa_split_shot");
+        return farmAbility.IsTrained() ? "maxHP" : "minHP";
+    },
+    npc_dota_hero_luna: () => {
+        const bot = GetBot();
+        const farmAbility = bot.GetAbilityByName("luna_moon_glaive");
+        return farmAbility.IsTrained() ? "maxHP" : "minHP";
+    },
+    npc_dota_hero_tidehunter: () => {
+        const bot = GetBot();
+        const farmAbility = bot.GetAbilityByName("tidehunter_anchor_smash");
+        const ultimateAbility = bot.GetAbilityByName("tidehunter_ravage");
 
-            if (farmAbility.IsTrained() &&
-                ultimateAbility.IsTrained() &&
-                bot.GetMana() > ultimateAbility.GetManaCost() + 200)
-            {
-                return 'maxHP';
-            }
+        if (
+            farmAbility.IsTrained() &&
+            ultimateAbility.IsTrained() &&
+            bot.GetMana() > ultimateAbility.GetManaCost() + 200
+        ) {
+            return "maxHP";
+        }
 
-            return 'minHP';
-        },
-        npc_dota_hero_nevermore: () => {
-            const bot = GetBot();
-            return (bot.GetMana() > 200 && bot.GetLevel() >= 13) ? 'maxHP' : 'minHP';
-        },
-        npc_dota_hero_dragon_knight: () => {
-            return GetBot().GetAttackRange() > 330 ? 'maxHP' : 'minHP';
-        },
+        return "minHP";
+    },
+    npc_dota_hero_nevermore: () => {
+        const bot = GetBot();
+        return bot.GetMana() > 200 && bot.GetLevel() >= 13 ? "maxHP" : "minHP";
+    },
+    npc_dota_hero_dragon_knight: () => {
+        return GetBot().GetAttackRange() > 330 ? "maxHP" : "minHP";
+    },
 } as { [key: string]: () => string };
 
 export const GetFarmLaneTarget = function (creepList: Unit[]): Unit | null {
@@ -545,11 +637,11 @@ export const GetFarmLaneTarget = function (creepList: Unit[]): Unit | null {
 
     const nearbyAllies = bot.GetNearbyLaneCreeps(1000, false);
 
-    if (botName !== 'npc_dota_hero_medusa' && nearbyAllies.length > 0) {
+    if (botName !== "npc_dota_hero_medusa" && nearbyAllies.length > 0) {
         targetCreep = GetNearestCreep(creepList);
     }
 
-    if (botName === 'npc_dota_hero_medusa') {
+    if (botName === "npc_dota_hero_medusa") {
         targetCreep = GetMinHPCreep(creepList);
     }
 
@@ -570,8 +662,13 @@ export const IsModeSuitableToFarm = function (bot: Unit): boolean {
     const mode = bot.GetActiveMode();
     const botLevel = bot.GetLevel();
 
-    if (botLevel <= 8 && 
-            (mode === BotMode.PushTowerTop || mode === BotMode.PushTowerMid || mode === BotMode.PushTowerBot || mode === BotMode.Laning)){
+    if (
+        botLevel <= 8 &&
+        (mode === BotMode.PushTowerTop ||
+            mode === BotMode.PushTowerMid ||
+            mode === BotMode.PushTowerBot ||
+            mode === BotMode.Laning)
+    ) {
         const enemyAncient = GetAncient(GetOpposingTeam());
         if (GetUnitToUnitDistance(bot, enemyAncient) > 6300) {
             return false;
@@ -583,10 +680,11 @@ export const IsModeSuitableToFarm = function (bot: Unit): boolean {
         botLevel >= 8 &&
         botLevel <= 24 &&
         IsSuitableFarmMode(mode) &&
-        mode != BotMode.Roshan && 
+        mode != BotMode.Roshan &&
         mode != BotMode.TeamRoam &&
         mode != BotMode.Laning &&
-        mode != BotMode.Ward) {
+        mode != BotMode.Ward
+    ) {
         return true;
     }
 
@@ -616,7 +714,9 @@ export const IsTimeToFarm = function (bot: Unit): boolean {
     const botName = bot.GetUnitName();
 
     if (
-        bot.GetActiveMode() === BotMode.PushTowerTop || bot.GetActiveMode() === BotMode.PushTowerMid || bot.GetActiveMode() === BotMode.PushTowerBot
+        bot.GetActiveMode() === BotMode.PushTowerTop ||
+        bot.GetActiveMode() === BotMode.PushTowerMid ||
+        bot.GetActiveMode() === BotMode.PushTowerBot
     ) {
         const enemyAncient = GetAncient(GetOpposingTeam());
         const allyList = bot.GetNearbyHeroes(1400, false, BotMode.None);
@@ -642,7 +742,10 @@ export const IsTimeToFarm = function (bot: Unit): boolean {
         }
     }
 
-    if (ConsiderIsTimeToFarm[botName] !== undefined && ConsiderIsTimeToFarm[botName]()) {
+    if (
+        ConsiderIsTimeToFarm[botName] !== undefined &&
+        ConsiderIsTimeToFarm[botName]()
+    ) {
         return true;
     }
 
@@ -650,12 +753,20 @@ export const IsTimeToFarm = function (bot: Unit): boolean {
 };
 
 // --根据地点来刷新阵营
-export const UpdateAvailableCamp = function (bot: Unit, preferredCamp: any, availableCampList: any[]): LuaMultiReturn<[any[], any | null]> {
+export const UpdateAvailableCamp = function (
+    bot: Unit,
+    preferredCamp: any,
+    availableCampList: any[]
+): LuaMultiReturn<[any[], any | null]> {
     if (preferredCamp !== null) {
         for (let i = 0; i < availableCampList.length; i++) {
             if (
-                availableCampList[i].cattr.location === preferredCamp.cattr.location ||
-                GetUnitToLocationDistance(bot, availableCampList[i].cattr.location) < 500
+                availableCampList[i].cattr.location ===
+                    preferredCamp.cattr.location ||
+                GetUnitToLocationDistance(
+                    bot,
+                    availableCampList[i].cattr.location
+                ) < 500
             ) {
                 availableCampList.splice(i, 1);
                 return $multi(availableCampList, null);
@@ -667,11 +778,19 @@ export const UpdateAvailableCamp = function (bot: Unit, preferredCamp: any, avai
 
 // --根据生物来刷新阵营
 let lastCreep: Unit | null = null;
-export const UpdateCommonCamp = function (creep: Unit, availableCampList: any[]): any[] {
+export const UpdateCommonCamp = function (
+    creep: Unit,
+    availableCampList: any[]
+): any[] {
     if (lastCreep !== creep) {
         lastCreep = creep;
         for (let i = 0; i < availableCampList.length; i++) {
-            if (GetUnitToLocationDistance(creep, availableCampList[i].cattr.location) < 500) {
+            if (
+                GetUnitToLocationDistance(
+                    creep,
+                    availableCampList[i].cattr.location
+                ) < 500
+            ) {
                 availableCampList.splice(i, 1);
                 return availableCampList;
             }
@@ -680,11 +799,18 @@ export const UpdateCommonCamp = function (creep: Unit, availableCampList: any[])
     return availableCampList;
 };
 
-export const GetAroundAllyCount = function (bot: Unit, nRadius: number): number {
+export const GetAroundAllyCount = function (
+    bot: Unit,
+    nRadius: number
+): number {
     let nCount = 0;
     for (let i = 1; i <= 5; i++) {
         const member = GetTeamMember(i);
-        if (member && member.IsAlive() && GetUnitToUnitDistance(bot, member) <= nRadius) {
+        if (
+            member &&
+            member.IsAlive() &&
+            GetUnitToUnitDistance(bot, member) <= nRadius
+        ) {
             nCount += 1;
         }
     }
@@ -700,7 +826,7 @@ export const ConsiderIsTimeToFarm = {
     // ... (implementations for other heroes)
 } as { [key: string]: () => boolean };
 
-ConsiderIsTimeToFarm["npc_dota_hero_luna"] = function() {
+ConsiderIsTimeToFarm["npc_dota_hero_luna"] = function () {
     const bot = GetBot();
     const botNetWorth = bot.GetNetWorth();
     const currentTime = DotaTime();
@@ -722,7 +848,7 @@ ConsiderIsTimeToFarm["npc_dota_hero_luna"] = function() {
     return false;
 };
 
-ConsiderIsTimeToFarm["npc_dota_hero_luna"] = function() {
+ConsiderIsTimeToFarm["npc_dota_hero_luna"] = function () {
     const bot = GetBot();
     const botNetWorth = bot.GetNetWorth();
     const currentTime = DotaTime();
@@ -731,22 +857,34 @@ ConsiderIsTimeToFarm["npc_dota_hero_luna"] = function() {
         return true;
     }
 
-    if (HasItem(bot, "item_gloves") && !HasItem(bot, "item_hand_of_midas") && bot.GetGold() > 800) {
+    if (
+        HasItem(bot, "item_gloves") &&
+        !HasItem(bot, "item_hand_of_midas") &&
+        bot.GetGold() > 800
+    ) {
         return true;
     }
 
-    if (HasItem(bot, "item_yasha") && !HasItem(bot, "item_manta") && bot.GetGold() > 1000) {
+    if (
+        HasItem(bot, "item_yasha") &&
+        !HasItem(bot, "item_manta") &&
+        bot.GetGold() > 1000
+    ) {
         return true;
     }
 
-    if (HasItem(bot, "item_hand_of_midas") && GetAroundAllyCount(bot, 1200) <= 3 && botNetWorth <= 26000) {
+    if (
+        HasItem(bot, "item_hand_of_midas") &&
+        GetAroundAllyCount(bot, 1200) <= 3 &&
+        botNetWorth <= 26000
+    ) {
         return true;
     }
 
     return false;
 };
 
-ConsiderIsTimeToFarm["npc_dota_hero_axe"] = function() {
+ConsiderIsTimeToFarm["npc_dota_hero_axe"] = function () {
     const bot = GetBot();
     const botNetWorth = bot.GetNetWorth();
 
@@ -767,7 +905,7 @@ ConsiderIsTimeToFarm["npc_dota_hero_axe"] = function() {
     return false;
 };
 
-ConsiderIsTimeToFarm["npc_dota_hero_bloodseeker"] = function() {
+ConsiderIsTimeToFarm["npc_dota_hero_bloodseeker"] = function () {
     const bot = GetBot();
     const botNetWorth = bot.GetNetWorth();
 
@@ -788,7 +926,7 @@ ConsiderIsTimeToFarm["npc_dota_hero_bloodseeker"] = function() {
     return false;
 };
 
-ConsiderIsTimeToFarm["npc_dota_hero_bristleback"] = function() {
+ConsiderIsTimeToFarm["npc_dota_hero_bristleback"] = function () {
     const bot = GetBot();
     const botNetWorth = bot.GetNetWorth();
 
@@ -811,11 +949,13 @@ ConsiderIsTimeToFarm["npc_dota_hero_bristleback"] = function() {
     return false;
 };
 
-ConsiderIsTimeToFarm["npc_dota_hero_chaos_knight"] = ConsiderIsTimeToFarm["npc_dota_hero_bristleback"];
+ConsiderIsTimeToFarm["npc_dota_hero_chaos_knight"] =
+    ConsiderIsTimeToFarm["npc_dota_hero_bristleback"];
 
-ConsiderIsTimeToFarm["npc_dota_hero_clinkz"] = ConsiderIsTimeToFarm["npc_dota_hero_templar_assassin"];
+ConsiderIsTimeToFarm["npc_dota_hero_clinkz"] =
+    ConsiderIsTimeToFarm["npc_dota_hero_templar_assassin"];
 
-ConsiderIsTimeToFarm["npc_dota_hero_dragon_knight"] = function() {
+ConsiderIsTimeToFarm["npc_dota_hero_dragon_knight"] = function () {
     const bot = GetBot();
     const botNetWorth = bot.GetNetWorth();
 
@@ -825,7 +965,11 @@ ConsiderIsTimeToFarm["npc_dota_hero_dragon_knight"] = function() {
             return true;
         }
 
-        if (bot.GetMana() > 450 && bot.GetCurrentVisionRange() < 1000 && allyCount < 2) {
+        if (
+            bot.GetMana() > 450 &&
+            bot.GetCurrentVisionRange() < 1000 &&
+            allyCount < 2
+        ) {
             return true;
         }
     }
@@ -833,7 +977,7 @@ ConsiderIsTimeToFarm["npc_dota_hero_dragon_knight"] = function() {
     return false;
 };
 
-ConsiderIsTimeToFarm["npc_dota_hero_drow_ranger"] = function() {
+ConsiderIsTimeToFarm["npc_dota_hero_drow_ranger"] = function () {
     const bot = GetBot();
     const botNetWorth = bot.GetNetWorth();
 
@@ -845,15 +989,26 @@ ConsiderIsTimeToFarm["npc_dota_hero_drow_ranger"] = function() {
         return true;
     }
 
-    if (HasItem(bot, "item_blade_of_alacrity") && !HasItem(bot, "item_ultimate_scepter")) {
+    if (
+        HasItem(bot, "item_blade_of_alacrity") &&
+        !HasItem(bot, "item_ultimate_scepter")
+    ) {
         return true;
     }
 
-    if (HasItem(bot, "item_shadow_amulet") && !HasItem(bot, "item_invis_sword") && bot.GetGold() > 400) {
+    if (
+        HasItem(bot, "item_shadow_amulet") &&
+        !HasItem(bot, "item_invis_sword") &&
+        bot.GetGold() > 400
+    ) {
         return true;
     }
 
-    if (HasItem(bot, "item_yasha") && !HasItem(bot, "item_manta") && bot.GetGold() > 1000) {
+    if (
+        HasItem(bot, "item_yasha") &&
+        !HasItem(bot, "item_manta") &&
+        bot.GetGold() > 1000
+    ) {
         return true;
     }
 
@@ -866,7 +1021,7 @@ ConsiderIsTimeToFarm["npc_dota_hero_drow_ranger"] = function() {
     return false;
 };
 
-ConsiderIsTimeToFarm["npc_dota_hero_huskar"] = function() {
+ConsiderIsTimeToFarm["npc_dota_hero_huskar"] = function () {
     const bot = GetBot();
     const botNetWorth = bot.GetNetWorth();
 
@@ -893,7 +1048,7 @@ ConsiderIsTimeToFarm["npc_dota_hero_huskar"] = function() {
     return false;
 };
 
-ConsiderIsTimeToFarm["npc_dota_hero_juggernaut"] = function() {
+ConsiderIsTimeToFarm["npc_dota_hero_juggernaut"] = function () {
     const bot = GetBot();
     const botNetWorth = bot.GetNetWorth();
 
@@ -916,13 +1071,16 @@ ConsiderIsTimeToFarm["npc_dota_hero_juggernaut"] = function() {
     return false;
 };
 
-ConsiderIsTimeToFarm["npc_dota_hero_kunkka"] = ConsiderIsTimeToFarm["npc_dota_hero_bristleback"];
+ConsiderIsTimeToFarm["npc_dota_hero_kunkka"] =
+    ConsiderIsTimeToFarm["npc_dota_hero_bristleback"];
 
-ConsiderIsTimeToFarm["npc_dota_hero_luna"] = ConsiderIsTimeToFarm["npc_dota_hero_huskar"];
+ConsiderIsTimeToFarm["npc_dota_hero_luna"] =
+    ConsiderIsTimeToFarm["npc_dota_hero_huskar"];
 
-ConsiderIsTimeToFarm["npc_dota_hero_mirana"] = ConsiderIsTimeToFarm["npc_dota_hero_templar_assassin"];
+ConsiderIsTimeToFarm["npc_dota_hero_mirana"] =
+    ConsiderIsTimeToFarm["npc_dota_hero_templar_assassin"];
 
-ConsiderIsTimeToFarm["npc_dota_hero_medusa"] = function() {
+ConsiderIsTimeToFarm["npc_dota_hero_medusa"] = function () {
     const bot = GetBot();
     const botNetWorth = bot.GetNetWorth();
 
@@ -943,7 +1101,7 @@ ConsiderIsTimeToFarm["npc_dota_hero_medusa"] = function() {
     return false;
 };
 
-ConsiderIsTimeToFarm["npc_dota_hero_nevermore"] = function() {
+ConsiderIsTimeToFarm["npc_dota_hero_nevermore"] = function () {
     const bot = GetBot();
     const botNetWorth = bot.GetNetWorth();
 
@@ -964,11 +1122,13 @@ ConsiderIsTimeToFarm["npc_dota_hero_nevermore"] = function() {
     return false;
 };
 
-ConsiderIsTimeToFarm["npc_dota_hero_omniknight"] = ConsiderIsTimeToFarm["npc_dota_hero_bristleback"];
+ConsiderIsTimeToFarm["npc_dota_hero_omniknight"] =
+    ConsiderIsTimeToFarm["npc_dota_hero_bristleback"];
 
-ConsiderIsTimeToFarm["npc_dota_hero_ogre_magi"] = ConsiderIsTimeToFarm["npc_dota_hero_bristleback"];
+ConsiderIsTimeToFarm["npc_dota_hero_ogre_magi"] =
+    ConsiderIsTimeToFarm["npc_dota_hero_bristleback"];
 
-ConsiderIsTimeToFarm["npc_dota_hero_phantom_assassin"] = function() {
+ConsiderIsTimeToFarm["npc_dota_hero_phantom_assassin"] = function () {
     const bot = GetBot();
     const botNetWorth = bot.GetNetWorth();
 
@@ -995,7 +1155,7 @@ ConsiderIsTimeToFarm["npc_dota_hero_phantom_assassin"] = function() {
     return false;
 };
 
-ConsiderIsTimeToFarm["npc_dota_hero_phantom_lancer"] = function() {
+ConsiderIsTimeToFarm["npc_dota_hero_phantom_lancer"] = function () {
     const bot = GetBot();
     const botNetWorth = bot.GetNetWorth();
 
@@ -1022,9 +1182,10 @@ ConsiderIsTimeToFarm["npc_dota_hero_phantom_lancer"] = function() {
     return false;
 };
 
-ConsiderIsTimeToFarm["npc_dota_hero_naga_siren"] = ConsiderIsTimeToFarm["npc_dota_hero_phantom_lancer"];
+ConsiderIsTimeToFarm["npc_dota_hero_naga_siren"] =
+    ConsiderIsTimeToFarm["npc_dota_hero_phantom_lancer"];
 
-ConsiderIsTimeToFarm["npc_dota_hero_razor"] = function() {
+ConsiderIsTimeToFarm["npc_dota_hero_razor"] = function () {
     const bot = GetBot();
     const botNetWorth = bot.GetNetWorth();
 
@@ -1045,11 +1206,13 @@ ConsiderIsTimeToFarm["npc_dota_hero_razor"] = function() {
     return false;
 };
 
-ConsiderIsTimeToFarm["npc_dota_hero_sand_king"] = ConsiderIsTimeToFarm["npc_dota_hero_bristleback"];
+ConsiderIsTimeToFarm["npc_dota_hero_sand_king"] =
+    ConsiderIsTimeToFarm["npc_dota_hero_bristleback"];
 
-ConsiderIsTimeToFarm["npc_dota_hero_slardar"] = ConsiderIsTimeToFarm["npc_dota_hero_bristleback"];
+ConsiderIsTimeToFarm["npc_dota_hero_slardar"] =
+    ConsiderIsTimeToFarm["npc_dota_hero_bristleback"];
 
-ConsiderIsTimeToFarm["npc_dota_hero_legion_commander"] = function() {
+ConsiderIsTimeToFarm["npc_dota_hero_legion_commander"] = function () {
     const bot = GetBot();
     const botNetWorth = bot.GetNetWorth();
 
@@ -1070,7 +1233,7 @@ ConsiderIsTimeToFarm["npc_dota_hero_legion_commander"] = function() {
     return false;
 };
 
-ConsiderIsTimeToFarm["npc_dota_hero_slark"] = function() {
+ConsiderIsTimeToFarm["npc_dota_hero_slark"] = function () {
     const bot = GetBot();
     const botNetWorth = bot.GetNetWorth();
 
@@ -1097,9 +1260,10 @@ ConsiderIsTimeToFarm["npc_dota_hero_slark"] = function() {
     return false;
 };
 
-ConsiderIsTimeToFarm["npc_dota_hero_skeleton_king"] = ConsiderIsTimeToFarm["npc_dota_hero_bristleback"];
+ConsiderIsTimeToFarm["npc_dota_hero_skeleton_king"] =
+    ConsiderIsTimeToFarm["npc_dota_hero_bristleback"];
 
-ConsiderIsTimeToFarm["npc_dota_hero_sven"] = function() {
+ConsiderIsTimeToFarm["npc_dota_hero_sven"] = function () {
     const bot = GetBot();
     const botNetWorth = bot.GetNetWorth();
 
@@ -1126,14 +1290,22 @@ ConsiderIsTimeToFarm["npc_dota_hero_sven"] = function() {
     return false;
 };
 
-ConsiderIsTimeToFarm["npc_dota_hero_sniper"] = function() {
+ConsiderIsTimeToFarm["npc_dota_hero_sniper"] = function () {
     const bot = GetBot();
     const botNetWorth = bot.GetNetWorth();
 
-    if (bot.GetLevel() >= 10 && !HasItem(bot, "item_monkey_king_bar") && botNetWorth < 22000) {
+    if (
+        bot.GetLevel() >= 10 &&
+        !HasItem(bot, "item_monkey_king_bar") &&
+        botNetWorth < 22000
+    ) {
         const botKills = GetHeroKills(bot.GetPlayerID());
         const botDeaths = GetHeroDeaths(bot.GetPlayerID());
-        if (botKills - 3 <= botDeaths && botDeaths > 2 && GetAroundAllyCount(bot, 1200) <= 2) {
+        if (
+            botKills - 3 <= botDeaths &&
+            botDeaths > 2 &&
+            GetAroundAllyCount(bot, 1200) <= 2
+        ) {
             return true;
         }
     }
@@ -1141,7 +1313,7 @@ ConsiderIsTimeToFarm["npc_dota_hero_sniper"] = function() {
     return false;
 };
 
-ConsiderIsTimeToFarm["npc_dota_hero_templar_assassin"] = function() {
+ConsiderIsTimeToFarm["npc_dota_hero_templar_assassin"] = function () {
     const bot = GetBot();
     const botNetWorth = bot.GetNetWorth();
 
@@ -1168,13 +1340,18 @@ ConsiderIsTimeToFarm["npc_dota_hero_templar_assassin"] = function() {
     return false;
 };
 
-ConsiderIsTimeToFarm["npc_dota_hero_tidehunter"] = ConsiderIsTimeToFarm["npc_dota_hero_sven"];
+ConsiderIsTimeToFarm["npc_dota_hero_tidehunter"] =
+    ConsiderIsTimeToFarm["npc_dota_hero_sven"];
 
-ConsiderIsTimeToFarm["npc_dota_hero_viper"] = function() {
+ConsiderIsTimeToFarm["npc_dota_hero_viper"] = function () {
     const bot = GetBot();
     const botNetWorth = bot.GetNetWorth();
 
-    if (bot.GetLevel() >= 10 && !HasItem(bot, "item_mjollnir") && botNetWorth < 20000) {
+    if (
+        bot.GetLevel() >= 10 &&
+        !HasItem(bot, "item_mjollnir") &&
+        botNetWorth < 20000
+    ) {
         const botKills = GetHeroKills(bot.GetPlayerID());
         const botDeaths = GetHeroDeaths(bot.GetPlayerID());
         const allyCount = GetAroundAllyCount(bot, 1300);
@@ -1182,11 +1359,14 @@ ConsiderIsTimeToFarm["npc_dota_hero_viper"] = function() {
             return true;
         }
 
-        if (bot.GetMana() > 650 && bot.GetCurrentVisionRange() < 1000 && allyCount <= 1) {
+        if (
+            bot.GetMana() > 650 &&
+            bot.GetCurrentVisionRange() < 1000 &&
+            allyCount <= 1
+        ) {
             return true;
         }
     }
 
     return false;
 };
-

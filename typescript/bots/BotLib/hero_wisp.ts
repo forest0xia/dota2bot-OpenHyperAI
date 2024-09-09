@@ -44,12 +44,9 @@ const abilityTether = bot.GetAbilityByName(AbilityList[0]);
 const abilitySpirits = bot.GetAbilityByName(AbilityList[1]);
 const abilityOvercharge = bot.GetAbilityByName(AbilityList[2]);
 const abilityRelocate = bot.GetAbilityByName(AbilityList[5]);
-const abilityBreakTether = bot.GetAbilityByName('wisp_tether_break')
+const abilityBreakTether = bot.GetAbilityByName("wisp_tether_break");
 
-const sellList = [
-    "item_black_king_bar",
-    "item_quelling_blade",
-];
+const sellList = ["item_black_king_bar", "item_quelling_blade"];
 const defaultBuild = [
     "item_tango",
     "item_faerie_fire",
@@ -178,7 +175,7 @@ function considerSpirits(): number {
 }
 
 function considerRelocate(): LuaMultiReturn<[number, Location | null]> {
-    return $multi(BotActionDesire.None, null)
+    return $multi(BotActionDesire.None, null);
 }
 
 export = {
