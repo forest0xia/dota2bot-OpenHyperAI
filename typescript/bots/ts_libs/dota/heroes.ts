@@ -69,6 +69,7 @@ export enum HeroName {
     ShadowFiend = "npc_dota_hero_nevermore",
     NightStalker = "npc_dota_hero_night_stalker",
     NyxAssassin = "npc_dota_hero_nyx_assassin",
+    Ringmaster = "npc_dota_hero_ringmaster",
     OutworldDestroyer = "npc_dota_hero_obsidian_destroyer",
     OgreMagi = "npc_dota_hero_ogre_magi",
     Omniknight = "npc_dota_hero_omniknight",
