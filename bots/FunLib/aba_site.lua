@@ -7,8 +7,10 @@ local ____dota = require("bots.ts_libs.dota.index")
 local BotModeDesire = ____dota.BotModeDesire
 local UnitType = ____dota.UnitType
 local BotMode = ____dota.BotMode
-local BotScriptEnums = ____dota.BotScriptEnums
 local Team = ____dota.Team
+local Tower = ____dota.Tower
+local Rune = ____dota.Rune
+local Shop = ____dota.Shop
 local ____utils = require("bots.FunLib.utils")
 local HasItem = ____utils.HasItem
 local GetLocationToLocationDistance = ____utils.GetLocationToLocationDistance
@@ -104,25 +106,25 @@ for ____, v in ipairs(allUnitList) do
 end
 ____exports.nWatchTowerList = {nWatchTower_1, nWatchTower_2}
 ____exports.nTowerList = {
-    TOWER_TOP_1,
-    TOWER_MID_1,
-    TOWER_BOT_1,
-    TOWER_TOP_2,
-    TOWER_MID_2,
-    TOWER_BOT_2,
-    TOWER_TOP_3,
-    TOWER_MID_3,
-    TOWER_BOT_3,
-    TOWER_BASE_1,
-    TOWER_BASE_2
+    Tower.Top1,
+    Tower.Mid1,
+    Tower.Bot1,
+    Tower.Top2,
+    Tower.Mi2,
+    Tower.Bot2,
+    Tower.Top3,
+    Tower.Mid3,
+    Tower.Bot3,
+    Tower.Base1,
+    Tower.Base2
 }
-____exports.nRuneList = {RUNE_POWERUP_1, RUNE_POWERUP_2, RUNE_BOUNTY_1, RUNE_BOUNTY_2}
+____exports.nRuneList = {Rune.Power1, Rune.Power2, Rune.Bounty1, Rune.Bounty2}
 ____exports.nShopList = {
-    SHOP_HOME,
-    SHOP_SIDE,
-    SHOP_SIDE2,
-    SHOP_SECRET,
-    SHOP_SECRET2
+    Shop.Home,
+    Shop.Side,
+    Shop.Side2,
+    Shop.Secret,
+    Shop.Secret2
 }
 ____exports.top_power_rune = Vector(-1767, 1233, 0)
 ____exports.bot_power_rune = Vector(2597, -2014, 0)

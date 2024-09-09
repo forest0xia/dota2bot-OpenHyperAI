@@ -4,8 +4,10 @@ import {
     UnitType,
     Vector,
     BotMode,
-    BotScriptEnums,
     Team,
+    Tower,
+    Rune,
+    Shop,
 } from "../ts_libs/dota";
 import {
     HasItem,
@@ -128,34 +130,34 @@ for (const v of allUnitList) {
 export const nWatchTowerList = [nWatchTower_1, nWatchTower_2];
 
 export const nTowerList = [
-    BotScriptEnums.TOWER_TOP_1,
-    BotScriptEnums.TOWER_MID_1,
-    BotScriptEnums.TOWER_BOT_1,
-    BotScriptEnums.TOWER_TOP_2,
-    BotScriptEnums.TOWER_MID_2,
-    BotScriptEnums.TOWER_BOT_2,
-    BotScriptEnums.TOWER_TOP_3,
-    BotScriptEnums.TOWER_MID_3,
-    BotScriptEnums.TOWER_BOT_3,
-    BotScriptEnums.TOWER_BASE_1,
-    BotScriptEnums.TOWER_BASE_2,
+    Tower.Top1,
+    Tower.Mid1,
+    Tower.Bot1,
+    Tower.Top2,
+    Tower.Mi2,
+    Tower.Bot2,
+    Tower.Top3,
+    Tower.Mid3,
+    Tower.Bot3,
+    Tower.Base1,
+    Tower.Base2,
 ];
 
 export const nRuneList = [
-    BotScriptEnums.RUNE_POWERUP_1, //--上
-    BotScriptEnums.RUNE_POWERUP_2, //--下
-    BotScriptEnums.RUNE_BOUNTY_1, //--天辉上  --天辉神秘符
-    BotScriptEnums.RUNE_BOUNTY_2, //--夜魇下  --天辉优势路符
+    Rune.Power1, //--上
+    Rune.Power2, //--下
+    Rune.Bounty1, //--天辉上  --天辉神秘符
+    Rune.Bounty2, //--夜魇下  --天辉优势路符
     // RUNE_BOUNTY_3, 	--天辉下 --夜魇神秘符
     // RUNE_BOUNTY_4, 	--夜魇上 --夜魇优势路符
 ];
 
 export const nShopList = [
-    BotScriptEnums.SHOP_HOME, //--家里商店
-    BotScriptEnums.SHOP_SIDE, //--天辉下路商店
-    BotScriptEnums.SHOP_SIDE2, //--夜魇上路商店
-    BotScriptEnums.SHOP_SECRET, //--天辉上路神秘
-    BotScriptEnums.SHOP_SECRET2, //--夜魇下路神秘
+    Shop.Home, //--家里商店
+    Shop.Side, //--天辉下路商店
+    Shop.Side2, //--夜魇上路商店
+    Shop.Secret, //--天辉上路神秘
+    Shop.Secret2, //--夜魇下路神秘
 ];
 
 export const top_power_rune = Vector(-1767, 1233, 0);

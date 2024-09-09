@@ -4,11 +4,12 @@ local ____exports = {}
 local furthestBuildings, PING_TIME_DELTA
 local jmz = require("bots.FunLib.jmz_func")
 local ____dota = require("bots.ts_libs.dota.index")
+local Barracks = ____dota.Barracks
 local BotActionDesire = ____dota.BotActionDesire
 local BotMode = ____dota.BotMode
 local BotModeDesire = ____dota.BotModeDesire
-local BotScriptEnums = ____dota.BotScriptEnums
 local Lane = ____dota.Lane
+local Tower = ____dota.Tower
 local UnitType = ____dota.UnitType
 local ____utils = require("bots.FunLib.utils")
 local GameStates = ____utils.GameStates
@@ -56,11 +57,11 @@ function ____exports.GetDefendDesireHelper(bot, lane)
     GameStates.defendPings = GameStates.defendPings or ({pingedTime = GameTime()})
     if GameTime() - GameStates.defendPings.pingedTime > PING_TIME_DELTA then
         local highGroundTowers = {
-            TOWER_TOP_3,
-            TOWER_MID_3,
-            TOWER_BOT_3,
-            TOWER_BASE_1,
-            TOWER_BASE_2
+            Tower.Top3,
+            Tower.Mid3,
+            Tower.Bot3,
+            Tower.Base1,
+            Tower.Base2
         }
         local enemyIsPushingBase = false
         local defendLocation = nil
@@ -98,8 +99,8 @@ function ____exports.GetDefendDesireHelper(bot, lane)
     end
     local enemiesAroundAncient = jmz.GetEnemiesAroundAncient()
     local ancientDefendDesire = BotModeDesire.Absolute
-    local midTowerDestroyed = GetTower(team, TOWER_MID_3) == nil
-    local laneTowersDestroyed = GetTower(team, TOWER_TOP_3) == nil and GetTower(team, TOWER_BOT_3) == nil
+    local midTowerDestroyed = GetTower(team, Tower.Mid3) == nil
+    local laneTowersDestroyed = GetTower(team, Tower.Top3) == nil and GetTower(team, Tower.Bot3) == nil
     if #enemiesAroundAncient >= 1 and (midTowerDestroyed or laneTowersDestroyed) and lane == Lane.Mid then
         defendDesire = defendDesire + ancientDefendDesire
     elseif defendDesire ~= 0.966 then
@@ -210,7 +211,7 @@ function ____exports.GetEnemyCountInLane(lane, isHero)
         0
     )
 end
-furthestBuildings = {[Lane.Top] = {towers = {{id = TOWER_TOP_1, mulMax = 0.5, mulMin = 1}, {id = TOWER_TOP_2, mulMax = 1, mulMin = 2}, {id = TOWER_TOP_3, mulMax = 1.5, mulMin = 2}}, barracks = {BARRACKS_TOP_MELEE, BARRACKS_TOP_RANGED}}, [Lane.Bot] = {towers = {{id = TOWER_BOT_1, mulMax = 0.5, mulMin = 1}, {id = TOWER_BOT_2, mulMax = 1, mulMin = 2}, {id = TOWER_BOT_3, mulMax = 1.5, mulMin = 2}}, barracks = {BARRACKS_BOT_MELEE, BARRACKS_BOT_RANGED}}, [Lane.Mid] = {towers = {{id = TOWER_MID_1, mulMax = 0.5, mulMin = 1}, {id = TOWER_MID_2, mulMax = 1, mulMin = 2}, {id = TOWER_MID_3, mulMax = 1.5, mulMin = 2}}, barracks = {BARRACKS_MID_MELEE, BARRACKS_MID_RANGED}}}
+furthestBuildings = {[Lane.Top] = {towers = {{id = Tower.Top1, mulMax = 0.5, mulMin = 1}, {id = Tower.Top2, mulMax = 1, mulMin = 2}, {id = Tower.Top3, mulMax = 1.5, mulMin = 2}}, barracks = {Barracks.TopMelee, Barracks.TopRanged}}, [Lane.Bot] = {towers = {{id = Tower.Bot1, mulMax = 0.5, mulMin = 1}, {id = Tower.Bot2, mulMax = 1, mulMin = 2}, {id = Tower.Bot3, mulMax = 1.5, mulMin = 2}}, barracks = {Barracks.BotMelee, Barracks.BotRanged}}, [Lane.Mid] = {towers = {{id = Tower.Mid1, mulMax = 0.5, mulMin = 1}, {id = Tower.Mi2, mulMax = 1, mulMin = 2}, {id = Tower.Mid3, mulMax = 1.5, mulMin = 2}}, barracks = {Barracks.MidMelee, Barracks.MidRanged}}}
 PING_TIME_DELTA = 5
 local TELEPORT_SLOT = 15
 local ENEMY_SEARCH_RANGE = 1400

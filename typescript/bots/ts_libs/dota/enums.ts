@@ -8,7 +8,7 @@
 // Collect and use the original enums from dota2 scripting in order to avoid accidentially changing or re-defining
 // the value of the enum that potentially can cause discrepancy between code in this script vs dota2 game engine.
 /** @compileMembersOnly */
-export declare enum BotScriptEnums {
+declare enum BotScriptEnums {
     // Bot Modes
     BOT_MODE_NONE,
     BOT_MODE_LANING,
@@ -464,4 +464,44 @@ export enum UnitType {
 
 export enum BotActionType {
     None = 0, // TODO: Add Actions
+}
+
+export enum Tower {
+    Top1 = BotScriptEnums.TOWER_TOP_1,
+    Top2 = BotScriptEnums.TOWER_TOP_2,
+    Top3 = BotScriptEnums.TOWER_TOP_3,
+    Mid1 = BotScriptEnums.TOWER_MID_1,
+    Mi2 = BotScriptEnums.TOWER_MID_2,
+    Mid3 = BotScriptEnums.TOWER_MID_3,
+    Bot1 = BotScriptEnums.TOWER_BOT_1,
+    Bot2 = BotScriptEnums.TOWER_BOT_2,
+    Bot3 = BotScriptEnums.TOWER_BOT_3,
+    Base1 = BotScriptEnums.TOWER_BASE_1,
+    Base2 = BotScriptEnums.TOWER_BASE_2,
+}
+
+export enum Barracks {
+    TopMelee = BotScriptEnums.BARRACKS_TOP_MELEE,
+    TopRanged = BotScriptEnums.BARRACKS_TOP_RANGED,
+    MidMelee = BotScriptEnums.BARRACKS_MID_MELEE,
+    MidRanged = BotScriptEnums.BARRACKS_MID_RANGED,
+    BotMelee = BotScriptEnums.BARRACKS_BOT_MELEE,
+    BotRanged = BotScriptEnums.BARRACKS_BOT_RANGED,
+}
+
+export enum Rune {
+    Power1 = BotScriptEnums.RUNE_POWERUP_1,
+    Power2 = BotScriptEnums.RUNE_POWERUP_2,
+    Bounty1 = BotScriptEnums.RUNE_BOUNTY_1,
+    Bounty2 = BotScriptEnums.RUNE_BOUNTY_2,
+    Bounty3 = BotScriptEnums.RUNE_BOUNTY_3,
+    Bounty4 = BotScriptEnums.RUNE_BOUNTY_4,
+}
+
+export enum Shop {
+    Home = BotScriptEnums.SHOP_HOME,
+    Side = BotScriptEnums.SHOP_SIDE,
+    Secret = BotScriptEnums.SHOP_SECRET,
+    Side2 = BotScriptEnums.SHOP_SIDE2,
+    Secret2 = BotScriptEnums.SHOP_SECRET2,
 }
