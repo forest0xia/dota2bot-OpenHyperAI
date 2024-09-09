@@ -229,7 +229,7 @@ end
 
 local originalAction_UseAbility = CDOTA_Bot_Script.Action_UseAbility
 function CDOTA_Bot_Script:Action_UseAbility(hAbility)
-    if hAbility:IsHidden() then
+    if hAbility == nil or hAbility:IsHidden() then
 		print("Action_UseAbility has been called on ability that's hidden")
 		print("Stack Trace:", debug.traceback())
 		return nil
@@ -239,7 +239,7 @@ end
 
 local originalActionPush_UseAbility = CDOTA_Bot_Script.ActionPush_UseAbility
 function CDOTA_Bot_Script:ActionPush_UseAbility(hAbility)
-    if hAbility:IsHidden() then
+    if hAbility == nil or hAbility:IsHidden() then
 		print("ActionPush_UseAbility has been called on ability that's hidden")
 		print("Stack Trace:", debug.traceback())
 		return nil

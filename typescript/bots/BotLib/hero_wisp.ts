@@ -1,5 +1,12 @@
 import * as jmz from "../FunLib/jmz_func";
-import { BotBehavior, BotRole, ItemBuilds } from "../ts_libs/bots";
+import {
+    BotSetup, 
+    BotRole, 
+    ItemBuilds, 
+    SkillBuilds,
+    TalentBuilds,
+    TalentTreeBuild,
+ } from "../ts_libs/bots";
 import {
     BotActionDesire,
     BotMode,
@@ -12,41 +19,48 @@ import { HasAnyEffect } from "../FunLib/utils";
 
 const bot = GetBot();
 // @ts-ignore
-const Minion = dofile("bots/FunLib/aba_minion");
+const minion = dofile("bots/FunLib/aba_minion");
 
-const talentList: Talent[] = jmz.Skill.GetTalentList(bot);
-const AbilityList: string[] = jmz.Skill.GetAbilityList(bot);
+const role: BotRole = jmz.Item.GetRoleItemsBuyList(bot);
 
-const talentTreeList = {
+// Construct for normal ability skills.
+const defaultAbilityBuild = [1, 3, 1, 3, 1, 6, 1, 3, 3, 2, 6, 2, 2, 2, 6]; // Pos 5 Build
+const allAbilitiesList: string[] = jmz.Skill.GetAbilityList(bot);
+const roleSkillBuildList: SkillBuilds = {
+    pos_1: defaultAbilityBuild,
+    pos_2: defaultAbilityBuild,
+    pos_3: defaultAbilityBuild,
+    pos_4: defaultAbilityBuild,
+    pos_5: defaultAbilityBuild,
+}
+const skillBuildList = roleSkillBuildList[role];
+
+// Construct for talent skills.
+const allTalentsList: Talent[] = jmz.Skill.GetTalentList(bot);
+const defaultTalentTree: TalentTreeBuild = {
     t25: [10, 0],
     t20: [10, 0],
     t15: [0, 10],
     t10: [0, 10],
-} satisfies jmz.TalentTreeBuild;
-const AllAbilityBuilds = [
-    [1, 3, 1, 3, 1, 6, 1, 3, 3, 2, 6, 2, 2, 2, 6], // Pos 5 Build
-];
+}
+const roleTalentBuildList: TalentBuilds = {
+    pos_1: defaultTalentTree,
+    pos_2: defaultTalentTree,
+    pos_3: defaultTalentTree,
+    pos_4: defaultTalentTree,
+    pos_5: defaultTalentTree,
+}
+const talentBuildList = jmz.Skill.GetTalentBuild(roleTalentBuildList[role]);
 
-const abilityBuild = jmz.Skill.GetRandomBuild(AllAbilityBuilds);
-
-const talentBuildList = jmz.Skill.GetTalentBuild(talentTreeList);
-
-const skillBuildList = jmz.Skill.GetSkillList(
-    AbilityList,
-    abilityBuild,
-    talentList,
+// Aggregate all talents and abilities to a single consective skill build list.
+const fullSkillBuildList = jmz.Skill.GetSkillList(
+    allAbilitiesList,
+    skillBuildList,
+    allTalentsList,
     talentBuildList
 );
 
-const role: BotRole = jmz.Item.GetRoleItemsBuyList(bot);
-
-const abilityTether = bot.GetAbilityByName(AbilityList[0]);
-const abilitySpirits = bot.GetAbilityByName(AbilityList[1]);
-const abilityOvercharge = bot.GetAbilityByName(AbilityList[2]);
-const abilityRelocate = bot.GetAbilityByName(AbilityList[5]);
-const abilityBreakTether = bot.GetAbilityByName("wisp_tether_break");
-
-const sellList = ["item_black_king_bar", "item_quelling_blade"];
+// Construct for items build.
 const defaultBuild = [
     "item_tango",
     "item_faerie_fire",
@@ -68,7 +82,7 @@ const defaultBuild = [
     "item_ultimate_scepter_2",
     "item_moon_shard",
 ];
-const roleItemBuyList: { [key in BotRole]: string[] } = {
+const roleItemBuyList: ItemBuilds = {
     pos_1: defaultBuild,
     pos_2: defaultBuild,
     pos_3: defaultBuild,
@@ -97,7 +111,20 @@ const roleItemBuyList: { [key in BotRole]: string[] } = {
         "item_moon_shard",
         "item_ultimate_scepter_2",
     ],
-} satisfies ItemBuilds;
+};
+const itemBuildList: string[] = roleItemBuyList[role]
+
+const sellList: string[] = [
+    "item_black_king_bar",
+    "item_quelling_blade",
+];
+
+const abilityTether = bot.GetAbilityByName(allAbilitiesList[0]);
+const abilitySpirits = bot.GetAbilityByName(allAbilitiesList[1]);
+const abilityOvercharge = bot.GetAbilityByName(allAbilitiesList[2]);
+const abilityRelocate = bot.GetAbilityByName(allAbilitiesList[5]);
+const abilityBreakTether = bot.GetAbilityByName('wisp_tether_break')
+
 
 function HasHealingEffect(hero: Unit) {
     return HasAnyEffect(hero, "modifier_tango_heal", ...hero_is_healing);
@@ -175,44 +202,46 @@ function considerSpirits(): number {
 }
 
 function considerRelocate(): LuaMultiReturn<[number, Location | null]> {
-    return $multi(BotActionDesire.None, null);
+    return $multi(BotActionDesire.None, null)
+}
+
+function SkillsComplement() {
+    if (jmz.CanNotUseAbility(bot) || bot.IsInvisible()) {
+        return;
+    }
+    const [tetherDesire, tetherLocation] = considerTether();
+    if (tetherDesire > 0 && tetherLocation) {
+        bot.Action_UseAbilityOnEntity(abilityTether, tetherLocation);
+        stateTetheredHero = tetherLocation;
+        return;
+    }
+
+    const overchargeDesire = considerOvercharge();
+    if (overchargeDesire > 0) {
+        bot.Action_UseAbility(abilityOvercharge);
+        return;
+    }
+    const spiritsDesire = considerSpirits();
+    if (spiritsDesire > 0) {
+        bot.Action_UseAbility(abilitySpirits);
+        return;
+    }
+    const [relocateDesire, relocateTarget] = considerRelocate();
+    if (relocateDesire && relocateTarget !== null) {
+        bot.Action_UseAbilityOnLocation(abilityRelocate, relocateTarget);
+    }
+}
+
+function MinionThink(hMinionUnit: any, _: any) {
+    if (minion.IsValidUnit(hMinionUnit)) {
+        minion.IllusionThink(hMinionUnit);
+    }
 }
 
 export = {
-    SkillsComplement() {
-        if (jmz.CanNotUseAbility(bot) || bot.IsInvisible()) {
-            return;
-        }
-        const [tetherDesire, tetherLocation] = considerTether();
-        if (tetherDesire > 0 && tetherLocation) {
-            bot.Action_UseAbilityOnEntity(abilityTether, tetherLocation);
-            stateTetheredHero = tetherLocation;
-            return;
-        }
-
-        const overchargeDesire = considerOvercharge();
-        if (overchargeDesire > 0) {
-            bot.Action_UseAbility(abilityOvercharge);
-            return;
-        }
-        const spiritsDesire = considerSpirits();
-        if (spiritsDesire > 0) {
-            bot.Action_UseAbility(abilitySpirits);
-            return;
-        }
-        const [relocateDesire, relocateTarget] = considerRelocate();
-        if (relocateDesire && relocateTarget !== null) {
-            bot.Action_UseAbilityOnLocation(abilityRelocate, relocateTarget);
-        }
-    },
+    SkillsComplement: SkillsComplement,
+    MinionThink: MinionThink,
     sSellList: sellList,
-    sBuyList: roleItemBuyList[role],
-    MinionThink(hMinionUnit: any, _: any) {
-        if (Minion.IsValidUnit(hMinionUnit)) {
-            Minion.IllusionThink(hMinionUnit);
-        }
-    },
-    bDefaultAbility: false,
-    bDefaultItem: false,
-    sSkillList: skillBuildList,
-} satisfies BotBehavior;
+    sBuyList: itemBuildList,
+    sSkillList: fullSkillBuildList,
+} satisfies BotSetup;

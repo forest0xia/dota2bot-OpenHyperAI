@@ -1,9 +1,9 @@
 /*
- * Dota 2 scripting API globals functions and constants
+ * Dota 2 scripting API globals functions and constants. https://developer.valvesoftware.com/wiki/Dota_Bot_Scripting
  */
 
-import { Unit, Vector } from "./dota/interfaces";
-import { Lane, Team, UnitType } from "./dota";
+import { Unit, Vector } from "./interfaces";
+import { Team, UnitType } from ".";
 
 declare global {
     function print(...args: any[]): void;

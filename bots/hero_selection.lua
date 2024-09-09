@@ -226,11 +226,13 @@ local sPos2List = {
 	"npc_dota_hero_morphling",
 	"npc_dota_hero_necrolyte",
 	"npc_dota_hero_nevermore",
+	"npc_dota_hero_nevermore", -- increase the chance of having mid Shadow Fiend.
+	"npc_dota_hero_nevermore",
 	"npc_dota_hero_obsidian_destroyer",
 	"npc_dota_hero_ogre_magi",
 	"npc_dota_hero_omniknight",
 	"npc_dota_hero_pangolier",
-	-- "npc_dota_hero_primal_beast", -- still passive
+	"npc_dota_hero_primal_beast",
 	"npc_dota_hero_puck",
 	"npc_dota_hero_pugna",
 	"npc_dota_hero_pudge",

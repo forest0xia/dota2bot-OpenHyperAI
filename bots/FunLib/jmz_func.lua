@@ -1,8 +1,6 @@
 local J = {}
 
 local bDebugMode = ( 1 == 10 )
-local bDebugTeam = ( GetTeam() == TEAM_RADIANT )
-local sDebugHero = 'npc_dota_hero_luna'
 local tAllyIDList = GetTeamPlayers( GetTeam() )
 local tAllyHeroList = {}
 local tAllyHumanList = {}
@@ -30,7 +28,6 @@ do
 
 end
 
-
 J.Site = require( GetScriptDirectory()..'/FunLib/aba_site' )
 J.Item = require( GetScriptDirectory()..'/FunLib/aba_item' )
 J.Buff = require( GetScriptDirectory()..'/FunLib/aba_buff' )
@@ -40,80 +37,17 @@ J.Chat = require( GetScriptDirectory()..'/FunLib/aba_chat' )
 J.Utils = require( GetScriptDirectory()..'/FunLib/utils' )
 
 
-if bDebugTeam
-then
-	print( GetTeam()..': Function Init Successful!' )
-end
-
-
-
 function J.SetUserHeroInit( nAbilityBuildList, nTalentBuildList, sBuyList, sSellList )
-
-	-- local bot = GetBot()
-
-	-- if J.Role.IsUserHero() 
-	-- then
-
-	-- 	local sBotDir = J.Chat.GetHeroDirName( bot )
-		
-	-- 	if J.Chat.GetNormName(bot) == '力丸'  --修复力丸的错误路径
-	-- 		and xpcall( function( loadDir ) require( loadDir ) end, function( err ) print( err ) end, sBotDir ) == false
-	-- 	then sBotDir = sBotDir..' '	end
-
-	-- 	if xpcall( function( loadDir ) require( loadDir ) end, function( err ) print( err ) end, sBotDir )
-	-- 	then
-	-- 		local BotSet = require( sBotDir )
-	-- 		if J.Chat.GetRawGameWord( BotSet['ShiFouShengXiao'] ) == true
-	-- 		then
-	-- 			nAbilityBuildList = BotSet['JiNeng']
-	-- 			nTalentBuildList = J.Chat.GetTalentBuildList( BotSet['TianFu'] )
-	-- 			sBuyList = J.Chat.GetItemBuildList( BotSet['ChuZhuang'] )
-	-- 			sSellList = J.Chat.GetItemBuildList( BotSet['GuoDuZhuang'] )
-	-- 			if J.Chat.GetRawGameWord( BotSet['ShiFouDaFuZhu'] ) == true
-	-- 			then J.Role.SetUserSup( bot ) end
-	-- 		end
-	-- 	end
-
-	-- end
-
+	-- A place to change the bot setup.
 	return nAbilityBuildList, nTalentBuildList, sBuyList, sSellList
-
-end
-
-
-local tInitList = {}
-function J.PrintInitMessage( sFlag, sMessage )
-
-	local bot = GetBot()
-
-	if not J.IsDebugHero( bot ) or tInitList[sFlag] ~= nil then return end
-
-	tInitList[sFlag] = true
-
-	local botName = string.gsub( string.sub( bot:GetUnitName(), 15 ), '_', '' )
-
-	print( 'A Beginner AI '..string.sub( botName, 1, 4 )..': '..string.sub( sFlag, 1, 5 )..' with '..sMessage..' init successful!' )
-
-end
-
-
-function J.IsDebugHero( bot )
-
-	return bDebugMode
-			and bDebugTeam
-			and bot:GetUnitName() == sDebugHero
-
 end
 
 function J.HasQueuedAction( bot )
-
-	if bot ~= GetBot() 
+	if bot ~= GetBot()
 	then
-		return false 
+		return false
 	end
-	
 	return bot:NumQueuedActions() > 0
-	
 end
 
 function J.CanNotUseAction( bot )
@@ -5047,54 +4981,6 @@ function J.IsEnemyHero(hero)
 		return true
 	else
 		return false
-	end
-end
-
-function J.ConsolePrintActiveMode(bot)
-	local mode = bot:GetActiveMode()
-
-	if mode == BOT_MODE_NONE then
-		print(string.gsub( bot:GetUnitName(), "npc_dota_", "" ).."'s current mode is: NONE")
-	elseif mode == BOT_MODE_LANING then
-		print(string.gsub( bot:GetUnitName(), "npc_dota_", "" ).."'s current mode is: LANING")
-	elseif mode == BOT_MODE_ATTACK then
-		print(string.gsub( bot:GetUnitName(), "npc_dota_", "" ).."'s current mode is: ATTACK")
-	elseif mode == BOT_MODE_ROAM then
-		print(string.gsub( bot:GetUnitName(), "npc_dota_", "" ).."'s current mode is: ROAM")
-	elseif mode == BOT_MODE_RETREAT then
-		print(string.gsub( bot:GetUnitName(), "npc_dota_", "" ).."'s current mode is: RETREAT")
-	elseif mode == BOT_MODE_SECRET_SHOP then
-		print(string.gsub( bot:GetUnitName(), "npc_dota_", "" ).."'s current mode is: SECRET SHOP")
-	elseif mode == BOT_MODE_SIDE_SHOP then
-		print(string.gsub( bot:GetUnitName(), "npc_dota_", "" ).."'s current mode is: SIDE SHOP")
-	elseif mode == BOT_MODE_PUSH_TOWER_TOP then
-		print(string.gsub( bot:GetUnitName(), "npc_dota_", "" ).."'s current mode is: PUSH TOWER TOP")
-	elseif mode == BOT_MODE_PUSH_TOWER_MID then
-		print(string.gsub( bot:GetUnitName(), "npc_dota_", "" ).."'s current mode is: PUSH TOWER MID")
-	elseif mode == BOT_MODE_PUSH_TOWER_BOT then
-		print(string.gsub( bot:GetUnitName(), "npc_dota_", "" ).."'s current mode is: PUSH TOWER BOT")
-	elseif mode == BOT_MODE_DEFEND_TOWER_TOP then
-		print(string.gsub( bot:GetUnitName(), "npc_dota_", "" ).."'s current mode is: DEFEND TOWER TOP")
-	elseif mode == BOT_MODE_DEFEND_TOWER_MID then
-		print(string.gsub( bot:GetUnitName(), "npc_dota_", "" ).."'s current mode is: DEFEND TOWER MID")
-	elseif mode == BOT_MODE_DEFEND_TOWER_BOT then
-		print(string.gsub( bot:GetUnitName(), "npc_dota_", "" ).."'s current mode is: DEFEND TOWER BOT")
-	elseif mode == BOT_MODE_ASSEMBLE then
-		print(string.gsub( bot:GetUnitName(), "npc_dota_", "" ).."'s current mode is: ASSEMBLE")
-	elseif mode == BOT_MODE_TEAM_ROAM then
-		print(string.gsub( bot:GetUnitName(), "npc_dota_", "" ).."'s current mode is: TEAM ROAM")
-	elseif mode == BOT_MODE_FARM then
-		print(string.gsub( bot:GetUnitName(), "npc_dota_", "" ).."'s current mode is: FARM")
-	elseif mode == BOT_MODE_DEFEND_ALLY then
-		print(string.gsub( bot:GetUnitName(), "npc_dota_", "" ).."'s current mode is: DEFEND ALLY")
-	elseif mode == BOT_MODE_EVASIVE_MANEUVERS then
-		print(string.gsub( bot:GetUnitName(), "npc_dota_", "" ).."'s current mode is: EVASIVE MANEUVERS")
-	elseif mode == BOT_MODE_ROSHAN then
-		print(string.gsub( bot:GetUnitName(), "npc_dota_", "" ).."'s current mode is: ROSHAN")
-	elseif mode == BOT_MODE_ITEM then
-		print(string.gsub( bot:GetUnitName(), "npc_dota_", "" ).."'s current mode is: ITEM")
-	elseif mode == BOT_MODE_WARD then
-		print(string.gsub( bot:GetUnitName(), "npc_dota_", "" ).."'s current mode is: WARD")
 	end
 end
 

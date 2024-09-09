@@ -8,11 +8,9 @@ local hero_is_healing = ____aba_buff.hero_is_healing
 local ____utils = require("bots.FunLib.utils")
 local HasAnyEffect = ____utils.HasAnyEffect
 local bot = GetBot()
-local Minion = dofile("bots/FunLib/aba_minion")
-local talentList = jmz.Skill.GetTalentList(bot)
-local AbilityList = jmz.Skill.GetAbilityList(bot)
-local talentTreeList = {t25 = {10, 0}, t20 = {10, 0}, t15 = {0, 10}, t10 = {0, 10}}
-local AllAbilityBuilds = {{
+local minion = dofile("bots/FunLib/aba_minion")
+local role = jmz.Item.GetRoleItemsBuyList(bot)
+local defaultAbilityBuild = {
     1,
     3,
     1,
@@ -28,17 +26,27 @@ local AllAbilityBuilds = {{
     2,
     2,
     6
-}}
-local abilityBuild = jmz.Skill.GetRandomBuild(AllAbilityBuilds)
-local talentBuildList = jmz.Skill.GetTalentBuild(talentTreeList)
-local skillBuildList = jmz.Skill.GetSkillList(AbilityList, abilityBuild, talentList, talentBuildList)
-local role = jmz.Item.GetRoleItemsBuyList(bot)
-local abilityTether = bot:GetAbilityByName(AbilityList[1])
-local abilitySpirits = bot:GetAbilityByName(AbilityList[2])
-local abilityOvercharge = bot:GetAbilityByName(AbilityList[3])
-local abilityRelocate = bot:GetAbilityByName(AbilityList[6])
-local abilityBreakTether = bot:GetAbilityByName("wisp_tether_break")
-local sellList = {"item_black_king_bar", "item_quelling_blade"}
+}
+local allAbilitiesList = jmz.Skill.GetAbilityList(bot)
+local roleSkillBuildList = {
+    pos_1 = defaultAbilityBuild,
+    pos_2 = defaultAbilityBuild,
+    pos_3 = defaultAbilityBuild,
+    pos_4 = defaultAbilityBuild,
+    pos_5 = defaultAbilityBuild
+}
+local skillBuildList = roleSkillBuildList[role]
+local allTalentsList = jmz.Skill.GetTalentList(bot)
+local defaultTalentTree = {t25 = {10, 0}, t20 = {10, 0}, t15 = {0, 10}, t10 = {0, 10}}
+local roleTalentBuildList = {
+    pos_1 = defaultTalentTree,
+    pos_2 = defaultTalentTree,
+    pos_3 = defaultTalentTree,
+    pos_4 = defaultTalentTree,
+    pos_5 = defaultTalentTree
+}
+local talentBuildList = jmz.Skill.GetTalentBuild(roleTalentBuildList[role])
+local fullSkillBuildList = jmz.Skill.GetSkillList(allAbilitiesList, skillBuildList, allTalentsList, talentBuildList)
 local defaultBuild = {
     "item_tango",
     "item_faerie_fire",
@@ -89,6 +97,13 @@ local roleItemBuyList = {
         "item_ultimate_scepter_2"
     }
 }
+local itemBuildList = roleItemBuyList[role]
+local sellList = {"item_black_king_bar", "item_quelling_blade"}
+local abilityTether = bot:GetAbilityByName(allAbilitiesList[1])
+local abilitySpirits = bot:GetAbilityByName(allAbilitiesList[2])
+local abilityOvercharge = bot:GetAbilityByName(allAbilitiesList[3])
+local abilityRelocate = bot:GetAbilityByName(allAbilitiesList[6])
+local abilityBreakTether = bot:GetAbilityByName("wisp_tether_break")
 local function HasHealingEffect(hero)
     return HasAnyEffect(
         hero,
@@ -158,41 +173,41 @@ end
 local function considerRelocate()
     return BotActionDesire.None, nil
 end
+local function SkillsComplement()
+    if jmz.CanNotUseAbility(bot) or bot:IsInvisible() then
+        return
+    end
+    local tetherDesire, tetherLocation = considerTether()
+    if tetherDesire > 0 and tetherLocation then
+        bot:Action_UseAbilityOnEntity(abilityTether, tetherLocation)
+        stateTetheredHero = tetherLocation
+        return
+    end
+    local overchargeDesire = considerOvercharge()
+    if overchargeDesire > 0 then
+        bot:Action_UseAbility(abilityOvercharge)
+        return
+    end
+    local spiritsDesire = considerSpirits()
+    if spiritsDesire > 0 then
+        bot:Action_UseAbility(abilitySpirits)
+        return
+    end
+    local relocateDesire, relocateTarget = considerRelocate()
+    if relocateDesire and relocateTarget ~= nil then
+        bot:Action_UseAbilityOnLocation(abilityRelocate, relocateTarget)
+    end
+end
+local function MinionThink(hMinionUnit, _)
+    if minion.IsValidUnit(hMinionUnit) then
+        minion.IllusionThink(hMinionUnit)
+    end
+end
 local ____exports = {
-    SkillsComplement = function()
-        if jmz.CanNotUseAbility(bot) or bot:IsInvisible() then
-            return
-        end
-        local tetherDesire, tetherLocation = considerTether()
-        if tetherDesire > 0 and tetherLocation then
-            bot:Action_UseAbilityOnEntity(abilityTether, tetherLocation)
-            stateTetheredHero = tetherLocation
-            return
-        end
-        local overchargeDesire = considerOvercharge()
-        if overchargeDesire > 0 then
-            bot:Action_UseAbility(abilityOvercharge)
-            return
-        end
-        local spiritsDesire = considerSpirits()
-        if spiritsDesire > 0 then
-            bot:Action_UseAbility(abilitySpirits)
-            return
-        end
-        local relocateDesire, relocateTarget = considerRelocate()
-        if relocateDesire and relocateTarget ~= nil then
-            bot:Action_UseAbilityOnLocation(abilityRelocate, relocateTarget)
-        end
-    end,
+    SkillsComplement = SkillsComplement,
+    MinionThink = MinionThink,
     sSellList = sellList,
-    sBuyList = roleItemBuyList[role],
-    MinionThink = function(hMinionUnit, _)
-        if Minion.IsValidUnit(hMinionUnit) then
-            Minion.IllusionThink(hMinionUnit)
-        end
-    end,
-    bDefaultAbility = false,
-    bDefaultItem = false,
-    sSkillList = skillBuildList
+    sBuyList = itemBuildList,
+    sSkillList = fullSkillBuildList
 }
 return ____exports

@@ -28,7 +28,11 @@ local defaultTeams = {
     {name = "AzureRay", players = {"Eurus", "Somnus丶M", "Yang", "Fy", "xNova"}},
     {name = "Blacklist", players = {"Raven", "Karl", "Kuku", "TIMS", "Eyyou"}},
     {name = "VirtusPro", players = {"RAMZES666", "kiyotaka", "MieRo", "Antares", "Solo"}},
-    {name = "Additionals", players = { -- not really an actual team but random names in case there is a need to more names in a team e.g. 12 v 12
+    {name = "9Pandas", players = {"RAMZES666", "kiyotaka", "MieRo", "Antares", "Solo"}}, -- Updated team from 2024
+    {name = "TeamSMG", players = {"MidOne", "Moon", "Masaros", "Ahfu", "Raging Potato"}}, -- Team from SEA region, rising in 2024
+    {name = "KeydStars", players = {"4dr", "Tavo", "hFn", "KJ", "mini"}}, -- Brazilian team prominent in 2024
+    {name = "ThunderAwaken", players = {"Panda", "DarkMago", "Sacred", "Matthew", "Pakazs"}}, -- Updated for 2024 with roster changes
+    {name = "Additionals", players = {
         "Azazel", "Lucifer", "Belial", "Lilith", "Diablo", "Mephisto", "Asmodeus", "Beelzebub", "Samael", "Abaddon", "Mammon", "Astaroth",
         "Leviathan", "Moloch", "Belphegor", "Apollyon", "Gorgoth", "Zaganthar", "Nyxoloth", "Malphas", "Inferno", "Darkfire", "Shadowblade",
         "Nightmare", "Hellspawn", "Bloodlust", "Doombringer", "Soulreaper", "Deathbringer", "Lightbringer", "Celestial", "Heavenly", "Seraphim",
