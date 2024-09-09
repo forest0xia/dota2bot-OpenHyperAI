@@ -134,7 +134,7 @@ export const nTowerList = [
     Tower.Mid1,
     Tower.Bot1,
     Tower.Top2,
-    Tower.Mi2,
+    Tower.Mid2,
     Tower.Bot2,
     Tower.Top3,
     Tower.Mid3,

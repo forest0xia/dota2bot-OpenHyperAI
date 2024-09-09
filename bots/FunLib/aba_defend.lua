@@ -211,7 +211,7 @@ function ____exports.GetEnemyCountInLane(lane, isHero)
         0
     )
 end
-furthestBuildings = {[Lane.Top] = {towers = {{id = Tower.Top1, mulMax = 0.5, mulMin = 1}, {id = Tower.Top2, mulMax = 1, mulMin = 2}, {id = Tower.Top3, mulMax = 1.5, mulMin = 2}}, barracks = {Barracks.TopMelee, Barracks.TopRanged}}, [Lane.Bot] = {towers = {{id = Tower.Bot1, mulMax = 0.5, mulMin = 1}, {id = Tower.Bot2, mulMax = 1, mulMin = 2}, {id = Tower.Bot3, mulMax = 1.5, mulMin = 2}}, barracks = {Barracks.BotMelee, Barracks.BotRanged}}, [Lane.Mid] = {towers = {{id = Tower.Mid1, mulMax = 0.5, mulMin = 1}, {id = Tower.Mi2, mulMax = 1, mulMin = 2}, {id = Tower.Mid3, mulMax = 1.5, mulMin = 2}}, barracks = {Barracks.MidMelee, Barracks.MidRanged}}}
+furthestBuildings = {[Lane.Top] = {towers = {{id = Tower.Top1, mulMax = 0.5, mulMin = 1}, {id = Tower.Top2, mulMax = 1, mulMin = 2}, {id = Tower.Top3, mulMax = 1.5, mulMin = 2}}, barracks = {Barracks.TopMelee, Barracks.TopRanged}}, [Lane.Bot] = {towers = {{id = Tower.Bot1, mulMax = 0.5, mulMin = 1}, {id = Tower.Bot2, mulMax = 1, mulMin = 2}, {id = Tower.Bot3, mulMax = 1.5, mulMin = 2}}, barracks = {Barracks.BotMelee, Barracks.BotRanged}}, [Lane.Mid] = {towers = {{id = Tower.Mid1, mulMax = 0.5, mulMin = 1}, {id = Tower.Mid2, mulMax = 1, mulMin = 2}, {id = Tower.Mid3, mulMax = 1.5, mulMin = 2}}, barracks = {Barracks.MidMelee, Barracks.MidRanged}}}
 PING_TIME_DELTA = 5
 local TELEPORT_SLOT = 15
 local ENEMY_SEARCH_RANGE = 1400

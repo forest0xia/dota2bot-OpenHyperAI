@@ -37,7 +37,7 @@ const furthestBuildings = {
     [Lane.Mid]: {
         towers: [
             { id: Tower.Mid1, mulMax: 0.5, mulMin: 1 },
-            { id: Tower.Mi2, mulMax: 1, mulMin: 2 },
+            { id: Tower.Mid2, mulMax: 1, mulMin: 2 },
             { id: Tower.Mid3, mulMax: 1.5, mulMin: 2 },
         ],
         barracks: [Barracks.MidMelee, Barracks.MidRanged],
