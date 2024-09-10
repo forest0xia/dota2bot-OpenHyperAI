@@ -1,14 +1,23 @@
 /**
- * 
+ *
  * Here is a set of simple but critial utilities that should be able to get imported to any other files without causing any circular dependency.
  * This lua file should NOT have any dependency libs or files if possible, to avoid circular dependency.
- * 
- * Anything that can be shared in any files without worrying about nested or circular dependency can be added to this file. 
+ *
+ * Anything that can be shared in any files without worrying about nested or circular dependency can be added to this file.
  * Can gradually migrate functions into this file as well.
- * 
+ *
  */
 
-import { BotActionType, Ping, Team, Unit, UnitType, Vector } from "../ts_libs/dota";
+import {
+    BotActionType,
+    Ping,
+    Team,
+    Unit,
+    UnitType,
+    Vector,
+} from "../ts_libs/dota";
+import { GameState } from "bots/ts_libs/bots";
+import { add, multiply, sub } from "bots/ts_libs/utils/native-operators";
 
 export const DebugMode = false;
 
@@ -35,8 +44,10 @@ export const BuggyHeroesDueToValveTooLazy = {
 };
 
 // Some gaming state keepers to keep a record of different states to avoid recomupte or anything.
-export const GameStates = { };
-export const LoneDruid = { };
+export const GameStates: GameState = {
+    defendPings: null,
+};
+export const LoneDruid = {};
 export const FrameProcessTime = 0.05;
 
 export function PrintTable(tbl: any | null, indent: number = 0) {
@@ -44,7 +55,7 @@ export function PrintTable(tbl: any | null, indent: number = 0) {
         print("nil");
         return;
     }
-    
+
     for (const [key, value] of Object.entries(tbl)) {
         const prefix = string.rep("  ", indent) + key + ": ";
         if (type(value) == "table") {
@@ -52,7 +63,10 @@ export function PrintTable(tbl: any | null, indent: number = 0) {
                 print(prefix);
                 PrintTable(value, indent + 1);
             } else {
-                print(prefix + "[WARN] Table has deep nested tables in it, stop printing more nested tables.");
+                print(
+                    prefix +
+                        "[WARN] Table has deep nested tables in it, stop printing more nested tables."
+                );
             }
         } else {
             print(prefix + value);
@@ -65,7 +79,9 @@ export function PrintUnitModifiers(unit: Unit) {
     for (let i = 0; i < modifierCount; i++) {
         const modifierName = unit.GetModifierName(i);
         const stackCount = unit.GetModifierStackCount(i);
-        print(`Unit ${unit.GetUnitName()} has modifier ${modifierName} with stack count ${stackCount}`);
+        print(
+            `Unit ${unit.GetUnitName()} has modifier ${modifierName} with stack count ${stackCount}`
+        );
     }
 }
 
@@ -135,8 +151,8 @@ export function GetHumanPing(): LuaMultiReturn<[Unit, Ping] | [null, null]> {
 export function IsPingedByAnyPlayer(
     bot: Unit,
     pingTimeGap: number,
-    minDistance: number,
-    maxDistance: number
+    minDistance: number | null,
+    maxDistance: number | null
 ): Ping | null {
     if (!bot.IsAlive()) {
         return null;
@@ -145,8 +161,8 @@ export function IsPingedByAnyPlayer(
     const pings = [];
     const teamPlayerIds = GetTeamPlayers(GetTeam());
 
-    minDistance = minDistance || 1500
-    maxDistance = maxDistance || 10000
+    minDistance = minDistance || 1500;
+    maxDistance = maxDistance || 10000;
 
     for (const [index, _] of teamPlayerIds.entries()) {
         const teamMember = GetTeamMember(index);
@@ -166,12 +182,15 @@ export function IsPingedByAnyPlayer(
 
     for (const ping of pings) {
         const distanceToBot = GetLocationToLocationDistance(
-            ping.location, bot.GetLocation());
-        const withinRange = minDistance <= distanceToBot && distanceToBot <= maxDistance;
+            ping.location,
+            bot.GetLocation()
+        );
+        const withinRange =
+            minDistance <= distanceToBot && distanceToBot <= maxDistance;
         const withinTimeRange = GameTime() - ping.time < pingTimeGap;
         if (
-            withinRange 
-            && withinTimeRange 
+            withinRange &&
+            withinTimeRange
             // && ping.player_id != -1
         ) {
             print(`Bot ${bot.GetUnitName()} noticed the ping`);
@@ -193,14 +212,12 @@ export function IsValidUnit(target: Unit): boolean {
 
 // check if the target is a valid hero.
 export function IsValidHero(target: Unit): boolean {
-	return IsValidUnit(target)
-	&& target.IsHero()
+    return IsValidUnit(target) && target.IsHero();
 }
 
 // check if the target is a valid building.
 export function IsValidBuilding(target: Unit): boolean {
-	return IsValidUnit(target)
-	&& target.IsBuilding()
+    return IsValidUnit(target) && target.IsBuilding();
 }
 
 export function HasItem(bot: Unit, itemName: string): boolean {
@@ -210,10 +227,7 @@ export function HasItem(bot: Unit, itemName: string): boolean {
 
 export function FindAllyWithName(name: string): Unit | null {
     for (const ally of GetUnitList(UnitType.AlliedHeroes)) {
-        if (
-            IsValidHero(ally) &&
-            string.find(ally.GetUnitName(), name)
-        ) {
+        if (IsValidHero(ally) && string.find(ally.GetUnitName(), name)) {
             return ally;
         }
     }
@@ -240,7 +254,10 @@ export function Deepcopy<T extends ArrayLike<unknown>>(orig: T): T {
             // @ts-ignore
             copy[Deepcopy(key)] = Deepcopy(value);
         }
-        setmetatable(copy as object, Deepcopy(getmetatable(orig) as any) as object);
+        setmetatable(
+            copy as object,
+            Deepcopy(getmetatable(orig) as any) as object
+        );
     } else {
         // number, string, boolean, etc.
         copy = orig;
@@ -441,28 +458,13 @@ export function IsBear(unit: Unit) {
     return IsUnitWithName(unit, "lone_druid_bear");
 }
 
-function subVectors(a: Vector, b: Vector): Vector {
-    // @ts-ignore
-    return a - b;
-}
-
-function addVectors(a: Vector, b: Vector): Vector {
-    // @ts-ignore
-    return a + b;
-}
-
-function multiplyVectors(a: Vector, b: Vector | number): Vector {
-    // @ts-ignore
-    return a * b;
-}
-
 export function GetOffsetLocationTowardsTargetLocation(
     initLoc: Vector,
     targetLoc: Vector,
     offsetDist: number
 ) {
-    const direrction = subVectors(targetLoc, initLoc).Normalized();
-    return addVectors(initLoc, multiplyVectors(direrction, offsetDist));
+    const direrction = sub(targetLoc, initLoc).Normalized();
+    return add(initLoc, multiply(direrction, offsetDist));
 }
 
 export function TimeNeedToHealHP(bot: Unit): number {
@@ -479,9 +481,13 @@ export function HasAnyEffect(unit: Unit, ...effects: string[]) {
 
 export function IsModeTurbo(): boolean {
     for (const u of GetUnitList(UnitType.Allies)) {
-        if (u && u.GetUnitName() === 'npc_dota_courier' && u.GetCurrentMovementSpeed() === 1100) {
+        if (
+            u &&
+            u.GetUnitName() === "npc_dota_courier" &&
+            u.GetCurrentMovementSpeed() === 1100
+        ) {
             return true;
         }
     }
     return false;
-};
+}

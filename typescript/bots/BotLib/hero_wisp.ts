@@ -1,12 +1,12 @@
 import * as jmz from "../FunLib/jmz_func";
 import {
-    BotSetup, 
-    BotRole, 
-    ItemBuilds, 
+    BotSetup,
+    BotRole,
+    ItemBuilds,
     SkillBuilds,
     TalentBuilds,
     TalentTreeBuild,
- } from "../ts_libs/bots";
+} from "../ts_libs/bots";
 import {
     BotActionDesire,
     BotMode,
@@ -32,7 +32,7 @@ const roleSkillBuildList: SkillBuilds = {
     pos_3: defaultAbilityBuild,
     pos_4: defaultAbilityBuild,
     pos_5: defaultAbilityBuild,
-}
+};
 const skillBuildList = roleSkillBuildList[role];
 
 // Construct for talent skills.
@@ -42,14 +42,14 @@ const defaultTalentTree: TalentTreeBuild = {
     t20: [10, 0],
     t15: [0, 10],
     t10: [0, 10],
-}
+};
 const roleTalentBuildList: TalentBuilds = {
     pos_1: defaultTalentTree,
     pos_2: defaultTalentTree,
     pos_3: defaultTalentTree,
     pos_4: defaultTalentTree,
     pos_5: defaultTalentTree,
-}
+};
 const talentBuildList = jmz.Skill.GetTalentBuild(roleTalentBuildList[role]);
 
 // Aggregate all talents and abilities to a single consective skill build list.
@@ -112,19 +112,15 @@ const roleItemBuyList: ItemBuilds = {
         "item_ultimate_scepter_2",
     ],
 };
-const itemBuildList: string[] = roleItemBuyList[role]
+const itemBuildList: string[] = roleItemBuyList[role];
 
-const sellList: string[] = [
-    "item_black_king_bar",
-    "item_quelling_blade",
-];
+const sellList: string[] = ["item_black_king_bar", "item_quelling_blade"];
 
 const abilityTether = bot.GetAbilityByName(allAbilitiesList[0]);
 const abilitySpirits = bot.GetAbilityByName(allAbilitiesList[1]);
 const abilityOvercharge = bot.GetAbilityByName(allAbilitiesList[2]);
 const abilityRelocate = bot.GetAbilityByName(allAbilitiesList[5]);
-const abilityBreakTether = bot.GetAbilityByName('wisp_tether_break')
-
+const abilityBreakTether = bot.GetAbilityByName("wisp_tether_break");
 
 function HasHealingEffect(hero: Unit) {
     return HasAnyEffect(hero, "modifier_tango_heal", ...hero_is_healing);
@@ -202,7 +198,7 @@ function considerSpirits(): number {
 }
 
 function considerRelocate(): LuaMultiReturn<[number, Location | null]> {
-    return $multi(BotActionDesire.None, null)
+    return $multi(BotActionDesire.None, null);
 }
 
 function SkillsComplement() {

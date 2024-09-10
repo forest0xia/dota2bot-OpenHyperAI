@@ -3,11 +3,11 @@
  */
 
 import { Unit, Vector } from "./interfaces";
-import { Team, UnitType } from ".";
+import { Lane, Team, UnitType } from ".";
 
 declare global {
     function print(...args: any[]): void;
-    
+
     function GetBot(): Unit;
 
     function GetOpposingTeam(): Team;
@@ -33,13 +33,29 @@ declare global {
     function DotaTime(): number;
 
     function GetHeroLevel(playerId: number): number;
-    function GetTower(team: Team, tower: number): Unit | undefined;
+    function GetTower(team: Team, tower: number): Unit | null;
+    function GetBarracks(team: Team, barracks: number): Unit | null;
     function GetUnitToUnitDistance(unit1: Unit, unit2: Unit): number;
     function GetUnitToLocationDistance(unit: Unit, location: Vector): number;
     function GetAncient(team: Team): Unit;
     function GetHeroKills(playerId: number): number;
     function GetHeroDeaths(playerId: number): number;
     function GetNeutralSpawners(): any;
+    function GetLaneFrontLocation(
+        team: Team,
+        lane: Lane,
+        deltaFromFront: number
+    ): Vector;
+    function RandomVector(length: number): Vector;
+    function Clamp(value: number, min: number, max: number): number;
+    function RemapValClamped(
+        value: number,
+        fromMin: number,
+        fromMax: number,
+        toMin: number,
+        toMax: number
+    ): number;
+    function GetDefendLaneDesire(lane: Lane): number;
 }
 
 export {};
