@@ -1,5 +1,33 @@
-local ____lualib = require("lualib_bundle")
-local __TS__ArrayReduce = ____lualib.__TS__ArrayReduce
+--[[ Generated with https://github.com/TypeScriptToLua/TypeScriptToLua ]]
+-- Lua Library inline imports
+local function __TS__CountVarargs(...)
+    return select("#", ...)
+end
+
+local function __TS__ArrayReduce(self, callbackFn, ...)
+    local len = #self
+    local k = 0
+    local accumulator = nil
+    if __TS__CountVarargs(...) ~= 0 then
+        accumulator = ...
+    elseif len > 0 then
+        accumulator = self[1]
+        k = 1
+    else
+        error("Reduce of empty array with no initial value", 0)
+    end
+    for i = k + 1, len do
+        accumulator = callbackFn(
+            nil,
+            accumulator,
+            self[i],
+            i - 1,
+            self
+        )
+    end
+    return accumulator
+end
+-- End of Lua Library inline imports
 local ____exports = {}
 local furthestBuildings, PING_TIME_DELTA
 local jmz = require("bots.FunLib.jmz_func")
@@ -40,7 +68,7 @@ function ____exports.GetDefendDesireHelper(bot, lane)
     ) >= 3 or jmz.IsDoingTormentor(bot) and #jmz.GetAlliesNearLoc(
         jmz.GetTormentorLocation(team),
         900
-    ) >= 2 and #jmz.GetEnemiesAroundAncient() > 0 then
+    ) >= 2 and jmz.GetEnemiesAroundAncient(2200) > 0 then
         return BotModeDesire.None
     end
     local botLevel = bot:GetLevel()
@@ -97,11 +125,11 @@ function ____exports.GetDefendDesireHelper(bot, lane)
             defendDesire = 0.966
         end
     end
-    local enemiesAroundAncient = jmz.GetEnemiesAroundAncient()
+    local enemiesAroundAncient = jmz.GetEnemiesAroundAncient(2200)
     local ancientDefendDesire = BotModeDesire.Absolute
     local midTowerDestroyed = GetTower(team, Tower.Mid3) == nil
     local laneTowersDestroyed = GetTower(team, Tower.Top3) == nil and GetTower(team, Tower.Bot3) == nil
-    if #enemiesAroundAncient >= 1 and (midTowerDestroyed or laneTowersDestroyed) and lane == Lane.Mid then
+    if enemiesAroundAncient >= 1 and (midTowerDestroyed or laneTowersDestroyed) and lane == Lane.Mid then
         defendDesire = defendDesire + ancientDefendDesire
     elseif defendDesire ~= 0.966 then
         local multiplier = ____exports.GetEnemyAmountMul(lane)

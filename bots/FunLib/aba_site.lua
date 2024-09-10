@@ -108,6 +108,7 @@ local HasItem = ____utils.HasItem
 local GetLocationToLocationDistance = ____utils.GetLocationToLocationDistance
 local GetOffsetLocationTowardsTargetLocation = ____utils.GetOffsetLocationTowardsTargetLocation
 local IsModeTurbo = ____utils.IsModeTurbo
+local IsValidCreep = ____utils.IsValidCreep
 local visionRad = 2000
 local trueSightRad = 1000
 local RADIANT_RUNE_WARD = Vector(2606, -1547, 0)
@@ -438,9 +439,6 @@ end
 ____exports.IsShouldFarmHero = function(bot)
     return ____exports.GetPosition(bot) <= 1
 end
-____exports.IsValidCreep = function(nUnit)
-    return nUnit ~= nil and nUnit:IsAlive() and nUnit:GetHealth() < 5000 and (GetBot():GetLevel() > 9 or not nUnit:IsAncientCreep())
-end
 ____exports.HasArmorReduction = function(nUnit)
     return nUnit:HasModifier("modifier_templar_assassin_meld_armor") or nUnit:HasModifier("modifier_item_medallion_of_courage_armor_reduction") or nUnit:HasModifier("modifier_item_solar_crest_armor_reduction") or nUnit:HasModifier("modifier_slardar_amplify_damage")
 end
@@ -475,7 +473,7 @@ ____exports.IsTheClosestOne = function(bot, loc)
     return closestMember == bot
 end
 ____exports.GetNearestCreep = function(creepList)
-    if ____exports.IsValidCreep(creepList[1]) then
+    if IsValidCreep(creepList[1]) then
         return creepList[1]
     end
     return nil
@@ -487,7 +485,7 @@ ____exports.GetMaxHPCreep = function(creepList)
         if not creep:IsNull() and ____exports.HasArmorReduction(creep) then
             return creep
         end
-        if ____exports.IsValidCreep(creep) and creep:GetHealth() > maxHP then
+        if IsValidCreep(creep) and creep:GetHealth() > maxHP then
             maxHP = creep:GetHealth()
             targetCreep = creep
         end
@@ -501,7 +499,7 @@ ____exports.GetMinHPCreep = function(creepList)
         if not creep:IsNull() and ____exports.HasArmorReduction(creep) then
             return creep
         end
-        if ____exports.IsValidCreep(creep) and creep:GetHealth() < minHP then
+        if IsValidCreep(creep) and creep:GetHealth() < minHP then
             minHP = creep:GetHealth()
             targetCreep = creep
         end

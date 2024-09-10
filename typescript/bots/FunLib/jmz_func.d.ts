@@ -63,7 +63,7 @@ declare function GetTormentorLocation(team: Team): Vector;
 
 declare function GetAlliesNearLoc(location: Vector, radius: number): Unit[];
 
-declare function GetEnemiesAroundAncient(): Unit[];
+declare function GetEnemiesAroundAncient(radius: number | null): number;
 
 declare function IsPingCloseToValidTower(
     team: Team,

@@ -185,7 +185,7 @@ end
 
 local originalGetNearbyHeroes = CDOTA_Bot_Script.GetNearbyHeroes
 function CDOTA_Bot_Script:GetNearbyHeroes(nRadius, bEnemies, nMode)
-    if not self:CanBeSeen() or not self:IsHero() then
+    if not self:CanBeSeen() then
 		-- print("GetNearbyHeroes has been called on unit can't be seen")
 		-- print("Stack Trace:", debug.traceback())
 		return nil

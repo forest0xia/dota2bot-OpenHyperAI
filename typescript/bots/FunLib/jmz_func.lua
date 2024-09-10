@@ -4508,19 +4508,62 @@ function J.NumHumanBotPlayersInTeam()
 	return nHuman, nBot
 end
 
-function J.GetEnemiesAroundAncient()
-	local nUnitList = {}
+function J.GetEnemiesAroundAncient(nRadius)
+	-- local nUnitList = {}
+
+	-- for _, unit in pairs(GetUnitList(UNIT_LIST_ENEMIES))
+	-- do
+	-- 	if J.IsValid(unit)
+	-- 	and GetUnitToUnitDistance(unit, GetAncient(GetTeam())) <= 2500
+	-- 	then
+	-- 		table.insert(nUnitList, creep)
+	-- 	end
+	-- end
+
+	-- return nUnitList
+
+	if not nRadius then nRadius = 2000 end
+
+	local nUnitCount = 0
+
+	-- Check Heroes. 
+	for _, id in pairs(GetTeamPlayers(GetOpposingTeam())) do
+		if IsHeroAlive(id) then
+			local info = GetHeroLastSeenInfo(id)
+			if info ~= nil then
+				local dInfo = info[1]
+				if dInfo ~= nil
+				and GetUnitToLocationDistance(GetAncient(GetTeam()), dInfo.location) <= nRadius
+				and dInfo.time_since_seen < 5.0
+				then
+					nUnitCount = nUnitCount + 1
+				end
+			end
+		end
+	end
 
 	for _, unit in pairs(GetUnitList(UNIT_LIST_ENEMIES))
 	do
 		if J.IsValid(unit)
-		and GetUnitToUnitDistance(unit, GetAncient(GetTeam())) <= 2500
+		and GetUnitToUnitDistance(unit, GetAncient(GetTeam())) <= nRadius
 		then
-			table.insert(nUnitList, creep)
+			local unitName = unit:GetUnitName()
+			if unit:IsCreep() then
+				nUnitCount = nUnitCount + 0.5
+			elseif string.find(unitName, 'upgraded') then
+				nUnitCount = nUnitCount + 1
+			elseif string.find(unitName, 'warlock_golem') then
+				nUnitCount = nUnitCount + 1
+			elseif string.find(unitName, 'lone_druid_bear') then
+				nUnitCount = nUnitCount + 2
+			elseif string.find(unitName, 'shadow_shaman_ward') then
+				nUnitCount = nUnitCount + 2
+			end
 		end
 	end
 
-	return nUnitList
+	return nUnitCount
+
 end
 
 function J.GetCurrentRoshanLocation()

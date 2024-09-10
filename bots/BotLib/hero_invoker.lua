@@ -113,6 +113,9 @@ X['sSellList'] = {
 
 	"item_ultimate_scepter",
 	"item_magic_wand",
+
+	"item_sheepstick",
+	"item_hand_of_midas",
 }
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_antimage' }, {} end

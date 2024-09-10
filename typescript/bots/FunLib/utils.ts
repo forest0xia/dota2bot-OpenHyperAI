@@ -215,6 +215,15 @@ export function IsValidHero(target: Unit): boolean {
     return IsValidUnit(target) && target.IsHero();
 }
 
+export function IsValidCreep(target: Unit): boolean {
+    return (
+        IsValidUnit(target) &&
+        target.GetHealth() < 5000 &&
+        !target.IsHero() &&
+        (GetBot().GetLevel() > 9 || !target.IsAncientCreep())
+    );
+};
+
 // check if the target is a valid building.
 export function IsValidBuilding(target: Unit): boolean {
     return IsValidUnit(target) && target.IsBuilding();

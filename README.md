@@ -1,13 +1,25 @@
-### We love bot games!
+## We love bot games!
 
 We love bot games! There is currently a Valve side bug, [CRITICAL] in order to play the script you need to create a Lobby and select "Local Host" as Server Location. To enable enhanced challenging mode, follow the steps on Workshop page to correctly install this script. The bots in game should have names with suffix ".OHA" when installed correctly.
-Thanks and kudos to all that contributed to make bot games fun and exciting.
-
-The goal of this script is to: 1. Share the most up to date functionalities that we've implemented/fixed to keep the bot games challenging, 2. For players to have fun with chill by playing/practicing against the bots that can play ALL Dota2 heroes.
 
 Bot script in Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=3246316298
 
-### Why it's enjoyable
+#### Script introduction in other languages:
+1. [中文介绍](https://steamcommunity.com/workshop/filedetails/discussion/3246316298/4764334012740794651/)
+1. [Введение на русском](https://steamcommunity.com/workshop/filedetails/discussion/3246316298/4764334012740807463/)
+1. [Introducción en español](https://steamcommunity.com/workshop/filedetails/discussion/3246316298/4764334012740863589/)
+1. [Introdução em português](https://steamcommunity.com/workshop/filedetails/discussion/3246316298/4764334012740872368/)
+1. If you still have language problems, copy the content and paste to https://chatgpt.com/ or other tools to translate words to your language.
+
+Thanks and kudos to all that contributed to make bot games fun and exciting.
+
+#### The goal of this script is to: 
+1. Share the most up to date functionalities that we've implemented/fixed to keep the bot games challenging, 
+1. For players to have fun with chill by playing/practicing against the bots that can play ALL Dota2 heroes. 
+1. Bots are meant to be for chill games, if you are looking for more competitive bots than the existing ones, please stop complaining and help us build it with constructive effort.
+
+
+## Why it's enjoyable
 0. Support 7.37
 1. Support ALL 125 heroes! You will see bots playing Ringmaster, Invoker, Techies, Meepo, Lone Druid, Dark Willow, Hoodwink, io, Muerta, Primal Beast, etc. Just note that some of the newly added ones are not very strong and in progress to be further enhanced.
 1. Bots are customizable . E.g. you can easily set ban / picks for bots, change their names, etc. Check out the file in [bots/Customize/general.lua](bots/Customize/general.lua), or in local Workshop directory: `<steam folder>\steamapps\workshop\content\570\3246316298\Customize\general.lua`
@@ -18,11 +30,11 @@ Bot script in Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails
 1. All supported heroes in this script can play any position roles. Heroes will go to any lane they are assigned. The laning or pos of the bot heroes will seem random in the game, but it's deterministic - check the Bot roles section below.
 1. Fixed tons of bugs. Bugs that can cause bots to stay idle or cancel it's own channeling spells or stuck on weird states.
 
-### How to install this script?
+## How to install this script?
 1. There is currently a bug on Valve side that new bot scripts can only work in Custom Lobby with "Local Host" as the Server Location.
 2. This script can boost bots with huge unfair advantage that make the game much harder. You must manually install this script, please follow the instruction here: https://steamcommunity.com/workshop/filedetails/discussion/3246316298/6197594023017709799/
 
-### Bot roles, lanings and positioning
+## Bot roles, lanings and positioning
 1. In local lobby, the positions of the bots are the same as the order of the slots: 1, 2, 3, 4, 5 from top to bottom in the lobby.
 1. Support multiple in-game commands:
    1. `!pos X` You can type: `!pos X` to swap the position with a bot. For example: `!pos 2` to swap role and lane with the bot that's going to mid.
@@ -36,12 +48,12 @@ Bot script in Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails
 1. You can change bot ban/picks, and roles, etc easily and permanently. Check out the file in [bots/Customize/general.lua](bots/Customize/general.lua)
 1. Pos1 and Pos5 bots go to safe lane. Pos3 and Pos4 bots go offlane. Pos2 bot goes to mid lane.
 
-### If you want to contribute to this script
+## If you want to contribute to this script
 1. Please feel very welcome to contribute to the Github repo any time you like. Just update the logic and create a pull request.
 1. Future development work for this script will be written in typescript as possible: [typescript/README](typescript/README.md).
 1. The typescipt source code is as well work-in-progress, feel free to convert more lua files to ts, and add libs/modules as you feel necessary.
 
-### What's next
+## What's next
 0. Ultimately, the bots play style is static/fixed with the current AI approach provided by Valve at the moment. We need machine learning AI bots! Just like the AIs we’ve seen from OpenAI Five.
 1. Follow up on https://www.reddit.com/r/DotA2/comments/1ezxpav/a_note_to_valve_official_regarding_bot_scripts/
 1. Maybe traning machine learning AI.
@@ -51,10 +63,10 @@ Bot script in Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails
 1. More code bug fixes.
 1. Figure out how to better support the Bugged-Heroes: Dark Willow, Elder Titan, Hoodwink, io, Lone Druid, Marci, Muerta, Primal Beast. Note that they are buggy due to problems on the Valves side, not script developers.
 
-### Support the script
+## Support the script
 If you'd like to buy me a coffee: https://steamcommunity.com/workshop/filedetails/discussion/3246316298/6553383644012991605/
 
-### Useful resources:
+## Useful resources:
 - Posts shared by Ranked Matchmaking AI author: https://www.adamqqq.com/ai/dota2-ai-devlopment-tutorial.html
 - Official Bot side script intro: https://developer.valvesoftware.com/wiki/Dota_Bot_Scripting
 - Lua (Bots side) APIs: https://docs.moddota.com/lua_bots/
@@ -63,7 +75,7 @@ If you'd like to buy me a coffee: https://steamcommunity.com/workshop/filedetail
 - Bot modifier names: https://developer.valvesoftware.com/wiki/Dota_2_Workshop_Tools/Scripting/Built-In_Modifier_Names
 - Dota2 data mining (details of items, abilities, heroes): https://github.com/muk-as/DOTA2_WEB/blob/master/dota2_web/Items_cn.json
 
-### Credits to
+## Credits to
 This script is based on Valve's default bot script and many other people's work and their scripts. That being said, this is a partial override not completely take over bot script. It takes the advantages of some other existing bot scripts and aims to be a better off script than the existing ones. We hope the bot's decision making and team strategies are more effective and brings more joy to you.
 
 - Tinkering ABout (by @ryndrb: https://github.com/ryndrb/dota2bot or https://steamcommunity.com/sharedfiles/filedetails/?id=3139791706). This is a script derived from Tinkering ABout. But the code has diverged significantly w.r.t roles, item selection, farming, laning, roaming, push, defend, rosh/runes strategies, as well as the local support with Fretbots. Presumably the future maintenance will keep diverging even more.
@@ -74,7 +86,7 @@ This script is based on Valve's default bot script and many other people's work 
 - ExtremePush (https://github.com/insraq/dota2bots)
 - All other bot script authors/contributors that had made bot scripts interesting.
 
-### Things to be updated (not ranked by priority, ChatGPT translated to English):
+## Things to be updated (not ranked by priority, ChatGPT translated to English):
 - less farming, more group push in late games.
 - focus more on tower and base in push.
 - use tango or something to escape from Prophet first spell trees

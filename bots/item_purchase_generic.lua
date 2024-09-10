@@ -834,7 +834,7 @@ function ItemPurchaseThink()
 			bot.lastInvCheck = currentTime
 
 			-- and can't finish even with lots of gold
-			if bot:GetGold() > 5000 and bot:GetGold() > GetItemCost(bot.currentItemToBuy) * 3 and GetItemCost(bot.currentItemToBuy) >= 100 then
+			if botGold > 5500 or (botGold > GetItemCost(bot.currentItemToBuy) * 3 and GetItemCost(bot.currentItemToBuy) >= 100 and botGold >= 2000) then
 				bot.countInvCheck = bot.countInvCheck + 1
 			end
 		end

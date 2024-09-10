@@ -14,6 +14,7 @@ import {
     GetLocationToLocationDistance,
     GetOffsetLocationTowardsTargetLocation,
     IsModeTurbo,
+    IsValidCreep,
 } from "../FunLib/utils";
 
 const visionRad = 2000; //--假眼查重范围
@@ -450,14 +451,6 @@ export const IsSpecialFarmer = function (bot: Unit): boolean {
 };
 export const IsShouldFarmHero = function (bot: Unit): boolean {
     return GetPosition(bot) <= 1;
-};
-export const IsValidCreep = function (nUnit: Unit | undefined): boolean {
-    return (
-        nUnit !== undefined &&
-        nUnit.IsAlive() &&
-        nUnit.GetHealth() < 5000 &&
-        (GetBot().GetLevel() > 9 || !nUnit.IsAncientCreep())
-    );
 };
 export const HasArmorReduction = function (nUnit: Unit): boolean {
     return (

@@ -519,6 +519,9 @@ end
 function ____exports.IsValidHero(target)
     return ____exports.IsValidUnit(target) and target:IsHero()
 end
+function ____exports.IsValidCreep(target)
+    return ____exports.IsValidUnit(target) and target:GetHealth() < 5000 and not target:IsHero() and (GetBot():GetLevel() > 9 or not target:IsAncientCreep())
+end
 function ____exports.IsValidBuilding(target)
     return ____exports.IsValidUnit(target) and target:IsBuilding()
 end

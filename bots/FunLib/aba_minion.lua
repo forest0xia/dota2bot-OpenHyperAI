@@ -1171,6 +1171,10 @@ end
 
 -- MINION THINK
 function X.MinionThink(hMinionUnit, aBot)
+	if bot.lastMinionFrameProcessTime == nil then bot.lastMinionFrameProcessTime = DotaTime() end
+	if DotaTime() - bot.lastMinionFrameProcessTime < 0.1 then return end
+	bot.lastMinionFrameProcessTime = DotaTime()
+
 	bot = aBot
 	
 	if X.IsValidUnit(hMinionUnit)
