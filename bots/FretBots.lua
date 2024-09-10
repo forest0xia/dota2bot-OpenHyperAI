@@ -40,7 +40,7 @@ local playersLoadedTimerName = 'playersLoadedTimerName'
 local isAllPlayersSpawned = false
 local isDataTablesInitialized = false
 local playerSpawnCount = 0
-local playerLoadFailSafeDelta = 5
+local playerLoadFailSafeDelta = 10
 
 -- Starting this script is largely handled by the requires, as separate pieces start
 -- themselves. DataTables cannot be initialized until all players have loaded, so
@@ -68,8 +68,8 @@ function FretBots:PlayersLoadedTimer()
 	-- if all players are loaded, initialize datatables and stop timer
 	if isAllPlayersSpawned then
 		if not isDataTablesInitialized then
-			isDataTablesInitialized = true
 			DataTables:Initialize()
+			isDataTablesInitialized = true
 		end
 		if not Flags.isSettingsFinalized then
 			Debug:Print('Settings not finalized yet! Waiting.')

@@ -66,6 +66,13 @@ local courier = nil
 local t3AlreadyDamaged = false
 local t3Check = -90
 
+local function HasSufficientTp()
+	local tCharges = Item.GetItemCharges( bot, 'item_tpscroll' )
+	return tCharges >= 2
+		or (tCharges >= 1 and Item.HasItem( bot, 'item_travel_boots' ))
+		or (tCharges >= 1 and Item.HasItem( bot, 'item_travel_boots_2' ))
+end
+
 local function GeneralPurchase()
 
 	if bot.lastItemToBuy ~= bot.currentComponentToBuy
@@ -633,8 +640,7 @@ function ItemPurchaseThink()
 		and botHP < 0.08
 		and bot:GetHealth() >= 1
 		and bot:WasRecentlyDamagedByAnyHero( 3.1 )
-		and not Item.HasItem( bot, 'item_travel_boots' )
-		and not Item.HasItem( bot, 'item_travel_boots_2' )
+		and not HasSufficientTp()
 		and Item.GetItemCharges( bot, 'item_tpscroll' ) <= 2
 	then
 		bot:ActionImmediate_PurchaseItem( "item_tpscroll" )
@@ -644,8 +650,7 @@ function ItemPurchaseThink()
 	if currentTime > 4 * 60
 		and bot:GetCourierValue() <= 100
 		and botGold >= tpCost
-		and not Item.HasItem( bot, 'item_travel_boots' )
-		and not Item.HasItem( bot, 'item_travel_boots_2' )
+		and not HasSufficientTp()
 		and bot:GetUnitName() ~= "npc_dota_hero_meepo" -- don't let meepo buy tp
 		and bot:GetUnitName() ~= "npc_dota_hero_lone_druid_bear"
 	then

@@ -4,6 +4,7 @@
     "luaTarget": "5.1",
     "noImplicitSelf": true,
     "tstlVerbose": true,
+    "luaLibImport": "inline",
   },
   "compilerOptions": {
     "baseUrl": "./typescript",

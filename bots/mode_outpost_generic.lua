@@ -25,6 +25,7 @@ local EdictTowerTarget = nil
 
 local ShouldMoveOutsideFountain = false
 local ShouldMoveOutsideFountainCheckTime = 0
+local MoveOutsideFountainDistance = 1500
 
 function GetDesire()
 	if not IsEnemyTier2Down
@@ -317,14 +318,14 @@ function Think()
 	-- Huskar
 	if ShouldMoveOutsideFountain
 	then
-		bot:Action_AttackMove(J.Utils.GetOffsetLocationTowardsTargetLocation(J.GetTeamFountain(), J.GetEnemyFountain(), 1300))
+		bot:Action_AttackMove(J.Utils.GetOffsetLocationTowardsTargetLocation(J.GetTeamFountain(), J.GetEnemyFountain(), MoveOutsideFountainDistance))
 		return
 	end
 
 	-- Get out of fountain if in item mode
 	if ShouldMoveOutsideFountain
 	then
-		bot:Action_AttackMove(J.Utils.GetOffsetLocationTowardsTargetLocation(J.GetTeamFountain(), J.GetEnemyFountain(), 1300))
+		bot:Action_AttackMove(J.Utils.GetOffsetLocationTowardsTargetLocation(J.GetTeamFountain(), J.GetEnemyFountain(), MoveOutsideFountainDistance))
 		return
 	end
 
@@ -728,7 +729,7 @@ end
 
 function ConsiderHeroMoveOutsideFountain()
 	if DotaTime() < 0 then return false end
-	if bot:DistanceFromFountain() > 1300 then return false end
+	if bot:DistanceFromFountain() > MoveOutsideFountainDistance then return false end
 
 	if (bot:HasModifier('modifier_fountain_aura_buff') -- in fountain with high hp
 		and J.GetHP(bot) > 0.95)

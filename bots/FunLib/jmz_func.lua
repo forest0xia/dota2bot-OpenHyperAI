@@ -2397,7 +2397,8 @@ function J.IsValid( nTarget )
 end
 
 function J.IsValidTarget(nTarget)
-	return J.Utils.IsValidUnit(nTarget)
+	-- return J.Utils.IsValidUnit(nTarget) -- ideally it shoukd be IsValidUnit, but a lot of legacy usage causing some problems.
+	return J.Utils.IsValidHero(nTarget)
 end
 
 function J.IsValidHero( nTarget )
