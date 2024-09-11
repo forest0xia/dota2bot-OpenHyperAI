@@ -13,6 +13,7 @@ local API_KEY = ''
 local recordedMessages = {}
 local maxpromptsLength = 3
 local inGameBots = {}
+local inGameHumans = {}
 local countErrorMsg = 0
 local chatTimerName = "chat"
 local chatVersionDetermineTime = -45
@@ -78,10 +79,15 @@ end
 
 local function botNameListInTheGame()
     inGameBots = {}
+    inGameHumans = {}
     for i, unit in pairs(AllUnits) do
-        if unit.stats.isBot then
-            -- local kda = unit:GetKills()..'/'..unit:GetDeaths()..'/'..unit:GetAssists()
-            table.insert(inGameBots, {team = unit.stats.team == 2 and 'Radiant' or 'Dire', name = unit.stats.name, }) -- level = unit:GetLevel(), kda = kda})
+        if unit.stats then
+            local kda = unit:GetKills()..'/'..unit:GetDeaths()..'/'..unit:GetAssists()
+            if unit.stats.isBot then
+                table.insert(inGameBots, {team = unit.stats.team == 2 and 'Radiant' or 'Dire', name = unit.stats.name, level = unit:GetLevel(), kda = kda, gold = unit:GetGold()})
+            else
+                table.insert(inGameHumans, {team = unit.stats.team == 2 and 'Radiant' or 'Dire', name = unit.stats.name, level = unit:GetLevel(), kda = kda, gold = unit:GetGold()})
+            end
         end
     end
 end
@@ -90,7 +96,7 @@ function ConstructChatBotRequest(inputContent)
     -- if next(inGameBots) == nil then botNameListInTheGame() end -- only load bots once to save cpu.
     botNameListInTheGame()
 
-    table.insert(recordedMessages, 1, { role = "user", content = 'Bot players in this game:' .. json.encode(inGameBots)})
+    table.insert(recordedMessages, 1, { role = "user", content = 'Bots in this game: ' .. json.encode(inGameBots) .. '. Humans: ' .. json.encode(inGameHumans)})
     table.insert(recordedMessages, { role = "user", content = inputContent })
 
     -- Initialize data table

@@ -56,6 +56,13 @@ declare global {
         toMax: number
     ): number;
     function GetDefendLaneDesire(lane: Lane): number;
+
+    interface HTTPRequest {
+        SetHTTPRequestRawPostBody(contentType: string, body: string): void;
+        Send(callback: (result: { [key: string]: any }) => void): void;
+    }
+
+    function CreateRemoteHTTPRequest(url: string): HTTPRequest;
 }
 
 export {};
