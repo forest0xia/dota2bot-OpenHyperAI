@@ -1,6 +1,9 @@
 /**
  * In game Http request layer. 
- * Can be used to interact with backend services enpowered with machine learning AI.
+ * 
+ * Will be used to:
+ * 1. Interact with backend services enpowered with machine learning AI. ML AI is the way out.
+ * 2. Dynamically load hero builds from 3rd party sources like dotabuff in game.
  */
 export interface RequestData {
     uuid: string;
