@@ -2,7 +2,7 @@
 
 This is a place for you to customize the Open Hyper AI bots.
 
-When modiftying this file, be very careful to the spelling, punctuation and variable names - it's very easy to cause syntax errors and could be hard for you to debug.
+When modiftying this file, be VERY careful to the spelling, punctuation and variable names - it's very easy to cause syntax errors and could be hard for you to debug.
 In the case you saw the bots having some random names or picks (heroes not what you have set or without "OHA" name suffix), that means you had made some mistakes/errors while modifying this file. 
 In any case this file got messed up and caused the bots to malfunction, you can try to restore the file. Either you have a copy to replace, or resubscribe the script, or download from github.
 
