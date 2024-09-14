@@ -35,6 +35,8 @@ if %errorlevel% equ 0 (
 ) else (
     echo ============
     echo Failed!!!
+    echo 1. Make sure to run this file in this folder:"Steam\steamapps\common\dota 2 beta". If you don't know where the Steam folder is, right click Dota2 in Steam Library, select Properties > Installed Files > Browse.
+    echo 2. Run this file as Administrator
     echo ============
 )
 pause

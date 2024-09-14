@@ -32,7 +32,7 @@ Thanks and kudos to all that contributed to make bot games fun and exciting.
 
 ## How to install this script?
 1. There is currently a bug on Valve side that new bot scripts can only work in Custom Lobby with "Local Host" as the Server Location.
-2. This script can boost bots with huge unfair advantage that make the game much harder. You must manually install this script, please follow the instruction here: https://steamcommunity.com/workshop/filedetails/discussion/3246316298/6197594023017709799/
+2. This script can boost bots with huge unfair advantage that make the game much harder. You must manually install this script, please follow the instruction here: https://steamcommunity.com/workshop/filedetails/discussion/3246316298/4764334012741504141/
 
 ## Bot roles, lanings and positioning
 1. In local lobby, the positions of the bots are the same as the order of the slots: 1, 2, 3, 4, 5 from top to bottom in the lobby.
