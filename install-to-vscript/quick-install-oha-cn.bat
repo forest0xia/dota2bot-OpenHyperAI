@@ -34,9 +34,10 @@ if %errorlevel% equ 0 (
     echo ============
 ) else (
     echo ============
+    echo "1. 请把此文件拷贝到这个文件夹中运行：'Steam\steamapps\common\dota 2 beta'。如果你不知道这个Steam文件夹的位置，请在Steam库中右键点击Dota2，选择属性 > 已安装文件 > 浏览。"
+    echo "2. 以管理员身份运行该文件"
+    echo ============
     echo 创建失败!!!
-    echo 1. 请确保在此文件夹中运行该文件："Steam\steamapps\common\dota 2 beta"。如果你不知道这个Steam文件夹的位置，请在Steam库中右键点击Dota2，选择属性 > 已安装文件 > 浏览。
-    echo 2. 以管理员身份运行该文件
     echo ============
 )
 pause

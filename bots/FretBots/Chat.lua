@@ -12,8 +12,7 @@ local API_KEY = ''
 
 local recordedMessages = {}
 local maxpromptsLength = 3
-local inGameBots = {}
-local inGameHumans = {}
+local inGamePlayers = {}
 local countErrorMsg = 0
 local chatTimerName = "chat"
 local chatVersionDetermineTime = -45
@@ -21,7 +20,7 @@ local chatVersionDetermineTime = -45
 function Chat:SendMessageToBackend(inputText, playerInfo)
     local inputContent
     if playerInfo ~= nil then
-        inputContent = {player = playerInfo, said = inputText } -- 'At game time '..tostring(math.floor(GameRules:GetGameTime()))..'s, player:'..json.encode(playerInfo)..' says: '..inputText
+        inputContent = {player = playerInfo, said = inputText, game_time_seconds = tostring(math.floor(GameRules:GetGameTime()))}
     end
     local inputData = ConstructChatBotRequest(json.encode(inputContent))
     Chat:SendHttpRequest('chat', inputData)
@@ -78,25 +77,20 @@ function Chat:NotifyUpdate()
 end
 
 local function botNameListInTheGame()
-    inGameBots = {}
-    inGameHumans = {}
+    inGamePlayers = {}
     for i, unit in pairs(AllUnits) do
         if unit.stats then
             local kda = unit:GetKills()..'/'..unit:GetDeaths()..'/'..unit:GetAssists()
-            if unit.stats.isBot then
-                table.insert(inGameBots, {team = unit.stats.team == 2 and 'Radiant' or 'Dire', name = unit.stats.name, level = unit:GetLevel(), kda = kda, gold = unit:GetGold()})
-            else
-                table.insert(inGameHumans, {team = unit.stats.team == 2 and 'Radiant' or 'Dire', name = unit.stats.name, level = unit:GetLevel(), kda = kda, gold = unit:GetGold()})
-            end
+            table.insert(inGamePlayers, {team = unit.stats.team == 2 and 'Radiant' or 'Dire', name = unit.stats.name, level = unit:GetLevel(), kda = kda, gold = unit:GetGold(), is_bot = unit.stats.isBot})
         end
     end
 end
 
 function ConstructChatBotRequest(inputContent)
-    -- if next(inGameBots) == nil then botNameListInTheGame() end -- only load bots once to save cpu.
+    -- if next(inGamePlayers) == nil then botNameListInTheGame() end -- only load bots once to save cpu.
     botNameListInTheGame()
 
-    table.insert(recordedMessages, 1, { role = "user", content = 'Bots in this game: ' .. json.encode(inGameBots) .. '. Humans: ' .. json.encode(inGameHumans)})
+    table.insert(recordedMessages, 1, { role = "user", content = 'Players in this game: ' .. json.encode(inGamePlayers)})
     table.insert(recordedMessages, { role = "user", content = inputContent })
 
     -- Initialize data table

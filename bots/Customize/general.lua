@@ -22,7 +22,7 @@ Customize['Enable'] = true
 Customize['Ban'] = {
     'npc_dota_hero_wisp',
     'npc_dota_hero_marci',
-    'npc_dota_hero_hoodwink',
+    'npc_dota_hero_primal_beast',
 }
 
 -- Set the heroes you want Radiant bots to pick. You have to use hero's internal name.

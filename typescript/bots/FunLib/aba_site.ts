@@ -450,7 +450,7 @@ export const IsSpecialFarmer = function (bot: Unit): boolean {
     return GetPosition(bot) === 1;
 };
 export const IsShouldFarmHero = function (bot: Unit): boolean {
-    return GetPosition(bot) <= 1;
+    return GetPosition(bot) <= 2;
 };
 export const HasArmorReduction = function (nUnit: Unit): boolean {
     return (
@@ -737,11 +737,12 @@ export const IsTimeToFarm = function (bot: Unit): boolean {
         }
     }
 
-    if (
-        ConsiderIsTimeToFarm[botName] !== undefined &&
-        ConsiderIsTimeToFarm[botName]()
-    ) {
-        return true;
+    const considerFarmForBot = ConsiderIsTimeToFarm[botName];
+
+    if (considerFarmForBot !== undefined) {
+        return considerFarmForBot();
+    } else {
+        return ConsiderIsTimeToFarm["default"]()
     }
 
     return false;
@@ -821,7 +822,8 @@ export const ConsiderIsTimeToFarm = {
     // ... (implementations for other heroes)
 } as { [key: string]: () => boolean };
 
-ConsiderIsTimeToFarm["npc_dota_hero_luna"] = function () {
+// Antimage
+ConsiderIsTimeToFarm["npc_dota_hero_antimage"] = function () {
     const bot = GetBot();
     const botNetWorth = bot.GetNetWorth();
     const currentTime = DotaTime();
@@ -843,42 +845,31 @@ ConsiderIsTimeToFarm["npc_dota_hero_luna"] = function () {
     return false;
 };
 
-ConsiderIsTimeToFarm["npc_dota_hero_luna"] = function () {
+// Arc Warden
+ConsiderIsTimeToFarm["npc_dota_hero_arc_warden"] = function () {
     const bot = GetBot();
     const botNetWorth = bot.GetNetWorth();
-    const currentTime = DotaTime();
 
-    if (currentTime > 15 * 60 && (bot.GetLevel() < 25 || botNetWorth < 22000)) {
+    if (DotaTime() > 15 * 60 && (bot.GetLevel() < 25 || botNetWorth < 22000)) {
         return true;
     }
 
-    if (
-        HasItem(bot, "item_gloves") &&
-        !HasItem(bot, "item_hand_of_midas") &&
-        bot.GetGold() > 800
-    ) {
+    if (HasItem(bot, "item_gloves") && !HasItem(bot, "item_hand_of_midas") && bot.GetGold() > 800) {
         return true;
     }
 
-    if (
-        HasItem(bot, "item_yasha") &&
-        !HasItem(bot, "item_manta") &&
-        bot.GetGold() > 1000
-    ) {
+    if (HasItem(bot, "item_yasha") && !HasItem(bot, "item_manta") && bot.GetGold() > 1000) {
         return true;
     }
 
-    if (
-        HasItem(bot, "item_hand_of_midas") &&
-        GetAroundAllyCount(bot, 1200) <= 3 &&
-        botNetWorth <= 26000
-    ) {
+    if (HasItem(bot, "item_hand_of_midas") && GetAroundAllyCount(bot, 1200) <= 3 && botNetWorth <= 26000) {
         return true;
     }
 
     return false;
 };
 
+// Axe
 ConsiderIsTimeToFarm["npc_dota_hero_axe"] = function () {
     const bot = GetBot();
     const botNetWorth = bot.GetNetWorth();
@@ -900,6 +891,7 @@ ConsiderIsTimeToFarm["npc_dota_hero_axe"] = function () {
     return false;
 };
 
+// Bloodseeker
 ConsiderIsTimeToFarm["npc_dota_hero_bloodseeker"] = function () {
     const bot = GetBot();
     const botNetWorth = bot.GetNetWorth();
@@ -921,6 +913,7 @@ ConsiderIsTimeToFarm["npc_dota_hero_bloodseeker"] = function () {
     return false;
 };
 
+// Bristleback
 ConsiderIsTimeToFarm["npc_dota_hero_bristleback"] = function () {
     const bot = GetBot();
     const botNetWorth = bot.GetNetWorth();
@@ -944,12 +937,17 @@ ConsiderIsTimeToFarm["npc_dota_hero_bristleback"] = function () {
     return false;
 };
 
-ConsiderIsTimeToFarm["npc_dota_hero_chaos_knight"] =
-    ConsiderIsTimeToFarm["npc_dota_hero_bristleback"];
+// Chaos Knight
+ConsiderIsTimeToFarm["npc_dota_hero_chaos_knight"] = function () {
+    return ConsiderIsTimeToFarm["npc_dota_hero_bristleback"]();
+};
 
-ConsiderIsTimeToFarm["npc_dota_hero_clinkz"] =
-    ConsiderIsTimeToFarm["npc_dota_hero_templar_assassin"];
+// Clinkz
+ConsiderIsTimeToFarm["npc_dota_hero_clinkz"] = function () {
+    return ConsiderIsTimeToFarm["npc_dota_hero_templar_assassin"]();
+};
 
+// Dragon Knight
 ConsiderIsTimeToFarm["npc_dota_hero_dragon_knight"] = function () {
     const bot = GetBot();
     const botNetWorth = bot.GetNetWorth();
@@ -960,11 +958,7 @@ ConsiderIsTimeToFarm["npc_dota_hero_dragon_knight"] = function () {
             return true;
         }
 
-        if (
-            bot.GetMana() > 450 &&
-            bot.GetCurrentVisionRange() < 1000 &&
-            allyCount < 2
-        ) {
+        if (bot.GetMana() > 450 && bot.GetCurrentVisionRange() < 1000 && allyCount < 2) {
             return true;
         }
     }
@@ -972,6 +966,7 @@ ConsiderIsTimeToFarm["npc_dota_hero_dragon_knight"] = function () {
     return false;
 };
 
+// Drow Ranger
 ConsiderIsTimeToFarm["npc_dota_hero_drow_ranger"] = function () {
     const bot = GetBot();
     const botNetWorth = bot.GetNetWorth();
@@ -984,26 +979,15 @@ ConsiderIsTimeToFarm["npc_dota_hero_drow_ranger"] = function () {
         return true;
     }
 
-    if (
-        HasItem(bot, "item_blade_of_alacrity") &&
-        !HasItem(bot, "item_ultimate_scepter")
-    ) {
+    if (HasItem(bot, "item_blade_of_alacrity") && !HasItem(bot, "item_ultimate_scepter")) {
         return true;
     }
 
-    if (
-        HasItem(bot, "item_shadow_amulet") &&
-        !HasItem(bot, "item_invis_sword") &&
-        bot.GetGold() > 400
-    ) {
+    if (HasItem(bot, "item_shadow_amulet") && !HasItem(bot, "item_invis_sword") && bot.GetGold() > 400) {
         return true;
     }
 
-    if (
-        HasItem(bot, "item_yasha") &&
-        !HasItem(bot, "item_manta") &&
-        bot.GetGold() > 1000
-    ) {
+    if (HasItem(bot, "item_yasha") && !HasItem(bot, "item_manta") && bot.GetGold() > 1000) {
         return true;
     }
 
@@ -1016,6 +1000,7 @@ ConsiderIsTimeToFarm["npc_dota_hero_drow_ranger"] = function () {
     return false;
 };
 
+// Huskar
 ConsiderIsTimeToFarm["npc_dota_hero_huskar"] = function () {
     const bot = GetBot();
     const botNetWorth = bot.GetNetWorth();
@@ -1043,6 +1028,7 @@ ConsiderIsTimeToFarm["npc_dota_hero_huskar"] = function () {
     return false;
 };
 
+// Juggernaut
 ConsiderIsTimeToFarm["npc_dota_hero_juggernaut"] = function () {
     const bot = GetBot();
     const botNetWorth = bot.GetNetWorth();
@@ -1066,15 +1052,22 @@ ConsiderIsTimeToFarm["npc_dota_hero_juggernaut"] = function () {
     return false;
 };
 
-ConsiderIsTimeToFarm["npc_dota_hero_kunkka"] =
-    ConsiderIsTimeToFarm["npc_dota_hero_bristleback"];
+// Kunkka
+ConsiderIsTimeToFarm["npc_dota_hero_kunkka"] = function () {
+    return ConsiderIsTimeToFarm["npc_dota_hero_bristleback"]();
+};
 
-ConsiderIsTimeToFarm["npc_dota_hero_luna"] =
-    ConsiderIsTimeToFarm["npc_dota_hero_huskar"];
+// Luna
+ConsiderIsTimeToFarm["npc_dota_hero_luna"] = function () {
+    return ConsiderIsTimeToFarm["npc_dota_hero_huskar"]();
+};
 
-ConsiderIsTimeToFarm["npc_dota_hero_mirana"] =
-    ConsiderIsTimeToFarm["npc_dota_hero_templar_assassin"];
+// Mirana
+ConsiderIsTimeToFarm["npc_dota_hero_mirana"] = function () {
+    return ConsiderIsTimeToFarm["npc_dota_hero_templar_assassin"]();
+};
 
+// Medusa
 ConsiderIsTimeToFarm["npc_dota_hero_medusa"] = function () {
     const bot = GetBot();
     const botNetWorth = bot.GetNetWorth();
@@ -1096,6 +1089,7 @@ ConsiderIsTimeToFarm["npc_dota_hero_medusa"] = function () {
     return false;
 };
 
+// Shadow Fiend
 ConsiderIsTimeToFarm["npc_dota_hero_nevermore"] = function () {
     const bot = GetBot();
     const botNetWorth = bot.GetNetWorth();
@@ -1117,12 +1111,17 @@ ConsiderIsTimeToFarm["npc_dota_hero_nevermore"] = function () {
     return false;
 };
 
-ConsiderIsTimeToFarm["npc_dota_hero_omniknight"] =
-    ConsiderIsTimeToFarm["npc_dota_hero_bristleback"];
+// Omniknight
+ConsiderIsTimeToFarm["npc_dota_hero_omniknight"] = function () {
+    return ConsiderIsTimeToFarm["npc_dota_hero_bristleback"]();
+};
 
-ConsiderIsTimeToFarm["npc_dota_hero_ogre_magi"] =
-    ConsiderIsTimeToFarm["npc_dota_hero_bristleback"];
+// Ogre Magi
+ConsiderIsTimeToFarm["npc_dota_hero_ogre_magi"] = function () {
+    return ConsiderIsTimeToFarm["npc_dota_hero_bristleback"]();
+};
 
+// Phantom Assassin
 ConsiderIsTimeToFarm["npc_dota_hero_phantom_assassin"] = function () {
     const bot = GetBot();
     const botNetWorth = bot.GetNetWorth();
@@ -1150,6 +1149,7 @@ ConsiderIsTimeToFarm["npc_dota_hero_phantom_assassin"] = function () {
     return false;
 };
 
+// Phantom Lancer
 ConsiderIsTimeToFarm["npc_dota_hero_phantom_lancer"] = function () {
     const bot = GetBot();
     const botNetWorth = bot.GetNetWorth();
@@ -1177,9 +1177,12 @@ ConsiderIsTimeToFarm["npc_dota_hero_phantom_lancer"] = function () {
     return false;
 };
 
-ConsiderIsTimeToFarm["npc_dota_hero_naga_siren"] =
-    ConsiderIsTimeToFarm["npc_dota_hero_phantom_lancer"];
+// Naga Siren
+ConsiderIsTimeToFarm["npc_dota_hero_naga_siren"] = function () {
+    return ConsiderIsTimeToFarm["npc_dota_hero_phantom_lancer"]();
+};
 
+// Razor
 ConsiderIsTimeToFarm["npc_dota_hero_razor"] = function () {
     const bot = GetBot();
     const botNetWorth = bot.GetNetWorth();
@@ -1201,12 +1204,17 @@ ConsiderIsTimeToFarm["npc_dota_hero_razor"] = function () {
     return false;
 };
 
-ConsiderIsTimeToFarm["npc_dota_hero_sand_king"] =
-    ConsiderIsTimeToFarm["npc_dota_hero_bristleback"];
+// Sand King
+ConsiderIsTimeToFarm["npc_dota_hero_sand_king"] = function () {
+    return ConsiderIsTimeToFarm["npc_dota_hero_bristleback"]();
+};
 
-ConsiderIsTimeToFarm["npc_dota_hero_slardar"] =
-    ConsiderIsTimeToFarm["npc_dota_hero_bristleback"];
+// Slardar
+ConsiderIsTimeToFarm["npc_dota_hero_slardar"] = function () {
+    return ConsiderIsTimeToFarm["npc_dota_hero_bristleback"]();
+};
 
+// Legion Commander
 ConsiderIsTimeToFarm["npc_dota_hero_legion_commander"] = function () {
     const bot = GetBot();
     const botNetWorth = bot.GetNetWorth();
@@ -1228,6 +1236,7 @@ ConsiderIsTimeToFarm["npc_dota_hero_legion_commander"] = function () {
     return false;
 };
 
+// Slark
 ConsiderIsTimeToFarm["npc_dota_hero_slark"] = function () {
     const bot = GetBot();
     const botNetWorth = bot.GetNetWorth();
@@ -1255,9 +1264,12 @@ ConsiderIsTimeToFarm["npc_dota_hero_slark"] = function () {
     return false;
 };
 
-ConsiderIsTimeToFarm["npc_dota_hero_skeleton_king"] =
-    ConsiderIsTimeToFarm["npc_dota_hero_bristleback"];
+// Wraith King
+ConsiderIsTimeToFarm["npc_dota_hero_skeleton_king"] = function () {
+    return ConsiderIsTimeToFarm["npc_dota_hero_bristleback"]();
+};
 
+// Sven
 ConsiderIsTimeToFarm["npc_dota_hero_sven"] = function () {
     const bot = GetBot();
     const botNetWorth = bot.GetNetWorth();
@@ -1285,22 +1297,15 @@ ConsiderIsTimeToFarm["npc_dota_hero_sven"] = function () {
     return false;
 };
 
+// Sniper
 ConsiderIsTimeToFarm["npc_dota_hero_sniper"] = function () {
     const bot = GetBot();
     const botNetWorth = bot.GetNetWorth();
 
-    if (
-        bot.GetLevel() >= 10 &&
-        !HasItem(bot, "item_monkey_king_bar") &&
-        botNetWorth < 22000
-    ) {
+    if (bot.GetLevel() >= 10 && !HasItem(bot, "item_monkey_king_bar") && botNetWorth < 22000) {
         const botKills = GetHeroKills(bot.GetPlayerID());
         const botDeaths = GetHeroDeaths(bot.GetPlayerID());
-        if (
-            botKills - 3 <= botDeaths &&
-            botDeaths > 2 &&
-            GetAroundAllyCount(bot, 1200) <= 2
-        ) {
+        if (botKills - 3 <= botDeaths && botDeaths > 2 && GetAroundAllyCount(bot, 1200) <= 2) {
             return true;
         }
     }
@@ -1308,6 +1313,7 @@ ConsiderIsTimeToFarm["npc_dota_hero_sniper"] = function () {
     return false;
 };
 
+// Templar Assassin
 ConsiderIsTimeToFarm["npc_dota_hero_templar_assassin"] = function () {
     const bot = GetBot();
     const botNetWorth = bot.GetNetWorth();
@@ -1335,18 +1341,17 @@ ConsiderIsTimeToFarm["npc_dota_hero_templar_assassin"] = function () {
     return false;
 };
 
-ConsiderIsTimeToFarm["npc_dota_hero_tidehunter"] =
-    ConsiderIsTimeToFarm["npc_dota_hero_sven"];
+// Tidehunter
+ConsiderIsTimeToFarm["npc_dota_hero_tidehunter"] = function () {
+    return ConsiderIsTimeToFarm["npc_dota_hero_sven"]();
+};
 
+// Viper
 ConsiderIsTimeToFarm["npc_dota_hero_viper"] = function () {
     const bot = GetBot();
     const botNetWorth = bot.GetNetWorth();
 
-    if (
-        bot.GetLevel() >= 10 &&
-        !HasItem(bot, "item_mjollnir") &&
-        botNetWorth < 20000
-    ) {
+    if (bot.GetLevel() >= 10 && !HasItem(bot, "item_mjollnir") && botNetWorth < 20000) {
         const botKills = GetHeroKills(bot.GetPlayerID());
         const botDeaths = GetHeroDeaths(bot.GetPlayerID());
         const allyCount = GetAroundAllyCount(bot, 1300);
@@ -1354,13 +1359,686 @@ ConsiderIsTimeToFarm["npc_dota_hero_viper"] = function () {
             return true;
         }
 
-        if (
-            bot.GetMana() > 650 &&
-            bot.GetCurrentVisionRange() < 1000 &&
-            allyCount <= 1
-        ) {
+        if (bot.GetMana() > 650 && bot.GetCurrentVisionRange() < 1000 && allyCount <= 1) {
             return true;
         }
+    }
+
+    return false;
+};
+
+// Earthshaker
+ConsiderIsTimeToFarm["npc_dota_hero_earthshaker"] = function () {
+    const bot = GetBot();
+    const botNetWorth = bot.GetNetWorth();
+
+    if (!HasItem(bot, "item_blink") && botNetWorth < 8000) {
+        return true;
+    }
+
+    if (!HasItem(bot, "item_ultimate_scepter") && botNetWorth < 16000) {
+        return true;
+    }
+
+    return false;
+};
+
+// Tiny
+ConsiderIsTimeToFarm["npc_dota_hero_tiny"] = function () {
+    const bot = GetBot();
+    const botNetWorth = bot.GetNetWorth();
+
+    if (DotaTime() > 10 * 60 && (bot.GetLevel() < 25 || botNetWorth < 22000)) {
+        return true;
+    }
+
+    if (!HasItem(bot, "item_echo_sabre") && botNetWorth < 12000) {
+        return true;
+    }
+
+    if (!HasItem(bot, "item_silver_edge") && botNetWorth < 18000) {
+        return true;
+    }
+
+    return false;
+};
+
+// Beastmaster
+ConsiderIsTimeToFarm["npc_dota_hero_beastmaster"] = function () {
+    const bot = GetBot();
+    const botNetWorth = bot.GetNetWorth();
+
+    if (!HasItem(bot, "item_helm_of_the_overlord") && botNetWorth < 14000) {
+        return true;
+    }
+
+    if (!HasItem(bot, "item_black_king_bar") && botNetWorth < 18000) {
+        return true;
+    }
+
+    return false;
+};
+
+// Clockwerk
+ConsiderIsTimeToFarm["npc_dota_hero_rattletrap"] = function () {
+    const bot = GetBot();
+    const botNetWorth = bot.GetNetWorth();
+
+    if (!HasItem(bot, "item_blade_mail") && botNetWorth < 8000) {
+        return true;
+    }
+
+    if (!HasItem(bot, "item_aghanims_shard") && botNetWorth < 12000) {
+        return true;
+    }
+
+    return false;
+};
+
+// Alchemist
+ConsiderIsTimeToFarm["npc_dota_hero_alchemist"] = function () {
+    const bot = GetBot();
+    const botNetWorth = bot.GetNetWorth();
+
+    if (bot.GetLevel() < 25 || botNetWorth < 35000) {
+        return true;
+    }
+
+    return false;
+};
+
+// Brewmaster
+ConsiderIsTimeToFarm["npc_dota_hero_brewmaster"] = function () {
+    const bot = GetBot();
+    const botNetWorth = bot.GetNetWorth();
+
+    if (!HasItem(bot, "item_blink") && botNetWorth < 8000) {
+        return true;
+    }
+
+    if (!HasItem(bot, "item_ultimate_scepter") && botNetWorth < 16000) {
+        return true;
+    }
+
+    return false;
+};
+
+// Treant Protector
+ConsiderIsTimeToFarm["npc_dota_hero_treant"] = function () {
+    const bot = GetBot();
+    const botNetWorth = bot.GetNetWorth();
+
+    if (!HasItem(bot, "item_meteor_hammer") && botNetWorth < 8000) {
+        return true;
+    }
+
+    if (!HasItem(bot, "item_blink") && botNetWorth < 12000) {
+        return true;
+    }
+
+    return false;
+};
+
+// Io
+ConsiderIsTimeToFarm["npc_dota_hero_wisp"] = function () {
+    const bot = GetBot();
+    const botNetWorth = bot.GetNetWorth();
+
+    if (!HasItem(bot, "item_mekansm") && botNetWorth < 6000) {
+        return true;
+    }
+
+    if (!HasItem(bot, "item_guardian_greaves") && botNetWorth < 10000) {
+        return true;
+    }
+
+    return false;
+};
+
+// Centaur Warrunner
+ConsiderIsTimeToFarm["npc_dota_hero_centaur"] = function () {
+    const bot = GetBot();
+    const botNetWorth = bot.GetNetWorth();
+
+    if (!HasItem(bot, "item_blink") && botNetWorth < 8000) {
+        return true;
+    }
+
+    if (!HasItem(bot, "item_hood_of_defiance") && botNetWorth < 10000) {
+        return true;
+    }
+
+    if (!HasItem(bot, "item_pipe") && botNetWorth < 14000) {
+        return true;
+    }
+
+    return false;
+};
+
+// Timbersaw
+ConsiderIsTimeToFarm["npc_dota_hero_shredder"] = function () {
+    const bot = GetBot();
+    const botNetWorth = bot.GetNetWorth();
+
+    if (!HasItem(bot, "item_bloodstone") && botNetWorth < 14000) {
+        return true;
+    }
+
+    if (!HasItem(bot, "item_lotus_orb") && botNetWorth < 18000) {
+        return true;
+    }
+
+    return false;
+};
+
+// Tusk
+ConsiderIsTimeToFarm["npc_dota_hero_tusk"] = function () {
+    const bot = GetBot();
+    const botNetWorth = bot.GetNetWorth();
+
+    if (!HasItem(bot, "item_blink") && botNetWorth < 8000) {
+        return true;
+    }
+
+    if (!HasItem(bot, "item_desolator") && botNetWorth < 14000) {
+        return true;
+    }
+
+    return false;
+};
+
+// Elder Titan
+ConsiderIsTimeToFarm["npc_dota_hero_elder_titan"] = function () {
+    const bot = GetBot();
+    const botNetWorth = bot.GetNetWorth();
+
+    if (!HasItem(bot, "item_spirit_vessel") && botNetWorth < 8000) {
+        return true;
+    }
+
+    if (!HasItem(bot, "item_blink") && botNetWorth < 12000) {
+        return true;
+    }
+
+    return false;
+};
+
+// Earth Spirit
+ConsiderIsTimeToFarm["npc_dota_hero_earth_spirit"] = function () {
+    const bot = GetBot();
+    const botNetWorth = bot.GetNetWorth();
+
+    if (!HasItem(bot, "item_spirit_vessel") && botNetWorth < 8000) {
+        return true;
+    }
+
+    if (!HasItem(bot, "item_blink") && botNetWorth < 12000) {
+        return true;
+    }
+
+    return false;
+};
+
+// Phoenix
+ConsiderIsTimeToFarm["npc_dota_hero_phoenix"] = function () {
+    const bot = GetBot();
+    const botNetWorth = bot.GetNetWorth();
+
+    if (!HasItem(bot, "item_mekansm") && botNetWorth < 6000) {
+        return true;
+    }
+
+    if (!HasItem(bot, "item_shivas_guard") && botNetWorth < 14000) {
+        return true;
+    }
+
+    return false;
+};
+
+// Mars
+ConsiderIsTimeToFarm["npc_dota_hero_mars"] = function () {
+    const bot = GetBot();
+    const botNetWorth = bot.GetNetWorth();
+
+    if (!HasItem(bot, "item_blink") && botNetWorth < 8000) {
+        return true;
+    }
+
+    if (!HasItem(bot, "item_black_king_bar") && botNetWorth < 14000) {
+        return true;
+    }
+
+    return false;
+};
+
+// Underlord
+ConsiderIsTimeToFarm["npc_dota_hero_abyssal_underlord"] = function () {
+    const bot = GetBot();
+    const botNetWorth = bot.GetNetWorth();
+
+    if (!HasItem(bot, "item_pipe") && botNetWorth < 10000) {
+        return true;
+    }
+
+    if (!HasItem(bot, "item_guardian_greaves") && botNetWorth < 14000) {
+        return true;
+    }
+
+    return false;
+};
+
+// Snapfire
+ConsiderIsTimeToFarm["npc_dota_hero_snapfire"] = function () {
+    const bot = GetBot();
+    const botNetWorth = bot.GetNetWorth();
+
+    if (!HasItem(bot, "item_aether_lens") && botNetWorth < 6000) {
+        return true;
+    }
+
+    if (!HasItem(bot, "item_solar_crest") && botNetWorth < 10000) {
+        return true;
+    }
+
+    return false;
+};
+
+// Dawnbreaker
+ConsiderIsTimeToFarm["npc_dota_hero_dawnbreaker"] = function () {
+    const bot = GetBot();
+    const botNetWorth = bot.GetNetWorth();
+
+    if (!HasItem(bot, "item_echo_sabre") && botNetWorth < 8000) {
+        return true;
+    }
+
+    if (!HasItem(bot, "item_desolator") && botNetWorth < 14000) {
+        return true;
+    }
+
+    return false;
+};
+
+// Primal Beast
+ConsiderIsTimeToFarm["npc_dota_hero_primal_beast"] = function () {
+    const bot = GetBot();
+    const botNetWorth = bot.GetNetWorth();
+
+    if (!HasItem(bot, "item_vanguard") && botNetWorth < 6000) {
+        return true;
+    }
+
+    if (!HasItem(bot, "item_blink") && botNetWorth < 10000) {
+        return true;
+    }
+
+    return false;
+};
+
+// Marci
+ConsiderIsTimeToFarm["npc_dota_hero_marci"] = function () {
+    const bot = GetBot();
+    const botNetWorth = bot.GetNetWorth();
+
+    if (!HasItem(bot, "item_armlet") && botNetWorth < 6000) {
+        return true;
+    }
+
+    if (!HasItem(bot, "item_black_king_bar") && botNetWorth < 14000) {
+        return true;
+    }
+
+    return false;
+};
+
+// Bounty Hunter
+ConsiderIsTimeToFarm["npc_dota_hero_bounty_hunter"] = function () {
+    const bot = GetBot();
+    const botNetWorth = bot.GetNetWorth();
+
+    if (!HasItem(bot, "item_spirit_vessel") && botNetWorth < 8000) {
+        return true;
+    }
+
+    if (!HasItem(bot, "item_guardian_greaves") && botNetWorth < 12000) {
+        return true;
+    }
+
+    return false;
+};
+
+// Broodmother
+ConsiderIsTimeToFarm["npc_dota_hero_broodmother"] = function () {
+    const bot = GetBot();
+    const botNetWorth = bot.GetNetWorth();
+
+    if (bot.GetLevel() < 25 || botNetWorth < 25000) {
+        return true;
+    }
+
+    return false;
+};
+
+// Ember Spirit
+ConsiderIsTimeToFarm["npc_dota_hero_ember_spirit"] = function () {
+    const bot = GetBot();
+    const botNetWorth = bot.GetNetWorth();
+
+    if (!HasItem(bot, "item_maelstrom") && botNetWorth < 12000) {
+        return true;
+    }
+
+    if (!HasItem(bot, "item_black_king_bar") && botNetWorth < 18000) {
+        return true;
+    }
+
+    if (botNetWorth < 25000) {
+        return true;
+    }
+
+    return false;
+};
+
+// Faceless Void
+ConsiderIsTimeToFarm["npc_dota_hero_faceless_void"] = function () {
+    const bot = GetBot();
+    const botNetWorth = bot.GetNetWorth();
+
+    if (!HasItem(bot, "item_mask_of_madness") && botNetWorth < 6000) {
+        return true;
+    }
+
+    if (!HasItem(bot, "item_maelstrom") && botNetWorth < 10000) {
+        return true;
+    }
+
+    if (botNetWorth < 22000) {
+        return true;
+    }
+
+    return false;
+};
+
+// Gyrocopter
+ConsiderIsTimeToFarm["npc_dota_hero_gyrocopter"] = function () {
+    const bot = GetBot();
+    const botNetWorth = bot.GetNetWorth();
+
+    if (bot.GetLevel() < 25 || botNetWorth < 22000) {
+        return true;
+    }
+
+    return false;
+};
+
+// Hoodwink
+ConsiderIsTimeToFarm["npc_dota_hero_hoodwink"] = function () {
+    const bot = GetBot();
+    const botNetWorth = bot.GetNetWorth();
+
+    if (!HasItem(bot, "item_maelstrom") && botNetWorth < 12000) {
+        return true;
+    }
+
+    if (!HasItem(bot, "item_gleipnir") && botNetWorth < 18000) {
+        return true;
+    }
+
+    return false;
+};
+
+// Lone Druid
+ConsiderIsTimeToFarm["npc_dota_hero_lone_druid"] = function () {
+    const bot = GetBot();
+    const botNetWorth = bot.GetNetWorth();
+
+    if (botNetWorth < 20000) {
+        return true;
+    }
+
+    return false;
+};
+
+// Meepo
+ConsiderIsTimeToFarm["npc_dota_hero_meepo"] = function () {
+    const bot = GetBot();
+    const botNetWorth = bot.GetNetWorth();
+
+    if (bot.GetLevel() < 25 || botNetWorth < 24000) {
+        return true;
+    }
+
+    return false;
+};
+
+// Monkey King
+ConsiderIsTimeToFarm["npc_dota_hero_monkey_king"] = function () {
+    const bot = GetBot();
+    const botNetWorth = bot.GetNetWorth();
+
+    if (!HasItem(bot, "item_echo_sabre") && botNetWorth < 8000) {
+        return true;
+    }
+
+    if (!HasItem(bot, "item_black_king_bar") && botNetWorth < 16000) {
+        return true;
+    }
+
+    if (botNetWorth < 24000) {
+        return true;
+    }
+
+    return false;
+};
+
+// Morphling
+ConsiderIsTimeToFarm["npc_dota_hero_morphling"] = function () {
+    const bot = GetBot();
+    const botNetWorth = bot.GetNetWorth();
+
+    if (bot.GetLevel() < 25 || botNetWorth < 26000) {
+        return true;
+    }
+
+    return false;
+};
+
+// Nyx Assassin
+ConsiderIsTimeToFarm["npc_dota_hero_nyx_assassin"] = function () {
+    const bot = GetBot();
+    const botNetWorth = bot.GetNetWorth();
+
+    if (!HasItem(bot, "item_blink") && botNetWorth < 8000) {
+        return true;
+    }
+
+    if (!HasItem(bot, "item_ultimate_scepter") && botNetWorth < 14000) {
+        return true;
+    }
+
+    return false;
+};
+
+// Pangolier
+ConsiderIsTimeToFarm["npc_dota_hero_pangolier"] = function () {
+    const bot = GetBot();
+    const botNetWorth = bot.GetNetWorth();
+
+    if (!HasItem(bot, "item_maelstrom") && botNetWorth < 12000) {
+        return true;
+    }
+
+    if (!HasItem(bot, "item_blink") && botNetWorth < 16000) {
+        return true;
+    }
+
+    return false;
+};
+
+// Riki
+ConsiderIsTimeToFarm["npc_dota_hero_riki"] = function () {
+    const bot = GetBot();
+    const botNetWorth = bot.GetNetWorth();
+
+    if (!HasItem(bot, "item_diffusal_blade") && botNetWorth < 10000) {
+        return true;
+    }
+
+    if (!HasItem(bot, "item_abyssal_blade") && botNetWorth < 18000) {
+        return true;
+    }
+
+    return false;
+};
+
+// Spectre
+ConsiderIsTimeToFarm["npc_dota_hero_spectre"] = function () {
+    const bot = GetBot();
+    const botNetWorth = bot.GetNetWorth();
+
+    if (!HasItem(bot, "item_radiance") && botNetWorth < 15000) {
+        return true;
+    }
+
+    if (!HasItem(bot, "item_manta") && botNetWorth < 20000) {
+        return true;
+    }
+
+    if (botNetWorth < 28000) {
+        return true;
+    }
+
+    return false;
+};
+
+// Terrorblade
+ConsiderIsTimeToFarm["npc_dota_hero_terrorblade"] = function () {
+    const bot = GetBot();
+    const botNetWorth = bot.GetNetWorth();
+
+    if (!HasItem(bot, "item_manta") && botNetWorth < 16000) {
+        return true;
+    }
+
+    if (!HasItem(bot, "item_skadi") && botNetWorth < 22000) {
+        return true;
+    }
+
+    if (botNetWorth < 30000) {
+        return true;
+    }
+
+    return false;
+};
+
+// Troll Warlord
+ConsiderIsTimeToFarm["npc_dota_hero_troll_warlord"] = function () {
+    const bot = GetBot();
+    const botNetWorth = bot.GetNetWorth();
+
+    if (!HasItem(bot, "item_maelstrom") && botNetWorth < 10000) {
+        return true;
+    }
+
+    if (!HasItem(bot, "item_black_king_bar") && botNetWorth < 16000) {
+        return true;
+    }
+
+    if (botNetWorth < 24000) {
+        return true;
+    }
+
+    return false;
+};
+
+// Ursa
+ConsiderIsTimeToFarm["npc_dota_hero_ursa"] = function () {
+    const bot = GetBot();
+    const botNetWorth = bot.GetNetWorth();
+
+    if (!HasItem(bot, "item_blink") && botNetWorth < 8000) {
+        return true;
+    }
+
+    if (!HasItem(bot, "item_black_king_bar") && botNetWorth < 14000) {
+        return true;
+    }
+
+    if (botNetWorth < 22000) {
+        return true;
+    }
+
+    return false;
+};
+
+// Vengeful Spirit
+ConsiderIsTimeToFarm["npc_dota_hero_vengefulspirit"] = function () {
+    const bot = GetBot();
+    const botNetWorth = bot.GetNetWorth();
+
+    if (GetPosition(bot) >= 4 && botNetWorth < 8000) {
+        return true;
+    }
+
+    return false;
+};
+
+// Venomancer
+ConsiderIsTimeToFarm["npc_dota_hero_venomancer"] = function () {
+    const bot = GetBot();
+    const botNetWorth = bot.GetNetWorth();
+
+    if (GetPosition(bot) >= 4 && botNetWorth < 8000) {
+        return true;
+    }
+
+    return false;
+};
+
+// Weaver
+ConsiderIsTimeToFarm["npc_dota_hero_weaver"] = function () {
+    const bot = GetBot();
+    const botNetWorth = bot.GetNetWorth();
+
+    if (!HasItem(bot, "item_maelstrom") && botNetWorth < 12000) {
+        return true;
+    }
+
+    if (!HasItem(bot, "item_black_king_bar") && botNetWorth < 18000) {
+        return true;
+    }
+
+    return false;
+};
+
+// Ringmaster (Custom Hero)
+ConsiderIsTimeToFarm["npc_dota_hero_ringmaster"] = function () {
+    const bot = GetBot();
+    const botNetWorth = bot.GetNetWorth();
+
+    if (!HasItem(bot, "item_ethereal_blade") && botNetWorth < 15000) {
+        return true;
+    }
+
+    if (!HasItem(bot, "item_dagon_5") && botNetWorth < 22000) {
+        return true;
+    }
+
+    return false;
+};
+
+// In case of missing heroes, use a default logic
+ConsiderIsTimeToFarm["default"] = function () {
+    const bot = GetBot();
+    const botNetWorth = bot.GetNetWorth();
+
+    if (!IsInLaningPhase() 
+        && GetPosition(bot) < 3) 
+    {
+        if (bot.GetLevel() < 10 || botNetWorth < 6000) return true;
+        if (bot.GetLevel() < 15 || botNetWorth < 8000) return true;
+        if (bot.GetLevel() < 20 || botNetWorth < 15000) return true;
+        if (bot.GetLevel() < 25 || botNetWorth < 20000) return true;
     }
 
     return false;

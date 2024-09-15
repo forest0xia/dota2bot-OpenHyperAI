@@ -437,7 +437,7 @@ ____exports.IsSpecialFarmer = function(bot)
     return ____exports.GetPosition(bot) == 1
 end
 ____exports.IsShouldFarmHero = function(bot)
-    return ____exports.GetPosition(bot) <= 1
+    return ____exports.GetPosition(bot) <= 2
 end
 ____exports.HasArmorReduction = function(nUnit)
     return nUnit:HasModifier("modifier_templar_assassin_meld_armor") or nUnit:HasModifier("modifier_item_medallion_of_courage_armor_reduction") or nUnit:HasModifier("modifier_item_solar_crest_armor_reduction") or nUnit:HasModifier("modifier_slardar_amplify_damage")
@@ -615,8 +615,11 @@ ____exports.IsTimeToFarm = function(bot)
             end
         end
     end
-    if ____exports.ConsiderIsTimeToFarm[botName] ~= nil and ____exports.ConsiderIsTimeToFarm[botName]() then
-        return true
+    local considerFarmForBot = ____exports.ConsiderIsTimeToFarm[botName]
+    if considerFarmForBot ~= nil then
+        return considerFarmForBot()
+    else
+        return ____exports.ConsiderIsTimeToFarm.default()
     end
     return false
 end
@@ -670,7 +673,7 @@ ____exports.IsInLaningPhase = function()
     return IsModeTurbo() and DotaTime() < 8 * 60 or DotaTime() < 12 * 60
 end
 ____exports.ConsiderIsTimeToFarm = {}
-____exports.ConsiderIsTimeToFarm.npc_dota_hero_luna = function()
+____exports.ConsiderIsTimeToFarm.npc_dota_hero_antimage = function()
     local bot = GetBot()
     local botNetWorth = bot:GetNetWorth()
     local currentTime = DotaTime()
@@ -687,11 +690,10 @@ ____exports.ConsiderIsTimeToFarm.npc_dota_hero_luna = function()
     end
     return false
 end
-____exports.ConsiderIsTimeToFarm.npc_dota_hero_luna = function()
+____exports.ConsiderIsTimeToFarm.npc_dota_hero_arc_warden = function()
     local bot = GetBot()
     local botNetWorth = bot:GetNetWorth()
-    local currentTime = DotaTime()
-    if currentTime > 15 * 60 and (bot:GetLevel() < 25 or botNetWorth < 22000) then
+    if DotaTime() > 15 * 60 and (bot:GetLevel() < 25 or botNetWorth < 22000) then
         return true
     end
     if HasItem(bot, "item_gloves") and not HasItem(bot, "item_hand_of_midas") and bot:GetGold() > 800 then
@@ -754,8 +756,12 @@ ____exports.ConsiderIsTimeToFarm.npc_dota_hero_bristleback = function()
     end
     return false
 end
-____exports.ConsiderIsTimeToFarm.npc_dota_hero_chaos_knight = ____exports.ConsiderIsTimeToFarm.npc_dota_hero_bristleback
-____exports.ConsiderIsTimeToFarm.npc_dota_hero_clinkz = ____exports.ConsiderIsTimeToFarm.npc_dota_hero_templar_assassin
+____exports.ConsiderIsTimeToFarm.npc_dota_hero_chaos_knight = function()
+    return ____exports.ConsiderIsTimeToFarm.npc_dota_hero_bristleback()
+end
+____exports.ConsiderIsTimeToFarm.npc_dota_hero_clinkz = function()
+    return ____exports.ConsiderIsTimeToFarm.npc_dota_hero_templar_assassin()
+end
 ____exports.ConsiderIsTimeToFarm.npc_dota_hero_dragon_knight = function()
     local bot = GetBot()
     local botNetWorth = bot:GetNetWorth()
@@ -834,9 +840,15 @@ ____exports.ConsiderIsTimeToFarm.npc_dota_hero_juggernaut = function()
     end
     return false
 end
-____exports.ConsiderIsTimeToFarm.npc_dota_hero_kunkka = ____exports.ConsiderIsTimeToFarm.npc_dota_hero_bristleback
-____exports.ConsiderIsTimeToFarm.npc_dota_hero_luna = ____exports.ConsiderIsTimeToFarm.npc_dota_hero_huskar
-____exports.ConsiderIsTimeToFarm.npc_dota_hero_mirana = ____exports.ConsiderIsTimeToFarm.npc_dota_hero_templar_assassin
+____exports.ConsiderIsTimeToFarm.npc_dota_hero_kunkka = function()
+    return ____exports.ConsiderIsTimeToFarm.npc_dota_hero_bristleback()
+end
+____exports.ConsiderIsTimeToFarm.npc_dota_hero_luna = function()
+    return ____exports.ConsiderIsTimeToFarm.npc_dota_hero_huskar()
+end
+____exports.ConsiderIsTimeToFarm.npc_dota_hero_mirana = function()
+    return ____exports.ConsiderIsTimeToFarm.npc_dota_hero_templar_assassin()
+end
 ____exports.ConsiderIsTimeToFarm.npc_dota_hero_medusa = function()
     local bot = GetBot()
     local botNetWorth = bot:GetNetWorth()
@@ -869,8 +881,12 @@ ____exports.ConsiderIsTimeToFarm.npc_dota_hero_nevermore = function()
     end
     return false
 end
-____exports.ConsiderIsTimeToFarm.npc_dota_hero_omniknight = ____exports.ConsiderIsTimeToFarm.npc_dota_hero_bristleback
-____exports.ConsiderIsTimeToFarm.npc_dota_hero_ogre_magi = ____exports.ConsiderIsTimeToFarm.npc_dota_hero_bristleback
+____exports.ConsiderIsTimeToFarm.npc_dota_hero_omniknight = function()
+    return ____exports.ConsiderIsTimeToFarm.npc_dota_hero_bristleback()
+end
+____exports.ConsiderIsTimeToFarm.npc_dota_hero_ogre_magi = function()
+    return ____exports.ConsiderIsTimeToFarm.npc_dota_hero_bristleback()
+end
 ____exports.ConsiderIsTimeToFarm.npc_dota_hero_phantom_assassin = function()
     local bot = GetBot()
     local botNetWorth = bot:GetNetWorth()
@@ -913,7 +929,9 @@ ____exports.ConsiderIsTimeToFarm.npc_dota_hero_phantom_lancer = function()
     end
     return false
 end
-____exports.ConsiderIsTimeToFarm.npc_dota_hero_naga_siren = ____exports.ConsiderIsTimeToFarm.npc_dota_hero_phantom_lancer
+____exports.ConsiderIsTimeToFarm.npc_dota_hero_naga_siren = function()
+    return ____exports.ConsiderIsTimeToFarm.npc_dota_hero_phantom_lancer()
+end
 ____exports.ConsiderIsTimeToFarm.npc_dota_hero_razor = function()
     local bot = GetBot()
     local botNetWorth = bot:GetNetWorth()
@@ -930,8 +948,12 @@ ____exports.ConsiderIsTimeToFarm.npc_dota_hero_razor = function()
     end
     return false
 end
-____exports.ConsiderIsTimeToFarm.npc_dota_hero_sand_king = ____exports.ConsiderIsTimeToFarm.npc_dota_hero_bristleback
-____exports.ConsiderIsTimeToFarm.npc_dota_hero_slardar = ____exports.ConsiderIsTimeToFarm.npc_dota_hero_bristleback
+____exports.ConsiderIsTimeToFarm.npc_dota_hero_sand_king = function()
+    return ____exports.ConsiderIsTimeToFarm.npc_dota_hero_bristleback()
+end
+____exports.ConsiderIsTimeToFarm.npc_dota_hero_slardar = function()
+    return ____exports.ConsiderIsTimeToFarm.npc_dota_hero_bristleback()
+end
 ____exports.ConsiderIsTimeToFarm.npc_dota_hero_legion_commander = function()
     local bot = GetBot()
     local botNetWorth = bot:GetNetWorth()
@@ -969,7 +991,9 @@ ____exports.ConsiderIsTimeToFarm.npc_dota_hero_slark = function()
     end
     return false
 end
-____exports.ConsiderIsTimeToFarm.npc_dota_hero_skeleton_king = ____exports.ConsiderIsTimeToFarm.npc_dota_hero_bristleback
+____exports.ConsiderIsTimeToFarm.npc_dota_hero_skeleton_king = function()
+    return ____exports.ConsiderIsTimeToFarm.npc_dota_hero_bristleback()
+end
 ____exports.ConsiderIsTimeToFarm.npc_dota_hero_sven = function()
     local bot = GetBot()
     local botNetWorth = bot:GetNetWorth()
@@ -1024,7 +1048,9 @@ ____exports.ConsiderIsTimeToFarm.npc_dota_hero_templar_assassin = function()
     end
     return false
 end
-____exports.ConsiderIsTimeToFarm.npc_dota_hero_tidehunter = ____exports.ConsiderIsTimeToFarm.npc_dota_hero_sven
+____exports.ConsiderIsTimeToFarm.npc_dota_hero_tidehunter = function()
+    return ____exports.ConsiderIsTimeToFarm.npc_dota_hero_sven()
+end
 ____exports.ConsiderIsTimeToFarm.npc_dota_hero_viper = function()
     local bot = GetBot()
     local botNetWorth = bot:GetNetWorth()
@@ -1036,6 +1062,479 @@ ____exports.ConsiderIsTimeToFarm.npc_dota_hero_viper = function()
             return true
         end
         if bot:GetMana() > 650 and bot:GetCurrentVisionRange() < 1000 and allyCount <= 1 then
+            return true
+        end
+    end
+    return false
+end
+____exports.ConsiderIsTimeToFarm.npc_dota_hero_earthshaker = function()
+    local bot = GetBot()
+    local botNetWorth = bot:GetNetWorth()
+    if not HasItem(bot, "item_blink") and botNetWorth < 8000 then
+        return true
+    end
+    if not HasItem(bot, "item_ultimate_scepter") and botNetWorth < 16000 then
+        return true
+    end
+    return false
+end
+____exports.ConsiderIsTimeToFarm.npc_dota_hero_tiny = function()
+    local bot = GetBot()
+    local botNetWorth = bot:GetNetWorth()
+    if DotaTime() > 10 * 60 and (bot:GetLevel() < 25 or botNetWorth < 22000) then
+        return true
+    end
+    if not HasItem(bot, "item_echo_sabre") and botNetWorth < 12000 then
+        return true
+    end
+    if not HasItem(bot, "item_silver_edge") and botNetWorth < 18000 then
+        return true
+    end
+    return false
+end
+____exports.ConsiderIsTimeToFarm.npc_dota_hero_beastmaster = function()
+    local bot = GetBot()
+    local botNetWorth = bot:GetNetWorth()
+    if not HasItem(bot, "item_helm_of_the_overlord") and botNetWorth < 14000 then
+        return true
+    end
+    if not HasItem(bot, "item_black_king_bar") and botNetWorth < 18000 then
+        return true
+    end
+    return false
+end
+____exports.ConsiderIsTimeToFarm.npc_dota_hero_rattletrap = function()
+    local bot = GetBot()
+    local botNetWorth = bot:GetNetWorth()
+    if not HasItem(bot, "item_blade_mail") and botNetWorth < 8000 then
+        return true
+    end
+    if not HasItem(bot, "item_aghanims_shard") and botNetWorth < 12000 then
+        return true
+    end
+    return false
+end
+____exports.ConsiderIsTimeToFarm.npc_dota_hero_alchemist = function()
+    local bot = GetBot()
+    local botNetWorth = bot:GetNetWorth()
+    if bot:GetLevel() < 25 or botNetWorth < 35000 then
+        return true
+    end
+    return false
+end
+____exports.ConsiderIsTimeToFarm.npc_dota_hero_brewmaster = function()
+    local bot = GetBot()
+    local botNetWorth = bot:GetNetWorth()
+    if not HasItem(bot, "item_blink") and botNetWorth < 8000 then
+        return true
+    end
+    if not HasItem(bot, "item_ultimate_scepter") and botNetWorth < 16000 then
+        return true
+    end
+    return false
+end
+____exports.ConsiderIsTimeToFarm.npc_dota_hero_treant = function()
+    local bot = GetBot()
+    local botNetWorth = bot:GetNetWorth()
+    if not HasItem(bot, "item_meteor_hammer") and botNetWorth < 8000 then
+        return true
+    end
+    if not HasItem(bot, "item_blink") and botNetWorth < 12000 then
+        return true
+    end
+    return false
+end
+____exports.ConsiderIsTimeToFarm.npc_dota_hero_wisp = function()
+    local bot = GetBot()
+    local botNetWorth = bot:GetNetWorth()
+    if not HasItem(bot, "item_mekansm") and botNetWorth < 6000 then
+        return true
+    end
+    if not HasItem(bot, "item_guardian_greaves") and botNetWorth < 10000 then
+        return true
+    end
+    return false
+end
+____exports.ConsiderIsTimeToFarm.npc_dota_hero_centaur = function()
+    local bot = GetBot()
+    local botNetWorth = bot:GetNetWorth()
+    if not HasItem(bot, "item_blink") and botNetWorth < 8000 then
+        return true
+    end
+    if not HasItem(bot, "item_hood_of_defiance") and botNetWorth < 10000 then
+        return true
+    end
+    if not HasItem(bot, "item_pipe") and botNetWorth < 14000 then
+        return true
+    end
+    return false
+end
+____exports.ConsiderIsTimeToFarm.npc_dota_hero_shredder = function()
+    local bot = GetBot()
+    local botNetWorth = bot:GetNetWorth()
+    if not HasItem(bot, "item_bloodstone") and botNetWorth < 14000 then
+        return true
+    end
+    if not HasItem(bot, "item_lotus_orb") and botNetWorth < 18000 then
+        return true
+    end
+    return false
+end
+____exports.ConsiderIsTimeToFarm.npc_dota_hero_tusk = function()
+    local bot = GetBot()
+    local botNetWorth = bot:GetNetWorth()
+    if not HasItem(bot, "item_blink") and botNetWorth < 8000 then
+        return true
+    end
+    if not HasItem(bot, "item_desolator") and botNetWorth < 14000 then
+        return true
+    end
+    return false
+end
+____exports.ConsiderIsTimeToFarm.npc_dota_hero_elder_titan = function()
+    local bot = GetBot()
+    local botNetWorth = bot:GetNetWorth()
+    if not HasItem(bot, "item_spirit_vessel") and botNetWorth < 8000 then
+        return true
+    end
+    if not HasItem(bot, "item_blink") and botNetWorth < 12000 then
+        return true
+    end
+    return false
+end
+____exports.ConsiderIsTimeToFarm.npc_dota_hero_earth_spirit = function()
+    local bot = GetBot()
+    local botNetWorth = bot:GetNetWorth()
+    if not HasItem(bot, "item_spirit_vessel") and botNetWorth < 8000 then
+        return true
+    end
+    if not HasItem(bot, "item_blink") and botNetWorth < 12000 then
+        return true
+    end
+    return false
+end
+____exports.ConsiderIsTimeToFarm.npc_dota_hero_phoenix = function()
+    local bot = GetBot()
+    local botNetWorth = bot:GetNetWorth()
+    if not HasItem(bot, "item_mekansm") and botNetWorth < 6000 then
+        return true
+    end
+    if not HasItem(bot, "item_shivas_guard") and botNetWorth < 14000 then
+        return true
+    end
+    return false
+end
+____exports.ConsiderIsTimeToFarm.npc_dota_hero_mars = function()
+    local bot = GetBot()
+    local botNetWorth = bot:GetNetWorth()
+    if not HasItem(bot, "item_blink") and botNetWorth < 8000 then
+        return true
+    end
+    if not HasItem(bot, "item_black_king_bar") and botNetWorth < 14000 then
+        return true
+    end
+    return false
+end
+____exports.ConsiderIsTimeToFarm.npc_dota_hero_abyssal_underlord = function()
+    local bot = GetBot()
+    local botNetWorth = bot:GetNetWorth()
+    if not HasItem(bot, "item_pipe") and botNetWorth < 10000 then
+        return true
+    end
+    if not HasItem(bot, "item_guardian_greaves") and botNetWorth < 14000 then
+        return true
+    end
+    return false
+end
+____exports.ConsiderIsTimeToFarm.npc_dota_hero_snapfire = function()
+    local bot = GetBot()
+    local botNetWorth = bot:GetNetWorth()
+    if not HasItem(bot, "item_aether_lens") and botNetWorth < 6000 then
+        return true
+    end
+    if not HasItem(bot, "item_solar_crest") and botNetWorth < 10000 then
+        return true
+    end
+    return false
+end
+____exports.ConsiderIsTimeToFarm.npc_dota_hero_dawnbreaker = function()
+    local bot = GetBot()
+    local botNetWorth = bot:GetNetWorth()
+    if not HasItem(bot, "item_echo_sabre") and botNetWorth < 8000 then
+        return true
+    end
+    if not HasItem(bot, "item_desolator") and botNetWorth < 14000 then
+        return true
+    end
+    return false
+end
+____exports.ConsiderIsTimeToFarm.npc_dota_hero_primal_beast = function()
+    local bot = GetBot()
+    local botNetWorth = bot:GetNetWorth()
+    if not HasItem(bot, "item_vanguard") and botNetWorth < 6000 then
+        return true
+    end
+    if not HasItem(bot, "item_blink") and botNetWorth < 10000 then
+        return true
+    end
+    return false
+end
+____exports.ConsiderIsTimeToFarm.npc_dota_hero_marci = function()
+    local bot = GetBot()
+    local botNetWorth = bot:GetNetWorth()
+    if not HasItem(bot, "item_armlet") and botNetWorth < 6000 then
+        return true
+    end
+    if not HasItem(bot, "item_black_king_bar") and botNetWorth < 14000 then
+        return true
+    end
+    return false
+end
+____exports.ConsiderIsTimeToFarm.npc_dota_hero_bounty_hunter = function()
+    local bot = GetBot()
+    local botNetWorth = bot:GetNetWorth()
+    if not HasItem(bot, "item_spirit_vessel") and botNetWorth < 8000 then
+        return true
+    end
+    if not HasItem(bot, "item_guardian_greaves") and botNetWorth < 12000 then
+        return true
+    end
+    return false
+end
+____exports.ConsiderIsTimeToFarm.npc_dota_hero_broodmother = function()
+    local bot = GetBot()
+    local botNetWorth = bot:GetNetWorth()
+    if bot:GetLevel() < 25 or botNetWorth < 25000 then
+        return true
+    end
+    return false
+end
+____exports.ConsiderIsTimeToFarm.npc_dota_hero_ember_spirit = function()
+    local bot = GetBot()
+    local botNetWorth = bot:GetNetWorth()
+    if not HasItem(bot, "item_maelstrom") and botNetWorth < 12000 then
+        return true
+    end
+    if not HasItem(bot, "item_black_king_bar") and botNetWorth < 18000 then
+        return true
+    end
+    if botNetWorth < 25000 then
+        return true
+    end
+    return false
+end
+____exports.ConsiderIsTimeToFarm.npc_dota_hero_faceless_void = function()
+    local bot = GetBot()
+    local botNetWorth = bot:GetNetWorth()
+    if not HasItem(bot, "item_mask_of_madness") and botNetWorth < 6000 then
+        return true
+    end
+    if not HasItem(bot, "item_maelstrom") and botNetWorth < 10000 then
+        return true
+    end
+    if botNetWorth < 22000 then
+        return true
+    end
+    return false
+end
+____exports.ConsiderIsTimeToFarm.npc_dota_hero_gyrocopter = function()
+    local bot = GetBot()
+    local botNetWorth = bot:GetNetWorth()
+    if bot:GetLevel() < 25 or botNetWorth < 22000 then
+        return true
+    end
+    return false
+end
+____exports.ConsiderIsTimeToFarm.npc_dota_hero_hoodwink = function()
+    local bot = GetBot()
+    local botNetWorth = bot:GetNetWorth()
+    if not HasItem(bot, "item_maelstrom") and botNetWorth < 12000 then
+        return true
+    end
+    if not HasItem(bot, "item_gleipnir") and botNetWorth < 18000 then
+        return true
+    end
+    return false
+end
+____exports.ConsiderIsTimeToFarm.npc_dota_hero_lone_druid = function()
+    local bot = GetBot()
+    local botNetWorth = bot:GetNetWorth()
+    if botNetWorth < 20000 then
+        return true
+    end
+    return false
+end
+____exports.ConsiderIsTimeToFarm.npc_dota_hero_meepo = function()
+    local bot = GetBot()
+    local botNetWorth = bot:GetNetWorth()
+    if bot:GetLevel() < 25 or botNetWorth < 24000 then
+        return true
+    end
+    return false
+end
+____exports.ConsiderIsTimeToFarm.npc_dota_hero_monkey_king = function()
+    local bot = GetBot()
+    local botNetWorth = bot:GetNetWorth()
+    if not HasItem(bot, "item_echo_sabre") and botNetWorth < 8000 then
+        return true
+    end
+    if not HasItem(bot, "item_black_king_bar") and botNetWorth < 16000 then
+        return true
+    end
+    if botNetWorth < 24000 then
+        return true
+    end
+    return false
+end
+____exports.ConsiderIsTimeToFarm.npc_dota_hero_morphling = function()
+    local bot = GetBot()
+    local botNetWorth = bot:GetNetWorth()
+    if bot:GetLevel() < 25 or botNetWorth < 26000 then
+        return true
+    end
+    return false
+end
+____exports.ConsiderIsTimeToFarm.npc_dota_hero_nyx_assassin = function()
+    local bot = GetBot()
+    local botNetWorth = bot:GetNetWorth()
+    if not HasItem(bot, "item_blink") and botNetWorth < 8000 then
+        return true
+    end
+    if not HasItem(bot, "item_ultimate_scepter") and botNetWorth < 14000 then
+        return true
+    end
+    return false
+end
+____exports.ConsiderIsTimeToFarm.npc_dota_hero_pangolier = function()
+    local bot = GetBot()
+    local botNetWorth = bot:GetNetWorth()
+    if not HasItem(bot, "item_maelstrom") and botNetWorth < 12000 then
+        return true
+    end
+    if not HasItem(bot, "item_blink") and botNetWorth < 16000 then
+        return true
+    end
+    return false
+end
+____exports.ConsiderIsTimeToFarm.npc_dota_hero_riki = function()
+    local bot = GetBot()
+    local botNetWorth = bot:GetNetWorth()
+    if not HasItem(bot, "item_diffusal_blade") and botNetWorth < 10000 then
+        return true
+    end
+    if not HasItem(bot, "item_abyssal_blade") and botNetWorth < 18000 then
+        return true
+    end
+    return false
+end
+____exports.ConsiderIsTimeToFarm.npc_dota_hero_spectre = function()
+    local bot = GetBot()
+    local botNetWorth = bot:GetNetWorth()
+    if not HasItem(bot, "item_radiance") and botNetWorth < 15000 then
+        return true
+    end
+    if not HasItem(bot, "item_manta") and botNetWorth < 20000 then
+        return true
+    end
+    if botNetWorth < 28000 then
+        return true
+    end
+    return false
+end
+____exports.ConsiderIsTimeToFarm.npc_dota_hero_terrorblade = function()
+    local bot = GetBot()
+    local botNetWorth = bot:GetNetWorth()
+    if not HasItem(bot, "item_manta") and botNetWorth < 16000 then
+        return true
+    end
+    if not HasItem(bot, "item_skadi") and botNetWorth < 22000 then
+        return true
+    end
+    if botNetWorth < 30000 then
+        return true
+    end
+    return false
+end
+____exports.ConsiderIsTimeToFarm.npc_dota_hero_troll_warlord = function()
+    local bot = GetBot()
+    local botNetWorth = bot:GetNetWorth()
+    if not HasItem(bot, "item_maelstrom") and botNetWorth < 10000 then
+        return true
+    end
+    if not HasItem(bot, "item_black_king_bar") and botNetWorth < 16000 then
+        return true
+    end
+    if botNetWorth < 24000 then
+        return true
+    end
+    return false
+end
+____exports.ConsiderIsTimeToFarm.npc_dota_hero_ursa = function()
+    local bot = GetBot()
+    local botNetWorth = bot:GetNetWorth()
+    if not HasItem(bot, "item_blink") and botNetWorth < 8000 then
+        return true
+    end
+    if not HasItem(bot, "item_black_king_bar") and botNetWorth < 14000 then
+        return true
+    end
+    if botNetWorth < 22000 then
+        return true
+    end
+    return false
+end
+____exports.ConsiderIsTimeToFarm.npc_dota_hero_vengefulspirit = function()
+    local bot = GetBot()
+    local botNetWorth = bot:GetNetWorth()
+    if ____exports.GetPosition(bot) >= 4 and botNetWorth < 8000 then
+        return true
+    end
+    return false
+end
+____exports.ConsiderIsTimeToFarm.npc_dota_hero_venomancer = function()
+    local bot = GetBot()
+    local botNetWorth = bot:GetNetWorth()
+    if ____exports.GetPosition(bot) >= 4 and botNetWorth < 8000 then
+        return true
+    end
+    return false
+end
+____exports.ConsiderIsTimeToFarm.npc_dota_hero_weaver = function()
+    local bot = GetBot()
+    local botNetWorth = bot:GetNetWorth()
+    if not HasItem(bot, "item_maelstrom") and botNetWorth < 12000 then
+        return true
+    end
+    if not HasItem(bot, "item_black_king_bar") and botNetWorth < 18000 then
+        return true
+    end
+    return false
+end
+____exports.ConsiderIsTimeToFarm.npc_dota_hero_ringmaster = function()
+    local bot = GetBot()
+    local botNetWorth = bot:GetNetWorth()
+    if not HasItem(bot, "item_ethereal_blade") and botNetWorth < 15000 then
+        return true
+    end
+    if not HasItem(bot, "item_dagon_5") and botNetWorth < 22000 then
+        return true
+    end
+    return false
+end
+____exports.ConsiderIsTimeToFarm.default = function()
+    local bot = GetBot()
+    local botNetWorth = bot:GetNetWorth()
+    if not ____exports.IsInLaningPhase() and ____exports.GetPosition(bot) < 3 then
+        if bot:GetLevel() < 10 or botNetWorth < 6000 then
+            return true
+        end
+        if bot:GetLevel() < 15 or botNetWorth < 8000 then
+            return true
+        end
+        if bot:GetLevel() < 20 or botNetWorth < 15000 then
+            return true
+        end
+        if bot:GetLevel() < 25 or botNetWorth < 20000 then
             return true
         end
     end

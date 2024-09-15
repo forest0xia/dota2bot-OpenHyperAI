@@ -2911,9 +2911,10 @@ end
 
 
 function J.GetMP( bot )
-
+	if bot:GetUnitName() == 'npc_dota_hero_huskar' then
+		return bot:GetHealth() / bot:GetMaxHealth()
+	end
 	return bot:GetMana() / bot:GetMaxMana()
-
 end
 
 

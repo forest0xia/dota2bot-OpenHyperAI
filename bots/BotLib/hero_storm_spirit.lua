@@ -167,7 +167,7 @@ function X.SkillsComplement()
 	ElectricVortexDesire, ElectricVortexTarget = X.ConsiderElectricVortex()
 	if ElectricVortexDesire > 0
 	then
-		if bot:HasScepter()
+		if bot:HasScepter() and string.find(GetBot():GetUnitName(), 'storm_spirit')
 		then
 			bot:Action_UseAbility(ElectricVortex)
 			return
@@ -191,7 +191,7 @@ function X.SkillsComplement()
 	if StaticRemnantDesire > 0
 	then
 		J.SetQueuePtToINT(bot, true)
-		bot:Action_UseAbility(StaticRemnant)
+		bot:ActionQueue_UseAbility(StaticRemnant)
 		return
 	end
 
@@ -204,7 +204,7 @@ function X.SkillsComplement()
 end
 
 function X.ConsiderStaticRemnant()
-	if not StaticRemnant:IsFullyCastable()
+	if not J.CanCastAbility(StaticRemnant)
 	then
 		return BOT_ACTION_DESIRE_NONE
 	end
@@ -212,7 +212,6 @@ function X.ConsiderStaticRemnant()
 	local nRadius = StaticRemnant:GetSpecialValueInt('static_remnant_radius')
 	local nAbilityLevel = StaticRemnant:GetLevel()
 	local nManaCost = StaticRemnant:GetManaCost()
-	local nMana = bot:GetMana() / bot:GetMaxMana()
 	local nAttackRange = bot:GetAttackRange()
 	local botTarget = J.GetProperTarget(bot)
 
@@ -230,7 +229,6 @@ function X.ConsiderStaticRemnant()
 		and J.CanCastOnNonMagicImmune(enemyHero)
 		and J.IsInRange(bot, enemyHero, nAttackRange)
 		and J.CanKillTarget(enemyHero, nOverloadDamage, DAMAGE_TYPE_MAGICAL)
-		and not J.IsSuspiciousIllusion(enemyHero)
 		and not enemyHero:HasModifier('modifier_abaddon_aphotic_shield')
 		and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
 		and not enemyHero:HasModifier('modifier_dazzle_shallow_grave')
@@ -244,9 +242,6 @@ function X.ConsiderStaticRemnant()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		local nInRangeAlly = J.GetNearbyHeroes(bot,1000, false, BOT_MODE_NONE)
-		local nInRangeEnemy = J.GetNearbyHeroes(bot,800, true, BOT_MODE_NONE)
-
 		if  J.IsValidTarget(botTarget)
 		and J.CanCastOnNonMagicImmune(botTarget)
 		and J.IsInRange(bot, botTarget, nAttackRange)
@@ -254,8 +249,6 @@ function X.ConsiderStaticRemnant()
 		and not botTarget:HasModifier('modifier_abaddon_borrowed_time')
 		and not botTarget:HasModifier('modifier_dazzle_shallow_grave')
 		and not botTarget:HasModifier('modifier_templar_assassin_refraction_absorb')
-		and nInRangeAlly ~= nil and nInRangeEnemy ~= nil
-		and #nInRangeAlly >= #nInRangeEnemy
 		then
 			return BOT_ACTION_DESIRE_HIGH
 		end
@@ -275,6 +268,7 @@ function X.ConsiderStaticRemnant()
 	end
 
 	local nCreeps = bot:GetNearbyCreeps(1200, true)
+
 	if  J.IsFarming(bot)
 	and nAbilityLevel >= 2
 	and J.GetManaAfter(nManaCost) > 0.25

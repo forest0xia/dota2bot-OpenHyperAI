@@ -4,20 +4,17 @@ BotsInit = require( "game/botsinit" )
 local X = BotsInit.CreateGeneric()
 
 local bot = GetBot()
-local botName = bot:GetUnitName()
 local LowHealthThreshold = 0.4
 local safeAmountFromFront = 300
 
 function X.OnStart() end
 function X.OnEnd() end
 
--- function X.GetDesire()
--- end
-local botTarget, nEnemyHeroes, nAllyHeroes, nEnemyTowers, nEnemyCreeps, nAllyCreeps, nAttackRange
+local nEnemyTowers, nEnemyCreeps
 
 
 function X.Think()
-    if not bot:IsAlive() or J.CanNotUseAction(bot) or bot:IsUsingAbility() or bot:IsChanneling() or bot:IsDisarmed() then return BOT_ACTION_DESIRE_NONE end
+    if not bot:IsAlive() or J.CanNotUseAction(bot) or bot:IsUsingAbility() or bot:IsChanneling() or bot:IsDisarmed() or bot:GetCurrentActionType() == BOT_ACTION_TYPE_ATTACK then return BOT_ACTION_DESIRE_NONE end
 
 	local AttackRange = bot:GetAttackRange()
 

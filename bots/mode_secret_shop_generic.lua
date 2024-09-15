@@ -105,6 +105,7 @@ local function CheckWisdomRuneAvailability()
 end
 
 function WisdomRuneDesire()
+	if J.Utils.BuggyHeroesDueToValveTooLazy[botName] then return BOT_MODE_DESIRE_NONE end
 	if J.IsCore(bot) then
 		return BOT_MODE_DESIRE_NONE
 	end

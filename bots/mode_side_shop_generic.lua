@@ -453,6 +453,7 @@ local function GetClosestAllyToWisdomRune()
 end
 
 function WisdomRuneDesire()
+	if J.Utils.BuggyHeroesDueToValveTooLazy[botName] then return BOT_MODE_DESIRE_NONE end
 	-- don't worry about wisdom rune if human player exist in the team.
 	if J.IsHumanPlayerInTeam() or J.IsCore(bot) then
 		return BOT_MODE_DESIRE_NONE

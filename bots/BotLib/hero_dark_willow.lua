@@ -148,7 +148,7 @@ function X.SkillsComplement()
     BedlamDesire, BedlamTarget = X.ConsiderBedlam()
     if BedlamDesire > 0
     then
-        bot:Action_UseAbilityOnEntity(Bedlam, BedlamTarget)
+        bot:Action_UseAbility(Bedlam)
         BedlamTime = DotaTime()
         return
     end
@@ -411,6 +411,7 @@ function X.ConsiderBedlam()
 
     local nCastRange = J.GetProperCastRange(false, bot, Bedlam:GetCastRange())
     local botTarget = J.GetProperTarget(bot)
+	-- local nEnemysHeroesInBonus = J.GetNearbyHeroes(bot, nCastRange + 150, true, BOT_MODE_NONE)
 
 	if J.IsInTeamFight(bot, 1200)
 	then
@@ -573,6 +574,23 @@ function X.ConsiderTerrorize()
 			then
 				return BOT_ACTION_DESIRE_MODERATE, nLocationAoE.targetloc
 			end
+		end
+	end
+
+	--打断
+	for _, npcEnemy in pairs( nEnemysHeroesInBonus )
+	do
+		if J.IsValid( npcEnemy )
+			and (npcEnemy:IsChanneling() or npcEnemy:HasModifier( 'modifier_teleporting' ))
+			and J.CanCastOnNonMagicImmune( npcEnemy )
+			and J.CanCastOnTargetAdvanced( npcEnemy )
+		then
+            local nLocationAoE = bot:FindAoELocation(true, true, bot:GetLocation(), nCastRange, 300, 0, 0)
+            if nLocationAoE.count >= 2
+            then
+                return BOT_ACTION_DESIRE_HIGH, nLocationAoE.targetloc
+            end
+			return BOT_ACTION_DESIRE_HIGH, npcEnemy:GetLocation()
 		end
 	end
 

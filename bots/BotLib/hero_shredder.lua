@@ -221,7 +221,7 @@ function X.ConsiderWhirlingDeath()
 	end
 
 	local nRadius = WhirlingDeath:GetSpecialValueInt('whirling_radius')
-	local nDamage = WhirlingDeath:GetSpecialValueInt('whirling_damage') * (1 + bot:GetSpellAmp())
+	local nDamage = WhirlingDeath:GetSpecialValueInt('whirling_damage')
 	local nManaCost = WhirlingDeath:GetManaCost()
 	local nMana = bot:GetMana() / bot:GetMaxMana()
 	local botTarget = J.GetProperTarget(bot)
@@ -346,8 +346,8 @@ function X.ConsiderTimberChain()
 	local nRadius = TimberChain:GetSpecialValueInt('chain_radius')
 	local nSpeed = TimberChain:GetSpecialValueInt('speed')
 	local nCastRange = J.GetProperCastRange(false, bot, TimberChain:GetCastRange())
-	local nDamage = TimberChain:GetSpecialValueInt('damage') * (1 + bot:GetSpellAmp())
-	local nWhirlingDamage = WhirlingDeath:GetSpecialValueInt('whirling_damage') * (1 + bot:GetSpellAmp())
+	local nDamage = TimberChain:GetSpecialValueInt('damage')
+	local nWhirlingDamage = WhirlingDeath:GetSpecialValueInt('whirling_damage')
 	local botTarget = J.GetProperTarget(bot)
 
 	if J.IsStuck(bot)
@@ -375,7 +375,7 @@ function X.ConsiderTimberChain()
 
 			if nTargetTree ~= nil
 			then
-				if  bot:GetLevel() < 6
+				if bot:GetLevel() < 6
 				and WhirlingDeath:IsTrained()
 				and not J.CanKillTarget(botTarget, nDamage + nWhirlingDamage, DAMAGE_TYPE_PURE)
 				then

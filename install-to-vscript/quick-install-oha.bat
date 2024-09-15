@@ -30,13 +30,14 @@ echo Creating symbolic link...
 mklink /d "%~dp0game\dota\scripts\vscripts\bots" "%~dp0..\..\workshop\content\570\3246316298"
 if %errorlevel% equ 0 (
     echo ============
-    echo Succeeded!!!
+    echo Install Succeeded!!!
     echo ============
 ) else (
     echo ============
-    echo Failed!!!
-    echo 1. Make sure to run this file in this folder:"Steam\steamapps\common\dota 2 beta". If you don't know where the Steam folder is, right click Dota2 in Steam Library, select Properties > Installed Files > Browse.
-    echo 2. Run this file as Administrator
+    echo "1. Make sure to copy this file into this folder:'Steam\steamapps\common\dota 2 beta'. If you don't know where the Steam folder is, right click Dota2 in Steam Library, select Properties > Installed Files > Browse."
+    echo "2. Run this file as Administrator"
+    echo ============
+    echo Install failed!!!
     echo ============
 )
 pause
