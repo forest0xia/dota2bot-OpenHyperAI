@@ -14,7 +14,7 @@ local nEnemyTowers, nEnemyCreeps
 
 
 function X.Think()
-    if not bot:IsAlive() or J.CanNotUseAction(bot) or bot:IsUsingAbility() or bot:IsChanneling() or bot:IsDisarmed() or bot:GetCurrentActionType() == BOT_ACTION_TYPE_ATTACK then return BOT_ACTION_DESIRE_NONE end
+    if not bot:IsAlive() or J.CanNotUseAction(bot) or bot:IsUsingAbility() or bot:IsChanneling() or bot:IsDisarmed() then return BOT_ACTION_DESIRE_NONE end
 
 	local AttackRange = bot:GetAttackRange()
 

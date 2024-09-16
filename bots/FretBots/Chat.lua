@@ -81,7 +81,7 @@ local function botNameListInTheGame()
     for i, unit in pairs(AllUnits) do
         if unit.stats then
             local kda = unit:GetKills()..'/'..unit:GetDeaths()..'/'..unit:GetAssists()
-            table.insert(inGamePlayers, {team = unit.stats.team == 2 and 'Radiant' or 'Dire', name = unit.stats.name, level = unit:GetLevel(), kda = kda, gold = unit:GetGold(), is_bot = unit.stats.isBot})
+            table.insert(inGamePlayers, {team = unit.stats.team == 2 and 'Radiant' or 'Dire', name = unit.stats.name, level = unit:GetLevel(), kda = kda, networth = PlayerResource:GetNetWorth(unit.stats.id), is_bot = unit.stats.isBot})
         end
     end
 end

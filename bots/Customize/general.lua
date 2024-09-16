@@ -21,8 +21,6 @@ Customize['Enable'] = true
 -- Hero name ref: https://developer.valvesoftware.com/wiki/Dota_2_Workshop_Tools/Scripting/Heroes_internal_names
 Customize['Ban'] = {
     'npc_dota_hero_wisp',
-    'npc_dota_hero_marci',
-    'npc_dota_hero_primal_beast',
 }
 
 -- Set the heroes you want Radiant bots to pick. You have to use hero's internal name.

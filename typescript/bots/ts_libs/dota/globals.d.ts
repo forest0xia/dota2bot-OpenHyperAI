@@ -32,6 +32,8 @@ declare global {
 
     function DotaTime(): number;
 
+    function GetSelectedHeroName(nPlayerID: number): string;
+
     function GetHeroLevel(playerId: number): number;
     function GetTower(team: Team, tower: number): Unit | null;
     function GetBarracks(team: Team, barracks: number): Unit | null;

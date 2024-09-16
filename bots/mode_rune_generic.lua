@@ -67,8 +67,6 @@ local vWaitRuneLocList = {
 }
 
 function GetDesire()
-	if J.Utils.BuggyHeroesDueToValveTooLazy[botName] then return BOT_MODE_DESIRE_NONE end
-
 	if GetGameMode() == GAMEMODE_1V1MID
 		or ( GetGameMode() == GAMEMODE_MO and DotaTime() <= 0 )
 		or ( bot:HasModifier("modifier_arc_warden_tempest_double") )

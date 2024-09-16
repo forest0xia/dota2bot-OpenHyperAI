@@ -1887,14 +1887,8 @@ end
 
 function X.GetCurrentSuitableRole( bot, hero )
 
-	if X.IsAllMode() 	 
-	   and X.IsUserSetSup( bot )
-	then
-		return "support"
-	end
-
 	local lane = bot:GetAssignedLane()
-	if X.CanBeSupport( hero ) and lane ~= LANE_MID and ( not X.IsAllMode() or #X["sUserSupList"] == 0 )
+	if X.CanBeSupport( hero ) and lane ~= LANE_MID
 	then
 		return "support"
 	elseif X.CanBeMidlaner( hero ) and lane == LANE_MID
@@ -2192,18 +2186,6 @@ function X.GetRuneActionTime()
 	return X['nStopWaitTime']
 end
 
-
-X["sUserKey"] = "00000"
-function X.SetUserKey( sString )
-	X["sUserKey"] = sString
-end
-
-
-X["sUserName"] = "锦囊模式"
-function X.GetUserName()
-	return X["sUserName"]
-end
-
 function X.IsABAHero()
 	
 	local bot = GetBot()
@@ -2341,196 +2323,6 @@ function X.IsABAHero()
 
 end
 
-local sPastKeyIndex = {
-
-
-	["AZR2007MM1EAKGFSA"] = true,
-	["AZR20086S9UYN8F5P"] = true,
-	["AZR20D3SNZPHTPUPP"] = true,
-	["AZR20YNYHCYVC8F9H"] = true,
-	
-	["AZR2105BL2R7YBFI"] = true,
-
-
-	["AJN2007MHIEC3OVVC"] = true,
-	["AJN20083UOBLU94H8"] = true,
-	["AJN20D3SEBXUVW5X8"] = true,
-	["AJN20YNYZ8ER7HXEE"] = true,
-
-
-	["SJN2007M9PQX15LXP"] = true,
-	["SJN2008AWD3ATBVDA"] = true,
-	["SJN20D3SBYH1RZ0U1"] = true,
-	["SJN20YNYGFS8ER78H"] = true,
-	
-	["AZR2105M8RY7NYO1J"] = true,
-	["AZR2106BL2R7YBFIQ"] = true,
-	
-	["AJN2105RQO9YTHQAF"] = true,
-	["AJN2106LAPDIIE0VA"] = true,
-	
-	["SJN2105R1TNCLH1PQ"] = true,
-	["SJN2106HVIDC4WWLL"] = true,
-
-
-}
-
-
-local sWillPastKeyIndex = {
-
-
-
-}
-
-
-local sKeyTypeIndex = {
-
-	["AZR2007MM1EAKGFSA"] = 'aba_lineup_202007',
-	["AZR20086S9UYN8F5P"] = 'aba_lineup_202008',
-	["AZR20D3SNZPHTPUPP"] = 'aba_lineup_2020d3',
-	["AZR20YNYHCYVC8F9H"] = 'aba_lineup_2020',
-	["AZR2105M8RY7NYO1J"] = 'aba_lineup_202105',
-	["AZR2106BL2R7YBFIQ"] = 'aba_lineup_202106',
-	["AZR21YNQKFZV6OV0Q"] = 'aba_lineup_2021',
-	
-	["AJN2007MHIEC3OVVC"] = 'aba_all_202007',
-	["AJN20083UOBLU94H8"] = 'aba_all_202008',
-	["AJN20D3SEBXUVW5X8"] = 'aba_all_2020d3',
-	["AJN20YNYZ8ER7HXEE"] = 'aba_all_2020',
-	["AJN2105RQO9YTHQAF"] = 'aba_all_202105',
-	["AJN2106LAPDIIE0VA"] = 'aba_all_202106',
-	["AJN21YNHNMZNKWEIT"] = 'aba_all_2021',
-	
-	["SJN2007M9PQX15LXP"] = 'sa_all_202007',
-	["SJN2008AWD3ATBVDA"] = 'sa_all_202008',
-	["SJN20D3SBYH1RZ0U1"] = 'sa_all_2020d3',
-	["SJN20YNYGFS8ER78H"] = 'sa_all_2020',
-	["SJN2105R1TNCLH1PQ"] = 'sa_all_202105',
-	["SJN2106HVIDC4WWLL"] = 'sa_all_202106',
-	["SJN21YN5SZUPZ9QSH"] = 'sa_all_2021',
-
-}
-
-local nKeyLVIndex = {
-
-	["AZR21YNQKFZV6OV0Q"] = 2,
-
-
-	["AJN21YNHNMZNKWEIT"] = 4,
-	
-	
-	["SJN21YN5SZUPZ9QSH"] = 6,
-
-}
-
-function X.GetKeyLV()
-
-	local sString = X["sUserKey"]
-	
-	local nKeyLV = nKeyLVIndex[sString]
-	
-	if nKeyLV ~= nil then return nKeyLV end
-   
-	return 0
-
-end
-
-function X.GetKeyType()
-	
-	local sString = X["sUserKey"]
-
-	local sKeyType = sKeyTypeIndex[sString]
-	
-	if sKeyType ~= nil then return sKeyType end
-   
-	return 0
-
-end
-
-
-X["nUserModeLevel"] = 0
-function X.IsAllMode()  --激活全部锦囊功能
-	return X["nUserModeLevel"] >= 4
-end
-
-function X.IsUserMode()
-	return X["nUserModeLevel"] >= 1
-end
-
-
-function X.IsUserHero()
-
-	if X["nUserModeLevel"] >= 6
-	then
-		return true
-	end
-	
-	if X["nUserModeLevel"] >= 4
-		and X.IsABAHero()
-	then
-		return true
-	end
-
-	return false
-	
-end
-
-
-
-function X.GetUserType()
-
-	local sUserTypeList = {
-
-		[1] = "aba_base", 
-		[2] = "aba_lineup",
-		[4] = "aba_all",
-		[6] = "sa_all",
-
-	}
-	
-	local nUserLevel = X["nUserModeLevel"]
-	
-	local sUserType = sUserTypeList[nUserLevel] 
-	
-	if sUserType ~= nil then return sUserType end
-	
-	return 'no_key'
-	
-end
-
-function X.IsPastKey()
-
-	return sPastKeyIndex[X["sUserKey"]] == true
-
-end
-
-
-function X.IsWillPastKey()
-
-	return sWillPastKeyIndex[X["sUserKey"]] == true
-end
-
-
-X["sUserSupList"] = {}
-function X.SetUserSup( bot )
-	table.insert( X["sUserSupList"], bot:GetUnitName() )
-end
-
-
-function X.IsUserSetSup( bot )
-
-	for _, s in pairs( X["sUserSupList"] )
-	do
-		if s == bot:GetUnitName()
-		then
-			return true
-		end
-	end
-
-	return false
-
-end
-
 function X.GetPositionForCM(bot)
 	if GetTeam() ~= bot:GetTeam() then
 		print('[WARNING] Cannot determine the role of an enemy bot. Return default pos as 3')
@@ -2636,26 +2428,11 @@ function X.IsPvNMode()
 
 end
 
-
-
 function X.IsAllShadow()
 
 	return false
 
 end
-
-
-function X.IsBanShadow()
-
-	if pcall( require,  'game/bot_shadow' )
-	then
-		return require( 'game/bot_shadow' )
-	end
-
-	return false
-
-end
-
 
 function X.GetHighestValueRoles( bot )
 
@@ -2675,10 +2452,4 @@ function X.GetHighestValueRoles( bot )
 
 end
 
-X["bLobbyGame"] = false
-
-
-
-
 return X
--- dota2jmz@163.com QQ:2462331592..

@@ -1,3 +1,5 @@
+require( GetScriptDirectory()..'/FunLib/aba_global_overrides' )
+
 local X = {}
 local sSelectHero = "npc_dota_hero_zuus"
 local fLastSlectTime, fLastRand = 5, 0
@@ -12,9 +14,9 @@ local MU = require( GetScriptDirectory()..'/FunLib/aba_matchups' )
 local Role = require( GetScriptDirectory()..'/FunLib/aba_role' )
 local Utils = require( GetScriptDirectory()..'/FunLib/utils' )
 local Dota2Teams = require( GetScriptDirectory()..'/FunLib/aba_team_names' )
-local Overrides = require( GetScriptDirectory()..'/FunLib/aba_global_overrides' )
 local CM = require( GetScriptDirectory()..'/FunLib/captain_mode' )
 local Customize = require( GetScriptDirectory()..'/Customize/general' )
+local HeroRoleMap = require( GetScriptDirectory()..'/FunLib/aba_hero_role_weights' )
 local SupportedHeroes = {}
 local UseCustomizedPicks = false
 
@@ -22,416 +24,37 @@ local CorrectRadiantAssignedLanes = false
 local CorrectDireAssignedLanes = false
 local CorrectDirePlayerIndexToLaneIndex = { }
 
+-- Define the upper bound threshold for considering a hero a good fit for a position
+local ROLE_WEIGHT_THRESHOLD = 50
+-- Only pick the top k result of the heroes that have the heighest weight for the role.
+local ROLE_LIST_TOP_K_LIMIT = 30
+
 --[[
-'npc_dota_hero_abaddon',
-'npc_dota_hero_abyssal_underlord',
-'npc_dota_hero_alchemist',
-'npc_dota_hero_ancient_apparition',
-'npc_dota_hero_antimage',
-'npc_dota_hero_arc_warden',
-'npc_dota_hero_axe',
-'npc_dota_hero_bane',
-'npc_dota_hero_batrider',
-'npc_dota_hero_beastmaster',
-'npc_dota_hero_bloodseeker',
-'npc_dota_hero_bounty_hunter',
-'npc_dota_hero_brewmaster',
-'npc_dota_hero_bristleback',
-'npc_dota_hero_broodmother',
-'npc_dota_hero_centaur',
-'npc_dota_hero_chaos_knight',
-'npc_dota_hero_chen',
-'npc_dota_hero_clinkz',
-'npc_dota_hero_crystal_maiden',
-'npc_dota_hero_dark_seer',
-'npc_dota_hero_dark_willow',
-'npc_dota_hero_dazzle',
-'npc_dota_hero_disruptor',
-'npc_dota_hero_death_prophet',
-'npc_dota_hero_doom_bringer',
-'npc_dota_hero_dragon_knight',
-'npc_dota_hero_drow_ranger',
-'npc_dota_hero_earth_spirit',
-'npc_dota_hero_earthshaker',
-'npc_dota_hero_elder_titan',
-'npc_dota_hero_ember_spirit',
-'npc_dota_hero_enchantress',
-'npc_dota_hero_enigma',
-'npc_dota_hero_faceless_void',
-'npc_dota_hero_furion',
-'npc_dota_hero_grimstroke',
-'npc_dota_hero_gyrocopter',
-'npc_dota_hero_huskar',
-'npc_dota_hero_invoker',
-'npc_dota_hero_jakiro',
-'npc_dota_hero_juggernaut',
-'npc_dota_hero_keeper_of_the_light',
-'npc_dota_hero_kunkka',
-'npc_dota_hero_legion_commander',
-'npc_dota_hero_leshrac',
-'npc_dota_hero_lich',
-'npc_dota_hero_life_stealer',
-'npc_dota_hero_lina',
-'npc_dota_hero_lion',
-'npc_dota_hero_lone_druid',
-'npc_dota_hero_luna',
-'npc_dota_hero_lycan',
-'npc_dota_hero_magnataur',
-'npc_dota_hero_mars',
-'npc_dota_hero_medusa',
-'npc_dota_hero_meepo',
-'npc_dota_hero_mirana',
-'npc_dota_hero_morphling',
-'npc_dota_hero_monkey_king',
-'npc_dota_hero_naga_siren',
-'npc_dota_hero_necrolyte',
-'npc_dota_hero_nevermore',
-'npc_dota_hero_night_stalker',
-'npc_dota_hero_nyx_assassin',
-'npc_dota_hero_obsidian_destroyer',
-'npc_dota_hero_ogre_magi',
-'npc_dota_hero_omniknight',
-'npc_dota_hero_oracle',
-'npc_dota_hero_pangolier',
-'npc_dota_hero_phantom_lancer',
-'npc_dota_hero_phantom_assassin',
-'npc_dota_hero_phoenix',
-'npc_dota_hero_puck',
-'npc_dota_hero_pudge',
-'npc_dota_hero_pugna',
-'npc_dota_hero_queenofpain',
-'npc_dota_hero_rattletrap',
-'npc_dota_hero_razor',
-'npc_dota_hero_riki',
-'npc_dota_hero_rubick',
-'npc_dota_hero_sand_king',
-'npc_dota_hero_shadow_demon',
-'npc_dota_hero_shadow_shaman',
-'npc_dota_hero_shredder',
-'npc_dota_hero_silencer',
-'npc_dota_hero_skeleton_king',
-'npc_dota_hero_skywrath_mage',
-'npc_dota_hero_slardar',
-'npc_dota_hero_slark',
-"npc_dota_hero_snapfire",
-'npc_dota_hero_sniper',
-'npc_dota_hero_spectre',
-'npc_dota_hero_spirit_breaker',
-'npc_dota_hero_storm_spirit',
-'npc_dota_hero_sven',
-'npc_dota_hero_techies',
-'npc_dota_hero_terrorblade',
-'npc_dota_hero_templar_assassin',
-'npc_dota_hero_tidehunter',
-'npc_dota_hero_tinker',
-'npc_dota_hero_tiny',
-'npc_dota_hero_treant',
-'npc_dota_hero_troll_warlord',
-'npc_dota_hero_tusk',
-'npc_dota_hero_undying',
-'npc_dota_hero_ursa',
-'npc_dota_hero_vengefulspirit',
-'npc_dota_hero_venomancer',
-'npc_dota_hero_viper',
-'npc_dota_hero_visage',
-'npc_dota_hero_void_spirit',
-'npc_dota_hero_warlock',
-'npc_dota_hero_weaver',
-'npc_dota_hero_windrunner',
-'npc_dota_hero_winter_wyvern',
-'npc_dota_hero_wisp',
-'npc_dota_hero_witch_doctor',
-'npc_dota_hero_zuus',
-'npc_dota_hero_hoodwink',
-'npc_dota_hero_dawnbreaker',
-'npc_dota_hero_marci',
-'npc_dota_hero_primal_beast',
---]]
+Game Modes
+[x]: to be added.
 
+GAMEMODE_NONE
+GAMEMODE_AP = 1 -- All Pick
+GAMEMODE_CM = 2 -- Captain Mode
+GAMEMODE_RD = 3 -- Random Draft. Players take turns choosing from a pool of 33 random heroes.
+GAMEMODE_SD = 4 -- Single Draft. Choose from 4 random heroes.
+GAMEMODE_AR = 5 -- All Random. Each player gets a random hero.
+[x] GAMEMODE_REVERSE_CM
+GAMEMODE_MO = 11 -- Mid Only
+[x] GAMEMODE_CD = 16 -- Captains Draft. Captains ban and choose from a selection of 28 heroes.
+[X] GAMEMODE_ABILITY_DRAFT -- Play a hero with four abilities selected from a random pool of abilities.
+GAMEMODE_LP -- Least Played. Choose from a pool of your least played heroes.
+[X] GAMEMODE_ARDM -- All Random Deathmatch. Players receive a random hero when they respawn after dying. First team to exhaust either teams 40 respawns, reach 45 kills on either team, or when the Ancient is destroyed, wins.
+GAMEMODE_1V1MID = 21
+GAMEMODE_ALL_DRAFT = 22 -- Ranked All Pick. The All Pick mode in ranked matches works different than the regular All Pick mode, and is called "Ranked Matchmaking".
+GAMEMODE_TURBO = 23
 
-local sPos1List = {
-	"npc_dota_hero_abaddon",
-	"npc_dota_hero_alchemist",
-	"npc_dota_hero_antimage",
-	"npc_dota_hero_arc_warden",
-	"npc_dota_hero_bloodseeker",
-	"npc_dota_hero_bristleback",
-	"npc_dota_hero_chaos_knight",
-	"npc_dota_hero_clinkz",
-	"npc_dota_hero_dragon_knight",
-	"npc_dota_hero_drow_ranger",
-	"npc_dota_hero_faceless_void",
-	"npc_dota_hero_gyrocopter",
-	"npc_dota_hero_juggernaut",
-	"npc_dota_hero_life_stealer",
-	"npc_dota_hero_lina",
-	"npc_dota_hero_luna",
-	"npc_dota_hero_lycan",
-	"npc_dota_hero_medusa",
-	"npc_dota_hero_meepo",
-	"npc_dota_hero_morphling",
-	"npc_dota_hero_muerta", -- Weak
-	"npc_dota_hero_naga_siren",
-	"npc_dota_hero_nevermore",
-	"npc_dota_hero_phantom_assassin",
-	"npc_dota_hero_phantom_lancer",
-	"npc_dota_hero_razor",
-	"npc_dota_hero_riki",
-	"npc_dota_hero_skeleton_king",
-	"npc_dota_hero_slark",
-	"npc_dota_hero_spectre",
-	"npc_dota_hero_sniper",
-	"npc_dota_hero_sven",
-	"npc_dota_hero_templar_assassin",
-	"npc_dota_hero_terrorblade",
-	"npc_dota_hero_troll_warlord",
-	"npc_dota_hero_ursa",
-	"npc_dota_hero_weaver",
-	"npc_dota_hero_windrunner",
-	"npc_dota_hero_invoker",
-	"npc_dota_hero_lone_druid",
-}
-
-local sPos2List = {
-	"npc_dota_hero_abaddon",
-	"npc_dota_hero_ancient_apparition",
-	"npc_dota_hero_arc_warden",
-	"npc_dota_hero_bane",
-	"npc_dota_hero_batrider",
-	"npc_dota_hero_bloodseeker",
-	"npc_dota_hero_bounty_hunter",
-	'npc_dota_hero_bristleback',
-	"npc_dota_hero_broodmother",
-	"npc_dota_hero_clinkz",
-	"npc_dota_hero_dazzle",
-	"npc_dota_hero_death_prophet",
-	"npc_dota_hero_doom_bringer",
-	"npc_dota_hero_dragon_knight",
-	"npc_dota_hero_earthshaker",
-	"npc_dota_hero_earth_spirit",
-	"npc_dota_hero_ember_spirit",
-	"npc_dota_hero_huskar",
-	"npc_dota_hero_invoker",
-	"npc_dota_hero_invoker", -- increase the chance of having mid Invoker.
-	"npc_dota_hero_invoker",
-	"npc_dota_hero_rubick",
-	"npc_dota_hero_rubick",
-	-- "npc_dota_hero_keeper_of_the_light",
-	"npc_dota_hero_kunkka",
-	"npc_dota_hero_leshrac",
-	"npc_dota_hero_lina",
-	"npc_dota_hero_lycan",
-	"npc_dota_hero_meepo",
-	"npc_dota_hero_monkey_king",
-	"npc_dota_hero_morphling",
-	"npc_dota_hero_necrolyte",
-	"npc_dota_hero_nevermore",
-	"npc_dota_hero_nevermore", -- increase the chance of having mid Shadow Fiend.
-	"npc_dota_hero_nevermore",
-	"npc_dota_hero_obsidian_destroyer",
-	"npc_dota_hero_ogre_magi",
-	"npc_dota_hero_omniknight",
-	"npc_dota_hero_pangolier",
-	"npc_dota_hero_primal_beast",
-	"npc_dota_hero_puck",
-	"npc_dota_hero_pugna",
-	"npc_dota_hero_pudge",
-	"npc_dota_hero_queenofpain",
-	"npc_dota_hero_razor",
-	"npc_dota_hero_silencer",
-	"npc_dota_hero_slardar",
-	"npc_dota_hero_snapfire",
-	"npc_dota_hero_sniper",
-	"npc_dota_hero_spirit_breaker",
-	"npc_dota_hero_storm_spirit",
-	"npc_dota_hero_templar_assassin",
-	"npc_dota_hero_tinker", -- TOO WEAK
-	"npc_dota_hero_tiny",
-	"npc_dota_hero_tusk",
-	"npc_dota_hero_viper",
-	"npc_dota_hero_visage",
-	"npc_dota_hero_void_spirit",
-	"npc_dota_hero_windrunner",
-	"npc_dota_hero_winter_wyvern", -- TOO WEAK
-	"npc_dota_hero_zuus",
-	"npc_dota_hero_lone_druid",
-}
-
-local sPos3List = {
-	"npc_dota_hero_abaddon",
-	"npc_dota_hero_abyssal_underlord",
-	"npc_dota_hero_axe",
-	"npc_dota_hero_batrider",
-	"npc_dota_hero_beastmaster",
-	"npc_dota_hero_bloodseeker",
-	"npc_dota_hero_bounty_hunter",
-	"npc_dota_hero_brewmaster",
-	"npc_dota_hero_bristleback",
-	"npc_dota_hero_broodmother",
-	"npc_dota_hero_centaur",
-	"npc_dota_hero_chaos_knight",
-	"npc_dota_hero_dark_seer",
-	"npc_dota_hero_dawnbreaker",
-	"npc_dota_hero_death_prophet",
-	"npc_dota_hero_doom_bringer",
-	"npc_dota_hero_dragon_knight",
-	"npc_dota_hero_earthshaker",
-	'npc_dota_hero_enchantress',
-	"npc_dota_hero_enigma",
-	"npc_dota_hero_furion",
-	"npc_dota_hero_huskar",
-	"npc_dota_hero_kunkka",
-	"npc_dota_hero_leshrac",
-	"npc_dota_hero_legion_commander",
-	"npc_dota_hero_lycan",
-	"npc_dota_hero_magnataur",
-	"npc_dota_hero_marci", -- still passive
-	"npc_dota_hero_mars",
-	"npc_dota_hero_necrolyte",
-	"npc_dota_hero_night_stalker",
-	"npc_dota_hero_ogre_magi",
-	"npc_dota_hero_omniknight",
-	"npc_dota_hero_pangolier",
-	"npc_dota_hero_primal_beast", -- still passive
-	"npc_dota_hero_pudge",
-	"npc_dota_hero_razor",
-	"npc_dota_hero_sand_king",
-	"npc_dota_hero_shredder",
-	"npc_dota_hero_skeleton_king",
-	"npc_dota_hero_slardar",
-	"npc_dota_hero_spirit_breaker",
-	"npc_dota_hero_tidehunter",
-	"npc_dota_hero_tiny",
-	"npc_dota_hero_riki",
-	"npc_dota_hero_tusk",
-	"npc_dota_hero_viper",
-	"npc_dota_hero_visage",
-	"npc_dota_hero_windrunner",
-	"npc_dota_hero_invoker",
-	"npc_dota_hero_lone_druid",
-	-- "npc_dota_hero_winter_wyvern", -- TOO WEAK
-}
-
-local sPos4List = {
-	"npc_dota_hero_abaddon",
-	"npc_dota_hero_ancient_apparition",
-	"npc_dota_hero_bane",
-	"npc_dota_hero_batrider",
-	"npc_dota_hero_bounty_hunter",
-	"npc_dota_hero_chen",
-	"npc_dota_hero_crystal_maiden",
-	"npc_dota_hero_dark_willow", -- still passive
-	"npc_dota_hero_dawnbreaker",
-	"npc_dota_hero_dazzle",
-	"npc_dota_hero_disruptor",
-	"npc_dota_hero_earthshaker",
-	'npc_dota_hero_earth_spirit',
-	"npc_dota_hero_elder_titan", -- still passive
-	"npc_dota_hero_enchantress",
-	"npc_dota_hero_enigma",
-	"npc_dota_hero_furion",
-	"npc_dota_hero_grimstroke",
-	"npc_dota_hero_gyrocopter",
-	"npc_dota_hero_hoodwink", -- Weak
-	"npc_dota_hero_jakiro",
-	"npc_dota_hero_keeper_of_the_light",
-	"npc_dota_hero_lich",
-	"npc_dota_hero_lina",
-	"npc_dota_hero_lion",
-	"npc_dota_hero_mirana",
-	"npc_dota_hero_nyx_assassin",
-	"npc_dota_hero_ogre_magi",
-	"npc_dota_hero_omniknight",
-	"npc_dota_hero_oracle",
-	"npc_dota_hero_phoenix",  -- TOO WEAK
-	"npc_dota_hero_pudge",
-	"npc_dota_hero_pugna",
-	"npc_dota_hero_rattletrap",
-	"npc_dota_hero_rubick",
-	"npc_dota_hero_shadow_demon",
-	"npc_dota_hero_shadow_shaman",
-	"npc_dota_hero_silencer",
-	"npc_dota_hero_skywrath_mage",
-	"npc_dota_hero_snapfire",
-	"npc_dota_hero_spirit_breaker",
-	"npc_dota_hero_techies",
-	"npc_dota_hero_tiny",
-	"npc_dota_hero_treant",
-	"npc_dota_hero_tusk",
-	"npc_dota_hero_undying",
-	"npc_dota_hero_vengefulspirit",
-	"npc_dota_hero_venomancer",
-	"npc_dota_hero_warlock",
-	"npc_dota_hero_weaver",
-	"npc_dota_hero_windrunner",
-	"npc_dota_hero_winter_wyvern", -- TOO WEAK
-	"npc_dota_hero_witch_doctor",
-	"npc_dota_hero_zuus",
-	"npc_dota_hero_invoker",
-	"npc_dota_hero_wisp",
-	"npc_dota_hero_ringmaster",
-}
-
-local sPos5List = {
-	"npc_dota_hero_abaddon",
-	"npc_dota_hero_ancient_apparition",
-	"npc_dota_hero_bane",
-	"npc_dota_hero_batrider",
-	"npc_dota_hero_bounty_hunter",
-	"npc_dota_hero_chen",
-	"npc_dota_hero_crystal_maiden",
-	"npc_dota_hero_dark_willow", -- still passive
-	"npc_dota_hero_dawnbreaker",
-	"npc_dota_hero_dazzle",
-	"npc_dota_hero_disruptor",
-	"npc_dota_hero_earthshaker",
-	"npc_dota_hero_earth_spirit",
-	-- "npc_dota_hero_elder_titan", -- still passive
-	"npc_dota_hero_enchantress",
-	"npc_dota_hero_enigma",
-	"npc_dota_hero_furion",
-	"npc_dota_hero_grimstroke",
-	"npc_dota_hero_gyrocopter",
-	"npc_dota_hero_hoodwink", -- Weak
-	"npc_dota_hero_jakiro",
-	"npc_dota_hero_keeper_of_the_light",
-	"npc_dota_hero_lich",
-	"npc_dota_hero_lina",
-	"npc_dota_hero_lion",
-	"npc_dota_hero_mirana",
-	"npc_dota_hero_nyx_assassin",
-	"npc_dota_hero_ogre_magi",
-	"npc_dota_hero_omniknight",
-	"npc_dota_hero_oracle",
-	"npc_dota_hero_phoenix",  -- TOO WEAK
-	"npc_dota_hero_pudge",
-	"npc_dota_hero_pugna",
-	"npc_dota_hero_rattletrap",
-	"npc_dota_hero_rubick",
-	"npc_dota_hero_shadow_demon",
-	"npc_dota_hero_shadow_shaman",
-	"npc_dota_hero_silencer",
-	"npc_dota_hero_skywrath_mage",
-	"npc_dota_hero_snapfire",
-	"npc_dota_hero_spirit_breaker",
-	"npc_dota_hero_techies",
-	"npc_dota_hero_tiny",
-	"npc_dota_hero_treant",
-	"npc_dota_hero_tusk",
-	"npc_dota_hero_undying",
-	"npc_dota_hero_vengefulspirit",
-	"npc_dota_hero_venomancer",
-	"npc_dota_hero_warlock",
-	"npc_dota_hero_weaver",
-	"npc_dota_hero_windrunner",
-	"npc_dota_hero_winter_wyvern",
-	"npc_dota_hero_witch_doctor",
-	"npc_dota_hero_zuus",
-	"npc_dota_hero_ringmaster",
-}
+]]
 
 -- A list of to be improved heroes. They maybe selected for bots, but shouldn't have more than one in a team to ensure the bar of gaming experience for human players.
 -- Weak due to 1, some have bugs from Valve side, I try my best to improve. 2, I'm not familir with the hero game play itself, or it's not easy hero in terms of do it with coding.
+local SelectedWeakHero = 0
+local MaxWeakHeroCount = 1
 local WeakHeroes = {
 	-- Weaks, meaning they are too far from being able to apply their power:
 	'npc_dota_hero_chen',
@@ -457,186 +80,50 @@ local WeakHeroes = {
     'npc_dota_hero_elder_titan',
     'npc_dota_hero_hoodwink',
     'npc_dota_hero_wisp',
-
-	-- Fixed by Valve. Lost some abilities due to Facet updates in 7.37 that they do not select a default facet that defines the ability.
-	-- 'npc_dota_hero_faceless_void',
-	-- 'npc_dota_hero_magnataur',
 }
 
-local SelectedWeakHero = 0
-local MaxWeakHeroCount = 1
+-- Function to get a list of all hero names from the heroRoleMap
+function GetAllHeroNames(roleMap)
+    local heroNames = {}
+    for heroName, _ in pairs(roleMap) do
+        table.insert(heroNames, heroName)
+    end
+    return heroNames
+end
 
--- Combine hero list
-SupportedHeroes = Utils.CombineTablesUnique(SupportedHeroes, sPos1List)
-SupportedHeroes = Utils.CombineTablesUnique(SupportedHeroes, sPos2List)
-SupportedHeroes = Utils.CombineTablesUnique(SupportedHeroes, sPos3List)
-SupportedHeroes = Utils.CombineTablesUnique(SupportedHeroes, sPos4List)
-SupportedHeroes = Utils.CombineTablesUnique(SupportedHeroes, sPos5List)
+-- Function to get a list of heroes suitable for a given position. Sort the list by weight。
+function GetPositionedPool(heroRoleMap, position)
+    local heroList = {}
+    for heroName, roleWeights in pairs(heroRoleMap) do
+        local weight = roleWeights[position]
+        if weight > RandomInt(0, ROLE_WEIGHT_THRESHOLD) then
+            table.insert(heroList, {name = heroName, weight = weight})
+        end
+    end
+    -- Sort the list by weight in descending order
+    table.sort(heroList, function(a, b) return a.weight > b.weight end)
+    -- Extract hero names
+    local sortedHeroNames = {}
+    for _, hero in ipairs(heroList) do
+        table.insert(sortedHeroNames, hero.name)
+		-- Only return top k (ROLE_LIST_TOP_K_LIMIT) results.
+		if #sortedHeroNames >= ROLE_LIST_TOP_K_LIMIT then
+			return sortedHeroNames
+		end
+    end
+    return sortedHeroNames
+end
+
+SupportedHeroes = GetAllHeroNames(HeroRoleMap)
 
 if Customize and not Customize.Enable then Customize = nil end
 
--- Role weight for now, heroes synergy later
--- Might take DotaBuff or others role weights once other pos are added
-function X.GetAdjustedPool(heroList, pos)
-	local sTempList = {}
-	local sHeroList = {										-- pos  1, 2, 3, 4, 5
-		{name = 'npc_dota_hero_abaddon', 					role = {5, 5, 25, 15, 50}},
-		{name = 'npc_dota_hero_abyssal_underlord', 			role = {0, 0, 100, 0, 0}},
-		{name = 'npc_dota_hero_alchemist', 					role = {50, 30, 20, 0, 0}},
-		{name = 'npc_dota_hero_ancient_apparition', 		role = {0, 5, 0, 25, 70}},
-		{name = 'npc_dota_hero_antimage', 					role = {100, 0, 0, 0, 0}},
-		{name = 'npc_dota_hero_arc_warden', 				role = {20, 80, 0, 0, 0}},
-		{name = 'npc_dota_hero_axe',	 					role = {0, 0, 100, 0, 0}},
-		{name = 'npc_dota_hero_bane', 						role = {0, 15, 0, 25, 60}},
-		{name = 'npc_dota_hero_batrider', 					role = {0, 10, 10, 50, 30}},
-		{name = 'npc_dota_hero_beastmaster', 				role = {0, 0, 100, 0, 0}},
-		{name = 'npc_dota_hero_bloodseeker', 				role = {65, 20, 15, 0, 0}},
-		{name = 'npc_dota_hero_bounty_hunter', 				role = {0, 25, 10, 50, 15}},
-		{name = 'npc_dota_hero_brewmaster', 				role = {0, 0, 100, 0, 0}},
-		{name = 'npc_dota_hero_bristleback', 				role = {10, 10, 80, 0, 0}},
-		{name = 'npc_dota_hero_broodmother', 				role = {0, 80, 20, 0, 0}},
-		{name = 'npc_dota_hero_centaur', 					role = {0, 0, 100, 0, 0}},
-		{name = 'npc_dota_hero_chaos_knight', 				role = {60, 0, 40, 0, 0}},
-		{name = 'npc_dota_hero_chen', 						role = {0, 0, 0, 0, 100}},
-		{name = 'npc_dota_hero_clinkz', 					role = {45, 30, 0, 20, 5}},
-		{name = 'npc_dota_hero_crystal_maiden', 			role = {0, 0, 0, 15, 85}},
-		{name = 'npc_dota_hero_dark_seer', 					role = {0, 0, 100, 0, 0}},
-		{name = 'npc_dota_hero_dark_willow', 				role = {0, 0, 0, 100, 10}},--nil
-		{name = 'npc_dota_hero_dawnbreaker', 				role = {0, 5, 70, 15, 10}},
-		{name = 'npc_dota_hero_dazzle', 					role = {0, 20, 0, 20, 60}},
-		{name = 'npc_dota_hero_disruptor', 					role = {0, 0, 0, 25, 75}},
-		{name = 'npc_dota_hero_death_prophet', 				role = {0, 50, 50, 0, 0}},
-		{name = 'npc_dota_hero_doom_bringer', 				role = {0, 10, 90, 0, 0}},
-		{name = 'npc_dota_hero_dragon_knight', 				role = {5, 35, 60, 0, 0}},
-		{name = 'npc_dota_hero_drow_ranger', 				role = {100, 0, 0, 0, 0}},
-		{name = 'npc_dota_hero_earth_spirit', 				role = {0, 45, 10, 40, 5}},
-		{name = 'npc_dota_hero_earthshaker', 				role = {0, 15, 25, 50, 10}},
-		{name = 'npc_dota_hero_elder_titan', 				role = {0, 0, 0, 100, 100}},--nil
-		{name = 'npc_dota_hero_ember_spirit', 				role = {0, 100, 0, 0, 0}},
-		{name = 'npc_dota_hero_enchantress', 				role = {0, 0, 10, 30, 60}},
-		{name = 'npc_dota_hero_enigma', 					role = {0, 0, 60, 25, 15}},
-		{name = 'npc_dota_hero_faceless_void', 				role = {100, 0, 0, 0, 0}},
-		{name = 'npc_dota_hero_furion', 					role = {0, 0, 10, 60, 30}},
-		{name = 'npc_dota_hero_grimstroke', 				role = {0, 0, 0, 45, 55}},
-		{name = 'npc_dota_hero_gyrocopter', 				role = {50, 0, 0, 30, 20}},
-		{name = 'npc_dota_hero_hoodwink', 					role = {0, 0, 0, 100, 20}},--nil
-		{name = 'npc_dota_hero_huskar', 					role = {0, 90, 10, 0, 0}},
-		{name = 'npc_dota_hero_invoker', 					role = {0, 100, 0, 0, 0}},
-		{name = 'npc_dota_hero_jakiro', 					role = {0, 0, 0, 30, 70}},
-		{name = 'npc_dota_hero_juggernaut', 				role = {100, 0, 0, 0, 0}},
-		{name = 'npc_dota_hero_keeper_of_the_light', 		role = {0, 75, 0, 20, 5}},
-		{name = 'npc_dota_hero_kunkka', 					role = {0, 40, 60, 0, 0}},
-		{name = 'npc_dota_hero_legion_commander', 			role = {0, 0, 100, 0, 0}},
-		{name = 'npc_dota_hero_leshrac', 					role = {0, 90, 10, 0, 0}},
-		{name = 'npc_dota_hero_lich', 						role = {0, 0, 0, 20, 80}},
-		{name = 'npc_dota_hero_life_stealer', 				role = {100, 0, 0, 0, 0}},
-		{name = 'npc_dota_hero_lina', 						role = {5, 75, 0, 15, 5}},
-		{name = 'npc_dota_hero_lion', 						role = {0, 0, 0, 35, 65}},
-		{name = 'npc_dota_hero_lone_druid', 				role = {50, 100, 50, 0, 0}},--nil
-		{name = 'npc_dota_hero_luna', 						role = {100, 0, 0, 0, 0}},
-		{name = 'npc_dota_hero_lycan', 						role = {5, 25, 70, 0, 0}},
-		{name = 'npc_dota_hero_magnataur', 					role = {0, 0, 100, 0, 0}},
-		{name = 'npc_dota_hero_marci',	 					role = {50, 0, 100, 0, 0}},--nil
-		{name = 'npc_dota_hero_mars', 						role = {0, 0, 100, 0, 0}},
-		{name = 'npc_dota_hero_medusa', 					role = {100, 0, 0, 0, 0}},
-		{name = 'npc_dota_hero_meepo', 						role = {20, 80, 0, 0, 0}},
-		{name = 'npc_dota_hero_mirana', 					role = {0, 0, 0, 60, 40}},
-		{name = 'npc_dota_hero_morphling', 					role = {95, 5, 0, 0, 0}},
-		{name = 'npc_dota_hero_monkey_king', 				role = {70, 30, 0, 0, 0}},
-		{name = 'npc_dota_hero_naga_siren', 				role = {100, 0, 0, 0, 0}},
-		{name = 'npc_dota_hero_necrolyte', 					role = {0, 70, 30, 0, 0}},
-		{name = 'npc_dota_hero_nevermore', 					role = {35, 65, 0, 0, 0}},
-		{name = 'npc_dota_hero_night_stalker', 				role = {0, 0, 100, 0, 0}},
-		{name = 'npc_dota_hero_nyx_assassin', 				role = {0, 0, 0, 85, 15}},
-		{name = 'npc_dota_hero_obsidian_destroyer', 		role = {0, 100, 0, 0, 0}},
-		{name = 'npc_dota_hero_ogre_magi', 					role = {0, 5, 15, 30, 50}},
-		{name = 'npc_dota_hero_omniknight', 				role = {0, 15, 75, 5, 5}},
-		{name = 'npc_dota_hero_oracle', 					role = {0, 0, 0, 20, 80}},
-		{name = 'npc_dota_hero_pangolier', 					role = {0, 80, 20, 0, 0}},
-		{name = 'npc_dota_hero_phantom_lancer', 			role = {100, 0, 0, 0, 0}},
-		{name = 'npc_dota_hero_phantom_assassin', 			role = {100, 0, 0, 0, 0}},
-		{name = 'npc_dota_hero_phoenix', 					role = {0, 0, 0, 50, 50}},
-		{name = 'npc_dota_hero_primal_beast', 				role = {0, 100, 100, 0, 0}},--nil
-		{name = 'npc_dota_hero_puck', 						role = {0, 100, 0, 0, 0}},
-		{name = 'npc_dota_hero_pudge', 						role = {0, 20, 25, 35, 20}},
-		{name = 'npc_dota_hero_pugna', 						role = {0, 20, 0, 45, 35}},
-		{name = 'npc_dota_hero_queenofpain', 				role = {0, 100, 0, 0, 0}},
-		{name = 'npc_dota_hero_rattletrap', 				role = {0, 0, 0, 55, 45}},
-		{name = 'npc_dota_hero_razor', 						role = {30, 20, 50, 0, 0}},
-		{name = 'npc_dota_hero_riki', 						role = {65, 35, 0, 0, 0}},
-		{name = 'npc_dota_hero_rubick', 					role = {0, 0, 0, 70, 30}},
-		{name = 'npc_dota_hero_sand_king', 					role = {0, 0, 100, 0, 0}},
-		{name = 'npc_dota_hero_shadow_demon', 				role = {0, 0, 0, 45, 55}},
-		{name = 'npc_dota_hero_shadow_shaman', 				role = {0, 0, 0, 35, 65}},
-		{name = 'npc_dota_hero_shredder', 					role = {0, 40, 60, 0, 0}},
-		{name = 'npc_dota_hero_silencer', 					role = {0, 10, 0, 35, 55}},
-		{name = 'npc_dota_hero_skeleton_king', 				role = {100, 0, 50, 0, 0}},
-		{name = 'npc_dota_hero_skywrath_mage', 				role = {0, 0, 0, 70, 30}},
-		{name = 'npc_dota_hero_slardar', 					role = {0, 10, 90, 0, 0}},
-		{name = 'npc_dota_hero_slark', 						role = {100, 0, 0, 0, 0}},
-		{name = "npc_dota_hero_snapfire", 					role = {0, 20, 0, 50, 30}},
-		{name = 'npc_dota_hero_sniper', 					role = {25, 75, 0, 0, 0}},
-		{name = 'npc_dota_hero_spectre', 					role = {100, 0, 0, 0, 0}},
-		{name = 'npc_dota_hero_spirit_breaker', 			role = {0, 10, 35, 50, 5}},
-		{name = 'npc_dota_hero_storm_spirit', 				role = {0, 100, 0, 0, 0}},
-		{name = 'npc_dota_hero_sven', 						role = {100, 0, 0, 0, 0}},
-		{name = 'npc_dota_hero_techies', 					role = {0, 0, 0, 60, 40}},
-		{name = 'npc_dota_hero_terrorblade', 				role = {100, 0, 0, 0, 0}},
-		{name = 'npc_dota_hero_templar_assassin', 			role = {45, 55, 0, 0, 0}},
-		{name = 'npc_dota_hero_tidehunter', 				role = {0, 0, 100, 0, 0}},
-		{name = 'npc_dota_hero_tinker', 					role = {0, 100, 0, 0, 0}},
-		{name = 'npc_dota_hero_tiny', 						role = {0, 25, 15, 55, 5}},
-		{name = 'npc_dota_hero_treant', 					role = {0, 0, 0, 20, 80}},
-		{name = 'npc_dota_hero_troll_warlord', 				role = {100, 0, 0, 0, 0}},
-		{name = 'npc_dota_hero_tusk', 						role = {0, 10, 15, 55, 20}},
-		{name = 'npc_dota_hero_undying', 					role = {0, 0, 0, 25, 75}},
-		{name = 'npc_dota_hero_ursa', 						role = {100, 0, 0, 0, 0}},
-		{name = 'npc_dota_hero_vengefulspirit', 			role = {0, 0, 0, 35, 65}},
-		{name = 'npc_dota_hero_venomancer', 				role = {0, 0, 0, 35, 65}},
-		{name = 'npc_dota_hero_viper', 						role = {0, 60, 40, 0, 0}},
-		{name = 'npc_dota_hero_visage', 					role = {0, 50, 50, 0, 0}},
-		{name = 'npc_dota_hero_void_spirit', 				role = {0, 100, 0, 0, 0}},
-		{name = 'npc_dota_hero_warlock', 					role = {0, 0, 0, 25, 75}},
-		{name = 'npc_dota_hero_weaver', 					role = {70, 0, 10, 15, 5}},
-		{name = 'npc_dota_hero_windrunner', 				role = {15, 30, 30, 20, 5}},
-		{name = 'npc_dota_hero_winter_wyvern', 				role = {0, 15, 25, 30, 30}},
-		{name = 'npc_dota_hero_wisp', 						role = {0, 0, 0, 50, 100}},
-		{name = 'npc_dota_hero_witch_doctor', 				role = {0, 0, 0, 30, 70}},
-		{name = 'npc_dota_hero_zuus', 						role = {0, 80, 0, 15, 5}},
-	}
-
-	for i = 1, #heroList
-	do
-		for _, hero in pairs(sHeroList)
-		do
-			if  hero.name == heroList[i]
-			and hero.role[pos] >= RandomInt(0, 100)
-			then
-				table.insert(sTempList, hero.name)
-			end
-		end
-	end
-
-	if #sTempList == 0
-	then
-		table.insert(sTempList, heroList[RandomInt(1, #heroList)])
-	end
-
-	return sTempList
-end
-
-sPos1List = X.GetAdjustedPool(sPos1List, 1)
-sPos2List = X.GetAdjustedPool(sPos2List, 2)
-sPos3List = X.GetAdjustedPool(sPos3List, 3)
-sPos4List = X.GetAdjustedPool(sPos4List, 4)
-sPos5List = X.GetAdjustedPool(sPos5List, 5)
-
 tSelectPoolList = {
-	[1] = sPos1List,
-	[2] = sPos2List,
-	[3] = sPos3List,
-	[4] = sPos4List,
-	[5] = sPos5List,
+	[1] = GetPositionedPool(HeroRoleMap, 1),
+	[2] = GetPositionedPool(HeroRoleMap, 2),
+	[3] = GetPositionedPool(HeroRoleMap, 3),
+	[4] = GetPositionedPool(HeroRoleMap, 4),
+	[5] = GetPositionedPool(HeroRoleMap, 5),
 }
 
 sSelectList = {
@@ -1032,8 +519,6 @@ function AllPickHeros()
 			if Utils.HasValue(WeakHeroes, sSelectHero) then SelectedWeakHero = SelectedWeakHero + 1 end
 			SelectHero( id, sSelectHero )
 
-			-- print('Selected hero for idx='..i..', id='..id..', bot='..sSelectHero)
-			if Role["bLobbyGame"] == false then Role["bLobbyGame"] = true end
 			fLastSlectTime = GameTime()
 			fLastRand = RandomInt( 8, 28 )/10
 			break
@@ -1225,24 +710,6 @@ local teamPlayerNames = Dota2Teams.generateTeams(playerNameOverrides)
 function GetBotNames()
 	return GetTeam() == TEAM_RADIANT and teamPlayerNames.Radiant or teamPlayerNames.Dire
 end
-
---[[ Game Modes
-GAMEMODE_NONE
-GAMEMODE_AP = 1 -- All Pick
-GAMEMODE_CM = 2 -- Captain Mode
-GAMEMODE_RD = 3 -- Random Draft
-GAMEMODE_SD = 4 -- Single Draft
-GAMEMODE_AR = 5 -- All Random
-GAMEMODE_REVERSE_CM
-GAMEMODE_MO = 11 -- Mid Only
-GAMEMODE_CD = 16
-GAMEMODE_ABILITY_DRAFT
-GAMEMODE_LP -- Least Played
-GAMEMODE_ARDM
-GAMEMODE_1V1MID = 21
-GAMEMODE_ALL_DRAFT = 22 -- Ranked All Pick
-GAMEMODE_TURBO = 23
-]]
 
 function UpdateLaneAssignments()
 

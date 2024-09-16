@@ -10,6 +10,7 @@
 
 import {
     BotActionType,
+    Lane,
     Ping,
     Team,
     Unit,
@@ -49,6 +50,14 @@ export const GameStates: GameState = {
 };
 export const LoneDruid = {};
 export const FrameProcessTime = 0.05;
+
+export const EstimatedEnemyRoles = {
+    // sample role entry
+    npc_dota_hero_any: {
+        lane: Lane.Mid,
+        role: 2
+    }
+} as { [key: string]: any }
 
 export function PrintTable(tbl: any | null, indent: number = 0) {
     if (tbl === null) {
@@ -499,4 +508,16 @@ export function IsModeTurbo(): boolean {
         }
     }
     return false;
+}
+
+// TODO: To guess the role of an enemy bot. Role should be determine around 1-2mins in the game based on lanes. In mid-late game, re-determine by networth.
+export function DetermineEnemyBotRole(bot: Unit): number {
+    const botName = bot.GetUnitName()
+    const estimatedRole = EstimatedEnemyRoles[botName]
+    if (estimatedRole == null) {
+        print(`Enemy bot ${botName} role not cached yet.`)
+        return 3
+    }
+
+    return estimatedRole.role
 }

@@ -15,14 +15,18 @@ function X.OnEnd() end
 function X.GetDesire()
     if not bot:IsAlive() or J.CanNotUseAction(bot) or bot:IsUsingAbility() or bot:IsChanneling() or bot:IsDisarmed() then return BOT_ACTION_DESIRE_NONE end
 
+	botTarget = bot:GetTarget()
 	if bot:GetActiveMode() == BOT_MODE_ATTACK then
-		botTarget = bot:GetTarget()
-		if not J.IsValidHero(botTarget)
+		if not J.IsValid(botTarget)
 		or not J.CanBeAttacked(botTarget)
 		or not J.IsInRange(bot, botTarget, MaxTrackingDistance) then
 			bot:SetTarget(nil)
 			return BOT_ACTION_DESIRE_NONE
 		end
+	end
+
+	if J.IsValid(botTarget) and botTarget:IsCreep() and bot:GetActiveMode() == BOT_MODE_ATTACK then
+		return bot:GetActiveModeDesire()
 	end
 
     nEnemyHeroes = J.GetNearbyHeroes(bot, 1600, true)
@@ -46,7 +50,7 @@ function X.GetDesire()
 		end
 	end
 
-	if J.WeAreStronger(bot, 1200) then
+	if J.WeAreStronger(bot, 1200) and (#nEnemyCreeps > 0 or #nEnemyHeroes > 0) then
 		bot:SetTarget(nEnemyHeroes[1])
 		return GetDesireBasedOnHp(nEnemyHeroes[1])
 	end
@@ -107,14 +111,14 @@ function GetDesireBasedOnHp(target)
 			return BOT_ACTION_DESIRE_NONE
 		end
 	end
-	return RemapValClamped(J.GetHP(bot), 0, 1, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_ABSOLUTE * 1.7 )
+	return RemapValClamped(J.GetHP(bot), 0, 1, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_ABSOLUTE )
 end
 
 function X.Think()
-	
-	if bot.lastAttackFrameProcessTime == nil then bot.lastAttackFrameProcessTime = DotaTime() end
-	if DotaTime() - bot.lastAttackFrameProcessTime < bot.frameProcessTime then return end
-	bot.lastAttackFrameProcessTime = DotaTime()
+	-- try last hitting creeps
+	if J.IsInLaningPhase() and LastHitCreeps() > 0 then
+		return
+	end
 
 	-- has a target already
 	botTarget = J.GetProperTarget(bot)
@@ -133,11 +137,6 @@ function X.Think()
     nAllyHeroes = J.GetNearbyHeroes(bot, 1600, false)
 
 	botTarget = ChooseAndAttackEnemyHero(nEnemyHeroes)
-
-	-- if no direct target, try last hitting creeps
-	if botTarget == nil or J.GetHP(botTarget) > 0.5 then
-		LastHitCreeps()
-	end
 
 	-- if again no direct target, try hitting any unit
 	if bot:GetTarget() == nil then
@@ -201,8 +200,8 @@ function LastHitCreeps()
 				or not J.IsInRange(bot, nLanePartner, 800)))
 		then
 			bot:SetTarget(hitCreep)
-			bot:Action_AttackUnit(hitCreep, true)
-			return
+			bot:Action_AttackUnit(hitCreep, false)
+			return 1
 		end
 	end
 
@@ -210,9 +209,10 @@ function LastHitCreeps()
 	if J.IsValid(denyCreep)
 	then
 		bot:SetTarget(denyCreep)
-		bot:Action_AttackUnit(denyCreep, true)
-		return
+		bot:Action_AttackUnit(denyCreep, false)
+		return 1
 	end
+	return 0
 end
 
 function GetBestLastHitCreep(hCreepList)

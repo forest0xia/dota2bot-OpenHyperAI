@@ -40,7 +40,7 @@ local playersLoadedTimerName = 'playersLoadedTimerName'
 local isAllPlayersSpawned = false
 local isDataTablesInitialized = false
 local playerSpawnCount = 0
-local playerLoadFailSafeDelta = 10
+local playerLoadFailSafeDelta = 5
 
 -- Starting this script is largely handled by the requires, as separate pieces start
 -- themselves. DataTables cannot be initialized until all players have loaded, so
@@ -59,12 +59,11 @@ end
 
 -- Runs until all players are loaded in and then initializes the DataTables
 function FretBots:PlayersLoadedTimer()
-    if Utilities:IsTurboMode() == nil then
-        return 1
-    end
+    if Utilities:IsTurboMode() == nil then return 1 end
+
 	Debug:Print('Initializing PlayersLoadedTimer')
-	if not isDataTablesInitialized and not isAllPlayersSpawned then FretBots:CheckBots() end
-	
+	if not isAllPlayersSpawned then FretBots:CheckBots() end
+
 	-- if all players are loaded, initialize datatables and stop timer
 	if isAllPlayersSpawned then
 		if not isDataTablesInitialized then
@@ -103,21 +102,11 @@ function FretBots:OnPlayerSpawned(event)
 end
 
 function FretBots:CheckBots()
-    local playerCount = PlayerResource:GetPlayerCount()
-
-    for playerID = 0, playerCount - 1 do
-        local player = PlayerResource:GetPlayer(playerID)
-        local hero = player:GetAssignedHero()
-        if hero ~= nil then
-            if PlayerResource:GetSteamID(hero:GetMainControllingPlayer()) == PlayerResource:GetSteamID(100) then
-				playerLoadFailSafeDelta = playerLoadFailSafeDelta - 1
-				if playerLoadFailSafeDelta <= 0 then
-					Debug:Print('All bots should be ready in game as most were ready a while ago.  Proceeding.')
-					isAllPlayersSpawned = true
-				end
-            end
-        end
-    end
+	playerLoadFailSafeDelta = playerLoadFailSafeDelta - 1
+	if playerLoadFailSafeDelta <= 0 then
+		Debug:Print('All bots should be ready in game as most were ready a while ago.  Proceeding.')
+		isAllPlayersSpawned = true
+	end
 end
 
 -- Sets the random seed for the game, and burns off the initial bad random number

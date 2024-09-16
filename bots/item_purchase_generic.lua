@@ -39,20 +39,6 @@ do
 	bot.itemToBuy[i] = sPurchaseList[#sPurchaseList - i + 1]
 end
 
-if Role.IsBanShadow()
-then
-
-	for i = 1, #bot.itemToBuy
-	do 
-		if bot.itemToBuy[i] == "item_glimmer_cape"
-		then
-			bot.itemToBuy[i] = "item_tpscroll"
-		end
-	end
-
-end
-
-
 bot.sell_time = -90
 local check_time = -90
 

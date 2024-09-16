@@ -240,6 +240,56 @@ function ThinkIndividualRoaming()
 		end
 	end
 
+	-- Primal Beast
+	if bot:HasModifier('modifier_primal_beast_trample') then
+		if J.IsInTeamFight(bot, 1600)
+		then
+			local target = nil
+			local hp = 0
+			for _, enemyHero in pairs(GetUnitList(UNIT_LIST_ENEMY_HEROES))
+			do
+				if J.IsValidHero(enemyHero)
+				and J.IsInRange(bot, enemyHero, 2200)
+				and J.CanBeAttacked(enemyHero)
+				and J.CanCastOnNonMagicImmune(enemyHero)
+				and not enemyHero:HasModifier('modifier_faceless_void_chronosphere_freeze')
+				and not enemyHero:HasModifier('modifier_necrolyte_reapers_scythe')
+				and hp < enemyHero:GetHealth()
+				then
+					hp = enemyHero:GetHealth()
+					target = enemyHero
+				end
+			end
+
+			if target ~= nil
+			then
+				bot:ActionQueue_MoveToLocation(target:GetLocation() + RandomVector(200))
+				return
+			end
+		end
+
+		if J.IsRetreating(bot)
+		then
+			bot:ActionQueue_MoveToLocation(J.GetTeamFountain() + RandomVector(200))
+			return
+		end
+
+		local tEnemyHeroes = bot:GetNearbyHeroes(880, true, BOT_MODE_NONE)
+		if J.IsValidHero(tEnemyHeroes[1])
+		and not tEnemyHeroes[1]:HasModifier('modifier_faceless_void_chronosphere_freeze')
+		then
+			bot:ActionQueue_MoveToLocation(tEnemyHeroes[1]:GetLocation() + RandomVector(200))
+			return
+		end
+
+		local tCreeps = bot:GetNearbyCreeps(880, true)
+		if J.IsValid(tCreeps[1])
+		then
+			bot:ActionQueue_MoveToLocation(tCreeps[1]:GetLocation() + RandomVector(200))
+			return
+		end
+	end
+
 	-- Phoenix
 	if bot:HasModifier('modifier_phoenix_sun_ray') and not bot:HasModifier('modifier_phoenix_supernova_hiding')
 	then
@@ -599,6 +649,13 @@ ConsiderHeroSpecificRoaming['npc_dota_hero_void_spirit'] = function ()
 		then
 			return BOT_MODE_DESIRE_ABSOLUTE
 		end
+	end
+	return BOT_MODE_DESIRE_NONE
+end
+
+ConsiderHeroSpecificRoaming['npc_dota_hero_primal_beast'] = function ()
+	if bot:HasModifier('modifier_primal_beast_trample') then
+		return BOT_MODE_DESIRE_ABSOLUTE
 	end
 	return BOT_MODE_DESIRE_NONE
 end
