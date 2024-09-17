@@ -1,5 +1,4 @@
-local json = require('bots.FretBots.dkjson')
-local heroNames = require('bots.FretBots.HeroNames')
+local json = require('bots.ts_libs.utils.json')
 local Version = require 'bots.FunLib.version'
 local Utils = require 'bots.FunLib.utils'
 local teamNames = require 'bots.FunLib.aba_team_names'
@@ -20,7 +19,7 @@ local chatVersionDetermineTime = -45
 function Chat:SendMessageToBackend(inputText, playerInfo)
     local inputContent
     if playerInfo ~= nil then
-        inputContent = {player = playerInfo, said = inputText, game_time_seconds = tostring(math.floor(GameRules:GetGameTime()))}
+        inputContent = {player = playerInfo, said = inputText}
     end
     local inputData = ConstructChatBotRequest(json.encode(inputContent))
     Chat:SendHttpRequest('chat', inputData)
@@ -81,7 +80,8 @@ local function botNameListInTheGame()
     for i, unit in pairs(AllUnits) do
         if unit.stats then
             local kda = unit:GetKills()..'/'..unit:GetDeaths()..'/'..unit:GetAssists()
-            table.insert(inGamePlayers, {team = unit.stats.team == 2 and 'Radiant' or 'Dire', name = unit.stats.name, level = unit:GetLevel(), kda = kda, networth = PlayerResource:GetNetWorth(unit.stats.id), is_bot = unit.stats.isBot})
+            table.insert(inGamePlayers, {team = unit.stats.team == 2 and 'Radiant' or 'Dire', name = unit.stats.name,
+                level = unit:GetLevel(), kda = kda, networth = PlayerResource:GetNetWorth(unit.stats.id), is_bot = unit.stats.isBot})
         end
     end
 end
@@ -90,7 +90,7 @@ function ConstructChatBotRequest(inputContent)
     -- if next(inGamePlayers) == nil then botNameListInTheGame() end -- only load bots once to save cpu.
     botNameListInTheGame()
 
-    table.insert(recordedMessages, 1, { role = "user", content = 'Players in this game: ' .. json.encode(inGamePlayers)})
+    table.insert(recordedMessages, 1, { role = "user", content = 'Players in this game: ' .. json.encode(inGamePlayers) .. ', current game time in seconds: ' .. tostring(math.floor(GameRules:GetGameTime()))})
     table.insert(recordedMessages, { role = "user", content = inputContent })
 
     -- Initialize data table
@@ -138,7 +138,7 @@ end
 function Chat:HandleFailMessage(message, isBotSay)
     -- print("API Failure: " .. message)
     countErrorMsg = countErrorMsg + 1
-    if isBotSay and countErrorMsg <= 2 then
+    if isBotSay and countErrorMsg <= 3 then
         local aBot = getRandomBot()
         if aBot ~= nil then
             Say(aBot, message, false)
@@ -146,7 +146,7 @@ function Chat:HandleFailMessage(message, isBotSay)
     else
         print("[ERROR] Cannot get valid repsonse from Chat server. Hide the errors to avoid spams.")
     end
-    if countErrorMsg >= 5 then
+    if countErrorMsg >= 6 then
         -- Reset count every 5 times so users can get re-notified about the error.
         countErrorMsg = 0
     end

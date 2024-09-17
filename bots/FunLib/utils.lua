@@ -323,8 +323,11 @@ end
 -- End of Lua Library inline imports
 local ____exports = {}
 local ____dota = require("bots.ts_libs.dota.index")
+local Lane = ____dota.Lane
 local Team = ____dota.Team
 local UnitType = ____dota.UnitType
+local ____http_req = require("bots.ts_libs.utils.http_utils.http_req")
+local Request = ____http_req.Request
 local ____native_2Doperators = require("bots.ts_libs.utils.native-operators")
 local add = ____native_2Doperators.add
 local multiply = ____native_2Doperators.multiply
@@ -336,7 +339,8 @@ function ____exports.GetLocationToLocationDistance(fLoc, sLoc)
     local y2 = sLoc.y
     return math.sqrt((y2 - y1) * (y2 - y1) + (x2 - x1) * (x2 - x1))
 end
-____exports.DebugMode = false
+require("bots.ts_libs.utils.json")
+____exports.DebugMode = true
 ____exports.ScriptID = 3246316298
 local RadiantFountainTpPoint = Vector(-7172, -6652, 384)
 local DireFountainTpPoint = Vector(6982, 6422, 392)
@@ -357,6 +361,7 @@ ____exports.BuggyHeroesDueToValveTooLazy = {
 ____exports.GameStates = {defendPings = nil}
 ____exports.LoneDruid = {}
 ____exports.FrameProcessTime = 0.05
+____exports.EstimatedEnemyRoles = {npc_dota_hero_any = {lane = Lane.Mid, role = 2}}
 function ____exports.PrintTable(tbl, indent)
     if indent == nil then
         indent = 0
@@ -735,5 +740,23 @@ function ____exports.IsModeTurbo()
         end
     end
     return false
+end
+function ____exports.DetermineEnemyBotRole(bot)
+    local botName = bot:GetUnitName()
+    local estimatedRole = ____exports.EstimatedEnemyRoles[botName]
+    if estimatedRole == nil then
+        print(("Enemy bot " .. botName) .. " role not cached yet.")
+        return 3
+    end
+    return estimatedRole.role
+end
+function ____exports.QueryCounters(heroId)
+    print("heroId=" .. tostring(heroId))
+    Request:RawGetRequest(
+        ("https://api.opendota.com/api/heroes/" .. tostring(heroId)) .. "/matchups",
+        function(res)
+            ____exports.PrintTable(res)
+        end
+    )
 end
 return ____exports

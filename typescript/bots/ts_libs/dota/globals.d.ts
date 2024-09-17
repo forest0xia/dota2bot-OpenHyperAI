@@ -61,7 +61,8 @@ declare global {
 
     interface HTTPRequest {
         SetHTTPRequestRawPostBody(contentType: string, body: string): void;
-        Send(callback: (result: { [key: string]: any }) => void): void;
+        SetHTTPRequestGetOrPostParameter(aString: string, bString: string): boolean;
+        Send(callback: (result: any) => void): void;
     }
 
     function CreateRemoteHTTPRequest(url: string): HTTPRequest;

@@ -7,6 +7,8 @@
  * 
  * Please feel very welcome to help us utilize the existing functionality to build more challenging bots!
  */
+const JSON = require('../json');
+
 export interface RequestData {
     uuid: string;
     gameTime: number;
@@ -30,31 +32,50 @@ export class Request {
         callback?: (res: string) => void)
     {
         if (this.UUID !== null) {
-            return RawPostBodyRequest(`${Request.BASE_URL}/${api}`, callback, postData)
+            return Request.RawPostRequest(`${Request.BASE_URL}/${api}`, callback, postData)
         } else {
             return this.GetUUID(callback);
         }
     }
 
     static GetUUID(callback?: (uuid: string) => void) {
-        return RawPostBodyRequest(`${Request.BASE_URL}/uuid`, callback)
+        return Request.RawPostRequest(`${Request.BASE_URL}/uuid`, callback)
     }
 
-}
+    static RawPostRequest(
+        url: string, 
+        callback?: (res: any) => void,
+        postData?: RequestData)
+    {
+        const reqData = JSON.encode(postData)
+        const req = CreateRemoteHTTPRequest(url);
+        req.SetHTTPRequestRawPostBody("application/json", reqData);
+        req.Send((result: any) => {
+            print(`Raw ${url} Result: ${result}`)
+            let resultData: ResultData = JSON.decode(result);
+            print(`Jsonified result: ${resultData}`)
+            if (callback) {
+                callback(result);
+            }
+        });
+        return req;
+    }
 
-function RawPostBodyRequest(
-    url: string, 
-    callback?: (res: any) => void,
-    postData?: RequestData)
-{
-    const reqData = JSON.stringify(postData)
-    const req = CreateRemoteHTTPRequest(url);
-    req.SetHTTPRequestRawPostBody("application/json", reqData);
-    req.Send((result: ResultData) => {
-        print(`Raw ${url} Result: ${result}`)
-        if (callback) {
-            callback(result);
-        }
-    });
-    return req;
+    static RawGetRequest(
+        url: string, 
+        callback?: (res: any) => void)
+    {
+        const req = CreateRemoteHTTPRequest(url);
+        // req.SetHTTPRequestGetOrPostParameter("", "")
+        req.Send((result: any) => {
+            print(`Raw ${url} Result: ${result}`)
+            // let resultData: ResultData = JSON.decode(result);
+            // print(`Jsonified result: ${resultData}`)
+            if (callback) {
+                callback(result);
+            }
+        });
+        return req;
+    }
+    
 }
