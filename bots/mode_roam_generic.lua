@@ -62,10 +62,17 @@ function GetDesire()
 		return Clamp(bot:GetActiveModeDesire() + 0.2, 0, 1.1)
 	end
 
+	-- unit special abilities
 	local specialRoaming = ConsiderHeroSpecificRoaming[botName]
 	if specialRoaming then
 		-- return specialRoaming
 		return Clamp(specialRoaming(), 0, 0.98)
+	end
+
+	-- general items or conditions.
+	local generalRoaming = ConsiderGeneralRoamingInConditions()
+	if generalRoaming then
+		return Clamp(generalRoaming, 0, 0.98)
 	end
 
 	return BOT_MODE_DESIRE_NONE
@@ -74,25 +81,12 @@ end
 function Think()
     if J.CanNotUseAction(bot) then return end
 
-	ThinkIndividualRoaming()
+	ThinkIndividualRoaming() -- unit special abilities
 	-- ThinkActualRoamingInLanes()
+	ThinkGeneralRoaming() -- general items or conditions.
 end
 
 function ThinkIndividualRoaming()
-	-- Huskar
-	if ShouldMoveOutsideFountain
-	then
-		bot:Action_AttackMove(J.Utils.GetOffsetLocationTowardsTargetLocation(J.GetTeamFountain(), J.GetEnemyFountain(), MoveOutsideFountainDistance))
-		return
-	end
-
-	-- Get out of fountain if in item mode
-	if ShouldMoveOutsideFountain
-	then
-		bot:Action_AttackMove(J.Utils.GetOffsetLocationTowardsTargetLocation(J.GetTeamFountain(), J.GetEnemyFountain(), MoveOutsideFountainDistance))
-		return
-	end
-
 	-- Heal in Base
 	-- Just for TP. Too much back and forth when "forcing" them try to walk to fountain; <- not reliable and misses farm.
 	if ShouldWaitInBaseToHeal
@@ -346,8 +340,62 @@ function ThinkIndividualRoaming()
 
 		return
 	end
+
+	-- Marci
+	if bot:HasModifier("modifier_marci_unleash") then
+		local botTarget = J.GetProperTarget(bot)
+		if GetUnitToUnitDistance(bot, botTarget) > bot:GetAttackRange()
+		then
+			bot:Action_MoveToLocation(botTarget:GetLocation())
+			return
+		else
+			bot:Action_AttackUnit(botTarget, false)
+			return
+		end
+	end
+
+	-- Leshrac
+	if bot:HasModifier("modifier_leshrac_pulse_nova")
+	then
+		local botTarget = J.GetProperTarget(bot)
+		if GetUnitToUnitDistance(bot, botTarget) > 400
+		then
+			bot:Action_MoveToLocation(botTarget:GetLocation())
+			return
+		else
+			bot:ActionQueue_AttackUnit(botTarget, false)
+			return
+		end
+	end
 end
 
+function ThinkGeneralRoaming()
+	-- Huskar
+	if ShouldMoveOutsideFountain
+	then
+		bot:Action_AttackMove(J.Utils.GetOffsetLocationTowardsTargetLocation(J.GetTeamFountain(), J.GetEnemyFountain(), MoveOutsideFountainDistance))
+		return
+	end
+
+	-- Get out of fountain if in item mode
+	if ShouldMoveOutsideFountain
+	then
+		bot:Action_AttackMove(J.Utils.GetOffsetLocationTowardsTargetLocation(J.GetTeamFountain(), J.GetEnemyFountain(), MoveOutsideFountainDistance))
+		return
+	end
+
+	if bot:HasModifier("modifier_item_mask_of_madness_berserk") then
+		local botTarget = J.GetProperTarget(bot)
+		if GetUnitToUnitDistance(bot, botTarget) > bot:GetAttackRange()
+		then
+			bot:Action_MoveToLocation(botTarget:GetLocation())
+			return
+		else
+			bot:Action_AttackUnit(botTarget, false)
+			return
+		end
+	end
+end
 
 function GankWithTwinGateDesire()
 	if J.CanNotUseAction(bot) or bot:IsUsingAbility() or bot:IsChanneling() or not bot:IsAlive() or gateWarp == nil then return BOT_ACTION_DESIRE_NONE end
@@ -601,6 +649,13 @@ function ConsiderHeroMoveOutsideFountain()
 	return false
 end
 
+function ConsiderGeneralRoamingInConditions()
+	if bot:HasModifier("modifier_item_mask_of_madness_berserk") then
+		if J.GetHP(bot) > 0.2 then
+			return BOT_ACTION_DESIRE_ABSOLUTE
+		end
+	end
+end
 
 ------------------------------
 -- Hero Channel/Kill/CC abilities
@@ -808,6 +863,33 @@ ConsiderHeroSpecificRoaming['npc_dota_hero_leshrac'] = function ()
 					EdictTowerTarget = nEnemyTowers[1]
 					return BOT_MODE_DESIRE_ABSOLUTE
 				end
+			end
+		end
+	end
+
+	if bot:HasModifier("modifier_leshrac_pulse_nova")
+	then
+		if J.GetHP(bot) > 0.2 then
+			local botTarget = J.GetProperTarget(bot)
+			if GetUnitToUnitDistance(bot, botTarget) > 400
+			then
+				return BOT_MODE_DESIRE_ABSOLUTE
+			end
+		end
+	end
+	return BOT_MODE_DESIRE_NONE
+end
+
+ConsiderHeroSpecificRoaming['npc_dota_hero_marci'] = function ()
+	if bot:HasModifier("modifier_marci_unleash")
+	then
+		if J.GetHP(bot) > 0.2 then
+			if J.IsInTeamFight(bot, 1500) then
+				return BOT_MODE_DESIRE_ABSOLUTE
+			end
+			local nInRangeEnemy = bot:GetNearbyHeroes(1500, true, BOT_MODE_NONE)
+			if J.IsGoingOnSomeone(bot) and #nInRangeEnemy >= 1 then
+				return BOT_MODE_DESIRE_ABSOLUTE
 			end
 		end
 	end

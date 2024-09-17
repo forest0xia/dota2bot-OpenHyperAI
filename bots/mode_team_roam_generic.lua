@@ -108,8 +108,6 @@ function GetDesire()
 		return RemapValClamped(J.GetHP(bot), 1, 0, BOT_MODE_DESIRE_MODERATE, BOT_ACTION_DESIRE_ABSOLUTE)
 	end
 
-	if J.Role['bStopAction'] then return 2.0 end
-
 	if  J.IsPushing(bot)
 	and bot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH
 	then
@@ -323,7 +321,7 @@ end
 
 function ItemOpsThink()
 	if PickedItem ~= nil then
-		if J.Item.GetEmptyInventoryAmount(bot) > 0 then
+		if J.Item.GetEmptyInventoryAmount(bot) > 0 and not PickedItem.item:IsNull() then
 			local itemName = PickedItem.item:GetName()
 			if tryPickCount >= 3 and not Utils.SetContains(itemName) then
 				tryPickCount = 0

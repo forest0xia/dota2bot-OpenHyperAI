@@ -5,7 +5,7 @@ local X = BotsInit.CreateGeneric()
 
 local bot = GetBot()
 local botName = bot:GetUnitName()
-local botTarget, nEnemyHeroes, nAllyHeroes, nEnemyTowers, nEnemyCreeps, nAllyCreeps, nAttackRange
+local botTarget, nEnemyHeroes, nAllyHeroes, nEnemyTowers, nAllyTowers, nEnemyCreeps, nAllyCreeps, nAttackRange, nAttackDamage, timeToAttack, attackSpeed
 local MaxTrackingDistance = 3000
 local attackDeltaDistance = 600
 
@@ -29,11 +29,19 @@ function X.GetDesire()
 		return bot:GetActiveModeDesire()
 	end
 
-    nEnemyHeroes = J.GetNearbyHeroes(bot, 1600, true)
-    nAllyHeroes = J.GetNearbyHeroes(bot, 1600, false)
-	nEnemyTowers = bot:GetNearbyTowers(1000, true )
-	nEnemyCreeps = bot:GetNearbyCreeps(800, true)
+    nEnemyHeroes = J.GetNearbyHeroes(bot, 1200, true)
+    nAllyHeroes = J.GetNearbyHeroes(bot, 1200, false)
+	nEnemyTowers = bot:GetNearbyTowers(900, true )
+	nAllyTowers = bot:GetNearbyTowers(900, false )
+	nEnemyCreeps = bot:GetNearbyLaneCreeps(700, true)
+	nAllyCreeps = bot:GetNearbyLaneCreeps(700, false)
 	nAttackRange = bot:GetAttackRange()
+	nAttackDamage = bot:GetAttackDamage()
+
+	-- Calculate the time until the attack lands
+	local attackPoint = bot:GetAttackPoint() + 0.05
+	attackSpeed = bot:GetAttackSpeed()
+	timeToAttack = attackPoint -- / attackSpeed
 
 	if J.GetModifierTime(bot, "modifier_muerta_pierce_the_veil") > 0.5
 	then
@@ -126,6 +134,7 @@ function X.Think()
 		local distance = GetUnitToUnitDistance(bot, botTarget)
 		if distance <= nAttackRange + attackDeltaDistance then
 			bot:Action_AttackUnit(botTarget, true)
+            MoveAfterAttack(botTarget)
 			return
 		else
 			bot:Action_MoveToUnit(botTarget)
@@ -153,6 +162,7 @@ function X.Think()
 			if J.Utils.IsValidUnit(unit)
 			and GetUnitToUnitDistance(bot, unit) <= nAttackRange + attackDeltaDistance then
 				bot:Action_AttackUnit(unit, true)
+				MoveAfterAttack(botTarget)
 				return
 			end
 		end
@@ -164,6 +174,7 @@ function ChooseAndAttackEnemyHero(hEnemyList)
 	if nInAttackRangeWeakestEnemyHero ~= nil then
 		bot:SetTarget(nInAttackRangeWeakestEnemyHero)
 		bot:Action_AttackUnit(nInAttackRangeWeakestEnemyHero, true)
+		MoveAfterAttack(botTarget)
 		return nInAttackRangeWeakestEnemyHero
 	end
 
@@ -177,6 +188,7 @@ function ChooseAndAttackEnemyHero(hEnemyList)
 			then
 				bot:SetTarget(enemyHero)
 				bot:Action_AttackUnit(enemyHero, true)
+				MoveAfterAttack(botTarget)
 				return enemyHero
 			end
         end
@@ -185,9 +197,6 @@ function ChooseAndAttackEnemyHero(hEnemyList)
 end
 
 function LastHitCreeps()
-	nAllyCreeps = bot:GetNearbyCreeps(nAttackRange + attackDeltaDistance, false)
-	nEnemyCreeps = bot:GetNearbyCreeps(nAttackRange + attackDeltaDistance, true)
-
 	local hitCreep = GetBestLastHitCreep(nEnemyCreeps)
 	if J.IsValid(hitCreep)
 	then
@@ -215,36 +224,151 @@ function LastHitCreeps()
 	return 0
 end
 
-function GetBestLastHitCreep(hCreepList)
-	for _, creep in pairs(hCreepList)
-	do
-		if J.IsValid(creep) and J.CanBeAttacked(creep)
-		then
-			local nAttackDelayTime = J.GetAttackProDelayTime(bot, creep)
-			if J.WillKillTarget(creep, bot:GetAttackDamage(), DAMAGE_TYPE_PHYSICAL, nAttackDelayTime)
-			or not (J.IsLaning( bot ) or J.IsInLaningPhase())
-			then
-				return creep
-			end
-		end
-	end
 
-	return nil
+function GetBestLastHitCreep(hCreepList)
+    local bestCreep = nil
+    local minHealth = 10000
+    for _, creep in pairs(hCreepList) do
+        if J.IsValid(creep)
+		and J.IsInRange(bot, creep, nAttackRange + attackDeltaDistance)
+		and J.CanBeAttacked(creep) then
+            local distance = GetUnitToUnitDistance(bot, creep)
+            -- Determine if the bot is ranged
+            if bot:GetAttackProjectileSpeed() > 0 then
+                local projectileSpeed = bot:GetAttackProjectileSpeed()
+                timeToAttack = timeToAttack + (distance / projectileSpeed)
+            end
+
+            -- Predict creep health at that time
+            local predictedHealth = PredictCreepHealth(true, creep, timeToAttack)
+
+            -- If we can kill the creep
+            if predictedHealth <= nAttackDamage then
+                if predictedHealth < minHealth then
+                    minHealth = predictedHealth
+                    bestCreep = creep
+                end
+            end
+        end
+    end
+    return bestCreep
 end
 
 function GetBestDenyCreep(hCreepList)
-	for _, creep in pairs(hCreepList)
-	do
-		if J.IsValid(creep)
-		and J.GetHP(creep) < 0.49
-		and J.CanBeAttacked(creep)
-		and creep:GetHealth() <= bot:GetAttackDamage()
-		then
-			return creep
-		end
-	end
+    local bestCreep = nil
+    local minHealth = 10000
+    for _, creep in pairs(hCreepList) do
+        if J.IsValid(creep)
+        and J.GetHP(creep) < 0.49
+		and J.IsInRange(bot, creep, nAttackRange + attackDeltaDistance)
+        and J.CanBeAttacked(creep) then
+            local distance = GetUnitToUnitDistance(bot, creep)
+            -- Determine if the bot is ranged
+            if bot:GetAttackProjectileSpeed() > 0 then
+                local projectileSpeed = bot:GetAttackProjectileSpeed()
+                timeToAttack = timeToAttack + (distance / projectileSpeed)
+            end
 
-	return nil
+            -- Predict creep health at that time
+            local predictedHealth = PredictCreepHealth(false, creep, timeToAttack)
+
+            -- If we can deny the creep
+            if predictedHealth <= nAttackDamage then
+                if predictedHealth < minHealth then
+                    minHealth = predictedHealth
+                    bestCreep = creep
+                end
+            end
+        end
+    end
+    return bestCreep
+end
+
+-- Predicts the creep's health after a certain time, accounting for allied damage and incoming projectiles
+function PredictCreepHealth(bEnemyCreep, creep, time)
+    local currentHealth = creep:GetHealth()
+    local damagePerSecond = GetCreepIncomingDamagePerSecond(bEnemyCreep, creep)
+    local predictedHealth = currentHealth - (damagePerSecond * time)
+    return predictedHealth
+end
+
+-- Calculates the damage per second the creep is taking from allied units and projectiles
+function GetCreepIncomingDamagePerSecond(bEnemyCreep, creep)
+    local totalDPS = 0
+
+    local enemies = bEnemyCreep == true and nEnemyCreeps or nAllyCreeps
+    local towers = bEnemyCreep == true and nEnemyTowers or nAllyTowers
+    local heroes = bEnemyCreep == true and nEnemyHeroes or nAllyHeroes
+
+    -- Damage from allied creeps
+    if enemies then
+        for _, allyCreep in pairs(enemies) do
+            if J.Utils.IsValidUnit(allyCreep) and allyCreep:GetAttackTarget() == creep then
+                totalDPS = totalDPS + allyCreep:GetAttackDamage() / allyCreep:GetSecondsPerAttack()
+            end
+        end
+    end
+
+    -- Damage from allied towers
+    if towers then
+        for _, tower in pairs(towers) do
+            if J.Utils.IsValidUnit(tower) and tower:GetAttackTarget() == creep then
+                totalDPS = totalDPS + tower:GetAttackDamage() / tower:GetSecondsPerAttack()
+            end
+        end
+    end
+
+    -- Damage from allied heroes
+    if heroes then
+        for _, hero in pairs(heroes) do
+            if J.IsValidHero(hero) and hero:GetAttackTarget() == creep then
+                totalDPS = totalDPS + hero:GetAttackDamage() / hero:GetSecondsPerAttack()
+            end
+        end
+    end
+
+    -- Damage from incoming projectiles
+    totalDPS = totalDPS + GetIncomingProjectileDamage(creep)
+
+    return totalDPS
+end
+
+-- Calculates the damage from incoming projectiles that will hit the creep before our attack lands
+function GetIncomingProjectileDamage(creep)
+    local totalDamage = 0
+    local projectiles = creep:GetIncomingTrackingProjectiles()
+    for _, projectile in pairs(projectiles) do
+		if projectile.is_attack then
+			projectile.moveSpeed = projectile.caster:GetAttackSpeed() -- assume a speed
+			projectile.damage = projectile.caster:GetAttackDamage() -- assume a speed
+			local timeToHit = GetUnitToLocationDistance(creep, projectile.location) / projectile.moveSpeed
+			if timeToHit <= 0.5 then -- Only consider projectiles that will hit soon
+				totalDamage = totalDamage + projectile.damage
+			end
+		end
+    end
+    return totalDamage
+end
+
+-- Improved attack-move function based on the situation
+function MoveAfterAttack(target)
+    -- if not J.IsValidHero(target) then return end
+
+    -- local botHP = J.GetHP(bot)
+    -- local targetHP = J.GetHP(target)
+
+    -- if (botHP > targetHP and #nAllyHeroes >= #nEnemyHeroes)
+    -- or J.WeAreStronger(bot, 1000) then
+    --     -- Situation is good, move towards the enemy
+    --     local targetPos = target:GetExtrapolatedLocation(1.0)
+	-- 	bot:ActionQueue_Delay(timeToAttack + 0.2)
+    --     bot:ActionQueue_MoveToLocation(targetPos)
+    -- else
+    --     -- Situation is bad, move away from the enemy
+    --     local retreatPosition = J.Utils.GetOffsetLocationTowardsTargetLocation(bot:GetLocation(), J.GetTeamFountain(), 200) + RandomVector(100)
+	-- 	bot:ActionQueue_Delay(timeToAttack + 0.2)
+    --     bot:ActionQueue_MoveToLocation(retreatPosition)
+    -- end
 end
 
 return X

@@ -359,6 +359,7 @@ Item['tEarlyConsumableItem'] = {
 	 'item_magic_wand',
 	 'item_recipe_magic_wand',
 	 'item_magic_stick',
+	 'item_smoke_of_deceit'
 	--  'item_dust',
 	--  'item_ward_sentry',
 	--  'item_ward_observer',

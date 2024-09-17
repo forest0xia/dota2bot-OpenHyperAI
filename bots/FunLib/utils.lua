@@ -340,7 +340,7 @@ function ____exports.GetLocationToLocationDistance(fLoc, sLoc)
     return math.sqrt((y2 - y1) * (y2 - y1) + (x2 - x1) * (x2 - x1))
 end
 require("bots.ts_libs.utils.json")
-____exports.DebugMode = true
+____exports.DebugMode = false
 ____exports.ScriptID = 3246316298
 local RadiantFountainTpPoint = Vector(-7172, -6652, 384)
 local DireFountainTpPoint = Vector(6982, 6422, 392)
@@ -758,5 +758,13 @@ function ____exports.QueryCounters(heroId)
             ____exports.PrintTable(res)
         end
     )
+end
+function ____exports.GetLoneDruid(bot)
+    local res = ____exports.LoneDruid[bot:GetPlayerID()]
+    if res == nil then
+        ____exports.LoneDruid[bot:GetPlayerID()] = {}
+        res = ____exports.LoneDruid[bot:GetPlayerID()]
+    end
+    return res
 end
 return ____exports

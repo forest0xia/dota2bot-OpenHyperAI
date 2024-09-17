@@ -46,7 +46,7 @@ function GetDesire()
 
     local aliveAlly = J.GetNumOfAliveHeroes(false)
     local aliveEnemy = J.GetNumOfAliveHeroes(true)
-    local hasSameOrMoreHero = aliveAlly >= aliveEnemy + 1
+    local hasSameOrMoreHero = aliveAlly >= aliveEnemy
     
     if not hasSameOrMoreHero then
         return BOT_ACTION_DESIRE_NONE

@@ -57,7 +57,8 @@ sRoleItemsBuyList['pos_2'] = {
     "item_magic_wand",
     "item_cyclone",
     "item_kaya_and_sange",--
-    "item_eternal_shroud",--
+    "item_bloodstone",--
+    -- "item_eternal_shroud",--
     "item_shivas_guard",--
     "item_black_king_bar",--
     "item_aghanims_shard",

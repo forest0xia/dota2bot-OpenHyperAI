@@ -122,7 +122,7 @@ function GetDesire()
 		TOWER_BASE_1,
 		TOWER_BASE_2,
 	}
-	local towers = bot:GetNearbyTowers( 1000, true )
+	local towers = bot:GetNearbyTowers(800, true )
 	if #towers >= 1 then
 		local towerType = -1
 		for i = 1, #nTowers do
@@ -134,7 +134,7 @@ function GetDesire()
 
 		-- may only go aggresive for T1s
 		local distanceToTower = GetUnitToUnitDistance(bot, towers[1])
-		local deltaRange = 300
+		local deltaRange = 200
 		if towerType == TOWER_TOP_1 or towerType == TOWER_MID_1 or towerType == TOWER_BOT_1 then
 			if J.IsValid(targetBot)
 			and distanceToTower < towers[1]:GetAttackRange() + deltaRange

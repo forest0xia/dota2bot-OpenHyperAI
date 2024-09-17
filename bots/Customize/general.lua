@@ -15,11 +15,11 @@ Github: https://github.com/forest0xia/dota2bot-OpenHyperAI
 local Customize = { }
 
 -- Set it to true to turn on ALL of the custom settings in this file, or set it to false to turn off the settings.
-Customize['Enable'] = true
+Customize.Enable = true
 
 -- Set the heroes you DON'T want the bots to pick. Use hero internal names.
 -- Hero name ref: https://developer.valvesoftware.com/wiki/Dota_2_Workshop_Tools/Scripting/Heroes_internal_names
-Customize['Ban'] = {
+Customize.Ban = {
     'npc_dota_hero_wisp',
 }
 
@@ -28,17 +28,13 @@ Customize['Ban'] = {
 -- Don't need to provide a value for all 5 bots, any empty/missing value will fallback to a Random value.
 -- The position is ranked by the order of the names you put in the below list, pos 1 - 5, from top to down.
 -- There are sample team picks in Appendix section below.
-Customize['Radiant_Heros'] = {
+Customize.Radiant_Heros = {
     'Random',
-    'Random',
+    'npc_dota_hero_leshrac',
 }
 
--- Set the heroes you want Radiant bots to pick. You have to use hero's internal name.
--- Hero internal name ref: https://developer.valvesoftware.com/wiki/Dota_2_Workshop_Tools/Scripting/Heroes_internal_names
--- Don't need to provide a value for all 5 bots, any empty/missing value will fallback to a Random value.
--- The position is ranked by the order of the names you put in the below list, pos 1 - 5, from top to down.
--- There are sample team picks in Appendix section below.
-Customize['Dire_Heros'] = {
+-- Same notes as for Radiant_Heros above
+Customize.Dire_Heros = {
     'Random',
 }
 
@@ -46,16 +42,16 @@ Customize['Dire_Heros'] = {
 -- By setting it to true, you can have bots picking all pudges, techies for example, or the same set of heroes for both teams. 
 -- WARNING: Setting this to true CAN reduce the gaming experience due to the fact some heroes are kind of buggy or weak at the moment (listed below) and 
 --          are currently intentionally having reduced chances to get picked by bots. Set this to true will break this blocker.
-Customize['Allow_Repeated_Heroes'] = false
+Customize.Allow_Repeated_Heroes = true
 
 -- Set the names of the heroes for Radiant bots. Don't need to provide a value for all 5 bots, any empty/missing value will fallback to a Random value.
-Customize['Radiant_Names'] = {
+Customize.Radiant_Names = {
     'Random',
     'Random',
 }
 
 -- Set the names of the heroes for Dire bots. Don't need to provide a value for all 5 bots, any empty/missing value will fallback to a Random value.
-Customize['Dire_Names'] = {
+Customize.Dire_Names = {
     'Random',
 }
 

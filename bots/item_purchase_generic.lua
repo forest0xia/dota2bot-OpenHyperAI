@@ -311,13 +311,15 @@ local buyBookTime = 0
 local initSmoke = false
 
 function ItemPurchaseThink()
+	if bot.lastItemPurchaseFrameProcessTime == nil then bot.lastItemPurchaseFrameProcessTime = DotaTime() end
+	if DotaTime() - bot.lastItemPurchaseFrameProcessTime < 0.05 then return end
+	bot.lastItemPurchaseFrameProcessTime = DotaTime()
 
 	if ( GetGameState() ~= GAME_STATE_PRE_GAME and GetGameState() ~= GAME_STATE_GAME_IN_PROGRESS )
 	then return	end
 
-	
-	if bot == Utils['LoneDruid'].hero then
-		local bear = Utils['LoneDruid'].bear
+	if bot == Utils.GetLoneDruid(bot).hero then
+		local bear = Utils.GetLoneDruid(bot).bear
 		if bear ~= nil then
 			local hEnemyList = J.GetNearbyHeroes(bot, 1000, true, BOT_MODE_NONE)
 			if #hEnemyList >= 1 then return end
@@ -351,7 +353,7 @@ function ItemPurchaseThink()
 		local dropItemList = GetDroppedItemList()
 		for _, tDropItem in pairs( dropItemList )
 		do
-			if tDropItem.owner == Utils['LoneDruid'].hero and not string.find(tDropItem.item:GetName(), 'token')
+			if tDropItem.owner == Utils.GetLoneDruid(bot).hero and not string.find(tDropItem.item:GetName(), 'token')
 			and not (string.find(tDropItem.item:GetName(), 'boot') and Item.HasItemWithName(bot, 'boot')) then
 				local distance = GetUnitToLocationDistance(bot, tDropItem.location)
 				if distance > 200 and distance < 1000 and tDropItem.owner == bot
@@ -800,16 +802,16 @@ function ItemPurchaseThink()
 			bot.currListItemToBuy[#tempTable-i+1] = tempTable[i]
 		end
 	end
-	
+
 	if #bot.currListItemToBuy == 0 and currentTime > bot.lastInvCheck + 1.0
 	then
 		if Item.IsItemInHero( bot.currentItemToBuy )
 			or bot.currentItemToBuy == "item_aghanims_shard"
 			or (
-				bot == Utils['LoneDruid'].hero
-				and Utils['LoneDruid'].bear ~= nil
-				and Item.GetItemTotalWorthInSlots(Utils['LoneDruid'].bear) < 28000
-				and Item.IsItemInTargetHero(bot.currentItemToBuy, Utils['LoneDruid'].bear)
+				bot == Utils.GetLoneDruid(bot).hero
+				and Utils.GetLoneDruid(bot).bear ~= nil
+				and Item.GetItemTotalWorthInSlots(Utils.GetLoneDruid(bot).bear) < 28000
+				and Item.IsItemInTargetHero(bot.currentItemToBuy, Utils.GetLoneDruid(bot).bear)
 			)
 			or bot.countInvCheck > 5 * 60 -- if can't finish the item for a long time
 		then

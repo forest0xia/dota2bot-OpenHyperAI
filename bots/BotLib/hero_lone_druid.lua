@@ -8,7 +8,7 @@ local sTalentList = J.Skill.GetTalentList( bot )
 local sAbilityList = J.Skill.GetAbilityList( bot )
 local sRole = J.Item.GetRoleItemsBuyList( bot )
 
-if Utils['LoneDruid'].hero == nil then Utils['LoneDruid'].hero = bot end
+if Utils.GetLoneDruid(bot).hero == nil then Utils.GetLoneDruid(bot).hero = bot end
 
 local tTalentTreeList = {--pos2
                         ['t25'] = {0, 10},
@@ -102,14 +102,14 @@ X['sSellList'] = {
 	"item_quelling_blade",
 }
 
-if Utils['LoneDruid'].roleType == nil then
-    if RandomInt(1, 3) >= 2 then
-        Utils['LoneDruid'].roleType = 'pos_1_w_bear'
+if Utils.GetLoneDruid(bot).roleType == nil then
+    if RandomInt(1, 5) >= 2 then
+        Utils.GetLoneDruid(bot).roleType = 'pos_1_w_bear'
     else
-        Utils['LoneDruid'].roleType = 'pos_1'
+        Utils.GetLoneDruid(bot).roleType = 'pos_1'
     end
 else
-    if Utils['LoneDruid'].roleType == 'pos_1_w_bear' then
+    if Utils.GetLoneDruid(bot).roleType == 'pos_1_w_bear' then
         X['sBuyList'] = sRoleItemsBuyList['pos_1_w_bear']
         nAbilityBuildList = nAbilityBuildListWithBear
     end
@@ -168,12 +168,12 @@ function X.SkillsComplement()
 end
 
 function X.ConsiderSummonSpiritBear()
-    if not SummonSpiritBear:IsFullyCastable() or Utils['LoneDruid'].roleType ~= 'pos_1_w_bear'
+    if not SummonSpiritBear:IsFullyCastable() or Utils.GetLoneDruid(bot).roleType ~= 'pos_1_w_bear'
     then
         return BOT_ACTION_DESIRE_NONE
     end
 
-	if Utils['LoneDruid'].bear == nil or not Utils['LoneDruid'].bear:IsAlive()
+	if Utils.GetLoneDruid(bot).bear == nil or not Utils.GetLoneDruid(bot).bear:IsAlive()
     then
 		return BOT_ACTION_DESIRE_HIGH
 	end

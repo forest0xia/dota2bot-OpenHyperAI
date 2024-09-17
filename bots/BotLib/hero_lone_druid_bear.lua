@@ -5,8 +5,8 @@ local Utils = require( GetScriptDirectory()..'/FunLib/utils' )
 local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
 local Minion = dofile( GetScriptDirectory()..'/FunLib/aba_minion' )
 
-if Utils['LoneDruid'].bear == nil or not Utils['LoneDruid'].bear:IsAlive() then Utils['LoneDruid'].bear = bear end
-bear.assignedRole = Utils['LoneDruid'].hero.assignedRole -- math.min(1, Utils['LoneDruid'].hero.assignedRole - 1)
+if Utils.GetLoneDruid(bear).bear == nil or not Utils.GetLoneDruid(bear).bear:IsAlive() then Utils.GetLoneDruid(bear).bear = bear end
+bear.assignedRole = Utils.GetLoneDruid(bear).hero.assignedRole -- math.min(1, Utils['LoneDruid'].hero.assignedRole - 1)
 bear.isBear = true
 
 local sTalentList = J.Skill.GetTalentList( bear )
@@ -75,23 +75,23 @@ function X.SkillsComplement()
 
     if J.CanNotUseAbility(bear) or bear:IsInvisible() then return end
     
-    botTarget = J.GetProperTarget(Utils['LoneDruid'].hero)
+    botTarget = J.GetProperTarget(Utils.GetLoneDruid(bear).hero)
     if botTarget ~= nil then bear:SetTarget(botTarget) end
     botTarget = J.GetProperTarget(bear)
     
-    distanceFromHero = GetUnitToUnitDistance(Utils['LoneDruid'].hero, bear)
+    distanceFromHero = GetUnitToUnitDistance(Utils.GetLoneDruid(bear).hero, bear)
 
     if not hasUltimateScepter then
         hasUltimateScepter = J.Item.HasItem(bear, 'item_ultimate_scepter') or bear:HasModifier('modifier_item_ultimate_scepter_consumed')
     end
 
-    if Utils['LoneDruid'].hero:IsAlive() and not (J.GetHP(bear) < 0.3 or J.IsRetreating(bear))
+    if Utils.GetLoneDruid(bear).hero:IsAlive() and not (J.GetHP(bear) < 0.3 or J.IsRetreating(bear))
     and not (bear:IsChanneling() or bear:IsUsingAbility() or hasUltimateScepter) then
         if distanceFromHero > 1000 then
             bear:Action_ClearActions(false)
-            bear:Action_MoveToLocation(Utils['LoneDruid'].hero:GetLocation())
+            bear:Action_MoveToLocation(Utils.GetLoneDruid(bear).hero:GetLocation())
         -- elseif distanceFromHero < 1000 and distanceFromHero > 400 and not (J.IsAttacking(bear) or J.IsGoingOnSomeone(bear)) then
-        --     bear:Action_AttackMove(Utils['LoneDruid'].hero:GetLocation() + RandomVector(150))
+        --     bear:Action_AttackMove(Utils.GetLoneDruid(bear).hero:GetLocation() + RandomVector(150))
         end
     end
 
@@ -114,7 +114,7 @@ end
 
 function X.ConsiderQ()
     if not abilityQ:IsFullyCastable() then return 0 end
-    if not Utils['LoneDruid'].hero:IsAlive() then return 0 end
+    if not Utils.GetLoneDruid(bear).hero:IsAlive() then return 0 end
 
     -- too far from hero
     if distanceFromHero > 3000
@@ -123,10 +123,10 @@ function X.ConsiderQ()
     end
 
     -- hero is being attacked
-    if Utils['LoneDruid'].hero:WasRecentlyDamagedByAnyHero(2)
-    and J.GetHP(Utils['LoneDruid'].hero) < 0.9
+    if Utils.GetLoneDruid(bear).hero:WasRecentlyDamagedByAnyHero(2)
+    and J.GetHP(Utils.GetLoneDruid(bear).hero) < 0.9
     and distanceFromHero > 3000 then
-        local nInRangeEnemy = J.GetNearbyHeroes(Utils['LoneDruid'].hero, 1000, true, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(Utils.GetLoneDruid(bear).hero, 1000, true, BOT_MODE_NONE)
         if #nInRangeEnemy >= 1 then
             return BOT_ACTION_DESIRE_HIGH
         end

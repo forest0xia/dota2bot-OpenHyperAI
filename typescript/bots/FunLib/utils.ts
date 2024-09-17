@@ -22,7 +22,7 @@ import { GameState } from "bots/ts_libs/bots";
 import { Request } from "bots/ts_libs/utils/http_utils/http_req";
 import { add, multiply, sub } from "bots/ts_libs/utils/native-operators";
 
-export const DebugMode = true;
+export const DebugMode = false;
 
 export const ScriptID = 3246316298;
 
@@ -50,7 +50,7 @@ export const BuggyHeroesDueToValveTooLazy = {
 export const GameStates: GameState = {
     defendPings: null,
 };
-export const LoneDruid = {};
+export const LoneDruid = { } as { [key: number]: any };
 export const FrameProcessTime = 0.05;
 
 export const EstimatedEnemyRoles = {
@@ -530,4 +530,13 @@ export function QueryCounters(heroId: number) {
     Request.RawGetRequest(`https://api.opendota.com/api/heroes/${heroId}/matchups`, function(res) {
         PrintTable(res)
     })
+}
+
+export function GetLoneDruid(bot: Unit): any {
+    let res = LoneDruid[bot.GetPlayerID()]
+    if (res === null) {
+        LoneDruid[bot.GetPlayerID()] = {}
+        res = LoneDruid[bot.GetPlayerID()]
+    }
+    return res;
 }
