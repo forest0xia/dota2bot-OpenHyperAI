@@ -113,8 +113,8 @@ X['sSkillList'] = J.Skill.GetSkillList( sAbilityList, nAbilityBuildList, sTalent
 X['bDeafaultAbility'] = false
 X['bDeafaultItem'] = false
 
-function X.MinionThink(hMinionUnit, bot)
-	Minion.MinionThink(hMinionUnit, bot)
+function X.MinionThink(hMinionUnit)
+	Minion.MinionThink(hMinionUnit)
 end
 
 local BrambleMaze   = bot:GetAbilityByName('dark_willow_bramble_maze')
@@ -411,57 +411,21 @@ function X.ConsiderBedlam()
 
     local nCastRange = J.GetProperCastRange(false, bot, Bedlam:GetCastRange())
     local botTarget = J.GetProperTarget(bot)
-	-- local nEnemysHeroesInBonus = J.GetNearbyHeroes(bot, nCastRange + 150, true, BOT_MODE_NONE)
+    local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 
 	if J.IsInTeamFight(bot, 1200)
 	then
-        local nAllyHeroes = J.GetNearbyHeroes(bot,nCastRange, false, BOT_MODE_NONE)
-
-        if nAllyHeroes ~= nil and #nAllyHeroes >= 1
+        if #nEnemyHeroes >= 1
         then
-            local allyTarget = nAllyHeroes[1]
-
-            for _, allyHero in pairs(nAllyHeroes)
-            do
-                local maxHealth = 0
-
-                if  allyHero:GetHealth() > maxHealth
-                and allyHero:GetAttackRange() <= 326
-                and J.IsCore(allyHero)
-                then
-                    maxHealth = allyHero:GetHealth()
-                    allyTarget = allyHero
-                end
-            end
-
-            return BOT_ACTION_DESIRE_HIGH, allyTarget
+            return BOT_ACTION_DESIRE_HIGH, bot
         end
 	end
 
     if J.IsGoingOnSomeone(bot)
 	then
-        local nAllyHeroes = J.GetNearbyHeroes(bot,nCastRange, false, BOT_MODE_NONE)
-        local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange + 100, true, BOT_MODE_NONE)
-
-        if  nAllyHeroes ~= nil and #nAllyHeroes <= 1
-        and nEnemyHeroes ~= nil and #nEnemyHeroes <= 1
+        if J.IsInRange(bot, botTarget, nCastRange)
         and J.IsValidTarget(botTarget)
         then
-            local allyTarget = nAllyHeroes[1]
-
-            for _, allyHero in pairs(nAllyHeroes)
-            do
-                local maxHealth = 0
-
-                if  allyHero:GetHealth() > maxHealth
-                and allyHero:GetAttackRange() <= 326
-                and J.IsInRange(allyHero, botTarget, 300)
-                then
-                    maxHealth = allyHero:GetHealth()
-                    allyTarget = allyHero
-                end
-            end
-
             return BOT_ACTION_DESIRE_HIGH, allyTarget
         end
 	end
@@ -478,6 +442,7 @@ function X.ConsiderTerrorize()
 
 	local nCastRange = J.GetProperCastRange(false, bot, Terrorize:GetCastRange())
 	local nRadius   = Terrorize:GetSpecialValueInt('destination_radius')
+	local nEnemysHeroesInBonus = J.GetNearbyHeroes(bot, nCastRange + 150, true, BOT_MODE_NONE)
 
 	if J.IsInTeamFight(bot, 1200)
 	then
@@ -519,7 +484,7 @@ function X.ConsiderTerrorize()
 		for _, allyHero in pairs(nAllyHeroes)
         do
 			if  J.IsValidHero(allyHero)
-            and J.IsDisabled(false, allyHero)
+            and J.IsDisabled(allyHero)
             and not allyHero:IsIllusion()
             then
 				nDisabledAllies = nDisabledAllies + 1

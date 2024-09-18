@@ -1170,13 +1170,11 @@ function X.AttackWardThink(hMinionUnit)
 end
 
 -- MINION THINK
-function X.MinionThink(hMinionUnit, aBot)
-	if bot.lastMinionFrameProcessTime == nil then bot.lastMinionFrameProcessTime = DotaTime() end
-	if DotaTime() - bot.lastMinionFrameProcessTime < 0.1 then return end
-	bot.lastMinionFrameProcessTime = DotaTime()
+function X.MinionThink(hMinionUnit)
+	if hMinionUnit.lastMinionFrameProcessTime == nil then hMinionUnit.lastMinionFrameProcessTime = DotaTime() end
+	if DotaTime() - hMinionUnit.lastMinionFrameProcessTime < 0.1 then return end
+	hMinionUnit.lastMinionFrameProcessTime = DotaTime()
 
-	bot = aBot
-	
 	if X.IsValidUnit(hMinionUnit)
 	then
 		if J.IsValidHero(hMinionUnit)

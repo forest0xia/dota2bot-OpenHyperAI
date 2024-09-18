@@ -27,6 +27,5 @@ end
 
 function MinionThink(hMinionUnit)
 	if not IsValidUnit(hMinionUnit) then return end
-	
-	BotBuild.MinionThink(hMinionUnit, bot)
+	BotBuild.MinionThink(hMinionUnit)
 end

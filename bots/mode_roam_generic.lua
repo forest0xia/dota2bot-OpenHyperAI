@@ -20,6 +20,7 @@ local EdictTowerTarget = nil
 local ShouldMoveOutsideFountain = false
 local ShouldMoveOutsideFountainCheckTime = 0
 local MoveOutsideFountainDistance = 1500
+local BearAttackLimitDistance = 1100
 local ConsiderHeroSpecificRoaming = {}
 
 
@@ -33,6 +34,7 @@ local enableGateUsage = false -- to be fixed
 local arriveRoamLocTime = 0
 local roamTimeAfterArrival = 0.55 * 60 -- stay to roam after arriving the location
 local roamGapTime = 3 * 60 -- don't roam again within this duration after roaming once.
+local nInRangeEnemy
 
 function GetDesire()
 
@@ -66,13 +68,13 @@ function GetDesire()
 	local specialRoaming = ConsiderHeroSpecificRoaming[botName]
 	if specialRoaming then
 		-- return specialRoaming
-		return Clamp(specialRoaming(), 0, 0.98)
+		return Clamp(specialRoaming(), 0, 0.99)
 	end
 
 	-- general items or conditions.
 	local generalRoaming = ConsiderGeneralRoamingInConditions()
 	if generalRoaming then
-		return Clamp(generalRoaming, 0, 0.98)
+		return Clamp(generalRoaming, 0, 0.99)
 	end
 
 	return BOT_MODE_DESIRE_NONE
@@ -80,6 +82,8 @@ end
 
 function Think()
     if J.CanNotUseAction(bot) then return end
+
+	nInRangeEnemy = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
 
 	ThinkIndividualRoaming() -- unit special abilities
 	-- ThinkActualRoamingInLanes()
@@ -93,7 +97,7 @@ function ThinkIndividualRoaming()
 	then
 		if GetUnitToLocationDistance(bot, J.GetTeamFountain()) > 150
 		then
-			local nInRangeEnemy = J.GetEnemiesNearLoc(bot:GetLocation(), 1600)
+			nInRangeEnemy = J.GetEnemiesNearLoc(bot:GetLocation(), 1600)
 			if  J.Item.GetItemCharges(bot, 'item_tpscroll') >= 1
 			and nInRangeEnemy ~= nil and #nInRangeEnemy == 0
 			then
@@ -148,8 +152,6 @@ function ThinkIndividualRoaming()
 	if bot:HasModifier('modifier_spirit_breaker_charge_of_darkness')
 	then
 		bot:Action_ClearActions(false)
-		local nInRangeEnemy = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
-
 		if  bot.chargeRetreat
 		and nInRangeEnemy ~= nil and #nInRangeEnemy == 0
 		then
@@ -366,6 +368,47 @@ function ThinkIndividualRoaming()
 			bot:ActionQueue_AttackUnit(botTarget, false)
 			return
 		end
+	end
+
+	if botName == 'npc_dota_hero_lone_druid_bear' then
+		local hero = J.Utils.GetLoneDruid(bot).hero
+		local hasUltimateScepter = J.Item.HasItem(bot, 'item_ultimate_scepter') or bot:HasModifier('modifier_item_ultimate_scepter_consumed')
+		local distanceFromHero = GetUnitToUnitDistance(J.Utils.GetLoneDruid(bot).hero, bot)
+		local target = J.GetProperTarget(bot) or J.GetProperTarget(hero)
+
+		if J.IsValidHero(hero)
+		and not hasUltimateScepter
+		then
+			-- has enemy near by.
+			if #nInRangeEnemy >= 1 then
+				-- distance to bear beyond attack limit
+				if distanceFromHero > BearAttackLimitDistance then
+					bot:Action_ClearActions(false)
+					bot:Action_MoveToLocation(hero:GetLocation())
+					return
+				end
+				-- distance of target to hero beyond attack limit
+				if J.IsValidTarget(target) then
+					local heroDistanceFromTarget = GetUnitToUnitDistance(hero, target)
+					if heroDistanceFromTarget > BearAttackLimitDistance then
+						bot:Action_ClearActions(false)
+						bot:Action_AttackMove(hero:GetLocation())
+						return
+					end
+				end
+			else
+				if distanceFromHero > 500 then
+					bot:Action_ClearActions(false)
+					bot:Action_AttackMove(hero:GetLocation())
+					return
+				end
+			end
+			if J.IsValidTarget(target) then
+				bot:Action_AttackUnit(target, false)
+				return
+			end
+		end
+		return
 	end
 end
 
@@ -590,8 +633,6 @@ end
 
 -- Just for TP. Too much back and forth when "forcing" them try to walk to fountain; <- not reliable and misses farm.
 function ConsiderWaitInBaseToHeal()
-	local nInRangeEnemy = J.GetEnemiesNearLoc(bot:GetLocation(), 1600)
-
 	local ProphetTP = nil
 	if bot:GetUnitName() == 'npc_dota_hero_furion'
 	then
@@ -880,6 +921,24 @@ ConsiderHeroSpecificRoaming['npc_dota_hero_leshrac'] = function ()
 	return BOT_MODE_DESIRE_NONE
 end
 
+ConsiderHeroSpecificRoaming['npc_dota_hero_lone_druid_bear'] = function ()
+	local hero = J.Utils.GetLoneDruid(bot).hero
+	local hasUltimateScepter = J.Item.HasItem(bot, 'item_ultimate_scepter') or bot:HasModifier('modifier_item_ultimate_scepter_consumed')
+    local distanceFromHero = GetUnitToUnitDistance(J.Utils.GetLoneDruid(bot).hero, bot)
+
+    if J.IsValidHero(hero)
+	and J.GetHP(bot) >= J.GetHP(hero) - 0.2 -- hp is higher or within 20% lower than hero.
+	and J.GetHP(bot) > 0.2
+    and not (bot:IsChanneling() or bot:IsUsingAbility())
+	and not hasUltimateScepter
+	then
+        if distanceFromHero > BearAttackLimitDistance * 0.6 then
+			return BOT_MODE_DESIRE_ABSOLUTE
+        end
+    end
+	return BOT_MODE_DESIRE_NONE
+end
+
 ConsiderHeroSpecificRoaming['npc_dota_hero_marci'] = function ()
 	if bot:HasModifier("modifier_marci_unleash")
 	then
@@ -887,7 +946,6 @@ ConsiderHeroSpecificRoaming['npc_dota_hero_marci'] = function ()
 			if J.IsInTeamFight(bot, 1500) then
 				return BOT_MODE_DESIRE_ABSOLUTE
 			end
-			local nInRangeEnemy = bot:GetNearbyHeroes(1500, true, BOT_MODE_NONE)
 			if J.IsGoingOnSomeone(bot) and #nInRangeEnemy >= 1 then
 				return BOT_MODE_DESIRE_ABSOLUTE
 			end

@@ -30,7 +30,7 @@ Customize.Ban = {
 -- There are sample team picks in Appendix section below.
 Customize.Radiant_Heros = {
     'Random',
-    'npc_dota_hero_leshrac',
+    'Random',
 }
 
 -- Same notes as for Radiant_Heros above

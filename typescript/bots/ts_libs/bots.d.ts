@@ -9,7 +9,7 @@ export interface BotSetup {
     sSellList: string[];
     sSkillList: Array<Talent | Ability>;
     SkillsComplement(this: void): void;
-    MinionThink(this: void, hMinionUnit: any, bot: any): void;
+    MinionThink(this: void, hMinionUnit: any): void;
 }
 export interface TalentTreeBuild {
     t10: [number, number];

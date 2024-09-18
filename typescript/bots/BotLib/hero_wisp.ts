@@ -228,7 +228,7 @@ function SkillsComplement() {
     }
 }
 
-function MinionThink(hMinionUnit: any, _: any) {
+function MinionThink(hMinionUnit: any) {
     if (minion.IsValidUnit(hMinionUnit)) {
         minion.IllusionThink(hMinionUnit);
     }

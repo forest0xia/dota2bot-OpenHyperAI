@@ -127,7 +127,7 @@ X['sSkillList'] = J.Skill.GetSkillList( sAbilityList, nAbilityBuildList, sTalent
 X['bDeafaultAbility'] = false
 X['bDeafaultItem'] = false
 
-function X.MinionThink(hMinionUnit, bot)
+function X.MinionThink(hMinionUnit)
     if Utils.IsUnitWithName(hMinionUnit, 'forged_spirit') then
         local botTarget = J.GetProperTarget(bot)
         local unitTarget = hMinionUnit:GetAttackTarget()
@@ -149,7 +149,7 @@ function X.MinionThink(hMinionUnit, bot)
                 return
             end
             -- 没固定目标，fallback
-            Minion.MinionThink(hMinionUnit, bot)
+            Minion.MinionThink(hMinionUnit)
         end
         
         -- 如果不是冒死也要杀死目前的情况，不要送
@@ -166,7 +166,7 @@ function X.MinionThink(hMinionUnit, bot)
             end
         end
     else
-        Minion.MinionThink(hMinionUnit, bot)
+        Minion.MinionThink(hMinionUnit)
     end
 end
 

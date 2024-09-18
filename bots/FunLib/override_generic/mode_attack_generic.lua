@@ -119,7 +119,7 @@ function GetDesireBasedOnHp(target)
 			return BOT_ACTION_DESIRE_NONE
 		end
 	end
-	return RemapValClamped(J.GetHP(bot), 0, 1, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_ABSOLUTE )
+	return RemapValClamped(J.GetHP(bot), 0, 1, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_ABSOLUTE * 0.98 )
 end
 
 function X.Think()

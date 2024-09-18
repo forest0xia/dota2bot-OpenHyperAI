@@ -137,7 +137,7 @@ local aetherRange = 0
 local abilityRef = nil
 
 
-function X.MinionThink(hMinionUnit, bot)
+function X.MinionThink(hMinionUnit)
 
 	if Minion.IsValidUnit( hMinionUnit )
 		and ( not J.IsKeyWordUnit( 'npc_dota_warlock_minor_imp', hMinionUnit ) )
@@ -174,7 +174,7 @@ function X.MinionThink(hMinionUnit, bot)
 	-- 		end
 	-- 	end
 
-	-- 	Minion.MinionThink(hMinionUnit, bot)
+	-- 	Minion.MinionThink(hMinionUnit)
 	-- end
 
 end

@@ -57,8 +57,8 @@ X['sSkillList'] = J.Skill.GetSkillList( sAbilityList, nAbilityBuildList, sTalent
 X['bDeafaultAbility'] = false
 X['bDeafaultItem'] = false
 
-function X.MinionThink(hMinionUnit, bot)
-    Minion.MinionThink(hMinionUnit, bot)
+function X.MinionThink(hMinionUnit)
+    Minion.MinionThink(hMinionUnit)
 end
 
 -- Ability usage logic
@@ -69,31 +69,16 @@ local castQDesire
 local castSavageRoarDesire
 
 local hEnemyList, hAllyList, botTarget, distanceFromHero
-local hasUltimateScepter = false
 
 function X.SkillsComplement()
 
     if J.CanNotUseAbility(bear) or bear:IsInvisible() then return end
-    
+
     botTarget = J.GetProperTarget(Utils.GetLoneDruid(bear).hero)
     if botTarget ~= nil then bear:SetTarget(botTarget) end
     botTarget = J.GetProperTarget(bear)
-    
+
     distanceFromHero = GetUnitToUnitDistance(Utils.GetLoneDruid(bear).hero, bear)
-
-    if not hasUltimateScepter then
-        hasUltimateScepter = J.Item.HasItem(bear, 'item_ultimate_scepter') or bear:HasModifier('modifier_item_ultimate_scepter_consumed')
-    end
-
-    if Utils.GetLoneDruid(bear).hero:IsAlive() and not (J.GetHP(bear) < 0.3 or J.IsRetreating(bear))
-    and not (bear:IsChanneling() or bear:IsUsingAbility() or hasUltimateScepter) then
-        if distanceFromHero > 1000 then
-            bear:Action_ClearActions(false)
-            bear:Action_MoveToLocation(Utils.GetLoneDruid(bear).hero:GetLocation())
-        -- elseif distanceFromHero < 1000 and distanceFromHero > 400 and not (J.IsAttacking(bear) or J.IsGoingOnSomeone(bear)) then
-        --     bear:Action_AttackMove(Utils.GetLoneDruid(bear).hero:GetLocation() + RandomVector(150))
-        end
-    end
 
     -- hEnemyList = J.GetNearbyHeroes(bear, 1600, true, BOT_MODE_NONE)
     -- hAllyList = J.GetNearbyHeroes(bear, 1600, false, BOT_MODE_NONE)

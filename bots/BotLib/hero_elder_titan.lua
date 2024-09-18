@@ -144,7 +144,7 @@ bot.theAstralSpirit = nil
 local targetTouchUnits = nil
 local nEnemyHeroes, nAllyHeroes
 
-function X.MinionThink(hMinionUnit, aBot)
+function X.MinionThink(hMinionUnit)
 	if J.Utils.IsUnitWithName(hMinionUnit, 'elder_titan_ancestral_spirit') and SpiritShouldBeAvailable() then
         bot.theAstralSpirit = hMinionUnit
 
@@ -163,7 +163,7 @@ function X.MinionThink(hMinionUnit, aBot)
         end
 	end
 
-    Minion.MinionThink(hMinionUnit, bot)
+    Minion.MinionThink(hMinionUnit)
 end
 
 function X.SkillsComplement()

@@ -142,7 +142,7 @@ X['sSkillList'] = J.Skill.GetSkillList( sAbilityList, nAbilityBuildList, sTalent
 X['bDeafaultAbility'] = false
 X['bDeafaultItem'] = true
 
-function X.MinionThink(hMinionUnit, bot)
+function X.MinionThink(hMinionUnit)
 
 	if Minion.IsValidUnit( hMinionUnit )
 		and hMinionUnit:GetUnitName() ~= 'npc_dota_zeus_cloud'

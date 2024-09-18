@@ -97,8 +97,8 @@ X['sSkillList'] = J.Skill.GetSkillList( sAbilityList, nAbilityBuildList, sTalent
 X['bDeafaultAbility'] = false
 X['bDeafaultItem'] = false
 
-function X.MinionThink(hMinionUnit, bot)
-    Minion.MinionThink(hMinionUnit, bot)
+function X.MinionThink(hMinionUnit)
+    Minion.MinionThink(hMinionUnit)
 end
 
 local ScatterBlast      = bot:GetAbilityByName('snapfire_scatterblast')
