@@ -398,7 +398,7 @@ function X.ConsiderMalefice()
 end
 
 function X.ConsiderDemonicSummoning()
-    if not DemonicSummoning:IsFullyCastable()
+    if not DemonicSummoning:IsFullyCastable() or J.GetHP(bot) < 0.25
     then
         return BOT_ACTION_DESIRE_NONE, 0
     end

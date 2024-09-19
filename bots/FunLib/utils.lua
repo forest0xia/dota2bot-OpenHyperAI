@@ -320,6 +320,11 @@ local function __TS__ArraySome(self, callbackfn, thisArg)
     end
     return false
 end
+
+local function __TS__StringTrim(self)
+    local result = string.gsub(self, "^[%s ﻿]*(.-)[%s ﻿]*$", "%1")
+    return result
+end
 -- End of Lua Library inline imports
 local ____exports = {}
 local ____dota = require("bots.ts_libs.dota.index")
@@ -766,5 +771,8 @@ function ____exports.GetLoneDruid(bot)
         res = ____exports.LoneDruid[bot:GetPlayerID()]
     end
     return res
+end
+function ____exports.TrimString(str)
+    return __TS__StringTrim(str)
 end
 return ____exports

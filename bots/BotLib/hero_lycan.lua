@@ -174,11 +174,8 @@ function X.ConsiderSummonWolves()
 
     for _, unit in pairs(GetUnitList(UNIT_LIST_ALLIES))
     do
-        if  J.IsValid(unit)
-        and (unit:GetUnitName() == 'npc_dota_lycan_wolf1'
-            or unit:GetUnitName() == 'npc_dota_lycan_wolf2'
-            or unit:GetUnitName() == 'npc_dota_lycan_wolf3'
-            or unit:GetUnitName() == 'npc_dota_lycan_wolf4')
+        if J.IsValid(unit)
+        and string.find( unit:GetUnitName(), "npc_dota_lycan_wolf" )
         then
             return BOT_ACTION_DESIRE_NONE
         end

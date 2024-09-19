@@ -1,4 +1,4 @@
-/* Adapted from https://developer.valvesoftware.com/wiki/Dota_2_Workshop_Tools/Scripting/Heroes_internal_names */
+/* Adapted from https://steamcommunity.com/workshop/filedetails/discussion/3246316298/4848777260032086340/ */
 export enum HeroName {
     Abaddon = "npc_dota_hero_abaddon",
     Underlorg = "npc_dota_hero_abyssal_underlord",

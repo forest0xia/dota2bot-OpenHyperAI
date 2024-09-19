@@ -173,7 +173,7 @@ local OneVoneLaneAssignment = {
 if Customize then
 	if GetTeam() == TEAM_RADIANT and Customize.Radiant_Heros then
 		for i = 1, #Customize.Radiant_Heros do
-			local hero = Customize.Radiant_Heros[i]
+			local hero = Utils.TrimString(Customize.Radiant_Heros[i])
 			if hero and hero ~= 'Random' and Utils.HasValue(SupportedHeroes, hero) then
 				sSelectList[i] = hero
 				UseCustomizedPicks = true
@@ -181,7 +181,7 @@ if Customize then
 		end
 	elseif GetTeam() == TEAM_DIRE and Customize.Dire_Heros then
 		for i = 1, #Customize.Dire_Heros do
-			local hero = Customize.Dire_Heros[i]
+			local hero = Utils.TrimString(Customize.Dire_Heros[i])
 			if hero and hero ~= 'Random' and Utils.HasValue(SupportedHeroes, hero) then
 				sSelectList[i] = hero
 				UseCustomizedPicks = true
@@ -343,7 +343,7 @@ function X.IsBannedHero( sHero )
 	for i = 1, #sBanList
 	do
 		if sBanList[i] ~= nil
-		   and string.find( sHero, sBanList[i] )
+		   and string.find( sHero, Utils.TrimString(sBanList[i]) )
 		then
 			return true
 		end
@@ -537,7 +537,7 @@ local function startsWithExclamation(str)
 end
 -- Function to parse the command string
 local function parseCommand(command)
-    local action, target = command:match("^(%S+)%s+(.*)$")
+    local action, target = Utils.TrimString(command):match("^(%S+)%s+(.*)$")
     return action, target
 end
 local userSwitchedRole = false
@@ -586,7 +586,7 @@ local function handleCommand(command, PlayerID, bTeamOnly)
 			end
 			userSwitchedRole = true
 		else
-			print("Hero name not found or not supported! Please refer to the list of names here: https://developer.valvesoftware.com/wiki/Dota_2_Workshop_Tools/Scripting/Heroes_internal_names");
+			print("Hero name not found or not supported! Please refer to the list of names here: https://steamcommunity.com/workshop/filedetails/discussion/3246316298/4848777260032086340/");
 		end
     elseif action == "!ban" and GetGameState() == GAME_STATE_HERO_SELECTION then
         print("Banning hero " .. text)
@@ -601,7 +601,7 @@ local function handleCommand(command, PlayerID, bTeamOnly)
 			print("Banned hero " .. hero.. '. Banned list:')
 			Utils.PrintTable(sBanList)
 		else
-			print("Hero name not found or not supported! Please refer to the list of names here: https://developer.valvesoftware.com/wiki/Dota_2_Workshop_Tools/Scripting/Heroes_internal_names");
+			print("Hero name not found or not supported! Please refer to the list of names here: https://steamcommunity.com/workshop/filedetails/discussion/3246316298/4848777260032086340/");
 		end
     elseif action == "!pos" and GetGameState() == GAME_STATE_PRE_GAME then
         print("Selecting pos " .. text)
@@ -695,12 +695,12 @@ local playerNameOverrides = {
 if Customize then
 	for i = 1, #Customize.Radiant_Names do
 		if Customize.Radiant_Names[i] ~= nil then
-			playerNameOverrides.Radiant[i] = Customize.Radiant_Names[i]
+			playerNameOverrides.Radiant[i] = Utils.TrimString(Customize.Radiant_Names[i])
 		end
 	end
 	for i = 1, #Customize.Dire_Names do
 		if Customize.Dire_Names[i] ~= nil then
-			playerNameOverrides.Dire[i] = Customize.Dire_Names[i]
+			playerNameOverrides.Dire[i] = Utils.TrimString(Customize.Dire_Names[i])
 		end
 	end
 end

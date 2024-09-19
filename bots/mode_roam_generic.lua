@@ -413,13 +413,6 @@ function ThinkIndividualRoaming()
 end
 
 function ThinkGeneralRoaming()
-	-- Huskar
-	if ShouldMoveOutsideFountain
-	then
-		bot:Action_AttackMove(J.Utils.GetOffsetLocationTowardsTargetLocation(J.GetTeamFountain(), J.GetEnemyFountain(), MoveOutsideFountainDistance))
-		return
-	end
-
 	-- Get out of fountain if in item mode
 	if ShouldMoveOutsideFountain
 	then

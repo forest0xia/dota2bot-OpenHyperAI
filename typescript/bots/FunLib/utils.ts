@@ -540,3 +540,8 @@ export function GetLoneDruid(bot: Unit): any {
     }
     return res;
 }
+
+export function TrimString(str: string): string {
+	return str.trim();
+}
+

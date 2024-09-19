@@ -54,9 +54,9 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_crystal_maiden_outfit",
 	"item_cyclone",
 	"item_force_staff",
-	"item_black_king_bar",
 	"item_hurricane_pike",
 	"item_orchid",
+	"item_black_king_bar",
 	"item_bloodthorn",
 	"item_aghanims_shard",
 	"item_ultimate_scepter",
@@ -77,10 +77,10 @@ sRoleItemsBuyList['pos_2'] = {
 
 	"item_arcane_boots",
 	"item_orchid",
-	"item_black_king_bar",--
-	"item_bloodthorn",--
 	"item_maelstrom",
 	"item_gungir",--
+	"item_black_king_bar",--
+	"item_bloodthorn",--
 	"item_invis_sword",
 	"item_silver_edge",--
 	"item_sheepstick",--

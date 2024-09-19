@@ -198,7 +198,7 @@ local function SkillsComplement()
         bot:Action_UseAbilityOnLocation(abilityRelocate, relocateTarget)
     end
 end
-local function MinionThink(hMinionUnit, _)
+local function MinionThink(hMinionUnit)
     if minion.IsValidUnit(hMinionUnit) then
         minion.IllusionThink(hMinionUnit)
     end

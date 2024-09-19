@@ -18,13 +18,13 @@ local Customize = { }
 Customize.Enable = true
 
 -- Set the heroes you DON'T want the bots to pick. Use hero internal names.
--- Hero name ref: https://developer.valvesoftware.com/wiki/Dota_2_Workshop_Tools/Scripting/Heroes_internal_names
+-- Hero name ref: https://steamcommunity.com/workshop/filedetails/discussion/3246316298/4848777260032086340/
 Customize.Ban = {
     'npc_dota_hero_wisp',
 }
 
 -- Set the heroes you want Radiant bots to pick. You have to use hero's internal name.
--- Hero internal name ref: https://developer.valvesoftware.com/wiki/Dota_2_Workshop_Tools/Scripting/Heroes_internal_names
+-- Hero internal name ref: https://steamcommunity.com/workshop/filedetails/discussion/3246316298/4848777260032086340/
 -- Don't need to provide a value for all 5 bots, any empty/missing value will fallback to a Random value.
 -- The position is ranked by the order of the names you put in the below list, pos 1 - 5, from top to down.
 -- There are sample team picks in Appendix section below.
