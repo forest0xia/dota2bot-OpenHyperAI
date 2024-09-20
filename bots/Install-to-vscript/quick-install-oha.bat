@@ -21,21 +21,24 @@ set timestamp=%year%%month%%day%_%time:~0,2%%time:~3,2%%time:~6,2%
 set timestamp=%timestamp: =0%
 
 :: Check if the folder already exists
-if exist "%~dp0game\dota\scripts\vscripts\bots" (
+if exist "%~dp0..\..\..\..\..\common\dota 2 beta\game\dota\scripts\vscripts\bots" (
     echo Folder already exists, renaming to bots_old_%timestamp%...
-    ren "%~dp0game\dota\scripts\vscripts\bots" "bots_old_%timestamp%"
+    ren "%~dp0..\..\..\..\..\common\dota 2 beta\game\dota\scripts\vscripts\bots" "bots_old_%timestamp%"
 )
 
 echo Creating symbolic link...
-mklink /d "%~dp0game\dota\scripts\vscripts\bots" "%~dp0..\..\workshop\content\570\3246316298"
+mklink /d "%~dp0..\..\..\..\..\common\dota 2 beta\game\dota\scripts\vscripts\bots" "%~dp0.."
 if %errorlevel% equ 0 (
+    echo ============
     echo ============
     echo Install Succeeded!!!
     echo ============
+    echo ============
 ) else (
     echo ============
-    echo "1. Make sure to copy this file into this folder:'Steam\steamapps\common\dota 2 beta'. If you don't know where the Steam folder is, right click Dota2 in Steam Library, select Properties > Installed Files > Browse."
-    echo "2. Run this file as Administrator"
+    echo "1. Make sure to execute this file in this folder:'Steam\steamapps\workshop\content\570\3246316298\Install-to-vscript'. 
+    echo "2. If you don't know where the Steam folder is, right click Dota2 in Steam Library, select Properties > Installed Files > Browse." It will open the folder: "Steam\steamapps\common\dota 2 beta", now replace the path text "common\dota 2 beta" in the address to be "workshop\content\570\3246316298\Install-to-vscript", hit Enter to open the correct folder. 
+    echo "3. Run this file as Administrator"
     echo ============
     echo Install failed!!!
     echo ============

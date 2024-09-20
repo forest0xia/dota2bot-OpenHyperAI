@@ -62,7 +62,26 @@ sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
 
 sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_3']
 
-sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_3']
+sRoleItemsBuyList['pos_4'] = {
+    "item_double_tango",
+    "item_faerie_fire",
+    "item_wind_lace",
+
+    "item_arcane_boots",
+    "item_magic_wand",
+    "item_guardian_greaves",--
+    "item_blink",
+    "item_ultimate_scepter",
+    "item_aghanims_shard",
+    "item_black_king_bar",--
+    "item_lotus_orb",--
+	"item_gungir",--
+    "item_wind_waker",--
+    -- "item_ultimate_scepter_2",
+    "item_overwhelming_blink",--
+    "item_ultimate_scepter_2",
+    "item_moon_shard",
+}
 
 sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_3']
 

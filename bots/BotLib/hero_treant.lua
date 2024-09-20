@@ -25,22 +25,21 @@ local nTalentBuildList = J.Skill.GetTalentBuild(tTalentTreeList)
 local sRoleItemsBuyList = {}
 
 sRoleItemsBuyList['pos_4'] = {
-    "item_tango",
-    "item_double_branches",
-    "item_enchanted_mango",
-    "item_blood_grenade",
+    "item_double_tango",
+    "item_faerie_fire",
     "item_wind_lace",
 
-    "item_boots",
+    "item_arcane_boots",
     "item_magic_wand",
-    "item_tranquil_boots",
-    "item_aghanims_shard",
+    "item_guardian_greaves",--
     "item_blink",
-    "item_force_staff",--
-    "item_boots_of_bearing",--
-    "item_pipe",--
-    "item_sheepstick",--
-	"item_guardian_greaves",--
+    "item_ultimate_scepter",
+    "item_aghanims_shard",
+    "item_black_king_bar",--
+    "item_lotus_orb",--
+	"item_gungir",--
+    "item_wind_waker",--
+    -- "item_ultimate_scepter_2",
     "item_overwhelming_blink",--
     "item_ultimate_scepter_2",
     "item_moon_shard",

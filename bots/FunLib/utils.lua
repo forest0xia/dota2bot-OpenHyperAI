@@ -347,8 +347,8 @@ end
 require("bots.ts_libs.utils.json")
 ____exports.DebugMode = false
 ____exports.ScriptID = 3246316298
-local RadiantFountainTpPoint = Vector(-7172, -6652, 384)
-local DireFountainTpPoint = Vector(6982, 6422, 392)
+____exports.RadiantFountainTpPoint = Vector(-7172, -6652, 384)
+____exports.DireFountainTpPoint = Vector(6982, 6422, 392)
 ____exports.WisdomRunes = {
     [Team.Radiant] = Vector(-8126, -320, 256),
     [Team.Dire] = Vector(8319, 266, 256)
@@ -442,9 +442,15 @@ function ____exports.PrintAllAbilities(unit)
 end
 function ____exports.GetEnemyFountainTpPoint()
     if GetTeam() == Team.Dire then
-        return RadiantFountainTpPoint
+        return ____exports.RadiantFountainTpPoint
     end
-    return DireFountainTpPoint
+    return ____exports.DireFountainTpPoint
+end
+function ____exports.GetTeamFountainTpPoint()
+    if GetTeam() == Team.Dire then
+        return ____exports.DireFountainTpPoint
+    end
+    return ____exports.RadiantFountainTpPoint
 end
 function ____exports.Shuffle(tbl)
     do
@@ -491,20 +497,20 @@ function ____exports.IsPingedByAnyPlayer(bot, pingTimeGap, minDistance, maxDista
         local index = ____value[1]
         local _ = ____value[2]
         do
-            local __continue33
+            local __continue35
             repeat
                 local teamMember = GetTeamMember(index)
                 if teamMember == nil or teamMember:IsIllusion() or teamMember == bot then
-                    __continue33 = true
+                    __continue35 = true
                     break
                 end
                 local ping = teamMember:GetMostRecentPing()
                 if ping ~= nil then
                     pings[#pings + 1] = ping
                 end
-                __continue33 = true
+                __continue35 = true
             until true
-            if not __continue33 then
+            if not __continue35 then
                 break
             end
         end

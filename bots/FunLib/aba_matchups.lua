@@ -57,7 +57,6 @@ local heroes = {
         "npc_dota_hero_riki",
         "npc_dota_hero_phantom_lancer",
         "npc_dota_hero_meepo",
-        "npc_dota_hero_wisp",
         "npc_dota_hero_spirit_breaker",
         "npc_dota_hero_tiny",
         "npc_dota_hero_chaos_knight"
@@ -70,7 +69,6 @@ local heroes = {
         "npc_dota_hero_dark_seer",
         "npc_dota_hero_oracle",
         "npc_dota_hero_monkey_king",
-        "npc_dota_hero_hoodwink",
         "npc_dota_hero_sven"
     }, counter = {
         "npc_dota_hero_visage",
@@ -99,7 +97,6 @@ local heroes = {
         "npc_dota_hero_necrophos",
         "npc_dota_hero_death_prophet",
         "npc_dota_hero_slark",
-        "npc_dota_hero_wisp",
         "npc_dota_hero_dazzle",
         "npc_dota_hero_treant",
         "npc_dota_hero_abyssal_underlord"
@@ -190,7 +187,6 @@ local heroes = {
         "npc_dota_hero_winter_wyvern",
         "npc_dota_hero_broodmother",
         "npc_dota_hero_templar_assassin",
-        "npc_dota_hero_wisp",
         "npc_dota_hero_leshrac",
         "npc_dota_hero_oracle",
         "npc_dota_hero_terrorblade"
@@ -201,7 +197,6 @@ local heroes = {
         "npc_dota_hero_troll_warlord",
         "npc_dota_hero_death_prophet",
         "npc_dota_hero_furion",
-        "npc_dota_hero_wisp",
         "npc_dota_hero_razor",
         "npc_dota_hero_meepo"
     }},
@@ -253,7 +248,6 @@ local heroes = {
         "npc_dota_hero_phantom_lancer",
         "npc_dota_hero_muerta",
         "npc_dota_hero_legion_commander",
-        "npc_dota_hero_hoodwink",
         "npc_dota_hero_void_spirit",
         "npc_dota_hero_obsidian_destroyer"
     }, counter = {
@@ -367,7 +361,6 @@ local heroes = {
         "npc_dota_hero_lycan",
         "npc_dota_hero_ogre_magi",
         "npc_dota_hero_razor",
-        "npc_dota_hero_wisp",
         "npc_dota_hero_broodmother",
         "npc_dota_hero_vengefulspirit",
         "npc_dota_hero_pugna"
@@ -380,8 +373,7 @@ local heroes = {
         "npc_dota_hero_batrider",
         "npc_dota_hero_arc_warden",
         "npc_dota_hero_primal_beast",
-        "npc_dota_hero_mars",
-        "npc_dota_hero_wisp"
+        "npc_dota_hero_mars"
     }, counter = {
         "npc_dota_hero_huskar",
         "npc_dota_hero_medusa",
@@ -413,7 +405,6 @@ local heroes = {
         "npc_dota_hero_sand_king"
     }},
     npc_dota_hero_crystal_maiden = {synergy = {
-        "npc_dota_hero_wisp",
         "npc_dota_hero_silencer",
         "npc_dota_hero_lycan",
         "npc_dota_hero_pudge",
@@ -426,7 +417,6 @@ local heroes = {
         "npc_dota_hero_meepo",
         "npc_dota_hero_enchantress",
         "npc_dota_hero_lycan",
-        "npc_dota_hero_wisp",
         "npc_dota_hero_bounty_hunter",
         "npc_dota_hero_furion",
         "npc_dota_hero_mirana",
@@ -507,7 +497,6 @@ local heroes = {
         "npc_dota_hero_slark",
         "npc_dota_hero_magnataur",
         "npc_dota_hero_batrider",
-        "npc_dota_hero_wisp",
         "npc_dota_hero_spectre",
         "npc_dota_hero_primal_beast",
         "npc_dota_hero_earthshaker",
@@ -527,7 +516,6 @@ local heroes = {
         "npc_dota_hero_oracle",
         "npc_dota_hero_alchemist",
         "npc_dota_hero_naga_siren",
-        "npc_dota_hero_wisp",
         "npc_dota_hero_meepo",
         "npc_dota_hero_huskar",
         "npc_dota_hero_omniknight",
@@ -568,7 +556,6 @@ local heroes = {
         "npc_dota_hero_bristleback",
         "npc_dota_hero_skywrath_mage",
         "npc_dota_hero_oracle",
-        "npc_dota_hero_wisp",
         "npc_dota_hero_skeleton_king",
         "npc_dota_hero_templar_assassin",
         "npc_dota_hero_void_spirit"
@@ -603,8 +590,7 @@ local heroes = {
         "npc_dota_hero_skeleton_king",
         "npc_dota_hero_undying",
         "npc_dota_hero_venomancer",
-        "npc_dota_hero_dazzle",
-        "npc_dota_hero_wisp"
+        "npc_dota_hero_dazzle"
     }, counter = {
         "npc_dota_hero_abyssal_underlord",
         "npc_dota_hero_keeper_of_the_light",
@@ -632,8 +618,7 @@ local heroes = {
         "npc_dota_hero_chaos_knight",
         "npc_dota_hero_arc_warden",
         "npc_dota_hero_visage",
-        "npc_dota_hero_lone_druid",
-        "npc_dota_hero_wisp"
+        "npc_dota_hero_lone_druid"
     }},
     npc_dota_hero_ember_spirit = {synergy = {
         "npc_dota_hero_dark_seer",
@@ -642,8 +627,7 @@ local heroes = {
         "npc_dota_hero_alchemist",
         "npc_dota_hero_bane",
         "npc_dota_hero_bounty_hunter",
-        "npc_dota_hero_bloodseeker",
-        "npc_dota_hero_hoodwink"
+        "npc_dota_hero_bloodseeker"
     }, counter = {
         "npc_dota_hero_phantom_lancer",
         "npc_dota_hero_batrider",
@@ -684,14 +668,12 @@ local heroes = {
         "npc_dota_hero_marci",
         "npc_dota_hero_huskar",
         "npc_dota_hero_phoenix",
-        "npc_dota_hero_wisp",
         "npc_dota_hero_skeleton_king",
         "npc_dota_hero_medusa"
     }, counter = {
         "npc_dota_hero_batrider",
         "npc_dota_hero_beastmaster",
         "npc_dota_hero_meepo",
-        "npc_dota_hero_wisp",
         "npc_dota_hero_razor",
         "npc_dota_hero_obsidian_destroyer",
         "npc_dota_hero_ogre_magi",
@@ -763,7 +745,6 @@ local heroes = {
         "npc_dota_hero_broodmother",
         "npc_dota_hero_riki",
         "npc_dota_hero_storm_spirit",
-        "npc_dota_hero_wisp",
         "npc_dota_hero_beastmaster",
         "npc_dota_hero_primal_beast",
         "npc_dota_hero_lone_druid",
@@ -773,7 +754,6 @@ local heroes = {
         "npc_dota_hero_batrider",
         "npc_dota_hero_dazzle",
         "npc_dota_hero_undying",
-        "npc_dota_hero_wisp",
         "npc_dota_hero_dawnbreaker",
         "npc_dota_hero_grimstroke",
         "npc_dota_hero_sven",
@@ -907,8 +887,7 @@ local heroes = {
         "npc_dota_hero_lone_druid",
         "npc_dota_hero_grimstroke",
         "npc_dota_hero_chaos_knight",
-        "npc_dota_hero_dark_seer",
-        "npc_dota_hero_wisp"
+        "npc_dota_hero_dark_seer"
     }},
     npc_dota_hero_legion_commander = {synergy = {
         "npc_dota_hero_omniknight",
@@ -1053,7 +1032,6 @@ local heroes = {
         "npc_dota_hero_undying",
         "npc_dota_hero_lycan",
         "npc_dota_hero_sven",
-        "npc_dota_hero_wisp",
         "npc_dota_hero_weaver"
     }},
     npc_dota_hero_lycan = {synergy = {
@@ -1089,7 +1067,6 @@ local heroes = {
         "npc_dota_hero_shadow_demon",
         "npc_dota_hero_marci",
         "npc_dota_hero_beastmaster",
-        "npc_dota_hero_wisp",
         "npc_dota_hero_naga_siren",
         "npc_dota_hero_drow_ranger",
         "npc_dota_hero_lycan",
@@ -1212,7 +1189,6 @@ local heroes = {
     }, counter = {
         "npc_dota_hero_lone_druid",
         "npc_dota_hero_meepo",
-        "npc_dota_hero_wisp",
         "npc_dota_hero_naga_siren",
         "npc_dota_hero_broodmother",
         "npc_dota_hero_ember_spirit",
@@ -1287,7 +1263,6 @@ local heroes = {
         "npc_dota_hero_lycan",
         "npc_dota_hero_bane",
         "npc_dota_hero_skeleton_king",
-        "npc_dota_hero_wisp",
         "npc_dota_hero_shadow_shaman",
         "npc_dota_hero_night_stalker",
         "npc_dota_hero_dazzle",
@@ -1352,8 +1327,7 @@ local heroes = {
         "npc_dota_hero_razor",
         "npc_dota_hero_mirana",
         "npc_dota_hero_rattletrap",
-        "npc_dota_hero_alchemist",
-        "npc_dota_hero_wisp"
+        "npc_dota_hero_alchemist"
     }, counter = {
         "npc_dota_hero_shredder",
         "npc_dota_hero_axe",
@@ -1384,8 +1358,7 @@ local heroes = {
         "npc_dota_hero_phantom_assassin",
         "npc_dota_hero_night_stalker",
         "npc_dota_hero_keeper_of_the_light",
-        "npc_dota_hero_bane",
-        "npc_dota_hero_hoodwink"
+        "npc_dota_hero_bane"
     }},
     npc_dota_hero_omniknight = {synergy = {
         "npc_dota_hero_bristleback",
@@ -1410,7 +1383,6 @@ local heroes = {
     npc_dota_hero_oracle = {synergy = {
         "npc_dota_hero_visage",
         "npc_dota_hero_huskar",
-        "npc_dota_hero_hoodwink",
         "npc_dota_hero_windrunner",
         "npc_dota_hero_sand_king",
         "npc_dota_hero_rubick",
@@ -1496,7 +1468,6 @@ local heroes = {
         "npc_dota_hero_beastmaster",
         "npc_dota_hero_terrorblade",
         "npc_dota_hero_enigma",
-        "npc_dota_hero_wisp",
         "npc_dota_hero_marci",
         "npc_dota_hero_huskar"
     }, counter = {
@@ -1608,7 +1579,6 @@ local heroes = {
         "npc_dota_hero_razor",
         "npc_dota_hero_spirit_breaker",
         "npc_dota_hero_drow_ranger",
-        "npc_dota_hero_hoodwink",
         "npc_dota_hero_windrunner",
         "npc_dota_hero_treant",
         "npc_dota_hero_crystal_maiden",
@@ -1655,7 +1625,6 @@ local heroes = {
     npc_dota_hero_rubick = {synergy = {
         "npc_dota_hero_oracle",
         "npc_dota_hero_naga_siren",
-        "npc_dota_hero_wisp",
         "npc_dota_hero_beastmaster",
         "npc_dota_hero_life_stealer",
         "npc_dota_hero_broodmother",
@@ -1700,7 +1669,6 @@ local heroes = {
         "npc_dota_hero_visage",
         "npc_dota_hero_lone_druid",
         "npc_dota_hero_dark_seer",
-        "npc_dota_hero_wisp",
         "npc_dota_hero_bloodseeker",
         "npc_dota_hero_dark_willow"
     }, counter = {
@@ -1933,7 +1901,6 @@ local heroes = {
         "npc_dota_hero_legion_commander",
         "npc_dota_hero_bloodseeker",
         "npc_dota_hero_juggernaut",
-        "npc_dota_hero_hoodwink",
         "npc_dota_hero_life_stealer",
         "npc_dota_hero_sniper",
         "npc_dota_hero_nevermore",
@@ -2141,7 +2108,6 @@ local heroes = {
     }, counter = {
         "npc_dota_hero_meepo",
         "npc_dota_hero_lycan",
-        "npc_dota_hero_wisp",
         "npc_dota_hero_slardar",
         "npc_dota_hero_earth_spirit",
         "npc_dota_hero_marci",
@@ -2233,7 +2199,6 @@ local heroes = {
         "npc_dota_hero_furion",
         "npc_dota_hero_skywrath_mage",
         "npc_dota_hero_enchantress",
-        "npc_dota_hero_hoodwink",
         "npc_dota_hero_death_prophet"
     }},
     npc_dota_hero_venomancer = {synergy = {
@@ -2433,7 +2398,6 @@ local heroes = {
         "npc_dota_hero_legion_commander",
         "npc_dota_hero_spirit_breaker",
         "npc_dota_hero_storm_spirit",
-        "npc_dota_hero_wisp",
         "npc_dota_hero_void_spirit",
         "npc_dota_hero_juggernaut",
         "npc_dota_hero_riki",

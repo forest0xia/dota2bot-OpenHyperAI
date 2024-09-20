@@ -28,8 +28,8 @@ end
 function Chat:SendHttpRequest(api, inputData, callback)
     local jsonString = json.encode(inputData)
 
-    -- local request = CreateHTTPRequest("POST", "http://127.0.0.1:5000/"..api)
-    local request = CreateHTTPRequest("POST", "https://chatgpt-with-dota2bot.onrender.com/"..api)
+    local request = CreateHTTPRequest("POST", "http://127.0.0.1:5000/"..api)
+    -- local request = CreateHTTPRequest("POST", "https://chatgpt-with-dota2bot.onrender.com/"..api)
     request:SetHTTPRequestHeaderValue("Content-Type", "application/json")
     request:SetHTTPRequestRawPostBody("application/json", jsonString)
     request:SetHTTPRequestHeaderValue("Authorization", API_KEY)

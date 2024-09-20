@@ -21,6 +21,7 @@ local ShouldMoveOutsideFountain = false
 local ShouldMoveOutsideFountainCheckTime = 0
 local MoveOutsideFountainDistance = 1500
 local BearAttackLimitDistance = 1100
+local TetherBreakDistance = 1000
 local ConsiderHeroSpecificRoaming = {}
 
 
@@ -39,6 +40,8 @@ local nInRangeEnemy
 function GetDesire()
 
 	TPScroll = J.GetItem2(bot, 'item_tpscroll')
+
+	nInRangeEnemy = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
 
 	if ConsiderWaitInBaseToHeal()
 	and GetUnitToLocationDistance(bot, J.GetTeamFountain()) > 5500
@@ -370,6 +373,20 @@ function ThinkIndividualRoaming()
 		end
 	end
 
+	if bot:HasModifier("modifier_wisp_tether")
+	and J.IsValid(bot.stateTetheredHero) then
+		if GetUnitToUnitDistance(bot, bot.stateTetheredHero) > TetherBreakDistance - 400 then
+			bot:Action_MoveToLocation(bot.stateTetheredHero:GetLocation())
+			return
+		else
+			local botTarget = J.GetProperTarget(bot)
+			if botTarget then
+				bot:ActionQueue_AttackUnit(botTarget, false)
+			end
+			return
+		end
+	end
+
 	if botName == 'npc_dota_hero_lone_druid_bear' then
 		local hero = J.Utils.GetLoneDruid(bot).hero
 		local hasUltimateScepter = J.Item.HasItem(bot, 'item_ultimate_scepter') or bot:HasModifier('modifier_item_ultimate_scepter_consumed')
@@ -422,13 +439,44 @@ function ThinkGeneralRoaming()
 
 	if bot:HasModifier("modifier_item_mask_of_madness_berserk") then
 		local botTarget = J.GetProperTarget(bot)
-		if GetUnitToUnitDistance(bot, botTarget) > bot:GetAttackRange()
-		then
-			bot:Action_MoveToLocation(botTarget:GetLocation())
-			return
+		if J.IsValid(botTarget) then
+			if GetUnitToUnitDistance(bot, botTarget) > bot:GetAttackRange()
+			then
+				bot:Action_MoveToLocation(botTarget:GetLocation())
+				return
+			else
+				bot:Action_AttackUnit(botTarget, false)
+				return
+			end
+		end
+	end
+
+	if bot:HasModifier("modifier_nevermore_shadowraze_debuff") then
+		MoveAwayFromTarget(GetTargetEnemy("npc_dota_hero_nevermore"), 1350)
+	end
+
+	if bot:HasModifier("modifier_ursa_fury_swipes_damage_increase") then
+		local enemy = GetTargetEnemy("npc_dota_hero_ursa")
+		if enemy ~= nil then -- nil check is enough here
+			MoveAwayFromTarget(enemy, enemy:GetAttackRange() * 1.5)
+		end
+	end
+
+	if bot:HasModifier("modifier_monkey_king_quadruple_tap_counter") then
+		local enemy = GetTargetEnemy("npc_dota_hero_monkey_king")
+		if enemy ~= nil then -- nil check is enough here
+			MoveAwayFromTarget(enemy, enemy:GetAttackRange() * 1.5)
+		end
+	end
+
+end
+
+function MoveAwayFromTarget(target, keepDistance)
+	if J.IsValidHero(target) and GetUnitToUnitDistance(bot, target) < keepDistance then
+		if GetUnitToLocationDistance(target, J.GetTeamFountain()) > GetUnitToLocationDistance(bot, J.GetTeamFountain()) then
+			bot:Action_MoveToLocation(J.GetTeamFountain())
 		else
-			bot:Action_AttackUnit(botTarget, false)
-			return
+			bot:Action_MoveToLocation(J.Utils.GetOffsetLocationTowardsTargetLocation(target:GetLocation(), bot:GetLocation(), keepDistance * 2))
 		end
 	end
 end
@@ -689,6 +737,39 @@ function ConsiderGeneralRoamingInConditions()
 			return BOT_ACTION_DESIRE_ABSOLUTE
 		end
 	end
+
+	if J.IsInLaningPhase() then
+		if J.GetModifierCount(bot, "modifier_nevermore_shadowraze_debuff") >= 2 then
+			local enemy = GetTargetEnemy("npc_dota_hero_nevermore")
+			if enemy ~= nil and J.GetHP(bot) < J.GetHP(enemy) and GetUnitToUnitDistance(bot, enemy) <= 1200 then
+				return BOT_ACTION_DESIRE_ABSOLUTE * 0.9
+			end
+		end
+
+		if J.GetModifierCount(bot, "modifier_ursa_fury_swipes_damage_increase") >= 2 then
+			local enemy = GetTargetEnemy("npc_dota_hero_ursa")
+			if enemy ~= nil and J.GetHP(bot) < J.GetHP(enemy) and GetUnitToUnitDistance(bot, enemy) <= 450 then
+				return BOT_ACTION_DESIRE_ABSOLUTE * 0.9
+			end
+		end
+
+		if J.GetModifierCount(bot, "modifier_monkey_king_quadruple_tap_counter") >= 2 then
+			local enemy = GetTargetEnemy("npc_dota_hero_monkey_king")
+			if enemy ~= nil and J.GetHP(bot) < J.GetHP(enemy) and GetUnitToUnitDistance(bot, enemy) <= 500 then
+				return BOT_ACTION_DESIRE_ABSOLUTE * 0.9
+			end
+		end
+	end
+end
+
+function GetTargetEnemy(unitName)
+	for _, enemyHero in pairs(nInRangeEnemy)
+	do
+		if J.IsValidHero(enemyHero) and enemyHero:GetUnitName() == unitName then
+			return enemyHero
+		end
+	end
+	return nil
 end
 
 ------------------------------
@@ -895,7 +976,7 @@ ConsiderHeroSpecificRoaming['npc_dota_hero_leshrac'] = function ()
 				and nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps <= 2
 				then
 					EdictTowerTarget = nEnemyTowers[1]
-					return BOT_MODE_DESIRE_ABSOLUTE
+					return BOT_MODE_DESIRE_VERYHIGH
 				end
 			end
 		end
@@ -907,7 +988,7 @@ ConsiderHeroSpecificRoaming['npc_dota_hero_leshrac'] = function ()
 			local botTarget = J.GetProperTarget(bot)
 			if GetUnitToUnitDistance(bot, botTarget) > 400
 			then
-				return BOT_MODE_DESIRE_ABSOLUTE
+				return BOT_MODE_DESIRE_VERYHIGH
 			end
 		end
 	end
@@ -926,7 +1007,7 @@ ConsiderHeroSpecificRoaming['npc_dota_hero_lone_druid_bear'] = function ()
 	and not hasUltimateScepter
 	then
         if distanceFromHero > BearAttackLimitDistance * 0.6 then
-			return BOT_MODE_DESIRE_ABSOLUTE
+			return BOT_MODE_DESIRE_VERYHIGH
         end
     end
 	return BOT_MODE_DESIRE_NONE
@@ -937,7 +1018,7 @@ ConsiderHeroSpecificRoaming['npc_dota_hero_marci'] = function ()
 	then
 		if J.GetHP(bot) > 0.2 then
 			if J.IsInTeamFight(bot, 1500) then
-				return BOT_MODE_DESIRE_ABSOLUTE
+				return BOT_MODE_DESIRE_VERYHIGH
 			end
 			if J.IsGoingOnSomeone(bot) and #nInRangeEnemy >= 1 then
 				return BOT_MODE_DESIRE_ABSOLUTE
@@ -946,3 +1027,16 @@ ConsiderHeroSpecificRoaming['npc_dota_hero_marci'] = function ()
 	end
 	return BOT_MODE_DESIRE_NONE
 end
+
+ConsiderHeroSpecificRoaming['npc_dota_hero_wisp'] = function ()
+	if bot:HasModifier("modifier_wisp_tether") and DotaTime() > 60
+	then
+		if J.IsValid(bot.stateTetheredHero)
+		and J.GetHP(bot) > 0.5
+		and GetUnitToUnitDistance(bot, bot.stateTetheredHero) > TetherBreakDistance - 200 then
+			return BOT_MODE_DESIRE_ABSOLUTE * 0.85
+		end
+	end
+	return BOT_MODE_DESIRE_NONE
+end
+

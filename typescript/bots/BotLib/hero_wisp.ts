@@ -13,9 +13,10 @@ import {
     Location,
     Talent,
     Unit,
+    UnitType,
 } from "../ts_libs/dota";
 import { hero_is_healing } from "../FunLib/aba_buff";
-import { HasAnyEffect } from "../FunLib/utils";
+import { GetTeamFountainTpPoint, HasAnyEffect, IsValidHero } from "../FunLib/utils";
 
 const bot = GetBot();
 // @ts-ignore
@@ -122,11 +123,13 @@ const abilityOvercharge = bot.GetAbilityByName(allAbilitiesList[2]);
 const abilityRelocate = bot.GetAbilityByName(allAbilitiesList[5]);
 const abilityBreakTether = bot.GetAbilityByName("wisp_tether_break");
 
+let nearbyEnemies: Unit[] = [];
+
 function HasHealingEffect(hero: Unit) {
     return HasAnyEffect(hero, "modifier_tango_heal", ...hero_is_healing);
 }
 
-let stateTetheredHero: Unit | null = null;
+bot.stateTetheredHero = bot.stateTetheredHero;
 
 function ShouldUseOvercharge(ally: Unit) {
     const isAttacking = GameTime() - ally.GetLastAttackTime() < 0.33;
@@ -141,6 +144,9 @@ function ShouldUseOvercharge(ally: Unit) {
 }
 
 function considerTether(): LuaMultiReturn<[number, Unit | null]> {
+    if (!bot.HasModifier("modifier_wisp_tether")) {
+        bot.stateTetheredHero = null
+    }
     if (!abilityTether.IsFullyCastable() || !abilityBreakTether.IsHidden()) {
         return $multi(BotActionDesire.None, null);
     }
@@ -178,8 +184,8 @@ function considerOvercharge(): number {
     }
     if (
         bot.HasModifier("modifier_wisp_tether") &&
-        stateTetheredHero !== null &&
-        ShouldUseOvercharge(stateTetheredHero)
+        bot.stateTetheredHero !== null &&
+        ShouldUseOvercharge(bot.stateTetheredHero)
     ) {
         return BotActionDesire.High;
     }
@@ -190,7 +196,6 @@ function considerSpirits(): number {
     if (!abilitySpirits.IsFullyCastable()) {
         return BotActionDesire.None;
     }
-    const nearbyEnemies = bot.GetNearbyHeroes(800, true, BotMode.None);
     if (nearbyEnemies.length >= 1) {
         return BotActionDesire.High;
     }
@@ -198,6 +203,28 @@ function considerSpirits(): number {
 }
 
 function considerRelocate(): LuaMultiReturn<[number, Location | null]> {
+    if (
+        bot.HasModifier("modifier_wisp_tether") &&
+        bot.stateTetheredHero !== null &&
+        (jmz.GetHP(bot.stateTetheredHero) <= 0.2 || jmz.GetHP(bot) <= 0.2)
+    ) {
+        const allyNearbyEnemies = bot.stateTetheredHero.GetNearbyHeroes(1200, true, BotMode.None);
+        if ((allyNearbyEnemies.length >= 1 && jmz.GetHP(bot.stateTetheredHero) < jmz.GetHP(allyNearbyEnemies[0])) || (nearbyEnemies.length >= 1 && jmz.GetHP(bot) < jmz.GetHP(nearbyEnemies[0]))) {
+            return $multi(BotActionDesire.High, GetTeamFountainTpPoint());
+        }
+    }
+    if (!bot.HasModifier("modifier_wisp_tether")) {
+        if (nearbyEnemies.length >= 1 && jmz.GetHP(bot) < jmz.GetHP(nearbyEnemies[0])) {
+            return $multi(BotActionDesire.High, GetTeamFountainTpPoint());
+        }
+    }
+
+    for (const ally of GetUnitList(UnitType.AlliedHeroes)) {
+        if (IsValidHero(ally) && jmz.IsInTeamFight(ally, 1200) && GetUnitToUnitDistance(bot, ally) > 3000 && ally.WasRecentlyDamagedByAnyHero(2)) {
+            return $multi(BotActionDesire.High, ally.GetLocation());
+        }
+    }
+    
     return $multi(BotActionDesire.None, null);
 }
 
@@ -205,10 +232,13 @@ function SkillsComplement() {
     if (jmz.CanNotUseAbility(bot) || bot.IsInvisible()) {
         return;
     }
-    const [tetherDesire, tetherLocation] = considerTether();
-    if (tetherDesire > 0 && tetherLocation) {
-        bot.Action_UseAbilityOnEntity(abilityTether, tetherLocation);
-        stateTetheredHero = tetherLocation;
+    
+    nearbyEnemies = bot.GetNearbyHeroes(1600, true, BotMode.None);
+
+    const [tetherDesire, tetherTarget] = considerTether();
+    if (tetherDesire > 0 && tetherTarget) {
+        bot.Action_UseAbilityOnEntity(abilityTether, tetherTarget);
+        bot.stateTetheredHero = tetherTarget;
         return;
     }
 

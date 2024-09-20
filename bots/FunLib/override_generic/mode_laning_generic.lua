@@ -10,15 +10,35 @@ local safeAmountFromFront = 300
 function X.OnStart() end
 function X.OnEnd() end
 
-local nEnemyTowers, nEnemyCreeps
+local nEnemyTowers, nEnemyCreeps, assignedLane
 
+function X.GetDesire()
+	assignedLane = GetBotTargetLane()
+	local vLaneFront = GetLaneFrontLocation(GetTeam(), assignedLane, 400)
+	local laneFrontEnemies = J.GetLastSeenEnemiesNearLoc(vLaneFront, 1200)
+	if #laneFrontEnemies >= 2 then
+		local hAllyList = J.GetNearbyHeroes(bot, 800, false, BOT_MODE_NONE )
+		if #laneFrontEnemies > hAllyList then
+			return 0.22
+		end
+	end
 
-function X.Think()
-    if not bot:IsAlive() or J.CanNotUseAction(bot) or bot:IsUsingAbility() or bot:IsChanneling() or bot:IsDisarmed() then return BOT_ACTION_DESIRE_NONE end
+	if GetGameMode() == GAMEMODE_1V1MID or GetGameMode() == GAMEMODE_MO then return 1 end
 
-	local AttackRange = bot:GetAttackRange()
+	local currentTime = DotaTime()
+	local botLV = bot:GetLevel()
 
-	local assignedLane = bot:GetAssignedLane()
+	if currentTime <= 10 then return 0.268 end
+	if currentTime <= 9 * 60 and botLV <= 7 then return 0.446 end
+	if currentTime <= 12 * 60 and botLV <= 11 then return 0.369 end
+	if botLV <= 17 then return 0.228 end
+
+	return 0
+
+end
+
+function GetBotTargetLane()
+	assignedLane = bot:GetAssignedLane()
 	if GetTeam() == TEAM_RADIANT then
 		if J.GetPosition(bot) == 2 then
 			assignedLane = LANE_MID
@@ -40,6 +60,14 @@ function X.Think()
 			assignedLane = LANE_BOT
 		end
 	end
+	return assignedLane
+end
+
+function X.Think()
+    if not bot:IsAlive() or J.CanNotUseAction(bot) or bot:IsUsingAbility() or bot:IsChanneling() or bot:IsDisarmed() then return BOT_ACTION_DESIRE_NONE end
+
+	GetBotTargetLane()
+	local AttackRange = bot:GetAttackRange()
 
 	-- print('Bug laning think, '..botName..', assignedLane='..tostring(assignedLane)..', pos='..J.GetPosition(bot))
 

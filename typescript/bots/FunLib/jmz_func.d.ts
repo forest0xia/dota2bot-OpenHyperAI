@@ -36,6 +36,7 @@ declare function CanNotUseAction(bot: Unit): boolean;
 declare function GetMP(bot: Unit): number;
 
 declare function GetHP(bot: Unit): number;
+declare function GetTeamFountain(): Vector;
 
 declare function GetMostDefendLaneDesire(): LuaMultiReturn<[Lane, number]>;
 

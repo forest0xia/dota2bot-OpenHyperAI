@@ -18,10 +18,12 @@ local BotBuild = require( GetScriptDirectory() .. "/BotLib/" .. string.gsub( bot
 
 if BotBuild == nil then return end
 
-bot.itemToBuy = {}
-bot.currentItemToBuy = nil
-bot.currentComponentToBuy = nil
-bot.currListItemToBuy = {}
+bot.purchaseListInReverseOrder = {}
+bot.currBuyingItemInPurchaseList = nil
+bot.currBuyingBasicItem = nil
+bot.currBuyingBasicItemList = {}
+bot.currBuyingBasicItemRefList = {}
+bot.rebuildCount = 0
 bot.SecretShop = false
 
 local sPurchaseList = BotBuild['sBuyList']
@@ -36,7 +38,7 @@ end
 
 for i = 1, #sPurchaseList
 do
-	bot.itemToBuy[i] = sPurchaseList[#sPurchaseList - i + 1]
+	bot.purchaseListInReverseOrder[i] = sPurchaseList[#sPurchaseList - i + 1]
 end
 
 bot.sell_time = -90
@@ -61,21 +63,21 @@ end
 
 local function GeneralPurchase()
 
-	if bot.lastItemToBuy ~= bot.currentComponentToBuy
+	if bot.lastItemToBuy ~= bot.currBuyingBasicItem
 	then
-		bot.lastItemToBuy = bot.currentComponentToBuy
-		bot:SetNextItemPurchaseValue( GetItemCost( bot.currentComponentToBuy ) )
-		bot.bPurchaseFromSecret = IsItemPurchasedFromSecretShop( bot.currentComponentToBuy )
-		itemCost = GetItemCost( bot.currentComponentToBuy )
+		bot.lastItemToBuy = bot.currBuyingBasicItem
+		bot:SetNextItemPurchaseValue( GetItemCost( bot.currBuyingBasicItem ) )
+		bot.bPurchaseFromSecret = IsItemPurchasedFromSecretShop( bot.currBuyingBasicItem )
+		itemCost = GetItemCost( bot.currBuyingBasicItem )
 	end
 
-	if bot.currentComponentToBuy == "item_infused_raindrop"
-		or bot.currentComponentToBuy == "item_tome_of_knowledge"
-		or bot.currentComponentToBuy == "item_flask"
+	if bot.currBuyingBasicItem == "item_infused_raindrop"
+		or bot.currBuyingBasicItem == "item_tome_of_knowledge"
+		or bot.currBuyingBasicItem == "item_flask"
 	then
-		if GetItemStockCount( bot.currentComponentToBuy ) <= 0
+		if GetItemStockCount( bot.currBuyingBasicItem ) <= 0
 		then
-			ClearBuyList()
+			ClearCurrBuyingBasicItemList()
 			return
 		end
 	end
@@ -84,7 +86,7 @@ local function GeneralPurchase()
 
 
 	if bot.lastItemToBuy == 'item_boots'
-		and bot.currentItemToBuy == 'item_travel_boots'
+		and bot.currBuyingItemInPurchaseList == 'item_travel_boots'
 		and Item.HasBootsInMainSolt( bot )
 	then
 		cost = GetItemCost( 'item_travel_boots' )
@@ -143,7 +145,7 @@ local function GeneralPurchase()
 	end
 
 	--如果只剩下一个小配件则不留
-	if #bot.currListItemToBuy == 1
+	if #bot.currBuyingBasicItemList == 1
 		or Role.IsPvNMode()
 	then
 		cost = itemCost
@@ -163,10 +165,10 @@ local function GeneralPurchase()
 	end
 
 	--开始购买魔晶
-	if bot.currentComponentToBuy == "item_aghanims_shard"
+	if bot.currBuyingBasicItem == "item_aghanims_shard"
 	then
 		bot.hasBuyShard = false
-		ClearBuyList()
+		ClearCurrBuyingBasicItemList()
 		return
 	end
 
@@ -186,9 +188,9 @@ local function GeneralPurchase()
 			and GetCourierState( courier ) == COURIER_STATE_IDLE
 			and courier:DistanceFromSecretShop() == 0
 		then
-			if courier:ActionImmediate_PurchaseItem( bot.currentComponentToBuy ) == PURCHASE_ITEM_SUCCESS
+			if courier:ActionImmediate_PurchaseItem( bot.currBuyingBasicItem ) == PURCHASE_ITEM_SUCCESS
 			then
-				ClearBuyList()
+				ClearCurrBuyingBasicItemList()
 				bot.SecretShop = false
 				return
 			end
@@ -203,19 +205,19 @@ local function GeneralPurchase()
 			if Utils.CountBackpackEmptySpace(bot) > 0 -- has empty slot
 			or bot:DistanceFromSecretShop() > 700
 			then
-				if bot:ActionImmediate_PurchaseItem( bot.currentComponentToBuy ) == PURCHASE_ITEM_SUCCESS
+				if bot:ActionImmediate_PurchaseItem( bot.currBuyingBasicItem ) == PURCHASE_ITEM_SUCCESS
 				then
-					ClearBuyList()
+					ClearCurrBuyingBasicItemList()
 					bot.SecretShop = false
 					return
 				else
-					if GetItemStockCount(bot.currentComponentToBuy ) < 1 then
+					if GetItemStockCount(bot.currBuyingBasicItem ) < 1 then
 						-- out of stock, skip that item.
 						-- print( bot:GetUnitName().." failed to purchase item - "..bot.currentComponentToBuy.." : out of stock.")
-						ClearBuyList()
+						ClearCurrBuyingBasicItemList()
 						bot.SecretShop = false
 					else
-						print( bot:GetUnitName().." 未能购买物品 "..bot.currentComponentToBuy.." : "..tostring( bot:ActionImmediate_PurchaseItem( bot.currentComponentToBuy ) ) )
+						print( bot:GetUnitName().." 未能购买物品 "..bot.currBuyingBasicItem.." : "..tostring( bot:ActionImmediate_PurchaseItem( bot.currBuyingBasicItem ) ) )
 					end
 				end
 			end
@@ -229,20 +231,20 @@ end
 --加速模式购物逻辑
 local function TurboModeGeneralPurchase()
 
-	if bot.lastItemToBuy ~= bot.currentComponentToBuy
+	if bot.lastItemToBuy ~= bot.currBuyingBasicItem
 	then
-		bot.lastItemToBuy = bot.currentComponentToBuy
-		bot:SetNextItemPurchaseValue( GetItemCost( bot.currentComponentToBuy ) )
-		itemCost = GetItemCost( bot.currentComponentToBuy )
-		bot.lastItemToBuy = bot.currentComponentToBuy
+		bot.lastItemToBuy = bot.currBuyingBasicItem
+		bot:SetNextItemPurchaseValue( GetItemCost( bot.currBuyingBasicItem ) )
+		itemCost = GetItemCost( bot.currBuyingBasicItem )
+		bot.lastItemToBuy = bot.currBuyingBasicItem
 	end
 
-	if bot.currentComponentToBuy == "item_infused_raindrop"
-		or bot.currentComponentToBuy == "item_tome_of_knowledge"
+	if bot.currBuyingBasicItem == "item_infused_raindrop"
+		or bot.currBuyingBasicItem == "item_tome_of_knowledge"
 	then
-		if GetItemStockCount( bot.currentComponentToBuy ) <= 0
+		if GetItemStockCount( bot.currBuyingBasicItem ) <= 0
 		then
-			ClearBuyList()
+			ClearCurrBuyingBasicItemList()
 			return
 		end
 	end
@@ -250,7 +252,7 @@ local function TurboModeGeneralPurchase()
 	local cost = itemCost
 
 	if bot.lastItemToBuy == 'item_boots'
-		and bot.currentItemToBuy == 'item_travel_boots'
+		and bot.currBuyingItemInPurchaseList == 'item_travel_boots'
 		and Item.HasBootsInMainSolt( bot )
 	then
 		cost = GetItemCost( 'item_travel_boots' )
@@ -269,27 +271,27 @@ local function TurboModeGeneralPurchase()
 		end
 	end
 
-	if bot.currentComponentToBuy == "item_aghanims_shard"
+	if bot.currBuyingBasicItem == "item_aghanims_shard"
 	then
 		bot.hasBuyShard = false
-		ClearBuyList()
+		ClearCurrBuyingBasicItemList()
 		return
 	end
 
 	if bot:GetGold() >= cost
 		and bot:GetItemInSlot( 14 ) == nil
 	then
-		if bot:ActionImmediate_PurchaseItem( bot.currentComponentToBuy ) == PURCHASE_ITEM_SUCCESS
+		if bot:ActionImmediate_PurchaseItem( bot.currBuyingBasicItem ) == PURCHASE_ITEM_SUCCESS
 		then
-			ClearBuyList()
+			ClearCurrBuyingBasicItemList()
 			return
 		else
-			if GetItemStockCount(bot.currentComponentToBuy ) < 1 then
+			if GetItemStockCount(bot.currBuyingBasicItem ) < 1 then
 				-- out of stock, skip that item.
 				-- print( bot:GetUnitName().." failed to purchase item - "..bot.currentComponentToBuy.." : out of stock.")
-				ClearBuyList()
+				ClearCurrBuyingBasicItemList()
 			else
-				print( bot:GetUnitName().." 未能购买物品 "..bot.currentComponentToBuy.." : "..tostring( bot:ActionImmediate_PurchaseItem( bot.currentComponentToBuy ) ) )
+				print( bot:GetUnitName().." 未能购买物品 "..bot.currBuyingBasicItem.." : "..tostring( bot:ActionImmediate_PurchaseItem( bot.currBuyingBasicItem ) ) )
 			end
 		end
 	end
@@ -370,7 +372,7 @@ function ItemPurchaseThink()
 	if bot:HasModifier( 'modifier_arc_warden_tempest_double' )
 	or (DotaTime() > 0 and J.IsMeepoClone(bot))
 	then
-		bot.itemToBuy = {}
+		bot.purchaseListInReverseOrder = {}
 		return
 	end
 
@@ -382,6 +384,9 @@ function ItemPurchaseThink()
 	local botWorth = bot:GetNetWorth()
 	local botMode = bot:GetActiveMode()
 	local botHP	= bot:GetHealth() / bot:GetMaxHealth()
+	local botCourierValue = bot:GetCourierValue()
+	local botStashValue = bot:GetStashValue()
+	local botDistanceFromFountain = bot:DistanceFromFountain()
 	--------*******----------------*******----------------*******--------
 
 
@@ -402,8 +407,8 @@ function ItemPurchaseThink()
 
 	--买小净化
 	if J.GetMP(bot) < 0.3
-	and bot:DistanceFromFountain() > 2000
-	and bot:GetCourierValue() == 0
+	and botDistanceFromFountain > 2000
+	and botCourierValue == 0
 	and GetItemStockCount('item_clarity') > 1
 	and Item.GetItemCharges(bot, 'item_clarity') <= 0
 	and botGold >= GetItemCost( "item_clarity" )
@@ -428,7 +433,7 @@ function ItemPurchaseThink()
 			and botGold >= GetItemCost( "item_dust" )
 			and Item.GetEmptyInventoryAmount( bot ) >= 2
 			and Item.GetItemCharges( bot, "item_dust" ) <= 0
-			and bot:GetCourierValue() == 0
+			and botCourierValue == 0
 			and not J.HasItem(bot, 'item_ward_sentry')
 		then
 			bot:ActionImmediate_PurchaseItem( "item_dust" )
@@ -440,11 +445,11 @@ function ItemPurchaseThink()
 	then
 		if botLevel < 6
 		and bot:IsAlive()
-		and bot:GetCourierValue() == 0
+		and botCourierValue == 0
 		and bot:FindItemSlot('item_flask') < 0
 		and bot:FindItemSlot('item_tango') < 0
-		and bot:DistanceFromFountain() > 2000
-		and bot:GetStashValue() > 0
+		and botDistanceFromFountain > 2000
+		and botStashValue > 0
 		and not bot:HasModifier('modifier_elixer_healing')
 		and not bot:HasModifier('modifier_filler_heal')
 		and not bot:HasModifier('modifier_flask_healing')
@@ -533,7 +538,7 @@ function ItemPurchaseThink()
 		and botGold >= GetItemCost(wardType)
 		and Item.GetEmptyInventoryAmount(bot) >= 2
 		and Item.GetItemCharges(bot, wardType) < 1
-		and bot:GetCourierValue() == 0
+		and botCourierValue == 0
 		then
 			bot:ActionImmediate_PurchaseItem(wardType)
 		end
@@ -547,7 +552,7 @@ function ItemPurchaseThink()
 		and botGold >= GetItemCost(wardType)
 		and Item.GetEmptyInventoryAmount(bot) >= 2
 		and Item.GetItemCharges(bot, wardType) < 2
-		and bot:GetCourierValue() == 0
+		and botCourierValue == 0
 		then
 			bot:ActionImmediate_PurchaseItem(wardType)
 		end
@@ -560,7 +565,7 @@ function ItemPurchaseThink()
 	and botGold >= GetItemCost('item_smoke_of_deceit')
 	and Item.GetEmptyInventoryAmount(bot) >= 3
 	and Item.GetItemCharges(bot, 'item_smoke_of_deceit') == 0
-	and bot:GetCourierValue() == 0
+	and botCourierValue == 0
 	then
 		if  DotaTime() < 0
 		and not initSmoke
@@ -596,7 +601,7 @@ function ItemPurchaseThink()
 	and botGold >= GetItemCost('item_blood_grenade')
 	and Item.GetEmptyInventoryAmount(bot) >= 3
 	and Item.GetItemCharges(bot, 'item_blood_grenade') == 0
-	and bot:GetStashValue() > 0
+	and botStashValue > 0
 	then
 		bot:ActionImmediate_PurchaseItem('item_blood_grenade')
 	end
@@ -636,7 +641,7 @@ function ItemPurchaseThink()
 	
 	--正常买备用tp
 	if currentTime > 4 * 60
-		and bot:GetCourierValue() <= 100
+		and botCourierValue <= 100
 		and botGold >= tpCost
 		and not HasSufficientTp()
 		and bot:GetUnitName() ~= "npc_dota_hero_meepo" -- don't let meepo buy tp
@@ -687,7 +692,7 @@ function ItemPurchaseThink()
 	end
 
 	if ( GetGameMode() ~= 23 and botLevel > 6 and currentTime > bot.fullInvCheck + 1.0
-		and (bot:DistanceFromFountain() <= 200 or bot:DistanceFromSecretShop() <= 200 ))
+		and (botDistanceFromFountain <= 200 or bot:DistanceFromSecretShop() <= 200 ))
 		or ( GetGameMode() == 23 and botLevel > 9 and currentTime > bot.fullInvCheck + 1.0 )
 	then
 		local emptySlot = Item.GetEmptyInventoryAmount( bot )
@@ -737,7 +742,7 @@ function ItemPurchaseThink()
 
 	--出售廉价装备, 可能偶然卖掉components
 	-- if bot:GetLevel() >= 10 and currentTime > bot.sell_time + 1
-	-- and ( bot:DistanceFromFountain() <= 200 or bot:DistanceFromSecretShop() <= 100 ) then
+	-- and ( botDistanceFromFountain <= 200 or bot:DistanceFromSecretShop() <= 100 ) then
 	-- 	for i = 1, 8
 	-- 	do
 	-- 		local item = bot:GetItemInSlot(i)
@@ -756,7 +761,7 @@ function ItemPurchaseThink()
 	local countEmptyBackpack = Utils.CountBackpackEmptySpace(bot)
 	if currentTime > bot.sell_time + 0.5
 		and countEmptyBackpack <= 1
-		and ( bot:DistanceFromFountain() <= 100 or bot:DistanceFromSecretShop() <= 100 )
+		and ( botDistanceFromFountain <= 100 or bot:DistanceFromSecretShop() <= 100 )
 	then
 		bot.sell_time = currentTime
 
@@ -785,52 +790,61 @@ function ItemPurchaseThink()
 		bot:ActionImmediate_SellItem(bot:GetItemInSlot(bot:FindItemSlot('item_mask_of_madness')))
 	end
 
-	if #bot.itemToBuy == 0 then
-		ClearBuyList()
+	if #bot.purchaseListInReverseOrder == 0 then
+		ClearCurrBuyingBasicItemList()
 		bot:SetNextItemPurchaseValue( 0 )
 		return
 	end
 
-	if bot.currentItemToBuy == nil
-	and #bot.currListItemToBuy == 0
+	if bot.currBuyingItemInPurchaseList == nil
+	and #bot.currBuyingBasicItemList == 0
 	then
-		bot.currentItemToBuy = bot.itemToBuy[#bot.itemToBuy]
-		local tempTable = Item.GetBasicItems( { bot.currentItemToBuy } )
-		for i = 1, math.ceil( #tempTable / 2 )
+		bot.currBuyingItemInPurchaseList = bot.purchaseListInReverseOrder[#bot.purchaseListInReverseOrder]
+		local basicItemTable = Item.GetBasicItems( { bot.currBuyingItemInPurchaseList } )
+		for i = 1, math.ceil( #basicItemTable / 2 )
 		do
-			bot.currListItemToBuy[i] = tempTable[#tempTable-i+1]
-			bot.currListItemToBuy[#tempTable-i+1] = tempTable[i]
+			bot.currBuyingBasicItemList[i] = basicItemTable[#basicItemTable-i+1]
+			bot.currBuyingBasicItemList[#basicItemTable-i+1] = basicItemTable[i]
 		end
+		bot.currBuyingBasicItemRefList = Utils.Deepcopy(bot.currBuyingBasicItemList)
 	end
 
-	if #bot.currListItemToBuy == 0 and currentTime > bot.lastInvCheck + 1.0
+	if #bot.currBuyingBasicItemList == 0
 	then
-		if Item.IsItemInHero( bot.currentItemToBuy )
-			or bot.currentItemToBuy == "item_aghanims_shard"
+		if Item.IsItemInHero( bot.currBuyingItemInPurchaseList )
+			or bot.currBuyingItemInPurchaseList == "item_aghanims_shard"
 			or (
 				bot == Utils.GetLoneDruid(bot).hero
 				and Utils.GetLoneDruid(bot).bear ~= nil
 				and Item.GetItemTotalWorthInSlots(Utils.GetLoneDruid(bot).bear) < 28000
-				and Item.IsItemInTargetHero(bot.currentItemToBuy, Utils.GetLoneDruid(bot).bear)
+				and Item.IsItemInTargetHero(bot.currBuyingItemInPurchaseList, Utils.GetLoneDruid(bot).bear)
 			)
-			or bot.countInvCheck > 5 * 60 -- if can't finish the item for a long time
+			or bot.countInvCheck > 3 * 60 -- if can't finish the item for a long time
 		then
 			bot.countInvCheck = 0
-			bot.currentItemToBuy = nil
-			bot.itemToBuy[#bot.itemToBuy] = nil
-		else
+			bot.currBuyingItemInPurchaseList = nil
+			bot.purchaseListInReverseOrder[#bot.purchaseListInReverseOrder] = nil
+		elseif currentTime > bot.lastInvCheck + 1.0 then
 			bot.lastInvCheck = currentTime
-
-			-- and can't finish even with lots of gold
-			if botGold > 5500 or (botGold > GetItemCost(bot.currentItemToBuy) * 3 and GetItemCost(bot.currentItemToBuy) >= 100 and botGold >= 2000) then
-				bot.countInvCheck = bot.countInvCheck + 1
+			if bot.rebuildCount < 3 and botCourierValue == 0 and botStashValue == 0 then
+				bot.rebuildCount = bot.rebuildCount + 1
+				for key, value in pairs(bot.currBuyingBasicItemRefList) do
+					if not Item.IsItemInHero(value) then
+						table.insert(bot.currBuyingBasicItemList, value)
+					end
+				end
+			else
+				-- and can't finish even with lots of gold
+				if botGold > GetItemCost(bot.currBuyingItemInPurchaseList) * 2 and botGold >= 2000 then
+					bot.countInvCheck = bot.countInvCheck + 1
+				end
 			end
 		end
-	elseif #bot.currListItemToBuy > 0
+	elseif #bot.currBuyingBasicItemList > 0
 	then
-		if bot.currentComponentToBuy == nil
+		if bot.currBuyingBasicItem == nil
 		then
-			bot.currentComponentToBuy = bot.currListItemToBuy[#bot.currListItemToBuy]
+			bot.currBuyingBasicItem = bot.currBuyingBasicItemList[#bot.currBuyingBasicItemList]
 		else
 			if GetGameMode() == 23
 			then
@@ -855,10 +869,10 @@ function SetPairedItems(itemList)
 	end
 end
 
-function ClearBuyList()
+function ClearCurrBuyingBasicItemList()
 	bot.countInvCheck = 0
-	bot.currentComponentToBuy = nil
-	bot.currListItemToBuy[#bot.currListItemToBuy] = nil
+	bot.currBuyingBasicItem = nil
+	bot.currBuyingBasicItemList[#bot.currBuyingBasicItemList] = nil
 end
 
 function IsThereHealingInStash(unit)

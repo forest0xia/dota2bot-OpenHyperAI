@@ -20,7 +20,7 @@ Customize.Enable = true
 -- Set the heroes you DON'T want the bots to pick. Use hero internal names.
 -- Hero name ref: https://steamcommunity.com/workshop/filedetails/discussion/3246316298/4848777260032086340/
 Customize.Ban = {
-    'npc_dota_hero_wisp',
+    'example_npc_dota_hero_internal_name_to_ban',
 }
 
 -- Set the heroes you want Radiant bots to pick. You have to use hero's internal name.
@@ -42,7 +42,7 @@ Customize.Dire_Heros = {
 -- By setting it to true, you can have bots picking all pudges, techies for example, or the same set of heroes for both teams. 
 -- WARNING: Setting this to true CAN reduce the gaming experience due to the fact some heroes are kind of buggy or weak at the moment (listed below) and 
 --          are currently intentionally having reduced chances to get picked by bots. Set this to true will break this blocker.
-Customize.Allow_Repeated_Heroes = true
+Customize.Allow_Repeated_Heroes = false
 
 -- Set the names of the heroes for Radiant bots. Don't need to provide a value for all 5 bots, any empty/missing value will fallback to a Random value.
 Customize.Radiant_Names = {

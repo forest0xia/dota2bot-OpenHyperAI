@@ -3,10 +3,13 @@ local jmz = require("bots.FunLib.jmz_func")
 local ____dota = require("bots.ts_libs.dota.index")
 local BotActionDesire = ____dota.BotActionDesire
 local BotMode = ____dota.BotMode
+local UnitType = ____dota.UnitType
 local ____aba_buff = require("bots.FunLib.aba_buff")
 local hero_is_healing = ____aba_buff.hero_is_healing
 local ____utils = require("bots.FunLib.utils")
+local GetTeamFountainTpPoint = ____utils.GetTeamFountainTpPoint
 local HasAnyEffect = ____utils.HasAnyEffect
+local IsValidHero = ____utils.IsValidHero
 local bot = GetBot()
 local minion = dofile("bots/FunLib/aba_minion")
 local role = jmz.Item.GetRoleItemsBuyList(bot)
@@ -104,6 +107,7 @@ local abilitySpirits = bot:GetAbilityByName(allAbilitiesList[2])
 local abilityOvercharge = bot:GetAbilityByName(allAbilitiesList[3])
 local abilityRelocate = bot:GetAbilityByName(allAbilitiesList[6])
 local abilityBreakTether = bot:GetAbilityByName("wisp_tether_break")
+local nearbyEnemies = {}
 local function HasHealingEffect(hero)
     return HasAnyEffect(
         hero,
@@ -111,13 +115,16 @@ local function HasHealingEffect(hero)
         unpack(hero_is_healing)
     )
 end
-local stateTetheredHero = nil
+bot.stateTetheredHero = bot.stateTetheredHero
 local function ShouldUseOvercharge(ally)
     local isAttacking = GameTime() - ally:GetLastAttackTime() < 0.33
     local attackTarget = ally:GetAttackTarget()
     return jmz.IsGoingOnSomeone(ally) or attackTarget and attackTarget:GetTeam() == GetOpposingTeam() and isAttacking or #ally:GetNearbyCreeps(200, true) > 2
 end
 local function considerTether()
+    if not bot:HasModifier("modifier_wisp_tether") then
+        bot.stateTetheredHero = nil
+    end
     if not abilityTether:IsFullyCastable() or not abilityBreakTether:IsHidden() then
         return BotActionDesire.None, nil
     end
@@ -125,26 +132,26 @@ local function considerTether()
     local allies = bot:GetNearbyHeroes(castRange, false, BotMode.None)
     for ____, ally in ipairs(allies) do
         do
-            local __continue6
+            local __continue7
             repeat
                 local canTargetAlly = ally ~= bot and ally:IsAlive() and not ally:IsMagicImmune()
                 if not canTargetAlly then
-                    __continue6 = true
+                    __continue7 = true
                     break
                 end
                 if jmz.IsRetreating(bot) or jmz.GetHP(bot) < 0.25 then
                     if jmz.IsRetreating(ally) then
                         return BotActionDesire.High, ally
                     end
-                    __continue6 = true
+                    __continue7 = true
                     break
                 end
                 if jmz.GetHP(ally) < 0.75 or jmz.GetMP(bot) > 0.8 or HasHealingEffect(bot) or ShouldUseOvercharge(ally) then
                     return BotActionDesire.High, ally
                 end
-                __continue6 = true
+                __continue7 = true
             until true
-            if not __continue6 then
+            if not __continue7 then
                 break
             end
         end
@@ -155,7 +162,7 @@ local function considerOvercharge()
     if not abilityOvercharge:IsFullyCastable() then
         return BotActionDesire.None
     end
-    if bot:HasModifier("modifier_wisp_tether") and stateTetheredHero ~= nil and ShouldUseOvercharge(stateTetheredHero) then
+    if bot:HasModifier("modifier_wisp_tether") and bot.stateTetheredHero ~= nil and ShouldUseOvercharge(bot.stateTetheredHero) then
         return BotActionDesire.High
     end
     return BotActionDesire.None
@@ -164,23 +171,39 @@ local function considerSpirits()
     if not abilitySpirits:IsFullyCastable() then
         return BotActionDesire.None
     end
-    local nearbyEnemies = bot:GetNearbyHeroes(800, true, BotMode.None)
     if #nearbyEnemies >= 1 then
         return BotActionDesire.High
     end
     return BotActionDesire.None
 end
 local function considerRelocate()
+    if bot:HasModifier("modifier_wisp_tether") and bot.stateTetheredHero ~= nil and (jmz.GetHP(bot.stateTetheredHero) <= 0.2 or jmz.GetHP(bot) <= 0.2) then
+        local allyNearbyEnemies = bot.stateTetheredHero:GetNearbyHeroes(1200, true, BotMode.None)
+        if #allyNearbyEnemies >= 1 and jmz.GetHP(bot.stateTetheredHero) < jmz.GetHP(allyNearbyEnemies[1]) or #nearbyEnemies >= 1 and jmz.GetHP(bot) < jmz.GetHP(nearbyEnemies[1]) then
+            return BotActionDesire.High, GetTeamFountainTpPoint()
+        end
+    end
+    if not bot:HasModifier("modifier_wisp_tether") then
+        if #nearbyEnemies >= 1 and jmz.GetHP(bot) < jmz.GetHP(nearbyEnemies[1]) then
+            return BotActionDesire.High, GetTeamFountainTpPoint()
+        end
+    end
+    for ____, ally in ipairs(GetUnitList(UnitType.AlliedHeroes)) do
+        if IsValidHero(ally) and jmz.IsInTeamFight(ally, 1200) and GetUnitToUnitDistance(bot, ally) > 3000 and ally:WasRecentlyDamagedByAnyHero(2) then
+            return BotActionDesire.High, ally:GetLocation()
+        end
+    end
     return BotActionDesire.None, nil
 end
 local function SkillsComplement()
     if jmz.CanNotUseAbility(bot) or bot:IsInvisible() then
         return
     end
-    local tetherDesire, tetherLocation = considerTether()
-    if tetherDesire > 0 and tetherLocation then
-        bot:Action_UseAbilityOnEntity(abilityTether, tetherLocation)
-        stateTetheredHero = tetherLocation
+    nearbyEnemies = bot:GetNearbyHeroes(1600, true, BotMode.None)
+    local tetherDesire, tetherTarget = considerTether()
+    if tetherDesire > 0 and tetherTarget then
+        bot:Action_UseAbilityOnEntity(abilityTether, tetherTarget)
+        bot.stateTetheredHero = tetherTarget
         return
     end
     local overchargeDesire = considerOvercharge()

@@ -26,8 +26,8 @@ export const DebugMode = false;
 
 export const ScriptID = 3246316298;
 
-const RadiantFountainTpPoint = Vector(-7172, -6652, 384);
-const DireFountainTpPoint = Vector(6982, 6422, 392);
+export const RadiantFountainTpPoint = Vector(-7172, -6652, 384);
+export const DireFountainTpPoint = Vector(6982, 6422, 392);
 
 export const WisdomRunes = {
     [Team.Radiant]: Vector(-8126, -320, 256),
@@ -128,6 +128,13 @@ export function GetEnemyFountainTpPoint(): Vector {
         return RadiantFountainTpPoint;
     }
     return DireFountainTpPoint;
+}
+
+export function GetTeamFountainTpPoint(): Vector {
+    if (GetTeam() == Team.Dire) {
+        return DireFountainTpPoint;
+    }
+    return RadiantFountainTpPoint;
 }
 
 export function Shuffle<T>(tbl: T[]): T[] {

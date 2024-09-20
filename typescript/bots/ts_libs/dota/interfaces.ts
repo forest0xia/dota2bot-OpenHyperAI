@@ -32,6 +32,7 @@ export interface Unit {
     assignedRole: number | null;
     DefendLaneDesire: number[] | null;
     laneToDefend: Lane;
+    stateTetheredHero: Unit | null;
 
     IsNull(): boolean;
 

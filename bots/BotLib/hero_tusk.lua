@@ -29,12 +29,11 @@ sRoleItemsBuyList['pos_4'] = {
     "item_faerie_fire",
     "item_wind_lace",
 
-    "item_tranquil_boots",
+    "item_arcane_boots",
     "item_magic_wand",
     "item_blink",
     "item_guardian_greaves",--
     "item_cyclone",
-    "item_boots_of_bearing",--
     "item_ultimate_scepter",
     "item_aghanims_shard",
     "item_black_king_bar",--
@@ -52,13 +51,14 @@ sRoleItemsBuyList['pos_5'] = {
     "item_faerie_fire",
     "item_wind_lace",
 
-    "item_arcane_boots",
+    "item_tranquil_boots",
     "item_magic_wand",
-    "item_blink",
+    "item_boots_of_bearing",--
     "item_pipe",--
     "item_ultimate_scepter",
     "item_aghanims_shard",
     "item_pavise",
+    "item_blink",
     "item_solar_crest",--
 	"item_heavens_halberd",--
     "item_lotus_orb",--
