@@ -603,14 +603,15 @@ function ____exports.RemoveValueFromTable(table_, valueToRemove)
         end
     end
 end
-function ____exports.HasActionTypeInQueue(bot, searchedActionType)
+function ____exports.NumActionTypeInQueue(bot, searchedActionType)
+    local count = 0
     for index = 1, bot:NumQueuedActions() do
         local actionType = bot:GetQueuedActionType(index)
         if actionType == searchedActionType then
-            return true
+            count = count + 1
         end
     end
-    return nil
+    return count
 end
 local humanCountCache = {}
 function ____exports.NumHumanBotPlayersInTeam(team)

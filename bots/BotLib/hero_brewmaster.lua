@@ -64,18 +64,23 @@ sRoleItemsBuyList['pos_2'] = {
 }
 
 sRoleItemsBuyList['pos_3'] = {
-	"item_tank_outfit",
+    "item_tango",
+    "item_double_branches",
+    "item_quelling_blade",
+
+    "item_double_bracer",
+    "item_boots",
+    "item_magic_wand",
+    "item_radiance",--
+    "item_pipe",--
+    "item_black_king_bar",--
     sCrimsonPipeLotus,--
-	"item_aghanims_shard",
-	"item_heavens_halberd",
-	"item_black_king_bar",--
-	"item_travel_boots",
-	"item_assault",--
+    "item_aghanims_shard",
+    "item_travel_boots",
     "item_shivas_guard",--
+    "item_travel_boots_2",--
     "item_ultimate_scepter_2",
-	"item_refresher",--
-	"item_moon_shard",
-	"item_travel_boots_2",--
+    "item_moon_shard",
 }
 
 sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_3']

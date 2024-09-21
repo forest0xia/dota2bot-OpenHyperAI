@@ -369,7 +369,7 @@ local function CourierUsageComplement()
 	--------* * * * * * * ----------------* * * * * * * ----------------* * * * * * * --------
 	local bDebugCourier = ( 1 == 10 )
 	local npcCourier = bot.theCourier
-	local cState = GetCourierState( npcCourier )
+	cState = GetCourierState( npcCourier )
 	local courierHP = npcCourier:GetHealth() / npcCourier:GetMaxHealth()
 	local currentTime = DotaTime()
 	local bAliveBot = bot:IsAlive()
@@ -428,7 +428,7 @@ local function CourierUsageComplement()
 		end
 
 		if bAliveBot
-			and ( not X.IsInvFull( bot ) 
+			and ( not X.IsInvFull( bot )
 					or currentTime <= 5 * 60
 					or ( bot.currListItemToBuy ~= nil and #bot.currListItemToBuy == 0 and bot.currentItemToBuy ~= 'item_travel_boots' ) )
 			and ( cState == COURIER_STATE_AT_BASE

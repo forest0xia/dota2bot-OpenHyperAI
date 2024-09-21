@@ -48,6 +48,8 @@ local isVoteForAllyScale = false
 if Settings == nil then
 	Settings = dofile('bots.FretBots.SettingsDefault')
 end
+Settings.difficultyMax = difficultyMax
+Settings.allowPlayersToCheat = allowPlayersToCheat
 
 -- neutral item drop settings
 AllNeutrals = dofile('bots.FretBots.SettingsNeutralItemTable')
@@ -67,7 +69,7 @@ local announcementList = {
 	{"#2980B9", "* If difficulty >= 0, bots get bonus neutral items, and get fair bonus in gold, exp, stats, etc every minute."},
 	{"#E59866", "* If difficulty >= 1, bots get above bonus upon their death; and also get new bonus in mana/hp regens."},
 	{"#1ABC9C", "* As difficulty increments, bots get neutral items sooner and higher bonus amount."},
-	{"#F39C12", "* If difficulty >= 5, when a player kills a bot, the player who made the kill receives a reduction in gold. This does not affect assisting players. Bots also provide less exp on death."},
+	{"#F39C12", "* If difficulty >= 5, when a player kills a bot, the killer receives a reduction in gold. The assisting players receive a smaller gold reduction. Bots also provide less exp on death."},
 	{"#7FB3D5", "* The higher the difficulty you vote, the more bonus the bots will get which can make the game more challenging." },
 	{"#E74C3C", "* High difficulty can be overwhelming or even frustrating, please choose the right difficulty for you and your team." },
 	{"#D4AC0D", "* Bot link for any feedback: https://steamcommunity.com/sharedfiles/filedetails/?id=3246316298 . Kudos to BeginnerAI, Fretbots, and ryndrb@; and thanks all for sharing your ideas." },
@@ -139,7 +141,7 @@ end
 
 -- Checks each player to see if they need a repurcussion
 function Settings:RepurcussionTimer()
-	if allowPlayersToCheat then return end
+	if Settings.allowPlayersToCheat then return end
 
 	for _, player in ipairs(AllHumanPlayers) do
 		if player.stats.repurcussionCount < player.stats.repurcussionTarget then
@@ -331,7 +333,7 @@ function Settings:OnPlayerChat(event)
 	-- Get event data
 	local playerID, rawText, teamonly = Settings:GetChatEventData(event)
 	-- Check to see if they're cheating
-	if not allowPlayersToCheat then
+	if not Settings.allowPlayersToCheat then
 		Settings:DoChatCheatParse(playerID, rawText)
 	end
 	-- Remove dashes (potentially)
@@ -393,8 +395,12 @@ function Settings:DoUserChatCommandParse(text, id)
 		return true
 	end
 	if command == 'enablecheat' then
-		allowPlayersToCheat = not allowPlayersToCheat
-		Utilities:Print('Free to cheat: '..tostring(allowPlayersToCheat), MSG_GOOD)
+		if id == Utilities:GetHostPlayerID() then
+			Settings.allowPlayersToCheat = not Settings.allowPlayersToCheat
+			Utilities:Print('Free to cheat: '..tostring(Settings.allowPlayersToCheat), MSG_GOOD)
+		else
+			Utilities:Print('Only the host of this game can enable cheat settings', MSG_WARNING)
+		end
 		return true
 	end
 	-- Random Asian soundboard

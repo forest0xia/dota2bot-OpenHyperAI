@@ -1,5 +1,5 @@
 -- Edit this flag to enable / disable debug
-local isDebug = false;
+local isDebug = true;
 
 -- Instantiate the class
 if Debug == nil then

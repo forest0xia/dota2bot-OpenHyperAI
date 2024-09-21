@@ -48,51 +48,99 @@ else
     nTalentBuildList    = J.Skill.GetTalentBuild(tTalentTreeList[2])
 end
 
-local sCrimsonPipe = RandomInt( 1, 2 ) == 1 and "item_crimson_guard" or "item_pipe"
+local sUtilityItem = RandomInt( 1, 2 ) == 1 and "item_crimson_guard" or "item_heavens_halberd"
 
 local sRoleItemsBuyList = {}
 
 sRoleItemsBuyList['pos_1'] = {
-	
-	'item_melee_carry_outfit',
---	'item_medallion_of_courage',
-	'item_vanguard',
-	"item_aghanims_shard",
-	"item_crimson_guard",
-	"item_black_king_bar",
+	"item_double_branches",
+	"item_quelling_blade",
+	"item_tango",
+	"item_faerie_fire",
+
+	"item_bottle",
+	"item_phase_boots",
+	"item_magic_wand",
+	"item_phylactery",
 	"item_ultimate_scepter",
+	"item_octarine_core",--
+	"item_black_king_bar",--
+	"item_angels_demise",--
+	"item_assault",--
 	"item_travel_boots",
-	"item_abyssal_blade",
-	"item_butterfly",
-	"item_moon_shard",
-	"item_travel_boots_2",
-	"item_reaver",
+	"item_wind_waker",--
 	"item_ultimate_scepter_2",
-	"item_heart",
+	"item_travel_boots_2",--
+	"item_moon_shard",
+	"item_aghanims_shard",
 }
 
 sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
 
 sRoleItemsBuyList['pos_3'] = {
-	"item_dragon_knight_outfit",
-	"item_crimson_guard",
-	"item_heavens_halberd",
-	"item_ultimate_scepter",
-	"item_travel_boots",
-	"item_aghanims_shard",
-	"item_black_king_bar",
-	"item_assault",
-	"item_moon_shard",
-	"item_travel_boots_2",
-	"item_reaver",
-	"item_ultimate_scepter_2",
-	"item_heart",
+	"item_double_branches",
+	"item_quelling_blade",
+	"item_tango",
+	"item_faerie_fire",
 
+	"item_boots",
+	"item_magic_wand",
+	"item_phase_boots",
+	"item_phylactery",
+	"item_pipe",
+	"item_black_king_bar",--
+	sUtilityItem,--
+	"item_angels_demise",--
+	"item_assault",--
+	"item_travel_boots",
+	"item_wind_waker",--
+	"item_ultimate_scepter_2",
+	"item_travel_boots_2",--
+	"item_moon_shard",
+	"item_aghanims_shard",
 }
 
-sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_3']
+sRoleItemsBuyList['pos_4'] = {
+	"item_tango",
+	"item_double_branches",
+	"item_blood_grenade",
+	"item_orb_of_venom",
 
-sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_3']
+	"item_boots",
+	"item_magic_wand",
+	"item_tranquil_boots",
+	"item_ancient_janggo",
+	"item_solar_crest",--
+	"item_guardian_greaves",--
+	"item_pipe",
+	"item_heavens_halberd",--
+	"item_sheepstick",--
+	"item_lotus_orb",--
+	"item_aghanims_shard",
+	"item_ultimate_scepter_2",
+	"item_moon_shard",
+}
+
+sRoleItemsBuyList['pos_5'] = {
+	"item_tango",
+	"item_double_branches",
+	"item_blood_grenade",
+	"item_orb_of_venom",
+
+	"item_boots",
+	"item_magic_wand",
+	"item_arcane_boots",
+	"item_ancient_janggo",
+	"item_solar_crest",--
+	"item_boots_of_bearing",--
+	"item_force_staff",--
+	"item_heavens_halberd",--
+	"item_sheepstick",--
+	"item_lotus_orb",--
+	"item_aghanims_shard",
+	"item_ultimate_scepter_2",
+	"item_moon_shard",
+}
 
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]

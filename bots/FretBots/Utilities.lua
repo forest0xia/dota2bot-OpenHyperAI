@@ -292,6 +292,24 @@ function Utilities:Clamp(number, minimum, maximum)
 	return number
 end
 
+function Utilities:RemapValClamped(value, inMin, inMax, outMin, outMax)
+    -- Handle division by zero if input range is zero
+    if inMax == inMin then
+        return (outMax + outMin) / 2
+    end
+
+    -- Calculate the proportion of the input value within the input range
+    local proportion = (value - inMin) / (inMax - inMin)
+
+    -- Clamp the proportion between 0 and 1
+    local clampedProportion = clamp(proportion, 0, 1)
+
+    -- Map the clamped proportion to the output range
+    local remappedValue = outMin + clampedProportion * (outMax - outMin)
+
+    return remappedValue
+end
+
 -- Rounds a number
 function Utilities:Round(num, decimals)
 	-- if no decimals argument, round to an integer

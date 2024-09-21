@@ -427,6 +427,20 @@ function ThinkIndividualRoaming()
 		end
 		return
 	end
+
+	if botName == 'npc_dota_hero_pudge' then
+		local Rot = bot:GetAbilityByName('pudge_rot')
+		if Rot:GetToggleState()
+		then
+			local botTarget = J.GetProperTarget(bot)
+			if GetUnitToUnitDistance(bot, botTarget) > 400
+			then
+				bot:Action_MoveToLocation(botTarget:GetLocation())
+				return
+			end
+		end
+		bot:ActionQueue_AttackUnit(botTarget, false)
+	end
 end
 
 function ThinkGeneralRoaming()
@@ -453,22 +467,55 @@ function ThinkGeneralRoaming()
 
 	if bot:HasModifier("modifier_nevermore_shadowraze_debuff") then
 		MoveAwayFromTarget(GetTargetEnemy("npc_dota_hero_nevermore"), 1350)
+		return
 	end
 
 	if bot:HasModifier("modifier_ursa_fury_swipes_damage_increase") then
-		local enemy = GetTargetEnemy("npc_dota_hero_ursa")
-		if enemy ~= nil then -- nil check is enough here
-			MoveAwayFromTarget(enemy, enemy:GetAttackRange() * 1.5)
-		end
+		bot:Action_MoveToLocation(J.GetTeamFountain())
+		return
 	end
 
 	if bot:HasModifier("modifier_monkey_king_quadruple_tap_counter") then
-		local enemy = GetTargetEnemy("npc_dota_hero_monkey_king")
-		if enemy ~= nil then -- nil check is enough here
-			MoveAwayFromTarget(enemy, enemy:GetAttackRange() * 1.5)
-		end
+		bot:Action_MoveToLocation(J.GetTeamFountain())
+		return
 	end
 
+	if bot:HasModifier("modifier_slark_essence_shift_debuff_counter") then
+		bot:Action_MoveToLocation(J.GetTeamFountain())
+		return
+	end
+
+	if bot:HasModifier("modifier_silencer_glaives_of_wisdom_debuff_counter") then
+		bot:Action_MoveToLocation(J.GetTeamFountain())
+		return
+	end
+
+	if bot:HasModifier("modifier_dazzle_poison_touch") then
+		bot:Action_MoveToLocation(J.GetTeamFountain())
+		return
+	end
+
+	if bot:HasModifier("modifier_maledict") then
+		bot:Action_MoveToLocation(J.GetTeamFountain())
+		return
+	end
+
+	if bot:HasModifier("modifier_viper_poison_attack_slow") then
+		bot:Action_MoveToLocation(J.GetTeamFountain())
+		return
+	end
+end
+
+function GeneralReactToStackedDebuff(enemyHeroName)
+	local enemy = GetTargetEnemy(enemyHeroName)
+	if enemy ~= nil then -- nil check is enough here
+		if J.GetHP(bot) > 0.6 and not J.Utils.NumActionTypeInQueue(BOT_ACTION_TYPE_ATTACK) <= 2 then
+			bot:ActionImmediate_Ping(enemy:GetLocation().x, enemy:GetLocation().y, true)
+			bot:ActionQueue_AttackUnit(enemy, false)
+		else
+			bot:Action_MoveToLocation(J.GetTeamFountain())
+		end
+	end
 end
 
 function MoveAwayFromTarget(target, keepDistance)
@@ -739,26 +786,65 @@ function ConsiderGeneralRoamingInConditions()
 	end
 
 	if J.IsInLaningPhase() then
-		if J.GetModifierCount(bot, "modifier_nevermore_shadowraze_debuff") >= 2 then
+		if J.GetModifierCount(bot, "modifier_nevermore_shadowraze_debuff") >= 2 then -- 7s
 			local enemy = GetTargetEnemy("npc_dota_hero_nevermore")
 			if enemy ~= nil and J.GetHP(bot) < J.GetHP(enemy) and GetUnitToUnitDistance(bot, enemy) <= 1200 then
-				return BOT_ACTION_DESIRE_ABSOLUTE * 0.9
+				return BOT_ACTION_DESIRE_ABSOLUTE
 			end
 		end
 
-		if J.GetModifierCount(bot, "modifier_ursa_fury_swipes_damage_increase") >= 2 then
-			local enemy = GetTargetEnemy("npc_dota_hero_ursa")
-			if enemy ~= nil and J.GetHP(bot) < J.GetHP(enemy) and GetUnitToUnitDistance(bot, enemy) <= 450 then
-				return BOT_ACTION_DESIRE_ABSOLUTE * 0.9
-			end
-		end
-
-		if J.GetModifierCount(bot, "modifier_monkey_king_quadruple_tap_counter") >= 2 then
+		if J.GetModifierCount(bot, "modifier_monkey_king_quadruple_tap_counter") >= 2 then -- 7 - 10s
 			local enemy = GetTargetEnemy("npc_dota_hero_monkey_king")
-			if enemy ~= nil and J.GetHP(bot) < J.GetHP(enemy) and GetUnitToUnitDistance(bot, enemy) <= 500 then
-				return BOT_ACTION_DESIRE_ABSOLUTE * 0.9
+			if enemy ~= nil and J.GetHP(bot) < J.GetHP(enemy) and GetUnitToUnitDistance(bot, enemy) <= enemy:GetAttackRange() * 1.5 then
+				return BOT_ACTION_DESIRE_ABSOLUTE
 			end
 		end
+
+		if J.GetModifierCount(bot, "modifier_viper_poison_attack_slow") >= 2 then -- 4s
+			local enemy = GetTargetEnemy("npc_dota_hero_viper")
+			if enemy ~= nil and J.GetHP(bot) < J.GetHP(enemy) and GetUnitToUnitDistance(bot, enemy) <= enemy:GetAttackRange() * 1.5 then
+				return BOT_ACTION_DESIRE_ABSOLUTE
+			end
+		end
+
+		-- long duration debuff
+		if not J.WeAreStronger(bot, 1200) then
+			if J.GetModifierCount(bot, "modifier_slark_essence_shift_debuff_counter") >= 2 then -- 20 - 80s
+				local enemy = GetTargetEnemy("npc_dota_hero_slark")
+				if enemy ~= nil and J.GetHP(bot) < J.GetHP(enemy) and GetUnitToUnitDistance(bot, enemy) <= enemy:GetAttackRange() * 1.5 then
+					return BOT_ACTION_DESIRE_ABSOLUTE
+				end
+			end
+
+			if J.GetModifierCount(bot, "modifier_silencer_glaives_of_wisdom_debuff_counter") >= 2 then -- 20 - 35s
+				local enemy = GetTargetEnemy("npc_dota_hero_silencer")
+				if enemy ~= nil and J.GetHP(bot) < J.GetHP(enemy) and GetUnitToUnitDistance(bot, enemy) <= enemy:GetAttackRange() * 1.5 then
+					return BOT_ACTION_DESIRE_ABSOLUTE
+				end
+			end
+
+			if J.GetModifierCount(bot, "modifier_ursa_fury_swipes_damage_increase") >= 2 then -- 8 - 20s
+				local enemy = GetTargetEnemy("npc_dota_hero_ursa")
+				if enemy ~= nil and J.GetHP(bot) < J.GetHP(enemy) and GetUnitToUnitDistance(bot, enemy) <= enemy:GetAttackRange() * 1.5 then
+					return BOT_ACTION_DESIRE_ABSOLUTE
+				end
+			end
+
+			if bot:HasModifier("modifier_dazzle_poison_touch") then -- 5s - forever
+				local enemy = GetTargetEnemy("npc_dota_hero_dazzle")
+				if enemy ~= nil and J.GetHP(bot) < J.GetHP(enemy) and GetUnitToUnitDistance(bot, enemy) <= enemy:GetAttackRange() * 1.5 then
+					return BOT_ACTION_DESIRE_ABSOLUTE
+				end
+			end
+
+			if bot:HasModifier("modifier_maledict") then -- 5s - forever
+				local enemy = GetTargetEnemy("npc_dota_hero_witch_doctor")
+				if enemy ~= nil and J.GetHP(bot) < J.GetHP(enemy) and GetUnitToUnitDistance(bot, enemy) <= enemy:GetAttackRange() * 1.5 then
+					return BOT_ACTION_DESIRE_ABSOLUTE
+				end
+			end
+		end
+
 	end
 end
 
@@ -984,8 +1070,8 @@ ConsiderHeroSpecificRoaming['npc_dota_hero_leshrac'] = function ()
 
 	if bot:HasModifier("modifier_leshrac_pulse_nova")
 	then
-		if J.GetHP(bot) > 0.2 then
-			local botTarget = J.GetProperTarget(bot)
+		local botTarget = J.GetProperTarget(bot)
+		if botTarget ~= nil and J.GetHP(bot) > J.GetHP(botTarget) then
 			if GetUnitToUnitDistance(bot, botTarget) > 400
 			then
 				return BOT_MODE_DESIRE_VERYHIGH
@@ -1002,7 +1088,7 @@ ConsiderHeroSpecificRoaming['npc_dota_hero_lone_druid_bear'] = function ()
 
     if J.IsValidHero(hero)
 	and J.GetHP(bot) >= J.GetHP(hero) - 0.2 -- hp is higher or within 20% lower than hero.
-	and J.GetHP(bot) > 0.2
+	and J.GetHP(bot) > 0.3
     and not (bot:IsChanneling() or bot:IsUsingAbility())
 	and not hasUltimateScepter
 	then
@@ -1016,7 +1102,8 @@ end
 ConsiderHeroSpecificRoaming['npc_dota_hero_marci'] = function ()
 	if bot:HasModifier("modifier_marci_unleash")
 	then
-		if J.GetHP(bot) > 0.2 then
+		local botTarget = J.GetProperTarget(bot)
+		if botTarget ~= nil and J.GetHP(bot) > J.GetHP(botTarget) then
 			if J.IsInTeamFight(bot, 1500) then
 				return BOT_MODE_DESIRE_VERYHIGH
 			end
@@ -1040,3 +1127,14 @@ ConsiderHeroSpecificRoaming['npc_dota_hero_wisp'] = function ()
 	return BOT_MODE_DESIRE_NONE
 end
 
+ConsiderHeroSpecificRoaming['npc_dota_hero_pudge'] = function ()
+	local Rot = bot:GetAbilityByName('pudge_rot')
+	if Rot ~= nil and Rot:GetToggleState() and J.WeAreStronger(bot, 1200)
+	then
+		local botTarget = J.GetProperTarget(bot)
+		if botTarget ~= nil and J.GetHP(bot) > J.GetHP(botTarget) then
+			return BOT_MODE_DESIRE_ABSOLUTE * 0.85
+		end
+	end
+	return BOT_MODE_DESIRE_NONE
+end

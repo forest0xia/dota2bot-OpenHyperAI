@@ -321,17 +321,18 @@ export function RemoveValueFromTable(table_: unknown[], valueToRemove: any) {
     }
 }
 
-export function HasActionTypeInQueue(
+export function NumActionTypeInQueue(
     bot: Unit,
     searchedActionType: BotActionType
 ) {
+    let count: number = 0
     for (const index of $range(1, bot.NumQueuedActions())) {
         const actionType = bot.GetQueuedActionType(index);
         if (actionType === searchedActionType) {
-            return true;
+            count++;
         }
     }
-    return null;
+    return count;
 }
 
 const humanCountCache: { [key in Team]: [number, number] } = {};

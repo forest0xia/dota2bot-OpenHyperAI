@@ -4,6 +4,7 @@ local J = require( GetScriptDirectory()..'/FunLib/jmz_func')
 local Utils = require( GetScriptDirectory()..'/FunLib/utils')
 
 local bot = GetBot()
+local botName = bot:GetUnitName()
 
 local X = {}
 
@@ -14,7 +15,7 @@ then
 	return
 end
 
-local BotBuild = require( GetScriptDirectory() .. "/BotLib/" .. string.gsub( bot:GetUnitName(), "npc_dota_", "" ) )
+local BotBuild = require( GetScriptDirectory() .. "/BotLib/" .. string.gsub( botName, "npc_dota_", "" ) )
 
 if BotBuild == nil then return end
 
@@ -31,7 +32,7 @@ local sItemSellList = BotBuild['sSellList']
 
 
 if sPurchaseList == nil then
-	print("[ERROR] Can't load purchase list for: " .. bot:GetUnitName())
+	print("[ERROR] Can't load purchase list for: " .. botName)
 	print("Stack Trace:", debug.traceback())
 	return
 end
@@ -53,6 +54,22 @@ local itemCost = 0
 local courier = nil
 local t3AlreadyDamaged = false
 local t3Check = -90
+
+bot.lastInvCheck = -90
+bot.fullInvCheck = -90
+bot.switchTime = 0
+bot.hasBuyClarity = false
+local lastBootsCheck = -90
+local buyBootsStatus = false
+local buyRD = false
+
+local buyWardTime = -999
+
+local buyBookTime = 0
+
+local initSmoke = false
+
+local currentTime, botLevel, botGold, botWorth, botMode, botHP, botCourierValue, botStashValue, botDistanceFromFountain
 
 local function HasSufficientTp()
 	local tCharges = Item.GetItemCharges( bot, 'item_tpscroll' )
@@ -91,8 +108,6 @@ local function GeneralPurchase()
 	then
 		cost = GetItemCost( 'item_travel_boots' )
 	end
-	
-
 
 	if bot:GetLevel() >= 18
 		and t3AlreadyDamaged == false
@@ -213,11 +228,11 @@ local function GeneralPurchase()
 				else
 					if GetItemStockCount(bot.currBuyingBasicItem ) < 1 then
 						-- out of stock, skip that item.
-						-- print( bot:GetUnitName().." failed to purchase item - "..bot.currentComponentToBuy.." : out of stock.")
+						-- print( botName.." failed to purchase item - "..bot.currentComponentToBuy.." : out of stock.")
 						ClearCurrBuyingBasicItemList()
 						bot.SecretShop = false
 					else
-						print( bot:GetUnitName().." 未能购买物品 "..bot.currBuyingBasicItem.." : "..tostring( bot:ActionImmediate_PurchaseItem( bot.currBuyingBasicItem ) ) )
+						print( botName.." 未能购买物品 "..bot.currBuyingBasicItem.." : "..tostring( bot:ActionImmediate_PurchaseItem( bot.currBuyingBasicItem ) ) )
 					end
 				end
 			end
@@ -288,29 +303,14 @@ local function TurboModeGeneralPurchase()
 		else
 			if GetItemStockCount(bot.currBuyingBasicItem ) < 1 then
 				-- out of stock, skip that item.
-				-- print( bot:GetUnitName().." failed to purchase item - "..bot.currentComponentToBuy.." : out of stock.")
+				-- print( botName.." failed to purchase item - "..bot.currentComponentToBuy.." : out of stock.")
 				ClearCurrBuyingBasicItemList()
 			else
-				print( bot:GetUnitName().." 未能购买物品 "..bot.currBuyingBasicItem.." : "..tostring( bot:ActionImmediate_PurchaseItem( bot.currBuyingBasicItem ) ) )
+				print( botName.." 未能购买物品 "..bot.currBuyingBasicItem.." : "..tostring( bot:ActionImmediate_PurchaseItem( bot.currBuyingBasicItem ) ) )
 			end
 		end
 	end
 end
-
-
-bot.lastInvCheck = -90
-bot.fullInvCheck = -90
-bot.switchTime = 0
-bot.hasBuyClarity = false
-local lastBootsCheck = -90
-local buyBootsStatus = false
-local buyRD = false
-
-local buyWardTime = -999
-
-local buyBookTime = 0
-
-local initSmoke = false
 
 function ItemPurchaseThink()
 	if bot.lastItemPurchaseFrameProcessTime == nil then bot.lastItemPurchaseFrameProcessTime = DotaTime() end
@@ -319,6 +319,16 @@ function ItemPurchaseThink()
 
 	if ( GetGameState() ~= GAME_STATE_PRE_GAME and GetGameState() ~= GAME_STATE_GAME_IN_PROGRESS )
 	then return	end
+
+	currentTime = DotaTime()
+	botLevel = bot:GetLevel()
+	botGold = bot:GetGold()
+	botWorth = bot:GetNetWorth()
+	botMode = bot:GetActiveMode()
+	botHP	= J.GetHP(bot)
+	botCourierValue = bot:GetCourierValue()
+	botStashValue = bot:GetStashValue()
+	botDistanceFromFountain = bot:DistanceFromFountain()
 
 	if bot == Utils.GetLoneDruid(bot).hero then
 		local bear = Utils.GetLoneDruid(bot).bear
@@ -375,21 +385,6 @@ function ItemPurchaseThink()
 		bot.purchaseListInReverseOrder = {}
 		return
 	end
-
-	--------*******----------------*******----------------*******--------
-	local currentTime = DotaTime()
-	local botName = bot:GetUnitName()
-	local botLevel = bot:GetLevel()
-	local botGold = bot:GetGold()
-	local botWorth = bot:GetNetWorth()
-	local botMode = bot:GetActiveMode()
-	local botHP	= bot:GetHealth() / bot:GetMaxHealth()
-	local botCourierValue = bot:GetCourierValue()
-	local botStashValue = bot:GetStashValue()
-	local botDistanceFromFountain = bot:DistanceFromFountain()
-	--------*******----------------*******----------------*******--------
-
-
 
 	--更新队伍里是否有辅助的定位
 	if Role['supportExist'] == nil then Role.UpdateSupportStatus( bot ) end
@@ -631,7 +626,7 @@ function ItemPurchaseThink()
 		and bot:IsAlive()
 		and botGold < ( tpCost + botWorth / 40 )
 		and botHP < 0.08
-		and bot:GetHealth() >= 1
+		and botHP >= 1
 		and bot:WasRecentlyDamagedByAnyHero( 3.1 )
 		and not HasSufficientTp()
 		and Item.GetItemCharges( bot, 'item_tpscroll' ) <= 2
@@ -644,8 +639,8 @@ function ItemPurchaseThink()
 		and botCourierValue <= 100
 		and botGold >= tpCost
 		and not HasSufficientTp()
-		and bot:GetUnitName() ~= "npc_dota_hero_meepo" -- don't let meepo buy tp
-		and bot:GetUnitName() ~= "npc_dota_hero_lone_druid_bear"
+		and botName ~= "npc_dota_hero_meepo" -- don't let meepo buy tp
+		and botName ~= "npc_dota_hero_lone_druid_bear"
 	then
 		local tCharges = Item.GetItemCharges( bot, 'item_tpscroll' )
 		if bot:HasModifier("modifier_teleporting") then tCharges = tCharges - 1 end

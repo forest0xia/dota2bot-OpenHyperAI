@@ -17,6 +17,15 @@ local thisDebug = false;
 local isDebug = Debug.IsDebug() and thisDebug;
 local RADIANT			= 2
 local DIRE				= 3
+local KillerAwardMinDifficulty = 5
+local KillerAwardAnnounce = Utilities:ColorString('Balance Killer Awards', "#DAA520")
+
+local goldTrackingTimer = "GoldTracking"
+local GoldTrackingTable = {}
+local TeamKillsTrackingTable = {
+	[RADIANT] = 0,
+	[DIRE] = 0
+}
 
 -- Instantiate ourself
 if EntityKilled == nil then
@@ -92,33 +101,60 @@ function EntityKilled:GetEntityKilledEventData(event)
 	if victim:IsHero() and victim:IsRealHero() and not victim:IsIllusion() and not victim:IsClone() then
 		isHero = true;
 
-		if Settings.difficulty >= 5 then
-			-- print('Enabled human killer gold reduction for diffculty scale = '..Settings.difficultyScale)
+		if Settings.difficulty >= KillerAwardMinDifficulty then
 			-- 当击杀者是人类玩家时，给与击杀惩罚
-			if killer == nil or killer.stats == nil or killer.stats.isBot then return end
-
-			-- TODO: check if victim is SNK or was with SNK's ult available - the first death was not a real death don't modify real player gold.
+			-- if killer == nil or killer.stats == nil or killer.stats.isBot then return end
 			if victim:HasModifier("modifier_skeleton_king_reincarnation") or victim:HasModifier("modifier_aegis_regen") then
-				-- print("Entity got killed, but not truly dead yet.")
+				Debug:Print("Entity got killed, but not truly dead yet.")
 				return
 			end
-
-			local goldPerLevel = -26
-			if Utilities:IsTurboMode() then
-				goldPerLevel = goldPerLevel * 1.5
-			end
-			local heroLevel = victim:GetLevel()
-			-- 基于基础惩罚，死亡单位的等级，和难度来确定惩罚额度
-			local goldBounty = math.floor(goldPerLevel * heroLevel/4 * (Settings.difficultyScale * 3) - math.random(1, 30))
-			-- 给予击杀者赏金
-			killer:ModifyGold(goldBounty, true, DOTA_ModifyGold_HeroKill)
-			local msg = 'Balance Killer Award to ' .. PlayerResource:GetPlayerName(killer:GetPlayerID())..' for the kill. Gold: ' .. goldBounty
-			Utilities:Print(msg, Utilities:GetPlayerColor(killer:GetPlayerID()))
-
+			if killer == nil or killer.stats == nil then return end
+			TeamKillsTrackingTable[killer.stats.team] = TeamKillsTrackingTable[killer.stats.team] + 1
 		end
 	end
 
 	return isHero, victim, killer;
+end
+
+function EntityKilled:GoldTracking()
+	local canClearRadiantTracking = false
+	local canClearDireTracking = false
+	local killerAwardAnnounce = KillerAwardAnnounce
+	print("player count" .. tostring(#AllHumanPlayers))
+	for i, player in pairs(AllHumanPlayers) do
+		local teamKills = TeamKillsTrackingTable[player.stats.team]
+		local netWorth = player:GetGold() -- PlayerResource:GetNetWorth(player.stats.id)
+		Debug:Print('GoldTracking. Player: '.. player.stats.name .. ', netWorth: ' .. netWorth)
+		local oldNetworth = GoldTrackingTable[player.stats.name] or netWorth
+		local netWorthDiff = netWorth - oldNetworth
+		Debug:Print('GoldTracking. Player: '.. player.stats.name .. ', netWorth diff vs previous: ' .. netWorthDiff .. ', team kills: ' .. teamKills .. ', difficulty: ' .. Settings.difficulty)
+
+		if netWorthDiff > 200 then
+			if Settings.difficulty >= KillerAwardMinDifficulty
+			and teamKills >= 1  -- 因为timer有执行间隔，同时击杀太多的话可能会有一些 edge cases 导致漏算或者多算人头，但是以后再改吧
+			then
+				local diffRatio = Utilities:Clamp(Settings.difficulty / math.min(10, Settings.difficultyMax), 0, 1)
+				local netWorthDiffAfterReduction = netWorthDiff * (1 - Utilities:RemapValClamped(diffRatio * 1.2, 0, 1, 0, 0.8))
+				local goldToReduce = Utilities:Clamp(math.floor(netWorthDiffAfterReduction - netWorthDiff), -5000, -50)
+				Debug:Print('GoldTracking. Player: '.. player.stats.name .. ', team: ' .. player.stats.team .. ', gold to reduce: ' .. goldToReduce)
+
+				player.stats.pColor = player.stats.pColor or Utilities:GetPlayerColor(player.stats.id)
+				player.stats.pName = player.stats.pName or PlayerResource:GetPlayerName(player:GetPlayerID())
+				killerAwardAnnounce = killerAwardAnnounce .. '. ' .. Utilities:ColorString(player.stats.pName .. ': ' .. tostring(goldToReduce), player.stats.pColor)
+				player:ModifyGold(goldToReduce, true, DOTA_ModifyGold_HeroKill)
+				if player.stats.team == RADIANT then canClearRadiantTracking = true end
+				if player.stats.team == DIRE then canClearDireTracking = true end
+			elseif teamKills == 0 and netWorthDiff > 900 and not Settings.allowPlayersToCheat then
+				local goldToReduce = -math.floor(netWorthDiff)
+				Debug:Print('GoldTracking. Player: '.. player.stats.name .. ' received gold without a kill. gold to reduce: ' .. goldToReduce)
+				player:ModifyGold(goldToReduce, true, DOTA_ModifyGold_HeroKill)
+			end
+		end
+		GoldTrackingTable[player.stats.name] = netWorth
+	end
+	if canClearRadiantTracking then GameRules:SendCustomMessage(killerAwardAnnounce, 0, 0); TeamKillsTrackingTable[RADIANT] = 0 end
+	if canClearDireTracking then GameRules:SendCustomMessage(killerAwardAnnounce, 0, 0); TeamKillsTrackingTable[DIRE] = 0 end
+	return 0.3
 end
 
 -- Registers Event Listener
@@ -127,6 +163,9 @@ function EntityKilled:RegisterEvents()
 		ListenToGameEvent('entity_killed', Dynamic_Wrap(EntityKilled, 'OnEntityKilled'), EntityKilled)
 		ListenToGameEvent("dota_combatlog", Dynamic_Wrap(EntityKilled, 'OnCombatlog'), EntityKilled)
 		ListenToGameEvent("dota_player_gained_level", Dynamic_Wrap(EntityKilled, 'OnLevelUp'), EntityKilled)
+
+		Debug:Print('Registering GoldTracking Timer.')
+		Timers:CreateTimer(goldTrackingTimer, {endTime = 1, callback = EntityKilled['GoldTracking']} )
 
 		Flags.isEntityKilledRegistered = true;
 		if true then

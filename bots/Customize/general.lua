@@ -39,9 +39,9 @@ Customize.Dire_Heros = {
 }
 
 -- Set whether or not allowing bots to pick same/repeated heroes. 
--- By setting it to true, you can have bots picking all pudges, techies for example, or the same set of heroes for both teams. 
+-- By setting it to true, you can have bots picking for example all pudges, all techies, or the same set of heroes on both teams. 
 -- WARNING: Setting this to true CAN reduce the gaming experience due to the fact some heroes are kind of buggy or weak at the moment (listed below) and 
---          are currently intentionally having reduced chances to get picked by bots. Set this to true will break this blocker.
+--          are currently intentionally having reduced chances to get picked by bots. Set this to true will break this limit.
 Customize.Allow_Repeated_Heroes = false
 
 -- Set the names of the heroes for Radiant bots. Don't need to provide a value for all 5 bots, any empty/missing value will fallback to a Random value.
