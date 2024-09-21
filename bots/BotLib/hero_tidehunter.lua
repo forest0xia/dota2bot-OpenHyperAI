@@ -48,7 +48,6 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_vladmir",--
 	"item_blink",
 	"item_aghanims_shard",
-	"item_pipe",--
 	"item_shivas_guard",--
 	sLotusHalberd,--
 	"item_ultimate_scepter",
@@ -83,7 +82,26 @@ sRoleItemsBuyList['pos_4'] = {
     "item_moon_shard",
 }
 
-sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_3']
+sRoleItemsBuyList['pos_5'] = {
+    "item_double_tango",
+    "item_faerie_fire",
+    "item_wind_lace",
+
+    "item_arcane_boots",
+    "item_magic_wand",
+    "item_pipe",--
+    "item_blink",
+    "item_ultimate_scepter",
+    "item_aghanims_shard",
+    "item_black_king_bar",--
+    "item_lotus_orb",--
+	"item_gungir",--
+    "item_wind_waker",--
+    -- "item_ultimate_scepter_2",
+    "item_overwhelming_blink",--
+    "item_ultimate_scepter_2",
+    "item_moon_shard",
+}
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 

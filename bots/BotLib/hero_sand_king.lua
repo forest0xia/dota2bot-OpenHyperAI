@@ -84,17 +84,18 @@ sRoleItemsBuyList['pos_5'] = {
     "item_blood_grenade",
 	"item_mage_outfit",
 	"item_ancient_janggo",
-	"item_glimmer_cape",
-	"item_boots_of_bearing",
-	"item_pipe",
+	-- "item_glimmer_cape",
+	"item_boots_of_bearing",--
+	"item_pipe",--
     "item_ultimate_scepter",
 	"item_cyclone",
 --	"item_wraith_pact",
-    "item_lotus_orb",--
-	"item_gungir",--
-	"item_shivas_guard",
-	"item_sheepstick",
+    -- "item_lotus_orb",
+	-- "item_gungir",--
+	"item_shivas_guard",--
+	"item_sheepstick",--
 	"item_moon_shard",
+    "item_wind_waker",--
 	"item_ultimate_scepter_2",
 }
 

@@ -55,12 +55,12 @@ sRoleItemsBuyList['pos_1'] = {
     "item_soul_ring",
     "item_echo_sabre",
     "item_basher",
+    "item_greater_crit",--
     "item_black_king_bar",--
+    "item_monkey_king_bar",--
     "item_abyssal_blade",--
-    "item_desolator",--
     "item_satanic",--
     "item_ultimate_scepter",
-    "item_abyssal_blade",--
     "item_moon_shard",
     "item_travel_boots",
     "item_travel_boots_2",--
@@ -70,23 +70,56 @@ sRoleItemsBuyList['pos_1'] = {
 sRoleItemsBuyList['pos_3'] = {
 	"item_tank_outfit",
 	"item_crimson_guard",--
-	"item_aghanims_shard",
-	"item_ultimate_scepter",
+    "item_basher",
 	"item_heavens_halberd",--
 	"item_travel_boots",
+    "item_monkey_king_bar",--
 	"item_assault",--
-	"item_sheepstick",--
+	-- "item_sheepstick",--
+	"item_aghanims_shard",
+	"item_ultimate_scepter",
+    "item_abyssal_blade",--
 	"item_moon_shard",
 	"item_travel_boots_2",--
 	"item_ultimate_scepter_2",
-	"item_octarine_core",--
+	-- "item_octarine_core",--
 }
 
 sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
 
-sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_3']
+sRoleItemsBuyList['pos_4'] = {
+	'item_priest_outfit',
+	"item_hand_of_midas",
+	"item_mekansm",
+	"item_glimmer_cape",--
+	"item_guardian_greaves",--
+    "item_basher",
+    "item_monkey_king_bar",--
+	"item_assault",--
+	"item_heavens_halberd",--
+	"item_aghanims_shard",
+    "item_abyssal_blade",--
+	"item_ultimate_scepter",
+	"item_moon_shard",
+	"item_ultimate_scepter_2",
+}
 
-sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_3']
+sRoleItemsBuyList['pos_5'] = {
+	'item_priest_outfit',
+	"item_hand_of_midas",
+	"item_mekansm",
+	"item_glimmer_cape",--
+	"item_pipe",--
+    "item_basher",
+    "item_monkey_king_bar",--
+	"item_assault",--
+	"item_heavens_halberd",--
+	"item_aghanims_shard",
+    "item_abyssal_blade",--
+	"item_ultimate_scepter",
+	"item_moon_shard",
+	"item_ultimate_scepter_2",
+}
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 

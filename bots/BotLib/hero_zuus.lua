@@ -111,8 +111,8 @@ sRoleItemsBuyList['pos_5'] = {
 	"item_mage_outfit",
 	"item_ancient_janggo",
 	"item_glimmer_cape",--
-	"item_boots_of_bearing",--
 	"item_pipe",--
+	"item_boots_of_bearing",--
     "item_ultimate_scepter",
 	"item_cyclone",
 --	"item_wraith_pact",

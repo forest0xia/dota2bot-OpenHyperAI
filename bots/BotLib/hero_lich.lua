@@ -61,6 +61,7 @@ sRoleItemsBuyList['pos_5'] = {
     "item_boots",
     "item_urn_of_shadows",
     "item_tranquil_boots",
+	"item_pipe",
     "item_spirit_vessel",--
     "item_glimmer_cape",--
     "item_pavise",

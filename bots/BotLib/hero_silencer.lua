@@ -142,6 +142,7 @@ sRoleItemsBuyList['pos_5'] = {
 	"item_magic_wand",
 	"item_force_staff",
 	"item_glimmer_cape",--
+	"item_pipe",
 	"item_boots_of_bearing",--
     "item_pavise",
     "item_solar_crest",--

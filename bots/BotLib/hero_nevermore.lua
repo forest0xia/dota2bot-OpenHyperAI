@@ -108,21 +108,42 @@ sRoleItemsBuyList['pos_4'] = {
 	"item_magic_wand",
 	"item_tranquil_boots",
 	"item_null_talisman",
-	"item_cyclone",
-	"item_glimmer_cape",
-	"item_kaya",
+	"item_glimmer_cape",--
+	"item_guardian_greaves",--
 	"item_force_staff",
-	"item_sange",
-	"item_boots_of_bearing",
-	"item_octarine_core",
-	"item_hurricane_pike",
+	"item_cyclone",
+	"item_boots_of_bearing",--
+	"item_octarine_core",--
+	"item_hurricane_pike",--
 	"item_aghanims_shard",
-	"item_wind_waker",
+	"item_wind_waker",--
 	"item_ultimate_scepter_2",
 	"item_moon_shard",
 }
 
-sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_4']
+sRoleItemsBuyList['pos_5'] = {
+	"item_tango",
+	"item_tango",
+	"item_double_branches",
+	"item_clarity",
+	"item_clarity",
+	"item_flask",
+
+	"item_magic_wand",
+	"item_tranquil_boots",
+	"item_null_talisman",
+	"item_glimmer_cape",--
+	"item_pipe",--
+	"item_force_staff",
+	"item_cyclone",
+	"item_boots_of_bearing",--
+	"item_octarine_core",--
+	"item_hurricane_pike",--
+	"item_aghanims_shard",
+	"item_wind_waker",--
+	"item_ultimate_scepter_2",
+	"item_moon_shard",
+}
 
 sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_1']
 

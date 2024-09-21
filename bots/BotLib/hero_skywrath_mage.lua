@@ -64,9 +64,10 @@ sRoleItemsBuyList['pos_5'] = {
 
 	"item_tranquil_boots",
 	"item_magic_wand",
-	"item_rod_of_atos",
 	"item_glimmer_cape",--
-	"item_aether_lens",--
+	"item_pipe",
+	"item_rod_of_atos",
+	-- "item_aether_lens",--
 	"item_aghanims_shard",
 	"item_boots_of_bearing",--
 	"item_ultimate_scepter",

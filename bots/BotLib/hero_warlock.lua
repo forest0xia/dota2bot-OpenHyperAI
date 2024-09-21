@@ -43,11 +43,11 @@ sRoleItemsBuyList['pos_4'] = {
 	"item_arcane_boots",
 	"item_magic_wand",
 	"item_glimmer_cape",--
+	"item_guardian_greaves",--
 	"item_aghanims_shard",
 	"item_force_staff",--
 	"item_ultimate_scepter",
 	"item_shivas_guard",--
-	"item_guardian_greaves",--
 	"item_refresher",--
 	"item_octarine_core",--
 	"item_ultimate_scepter_2",
@@ -63,6 +63,7 @@ sRoleItemsBuyList['pos_5'] = {
 	"item_tranquil_boots",
 	"item_magic_wand",
 	"item_glimmer_cape",--
+	"item_pipe",
 	"item_aghanims_shard",
 	"item_force_staff",--
 	"item_ultimate_scepter",

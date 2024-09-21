@@ -59,9 +59,9 @@ sRoleItemsBuyList['pos_3'] = {
     "item_magic_wand",
     "item_arcane_boots",
     "item_pavise",
+    "item_pipe",--
     "item_solar_crest",--
     "item_glimmer_cape",--
-    "item_pipe",--
     "item_ultimate_scepter",
     "item_aghanims_shard",
     "item_force_staff",

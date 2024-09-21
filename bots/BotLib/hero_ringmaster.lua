@@ -48,8 +48,8 @@ sRoleItemsBuyList['pos_5'] = {
 	'item_ancient_janggo',
 	'item_glimmer_cape',
 	'item_boots_of_bearing',
-	"item_rod_of_atos",
 	'item_pipe',
+	"item_rod_of_atos",
     "item_gungir",--
 	"item_shivas_guard",
 	'item_cyclone',

@@ -420,6 +420,9 @@ Item['sSellList'] = {
 
 	"item_vladmir",
 	"item_magic_wand",
+
+	"item_solar_crest",
+	"item_pavise",
 }
 
 local tCanNotSwitchItemList = {}

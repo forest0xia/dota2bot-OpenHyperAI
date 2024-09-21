@@ -35,9 +35,9 @@ sRoleItemsBuyList['pos_4'] = {
     "item_pavise",
     "item_force_staff",
     "item_pavise",
+	"item_guardian_greaves",--
     "item_solar_crest",--
     "item_glimmer_cape",--
-	"item_guardian_greaves",--
     "item_hurricane_pike",--
     "item_sheepstick",--
     "item_wind_waker",--
@@ -56,10 +56,10 @@ sRoleItemsBuyList['pos_5'] = {
     "item_magic_wand",
     "item_pavise",
     "item_force_staff",
+	"item_pipe",--
     "item_pavise",
     "item_solar_crest",--
     "item_glimmer_cape",--
-	"item_pipe",--
     "item_boots_of_bearing",--
     "item_hurricane_pike",--
     "item_sheepstick",--

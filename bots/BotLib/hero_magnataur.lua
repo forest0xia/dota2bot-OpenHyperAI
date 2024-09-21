@@ -22,7 +22,7 @@ local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
 
 local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 
-local sUtility = {"item_pipe", "item_lotus_orb", "item_heavens_halberd", "item_crimson_guard"}
+local sUtility = {"item_lotus_orb", "item_heavens_halberd"}
 local nUtility = sUtility[RandomInt(1, #sUtility)]
 
 local sRoleItemsBuyList = {}
@@ -37,6 +37,7 @@ sRoleItemsBuyList['pos_3'] = {
     "item_magic_wand",
     "item_power_treads",
     "item_blink",
+    "item_crimson_guard",
     "item_echo_sabre",
     "item_black_king_bar",--
     "item_harpoon",--
@@ -54,9 +55,41 @@ sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
 
 sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_3']
 
-sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_3']
+sRoleItemsBuyList['pos_4'] = {
+	'item_priest_outfit',
+	"item_hand_of_midas",
+	"item_mekansm",
+	"item_glimmer_cape",--
+	"item_guardian_greaves",--
+    "item_blink",
+    "item_echo_sabre",
+    "item_black_king_bar",--
+    "item_sheepstick",--
+    "item_aghanims_shard",
+    "item_travel_boots",
+    "item_arcane_blink",--
+    "item_travel_boots_2",--
+    "item_ultimate_scepter_2",
+    "item_moon_shard",
+}
 
-sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_3']
+sRoleItemsBuyList['pos_5'] = {
+	'item_priest_outfit',
+	"item_hand_of_midas",
+	"item_mekansm",
+	"item_glimmer_cape",--
+	"item_pipe",--
+    "item_blink",
+    "item_echo_sabre",
+    "item_black_king_bar",--
+    "item_sheepstick",--
+    "item_aghanims_shard",
+    "item_travel_boots",
+    "item_arcane_blink",--
+    "item_travel_boots_2",--
+    "item_ultimate_scepter_2",
+    "item_moon_shard",
+}
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 

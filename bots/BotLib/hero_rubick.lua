@@ -58,6 +58,7 @@ sRoleItemsBuyList['pos_5'] = {
     "item_boots",
     "item_magic_wand",
     "item_tranquil_boots",
+	'item_pipe',--
     "item_aether_lens",
     "item_blink",
     "item_ancient_janggo",
@@ -66,9 +67,9 @@ sRoleItemsBuyList['pos_5'] = {
     "item_boots_of_bearing",--
     "item_ultimate_scepter",
     "item_octarine_core",--
-    "item_cyclone",
+    -- "item_cyclone",
     "item_ethereal_blade",--
-    "item_wind_waker",--
+    -- "item_wind_waker",--
     "item_arcane_blink",--
     "item_ultimate_scepter_2",
     "item_moon_shard",

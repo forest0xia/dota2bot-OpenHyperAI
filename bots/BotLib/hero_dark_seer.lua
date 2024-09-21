@@ -24,10 +24,38 @@ local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 
 local sRoleItemsBuyList = {}
 
-local sUtility = {"item_crimson_guard", "item_pipe", "item_lotus_orb", "item_heavens_halberd"}
+local sUtility = {"item_crimson_guard", "item_lotus_orb", "item_heavens_halberd"}
 local nUtility = sUtility[RandomInt(1, #sUtility)]
 
 sRoleItemsBuyList['pos_3'] = {
+    "item_tango",
+    "item_double_branches",
+    "item_magic_stick",
+    "item_quelling_blade",
+    "item_enchanted_mango",
+
+    "item_magic_wand",
+    "item_arcane_boots",
+    "item_veil_of_discord",
+    "item_crimson_guard", --
+    "item_blink",
+    "item_ultimate_scepter",
+    "item_black_king_bar",--
+    "item_shivas_guard",--
+    "item_sheepstick",--
+    "item_arcane_blink",--
+    "item_travel_boots",
+    "item_moon_shard",
+    "item_travel_boots_2",
+    "item_ultimate_scepter_2",
+    "item_aghanims_shard",
+}
+
+sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
+
+sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_3']
+
+sRoleItemsBuyList['pos_4'] = {
     "item_tango",
     "item_double_branches",
     "item_magic_stick",
@@ -50,13 +78,28 @@ sRoleItemsBuyList['pos_3'] = {
     "item_moon_shard",
 }
 
-sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
+sRoleItemsBuyList['pos_5'] = {
+    "item_tango",
+    "item_double_branches",
+    "item_magic_stick",
+    "item_quelling_blade",
+    "item_enchanted_mango",
 
-sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_3']
-
-sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_3']
-
-sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_3']
+    "item_magic_wand",
+    "item_arcane_boots",
+    "item_veil_of_discord",
+    "item_pipe",--
+    "item_blink",
+    nUtility,--
+    "item_ultimate_scepter",
+    "item_black_king_bar",--
+    "item_shivas_guard",--
+    "item_sheepstick",--
+    "item_arcane_blink",--
+    "item_ultimate_scepter_2",
+    "item_aghanims_shard",
+    "item_moon_shard",
+}
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 

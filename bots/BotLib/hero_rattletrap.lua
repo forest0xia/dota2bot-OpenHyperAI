@@ -74,13 +74,14 @@ sRoleItemsBuyList['pos_5'] = {
     "item_magic_wand",
     "item_tranquil_boots",
     "item_urn_of_shadows",
+	"item_pipe",
     "item_force_staff",--
     "item_spirit_vessel",--
     sGlimmerSolarCrest,--
     "item_aghanims_shard",
     "item_boots_of_bearing",-- 
     "item_shivas_guard",--
-    "item_heavens_halberd",--
+    -- "item_heavens_halberd",--
     "item_ultimate_scepter",
     "item_ultimate_scepter_2",
     "item_moon_shard",

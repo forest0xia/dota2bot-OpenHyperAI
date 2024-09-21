@@ -36,14 +36,14 @@ sRoleItemsBuyList['pos_4'] = {
     "item_boots",
     "item_magic_wand",
     "item_arcane_boots",
-    "item_blink",
+    "item_guardian_greaves",--
+	"item_glimmer_cape",--
     "item_force_staff",
     "item_aether_lens",--
-    "item_guardian_greaves",--
     nUtility,--
     "item_aghanims_shard",
     "item_refresher",--
-    "item_arcane_blink",--
+    -- "item_arcane_blink",--
     "item_hurricane_pike",--
     "item_moon_shard",
     "item_ultimate_scepter_2",
@@ -58,14 +58,15 @@ sRoleItemsBuyList['pos_5'] = {
     "item_boots",
     "item_magic_wand",
     "item_tranquil_boots",
-    "item_blink",
+	"item_glimmer_cape",--
+    "item_pipe",
     "item_force_staff",
     "item_aether_lens",--
     "item_boots_of_bearing",--
     nUtility,--
     "item_aghanims_shard",
     "item_refresher",--
-    "item_arcane_blink",--
+    -- "item_arcane_blink",--
     "item_hurricane_pike",--
     "item_moon_shard",
     "item_ultimate_scepter_2",

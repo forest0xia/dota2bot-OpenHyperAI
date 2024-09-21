@@ -50,7 +50,6 @@ end
 
 local sRoleItemsBuyList = {}
 
-local sPipeHalberd = RandomInt( 1, 2 ) == 1 and "item_heavens_halberd" or "item_pipe"
 
 sRoleItemsBuyList['pos_2'] = {
 	"item_tango",
@@ -103,20 +102,40 @@ sRoleItemsBuyList['pos_4'] = {
 	"item_ring_of_basilius",
 	"item_arcane_boots",
 	"item_magic_wand",
-	"item_shivas_guard",--
 	"item_guardian_greaves",--
+	"item_shivas_guard",--
 	"item_cyclone",
 	"item_eternal_shroud",--
 	"item_black_king_bar",--
 	"item_aghanims_shard",
-	sPipeHalberd,--
+	"item_heavens_halberd", --
     "item_wind_waker",
 	"item_refresher",--
 	"item_moon_shard",
 	"item_ultimate_scepter_2",
 }
 
-sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_3']
+sRoleItemsBuyList['pos_5'] = {
+	"item_tango",
+	"item_double_branches",
+	"item_faerie_fire",
+	"item_circlet",
+
+	"item_boots",
+	"item_ring_of_basilius",
+	"item_arcane_boots",
+	"item_magic_wand",
+	"item_pipe",--
+	"item_shivas_guard",--
+	"item_cyclone",
+	"item_eternal_shroud",--
+	"item_black_king_bar",--
+	"item_aghanims_shard",
+    "item_wind_waker",
+	"item_refresher",--
+	"item_moon_shard",
+	"item_ultimate_scepter_2",
+}
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 

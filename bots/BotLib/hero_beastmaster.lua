@@ -59,9 +59,44 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_travel_boots_2",--
 }
 
-sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_3']
+sRoleItemsBuyList['pos_4'] = {
+	'item_priest_outfit',
+	"item_hand_of_midas",
+	"item_mekansm",
+	"item_glimmer_cape",
+	"item_aghanims_shard",
+	"item_guardian_greaves",
+    "item_blink",
+	"item_lotus_orb",
+	"item_gungir",--
+	"item_ultimate_scepter",
+	"item_sheepstick",
+	"item_mystic_staff",
+	"item_ultimate_scepter_2",
+	"item_shivas_guard",
+    "item_moon_shard",
+	"item_overwhelming_blink",--
+}
 
-sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_3']
+sRoleItemsBuyList['pos_5'] = {
+	'item_mage_outfit',
+	"item_hand_of_midas",
+	"item_glimmer_cape",
+
+    "item_pavise",
+	"item_pipe",--
+    "item_solar_crest",--
+	"item_lotus_orb",--
+	"item_aghanims_shard",
+    "item_blink",
+	"item_ultimate_scepter",
+	"item_shivas_guard",--
+	"item_mystic_staff",
+	"item_ultimate_scepter_2",
+    "item_moon_shard",
+	"item_sheepstick",--
+	"item_overwhelming_blink",--
+}
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 

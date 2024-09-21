@@ -95,8 +95,8 @@ sRoleItemsBuyList['pos_5'] = {
 	"item_orchid",
 	"item_glimmer_cape",--
     "item_pavise",
+	"item_pipe",
     "item_solar_crest",--
-	"item_pipe",--
 	"item_aghanims_shard",
     "item_shivas_guard",--
 	"item_sheepstick",--

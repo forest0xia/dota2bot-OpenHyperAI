@@ -135,7 +135,7 @@ function EntityKilled:GoldTracking()
 	local canClearRadiantTracking = false
 	local canClearDireTracking = false
 	local killerAwardAnnounce = KillerAwardAnnounce
-	print("player count" .. tostring(#AllHumanPlayers))
+	-- print("player count" .. tostring(#AllHumanPlayers))
 	for i, player in pairs(AllHumanPlayers) do
 		local teamKills = TeamKillsTrackingTable[player.stats.team]
 		local netWorth = player:GetGold() -- PlayerResource:GetNetWorth(player.stats.id)

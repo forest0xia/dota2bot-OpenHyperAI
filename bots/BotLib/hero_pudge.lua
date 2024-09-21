@@ -124,10 +124,10 @@ sRoleItemsBuyList['pos_5'] = {
 
     "item_arcane_boots",
     "item_magic_wand",
+    "item_pipe",--
     "item_blink",
     "item_aether_lens",--
     "item_force_staff",
-    "item_pipe",--
     "item_lotus_orb",--
 	"item_gungir",--
     "item_overwhelming_blink",--
