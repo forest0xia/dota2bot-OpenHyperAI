@@ -228,7 +228,7 @@ local function GeneralPurchase()
 				else
 					if GetItemStockCount(bot.currBuyingBasicItem ) < 1 then
 						-- out of stock, skip that item.
-						-- print( botName.." failed to purchase item - "..bot.currentComponentToBuy.." : out of stock.")
+						-- print( botName.." failed to purchase item - "..bot.currBuyingBasicItem.." : out of stock.")
 						ClearCurrBuyingBasicItemList()
 						bot.SecretShop = false
 					else
@@ -303,7 +303,7 @@ local function TurboModeGeneralPurchase()
 		else
 			if GetItemStockCount(bot.currBuyingBasicItem ) < 1 then
 				-- out of stock, skip that item.
-				-- print( botName.." failed to purchase item - "..bot.currentComponentToBuy.." : out of stock.")
+				-- print( botName.." failed to purchase item - "..bot.currBuyingBasicItem.." : out of stock.")
 				ClearCurrBuyingBasicItemList()
 			else
 				print( botName.." 未能购买物品 "..bot.currBuyingBasicItem.." : "..tostring( bot:ActionImmediate_PurchaseItem( bot.currBuyingBasicItem ) ) )

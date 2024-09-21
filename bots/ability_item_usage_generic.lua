@@ -430,7 +430,7 @@ local function CourierUsageComplement()
 		if bAliveBot
 			and ( not X.IsInvFull( bot )
 					or currentTime <= 5 * 60
-					or ( bot.currListItemToBuy ~= nil and #bot.currListItemToBuy == 0 and bot.currentItemToBuy ~= 'item_travel_boots' ) )
+					or ( bot.currBuyingBasicItemList ~= nil and #bot.currBuyingBasicItemList == 0 and bot.currBuyingItemInPurchaseList ~= 'item_travel_boots' ) )
 			and ( cState == COURIER_STATE_AT_BASE
 					or ( cState == COURIER_STATE_IDLE and npcCourier:DistanceFromFountain() < 800 ) )
 		then
@@ -438,11 +438,11 @@ local function CourierUsageComplement()
 			if nMSlot > 0
 			-- and Utils.CountBackpackEmptySpace(bot) >= 1
 			then
-				if ( bot.currListItemToBuy ~= nil and #bot.currListItemToBuy == 0 )
-					or ( bot.currentComponentToBuy ~= nil
-							and ( IsItemPurchasedFromSecretShop( bot.currentComponentToBuy )
+				if ( bot.currBuyingBasicItemList ~= nil and #bot.currBuyingBasicItemList == 0 )
+					or ( bot.currBuyingBasicItem ~= nil
+							and ( IsItemPurchasedFromSecretShop( bot.currBuyingBasicItem )
 									or X.GetNumStashItem( bot ) == 6
-									or bot:GetGold() + 80 < GetItemCost( bot.currentComponentToBuy ) ) )
+									or bot:GetGold() + 80 < GetItemCost( bot.currBuyingBasicItem ) ) )
 				then
 					J.SetReportMotive( bDebugCourier, "信使取出物品并开始运输" )
 					bot:ActionImmediate_Courier( npcCourier, COURIER_ACTION_TAKE_STASH_ITEMS )
@@ -467,7 +467,7 @@ local function CourierUsageComplement()
 		if bAliveBot
 			and bot:GetCourierValue() > 0
 			and bot:GetStashValue() < 100
-			and ( not X.IsInvFull( bot ) or ( X.GetNumStashItem( bot ) == 0 and bot.currListItemToBuy ~= nil and #bot.currListItemToBuy == 0 ) )
+			and ( not X.IsInvFull( bot ) or ( X.GetNumStashItem( bot ) == 0 and bot.currBuyingBasicItemList ~= nil and #bot.currBuyingBasicItemList == 0 ) )
 			and ( npcCourier:DistanceFromFountain() < 4000 + botLV * 200 or GetUnitToUnitDistance( bot, npcCourier ) < 1800 )
 			and currentTime > courierTime + useCourierCD
 			-- and Utils.CountBackpackEmptySpace(bot) >= 1
