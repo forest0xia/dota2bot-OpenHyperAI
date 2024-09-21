@@ -22,6 +22,7 @@ local KillerAwardAnnounce = Utilities:ColorString('Balance Killer Awards', "#DAA
 
 local goldTrackingTimer = "GoldTracking"
 local GoldTrackingTable = {}
+local IsGoldTrackingRunning = false
 local TeamKillsTrackingTable = {
 	[RADIANT] = 0,
 	[DIRE] = 0
@@ -102,14 +103,27 @@ function EntityKilled:GetEntityKilledEventData(event)
 		isHero = true;
 
 		if Settings.difficulty >= KillerAwardMinDifficulty then
-			-- 当击杀者是人类玩家时，给与击杀惩罚
-			-- if killer == nil or killer.stats == nil or killer.stats.isBot then return end
 			if victim:HasModifier("modifier_skeleton_king_reincarnation") or victim:HasModifier("modifier_aegis_regen") then
 				Debug:Print("Entity got killed, but not truly dead yet.")
 				return
 			end
-			if killer == nil or killer.stats == nil then return end
-			TeamKillsTrackingTable[killer.stats.team] = TeamKillsTrackingTable[killer.stats.team] + 1
+			if killer ~= nil and killer.stats ~= nil then
+				TeamKillsTrackingTable[killer.stats.team] = TeamKillsTrackingTable[killer.stats.team] + 1
+				-- 当击杀者是人类玩家时，给与击杀惩罚
+				if not IsGoldTrackingRunning and not killer.stats.isBot then
+					local goldPerLevel = -26
+					if Utilities:IsTurboMode() then
+						goldPerLevel = goldPerLevel * 1.5
+					end
+					local heroLevel = victim:GetLevel()
+					-- 基于基础惩罚，死亡单位的等级，和难度来确定惩罚额度
+					local goldBounty = math.floor(goldPerLevel * heroLevel/4 * (Settings.difficultyScale * 3) - math.random(1, 30))
+					-- 给予击杀者赏金
+					killer:ModifyGold(goldBounty, true, DOTA_ModifyGold_HeroKill)
+					local msg = 'Balance Killer Award to ' .. PlayerResource:GetPlayerName(killer:GetPlayerID())..' for the kill. Gold: ' .. goldBounty
+					Utilities:Print(msg, Utilities:GetPlayerColor(killer:GetPlayerID()))
+				end
+			end
 		end
 	end
 
@@ -117,6 +131,7 @@ function EntityKilled:GetEntityKilledEventData(event)
 end
 
 function EntityKilled:GoldTracking()
+	IsGoldTrackingRunning = true
 	local canClearRadiantTracking = false
 	local canClearDireTracking = false
 	local killerAwardAnnounce = KillerAwardAnnounce
