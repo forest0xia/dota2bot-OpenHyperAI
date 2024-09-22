@@ -11,6 +11,7 @@ require 'bots.FretBots.AwardBonus'
 require 'bots.FretBots.Settings'
 -- Game State Tracker
 require 'bots.FretBots.GameState'
+require 'bots.FretBots.modifiers.Modifier'
 
 -- local debug flag
 local thisDebug = false;
@@ -27,6 +28,8 @@ local TeamKillsTrackingTable = {
 	[RADIANT] = 0,
 	[DIRE] = 0
 }
+local TauntModifierTimers = {}
+local TauntTime = 4
 
 -- Instantiate ourself
 if EntityKilled == nil then
@@ -88,6 +91,23 @@ function EntityKilled:OnLevelUp(event)
 	end
 end
 
+function EntityKilled:TauntModifierTimer()
+	for k, v in pairs(TauntModifierTimers) do
+		if k and v then
+			if Utilities:GetTime() >= v.time + TauntTime
+			then
+				TauntModifierTimers[k] = nil
+				Modifier:RemoveHighFiveModifier(v.hero)
+			end
+			if v.hero:HasModifier("modifier_taunt") and Utilities:IsEnemyHeroNearby(v.hero, 1600)
+			then
+				unit:RemoveModifierByName("modifier_taunt")
+			end
+		end
+	end
+	return 1
+end
+
 -- returns useful data about the kill event
 function EntityKilled:GetEntityKilledEventData(event)
 	-- Victim
@@ -101,28 +121,31 @@ function EntityKilled:GetEntityKilledEventData(event)
 	local isHero = false;
 	if victim:IsHero() and victim:IsRealHero() and not victim:IsIllusion() and not victim:IsClone() then
 		isHero = true;
+		if killer == nil or killer.stats == nil then return end
+		if not victim.stats.isBot and (not TauntModifierTimers[killer.stats.name] or TauntModifierTimers[killer.stats.name].time < Utilities:GetTime() + TauntTime) then
+			TauntModifierTimers[killer.stats.name] = {time = Utilities:GetTime(), hero = killer}
+			Modifier:ApplyHighFiveModifier(killer)
+		end
 
 		if Settings.difficulty >= KillerAwardMinDifficulty then
 			if victim:HasModifier("modifier_skeleton_king_reincarnation") or victim:HasModifier("modifier_aegis_regen") then
 				Debug:Print("Entity got killed, but not truly dead yet.")
 				return
 			end
-			if killer ~= nil and killer.stats ~= nil then
-				TeamKillsTrackingTable[killer.stats.team] = TeamKillsTrackingTable[killer.stats.team] + 1
-				-- 当击杀者是人类玩家时，给与击杀惩罚
-				if not IsGoldTrackingRunning and not killer.stats.isBot then
-					local goldPerLevel = -26
-					if Utilities:IsTurboMode() then
-						goldPerLevel = goldPerLevel * 1.5
-					end
-					local heroLevel = victim:GetLevel()
-					-- 基于基础惩罚，死亡单位的等级，和难度来确定惩罚额度
-					local goldBounty = math.floor(goldPerLevel * heroLevel/4 * (Settings.difficultyScale * 3) - math.random(1, 30))
-					-- 给予击杀者赏金
-					killer:ModifyGold(goldBounty, true, DOTA_ModifyGold_HeroKill)
-					local msg = 'Balance Killer Award to ' .. PlayerResource:GetPlayerName(killer:GetPlayerID())..' for the kill. Gold: ' .. goldBounty
-					Utilities:Print(msg, Utilities:GetPlayerColor(killer:GetPlayerID()))
+			TeamKillsTrackingTable[killer.stats.team] = TeamKillsTrackingTable[killer.stats.team] + 1
+			-- 当击杀者是人类玩家时，给与击杀惩罚
+			if not IsGoldTrackingRunning and not killer.stats.isBot then
+				local goldPerLevel = -26
+				if Utilities:IsTurboMode() then
+					goldPerLevel = goldPerLevel * 1.5
 				end
+				local heroLevel = victim:GetLevel()
+				-- 基于基础惩罚，死亡单位的等级，和难度来确定惩罚额度
+				local goldBounty = math.floor(goldPerLevel * heroLevel/4 * (Settings.difficultyScale * 3) - math.random(1, 30))
+				-- 给予击杀者赏金
+				killer:ModifyGold(goldBounty, true, DOTA_ModifyGold_HeroKill)
+				local msg = 'Balance Killer Award to ' .. PlayerResource:GetPlayerName(killer:GetPlayerID())..' for the kill. Gold: ' .. goldBounty
+				Utilities:Print(msg, Utilities:GetPlayerColor(killer:GetPlayerID()))
 			end
 		end
 	end
@@ -181,6 +204,7 @@ function EntityKilled:RegisterEvents()
 
 		Debug:Print('Registering GoldTracking Timer.')
 		Timers:CreateTimer(goldTrackingTimer, {endTime = 1, callback = EntityKilled['GoldTracking']} )
+		Timers:CreateTimer("Taunt-Modifiers", {endTime = 1, callback = EntityKilled['TauntModifierTimer']} )
 
 		Flags.isEntityKilledRegistered = true;
 		if true then

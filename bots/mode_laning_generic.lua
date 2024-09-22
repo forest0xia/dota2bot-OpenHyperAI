@@ -37,6 +37,10 @@ function GetDesire()
 	end
 
 	local currentTime = DotaTime()
+	if GetGameMode() == 23 then
+		currentTime = currentTime * 1.65
+	end
+
 	local botLV = bot:GetLevel()
 
 	if currentTime <= 10

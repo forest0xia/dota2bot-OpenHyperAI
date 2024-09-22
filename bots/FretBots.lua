@@ -1,3 +1,5 @@
+LinkLuaModifier("modifier_fret_damage_increase", "FretBots/modifiers/modifier_seasonal_party_hat.lua", LUA_MODIFIER_MOTION_NONE)
+
 -- Version information
 local Version = require 'bots.FunLib.version'
 -- Print version to console
@@ -29,6 +31,7 @@ require 'bots.FretBots.HeroLoneDruid'
 require 'bots.FretBots.RoleDetermination'
 -- Neutral items
 require 'bots.FretBots.NeutralItems'
+require 'bots.FretBots.modifiers.Modifier'
 
 -- Instantiate ourself
 if FretBots == nil then
@@ -86,6 +89,7 @@ function FretBots:PlayersLoadedTimer()
 		EntityHurt:RegisterEvents()
 		-- Register EntityKilled Listener
 		EntityKilled:RegisterEvents()
+		Modifier:Initialize()
 		-- Hero Specific extensions - these will stop themselves if they
 		-- determine that they are not enabled
 		-- Disabled until this works

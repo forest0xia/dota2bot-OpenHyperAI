@@ -666,3 +666,30 @@ function GameStateListener:Register(o, initializer, initState)
 	ListenToGameEvent('game_rules_state_change', Dynamic_Wrap(self, 'Listen'), self)
 end
 
+function Utilities:IsEnemyHeroNearby(unit, searchRadius)
+    -- Get the team number of the unit
+    local unitTeam = unit:GetTeamNumber()
+
+    -- Get the position of the unit
+    local unitPosition = unit:GetAbsOrigin()
+
+    -- Search for enemy heroes in the radius
+    local enemyHeroes = FindUnitsInRadius(
+        unitTeam,                          -- The team of the unit performing the search
+        unitPosition,                      -- The center of the search
+        nil,                               -- CacheUnit (not used here)
+        searchRadius,                      -- Radius of the search
+        DOTA_UNIT_TARGET_TEAM_ENEMY,       -- Search for enemy units
+        DOTA_UNIT_TARGET_HERO,             -- Only consider heroes
+        DOTA_UNIT_TARGET_FLAG_NONE,        -- No special flags
+        FIND_ANY_ORDER,                    -- No particular order
+        false                              -- Don't cache
+    )
+
+    -- Check if any enemy heroes were found
+    if #enemyHeroes > 0 then
+        return true  -- There is at least one enemy hero nearby
+    else
+        return false -- No enemy heroes nearby
+    end
+end
