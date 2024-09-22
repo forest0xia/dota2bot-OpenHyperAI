@@ -99,10 +99,10 @@ function EntityKilled:TauntModifierTimer()
 				TauntModifierTimers[k] = nil
 				Modifier:RemoveHighFiveModifier(v.hero)
 			end
-			if v.hero:HasModifier("modifier_taunt") and Utilities:IsEnemyHeroNearby(v.hero, 1600)
-			then
-				unit:RemoveModifierByName("modifier_taunt")
-			end
+			-- if v.hero:HasModifier("modifier_taunt") and Utilities:IsEnemyHeroNearby(v.hero, 1600)
+			-- then
+			-- 	v.hero:RemoveModifierByName("modifier_taunt")
+			-- end
 		end
 	end
 	return 1
@@ -162,7 +162,7 @@ function EntityKilled:GoldTracking()
 	for i, player in pairs(AllHumanPlayers) do
 		local teamKills = TeamKillsTrackingTable[player.stats.team]
 		local netWorth = player:GetGold() -- PlayerResource:GetNetWorth(player.stats.id)
-		Debug:Print('GoldTracking. Player: '.. player.stats.name .. ', netWorth: ' .. netWorth)
+		-- Debug:Print('GoldTracking. Player: '.. player.stats.name .. ', netWorth: ' .. netWorth)
 		local oldNetworth = GoldTrackingTable[player.stats.name] or netWorth
 		local netWorthDiff = netWorth - oldNetworth
 		Debug:Print('GoldTracking. Player: '.. player.stats.name .. ', netWorth diff vs previous: ' .. netWorthDiff .. ', team kills: ' .. teamKills .. ', difficulty: ' .. Settings.difficulty)
@@ -202,9 +202,10 @@ function EntityKilled:RegisterEvents()
 		ListenToGameEvent("dota_combatlog", Dynamic_Wrap(EntityKilled, 'OnCombatlog'), EntityKilled)
 		ListenToGameEvent("dota_player_gained_level", Dynamic_Wrap(EntityKilled, 'OnLevelUp'), EntityKilled)
 
-		Debug:Print('Registering GoldTracking Timer.')
 		Timers:CreateTimer(goldTrackingTimer, {endTime = 1, callback = EntityKilled['GoldTracking']} )
+		Debug:Print('Registered Gold Tracking Timer.')
 		Timers:CreateTimer("Taunt-Modifiers", {endTime = 1, callback = EntityKilled['TauntModifierTimer']} )
+		Debug:Print('Registered Taunt Modifiers Timer.')
 
 		Flags.isEntityKilledRegistered = true;
 		if true then

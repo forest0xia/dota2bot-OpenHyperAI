@@ -37,10 +37,10 @@ function Modifier:ApplyHighFiveModifier(unit)
             unit:AddNewModifier(unit, nil, "modifier_plus_high_five_requested", {})
             Debug:Print('Added modifier_plus_high_five_requested to:'..unit.stats.name)
         end
-        if not unit:HasModifier("modifier_taunt") and not Utilities:IsEnemyHeroNearby(unit, 1600) then
-            unit:AddNewModifier(unit, nil, "modifier_taunt", {})
-            Debug:Print('Added modifier_taunt to:'..unit.stats.name)
-        end
+        -- if not unit:HasModifier("modifier_taunt") and not Utilities:IsEnemyHeroNearby(unit, 1600) then
+        --     unit:AddNewModifier(unit, nil, "modifier_taunt", {})
+        --     Debug:Print('Added modifier_taunt to:'..unit.stats.name)
+        -- end
     end
 end
 

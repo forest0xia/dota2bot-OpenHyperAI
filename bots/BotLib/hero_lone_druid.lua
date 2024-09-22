@@ -103,7 +103,7 @@ X['sSellList'] = {
 }
 
 if Utils.GetLoneDruid(bot).roleType == nil then
-    if RandomInt(1, 5) >= 2 then
+    if RandomInt(1, 5) >= 0 then -- always with bear, for now.
         Utils.GetLoneDruid(bot).roleType = 'pos_1_w_bear'
     else
         Utils.GetLoneDruid(bot).roleType = 'pos_1'

@@ -302,7 +302,7 @@ function Utilities:RemapValClamped(value, inMin, inMax, outMin, outMax)
     local proportion = (value - inMin) / (inMax - inMin)
 
     -- Clamp the proportion between 0 and 1
-    local clampedProportion = clamp(proportion, 0, 1)
+    local clampedProportion = Utilities:Clamp(proportion, 0, 1)
 
     -- Map the clamped proportion to the output range
     local remappedValue = outMin + clampedProportion * (outMax - outMin)
