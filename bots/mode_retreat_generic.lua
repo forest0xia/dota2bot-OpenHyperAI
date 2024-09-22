@@ -22,7 +22,7 @@ function GetDesire()
 	or bot:HasModifier('modifier_skeleton_king_reincarnation_scepter_active')
 	or bot:HasModifier('modifier_item_satanic_unholy')
 	or bot:HasModifier('modifier_abaddon_borrowed_time')
-	or J.GetModifierTime(bot, "modifier_muerta_pierce_the_veil") > 0.5
+	or J.GetModifierTime(bot, "modifier_muerta_pierce_the_veil_buff") > 0.5
 	or (J.GetModifierTime(bot, 'modifier_dazzle_shallow_grave') > 0.5 and J.GetHP(bot) > 0.2)
 	or J.GetModifierTime(bot, 'modifier_oracle_false_promise_timer') > 0.5
 	or (bot:GetCurrentMovementSpeed() < 240 and not bot:HasModifier("modifier_arc_warden_spark_wraith_purge"))

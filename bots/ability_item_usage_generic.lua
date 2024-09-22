@@ -345,16 +345,17 @@ local function BuybackUsageComplement()
 end
 
 
-local courierTime = -90
-local cState = -1
+local nCourierLastActionTime = -90
+local nCourierState = -1
 bot.SShopUser = false
-local nReturnTime = -90
+local nCourierReturnTime = -90
+local nCourierDeliverTime = -90
 local function CourierUsageComplement()
 
 	if GetGameMode() == 23
 		or DotaTime() < -56
 		or bot:HasModifier( "modifier_arc_warden_tempest_double" )
-		or nReturnTime + 5.0 > DotaTime()
+		or nCourierReturnTime + 5.0 > DotaTime()
 	then
 		return
 	end
@@ -368,7 +369,7 @@ local function CourierUsageComplement()
 	--------* * * * * * * ----------------* * * * * * * ----------------* * * * * * * --------
 	local bDebugCourier = ( 1 == 10 )
 	local npcCourier = bot.theCourier
-	cState = GetCourierState( npcCourier )
+	nCourierState = GetCourierState( npcCourier )
 	local courierHP = npcCourier:GetHealth() / npcCourier:GetMaxHealth()
 	local currentTime = DotaTime()
 	local bAliveBot = bot:IsAlive()
@@ -377,13 +378,13 @@ local function CourierUsageComplement()
 	local protectCourierCD = 5.0
 	--------* * * * * * * ----------------* * * * * * * ----------------* * * * * * * --------
 
-	if cState == COURIER_STATE_DEAD then return	end
+	if nCourierState == COURIER_STATE_DEAD then return	end
 
 	if X.IsCourierTargetedByUnit( npcCourier )
 	then
-		if currentTime > nReturnTime + protectCourierCD
+		if currentTime > nCourierReturnTime + protectCourierCD
 		then
-			nReturnTime = currentTime
+			nCourierReturnTime = currentTime
 
 			J.SetReportMotive( bDebugCourier, "信使可能会被攻击" )
 
@@ -399,7 +400,6 @@ local function CourierUsageComplement()
 		end
 	end
 
-
 	if bot.SShopUser
 		and ( not bAliveBot or bot:GetActiveMode() == BOT_MODE_SECRET_SHOP or not bot.SecretShop )
 	then
@@ -410,16 +410,16 @@ local function CourierUsageComplement()
 	end
 
 
-	if ( cState == COURIER_STATE_RETURNING_TO_BASE
-		or cState == COURIER_STATE_AT_BASE
-		or cState == COURIER_STATE_IDLE )
-		and currentTime > nReturnTime + protectCourierCD
+	if ( nCourierState == COURIER_STATE_RETURNING_TO_BASE
+		or nCourierState == COURIER_STATE_AT_BASE
+		or nCourierState == COURIER_STATE_IDLE )
+		and currentTime > nCourierReturnTime + protectCourierCD
 	then
 
-		if cState == COURIER_STATE_AT_BASE and courierHP < 0.8 
+		if nCourierState == COURIER_STATE_AT_BASE and courierHP < 0.8 
 		then return	end
 
-		if cState == COURIER_STATE_IDLE and npcCourier:DistanceFromFountain() > 800
+		if nCourierState == COURIER_STATE_IDLE and npcCourier:DistanceFromFountain() > 800
 		then
 			J.SetReportMotive( bDebugCourier, "让空闲的信使返回" )
 			bot:ActionImmediate_Courier( npcCourier, COURIER_ACTION_RETURN_STASH_ITEMS )
@@ -430,8 +430,8 @@ local function CourierUsageComplement()
 			and ( not X.IsInvFull( bot )
 					or currentTime <= 5 * 60
 					or ( bot.currBuyingBasicItemList ~= nil and #bot.currBuyingBasicItemList == 0 and bot.currBuyingItemInPurchaseList ~= 'item_travel_boots' ) )
-			and ( cState == COURIER_STATE_AT_BASE
-					or ( cState == COURIER_STATE_IDLE and npcCourier:DistanceFromFountain() < 800 ) )
+			and ( nCourierState == COURIER_STATE_AT_BASE
+					or ( nCourierState == COURIER_STATE_IDLE and npcCourier:DistanceFromFountain() < 800 ) )
 		then
 			local nMSlot = X.GetNumStashItem( bot )
 			if nMSlot > 0
@@ -445,7 +445,18 @@ local function CourierUsageComplement()
 				then
 					J.SetReportMotive( bDebugCourier, "信使取出物品并开始运输" )
 					bot:ActionImmediate_Courier( npcCourier, COURIER_ACTION_TAKE_STASH_ITEMS )
-					courierTime = currentTime
+					nCourierLastActionTime = currentTime
+
+					if currentTime > nCourierDeliverTime + protectCourierCD
+					then
+						nCourierDeliverTime = currentTime
+						local abilityBurst = npcCourier:GetAbilityByName( 'courier_burst' )
+						if botLV >= 10 and abilityBurst:IsFullyCastable()
+						then
+							J.SetReportMotive( bDebugCourier, "信使加速配送" )
+							bot:ActionImmediate_Courier( npcCourier, COURIER_ACTION_BURST )
+						end
+					end
 				end
 			end
 		end
@@ -454,12 +465,12 @@ local function CourierUsageComplement()
 			and npcCourier:DistanceFromFountain() < 7000
 			and J.Item.GetEmptyInventoryAmount( npcCourier ) >= 2
 			and not X.IsEnemyHeroAroundSecretShop() -- 商店附近没有敌人
-			and currentTime > courierTime + useCourierCD
+			and currentTime > nCourierLastActionTime + useCourierCD
 		then
 			J.SetReportMotive( bDebugCourier, "信使前往神秘商店购物" )
 			bot:ActionImmediate_Courier( npcCourier, COURIER_ACTION_SECRET_SHOP )
 			bot.SShopUser = true
-			courierTime = currentTime
+			nCourierLastActionTime = currentTime
 			return
 		end
 
@@ -468,12 +479,12 @@ local function CourierUsageComplement()
 			and bot:GetStashValue() < 100
 			and ( not X.IsInvFull( bot ) or ( X.GetNumStashItem( bot ) == 0 and bot.currBuyingBasicItemList ~= nil and #bot.currBuyingBasicItemList == 0 ) )
 			and ( npcCourier:DistanceFromFountain() < 4000 + botLV * 200 or GetUnitToUnitDistance( bot, npcCourier ) < 1800 )
-			and currentTime > courierTime + useCourierCD
+			and currentTime > nCourierLastActionTime + useCourierCD
 			-- and Utils.CountBackpackEmptySpace(bot) >= 1
 		then
 			J.SetReportMotive( bDebugCourier, "信使运输背包中的东西" )
 			bot:ActionImmediate_Courier( npcCourier, COURIER_ACTION_TRANSFER_ITEMS )
-			courierTime = currentTime
+			nCourierLastActionTime = currentTime
 			return
 		end
 

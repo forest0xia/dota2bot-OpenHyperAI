@@ -43,7 +43,7 @@ function X.GetDesire()
 	attackSpeed = bot:GetAttackSpeed()
 	timeToAttack = attackPoint -- / attackSpeed
 
-	if J.GetModifierTime(bot, "modifier_muerta_pierce_the_veil") > 0.5
+	if J.GetModifierTime(bot, "modifier_muerta_pierce_the_veil_buff") > 0.5
 	then
 		return BOT_MODE_DESIRE_VERYHIGH
 	end

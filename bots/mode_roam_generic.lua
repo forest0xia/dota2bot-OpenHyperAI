@@ -36,9 +36,11 @@ local arriveRoamLocTime = 0
 local roamTimeAfterArrival = 0.55 * 60 -- stay to roam after arriving the location
 local roamGapTime = 3 * 60 -- don't roam again within this duration after roaming once.
 local nInRangeEnemy
+local trySeduce = false
 
 function GetDesire()
 
+	trySeduce = false
 	TPScroll = J.GetItem2(bot, 'item_tpscroll')
 
 	nInRangeEnemy = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
@@ -349,7 +351,20 @@ function ThinkIndividualRoaming()
 	-- Marci
 	if bot:HasModifier("modifier_marci_unleash") then
 		local botTarget = J.GetProperTarget(bot)
-		if GetUnitToUnitDistance(bot, botTarget) > bot:GetAttackRange()
+		if botTarget and GetUnitToUnitDistance(bot, botTarget) > bot:GetAttackRange()
+		then
+			bot:Action_MoveToLocation(botTarget:GetLocation())
+			return
+		else
+			bot:Action_AttackUnit(botTarget, false)
+			return
+		end
+	end
+
+	if bot:HasModifier("modifier_muerta_pierce_the_veil_buff")
+	then
+		local botTarget = J.GetProperTarget(bot)
+		if botTarget and GetUnitToUnitDistance(bot, botTarget) > bot:GetAttackRange()
 		then
 			bot:Action_MoveToLocation(botTarget:GetLocation())
 			return
@@ -363,7 +378,7 @@ function ThinkIndividualRoaming()
 	if bot:HasModifier("modifier_leshrac_pulse_nova")
 	then
 		local botTarget = J.GetProperTarget(bot)
-		if GetUnitToUnitDistance(bot, botTarget) > 400
+		if botTarget and GetUnitToUnitDistance(bot, botTarget) > 400
 		then
 			bot:Action_MoveToLocation(botTarget:GetLocation())
 			return
@@ -502,6 +517,18 @@ function ThinkGeneralRoaming()
 
 	if bot:HasModifier("modifier_viper_poison_attack_slow") then
 		bot:Action_MoveToLocation(J.GetTeamFountain())
+		return
+	end
+
+	if trySeduce then
+		local allyTowers = bot:GetNearbyTowers(1600, false)
+		local distanceFromFountain = bot:DistanceFromFountain()
+		local distanceToCloestTower = GetUnitToUnitDistance(bot, allyTowers[1])
+		if distanceToCloestTower > 300 and distanceFromFountain > distanceToCloestTower then
+			bot:Action_MoveToLocation(allyTowers[1]:GetLocation())
+		else
+			bot:Action_MoveToLocation(J.GetTeamFountain())
+		end
 		return
 	end
 end
@@ -845,6 +872,17 @@ function ConsiderGeneralRoamingInConditions()
 			end
 		end
 
+		-- 尝试勾引
+		if #nInRangeEnemy >=1 and J.Utils.IsValidHero(nInRangeEnemy[1]) then
+			local cloestEnemy = nInRangeEnemy[1]
+			if cloestEnemy:IsFacingLocation(bot:GetLocation(), 8)
+			and J.IsInRange(bot, cloestEnemy, cloestEnemy:GetAttackRange())
+			and J.GetHP(cloestEnemy) >= J.GetHP(bot)
+			then
+				trySeduce = true
+				return BOT_ACTION_DESIRE_ABSOLUTE
+			end
+		end
 	end
 end
 
@@ -1134,6 +1172,22 @@ ConsiderHeroSpecificRoaming['npc_dota_hero_pudge'] = function ()
 		local botTarget = J.GetProperTarget(bot)
 		if botTarget ~= nil and J.GetHP(bot) > J.GetHP(botTarget) then
 			return BOT_MODE_DESIRE_ABSOLUTE * 0.85
+		end
+	end
+	return BOT_MODE_DESIRE_NONE
+end
+
+ConsiderHeroSpecificRoaming['npc_dota_hero_muerta'] = function ()
+	if bot:HasModifier("modifier_muerta_pierce_the_veil_buff")
+	then
+		local botTarget = J.GetProperTarget(bot)
+		if botTarget ~= nil and J.GetHP(bot) > 0.2 then
+			if J.IsInTeamFight(bot, 1500) then
+				return BOT_MODE_DESIRE_VERYHIGH
+			end
+			if J.IsGoingOnSomeone(bot) and #nInRangeEnemy >= 1 then
+				return BOT_MODE_DESIRE_ABSOLUTE
+			end
 		end
 	end
 	return BOT_MODE_DESIRE_NONE

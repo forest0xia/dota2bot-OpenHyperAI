@@ -30,6 +30,12 @@ local TeamKillsTrackingTable = {
 }
 local TauntModifierTimers = {}
 local TauntTime = 4
+local CheatGoldThreshold = 900
+local GoldPenaltyNetworthDiffThreshold = 200
+local GoldPenaltyPercentageMax = 0.85
+local GoldPenaltyAmountMax = -5000
+local GoldPenaltyAmountMin = -50
+local GoldPenaltyDiffRatioMultipler = 1.25
 
 -- Instantiate ourself
 if EntityKilled == nil then
@@ -167,13 +173,13 @@ function EntityKilled:GoldTracking()
 		local netWorthDiff = netWorth - oldNetworth
 		Debug:Print('GoldTracking. Player: '.. player.stats.name .. ', netWorth diff vs previous: ' .. netWorthDiff .. ', team kills: ' .. teamKills .. ', difficulty: ' .. Settings.difficulty)
 
-		if netWorthDiff > 200 then
+		if netWorthDiff > GoldPenaltyNetworthDiffThreshold then
 			if Settings.difficulty >= KillerAwardMinDifficulty
 			and teamKills >= 1  -- 因为timer有执行间隔，同时击杀太多的话可能会有一些 edge cases 导致漏算或者多算人头，但是以后再改吧
 			then
 				local diffRatio = Utilities:Clamp(Settings.difficulty / math.min(10, Settings.difficultyMax), 0, 1)
-				local netWorthDiffAfterReduction = netWorthDiff * (1 - Utilities:RemapValClamped(diffRatio * 1.2, 0, 1, 0, 0.8))
-				local goldToReduce = Utilities:Clamp(math.floor(netWorthDiffAfterReduction - netWorthDiff), -5000, -50)
+				local netWorthDiffAfterReduction = netWorthDiff * (1 - Utilities:RemapValClamped(diffRatio * GoldPenaltyDiffRatioMultipler, 0, 1, 0, GoldPenaltyPercentageMax))
+				local goldToReduce = Utilities:Clamp(math.floor(netWorthDiffAfterReduction - netWorthDiff), GoldPenaltyAmountMax, GoldPenaltyAmountMin)
 				Debug:Print('GoldTracking. Player: '.. player.stats.name .. ', team: ' .. player.stats.team .. ', gold to reduce: ' .. goldToReduce)
 
 				player.stats.pColor = player.stats.pColor or Utilities:GetPlayerColor(player.stats.id)
@@ -182,7 +188,7 @@ function EntityKilled:GoldTracking()
 				player:ModifyGold(goldToReduce, true, DOTA_ModifyGold_HeroKill)
 				if player.stats.team == RADIANT then canClearRadiantTracking = true end
 				if player.stats.team == DIRE then canClearDireTracking = true end
-			elseif teamKills == 0 and netWorthDiff > 900 and not Settings.allowPlayersToCheat then
+			elseif teamKills == 0 and netWorthDiff > CheatGoldThreshold and not Settings.allowPlayersToCheat then
 				local goldToReduce = -math.floor(netWorthDiff)
 				Debug:Print('GoldTracking. Player: '.. player.stats.name .. ' received gold without a kill. gold to reduce: ' .. goldToReduce)
 				player:ModifyGold(goldToReduce, true, DOTA_ModifyGold_HeroKill)

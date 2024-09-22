@@ -363,37 +363,6 @@ local AvailableRoles = {
 }
 function FillLAHumanCaptain()
 	local sTeamName = GetTeam() == TEAM_RADIANT and 'TEAM_RADIANT' or 'TEAM_DIRE'
-	-- local TeamMember = GetTeamPlayers(GetTeam());
-	-- for i = 1, #TeamMember do
-	-- 	local unit = GetTeamMember(i)
-	-- 	if unit ~= nil and unit:IsHero() then
-	-- 		local unit_name = unit:GetUnitName();
-	-- 		for _, sRole in pairs(AvailableRoles[sTeamName]) do
-	-- 			if sRole == "carry" and role.CanBeSafeLaneCarry(unit_name) then
-	-- 				PairsHeroNameNRole[sTeamName][unit_name] = sRole
-	-- 			elseif sRole == "midlaner" and role.CanBeMidlaner(unit_name) then
-	-- 				PairsHeroNameNRole[sTeamName][unit_name] = sRole
-	-- 			elseif sRole == "offlaner" and role.CanBeOfflaner(unit_name) then
-	-- 				PairsHeroNameNRole[sTeamName][unit_name] = sRole
-	-- 			elseif sRole == "support1" and role.CanBeSupport(unit_name) then
-	-- 				PairsHeroNameNRole[sTeamName][unit_name] = "support"
-	-- 			elseif sRole == "support2" and role.CanBeSupport(unit_name) then
-	-- 				PairsHeroNameNRole[sTeamName][unit_name] = "support"
-	-- 			else
-	-- 				print('[WARN] Does not find a suitable role for: '..unit_name..', target role: '..sRole..', assigning role directrly. Remaining roles:')
-	-- 				Utils.PrintTable(AvailableRoles[sTeamName])
-	-- 				-- TODO: optimize the coding style.
-	-- 				if sRole == "support1" or sRole == "support2" then
-	-- 					PairsHeroNameNRole[sTeamName][unit_name] = "support"
-	-- 				else
-	-- 					PairsHeroNameNRole[sTeamName][unit_name] = sRole
-	-- 				end
-	-- 			end
-	-- 			Utils.RemoveValueFromTable(AvailableRoles[sTeamName], sRole)
-	-- 		end
-	-- 	end
-	-- end
-
 	local TeamMember = GetTeamPlayers(GetTeam());
 	for i = 1, #TeamMember do
 		if GetTeamMember(i) ~= nil and GetTeamMember(i):IsHero() then

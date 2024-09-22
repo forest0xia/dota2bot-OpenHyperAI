@@ -31,11 +31,12 @@ Customize.Ban = {
 Customize.Radiant_Heros = {
     'Random',
     'Random',
+    'npc_dota_hero_elder_titan',
 }
 
 -- Same notes as for Radiant_Heros above
 Customize.Dire_Heros = {
-    'Random',
+    'npc_dota_hero_elder_titan',
 }
 
 -- Set whether or not allowing bots to pick same/repeated heroes. 

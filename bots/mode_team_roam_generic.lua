@@ -1922,7 +1922,7 @@ function X.ShouldNotRetreat(bot)
 	
 	if ( botName == "npc_dota_hero_medusa" 
 	     or bot:FindItemSlot("item_abyssal_blade") >= 0 )
-		 or (botName == "npc_dota_hero_muerta" and bot:HasModifier('modifier_muerta_pierce_the_veil'))
+		 or bot:HasModifier('modifier_muerta_pierce_the_veil_buff')
 		 and (bot:WasRecentlyDamagedByAnyHero(1) or J.GetHP(bot) > 0.2 or bot:WasRecentlyDamagedByTower(1))
 		and #nAllies >= 3 and #nAttackAlly >= 1
 	then

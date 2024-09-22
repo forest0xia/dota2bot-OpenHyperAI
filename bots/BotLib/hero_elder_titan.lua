@@ -227,6 +227,7 @@ end
 function ConsiderMoveAstralSpirit()
     if not MoveAstralSpirit:IsFullyCastable() then return BOT_ACTION_DESIRE_NONE end
     if not SpiritShouldBeAvailable() then return BOT_ACTION_DESIRE_NONE end
+    if bot.theAstralSpirit == nil then return BOT_ACTION_DESIRE_NONE end
 
     if targetTouchUnits == nil then
         local enemyCreeps = bot:GetNearbyCreeps(1600, true);

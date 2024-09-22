@@ -1,4 +1,4 @@
-require( GetScriptDirectory()..'/FunLib/utils' )
+local Utils = require( GetScriptDirectory()..'/FunLib/utils' )
 
 local bot = GetBot()
 local botName = bot:GetUnitName()
@@ -11,12 +11,6 @@ then
 	return
 end
 
-local function IsValidUnit(unit)
-	return unit ~= nil
-	   and not unit:IsNull()
-	   and unit:IsAlive()
-end
-
 local BotBuild = dofile(GetScriptDirectory() .. "/BotLib/" .. string.gsub(botName, "npc_dota_", ""));
 
 if BotBuild == nil
@@ -26,6 +20,6 @@ then
 end
 
 function MinionThink(hMinionUnit)
-	if not IsValidUnit(hMinionUnit) then return end
+	if not Utils.IsValidUnit(hMinionUnit) then return end
 	BotBuild.MinionThink(hMinionUnit)
 end

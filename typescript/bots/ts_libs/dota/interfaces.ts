@@ -55,6 +55,8 @@ export interface Unit {
 
     IsHero(): boolean;
 
+    IsInvulnerable(): boolean;
+
     IsBot(): boolean;
 
     IsIllusion(): boolean;

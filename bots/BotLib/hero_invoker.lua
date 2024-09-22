@@ -162,7 +162,7 @@ function X.MinionThink(hMinionUnit)
         -- todo: 小心巫妖大，或者卡自己位
         if J.IsLaning(bot) or J.IsFarming(bot) then
             if GetUnitToUnitDistance(hMinionUnit, bot) > 500 then
-                hMinionUnit:Action_MoveToLocation(bot:GetLocation() + RandomVector(220))
+                hMinionUnit:Action_AttackMove(bot:GetLocation() + RandomVector(220))
             end
         end
     else
@@ -1411,27 +1411,29 @@ function X.ConsiderSunstrike()
     local nCastPoint = 0 -- Sunstrike:GetCastPoint()
     local nDamage = Sunstrike:GetSpecialValueInt('damage')
 
-    local nEnemyHeroes = GetUnitList(UNIT_LIST_ENEMY_HEROES)
-    for _, enemyHero in pairs(nEnemyHeroes)
+    local nAllEnemyHeroes = GetUnitList(UNIT_LIST_ENEMY_HEROES)
+    for _, enemyHero in pairs(nAllEnemyHeroes)
     do
         if J.IsValidHero(enemyHero) and not J.IsSuspiciousIllusion(enemyHero) then
+            -- 杀掉残血
+            if J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_PURE) then
+                -- 残血tp
+                if enemyHero:HasModifier( 'modifier_teleporting' ) then
+                    local remaining = J.GetModifierTime(enemyHero, 'modifier_teleporting')
+                    if remaining ~= nil and remaining > nDelay + 0.05
+                    then
+                        return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation()
+                    else
+                        -- tp 马上完成，则天火对方泉水
+                        return BOT_ACTION_DESIRE_HIGH, Utils.GetEnemyFountainTpPoint()
+                    end
+                end
+                -- 预判杀掉逃跑
+                return BOT_ACTION_DESIRE_HIGH, J.GetCorrectLoc(enemyHero, nDelay + nCastPoint)
+            end
+
             -- 敌人可能可以被天火击杀
             if J.CanKillTarget(enemyHero, nDamage * 2, DAMAGE_TYPE_PURE) then
-                if J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_PURE) then
-                    -- 杀掉残血tp
-                    if enemyHero:HasModifier( 'modifier_teleporting' ) then
-                        local remaining = J.GetModifierTime(enemyHero, 'modifier_teleporting')
-                        if remaining ~= nil and remaining > nDelay + 0.05
-                        then
-                            return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation()
-                        else
-                            -- tp 马上完成，则天火对方泉水
-                            return BOT_ACTION_DESIRE_HIGH, Utils.GetEnemyFountainTpPoint()
-                        end
-                    end
-                    return BOT_ACTION_DESIRE_HIGH, J.GetCorrectLoc(enemyHero, nDelay + nCastPoint)
-                end
-
                 -- if our allys are near by the target, assuming allys will deal with enough dmg within the delay of sunstrike
                 if J.GetNearbyHeroes(enemyHero, 500, true) >= 2
                 then
@@ -1442,11 +1444,11 @@ function X.ConsiderSunstrike()
                 if X.CheckTempModifiers(TempNonMovableModifierNames, enemyHero, (nDelay + nCastPoint)) > 0 then
                     return BOT_ACTION_DESIRE_HIGH, J.GetCorrectLoc(enemyHero, nDelay + nCastPoint)
                 end
-            end
 
-            -- 敌人被长时间大招控制
-            if X.IsUnderLongDurationStun(enemyHero) then
-                return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation()
+                -- 敌人被长时间大招控制
+                if X.IsUnderLongDurationStun(enemyHero) then
+                    return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation()
+                end
             end
         end
     end
@@ -1589,6 +1591,7 @@ function X.ConsiderIceWall()
         and not J.IsSuspiciousIllusion(nEnemyHeroes[1])
         and not J.IsDisabled(nEnemyHeroes[1])
         and J.GetHP(bot) < 0.7
+        and bot:WasRecentlyDamagedByAnyHero(1)
 		then
             return BOT_ACTION_DESIRE_HIGH
 		end
