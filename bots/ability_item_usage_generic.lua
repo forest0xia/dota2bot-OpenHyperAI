@@ -283,7 +283,6 @@ end
 
 local function BuybackUsageComplement()
 	if J.IsMeepoClone(bot) then return end
-	if bot:IsAlive() then return end
 
 	X.SetTalkMessage()
 
@@ -329,7 +328,7 @@ local function BuybackUsageComplement()
 		return
 	end
 
-	local ancient = GetAncient( team )
+	local ancient = GetAncient( GetTeam() )
 
 	if ancient ~= nil
 	then
