@@ -171,13 +171,13 @@ function EntityKilled:GoldTracking()
 		-- Debug:Print('GoldTracking. Player: '.. player.stats.name .. ', netWorth: ' .. netWorth)
 		local oldNetworth = GoldTrackingTable[player.stats.name] or netWorth
 		local netWorthDiff = netWorth - oldNetworth
-		Debug:Print('GoldTracking. Player: '.. player.stats.name .. ', netWorth diff vs previous: ' .. netWorthDiff .. ', team kills: ' .. teamKills .. ', difficulty: ' .. Settings.difficulty)
+		-- Debug:Print('GoldTracking. Player: '.. player.stats.name .. ', netWorth diff vs previous: ' .. netWorthDiff .. ', team kills: ' .. teamKills .. ', difficulty: ' .. Settings.difficulty)
 
 		if netWorthDiff > GoldPenaltyNetworthDiffThreshold then
 			if Settings.difficulty >= KillerAwardMinDifficulty
 			and teamKills >= 1  -- 因为timer有执行间隔，同时击杀太多的话可能会有一些 edge cases 导致漏算或者多算人头，但是以后再改吧
 			then
-				local diffRatio = Utilities:Clamp(Settings.difficulty / math.min(10, Settings.difficultyMax), 0, 1)
+				local diffRatio = Utilities:Clamp(Settings.difficulty / Settings.diffMaxDenominator, 0, 1)
 				local netWorthDiffAfterReduction = netWorthDiff * (1 - Utilities:RemapValClamped(diffRatio * GoldPenaltyDiffRatioMultipler, 0, 1, 0, GoldPenaltyPercentageMax))
 				local goldToReduce = Utilities:Clamp(math.floor(netWorthDiffAfterReduction - netWorthDiff), GoldPenaltyAmountMax, GoldPenaltyAmountMin)
 				Debug:Print('GoldTracking. Player: '.. player.stats.name .. ', team: ' .. player.stats.team .. ', gold to reduce: ' .. goldToReduce)

@@ -71,10 +71,11 @@ function GetDesire()
 	end
 
 	-- unit special abilities
-	local specialRoaming = ConsiderHeroSpecificRoaming[botName]()
-	if specialRoaming and specialRoaming > 0 then
+	local specialRoaming = ConsiderHeroSpecificRoaming[botName]
+	if specialRoaming then
 		-- return specialRoaming
-		return Clamp(specialRoaming, 0, 0.99)
+		local specialDesire = specialRoaming()
+		if specialDesire > 0 then return Clamp(specialDesire, 0, 0.99) end
 	end
 
 	-- general items or conditions.

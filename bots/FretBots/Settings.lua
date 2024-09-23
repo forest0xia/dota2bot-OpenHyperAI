@@ -13,7 +13,7 @@ require('bots.FretBots.HeroSounds')
 local Chat = require('bots.FretBots.Chat')
 
 -- max scales to vote
-local difficultyMax = 10
+local difficultyMax = 20
 local allyScaleMax = 1
 
 -- default difficulty if no one votes
@@ -51,6 +51,7 @@ if Settings == nil then
 	Settings = dofile('bots.FretBots.SettingsDefault')
 end
 Settings.difficultyMax = difficultyMax
+Settings.diffMaxDenominator = diffMaxDenominator
 Settings.allowPlayersToCheat = allowPlayersToCheat
 
 -- neutral item drop settings
