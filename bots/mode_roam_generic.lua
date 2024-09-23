@@ -35,7 +35,7 @@ local enableGateUsage = false -- to be fixed
 local arriveRoamLocTime = 0
 local roamTimeAfterArrival = 0.55 * 60 -- stay to roam after arriving the location
 local roamGapTime = 3 * 60 -- don't roam again within this duration after roaming once.
-local nInRangeEnemy
+local nInRangeEnemy, allyTowers
 local trySeduce = false
 
 function GetDesire()
@@ -44,6 +44,7 @@ function GetDesire()
 	TPScroll = J.GetItem2(bot, 'item_tpscroll')
 
 	nInRangeEnemy = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+	allyTowers = bot:GetNearbyTowers(1600, false)
 
 	if ConsiderWaitInBaseToHeal()
 	and GetUnitToLocationDistance(bot, J.GetTeamFountain()) > 5500
@@ -70,15 +71,15 @@ function GetDesire()
 	end
 
 	-- unit special abilities
-	local specialRoaming = ConsiderHeroSpecificRoaming[botName]
-	if specialRoaming then
+	local specialRoaming = ConsiderHeroSpecificRoaming[botName]()
+	if specialRoaming and specialRoaming > 0 then
 		-- return specialRoaming
-		return Clamp(specialRoaming(), 0, 0.99)
+		return Clamp(specialRoaming, 0, 0.99)
 	end
 
 	-- general items or conditions.
 	local generalRoaming = ConsiderGeneralRoamingInConditions()
-	if generalRoaming then
+	if generalRoaming and generalRoaming > 0 then
 		return Clamp(generalRoaming, 0, 0.99)
 	end
 
@@ -521,7 +522,7 @@ function ThinkGeneralRoaming()
 	end
 
 	if trySeduce then
-		local allyTowers = bot:GetNearbyTowers(1600, false)
+		allyTowers = bot:GetNearbyTowers(1600, false)
 		local distanceFromFountain = bot:DistanceFromFountain()
 		local distanceToCloestTower = GetUnitToUnitDistance(bot, allyTowers[1])
 		if distanceToCloestTower > 300 and distanceFromFountain > distanceToCloestTower then
@@ -529,6 +530,11 @@ function ThinkGeneralRoaming()
 		else
 			bot:Action_MoveToLocation(J.GetTeamFountain())
 		end
+		return
+	end
+
+	if bot:HasModifier("modifier_warlock_golem_permanent_immolation_debuff") then
+		bot:Action_MoveToLocation(J.GetTeamFountain())
 		return
 	end
 end
@@ -873,17 +879,40 @@ function ConsiderGeneralRoamingInConditions()
 		end
 
 		-- 尝试勾引
-		if #nInRangeEnemy >=1 and J.Utils.IsValidHero(nInRangeEnemy[1]) then
+		if #nInRangeEnemy >=1 and J.Utils.IsValidHero(nInRangeEnemy[1])
+		and #allyTowers >= 1 and GetUnitToUnitDistance(allyTowers[1], bot) < 1600 then
 			local cloestEnemy = nInRangeEnemy[1]
-			if cloestEnemy:IsFacingLocation(bot:GetLocation(), 8)
+			if (J.IsRunning(cloestEnemy) or J.IsAttacking(cloestEnemy))
+			and cloestEnemy:IsFacingLocation(bot:GetLocation(), 15)
 			and J.IsInRange(bot, cloestEnemy, cloestEnemy:GetAttackRange())
-			and J.GetHP(cloestEnemy) >= J.GetHP(bot)
+			and J.GetHP(cloestEnemy) >= J.GetHP(bot) - 0.2
 			then
 				trySeduce = true
 				return BOT_ACTION_DESIRE_ABSOLUTE
 			end
 		end
 	end
+
+	if bot:HasModifier("modifier_warlock_golem_permanent_immolation_debuff")
+	and bot:GetNetWorth() < 18000 -- 其实即使是后期也怕多个大火人
+	then
+		local nUnits = GetUnitList(UNIT_LIST_ENEMIES)
+		for _, unit in pairs(nUnits)
+		do
+			if J.IsValid(unit)
+			and string.find(unit:GetUnitName(), 'warlock_golem')
+			then
+				if (J.GetHP(bot) < J.GetHP(unit)
+				and J.GetHP(bot) < 0.7)
+				or J.GetHP(bot) < 0.2 then
+					return BOT_ACTION_DESIRE_VERYHIGH
+				end
+			end
+		end
+	end
+
+
+	return BOT_ACTION_DESIRE_NONE
 end
 
 function GetTargetEnemy(unitName)

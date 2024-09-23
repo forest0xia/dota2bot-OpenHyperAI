@@ -326,11 +326,11 @@
 		awardCap =
 		{
 			gold 				= 30000,
-			armor 				= 25,
-			magicResist 		= 25,
-			levels 				= 10,
-			neutral 			= 1200,
-			stats 				= 25,
+			armor 				= 35,
+			magicResist 		= 35,
+			levels 				= 15,
+			neutral 			= 1500,
+			stats 				= 45,
 		},
 		-- Settings for dynamically adjusting difficulty
 		dynamicDifficulty =

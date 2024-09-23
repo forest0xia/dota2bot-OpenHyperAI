@@ -325,8 +325,21 @@ local function __TS__StringTrim(self)
     local result = string.gsub(self, "^[%s ﻿]*(.-)[%s ﻿]*$", "%1")
     return result
 end
+
+local function __TS__ArrayFilter(self, callbackfn, thisArg)
+    local result = {}
+    local len = 0
+    for i = 1, #self do
+        if callbackfn(thisArg, self[i], i - 1, self) then
+            len = len + 1
+            result[len] = self[i]
+        end
+    end
+    return result
+end
 -- End of Lua Library inline imports
 local ____exports = {}
+local avoidanceZones
 local ____dota = require("bots.ts_libs.dota.index")
 local Lane = ____dota.Lane
 local Team = ____dota.Team
@@ -335,6 +348,8 @@ local ____http_req = require("bots.ts_libs.utils.http_utils.http_req")
 local Request = ____http_req.Request
 local ____native_2Doperators = require("bots.ts_libs.utils.native-operators")
 local add = ____native_2Doperators.add
+local dot = ____native_2Doperators.dot
+local length2D = ____native_2Doperators.length2D
 local multiply = ____native_2Doperators.multiply
 local sub = ____native_2Doperators.sub
 function ____exports.GetLocationToLocationDistance(fLoc, sLoc)
@@ -343,6 +358,35 @@ function ____exports.GetLocationToLocationDistance(fLoc, sLoc)
     local y1 = fLoc.y
     local y2 = sLoc.y
     return math.sqrt((y2 - y1) * (y2 - y1) + (x2 - x1) * (x2 - x1))
+end
+function ____exports.findSafePosition(currentPosition, targetPosition)
+    local direction = sub(targetPosition, currentPosition):Normalized()
+    local safeDistance = ____exports.getSafeDistance(currentPosition, targetPosition)
+    return add(
+        currentPosition,
+        multiply(direction, safeDistance)
+    )
+end
+function ____exports.getSafeDistance(currentPosition, targetPosition)
+    local maxDistance = length2D(sub(targetPosition, currentPosition))
+    for ____, zone in ipairs(avoidanceZones) do
+        local projectedPoint = ____exports.projectPointOntoLine(currentPosition, targetPosition, zone.center)
+        local distanceToZone = length2D(sub(projectedPoint, zone.center))
+        if distanceToZone <= zone.radius then
+            local distanceToAvoid = length2D(sub(projectedPoint, currentPosition)) - zone.radius
+            return math.max(0, distanceToAvoid)
+        end
+    end
+    return maxDistance
+end
+function ____exports.projectPointOntoLine(startPoint, endPoint, point)
+    local lineDir = sub(endPoint, startPoint):Normalized()
+    local toPoint = sub(point, startPoint)
+    local projectionLength = dot(toPoint, lineDir)
+    return add(
+        startPoint,
+        multiply(lineDir, projectionLength)
+    )
 end
 require("bots.ts_libs.utils.json")
 ____exports.DebugMode = false
@@ -363,6 +407,7 @@ ____exports.BuggyHeroesDueToValveTooLazy = {
     npc_dota_hero_hoodwink = true,
     npc_dota_hero_wisp = true
 }
+avoidanceZones = {}
 ____exports.GameStates = {defendPings = nil}
 ____exports.LoneDruid = {}
 ____exports.FrameProcessTime = 0.05
@@ -781,5 +826,62 @@ function ____exports.GetLoneDruid(bot)
 end
 function ____exports.TrimString(str)
     return __TS__StringTrim(str)
+end
+--- TODO: AvoidanceZone work in progress.
+-- 
+-- Example: Adds a zone that expires after 10 seconds: addCustomAvoidanceZone(Vector(1000, 2000), 500, 10);
+-- Example: Adds a zone lasts indefinitely: addCustomAvoidanceZone(Vector(1000, 2000), 500);
+-- 
+-- @param center
+-- @param radius
+-- @param duration
+function ____exports.addCustomAvoidanceZone(center, radius, duration)
+    local currentTime = DotaTime()
+    local expirationTime = duration ~= nil and currentTime + duration or math.huge
+    avoidanceZones[#avoidanceZones + 1] = {center = center, radius = radius, expirationTime = expirationTime}
+end
+function ____exports.cleanExpiredAvoidanceZones()
+    local currentTime = DotaTime()
+    avoidanceZones = __TS__ArrayFilter(
+        avoidanceZones,
+        function(____, zone) return zone.expirationTime > currentTime end
+    )
+end
+function ____exports.getCustomAvoidanceZones()
+    return avoidanceZones
+end
+function ____exports.isPositionInAvoidanceZone(position)
+    for ____, zone in ipairs(avoidanceZones) do
+        local distance = length2D(sub(position, zone.center))
+        if distance <= zone.radius then
+            return true
+        end
+    end
+    return false
+end
+function ____exports.moveToPositionAvoidingZones(bot, targetPosition)
+    if ____exports.isPositionInAvoidanceZone(targetPosition) then
+        local safePosition = ____exports.findSafePosition(
+            bot:GetLocation(),
+            targetPosition
+        )
+        bot:Action_MoveToLocation(safePosition)
+    else
+        bot:Action_MoveToLocation(targetPosition)
+    end
+end
+function ____exports.drawAvoidanceZones()
+    for ____, zone in ipairs(avoidanceZones) do
+        DebugDrawCircle(
+            zone.center,
+            zone.radius,
+            0,
+            255,
+            0
+        )
+    end
+end
+function ____exports.findPathAvoidingZones(startPosition, endPosition)
+    return {}
 end
 return ____exports

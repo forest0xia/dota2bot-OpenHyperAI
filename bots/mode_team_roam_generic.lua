@@ -51,6 +51,9 @@ local lastCheckBotToDropTime = 0
 
 
 local TormentorLocation
+local IsAvoidingAbilityZone = false
+local IsShouldFindTeammates = false
+
 if team == TEAM_RADIANT
 then
 	TormentorLocation = Vector(-8075, -1148, 1000)
@@ -61,6 +64,8 @@ end
 function GetDesire()
 	Utils.SetFrameProcessTime(bot)
 
+	IsAvoidingAbilityZone = false
+	IsShouldFindTeammates = false
 	-- check if bot is idle
 	if DotaTime() - lastIdleStateCheck >= 2 then
 		J.CheckBotIdleState()
@@ -89,6 +94,7 @@ function GetDesire()
 	local nAllyList = J.GetNearbyHeroes(bot, 1600, false, BOT_MODE_NONE);
 	if #nAllyList <= 1 and J.GetNumOfAliveHeroes(true) > 1 and J.GetNumOfAliveHeroes(false) > 3
 	and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 3500 then
+		IsShouldFindTeammates = true
 		return BOT_MODE_DESIRE_VERYHIGH
 	end
 
@@ -102,10 +108,18 @@ function GetDesire()
 		return BOT_ACTION_DESIRE_VERYHIGH
 	end
 
-	if ShouldAvoidAbilityZone() then
-		local botLoc = bot:GetLocation()
-		J.AddAvoidanceZone(Vector(botLoc.x, botLoc.y, 100.0), 5)
-		return RemapValClamped(J.GetHP(bot), 1, 0, BOT_MODE_DESIRE_MODERATE, BOT_ACTION_DESIRE_ABSOLUTE)
+	if J.IsInLaningPhase() then
+		if bot:HasModifier('modifier_warlock_upheaval') then
+			IsAvoidingAbilityZone = true
+			return BOT_ACTION_DESIRE_VERYHIGH + 0.1
+		end
+	end
+
+	if HasBetterAvoidAbilityEffects() and not J.WeAreStronger(bot, 1500) then
+		-- local botLoc = bot:GetLocation()
+		-- J.AddAvoidanceZone(Vector(botLoc.x, botLoc.y, 100.0), 5)
+		IsAvoidingAbilityZone = true
+		return BOT_ACTION_DESIRE_VERYHIGH + 0.1
 	end
 
 	if  J.IsPushing(bot)
@@ -164,21 +178,14 @@ function GetDesire()
 end
 
 -- Leave from the area that's affected by some spells like ults of Lich, Jakiro, etc.
-function ShouldAvoidAbilityZone()
+function HasBetterAvoidAbilityEffects()
 	return bot:HasModifier('modifier_jakiro_macropyre_burn') -- 可能无视魔免的技能
 	or bot:HasModifier('modifier_dark_seer_wall_slow')
 	or ( -- 不无视魔免的技能
-		(bot:HasModifier('modifier_warlock_upheaval')
-		or bot:HasModifier('modifier_sandking_sand_storm_slow')
+		(bot:HasModifier('modifier_sandking_sand_storm_slow')
 		or bot:HasModifier('modifier_sand_king_epicenter_slow')
 		or bot:HasModifier('modifier_lich_chainfrost_slow'))
 		and (not bot:HasModifier("modifier_black_king_bar_immune") or not bot:HasModifier("modifier_magic_immune") or not bot:HasModifier("modifier_omniknight_repel"))
-	)
-	or (J.IsInLaningPhase() and -- 一些对线期避免碰到的情况
-		(bot:HasModifier('modifier_maledict') -- 防止中了巫医毒还继续吃伤害
-		or bot:HasModifier('modifier_dazzle_poison_touch')
-		or bot:HasModifier('modifier_slark_essence_shift_debuff') -- 防止不停被小鱼偷属性
-		)
 	)
 end
 
@@ -251,34 +258,12 @@ function Think()
 
 	ItemOpsThink()
 
-	if bot.lastTeamRoamFrameProcessTime == nil then bot.lastTeamRoamFrameProcessTime = DotaTime() end
-	if DotaTime() - bot.lastTeamRoamFrameProcessTime < bot.frameProcessTime then return end
-	bot.lastTeamRoamFrameProcessTime = DotaTime()
-
-	if ShouldAvoidAbilityZone() then
-		if J.GetHP(bot) < 0.95 and bot:WasRecentlyDamagedByAnyHero(3)
-		then
-			bot:Action_MoveToLocation(Utils.GetOffsetLocationTowardsTargetLocation(bot:GetLocation(), J.GetTeamFountain(), 500) + RandomVector(200))
-		end
+	if IsAvoidingAbilityZone then
+		bot:Action_MoveToLocation(Utils.GetOffsetLocationTowardsTargetLocation(bot:GetLocation(), J.GetTeamFountain(), 600) + RandomVector(200))
 		return
 	end
 
-	if DotaTime() < 5 * 60 then
-		if bot:HasModifier('modifier_maledict') -- 防止中了巫医毒还继续吃伤害
-		or bot:HasModifier('modifier_dazzle_poison_touch')
-		or bot:HasModifier('modifier_slark_essence_shift_debuff') -- 防止不停被小鱼偷属性
-		then
-			if J.GetHP(bot) < 0.9 and bot:WasRecentlyDamagedByAnyHero(2.0)
-			then
-				bot:Action_MoveToLocation(J.GetTeamFountain())
-			end
-		end
-	end
-
-	-- 如果自己在上高，对面人活着，队友却不在，赶紧去找队友
-	local nAllyList = J.GetNearbyHeroes(bot, 1600, false, BOT_MODE_NONE);
-	if #nAllyList <= 1 and J.GetNumOfAliveHeroes(true) > 1 and J.GetNumOfAliveHeroes(false) > 3
-	and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 3500 then
+	if IsShouldFindTeammates then
 		for i, id in pairs( GetTeamPlayers( team ) )
 		do
 			if IsHeroAlive( id )
@@ -289,6 +274,7 @@ function Think()
 				end
 			end
 		end
+		return
 	end
 
 	if shouldHarass
@@ -2067,7 +2053,7 @@ function CanAttackSpecialUnit()
 					SpecialUnitTarget = unit
 					return true
 				end
-			else
+			elseif J.GetHP(bot) > J.GetHP(unit) - 0.2 and J.GetHP(bot) > 0.5 and J.CanBeAttacked(unit) then
 				-- Extra units the bots should distory if they are in good situation
 				if string.find(unit:GetUnitName(), 'forged_spirit')
 				or string.find(unit:GetUnitName(), 'lone_druid_bear')
@@ -2082,11 +2068,8 @@ function CanAttackSpecialUnit()
 					local nInRangeAlly = J.GetNearbyHeroes(bot,1000, false, BOT_MODE_NONE)
 					local nInRangeEnemy = J.GetNearbyHeroes(bot,1000, true, BOT_MODE_NONE)
 
-					if  GetUnitToUnitDistance(bot, unit) <= nAttackRange + 300
-					and J.CanBeAttacked(unit)
-					and J.GetHP(bot) > 0.5
-					and (nInRangeEnemy == nil 
-						or (nInRangeAlly ~= nil and nInRangeEnemy and #nInRangeAlly >= #nInRangeEnemy)) 
+					if nInRangeEnemy == nil 
+						or (nInRangeAlly ~= nil and nInRangeEnemy and #nInRangeAlly >= #nInRangeEnemy)
 					then
 						SpecialUnitTarget = unit
 						return true

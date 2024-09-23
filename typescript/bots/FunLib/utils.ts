@@ -18,9 +18,9 @@ import {
     UnitType,
     Vector,
 } from "../ts_libs/dota";
-import { GameState } from "bots/ts_libs/bots";
+import { GameState, AvoidanceZone } from "bots/ts_libs/bots";
 import { Request } from "bots/ts_libs/utils/http_utils/http_req";
-import { add, multiply, sub } from "bots/ts_libs/utils/native-operators";
+import { add, dot, length2D, multiply, sub } from "bots/ts_libs/utils/native-operators";
 
 export const DebugMode = false;
 
@@ -46,12 +46,16 @@ export const BuggyHeroesDueToValveTooLazy = {
     npc_dota_hero_wisp: true,
 };
 
+// Global array to store avoidance zones
+let avoidanceZones: AvoidanceZone[] = [];
+
 // Some gaming state keepers to keep a record of different states to avoid recomupte or anything.
 export const GameStates: GameState = {
     defendPings: null,
 };
 export const LoneDruid = { } as { [key: number]: any };
 export const FrameProcessTime = 0.05;
+
 
 export const EstimatedEnemyRoles = {
     // sample role entry
@@ -553,3 +557,87 @@ export function TrimString(str: string): string {
 	return str.trim();
 }
 
+/**
+ * TODO: AvoidanceZone work in progress.
+ * 
+ * Example: Adds a zone that expires after 10 seconds: addCustomAvoidanceZone(Vector(1000, 2000), 500, 10);
+ * Example: Adds a zone lasts indefinitely: addCustomAvoidanceZone(Vector(1000, 2000), 500);
+ * @param center 
+ * @param radius 
+ * @param duration 
+ */
+export function addCustomAvoidanceZone(center: Vector, radius: number, duration?: number): void {
+    const currentTime = DotaTime();
+    const expirationTime = duration !== undefined ? currentTime + duration : Number.POSITIVE_INFINITY;
+
+    avoidanceZones.push({ center, radius, expirationTime });
+}
+
+export function cleanExpiredAvoidanceZones(): void {
+    const currentTime = DotaTime();
+    avoidanceZones = avoidanceZones.filter(zone => zone.expirationTime > currentTime);
+}
+
+export function getCustomAvoidanceZones(): Array<{ center: Vector; radius: number }> {
+    return avoidanceZones;
+}
+
+export function isPositionInAvoidanceZone(position: Vector): boolean {
+    for (const zone of avoidanceZones) {
+        const distance = length2D(sub(position, zone.center));
+        if (distance <= zone.radius) {
+            return true;
+        }
+    }
+    return false;
+}
+
+export function moveToPositionAvoidingZones(bot: Unit, targetPosition: Vector): void {
+    if (isPositionInAvoidanceZone(targetPosition)) {
+        const safePosition = findSafePosition(bot.GetLocation(), targetPosition);
+        bot.Action_MoveToLocation(safePosition);
+    } else {
+        bot.Action_MoveToLocation(targetPosition);
+    }
+}
+
+export function findSafePosition(currentPosition: Vector, targetPosition: Vector): Vector {
+    // Move towards the target but stop before entering the avoidance zone
+    const direction = sub(targetPosition, currentPosition).Normalized();
+    const safeDistance = getSafeDistance(currentPosition, targetPosition);
+    return add(currentPosition, multiply(direction, safeDistance));
+}
+
+export function getSafeDistance(currentPosition: Vector, targetPosition: Vector): number {
+    const maxDistance = length2D(sub(targetPosition, currentPosition));
+    for (const zone of avoidanceZones) {
+        const projectedPoint = projectPointOntoLine(currentPosition, targetPosition, zone.center);
+        const distanceToZone = length2D(sub(projectedPoint, zone.center));
+        if (distanceToZone <= zone.radius) {
+            const distanceToAvoid = length2D(sub(projectedPoint, currentPosition)) - zone.radius;
+            return Math.max(0, distanceToAvoid);
+        }
+    }
+    return maxDistance;
+}
+
+export function projectPointOntoLine(startPoint: Vector, endPoint: Vector, point: Vector): Vector {
+    const lineDir = sub(endPoint, startPoint).Normalized();
+    const toPoint = sub(point, startPoint);
+    const projectionLength = dot(toPoint, lineDir);
+    return add(startPoint, multiply(lineDir, projectionLength));
+}
+
+export function drawAvoidanceZones(): void {
+    for (const zone of avoidanceZones) {
+        DebugDrawCircle(zone.center, zone.radius, 0, 255, 0);
+    }
+}
+
+// @ts-ignore
+export function findPathAvoidingZones(startPosition: Vector, endPosition: Vector): Vector[] {
+    // Implement A* pathfinding algorithm here
+    // Each node should check for collision with avoidance zones
+    // Return a path array of Vectors that avoids the zones
+    return [];
+}

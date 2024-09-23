@@ -2,7 +2,7 @@
  * The interfaces we defined in this script.
  */
 
-import { Ability, Talent } from "./dota";
+import { Ability, Vector, Talent } from "./dota";
 
 export interface BotSetup {
     sBuyList: string[];
@@ -32,4 +32,10 @@ export interface GameState {
     defendPings: {
         pingedTime: number;
     } | null;
+}
+
+export interface AvoidanceZone {
+    center: Vector;
+    radius: number;
+    expirationTime: number;
 }

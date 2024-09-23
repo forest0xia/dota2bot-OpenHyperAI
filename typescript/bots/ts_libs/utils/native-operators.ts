@@ -17,3 +17,12 @@ export function multiply<T extends InternalScalarType>(a: T, b: T): T {
     // @ts-ignore
     return a * b;
 }
+
+export function dot(a: Vector, b: Vector): number {
+    return a.x * b.x + a.y * b.y + a.z * b.z;
+}
+
+// Method to calculate the 2D length (magnitude) of the vector
+export function length2D(a: Vector): number {
+    return Math.sqrt(a.x * a.x + a.y * a.y);
+}

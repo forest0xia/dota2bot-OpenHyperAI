@@ -38,6 +38,8 @@ local maxVotes = DOTA_MAX_PLAYERS
 local votingTimeElapsed = -1
 -- The playerID of the host.  Used to whitelist chat commands.
 local hostID = -1
+-- While the max difficulty can be 10+, if we use same max value for denominator later, it may decrease the difficulty.
+local diffMaxDenominator = 10
 -- Is repurcussion timer started?
 local isRepurcussionTimerStarted = false
 -- can players freely enter cheating commands?
@@ -116,12 +118,12 @@ function Settings:Initialize(difficulty)
 	-- no argument implies default, do nothing
 	if difficulty == nil then return end
 	-- Adjust bot skill values by the difficulty value
-	Settings.difficultyScale = 1 + ((difficulty - 5) / difficultyMax)
+	Settings.difficultyScale = 1 + ((difficulty - 5) / diffMaxDenominator)
 	-- increase diff scale for diffculty > 5.
-	if difficulty > difficultyMax/2 and difficulty < difficultyMax then
-		Settings.difficultyScale = 1 + ((difficulty - 3) / difficultyMax)
-	elseif difficulty >= difficultyMax then
-		Settings.difficultyScale = 1 + (difficulty / difficultyMax)
+	if difficulty >= 5 and difficulty < diffMaxDenominator then
+		Settings.difficultyScale = 1 + ((difficulty - 2.7) / diffMaxDenominator)
+	elseif difficulty >= diffMaxDenominator then
+		Settings.difficultyScale = 1 + (difficulty / diffMaxDenominator)
 	end
 	Settings.difficultyScale = Utilities:Round(Settings.difficultyScale, 2)
 	-- Print

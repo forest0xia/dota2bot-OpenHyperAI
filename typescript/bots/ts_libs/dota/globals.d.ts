@@ -32,6 +32,8 @@ declare global {
 
     function DotaTime(): number;
 
+    function DebugDrawCircle( vCenter: Vector, fRadius: number, nRed: number, nGreen: number, nBlue: number ): void;
+
     function GetSelectedHeroName(nPlayerID: number): string;
 
     function GetHeroLevel(playerId: number): number;

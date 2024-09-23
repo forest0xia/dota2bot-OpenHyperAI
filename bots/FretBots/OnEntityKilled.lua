@@ -128,7 +128,7 @@ function EntityKilled:GetEntityKilledEventData(event)
 	if victim:IsHero() and victim:IsRealHero() and not victim:IsIllusion() and not victim:IsClone() then
 		isHero = true;
 		if killer == nil or killer.stats == nil then return end
-		if not victim.stats.isBot and (not TauntModifierTimers[killer.stats.name] or TauntModifierTimers[killer.stats.name].time < Utilities:GetTime() + TauntTime) then
+		if not victim.stats.isBot and killer.stats.isBot and (not TauntModifierTimers[killer.stats.name] or TauntModifierTimers[killer.stats.name].time < Utilities:GetTime() + TauntTime) then
 			TauntModifierTimers[killer.stats.name] = {time = Utilities:GetTime(), hero = killer}
 			Modifier:ApplyHighFiveModifier(killer)
 		end

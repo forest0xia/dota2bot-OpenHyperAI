@@ -40,6 +40,8 @@ export interface Unit {
 
     GetPlayerID(): number;
 
+    GetLocation(): Vector;
+
     GetUnitName(): string;
 
     GetAbilityCount(): number;
