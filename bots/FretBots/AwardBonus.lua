@@ -304,6 +304,11 @@ function AwardBonus:GetValue(bot, award)
 		clamped = Utilities:Clamp(rounded, Settings.deathBonus.clamp[award][1], upperClamp)
 		debugTable.rounded = rounded
 	end
+
+	if Utilities:IsTurboMode() then
+		clamped = clamped * 1.7
+	end
+
 	-- Final check: don't award anything that would put them over the cap.
 	if (bot.stats.awards[award] + clamped) >= Settings.awardCap[award] then
 		clamped = Settings.awardCap[award] - bot.stats.awards[award]

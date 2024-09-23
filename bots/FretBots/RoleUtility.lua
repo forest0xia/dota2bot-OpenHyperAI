@@ -145,6 +145,7 @@ X['supp'] = {
 	'npc_dota_hero_wisp',
 	'npc_dota_hero_witch_doctor',
 	'npc_dota_hero_hoodwink',
+	'npc_dota_hero_ringmaster',
 }
 
 --OFFLANER

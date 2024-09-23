@@ -13,12 +13,12 @@ require('bots.FretBots.HeroSounds')
 local Chat = require('bots.FretBots.Chat')
 
 -- max scales to vote
-local difficultyMax = 20
+local difficultyMax = 10
 local allyScaleMax = 1
 
 -- default difficulty if no one votes
 local DefaultDifficulty = 2 -- [0, 10]
-local DefaultAllyScale = 0.7 -- [0, 1]
+local DefaultAllyScale = 0.5 -- [0, 1]
 
 Settings = nil
 

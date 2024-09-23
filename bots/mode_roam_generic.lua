@@ -978,7 +978,7 @@ ConsiderHeroSpecificRoaming['npc_dota_hero_void_spirit'] = function ()
 end
 
 ConsiderHeroSpecificRoaming['npc_dota_hero_primal_beast'] = function ()
-	if bot:HasModifier('modifier_primal_beast_trample') then
+	if bot:HasModifier('modifier_primal_beast_trample') and J.GetHP(bot) > 0.4 then
 		return BOT_MODE_DESIRE_ABSOLUTE
 	end
 	return BOT_MODE_DESIRE_NONE
