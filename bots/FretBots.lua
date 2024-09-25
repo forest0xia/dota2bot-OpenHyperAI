@@ -43,7 +43,7 @@ local playersLoadedTimerName = 'playersLoadedTimerName'
 local isAllPlayersSpawned = false
 local isDataTablesInitialized = false
 local playerSpawnCount = 0
-local playerLoadFailSafeDelta = 5
+local playerLoadFailSafeDelta = 3
 
 -- Starting this script is largely handled by the requires, as separate pieces start
 -- themselves. DataTables cannot be initialized until all players have loaded, so
@@ -77,6 +77,8 @@ function FretBots:PlayersLoadedTimer()
 			Debug:Print('Settings not finalized yet! Waiting.')
 			return 1
 		end
+		-- Register EntityKilled Listener
+		EntityKilled:RegisterEvents()
 		-- Set all bots to find tier 1 neutrals
 		NeutralItems:InitializeFindTimings()
 		-- Set the host ID for whitelisting settings chat commands
@@ -87,8 +89,6 @@ function FretBots:PlayersLoadedTimer()
 		RoleDetermination:Initialize()
 		-- Register EntityHurt Listener
 		EntityHurt:RegisterEvents()
-		-- Register EntityKilled Listener
-		EntityKilled:RegisterEvents()
 		Modifier:Initialize()
 		-- Hero Specific extensions - these will stop themselves if they
 		-- determine that they are not enabled

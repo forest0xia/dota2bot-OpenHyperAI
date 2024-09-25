@@ -30,12 +30,12 @@ local TeamKillsTrackingTable = {
 }
 local TauntModifierTimers = {}
 local TauntTime = 4
-local CheatGoldThreshold = 900
 local GoldPenaltyNetworthDiffThreshold = 200
 local GoldPenaltyPercentageMax = 0.85
 local GoldPenaltyAmountMax = -5000
 local GoldPenaltyAmountMin = -50
 local GoldPenaltyDiffRatioMultipler = 1.25
+local GoldPenaltyTimeFactor = 30 * 60 -- after 25 mins, use full penalty.
 
 -- Instantiate ourself
 if EntityKilled == nil then
@@ -127,7 +127,7 @@ function EntityKilled:GetEntityKilledEventData(event)
 	local isHero = false;
 	if victim:IsHero() and victim:IsRealHero() and not victim:IsIllusion() and not victim:IsClone() then
 		isHero = true;
-		if killer == nil or killer.stats == nil then return end
+		if killer == nil or killer.stats == nil or victim == nil or victim.stats == nil then return end
 		if not victim.stats.isBot and killer.stats.isBot and (not TauntModifierTimers[killer.stats.name] or TauntModifierTimers[killer.stats.name].time < Utilities:GetTime() + TauntTime) then
 			TauntModifierTimers[killer.stats.name] = {time = Utilities:GetTime(), hero = killer}
 			Modifier:ApplyHighFiveModifier(killer)
@@ -178,7 +178,8 @@ function EntityKilled:GoldTracking()
 			and teamKills >= 1  -- 因为timer有执行间隔，同时击杀太多的话可能会有一些 edge cases 导致漏算或者多算人头，但是以后再改吧
 			then
 				local diffRatio = Utilities:Clamp(Settings.difficulty / Settings.diffMaxDenominator, 0, 1)
-				local netWorthDiffAfterReduction = netWorthDiff * (1 - Utilities:RemapValClamped(diffRatio * GoldPenaltyDiffRatioMultipler, 0, 1, 0, GoldPenaltyPercentageMax))
+				local timeRatio = Utilities:RemapValClamped(Utilities:GetTime() / GoldPenaltyTimeFactor, 0, 1, 0.5, 1)
+				local netWorthDiffAfterReduction = netWorthDiff * (1 - Utilities:RemapValClamped(diffRatio * GoldPenaltyDiffRatioMultipler * timeRatio, 0, 1, 0, GoldPenaltyPercentageMax))
 				local goldToReduce = Utilities:Clamp(math.floor(netWorthDiffAfterReduction - netWorthDiff), GoldPenaltyAmountMax, GoldPenaltyAmountMin)
 				Debug:Print('GoldTracking. Player: '.. player.stats.name .. ', team: ' .. player.stats.team .. ', gold to reduce: ' .. goldToReduce)
 
@@ -188,7 +189,7 @@ function EntityKilled:GoldTracking()
 				player:ModifyGold(goldToReduce, true, DOTA_ModifyGold_HeroKill)
 				if player.stats.team == RADIANT then canClearRadiantTracking = true end
 				if player.stats.team == DIRE then canClearDireTracking = true end
-			elseif teamKills == 0 and netWorthDiff > CheatGoldThreshold and not Settings.allowPlayersToCheat then
+			elseif not Settings.allowPlayersToCheat and (player.stats.repurcussionTarget > 0 and player.stats.repurcussionCount < player.stats.repurcussionTarget) then
 				local goldToReduce = -math.floor(netWorthDiff)
 				Debug:Print('GoldTracking. Player: '.. player.stats.name .. ' received gold without a kill. gold to reduce: ' .. goldToReduce)
 				player:ModifyGold(goldToReduce, true, DOTA_ModifyGold_HeroKill)
@@ -213,6 +214,9 @@ function EntityKilled:RegisterEvents()
 		Timers:CreateTimer("Taunt-Modifiers", {endTime = 1, callback = EntityKilled['TauntModifierTimer']} )
 		Debug:Print('Registered Taunt Modifiers Timer.')
 
+		if Utilities:IsTurboMode() then
+			GoldPenaltyTimeFactor = GoldPenaltyTimeFactor / 2
+		end
 		Flags.isEntityKilledRegistered = true;
 		if true then
 			print('EntityKilled Event Listener Registered.')
