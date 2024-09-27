@@ -5079,10 +5079,10 @@ local deltaIdleDistance = 5
 local botIdleStateTracker = { }
 
 function J.CheckBotIdleState()
-	if DotaTime() <= 0 then return end
+	if DotaTime() <= 0 then return false end
 
 	local bot = GetBot()
-	if not bot:IsAlive() then return end
+	if not bot:IsAlive() then return false end
 
 	local botName = bot:GetUnitName();
 	local botId = bot:GetPlayerID();
@@ -5109,7 +5109,7 @@ function J.CheckBotIdleState()
 						end
 					end
 					bot:Action_ClearActions(true);
-	
+
 					-- Should send it to most desire farming lane, if in laning or send it to desire push lane.
 					local frontLoc = GetLaneFrontLocation(GetTeam(), bot:GetAssignedLane(), 0);
 					bot:ActionQueue_AttackMove(frontLoc)
@@ -5117,6 +5117,7 @@ function J.CheckBotIdleState()
 				else
 					print('Bot '..botName..' is in idle state for unknown reasons.')
 				end
+				return true
 			else
 				botState.idleCount = 0
 				-- print('Bot '..botName..' is not in idle state.')
@@ -5124,7 +5125,6 @@ function J.CheckBotIdleState()
 
 			botState.botLocation = bot:GetLocation()
 			botState.lastCheckTime = DotaTime()
-			
 		end
 	else
 		local botIdleState = {
@@ -5134,6 +5134,7 @@ function J.CheckBotIdleState()
 		}
 		botIdleStateTracker[botId] = botIdleState
 	end
+	return false
 end
 
 return J

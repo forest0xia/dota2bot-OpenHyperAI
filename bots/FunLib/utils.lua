@@ -390,7 +390,7 @@ function ____exports.projectPointOntoLine(startPoint, endPoint, point)
     )
 end
 require("bots.ts_libs.utils.json")
-____exports.DebugMode = true
+____exports.DebugMode = false
 ____exports.ScriptID = 3246316298
 ____exports.RadiantFountainTpPoint = Vector(-7172, -6652, 384)
 ____exports.DireFountainTpPoint = Vector(6982, 6422, 392)
@@ -894,8 +894,10 @@ function ____exports.findPathAvoidingZones(startPosition, endPosition)
     return {}
 end
 function ____exports.IsBuildingAttackedByEnemy(building)
-    if building:WasRecentlyDamagedByAnyHero(2) or building:WasRecentlyDamagedByCreep(2) then
-        return building
+    for ____, hero in ipairs(GetUnitList(UnitType.EnemyHeroes)) do
+        if ____exports.IsValidHero(hero) and (GetUnitToUnitDistance(building, hero) <= hero:GetAttackRange() + 200 and hero:GetAttackTarget() == building) then
+            return building
+        end
     end
     return nil
 end

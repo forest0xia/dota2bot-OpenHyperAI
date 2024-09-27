@@ -29,8 +29,11 @@ function Defend.GetDefendDesireHelper(bot, lane)
 	nInRangeEnemy = J.GetLastSeenEnemiesNearLoc( bot:GetLocation(), 2200 )
 	local team = GetTeam()
 
-	if #nInRangeEnemy > 0 and GetUnitToLocationDistance(bot, GetLaneFrontLocation(team, lane, 0)) < 1600
-	or bot:WasRecentlyDamagedByAnyHero(2)
+	if #nInRangeEnemy > 0 and GetUnitToLocationDistance(bot, GetLaneFrontLocation(team, lane, 0)) < 1600 then
+		return RemapValClamped(J.GetHP(bot), 1, 0, BOT_ACTION_DESIRE_VERYHIGH, BOT_ACTION_DESIRE_NONE)
+	end
+
+	if bot:WasRecentlyDamagedByAnyHero(2)
 	or (bot:GetAssignedLane() ~= lane and J.GetPosition(bot) == 1 and J.IsInLaningPhase()) -- reduce carry feeds
 	or (J.IsDoingRoshan(bot) and #J.GetAlliesNearLoc(J.GetCurrentRoshanLocation(), 2800) >= 3)
 	or (J.IsDoingTormentor(bot) and #J.GetAlliesNearLoc(J.GetTormentorLocation(team), 900) >= 2 and #J.GetEnemiesAroundAncient() == 0)
@@ -107,7 +110,7 @@ function Defend.GetDefendDesireHelper(bot, lane)
 	local nEnemies = J.GetEnemiesAroundAncient()
 
 	local defAcientDesire = BOT_MODE_DESIRE_ABSOLUTE
-	if  nEnemies ~= nil and #nEnemies >= 1
+	if nEnemies >= 1
 	and (GetTower(team, TOWER_MID_3) == nil
 		or (GetTower(team, TOWER_TOP_3) == nil
 			and GetTower(team, TOWER_MID_3) == nil
@@ -137,7 +140,7 @@ function Defend.DefendThink(bot, lane)
 	local saferLoc = J.AdjustLocationWithOffsetTowardsFountain(vDefendLane, 260)
 	local bestTpLoc = J.GetNearbyLocationToTp(saferLoc)
 	local distance = GetUnitToLocationDistance(bot, vDefendLane)
-	if distance > 3500 and not bot:WasRecentlyDamagedByAnyHero(2) then
+	if distance > 3500 then
 		if tps ~= nil and tps:IsFullyCastable() then
 			bot:Action_UseAbilityOnLocation(tps, bestTpLoc + RandomVector(30))
 			return
@@ -145,8 +148,7 @@ function Defend.DefendThink(bot, lane)
 			bot:Action_MoveToLocation(saferLoc + RandomVector(30));
 			return
 		end
-	end
-	if distance > 2000 and distance <= 3500 and not bot:WasRecentlyDamagedByAnyHero(3) then
+	elseif distance > 2000 and distance <= 3500 then
 		bot:Action_AttackMove(saferLoc + RandomVector(30));
 	elseif distance <= 2000 and bot:GetTarget() == nil then
 		local hNearbyEnemyHeroList = J.GetHeroesNearLocation( true, vDefendLane, 1300 )

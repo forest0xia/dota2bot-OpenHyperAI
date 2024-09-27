@@ -23,7 +23,7 @@ import { GameState, AvoidanceZone } from "bots/ts_libs/bots";
 import { Request } from "bots/ts_libs/utils/http_utils/http_req";
 import { add, dot, length2D, multiply, sub } from "bots/ts_libs/utils/native-operators";
 
-export const DebugMode = true;
+export const DebugMode = false;
 
 export const ScriptID = 3246316298;
 
@@ -644,15 +644,15 @@ export function findPathAvoidingZones(startPosition: Vector, endPosition: Vector
 }
 
 export function IsBuildingAttackedByEnemy(building: Unit): Unit | null {
-    // for (const hero of GetUnitList(UnitType.EnemyHeroes)) {
-    //     if (IsValidHero(hero) 
-    //         && ( GetUnitToUnitDistance( building, hero ) <= hero.GetAttackRange() + 200 && hero.GetAttackTarget() == building )) {
-    //         return true;
-    //     }
-    // }
-    if (building.WasRecentlyDamagedByAnyHero(2) || building.WasRecentlyDamagedByCreep(2)) {
-        return building
+    for (const hero of GetUnitList(UnitType.EnemyHeroes)) {
+        if (IsValidHero(hero) 
+            && ( GetUnitToUnitDistance( building, hero ) <= hero.GetAttackRange() + 200 && hero.GetAttackTarget() == building )) {
+            return building;
+        }
     }
+    // if (building.WasRecentlyDamagedByAnyHero(2) || building.WasRecentlyDamagedByCreep(2)) {
+    //     return building
+    // }
 	return null
 }
 

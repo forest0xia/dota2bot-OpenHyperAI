@@ -181,7 +181,7 @@ function ThinkIndividualRoaming()
 	then
 		if bot.vendettaTarget ~= nil
 		then
-			if GetUnitToUnitDistance(bot, bot.vendettaTarget) > bot:GetAttackRange()
+			if GetUnitToUnitDistance(bot, bot.vendettaTarget) > bot:GetAttackRange() + 200
 			then
 				bot:Action_MoveToLocation(bot.vendettaTarget:GetLocation())
 				return
@@ -353,7 +353,7 @@ function ThinkIndividualRoaming()
 	-- Marci
 	if bot:HasModifier("modifier_marci_unleash") then
 		local botTarget = J.GetProperTarget(bot)
-		if botTarget and GetUnitToUnitDistance(bot, botTarget) > bot:GetAttackRange()
+		if botTarget and GetUnitToUnitDistance(bot, botTarget) > bot:GetAttackRange() + 200
 		then
 			bot:Action_MoveToLocation(botTarget:GetLocation())
 			return
@@ -366,7 +366,20 @@ function ThinkIndividualRoaming()
 	if bot:HasModifier("modifier_muerta_pierce_the_veil_buff")
 	then
 		local botTarget = J.GetProperTarget(bot)
-		if botTarget and GetUnitToUnitDistance(bot, botTarget) > bot:GetAttackRange()
+		if botTarget and GetUnitToUnitDistance(bot, botTarget) > bot:GetAttackRange() + 200
+		then
+			bot:Action_MoveToLocation(botTarget:GetLocation())
+			return
+		else
+			bot:Action_AttackUnit(botTarget, false)
+			return
+		end
+	end
+
+	if bot:HasModifier("modifier_faceless_void_chronosphere")
+	then
+		local botTarget = J.GetProperTarget(bot)
+		if botTarget and GetUnitToUnitDistance(bot, botTarget) > bot:GetAttackRange() + 200
 		then
 			bot:Action_MoveToLocation(botTarget:GetLocation())
 			return
@@ -886,7 +899,7 @@ function ConsiderGeneralRoamingInConditions()
 			local cloestEnemy = nInRangeEnemy[1]
 			if (J.IsRunning(cloestEnemy) or J.IsAttacking(cloestEnemy))
 			and cloestEnemy:IsFacingLocation(bot:GetLocation(), 15)
-			and J.IsInRange(bot, cloestEnemy, cloestEnemy:GetAttackRange())
+			and J.IsInRange(bot, cloestEnemy, cloestEnemy:GetAttackRange() + 350)
 			and J.GetHP(cloestEnemy) >= J.GetHP(bot) - 0.2
 			then
 				trySeduce = true
@@ -1233,3 +1246,16 @@ ConsiderHeroSpecificRoaming['npc_dota_hero_muerta'] = function ()
 	end
 	return BOT_MODE_DESIRE_NONE
 end
+
+ConsiderHeroSpecificRoaming['npc_dota_hero_faceless_void'] = function ()
+	if bot:HasModifier("modifier_faceless_void_chronosphere")
+	then
+		local botTarget = J.GetProperTarget(bot)
+		if botTarget ~= nil and J.GetHP(bot) > 0.25
+		and J.IsLocationInChrono(botTarget:GetLocation()) then
+			return BOT_MODE_DESIRE_VERYHIGH
+		end
+	end
+	return BOT_MODE_DESIRE_NONE
+end
+

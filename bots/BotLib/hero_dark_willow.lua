@@ -493,7 +493,7 @@ function X.ConsiderTerrorize()
             -----
             if  J.IsValidHero(allyHero)
             and J.IsCore(allyHero)
-            and allyHero:HasModifier('modifier_faceless_void_chronosphere')
+            and allyHero:HasModifier('modifier_faceless_void_chronosphere_freeze')
             then
                 local nNearbyEnemyWithAlly = J.GetNearbyHeroes(allyHero, 400, true, BOT_MODE_NONE)
 
