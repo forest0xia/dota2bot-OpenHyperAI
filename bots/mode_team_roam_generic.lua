@@ -33,6 +33,7 @@ local SpecialUnitTarget = nil
 local shouldHarass = false
 local harassTarget = nil
 local lastIdleStateCheck = -1
+local isInIdleState = false
 
 
 local PickedItem = nil
@@ -67,8 +68,8 @@ function GetDesire()
 	IsAvoidingAbilityZone = false
 	IsShouldFindTeammates = false
 	-- check if bot is idle
-	if DotaTime() - lastIdleStateCheck >= 2 then
-		J.CheckBotIdleState()
+	if DotaTime() - lastIdleStateCheck >= 1 or isInIdleState then
+		isInIdleState = J.CheckBotIdleState()
 		lastIdleStateCheck = DotaTime()
 	end
 
@@ -297,8 +298,12 @@ function Think()
 		return
 	end
 
-	if  (IsHeroCore or IsSupport)
-	and targetUnit ~= nil and not targetUnit:IsNull() and targetUnit:IsAlive()
+	if isInIdleState then
+		isInIdleState = J.CheckBotIdleState()
+	end
+
+	if (IsHeroCore or IsSupport)
+	and J.Utils.IsValidUnit(targetUnit)
 	then
 		bot:Action_AttackUnit(targetUnit, false)
 		return

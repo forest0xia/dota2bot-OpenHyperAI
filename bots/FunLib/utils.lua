@@ -341,6 +341,7 @@ end
 local ____exports = {}
 local avoidanceZones
 local ____dota = require("bots.ts_libs.dota.index")
+local Barracks = ____dota.Barracks
 local Lane = ____dota.Lane
 local Team = ____dota.Team
 local UnitType = ____dota.UnitType
@@ -389,10 +390,18 @@ function ____exports.projectPointOntoLine(startPoint, endPoint, point)
     )
 end
 require("bots.ts_libs.utils.json")
-____exports.DebugMode = false
+____exports.DebugMode = true
 ____exports.ScriptID = 3246316298
 ____exports.RadiantFountainTpPoint = Vector(-7172, -6652, 384)
 ____exports.DireFountainTpPoint = Vector(6982, 6422, 392)
+____exports.BarrackList = {
+    Barracks.TopMelee,
+    Barracks.TopRanged,
+    Barracks.MidMelee,
+    Barracks.MidRanged,
+    Barracks.BotMelee,
+    Barracks.BotRanged
+}
 ____exports.WisdomRunes = {
     [Team.Radiant] = Vector(-8126, -320, 256),
     [Team.Dire] = Vector(8319, 266, 256)
@@ -883,5 +892,26 @@ function ____exports.drawAvoidanceZones()
 end
 function ____exports.findPathAvoidingZones(startPosition, endPosition)
     return {}
+end
+function ____exports.IsBuildingAttackedByEnemy(building)
+    if building:WasRecentlyDamagedByAnyHero(2) or building:WasRecentlyDamagedByCreep(2) then
+        return building
+    end
+    return nil
+end
+function ____exports.IsAnyBarrackAttackByEnemyHero()
+    for ____, barrackE in ipairs(____exports.BarrackList) do
+        local barrack = GetBarracks(
+            GetTeam(),
+            barrackE
+        )
+        if barrack ~= nil and barrack:GetHealth() > 0 then
+            local bar = ____exports.IsBuildingAttackedByEnemy(barrack)
+            if bar ~= nil then
+                return bar
+            end
+        end
+    end
+    return nil
 end
 return ____exports

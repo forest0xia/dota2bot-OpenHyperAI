@@ -471,7 +471,7 @@ function ThinkGeneralRoaming()
 	if bot:HasModifier("modifier_item_mask_of_madness_berserk") then
 		local botTarget = J.GetProperTarget(bot)
 		if J.IsValid(botTarget) then
-			if GetUnitToUnitDistance(bot, botTarget) > bot:GetAttackRange()
+			if GetUnitToUnitDistance(bot, botTarget) > bot:GetAttackRange() + 200
 			then
 				bot:Action_MoveToLocation(botTarget:GetLocation())
 				return
@@ -814,7 +814,8 @@ end
 
 function ConsiderGeneralRoamingInConditions()
 	if bot:HasModifier("modifier_item_mask_of_madness_berserk") then
-		if J.GetHP(bot) > 0.2 then
+		local botTarget = J.GetProperTarget(bot)
+		if J.IsValid(botTarget) and J.GetHP(bot) > 0.3 then
 			return BOT_ACTION_DESIRE_ABSOLUTE
 		end
 	end
@@ -1073,6 +1074,16 @@ ConsiderHeroSpecificRoaming['npc_dota_hero_puck'] = function ()
 		end
 	end
 	return BOT_MODE_DESIRE_NONE
+end
+
+ConsiderHeroSpecificRoaming['npc_dota_hero_ringmaster'] = function ()
+	if cAbility == nil then cAbility = bot:GetAbilityByName("ringmaster_tame_the_beasts") end
+	if cAbility:IsTrained()
+	then
+		if cAbility:IsInAbilityPhase() or bot:HasModifier("modifier_ringmaster_tame_the_beasts") then
+			return BOT_MODE_DESIRE_ABSOLUTE
+		end
+	end
 end
 
 ConsiderHeroSpecificRoaming['npc_dota_hero_snapfire'] = function ()

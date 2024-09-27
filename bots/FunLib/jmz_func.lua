@@ -5085,9 +5085,10 @@ function J.CheckBotIdleState()
 	if not bot:IsAlive() then return end
 
 	local botName = bot:GetUnitName();
+	local botId = bot:GetPlayerID();
 
 	-- print('Checking bot '..botName..' idle state.')
-	local botState = botIdleStateTracker[botName]
+	local botState = botIdleStateTracker[botId]
 	if botState then
 		if DotaTime() - botState.lastCheckTime >= botIdelStateTimeThreshold then
 			local diffDistance = J.GetLocationToLocationDistance( botState.botLocation, bot:GetLocation())
@@ -5096,23 +5097,28 @@ function J.CheckBotIdleState()
 			and not bot:IsChanneling()
 			and not bot:WasRecentlyDamagedByAnyHero(3)
 			and diffDistance <= deltaIdleDistance -- normally a bot gets stuck if it stopped moving.
-			and bot:GetCurrentActionType() == BOT_ACTION_TYPE_IDLE
 			then
-				
-				local nActions = bot:NumQueuedActions()
-				if nActions > 0 then
-					for i=1, nActions do
-						local aType = bot:GetQueuedActionType(i)
-						print('Bot '..botName.." has enqueued actions i="..i..", type="..tostring(aType))
+				botState.idleCount = botState.idleCount + 1
+				if bot:GetCurrentActionType() == BOT_ACTION_TYPE_IDLE
+				or bot:GetActiveMode() == BOT_MODE_ITEM then
+					local nActions = bot:NumQueuedActions()
+					if nActions > 0 then
+						for i=1, nActions do
+							local aType = bot:GetQueuedActionType(i)
+							print('Bot '..botName.." has enqueued actions i="..i..", type="..tostring(aType))
+						end
 					end
+					bot:Action_ClearActions(true);
+	
+					-- Should send it to most desire farming lane, if in laning or send it to desire push lane.
+					local frontLoc = GetLaneFrontLocation(GetTeam(), bot:GetAssignedLane(), 0);
+					bot:ActionQueue_AttackMove(frontLoc)
+					print('[ERROR] Relocating the idle bot: '..botName..'. Sending it to the lane# it was originally assigned: '..tostring(bot:GetAssignedLane()))
+				else
+					print('Bot '..botName..' is in idle state for unknown reasons.')
 				end
-				bot:Action_ClearActions(true);
-
-				-- Should send it to most desire farming lane, if in laning or send it to desire push lane.
-				local frontLoc = GetLaneFrontLocation(GetTeam(), bot:GetAssignedLane(), 0);
-				bot:ActionQueue_AttackMove(frontLoc)
-				print('[ERROR] Relocating the idle bot: '..botName..'. Sending it to the lane# it was originally assigned: '..tostring(bot:GetAssignedLane()))
 			else
+				botState.idleCount = 0
 				-- print('Bot '..botName..' is not in idle state.')
 			end
 
@@ -5123,9 +5129,10 @@ function J.CheckBotIdleState()
 	else
 		local botIdleState = {
 			botLocation = bot:GetLocation(),
-			lastCheckTime = DotaTime()
+			lastCheckTime = DotaTime(),
+			idleCount = 0
 		}
-		botIdleStateTracker[botName] = botIdleState
+		botIdleStateTracker[botId] = botIdleState
 	end
 end
 

@@ -115,6 +115,7 @@ export function GetDefendDesireHelper(bot: Unit, lane: Lane): BotModeDesire {
         }
     }
 
+    // -- 判断是否要提醒回防
     GameStates.defendPings = GameStates.defendPings || {
         pingedTime: GameTime(),
     };

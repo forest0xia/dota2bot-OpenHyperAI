@@ -10,6 +10,7 @@
 
 require('bots/ts_libs/utils/json');
 import {
+    Barracks,
     BotActionType,
     Lane,
     Ping,
@@ -22,13 +23,13 @@ import { GameState, AvoidanceZone } from "bots/ts_libs/bots";
 import { Request } from "bots/ts_libs/utils/http_utils/http_req";
 import { add, dot, length2D, multiply, sub } from "bots/ts_libs/utils/native-operators";
 
-export const DebugMode = false;
+export const DebugMode = true;
 
 export const ScriptID = 3246316298;
 
 export const RadiantFountainTpPoint = Vector(-7172, -6652, 384);
 export const DireFountainTpPoint = Vector(6982, 6422, 392);
-
+export const BarrackList: Barracks[] = [Barracks.TopMelee, Barracks.TopRanged, Barracks.MidMelee, Barracks.MidRanged, Barracks.BotMelee, Barracks.BotRanged];
 export const WisdomRunes = {
     [Team.Radiant]: Vector(-8126, -320, 256),
     [Team.Dire]: Vector(8319, 266, 256),
@@ -641,3 +642,31 @@ export function findPathAvoidingZones(startPosition: Vector, endPosition: Vector
     // Return a path array of Vectors that avoids the zones
     return [];
 }
+
+export function IsBuildingAttackedByEnemy(building: Unit): Unit | null {
+    // for (const hero of GetUnitList(UnitType.EnemyHeroes)) {
+    //     if (IsValidHero(hero) 
+    //         && ( GetUnitToUnitDistance( building, hero ) <= hero.GetAttackRange() + 200 && hero.GetAttackTarget() == building )) {
+    //         return true;
+    //     }
+    // }
+    if (building.WasRecentlyDamagedByAnyHero(2) || building.WasRecentlyDamagedByCreep(2)) {
+        return building
+    }
+	return null
+}
+
+export function IsAnyBarrackAttackByEnemyHero(): Unit | null {
+    for (const barrackE of BarrackList) {
+        const barrack = GetBarracks( GetTeam(), barrackE)
+        if (barrack != null && barrack.GetHealth() > 0) {
+            const bar = IsBuildingAttackedByEnemy(barrack);
+            if (bar != null) {
+                return bar;
+            }
+        }
+    }
+	return null
+}
+
+
