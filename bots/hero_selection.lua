@@ -25,9 +25,9 @@ local CorrectDireAssignedLanes = false
 local CorrectDirePlayerIndexToLaneIndex = { }
 
 -- Define the upper bound threshold for considering a hero a good fit for a position
-local ROLE_WEIGHT_THRESHOLD = 70
+local ROLE_WEIGHT_THRESHOLD = 60
 -- Only pick the top k result of the heroes that have the heighest weight for the role.
-local ROLE_LIST_TOP_K_LIMIT = 20
+local ROLE_LIST_TOP_K_LIMIT = 25
 
 --[[
 Game Modes
@@ -96,7 +96,7 @@ function GetPositionedPool(heroRoleMap, position)
     local heroList = {}
     for heroName, roleWeights in pairs(heroRoleMap) do
         local weight = roleWeights[position]
-        if weight > RandomInt(0, ROLE_WEIGHT_THRESHOLD) then
+        if weight > RandomInt(5, ROLE_WEIGHT_THRESHOLD) then
             table.insert(heroList, {name = heroName, weight = weight})
         end
     end
@@ -111,6 +111,11 @@ function GetPositionedPool(heroRoleMap, position)
 			return sortedHeroNames
 		end
     end
+	if #sortedHeroNames < 15 then -- in case all selections is unavailable or have been picked.
+		sortedHeroNames = Utils.CombineTablesUnique(sortedHeroNames, GetPositionedPool(heroRoleMap, position))
+	end
+	print("For position: " .. position .. ", pool size count: ".. #sortedHeroNames)
+	Utils.PrintTable(sortedHeroNames)
     return sortedHeroNames
 end
 

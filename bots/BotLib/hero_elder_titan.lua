@@ -47,11 +47,11 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_heavens_halberd",--
 	"item_lotus_orb",--
 	"item_black_king_bar",--
-	"item_aghanims_shard",
 	"item_travel_boots",
 	"item_abyssal_blade",--
 	-- "item_heart",--
 	"item_moon_shard",
+	"item_aghanims_shard",--bugged
     "item_ultimate_scepter_2",
 	"item_travel_boots_2",--
 }
@@ -60,7 +60,6 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_tank_outfit",
 	"item_vanguard",
 	"item_crimson_guard",--
-	"item_aghanims_shard",
 	"item_heavens_halberd",--
     "item_shivas_guard",--
 	"item_assault",--
@@ -68,6 +67,7 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_ultimate_scepter_2",
 	"item_moon_shard",
 	"item_heart",--
+	"item_aghanims_shard",--bugged
 	"item_travel_boots_2",--
 }
 
@@ -77,7 +77,6 @@ sRoleItemsBuyList['pos_4'] = {
 	'item_priest_outfit',
 	"item_mekansm",
 	"item_glimmer_cape",
-	"item_aghanims_shard",
 	"item_guardian_greaves",
 	"item_spirit_vessel",
 	"item_lotus_orb",
@@ -88,6 +87,7 @@ sRoleItemsBuyList['pos_4'] = {
 	"item_mystic_staff",
 	"item_ultimate_scepter_2",
 	"item_shivas_guard",
+	"item_aghanims_shard",--bugged
     "item_moon_shard",
 }
 
@@ -100,13 +100,13 @@ sRoleItemsBuyList['pos_5'] = {
 	"item_lotus_orb",--
 	"item_pipe",--
 	
-	"item_aghanims_shard",
 	"item_spirit_vessel",--
 	"item_ultimate_scepter",
 	"item_shivas_guard",--
 	"item_mystic_staff",
 	"item_ultimate_scepter_2",
     "item_moon_shard",
+	"item_aghanims_shard",--bugged
 	"item_sheepstick",--
 }
 
