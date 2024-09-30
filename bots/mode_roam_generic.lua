@@ -75,7 +75,7 @@ function GetDesire()
 	if specialRoaming then
 		-- return specialRoaming
 		local specialDesire = specialRoaming()
-		if specialDesire > 0 then return Clamp(specialDesire, 0, 0.99) end
+		if specialDesire and specialDesire > 0 then return Clamp(specialDesire, 0, 0.99) end
 	end
 
 	-- general items or conditions.
@@ -1097,6 +1097,7 @@ ConsiderHeroSpecificRoaming['npc_dota_hero_ringmaster'] = function ()
 			return BOT_MODE_DESIRE_ABSOLUTE
 		end
 	end
+	return BOT_MODE_DESIRE_NONE
 end
 
 ConsiderHeroSpecificRoaming['npc_dota_hero_snapfire'] = function ()
