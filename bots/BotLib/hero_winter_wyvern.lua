@@ -608,7 +608,7 @@ function X.ConsiderColdEmbrace()
                 and enemyHero:GetAttackTarget() == allyHero
                 and not J.IsSuspiciousIllusion(enemyHero)
                 then
-                    if allyHero:HasModifier('modifier_legion_commander_duel')
+                    if (allyHero:HasModifier('modifier_legion_commander_duel') and J.GetHP(allyHero) < 0.25)
                     or allyHero:HasModifier('modifier_enigma_black_hole_pull')
                     or allyHero:HasModifier('modifier_faceless_void_chronosphere_freeze')
                     then
