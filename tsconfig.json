@@ -11,6 +11,12 @@
     "lib": [
       "ES2020"
     ],
+    // "plugins": [
+    //   {
+    //     "transform": "./custom-transformer.js",
+    //     "type": "program"
+    //   }
+    // ],
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "target": "ES6",

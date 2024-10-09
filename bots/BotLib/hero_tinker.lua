@@ -69,9 +69,49 @@ sRoleItemsBuyList['pos_3'] = {
 
 sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
 
-sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_3']
+sRoleItemsBuyList['pos_4'] = {
+	"item_tango",
+	"item_tango",
+	"item_double_branches",
+	"item_faerie_fire",
+	"item_blood_grenade",
 
-sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_3']
+	"item_arcane_boots",
+	"item_magic_wand",
+	"item_rod_of_atos",
+	"item_glimmer_cape",--
+	"item_aether_lens",--
+	"item_aghanims_shard",
+	"item_guardian_greaves",--
+	"item_ultimate_scepter",
+	"item_octarine_core",--
+	"item_gungir",--
+	"item_shivas_guard",--
+	"item_ultimate_scepter_2",
+	"item_moon_shard",
+}
+
+sRoleItemsBuyList['pos_5'] = {
+    "item_double_tango",
+    "item_faerie_fire",
+    "item_clarity",
+    "item_blood_grenade",
+
+    "item_boots",
+    "item_urn_of_shadows",
+    "item_tranquil_boots",
+	"item_pipe",
+    "item_spirit_vessel",--
+    "item_glimmer_cape",--
+    "item_pavise",
+    "item_solar_crest",--
+    "item_boots_of_bearing",--
+    "item_octarine_core",--
+    "item_sheepstick",--
+    "item_aghanims_shard",
+    "item_ultimate_scepter_2",
+    "item_moon_shard",
+}
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 

@@ -1,6 +1,6 @@
 --[[ Generated with https://github.com/TypeScriptToLua/TypeScriptToLua ]]
 local ____exports = {}
-local ____enums = require("bots.ts_libs.dota.enums")
+local ____enums = require(GetScriptDirectory().."/ts_libs/dota/enums")
 local BotScriptEnums = ____enums.BotScriptEnums
 local DESIRE_NONE = 0
 local DESIRE_VERY_LOW = 0.1

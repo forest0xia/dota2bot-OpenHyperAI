@@ -7,8 +7,7 @@
  * Can gradually migrate functions into this file as well.
  *
  */
-
-require('bots/ts_libs/utils/json');
+require("bots/ts_libs/utils/json");
 import {
     Barracks,
     BotActionType,
@@ -21,7 +20,13 @@ import {
 } from "../ts_libs/dota";
 import { GameState, AvoidanceZone } from "bots/ts_libs/bots";
 import { Request } from "bots/ts_libs/utils/http_utils/http_req";
-import { add, dot, length2D, multiply, sub } from "bots/ts_libs/utils/native-operators";
+import {
+    add,
+    dot,
+    length2D,
+    multiply,
+    sub,
+} from "bots/ts_libs/utils/native-operators";
 
 export const DebugMode = false;
 
@@ -29,7 +34,14 @@ export const ScriptID = 3246316298;
 
 export const RadiantFountainTpPoint = Vector(-7172, -6652, 384);
 export const DireFountainTpPoint = Vector(6982, 6422, 392);
-export const BarrackList: Barracks[] = [Barracks.TopMelee, Barracks.TopRanged, Barracks.MidMelee, Barracks.MidRanged, Barracks.BotMelee, Barracks.BotRanged];
+export const BarrackList: Barracks[] = [
+    Barracks.TopMelee,
+    Barracks.TopRanged,
+    Barracks.MidMelee,
+    Barracks.MidRanged,
+    Barracks.BotMelee,
+    Barracks.BotRanged,
+];
 export const WisdomRunes = {
     [Team.Radiant]: Vector(-8126, -320, 256),
     [Team.Dire]: Vector(8319, 266, 256),
@@ -54,17 +66,16 @@ let avoidanceZones: AvoidanceZone[] = [];
 export const GameStates: GameState = {
     defendPings: null,
 };
-export const LoneDruid = { } as { [key: number]: any };
+export const LoneDruid = {} as { [key: number]: any };
 export const FrameProcessTime = 0.05;
-
 
 export const EstimatedEnemyRoles = {
     // sample role entry
     npc_dota_hero_any: {
         lane: Lane.Mid,
-        role: 2
-    }
-} as { [key: string]: any }
+        role: 2,
+    },
+} as { [key: string]: any };
 
 export function PrintTable(tbl: any | null, indent: number = 0) {
     if (tbl === null) {
@@ -245,7 +256,7 @@ export function IsValidCreep(target: Unit): boolean {
         !target.IsHero() &&
         (GetBot().GetLevel() > 9 || !target.IsAncientCreep())
     );
-};
+}
 
 // check if the target is a valid building.
 export function IsValidBuilding(target: Unit): boolean {
@@ -330,7 +341,7 @@ export function NumActionTypeInQueue(
     bot: Unit,
     searchedActionType: BotActionType
 ) {
-    let count: number = 0
+    let count: number = 0;
     for (const index of $range(1, bot.NumQueuedActions())) {
         const actionType = bot.GetQueuedActionType(index);
         if (actionType === searchedActionType) {
@@ -527,59 +538,74 @@ export function IsModeTurbo(): boolean {
 
 // TODO: To guess the role of an enemy bot. Role should be determine around 1-2mins in the game based on lanes. In mid-late game, re-determine by networth.
 export function DetermineEnemyBotRole(bot: Unit): number {
-    const botName = bot.GetUnitName()
-    const estimatedRole = EstimatedEnemyRoles[botName]
+    const botName = bot.GetUnitName();
+    const estimatedRole = EstimatedEnemyRoles[botName];
     if (estimatedRole == null) {
-        print(`Enemy bot ${botName} role not cached yet.`)
-        return 3
+        print(`Enemy bot ${botName} role not cached yet.`);
+        return 3;
     }
 
-    return estimatedRole.role
+    return estimatedRole.role;
 }
 
 // TODO: Just trying. Does not work.
 export function QueryCounters(heroId: number) {
-    print("heroId=" + heroId)
-    Request.RawGetRequest(`https://api.opendota.com/api/heroes/${heroId}/matchups`, function(res) {
-        PrintTable(res)
-    })
+    print("heroId=" + heroId);
+    Request.RawGetRequest(
+        `https://api.opendota.com/api/heroes/${heroId}/matchups`,
+        function (res) {
+            PrintTable(res);
+        }
+    );
 }
 
 export function GetLoneDruid(bot: Unit): any {
-    let res = LoneDruid[bot.GetPlayerID()]
+    let res = LoneDruid[bot.GetPlayerID()];
     if (res === null) {
-        LoneDruid[bot.GetPlayerID()] = {}
-        res = LoneDruid[bot.GetPlayerID()]
+        LoneDruid[bot.GetPlayerID()] = {};
+        res = LoneDruid[bot.GetPlayerID()];
     }
     return res;
 }
 
 export function TrimString(str: string): string {
-	return str.trim();
+    return str.trim();
 }
 
 /**
  * TODO: AvoidanceZone work in progress.
- * 
+ *
  * Example: Adds a zone that expires after 10 seconds: addCustomAvoidanceZone(Vector(1000, 2000), 500, 10);
  * Example: Adds a zone lasts indefinitely: addCustomAvoidanceZone(Vector(1000, 2000), 500);
- * @param center 
- * @param radius 
- * @param duration 
+ * @param center
+ * @param radius
+ * @param duration
  */
-export function addCustomAvoidanceZone(center: Vector, radius: number, duration?: number): void {
+export function addCustomAvoidanceZone(
+    center: Vector,
+    radius: number,
+    duration?: number
+): void {
     const currentTime = DotaTime();
-    const expirationTime = duration !== undefined ? currentTime + duration : Number.POSITIVE_INFINITY;
+    const expirationTime =
+        duration !== undefined
+            ? currentTime + duration
+            : Number.POSITIVE_INFINITY;
 
     avoidanceZones.push({ center, radius, expirationTime });
 }
 
 export function cleanExpiredAvoidanceZones(): void {
     const currentTime = DotaTime();
-    avoidanceZones = avoidanceZones.filter(zone => zone.expirationTime > currentTime);
+    avoidanceZones = avoidanceZones.filter(
+        zone => zone.expirationTime > currentTime
+    );
 }
 
-export function getCustomAvoidanceZones(): Array<{ center: Vector; radius: number }> {
+export function getCustomAvoidanceZones(): Array<{
+    center: Vector;
+    radius: number;
+}> {
     return avoidanceZones;
 }
 
@@ -593,36 +619,57 @@ export function isPositionInAvoidanceZone(position: Vector): boolean {
     return false;
 }
 
-export function moveToPositionAvoidingZones(bot: Unit, targetPosition: Vector): void {
+export function moveToPositionAvoidingZones(
+    bot: Unit,
+    targetPosition: Vector
+): void {
     if (isPositionInAvoidanceZone(targetPosition)) {
-        const safePosition = findSafePosition(bot.GetLocation(), targetPosition);
+        const safePosition = findSafePosition(
+            bot.GetLocation(),
+            targetPosition
+        );
         bot.Action_MoveToLocation(safePosition);
     } else {
         bot.Action_MoveToLocation(targetPosition);
     }
 }
 
-export function findSafePosition(currentPosition: Vector, targetPosition: Vector): Vector {
+export function findSafePosition(
+    currentPosition: Vector,
+    targetPosition: Vector
+): Vector {
     // Move towards the target but stop before entering the avoidance zone
     const direction = sub(targetPosition, currentPosition).Normalized();
     const safeDistance = getSafeDistance(currentPosition, targetPosition);
     return add(currentPosition, multiply(direction, safeDistance));
 }
 
-export function getSafeDistance(currentPosition: Vector, targetPosition: Vector): number {
+export function getSafeDistance(
+    currentPosition: Vector,
+    targetPosition: Vector
+): number {
     const maxDistance = length2D(sub(targetPosition, currentPosition));
     for (const zone of avoidanceZones) {
-        const projectedPoint = projectPointOntoLine(currentPosition, targetPosition, zone.center);
+        const projectedPoint = projectPointOntoLine(
+            currentPosition,
+            targetPosition,
+            zone.center
+        );
         const distanceToZone = length2D(sub(projectedPoint, zone.center));
         if (distanceToZone <= zone.radius) {
-            const distanceToAvoid = length2D(sub(projectedPoint, currentPosition)) - zone.radius;
+            const distanceToAvoid =
+                length2D(sub(projectedPoint, currentPosition)) - zone.radius;
             return Math.max(0, distanceToAvoid);
         }
     }
     return maxDistance;
 }
 
-export function projectPointOntoLine(startPoint: Vector, endPoint: Vector, point: Vector): Vector {
+export function projectPointOntoLine(
+    startPoint: Vector,
+    endPoint: Vector,
+    point: Vector
+): Vector {
     const lineDir = sub(endPoint, startPoint).Normalized();
     const toPoint = sub(point, startPoint);
     const projectionLength = dot(toPoint, lineDir);
@@ -635,8 +682,12 @@ export function drawAvoidanceZones(): void {
     }
 }
 
-// @ts-ignore
-export function findPathAvoidingZones(startPosition: Vector, endPosition: Vector): Vector[] {
+export function findPathAvoidingZones(
+    // @ts-ignore
+    startPosition: Vector,
+    // @ts-ignore
+    endPosition: Vector
+): Vector[] {
     // Implement A* pathfinding algorithm here
     // Each node should check for collision with avoidance zones
     // Return a path array of Vectors that avoids the zones
@@ -645,20 +696,24 @@ export function findPathAvoidingZones(startPosition: Vector, endPosition: Vector
 
 export function IsBuildingAttackedByEnemy(building: Unit): Unit | null {
     for (const hero of GetUnitList(UnitType.EnemyHeroes)) {
-        if (IsValidHero(hero) 
-            && ( GetUnitToUnitDistance( building, hero ) <= hero.GetAttackRange() + 200 && hero.GetAttackTarget() == building )) {
+        if (
+            IsValidHero(hero) &&
+            GetUnitToUnitDistance(building, hero) <=
+                hero.GetAttackRange() + 200 &&
+            hero.GetAttackTarget() == building
+        ) {
             return building;
         }
     }
     // if (building.WasRecentlyDamagedByAnyHero(2) || building.WasRecentlyDamagedByCreep(2)) {
     //     return building
     // }
-	return null
+    return null;
 }
 
 export function IsAnyBarrackAttackByEnemyHero(): Unit | null {
     for (const barrackE of BarrackList) {
-        const barrack = GetBarracks( GetTeam(), barrackE)
+        const barrack = GetBarracks(GetTeam(), barrackE);
         if (barrack != null && barrack.GetHealth() > 0) {
             const bar = IsBuildingAttackedByEnemy(barrack);
             if (bar != null) {
@@ -666,7 +721,5 @@ export function IsAnyBarrackAttackByEnemyHero(): Unit | null {
             }
         }
     }
-	return null
+    return null;
 }
-
-

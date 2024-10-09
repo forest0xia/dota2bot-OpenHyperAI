@@ -30,8 +30,8 @@ end
 -- End of Lua Library inline imports
 local ____exports = {}
 local furthestBuildings, PING_TIME_DELTA
-local jmz = require("bots.FunLib.jmz_func")
-local ____dota = require("bots.ts_libs.dota.index")
+local jmz = require(GetScriptDirectory().."/FunLib/jmz_func")
+local ____dota = require(GetScriptDirectory().."/ts_libs/dota/index")
 local Barracks = ____dota.Barracks
 local BotActionDesire = ____dota.BotActionDesire
 local BotMode = ____dota.BotMode
@@ -39,11 +39,11 @@ local BotModeDesire = ____dota.BotModeDesire
 local Lane = ____dota.Lane
 local Tower = ____dota.Tower
 local UnitType = ____dota.UnitType
-local ____utils = require("bots.FunLib.utils")
+local ____utils = require(GetScriptDirectory().."/FunLib/utils")
 local GameStates = ____utils.GameStates
 local IsPingedByAnyPlayer = ____utils.IsPingedByAnyPlayer
 local IsValidHero = ____utils.IsValidHero
-local ____native_2Doperators = require("bots.ts_libs.utils.native-operators")
+local ____native_2Doperators = require(GetScriptDirectory().."/ts_libs/utils/native-operators")
 local add = ____native_2Doperators.add
 function ____exports.GetDefendDesireHelper(bot, lane)
     local defendDesire = 0

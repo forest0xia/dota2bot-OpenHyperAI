@@ -4,7 +4,6 @@
     "repository": "https://github.com/forest0xia/dota2bot-OpenHyperAI",
     "author": "",
     "license": "MIT",
-    "dependencies": {},
     "devDependencies": {
         "@types/node": "^22.5.4",
         "lua-types": "^2.13.1",
@@ -13,8 +12,10 @@
         "typescript-to-lua": "^1.26.2"
     },
     "scripts": {
-        "build": "tstl",
+        "build": "tstl && node ./post-process/post-process-lua.js",
         "dev": "tstl --watch",
-        "prettier": "prettier ./bots ./typescript --write"
+        "prettier": "prettier ./bots ./typescript --write",
+        "update-version": "node ./post-process/update-version.js",
+        "release": "node ./post-process/update-version.js && npm run build && npm run prettier"
     }
 }

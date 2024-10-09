@@ -375,7 +375,8 @@ function Settings:OpenAIResponse(text, playerID, teamonly)
 		for _, player in ipairs(AllUnits) do
 			if player.stats.id == playerID and not player.stats.isBot then
 				-- local kda = player:GetKills()..'/'..player:GetDeaths()..'/'..player:GetAssists()
-				Chat:SendMessageToBackend(text, { name = player.stats.name, team = player.stats.team == 2 and 'Radiant' or 'Dire', steamId = tostring(player.stats.steamId) }) -- level = player:GetLevel(), kda = kda })
+				Chat:SendMessageToBackend(text, { name = player.stats.name, game_difficulty = tostring(Settings.difficulty) .. ' out of ' .. Settings.difficultyMax,
+					team = player.stats.team == 2 and 'Radiant' or 'Dire', steamId = tostring(player.stats.steamId) }) -- level = player:GetLevel(), kda = kda })
 			end
 		end
 	end

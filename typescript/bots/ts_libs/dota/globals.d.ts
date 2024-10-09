@@ -32,7 +32,13 @@ declare global {
 
     function DotaTime(): number;
 
-    function DebugDrawCircle( vCenter: Vector, fRadius: number, nRed: number, nGreen: number, nBlue: number ): void;
+    function DebugDrawCircle(
+        vCenter: Vector,
+        fRadius: number,
+        nRed: number,
+        nGreen: number,
+        nBlue: number
+    ): void;
 
     function GetSelectedHeroName(nPlayerID: number): string;
 
@@ -63,7 +69,10 @@ declare global {
 
     interface HTTPRequest {
         SetHTTPRequestRawPostBody(contentType: string, body: string): void;
-        SetHTTPRequestGetOrPostParameter(aString: string, bString: string): boolean;
+        SetHTTPRequestGetOrPostParameter(
+            aString: string,
+            bString: string
+        ): boolean;
         Send(callback: (result: any) => void): void;
     }
 

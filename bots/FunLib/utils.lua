@@ -340,14 +340,14 @@ end
 -- End of Lua Library inline imports
 local ____exports = {}
 local avoidanceZones
-local ____dota = require("bots.ts_libs.dota.index")
+local ____dota = require(GetScriptDirectory().."/ts_libs/dota/index")
 local Barracks = ____dota.Barracks
 local Lane = ____dota.Lane
 local Team = ____dota.Team
 local UnitType = ____dota.UnitType
-local ____http_req = require("bots.ts_libs.utils.http_utils.http_req")
+local ____http_req = require(GetScriptDirectory().."/ts_libs/utils/http_utils/http_req")
 local Request = ____http_req.Request
-local ____native_2Doperators = require("bots.ts_libs.utils.native-operators")
+local ____native_2Doperators = require(GetScriptDirectory().."/ts_libs/utils/native-operators")
 local add = ____native_2Doperators.add
 local dot = ____native_2Doperators.dot
 local length2D = ____native_2Doperators.length2D
@@ -389,7 +389,7 @@ function ____exports.projectPointOntoLine(startPoint, endPoint, point)
         multiply(lineDir, projectionLength)
     )
 end
-require("bots.ts_libs.utils.json")
+require(GetScriptDirectory().."/ts_libs/utils/json")
 ____exports.DebugMode = false
 ____exports.ScriptID = 3246316298
 ____exports.RadiantFountainTpPoint = Vector(-7172, -6652, 384)
@@ -895,7 +895,7 @@ function ____exports.findPathAvoidingZones(startPosition, endPosition)
 end
 function ____exports.IsBuildingAttackedByEnemy(building)
     for ____, hero in ipairs(GetUnitList(UnitType.EnemyHeroes)) do
-        if ____exports.IsValidHero(hero) and (GetUnitToUnitDistance(building, hero) <= hero:GetAttackRange() + 200 and hero:GetAttackTarget() == building) then
+        if ____exports.IsValidHero(hero) and GetUnitToUnitDistance(building, hero) <= hero:GetAttackRange() + 200 and hero:GetAttackTarget() == building then
             return building
         end
     end

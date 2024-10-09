@@ -16,7 +16,11 @@ import {
     UnitType,
 } from "../ts_libs/dota";
 import { hero_is_healing } from "../FunLib/aba_buff";
-import { GetTeamFountainTpPoint, HasAnyEffect, IsValidHero } from "../FunLib/utils";
+import {
+    GetTeamFountainTpPoint,
+    HasAnyEffect,
+    IsValidHero,
+} from "../FunLib/utils";
 
 const bot = GetBot();
 // @ts-ignore
@@ -145,7 +149,7 @@ function ShouldUseOvercharge(ally: Unit) {
 
 function considerTether(): LuaMultiReturn<[number, Unit | null]> {
     if (!bot.HasModifier("modifier_wisp_tether")) {
-        bot.stateTetheredHero = null
+        bot.stateTetheredHero = null;
     }
     if (!abilityTether.IsFullyCastable() || !abilityBreakTether.IsHidden()) {
         return $multi(BotActionDesire.None, null);
@@ -208,23 +212,41 @@ function considerRelocate(): LuaMultiReturn<[number, Location | null]> {
         bot.stateTetheredHero !== null &&
         (jmz.GetHP(bot.stateTetheredHero) <= 0.2 || jmz.GetHP(bot) <= 0.2)
     ) {
-        const allyNearbyEnemies = bot.stateTetheredHero.GetNearbyHeroes(1200, true, BotMode.None);
-        if ((allyNearbyEnemies.length >= 1 && jmz.GetHP(bot.stateTetheredHero) < jmz.GetHP(allyNearbyEnemies[0])) || (nearbyEnemies.length >= 1 && jmz.GetHP(bot) < jmz.GetHP(nearbyEnemies[0]))) {
+        const allyNearbyEnemies = bot.stateTetheredHero.GetNearbyHeroes(
+            1200,
+            true,
+            BotMode.None
+        );
+        if (
+            (allyNearbyEnemies.length >= 1 &&
+                jmz.GetHP(bot.stateTetheredHero) <
+                    jmz.GetHP(allyNearbyEnemies[0])) ||
+            (nearbyEnemies.length >= 1 &&
+                jmz.GetHP(bot) < jmz.GetHP(nearbyEnemies[0]))
+        ) {
             return $multi(BotActionDesire.High, GetTeamFountainTpPoint());
         }
     }
     if (!bot.HasModifier("modifier_wisp_tether")) {
-        if (nearbyEnemies.length >= 1 && jmz.GetHP(bot) < jmz.GetHP(nearbyEnemies[0])) {
+        if (
+            nearbyEnemies.length >= 1 &&
+            jmz.GetHP(bot) < jmz.GetHP(nearbyEnemies[0])
+        ) {
             return $multi(BotActionDesire.High, GetTeamFountainTpPoint());
         }
     }
 
     for (const ally of GetUnitList(UnitType.AlliedHeroes)) {
-        if (IsValidHero(ally) && jmz.IsInTeamFight(ally, 1200) && GetUnitToUnitDistance(bot, ally) > 3000 && ally.WasRecentlyDamagedByAnyHero(2)) {
+        if (
+            IsValidHero(ally) &&
+            jmz.IsInTeamFight(ally, 1200) &&
+            GetUnitToUnitDistance(bot, ally) > 3000 &&
+            ally.WasRecentlyDamagedByAnyHero(2)
+        ) {
             return $multi(BotActionDesire.High, ally.GetLocation());
         }
     }
-    
+
     return $multi(BotActionDesire.None, null);
 }
 
@@ -232,7 +254,7 @@ function SkillsComplement() {
     if (jmz.CanNotUseAbility(bot) || bot.IsInvisible()) {
         return;
     }
-    
+
     nearbyEnemies = bot.GetNearbyHeroes(1600, true, BotMode.None);
 
     const [tetherDesire, tetherTarget] = considerTether();

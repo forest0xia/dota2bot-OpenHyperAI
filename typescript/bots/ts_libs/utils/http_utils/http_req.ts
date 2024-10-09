@@ -1,20 +1,20 @@
 /**
- * In game Http request layer. 
- * 
+ * In game Http request layer.
+ *
  * Will be used to:
  * 1. Interact with backend services enpowered with machine learning AI. ML AI is the way out.
  * 2. Dynamically load hero builds from 3rd party sources like dotabuff in game.
- * 
+ *
  * Please feel very welcome to help us utilize the existing functionality to build more challenging bots!
  */
-const JSON = require('../json');
+const JSON = require("../json");
 
 export interface RequestData {
     uuid: string;
     gameTime: number;
     requestBody: {
         [key: string]: any;
-    }
+    };
 }
 export interface ResultData {
     [key: string]: any;
@@ -28,32 +28,36 @@ export class Request {
 
     static HttpPost(
         postData: RequestData,
-        api: Api, 
-        callback?: (res: string) => void)
-    {
+        api: Api,
+        callback?: (res: string) => void
+    ) {
         if (this.UUID !== null) {
-            return Request.RawPostRequest(`${Request.BASE_URL}/${api}`, callback, postData)
+            return Request.RawPostRequest(
+                `${Request.BASE_URL}/${api}`,
+                callback,
+                postData
+            );
         } else {
             return this.GetUUID(callback);
         }
     }
 
     static GetUUID(callback?: (uuid: string) => void) {
-        return Request.RawPostRequest(`${Request.BASE_URL}/uuid`, callback)
+        return Request.RawPostRequest(`${Request.BASE_URL}/uuid`, callback);
     }
 
     static RawPostRequest(
-        url: string, 
+        url: string,
         callback?: (res: any) => void,
-        postData?: RequestData)
-    {
-        const reqData = JSON.encode(postData)
+        postData?: RequestData
+    ) {
+        const reqData = JSON.encode(postData);
         const req = CreateRemoteHTTPRequest(url);
         req.SetHTTPRequestRawPostBody("application/json", reqData);
         req.Send((result: any) => {
-            print(`Raw ${url} Result: ${result}`)
+            print(`Raw ${url} Result: ${result}`);
             let resultData: ResultData = JSON.decode(result);
-            print(`Jsonified result: ${resultData}`)
+            print(`Jsonified result: ${resultData}`);
             if (callback) {
                 callback(result);
             }
@@ -61,14 +65,11 @@ export class Request {
         return req;
     }
 
-    static RawGetRequest(
-        url: string, 
-        callback?: (res: any) => void)
-    {
+    static RawGetRequest(url: string, callback?: (res: any) => void) {
         const req = CreateRemoteHTTPRequest(url);
         // req.SetHTTPRequestGetOrPostParameter("", "")
         req.Send((result: any) => {
-            print(`Raw ${url} Result: ${result}`)
+            print(`Raw ${url} Result: ${result}`);
             // let resultData: ResultData = JSON.decode(result);
             // print(`Jsonified result: ${resultData}`)
             if (callback) {
@@ -77,5 +78,4 @@ export class Request {
         });
         return req;
     }
-    
 }

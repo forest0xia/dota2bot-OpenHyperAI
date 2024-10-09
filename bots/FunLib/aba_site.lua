@@ -95,7 +95,7 @@ local function __TS__ArraySplice(self, ...)
 end
 -- End of Lua Library inline imports
 local ____exports = {}
-local ____dota = require("bots.ts_libs.dota.index")
+local ____dota = require(GetScriptDirectory().."/ts_libs/dota/index")
 local BotModeDesire = ____dota.BotModeDesire
 local UnitType = ____dota.UnitType
 local BotMode = ____dota.BotMode
@@ -103,7 +103,7 @@ local Team = ____dota.Team
 local Tower = ____dota.Tower
 local Rune = ____dota.Rune
 local Shop = ____dota.Shop
-local ____utils = require("bots.FunLib.utils")
+local ____utils = require(GetScriptDirectory().."/FunLib/utils")
 local HasItem = ____utils.HasItem
 local GetLocationToLocationDistance = ____utils.GetLocationToLocationDistance
 local GetOffsetLocationTowardsTargetLocation = ____utils.GetOffsetLocationTowardsTargetLocation

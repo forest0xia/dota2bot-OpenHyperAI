@@ -742,7 +742,7 @@ export const IsTimeToFarm = function (bot: Unit): boolean {
     if (considerFarmForBot !== undefined) {
         return considerFarmForBot();
     } else {
-        return ConsiderIsTimeToFarm["default"]()
+        return ConsiderIsTimeToFarm["default"]();
     }
 
     return false;
@@ -854,15 +854,27 @@ ConsiderIsTimeToFarm["npc_dota_hero_arc_warden"] = function () {
         return true;
     }
 
-    if (HasItem(bot, "item_gloves") && !HasItem(bot, "item_hand_of_midas") && bot.GetGold() > 800) {
+    if (
+        HasItem(bot, "item_gloves") &&
+        !HasItem(bot, "item_hand_of_midas") &&
+        bot.GetGold() > 800
+    ) {
         return true;
     }
 
-    if (HasItem(bot, "item_yasha") && !HasItem(bot, "item_manta") && bot.GetGold() > 1000) {
+    if (
+        HasItem(bot, "item_yasha") &&
+        !HasItem(bot, "item_manta") &&
+        bot.GetGold() > 1000
+    ) {
         return true;
     }
 
-    if (HasItem(bot, "item_hand_of_midas") && GetAroundAllyCount(bot, 1200) <= 3 && botNetWorth <= 26000) {
+    if (
+        HasItem(bot, "item_hand_of_midas") &&
+        GetAroundAllyCount(bot, 1200) <= 3 &&
+        botNetWorth <= 26000
+    ) {
         return true;
     }
 
@@ -958,7 +970,11 @@ ConsiderIsTimeToFarm["npc_dota_hero_dragon_knight"] = function () {
             return true;
         }
 
-        if (bot.GetMana() > 450 && bot.GetCurrentVisionRange() < 1000 && allyCount < 2) {
+        if (
+            bot.GetMana() > 450 &&
+            bot.GetCurrentVisionRange() < 1000 &&
+            allyCount < 2
+        ) {
             return true;
         }
     }
@@ -979,15 +995,26 @@ ConsiderIsTimeToFarm["npc_dota_hero_drow_ranger"] = function () {
         return true;
     }
 
-    if (HasItem(bot, "item_blade_of_alacrity") && !HasItem(bot, "item_ultimate_scepter")) {
+    if (
+        HasItem(bot, "item_blade_of_alacrity") &&
+        !HasItem(bot, "item_ultimate_scepter")
+    ) {
         return true;
     }
 
-    if (HasItem(bot, "item_shadow_amulet") && !HasItem(bot, "item_invis_sword") && bot.GetGold() > 400) {
+    if (
+        HasItem(bot, "item_shadow_amulet") &&
+        !HasItem(bot, "item_invis_sword") &&
+        bot.GetGold() > 400
+    ) {
         return true;
     }
 
-    if (HasItem(bot, "item_yasha") && !HasItem(bot, "item_manta") && bot.GetGold() > 1000) {
+    if (
+        HasItem(bot, "item_yasha") &&
+        !HasItem(bot, "item_manta") &&
+        bot.GetGold() > 1000
+    ) {
         return true;
     }
 
@@ -1302,10 +1329,18 @@ ConsiderIsTimeToFarm["npc_dota_hero_sniper"] = function () {
     const bot = GetBot();
     const botNetWorth = bot.GetNetWorth();
 
-    if (bot.GetLevel() >= 10 && !HasItem(bot, "item_monkey_king_bar") && botNetWorth < 22000) {
+    if (
+        bot.GetLevel() >= 10 &&
+        !HasItem(bot, "item_monkey_king_bar") &&
+        botNetWorth < 22000
+    ) {
         const botKills = GetHeroKills(bot.GetPlayerID());
         const botDeaths = GetHeroDeaths(bot.GetPlayerID());
-        if (botKills - 3 <= botDeaths && botDeaths > 2 && GetAroundAllyCount(bot, 1200) <= 2) {
+        if (
+            botKills - 3 <= botDeaths &&
+            botDeaths > 2 &&
+            GetAroundAllyCount(bot, 1200) <= 2
+        ) {
             return true;
         }
     }
@@ -1351,7 +1386,11 @@ ConsiderIsTimeToFarm["npc_dota_hero_viper"] = function () {
     const bot = GetBot();
     const botNetWorth = bot.GetNetWorth();
 
-    if (bot.GetLevel() >= 10 && !HasItem(bot, "item_mjollnir") && botNetWorth < 20000) {
+    if (
+        bot.GetLevel() >= 10 &&
+        !HasItem(bot, "item_mjollnir") &&
+        botNetWorth < 20000
+    ) {
         const botKills = GetHeroKills(bot.GetPlayerID());
         const botDeaths = GetHeroDeaths(bot.GetPlayerID());
         const allyCount = GetAroundAllyCount(bot, 1300);
@@ -1359,7 +1398,11 @@ ConsiderIsTimeToFarm["npc_dota_hero_viper"] = function () {
             return true;
         }
 
-        if (bot.GetMana() > 650 && bot.GetCurrentVisionRange() < 1000 && allyCount <= 1) {
+        if (
+            bot.GetMana() > 650 &&
+            bot.GetCurrentVisionRange() < 1000 &&
+            allyCount <= 1
+        ) {
             return true;
         }
     }
@@ -2032,9 +2075,7 @@ ConsiderIsTimeToFarm["default"] = function () {
     const bot = GetBot();
     const botNetWorth = bot.GetNetWorth();
 
-    if (!IsInLaningPhase() 
-        && GetPosition(bot) < 3) 
-    {
+    if (!IsInLaningPhase() && GetPosition(bot) < 3) {
         if (bot.GetLevel() < 10 || botNetWorth < 6000) return true;
         if (bot.GetLevel() < 15 || botNetWorth < 8000) return true;
         if (bot.GetLevel() < 20 || botNetWorth < 15000) return true;

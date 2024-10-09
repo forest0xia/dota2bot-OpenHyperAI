@@ -1,5 +1,5 @@
 LinkLuaModifier("modifier_fret_damage_increase", "FretBots/modifiers/modifier_seasonal_party_hat.lua", LUA_MODIFIER_MOTION_NONE)
-
+if GetScriptDirectory == nil then GetScriptDirectory = function() return "bots" end end
 -- Version information
 local Version = require 'bots.FunLib.version'
 -- Print version to console

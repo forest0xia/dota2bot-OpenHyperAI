@@ -8,14 +8,14 @@ local function __TS__Class(self)
 end
 -- End of Lua Library inline imports
 local ____exports = {}
---- In game Http request layer. 
+--- In game Http request layer.
 -- 
 -- Will be used to:
 -- 1. Interact with backend services enpowered with machine learning AI. ML AI is the way out.
 -- 2. Dynamically load hero builds from 3rd party sources like dotabuff in game.
 -- 
 -- Please feel very welcome to help us utilize the existing functionality to build more challenging bots!
-local JSON = require("bots.ts_libs.utils.json")
+local JSON = require(GetScriptDirectory().."/ts_libs/utils/json")
 ____exports.Request = __TS__Class()
 local Request = ____exports.Request
 Request.name = "Request"

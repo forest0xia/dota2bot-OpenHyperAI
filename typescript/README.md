@@ -4,8 +4,8 @@ Future development work for this script will be written in ts as possible. In lo
 
 Starting from here, please use typescript to write the bot logic in ts and build to generate the relative lua files.
 
-* More about "Write Lua with TypeScript": https://typescripttolua.github.io/
-* More about Typescript: https://www.typescriptlang.org/
+-   More about "Write Lua with TypeScript": https://typescripttolua.github.io/
+-   More about Typescript: https://www.typescriptlang.org/
 
 ### Developer notes
 
@@ -19,4 +19,8 @@ Starting from here, please use typescript to write the bot logic in ts and build
 1. Install yarn. `npm install --global yarn`
 1. Install dependencies. `yarn install`
 1. Run a watcher process to keep re-compiling code for any newly saved changes in TS: `npm run dev`
-    * Or, compile to generate lua files only once: `npm run build`
+    - Or, compile to generate lua files only once: `npm run build`
+
+## Release a new version of the bot script
+
+1. Before releasing a new version, run: `npm run release`
