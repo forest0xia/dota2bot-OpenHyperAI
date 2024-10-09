@@ -66,8 +66,7 @@ X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 X['sSellList'] = {
 
-	"item_black_king_bar",
-	"item_quelling_blade",
+	"item_black_king_bar"
 }
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_PA' }, {"item_power_treads", 'item_quelling_blade'} end
