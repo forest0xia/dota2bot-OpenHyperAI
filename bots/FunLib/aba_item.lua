@@ -348,7 +348,7 @@ Item['tEarlyConsumableItem'] = {
 	 'item_flask',
 	 'item_infused_raindrop',
 	 'item_magic_stick',
-	 'item_quelling_blade',
+	--  'item_quelling_blade', -- for bf.
 	 'item_branches',
 	 -- 'item_magic_wand',
 	 'item_blood_grenade',
@@ -397,9 +397,6 @@ Item['sSellList'] = {
 	"item_shivas_guard",
 	'item_magic_wand',
 
-	"item_power_treads",
-	"item_quelling_blade",
-
 	"item_lotus_orb",
 	"item_quelling_blade",
 
@@ -410,6 +407,9 @@ Item['sSellList'] = {
 	"item_magic_wand",
 
 	"item_travel_boots",
+	"item_phase_boots",
+
+	"item_travel_boots_2",
 	"item_phase_boots",
 
 	"item_travel_boots",
