@@ -363,9 +363,8 @@ function J.IsOtherAllyCanKillTarget( bot, target )
 	for i = 1, #nTeamMember
 	do
 		local ally = GetTeamMember( i )
-		if ally ~= nil
+		if J.IsValidTarget(ally)
 			and ally ~= bot
-			and ally:IsAlive()
 			and not J.IsDisabled( ally )
 			and ally:GetHealth() / ally:GetMaxHealth() > 0.15
 			and ally:IsFacingLocation( target:GetLocation(), 20 )
@@ -3951,6 +3950,7 @@ function J.GetStrongestUnit(nRange, hUnit, bEnemy, bMagicImune, fTime)
 
 	for i = 1, #units do
 		if J.IsValidTarget(units[i])
+		and J.IsValidTarget(hUnit)
 		and ((bMagicImune == true and J.CanCastOnMagicImmune(units[i]) == true) or (bMagicImune == false and J.CanCastOnNonMagicImmune(units[i]) == true))
 		then
 			local power = units[i]:GetEstimatedDamageToTarget(true, hUnit, fTime, DAMAGE_TYPE_ALL)

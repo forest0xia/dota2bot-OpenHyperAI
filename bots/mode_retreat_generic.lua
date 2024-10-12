@@ -99,6 +99,7 @@ function GetDesire()
 		-- 别被近战近身
 		for _, enemy in pairs(nEnemyHeroes) do
 			if J.IsValidHero(enemy)
+			and not bot.isBear
 			and enemy:GetAttackRange() < 400
 			and bot:GetAttackRange() > 400
 			and GetUnitToUnitDistance( bot, enemy ) < enemy:GetAttackRange() + 260
@@ -211,6 +212,10 @@ function GetDesire()
 	possibleMaxDesire = possibleMaxDesire / maxDesireReduceRate
 
 	local clampedDesire = RemapValClamped(retreatDesire, 0, possibleMaxDesire, 0, 1)
+
+	if bot.isBear then
+		clampedDesire = clampedDesire * 0.7
+	end
 
 	-- print('Retreat mode, bot: '..botName..', clamped desire: ' .. tostring(clampedDesire))
 

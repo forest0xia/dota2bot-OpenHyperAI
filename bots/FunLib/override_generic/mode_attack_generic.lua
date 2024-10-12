@@ -43,9 +43,9 @@ function X.GetDesire()
 	attackSpeed = bot:GetAttackSpeed()
 	timeToAttack = attackPoint -- / attackSpeed
 
-	if J.GetModifierTime(bot, "modifier_muerta_pierce_the_veil_buff") > 0.5
+	if J.GetModifierTime(bot, "modifier_muerta_pierce_the_veil_buff") > 1
 	then
-		return BOT_MODE_DESIRE_VERYHIGH
+		return BOT_MODE_DESIRE_VERYHIGH * 1.1
 	end
 
 	-- going on killing a target
@@ -119,7 +119,14 @@ function GetDesireBasedOnHp(target)
 			return BOT_ACTION_DESIRE_NONE
 		end
 	end
-	return RemapValClamped(J.GetHP(bot), 0, 1, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_ABSOLUTE * 0.98 )
+
+	local clampedDesire = RemapValClamped(J.GetHP(bot), 0, 1, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_ABSOLUTE * 0.98 )
+
+	if bot.isBear then
+		clampedDesire = clampedDesire * 1.3
+	end
+
+	return clampedDesire
 end
 
 function X.Think()

@@ -18,7 +18,6 @@ Thanks and kudos to all that contributed to make bot games fun and exciting.
 1. For players to have fun with chill by playing/practicing against the bots that can play ALL Dota2 heroes. 
 1. Bots are meant to be for chill games, if you are looking for more competitive bots than the existing ones, please stop complaining and help us build it with constructive effort.
 
-
 ## Why it's enjoyable
 0. Support 7.37
 1. Support ALL 125 heroes! You will see bots playing Ringmaster, Invoker, Techies, Meepo, Lone Druid, Dark Willow, Hoodwink, io, Muerta, Primal Beast, etc. Just note that some of the newly added ones are not very strong and in progress to be further enhanced.
@@ -41,10 +40,8 @@ Thanks and kudos to all that contributed to make bot games fun and exciting.
    1. `!pick XXX` During hero selection phase, you can type: `!pick XXX` to pick a hero. For example: `!pick puck` to pick puck as ally.
       1. You can type: `/all !pick XXX` to pick hero for enemy. For example: `/all !pick puck` to pick puck as enemy.
       1. For complex hero names or names that may apply to multiple heroes, please use the full internal code name. For example: `!pick npc_dota_hero_keeper_of_the_light` .
-      1. You can find a list of hero names here: https://steamcommunity.com/workshop/filedetails/discussion/3246316298/4848777260032086340/
+      1. You can find a list of hero's internal code names in here: https://steamcommunity.com/workshop/filedetails/discussion/3246316298/4848777260032086340/
    1. `!ban XXX` You can type: `!ban XXX` to ban a hero so the bots won't pick that hero. For example: `!ban puck` to prevent any bots from picking puck.
-      1. For complex hero names or names that may apply to multiple heroes, please use the full internal code name. For example: `!ban npc_dota_hero_keeper_of_the_light` .
-      1. You can find a list of hero names here: https://steamcommunity.com/workshop/filedetails/discussion/3246316298/4848777260032086340/
 1. You can change bot ban/picks, and roles, etc easily and permanently. Check out the file in [bots/Customize/general.lua](bots/Customize/general.lua)
 1. Pos1 and Pos5 bots go to safe lane. Pos3 and Pos4 bots go offlane. Pos2 bot goes to mid lane.
 
@@ -64,7 +61,8 @@ Thanks and kudos to all that contributed to make bot games fun and exciting.
 1. Figure out how to better support the Bugged-Heroes: Dark Willow, Elder Titan, Hoodwink, io, Lone Druid, Marci, Muerta, Primal Beast. Note that they are buggy due to problems on the Valves side, not script developers.
 
 ## Support the script
-If you'd like to buy me a coffee: https://steamcommunity.com/workshop/filedetails/discussion/3246316298/6553383644012991605/
+1. Please feel very welcome to contribute to the Github repo.
+2. If you'd like to buy me a coffee: https://steamcommunity.com/workshop/filedetails/discussion/3246316298/6553383644012991605/
 
 ## Useful resources:
 - Posts shared by Ranked Matchmaking AI author: https://www.adamqqq.com/ai/dota2-ai-devlopment-tutorial.html

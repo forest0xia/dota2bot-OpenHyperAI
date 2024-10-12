@@ -376,6 +376,19 @@ function ThinkIndividualRoaming()
 		end
 	end
 
+	if bot:HasModifier('modifier_razor_static_link_buff') then
+		local botTarget = J.GetProperTarget(bot)
+		local distanceFromHero = GetUnitToUnitDistance(bot, botTarget)
+		if botTarget and distanceFromHero > bot:GetAttackRange()
+		then
+			bot:Action_MoveToLocation(botTarget:GetLocation() + RandomVector(200))
+			return
+		elseif botTarget and distanceFromHero <= bot:GetAttackRange() / 2 then
+			bot:Action_AttackUnit(botTarget, false)
+			return
+		end
+	end
+
 	if bot:HasModifier("modifier_faceless_void_chronosphere")
 	then
 		local botTarget = J.GetProperTarget(bot)
@@ -1243,6 +1256,17 @@ ConsiderHeroSpecificRoaming['npc_dota_hero_muerta'] = function ()
 			if J.IsGoingOnSomeone(bot) and #nInRangeEnemy >= 1 then
 				return BOT_MODE_DESIRE_ABSOLUTE
 			end
+		end
+	end
+	return BOT_MODE_DESIRE_NONE
+end
+
+ConsiderHeroSpecificRoaming['npc_dota_hero_razor'] = function ()
+	if bot:HasModifier("modifier_razor_static_link_buff")
+	then
+		local botTarget = J.GetProperTarget(bot)
+		if J.IsValidHero(botTarget) and J.GetHP(bot) > 0.3 and J.GetHP(bot) >= J.GetHP(botTarget) then
+			return BOT_MODE_DESIRE_VERYHIGH * 1.1
 		end
 	end
 	return BOT_MODE_DESIRE_NONE
