@@ -1,5 +1,5 @@
-import { Lane, Ping, Talent, Team, Unit, Vector } from "../ts_libs/dota";
-import { BotRole, TalentTreeBuild } from "../ts_libs/bots";
+import { Lane, Ping, Talent, Team, Unit, Vector } from "bots/ts_libs/dota";
+import { BotRole, TalentTreeBuild } from "bots/ts_libs/bots";
 
 /** @noSelf **/
 interface ISkill {

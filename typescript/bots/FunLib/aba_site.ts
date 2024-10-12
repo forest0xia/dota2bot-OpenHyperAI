@@ -8,14 +8,14 @@ import {
     Tower,
     Rune,
     Shop,
-} from "../ts_libs/dota";
+} from "bots/ts_libs/dota";
 import {
     HasItem,
     GetLocationToLocationDistance,
     GetOffsetLocationTowardsTargetLocation,
     IsModeTurbo,
     IsValidCreep,
-} from "../FunLib/utils";
+} from "bots/FunLib/utils";
 
 const visionRad = 2000; //--假眼查重范围
 const trueSightRad = 1000; //--真眼查重范围

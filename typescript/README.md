@@ -11,7 +11,6 @@ Starting from here, please use typescript to write the bot logic in ts and build
 
 1. Create the files/folders in typescript in the same file structure as in the root bots folder.
 1. Always try to modify/update ts files first for any modification, because ts files can replace the lua files and override whatever you might have changed in lua files.
-1. `jmz_func.lua` is now moved under typescipt folder as well and it's to be converted to ts next.
 
 ## Usage
 

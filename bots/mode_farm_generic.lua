@@ -84,7 +84,7 @@ function GetDesire()
 	if #nAllyList <= 2 and #nAllyList + 1 <= J.GetNumOfAliveHeroes(true)
 	and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 5500
 	and bot:GetActiveModeDesire() <= BOT_ACTION_DESIRE_HIGH then
-		return BOT_ACTION_DESIRE_VERYHIGH
+		return BOT_ACTION_DESIRE_ABSOLUTE
 	end
 
 	if not bInitDone

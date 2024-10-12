@@ -347,6 +347,9 @@ end
 
 
 function J.IsOtherAllyCanKillTarget( bot, target )
+	if not J.IsValid(target) then
+		return false
+	end
 
 	if target:GetHealth() / target:GetMaxHealth() > 0.38
 	then
@@ -3678,13 +3681,13 @@ function J.WeAreStronger(bot, radius)
     local enemyPower = 0;
   
     for _, h in pairs(mates) do
-		if not J.IsSuspiciousIllusion(h) then
+		if J.IsValid(h) and not J.IsSuspiciousIllusion(h) then
 			ourPower = ourPower + h:GetOffensivePower();
 		end
     end
   
     for _, h in pairs(enemies) do
-		if not J.IsSuspiciousIllusion(h) then
+		if J.IsValid(h) and not J.IsSuspiciousIllusion(h) then
         	enemyPower = enemyPower + h:GetRawOffensivePower();
 		end
     end
@@ -4691,7 +4694,8 @@ function J.GetTotalEstimatedDamageToTarget(nUnits, target)
 
 	for _, unit in pairs(nUnits)
 	do
-		if  J.IsValid(unit)
+		if J.IsValid(unit)
+		and J.IsValid(target)
 		and not J.IsSuspiciousIllusion(unit)
 		then
 			dmg = dmg + unit:GetEstimatedDamageToTarget(true, target, 5, DAMAGE_TYPE_ALL)

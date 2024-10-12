@@ -11,7 +11,7 @@ local GetTeamFountainTpPoint = ____utils.GetTeamFountainTpPoint
 local HasAnyEffect = ____utils.HasAnyEffect
 local IsValidHero = ____utils.IsValidHero
 local bot = GetBot()
-local minion = dofile("bots/FunLib/aba_minion")
+local minion = dofile(GetScriptDirectory().."/FunLib/aba_minion")
 local role = jmz.Item.GetRoleItemsBuyList(bot)
 local defaultAbilityBuild = {
     1,

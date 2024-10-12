@@ -17,7 +17,7 @@ import {
     Unit,
     UnitType,
     Vector,
-} from "../ts_libs/dota";
+} from "bots/ts_libs/dota";
 import { GameState, AvoidanceZone } from "bots/ts_libs/bots";
 import { Request } from "bots/ts_libs/utils/http_utils/http_req";
 import {

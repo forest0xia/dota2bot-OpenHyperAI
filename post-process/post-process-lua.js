@@ -1,8 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
-// Define the root directory containing the generated Lua files (update this if necessary)
-const luaRootDirectory = path.join(__dirname, '../bots'); // Update this path if needed
+// Define the root directory containing the generated Lua files
+const luaRootDirectory = path.join(__dirname, '../bots');
 
 // Function to replace paths in a Lua file
 function replacePathsInFile(filePath) {
@@ -12,23 +12,53 @@ function replacePathsInFile(filePath) {
             return;
         }
 
-        // Log the original content for debugging
         // console.log(`Processing file: ${filePath}`);
-        // console.log("Original content snippet:\n", data.substring(0, 200));
 
-        // Regex to match the require calls with paths starting with "bots."
-        const regex = /require\("bots\.([^"]+)"\)/g;
-        if (regex.test(data)) {
-            // console.log("Match found in file:", filePath);
+        // Regex patterns to match require and dofile calls with paths starting with "bots." or "bots/"
+        const patterns = [
+            {
+                regex: /require\("bots\.([^"]+)"\)/g,
+                type: 'require',
+                style: 'dots',
+            },
+            {
+                regex: /require\("bots\/([^"]+)"\)/g,
+                type: 'require',
+                style: 'slashes',
+            },
+            {
+                regex: /dofile\("bots\.([^"]+)"\)/g,
+                type: 'dofile',
+                style: 'dots',
+            },
+            {
+                regex: /dofile\("bots\/([^"]+)"\)/g,
+                type: 'dofile',
+                style: 'slashes',
+            },
+        ];
 
-            const replacedData = data.replace(regex, (match, p1) => {
-                // Replace dots with slashes and construct the new path
-                const newPath = `GetScriptDirectory().."/${p1.replace(/\./g, '/')}"`;
-                console.log(`Transforming path: '${match}' to 'require(${newPath})'`);
-                return `require(${newPath})`;
+        let updatedData = data;
+        let hasChanges = false;
+
+        // Apply transformations for each pattern
+        patterns.forEach(({ regex, type, style }) => {
+            updatedData = updatedData.replace(regex, (match, p1) => {
+                let newPath;
+                if (style === 'dots') {
+                    newPath = `GetScriptDirectory().."/${p1.replace(/\./g, '/')}"`;
+                } else {
+                    newPath = `GetScriptDirectory().."/${p1}"`;
+                }
+                console.log(`Transforming ${type} path (${style}): '${match}' to '${type}(${newPath})'`);
+                hasChanges = true;
+                return `${type}(${newPath})`;
             });
+        });
 
-            fs.writeFile(filePath, replacedData, 'utf8', (err) => {
+        // Write the updated content back to the file if changes were made
+        if (hasChanges) {
+            fs.writeFile(filePath, updatedData, 'utf8', (err) => {
                 if (err) {
                     console.error(`Error writing file ${filePath}:`, err);
                 } else {
@@ -36,7 +66,7 @@ function replacePathsInFile(filePath) {
                 }
             });
         } else {
-            // console.log("No match found in file:", filePath);
+            // console.log(`No matches found in file: ${filePath}`);
         }
     });
 }

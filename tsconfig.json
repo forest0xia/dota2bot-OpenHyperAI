@@ -5,6 +5,7 @@
     "noImplicitSelf": true,
     "tstlVerbose": true,
     "luaLibImport": "inline",
+    "noResolvePaths": ["bots/FunLib/jmz_func", "../FunLib/jmz_func"],
   },
   "compilerOptions": {
     "baseUrl": "./typescript",

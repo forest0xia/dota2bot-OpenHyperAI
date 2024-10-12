@@ -1,4 +1,4 @@
-import * as jmz from "../FunLib/jmz_func";
+import * as jmz from "bots/FunLib/jmz_func";
 import {
     BotSetup,
     BotRole,
@@ -6,7 +6,7 @@ import {
     SkillBuilds,
     TalentBuilds,
     TalentTreeBuild,
-} from "../ts_libs/bots";
+} from "bots/ts_libs/bots";
 import {
     BotActionDesire,
     BotMode,
@@ -14,13 +14,13 @@ import {
     Talent,
     Unit,
     UnitType,
-} from "../ts_libs/dota";
-import { hero_is_healing } from "../FunLib/aba_buff";
+} from "bots/ts_libs/dota";
+import { hero_is_healing } from "bots/FunLib/aba_buff";
 import {
     GetTeamFountainTpPoint,
     HasAnyEffect,
     IsValidHero,
-} from "../FunLib/utils";
+} from "bots/FunLib/utils";
 
 const bot = GetBot();
 // @ts-ignore

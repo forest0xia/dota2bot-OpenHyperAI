@@ -1,3 +1,4 @@
+/** @noResolution */
 import * as jmz from "bots/FunLib/jmz_func";
 import {
     Barracks,

@@ -92,11 +92,11 @@ function GetDesire()
 	end
 
 	-- 如果自己在上高，对面人活着，队友活着却不在附近，赶紧溜去其他地方游走
-	local nAllyList = J.GetNearbyHeroes(bot, 1600, false, BOT_MODE_NONE);
-	if #nAllyList <= 1 and J.GetNumOfAliveHeroes(true) > 1 and J.GetNumOfAliveHeroes(false) > 3
-	and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 3500 then
+	if not J.IsAllyHeroAroundLocation(bot:GetLocation(), 2500)
+	and J.GetNumOfAliveHeroes(true) > 1 and J.GetNumOfAliveHeroes(false) > 3
+	and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 4000 then
 		IsShouldFindTeammates = true
-		return BOT_MODE_DESIRE_VERYHIGH
+		return BOT_ACTION_DESIRE_ABSOLUTE * 1.1
 	end
 
 	if not bot:IsAlive() or bot:GetCurrentActionType() == BOT_ACTION_TYPE_DELAY then
@@ -272,6 +272,7 @@ function Think()
 				local member = GetTeamMember(id)
 				if member ~= nil then
 					bot:Action_MoveToLocation(member:GetLocation() + RandomVector(500))
+					return
 				end
 			end
 		end
