@@ -91,7 +91,6 @@ This script is based on Valve's default bot script and many other people's work 
 - Bots should be less aggressive to chase people into towers, human will take advantage of that to continuely lowering bot's hp and get the kill.
 - Bots should respect the TPs while chasing people.
 - Bot should rethink about dot damage on them. they run away from dot damage without considering why. e.g. dark seer ion shell you can chase a bot from their t1 to your t1 by simply walking behind them and they take the path most directly away from it. 
-- Bots should take exp runes. [exp rune is not officially supported as of 5.5.2024]
 - Bots are ignoreing some abilities or modifiers that have relatively long duration and can end up deal with high dmg, spells like dazzle’s first ability modifier.
 - Calculate Enigma's ultimate damage. 1600 range, lasts 4 seconds, plus Decay. Engage if it can kill, even if alone.
 - Use ultimate if it can hit all visible people and can take at least one with it.
@@ -100,7 +99,6 @@ This script is based on Valve's default bot script and many other people's work 
 - Or if you are slowed, with more than two enemies nearby. Being attacked. Health below 75%.
 - If already at half health and running away, continue to retreat rather than turning back.
 - During laning phase, don't use Sun Strike. Now focusing on Cold Snap and Lightning in the early game. In mid and late game, Sun Strike only on controlled targets or to secure kills.
-- Don't use Sun Strike when nearly at full health. Don't use Carl's Sun Strike just for channelling.
 - Sun Strike release is very confusing. Check if the position or target is wrong.
 - Sun Strike always fails to connect, consider removing cast point.
 - Prioritize global Sun Strike conditions. If there's Enigma's ult or similar, prioritize using big Sun Strike, or with Batrider's pull.

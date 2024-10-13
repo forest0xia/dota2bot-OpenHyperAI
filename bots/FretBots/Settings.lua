@@ -174,14 +174,16 @@ function IsTimeToVoteForAllyBonusScale()
 	local allyTeam = 2
     for playerID = 0, playerCount - 1 do
         local player = PlayerResource:GetPlayer(playerID)
-		local team = PlayerResource:GetTeam(playerID)
-		if PlayerResource:GetSteamID(playerID) == PlayerResource:GetSteamID(100) then
-			table.insert(bots[team], player)
-		elseif team >= 2 and team <= 3 then
-			table.insert(humans[team], player)
-			allyTeam = team
-		else
-			print('Cannot start voting for ally bonus. Invalid player team: '..team)
+		if player then
+			local team = PlayerResource:GetTeam(playerID)
+			if PlayerResource:GetSteamID(playerID) == PlayerResource:GetSteamID(100) then
+				table.insert(bots[team], player)
+			elseif team >= 2 and team <= 3 then
+				table.insert(humans[team], player)
+				allyTeam = team
+			else
+				print('Cannot start voting for ally bonus. Invalid player team: '..team)
+			end
 		end
 	end
 

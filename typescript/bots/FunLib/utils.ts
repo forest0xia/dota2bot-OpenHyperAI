@@ -1,11 +1,14 @@
 /**
+ * The basic utilities file.
+ * Here is a set of simple but critial utilities that should be able to get imported to any other files
+ * without causing any circular dependency. The methods here can be shared in any other higher level
+ * implementation files without worrying about nested or circular dependency can be added to this file.
  *
- * Here is a set of simple but critial utilities that should be able to get imported to any other files without causing any circular dependency.
- * This lua file should NOT have any dependency libs or files if possible, to avoid circular dependency.
+ * This file should NOT import any dependency libs or files that can cause circular dependency,
+ * which means all methods used in this file should be raw basic methods from lower level implementations.
  *
- * Anything that can be shared in any files without worrying about nested or circular dependency can be added to this file.
- * Can gradually migrate functions into this file as well.
- *
+ * We can gradually migrate functions into this file, and the bot script isn't a large project so we can
+ * keep putting shared low level funtionalities in this file until it gets too big for maintanence.
  */
 require("bots/ts_libs/utils/json");
 import {
