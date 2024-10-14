@@ -9,7 +9,7 @@ local highgroundTowers = {
 	TOWER_BASE_1,
 	TOWER_BASE_2
 }
-local nInRangeEnemy
+local nInRangeEnemy, weAreStronger
 
 function Defend.GetDefendDesire(bot, lane)
 	if bot.DefendLaneDesire == nil then bot.DefendLaneDesire = {0, 0, 0} end
@@ -27,10 +27,18 @@ function Defend.GetDefendDesireHelper(bot, lane)
 
 	local nDefendDesire = 0
 	nInRangeEnemy = J.GetLastSeenEnemiesNearLoc( bot:GetLocation(), 2200 )
+	weAreStronger = J.WeAreStronger(bot, 2200)
 	local team = GetTeam()
 
-	if #nInRangeEnemy > 0 and GetUnitToLocationDistance(bot, GetLaneFrontLocation(team, lane, 0)) < 1600 then
-		return RemapValClamped(J.GetHP(bot), 1, 0, BOT_ACTION_DESIRE_VERYHIGH, BOT_ACTION_DESIRE_NONE)
+	if #nInRangeEnemy > 0 then
+		-- if we are not stronger, most likely defend == feed
+		if GetUnitToLocationDistance(bot, GetLaneFrontLocation(team, lane, 0)) < 1600 then
+			nDefendDesire = RemapValClamped(J.GetHP(bot), 1, 0, BOT_ACTION_DESIRE_VERYHIGH, BOT_ACTION_DESIRE_NONE)
+			if not weAreStronger then
+				return nDefendDesire / 2
+			end
+			return nDefendDesire
+		end
 	end
 
 	if bot:WasRecentlyDamagedByAnyHero(2)
@@ -57,7 +65,11 @@ function Defend.GetDefendDesireHelper(bot, lane)
 		local isPinged, pingedLane = J.IsPingCloseToValidTower(team, ping)
 		if isPinged and lane == pingedLane
 		then
-			return 0.92
+			nDefendDesire = 0.92
+			if not weAreStronger and GetUnitToLocationDistance(bot, ping.location) < 1800 then
+				return nDefendDesire / 2
+			end
+			return nDefendDesire
 		end
 	end
 

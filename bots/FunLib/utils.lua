@@ -916,4 +916,12 @@ function ____exports.IsAnyBarrackAttackByEnemyHero()
     end
     return nil
 end
+function ____exports.getEnemyHeroByPlayerId(id)
+    for ____, hero in ipairs(GetUnitList(UnitType.EnemyHeroes)) do
+        if ____exports.IsValidHero(hero) and hero:GetPlayerID() == id then
+            return hero
+        end
+    end
+    return nil
+end
 return ____exports

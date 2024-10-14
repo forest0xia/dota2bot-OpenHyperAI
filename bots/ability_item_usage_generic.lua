@@ -1089,6 +1089,7 @@ X.ConsiderItemDesire["item_black_king_bar"] = function( hItem )
 		and not bot:HasModifier( 'modifier_antimage_spell_shield' )
 		and ( J.IsGoingOnSomeone( bot ) or J.IsRetreating( bot ) )
 	then
+		local nearEnemyCount = J.GetEnemyCount( bot, 600 )
 		if bot:IsRooted()
 		then
 			sCastMotive = '解缠绕'
@@ -1098,25 +1099,28 @@ X.ConsiderItemDesire["item_black_king_bar"] = function( hItem )
 		if bot:IsSilenced()
 			and bot:GetMana() > 100
 			and not bot:HasModifier( "modifier_item_mask_of_madness_berserk" )
-			and J.GetEnemyCount( bot, 600 ) >= 2
+			and nearEnemyCount >= 2
 		then
 			sCastMotive = '解沉默'
 			return BOT_ACTION_DESIRE_HIGH, bot, sCastType, sCastMotive
 		end
 
 		if J.IsNotAttackProjectileIncoming( bot, 350 )
+		and nearEnemyCount >= 1
 		then
 			sCastMotive = '防御弹道'
 			return BOT_ACTION_DESIRE_HIGH, bot, sCastType, sCastMotive
 		end
 
 		if J.IsWillBeCastUnitTargetSpell( bot, nCastRange )
+		and nearEnemyCount >= 1
 		then
 			sCastMotive = '防御指向技能'
 			return BOT_ACTION_DESIRE_HIGH, bot, sCastType, sCastMotive
 		end
 
 		if J.IsWillBeCastPointSpell( bot, nCastRange )
+		and nearEnemyCount >= 1
 		then
 			sCastMotive = '防御地点技能'
 			return BOT_ACTION_DESIRE_HIGH, bot, sCastType, sCastMotive
@@ -6238,41 +6242,44 @@ end
 local EnemyPIDs = nil
 X.ConsiderItemDesire['item_dust'] = function(item)
 	local nRadius = 1050
-	
+
 	if EnemyPIDs == nil then EnemyPIDs = GetTeamPlayers(GetOpposingTeam()) end
 
-	for _, id in pairs(EnemyPIDs)
-	do
-		local info = GetHeroLastSeenInfo(id)
+	local trees = bot:GetNearbyTrees(500)
+	if trees < 5 then
+		for _, id in pairs(EnemyPIDs)
+		do
+			local info = GetHeroLastSeenInfo(id)
 
-		if  IsHeroAlive(id) 
-		and info ~= nil
-		then
-			local dInfo = info[1]
+			if  IsHeroAlive(id)
+			and info ~= nil
+			then
+				local dInfo = info[1]
 
-			if  dInfo ~= nil 
-			and dInfo.time_since_seen > 0.2
-			and dInfo.time_since_seen < 0.5
-			and GetUnitToLocationDistance(bot, dInfo.location) + 150 <  nRadius 
-			and J.IsClosestToDustLocation(bot, dInfo.location)
-			then	
-				local loc = J.GetXUnitsTowardsLocation2(dInfo.location, DireFountain, 200)
-				if team == TEAM_DIRE
+				if  dInfo ~= nil
+				and dInfo.time_since_seen > 0.2
+				and dInfo.time_since_seen < 0.5
+				and GetUnitToLocationDistance(bot, dInfo.location) < nRadius - 450
+				and J.IsClosestToDustLocation(bot, dInfo.location)
 				then
-					loc = J.GetXUnitsTowardsLocation2(dInfo.location, RadiantFountain, 200)
-				end
+					local loc = J.GetXUnitsTowardsLocation2(dInfo.location, DireFountain, 200)
+					if team == TEAM_DIRE
+					then
+						loc = J.GetXUnitsTowardsLocation2(dInfo.location, RadiantFountain, 200)
+					end
 
-				if  IsLocationVisible(loc) 
-				and IsLocationPassable(loc)
-				then
-					return BOT_ACTION_DESIRE_HIGH, bot, 'none', nil
+					if  IsLocationVisible(loc)
+					and IsLocationPassable(loc)
+					then
+						return BOT_ACTION_DESIRE_HIGH, bot, 'none', nil
+					end
 				end
 			end
-		end	
+		end
 	end
-	
-	if bot:HasModifier('modifier_sandking_sand_storm_slow') 
-	or bot:HasModifier('modifier_sandking_sand_storm_slow_aura_thinker') 
+
+	if bot:HasModifier('modifier_sandking_sand_storm_slow')
+	or bot:HasModifier('modifier_sandking_sand_storm_slow_aura_thinker')
 	then
 		return BOT_ACTION_DESIRE_HIGH, bot, 'none', nil
 	end
@@ -6280,14 +6287,14 @@ X.ConsiderItemDesire['item_dust'] = function(item)
 	local nInRangeEnemy = J.GetEnemiesNearLoc(bot:GetLocation(), nRadius)
 	if nInRangeEnemy ~= nil and #nInRangeEnemy == 0
 	then
-		if bot:HasModifier('modifier_item_radiance_debuff') 
+		if bot:HasModifier('modifier_item_radiance_debuff')
 		then
 			return BOT_ACTION_DESIRE_HIGH, bot, 'none', nil
 		end
 
 		for _, id in pairs(EnemyPIDs)
 		do
-			if  IsHeroAlive(id)
+			if IsHeroAlive(id)
 			and bot:WasRecentlyDamagedByPlayer(id, 0.5)
 			then
 				local info = GetHeroLastSeenInfo(id)
@@ -6296,7 +6303,7 @@ X.ConsiderItemDesire['item_dust'] = function(item)
 				then
 					local dInfo = info[1]
 					if  dInfo ~= nil
-					and GetUnitToLocationDistance(bot, dInfo.location) < nRadius 
+					and GetUnitToLocationDistance(bot, dInfo.location) < nRadius
 					then
 						return BOT_ACTION_DESIRE_HIGH, bot, 'none', nil
 					end

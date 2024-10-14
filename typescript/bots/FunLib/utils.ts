@@ -726,3 +726,12 @@ export function IsAnyBarrackAttackByEnemyHero(): Unit | null {
     }
     return null;
 }
+
+export function getEnemyHeroByPlayerId(id: number): Unit | null {
+    for (const hero of GetUnitList(UnitType.EnemyHeroes)) {
+        if (IsValidHero(hero) && hero.GetPlayerID() == id) {
+            return hero;
+        }
+    }
+    return null;
+}

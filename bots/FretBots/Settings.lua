@@ -67,7 +67,7 @@ local announcementGap = 2
 
 -- RGB color and text. sample color pick web: https://htmlcolorcodes.com/
 local announcementList = {
-	{"#C0392B", "GLHF! Default bot scripts lack excitement. This script boosts bots with unfair advantages to make bot games more challenging:"},
+	{"#C0392B", "GLHF! Native bot scripts lack excitement. This script boosts bots with unfair advantages to make bot games more challenging:"},
 	{"#9B59B6", "* You can vote for difficulty scale from 0 to "..difficultyMax..", which affects the amount of bonus the bots will receive." },
 	{"#2980B9", "* If difficulty >= 0, bots get bonus neutral items, and get fair bonus in gold, exp, stats, etc every minute."},
 	{"#E59866", "* If difficulty >= 1, bots get above bonus upon their death; and also get new bonus in mana/hp regens."},
@@ -98,7 +98,9 @@ local chatCommands =
 	'difficulty',
 	'stats',
 	'goodsound',
+	'gs',
 	'badsound',
+	'bs',
 	'asound',
 	'csound',
 	'esound',
@@ -391,12 +393,12 @@ function Settings:DoUserChatCommandParse(text, id)
 	-- No command, return false
 	if command == nil then return false end
 	-- Random good sound
-	if command == 'goodsound' then
+	if command == 'goodsound' or command == 'gs' then
 		Utilities:RandomSound(GOOD_LIST)
 		return true
 	end
 	-- Random bad sound
-	if command == 'badsound' then
+	if command == 'badsound' or command == 'bs' then
 		Utilities:RandomSound(BAD_LIST)
 		return true
 	end
