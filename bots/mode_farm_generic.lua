@@ -97,7 +97,8 @@ function GetDesire()
 
 	local nMode = bot:GetActiveMode()
 	local nModeDesire = bot:GetActiveModeDesire()
-	if  (nMode == BOT_MODE_DEFEND_TOWER_TOP or nMode == BOT_MODE_DEFEND_TOWER_MID or nMode == BOT_MODE_DEFEND_TOWER_BOT)
+	if (nMode == BOT_MODE_DEFEND_TOWER_TOP or nMode == BOT_MODE_DEFEND_TOWER_MID
+		or nMode == BOT_MODE_DEFEND_TOWER_BOT or nMode == BOT_MODE_RUNE)
 	and nModeDesire > BOT_MODE_DESIRE_MODERATE
     then
         return BOT_ACTION_DESIRE_NONE

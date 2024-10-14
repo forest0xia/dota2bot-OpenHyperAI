@@ -7255,10 +7255,10 @@ function AbilityUsageThink()
 end
 
 function BuybackUsageThink()
+	if bot.lastBuybackFrameProcessTime == nil then bot.lastBuybackFrameProcessTime = DotaTime() end
+	if DotaTime() - bot.lastBuybackFrameProcessTime < bot.frameProcessTime then return end
+	bot.lastBuybackFrameProcessTime = DotaTime()
 	BuybackUsageComplement()
-	-- if bot.lastBuybackFrameProcessTime == nil then bot.lastBuybackFrameProcessTime = DotaTime() end
-	-- if DotaTime() - bot.lastBuybackFrameProcessTime < bot.frameProcessTime then return end
-	-- bot.lastBuybackFrameProcessTime = DotaTime()
 	UseGlyph()
 end
 

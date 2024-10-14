@@ -73,8 +73,6 @@ sRoleItemsBuyList['pos_2'] = {
 	"item_enchanted_mango",
 	"item_enchanted_mango",
 	"item_clarity",
-	"item_clarity",
-	"item_flask",
 	"item_faerie_fire",
 	"item_quelling_blade",
 
@@ -102,8 +100,6 @@ sRoleItemsBuyList['pos_4'] = {
 	"item_tango",
 	"item_double_branches",
 	"item_clarity",
-	"item_clarity",
-	"item_flask",
 
 	"item_magic_wand",
 	"item_tranquil_boots",
@@ -126,8 +122,6 @@ sRoleItemsBuyList['pos_5'] = {
 	"item_tango",
 	"item_double_branches",
 	"item_clarity",
-	"item_clarity",
-	"item_flask",
 
 	"item_magic_wand",
 	"item_tranquil_boots",
@@ -225,6 +219,10 @@ local nKeepMana, nMP, nHP, nLV, nInRangeEnemy, botTarget
 function X.SkillsComplement()
 	J.ConsiderTarget()
 	if J.CanNotUseAbility( bot ) then return end
+	if abilityR:IsFullyCastable()
+	and (bot:IsInvisible() and not bot:HasModifier( 'modifier_item_dustofappearance' ))
+	and bot:GetActiveMode() ~= BOT_MODE_RETREAT
+	then return end
 
 	nKeepMana = 340
 	nLV = bot:GetLevel()
@@ -320,15 +318,16 @@ function X.ConsiderN()
 end
 
 function X.ConsiderR()
-	if not abilityR:IsFullyCastable() or (not bot:IsInvisible() and bot:WasRecentlyDamagedByAnyHero(2.0) and not bot:HasModifier("modifier_black_king_bar_immune") and nHP < 0.66) or (bot:IsInvisible() and bot:WasRecentlyDamagedByAnyHero(4.0) and nHP < 0.33) then
+	-- the ult can be used for dealing with dmg or retreating like when hp is low.
+	if not abilityR:IsFullyCastable()
+	then
 		return 0
 	end
 
 	-- less souls = no fear
 	local nSoulCount = bot:GetModifierStackCount(bot:GetModifierByName('modifier_nevermore_necromastery'))
-	if nSoulCount < 10 then return 0 end
-
-	local nRadius = 1000
+	-- if less sours and have sufficient hp, dont use ult yet. may collect more souls or use ult for retreating.
+	if nSoulCount < 10 and nHP > 0.5 then return 0 end
 
 	local nEnemysHerosInLong	 = J.GetEnemyList( bot, 1200 )
 	local nEnemysHerosInSkillRange = J.GetEnemyList( bot, 750 )
@@ -337,9 +336,9 @@ function X.ConsiderR()
 	for _, enemy in pairs( nEnemysHerosNearby )
 	do
 		if J.IsValidHero( enemy )
-			and enemy:HasModifier( "modifier_brewmaster_storm_cyclone" )
-			and J.GetModifierTime( enemy, "modifier_brewmaster_storm_cyclone" ) < 1.66
-			and enemy:GetHealth() > 800
+		and ((enemy:HasModifier( "modifier_brewmaster_storm_cyclone" ) and J.GetModifierTime( enemy, "modifier_brewmaster_storm_cyclone" ) < 1.66)
+			or (bot:IsInvisible() and not bot:HasModifier( 'modifier_item_dustofappearance' )))
+		and enemy:GetHealth() > 800
 		then
 			return BOT_ACTION_DESIRE_HIGH
 		end
@@ -367,7 +366,6 @@ function X.ConsiderR()
 			and not J.IsDisabled( npcTarget )
 			and GetUnitToUnitDistance( npcTarget, bot ) <= 400
 			and npcTarget:GetHealth() > 800
-			and nHP > 0.38
 		then
 			return BOT_ACTION_DESIRE_HIGH
 		end

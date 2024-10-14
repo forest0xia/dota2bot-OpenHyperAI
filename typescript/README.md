@@ -9,9 +9,9 @@ Starting from here, please use typescript to write the bot logic in ts and build
 
 ### Developer notes
 
-1. Create the files/folders in typescript in the same file structure as in the root bots folder.
-1. Always try to modify/update ts files first for any modification, because ts files can replace the lua files and override whatever you might have changed in lua files.
 1. Do not use relative filepath when importing module files with functions like `require` or `dofile` in a ts file. Make sure to use absolute filepath with `bots/` as the root path. TLDR, this is because bot script lua files need to use absolute filepath for any non-in-same-folder path.
+1. Always try to modify/update ts files first for any modification, because ts files can replace the lua files and override whatever you might have changed in lua files.
+1. When adding/moving files, create the files/folders in typescript in the same file structure as in the root bots folder.
 
 ## Usage
 
@@ -23,4 +23,4 @@ Starting from here, please use typescript to write the bot logic in ts and build
 
 ## Release a new version of the bot script
 
-1. Before releasing a new version, run: `npm run release`
+1. Before releasing a new version, run: `npm run release`, this is to auto update script version number, prettify typescript code, convert any possible changes in typescript to lua.
