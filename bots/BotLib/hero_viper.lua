@@ -173,6 +173,18 @@ function X.SkillsComplement()
 
 	botTarget = J.GetProperTarget(bot)
 
+	if J.IsValidHero(botTarget) then
+		if not PoisonAttack:GetAutoCastState()
+		then
+			PoisonAttack:ToggleAutoCast()
+		end
+	else
+		if PoisonAttack:GetAutoCastState()
+		then
+			PoisonAttack:ToggleAutoCast()
+		end
+	end
+
 	ViperStrikeDesire, ViperStrikeTarget = X.ConsiderViperStrike()
 	if ViperStrikeDesire > 0
 	then
@@ -234,22 +246,24 @@ function X.ConsiderPoisonAttack()
 	local nDamage = PoisonAttack:GetSpecialValueInt('damage')
 	local nDuration = PoisonAttack:GetSpecialValueInt('duration')
 
-	local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
-    for _, enemyHero in pairs(nEnemyHeroes)
-    do
-        if J.IsValidHero(enemyHero)
-        and J.CanCastOnNonMagicImmune(enemyHero)
-        and J.CanKillTarget(enemyHero, nDamage * nDuration, DAMAGE_TYPE_MAGICAL)
-        and not J.IsSuspiciousIllusion(enemyHero)
-        and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
-        and not enemyHero:HasModifier('modifier_dazzle_shallow_grave')
-        and not enemyHero:HasModifier('modifier_necrolyte_reapers_scythe')
-        and not enemyHero:HasModifier('modifier_oracle_false_promise_timer')
-        and not enemyHero:HasModifier('modifier_templar_assassin_refraction_absorb')
-        then
-            return BOT_ACTION_DESIRE_HIGH, enemyHero
-        end
-    end
+	if not J.IsRetreating(bot) then
+		local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
+		for _, enemyHero in pairs(nEnemyHeroes)
+		do
+			if J.IsValidHero(enemyHero)
+			and J.CanCastOnNonMagicImmune(enemyHero)
+			and J.CanKillTarget(enemyHero, nDamage * nDuration, DAMAGE_TYPE_MAGICAL)
+			and not J.IsSuspiciousIllusion(enemyHero)
+			and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
+			and not enemyHero:HasModifier('modifier_dazzle_shallow_grave')
+			and not enemyHero:HasModifier('modifier_necrolyte_reapers_scythe')
+			and not enemyHero:HasModifier('modifier_oracle_false_promise_timer')
+			and not enemyHero:HasModifier('modifier_templar_assassin_refraction_absorb')
+			then
+				return BOT_ACTION_DESIRE_HIGH, enemyHero
+			end
+		end
+	end
 
 	if J.IsGoingOnSomeone(bot)
 	then
@@ -272,10 +286,10 @@ function X.ConsiderPoisonAttack()
                 if J.IsInRange(bot, botTarget, nAttackRange)
 				and not botTarget:IsAttackImmune()
 				then
-					if PoisonAttack:GetAutoCastState() == false
+					if not PoisonAttack:GetAutoCastState()
 					then
 						PoisonAttack:ToggleAutoCast()
-						return BOT_ACTION_DESIRE_NONE, nil
+						return BOT_ACTION_DESIRE_HIGH, nil
 					else
 						return BOT_ACTION_DESIRE_NONE, nil
 					end
@@ -310,17 +324,17 @@ function X.ConsiderPoisonAttack()
         and J.IsInRange(bot, botTarget, 500)
         and J.IsAttacking(bot)
         then
-			if PoisonAttack:GetAutoCastState() == false
+			if not PoisonAttack:GetAutoCastState()
 			and J.GetMP(bot) > 0.25
 			then
 				PoisonAttack:ToggleAutoCast()
-				return BOT_ACTION_DESIRE_NONE, nil
+				return BOT_ACTION_DESIRE_HIGH, nil
 			else
-				if PoisonAttack:GetAutoCastState() == true
+				if PoisonAttack:GetAutoCastState()
 				and J.GetMP(bot) < 0.25
 				then
 					PoisonAttack:ToggleAutoCast()
-					return BOT_ACTION_DESIRE_NONE, nil
+					return BOT_ACTION_DESIRE_HIGH, nil
 				end
 
 				return BOT_ACTION_DESIRE_NONE, nil
@@ -334,17 +348,17 @@ function X.ConsiderPoisonAttack()
         and J.IsInRange(bot, botTarget, 500)
         and J.IsAttacking(bot)
         then
-			if PoisonAttack:GetAutoCastState() == false
+			if not PoisonAttack:GetAutoCastState()
 			and J.GetMP(bot) > 0.25
 			then
 				PoisonAttack:ToggleAutoCast()
-				return BOT_ACTION_DESIRE_NONE, nil
+				return BOT_ACTION_DESIRE_HIGH, nil
 			else
-				if PoisonAttack:GetAutoCastState() == true
+				if PoisonAttack:GetAutoCastState()
 				and J.GetMP(bot) < 0.25
 				then
 					PoisonAttack:ToggleAutoCast()
-					return BOT_ACTION_DESIRE_NONE, nil
+					return BOT_ACTION_DESIRE_HIGH, nil
 				end
 
 				return BOT_ACTION_DESIRE_NONE, nil
@@ -380,10 +394,9 @@ function X.ConsiderPoisonAttack()
         end
     end
 
-	if PoisonAttack:GetAutoCastState() == true
+	if PoisonAttack:GetAutoCastState()
 	then
 		PoisonAttack:ToggleAutoCast()
-		return BOT_ACTION_DESIRE_NONE, nil
 	end
 
 	return BOT_ACTION_DESIRE_NONE, nil

@@ -126,7 +126,24 @@ export function PrintPings(pingTimeGap: number): void {
         const ping = allyHero.GetMostRecentPing();
         if (ping.time !== 0 && GameTime() - ping.time < pingTimeGap) {
             listPings.push(ping);
+
+            // print units and modifiers.
+            // for (const unit of GetUnitList(UnitType.All)) {
+            //     if (
+            //         IsValidHero(unit) &&
+            //         GetLocationToLocationDistance(
+            //             ping.location,
+            //             unit.GetLocation()
+            //         ) < 400
+            //     ) {
+            //         print(unit.GetUnitName());
+            //         PrintUnitModifiers(unit);
+            //     }
+            // }
         }
+    }
+    if (listPings.length > 0) {
+        PrintTable(listPings);
     }
 }
 
@@ -742,4 +759,15 @@ export function isTruelyInvisible(unit: Unit): boolean {
         !unit.HasModifier("modifier_item_dustofappearance") &&
         !RecentlyTookDamage(unit, 1.5)
     ); // use 1.5s because invisibility may have delayed effect.
+}
+
+export function hasModifierContainsName(unit: Unit, name: string): boolean {
+    const modifierCount = unit.NumModifiers();
+    for (let i = 0; i < modifierCount; i++) {
+        const modifierName = unit.GetModifierName(i);
+        if (modifierName.indexOf(name) > -1) {
+            return true;
+        }
+    }
+    return false;
 }

@@ -3,7 +3,7 @@ local J = require( GetScriptDirectory()..'/FunLib/jmz_func')
 local bot = GetBot()
 local botName = bot:GetUnitName()
 
-if bot:IsInvulnerable() or not bot:IsHero() or not bot:IsAlive() or not string.find(botName, "hero") or bot:IsIllusion() then
+if bot:IsInvulnerable() or not bot:IsHero() or not string.find(botName, "hero") or bot:IsIllusion() then
 	return
 end
 
@@ -81,8 +81,12 @@ function GetDesire()
 
 	-- general items or conditions.
 	local generalRoaming = ConsiderGeneralRoamingInConditions()
-	if generalRoaming and generalRoaming > 0 then
-		return Clamp(generalRoaming, 0, 0.99)
+	if generalRoaming then
+		if generalRoaming > 0 and generalRoaming <= 1 then
+			return Clamp(generalRoaming, 0, 0.99)
+		else
+			return generalRoaming
+		end
 	end
 
 	return BOT_MODE_DESIRE_NONE
@@ -520,6 +524,20 @@ function ThinkGeneralRoaming()
 		end
 	end
 
+	if bot:HasModifier("modifier_skeleton_king_reincarnation_scepter_active") then
+		local botTarget = J.GetProperTarget(bot)
+		if J.IsValid(botTarget) then
+			if GetUnitToUnitDistance(bot, botTarget) > bot:GetAttackRange() + 200
+			then
+				bot:Action_MoveToLocation(botTarget:GetLocation())
+				return
+			else
+				bot:Action_AttackUnit(botTarget, false)
+				return
+			end
+		end
+	end
+
 	if bot:HasModifier("modifier_nevermore_shadowraze_debuff") then
 		MoveAwayFromTarget(GetTargetEnemy("npc_dota_hero_nevermore"), 1350)
 		return
@@ -562,10 +580,11 @@ function ThinkGeneralRoaming()
 
 	if trySeduce then
 		allyTowers = bot:GetNearbyTowers(1600, false)
-		local distanceFromFountain = bot:DistanceFromFountain()
-		local distanceToCloestTower = GetUnitToUnitDistance(bot, allyTowers[1])
-		if distanceToCloestTower > 300 and distanceFromFountain > distanceToCloestTower then
-			bot:Action_MoveToLocation(allyTowers[1]:GetLocation())
+		local distanceFromFountain = GetUnitToLocationDistance(bot, J.GetTeamFountain())
+		local towerFromFountain = GetUnitToLocationDistance(allyTowers[1], J.GetTeamFountain())
+		local distanceToTower = GetUnitToUnitDistance(bot, allyTowers[1])
+		if distanceFromFountain > towerFromFountain and distanceToTower > 300 then
+			bot:Action_MoveToLocation(allyTowers[1]:GetLocation() + RandomVector(150))
 		else
 			bot:Action_MoveToLocation(J.GetTeamFountain())
 		end
@@ -858,6 +877,14 @@ function ConsiderGeneralRoamingInConditions()
 		end
 	end
 
+	if bot:HasModifier("modifier_skeleton_king_reincarnation_scepter_active") then
+		local botTarget = J.GetAttackableWeakestUnit( bot, 1500, true, true )
+		if J.IsValidHero(botTarget) then
+			bot:SetTarget( botTarget )
+			return BOT_ACTION_DESIRE_ABSOLUTE * 2
+		end
+	end
+
 	if J.IsInLaningPhase() then
 		if J.GetModifierCount(bot, "modifier_nevermore_shadowraze_debuff") >= 2 then -- 7s
 			local enemy = GetTargetEnemy("npc_dota_hero_nevermore")
@@ -919,15 +946,20 @@ function ConsiderGeneralRoamingInConditions()
 		end
 
 		-- 尝试勾引
-		if #nInRangeEnemy >=1 and J.Utils.IsValidHero(nInRangeEnemy[1])
-		and #allyTowers >= 1 and GetUnitToUnitDistance(allyTowers[1], bot) < 1600 then
-			local cloestEnemy = nInRangeEnemy[1]
-			if cloestEnemy:IsFacingLocation(bot:GetLocation(), 15)
-			and J.IsInRange(bot, cloestEnemy, cloestEnemy:GetAttackRange() + 250)
-			and J.GetHP(cloestEnemy) >= J.GetHP(bot) - 0.2
-			then
-				trySeduce = true
-				return BOT_ACTION_DESIRE_ABSOLUTE
+		if #nInRangeEnemy >= 1
+		and #allyTowers >= 1
+		and GetUnitToUnitDistance(allyTowers[1], bot) < 1600 then
+			for _, enemy in pairs(nInRangeEnemy) do
+				if J.Utils.IsValidHero(enemy) then
+					if enemy:IsFacingLocation(bot:GetLocation(), 15)
+					and J.IsInRange(bot, enemy, enemy:GetAttackRange() + 450)
+					and J.GetHP(enemy) > J.GetHP(bot)
+					and J.GetHP(bot) < 0.75
+					then
+						trySeduce = true
+						return BOT_ACTION_DESIRE_ABSOLUTE
+					end
+				end
 			end
 		end
 	end

@@ -452,7 +452,7 @@ function ____exports.PrintUnitModifiers(unit)
         while i < modifierCount do
             local modifierName = unit:GetModifierName(i)
             local stackCount = unit:GetModifierStackCount(i)
-            print((((("Unit " .. unit:GetUnitName()) .. " has modifier ") .. tostring(modifierName)) .. " with stack count ") .. tostring(stackCount))
+            print((((("Unit " .. unit:GetUnitName()) .. " has modifier ") .. modifierName) .. " with stack count ") .. tostring(stackCount))
             i = i + 1
         end
     end
@@ -481,6 +481,9 @@ function ____exports.PrintPings(pingTimeGap)
                 break
             end
         end
+    end
+    if #listPings > 0 then
+        ____exports.PrintTable(listPings)
     end
 end
 function ____exports.PrintAllAbilities(unit)
@@ -551,20 +554,20 @@ function ____exports.IsPingedByAnyPlayer(bot, pingTimeGap, minDistance, maxDista
         local index = ____value[1]
         local _ = ____value[2]
         do
-            local __continue35
+            local __continue36
             repeat
                 local teamMember = GetTeamMember(index)
                 if teamMember == nil or teamMember:IsIllusion() or teamMember == bot then
-                    __continue35 = true
+                    __continue36 = true
                     break
                 end
                 local ping = teamMember:GetMostRecentPing()
                 if ping ~= nil then
                     pings[#pings + 1] = ping
                 end
-                __continue35 = true
+                __continue36 = true
             until true
-            if not __continue35 then
+            if not __continue36 then
                 break
             end
         end
@@ -926,5 +929,19 @@ function ____exports.getEnemyHeroByPlayerId(id)
 end
 function ____exports.isTruelyInvisible(unit)
     return unit:IsInvisible() and not unit:HasModifier("modifier_item_dustofappearance") and not ____exports.RecentlyTookDamage(unit, 1.5)
+end
+function ____exports.hasModifierContainsName(unit, name)
+    local modifierCount = unit:NumModifiers()
+    do
+        local i = 0
+        while i < modifierCount do
+            local modifierName = unit:GetModifierName(i)
+            if (string.find(modifierName, name, nil, true) or 0) - 1 > -1 then
+                return true
+            end
+            i = i + 1
+        end
+    end
+    return false
 end
 return ____exports

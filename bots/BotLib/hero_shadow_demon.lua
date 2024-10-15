@@ -167,12 +167,12 @@ function X.SkillsComplement()
         return
     end
 
-    -- ShadowPoisonReleaseDesire = X.ConsiderShadowPoisonRelease()
-    -- if ShadowPoisonReleaseDesire > 0
-    -- then
-    --     bot:Action_UseAbility(ShadowPoison)
-    --     return
-    -- end
+    ShadowPoisonReleaseDesire = X.ConsiderShadowPoisonRelease()
+    if ShadowPoisonReleaseDesire > 0
+    then
+        bot:Action_UseAbility(ShadowPoisonRelease)
+        return
+    end
 end
 
 function X.ConsiderDisruption()
@@ -418,6 +418,31 @@ function X.ConsiderDisseminate()
 	end
 
     return BOT_ACTION_DESIRE_NONE, nil
+end
+
+function X.ConsiderShadowPoisonRelease()
+    if not ShadowPoisonRelease:IsFullyCastable()
+    then
+        return BOT_ACTION_DESIRE_NONE, 0
+    end
+
+    local multiplier = {1, 2, 4, 8, 16}
+    for _, enemyHero in pairs(GetUnitList(UNIT_LIST_ENEMY_HEROES))
+	do
+		if J.IsValidHero(enemyHero)
+        and J.IsInRange(enemyHero, bot, 3000)
+		and not J.IsSuspiciousIllusion(enemyHero)
+        then
+            local spCount = J.GetModifierCount( enemyHero, "modifier_shadow_demon_shadow_poison" )
+            local nDamage = ShadowPoison:GetSpecialValueFloat("stack_damage")
+            if spCount >= 5
+            or (spCount > 0 and J.CanKillTarget( enemyHero, nDamage * spCount * multiplier[spCount], DAMAGE_TYPE_MAGICAL ))
+            then
+                return BOT_ACTION_DESIRE_HIGH
+            end
+        end
+	end
+    return BOT_ACTION_DESIRE_NONE
 end
 
 function X.ConsiderShadowPoison()

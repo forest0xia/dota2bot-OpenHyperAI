@@ -67,7 +67,7 @@ export interface Unit {
 
     NumModifiers(): number;
 
-    GetModifierName(nModifier: number): number;
+    GetModifierName(nModifier: number): string;
 
     GetModifierStackCount(nModifier: number): number;
 
