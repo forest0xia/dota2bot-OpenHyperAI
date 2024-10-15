@@ -25,6 +25,12 @@ local EnemyWisdomTimer = 0
 
 function GetDesire()
 
+	-- 如果在打高地 就别撤退去干别的
+	local nAllyList = J.GetNearbyHeroes(bot,1600,false,BOT_MODE_NONE);
+	if #nAllyList > 2 and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 5000 then
+		return BOT_MODE_DESIRE_NONE
+	end
+
 	local wisdomRuneDesire = WisdomRuneDesire()
 	if wisdomRuneDesire > 0 and WisdomRuneSpawned[enemyTeam] then
 		return wisdomRuneDesire

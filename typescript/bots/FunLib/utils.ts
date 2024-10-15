@@ -260,7 +260,8 @@ export function IsValidUnit(target: Unit): boolean {
         target !== null &&
         !target.IsNull() &&
         target.CanBeSeen() &&
-        target.IsAlive()
+        target.IsAlive() &&
+        !target.IsInvulnerable()
     );
 }
 

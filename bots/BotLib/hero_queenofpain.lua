@@ -38,7 +38,9 @@ sRoleItemsBuyList['pos_2'] = {
 	"item_double_branches",
 	"item_faerie_fire",
 
+	'item_null_talisman',
 	"item_bottle",
+	'item_null_talisman',
 	"item_boots",
 	"item_magic_wand",
 	"item_power_treads",
@@ -133,7 +135,7 @@ X['sBuyList'] = sRoleItemsBuyList[sRole]
 X['sSellList'] = {
 
 	"item_black_king_bar",
-	"item_quelling_blade",
+	'item_null_talisman',
 }
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'],X['sSellList'] = { 'PvN_mage' }, {} end

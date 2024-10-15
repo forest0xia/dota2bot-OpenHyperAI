@@ -234,7 +234,7 @@ function X.GetWeakestHero(radius, minion)
 	
 	if enemies ~= nil and #enemies == 0 then enemies = minion:GetNearbyHeroes( radius, true, BOT_MODE_NONE) end
 	
-	return X.GetWeakest(enemies);
+	return J.GetWeakestUnit(enemies)
 end
 
 function X.GetWeakestCreep(radius, minion)

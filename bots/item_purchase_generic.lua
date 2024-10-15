@@ -444,7 +444,7 @@ function ItemPurchaseThink()
 		and bot:FindItemSlot('item_flask') < 0
 		and bot:FindItemSlot('item_tango') < 0
 		and botDistanceFromFountain > 2000
-		and botStashValue > 0
+		and botStashValue == 0
 		and not bot:HasModifier('modifier_elixer_healing')
 		and not bot:HasModifier('modifier_filler_heal')
 		and not bot:HasModifier('modifier_flask_healing')
@@ -821,7 +821,7 @@ function ItemPurchaseThink()
 			bot.purchaseListInReverseOrder[#bot.purchaseListInReverseOrder] = nil
 		elseif currentTime > bot.lastInvCheck + 1.0 then
 			bot.lastInvCheck = currentTime
-			if bot.rebuildCount < 3 and botCourierValue == 0 and botStashValue == 0 then
+			if bot.rebuildCount < 3 and botCourierValue == 0 and botStashValue == 0 and botName ~= "npc_dota_hero_lone_druid" then
 				bot.rebuildCount = bot.rebuildCount + 1
 				for key, value in pairs(bot.currBuyingBasicItemRefList) do
 					if not Item.IsItemInHero(value) then

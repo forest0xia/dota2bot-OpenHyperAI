@@ -36,6 +36,12 @@ function GetDesire()
         end
     end
 
+	-- 如果在打高地 就别撤退去干别的
+	local nAllyList = J.GetNearbyHeroes(bot,1600,false,BOT_MODE_NONE);
+	if #nAllyList > 2 and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 5000 then
+		return BOT_MODE_DESIRE_NONE
+	end
+
     -- if Roshan is about to get killed, kill it unless there are other absolute actions.
     if J.Utils.IsValidUnit(Roshan) then
         local roshHP = Roshan:GetHealth()/Roshan:GetMaxHealth()

@@ -194,31 +194,15 @@ function J.GetAttackEnemysAllyCreepCount( target, nRadius )
 
 end
 
-
 function J.GetVulnerableWeakestUnit( bot, bHero, bEnemy, nRadius )
-
 	local unitList = {}
-	local weakest = nil
-	local weakestHP = 10000
 	if bHero
 	then
 		unitList = J.GetNearbyHeroes(bot, nRadius, bEnemy, BOT_MODE_NONE )
 	else
 		unitList = bot:GetNearbyLaneCreeps( nRadius, bEnemy )
 	end
-
-	for _, u in pairs( unitList )
-	do
-		if u:GetHealth() < weakestHP
-			and J.CanCastOnNonMagicImmune( u )
-		then
-			weakest = u
-			weakestHP = u:GetHealth()
-		end
-	end
-
-	return weakest
-
+    return J.GetAttackableWeakestUnitFromList( bot, unitList )
 end
 
 
@@ -2399,7 +2383,7 @@ function J.IsValid( nTarget )
 end
 
 function J.IsValidTarget(nTarget)
-	-- return J.Utils.IsValidUnit(nTarget) -- ideally it shoukd be IsValidUnit, but a lot of legacy usage causing some problems.
+	-- NOTE: return J.Utils.IsValidUnit(nTarget) -- ideally it should be IsValidUnit, but a lot of legacy usage causing some problems.
 	return J.Utils.IsValidHero(nTarget)
 end
 
@@ -2819,6 +2803,23 @@ function J.GetMostPushLaneDesire()
 
 end
 
+function J.GetClosestAlly(bot, nRadius)
+	for i = 1, 5
+	do
+		local member = GetTeamMember(i)
+
+		if  member ~= nil
+		and member:IsAlive()
+		and member ~= bot
+		and GetUnitToUnitDistance(bot, member) <= nRadius
+		and not J.IsSuspiciousIllusion(member)
+		then
+			return member
+		end
+	end
+
+	return nil
+end
 
 function J.GetNearestLaneFrontLocation( nUnitLoc, bEnemy, fDeltaFromFront )
 
@@ -2847,39 +2848,57 @@ function J.GetNearestLaneFrontLocation( nUnitLoc, bEnemy, fDeltaFromFront )
 
 end
 
-
 function J.GetAttackableWeakestUnit( bot, nRadius, bHero, bEnemy )
-
-	local unitList = {}
-	local weakest = nil
-	local weakestHP = 10000
-
-	if bHero
-	then
-		unitList = J.GetNearbyHeroes(bot, nRadius, bEnemy, BOT_MODE_NONE )
-	else
-		unitList = bot:GetNearbyLaneCreeps( nRadius, bEnemy )
-	end
-
-	for _, unit in pairs( unitList )
-	do
-		if J.IsValid( unit )
-			and unit:GetHealth() < weakestHP
-			and not unit:IsAttackImmune()
-			and not unit:IsInvulnerable()
-			and not J.HasForbiddenModifier( unit )
-			and not J.IsSuspiciousIllusion( unit )
-			--and not J.IsAllyCanKill( unit )
-		then
-			weakest = unit
-			weakestHP = unit:GetHealth()
-		end
-	end
-
-	return weakest
-
+    local unitList = {}
+    if bHero then
+        unitList = J.GetNearbyHeroes(bot, nRadius, bEnemy, BOT_MODE_NONE )
+    else
+        unitList = bot:GetNearbyLaneCreeps( nRadius, bEnemy )
+    end
+    return J.GetAttackableWeakestUnitFromList( bot, unitList )
 end
 
+-- The arg `bot` here can be nil
+function J.GetAttackableWeakestUnitFromList( bot, unitList )
+    local weakest = nil
+    local bestScore = math.huge
+
+    for _, unit in pairs( unitList ) do
+        local hp = J.GetEffectiveHP( unit )
+        local offensivePower = 0
+        if J.IsValidHero(unit) then
+            offensivePower = unit:GetRawOffensivePower()
+        end
+        if J.IsValid( unit )
+            and not unit:IsAttackImmune()
+            and not unit:IsInvulnerable()
+            and not J.HasForbiddenModifier( unit )
+            and not J.IsSuspiciousIllusion( unit )
+			--and not J.IsAllyCanKill( unit )
+            and not J.CannotBeKilled(bot, unit)
+        then
+            -- Calculate score: lower score is better
+            -- Can adjust the weight factors for hp and offensive power to tune the behavior
+            local hpWeight = 0.7
+            local powerWeight = 0.3
+            local score = (hp * hpWeight) - (offensivePower * powerWeight)
+
+            -- If the new score is lower, choose this unit as the weakest
+            if score < bestScore then
+                bestScore = score
+                weakest = unit
+            end
+        end
+    end
+
+    return weakest
+end
+
+function J.CannotBeKilled(bot, botTarget)
+	return J.IsValidHero( botTarget )
+	and ((J.GetModifierTime(botTarget, 'modifier_dazzle_shallow_grave') > 0.8 and J.GetHP(botTarget) < 0.15 and (bot == nil or bot:GetUnitName() ~= "npc_dota_hero_axe"))
+	or J.GetModifierTime(botTarget, 'modifier_oracle_false_promise_timer') > 0.8)
+end
 
 function J.CanBeAttacked( unit )
 	return  unit ~= nil
@@ -2899,16 +2918,43 @@ end
 
 
 function J.GetHP( bot )
-	local nCurHealth = bot:GetHealth()
+	local nCurHealth = J.GetEffectiveHP( bot )
     local nMaxHealth = bot:GetMaxHealth()
+
+	if nCurHealth <= 0 then return 0 end
 
 	if bot:GetUnitName() == 'npc_dota_hero_medusa'
     then
-        nCurHealth = nCurHealth + bot:GetMana()
-        nMaxHealth = nMaxHealth + bot:GetMaxMana()
+		-- Assuming max level Mana Shield (95% absorption and 2.5 damage absorbed per point of mana)
+		local manaAbsorptionRate = 0.95
+		local damagePerMana = 2.6
+		local maxManaEffectiveHP = bot:GetMaxMana() * damagePerMana * manaAbsorptionRate
+		-- Total max effective HP
+        nMaxHealth = nMaxHealth + maxManaEffectiveHP
     end
 
 	return nCurHealth / nMaxHealth
+end
+
+function J.GetEffectiveHP( bot )
+	if not J.IsValid(bot) then return 0 end
+
+	local nCurHealth = bot:GetHealth()
+	if nCurHealth <= 0 then return 0 end
+
+	if bot:GetUnitName() == 'npc_dota_hero_medusa'
+    then
+		local mana = bot:GetMana()
+		-- Assuming max level Mana Shield (95% absorption and 2.5 damage absorbed per point of mana)
+		local manaAbsorptionRate = 0.95
+		local damagePerMana = 2.6
+		-- Calculate how much damage her current mana can absorb
+		local manaEffectiveHP = mana * damagePerMana * manaAbsorptionRate
+		-- Effective HP is her base HP plus the effective HP from her mana shield
+		nCurHealth = nCurHealth + manaEffectiveHP
+    end
+
+	return nCurHealth
 end
 
 
@@ -4274,24 +4320,7 @@ function J.DidEnemyCastAbility()
 end
 
 function J.GetWeakestUnit(nEnemyUnits)
-	local nWeakestUnit = nil
-	local nWeakestUnitLowestHealth = 10000
-
-	for _, unit in pairs(nEnemyUnits)
-	do
-		if 	unit:IsAlive()
-        and J.CanCastOnNonMagicImmune(unit)
-        and J.CanCastOnTargetAdvanced(unit)
-		then
-			if unit:GetHealth() < nWeakestUnitLowestHealth
-			then
-				nWeakestUnitLowestHealth = unit:GetHealth()
-				nWeakestUnit = unit
-			end
-		end
-	end
-
-	return nWeakestUnit, nWeakestUnitLowestHealth
+	return J.GetAttackableWeakestUnitFromList( nil, nEnemyUnits )
 end
 
 function J.HasInvisibilityOrItem( npcEnemy )

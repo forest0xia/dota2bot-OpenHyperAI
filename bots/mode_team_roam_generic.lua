@@ -11,6 +11,7 @@ local X = {}
 
 local J = require( GetScriptDirectory()..'/FunLib/jmz_func')
 local Item = require( GetScriptDirectory()..'/FunLib/aba_item')
+local AttackSpecialUnit = dofile( GetScriptDirectory()..'/FunLib/aba_special_units')
 
 local botName = bot:GetUnitName();
 
@@ -54,6 +55,7 @@ local lastCheckBotToDropTime = 0
 local TormentorLocation
 local IsAvoidingAbilityZone = false
 local IsShouldFindTeammates = false
+local ShouldFindTeammatesTime = 0
 
 if team == TEAM_RADIANT
 then
@@ -66,7 +68,10 @@ function GetDesire()
 	Utils.SetFrameProcessTime(bot)
 
 	IsAvoidingAbilityZone = false
-	IsShouldFindTeammates = false
+
+	if IsShouldFindTeammates and DotaTime() - ShouldFindTeammatesTime > 8 then
+		IsShouldFindTeammates = false
+	end
 	-- check if bot is idle
 	if DotaTime() - lastIdleStateCheck >= 1 or isInIdleState then
 		isInIdleState = J.CheckBotIdleState()
@@ -91,22 +96,23 @@ function GetDesire()
 		return nDesire
 	end
 
-	-- 如果自己在上高，对面人活着，队友活着却不在附近，赶紧溜去其他地方游走
-	if not J.IsAllyHeroAroundLocation(bot:GetLocation(), 2500)
-	and J.GetNumOfAliveHeroes(true) > 1 and J.GetNumOfAliveHeroes(false) > 3
-	and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 4000 then
+	-- 如果在上高，对面人活着，其他队友活着却不在附近，赶紧溜去其他地方游走
+	if #J.GetNearbyHeroes(bot, 1600, false, BOT_MODE_NONE) <= 2
+	and J.GetNumOfAliveHeroes(true) > 3 and J.GetNumOfAliveHeroes(false) > 3
+	and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 6000 then
 		IsShouldFindTeammates = true
-		return BOT_ACTION_DESIRE_ABSOLUTE * 1.1
+		ShouldFindTeammatesTime = DotaTime()
+		return BOT_ACTION_DESIRE_ABSOLUTE * 0.98
 	end
 
 	if not bot:IsAlive() or bot:GetCurrentActionType() == BOT_ACTION_TYPE_DELAY then
 		return BOT_MODE_DESIRE_NONE
 	end
 
-	ShouldAttackSpecialUnit = CanAttackSpecialUnit()
-	if ShouldAttackSpecialUnit
-	then
-		return BOT_ACTION_DESIRE_VERYHIGH
+	nDesire = AttackSpecialUnit.GetDesire(bot)
+	if nDesire > 0 then
+		ShouldAttackSpecialUnit = true
+		return nDesire
 	end
 
 	if J.IsInLaningPhase() then
@@ -271,7 +277,12 @@ function Think()
 			then
 				local member = GetTeamMember(id)
 				if member ~= nil then
-					bot:Action_MoveToLocation(member:GetLocation() + RandomVector(500))
+					local distanceToMember = GetUnitToLocationDistance(bot, member:GetLocation())
+					if distanceToMember > 2200 then
+						bot:Action_MoveToLocation(member:GetLocation() + RandomVector(500))
+					else
+						IsShouldFindTeammates = false
+					end
 					return
 				end
 			end
@@ -287,10 +298,8 @@ function Think()
 	end
 
 	if ShouldAttackSpecialUnit
-	and SpecialUnitTarget ~= nil
 	then
-		bot:Action_AttackUnit(SpecialUnitTarget, false)
-		return
+		AttackSpecialUnit.Think()
 	end
 
 	if towerCreepMode

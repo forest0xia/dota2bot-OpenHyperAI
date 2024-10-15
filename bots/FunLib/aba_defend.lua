@@ -10,10 +10,17 @@ local highgroundTowers = {
 	TOWER_BASE_2
 }
 local nInRangeEnemy, weAreStronger, distanceToLane
-local defDurationHoldTime = 10 -- onces trying to def, hold the state for longer duration.
+local defDurationHoldTime = 6 -- once trying to def, hold the state for longer period.
 local defDurationCacheTime = {}
 
 function Defend.GetDefendDesire(bot, lane)
+
+	-- 如果在打高地 就别撤退去干别的
+	local nAllyList = J.GetNearbyHeroes(bot,1600,false,BOT_MODE_NONE);
+	if #nAllyList > 2 and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 5000 then
+		return BOT_MODE_DESIRE_NONE
+	end
+
 	if bot.DefendLaneDesire == nil then bot.DefendLaneDesire = {0, 0, 0} end
 	bot.DefendLaneDesire[lane] = Defend.GetDefendDesireHelper(bot, lane)
 	local toBeReturnedDesire = bot.DefendLaneDesire[lane]

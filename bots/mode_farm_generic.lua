@@ -50,6 +50,9 @@ local beVeryHighFarmer = false;
 
 local isChangePosMessageDone = false
 
+local IsShouldGoFarm = false
+local ShouldGoFarmTime = 0
+
 local MessagesToBeAnnounced = { -- {sMessage, bGlobalMessage, bEnabled}
 	{"Welcome to Open Hyper AI (OHA): " .. Version.number, true, true},
 	{"You can pre-define the heroes for bots to pick, e.g. 10 same heroes or your dream teams. Just modify the Customize/general file.", false, true},
@@ -69,22 +72,28 @@ function GetDesire()
 
 	PickOneAnnouncer()
 	AnnounceMessages()
+	if DotaTime() - ShouldGoFarmTime > 5 then
+		IsShouldGoFarm = false
+	end
 
 	-- 如果在打高地 就别撤退去打钱了
 	local nAllyList = J.GetNearbyHeroes(bot,1600,false,BOT_MODE_NONE);
-	if #nAllyList >= 2 and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 4000 then
+	if #nAllyList > 2 and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 5000 then
 		return BOT_MODE_DESIRE_NONE;
 	end
+
 	-- 如果在打推塔 就别撤退去打钱了
 	local nEnemyTowers = bot:GetNearbyTowers(1200, true);
 	if #nAllyList >= 2 and nEnemyTowers ~= nil and #nEnemyTowers > 0 and GetUnitToLocationDistance(bot, nEnemyTowers[1]:GetLocation()) < 1300 then
 		return BOT_MODE_DESIRE_NONE;
 	end
 	-- 如果自己在上高，对面人活着，队友却不够，赶紧溜去farm
-	if #nAllyList <= 2 and #nAllyList + 1 <= J.GetNumOfAliveHeroes(true)
-	and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 5500
-	and bot:GetActiveModeDesire() <= BOT_ACTION_DESIRE_HIGH then
-		return BOT_ACTION_DESIRE_ABSOLUTE
+	if IsShouldGoFarm or (#nAllyList <= 2 and #nAllyList <= J.GetNumOfAliveHeroes(true)
+	and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 6000
+	and bot:GetActiveModeDesire() <= BOT_ACTION_DESIRE_HIGH) then
+		IsShouldGoFarm = true
+		ShouldGoFarmTime = DotaTime()
+		return BOT_ACTION_DESIRE_ABSOLUTE * 0.98
 	end
 
 	if not bInitDone
@@ -774,23 +783,19 @@ function X.IsUnitAroundLocation(vLoc, nRadius)
 	return false;
 end
 
-
 local enemyPids = nil;
 function X.ShouldRun(bot)
-
-
 	if bot:HasModifier('modifier_medusa_stone_gaze_facing')
 	then
 		return 3.33
 	end
 
-		
-	if bot:IsChanneling() 
+	if bot:IsChanneling()
 	   or not bot:IsAlive()
 	then
 		return 0
-	end	   
-	
+	end
+
 	local botLevel    = bot:GetLevel();
 	local botMode     = bot:GetActiveMode();
 	local botTarget   = J.GetProperTarget(bot);
@@ -801,27 +806,25 @@ function X.ShouldRun(bot)
 	local enemyAncientDistance = GetUnitToUnitDistance(bot,enemyAncient);
 	local aliveEnemyCount = J.GetNumOfAliveHeroes(true)
 	local rushEnemyTowerDistance = 250;
-	
-		
+
 	if enemyFountainDistance < 1560
 	then
 		return 2;
 	end
-	
+
 	if bot:DistanceFromFountain() < 200
 		and botMode ~= BOT_MODE_RETREAT
 		and ( J.GetHP(bot) + J.GetMP(bot) < 1.7 )
 	then
 		return 3;
 	end
-	
-	
+
 	if botLevel <= 4
 		and enemyFountainDistance < 7666
 	then
 		return 3.33;
 	end
-	
+
 	if botLevel < 6
 		and DotaTime() > 30
 		and DotaTime() < 8 * 60
@@ -835,7 +838,7 @@ function X.ShouldRun(bot)
 			return 2.88;
 		end
 	end
-	
+
 	if bot:GetLevel() < 10
 	   and bot:GetAttackDamage() < 133
 	   and botTarget ~= nil
@@ -846,10 +849,9 @@ function X.ShouldRun(bot)
 		bot:SetTarget(nil);
 		return 6.21;
 	end
-	
 
-	if not X.IsThereT3Detroyed() 
-	   and aliveEnemyCount >= 3 
+	if not X.IsThereT3Detroyed()
+	   and aliveEnemyCount >= 3
 	   and #hAllyHeroList < aliveEnemyCount + 2
 	   and not J.Role.IsPvNMode()
 	   and ( DotaTime() % 600 > 285 or DotaTime() < 18 * 60 )--处于夜间或小于18分钟
@@ -866,12 +868,11 @@ function X.ShouldRun(bot)
 				return 1.33;
 			end
 		end
-				
 	end
-	
+
 	local nEnemyTowers = bot:GetNearbyTowers(898, true);
 	local nEnemyBrracks = bot:GetNearbyBarracks(800,true);
-	
+
 	if #nEnemyBrracks >= 1 and aliveEnemyCount >= 2
 	then
 		if #nEnemyTowers >= 2
@@ -881,16 +882,15 @@ function X.ShouldRun(bot)
 			return 2;
 		end
 	end
-	
 
-	if nEnemyTowers[1] ~= nil and botLevel < 20
+	if J.IsValidBuilding(nEnemyTowers[1]) and botLevel < 20
 	then
 		if nEnemyTowers[1]:HasModifier("modifier_invulnerable") and aliveEnemyCount > 1
 		then
 			return 2.5;
 		end
-		
-		if enemyAncientDistance > 2100
+
+		if  enemyAncientDistance > 2100
 			and enemyAncientDistance < GetUnitToUnitDistance(nEnemyTowers[1],enemyAncient) - rushEnemyTowerDistance
 		then
 			local nTarget = J.GetProperTarget(bot);
@@ -898,12 +898,10 @@ function X.ShouldRun(bot)
 			then
 				return 3.9;
 			end
-			
+
 			if nTarget ~= nil and nTarget:IsHero() and aliveEnemyCount > 2
 			then
-				
 				local assistAlly = false;
-				
 				for _,ally in pairs(hAllyHeroList)
 				do
 					if GetUnitToUnitDistance(ally,nTarget) <= ally:GetAttackRange() + 100
@@ -913,36 +911,33 @@ function X.ShouldRun(bot)
 						break;
 					end
 				end
-				
-				if not assistAlly 
+				if not assistAlly
 				then
 					return 2.5;
 				end
-				
 			end
 		end
 	end
-	
 
-	if botLevel <= 10
+	if  botLevel <= 10
 		and (#hEnemyHeroList > 0 or bot:GetHealth() < 700)
 	then
 		local nLongEnemyTowers = bot:GetNearbyTowers(999, true);
-		if bot:GetAssignedLane() == LANE_MID 
-		then 
-			 nLongEnemyTowers = bot:GetNearbyTowers(988, true); 
-			 nEnemyTowers     = bot:GetNearbyTowers(966, true); 
+		if bot:GetAssignedLane() == LANE_MID
+		then
+			 nLongEnemyTowers = bot:GetNearbyTowers(988, true);
+			 nEnemyTowers     = bot:GetNearbyTowers(966, true);
 		end
 		if ( botLevel <= 2 or DotaTime() < 2 * 60 )
 			and nLongEnemyTowers[1] ~= nil
 		then
 			return 1;
-		end	
+		end
 		if ( botLevel <= 4 or DotaTime() < 3 * 60 )
 			and nEnemyTowers[1] ~= nil
 		then
 			return 1;
-		end	
+		end
 		if botLevel <= 9
 			and nEnemyTowers[1] ~= nil
 			and nEnemyTowers[1]:CanBeSeen()
@@ -952,79 +947,70 @@ function X.ShouldRun(bot)
 			return 1;
 		end
 	end
-	
-	if bot:IsInvisible() and DotaTime() > 8 * 60
+
+	if  bot:IsInvisible() and DotaTime() > 8 * 60
 		and botMode == BOT_MODE_RETREAT
 		and bot:GetActiveModeDesire() > 0.4
 		and #hAllyHeroList <= 1
 		and J.IsValid(hEnemyHeroList[1])
-		and botName ~= "npc_dota_hero_riki"
-		and botName ~= "npc_dota_hero_bounty_hunter"
-		and botName ~= "npc_dota_hero_slark"
+		and bot:GetUnitName() ~= "npc_dota_hero_riki"
+		and bot:GetUnitName() ~= "npc_dota_hero_bounty_hunter"
+		and bot:GetUnitName() ~= "npc_dota_hero_slark"
 		and J.GetDistanceFromAncient(bot,false) < J.GetDistanceFromAncient(hEnemyHeroList[1], false)
 	then
 		return 5;
-	end	
+	end
 
-	if #hAllyHeroList <= 1 
+	if #hAllyHeroList <= 1
 	   and botMode ~= BOT_MODE_TEAM_ROAM
 	   and botMode ~= BOT_MODE_LANING
 	   and botMode ~= BOT_MODE_RETREAT
-	   and ( botLevel <= 1 or botLevel > 5 ) 
+	   and ( botLevel <= 1 or botLevel > 5 )
 	   and bot:DistanceFromFountain() > 1400
 	then
 		if enemyPids == nil then
 			enemyPids = GetTeamPlayers(GetOpposingTeam())
-		end	
+		end
 		local enemyCount = 0
 		for i = 1, #enemyPids do
 			local info = GetHeroLastSeenInfo(enemyPids[i])
 			if info ~= nil then
 				local dInfo = info[1]; 
-				if dInfo ~= nil and dInfo.time_since_seen < 2.0  
-					and GetUnitToLocationDistance(bot,dInfo.location) < 1000 
+				if dInfo ~= nil and dInfo.time_since_seen < 2.0
+					and GetUnitToLocationDistance(bot,dInfo.location) < 1000
 				then
 					enemyCount = enemyCount +1;
 				end
-			end	
+			end
 		end
-		if (enemyCount >= 4 or #hEnemyHeroList >= 4) 
+		if (enemyCount >= 4 or #hEnemyHeroList >= 4)
 			and botMode ~= BOT_MODE_ATTACK
 			and botMode ~= BOT_MODE_TEAM_ROAM
 			and bot:GetCurrentMovementSpeed() > 300
 		then
-			local nNearByHeroes = J.GetNearbyHeroes(bot,700,true,BOT_MODE_NONE);
+			local nNearByHeroes = bot:GetNearbyHeroes(700,true,BOT_MODE_NONE);
 			if #nNearByHeroes < 2
 	        then
 				return 4;
 			end
-		end	
-		if botLevel >= 9 and botLevel <= 17  
-			and (enemyCount >= 3 or #hEnemyHeroList >= 3) 
+		end
+		if  botLevel >= 9 and botLevel <= 17
+			and (enemyCount >= 3 or #hEnemyHeroList >= 3)
 			and botMode ~= BOT_MODE_LANING
 			and bot:GetCurrentMovementSpeed() > 300
 		then
-			local nNearByHeroes = J.GetNearbyHeroes(bot,700,true,BOT_MODE_NONE);
+			local nNearByHeroes = bot:GetNearbyHeroes(700,true,BOT_MODE_NONE);
 			if #nNearByHeroes < 2
 	        then
 				return 3;
 			end
-		end	
-		
+		end
 		if J.IsValid(enemy)
 		and not J.WeAreStronger(bot, 800)
 		then
-			-- and enemy:GetUnitName() == "npc_dota_hero_necrolyte"
-			-- and enemy:GetMana() >= 200
-			-- and J.GetHP(bot) < 0.45
-			-- and enemy:IsFacingLocation(bot:GetLocation(),20)
 			return 3;
 		end
-		
-	end	
-	
-	
-
+	end
 	return 0
 end
 
@@ -1196,6 +1182,8 @@ function X.IsNormalFarmer(bot)
 	or botName == "npc_dota_hero_abyssal_underlord"
 	or botName == "npc_dota_hero_visage"
 	or botName == "npc_dota_hero_windrunner"
+	or botName == "npc_dota_hero_marci"
+	or botName == "npc_dota_hero_primal_beast"
 	)
 end
 
@@ -1245,6 +1233,9 @@ function X.IsHighFarmer(bot)
 	or botName == "npc_dota_hero_windrunner"
 	or botName == "npc_dota_hero_lone_druid"
 	or botName == "npc_dota_hero_tinker"
+	or botName == "npc_dota_hero_lone_druid"
+	or botName == "npc_dota_hero_lone_druid_bear"
+	or botName == "npc_dota_hero_muerta"
 	)
 end
 
@@ -1292,6 +1283,9 @@ function X.IsVeryHighFarmer(bot)
 	or botName == "npc_dota_hero_troll_warlord"
 	or botName == "npc_dota_hero_weaver"
 	or botName == "npc_dota_hero_windrunner"
+	or botName == "npc_dota_hero_lone_druid"
+	or botName == "npc_dota_hero_lone_druid_bear"
+	or botName == "npc_dota_hero_muerta"
 	)
 end
 

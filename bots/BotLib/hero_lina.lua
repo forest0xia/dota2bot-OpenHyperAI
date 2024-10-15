@@ -71,7 +71,9 @@ sRoleItemsBuyList['pos_2'] = {
     "item_double_branches",
     "item_faerie_fire",
 
+	'item_null_talisman',
     "item_bottle",
+	'item_null_talisman',
     "item_boots",
     "item_magic_wand",
 
@@ -148,7 +150,7 @@ X['sBuyList'] = sRoleItemsBuyList[sRole]
 X['sSellList'] = {
 
 	"item_black_king_bar",
-	"item_quelling_blade",
+	"item_null_talisman",
 
 }
 

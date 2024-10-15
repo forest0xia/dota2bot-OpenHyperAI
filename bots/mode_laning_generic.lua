@@ -1,5 +1,6 @@
 
 local Utils = require( GetScriptDirectory()..'/FunLib/utils')
+local J = require( GetScriptDirectory()..'/FunLib/jmz_func')
 
 local bot = GetBot()
 local botName = bot:GetUnitName()
@@ -28,6 +29,12 @@ function GetDesire()
 	else
 		skipLaningState.lastCheckTime = DotaTime()
 		skipLaningState.count = 0
+	end
+
+	-- 如果在打高地 就别撤退去干别的
+	local nAllyList = J.GetNearbyHeroes(bot,1600,false,BOT_MODE_NONE);
+	if #nAllyList > 2 and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 5000 then
+		return BOT_MODE_DESIRE_NONE
 	end
 
 	if local_mode_laning_generic ~= nil and local_mode_laning_generic.GetDesire ~= nil then return local_mode_laning_generic.GetDesire() end

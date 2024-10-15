@@ -29,6 +29,13 @@ local TeamWisdomTimer = 0
 local WisdomRuneTimeGap = 420 - 5
 
 function GetDesire()
+
+	-- 如果在打高地 就别撤退去干别的
+	local nAllyList = J.GetNearbyHeroes(bot,1600,false,BOT_MODE_NONE);
+	if #nAllyList > 2 and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 5000 then
+		return BOT_MODE_DESIRE_NONE
+	end
+
 	local wisdomRuneDesire = WisdomRuneDesire()
 	if wisdomRuneDesire > 0 and WisdomRuneSpawned[botTeam] then
 		return wisdomRuneDesire
@@ -485,13 +492,13 @@ function WisdomRuneDesire()
 		if WisdomRuneSpawned[botTeam] then
 			local distance = GetUnitToLocationDistance(ClosestAllyToWisdomRune, TeamWisdomRune[botTeam])
 			if botLvl < 12 then
-				return RemapValClamped(distance, 6400, 100, BOT_ACTION_DESIRE_HIGH, BOT_ACTION_DESIRE_ABSOLUTE  )
+				return RemapValClamped(distance, 6400, 100, BOT_ACTION_DESIRE_MODERATE, BOT_ACTION_DESIRE_VERYHIGH )
 			elseif botLvl < 18 then
-				return RemapValClamped(distance, 6400, 100, BOT_ACTION_DESIRE_HIGH , BOT_ACTION_DESIRE_VERYHIGH   )
+				return RemapValClamped(distance, 6400, 100, BOT_ACTION_DESIRE_MODERATE , BOT_ACTION_DESIRE_VERYHIGH )
 			elseif botLvl < 25 then
-				return RemapValClamped(distance, 6400, 100, BOT_ACTION_DESIRE_MODERATE, BOT_ACTION_DESIRE_VERYHIGH  )
+				return RemapValClamped(distance, 6400, 100, BOT_ACTION_DESIRE_MODERATE, BOT_ACTION_DESIRE_HIGH )
 			elseif botLvl < 30 then
-				return RemapValClamped(distance, 6400, 100, BOT_ACTION_DESIRE_LOW , BOT_ACTION_DESIRE_HIGH  )
+				return RemapValClamped(distance, 6400, 100, BOT_ACTION_DESIRE_LOW , BOT_ACTION_DESIRE_HIGH )
 			end
 		end
 	end

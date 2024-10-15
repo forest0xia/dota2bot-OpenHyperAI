@@ -214,7 +214,7 @@ function GetDesire()
 	local clampedDesire = RemapValClamped(retreatDesire, 0, possibleMaxDesire, 0, 1)
 
 	if bot.isBear then
-		clampedDesire = clampedDesire * 0.7
+		clampedDesire = clampedDesire * 0.75
 	end
 
 	-- print('Retreat mode, bot: '..botName..', clamped desire: ' .. tostring(clampedDesire))

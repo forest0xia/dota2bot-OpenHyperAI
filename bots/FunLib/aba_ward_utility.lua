@@ -6,9 +6,8 @@ local nVisionRadius = 1600
 
 -- Radiant Warding Spots
 -- Game Start
-local RADIANT_GAME_START_1 = Vector(-300, -1200, 128) -- radiant mid lane bot right
-local RADIANT_GAME_START_1_2 = Vector(-1350, -360, 128) -- radiant mid lane top left
-local RADIANT_GAME_START_2 = Vector(2026, -3003, 128) -- radiant bot river to jungle enterance
+local RADIANT_GAME_START_1 = Vector(-250, -1089, 128)
+local RADIANT_GAME_START_2 = Vector(2026, -3903, 128)
 
 -- Laning Phase
 local RADIANT_LANE_PHASE_1 = Vector(2306, -3001, 128)
@@ -17,14 +16,12 @@ local RADIANT_LANE_PHASE_3 = Vector(-3556, 6446, 128)
 
 -- Dire Warding Spots
 -- Game Start
-local DIRE_GAME_START_1 = Vector(-491, 303, 128) -- dire mid lane top left
-local DIRE_GAME_START_1_2 = Vector(800, -400, 128) -- dire mid lane bot right
-local DIRE_GAME_START_2 = Vector(-4000, 4000, 128) -- dire top river enterance besides the first left jungle.
--- local DIRE_GAME_START_2 = Vector(-3519, 3018, 128) -- dire top river enterance to jungle.
+local DIRE_GAME_START_1 = Vector(-491, 303, 128)
+local DIRE_GAME_START_2 = Vector(-7045, 4110, 128)
 
 -- Laning Phase
-local DIRE_LANE_PHASE_1 = Vector(-5183, 3780, 128) -- radian ward near t1 on the left side of the river top left enterance.
-local DIRE_LANE_PHASE_2 = Vector(-773, 1135, 0) 
+local DIRE_LANE_PHASE_1 = Vector(-5217, 2501, 128)
+local DIRE_LANE_PHASE_2 = Vector(-2462, 1534, 0)
 local DIRE_LANE_PHASE_3 = Vector(3851, -4636, 353)
 
 local nTowerList = {
@@ -45,7 +42,7 @@ local nTowerList = {
 local WardSpotAliveTeamTowerRadiant = {
 	[TOWER_TOP_1] = {
 						Vector(-3290, 5302, 128),
-						Vector(-5183, 3780, 128),
+						Vector(-5217, 2463, 128),
 					},
 	[TOWER_MID_1] = {
 						Vector(-3048, 1779, 128),
@@ -106,14 +103,14 @@ local InvadeWardSpotDeadEnemyTowerDire = {
 					},
 
 	[TOWER_TOP_2] = {
-						Vector( 462, 4408, 128), -- dire t2上半区野区高台眼
+						Vector( 462, 4408, 128),
 						Vector(  50, 8668, 512),
 						Vector(3069, 6554, 256),
 						Vector(2334, 4270, 128),
 					},
 	[TOWER_MID_2] = {
-						Vector(4610,  759, 527), -- dire t2下半区野区高台眼
-						Vector(3400,  700, 256), -- dire t2下半区野区北部入口
+						Vector(4610,  759, 527),
+						Vector(3400,  986, 256),
 						Vector(1048, 3313, 399),
 						Vector(4590, 2915, 256),
 					},
@@ -266,26 +263,13 @@ function X.GetLaningPhaseWardSpots()
 end
 
 function X.GetGameStartWardSpots()
-	local radianStartWard1
-	if (RandomInt(1, 2) >= 2) then
-		radianStartWard1 = RADIANT_GAME_START_1_2
-	else
-		radianStartWard1 = RADIANT_GAME_START_1
-	end
-
 	local WardSpotRadiant = {
-		radianStartWard1,
+		RADIANT_GAME_START_1,
 		RADIANT_GAME_START_2,
 	}
 
-	local direStartWard1
-	if (RandomInt(1, 2) >= 2) then
-		direStartWard1 = DIRE_GAME_START_1_2
-	else
-		direStartWard1 = DIRE_GAME_START_1
-	end
 	local WardSpotDire = {
-		direStartWard1,
+		DIRE_GAME_START_1,
 		DIRE_GAME_START_2,
 	}
 
@@ -392,7 +376,7 @@ function X.GetItemWard(bot)
     do
 		local item = bot:GetItemInSlot(i)
 
-		if item ~= nil
+		if  item ~= nil
 		and (item:GetName() == 'item_ward_observer'
 			or (item:GetName() == 'item_ward_sentry' and IsPinged))
         then
@@ -412,7 +396,7 @@ function X.IsPingedByHumanPlayer(bot)
         then
 			local member = GetTeamMember(i)
 
-			if member ~= nil
+			if  member ~= nil
             and member:IsAlive()
             and GetUnitToUnitDistance(bot, member) < 1200
             then
@@ -426,7 +410,7 @@ function X.IsPingedByHumanPlayer(bot)
 
 				local wardSlot = member:FindItemSlot(wardType)
 
-				if GetUnitToLocationDistance(bot, ping.location) <= 700
+				if  GetUnitToLocationDistance(bot, ping.location) <= 700
                 and DotaTime() - ping.time < 5
                 and wardSlot == -1
 				and not ping.normal_ping
@@ -459,10 +443,10 @@ function X.GetAvailableSpot(bot)
 		return availableSpot
 	end
 
-	if (J.IsModeTurbo() and DotaTime() < 8 * 60)
-	or DotaTime() < 12 * 60
+	if J.IsInLaningPhase()
 	then
-		for _, spot in pairs(X.GetLaningPhaseWardSpots())
+		local nSpots = X.CheckSpots(X.GetLaningPhaseWardSpots())
+		for _, spot in pairs(nSpots)
 		do
 			if not X.IsOtherWardClose(spot)
 			then
@@ -471,7 +455,8 @@ function X.GetAvailableSpot(bot)
 		end
 	end
 
-	for _, spot in pairs(X.GetWardSpotBeforeTowerFall())
+	local nSpots = X.CheckSpots(X.GetWardSpotBeforeTowerFall())
+	for _, spot in pairs(nSpots)
     do
 		if not X.IsOtherWardClose(spot)
         then
@@ -479,7 +464,8 @@ function X.GetAvailableSpot(bot)
 		end
 	end
 
-	for _, spot in pairs(X.GetWardSpotDeadEnemyTowerDire())
+	nSpots = X.CheckSpots(X.GetWardSpotDeadEnemyTowerDire())
+	for _, spot in pairs(nSpots)
     do
 		if not X.IsOtherWardClose(spot)
         then
@@ -495,7 +481,7 @@ function X.IsOtherWardClose(wardLoc)
 
 	for _, ward in pairs(nWardList)
     do
-		if X.IsWard(ward)
+		if  X.IsWard(ward)
         and GetUnitToLocationDistance(ward, wardLoc) <= nVisionRadius
         then
 			return true
@@ -542,7 +528,7 @@ function X.GetHumanPing()
 	do
 		local member = GetTeamMember(id)
 
-		if member ~= nil
+		if  member ~= nil
         and not member:IsBot()
         then
 			return member:GetMostRecentPing()
@@ -550,6 +536,54 @@ function X.GetHumanPing()
 	end
 
 	return nil
+end
+
+function X.IsThereSentry(loc)
+	local nWardList = GetUnitList(UNIT_LIST_ALLIED_WARDS)
+
+	for _, ward in pairs(nWardList)
+    do
+		if ward ~= nil
+		and ward:GetUnitName() == "npc_dota_sentry_wards"
+        and GetUnitToLocationDistance(ward, loc) <= 600
+        then
+			return true
+		end
+	end
+
+	return false
+end
+
+function X.GetWardType()
+	if J.HasItem(GetBot(), 'item_ward_sentry') then return 'sentry' end
+	return 'observer'
+end
+
+-- Can't refer to the actual (invalid) objects (wards) once garbage collected.
+-- So affected spot will just be on cooldown according to the duration of the wards.
+function X.CheckSpots(bSpots)
+	local bot = GetBot()
+	local sSpots = J.Utils.Deepcopy(bSpots)
+
+	for i = 1, #bot.WardTable
+	do
+		if bot.WardTable[i] ~= nil
+		and X.GetWardType() == bot.WardTable[i].type
+		and DotaTime() < bot.WardTable[i].timePlanted + bot.WardTable[i].duration
+		then
+			for j = #sSpots, 1, -1
+			do
+				if J.GetDistance(sSpots[j], bot.WardTable[i].loc) < 50
+				and not X.IsThereSentry(sSpots[j])
+				then
+					-- print('Ward Spot: '..tostring(sSpots[j])..' on cooldown!')
+					table.remove(sSpots, j)
+				end
+			end
+		end
+	end
+
+	return sSpots
 end
 
 return X

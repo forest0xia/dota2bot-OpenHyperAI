@@ -35,14 +35,14 @@ local enableGateUsage = false -- to be fixed
 local arriveRoamLocTime = 0
 local roamTimeAfterArrival = 0.55 * 60 -- stay to roam after arriving the location
 local roamGapTime = 3 * 60 -- don't roam again within this duration after roaming once.
-local nInRangeEnemy, allyTowers, enemyTowers, trySeduce, shouldTempRetreat
+local nInRangeEnemy, allyTowers, enemyTowers, trySeduce, shouldTempRetreat, botTarget
 
 function GetDesire()
 
 	trySeduce = false
 	shouldTempRetreat = false
 	TPScroll = J.GetItem2(bot, 'item_tpscroll')
-
+	botTarget = J.GetProperTarget(bot)
 	nInRangeEnemy = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
 	allyTowers = bot:GetNearbyTowers(1600, false)
 	enemyTowers = bot:GetNearbyTowers(1600, true)
@@ -87,6 +87,14 @@ function GetDesire()
 		else
 			return generalRoaming
 		end
+	end
+
+	if J.IsValidHero(botTarget)
+	and ((J.GetModifierTime(bot, 'modifier_dazzle_shallow_grave') > 0.5 and J.GetHP(botTarget) < 0.15 and botName ~= "npc_dota_hero_axe")
+	or J.GetModifierTime(bot, 'modifier_oracle_false_promise_timer') > 0.5)
+	then
+		local nAttackTarget = J.GetAttackableWeakestUnit( bot, bot:GetAttackRange() + 400, true, true )
+		bot:SetTarget( nAttackTarget )
 	end
 
 	return BOT_MODE_DESIRE_NONE
@@ -995,7 +1003,46 @@ function ConsiderGeneralRoamingInConditions()
 		end
 	end
 
+	local targetUnit, ShouldHelpAlly = ConsiderHelpAlly()
+	if ShouldHelpAlly
+	then
+		bot:SetTarget(targetUnit)
+		return BOT_ACTION_DESIRE_ABSOLUTE * 0.98
+	end
+
 	return BOT_ACTION_DESIRE_NONE
+end
+
+function ConsiderHelpAlly()
+	local nRadius = 3500
+	local nModeDesire = bot:GetActiveModeDesire()
+	local nClosestAlly = J.GetClosestAlly(bot, nRadius)
+
+	if nClosestAlly ~= nil
+	and J.GetHP(nClosestAlly) > 0.2
+	and (not J.IsCore(bot) or (J.IsCore(bot) and (not J.IsInLaningPhase() or J.IsInRange(bot, nClosestAlly, 1600))))
+	and not J.IsGoingOnSomeone(bot)
+	and not (J.IsRetreating(bot) and nModeDesire > 0.8)
+	then
+		local nInRangeAlly = J.GetAlliesNearLoc(nClosestAlly:GetLocation(), 1200)
+		local nInRangeEnemy = J.GetEnemiesNearLoc(nClosestAlly:GetLocation(), 1600)
+
+		for _, enemyHero in pairs(nInRangeEnemy)
+		do
+			if J.IsValidHero(enemyHero)
+			and GetUnitToUnitDistance(enemyHero, nClosestAlly) <= 1600
+			and (#nInRangeAlly + 1 >= #nInRangeEnemy)
+			then
+				if (enemyHero:GetAttackTarget() == nClosestAlly or J.IsChasingTarget(enemyHero, nClosestAlly))
+				or nClosestAlly:WasRecentlyDamagedByHero(enemyHero, 2.5)
+				then
+					return enemyHero, true
+				end
+			end
+		end
+	end
+
+	return nil, false
 end
 
 function GetTargetEnemy(unitName)
@@ -1184,7 +1231,7 @@ ConsiderHeroSpecificRoaming['npc_dota_hero_spirit_breaker'] = function ()
 	if cAbility:IsTrained()
 	then
 		if cAbility:IsInAbilityPhase() or bot:HasModifier('modifier_spirit_breaker_charge_of_darkness') then
-			return BOT_MODE_DESIRE_ABSOLUTE
+			return BOT_MODE_DESIRE_ABSOLUTE * 1.2
 		end
 	end
 	return BOT_MODE_DESIRE_NONE
