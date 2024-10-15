@@ -194,7 +194,7 @@ function X.ConsiderThunderStrike()
     local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
     for _, enemyHero in pairs(nEnemyHeroes)
     do
-        if  J.IsValidTarget(enemyHero)
+        if J.IsValidTarget(enemyHero)
         and J.CanCastOnNonMagicImmune(enemyHero)
         and J.CanCastOnTargetAdvanced(enemyHero)
         and J.CanKillTarget(enemyHero, nDamage * nStikesCount, DAMAGE_TYPE_MAGICAL)
@@ -215,7 +215,7 @@ function X.ConsiderThunderStrike()
     do
         local nAllyInRangeEnemy = J.GetNearbyHeroes(allyHero, 1200, true, BOT_MODE_NONE)
 
-        if  J.IsValidHero(allyHero)
+        if J.IsValidHero(allyHero)
         and J.IsRetreating(allyHero)
         and J.IsCore(allyHero)
         and allyHero:WasRecentlyDamagedByAnyHero(2)
@@ -223,7 +223,7 @@ function X.ConsiderThunderStrike()
         and not allyHero:IsIllusion()
         and not Glimpse:IsFullyCastable()
         then
-            if  nAllyInRangeEnemy ~= nil and #nAllyInRangeEnemy >= 1
+            if nAllyInRangeEnemy ~= nil and #nAllyInRangeEnemy >= 1
             and J.IsValidHero(nAllyInRangeEnemy[1])
             and J.CanCastOnNonMagicImmune(nAllyInRangeEnemy[1])
             and J.CanCastOnTargetAdvanced(nAllyInRangeEnemy[1])
@@ -242,7 +242,7 @@ function X.ConsiderThunderStrike()
 
     if J.IsGoingOnSomeone(bot)
 	then
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.CanCastOnTargetAdvanced(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange + 300)
@@ -255,7 +255,7 @@ function X.ConsiderThunderStrike()
             local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1200, true, BOT_MODE_NONE)
             local nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1200, false, BOT_MODE_NONE)
 
-            if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+            if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
             and #nInRangeAlly >= #nInRangeEnemy
             then
                 return BOT_ACTION_DESIRE_HIGH, botTarget
@@ -263,13 +263,13 @@ function X.ConsiderThunderStrike()
 		end
 	end
 
-    if  J.IsRetreating(bot)
+    if J.IsRetreating(bot)
     and bot:GetActiveModeDesire() > 0.5
 	then
         local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
         for _, enemyHero in pairs(nInRangeEnemy)
         do
-            if  J.IsValidHero(enemyHero)
+            if J.IsValidHero(enemyHero)
             and J.CanCastOnNonMagicImmune(enemyHero)
             and J.CanCastOnTargetAdvanced(enemyHero)
             and J.IsChasingTarget(enemyHero, bot)
@@ -280,7 +280,7 @@ function X.ConsiderThunderStrike()
                 local nInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, true, BOT_MODE_NONE)
                 local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
 
-                if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+                if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
                 and ((#nTargetInRangeAlly > #nInRangeAlly)
                     or bot:WasRecentlyDamagedByAnyHero(2))
                 then
@@ -294,12 +294,12 @@ function X.ConsiderThunderStrike()
 	then
         local nInRangeEnemy = J.GetEnemiesNearLoc(bot:GetLocation(), 1600)
 		local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nCastRange, true)
-        if  nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 3
+        if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 3
         and nInRangeEnemy ~= nil and #nInRangeEnemy == 0
         then
             for _, creep in pairs(nEnemyLaneCreeps)
             do
-                if  J.IsValid(creep)
+                if J.IsValid(creep)
                 and J.CanBeAttacked(creep)
                 then
                     local nCreepCountAround = J.GetNearbyAroundLocationUnitCount(true, false, nRadius, creep:GetLocation())
@@ -315,7 +315,7 @@ function X.ConsiderThunderStrike()
     if J.IsDoingRoshan(bot)
 	then
         -- Remove Spell Block
-		if  J.IsRoshan(botTarget)
+		if J.IsRoshan(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
         and J.IsAttacking(bot)
 		then
@@ -325,7 +325,7 @@ function X.ConsiderThunderStrike()
 
     if J.IsDoingTormentor(bot)
     then
-        if  J.IsTormentor(botTarget)
+        if J.IsTormentor(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
         and J.IsAttacking(bot)
         then
@@ -336,7 +336,7 @@ function X.ConsiderThunderStrike()
     local nNeutralCreeps = bot:GetNearbyNeutralCreeps(nCastRange)
     for _, creep in pairs(nNeutralCreeps)
     do
-        if  J.IsValid(creep)
+        if J.IsValid(creep)
         and J.CanBeAttacked(creep)
         and creep:GetHealth() > nDamage * nStikesCount / 2
         and creep:GetHealth() <= nDamage * nStikesCount
@@ -360,7 +360,7 @@ function X.ConsiderGlimpse()
 	local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 	for _, enemyHero in pairs(nEnemyHeroes)
 	do
-		if  J.IsValidHero(enemyHero)
+		if J.IsValidHero(enemyHero)
         and J.CanCastOnNonMagicImmune(enemyHero)
         and J.CanCastOnTargetAdvanced(enemyHero)
         and (enemyHero:IsChanneling()
@@ -380,7 +380,7 @@ function X.ConsiderGlimpse()
             if J.IsGoingOnSomeone(bot)
             then
                 local nInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
-                if  J.IsChasingTarget(bot, enemyHero)
+                if J.IsChasingTarget(bot, enemyHero)
                 and enemyHero:GetCurrentMovementSpeed() > bot:GetCurrentMovementSpeed()
                 and nInRangeAlly ~= nil and #nInRangeAlly >= #nEnemyHeroes
                 then
@@ -390,13 +390,13 @@ function X.ConsiderGlimpse()
 		end
 	end
 
-    if  J.IsRetreating(bot)
+    if J.IsRetreating(bot)
     and bot:GetActiveModeDesire() >= 0.75
 	then
         local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
         for _, enemyHero in pairs(nInRangeEnemy)
         do
-            if  J.IsValidHero(enemyHero)
+            if J.IsValidHero(enemyHero)
             and J.CanCastOnNonMagicImmune(enemyHero)
             and J.CanCastOnTargetAdvanced(enemyHero)
             and J.IsChasingTarget(enemyHero, bot)
@@ -408,7 +408,7 @@ function X.ConsiderGlimpse()
                 local nInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, true, BOT_MODE_NONE)
                 local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
 
-                if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+                if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
                 and ((#nTargetInRangeAlly > #nInRangeAlly)
                     or bot:WasRecentlyDamagedByAnyHero(2))
                 then
@@ -422,14 +422,14 @@ function X.ConsiderGlimpse()
     do
         local nAllyInRangeEnemy = J.GetNearbyHeroes(allyHero, 1200, true, BOT_MODE_NONE)
 
-        if  J.IsValidHero(allyHero)
+        if J.IsValidHero(allyHero)
         and J.IsRetreating(allyHero)
         and J.IsCore(allyHero)
         and allyHero:GetActiveModeDesire() >= 0.75
         and allyHero:WasRecentlyDamagedByAnyHero(2)
         and not allyHero:IsIllusion()
         then
-            if  nAllyInRangeEnemy ~= nil and #nAllyInRangeEnemy >= 1
+            if nAllyInRangeEnemy ~= nil and #nAllyInRangeEnemy >= 1
             and J.IsValidHero(nAllyInRangeEnemy[1])
             and J.CanCastOnNonMagicImmune(nAllyInRangeEnemy[1])
             and J.CanCastOnTargetAdvanced(nAllyInRangeEnemy[1])
@@ -452,7 +452,7 @@ function X.ConsiderGlimpse()
 
     for _, enemyHero in pairs(nEnemyHeroes)
 	do
-		if  J.IsValidHero(enemyHero)
+		if J.IsValidHero(enemyHero)
         and J.CanCastOnNonMagicImmune(enemyHero)
         and J.CanCastOnTargetAdvanced(enemyHero)
         and not J.IsSuspiciousIllusion(enemyHero)
@@ -486,7 +486,7 @@ function X.ConsiderKineticField()
 	local nCastPoint = KineticField:GetCastPoint()
 	local nRadius = KineticField:GetSpecialValueInt('radius')
 
-	if  J.IsInTeamFight(bot, 1200)
+	if J.IsInTeamFight(bot, 1200)
     and not CanCastKineticStorm()
 	then
 		local nLocationAoE = bot:FindAoELocation(true, true, bot:GetLocation(), nCastRange, nRadius * 0.8, 0, 0)
@@ -500,7 +500,7 @@ function X.ConsiderKineticField()
 
     if J.IsGoingOnSomeone(bot)
 	then
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
         and not J.IsSuspiciousIllusion(botTarget)
         and not botTarget:IsMagicImmune()
@@ -510,7 +510,7 @@ function X.ConsiderKineticField()
             local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1400, true, BOT_MODE_NONE)
             local nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1400, false, BOT_MODE_NONE)
 
-            if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+            if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
             and #nInRangeAlly >= #nInRangeEnemy
             then
                 if #nInRangeEnemy == 0
@@ -522,7 +522,7 @@ function X.ConsiderKineticField()
                             return BOT_ACTION_DESIRE_HIGH, botTarget:GetExtrapolatedLocation(nCastPoint)
                         end
 
-                        if  J.IsInRange(bot, botTarget, nCastRange + nRadius)
+                        if J.IsInRange(bot, botTarget, nCastRange + nRadius)
                         and not J.IsInRange(bot, botTarget, nCastRange)
                         then
                             return BOT_ACTION_DESIRE_HIGH, J.Site.GetXUnitsTowardsLocation(bot, botTarget:GetLocation(), nCastRange)
@@ -540,7 +540,7 @@ function X.ConsiderKineticField()
                         end
                     end
 
-                    if  J.IsInRange(bot, botTarget, nCastRange + nRadius)
+                    if J.IsInRange(bot, botTarget, nCastRange + nRadius)
                     and not J.IsInRange(bot, botTarget, nCastRange)
                     then
                         nInRangeEnemy = J.GetEnemiesNearLoc(botTarget:GetLocation(), nRadius * 0.8)
@@ -557,13 +557,13 @@ function X.ConsiderKineticField()
 	end
 
     local desireCheck = RemapValClamped(KineticField:GetLevel(), 1, 4, 0.75, 0.5)
-    if  J.IsRetreating(bot)
+    if J.IsRetreating(bot)
     and bot:GetActiveModeDesire() >= desireCheck
 	then
         local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
         if nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
         then
-            if  J.IsValidHero(nInRangeEnemy[1])
+            if J.IsValidHero(nInRangeEnemy[1])
             and J.IsChasingTarget(nInRangeEnemy[1], bot)
             and not J.IsSuspiciousIllusion(nInRangeEnemy[1])
             and not J.IsDisabled(nInRangeEnemy[1])
@@ -573,7 +573,7 @@ function X.ConsiderKineticField()
                 local nInRangeAlly = J.GetNearbyHeroes(nInRangeEnemy[1], 1200, true, BOT_MODE_NONE)
                 local nTargetInRangeAlly = J.GetNearbyHeroes(nInRangeEnemy[1], 1200, false, BOT_MODE_NONE)
 
-                if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+                if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
                 and ((#nTargetInRangeAlly > #nInRangeAlly)
                     or bot:WasRecentlyDamagedByAnyHero(2))
                 then
@@ -593,7 +593,7 @@ function X.ConsiderKineticField()
     do
         local nAllyInRangeEnemy = J.GetNearbyHeroes(allyHero, 1200, true, BOT_MODE_NONE)
 
-        if  J.IsValidHero(allyHero)
+        if J.IsValidHero(allyHero)
         and J.IsRetreating(allyHero)
         and J.IsCore(allyHero)
         and allyHero:GetActiveModeDesire() >= 0.75
@@ -601,7 +601,7 @@ function X.ConsiderKineticField()
         and not allyHero:IsIllusion()
         and not J.IsGoingOnSomeone(bot)
         then
-            if  nAllyInRangeEnemy ~= nil and #nAllyInRangeEnemy >= 1
+            if nAllyInRangeEnemy ~= nil and #nAllyInRangeEnemy >= 1
             and J.IsValidHero(nAllyInRangeEnemy[1])
             and J.IsInRange(bot, nAllyInRangeEnemy[1], nCastRange)
             and J.IsChasingTarget(nAllyInRangeEnemy[1], allyHero)
@@ -630,13 +630,13 @@ function X.ConsiderStaticStorm()
 	local nRadius = StaticStorm:GetSpecialValueInt('radius')
 	local nCastRange = StaticStorm:GetCastRange()
 
-	if  J.IsInTeamFight(bot, 1200)
+	if J.IsInTeamFight(bot, 1200)
     and not CanCastKineticStorm()
 	then
 		local nLocationAoE = bot:FindAoELocation(true, true, bot:GetLocation(), nCastRange, nRadius * 0.8, 0, 0)
         local nInRangeEnemy = J.GetEnemiesNearLoc(nLocationAoE.targetloc, nRadius * 0.8)
 
-		if  nInRangeEnemy ~= nil and #nInRangeEnemy >= 2
+		if nInRangeEnemy ~= nil and #nInRangeEnemy >= 2
         and not J.IsLocationInChrono(nLocationAoE.targetloc)
         and not J.IsLocationInBlackHole(nLocationAoE.targetloc)
         then
@@ -658,7 +658,7 @@ function X.ConsiderKineticStorm()
             local nLocationAoE = bot:FindAoELocation(true, true, bot:GetLocation(), nCastRange, nRadius * 0.8, 0, 0)
             local nInRangeEnemy = J.GetEnemiesNearLoc(nLocationAoE.targetloc, nRadius * 0.8)
 
-            if  nInRangeEnemy ~= nil and #nInRangeEnemy >= 2
+            if nInRangeEnemy ~= nil and #nInRangeEnemy >= 2
             and not J.IsLocationInChrono(nLocationAoE.targetloc)
             and not J.IsLocationInBlackHole(nLocationAoE.targetloc)
             then
@@ -671,7 +671,7 @@ function X.ConsiderKineticStorm()
 end
 
 function CanCastKineticStorm()
-    if  KineticField:IsFullyCastable()
+    if KineticField:IsFullyCastable()
     and StaticStorm:IsFullyCastable()
     then
         local nManaCost = KineticField:GetManaCost() + StaticStorm:GetManaCost()

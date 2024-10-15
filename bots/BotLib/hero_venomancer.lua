@@ -181,7 +181,7 @@ function X.ConsiderVenomousGale()
     local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
     for _, enemyHero in pairs(nEnemyHeroes)
     do
-        if  J.IsValidHero(enemyHero)
+        if J.IsValidHero(enemyHero)
         and J.CanCastOnNonMagicImmune(enemyHero)
         and (J.CanKillTarget(enemyHero, nInitDamage, DAMAGE_TYPE_MAGICAL)
             or J.CanKillTarget(enemyHero, nInitDamage * nTickDamage, DAMAGE_TYPE_MAGICAL))
@@ -196,7 +196,7 @@ function X.ConsiderVenomousGale()
             then
                 local nInRangeTower = enemyHero:GetNearbyTowers(700, true)
 
-                if  nInRangeTower ~= nil and #nInRangeTower >= 1
+                if nInRangeTower ~= nil and #nInRangeTower >= 1
                 and J.IsValidBuilding(nInRangeTower[1])
                 and nInRangeTower[1]:GetAttackTarget() == enemyHero
                 then
@@ -222,12 +222,12 @@ function X.ConsiderVenomousGale()
 
         for _, enemyHero in pairs(nAllyInRangeEnemy)
         do
-            if  J.IsValidHero(allyHero)
+            if J.IsValidHero(allyHero)
             and J.IsRetreating(allyHero)
             and allyHero:WasRecentlyDamagedByAnyHero(1.5)
             and not allyHero:IsIllusion()
             then
-                if  J.IsValidHero(enemyHero)
+                if J.IsValidHero(enemyHero)
                 and J.CanCastOnNonMagicImmune(enemyHero)
                 and J.IsInRange(bot, enemyHero, nCastRange)
                 and J.IsChasingTarget(enemyHero, allyHero)
@@ -251,7 +251,7 @@ function X.ConsiderVenomousGale()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
         and not J.IsSuspiciousIllusion(botTarget)
@@ -261,7 +261,7 @@ function X.ConsiderVenomousGale()
             local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1200, true, BOT_MODE_NONE)
             local nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1200, false, BOT_MODE_NONE)
 
-            if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+            if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
             and #nInRangeAlly >= #nInRangeEnemy
             then
                 nInRangeEnemy = J.GetEnemiesNearLoc(botTarget:GetLocation(), nRadius)
@@ -281,7 +281,7 @@ function X.ConsiderVenomousGale()
         local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
         for _, enemyHero in pairs(nInRangeEnemy)
         do
-            if  J.IsValidHero(enemyHero)
+            if J.IsValidHero(enemyHero)
             and J.CanCastOnNonMagicImmune(enemyHero)
             and J.IsChasingTarget(enemyHero, bot)
             and not J.IsSuspiciousIllusion(enemyHero)
@@ -290,7 +290,7 @@ function X.ConsiderVenomousGale()
                 local nInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, true, BOT_MODE_NONE)
                 local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
 
-                if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+                if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
                 and ((#nTargetInRangeAlly > #nInRangeAlly)
                     or bot:WasRecentlyDamagedByAnyHero(2))
                 then
@@ -307,13 +307,13 @@ function X.ConsiderVenomousGale()
         end
 	end
 
-    if  (J.IsPushing(bot) or J.IsDefending(bot))
+    if (J.IsPushing(bot) or J.IsDefending(bot))
     and not J.IsThereCoreNearby(1000)
 	then
         local nLocationAoE = bot:FindAoELocation(true, false, bot:GetLocation(), nCastRange, nRadius, 0, 0)
         local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nCastRange, true)
 
-        if  nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 3
+        if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 3
         and nLocationAoE.count >= 3
         and J.GetMP(bot) > 0.5
         then
@@ -336,7 +336,7 @@ function X.ConsiderVenomousGale()
 
 		for _, creep in pairs(nEnemyLaneCreeps)
 		do
-            if  J.IsValid(creep)
+            if J.IsValid(creep)
             and creep:GetHealth() <= nInitDamage
             then
                 canKill = canKill + 1
@@ -344,7 +344,7 @@ function X.ConsiderVenomousGale()
             end
 		end
 
-        if  canKill >= 2
+        if canKill >= 2
         and J.GetMP(bot) > 0.41
         and nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
         and J.CanBeAttacked(creepList[1])
@@ -356,7 +356,7 @@ function X.ConsiderVenomousGale()
 
     if J.IsDoingRoshan(bot)
     then
-        if  J.IsRoshan(botTarget)
+        if J.IsRoshan(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, 500)
         and J.IsAttacking(bot)
@@ -367,7 +367,7 @@ function X.ConsiderVenomousGale()
 
     if J.IsDoingTormentor(bot)
     then
-        if  J.IsTormentor(botTarget)
+        if J.IsTormentor(botTarget)
         and J.IsInRange(bot, botTarget, 500)
         and J.IsAttacking(bot)
         then
@@ -393,12 +393,12 @@ function X.ConsiderPlagueWard()
 
         for _, enemyHero in pairs(nAllyInRangeEnemy)
         do
-            if  J.IsValidHero(allyHero)
+            if J.IsValidHero(allyHero)
             and J.IsRetreating(allyHero)
             and allyHero:WasRecentlyDamagedByAnyHero(1.5)
             and not allyHero:IsIllusion()
             then
-                if  J.IsValidHero(enemyHero)
+                if J.IsValidHero(enemyHero)
                 and J.CanCastOnNonMagicImmune(enemyHero)
                 and J.IsInRange(bot, enemyHero, nCastRange)
                 and J.IsChasingTarget(enemyHero, allyHero)
@@ -415,7 +415,7 @@ function X.ConsiderPlagueWard()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
         and J.CanCastOnMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
         and not J.IsSuspiciousIllusion(botTarget)
@@ -434,7 +434,7 @@ function X.ConsiderPlagueWard()
         local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
         for _, enemyHero in pairs(nInRangeEnemy)
         do
-            if  J.IsValidHero(enemyHero)
+            if J.IsValidHero(enemyHero)
             and J.CanCastOnNonMagicImmune(enemyHero)
             and J.IsChasingTarget(enemyHero, bot)
             and not J.IsSuspiciousIllusion(enemyHero)
@@ -443,7 +443,7 @@ function X.ConsiderPlagueWard()
                 local nInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, true, BOT_MODE_NONE)
                 local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
 
-                if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+                if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
                 and ((#nTargetInRangeAlly > #nInRangeAlly)
                     or bot:WasRecentlyDamagedByAnyHero(2.2))
                 then
@@ -458,14 +458,14 @@ function X.ConsiderPlagueWard()
 	then
         local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nCastRange, true)
 
-        if  nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 4
+        if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 4
         and J.GetMP(bot) > 0.5
         then
             return BOT_ACTION_DESIRE_HIGH, J.GetCenterOfUnits(nEnemyLaneCreeps)
         end
 
         local nEnemyTower = bot:GetNearbyTowers(600, true)
-        if  nEnemyTower ~= nil and #nEnemyTower >= 1
+        if nEnemyTower ~= nil and #nEnemyTower >= 1
         and J.IsValidBuilding(nEnemyTower[1])
         and J.IsAttacking(bot)
         and bot:GetAttackTarget() == nEnemyTower[1]
@@ -474,13 +474,13 @@ function X.ConsiderPlagueWard()
         end
 	end
 
-    if  J.IsLaning(bot)
+    if J.IsLaning(bot)
     and J.IsInLaningPhase()
     then
         local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
         for _, enemyHero in pairs(nInRangeEnemy)
         do
-            if  J.IsValidHero(enemyHero)
+            if J.IsValidHero(enemyHero)
             and J.IsAttacking(enemyHero)
             and J.IsValid(enemyHero:GetAttackTarget())
             and enemyHero:GetAttackTarget():IsCreep()
@@ -498,7 +498,7 @@ function X.ConsiderPlagueWard()
 
     if J.IsDoingRoshan(bot)
     then
-        if  J.IsRoshan(botTarget)
+        if J.IsRoshan(botTarget)
         and J.IsInRange(bot, botTarget, 500)
         and J.IsAttacking(bot)
         then
@@ -508,7 +508,7 @@ function X.ConsiderPlagueWard()
 
     if J.IsDoingTormentor(bot)
     then
-        if  J.IsTormentor(botTarget)
+        if J.IsTormentor(botTarget)
         and J.IsInRange(bot, botTarget, 500)
         and J.IsAttacking(bot)
         then
@@ -535,7 +535,7 @@ function X.ConsiderNoxiousPlague()
 
         for _, enemyHero in pairs(nInRangeEnemy)
         do
-            if  J.IsValidHero(enemyHero)
+            if J.IsValidHero(enemyHero)
             and J.CanCastOnNonMagicImmune(enemyHero)
             and not J.IsSuspiciousIllusion(enemyHero)
             and not J.IsDisabled(enemyHero)
@@ -548,7 +548,7 @@ function X.ConsiderNoxiousPlague()
                 local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
                 local currDmg = enemyHero:GetEstimatedDamageToTarget(true, bot, 5, DAMAGE_TYPE_ALL)
 
-                if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+                if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
                 and #nInRangeAlly >= #nTargetInRangeAlly
                 and not (#nInRangeAlly >= #nTargetInRangeAlly + 2)
                 and dmg < currDmg
@@ -582,7 +582,7 @@ end
 --     local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 --     for _, enemyHero in pairs(nEnemyHeroes)
 --     do
---         if  J.IsValidHero(enemyHero)
+--         if J.IsValidHero(enemyHero)
 --         and J.CanCastOnNonMagicImmune(enemyHero)
 --         and J.CanCastOnTargetAdvanced(enemyHero)
 --         and (J.CanKillTarget(enemyHero, nDamagePer * nDuration, DAMAGE_TYPE_MAGICAL))
@@ -605,7 +605,7 @@ end
 
 --         for _, enemyHero in pairs(nInRangeEnemy)
 --         do
---             if  J.IsValidHero(enemyHero)
+--             if J.IsValidHero(enemyHero)
 --             and J.CanCastOnNonMagicImmune(enemyHero)
 --             and J.CanCastOnTargetAdvanced(enemyHero)
 --             and not J.IsSuspiciousIllusion(enemyHero)
@@ -619,7 +619,7 @@ end
 --                 local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
 --                 local currDmg = enemyHero:GetEstimatedDamageToTarget(true, bot, 5, DAMAGE_TYPE_ALL)
 
---                 if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+--                 if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
 --                 and #nInRangeAlly >= #nTargetInRangeAlly
 --                 and dmg < currDmg
 --                 then
@@ -637,7 +637,7 @@ end
 
 --     if J.IsDoingRoshan(bot)
 --     then
---         if  J.IsRoshan(botTarget)
+--         if J.IsRoshan(botTarget)
 --         and J.CanCastOnNonMagicImmune(botTarget)
 --         and J.CanCastOnTargetAdvanced(botTarget)
 --         and J.IsInRange(bot, botTarget, 500)

@@ -497,7 +497,7 @@ function X.ConsiderStinger()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and not J.IsSuspiciousIllusion(botTarget)
         and not botTarget:HasModifier('modifier_abaddon_borrowed_time')
@@ -507,14 +507,14 @@ function X.ConsiderStinger()
             local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1200, true, BOT_MODE_NONE)
             local nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1200, false, BOT_MODE_NONE)
 
-            if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+            if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
             and #nInRangeAlly >= #nInRangeEnemy
             then
                 nInRangeEnemy = J.GetEnemiesNearLoc(botTarget:GetLocation(), nCastRange + nRadius)
 
                 if nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
                 then
-					if  GetUnitToLocationDistance(bot, J.GetCenterOfUnits(nInRangeEnemy)) > nCastRange
+					if GetUnitToLocationDistance(bot, J.GetCenterOfUnits(nInRangeEnemy)) > nCastRange
 					and GetUnitToLocationDistance(bot, J.GetCenterOfUnits(nInRangeEnemy)) < nCastRange + nRadius
 					then
 						return BOT_ACTION_DESIRE_HIGH, J.Site.GetXUnitsTowardsLocation(bot, J.GetCenterOfUnits(nInRangeEnemy), nCastRange)
@@ -524,7 +524,7 @@ function X.ConsiderStinger()
 
                 end
 
-				if  J.IsInRange(bot, botTarget, nCastRange + nRadius)
+				if J.IsInRange(bot, botTarget, nCastRange + nRadius)
 				and not J.IsInRange(bot, botTarget, nCastRange)
 				then
 					return BOT_ACTION_DESIRE_HIGH, J.Site.GetXUnitsTowardsLocation(bot, botTarget:GetLocation(), nCastRange)
@@ -540,7 +540,7 @@ function X.ConsiderStinger()
         local nInRangeEnemy = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE)
         for _, enemyHero in pairs(nInRangeEnemy)
         do
-            if  J.IsValidHero(enemyHero)
+            if J.IsValidHero(enemyHero)
             and J.CanCastOnNonMagicImmune(enemyHero)
             and J.IsChasingTarget(enemyHero, bot)
             and not J.IsSuspiciousIllusion(enemyHero)
@@ -550,7 +550,7 @@ function X.ConsiderStinger()
                 local nInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, true, BOT_MODE_NONE)
                 local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
 
-                if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+                if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
                 and ((#nTargetInRangeAlly > #nInRangeAlly)
                     or bot:WasRecentlyDamagedByAnyHero(2))
                 and GetUnitToUnitDistance(bot, enemyHero) < nRadius
@@ -561,11 +561,11 @@ function X.ConsiderStinger()
         end
     end
 
-	if  (J.IsPushing(bot) or J.IsDefending(bot))
+	if (J.IsPushing(bot) or J.IsDefending(bot))
 	and nManaAfter > abilityQ:GetManaCost() + abilityW:GetManaCost()
 	then
         local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(1600, true)
-        if  nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 5
+        if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 5
 		and J.CanBeAttacked(nEnemyLaneCreeps[1])
 		and not J.IsRunning(nEnemyLaneCreeps[1])
         then
@@ -573,7 +573,7 @@ function X.ConsiderStinger()
         end
 	end
 
-    if  J.IsFarming(bot)
+    if J.IsFarming(bot)
 	and nManaAfter > abilityQ:GetManaCost() + abilityW:GetManaCost()
     then
         if J.IsAttacking(bot)
@@ -585,7 +585,7 @@ function X.ConsiderStinger()
             end
 
             local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(700, true)
-            if  nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 3
+            if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 3
 			and J.CanBeAttacked(nEnemyLaneCreeps[1])
 			and not J.IsRunning(nEnemyLaneCreeps[1])
             then
@@ -594,14 +594,14 @@ function X.ConsiderStinger()
         end
     end
 
-    if  J.IsLaning(bot)
+    if J.IsLaning(bot)
 	and nManaAfter > abilityQ:GetManaCost() + abilityW:GetManaCost()
 	and nAbilityLevel >= 2
 	then
         local nInRangeEnemy = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE)
         local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nCastRange + nRadius, true)
 
-        if  nInRangeEnemy ~= nil and #nInRangeEnemy == 0
+        if nInRangeEnemy ~= nil and #nInRangeEnemy == 0
         and nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 4
         and J.IsAttacking(bot)
 		and J.CanBeAttacked(nEnemyLaneCreeps[1])
@@ -611,10 +611,10 @@ function X.ConsiderStinger()
         end
 	end
 
-    if  J.IsDoingRoshan(bot)
+    if J.IsDoingRoshan(bot)
 	and nManaAfter > abilityQ:GetManaCost() + abilityW:GetManaCost()
     then
-        if  J.IsRoshan(botTarget)
+        if J.IsRoshan(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, 600)
         and J.IsAttacking(bot)
@@ -623,10 +623,10 @@ function X.ConsiderStinger()
         end
     end
 
-    if  J.IsDoingTormentor(bot)
+    if J.IsDoingTormentor(bot)
 	and nManaAfter > abilityQ:GetManaCost() + abilityW:GetManaCost()
     then
-        if  J.IsTormentor(botTarget)
+        if J.IsTormentor(botTarget)
         and J.IsInRange(bot, botTarget, 600)
         and J.IsAttacking(bot)
         then

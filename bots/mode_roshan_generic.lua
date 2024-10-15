@@ -73,7 +73,7 @@ function GetDesire()
 
     shouldKillRoshan = J.IsRoshanAlive()
 
-    if  shouldKillRoshan
+    if shouldKillRoshan
     and not roshTimeFlag
     then
         sinceRoshAliveTime = DotaTime()
@@ -94,13 +94,13 @@ function GetDesire()
     local nTeamFightLocation = J.GetTeamFightLocation(bot)
     if nTeamFightLocation ~= nil
     then
-        if  timeOfDay == 'day'
+        if timeOfDay == 'day'
         and GetUnitToLocationDistance(bot, roshanRadiantLoc) < 1000
         and GetUnitToLocationDistance(bot, nTeamFightLocation) < 1600
         then
             return BOT_ACTION_DESIRE_NONE
         else
-            if  timeOfDay == 'night'
+            if timeOfDay == 'night'
             and GetUnitToLocationDistance(bot, roshanDireLoc) < 1000
             and GetUnitToLocationDistance(bot, nTeamFightLocation) < 1600
             then
@@ -132,7 +132,7 @@ function GetDesire()
 		return BOT_ACTION_DESIRE_NONE;
 	end
 
-    if  shouldKillRoshan
+    if shouldKillRoshan
     and initDPSFlag
     -- and (hasSameOrMoreHero or (not hasSameOrMoreHero and IsEnoughAllies()))
     then

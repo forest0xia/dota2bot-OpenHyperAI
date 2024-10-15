@@ -235,7 +235,7 @@ end
 function X.IsOtherMinesClose(loc)
 	for _, mine in pairs(GetUnitList(UNIT_LIST_ALLIES))
     do
-		if  X.IsMines(mine)
+		if X.IsMines(mine)
         and GetUnitToLocationDistance(mine, loc) <= nRadius
         then
 			return true

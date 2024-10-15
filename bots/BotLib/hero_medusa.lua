@@ -291,7 +291,7 @@ function X.ConsiderGorgonGrasp()
 
 	for _, allyHero in pairs(tAllyHeroes)
     do
-        if  J.IsValidHero(allyHero)
+        if J.IsValidHero(allyHero)
         and J.IsRetreating(allyHero)
         and allyHero:GetActiveModeDesire() >= 0.7
         and allyHero:WasRecentlyDamagedByAnyHero(3)

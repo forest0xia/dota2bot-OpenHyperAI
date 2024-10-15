@@ -200,7 +200,7 @@ function X.ConsiderVacuum()
 
     for _, enemyHero in pairs(nEnemyHeroes)
     do
-        if  J.IsValidHero(enemyHero)
+        if J.IsValidHero(enemyHero)
         and J.CanCastOnNonMagicImmune(enemyHero)
         and J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_MAGICAL)
         and not J.IsInTeamFight(bot, 1200)
@@ -215,7 +215,7 @@ function X.ConsiderVacuum()
         end
     end
 
-	if  J.IsInTeamFight(bot, 1200)
+	if J.IsInTeamFight(bot, 1200)
     and not CanDoVacuumWall()
 	then
 		local nLocationAoE = bot:FindAoELocation(true, true, bot:GetLocation(), nCastRange, nRadius, nCastPoint, 0)
@@ -229,7 +229,7 @@ function X.ConsiderVacuum()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange + nRadius)
         and not J.IsSuspiciousIllusion(botTarget)
@@ -241,7 +241,7 @@ function X.ConsiderVacuum()
             local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1200, true, BOT_MODE_NONE)
             local nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1200, false, BOT_MODE_NONE)
 
-            if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+            if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
             and #nInRangeAlly >= #nInRangeEnemy
             then
                 if not J.IsInRange(bot, botTarget, nCastRange)
@@ -277,7 +277,7 @@ function X.ConsiderIonShell()
         then
             for _, allyHero in pairs(nAllyHeroes)
             do
-                if  J.IsValid(allyHero)
+                if J.IsValid(allyHero)
                 and not allyHero:IsIllusion()
                 and not allyHero:HasModifier('modifier_dark_seer_ion_shell')
                 and not allyHero:HasModifier('modifier_necrolyte_reapers_scythe')
@@ -288,7 +288,7 @@ function X.ConsiderIonShell()
 
                     for _, allyEnemyHero in pairs(nAllyEnemyHeroes)
                     do
-                        if  allyEnemyHero ~= nil
+                        if allyEnemyHero ~= nil
                         and allyEnemyHero:IsAlive()
                         and allyEnemyHero:GetAttackTarget() == allyHero
                         and not J.IsSuspiciousIllusion(allyEnemyHero)
@@ -300,7 +300,7 @@ function X.ConsiderIonShell()
 
                     for _, creep in pairs(nAllyEnemyCreeps)
                     do
-                        if  creep ~= nil
+                        if creep ~= nil
                         and creep:IsAlive()
                         and creep:GetAttackTarget() == allyHero
                         and creep:GetAttackRange() <= 326
@@ -317,7 +317,7 @@ function X.ConsiderIonShell()
                 end
             end
         else
-            if  J.IsValidTarget(botTarget)
+            if J.IsValidTarget(botTarget)
             and J.IsInRange(bot, botTarget, nRadius)
             and not J.IsSuspiciousIllusion(botTarget)
             and not bot:HasModifier('modifier_dark_seer_ion_shell')
@@ -332,14 +332,14 @@ function X.ConsiderIonShell()
         end
 	end
 
-    if  J.IsRetreating(bot)
+    if J.IsRetreating(bot)
     and bot:GetActiveModeDesire() > 0.75
     and not Vacuum:IsFullyCastable()
 	then
         local nInRangeEnemy = J.GetNearbyHeroes(bot,nRadius, true, BOT_MODE_NONE)
         for _, enemyHero in pairs(nInRangeEnemy)
         do
-            if  J.IsValidHero(enemyHero)
+            if J.IsValidHero(enemyHero)
             and J.CanCastOnNonMagicImmune(enemyHero)
             and J.IsChasingTarget(enemyHero, bot)
             and not bot:HasModifier('modifier_dark_seer_ion_shell')
@@ -350,7 +350,7 @@ function X.ConsiderIonShell()
                 local nInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, true, BOT_MODE_NONE)
                 local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
 
-                if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+                if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
                 and ((#nTargetInRangeAlly > #nInRangeAlly)
                     or bot:WasRecentlyDamagedByAnyHero(2))
                 then
@@ -366,14 +366,14 @@ function X.ConsiderIonShell()
         if nInRangeEnemy ~= nil and #nInRangeEnemy == 0
         then
             local nAllyLaneCreeps = bot:GetNearbyLaneCreeps(nCastRange, false)
-            if  nAllyLaneCreeps ~= nil and #nAllyLaneCreeps >= 1
+            if nAllyLaneCreeps ~= nil and #nAllyLaneCreeps >= 1
             then
                 local targetCreep = nil
                 local targetDis = 0
 
                 for _, creep in pairs(nAllyLaneCreeps)
                 do
-                    if  J.IsValid(creep)
+                    if J.IsValid(creep)
                     and J.GetHP(creep) > 0.75
                     and creep:DistanceFromFountain() > targetDis
                     and creep:GetAttackRange() <= 326
@@ -397,7 +397,7 @@ function X.ConsiderIonShell()
         local botAttackTarget = bot:GetAttackTarget()
         local nNeutralCreeps = bot:GetNearbyNeutralCreeps(nRadius + bot:GetAttackRange())
 
-        if  J.IsValid(botAttackTarget)
+        if J.IsValid(botAttackTarget)
         and botAttackTarget:IsCreep()
         and nNeutralCreeps ~= nil and #nNeutralCreeps >= 2
         then
@@ -414,12 +414,12 @@ function X.ConsiderIonShell()
         local nInRangeEnemy = J.GetNearbyHeroes(bot,1200, true, BOT_MODE_NONE)
         local nEnemyTowers = bot:GetNearbyTowers(700, true)
 
-        if  nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 3
+        if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 3
         and nInRangeEnemy ~= nil and #nInRangeEnemy == 0
         and nEnemyTowers ~= nil and #nInRangeEnemy == 0
         and nAbilityLevel >= 2
         then
-            if  J.IsAttacking(bot)
+            if J.IsAttacking(bot)
             and J.CanBeAttacked(nEnemyLaneCreeps[1])
             and not bot:HasModifier('modifier_dark_seer_ion_shell')
             then
@@ -430,7 +430,7 @@ function X.ConsiderIonShell()
 
     if J.IsDoingRoshan(bot) or J.IsDoingTormentor(bot)
 	then
-		if  (J.IsRoshan(botTarget) or J.IsTormentor(botTarget))
+		if (J.IsRoshan(botTarget) or J.IsTormentor(botTarget))
         and J.IsInRange(bot, botTarget, nRadius)
         and J.IsAttacking(bot)
         and not bot:HasModifier('modifier_dark_seer_ion_shell')
@@ -455,7 +455,7 @@ function X.ConsiderSurge()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
         and J.IsInRange(bot, botTarget, 1200)
         and not J.IsSuspiciousIllusion(botTarget)
         and not botTarget:HasModifier('modifier_faceless_void_chronosphere_freeze')
@@ -470,7 +470,7 @@ function X.ConsiderSurge()
                 local allyTarget = J.GetProperTarget(allyHero)
 				local dist = GetUnitToUnitDistance(allyHero, botTarget)
 
-				if  dist < tToMeDist
+				if dist < tToMeDist
                 and dist < nCastRange
                 and J.IsValidTarget(allyTarget)
                 and not J.IsSuspiciousIllusion(allyTarget)
@@ -487,13 +487,13 @@ function X.ConsiderSurge()
 		end
 	end
 
-    if  J.IsRetreating(bot)
+    if J.IsRetreating(bot)
     and bot:GetActiveModeDesire() > 0.75
 	then
         local nInRangeEnemy = J.GetNearbyHeroes(bot,1200, true, BOT_MODE_NONE)
         for _, enemyHero in pairs(nInRangeEnemy)
         do
-            if  J.IsValidHero(enemyHero)
+            if J.IsValidHero(enemyHero)
             and J.CanCastOnNonMagicImmune(enemyHero)
             and J.IsChasingTarget(enemyHero, bot)
             and J.IsInRange(bot, enemyHero, 600)
@@ -505,7 +505,7 @@ function X.ConsiderSurge()
                 local nInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, true, BOT_MODE_NONE)
                 local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
 
-                if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+                if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
                 and ((#nTargetInRangeAlly > #nInRangeAlly)
                     or bot:WasRecentlyDamagedByAnyHero(1.5))
                 then
@@ -517,7 +517,7 @@ function X.ConsiderSurge()
 
     if J.IsDoingRoshan(bot)
 	then
-        if  GetUnitToLocationDistance(bot, RoshanLocation) > 1600
+        if GetUnitToLocationDistance(bot, RoshanLocation) > 1600
         and J.GetManaAfter(Surge:GetManaCost()) * bot:GetMana() > Vacuum:GetManaCost()
         and J.GetManaAfter(Surge:GetManaCost()) * bot:GetMana() > WallOfReplica:GetManaCost()
         and nAbilityLevel >= 3
@@ -528,7 +528,7 @@ function X.ConsiderSurge()
 
     if J.IsDoingTormentor(bot)
 	then
-        if  GetUnitToLocationDistance(bot, TormentorLocation) > 1600
+        if GetUnitToLocationDistance(bot, TormentorLocation) > 1600
         and J.GetManaAfter(Surge:GetManaCost()) * bot:GetMana() > Vacuum:GetManaCost()
         and J.GetManaAfter(Surge:GetManaCost()) * bot:GetMana() > WallOfReplica:GetManaCost()
         and nAbilityLevel >= 2
@@ -542,12 +542,12 @@ function X.ConsiderSurge()
     do
         local nAllyInRangeEnemy = J.GetNearbyHeroes(allyHero, 1200, true, BOT_MODE_NONE)
 
-        if  J.IsValidHero(allyHero)
+        if J.IsValidHero(allyHero)
         and J.IsRetreating(allyHero)
         and allyHero:WasRecentlyDamagedByAnyHero(1.5)
         and not allyHero:IsIllusion()
         then
-            if  nAllyInRangeEnemy ~= nil and #nAllyInRangeEnemy >= 1
+            if nAllyInRangeEnemy ~= nil and #nAllyInRangeEnemy >= 1
             and J.IsValidHero(nAllyInRangeEnemy[1])
             and J.IsInRange(bot, nAllyInRangeEnemy[1], nCastRange)
             and J.IsChasingTarget(nAllyInRangeEnemy[1], allyHero)
@@ -614,7 +614,7 @@ function X.ConsiderVacuumWall()
 end
 
 function CanDoVacuumWall()
-    if  Vacuum:IsFullyCastable()
+    if Vacuum:IsFullyCastable()
     and WallOfReplica:IsFullyCastable()
     and HasBlink()
     then
@@ -645,7 +645,7 @@ function HasBlink()
 		end
 	end
 
-    if  blink ~= nil
+    if blink ~= nil
     and blink:IsFullyCastable()
 	then
         Blink = blink

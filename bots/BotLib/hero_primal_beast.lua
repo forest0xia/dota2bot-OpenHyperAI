@@ -446,7 +446,7 @@ function X.ConsiderW()
 
     if J.IsDoingTormentor(bot)
     then
-        if  J.IsTormentor(botTarget)
+        if J.IsTormentor(botTarget)
         and J.IsInRange(bot, botTarget, nTrampleRadius)
         and J.IsAttacking(bot)
         then
@@ -525,7 +525,7 @@ function X.ConsiderR()
 	then
         local strongestTarget = J.GetStrongestUnit(nPulverizeCastRange, bot, true, true, 5)
 
-		if  J.IsValidTarget(strongestTarget)
+		if J.IsValidTarget(strongestTarget)
 		and not J.IsSuspiciousIllusion(strongestTarget)
         and not J.HasMovableUndyingModifier(strongestTarget, 0.1)
 		then
@@ -537,11 +537,11 @@ function X.ConsiderR()
     then
         local weakestTarget = J.GetAttackableWeakestUnit(bot, nPulverizeCastRange, true, true)
 
-		if  J.IsValidTarget(weakestTarget)
+		if J.IsValidTarget(weakestTarget)
 		and not J.IsSuspiciousIllusion(weakestTarget)
         and not J.HasMovableUndyingModifier(weakestTarget, 0.1)
 		then
-            if  nInRangeAlly ~= nil and nEnemyHeroes ~= nil
+            if nInRangeAlly ~= nil and nEnemyHeroes ~= nil
             and #nEnemyHeroes > #nInRangeAlly
             and bot:WasRecentlyDamagedByAnyHero(2)
             then
@@ -574,7 +574,7 @@ function X.ConsiderR()
 
     if J.IsDoingRoshan(bot)
     then
-        if  J.IsRoshan(botTarget)
+        if J.IsRoshan(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, 500)
         and J.IsAttacking(bot)

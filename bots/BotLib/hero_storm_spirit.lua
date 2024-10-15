@@ -225,7 +225,7 @@ function X.ConsiderStaticRemnant()
 
 	for _, enemyHero in pairs(nEnemyHeroes)
 	do
-		if  J.IsValidHero(enemyHero)
+		if J.IsValidHero(enemyHero)
 		and J.CanCastOnNonMagicImmune(enemyHero)
 		and J.IsInRange(bot, enemyHero, nAttackRange)
 		and J.CanKillTarget(enemyHero, nOverloadDamage, DAMAGE_TYPE_MAGICAL)
@@ -242,7 +242,7 @@ function X.ConsiderStaticRemnant()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
 		and J.CanCastOnNonMagicImmune(botTarget)
 		and J.IsInRange(bot, botTarget, nAttackRange)
 		and not J.IsSuspiciousIllusion(botTarget)
@@ -269,7 +269,7 @@ function X.ConsiderStaticRemnant()
 
 	local nCreeps = bot:GetNearbyCreeps(1200, true)
 
-	if  J.IsFarming(bot)
+	if J.IsFarming(bot)
 	and nAbilityLevel >= 2
 	and J.GetManaAfter(nManaCost) > 0.25
 	and J.IsAttacking(bot)
@@ -300,14 +300,14 @@ function X.ConsiderStaticRemnant()
 		end
 	end
 
-	if  J.IsLaning(bot)
+	if J.IsLaning(bot)
 	and J.GetManaAfter(nManaCost) > 0.3
 	then
 		local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nAttackRange + 300, true)
 
 		for _, creep in pairs(nEnemyLaneCreeps)
 		do
-			if  J.IsValid(creep)
+			if J.IsValid(creep)
 			and J.CanBeAttacked(creep)
 			and (J.IsKeyWordUnit('ranged', creep) or J.IsKeyWordUnit('siege', creep) or J.IsKeyWordUnit('flagbearer', creep))
 			and creep:GetHealth() <= nOverloadDamage
@@ -325,7 +325,7 @@ function X.ConsiderStaticRemnant()
 
 	if J.IsDoingRoshan(bot)
     then
-        if  J.IsRoshan(botTarget)
+        if J.IsRoshan(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, nAttackRange)
         and J.IsAttacking(bot)
@@ -336,7 +336,7 @@ function X.ConsiderStaticRemnant()
 
     if J.IsDoingTormentor(bot)
     then
-        if  J.IsTormentor(botTarget)
+        if J.IsTormentor(botTarget)
         and J.IsInRange(bot, botTarget, nAttackRange)
         and J.IsAttacking(bot)
         then
@@ -345,7 +345,7 @@ function X.ConsiderStaticRemnant()
     end
 
 	nCreeps = bot:GetNearbyCreeps(nRadius, true)
-	if  (J.IsDefending(bot) or J.IsPushing(bot))
+	if (J.IsDefending(bot) or J.IsPushing(bot))
 	and nAbilityLevel >= 3
 	and J.GetManaAfter(nManaCost) > 0.4
 	then
@@ -381,7 +381,7 @@ function X.ConsiderElectricVortex()
 
 	for _, enemyHero in pairs(nEnemyHeroes)
 	do
-		if  J.IsValidHero(enemyHero)
+		if J.IsValidHero(enemyHero)
 		and J.IsInRange(bot, enemyHero, nCastRange)
 		and J.CanCastOnNonMagicImmune(enemyHero)
 		and (hasScepter or J.CanCastOnTargetAdvanced(enemyHero))
@@ -393,7 +393,7 @@ function X.ConsiderElectricVortex()
 		end
 	end
 
-	if  J.IsInTeamFight(bot, 1200)
+	if J.IsInTeamFight(bot, 1200)
 	and bot:HasScepter()
 	then
 		local nInRangeEnemy = J.GetEnemiesNearLoc(bot:GetLocation(), nRadius)
@@ -406,7 +406,7 @@ function X.ConsiderElectricVortex()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
 		and J.CanCastOnNonMagicImmune(botTarget)
 		and (hasScepter or J.CanCastOnTargetAdvanced(botTarget))
 		and not J.IsDisabled(botTarget)
@@ -474,10 +474,10 @@ function X.ConsiderBallLightning()
 		return BOT_ACTION_DESIRE_HIGH, J.Site.GetXUnitsTowardsLocation(bot, loc, 600)
 	end
 
-	if  J.IsGoingOnSomeone(bot)
+	if J.IsGoingOnSomeone(bot)
 	and nMana > 0.15
 	then
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
 		and J.IsInRange(bot, botTarget, 1000)
 		and J.CanCastOnNonMagicImmune(botTarget)
 		and J.CanBeAttacked(botTarget)
@@ -508,7 +508,7 @@ function X.ConsiderBallLightning()
 		end
 	end
 
-	if  J.IsFarming(bot)
+	if J.IsFarming(bot)
 	and J.IsAttacking(bot)
 	and nMana > 0.7
 	then
@@ -535,7 +535,7 @@ function X.ConsiderBallVortex()
 
 		local nTeamFightLocation = J.GetTeamFightLocation(bot)
 
-		if  J.IsInTeamFight(bot, 1200)
+		if J.IsInTeamFight(bot, 1200)
 		and nTeamFightLocation ~= nil
 		and GetUnitToLocationDistance(bot, nTeamFightLocation) <= 1200
 		then
@@ -555,7 +555,7 @@ function X.ConsiderBallVortex()
 end
 
 function X.CanDoBallVortex()
-	if  J.CanCastAbility(ElectricVortex)
+	if J.CanCastAbility(ElectricVortex)
 	and J.CanCastAbility(BallLightning)
 	and string.find(GetBot():GetUnitName(), 'storm_spirit')
 	and bot:HasScepter()
@@ -569,7 +569,7 @@ function X.CanDoBallVortex()
 
 			local nTeamFightLocation = J.GetTeamFightLocation(bot)
 
-			if  nTeamFightLocation ~= nil
+			if nTeamFightLocation ~= nil
 			and GetUnitToLocationDistance(bot, nTeamFightLocation) <= 1200
 			then
 				local totalDist = GetUnitToLocationDistance(bot, nTeamFightLocation)
@@ -580,7 +580,7 @@ function X.CanDoBallVortex()
 
 				local nManaCost = nBofLCost + ElectricVortex:GetManaCost()
 
-				if  bot:GetMana() >= nManaCost
+				if bot:GetMana() >= nManaCost
 				then
 					return true
 				end

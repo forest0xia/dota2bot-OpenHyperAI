@@ -207,7 +207,7 @@ function X.ConsiderDispose()
     local nEnemyHeroes = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
     for _, enemyHero in pairs(nEnemyHeroes)
     do
-        if  J.IsValidHero(enemyHero)
+        if J.IsValidHero(enemyHero)
         and J.CanCastOnNonMagicImmune(enemyHero)
         and J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_MAGICAL)
         and not J.IsSuspiciousIllusion(enemyHero)
@@ -225,7 +225,7 @@ function X.ConsiderDispose()
         local nInRangeAlly = bot:GetNearbyHeroes(800, false, BOT_MODE_NONE)
         local nInRangeEnemy = bot:GetNearbyHeroes(800, true, BOT_MODE_NONE)
 
-        if  J.IsValidTarget(botTarget)
+        if J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
         and not J.IsSuspiciousIllusion(botTarget)
@@ -247,14 +247,14 @@ function X.ConsiderDispose()
         local nInRangeAlly = bot:GetNearbyHeroes(800, false, BOT_MODE_NONE)
         local nInRangeEnemy = bot:GetNearbyHeroes(800, true, BOT_MODE_NONE)
 
-        if  nInRangeAlly ~= nil and nInRangeEnemy
+        if nInRangeAlly ~= nil and nInRangeEnemy
         and ((#nInRangeEnemy > #nInRangeAlly)
             or (J.GetHP(bot) < 0.68 and bot:WasRecentlyDamagedByAnyHero(1.9)))
         then
             nInRangeEnemy = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
             for _, enemyHero in pairs(nInRangeEnemy)
             do
-                if  J.IsValidHero(enemyHero)
+                if J.IsValidHero(enemyHero)
                 and J.CanCastOnNonMagicImmune(enemyHero)
                 and bot:IsFacingLocation(J.GetEscapeLoc(), 30)
                 and bot:IsFacingLocation(enemyHero:GetLocation(), 15)

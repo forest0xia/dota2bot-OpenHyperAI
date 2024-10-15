@@ -48,7 +48,7 @@ function X.ConsiderThunderClap()
     local nEnemyHeroes = J.GetNearbyHeroes(bot,nRadius - 75, true, BOT_MODE_NONE)
     for _, enemyHero in pairs(nEnemyHeroes)
     do
-        if  J.IsValidHero(enemyHero)
+        if J.IsValidHero(enemyHero)
         and J.CanCastOnNonMagicImmune(enemyHero)
         and J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_MAGICAL)
         and not J.IsSuspiciousIllusion(enemyHero)
@@ -64,7 +64,7 @@ function X.ConsiderThunderClap()
 
     if J.IsGoingOnSomeone(bot)
 	then
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, nRadius - 75)
         and not J.IsSuspiciousIllusion(botTarget)
@@ -75,7 +75,7 @@ function X.ConsiderThunderClap()
             local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1200, true, BOT_MODE_NONE)
             local nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1200, false, BOT_MODE_NONE)
 
-            if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+            if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
             and #nInRangeAlly >= #nInRangeEnemy
             then
                 return BOT_ACTION_DESIRE_HIGH
@@ -88,7 +88,7 @@ function X.ConsiderThunderClap()
         local nInRangeAlly = J.GetNearbyHeroes(bot,1200, false, BOT_MODE_NONE)
         local nInRangeEnemy = J.GetNearbyHeroes(bot,1200, true, BOT_MODE_NONE)
 
-        if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+        if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
         and J.IsValidHero(nInRangeEnemy[1])
         and J.IsInRange(bot, nInRangeEnemy[1], nRadius)
         and J.IsChasingTarget(nInRangeEnemy[1], bot)
@@ -98,7 +98,7 @@ function X.ConsiderThunderClap()
         then
             local nTargetInRangeAlly = J.GetNearbyHeroes(nInRangeEnemy[1], 1200, false, BOT_MODE_NONE)
 
-            if  nTargetInRangeAlly ~= nil
+            if nTargetInRangeAlly ~= nil
             and ((#nTargetInRangeAlly > #nInRangeAlly)
                 or (bot:WasRecentlyDamagedByAnyHero(1.5)))
             then
@@ -118,11 +118,11 @@ function X.ConsiderThunderClap()
 
     if J.IsFarming(bot)
     then
-        if  J.IsAttacking(bot)
+        if J.IsAttacking(bot)
         and J.GetMP(bot) > 0.4
         then
             local nNeutralCreeps = bot:GetNearbyNeutralCreeps(nRadius)
-            if  nNeutralCreeps ~= nil
+            if nNeutralCreeps ~= nil
             and ((#nNeutralCreeps >= 3)
                 or (#nNeutralCreeps >= 2 and nNeutralCreeps[1]:IsAncientCreep()))
             then
@@ -146,20 +146,20 @@ function X.ConsiderThunderClap()
 
 		for _, creep in pairs(nEnemyLaneCreeps)
 		do
-			-- if  J.IsValid(creep)
+			-- if J.IsValid(creep)
 			-- and (J.IsKeyWordUnit('ranged', creep) or J.IsKeyWordUnit('siege', creep) or J.IsKeyWordUnit('flagbearer', creep))
 			-- and creep:GetHealth() <= nDamage
 			-- then
 			-- 	local nCreepInRangeHero = creep:GetNearbyHeroes(500, false, BOT_MODE_NONE)
 
-			-- 	if  nCreepInRangeHero ~= nil and #nCreepInRangeHero >= 1
+			-- 	if nCreepInRangeHero ~= nil and #nCreepInRangeHero >= 1
             --     and J.GetMP(bot) > 0.35
 			-- 	then
 			-- 		return BOT_ACTION_DESIRE_HIGH
 			-- 	end
 			-- end
 
-            if  J.IsValid(creep)
+            if J.IsValid(creep)
             and creep:GetHealth() <= nDamage
             then
                 canKill = canKill + 1
@@ -167,7 +167,7 @@ function X.ConsiderThunderClap()
             end
 		end
 
-        if  canKill >= 2
+        if canKill >= 2
         and J.GetMP(bot) > 0.33
         and nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
         then
@@ -177,7 +177,7 @@ function X.ConsiderThunderClap()
         if J.IsInLaningPhase()
         then
             nInRangeEnemy = J.GetEnemiesNearLoc(bot:GetLocation(), nRadius)
-            if  nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
+            if nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
             and J.GetMP(bot) > 0.5
             then
                 return BOT_ACTION_DESIRE_HIGH
@@ -187,7 +187,7 @@ function X.ConsiderThunderClap()
 
     if J.IsDoingRoshan(bot)
 	then
-		if  J.IsRoshan(botTarget)
+		if J.IsRoshan(botTarget)
         and J.CanCastOnMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, nRadius)
         and J.IsAttacking(bot)
@@ -198,7 +198,7 @@ function X.ConsiderThunderClap()
 
     if J.IsDoingTormentor(bot)
     then
-        if  J.IsTormentor(botTarget)
+        if J.IsTormentor(botTarget)
         and J.IsInRange(bot, botTarget, nRadius)
         and J.IsAttacking(bot)
         then
@@ -232,7 +232,7 @@ function X.ConsiderCinderBrew()
 
     if J.IsGoingOnSomeone(bot)
 	then
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
         and not J.IsSuspiciousIllusion(botTarget)
@@ -244,7 +244,7 @@ function X.ConsiderCinderBrew()
             local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1200, true, BOT_MODE_NONE)
             local nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1200, false, BOT_MODE_NONE)
 
-            if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+            if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
             and #nInRangeAlly >= #nInRangeEnemy
             then
                 return BOT_ACTION_DESIRE_HIGH, botTarget:GetExtrapolatedLocation(nCastPoint)
@@ -257,7 +257,7 @@ function X.ConsiderCinderBrew()
         local nInRangeAlly = J.GetNearbyHeroes(bot,1200, false, BOT_MODE_NONE)
         local nInRangeEnemy = J.GetNearbyHeroes(bot,1200, true, BOT_MODE_NONE)
 
-        if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+        if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
         and J.IsValidHero(nInRangeEnemy[1])
         and J.IsInRange(bot, nInRangeEnemy[1], nRadius)
         and J.IsChasingTarget(nInRangeEnemy[1], bot)
@@ -267,7 +267,7 @@ function X.ConsiderCinderBrew()
         then
             local nTargetInRangeAlly = J.GetNearbyHeroes(nInRangeEnemy[1], 1200, false, BOT_MODE_NONE)
 
-            if  nTargetInRangeAlly ~= nil
+            if nTargetInRangeAlly ~= nil
             and ((#nTargetInRangeAlly > #nInRangeAlly)
                 or (bot:WasRecentlyDamagedByAnyHero(1.5)))
             then
@@ -294,7 +294,7 @@ function X.ConsiderCinderBrew()
 
     if J.IsFarming(bot)
     then
-        if  J.IsAttacking(bot)
+        if J.IsAttacking(bot)
         and J.GetMP(bot) > 0.45
         then
             local nNeutralCreeps = bot:GetNearbyNeutralCreeps(nRadius)
@@ -315,7 +315,7 @@ function X.ConsiderCinderBrew()
 
     if J.IsDoingRoshan(bot)
 	then
-		if  J.IsRoshan(botTarget)
+		if J.IsRoshan(botTarget)
         and J.CanCastOnMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, nRadius)
         and J.IsAttacking(bot)
@@ -326,7 +326,7 @@ function X.ConsiderCinderBrew()
 
     if J.IsDoingTormentor(bot)
     then
-        if  J.IsTormentor(botTarget)
+        if J.IsTormentor(botTarget)
         and J.IsInRange(bot, botTarget, nRadius)
         and J.IsAttacking(bot)
         then

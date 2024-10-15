@@ -186,7 +186,7 @@ function X.ConsiderFirestorm()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange + nRadius)
         and not J.IsSuspiciousIllusion(botTarget)
@@ -198,7 +198,7 @@ function X.ConsiderFirestorm()
             local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1200, true, BOT_MODE_NONE)
             local nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1200, false, BOT_MODE_NONE)
 
-            if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+            if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
             and #nInRangeAlly >= #nInRangeEnemy
             then
                 nInRangeEnemy = J.GetEnemiesNearLoc(botTarget:GetLocation(), nCastRange + nRadius)
@@ -227,14 +227,14 @@ function X.ConsiderFirestorm()
         if J.IsAttacking(bot)
         then
             local nNeutralCreeps = bot:GetNearbyNeutralCreeps(nCastRange + nRadius)
-            if  nNeutralCreeps ~= nil and #nNeutralCreeps >= 3
+            if nNeutralCreeps ~= nil and #nNeutralCreeps >= 3
             and J.GetMP(bot) > 0.3
             then
                 return BOT_ACTION_DESIRE_HIGH, J.GetCenterOfUnits(nNeutralCreeps)
             end
 
             local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nCastRange + nRadius, true)
-            if  nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 3
+            if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 3
             and J.GetMP(bot) > 0.3
             then
                 return BOT_ACTION_DESIRE_HIGH, J.GetCenterOfUnits(nEnemyLaneCreeps)
@@ -247,7 +247,7 @@ function X.ConsiderFirestorm()
         local nInRangeEnemy = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE)
         local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nCastRange + nRadius, true)
 
-        if  nInRangeEnemy ~= nil and #nInRangeEnemy == 0
+        if nInRangeEnemy ~= nil and #nInRangeEnemy == 0
         and nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 4
         and J.IsAttacking(bot)
         and J.GetMP(bot) > 0.5
@@ -258,7 +258,7 @@ function X.ConsiderFirestorm()
 
     if J.IsDoingRoshan(bot)
     then
-        if  J.IsRoshan(botTarget)
+        if J.IsRoshan(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, 500)
         and J.IsAttacking(bot)
@@ -269,7 +269,7 @@ function X.ConsiderFirestorm()
 
     if J.IsDoingTormentor(bot)
     then
-        if  J.IsTormentor(botTarget)
+        if J.IsTormentor(botTarget)
         and J.IsInRange(bot, botTarget, 500)
         and J.IsAttacking(bot)
         then
@@ -292,7 +292,7 @@ function X.ConsiderPitOfMalice()
     local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange + nRadius, true, BOT_MODE_NONE)
     for _, enemyHero in pairs(nEnemyHeroes)
     do
-        if  J.IsValidHero(enemyHero)
+        if J.IsValidHero(enemyHero)
         and J.CanCastOnNonMagicImmune(enemyHero)
         and enemyHero:IsChanneling()
         and not J.IsSuspiciousIllusion(enemyHero)
@@ -303,7 +303,7 @@ function X.ConsiderPitOfMalice()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange + nRadius)
         and not J.IsSuspiciousIllusion(botTarget)
@@ -312,7 +312,7 @@ function X.ConsiderPitOfMalice()
             local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1200, true, BOT_MODE_NONE)
             local nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1200, false, BOT_MODE_NONE)
 
-            if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+            if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
             and #nInRangeAlly >= #nInRangeEnemy
             then
                 nInRangeEnemy = J.GetEnemiesNearLoc(botTarget:GetLocation(), nCastRange + nRadius)
@@ -332,7 +332,7 @@ function X.ConsiderPitOfMalice()
         local nInRangeEnemy = J.GetNearbyHeroes(bot,1200, true, BOT_MODE_NONE)
         for _, enemyHero in pairs(nInRangeEnemy)
         do
-            if  J.IsValidHero(enemyHero)
+            if J.IsValidHero(enemyHero)
             and J.CanCastOnNonMagicImmune(enemyHero)
             and J.IsChasingTarget(enemyHero, bot)
             and not J.IsSuspiciousIllusion(enemyHero)
@@ -341,7 +341,7 @@ function X.ConsiderPitOfMalice()
                 local nInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, true, BOT_MODE_NONE)
                 local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
 
-                if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+                if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
                 and ((#nTargetInRangeAlly > #nInRangeAlly)
                     or bot:WasRecentlyDamagedByAnyHero(2.5))
                 and GetUnitToUnitDistance(bot, enemyHero) < nRadius + 100
@@ -358,7 +358,7 @@ function X.ConsiderPitOfMalice()
         local nInRangeAlly = J.GetNearbyHeroes(bot,1200, false, BOT_MODE_NONE)
         local nInRangeEnemy = J.GetEnemiesNearLoc(nLocationAoE.targetloc, nRadius)
 
-		if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+		if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
         and #nInRangeEnemy >= 1
         and not (#nInRangeAlly > #nInRangeEnemy + 1)
 		then
@@ -368,7 +368,7 @@ function X.ConsiderPitOfMalice()
 
     if J.IsDoingRoshan(bot)
     then
-        if  J.IsRoshan(botTarget)
+        if J.IsRoshan(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, 500)
         and J.IsAttacking(bot)
@@ -388,7 +388,7 @@ function X.ConsiderFiendsGate()
 
     local nTeamFightLocation = J.GetTeamFightLocation(bot)
 
-    if  nTeamFightLocation ~= nil
+    if nTeamFightLocation ~= nil
     and GetUnitToLocationDistance(bot, nTeamFightLocation) > 2500
     and not J.IsGoingOnSomeone(bot)
     and not J.IsRetreating(bot)
@@ -397,13 +397,13 @@ function X.ConsiderFiendsGate()
         local nInRangeAlly = J.GetAlliesNearLoc(nTeamFightLocation, 1200)
         local nInRangeEnemy = J.GetEnemiesNearLoc(nTeamFightLocation, 1200)
 
-        if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+        if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
         and #nInRangeAlly + 1 >= #nInRangeEnemy
         and #nInRangeEnemy >= 1
         then
             local targetLoc = J.GetCenterOfUnits(nInRangeAlly)
 
-            if  IsLocationPassable(targetLoc)
+            if IsLocationPassable(targetLoc)
             and not J.IsLocationInChrono(targetLoc)
             and not J.IsLocationInBlackHole(targetLoc)
             and not J.IsLocationInArena(targetLoc, 600)
@@ -416,7 +416,7 @@ function X.ConsiderFiendsGate()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
         and GetUnitToUnitDistance(bot, botTarget) > 2500
         and not J.IsSuspiciousIllusion(botTarget)
         and not J.IsInLaningPhase()
@@ -426,14 +426,14 @@ function X.ConsiderFiendsGate()
             local nInRangeEnemy = J.GetNearbyHeroes(bot,1600, false, BOT_MODE_NONE)
             local nEnemyTowers = bot:GetNearbyTowers(700, true)
 
-			if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+			if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
             and nInRangeEnemy ~= nil and nEnemyTowers ~= nil
             and #nInRangeAlly >= #nTargetInRangeAlly
             and #nInRangeEnemy == 0 and #nEnemyTowers == 0
             then
                 local targetLoc = J.GetCenterOfUnits(nInRangeAlly)
 
-                if  IsLocationPassable(targetLoc)
+                if IsLocationPassable(targetLoc)
                 and not J.IsLocationInChrono(targetLoc)
                 and not J.IsLocationInBlackHole(targetLoc)
                 and not J.IsLocationInArena(targetLoc, 600)
@@ -449,7 +449,7 @@ function X.ConsiderFiendsGate()
     local pushCount = {0,0,0}
     for _, allyHero in pairs(GetUnitList(UNIT_LIST_ALLIED_HEROES))
     do
-        if  J.IsValidHero(allyHero)
+        if J.IsValidHero(allyHero)
         and J.IsGoingOnSomeone(allyHero)
         and GetUnitToUnitDistance(bot, allyHero) > 2500
         and not allyHero:IsIllusion()
@@ -458,7 +458,7 @@ function X.ConsiderFiendsGate()
             local allyTarget = allyHero:GetAttackTarget()
             local nAllyInRangeAlly = J.GetNearbyHeroes(allyHero, 800, false, BOT_MODE_NONE)
 
-            if  J.IsValidTarget(allyTarget)
+            if J.IsValidTarget(allyTarget)
             and J.IsInRange(allyHero, allyTarget, 800)
             and J.GetHP(allyHero) > 0.5
             -- and J.IsCore(allyTarget)
@@ -468,7 +468,7 @@ function X.ConsiderFiendsGate()
                 local nInRangeEnemy = J.GetNearbyHeroes(bot,1600, false, BOT_MODE_NONE)
                 local nEnemyTowers = bot:GetNearbyTowers(700, true)
 
-                if  nAllyInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+                if nAllyInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
                 and #nAllyInRangeAlly + 1 >= #nTargetInRangeAlly
                 and #nTargetInRangeAlly >= 1
                 and nInRangeEnemy ~= nil and nEnemyTowers ~= nil
@@ -476,7 +476,7 @@ function X.ConsiderFiendsGate()
                 then
                     local targetLoc = J.GetCenterOfUnits(allyHero:GetExtrapolatedLocation(1))
 
-                    if  IsLocationPassable(targetLoc)
+                    if IsLocationPassable(targetLoc)
                     and not J.IsLocationInChrono(targetLoc)
                     and not J.IsLocationInBlackHole(targetLoc)
                     and not J.IsLocationInArena(targetLoc, 600)
@@ -488,26 +488,26 @@ function X.ConsiderFiendsGate()
             end
         end
 
-        if  J.IsValidHero(allyHero)
+        if J.IsValidHero(allyHero)
         and bot ~= allyHero
         and not J.IsSuspiciousIllusion(allyHero)
         and not J.IsMeepoClone(allyHero)
         then
-            if  allyHero:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP
+            if allyHero:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP
             and bot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP
             then
                 pushCount[1] = pushCount[1] + 1
                 aveDist[1] = aveDist[1] + GetUnitToLocationDistance(allyHero, GetLaneFrontLocation(GetTeam(), LANE_TOP, 0))
             end
 
-            if  allyHero:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID
+            if allyHero:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID
             and bot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID
             then
                 pushCount[2] = pushCount[2] + 1
                 aveDist[2] = aveDist[2] + GetUnitToLocationDistance(allyHero, GetLaneFrontLocation(GetTeam(), LANE_MID, 0))
             end
 
-            if  allyHero:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT
+            if allyHero:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT
             and bot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT
             then
                 pushCount[3] = pushCount[3] + 1

@@ -47,7 +47,7 @@ function GetDesire()
 					if itemName == 'item_cheese' and J.GetPosition(bot) <= 3 and not J.HasItem(bot, 'item_aegis') then PickedItem = droppedItem end
 					if itemName == 'item_refresher_shard' then
 						local mostCDHero = J.GetMostUltimateCDUnit()
-						if  mostCDHero ~= nil
+						if mostCDHero ~= nil
 						and mostCDHero:IsBot()
 						and bot == mostCDHero then
 							PickedItem = droppedItem

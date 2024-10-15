@@ -201,12 +201,12 @@ function X.ConsiderColdFeet()
     do
         local nAllyInRangeEnemy = J.GetNearbyHeroes(allyHero, 1200, true, BOT_MODE_NONE)
 
-        if  J.IsValidHero(allyHero)
+        if J.IsValidHero(allyHero)
         and J.IsRetreating(allyHero)
         and allyHero:WasRecentlyDamagedByAnyHero(1.5)
         and not allyHero:IsIllusion()
         then
-            if  nAllyInRangeEnemy ~= nil and #nAllyInRangeEnemy >= 1
+            if nAllyInRangeEnemy ~= nil and #nAllyInRangeEnemy >= 1
             and J.IsValidHero(nAllyInRangeEnemy[1])
             and J.CanCastOnNonMagicImmune(nAllyInRangeEnemy[1])
             and J.CanCastOnTargetAdvanced(nAllyInRangeEnemy[1])
@@ -227,7 +227,7 @@ function X.ConsiderColdFeet()
 
     if J.IsGoingOnSomeone(bot)
     then
-        if  J.IsValidTarget(botTarget)
+        if J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.CanCastOnTargetAdvanced(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
@@ -239,7 +239,7 @@ function X.ConsiderColdFeet()
             local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1000, true, BOT_MODE_NONE)
             local nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1000, false, BOT_MODE_NONE)
 
-            if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+            if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
             and #nInRangeAlly >= #nInRangeEnemy
             then
                 return BOT_ACTION_DESIRE_HIGH, botTarget
@@ -274,7 +274,7 @@ function X.ConsiderColdFeet()
 
     if J.IsDoingRoshan(bot)
     then
-        if  J.IsRoshan(botTarget)
+        if J.IsRoshan(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
         and J.IsAttacking(bot)
@@ -287,7 +287,7 @@ function X.ConsiderColdFeet()
 
     if J.IsDoingTormentor(bot)
     then
-        if  J.IsTormentor(botTarget)
+        if J.IsTormentor(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
         and J.IsAttacking(bot)
         and not botTarget:HasModifier('modifier_cold_feet')
@@ -324,7 +324,7 @@ function X.ConsiderIceVortex()
 
     if J.IsGoingOnSomeone(bot)
     then
-        if  J.IsValidTarget(botTarget)
+        if J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
         and not J.IsSuspiciousIllusion(botTarget)
@@ -334,7 +334,7 @@ function X.ConsiderIceVortex()
             local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1000, true, BOT_MODE_NONE)
             local nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1000, false, BOT_MODE_NONE)
 
-            if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+            if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
             and #nInRangeAlly >= #nInRangeEnemy
             then
                 return BOT_ACTION_DESIRE_HIGH, botTarget:GetExtrapolatedLocation(nCastPoint)
@@ -366,13 +366,13 @@ function X.ConsiderIceVortex()
         end
     end
 
-    if  (J.IsDefending(bot) or J.IsPushing(bot))
+    if (J.IsDefending(bot) or J.IsPushing(bot))
     and not J.IsThereCoreNearby(1000)
 	then
 		local nEnemyLanecreeps = bot:GetNearbyLaneCreeps(nCastRange, true)
 		local nLocationAoE = bot:FindAoELocation(true, false, bot:GetLocation(), nCastRange, nRadius, nCastPoint, 0)
 
-		if  nEnemyLanecreeps ~= nil and #nEnemyLanecreeps >= 4
+		if nEnemyLanecreeps ~= nil and #nEnemyLanecreeps >= 4
         and nLocationAoE.count >= 4
 		then
 			return BOT_ACTION_DESIRE_HIGH, nLocationAoE.targetloc
@@ -387,7 +387,7 @@ function X.ConsiderIceVortex()
 
     if J.IsDoingRoshan(bot)
     then
-        if  J.IsRoshan(botTarget)
+        if J.IsRoshan(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
         and J.IsAttacking(bot)
@@ -398,7 +398,7 @@ function X.ConsiderIceVortex()
 
     if J.IsDoingTormentor(bot)
     then
-        if  J.IsTormentor(botTarget)
+        if J.IsTormentor(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
         and J.IsAttacking(bot)
         then
@@ -422,7 +422,7 @@ function X.ConsiderChillingTouch()
     local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange + 150, true, BOT_MODE_NONE)
     for _, enemyHero in pairs(nEnemyHeroes)
     do
-        if  J.IsValidHero(enemyHero)
+        if J.IsValidHero(enemyHero)
         and J.CanCastOnNonMagicImmune(enemyHero)
         and J.CanCastOnTargetAdvanced(enemyHero)
         and J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_MAGICAL)
@@ -441,12 +441,12 @@ function X.ConsiderChillingTouch()
     do
         local nAllyInRangeEnemy = J.GetNearbyHeroes(allyHero, 1200, true, BOT_MODE_NONE)
 
-        if  J.IsValidHero(allyHero)
+        if J.IsValidHero(allyHero)
         and J.IsRetreating(allyHero)
         and allyHero:WasRecentlyDamagedByAnyHero(1.5)
         and not allyHero:IsIllusion()
         then
-            if  nAllyInRangeEnemy ~= nil and #nAllyInRangeEnemy >= 1
+            if nAllyInRangeEnemy ~= nil and #nAllyInRangeEnemy >= 1
             and J.IsValidHero(nAllyInRangeEnemy[1])
             and J.CanCastOnNonMagicImmune(nAllyInRangeEnemy[1])
             and J.CanCastOnTargetAdvanced(nAllyInRangeEnemy[1])
@@ -467,7 +467,7 @@ function X.ConsiderChillingTouch()
 
     if J.IsGoingOnSomeone(bot)
     then
-        if  J.IsValidTarget(botTarget)
+        if J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.CanCastOnTargetAdvanced(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
@@ -482,7 +482,7 @@ function X.ConsiderChillingTouch()
             local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1200, true, BOT_MODE_NONE)
             local nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1200, false, BOT_MODE_NONE)
 
-            if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+            if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
             and #nInRangeAlly >= #nInRangeEnemy
             then
                 return BOT_ACTION_DESIRE_HIGH, botTarget
@@ -515,7 +515,7 @@ function X.ConsiderChillingTouch()
 
     if J.IsDoingRoshan(bot)
     then
-        if  J.IsRoshan(botTarget)
+        if J.IsRoshan(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
         and J.IsAttacking(bot)
@@ -526,7 +526,7 @@ function X.ConsiderChillingTouch()
 
     if J.IsDoingTormentor(bot)
     then
-        if  J.IsTormentor(botTarget)
+        if J.IsTormentor(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
         and J.IsAttacking(bot)
         then
@@ -595,7 +595,7 @@ function X.ConsiderIceBlastRelease()
 	do
 		if p ~= nil and p.ability:GetName() == "ancient_apparition_ice_blast"
         then
-			if  IceBlastReleaseLocation ~= nil
+			if IceBlastReleaseLocation ~= nil
             and J.GetLocationToLocationDistance(IceBlastReleaseLocation, p.location) < 100
             then
 				return BOT_ACTION_DESIRE_HIGH

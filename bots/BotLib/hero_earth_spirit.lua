@@ -274,7 +274,7 @@ function X.ConsiderBoulderSmash()
 	local nInRangeAlly = J.GetNearbyHeroes(bot,1200, false, BOT_MODE_NONE)
 	for _, enemyHero in pairs(nInRangeEnemy)
 	do
-		if  J.IsValidHero(enemyHero)
+		if J.IsValidHero(enemyHero)
 		and J.CanCastOnNonMagicImmune(enemyHero)
 		and J.IsInRange(bot, enemyHero, nAttackRange)
 		and not J.IsSuspiciousIllusion(enemyHero)
@@ -293,7 +293,7 @@ function X.ConsiderBoulderSmash()
 		local nEnemyHeroes = J.GetNearbyHeroes(bot,math.min(nCastRange, 1600), true, BOT_MODE_NONE)
 		local target = J.GetCanBeKilledUnit(nEnemyHeroes, nDamage, DAMAGE_TYPE_MAGICAL, false)
 
-		if  target ~= nil
+		if target ~= nil
 		and not J.IsSuspiciousIllusion(target)
 		then
 			local loc = J.GetCorrectLoc(target, GetUnitToUnitDistance(bot, target) / nSpeed)
@@ -304,7 +304,7 @@ function X.ConsiderBoulderSmash()
 		local nEnemyHeroes = J.GetNearbyHeroes(bot,math.min(nCastRange, 1600), true, BOT_MODE_NONE)
 		local target = J.GetCanBeKilledUnit(nEnemyHeroes, nDamage, DAMAGE_TYPE_MAGICAL, false)
 
-		if  target ~= nil
+		if target ~= nil
 		and not J.IsSuspiciousIllusion(target)
 		then
 			local loc = J.GetCorrectLoc(target, GetUnitToUnitDistance(bot, target) / nSpeed)
@@ -316,7 +316,7 @@ function X.ConsiderBoulderSmash()
 	then
 		local botTarget = J.GetProperTarget(bot)
 
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
 		and J.CanCastOnNonMagicImmune(botTarget)
 		and J.IsInRange(bot, botTarget, math.min(nCastRange, 1600))
 		and not J.IsSuspiciousIllusion(botTarget)
@@ -333,7 +333,7 @@ function X.ConsiderBoulderSmash()
 		end
 	end
 
-	if  J.IsRetreating(bot)
+	if J.IsRetreating(bot)
 	and bot:WasRecentlyDamagedByAnyHero(2)
 	then
 		local nAllyHeroes = J.GetNearbyHeroes(bot,1000, false, BOT_MODE_NONE)
@@ -342,14 +342,14 @@ function X.ConsiderBoulderSmash()
 		local target = J.GetClosestUnit(nEnemyHeroes)
 		if target ~= nil and stoneNearby
 		then
-			if  nAllyHeroes ~= nil and nEnemyHeroes ~= nil
+			if nAllyHeroes ~= nil and nEnemyHeroes ~= nil
 			and #nAllyHeroes <= 1 and #nEnemyHeroes <= 1
 			then
 				return BOT_ACTION_DESIRE_HIGH, target:GetLocation(), false, true
 			end
 		elseif target ~= nil and nStone >= 1
 		then
-			if  nAllyHeroes ~= nil and nEnemyHeroes ~= nil
+			if nAllyHeroes ~= nil and nEnemyHeroes ~= nil
 			and #nAllyHeroes <= 1 and #nEnemyHeroes <= 1
 			and bot:IsFacingLocation(J.GetEscapeLoc(), 30)
 			then
@@ -360,20 +360,20 @@ function X.ConsiderBoulderSmash()
 
 	if J.IsLaning(bot)
 	then
-		if  nStone >= 1
+		if nStone >= 1
 		and nMana > 0.33
 		then
 			local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(StoneRemnant:GetCastRange(), true)
 
 			for _, creep in pairs(nEnemyLaneCreeps)
 			do
-				if  J.IsValid(creep)
+				if J.IsValid(creep)
 				and J.IsKeyWordUnit('ranged', creep)
 				and creep:GetHealth() <= nDamage
 				then
 					local nEnemyHeroes = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE)
 
-					if  nEnemyHeroes ~= nil and #nEnemyHeroes >= 1
+					if nEnemyHeroes ~= nil and #nEnemyHeroes >= 1
 					and GetUnitToUnitDistance(creep, nEnemyHeroes[1]) <= 600
 					then
 						return BOT_ACTION_DESIRE_HIGH, creep:GetLocation(), true, false
@@ -435,7 +435,7 @@ function X.ConsiderRollingBoulder()
 	then
 		local target = J.GetCanBeKilledUnit(nEnemyHeroes, nDamage, DAMAGE_TYPE_MAGICAL, false)
 
-		if  target ~= nil
+		if target ~= nil
 		and not J.IsSuspiciousIllusion(target)
 		then
 			local loc = J.GetCorrectLoc(target, (GetUnitToUnitDistance(bot, target) / nSpeed) + nDelay)
@@ -451,7 +451,7 @@ function X.ConsiderRollingBoulder()
 	then
 		local target = J.GetCanBeKilledUnit(nEnemyHeroes, nDamage, DAMAGE_TYPE_MAGICAL, false)
 
-		if  target ~= nil
+		if target ~= nil
 		and not J.IsSuspiciousIllusion(target)
 		then
 			local loc = J.GetCorrectLoc(target, (GetUnitToUnitDistance(bot, target) / nSpeed) + nDelay)
@@ -463,7 +463,7 @@ function X.ConsiderRollingBoulder()
 	then
 		local botTarget = J.GetProperTarget(bot)
 
-		if  nStone >= 1
+		if nStone >= 1
 		and J.IsValidTarget(botTarget)
 		and J.CanCastOnNonMagicImmune(botTarget)
 		and J.IsInRange(bot, botTarget, nDistance2)
@@ -472,7 +472,7 @@ function X.ConsiderRollingBoulder()
 		then
 			local nAllyHeroes = J.GetNearbyHeroes(bot, nDistance2, false, BOT_MODE_NONE)
 
-			if  nEnemyHeroes ~= nil and nAllyHeroes ~= nil
+			if nEnemyHeroes ~= nil and nAllyHeroes ~= nil
 			and ((#nAllyHeroes >= #nEnemyHeroes) or (#nEnemyHeroes > #nAllyHeroes and J.WeAreStronger(bot, nDistance)))
 			then
 				local loc = J.GetCorrectLoc(botTarget, GetUnitToUnitDistance(bot, botTarget) / nSpeed)
@@ -504,10 +504,10 @@ function X.ConsiderRollingBoulder()
 		local location = J.GetEscapeLoc()
 		local loc = J.Site.GetXUnitsTowardsLocation(bot, location, nDistance)
 
-		if  nAllyHeroes ~= nil and nEnemyHeroes ~= nil
+		if nAllyHeroes ~= nil and nEnemyHeroes ~= nil
 		and ((#nEnemyHeroes > #nAllyHeroes) or (#nAllyHeroes >= #nEnemyHeroes and J.GetHP(bot) < 0.45))
 		then
-			if  nStone >= 1
+			if nStone >= 1
 			then
 				if J.IsInRange(bot, nEnemyHeroes[1], 600)
 				then
@@ -522,7 +522,7 @@ function X.ConsiderRollingBoulder()
 		end
 	end
 
-	if  nMana > 0.88
+	if nMana > 0.88
 	and bot:DistanceFromFountain() > 100
 	and bot:DistanceFromFountain() < 6000
 	and DotaTime() > 0
@@ -601,7 +601,7 @@ function X.ConsiderGeomagneticGrip()
 
 	local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 	local target = J.GetCanBeKilledUnit(nEnemyHeroes, nDamage, DAMAGE_TYPE_MAGICAL, false)
-	if  target ~= nil
+	if target ~= nil
 	and J.CanCastOnNonMagicImmune(target)
 	and J.IsInRange(bot, target, nCastRange)
 	and not J.IsSuspiciousIllusion(target)
@@ -622,7 +622,7 @@ function X.ConsiderGeomagneticGrip()
 	then
 		local botTarget = J.GetProperTarget(bot)
 
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
 		and J.CanCastOnNonMagicImmune(botTarget)
 		and J.IsInRange(bot, botTarget, nCastRange)
 		and J.CanKillTarget(botTarget, nDamage, DAMAGE_TYPE_MAGICAL)
@@ -631,7 +631,7 @@ function X.ConsiderGeomagneticGrip()
 			local nTargetAlly  = J.GetNearbyHeroes(botTarget, nCastRange, false, BOT_MODE_NONE)
 			local nTargetEnemy = J.GetNearbyHeroes(botTarget, nCastRange, true, BOT_MODE_NONE)
 
-			if  nTargetAlly ~= nil and nTargetEnemy ~= nil
+			if nTargetAlly ~= nil and nTargetEnemy ~= nil
 			and #nTargetAlly >= #nTargetEnemy
 			then
 				local loc = J.GetCorrectLoc(botTarget, nCastPoint)
@@ -650,20 +650,20 @@ function X.ConsiderGeomagneticGrip()
 
 	if J.IsLaning(bot)
 	then
-		if  nStone >= 1
+		if nStone >= 1
 		and nMana > 0.33
 		then
 			local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(StoneRemnant:GetCastRange(), true)
 
 			for _, creep in pairs(nEnemyLaneCreeps)
 			do
-				if  J.IsValid(creep)
+				if J.IsValid(creep)
 				and J.IsKeyWordUnit('ranged', creep)
 				and creep:GetHealth() <= nDamage
 				then
 					local nEnemyHeroesL = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE)
 
-					if  nEnemyHeroesL ~= nil and #nEnemyHeroesL >= 1
+					if nEnemyHeroesL ~= nil and #nEnemyHeroesL >= 1
 					and GetUnitToUnitDistance(creep, nEnemyHeroesL[1]) <= 600
 					then
 						return BOT_ACTION_DESIRE_HIGH, creep:GetLocation(), true, false
@@ -710,7 +710,7 @@ function X.ConsiderMagnetize()
 		local nAllyHeroes = J.GetNearbyHeroes(bot,nRadius + 200, false, BOT_MODE_NONE)
 		local nEnemyHeroes = J.GetNearbyHeroes(bot,nRadius, true, BOT_MODE_NONE)
 
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
 		and J.CanCastOnNonMagicImmune(botTarget)
 		and J.IsInRange(bot, botTarget, nRadius)
 		and not J.IsSuspiciousIllusion(botTarget)
@@ -726,7 +726,7 @@ function X.ConsiderMagnetize()
 		local nAllyHeroes = J.GetNearbyHeroes(bot,nRadius + 200, false, BOT_MODE_NONE)
 		local nEnemyHeroes = J.GetNearbyHeroes(bot,nRadius, true, BOT_MODE_NONE)
 
-		if  nEnemyHeroes ~= nil and nAllyHeroes ~= nil
+		if nEnemyHeroes ~= nil and nAllyHeroes ~= nil
 		and #nEnemyHeroes >= 2
 		and bot:WasRecentlyDamagedByAnyHero(2)
 		and J.CanCastOnNonMagicImmune(nEnemyHeroes[1])
@@ -747,7 +747,7 @@ function IsStoneNearby(location, radius)
 
 	for _, u in pairs(units)
 	do
-		if  u ~= nil and u:GetUnitName() == "npc_dota_earth_spirit_stone"
+		if u ~= nil and u:GetUnitName() == "npc_dota_earth_spirit_stone"
 		and GetUnitToLocationDistance(u, location) < radius
 		then
 			return true
@@ -764,7 +764,7 @@ function IsStoneInPath(location, dist)
 
 		for _, u in pairs(units)
 		do
-			if  u ~= nil
+			if u ~= nil
 			and u:GetUnitName() == "npc_dota_earth_spirit_stone"
 			and bot:IsFacingLocation(u:GetLocation(), 5)
 			and GetUnitToUnitDistance(u, bot) < dist
@@ -782,7 +782,7 @@ function IsStoneNearTarget(target)
 
 	for _, u in pairs(units)
 	do
-		if  u ~= nil
+		if u ~= nil
 		and u:GetUnitName() == "npc_dota_earth_spirit_stone"
 		and GetUnitToLocationDistance(u, target:GetLocation()) < 100
 		then

@@ -48,7 +48,7 @@ function GetDesire()
 			hasItemToSell, itemSlot = X.HaveItemToSell();
 			if hasItemToSell then
 				preferedShop = X.GetPreferedSecretShop();
-				if  preferedShop ~= nil then
+				if preferedShop ~= nil then
 					return RemapValClamped(  GetUnitToLocationDistance(bot, preferedShop), 6000, 0, 0.75, 0.95 );
 				end	
 			end
@@ -61,7 +61,7 @@ function GetDesire()
 	
 	if bot.SecretShop and cState ~= COURIER_STATE_MOVING  then
 		preferedShop = X.GetPreferedSecretShop();
-		if  preferedShop ~= nil and cState == COURIER_STATE_DEAD then
+		if preferedShop ~= nil and cState == COURIER_STATE_DEAD then
 			return RemapValClamped(  GetUnitToLocationDistance(bot, preferedShop), 6000, 0, 0.7, 0.85 );
 		else
 			if preferedShop ~= nil and GetUnitToLocationDistance(bot, preferedShop) <= 3200 then
@@ -148,7 +148,7 @@ end
 
 function Think()
 
-	if  bot:IsChanneling() 
+	if bot:IsChanneling() 
 		or bot:NumQueuedActions() > 0
 		or bot:IsCastingAbility()
 		or bot:IsUsingAbility()

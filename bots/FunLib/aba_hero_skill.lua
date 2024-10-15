@@ -15,7 +15,7 @@ function X.ConsiderMagicMissile(hMinionUnit, MagicMissile)
 
     for _, enemyHero in pairs(nEnemyHeroes)
     do
-        if  J.IsValidHero(enemyHero)
+        if J.IsValidHero(enemyHero)
         and J.CanCastOnNonMagicImmune(enemyHero)
         and not J.IsSuspiciousIllusion(enemyHero)
         then
@@ -24,7 +24,7 @@ function X.ConsiderMagicMissile(hMinionUnit, MagicMissile)
                 return BOT_ACTION_DESIRE_HIGH, enemyHero
             end
 
-            if  J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_MAGICAL)
+            if J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_MAGICAL)
             and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
             and not enemyHero:HasModifier('modifier_dazzle_shallow_grave')
             and not enemyHero:HasModifier('modifier_necrolyte_reapers_scythe')
@@ -41,12 +41,12 @@ function X.ConsiderMagicMissile(hMinionUnit, MagicMissile)
     do
         local nAllyInRangeEnemy = J.GetNearbyHeroes(allyHero, 1200, true, BOT_MODE_NONE)
 
-        if  J.IsValidHero(allyHero)
+        if J.IsValidHero(allyHero)
         and J.IsRetreating(allyHero)
         and allyHero:WasRecentlyDamagedByAnyHero(1.5)
         and not allyHero:IsIllusion()
         then
-            if  nAllyInRangeEnemy ~= nil and #nAllyInRangeEnemy >= 1
+            if nAllyInRangeEnemy ~= nil and #nAllyInRangeEnemy >= 1
             and J.IsValidHero(nAllyInRangeEnemy[1])
             and J.CanCastOnNonMagicImmune(nAllyInRangeEnemy[1])
             and J.CanCastOnTargetAdvanced(nAllyInRangeEnemy[1])
@@ -71,7 +71,7 @@ function X.ConsiderMagicMissile(hMinionUnit, MagicMissile)
 
 	for _, enemyHero in pairs(nEnemyHeroes)
 	do
-		if  J.IsValidHero(enemyHero)
+		if J.IsValidHero(enemyHero)
 		and J.CanCastOnNonMagicImmune(enemyHero)
 		and not J.IsSuspiciousIllusion(enemyHero)
 		and not J.IsDisabled(enemyHero)
@@ -83,7 +83,7 @@ function X.ConsiderMagicMissile(hMinionUnit, MagicMissile)
 			local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
 			local currDmg = enemyHero:GetEstimatedDamageToTarget(true, hMinionUnit, 5, DAMAGE_TYPE_ALL)
 
-			if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+			if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
 			and #nInRangeAlly >= #nTargetInRangeAlly
 			and dmg < currDmg
 			then
@@ -114,7 +114,7 @@ function X.ConsiderWaveOfTerror(hMinionUnit, WaveOfTerror)
 
     for _, enemyHero in pairs(nEnemyHeroes)
     do
-        if  J.IsValidHero(enemyHero)
+        if J.IsValidHero(enemyHero)
         and J.CanCastOnNonMagicImmune(enemyHero)
         and J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_MAGICAL)
         and not J.IsSuspiciousIllusion(enemyHero)
@@ -140,7 +140,7 @@ function X.ConsiderWaveOfTerror(hMinionUnit, WaveOfTerror)
 
 	for _, enemyHero in pairs(nEnemyHeroes)
 	do
-		if  J.IsValidHero(enemyHero)
+		if J.IsValidHero(enemyHero)
 		and J.CanCastOnNonMagicImmune(enemyHero)
 		and not J.IsSuspiciousIllusion(enemyHero)
 		and not J.IsDisabled(enemyHero)
@@ -152,7 +152,7 @@ function X.ConsiderWaveOfTerror(hMinionUnit, WaveOfTerror)
 			local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
 			local currDmg = enemyHero:GetEstimatedDamageToTarget(true, hMinionUnit, 5, DAMAGE_TYPE_ALL)
 
-			if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+			if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
 			and #nInRangeAlly >= #nTargetInRangeAlly
 			and dmg < currDmg
 			then
@@ -176,7 +176,7 @@ function X.ConsiderWaveOfTerror(hMinionUnit, WaveOfTerror)
     local nLocationAoE = hMinionUnit:FindAoELocation(true, false, hMinionUnit:GetLocation(), nCastRange, nRadius, 0, 0)
     local nEnemyLaneCreeps = hMinionUnit:GetNearbyLaneCreeps(nCastRange, true)
 
-    if  nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 3
+    if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 3
     and nLocationAoE.count >= 3
     and not J.IsThereCoreNearby(1000)
     then
@@ -197,7 +197,7 @@ function X.ConsiderNetherSwap(hMinionUnit, NetherSwap)
     local nAllyHeroes = hMinionUnit:GetNearbyHeroes(nCastRange, false, BOT_MODE_NONE)
     for _, allyHero in pairs(nAllyHeroes)
     do
-        if  J.IsValidHero(allyHero)
+        if J.IsValidHero(allyHero)
         and J.IsCore(allyHero)
         and not J.IsSuspiciousIllusion(allyHero)
         then
@@ -218,7 +218,7 @@ function X.ConsiderNetherSwap(hMinionUnit, NetherSwap)
 
 	for _, enemyHero in pairs(nInRangeEnemy)
 	do
-		if  J.IsValidHero(enemyHero)
+		if J.IsValidHero(enemyHero)
 		and J.CanCastOnNonMagicImmune(enemyHero)
 		and not J.IsInRange(hMinionUnit, enemyHero, nCastRange / 2)
 		and not J.IsSuspiciousIllusion(enemyHero)
@@ -233,7 +233,7 @@ function X.ConsiderNetherSwap(hMinionUnit, NetherSwap)
 			local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
 			local currDmg = enemyHero:GetEstimatedDamageToTarget(true, bot, 5, DAMAGE_TYPE_ALL)
 
-			if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+			if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
 			and #nInRangeAlly >= #nTargetInRangeAlly
 			and #nInRangeAlly >= 1
 			and not (#nInRangeAlly > #nTargetInRangeAlly + 2)

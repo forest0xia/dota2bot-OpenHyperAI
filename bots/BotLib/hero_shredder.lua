@@ -229,7 +229,7 @@ function X.ConsiderWhirlingDeath()
 	local nEnemyHeroes = bot:GetNearbyHeroes(nRadius, true, BOT_MODE_NONE)
 	for _, enemyHero in pairs(nEnemyHeroes)
 	do
-		if  J.IsValidHero(enemyHero)
+		if J.IsValidHero(enemyHero)
 		and J.CanCastOnNonMagicImmune(enemyHero)
 		and J.IsInRange(bot, enemyHero, nRadius)
 		and J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_PURE)
@@ -249,7 +249,7 @@ function X.ConsiderWhirlingDeath()
 		local nInRangeAlly = bot:GetNearbyHeroes(700, false, BOT_MODE_NONE)
 		local nInRangeEnemy = bot:GetNearbyHeroes(nRadius, true, BOT_MODE_NONE)
 
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
 		and J.CanCastOnNonMagicImmune(botTarget)
 		and J.IsInRange(bot, botTarget, nRadius)
 		and not J.IsSuspiciousIllusion(botTarget)
@@ -270,7 +270,7 @@ function X.ConsiderWhirlingDeath()
 		local nInRangeAlly = bot:GetNearbyHeroes(700, false, BOT_MODE_NONE)
 		local nInRangeEnemy = bot:GetNearbyHeroes(nRadius, true, BOT_MODE_NONE)
 
-		if  nInRangeAlly ~= nil and nInRangeEnemy
+		if nInRangeAlly ~= nil and nInRangeEnemy
 		and ((#nInRangeEnemy > #nInRangeAlly)
 			or (J.GetHP(bot) and bot:WasRecentlyDamagedByAnyHero(3)))
 		and J.IsValidHero(nInRangeEnemy[1])
@@ -303,7 +303,7 @@ function X.ConsiderWhirlingDeath()
 		local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nRadius, true)
 		local nNeutralCreeps = bot:GetNearbyNeutralCreeps(nRadius)
 
-		if  nNeutralCreeps ~= nil and #nNeutralCreeps >= 2
+		if nNeutralCreeps ~= nil and #nNeutralCreeps >= 2
 			or (nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 4)
 		and nMana > 0.33
 		then
@@ -311,20 +311,20 @@ function X.ConsiderWhirlingDeath()
 		end
 	end
 
-	if  J.IsLaning(bot)
+	if J.IsLaning(bot)
 	and J.IsAllowedToSpam(bot, nManaCost)
 	then
 		local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nRadius, true)
 
 		for _, creep in pairs(nEnemyLaneCreeps)
 		do
-			if  J.IsValid(creep)
+			if J.IsValid(creep)
 			and (J.IsKeyWordUnit('ranged', creep) or J.IsKeyWordUnit('siege', creep))
 			and creep:GetHealth() <= nDamage
 			then
 				local nInRangeEnemy = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
 
-				if  nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
+				if nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
 				and GetUnitToUnitDistance(creep, nInRangeEnemy[1]) <= 600
 				then
 					return BOT_ACTION_DESIRE_HIGH
@@ -361,7 +361,7 @@ function X.ConsiderTimberChain()
 		local nInRangeAlly = bot:GetNearbyHeroes(nCastRange, false, BOT_MODE_NONE)
 		local nInRangeEnemy = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
 
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
 		and J.CanCastOnNonMagicImmune(botTarget)
 		and J.IsInRange(bot, botTarget, nCastRange)
 		and not J.IsSuspiciousIllusion(botTarget)
@@ -387,13 +387,13 @@ function X.ConsiderTimberChain()
 		end
 	end
 
-	if  J.IsRetreating(bot)
+	if J.IsRetreating(bot)
 	and bot:DistanceFromFountain() > 600
 	then
 		local nInRangeAlly = bot:GetNearbyHeroes(nCastRange, false, BOT_MODE_NONE)
 		local nInRangeEnemy = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
 
-		if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+		if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 		and ((#nInRangeEnemy > #nInRangeAlly)
 			or (J.GetHP(bot) and bot:WasRecentlyDamagedByAnyHero(3)))
 		and J.IsValidHero(nInRangeEnemy[1])
@@ -428,7 +428,7 @@ function X.ConsiderReactiveArmor()
 		local nInRangeAlly = bot:GetNearbyHeroes(800, false, BOT_MODE_NONE)
 		local nInRangeEnemy = bot:GetNearbyHeroes(600, true, BOT_MODE_NONE)
 
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
 		and J.CanCastOnNonMagicImmune(botTarget)
 		and J.IsInRange(bot, botTarget, 500)
 		and not J.IsSuspiciousIllusion(botTarget)
@@ -446,7 +446,7 @@ function X.ConsiderReactiveArmor()
 	then
 		local nInRangeEnemy = bot:GetNearbyHeroes(600, true, BOT_MODE_NONE)
 
-		if  nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
+		if nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
 		and J.GetHP(bot) < 0.51
 		and bot:WasRecentlyDamagedByAnyHero(1.5)
 		then
@@ -478,7 +478,7 @@ function X.ConsiderChakram()
 		local nInRangeAlly = bot:GetNearbyHeroes(nCastRange + 100, false, BOT_MODE_NONE)
 		local nInRangeEnemy = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
 
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
 		and J.CanCastOnNonMagicImmune(botTarget)
 		and J.IsInRange(bot, botTarget, nCastRange)
 		and not J.IsSuspiciousIllusion(botTarget)
@@ -505,7 +505,7 @@ function X.ConsiderChakram()
 		local nInRangeAlly = bot:GetNearbyHeroes(nCastRange + 100, false, BOT_MODE_NONE)
 		local nInRangeEnemy = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
 
-		if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+		if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 		and ((#nInRangeEnemy > #nInRangeAlly)
 			or (J.GetHP(bot) and bot:WasRecentlyDamagedByAnyHero(3)))
 		and J.IsValidHero(nInRangeEnemy[1])
@@ -523,7 +523,7 @@ function X.ConsiderChakram()
 	then
 		local nLocationAoE = bot:FindAoELocation(true, false, bot:GetLocation(), nCastRange, nRadius, nCastPoint, 0)
 
-		if  nLocationAoE.count >= 4
+		if nLocationAoE.count >= 4
 		and nMana > 0.33
 		then
 			local e = (GetUnitToLocationDistance(bot, nLocationAoE.targetloc) / nSpeed) + nCastPoint
@@ -536,7 +536,7 @@ function X.ConsiderChakram()
 		local nNeutralCreeps = bot:GetNearbyNeutralCreeps(nCastRange)
 		local nLocationAoE = bot:FindAoELocation(true, false, bot:GetLocation(), nCastRange, nRadius, nCastPoint, 0)
 
-		if  nNeutralCreeps ~= nil and #nNeutralCreeps >= 3
+		if nNeutralCreeps ~= nil and #nNeutralCreeps >= 3
 		and nLocationAoE.count >= 3
 		and nMana > 0.45
 		then
@@ -551,13 +551,13 @@ function X.ConsiderChakram()
 
 		for _, creep in pairs(nEnemyLaneCreeps)
 		do
-			if  J.IsValid(creep)
+			if J.IsValid(creep)
 			and (J.IsKeyWordUnit('ranged', creep) or J.IsKeyWordUnit('siege', creep))
 			and creep:GetHealth() <= nDamage
 			then
 				local nInRangeEnemy = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
 
-				if  nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
+				if nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
 				and GetUnitToUnitDistance(creep, nInRangeEnemy[1]) <= 600
 				then
 					local e = (GetUnitToUnitDistance(bot, creep) / nSpeed) + nCastPoint
@@ -649,7 +649,7 @@ end
 -- 		local nInRangeAlly = bot:GetNearbyHeroes(nCastRange + 100, false, BOT_MODE_NONE)
 -- 		local nInRangeEnemy = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
 
--- 		if  J.IsValidTarget(botTarget)
+-- 		if J.IsValidTarget(botTarget)
 -- 		and J.CanCastOnNonMagicImmune(botTarget)
 -- 		and J.IsInRange(bot, botTarget, nCastRange)
 -- 		and not J.IsSuspiciousIllusion(botTarget)
@@ -676,7 +676,7 @@ end
 -- 		local nInRangeAlly = bot:GetNearbyHeroes(nCastRange + 100, false, BOT_MODE_NONE)
 -- 		local nInRangeEnemy = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
 
--- 		if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+-- 		if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 -- 		and ((#nInRangeEnemy > #nInRangeAlly)
 -- 			or (J.GetHP(bot) and bot:WasRecentlyDamagedByAnyHero(3)))
 -- 		and J.IsValidHero(nInRangeEnemy[1])
@@ -694,7 +694,7 @@ end
 -- 	then
 -- 		local nLocationAoE = bot:FindAoELocation(true, false, bot:GetLocation(), nCastRange, nRadius, nCastPoint, 0)
 
--- 		if  nLocationAoE.count >= 4
+-- 		if nLocationAoE.count >= 4
 -- 		and nMana > 0.33
 -- 		then
 -- 			local e = (GetUnitToLocationDistance(bot, nLocationAoE.targetloc) / nSpeed) + nCastPoint
@@ -707,7 +707,7 @@ end
 -- 		local nNeutralCreeps = bot:GetNearbyNeutralCreeps(nCastRange)
 -- 		local nLocationAoE = bot:FindAoELocation(true, false, bot:GetLocation(), nCastRange, nRadius, nCastPoint, 0)
 
--- 		if  nNeutralCreeps ~= nil and #nNeutralCreeps >= 3
+-- 		if nNeutralCreeps ~= nil and #nNeutralCreeps >= 3
 -- 		and nLocationAoE.count >= 3
 -- 		and nMana > 0.45
 -- 		then
@@ -722,13 +722,13 @@ end
 
 -- 		for _, creep in pairs(nEnemyLaneCreeps)
 -- 		do
--- 			if  J.IsValid(creep)
+-- 			if J.IsValid(creep)
 -- 			and (J.IsKeyWordUnit('ranged', creep) or J.IsKeyWordUnit('siege', creep))
 -- 			and creep:GetHealth() <= nDamage
 -- 			then
 -- 				local nInRangeEnemy = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
 
--- 				if  nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
+-- 				if nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
 -- 				and GetUnitToUnitDistance(creep, nInRangeEnemy[1]) <= 600
 -- 				then
 -- 					local e = (GetUnitToUnitDistance(bot, creep) / nSpeed) + nCastPoint
@@ -812,7 +812,7 @@ end
 -- 		local nInRangeAlly = bot:GetNearbyHeroes(800, false, BOT_MODE_NONE)
 -- 		local nInRangeEnemy = bot:GetNearbyHeroes(600, true, BOT_MODE_NONE)
 
--- 		if  J.IsValidTarget(botTarget)
+-- 		if J.IsValidTarget(botTarget)
 -- 		and J.CanCastOnNonMagicImmune(botTarget)
 -- 		and J.IsInRange(bot, botTarget, 500)
 -- 		and not J.IsSuspiciousIllusion(botTarget)
@@ -841,7 +841,7 @@ function X.ConsiderFlamethrower()
 		local nInRangeAlly = bot:GetNearbyHeroes(800, false, BOT_MODE_NONE)
 		local nInRangeEnemy = bot:GetNearbyHeroes(nFrontRange, true, BOT_MODE_NONE)
 
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
 		and J.CanCastOnNonMagicImmune(botTarget)
 		and J.IsInRange(bot, botTarget, nFrontRange)
 		and bot:IsFacingLocation(botTarget:GetLocation(), 30)
@@ -888,7 +888,7 @@ function AreTreesBetween(loc, r)
 
 			local d = math.abs((a*z.x+b*z.y+c)/math.sqrt(a*a+b*b))
 
-			if  d <= r
+			if d <= r
 			and GetUnitToLocationDistance(bot,loc) > J.GetDistance(x, loc) + 50
 			then
 				return true
@@ -918,7 +918,7 @@ function GetBestRetreatTree(nCastRange)
 	do
 		local nTreeLoc = GetTreeLocation(tree)
 
-		if  not AreTreesBetween(nTreeLoc, 100)
+		if not AreTreesBetween(nTreeLoc, 100)
 		and GetUnitToLocationDistance(bot, nTreeLoc) > maxDist
 		and GetUnitToLocationDistance(bot, nTreeLoc) < nCastRange
 		and J.GetDistance(nTreeLoc, dest) < 880
@@ -928,7 +928,7 @@ function GetBestRetreatTree(nCastRange)
 		end
 	end
 
-	if  bestRetreatTree ~= nil
+	if bestRetreatTree ~= nil
 	and maxDist > bot:GetAttackRange()
 	then
 		return bestRetreatTree
@@ -964,7 +964,7 @@ function GetBestTree(enemyLoc, enemy, nCastRange, hitRadios)
 			end
 
 			local d = math.abs((a * z.x + b * z.y + c) / math.sqrt(a * a + b * b))
-			if  d <= hitRadios
+			if d <= hitRadios
 			and dist > GetUnitToLocationDistance(enemy, x)
 			and (GetUnitToLocationDistance(enemy, x) <= GetUnitToLocationDistance(bot, x))
 			then
@@ -1019,7 +1019,7 @@ function StillTraveling(cType)
 	local proj = GetLinearProjectiles()
 	for _, p in pairs(proj)
 	do
-		if  p ~= nil
+		if p ~= nil
 		and ((cType == 1 and p.ability:GetName() == 'shredder_chakram')
 			or (cType == 2 and p.ability:GetName() == 'shredder_chakram_2'))
 		then

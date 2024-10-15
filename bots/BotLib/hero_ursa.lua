@@ -139,7 +139,7 @@ function X.ConsiderEarthshock()
 
 	for _, enemyHero in pairs(nEnemyHeroes)
 	do
-		if  J.IsValidHero(enemyHero)
+		if J.IsValidHero(enemyHero)
 		and J.CanCastOnNonMagicImmune(enemyHero)
 		and J.IsInRange(bot, enemyHero, nRadius)
 		and not J.IsSuspiciousIllusion(enemyHero)
@@ -150,7 +150,7 @@ function X.ConsiderEarthshock()
 			then
 				local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, nRadius + 100, true, BOT_MODE_NONE)
 
-				if  nTargetInRangeAlly ~= nil and #nTargetInRangeAlly <= 1
+				if nTargetInRangeAlly ~= nil and #nTargetInRangeAlly <= 1
 				and J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_MAGICAL)
 				then
 					return BOT_ACTION_DESIRE_HIGH
@@ -164,7 +164,7 @@ function X.ConsiderEarthshock()
 		local nInRangeAlly = J.GetNearbyHeroes(bot,nRadius + 200, false, BOT_MODE_NONE)
 		local nInRangeEnemy = J.GetNearbyHeroes(bot,nRadius, true, BOT_MODE_NONE)
 
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
 		and J.IsInRange(bot, botTarget, nRadius)
 		and not J.IsSuspiciousIllusion(botTarget)
 		and not botTarget:HasModifier('modifier_enigma_black_hole_pull')
@@ -185,7 +185,7 @@ function X.ConsiderEarthshock()
 		local nInRangeAlly = J.GetNearbyHeroes(bot,nRadius * 2.5, false, BOT_MODE_NONE)
 		local nInRangeEnemy = J.GetNearbyHeroes(bot,nRadius * 2, true, BOT_MODE_NONE)
 
-		if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+		if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 		and ((#nInRangeEnemy > #nInRangeAlly)
 			or (J.GetHP(bot) < 0.55 and bot:WasRecentlyDamagedByAnyHero(2.5)))
 		and J.IsValidHero(nInRangeEnemy[1])
@@ -201,14 +201,14 @@ function X.ConsiderEarthshock()
 		end
 	end
 
-	if  J.IsLaning(bot)
+	if J.IsLaning(bot)
 	and nEnemyHeroes ~= nil and nEnemyTowers ~= nil
 	and #nEnemyHeroes == 0 and #nEnemyTowers == 0
 	then
 		local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nRadius, true)
 		for _, creep in pairs(nEnemyLaneCreeps)
 		do
-			if  J.IsValid(creep)
+			if J.IsValid(creep)
 			and J.CanBeAttacked(creep)
 			and (J.IsKeyWordUnit('ranged', creep) or J.IsKeyWordUnit('siege', creep))
 			and bot:IsFacingLocation(creep:GetLocation(), 15)
@@ -221,7 +221,7 @@ function X.ConsiderEarthshock()
 			end
 		end
 
-		if  nMana > 0.89
+		if nMana > 0.89
 		and bot:DistanceFromFountain() > 100
 		and bot:DistanceFromFountain() < 6000
 		then
@@ -233,7 +233,7 @@ function X.ConsiderEarthshock()
 			then
 				local loc = J.Site.GetXUnitsTowardsLocation(bot, nLaneFrontLocation, nRadius)
 
-				if  IsLocationPassable(loc)
+				if IsLocationPassable(loc)
 				and bot:IsFacingLocation(loc, 30)
 				then
 					return BOT_ACTION_DESIRE_HIGH
@@ -260,7 +260,7 @@ function X.ConsiderOverpower()
 		local nInRangeAlly = J.GetNearbyHeroes(bot,nAttackRange * 3, false, BOT_MODE_NONE)
 		local nInRangeEnemy = J.GetNearbyHeroes(bot,nAttackRange * 2, true, BOT_MODE_NONE)
 
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
 		and J.IsInRange(bot, botTarget, nAttackRange * 2)
 		and bot:IsFacingLocation(botTarget:GetLocation(), 30)
 		and not J.IsSuspiciousIllusion(botTarget)
@@ -275,7 +275,7 @@ function X.ConsiderOverpower()
 		end
 	end
 
-	if  J.IsPushing(bot)
+	if J.IsPushing(bot)
 	and nMana > 0.45
 	then
 		local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nAttackRange, true)
@@ -288,7 +288,7 @@ function X.ConsiderOverpower()
 		end
 	end
 
-	if  J.IsFarming(bot)
+	if J.IsFarming(bot)
 	and nMana > 0.25
 	then
 		local nCreeps = bot:GetNearbyNeutralCreeps(400)
@@ -324,7 +324,7 @@ function X.ConsiderEnrage()
 		local nInRangeAlly = J.GetNearbyHeroes(bot,800, false, BOT_MODE_NONE)
 		local nInRangeEnemy = J.GetNearbyHeroes(bot,600, true, BOT_MODE_NONE)
 
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
 		and J.IsInRange(bot, botTarget, nAttackRange + 75)
 		and not J.IsSuspiciousIllusion(botTarget)
 		and not J.IsDisabled(botTarget)
@@ -334,7 +334,7 @@ function X.ConsiderEnrage()
 		and nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 		and #nInRangeAlly >= #nInRangeEnemy
 		then
-			if  bot:WasRecentlyDamagedByAnyHero(1)
+			if bot:WasRecentlyDamagedByAnyHero(1)
 			and J.GetHP(bot) < 0.75
 			then
 				return BOT_ACTION_DESIRE_HIGH
@@ -347,7 +347,7 @@ function X.ConsiderEnrage()
 		local nInRangeAlly = J.GetNearbyHeroes(bot,800, false, BOT_MODE_NONE)
 		local nInRangeEnemy = J.GetNearbyHeroes(bot,600, true, BOT_MODE_NONE)
 
-		if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+		if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 		and ((#nInRangeEnemy > #nInRangeAlly)
 			or (J.GetHP(bot) < 0.5 and bot:WasRecentlyDamagedByAnyHero(1.5)))
 		and J.IsValidHero(nInRangeEnemy[1])
@@ -360,10 +360,10 @@ function X.ConsiderEnrage()
 		end
 	end
 
-	if  J.IsFarming(bot)
+	if J.IsFarming(bot)
 	and J.GetHP(bot) < 0.25
 	then
-		if  J.IsValid(botTarget)
+		if J.IsValid(botTarget)
 		and botTarget:IsCreep()
 		and J.IsInRange(bot, botTarget, nAttackRange)
 		then
@@ -371,7 +371,7 @@ function X.ConsiderEnrage()
 		end
 	end
 
-	if  J.IsDoingRoshan(bot)
+	if J.IsDoingRoshan(bot)
 	and J.GetHP(bot) < 0.33
 	then
 		if J.IsRoshan(botTarget)

@@ -156,7 +156,7 @@ function X.ConsiderRage()
     local nCastRange = 1000
 	local nEnemyHeroes = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE)
 
-	if  nEnemyHeroes ~= nil and #nEnemyHeroes > 0
+	if nEnemyHeroes ~= nil and #nEnemyHeroes > 0
     and not bot:IsMagicImmune()
     and not bot:IsInvulnerable()
     and not bot:HasModifier('modifier_item_lotus_orb_active')
@@ -168,7 +168,7 @@ function X.ConsiderRage()
 			return BOT_ACTION_DESIRE_HIGH
 		end
 
-		if  bot:IsSilenced()
+		if bot:IsSilenced()
         and J.GetEnemyCount(bot, 600) >= 2
         and not bot:HasModifier('modifier_item_mask_of_madness_berserk')
 		then
@@ -214,7 +214,7 @@ function X.ConsiderOpenWounds()
         local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange + 100, false, BOT_MODE_NONE)
         local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 
-        if  J.IsValidTarget(botTarget)
+        if J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
         and not J.IsSuspiciousIllusion(botTarget)
@@ -234,7 +234,7 @@ function X.ConsiderOpenWounds()
         local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange + 125, false, BOT_MODE_NONE)
         local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 
-        if  nInRangeAlly ~= nil and nInRangeEnemy
+        if nInRangeAlly ~= nil and nInRangeEnemy
         and ((#nInRangeEnemy > #nInRangeAlly)
             or (J.GetHP(bot) < 0.62 and bot:WasRecentlyDamagedByAnyHero(2)))
         and J.IsValidHero(nInRangeEnemy[1])
@@ -247,12 +247,12 @@ function X.ConsiderOpenWounds()
         end
     end
 
-	if  J.IsFarming(bot)
+	if J.IsFarming(bot)
     and J.GetHP(bot) < 0.49
 	then
         local nNeutralCreeps = bot:GetNearbyNeutralCreeps(nCastRange)
 
-		if  nNeutralCreeps ~= nil and #nNeutralCreeps >= 1
+		if nNeutralCreeps ~= nil and #nNeutralCreeps >= 1
         and J.IsAttacking(bot)
         and J.CanBeAttacked(nNeutralCreeps[1])
         and J.GetHP(nNeutralCreeps[1]) >= 0.75
@@ -263,7 +263,7 @@ function X.ConsiderOpenWounds()
 
 	if J.IsDoingRoshan(bot)
 	then
-        if  J.IsRoshan(botTarget)
+        if J.IsRoshan(botTarget)
         and J.CanBeAttacked(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsAttacking(bot)
@@ -292,7 +292,7 @@ function X.ConsiderInfest()
         local nInRangeAlly = J.GetNearbyHeroes(bot,1000, false, BOT_MODE_NONE)
         local nInRangeEnemy = J.GetNearbyHeroes(bot,1000, true, BOT_MODE_NONE)
 
-        if  J.IsValidTarget(botTarget)
+        if J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, 1000)
         and not J.IsSuspiciousIllusion(botTarget)
@@ -308,7 +308,7 @@ function X.ConsiderInfest()
 
 			for _, allyHero in pairs(nInRangeAlly)
 			do
-				if  J.IsNotSelf(bot, allyHero)
+				if J.IsNotSelf(bot, allyHero)
                 and allyHero:GetAttackRange() <= 324
 				then
 					target = allyHero
@@ -327,7 +327,7 @@ function X.ConsiderInfest()
         local nInRangeAlly = J.GetNearbyHeroes(bot,800, false, BOT_MODE_NONE)
 		local nInRangeEnemy = J.GetNearbyHeroes(bot,1000, true, BOT_MODE_NONE)
 
-        if  nInRangeAlly ~= nil and nInRangeEnemy
+        if nInRangeAlly ~= nil and nInRangeEnemy
         and ((#nInRangeEnemy > #nInRangeAlly)
             or (J.GetHP(bot) < 0.5 and bot:WasRecentlyDamagedByAnyHero(2.5)))
         and J.IsValidHero(nInRangeEnemy[1])
@@ -340,7 +340,7 @@ function X.ConsiderInfest()
 
             for _, allyHero in pairs(nInRangeAlly)
             do
-                if  J.IsNotSelf(bot, allyHero)
+                if J.IsNotSelf(bot, allyHero)
                 and J.IsInRange(bot, allyHero, 3 * nAttackRange)
                 then
                     return BOT_ACTION_DESIRE_HIGH, allyHero
@@ -349,7 +349,7 @@ function X.ConsiderInfest()
 
             for _, creep in pairs(nAllyLaneCreeps)
             do
-                if  J.IsInRange(bot, creep, 3 * nAttackRange)
+                if J.IsInRange(bot, creep, 3 * nAttackRange)
                 then
                     return BOT_ACTION_DESIRE_HIGH, creep
                 end
@@ -357,7 +357,7 @@ function X.ConsiderInfest()
 
             for _, creep in pairs(nEnemyLaneCreeps)
             do
-                if  J.IsInRange(bot, creep, 3 * nAttackRange)
+                if J.IsInRange(bot, creep, 3 * nAttackRange)
                 then
                     return BOT_ACTION_DESIRE_HIGH, creep
                 end
@@ -383,7 +383,7 @@ function X.ConsiderConsume()
         local nInRangeAlly = J.GetNearbyHeroes(bot,800, false, BOT_MODE_NONE)
 		local nInRangeEnemy = J.GetNearbyHeroes(bot,800, true, BOT_MODE_NONE)
 
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, nRadius - 200)
         and not J.IsSuspiciousIllusion(botTarget)
@@ -401,7 +401,7 @@ function X.ConsiderConsume()
         nInRangeEnemy = J.GetNearbyHeroes(bot,nRadius - 100, true, BOT_MODE_NONE)
         for _, enemyHero in pairs(nInRangeEnemy)
         do
-            if  J.IsValidHero(enemyHero)
+            if J.IsValidHero(enemyHero)
             and J.CanCastOnNonMagicImmune(enemyHero)
             and J.IsInRange(bot, enemyHero, nRadius - 100)
             and J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_MAGICAL)

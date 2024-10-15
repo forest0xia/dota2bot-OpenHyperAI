@@ -386,7 +386,7 @@ function X.GetBestHeroFromPool(i, nTeamList)
 		local hName = nTeamList[j].name
 		for _, sName in pairs(tSelectPoolList[i])
 		do
-			if  (MU.IsSynergy(hName, sName) or MU.IsSynergy(sName, hName))
+			if (MU.IsSynergy(hName, sName) or MU.IsSynergy(sName, hName))
 			and not X.IsRepeatHero(sName)
 			then
 				if nHeroes[sName] == nil then nHeroes[sName] = {} end
@@ -403,7 +403,7 @@ function X.GetBestHeroFromPool(i, nTeamList)
 		do
 			if not X.IsRepeatHero(k1)
 			then
-				if  v2 > 0 and c > 0 and v2 == c
+				if v2 > 0 and c > 0 and v2 == c
 				and RandomInt(1, 2) == 1
 				then
 					sBestHero = k1

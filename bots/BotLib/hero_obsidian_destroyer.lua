@@ -92,7 +92,7 @@ local SanitysEclipseDesire, SanitysEclipseLocation
 function X.SkillsComplement()
     if J.CanNotUseAbility(bot) then return end
 
-	if  ArcaneOrb:IsTrained()
+	if ArcaneOrb:IsTrained()
 	and ArcaneOrb:GetAutoCastState( ) == false
 	and EssenceFlux:GetLevel() >= 3
 	then
@@ -138,7 +138,7 @@ function X.ConsiderArcaneOrb()
         local weakestTarget = J.GetVulnerableWeakestUnit(bot, true, true, nAttackRange)
         local nInRangeAlly = J.GetNearbyHeroes(bot,800, false, BOT_MODE_NONE)
 
-		if  J.IsValidTarget(weakestTarget)
+		if J.IsValidTarget(weakestTarget)
         and not J.IsSuspiciousIllusion(weakestTarget)
         and not weakestTarget:HasModifier('modifier_abaddon_borrowed_time')
         and not weakestTarget:HasModifier('modifier_dazzle_shallow_grave')
@@ -147,7 +147,7 @@ function X.ConsiderArcaneOrb()
 		then
             local nTargetInRangeAlly = J.GetNearbyHeroes(weakestTarget, 800, false, BOT_MODE_NONE)
 
-            if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+            if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
             and #nInRangeAlly >= #nTargetInRangeAlly
             then
                 return BOT_ACTION_DESIRE_HIGH, weakestTarget
@@ -161,7 +161,7 @@ function X.ConsiderArcaneOrb()
 
 	-- 	for _, creep in pairs(nEnemyLaneCreeps)
 	-- 	do
-	-- 		if  J.IsValid(creep)
+	-- 		if J.IsValid(creep)
 	-- 		and J.CanKillTarget(creep, nDamage, DAMAGE_TYPE_PURE)
 	-- 		then
 	-- 			local nCreepInRangeHero = creep:GetNearbyHeroes(500, false, BOT_MODE_NONE)
@@ -176,7 +176,7 @@ function X.ConsiderArcaneOrb()
 
     if J.IsDoingRoshan(bot)
     then
-        if  J.IsRoshan(botTarget)
+        if J.IsRoshan(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, 500)
         and J.IsAttacking(bot)
@@ -187,7 +187,7 @@ function X.ConsiderArcaneOrb()
 
     if J.IsDoingTormentor(bot)
     then
-        if  J.IsTormentor(botTarget)
+        if J.IsTormentor(botTarget)
         and J.IsInRange(bot, botTarget, 400)
         and J.IsAttacking(bot)
         then
@@ -212,7 +212,7 @@ function X.ConsiderAstralImprisonment()
     local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
     for _, enemyHero in pairs(nEnemyHeroes)
     do
-        if  J.IsValidHero(enemyHero)
+        if J.IsValidHero(enemyHero)
         and J.CanCastOnNonMagicImmune(enemyHero)
         and not J.IsSuspiciousIllusion(enemyHero)
         then
@@ -223,7 +223,7 @@ function X.ConsiderAstralImprisonment()
 
             local nInRangeAlly = J.GetNearbyHeroes(bot,1000, false, BOT_MODE_NONE)
 
-            if  J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_MAGICAL)
+            if J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_MAGICAL)
             and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
             and not enemyHero:HasModifier('modifier_dazzle_shallow_grave')
             and not enemyHero:HasModifier('modifier_oracle_false_promise_timer')
@@ -240,7 +240,7 @@ function X.ConsiderAstralImprisonment()
         local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange, false, BOT_MODE_NONE)
         for _, allyHero in pairs(nInRangeAlly)
         do
-            if  J.IsValidHero(allyHero)
+            if J.IsValidHero(allyHero)
             and not allyHero:IsIllusion()
             and allyHero:WasRecentlyDamagedByAnyHero(1)
             then
@@ -262,7 +262,7 @@ function X.ConsiderAstralImprisonment()
             strongestTarget = J.GetStrongestUnit(nCastRange, bot, true, true, nDuration)
         end
 
-		if  J.IsValidTarget(strongestTarget)
+		if J.IsValidTarget(strongestTarget)
         and J.IsInRange(bot, strongestTarget, nCastRange)
         and not J.IsSuspiciousIllusion(strongestTarget)
         and not J.IsDisabled(strongestTarget)
@@ -282,7 +282,7 @@ function X.ConsiderAstralImprisonment()
 	then
         local nInRangeAlly = J.GetNearbyHeroes(bot,1000, false, BOT_MODE_NONE)
 
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
         and not J.IsSuspiciousIllusion(botTarget)
@@ -297,7 +297,7 @@ function X.ConsiderAstralImprisonment()
 		then
             local nTargetInRangeAlly = J.GetNearbyHeroes(botTarget, 1000, false, BOT_MODE_NONE)
 
-            if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+            if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
             and #nInRangeAlly >= #nTargetInRangeAlly
             and #nInRangeAlly <= 1
             then
@@ -311,7 +311,7 @@ function X.ConsiderAstralImprisonment()
         local nInRangeAlly = J.GetNearbyHeroes(bot,800, false, BOT_MODE_NONE)
         local nInRangeEnemy = J.GetNearbyHeroes(bot,800, true, BOT_MODE_NONE)
 
-        if  nInRangeAlly ~= nil and nInRangeEnemy
+        if nInRangeAlly ~= nil and nInRangeEnemy
         and J.IsValidHero(nInRangeEnemy[1])
         and J.CanCastOnNonMagicImmune(nInRangeEnemy[1])
         and J.IsInRange(bot, nInRangeEnemy[1], nCastRange)
@@ -325,7 +325,7 @@ function X.ConsiderAstralImprisonment()
         then
             local nTargetInRangeAlly = J.GetNearbyHeroes(nInRangeEnemy[1], 800, false, BOT_MODE_NONE)
 
-            if  nTargetInRangeAlly ~= nil
+            if nTargetInRangeAlly ~= nil
             and ((#nTargetInRangeAlly > #nInRangeAlly)
                 or (J.GetHP(bot) < 0.72 and bot:WasRecentlyDamagedByAnyHero(1.9)))
             then
@@ -334,7 +334,7 @@ function X.ConsiderAstralImprisonment()
         end
     end
 
-    if  J.IsLaning(bot)
+    if J.IsLaning(bot)
     and J.IsInLaningPhase()
 	then
 		if J.GetMP(bot) > 0.65
@@ -342,7 +342,7 @@ function X.ConsiderAstralImprisonment()
             local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
             for _, enemyHero in pairs(nInRangeEnemy)
             do
-                if  J.IsValidHero(enemyHero)
+                if J.IsValidHero(enemyHero)
                 and J.CanCastOnNonMagicImmune(enemyHero)
                 and J.IsAttacking(enemyHero)
                 and not J.IsSuspiciousIllusion(enemyHero)
@@ -358,7 +358,7 @@ function X.ConsiderAstralImprisonment()
 
     if J.IsDoingTormentor(bot)
     then
-        if  J.IsTormentor(botTarget)
+        if J.IsTormentor(botTarget)
         and J.IsInRange(bot, botTarget, 400)
         then
             if J.GetHP(bot) < 0.2
@@ -369,7 +369,7 @@ function X.ConsiderAstralImprisonment()
             local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange, false, BOT_MODE_NONE)
             for _, allyHero in pairs(nInRangeAlly)
             do
-                if  J.IsValidHero(allyHero)
+                if J.IsValidHero(allyHero)
                 and J.GetHP(allyHero) < 0.3
                 and not allyHero:IsIllusion()
                 and not allyHero:HasModifier('modifier_abaddon_borrowed_time')
@@ -387,13 +387,13 @@ function X.ConsiderAstralImprisonment()
     do
         local nAllyInRangeEnemy = J.GetNearbyHeroes(allyHero, nCastRange, true, BOT_MODE_NONE)
 
-        if  J.IsRetreating(allyHero)
+        if J.IsRetreating(allyHero)
         and allyHero:WasRecentlyDamagedByAnyHero(1.6)
         and not allyHero:IsChanneling()
         and not allyHero:IsIllusion()
         and J.GetMP(bot) > 0.31
         then
-            if  nAllyInRangeEnemy ~= nil and #nAllyInRangeEnemy >= 1
+            if nAllyInRangeEnemy ~= nil and #nAllyInRangeEnemy >= 1
             and J.IsValidHero(nAllyInRangeEnemy[1])
             and J.CanCastOnNonMagicImmune(nAllyInRangeEnemy[1])
             and J.IsInRange(allyHero, nAllyInRangeEnemy[1], 400)
@@ -433,7 +433,7 @@ function X.ConsiderSanitysEclipse()
         local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
         for _, enemyHero in pairs(nInRangeEnemy)
         do
-            if  J.IsValidTarget(enemyHero)
+            if J.IsValidTarget(enemyHero)
             and J.CanCastOnNonMagicImmune(enemyHero)
             and not J.IsSuspiciousIllusion(enemyHero)
             and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
@@ -448,7 +448,7 @@ function X.ConsiderSanitysEclipse()
                 local nManaDiff = math.abs(bot:GetMana() - enemyHero:GetMana())
                 local nDamage = nManaDiff * nMultiplier
 
-                if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+                if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
                 and #nInRangeAlly >= #nTargetInRangeAlly
                 and J.CanKillTarget(enemyHero, nBaseDamage + nDamage, DAMAGE_TYPE_MAGICAL)
                 then

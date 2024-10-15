@@ -151,7 +151,7 @@ function X.ConsiderEarthBind()
     local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
     for _, enemyHero in pairs(nEnemyHeroes)
     do
-        if  J.IsValidHero(enemyHero)
+        if J.IsValidHero(enemyHero)
         and J.CanCastOnNonMagicImmune(enemyHero)
         and J.IsInRange(bot, enemyHero, nCastRange)
         and (enemyHero:IsChanneling() or J.IsCastingUltimateAbility(enemyHero))
@@ -175,7 +175,7 @@ function X.ConsiderEarthBind()
         local nInRangeAlly = J.GetNearbyHeroes(bot,1000, false, BOT_MODE_NONE)
         local nInRangeEnemy = J.GetNearbyHeroes(bot,800, true, BOT_MODE_NONE)
 
-        if  J.IsValidTarget(botTarget)
+        if J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
         and not J.IsSuspiciousIllusion(botTarget)
@@ -192,13 +192,13 @@ function X.ConsiderEarthBind()
         end
 	end
 
-    if  J.IsRetreating(bot)
+    if J.IsRetreating(bot)
     and nModeDesire > BOT_ACTION_DESIRE_HIGH
     then
         local nInRangeAlly = J.GetNearbyHeroes(bot,800, false, BOT_MODE_NONE)
         local nInRangeEnemy = J.GetNearbyHeroes(bot,800, true, BOT_MODE_NONE)
 
-        if  nInRangeAlly ~= nil and nInRangeEnemy
+        if nInRangeAlly ~= nil and nInRangeEnemy
         and ((#nInRangeEnemy > #nInRangeAlly)
             or (J.GetHP(bot) < 0.62 and bot:WasRecentlyDamagedByAnyHero(2)))
         and J.IsValidHero(nInRangeEnemy[1])
@@ -218,12 +218,12 @@ function X.ConsiderEarthBind()
     do
         local nAllyInRangeEnemy = J.GetNearbyHeroes(allyHero, nCastRange, true, BOT_MODE_NONE)
 
-        if  J.IsRetreating(allyHero)
+        if J.IsRetreating(allyHero)
         and allyHero:WasRecentlyDamagedByAnyHero(2.1)
         and not allyHero:IsIllusion()
         and J.GetMP(bot) > 0.48
         then
-            if  nAllyInRangeEnemy ~= nil and #nAllyInRangeEnemy >= 1
+            if nAllyInRangeEnemy ~= nil and #nAllyInRangeEnemy >= 1
             and J.IsValidHero(nAllyInRangeEnemy[1])
             and J.CanCastOnNonMagicImmune(nAllyInRangeEnemy[1])
             and J.IsInRange(allyHero, nAllyInRangeEnemy[1], 400)
@@ -264,7 +264,7 @@ function X.ConsiderPoof()
             local nInRangeAlly = J.GetNearbyHeroes(meepo, 1000, false, BOT_MODE_NONE)
             local nInRangeEnemy = J.GetNearbyHeroes(meepo, 800, true, BOT_MODE_NONE)
 
-            if  J.IsValidTarget(mTarget)
+            if J.IsValidTarget(mTarget)
             and J.IsInRange(meepo, mTarget, 800)
             and not J.IsRetreating(bot)
             and not J.IsSuspiciousIllusion(mTarget)
@@ -276,13 +276,13 @@ function X.ConsiderPoof()
             end
         end
 
-        if  J.IsLaning(bot)
+        if J.IsLaning(bot)
         and J.IsLaning(meepo)
         and meepo ~= bot
         then
             local laneFrontLoc = GetLaneFrontLocation(GetTeam(), bot:GetAssignedLane(), 0)
 
-            if  GetUnitToLocationDistance(bot, laneFrontLoc) > 1600
+            if GetUnitToLocationDistance(bot, laneFrontLoc) > 1600
             and GetUnitToLocationDistance(meepo, laneFrontLoc) < 600
             then
                 return BOT_ACTION_DESIRE_HIGH, meepo
@@ -293,7 +293,7 @@ function X.ConsiderPoof()
         then
             local nInRangeEnemy = J.GetNearbyHeroes(meepo, 800, true, BOT_MODE_NONE)
 
-            if  J.IsRoshan(mTarget)
+            if J.IsRoshan(mTarget)
             and J.IsInRange(meepo, mTarget, 400)
             and J.GetHP(mTarget) > 0.33
             and nInRangeEnemy ~= nil and #nInRangeEnemy == 0
@@ -306,7 +306,7 @@ function X.ConsiderPoof()
         then
             local nInRangeEnemy = J.GetNearbyHeroes(meepo, 800, true, BOT_MODE_NONE)
 
-            if  J.IsTormentor(mTarget)
+            if J.IsTormentor(mTarget)
             and J.IsInRange(meepo, mTarget, 400)
             and nInRangeEnemy ~= nil and #nInRangeEnemy == 0
             then
@@ -314,7 +314,7 @@ function X.ConsiderPoof()
             end
         end
 
-        if  J.GetHP(bot) < 0.3
+        if J.GetHP(bot) < 0.3
         and J.IsRetreating(bot)
         and meepo ~= bot
         and meepo:DistanceFromFountain() < 500
@@ -323,12 +323,12 @@ function X.ConsiderPoof()
         end
     end
 
-	if  J.IsRetreating(bot)
+	if J.IsRetreating(bot)
 	then
         local nInRangeAlly = J.GetNearbyHeroes(bot,800, false, BOT_MODE_NONE)
         local nInRangeEnemy = J.GetNearbyHeroes(bot,800, true, BOT_MODE_NONE)
 
-        if  nInRangeAlly ~= nil and nInRangeEnemy
+        if nInRangeAlly ~= nil and nInRangeEnemy
         and ((#nInRangeEnemy > #nInRangeAlly)
             or (J.GetHP(bot) < 0.8 and bot:WasRecentlyDamagedByAnyHero(1.3)))
         and J.IsValidHero(nInRangeEnemy[1])
@@ -362,14 +362,14 @@ function X.ConsiderPoof()
         if J.IsAttacking(bot)
         then
             local nEnemyLanecreeps = bot:GetNearbyLaneCreeps(nRadius, true)
-            if  nEnemyLanecreeps ~= nil and #nEnemyLanecreeps >= 3
+            if nEnemyLanecreeps ~= nil and #nEnemyLanecreeps >= 3
             and J.GetMP(bot) > 0.33
             then
                 return BOT_ACTION_DESIRE_HIGH, bot
             end
 
             local nNeutralCreeps = bot:GetNearbyNeutralCreeps(nRadius)
-            if  nNeutralCreeps ~= nil and #nNeutralCreeps >= 2
+            if nNeutralCreeps ~= nil and #nNeutralCreeps >= 2
             and J.GetMP(bot) > 0.26
             then
                 return BOT_ACTION_DESIRE_HIGH, bot
@@ -377,7 +377,7 @@ function X.ConsiderPoof()
         end
     end
 
-    if  J.IsLaning(bot)
+    if J.IsLaning(bot)
     and J.GetMP(bot) > 0.29
 	then
 		local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nRadius, true)
@@ -385,7 +385,7 @@ function X.ConsiderPoof()
 
 		for _, creep in pairs(nEnemyLaneCreeps)
 		do
-			if  J.IsValid(creep)
+			if J.IsValid(creep)
 			and J.CanKillTarget(creep, nDamage, DAMAGE_TYPE_MAGICAL)
 			then
                 canKillCreepsCount = canKillCreepsCount + 1
@@ -400,7 +400,7 @@ function X.ConsiderPoof()
         local nInRangeEnemy = J.GetNearbyHeroes(bot,nRadius / 2.1, true, BOT_MODE_NONE)
         for _, enemyHero in pairs(nInRangeEnemy)
         do
-            if  J.IsValidHero(enemyHero)
+            if J.IsValidHero(enemyHero)
             and J.CanCastOnNonMagicImmune(enemyHero)
             and not J.IsSuspiciousIllusion(enemyHero)
             and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
@@ -415,13 +415,13 @@ function X.ConsiderPoof()
 
 		for _, creep in pairs(nEnemyLaneCreeps)
 		do
-			if  J.IsValid(creep)
+			if J.IsValid(creep)
 			and (J.IsKeyWordUnit('ranged', creep) or J.IsKeyWordUnit('siege', creep) or J.IsKeyWordUnit('flagbearer', creep))
 			and J.CanKillTarget(creep, nDamage, DAMAGE_TYPE_MAGICAL)
 			then
 				nInRangeEnemy = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE)
 
-				if  nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
+				if nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
 				and GetUnitToUnitDistance(creep, nInRangeEnemy[1]) <= 500
                 and J.GetHP(bot) > 0.5 and not bot:WasRecentlyDamagedByAnyHero(2.7)
 				then
@@ -434,13 +434,13 @@ function X.ConsiderPoof()
 	if (J.IsDefending(bot) or J.IsPushing(bot))
 	then
 		local nEnemyLanecreeps = bot:GetNearbyLaneCreeps(nRadius, true)
-		if  nEnemyLanecreeps ~= nil and #nEnemyLanecreeps >= 4
+		if nEnemyLanecreeps ~= nil and #nEnemyLanecreeps >= 4
 		then
 			return BOT_ACTION_DESIRE_HIGH, bot
 		end
 	end
 
-	if  J.GetHP(bot)
+	if J.GetHP(bot)
     and not J.IsRetreating(bot)
     then
 		for _, meepo in pairs(Meepos)
@@ -448,7 +448,7 @@ function X.ConsiderPoof()
             local nInRangeAlly = J.GetNearbyHeroes(meepo, 800, false, BOT_MODE_NONE)
 			local nInRangeEnemy = J.GetNearbyHeroes(meepo, 1200, true, BOT_MODE_NONE)
 
-			if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+			if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
             and ((#Meepos >= #nInRangeEnemy)
                 or (#nInRangeAlly >= #nInRangeEnemy))
             and GetUnitToUnitDistance(bot, meepo) > 1600
@@ -459,7 +459,7 @@ function X.ConsiderPoof()
 		end
 	end
 
-	if  J.GetHP(bot)
+	if J.GetHP(bot)
     and not J.IsRetreating(bot)
     then
 		for _, meepo in pairs(Meepos)
@@ -467,10 +467,10 @@ function X.ConsiderPoof()
             local nInRangeAlly = J.GetNearbyHeroes(meepo, 800, false, BOT_MODE_NONE)
 			local nInRangeEnemy = J.GetNearbyHeroes(meepo, 324, true, BOT_MODE_NONE)
 
-			if  nInRangeEnemy ~= nil
+			if nInRangeEnemy ~= nil
             and J.GetHP(bot) - J.GetHP(meepo) > 0.2
             then
-				if  J.IsValidHero(nInRangeEnemy[1])
+				if J.IsValidHero(nInRangeEnemy[1])
                 and ((#Meepos >= #nInRangeEnemy)
                     or (#nInRangeAlly >= #nInRangeEnemy))
                 and not J.IsSuspiciousIllusion(nInRangeEnemy[1])
@@ -517,7 +517,7 @@ function X.ConsiderMegaMeepo()
         for _, meepo in pairs(Meepos)
         do
 
-            if  meepo:WasRecentlyDamagedByAnyHero(1.2)
+            if meepo:WasRecentlyDamagedByAnyHero(1.2)
             and J.IsMeepoClone(meepo)
             and J.IsInRange(bot, meepo, nRadius)
             and not meepo:HasModifier('modifier_meepo_petrify')
@@ -546,11 +546,11 @@ function X.ConsiderMegaMeepoFling()
     local nInRangeAlly = J.GetNearbyHeroes(bot,1000, false, BOT_MODE_NONE)
     local nInRangeEnemy = J.GetNearbyHeroes(bot,800, true, BOT_MODE_NONE)
 
-    if  J.IsGoingOnSomeone(bot)
+    if J.IsGoingOnSomeone(bot)
     then
         local weakestTarget = J.GetAttackableWeakestUnit(bot, nCastRange, true, true)
 
-        if  weakestTarget ~= nil
+        if weakestTarget ~= nil
         and bot:WasRecentlyDamagedByAnyHero(3.1)
         and not J.IsMeepoClone(bot)
         and not weakestTarget:HasModifier('modifier_faceless_void_chronosphere_freeze')
@@ -562,10 +562,10 @@ function X.ConsiderMegaMeepoFling()
     end
 
     local nCreeps = bot:GetNearbyCreeps(nCastRange, true)
-    if  nCreeps ~= nil and #nCreeps >= 1
+    if nCreeps ~= nil and #nCreeps >= 1
     and nInRangeEnemy ~= nil and #nInRangeEnemy == 0
     then
-        if  J.IsValid(nCreeps[1])
+        if J.IsValid(nCreeps[1])
         and not J.IsMeepoClone(bot)
         then
             return BOT_ACTION_DESIRE_HIGH, nCreeps[1]

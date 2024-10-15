@@ -463,7 +463,7 @@ function ItemPurchaseThink()
 				then
 					if partner ~= nil
 					then
-						if  partner:FindItemSlot('item_flask') < 0
+						if partner:FindItemSlot('item_flask') < 0
 						and partner:FindItemSlot('item_tango') < 0
 						and Item.GetItemCharges(bot, 'item_flask') <= 0
 						and botGold >= GetItemCost('item_flask')
@@ -472,7 +472,7 @@ function ItemPurchaseThink()
 							bot:ActionImmediate_PurchaseItem('item_flask')
 						end
 					else
-						if  Item.GetItemCharges(bot, 'item_flask') <= 0
+						if Item.GetItemCharges(bot, 'item_flask') <= 0
 						and botGold >= GetItemCost('item_flask')
 						and GetItemStockCount('item_flask') > 1
 						and (not J.HasItem(bot, 'item_bottle')
@@ -494,7 +494,7 @@ function ItemPurchaseThink()
 				then
 					if partner ~= nil
 					then
-						if  partner:FindItemSlot('item_flask') < 0
+						if partner:FindItemSlot('item_flask') < 0
 						and partner:FindItemSlot('item_tango') < 0
 						and partner ~= nil
 						and Item.GetItemCharges(bot, 'item_tango') <= 0
@@ -504,7 +504,7 @@ function ItemPurchaseThink()
 							bot:ActionImmediate_PurchaseItem('item_tango')
 						end
 					else
-						if  Item.GetItemCharges(bot, 'item_flask') <= 0
+						if Item.GetItemCharges(bot, 'item_flask') <= 0
 						and GetItemStockCount('item_flask') > 1
 						and botGold >= GetItemCost('item_flask')
 						and (not J.HasItem(bot, 'item_bottle')
@@ -529,7 +529,7 @@ function ItemPurchaseThink()
 	then
 		local wardType = 'item_ward_sentry'
 
-		if  GetItemStockCount(wardType) > 1
+		if GetItemStockCount(wardType) > 1
 		and botGold >= GetItemCost(wardType)
 		and Item.GetEmptyInventoryAmount(bot) >= 2
 		and Item.GetItemCharges(bot, wardType) < 1
@@ -543,7 +543,7 @@ function ItemPurchaseThink()
 	then
 		local wardType = 'item_ward_observer'
 
-		if  GetItemStockCount(wardType) > 1
+		if GetItemStockCount(wardType) > 1
 		and botGold >= GetItemCost(wardType)
 		and Item.GetEmptyInventoryAmount(bot) >= 2
 		and Item.GetItemCharges(bot, wardType) < 2
@@ -562,13 +562,13 @@ function ItemPurchaseThink()
 	and Item.GetItemCharges(bot, 'item_smoke_of_deceit') == 0
 	and botCourierValue == 0
 	then
-		if  DotaTime() < 0
+		if DotaTime() < 0
 		and not initSmoke
 		then
 			local hasSmoke = false
 			for _, allyHero in pairs(GetUnitList(UNIT_LIST_ALLIED_HEROES))
 			do
-				if  J.IsValidHero(allyHero)
+				if J.IsValidHero(allyHero)
 				and J.IsNotSelf(bot, allyHero)
 				and J.HasItem(allyHero, 'item_smoke_of_deceit')
 				then
@@ -589,7 +589,7 @@ function ItemPurchaseThink()
 	end
 
 	-- Blood Grenade
-	if  J.IsInLaningPhase()
+	if J.IsInLaningPhase()
 	and (J.GetPosition(bot) == 4 or J.GetPosition(bot) == 5)
 	and GetItemStockCount('item_blood_grenade') > 0
 	and botLevel < 5

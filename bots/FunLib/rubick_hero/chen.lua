@@ -78,12 +78,12 @@ function X.ConsiderPenitence()
     do
         local nAllyInRangeEnemy = J.GetNearbyHeroes(allyHero, 1200, true, BOT_MODE_NONE)
 
-        if  J.IsValidHero(allyHero)
+        if J.IsValidHero(allyHero)
         and J.IsRetreating(allyHero)
         and allyHero:WasRecentlyDamagedByAnyHero(1.5)
         and not allyHero:IsIllusion()
         then
-            if  nAllyInRangeEnemy ~= nil and #nAllyInRangeEnemy >= 1
+            if nAllyInRangeEnemy ~= nil and #nAllyInRangeEnemy >= 1
             and J.IsValidHero(nAllyInRangeEnemy[1])
             and J.IsInRange(bot, nAllyInRangeEnemy[1], nCastRange)
             and J.IsChasingTarget(nAllyInRangeEnemy[1], allyHero)
@@ -100,7 +100,7 @@ function X.ConsiderPenitence()
 
     if J.IsGoingOnSomeone(bot)
 	then
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
         and not J.IsSuspiciousIllusion(botTarget)
         and not botTarget:HasModifier('modifier_abaddon_borrowed_time')
@@ -109,17 +109,17 @@ function X.ConsiderPenitence()
             local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1200, true, BOT_MODE_NONE)
             local nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1200, false, BOT_MODE_NONE)
 
-            if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+            if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
             and #nInRangeAlly >= #nInRangeEnemy
             then
-                if  J.IsChasingTarget(bot, botTarget)
+                if J.IsChasingTarget(bot, botTarget)
                 and bot:GetCurrentMovementSpeed() < botTarget:GetCurrentMovementSpeed()
                 then
                     return BOT_ACTION_DESIRE_HIGH, botTarget
                 end
 
                 nInRangeAlly = J.GetAlliesNearLoc(bot:GetLocation(), 1600)
-                if  J.IsInRange(bot, botTarget, nAttackRange)
+                if J.IsInRange(bot, botTarget, nAttackRange)
                 and J.IsAttacking(bot)
                 and J.GetHeroCountAttackingTarget(nInRangeAlly, botTarget) >= 2
                 then
@@ -134,7 +134,7 @@ function X.ConsiderPenitence()
         local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
         for _, enemyHero in pairs(nInRangeEnemy)
         do
-            if  J.IsValidHero(enemyHero)
+            if J.IsValidHero(enemyHero)
             and J.IsChasingTarget(enemyHero, bot)
             and not J.IsSuspiciousIllusion(enemyHero)
             and not J.IsDisabled(enemyHero)
@@ -142,7 +142,7 @@ function X.ConsiderPenitence()
                 local nInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, true, BOT_MODE_NONE)
                 local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
 
-                if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+                if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
                 and ((#nTargetInRangeAlly > #nInRangeAlly)
                     or bot:WasRecentlyDamagedByAnyHero(1.5))
                 and bot:GetCurrentMovementSpeed() < enemyHero:GetCurrentMovementSpeed()
@@ -157,7 +157,7 @@ function X.ConsiderPenitence()
 	then
         local nInRangeAlly = J.GetAlliesNearLoc(bot:GetLocation(), 800)
 
-		if  (J.IsRoshan(botTarget) or J.IsTormentor(botTarget))
+		if (J.IsRoshan(botTarget) or J.IsTormentor(botTarget))
         and J.IsInRange(bot, botTarget, nCastRange)
         and J.IsAttacking(bot)
         and nInRangeAlly ~= nil and #nInRangeAlly >= 1
@@ -246,7 +246,7 @@ function X.ConsiderDivineFavor()
 
 	for _, allyHero in pairs(nAllyHeroes)
 	do
-		if  J.IsValidHero(allyHero)
+		if J.IsValidHero(allyHero)
 		and J.IsInRange(bot, allyHero, nCastRange)
         and not allyHero:HasModifier('modifier_abaddon_borrowed_time')
 		and not allyHero:HasModifier('modifier_legion_commander_press_the_attack')
@@ -260,7 +260,7 @@ function X.ConsiderDivineFavor()
 			then
 				local allyTarget = J.GetProperTarget(allyHero)
 
-				if  J.IsValidTarget(allyTarget)
+				if J.IsValidTarget(allyTarget)
                 and J.IsCore(allyHero)
 				and J.IsInRange(allyHero, allyTarget, allyHero:GetCurrentVisionRange())
                 and not J.IsSuspiciousIllusion(allyTarget)
@@ -271,10 +271,10 @@ function X.ConsiderDivineFavor()
 
             local nAllyInRangeEnemy = J.GetNearbyHeroes(allyHero, 1200, true, BOT_MODE_NONE)
 
-            if  J.IsRetreating(allyHero)
+            if J.IsRetreating(allyHero)
             and allyHero:WasRecentlyDamagedByAnyHero(1.5)
             then
-                if  nAllyInRangeEnemy ~= nil and #nAllyInRangeEnemy >= 1
+                if nAllyInRangeEnemy ~= nil and #nAllyInRangeEnemy >= 1
                 and J.IsValidHero(nAllyInRangeEnemy[1])
                 and J.IsInRange(bot, nAllyInRangeEnemy[1], nCastRange)
                 and J.IsChasingTarget(nAllyInRangeEnemy[1], allyHero)
@@ -291,7 +291,7 @@ function X.ConsiderDivineFavor()
 
     if J.IsDoingRoshan(bot) or J.IsDoingTormentor(bot)
 	then
-		if  (J.IsRoshan(botTarget) or J.IsTormentor(botTarget))
+		if (J.IsRoshan(botTarget) or J.IsTormentor(botTarget))
         and J.IsInRange(bot, botTarget, nCastRange)
         and J.IsAttacking(bot)
 		then
@@ -331,7 +331,7 @@ function X.ConsiderDivineFavor()
         local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
         for _, enemyHero in pairs(nInRangeEnemy)
         do
-            if  J.IsValidHero(enemyHero)
+            if J.IsValidHero(enemyHero)
             and J.IsChasingTarget(enemyHero, bot)
             and not J.IsSuspiciousIllusion(enemyHero)
             and not J.IsDisabled(enemyHero)
@@ -339,7 +339,7 @@ function X.ConsiderDivineFavor()
                 local nInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, true, BOT_MODE_NONE)
                 local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
 
-                if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+                if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
                 and ((#nTargetInRangeAlly > #nInRangeAlly and #nInRangeAlly <= 1)
                     or bot:WasRecentlyDamagedByAnyHero(2))
                 then
@@ -366,7 +366,7 @@ function X.ConsiderHandOfGod()
 
         for _, allyHero in pairs(nAllyList)
         do
-            if  J.IsValidHero(allyHero)
+            if J.IsValidHero(allyHero)
             and J.IsCore(allyHero)
             and J.GetHP(allyHero) < 0.5
             and not allyHero:IsIllusion()
@@ -384,7 +384,7 @@ function X.ConsiderHandOfGod()
     do
         local nAllyInRangeEnemy = J.GetNearbyHeroes(allyHero, 1200, true, BOT_MODE_NONE)
 
-        if  J.IsValidHero(allyHero)
+        if J.IsValidHero(allyHero)
         and J.IsCore(allyHero)
         and J.GetHP(allyHero) < 0.5
         and allyHero:WasRecentlyDamagedByAnyHero(1)
@@ -394,7 +394,7 @@ function X.ConsiderHandOfGod()
         and not allyHero:HasModifier('modifier_necrolyte_reapers_scythe')
         and not allyHero:HasModifier('modifier_oracle_false_promise_timer')
         then
-            if  nAllyInRangeEnemy ~= nil and #nAllyInRangeEnemy >= 1
+            if nAllyInRangeEnemy ~= nil and #nAllyInRangeEnemy >= 1
             and J.IsValidHero(nAllyInRangeEnemy[1])
             and J.IsChasingTarget(nAllyInRangeEnemy[1], allyHero)
             and not J.IsSuspiciousIllusion(nAllyInRangeEnemy[1])

@@ -10,17 +10,36 @@ local highgroundTowers = {
 	TOWER_BASE_2
 }
 local nInRangeEnemy, weAreStronger
+local defDurationHoldTime = 15 -- onces trying to def, hold the state for longer duration.
+local defDurationCacheTime = {}
 
 function Defend.GetDefendDesire(bot, lane)
 	if bot.DefendLaneDesire == nil then bot.DefendLaneDesire = {0, 0, 0} end
 	bot.DefendLaneDesire[lane] = Defend.GetDefendDesireHelper(bot, lane)
+	local toBeReturnedDesire = bot.DefendLaneDesire[lane]
+
+	if not defDurationCacheTime[bot:GetPlayerID()]
+	or not defDurationCacheTime[bot:GetPlayerID()][lane]
+	then
+		defDurationCacheTime[bot:GetPlayerID()] = { [lane] = { } }
+	end
+	if not defDurationCacheTime[bot:GetPlayerID()][lane].time
+	or defDurationCacheTime[bot:GetPlayerID()][lane].time + defDurationHoldTime <= DotaTime()
+	or defDurationCacheTime[bot:GetPlayerID()][lane].desire < toBeReturnedDesire
+	then
+		defDurationCacheTime[bot:GetPlayerID()][lane].time = DotaTime()
+		defDurationCacheTime[bot:GetPlayerID()][lane].desire = toBeReturnedDesire
+	end
+	if defDurationCacheTime[bot:GetPlayerID()][lane].time + defDurationHoldTime > DotaTime() then
+		toBeReturnedDesire = defDurationCacheTime[bot:GetPlayerID()][lane].desire
+	end
 
 	local mostDesireLane, desire = J.GetMostDefendLaneDesire()
 	bot.laneToDefend = mostDesireLane
 	if mostDesireLane ~= lane then
-		return bot.DefendLaneDesire[lane] * 0.8
+		return toBeReturnedDesire * 0.8
 	end
-	return bot.DefendLaneDesire[lane]
+	return toBeReturnedDesire
 end
 
 function Defend.GetDefendDesireHelper(bot, lane)
@@ -29,10 +48,11 @@ function Defend.GetDefendDesireHelper(bot, lane)
 	nInRangeEnemy = J.GetLastSeenEnemiesNearLoc( bot:GetLocation(), 2200 )
 	weAreStronger = J.WeAreStronger(bot, 2200)
 	local team = GetTeam()
+	local distanceToLane = GetUnitToLocationDistance(bot, GetLaneFrontLocation(team, lane, 0))
 
 	if #nInRangeEnemy > 0 then
 		-- if we are not stronger, most likely defend == feed
-		if GetUnitToLocationDistance(bot, GetLaneFrontLocation(team, lane, 0)) < 1600 then
+		if distanceToLane < 1600 then
 			nDefendDesire = RemapValClamped(J.GetHP(bot), 1, 0, BOT_ACTION_DESIRE_VERYHIGH, BOT_ACTION_DESIRE_NONE)
 			if not weAreStronger then
 				return nDefendDesire / 2
@@ -41,7 +61,7 @@ function Defend.GetDefendDesireHelper(bot, lane)
 		end
 	end
 
-	if bot:WasRecentlyDamagedByAnyHero(2)
+	if bot:WasRecentlyDamagedByAnyHero(2) and distanceToLane > 2000 -- far from the defend lane and probably currently in a fight.
 	or (bot:GetAssignedLane() ~= lane and J.GetPosition(bot) == 1 and J.IsInLaningPhase()) -- reduce carry feeds
 	or (J.IsDoingRoshan(bot) and #J.GetAlliesNearLoc(J.GetCurrentRoshanLocation(), 2800) >= 3)
 	or (J.IsDoingTormentor(bot) and #J.GetAlliesNearLoc(J.GetTormentorLocation(team), 900) >= 2 and #J.GetEnemiesAroundAncient() == 0)
@@ -405,7 +425,7 @@ function Defend.GetEnemyCountInLane(lane, isHero)
 
 			if isHero
 			then
-				if  distance < 1300
+				if distance < 1300
 				and not J.IsSuspiciousIllusion(enemy)
 				then
 					table.insert(units, enemy)

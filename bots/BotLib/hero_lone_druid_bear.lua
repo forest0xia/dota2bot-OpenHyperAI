@@ -127,7 +127,7 @@ function X.ConsiderSavageRoar()
 
     if J.IsGoingOnSomeone(bear)
 	then
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
         and J.IsInRange(bear, botTarget, nRadius)
         and not J.IsSuspiciousIllusion(botTarget)
         and not botTarget:HasModifier('modifier_necrolyte_reapers_scythe')
@@ -141,7 +141,7 @@ function X.ConsiderSavageRoar()
         local nInRangeEnemy = J.GetNearbyHeroes(bear,nRadius, true, BOT_MODE_NONE)
         for _, enemyHero in pairs(nInRangeEnemy)
         do
-            if  J.IsValidHero(enemyHero)
+            if J.IsValidHero(enemyHero)
             and J.IsChasingTarget(enemyHero, bear)
             and J.IsInRange(bear, enemyHero, nRadius)
             and not J.IsSuspiciousIllusion(enemyHero)
@@ -154,7 +154,7 @@ function X.ConsiderSavageRoar()
 
     if J.IsDoingRoshan(bear)
     then
-        if  J.IsRoshan(botTarget)
+        if J.IsRoshan(botTarget)
         and J.IsInRange(bear, botTarget, 500)
         and J.IsAttacking(bear)
         then
@@ -167,7 +167,7 @@ function X.ConsiderSavageRoar()
 
     if J.IsDoingTormentor(bear)
     then
-        if  J.IsTormentor(botTarget)
+        if J.IsTormentor(botTarget)
         and J.IsInRange(bear, botTarget, 500)
         and J.IsAttacking(bear)
         then

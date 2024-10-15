@@ -52,7 +52,7 @@ function GetDesire()
 	-- then
 	-- 	local nEnemyHeroes = J.GetNearbyHeroes(bot,700, true, BOT_MODE_NONE)
 
-	-- 	if  not (J.GetPosition(bot) == 1)
+	-- 	if not (J.GetPosition(bot) == 1)
 	-- 	and bot:GetAssignedLane() ~= LANE_MID
 	-- 	and ((GetTeam() == TEAM_RADIANT and bot:GetAssignedLane() == LANE_TOP)
 	-- 	    or (GetTeam() == TEAM_DIRE and bot:GetAssignedLane() == LANE_BOT)
@@ -74,12 +74,12 @@ function GetDesire()
 
 	ItemWard = Ward.GetItemWard(bot)
 
-	if  ItemWard ~= nil
+	if ItemWard ~= nil
 	and ItemWard:GetCooldownTimeRemaining() == 0
 	then
 
 		Pinged, WardTargetLocation = Ward.IsPingedByHumanPlayer(bot)
-		if  Pinged
+		if Pinged
 		and WardTargetLocation ~= nil
 		and not Ward.IsOtherWardClose(WardTargetLocation)
 		then
@@ -90,7 +90,7 @@ function GetDesire()
 		AvailableSpots = Ward.GetAvailableSpot(bot)
 		WardTargetLocation, WardTargetDist = Ward.GetClosestSpot(bot, AvailableSpots)
 
-		-- if  WardTargetLocation ~= nil
+		-- if WardTargetLocation ~= nil
 		-- and DotaTime() > (J.IsModeTurbo() and -45 or -60)
 		-- and DotaTime() < 0
 		-- and not IsEnemyCloserToWardLocation(WardTargetLocation, WardTargetDist)
@@ -99,7 +99,7 @@ function GetDesire()
 		-- 	return BOT_MODE_DESIRE_ABSOLUTE
 		-- end
 
-		if  WardTargetLocation ~= nil
+		if WardTargetLocation ~= nil
 		and DotaTime() > WardCastTime + 1.0
 		and not IsEnemyCloserToWardLocation(WardTargetLocation, WardTargetDist)
 		then
@@ -142,7 +142,7 @@ function OnEnd()
 	then
 		local wardSlot = bot:FindItemSlot(ItemWard:GetName())
 
-		if  wardSlot >= 0
+		if wardSlot >= 0
 		and wardSlot <= 5
 		then
 			local mostCostItem = FindMostItemSlot()
@@ -157,7 +157,7 @@ function OnEnd()
 end
 
 function Think()
-	if  GetGameState() ~= GAME_STATE_PRE_GAME
+	if GetGameState() ~= GAME_STATE_PRE_GAME
 	and GetGameState()~= GAME_STATE_GAME_IN_PROGRESS
 	then
 		return
@@ -207,7 +207,7 @@ function Think()
 
 		SmokeOfDeceit = GetItem("item_smoke_of_deceit")
 
-		if  SmokeOfDeceit ~= nil
+		if SmokeOfDeceit ~= nil
 		and not hasChatted
 		then
 			hasChatted = true
@@ -215,7 +215,7 @@ function Think()
 			return
 		end
 
-		if  SmokeOfDeceit ~= nil
+		if SmokeOfDeceit ~= nil
 		and SmokeOfDeceit:IsFullyCastable()
 		and not bot:HasModifier('modifier_smoke_of_deceit')
 		then
@@ -277,7 +277,7 @@ function CountStealingUnit()
 	do
 		local member = GetTeamMember(i)
 
-		if  IsPlayerBot(id)
+		if IsPlayerBot(id)
 		and member ~= nil
 		and member.steal
 		then
@@ -295,7 +295,7 @@ function CountStealUnitNearLoc(loc, nRadius)
 	do
 		local member = GetTeamMember(i)
 
-		if  member ~= nil
+		if member ~= nil
 		and member.steal
 		and GetUnitToLocationDistance(member, loc) <= nRadius
 		then
@@ -312,7 +312,7 @@ function FindLeastItemSlot()
 
 	for i = 0,5
 	do
-		if  bot:GetItemInSlot(i) ~= nil
+		if bot:GetItemInSlot(i) ~= nil
 		and bot:GetItemInSlot(i):GetName() ~= 'item_aegis'
 		then
 			local item = bot:GetItemInSlot(i):GetName()
@@ -397,7 +397,7 @@ function IsEnemyCloserToWardLocation(wardLoc, botDist)
 		then
 			local dInfo = info[1]
 
-			if  dInfo ~= nil
+			if dInfo ~= nil
 			and dInfo.time_since_seen < 3.0
 			and J.GetDistance(dInfo.location, wardLoc) <  botDist
 			then
@@ -414,7 +414,7 @@ function GetItem(item_name)
 	do
 		local item = bot:GetItemInSlot(i)
 
-		if  item ~= nil
+		if item ~= nil
 		and item:GetName() == item_name
 		then
 			return item

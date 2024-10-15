@@ -185,7 +185,7 @@ function X.ConsiderIllusoryOrb()
     local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
     for _, enemyHero in pairs(nEnemyHeroes)
     do
-        if  J.IsValidHero(enemyHero)
+        if J.IsValidHero(enemyHero)
         and J.CanCastOnNonMagicImmune(enemyHero)
         and J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_MAGICAL)
         and not J.IsSuspiciousIllusion(enemyHero)
@@ -208,7 +208,7 @@ function X.ConsiderIllusoryOrb()
 	then
 		local nInRangeAlly = J.GetNearbyHeroes(bot,1000, false, BOT_MODE_NONE)
 
-        if  J.IsValidTarget(botTarget)
+        if J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and not J.IsSuspiciousIllusion(botTarget)
         and not botTarget:HasModifier('modifier_abaddon_borrowed_time')
@@ -218,7 +218,7 @@ function X.ConsiderIllusoryOrb()
         then
             local nTargetInRangeAlly = J.GetNearbyHeroes(botTarget, 1000, false, BOT_MODE_NONE)
 
-            if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+            if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
             and #nInRangeAlly >= #nTargetInRangeAlly
             then
                 return BOT_ACTION_DESIRE_HIGH, botTarget:GetExtrapolatedLocation(nCastPoint)
@@ -231,13 +231,13 @@ function X.ConsiderIllusoryOrb()
         local nInRangeAlly = J.GetNearbyHeroes(bot,800, false, BOT_MODE_NONE)
         local nInRangeEnemy = J.GetNearbyHeroes(bot,1000, true, BOT_MODE_NONE)
 
-        if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+        if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
         and J.IsValidHero(nInRangeEnemy[1])
         and not J.IsSuspiciousIllusion(nInRangeEnemy[1])
         then
             local nTargetInRangeAlly = J.GetNearbyHeroes(nInRangeEnemy[1], 1000, false, BOT_MODE_NONE)
 
-            if  nTargetInRangeAlly ~= nil
+            if nTargetInRangeAlly ~= nil
             and #nTargetInRangeAlly > #nInRangeAlly
             then
                 IsRetreatOrb = true
@@ -254,7 +254,7 @@ function X.ConsiderIllusoryOrb()
         local nLocationAoE = bot:FindAoELocation(true, false, bot:GetLocation(), nCastRange, nRadius, nCastPoint, 0)
         local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nCastRange, true)
 
-        if  nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 4
+        if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 4
         and nLocationAoE.count >= 4
         then
             return BOT_ACTION_DESIRE_HIGH, nLocationAoE.targetloc
@@ -282,7 +282,7 @@ function X.ConsiderIllusoryOrb()
             end
 
             local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nCastRange, true)
-            if  nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 3
+            if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 3
             and nLocationAoE.count >= 3
             then
                 return BOT_ACTION_DESIRE_HIGH, nLocationAoE.targetloc
@@ -299,20 +299,20 @@ function X.ConsiderIllusoryOrb()
 
 		for _, creep in pairs(nEnemyLaneCreeps)
 		do
-			-- if  J.IsValid(creep)
+			-- if J.IsValid(creep)
 			-- and (J.IsKeyWordUnit('ranged', creep) or J.IsKeyWordUnit('siege', creep) or J.IsKeyWordUnit('flagbearer', creep))
 			-- and creep:GetHealth() <= nDamage
 			-- then
 			-- 	local nCreepInRangeHero = creep:GetNearbyHeroes(500, false, BOT_MODE_NONE)
 
-			-- 	if  nCreepInRangeHero ~= nil and #nCreepInRangeHero >= 1
+			-- 	if nCreepInRangeHero ~= nil and #nCreepInRangeHero >= 1
             --     and J.GetMP(bot) > 0.35
 			-- 	then
 			-- 		return BOT_ACTION_DESIRE_HIGH, creep:GetLocation()
 			-- 	end
 			-- end
 
-            if  J.IsValid(creep)
+            if J.IsValid(creep)
             and creep:GetHealth() <= nDamage
             then
                 canKill = canKill + 1
@@ -320,7 +320,7 @@ function X.ConsiderIllusoryOrb()
             end
 		end
 
-        if  canKill >= 2
+        if canKill >= 2
         and J.GetMP(bot) > 0.25
         and nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
         then
@@ -330,7 +330,7 @@ function X.ConsiderIllusoryOrb()
 
     if J.IsDoingRoshan(bot)
     then
-        if  J.IsRoshan(botTarget)
+        if J.IsRoshan(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, 500)
         and J.IsAttacking(bot)
@@ -341,7 +341,7 @@ function X.ConsiderIllusoryOrb()
 
     if J.IsDoingTormentor(bot)
     then
-        if  J.IsTormentor(botTarget)
+        if J.IsTormentor(botTarget)
         and J.IsInRange(bot, botTarget, 400)
         and J.IsAttacking(bot)
         then
@@ -367,7 +367,7 @@ function X.ConsiderWaningRift()
     local nEnemyHeroes = J.GetNearbyHeroes(bot,nRadius + 200, true, BOT_MODE_NONE)
     for _, enemyHero in pairs(nEnemyHeroes)
     do
-        if  J.IsValidHero(enemyHero)
+        if J.IsValidHero(enemyHero)
         and J.CanCastOnNonMagicImmune(enemyHero)
         and J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_MAGICAL)
         and not J.IsSuspiciousIllusion(enemyHero)
@@ -400,7 +400,7 @@ function X.ConsiderWaningRift()
 	then
 		local nInRangeAlly = J.GetNearbyHeroes(bot,1200, false, BOT_MODE_NONE)
 
-        if  J.IsValidTarget(botTarget)
+        if J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, nRadius)
         and not J.IsSuspiciousIllusion(botTarget)
@@ -411,7 +411,7 @@ function X.ConsiderWaningRift()
         then
             local nTargetInRangeAlly = J.GetNearbyHeroes(botTarget, 1200, false, BOT_MODE_NONE)
 
-            if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+            if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
             and #nInRangeAlly >= #nTargetInRangeAlly
             then
                 return BOT_ACTION_DESIRE_HIGH, botTarget:GetExtrapolatedLocation(nCastPoint)
@@ -424,14 +424,14 @@ function X.ConsiderWaningRift()
         local nInRangeAlly = J.GetNearbyHeroes(bot,1000, false, BOT_MODE_NONE)
         local nInRangeEnemy = J.GetNearbyHeroes(bot,1200, true, BOT_MODE_NONE)
 
-        if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+        if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
         and J.IsValidHero(nInRangeEnemy[1])
         and not J.IsSuspiciousIllusion(nInRangeEnemy[1])
         and not J.IsDisabled(nInRangeEnemy[1])
         then
             local nTargetInRangeAlly = J.GetNearbyHeroes(nInRangeEnemy[1], 1200, false, BOT_MODE_NONE)
 
-            if  nTargetInRangeAlly ~= nil
+            if nTargetInRangeAlly ~= nil
             and ((#nTargetInRangeAlly > #nInRangeAlly)
                 or (J.GetHP(bot) < 0.65 and bot:WasRecentlyDamagedByAnyHero(2)))
             then
@@ -446,7 +446,7 @@ function X.ConsiderWaningRift()
         local nLocationAoE = bot:FindAoELocation(true, false, bot:GetLocation(), bot:GetAttackRange() + 150, nRadius, 0, 0)
         local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nRadius, true)
 
-        if  nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 4
+        if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 4
         and nLocationAoE.count >= 4
         then
             return BOT_ACTION_DESIRE_HIGH, nLocationAoE.targetloc
@@ -468,7 +468,7 @@ function X.ConsiderWaningRift()
             end
 
             local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nRadius, true)
-            if  nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 3
+            if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 3
             and nLocationAoE.count >= 3
             then
                 return BOT_ACTION_DESIRE_HIGH, nLocationAoE.targetloc
@@ -485,19 +485,19 @@ function X.ConsiderWaningRift()
 
 		for _, creep in pairs(nEnemyLaneCreeps)
 		do
-			-- if  J.IsValid(creep)
+			-- if J.IsValid(creep)
 			-- and creep:GetHealth() <= nDamage
 			-- then
 			-- 	local nCreepInRangeHero = creep:GetNearbyHeroes(500, false, BOT_MODE_NONE)
 
-			-- 	if  nCreepInRangeHero ~= nil and #nCreepInRangeHero >= 1
+			-- 	if nCreepInRangeHero ~= nil and #nCreepInRangeHero >= 1
             --     and J.GetMP(bot) > 0.35
 			-- 	then
 			-- 		return BOT_ACTION_DESIRE_HIGH, bot:GetLocation()
 			-- 	end
 			-- end
 
-            if  J.IsValid(creep)
+            if J.IsValid(creep)
             and creep:GetHealth() <= nDamage
             then
                 canKill = canKill + 1
@@ -505,7 +505,7 @@ function X.ConsiderWaningRift()
             end
 		end
 
-        if  canKill >= 2
+        if canKill >= 2
         and J.GetMP(bot) > 0.25
         and nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
         then
@@ -515,7 +515,7 @@ function X.ConsiderWaningRift()
 
     if J.IsDoingRoshan(bot)
     then
-        if  J.IsRoshan(botTarget)
+        if J.IsRoshan(botTarget)
         and J.IsInRange(bot, botTarget, 500)
         and J.IsAttacking(bot)
         then
@@ -525,7 +525,7 @@ function X.ConsiderWaningRift()
 
     if J.IsDoingTormentor(bot)
     then
-        if  J.IsTormentor(botTarget)
+        if J.IsTormentor(botTarget)
         and J.IsInRange(bot, botTarget, 400)
         and J.IsAttacking(bot)
         then
@@ -554,7 +554,7 @@ function X.ConsiderPhaseShift()
 		return BOT_ACTION_DESIRE_HIGH
 	end
 
-	if  not bot:HasModifier('modifier_sniper_assassinate')
+	if not bot:HasModifier('modifier_sniper_assassinate')
 	and not bot:IsMagicImmune()
 	then
 		if J.IsWillBeCastUnitTargetSpell(bot, 400)
@@ -566,7 +566,7 @@ function X.ConsiderPhaseShift()
 	if J.IsRetreating(bot)
 	then
 		local blink = bot:GetItemInSlot(bot:FindItemSlot('item_blink'))
-		if  blink ~= nil
+		if blink ~= nil
         and blink:GetCooldownTimeRemaining() < nDuration
         then
 			return BOT_ACTION_DESIRE_HIGH
@@ -575,7 +575,7 @@ function X.ConsiderPhaseShift()
 		local nProjectiles = GetLinearProjectiles()
 		for _, p in pairs(nProjectiles)
 		do
-			if  p ~= nil
+			if p ~= nil
             and p.ability:GetName() == 'puck_illusory_orb'
             then
 				if GetUnitToLocationDistance(bot, p.location) < 300
@@ -589,7 +589,7 @@ function X.ConsiderPhaseShift()
     local realEnemyCount = J.GetEnemiesNearLoc(bot:GetLocation(), 800)
     local nInRangeAlly = J.GetNearbyHeroes(bot,800, false, BOT_MODE_NONE)
 
-    if  realEnemyCount ~= nil and #realEnemyCount >= 2
+    if realEnemyCount ~= nil and #realEnemyCount >= 2
     and nInRangeAlly ~= nil and #realEnemyCount > #nInRangeAlly
     and bot:WasRecentlyDamagedByAnyHero(1.5)
     then
@@ -610,7 +610,7 @@ function X.ConsiderEtherealJaunt()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
         and not J.IsInRange(bot, botTarget, nAttackRange)
 		then
 			local nProjectiles = GetLinearProjectiles()
@@ -618,14 +618,14 @@ function X.ConsiderEtherealJaunt()
             local nTargetInRangeAlly = J.GetNearbyHeroes(botTarget, 1200, false, BOT_MODE_NONE)
             local nTargetInRangeEnemy = J.GetNearbyHeroes(botTarget, 1200, true, BOT_MODE_NONE)
 
-            if  nTargetInRangeEnemy ~= nil and nTargetInRangeAlly ~= nil
+            if nTargetInRangeEnemy ~= nil and nTargetInRangeAlly ~= nil
             and #nTargetInRangeEnemy >= #nTargetInRangeAlly
             then
                 local nTargetInRangeTower = botTarget:GetNearbyTowers(700, false)
 
                 for _, p in pairs(nProjectiles)
                 do
-                    if  p ~= nil
+                    if p ~= nil
                     and p.ability:GetName() == 'puck_illusory_orb'
                     and not J.IsLocationInChrono(p.location)
                     then
@@ -646,7 +646,7 @@ function X.ConsiderEtherealJaunt()
 
                                 if #nInRangeAlly >= #nInRangeEnemy
                                 then
-                                    if  #nInRangeAlly <= 1 and #nInRangeEnemy == 1
+                                    if #nInRangeAlly <= 1 and #nInRangeEnemy == 1
                                     and nTargetInRangeTower ~= nil and #nTargetInRangeAlly == 0
                                     then
                                         return BOT_ACTION_DESIRE_HIGH
@@ -665,14 +665,14 @@ function X.ConsiderEtherealJaunt()
 		end
 	end
 
-    if  J.IsRetreating(bot)
+    if J.IsRetreating(bot)
     and IsRetreatOrb
 	then
 		local nProjectiles = GetLinearProjectiles()
 
 		for _, p in pairs(nProjectiles)
         do
-            if  p.ability:GetName() == 'puck_illusory_orb'
+            if p.ability:GetName() == 'puck_illusory_orb'
             and not J.IsLocationInChrono(p.location)
             then
                 if GetUnitToLocationDistance(bot, p.location) > 600
@@ -702,7 +702,7 @@ function X.ConsiderDreamCoil()
 		local nLocationAoE = bot:FindAoELocation( true, true, bot:GetLocation(), nCastRange, nRadius, 0, 0 )
         local realEnemyCount = J.GetEnemiesNearLoc(nLocationAoE.targetloc, nRadius)
 
-        if  realEnemyCount ~= nil and #realEnemyCount >= 2
+        if realEnemyCount ~= nil and #realEnemyCount >= 2
         and not J.IsLocationInChrono(nLocationAoE.targetloc)
         and not J.IsLocationInBlackHole(nLocationAoE.targetloc)
         then
@@ -715,7 +715,7 @@ function X.ConsiderDreamCoil()
         local nInRangeAlly = J.GetNearbyHeroes(bot,1000, false, BOT_MODE_NONE)
         local strongestTarget = J.GetStrongestUnit(nCastRange, bot, true, false, nDuration)
 
-		if  J.IsValidTarget(strongestTarget)
+		if J.IsValidTarget(strongestTarget)
 		and J.CanCastOnNonMagicImmune(strongestTarget)
         and not J.IsSuspiciousIllusion(strongestTarget)
         and not J.IsDisabled(strongestTarget)
@@ -728,17 +728,17 @@ function X.ConsiderDreamCoil()
 		then
 			local nTargetInRangeAlly = J.GetNearbyHeroes(bot,1000, false, BOT_MODE_NONE)
 
-            if  nInRangeAlly ~= nil and nTargetInRangeAlly
+            if nInRangeAlly ~= nil and nTargetInRangeAlly
             and #nInRangeAlly >= #nTargetInRangeAlly
             then
-                if  #nInRangeAlly == 1 and #nTargetInRangeAlly == 0
+                if #nInRangeAlly == 1 and #nTargetInRangeAlly == 0
                 and J.GetHP(strongestTarget) > 0.55
                 and J.IsAttacking(bot)
                 then
                     return BOT_ACTION_DESIRE_HIGH, strongestTarget:GetLocation()
                 end
 
-                if  #nInRangeAlly == 2 and #nTargetInRangeAlly == 0
+                if #nInRangeAlly == 2 and #nTargetInRangeAlly == 0
                 and J.GetHP(strongestTarget) > 0.2
                 and J.IsRunning(strongestTarget)
                 and not strongestTarget:IsFacingLocation(bot:GetLocation(), 90)
@@ -756,9 +756,9 @@ function X.ConsiderDreamCoil()
         local realEnemyCount = J.GetEnemiesNearLoc(nLocationAoE.targetloc, nRadius)
         local nInRangeTower = bot:GetNearbyTowers(700, false)
 
-        if  nInRangeAlly ~= nil and realEnemyCount ~= nil
+        if nInRangeAlly ~= nil and realEnemyCount ~= nil
         then
-            if  nInRangeTower ~= nil and #nInRangeTower == 0
+            if nInRangeTower ~= nil and #nInRangeTower == 0
             and #realEnemyCount > #nInRangeAlly
             and #realEnemyCount >= 3 and #nInRangeAlly <= 1
             and GetUnitToLocationDistance(bot, nLocationAoE.targetloc) < 700
@@ -773,7 +773,7 @@ function X.ConsiderDreamCoil()
 end
 
 function CanDoPhaseOrb()
-    if  PhaseShift:IsFullyCastable()
+    if PhaseShift:IsFullyCastable()
     and IllusoryOrb:IsFullyCastable()
     then
         local nManaCost = PhaseShift:GetManaCost() + IllusoryOrb:GetManaCost()
@@ -796,7 +796,7 @@ function X.ConsiderPhaseOrb()
         local realEnemyCount = J.GetEnemiesNearLoc(bot:GetLocation(), 800)
         local nInRangeAlly = J.GetNearbyHeroes(bot,800, false, BOT_MODE_NONE)
 
-        if  realEnemyCount ~= nil and #realEnemyCount >= 2
+        if realEnemyCount ~= nil and #realEnemyCount >= 2
         and nInRangeAlly ~= nil and #realEnemyCount >= #nInRangeAlly
         then
             local loc = J.GetEscapeLoc()
@@ -807,13 +807,13 @@ function X.ConsiderPhaseOrb()
         then
             local nInRangeEnemy = J.GetNearbyHeroes(bot,1000, true, BOT_MODE_NONE)
 
-            if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+            if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
             and J.IsValidHero(nInRangeEnemy[1])
             and not J.IsSuspiciousIllusion(nInRangeEnemy[1])
             then
                 local nTargetInRangeAlly = J.GetNearbyHeroes(nInRangeEnemy[1], 1000, false, BOT_MODE_NONE)
 
-                if  nTargetInRangeAlly ~= nil
+                if nTargetInRangeAlly ~= nil
                 and #nTargetInRangeAlly > #nInRangeAlly
                 then
                     local loc = J.GetEscapeLoc()

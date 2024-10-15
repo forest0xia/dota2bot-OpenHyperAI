@@ -229,7 +229,7 @@ function X.ConsiderShackleShot()
 
 	for _, enemyHero in pairs(tEnemyHeroes)
     do
-		if  J.IsValidHero(enemyHero)
+		if J.IsValidHero(enemyHero)
         and J.IsInRange(bot, enemyHero, nCastRange)
         and J.CanCastOnNonMagicImmune(enemyHero)
         and J.CanCastOnTargetAdvanced(enemyHero)
@@ -245,7 +245,7 @@ function X.ConsiderShackleShot()
         local targetAttackDamage = 0
 
         for _, enemy in pairs(tEnemyHeroes) do
-            if  J.IsValidTarget(enemy)
+            if J.IsValidTarget(enemy)
             and J.CanCastOnNonMagicImmune(enemy)
             and J.CanCastOnTargetAdvanced(enemy)
             and J.IsInRange(bot, enemy, nCastRange)
@@ -279,7 +279,7 @@ function X.ConsiderShackleShot()
 	then
         for _, enemyHero in pairs(tEnemyHeroes)
         do
-            if  J.IsValidHero(enemyHero)
+            if J.IsValidHero(enemyHero)
             and J.CanCastOnNonMagicImmune(enemyHero)
             and J.CanCastOnTargetAdvanced(enemyHero)
             and J.IsChasingTarget(enemyHero, bot)
@@ -318,7 +318,7 @@ function X.ConsiderShackleShot()
         then
             local tAllyInRangeEnemy = allyHero:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
             for _, enemyHero in pairs(tAllyInRangeEnemy) do
-                if  J.IsValidHero(enemyHero)
+                if J.IsValidHero(enemyHero)
                 and J.CanCastOnNonMagicImmune(enemyHero)
                 and J.CanCastOnTargetAdvanced(enemyHero)
                 and J.IsInRange(bot, enemyHero, nCastRange)
@@ -360,7 +360,7 @@ function X.ConsiderPowershot()
 
     for _, enemyHero in pairs(tEnemyHeroes)
     do
-        if  J.IsValidHero(enemyHero)
+        if J.IsValidHero(enemyHero)
         and J.IsInRange(bot, enemyHero, nCastRange)
         and J.CanCastOnNonMagicImmune(enemyHero)
         and J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_MAGICAL)
@@ -378,7 +378,7 @@ function X.ConsiderPowershot()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-        if  J.IsValidHero(botTarget)
+        if J.IsValidHero(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
         and not J.IsInRange(bot, botTarget, nAttackRange)
@@ -435,7 +435,7 @@ function X.ConsiderPowershot()
         end
     end
 
-    if  J.IsLaning(bot)
+    if J.IsLaning(bot)
     and (J.IsCore(bot) or (not J.IsCore(bot) and not J.IsThereCoreNearby(1200)))
 	then
         local canKill = 0
@@ -444,7 +444,7 @@ function X.ConsiderPowershot()
 
 		for _, creep in pairs(nEnemyLaneCreeps)
 		do
-			if  J.IsValid(creep)
+			if J.IsValid(creep)
 			and (J.IsKeyWordUnit('ranged', creep) or J.IsKeyWordUnit('siege', creep) or J.IsKeyWordUnit('flagbearer', creep))
             and creep:GetHealth() > bot:GetAttackDamage()
 			and J.CanKillTarget(creep, nDamage, DAMAGE_TYPE_MAGICAL)
@@ -488,7 +488,7 @@ function X.ConsiderPowershot()
 
     if J.IsDoingRoshan(bot)
     then
-        if  J.IsRoshan(botTarget)
+        if J.IsRoshan(botTarget)
         and J.CanBeAttacked(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
@@ -500,7 +500,7 @@ function X.ConsiderPowershot()
 
     if J.IsDoingTormentor(bot)
     then
-        if  J.IsTormentor(botTarget)
+        if J.IsTormentor(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
         and J.IsAttacking(bot)
         then
@@ -524,7 +524,7 @@ function X.ConsiderWindrun()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
         and not J.IsSuspiciousIllusion(botTarget)
         and not botTarget:HasModifier('modifier_enigma_black_hole_pull')
         and not botTarget:HasModifier('modifier_faceless_void_chronosphere_freeze')
@@ -543,7 +543,7 @@ function X.ConsiderWindrun()
     if J.IsRetreating(bot)
     and not J.IsRealInvisible(bot)
 	then
-        if  J.IsValidHero(tEnemyHeroes[1])
+        if J.IsValidHero(tEnemyHeroes[1])
         and J.CanBeAttacked(bot)
         and J.IsChasingTarget(tEnemyHeroes[1], bot)
         and not J.IsSuspiciousIllusion(tEnemyHeroes[1])
@@ -571,7 +571,7 @@ function X.ConsiderWindrun()
 
     if J.IsDoingRoshan(bot)
     then
-        if  J.IsRoshan(botTarget)
+        if J.IsRoshan(botTarget)
         and J.IsInRange(bot, botTarget, bot:GetAttackRange())
         and J.IsAttacking(bot)
         then
@@ -584,7 +584,7 @@ function X.ConsiderWindrun()
 
     if J.IsDoingTormentor(bot)
     then
-        if  J.IsTormentor(botTarget)
+        if J.IsTormentor(botTarget)
         and J.IsInRange(bot, botTarget, bot:GetAttackRange())
         and J.IsAttacking(bot)
         then
@@ -614,7 +614,7 @@ function X.ConsiderFocusFire()
 
     for _, enemyHero in pairs(tEnemyHeroes)
     do
-        if  J.IsValidHero(enemyHero)
+        if J.IsValidHero(enemyHero)
         and J.CanBeAttacked(enemyHero)
         and not J.IsInEtherealForm(enemyHero)
         and enemyHero:GetHealth() > bot:GetAttackDamage() * 2
@@ -639,7 +639,7 @@ function X.ConsiderFocusFire()
 	then
         for _, enemyHero in pairs(tEnemyHeroes)
         do
-            if  J.IsValidTarget(enemyHero)
+            if J.IsValidTarget(enemyHero)
             and J.CanBeAttacked(enemyHero)
             and not J.IsInEtherealForm(enemyHero)
             and enemyHero:GetHealth() > bot:GetAttackDamage() * 3
@@ -659,7 +659,7 @@ function X.ConsiderFocusFire()
 
     if J.IsDoingRoshan(bot)
     then
-        if  J.IsRoshan(botTarget)
+        if J.IsRoshan(botTarget)
         and J.IsInRange(bot, botTarget, 500)
         and J.GetHP(botTarget) > 0.25
         and J.IsAttacking(bot)
@@ -671,7 +671,7 @@ function X.ConsiderFocusFire()
 
     if J.IsDoingTormentor(bot)
     then
-        if  J.IsTormentor(botTarget)
+        if J.IsTormentor(botTarget)
         and J.IsInRange(bot, botTarget, 500)
         and J.GetHP(botTarget) > 0.3
         and J.IsAttacking(bot)
@@ -712,7 +712,7 @@ function X.ConsiderGaleForce()
         local tEnemyHeroes = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE)
         for _, enemyHero in pairs(tEnemyHeroes)
         do
-            if  J.IsValidHero(enemyHero)
+            if J.IsValidHero(enemyHero)
             and J.IsInRange(bot, enemyHero, 800)
             and J.CanCastOnNonMagicImmune(enemyHero)
             and J.IsChasingTarget(enemyHero, bot)
@@ -755,7 +755,7 @@ function X.GetShackleHeroTarget(hSource, hTarget, nRadius, nMaxAngle)
 	local nEnemyHeroes = hTarget:GetNearbyHeroes(nRadius, false, BOT_MODE_NONE)
 	for _, enemyHero in pairs(nEnemyHeroes)
     do
-        if  J.IsValidHero(enemyHero)
+        if J.IsValidHero(enemyHero)
         and J.CanCastOnNonMagicImmune(enemyHero)
         and enemyHero ~= hTarget
         then

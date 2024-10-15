@@ -500,20 +500,20 @@ function X.ConsiderW()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
 		and J.IsInRange(bot, botTarget, 1600)
 		and not J.IsSuspiciousIllusion(botTarget)
 		then
 			local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1200, true, BOT_MODE_NONE)
             local nTargetInRangeAlly = J.GetNearbyHeroes(botTarget, 1200, false, BOT_MODE_NONE)
 
-			if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+			if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
 			and #nInRangeAlly >= #nTargetInRangeAlly
 			then
 				nInRangeAlly = J.GetAlliesNearLoc(bot:GetLocation(), nRadius)
 				for _, allyHero in pairs(nInRangeAlly)
 				do
-					if  J.IsValidHero(allyHero)
+					if J.IsValidHero(allyHero)
 					and J.GetHP(allyHero) < 0.5
 					and not J.IsSuspiciousIllusion(allyHero)
 					and not allyHero:HasModifier('modifier_skeleton_king_reincarnation_scepter_active')
@@ -534,14 +534,14 @@ function X.ConsiderW()
 
 	if J.IsRetreating(bot)
 	then
-		if  J.IsValidHero(nInRangeEnemy[1])
+		if J.IsValidHero(nInRangeEnemy[1])
 		and J.GetHP(bot) < 0.5
 		and not J.IsSuspiciousIllusion(nInRangeEnemy[1])
 		then
 			local nInRangeAlly = J.GetNearbyHeroes(nInRangeEnemy[1], 1200, true, BOT_MODE_NONE)
             local nTargetInRangeAlly = J.GetNearbyHeroes(nInRangeEnemy[1], 1200, false, BOT_MODE_NONE)
 
-			if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+			if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
 			and (#nInRangeAlly > #nTargetInRangeAlly
 				or bot:WasRecentlyDamagedByAnyHero(1.5))
 			then
@@ -558,7 +558,7 @@ function X.ConsiderW()
 	local nInRangeAlly = J.GetAlliesNearLoc(bot:GetLocation(), nRadius)
 	for _, allyHero in pairs(nInRangeAlly)
 	do
-		if  J.IsValidHero(allyHero)
+		if J.IsValidHero(allyHero)
 		and J.GetHP(allyHero) < 0.5
 		and nInRangeEnemy ~= nil and #nInRangeEnemy == 0
 		and not J.IsSuspiciousIllusion(allyHero)
@@ -577,7 +577,7 @@ function X.ConsiderW()
 
 	if J.IsDoingRoshan(bot)
 	then
-		if  J.IsRoshan(botTarget)
+		if J.IsRoshan(botTarget)
 		and J.IsInRange(bot, botTarget, bot:GetAttackRange())
 		and J.IsAttacking(bot)
 		then
@@ -592,7 +592,7 @@ function X.ConsiderW()
 
 	if J.IsDoingTormentor(bot)
 	then
-		if  J.IsTormentor(botTarget)
+		if J.IsTormentor(botTarget)
 		and J.IsInRange(bot, botTarget, bot:GetAttackRange())
 		and J.IsAttacking(bot)
 		then

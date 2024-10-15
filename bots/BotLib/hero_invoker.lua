@@ -750,7 +750,7 @@ function X.ConsiderColdSnap()
 
     for _, enemyHero in pairs(nEnemyHeroes)
     do
-        if  J.IsValidHero(enemyHero)
+        if J.IsValidHero(enemyHero)
         and J.CanCastOnNonMagicImmune(enemyHero)
         and (
             enemyHero:IsChanneling() -- 打断技能
@@ -767,7 +767,7 @@ function X.ConsiderColdSnap()
 
     if J.IsGoingOnSomeone(bot)
 	then
-		if  J.IsValidHero(botTarget)
+		if J.IsValidHero(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange + castDeltaRange)
         and not J.IsSuspiciousIllusion(botTarget)
@@ -871,7 +871,7 @@ function X.ConsiderTornado()
 	local nRadius = Tornado:GetSpecialValueInt('area_of_effect')
 	local nSpeed = Tornado:GetSpecialValueInt('travel_speed')
 
-    if  J.IsInTeamFight(bot, 1200) then
+    if J.IsInTeamFight(bot, 1200) then
 		local nLocationAoE = bot:FindAoELocation(true, true, bot:GetLocation(), nCastRange, nRadius, nCastPoint, 0)
         local nInRangeEnemy = J.GetEnemiesNearLoc(nLocationAoE.targetloc, nRadius)
         local nInRangeAlly = J.GetAlliesNearLoc(nLocationAoE.targetloc, nRadius)
@@ -894,7 +894,7 @@ function X.ConsiderTornado()
     end
 
     if J.IsGoingOnSomeone(bot) then
-		if  J.IsValidHero(botTarget)
+		if J.IsValidHero(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
         and not J.IsInRange(bot, botTarget, 600)
@@ -953,7 +953,7 @@ function X.ConsiderTornado()
     then
         local nLocationAoE = bot:FindAoELocation(true, true, bot:GetLocation(), nCastRange, nRadius, nCastPoint, 0)
         local nInRangeEnemy = J.GetEnemiesNearLoc(nLocationAoE.targetloc, nRadius)
-        if  nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
+        if nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
         and not J.IsLocationInChrono(nLocationAoE.targetloc)
         and not J.IsLocationInBlackHole(nLocationAoE.targetloc)
         then
@@ -988,7 +988,7 @@ function X.ConsiderEMP()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
 		and J.CanCastOnNonMagicImmune(botTarget)
 		and J.IsInRange(bot, botTarget, nCastRange)
         and not J.IsSuspiciousIllusion(botTarget)
@@ -1027,7 +1027,7 @@ function X.ConsiderAlacrity()
     local nAllyHeroes = J.GetNearbyHeroes(bot, nCastRange, false)
 	for _, allyHero in pairs(nAllyHeroes)
 	do
-		if  J.IsValidHero(allyHero)
+		if J.IsValidHero(allyHero)
         and J.IsAttacking(allyHero)
         and not allyHero:IsIllusion()
         and not J.IsDisabled(allyHero)
@@ -1070,7 +1070,7 @@ function X.ConsiderAlacrity()
 
 		local nEnemyTowers = bot:GetNearbyTowers(700, true)
 
-		if  nEnemyTowers ~= nil and #nEnemyTowers >= 1
+		if nEnemyTowers ~= nil and #nEnemyTowers >= 1
         and suitableTarget ~= nil
         then
             local nAttackTarget = suitableTarget:GetAttackTarget()
@@ -1129,7 +1129,7 @@ function X.ConsiderAlacrity()
     if J.IsDoingTormentor(bot)
     and suitableTarget ~= nil
 	then
-		if  J.IsTormentor(botTarget)
+		if J.IsTormentor(botTarget)
         and J.IsInRange(suitableTarget, botTarget, 1000)
         and J.IsAttacking(bot)
 		then
@@ -1191,7 +1191,7 @@ function X.ConsiderChaosMeteor()
             end
 
             local nLocationAoE = bot:FindAoELocation(true, true, bot:GetLocation(), nCastRange, nRadius, nDelay, 0)
-            if  nLocationAoE.count >= 2 then
+            if nLocationAoE.count >= 2 then
                 return BOT_ACTION_DESIRE_HIGH, X.AdjustCMLocation(nLocationAoE.targetloc, botTarget)
             end
             return BOT_ACTION_DESIRE_HIGH, X.AdjustCMLocation(J.GetCorrectLoc(botTarget, nDelay), botTarget)
@@ -1255,7 +1255,7 @@ function X.ConsiderChaosMeteor()
 	end
 
     if J.IsDoingTormentor(bot) then
-		if  J.IsTormentor(botTarget)
+		if J.IsTormentor(botTarget)
 		and J.IsInRange(bot, botTarget, 700)
         and J.IsAttacking(bot)
 		then
@@ -1482,7 +1482,7 @@ function X.ConsiderForgeSpirit()
 
     if J.IsGoingOnSomeone(bot)
 	then
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
         and J.IsInRange(bot, botTarget, 1200)
 		then
             return BOT_ACTION_DESIRE_HIGH
@@ -1623,7 +1623,7 @@ function X.ConsiderDeafeningBlast()
     then
         local nInRangeEnemy = J.GetEnemiesNearLoc(nLocationAoE.targetloc, nRadius)
 
-		if  nInRangeEnemy ~= nil and #nInRangeEnemy >= 2
+		if nInRangeEnemy ~= nil and #nInRangeEnemy >= 2
         and not J.IsLocationInChrono(J.GetCenterOfUnits(nInRangeEnemy))
         then
             return BOT_ACTION_DESIRE_HIGH, J.GetCenterOfUnits(nInRangeEnemy)
@@ -1660,7 +1660,7 @@ function X.ConsiderDeafeningBlast()
 	end
 
     if J.IsRetreating(bot) then
-        if  nEnemyHeroes ~= nil and #nEnemyHeroes >= 1 and bot:WasRecentlyDamagedByAnyHero(2)
+        if nEnemyHeroes ~= nil and #nEnemyHeroes >= 1 and bot:WasRecentlyDamagedByAnyHero(2)
 		then
             return BOT_ACTION_DESIRE_HIGH, nEnemyHeroes[1]:GetLocation()
 		end

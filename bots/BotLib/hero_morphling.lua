@@ -146,7 +146,7 @@ function X.SkillsComplement()
     -- Later Stuff ^^
     -- if bot:GetAbilityInSlot(0) == Waveform then bot.IsMorphling = true else bot.IsMorphling = false end
 
-    -- if  not bot.IsMorphling
+    -- if not bot.IsMorphling
     -- and not MorphReplicate:IsHidden()
     -- and MorphedHero ~= nil
     -- then
@@ -154,7 +154,7 @@ function X.SkillsComplement()
     --     return
     -- end
 
-    -- if  not bot.IsMorphling
+    -- if not bot.IsMorphling
     -- and not MorphReplicate:IsHidden()
     -- then
     --     bot:Action_UseAbility(MorphReplicate)
@@ -222,7 +222,7 @@ function X.ConsiderWaveform()
     local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 	for _, enemyHero in pairs(nEnemyHeroes)
 	do
-        if  J.IsValidHero(enemyHero)
+        if J.IsValidHero(enemyHero)
         and J.CanCastOnNonMagicImmune(enemyHero)
         and J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_MAGICAL)
         and not J.IsSuspiciousIllusion(enemyHero)
@@ -236,13 +236,13 @@ function X.ConsiderWaveform()
 			local nInRangeEnemy = J.GetNearbyHeroes(enemyHero, 1600, false, BOT_MODE_NONE)
             local eta = (GetUnitToUnitDistance(bot, botTarget) / nSpeed) + nCastPoint
 
-            if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+            if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
             and #nInRangeAlly >= #nInRangeEnemy
             then
                 local nEnemyTowers = enemyHero:GetNearbyTowers(700, false)
                 if J.IsInLaningPhase()
                 then
-                    if  nEnemyHeroes ~= nil
+                    if nEnemyHeroes ~= nil
                     and (#nEnemyTowers == 0
                         or (#nEnemyTowers >= 1
                             and J.IsValidBuilding(nEnemyTowers[1])
@@ -269,7 +269,7 @@ function X.ConsiderWaveform()
         return BOT_ACTION_DESIRE_HIGH, J.Site.GetXUnitsTowardsLocation(bot, J.GetTeamFountain(), nCastRange)
     end
 
-	if  not bot:HasModifier('modifier_sniper_assassinate')
+	if not bot:HasModifier('modifier_sniper_assassinate')
 	and not bot:IsMagicImmune()
 	then
 		if J.IsWillBeCastUnitTargetSpell(bot, 400)
@@ -280,7 +280,7 @@ function X.ConsiderWaveform()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
 		and not J.IsSuspiciousIllusion(botTarget)
 		and not botTarget:IsAttackImmune()
 		and not botTarget:HasModifier('modifier_necrolyte_reapers_scythe')
@@ -295,7 +295,7 @@ function X.ConsiderWaveform()
                 loc = botTarget:GetLocation()
             end
 
-			if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+			if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 			and #nInRangeAlly >= #nInRangeEnemy
 			and IsLocationPassable(loc)
             and not J.IsLocationInChrono(loc)
@@ -318,13 +318,13 @@ function X.ConsiderWaveform()
 		end
 	end
 
-	if  J.IsRetreating(bot)
+	if J.IsRetreating(bot)
     and bot:GetActiveModeDesire() > BOT_MODE_DESIRE_MODERATE
 	then
         local nInRangeEnemy = J.GetNearbyHeroes(bot,1200, true, BOT_MODE_NONE)
 		for _, enemyHero in pairs(nInRangeEnemy)
         do
-			if  J.IsValidHero(enemyHero)
+			if J.IsValidHero(enemyHero)
 			and not J.IsSuspiciousIllusion(enemyHero)
 			and not J.IsDisabled(enemyHero)
 			and not J.IsRealInvisible(bot)
@@ -332,7 +332,7 @@ function X.ConsiderWaveform()
 				local nInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, true, BOT_MODE_NONE)
 				local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
 
-				if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+				if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
 				and ((#nTargetInRangeAlly > #nInRangeAlly)
 					or bot:WasRecentlyDamagedByAnyHero(1.5))
 				then
@@ -348,7 +348,7 @@ function X.ConsiderWaveform()
         local nInRangeEnemy = J.GetEnemiesNearLoc(bot:GetLocation(), 1200)
 		local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(1200, true)
 
-		if  nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 4
+		if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 4
         and nInRangeEnemy ~= nil and #nInRangeEnemy == 0
         and nInRangeAlly ~= nil and #nInRangeAlly <= 1
 		and GetUnitToLocationDistance(bot, J.GetCenterOfUnits(nEnemyLaneCreeps)) > bot:GetAttackRange()
@@ -362,16 +362,16 @@ function X.ConsiderWaveform()
 		end
 	end
 
-	if  J.IsFarming(bot)
+	if J.IsFarming(bot)
     and bot:GetActiveModeDesire() > BOT_MODE_DESIRE_HIGH
 	then
-        if  bot.farmLocation ~= nil
+        if bot.farmLocation ~= nil
         and J.GetManaAfter(Waveform:GetManaCost()) * bot:GetMana() > Waveform:GetManaCost() * 2
         then
             if GetUnitToLocationDistance(bot, bot.farmLocation) > nCastRange + 150
             then
                 local targetLoc = J.Site.GetXUnitsTowardsLocation(bot, bot.farmLocation, nCastRange)
-                if  IsLocationPassable(targetLoc)
+                if IsLocationPassable(targetLoc)
                 and J.GetManaAfter(Waveform:GetManaCost()) * bot:GetMana() > Waveform:GetManaCost() * 2
                 then
                     return BOT_ACTION_DESIRE_HIGH, targetLoc
@@ -383,7 +383,7 @@ function X.ConsiderWaveform()
 	if J.IsLaning(bot)
 	then
         local nInRangeEnemy = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE)
-		if  J.GetManaAfter(Waveform:GetManaCost()) > 0.85
+		if J.GetManaAfter(Waveform:GetManaCost()) > 0.85
 		and J.IsInLaningPhase()
 		and bot:DistanceFromFountain() > 100
 		and bot:DistanceFromFountain() < 6000
@@ -412,7 +412,7 @@ function X.ConsiderWaveform()
 			local targetLoc = J.Site.GetXUnitsTowardsLocation(bot, roshLoc, nCastRange)
 			local nInRangeEnemy = J.GetEnemiesNearLoc(roshLoc, 1600)
 
-			if  nInRangeEnemy ~= nil and #nInRangeEnemy == 0
+			if nInRangeEnemy ~= nil and #nInRangeEnemy == 0
 			and IsLocationPassable(targetLoc)
             and J.GetManaAfter(Waveform:GetManaCost()) * bot:GetMana() > Waveform:GetManaCost() * 2
 			then
@@ -429,7 +429,7 @@ function X.ConsiderWaveform()
 			local targetLoc = J.Site.GetXUnitsTowardsLocation(bot, tormentorLoc, nCastRange)
 			local nInRangeEnemy = J.GetEnemiesNearLoc(targetLoc, 1600)
 
-			if  nInRangeEnemy ~= nil and #nInRangeEnemy == 0
+			if nInRangeEnemy ~= nil and #nInRangeEnemy == 0
 			and IsLocationPassable(targetLoc)
             and J.GetManaAfter(Waveform:GetManaCost()) * bot:GetMana() > Waveform:GetManaCost() * 2
 			then
@@ -465,7 +465,7 @@ function X.ConsiderAdaptiveStrikeAGI()
     local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 	for _, enemyHero in pairs(nEnemyHeroes)
 	do
-        if  J.IsValidHero(enemyHero)
+        if J.IsValidHero(enemyHero)
         and J.CanCastOnNonMagicImmune(enemyHero)
         and J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_MAGICAL)
         and not J.IsSuspiciousIllusion(enemyHero)
@@ -483,7 +483,7 @@ function X.ConsiderAdaptiveStrikeAGI()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange + 150)
 		and not J.IsSuspiciousIllusion(botTarget)
@@ -498,7 +498,7 @@ function X.ConsiderAdaptiveStrikeAGI()
 			local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1200, true, BOT_MODE_NONE)
 			local nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1200, false, BOT_MODE_NONE)
 
-			if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+			if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 			and #nInRangeAlly >= #nInRangeEnemy
 			then
                 if J.HasItem(bot, 'item_phylactery') or J.HasItem(bot, 'item_angels_demise')
@@ -514,7 +514,7 @@ function X.ConsiderAdaptiveStrikeAGI()
 		end
 	end
 
-    if  J.IsLaning(bot)
+    if J.IsLaning(bot)
     and J.IsInLaningPhase()
 	then
 		local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(1200, true)
@@ -522,16 +522,16 @@ function X.ConsiderAdaptiveStrikeAGI()
 
 		for _, creep in pairs(nEnemyLaneCreeps)
 		do
-			if  J.IsValid(creep)
+			if J.IsValid(creep)
 			and (J.IsKeyWordUnit('ranged', creep) or J.IsKeyWordUnit('siege', creep) or J.IsKeyWordUnit('flagbearer', creep))
 			and creep:GetHealth() <= nDamage
 			then
 
-				if  (bot:GetTarget() ~= creep or bot:GetAttackTarget() ~= creep)
+				if (bot:GetTarget() ~= creep or bot:GetAttackTarget() ~= creep)
                 and J.GetManaAfter(AdaptiveStrikeAGI:GetManaCost()) * bot:GetMana() > Waveform:GetManaCost()
                 and J.CanBeAttacked(creep)
 				then
-                    if  nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
+                    if nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
                     and J.IsValidHero(nInRangeEnemy[1])
                     and nInRangeEnemy[1]:GetAttackTarget() ~= bot
                     and not J.IsSuspiciousIllusion(nInRangeEnemy[1])
@@ -560,7 +560,7 @@ function X.ConsiderAdaptiveStrikeSTR()
     local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 	for _, enemyHero in pairs(nEnemyHeroes)
 	do
-        if  J.IsValidHero(enemyHero)
+        if J.IsValidHero(enemyHero)
         and J.CanCastOnNonMagicImmune(enemyHero)
         and enemyHero:IsChanneling()
         and not J.IsSuspiciousIllusion(enemyHero)
@@ -569,13 +569,13 @@ function X.ConsiderAdaptiveStrikeSTR()
         end
 	end
 
-    if  J.IsRetreating(bot)
+    if J.IsRetreating(bot)
     and bot:GetActiveModeDesire() > BOT_MODE_DESIRE_MODERATE
 	then
         local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 		for _, enemyHero in pairs(nInRangeEnemy)
         do
-			if  J.IsValidHero(enemyHero)
+			if J.IsValidHero(enemyHero)
             and J.CanCastOnNonMagicImmune(enemyHero)
 			and not J.IsSuspiciousIllusion(enemyHero)
 			and not J.IsDisabled(enemyHero)
@@ -584,7 +584,7 @@ function X.ConsiderAdaptiveStrikeSTR()
 				local nInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, true, BOT_MODE_NONE)
 				local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
 
-				if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+				if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
 				and ((#nTargetInRangeAlly > #nInRangeAlly)
 					or bot:WasRecentlyDamagedByAnyHero(1.5))
 				then
@@ -598,7 +598,7 @@ function X.ConsiderAdaptiveStrikeSTR()
 end
 
 function X.ConsiderAtttributeShift()
-	if  J.IsRetreating(bot)
+	if J.IsRetreating(bot)
     and not J.IsRealInvisible(bot)
 	then
         if J.GetHP(bot) < 0.5
@@ -610,7 +610,7 @@ function X.ConsiderAtttributeShift()
                 return BOT_ACTION_DESIRE_NONE, ''
             end
         else
-            if  nSTRRatio > 0.85
+            if nSTRRatio > 0.85
             and AttributeShiftSTR:GetToggleState() == true
             then
                 return BOT_ACTION_DESIRE_HIGH, 'str'
@@ -620,23 +620,23 @@ function X.ConsiderAtttributeShift()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
         and J.IsInRange(bot, botTarget, 1600)
 		then
 			local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1600, true, BOT_MODE_NONE)
 			local nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1600, false, BOT_MODE_NONE)
 
-			if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+			if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 			and (#nInRangeAlly >= #nInRangeEnemy or J.WeAreStronger(bot, 1600))
 			then
-                if  nAGIRatio < 0.8
+                if nAGIRatio < 0.8
                 and J.GetHP(bot) > 0.5
                 then
                     if AttributeShiftAGI:GetToggleState() == false
                     then
                         return BOT_ACTION_DESIRE_HIGH, 'agi'
                     else
-                        if  nAGIRatio > 0.8
+                        if nAGIRatio > 0.8
                         and AttributeShiftAGI:GetToggleState() == true
                         then
                             return BOT_ACTION_DESIRE_HIGH, 'agi'
@@ -645,14 +645,14 @@ function X.ConsiderAtttributeShift()
                         return BOT_ACTION_DESIRE_NONE, ''
                     end
                 else
-                    if  J.GetHP(bot) < 0.5
+                    if J.GetHP(bot) < 0.5
                     and (bot:WasRecentlyDamagedByAnyHero(1) or bot:WasRecentlyDamagedByTower(1))
                     then
                         if AttributeShiftSTR:GetToggleState() == false
                         then
                             return BOT_ACTION_DESIRE_HIGH, 'str'
                         else
-                            if  nSTRRatio > 0.8
+                            if nSTRRatio > 0.8
                             and AttributeShiftSTR:GetToggleState() == true
                             then
                                 return BOT_ACTION_DESIRE_HIGH, 'str'
@@ -673,7 +673,7 @@ function X.ConsiderAtttributeShift()
 
     if J.IsPushing(bot)
     then
-        if  nAGIRatio < 0.85
+        if nAGIRatio < 0.85
         and J.GetHP(bot) > 0.5
         and J.IsAttacking(bot)
         then
@@ -681,7 +681,7 @@ function X.ConsiderAtttributeShift()
             then
                 return BOT_ACTION_DESIRE_HIGH, 'agi'
             else
-                if  nAGIRatio >= 0.85
+                if nAGIRatio >= 0.85
                 and AttributeShiftAGI:GetToggleState() == true
                 then
                     return BOT_ACTION_DESIRE_HIGH, 'agi'
@@ -696,7 +696,7 @@ function X.ConsiderAtttributeShift()
                 then
                     return BOT_ACTION_DESIRE_HIGH, 'str'
                 else
-                    if  (J.GetHP(bot) > 0.5 or nSTRRatio > 0.8)
+                    if (J.GetHP(bot) > 0.5 or nSTRRatio > 0.8)
                     and AttributeShiftSTR:GetToggleState() == true
                     then
                         return BOT_ACTION_DESIRE_HIGH, 'str'
@@ -708,11 +708,11 @@ function X.ConsiderAtttributeShift()
         end
     end
 
-    if  J.IsLaning(bot)
+    if J.IsLaning(bot)
     and J.IsInLaningPhase()
     then
         local nRatio = RemapValClamped(bot:GetHealth(), bot:GetMaxHealth() * 0.5, bot:GetMaxHealth(), 0.5, 0.77)
-        if  nAGIRatio < nRatio
+        if nAGIRatio < nRatio
         and J.GetHP(bot) > 0.5
         then
             if AttributeShiftAGI:GetToggleState() == false
@@ -736,7 +736,7 @@ function X.ConsiderAtttributeShift()
                 then
                     return BOT_ACTION_DESIRE_HIGH, 'str'
                 else
-                    if  (J.GetHP(bot) > 0.5 or nSTRRatio > 0.8)
+                    if (J.GetHP(bot) > 0.5 or nSTRRatio > 0.8)
                     and AttributeShiftSTR:GetToggleState() == true
                     then
                         return BOT_ACTION_DESIRE_HIGH, 'str'
@@ -751,7 +751,7 @@ function X.ConsiderAtttributeShift()
     if J.IsFarming(bot)
     then
         local nRatio = RemapValClamped(bot:GetHealth(), bot:GetMaxHealth() * 0.5, bot:GetMaxHealth(), 0.5, 0.88)
-        if  nAGIRatio < nRatio
+        if nAGIRatio < nRatio
         and J.GetHP(bot) > 0.45
         and J.IsAttacking(bot)
         then
@@ -776,7 +776,7 @@ function X.ConsiderAtttributeShift()
                 then
                     return BOT_ACTION_DESIRE_HIGH, 'str'
                 else
-                    if  J.GetHP(bot) > 0.5
+                    if J.GetHP(bot) > 0.5
                     and AttributeShiftSTR:GetToggleState() == true
                     then
                         return BOT_ACTION_DESIRE_HIGH, 'str'
@@ -790,17 +790,17 @@ function X.ConsiderAtttributeShift()
 
     if J.IsDoingRoshan(bot) or J.IsDoingTormentor(bot)
     then
-        if  (J.IsRoshan(botTarget) or J.IsTormentor(botTarget))
+        if (J.IsRoshan(botTarget) or J.IsTormentor(botTarget))
         and J.IsInRange(bot, botTarget, 1000)
         then
-            if  J.GetHP(bot) > 0.5
+            if J.GetHP(bot) > 0.5
             and J.IsAttacking(bot)
             then
                 if AttributeShiftAGI:GetToggleState() == false
                 then
                     return BOT_ACTION_DESIRE_HIGH, 'agi'
                 else
-                    if  nAGIRatio > 0.8
+                    if nAGIRatio > 0.8
                     and AttributeShiftAGI:GetToggleState() == true
                     then
                         return BOT_ACTION_DESIRE_HIGH, 'agi'
@@ -813,7 +813,7 @@ function X.ConsiderAtttributeShift()
                 then
                     return BOT_ACTION_DESIRE_HIGH, 'str'
                 else
-                    if  (J.GetHP(bot) > 0.45 or nSTRRatio > 0.87)
+                    if (J.GetHP(bot) > 0.45 or nSTRRatio > 0.87)
                     and AttributeShiftSTR:GetToggleState() == true
                     then
                         return BOT_ACTION_DESIRE_HIGH, 'str'
@@ -825,7 +825,7 @@ function X.ConsiderAtttributeShift()
         end
     end
 
-    if  bot:DistanceFromFountain() < 1200
+    if bot:DistanceFromFountain() < 1200
     and bot:HasModifier('modifier_fountain_aura_buff')
     and J.GetHP(bot) > 0.2
     and DotaTime() > 0
@@ -868,7 +868,7 @@ function X.ConsiderMorph()
         local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
         for _, enemyHero in pairs(nInRangeEnemy)
         do
-            if  J.IsValidHero(enemyHero)
+            if J.IsValidHero(enemyHero)
             and J.CanCastOnMagicImmune(enemyHero)
             and DoesTargetHeroHaveDirectStun(enemyHero)
             and not J.IsSuspiciousIllusion(enemyHero)
@@ -876,7 +876,7 @@ function X.ConsiderMorph()
                 local nInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, true, BOT_MODE_NONE)
                 local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
 
-                if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+                if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
                 and #nInRangeAlly >= #nTargetInRangeAlly
                 then
                     return BOT_ACTION_DESIRE_HIGH, enemyHero
@@ -885,14 +885,14 @@ function X.ConsiderMorph()
         end
 	end
 
-    if  J.IsRetreating(bot)
+    if J.IsRetreating(bot)
     and bot:GetActiveModeDesire() > BOT_MODE_DESIRE_MODERATE
     and Waveform:GetCooldownTimeRemaining() > 5
 	then
         local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 		for _, enemyHero in pairs(nInRangeEnemy)
         do
-			if  J.IsValidHero(enemyHero)
+			if J.IsValidHero(enemyHero)
             and J.CanCastOnMagicImmune(enemyHero)
             and DoesTargetHeroHaveEscape(enemyHero)
 			and not J.IsSuspiciousIllusion(enemyHero)
@@ -901,7 +901,7 @@ function X.ConsiderMorph()
 				local nInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, true, BOT_MODE_NONE)
 				local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
 
-				if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+				if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
 				and ((#nTargetInRangeAlly > #nInRangeAlly)
 					or bot:WasRecentlyDamagedByAnyHero(0.5))
 				then
@@ -1406,7 +1406,7 @@ function X.CountItemsInInventory(itemName)
     for i = 0, 5
     do
         local item = bot:GetItemInSlot(i)
-        if  item ~= nil
+        if item ~= nil
         and item:GetName() == itemName
         then
             count = count + 1

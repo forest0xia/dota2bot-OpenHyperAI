@@ -218,7 +218,7 @@ function X.ConsiderNaturesGrasp()
 
     if J.IsGoingOnSomeone(bot)
 	then
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
         and not J.IsSuspiciousIllusion(botTarget)
@@ -229,7 +229,7 @@ function X.ConsiderNaturesGrasp()
             local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1200, true, BOT_MODE_NONE)
             local nTargetInRangeAlly = J.GetNearbyHeroes(botTarget, 1200, false, BOT_MODE_NONE)
 
-            if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+            if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
             and #nInRangeAlly >= #nTargetInRangeAlly
             then
                 return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
@@ -242,7 +242,7 @@ function X.ConsiderNaturesGrasp()
         local nInRangeAlly = J.GetNearbyHeroes(bot,1200, false, BOT_MODE_NONE)
         local nInRangeEnemy = J.GetNearbyHeroes(bot,1200, true, BOT_MODE_NONE)
 
-        if  nInRangeAlly ~= nil and nInRangeEnemy
+        if nInRangeAlly ~= nil and nInRangeEnemy
         and J.IsValidHero(nInRangeEnemy[1])
         and J.CanCastOnNonMagicImmune(nInRangeEnemy[1])
         and J.IsChasingTarget(nInRangeEnemy[1], bot)
@@ -252,7 +252,7 @@ function X.ConsiderNaturesGrasp()
         then
             local nTargetInRangeAlly = J.GetNearbyHeroes(nInRangeEnemy[1], 1000, false, BOT_MODE_NONE)
 
-            if  nTargetInRangeAlly ~= nil
+            if nTargetInRangeAlly ~= nil
             and ((#nTargetInRangeAlly > #nInRangeAlly)
                 or (J.GetHP(bot) < 0.75 and bot:WasRecentlyDamagedByAnyHero(1)))
             then
@@ -266,7 +266,7 @@ function X.ConsiderNaturesGrasp()
         local nLocationAoE = bot:FindAoELocation(true, false, bot:GetLocation(), nCastRange, nRadius, 0, 0)
         local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nCastRange, true)
 
-        if  nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 3
+        if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 3
         and nLocationAoE.count >= 3
         and J.CanBeAttacked(nEnemyLaneCreeps[1])
         then
@@ -284,7 +284,7 @@ function X.ConsiderNaturesGrasp()
 	then
 		local strongestTarget = J.GetStrongestUnit(nCastRange, bot, true, false, 5)
 
-		if  J.IsValidTarget(strongestTarget)
+		if J.IsValidTarget(strongestTarget)
         and J.CanCastOnNonMagicImmune(strongestTarget)
         and not J.IsSuspiciousIllusion(strongestTarget)
         and not strongestTarget:HasModifier('modifier_abaddon_borrowed_time')
@@ -300,7 +300,7 @@ function X.ConsiderNaturesGrasp()
             local nLocationAoE = bot:FindAoELocation(true, false, bot:GetLocation(), nCastRange, nRadius, 0, 0)
             local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nCastRange, true)
 
-            if  nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 3
+            if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 3
             and nLocationAoE.count >= 3
             and J.CanBeAttacked(nEnemyLaneCreeps[1])
             then
@@ -311,7 +311,7 @@ function X.ConsiderNaturesGrasp()
 
     if J.IsDoingRoshan(bot)
     then
-        if  J.IsRoshan(botTarget)
+        if J.IsRoshan(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, 500)
         and J.IsAttacking(bot)
@@ -322,7 +322,7 @@ function X.ConsiderNaturesGrasp()
 
     if J.IsDoingTormentor(bot)
     then
-        if  J.IsTormentor(botTarget)
+        if J.IsTormentor(botTarget)
         and J.IsInRange(bot, botTarget, 500)
         and J.IsAttacking(bot)
         then
@@ -350,7 +350,7 @@ function X.ConsiderLeechSeed()
 
         for _, enemyHero in pairs(nInRangeEnemy)
         do
-            if  J.IsValidHero(enemyHero)
+            if J.IsValidHero(enemyHero)
             and J.CanCastOnNonMagicImmune(enemyHero)
             and J.IsInRange(bot, enemyHero, nCastRange)
             and not J.IsSuspiciousIllusion(enemyHero)
@@ -364,7 +364,7 @@ function X.ConsiderLeechSeed()
                 local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
                 local currDmg = enemyHero:GetEstimatedDamageToTarget(false, bot, 5, DAMAGE_TYPE_ALL)
 
-                if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+                if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
                 and #nInRangeAlly >= #nTargetInRangeAlly
                 and currDmg > dmg
                 then
@@ -385,7 +385,7 @@ function X.ConsiderLeechSeed()
         local nInRangeAlly = J.GetNearbyHeroes(bot,1200, false, BOT_MODE_NONE)
         local nInRangeEnemy = J.GetNearbyHeroes(bot,1200, true, BOT_MODE_NONE)
 
-        if  nInRangeAlly ~= nil and nInRangeEnemy
+        if nInRangeAlly ~= nil and nInRangeEnemy
         and J.IsValidHero(nInRangeEnemy[1])
         and J.CanCastOnNonMagicImmune(nInRangeEnemy[1])
         and J.IsInRange(bot, nInRangeEnemy[1], nCastRange)
@@ -404,7 +404,7 @@ function X.ConsiderLeechSeed()
 
     if J.IsDoingRoshan(bot)
     then
-        if  J.IsRoshan(botTarget)
+        if J.IsRoshan(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, 500)
         and J.IsAttacking(bot)
@@ -415,7 +415,7 @@ function X.ConsiderLeechSeed()
 
     if J.IsDoingTormentor(bot)
     then
-        if  J.IsTormentor(botTarget)
+        if J.IsTormentor(botTarget)
         and J.IsInRange(bot, botTarget, 500)
         and J.IsAttacking(bot)
         then
@@ -443,7 +443,7 @@ function X.ConsiderLivingArmor()
 
         for _, allyHero in pairs(nInRangeAlly)
         do
-            if  J.IsValidHero(allyHero)
+            if J.IsValidHero(allyHero)
             and not J.IsMeepoClone(allyHero)
             and not allyHero:IsIllusion()
             and not allyHero:HasModifier('modifier_arc_warden_tempest_double')
@@ -470,14 +470,14 @@ function X.ConsiderLivingArmor()
 
     for _, allyHero in pairs(GetUnitList(UNIT_LIST_ALLIED_HEROES))
     do
-        if  J.IsValidHero(allyHero)
+        if J.IsValidHero(allyHero)
         and not J.IsMeepoClone(allyHero)
         and not allyHero:IsIllusion()
         and not allyHero:HasModifier('modifier_arc_warden_tempest_double')
         and not allyHero:HasModifier('modifier_treant_living_armor')
         and not allyHero:HasModifier('modifier_fountain_aura')
         then
-            if  J.GetHP(allyHero) < hp
+            if J.GetHP(allyHero) < hp
             and J.GetHP(allyHero) < 0.7
             then
                 hp = J.GetHP(allyHero)
@@ -497,10 +497,10 @@ function X.ConsiderLivingArmor()
 
     for _, b in pairs(GetUnitList(UNIT_LIST_ALLIED_BUILDINGS))
     do
-        if  J.IsValidBuilding(b)
+        if J.IsValidBuilding(b)
         and not b:HasModifier('modifier_treant_living_armor')
         then
-            if  (b:GetHealth() / b:GetMaxHealth()) < bHealth
+            if (b:GetHealth() / b:GetMaxHealth()) < bHealth
             and (b:GetHealth() / b:GetMaxHealth()) < 0.8
             then
                 bHealth = (b:GetHealth() / b:GetMaxHealth())
@@ -515,7 +515,7 @@ function X.ConsiderLivingArmor()
     end
 
     -- Self
-    if  J.GetHP(bot) < 0.75
+    if J.GetHP(bot) < 0.75
     and not bot:HasModifier('modifier_treant_living_armor')
     and not bot:HasModifier('modifier_fountain_aura')
     then
@@ -537,7 +537,7 @@ function X.ConsiderOvergrowth()
 	then
 		local nInRangeEnemy = J.GetEnemiesNearLoc(bot:GetLocation(), nRadius)
 
-        if  nInRangeEnemy ~= nil and #nInRangeEnemy >= 2
+        if nInRangeEnemy ~= nil and #nInRangeEnemy >= 2
         and not J.IsLocationInChrono(bot:GetLocation())
         and not J.IsLocationInBlackHole(bot:GetLocation())
 		then
@@ -561,7 +561,7 @@ function X.ConsiderEyesInTheForest()
 
     if J.IsGoingOnSomeone(bot)
     then
-        if  J.IsValidTarget(botTarget)
+        if J.IsValidTarget(botTarget)
         and J.IsInRange(bot, botTarget, nRadius)
         and not J.IsSuspiciousIllusion(botTarget)
         and not botTarget:HasModifier('modifier_treant_eyes_in_the_forest')
@@ -570,7 +570,7 @@ function X.ConsiderEyesInTheForest()
             local nTargetInRangeAlly = J.GetNearbyHeroes(botTarget, 1200, false, BOT_MODE_NONE)
             local nTrees = bot:GetNearbyTrees(nCastRange)
 
-            if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+            if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
             and #nInRangeAlly >= #nTargetInRangeAlly
             and #nInRangeAlly >= 1
             and nTrees ~= nil and #nTrees >= 1
@@ -593,7 +593,7 @@ function X.ConsiderBlinkOvergrowth()
             local nLocationAoE = bot:FindAoELocation(true, true, bot:GetLocation(), 1199, nRadius, 0, 0)
             local nInRangeEnemy = J.GetEnemiesNearLoc(nLocationAoE.targetloc, nRadius)
 
-            if  nInRangeEnemy ~= nil and #nInRangeEnemy >= 2
+            if nInRangeEnemy ~= nil and #nInRangeEnemy >= 2
             and not J.IsLocationInChrono(nLocationAoE.targetloc)
             and not J.IsLocationInBlackHole(nLocationAoE.targetloc)
             and GetUnitToLocationDistance(bot, nLocationAoE.targetloc) > 600
@@ -607,7 +607,7 @@ function X.ConsiderBlinkOvergrowth()
 end
 
 function CanDoBlinkOvergrowth()
-    if  Overgrowth:IsFullyCastable()
+    if Overgrowth:IsFullyCastable()
     and HasBlink()
     then
         local nManaCost = Overgrowth:GetManaCost()
@@ -630,7 +630,7 @@ function HasBlink()
     do
 		local item = bot:GetItemInSlot(i)
 
-		if  item ~= nil
+		if item ~= nil
         and (item:GetName() == "item_blink" or item:GetName() == "item_overwhelming_blink" or item:GetName() == "item_arcane_blink" or item:GetName() == "item_swift_blink")
         then
 			blink = item
@@ -638,7 +638,7 @@ function HasBlink()
 		end
 	end
 
-    if  blink ~= nil
+    if blink ~= nil
     and blink:IsFullyCastable()
 	then
         Blink = blink

@@ -220,7 +220,7 @@ function X.ConsiderSwashbuckle()
                     return BOT_ACTION_DESIRE_HIGH, bot:GetLocation()
                 end
 
-                if  J.IsInRange(bot, enemyHero, nDashRange + nSwashRange)
+                if J.IsInRange(bot, enemyHero, nDashRange + nSwashRange)
                 and not J.IsInRange(bot, enemyHero, nDashRange)
                 and not enemyHero:HasModifier('modifier_faceless_void_chronosphere_freeze')
                 then
@@ -241,7 +241,7 @@ function X.ConsiderSwashbuckle()
         local weakestTarget = J.GetVulnerableWeakestUnit(bot, true, true, 1200)
         local nInRangeAlly = J.GetNearbyHeroes(bot,1000, false, BOT_MODE_NONE)
 
-        if  J.IsValidTarget(weakestTarget)
+        if J.IsValidTarget(weakestTarget)
         and not J.IsSuspiciousIllusion(weakestTarget)
         and not weakestTarget:HasModifier('modifier_abaddon_borrowed_time')
         and not weakestTarget:HasModifier('modifier_dazzle_shallow_grave')
@@ -249,7 +249,7 @@ function X.ConsiderSwashbuckle()
         then
             local nTargetInRangeAlly = J.GetNearbyHeroes(weakestTarget, 800, false, BOT_MODE_NONE)
 
-            if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+            if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
             and #nInRangeAlly >= #nTargetInRangeAlly
             and bot:IsFacingLocation(weakestTarget:GetLocation(), 5)
             then
@@ -263,7 +263,7 @@ function X.ConsiderSwashbuckle()
                     end
                 end
 
-                if  J.IsInRange(bot, weakestTarget, nDashRange + nSwashRange)
+                if J.IsInRange(bot, weakestTarget, nDashRange + nSwashRange)
                 and not J.IsInRange(bot, weakestTarget, nDashRange)
                 and not weakestTarget:HasModifier('modifier_faceless_void_chronosphere_freeze')
                 then
@@ -278,7 +278,7 @@ function X.ConsiderSwashbuckle()
         local nInRangeAlly = J.GetNearbyHeroes(bot,800, false, BOT_MODE_NONE)
         local nInRangeEnemy = J.GetNearbyHeroes(bot,1000, true, BOT_MODE_NONE)
 
-        if  nInRangeAlly ~= nil and nInRangeEnemy
+        if nInRangeAlly ~= nil and nInRangeEnemy
         and J.IsValidHero(nInRangeEnemy[1])
         and not J.IsSuspiciousIllusion(nInRangeEnemy[1])
         and not J.IsDisabled(nInRangeEnemy[1])
@@ -289,7 +289,7 @@ function X.ConsiderSwashbuckle()
         then
             local nTargetInRangeAlly = J.GetNearbyHeroes(nInRangeEnemy[1], 1000, false, BOT_MODE_NONE)
 
-            if  nTargetInRangeAlly ~= nil
+            if nTargetInRangeAlly ~= nil
             and ((#nTargetInRangeAlly > #nInRangeAlly)
                 or (J.GetHP(bot) < 0.68 and bot:WasRecentlyDamagedByAnyHero(1.6)))
             then
@@ -305,7 +305,7 @@ function X.ConsiderSwashbuckle()
         local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nSwashRange, true)
         local nInRangeEnemy = J.GetNearbyHeroes(bot,1200, true, BOT_MODE_NONE)
 
-        if  nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 4
+        if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 4
         and nLocationAoE.count >= 4
         and nInRangeEnemy ~= nil and #nInRangeEnemy == 0
         and bot:IsFacingLocation(nLocationAoE.targetloc, 10)
@@ -314,14 +314,14 @@ function X.ConsiderSwashbuckle()
         end
 
         nLocationAoE = bot:FindAoELocation(true, true, bot:GetLocation(), nSwashRange, nRadius, 0, 0)
-        if  nLocationAoE.count >= 1
+        if nLocationAoE.count >= 1
         and bot:IsFacingLocation(nLocationAoE.targetloc, 10)
         then
             return BOT_ACTION_DESIRE_HIGH, bot:GetLocation()
         end
     end
 
-    if  J.IsFarming(bot)
+    if J.IsFarming(bot)
     and J.GetMP(bot) > 0.33
     then
         local nLocationAoE = bot:FindAoELocation(true, false, bot:GetLocation(), nSwashRange, nRadius, 0, 0)
@@ -336,7 +336,7 @@ function X.ConsiderSwashbuckle()
         end
 
         local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nSwashRange, true)
-        if  nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 3
+        if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 3
         and nLocationAoE.count >= 3
         and bot:IsFacingLocation(nLocationAoE.targetloc, 10)
         then
@@ -344,7 +344,7 @@ function X.ConsiderSwashbuckle()
         end
     end
 
-    if  J.IsLaning(bot)
+    if J.IsLaning(bot)
     and J.GetMP(bot) > 0.33
 	then
         local canKill = 0
@@ -357,7 +357,7 @@ function X.ConsiderSwashbuckle()
 
 		for _, creep in pairs(nEnemyLaneCreeps)
 		do
-			-- if  J.IsValid(creep)
+			-- if J.IsValid(creep)
 			-- and (J.IsKeyWordUnit('ranged', creep) or J.IsKeyWordUnit('siege', creep) or J.IsKeyWordUnit('flagbearer', creep))
 			-- and creep:GetHealth() <= nDamage * nStrikeCount
             -- and bot:IsFacingLocation(creep:GetLocation(), 10)
@@ -371,7 +371,7 @@ function X.ConsiderSwashbuckle()
             --             return BOT_ACTION_DESIRE_HIGH, bot:GetLocation()
             --         end
 
-            --         if  J.IsInRange(bot, creep, nDashRange + nSwashRange)
+            --         if J.IsInRange(bot, creep, nDashRange + nSwashRange)
             --         and not J.IsInRange(bot, creep, nDashRange)
             --         then
             --             return BOT_ACTION_DESIRE_HIGH, J.Site.GetXUnitsTowardsLocation(bot, creep:GetLocation(), nDashRange)
@@ -388,7 +388,7 @@ function X.ConsiderSwashbuckle()
             --     end
 			-- end
 
-            if  J.IsValid(creep)
+            if J.IsValid(creep)
             and creep:GetHealth() <= nDamage * nStrikeCount
             then
                 canKill = canKill + 1
@@ -397,7 +397,7 @@ function X.ConsiderSwashbuckle()
 
         local nLocationAoE = bot:FindAoELocation(true, false, bot:GetLocation(), 1000, nRadius, 0, 0)
 
-        if  canKill >= 2
+        if canKill >= 2
         and nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
         and nLocationAoE.count >= 2
         and bot:IsFacingLocation(nLocationAoE.targetloc, 5)
@@ -407,7 +407,7 @@ function X.ConsiderSwashbuckle()
                 return BOT_ACTION_DESIRE_HIGH, bot:GetLocation()
             end
 
-            if  GetUnitToLocationDistance(bot, nLocationAoE.targetloc) <= nDashRange + nSwashRange
+            if GetUnitToLocationDistance(bot, nLocationAoE.targetloc) <= nDashRange + nSwashRange
             and not (GetUnitToLocationDistance(bot, nLocationAoE.targetloc) <= nDashRange)
             then
                 return BOT_ACTION_DESIRE_HIGH, J.Site.GetXUnitsTowardsLocation(bot, nLocationAoE.targetloc, nDashRange)
@@ -417,7 +417,7 @@ function X.ConsiderSwashbuckle()
 
     if J.IsDoingRoshan(bot)
     then
-        if  J.IsRoshan(botTarget)
+        if J.IsRoshan(botTarget)
         and J.IsInRange(bot, botTarget, 500)
         and J.IsAttacking(bot)
         and bot:IsFacingLocation(botTarget:GetLocation(), 10)
@@ -428,7 +428,7 @@ function X.ConsiderSwashbuckle()
 
     if J.IsDoingTormentor(bot)
     then
-        if  J.IsTormentor(botTarget)
+        if J.IsTormentor(botTarget)
         and J.IsInRange(bot, botTarget, 400)
         and J.IsAttacking(bot)
         and bot:IsFacingLocation(botTarget:GetLocation(), 10)
@@ -470,7 +470,7 @@ function X.ConsiderShieldCrash()
     then
         local realEnemyCount = J.GetEnemiesNearLoc(bot:GetLocation(), nRadius)
 
-        if  realEnemyCount ~= nil and #realEnemyCount >= 2
+        if realEnemyCount ~= nil and #realEnemyCount >= 2
         and not bot:HasModifier('modifier_pangolier_gyroshell')
         then
             return BOT_ACTION_DESIRE_HIGH
@@ -482,14 +482,14 @@ function X.ConsiderShieldCrash()
         local weakestTarget = J.GetVulnerableWeakestUnit(bot, true, true, nRadius)
         local nInRangeAlly = J.GetNearbyHeroes(bot,800, false, BOT_MODE_NONE)
 
-        if  J.IsValidTarget(weakestTarget)
+        if J.IsValidTarget(weakestTarget)
         and bot:HasModifier('modifier_pangolier_gyroshell')
         and bot:IsFacingLocation(weakestTarget:GetLocation(), 5)
         then
             return BOT_ACTION_DESIRE_HIGH
         end
 
-        if  J.IsValidTarget(weakestTarget)
+        if J.IsValidTarget(weakestTarget)
         and not J.IsSuspiciousIllusion(weakestTarget)
         and not weakestTarget:HasModifier('modifier_abaddon_borrowed_time')
         and not weakestTarget:HasModifier('modifier_dazzle_shallow_grave')
@@ -498,7 +498,7 @@ function X.ConsiderShieldCrash()
         then
             local nTargetInRangeAlly = J.GetNearbyHeroes(weakestTarget, 1200, false, BOT_MODE_NONE)
 
-            if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+            if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
             and #nInRangeAlly >= #nTargetInRangeAlly
             and bot:IsFacingLocation(weakestTarget:GetLocation(), 30)
             then
@@ -512,7 +512,7 @@ function X.ConsiderShieldCrash()
         local nInRangeAlly = J.GetNearbyHeroes(bot,800, false, BOT_MODE_NONE)
         local nInRangeEnemy = J.GetNearbyHeroes(bot,1000, true, BOT_MODE_NONE)
 
-        if  nInRangeAlly ~= nil and nInRangeEnemy
+        if nInRangeAlly ~= nil and nInRangeEnemy
         and J.IsValidHero(nInRangeEnemy[1])
         and not J.IsSuspiciousIllusion(nInRangeEnemy[1])
         and not nInRangeEnemy[1]:HasModifier('modifier_enigma_black_hole_pull')
@@ -522,7 +522,7 @@ function X.ConsiderShieldCrash()
         then
             local nTargetInRangeAlly = J.GetNearbyHeroes(nInRangeEnemy[1], 1000, false, BOT_MODE_NONE)
 
-            if  nTargetInRangeAlly ~= nil
+            if nTargetInRangeAlly ~= nil
             and ((#nTargetInRangeAlly > #nInRangeAlly)
                 or (J.GetHP(bot) < 0.68 and bot:WasRecentlyDamagedByAnyHero(1.6)))
             and bot:IsFacingLocation(J.GetEscapeLoc(), 30)
@@ -538,7 +538,7 @@ function X.ConsiderShieldCrash()
 
         if J.IsAttacking(bot)
         then
-            if  nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 4
+            if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 4
             and bot:IsFacingLocation(nEnemyLaneCreeps[1]:GetLocation(), 30)
             then
                 return BOT_ACTION_DESIRE_HIGH
@@ -546,7 +546,7 @@ function X.ConsiderShieldCrash()
         end
     end
 
-    if  J.IsFarming(bot)
+    if J.IsFarming(bot)
     and J.GetMP(bot) > 0.33
     and nAbilityLevel >= 2
     then
@@ -562,7 +562,7 @@ function X.ConsiderShieldCrash()
             end
 
             local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nRadius, true)
-            if  nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 3
+            if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 3
             and bot:IsFacingLocation(nEnemyLaneCreeps[1]:GetLocation(), 15)
             then
                 return BOT_ACTION_DESIRE_HIGH
@@ -579,13 +579,13 @@ function X.ConsiderShieldCrash()
 
 		for _, creep in pairs(nEnemyLaneCreeps)
 		do
-			-- if  J.IsValid(creep)
+			-- if J.IsValid(creep)
 			-- and (J.IsKeyWordUnit('ranged', creep) or J.IsKeyWordUnit('siege', creep) or J.IsKeyWordUnit('flagbearer', creep))
 			-- and creep:GetHealth() <= nDamage
 			-- then
 			-- 	local nCreepInRangeHero = creep:GetNearbyHeroes(500, false, BOT_MODE_NONE)
 
-			-- 	if  nCreepInRangeHero ~= nil and #nCreepInRangeHero >= 1
+			-- 	if nCreepInRangeHero ~= nil and #nCreepInRangeHero >= 1
             --     and J.GetMP(bot) > 0.33
             --     and bot:IsFacingLocation(creep:GetLocation(), 15)
 			-- 	then
@@ -593,10 +593,10 @@ function X.ConsiderShieldCrash()
 			-- 	end
 			-- end
 
-            if  J.IsValid(creep)
+            if J.IsValid(creep)
             and creep:GetHealth() <= nDamage
             then
-                if  J.GetMP(bot) > 0.33
+                if J.GetMP(bot) > 0.33
                 and bot:IsFacingLocation(creep:GetLocation(), 15)
                 and not J.IsInRange(bot, creep, bot:GetAttackRange())
                 and not J.IsAttacking(bot)
@@ -609,7 +609,7 @@ function X.ConsiderShieldCrash()
             end
 		end
 
-        if  canKill >= 2
+        if canKill >= 2
         and J.GetMP(bot) > 0.25
         and nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
         and bot:IsFacingLocation(J.GetCenterOfUnits(creepList), 15)
@@ -617,7 +617,7 @@ function X.ConsiderShieldCrash()
             return BOT_ACTION_DESIRE_HIGH
         end
 
-        if  nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
+        if nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
         and bot:IsFacingLocation(nInRangeEnemy[1]:GetLocation(), 15)
         and J.IsInRange(bot, nInRangeEnemy[1], nRadius)
         then
@@ -632,7 +632,7 @@ function X.ConsiderShieldCrash()
 
     if J.IsDoingRoshan(bot)
     then
-        if  J.IsRoshan(botTarget)
+        if J.IsRoshan(botTarget)
         and J.IsInRange(bot, botTarget, 500)
         and J.IsAttacking(bot)
         and bot:IsFacingLocation(botTarget:GetLocation(), 15)
@@ -643,7 +643,7 @@ function X.ConsiderShieldCrash()
 
     if J.IsDoingTormentor(bot)
     then
-        if  J.IsTormentor(botTarget)
+        if J.IsTormentor(botTarget)
         and J.IsInRange(bot, botTarget, 400)
         and J.IsAttacking(bot)
         and bot:IsFacingLocation(botTarget:GetLocation(), 15)
@@ -677,7 +677,7 @@ function X.ConsiderRollingThunder()
         local nInRangeAlly = J.GetNearbyHeroes(bot,800, false, BOT_MODE_NONE)
         local nInRangeEnemy = J.GetNearbyHeroes(bot,1000, true, BOT_MODE_NONE)
 
-        if  nInRangeAlly ~= nil and nInRangeEnemy
+        if nInRangeAlly ~= nil and nInRangeEnemy
         and J.IsValidHero(nInRangeEnemy[1])
         and J.IsRunning(nInRangeEnemy[1])
         and nInRangeEnemy[1]:IsFacingLocation(bot:GetLocation(), 30)
@@ -685,7 +685,7 @@ function X.ConsiderRollingThunder()
         then
             local nTargetInRangeAlly = J.GetNearbyHeroes(nInRangeEnemy[1], 1000, false, BOT_MODE_NONE)
 
-            if  nTargetInRangeAlly ~= nil
+            if nTargetInRangeAlly ~= nil
             and ((#nTargetInRangeAlly > #nInRangeAlly)
             and (J.GetHP(bot) < 0.55 and bot:WasRecentlyDamagedByAnyHero(2)))
             then
@@ -727,7 +727,7 @@ function X.ConsiderRollUp()
 		return BOT_ACTION_DESIRE_HIGH
 	end
 
-	if  not bot:HasModifier('modifier_sniper_assassinate')
+	if not bot:HasModifier('modifier_sniper_assassinate')
 	and not bot:IsMagicImmune()
 	then
 		if J.IsWillBeCastUnitTargetSpell(bot, 1400)
@@ -747,10 +747,10 @@ function X.ConsiderRollUp()
 
         local weakestTarget = J.GetVulnerableWeakestUnit(bot, true, true, 1200)
 
-        if  J.IsValidTarget(weakestTarget)
+        if J.IsValidTarget(weakestTarget)
         and not J.IsSuspiciousIllusion(weakestTarget)
         then
-            if  bot:HasModifier('modifier_pangolier_gyroshell')
+            if bot:HasModifier('modifier_pangolier_gyroshell')
             and not bot:IsFacingLocation(weakestTarget:GetLocation(), 90)
             then
                 return BOT_ACTION_DESIRE_HIGH
@@ -772,7 +772,7 @@ function X.ConsiderEndRollUp()
     then
         local weakestTarget = J.GetVulnerableWeakestUnit(bot, true, true, 1200)
 
-        if  J.IsValidTarget(weakestTarget)
+        if J.IsValidTarget(weakestTarget)
         and not J.IsSuspiciousIllusion(weakestTarget)
         then
             if bot:HasModifier('modifier_pangolier_roll')

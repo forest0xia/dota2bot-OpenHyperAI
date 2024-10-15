@@ -180,7 +180,7 @@ function X.ConsiderDecay()
     local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange + nRadius, true, BOT_MODE_NONE)
     for _, enemyHero in pairs(nEnemyHeroes)
     do
-        if  J.IsValidHero(enemyHero)
+        if J.IsValidHero(enemyHero)
         and J.CanCastOnNonMagicImmune(enemyHero)
         and J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_MAGICAL)
         and not J.IsSuspiciousIllusion(enemyHero)
@@ -226,14 +226,14 @@ function X.ConsiderDecay()
         local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange + nRadius, true, BOT_MODE_NONE)
         for _, enemyHero in pairs(nInRangeEnemy)
         do
-            if  J.IsValidHero(enemyHero)
+            if J.IsValidHero(enemyHero)
             and J.CanCastOnNonMagicImmune(enemyHero)
             and not J.IsSuspiciousIllusion(enemyHero)
             then
                 local nInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, true, BOT_MODE_NONE)
                 local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
 
-                if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+                if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
                 and #nInRangeAlly >= #nTargetInRangeAlly
                 then
                     nInRangeEnemy = J.GetEnemiesNearLoc(enemyHero:GetLocation(), nRadius)
@@ -276,7 +276,7 @@ function X.ConsiderDecay()
         local nInRangeEnemy = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE)
         local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nCastRange + nRadius, true)
 
-        if  nInRangeEnemy ~= nil and #nInRangeEnemy == 0
+        if nInRangeEnemy ~= nil and #nInRangeEnemy == 0
         and nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 4
         and J.IsAttacking(bot)
         and J.GetMP(bot) > 0.5
@@ -289,7 +289,7 @@ function X.ConsiderDecay()
         local nLocationAoE = bot:FindAoELocation(true, true, bot:GetLocation(), nCastRange + nRadius, nRadius, 0, 0)
         nInRangeEnemy = J.GetEnemiesNearLoc(nLocationAoE.targetloc, nRadius)
 
-        if  nInRangeEnemy ~= nil and #nInRangeEnemy >= 2
+        if nInRangeEnemy ~= nil and #nInRangeEnemy >= 2
         and J.IsInLaningPhase()
         and nAbilityLevel >= 2
         then
@@ -304,7 +304,7 @@ function X.ConsiderDecay()
 
     if J.IsDoingRoshan(bot)
     then
-        if  J.IsRoshan(botTarget)
+        if J.IsRoshan(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, 500)
         and J.IsAttacking(bot)
@@ -316,7 +316,7 @@ function X.ConsiderDecay()
 
     if J.IsDoingTormentor(bot)
     then
-        if  J.IsTormentor(botTarget)
+        if J.IsTormentor(botTarget)
         and J.IsInRange(bot, botTarget, 500)
         and J.IsAttacking(bot)
         and nAbilityLevel >= 3
@@ -341,7 +341,7 @@ function X.ConsiderSoulRip()
     local nEnemyHeroes = J.GetNearbyHeroes(bot,nRadius, true, BOT_MODE_NONE)
     for _, enemyHero in pairs(nEnemyHeroes)
     do
-        if  J.IsValidHero(enemyHero)
+        if J.IsValidHero(enemyHero)
         and J.CanCastOnNonMagicImmune(enemyHero)
         and not J.IsSuspiciousIllusion(enemyHero)
         and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
@@ -377,14 +377,14 @@ function X.ConsiderSoulRip()
 		local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange, false, BOT_MODE_NONE)
 		for _, allyHero in pairs(nInRangeAlly)
 		do
-			if  J.IsValidHero(allyHero)
+			if J.IsValidHero(allyHero)
             and not J.IsSuspiciousIllusion(allyHero)
 			then
                 local nAllyInRangeEnemy = J.GetNearbyHeroes(bot,nRadius, true, BOT_MODE_NONE)
                 local nAllyInRangeCreeps = bot:GetNearbyCreeps(nRadius, true)
 				local currHP = allyHero:GetHealth()
 
-				if  currHP < hp
+				if currHP < hp
                 and J.GetHP(allyHero) < 0.75
                 and (nAllyInRangeEnemy ~= nil and #nAllyInRangeEnemy >= 1
                     or nAllyInRangeCreeps ~= nil and #nAllyInRangeCreeps >= 2)
@@ -406,7 +406,7 @@ function X.ConsiderSoulRip()
         local nInRangeEnemy = J.GetNearbyHeroes(bot,nRadius, true, BOT_MODE_NONE)
         for _, enemyHero in pairs(nInRangeEnemy)
         do
-            if  J.IsValidHero(enemyHero)
+            if J.IsValidHero(enemyHero)
             and J.CanCastOnNonMagicImmune(enemyHero)
             and J.IsChasingTarget(enemyHero, bot)
             and not J.IsSuspiciousIllusion(enemyHero)
@@ -414,7 +414,7 @@ function X.ConsiderSoulRip()
                 local nInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, true, BOT_MODE_NONE)
                 local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
 
-                if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+                if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
                 and ((#nTargetInRangeAlly > #nInRangeAlly)
                     or bot:WasRecentlyDamagedByAnyHero(1.5)
                     or J.GetHP(bot) < 0.5)
@@ -425,7 +425,7 @@ function X.ConsiderSoulRip()
         end
 
         local nCreeps = bot:GetNearbyCreeps(nRadius, true)
-        if  nCreeps ~= nil and #nCreeps >= 4
+        if nCreeps ~= nil and #nCreeps >= 4
         and J.GetHP(bot) < 0.6
         then
             return BOT_ACTION_DESIRE_HIGH, bot
@@ -436,7 +436,7 @@ function X.ConsiderSoulRip()
 	then
         local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nRadius, true)
 
-        if  nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 4
+        if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 4
         and J.GetMP(bot) > 0.7
         and J.GetHP(bot) < 0.6
         then
@@ -448,7 +448,7 @@ function X.ConsiderSoulRip()
 	then
         local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nRadius, true)
 
-        if  nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 3
+        if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 3
         and J.IsAttacking(bot)
         and J.GetMP(bot) > 0.5
         and J.GetHP(bot) < 0.6
@@ -459,7 +459,7 @@ function X.ConsiderSoulRip()
 
     if J.IsDoingRoshan(bot) or J.IsDoingTormentor(bot)
 	then
-        if  (J.IsRoshan(botTarget) or J.IsTormentor(botTarget))
+        if (J.IsRoshan(botTarget) or J.IsTormentor(botTarget))
         and J.IsInRange(bot, botTarget, nRadius)
         and J.IsAttacking(bot)
         then
@@ -469,12 +469,12 @@ function X.ConsiderSoulRip()
             local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange, false, BOT_MODE_NONE)
             for _, allyHero in pairs(nInRangeAlly)
             do
-                if  J.IsValidHero(allyHero)
+                if J.IsValidHero(allyHero)
                 and not J.IsSuspiciousIllusion(allyHero)
                 then
                     local currHP = allyHero:GetHealth()
 
-                    if  currHP < hp
+                    if currHP < hp
                     and J.GetHP(allyHero) < 0.75
                     then
                         hp = currHP
@@ -496,13 +496,13 @@ function X.ConsiderSoulRip()
     local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange, false, BOT_MODE_NONE)
     for _, allyHero in pairs(nInRangeAlly)
     do
-        if  J.IsValidHero(allyHero)
+        if J.IsValidHero(allyHero)
         and not J.IsSuspiciousIllusion(allyHero)
         then
             local nAllyInRangeCreeps = bot:GetNearbyCreeps(nRadius, true)
             local currHP = allyHero:GetHealth()
 
-            if  currHP < hp
+            if currHP < hp
             and J.GetHP(allyHero) < 0.75
             and J.GetMP(bot) > 0.35
             and nAllyInRangeCreeps ~= nil and #nAllyInRangeCreeps >= 4

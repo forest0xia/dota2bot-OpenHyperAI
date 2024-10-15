@@ -735,3 +735,11 @@ export function getEnemyHeroByPlayerId(id: number): Unit | null {
     }
     return null;
 }
+
+export function isTruelyInvisible(unit: Unit): boolean {
+    return (
+        unit.IsInvisible() &&
+        !unit.HasModifier("modifier_item_dustofappearance") &&
+        !RecentlyTookDamage(unit, 1.5)
+    ); // use 1.5s because invisibility may have delayed effect.
+}

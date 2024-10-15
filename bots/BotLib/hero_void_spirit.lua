@@ -191,7 +191,7 @@ function X.ConsiderAetherRemnant()
 	local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 	for _, enemyHero in pairs(nEnemyHeroes)
 	do
-		if  J.IsValidTarget(enemyHero)
+		if J.IsValidTarget(enemyHero)
 		and J.CanCastOnNonMagicImmune(enemyHero)
 		and J.IsInRange(bot, enemyHero, nCastRange)
 		and not J.IsSuspiciousIllusion(enemyHero)
@@ -208,13 +208,13 @@ function X.ConsiderAetherRemnant()
 		end
 	end
 
-	if  J.IsGoingOnSomeone(bot)
+	if J.IsGoingOnSomeone(bot)
 	-- and not CanQuadCombo()
 	then
 		local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange + 100, false, BOT_MODE_NONE)
 		local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 
-		if  J.IsValidHero(botTarget)
+		if J.IsValidHero(botTarget)
 		and J.CanCastOnNonMagicImmune(botTarget)
 		and J.IsInRange(bot, botTarget, nCastRange)
 		and not J.IsInRange(bot, botTarget, nRadius)
@@ -235,7 +235,7 @@ function X.ConsiderAetherRemnant()
 		local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange + 100, false, BOT_MODE_NONE)
 		local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 
-		if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+		if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 		and ((#nInRangeEnemy > #nInRangeAlly)
 			or (J.GetHP(bot) < 0.5 and bot:WasRecentlyDamagedByAnyHero(2)))
 		and J.IsValidHero(nInRangeEnemy[1])
@@ -265,13 +265,13 @@ function X.ConsiderDissimilate()
 		return BOT_ACTION_DESIRE_HIGH
 	end
 
-	if  J.IsGoingOnSomeone(bot)
+	if J.IsGoingOnSomeone(bot)
 	-- and not CanQuadCombo()
 	then
 		local nInRangeAlly = J.GetNearbyHeroes(bot,nRadius * 1.5, false, BOT_MODE_NONE)
 		local nInRangeEnemy = J.GetNearbyHeroes(bot,nRadius, true, BOT_MODE_NONE)
 
-		if  J.IsValidHero(botTarget)
+		if J.IsValidHero(botTarget)
 		and J.CanCastOnNonMagicImmune(botTarget)
 		and J.IsInRange(bot, botTarget, nRadius)
 		and not J.IsInRange(bot, botTarget, bot:GetAttackRange() + 50)
@@ -290,7 +290,7 @@ function X.ConsiderDissimilate()
 		local nInRangeAlly = J.GetNearbyHeroes(bot,nRadius * 1.5, false, BOT_MODE_NONE)
 		local nInRangeEnemy = J.GetNearbyHeroes(bot,nRadius, true, BOT_MODE_NONE)
 
-		if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+		if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 		and ((#nInRangeEnemy > #nInRangeAlly)
 			or (J.GetHP(bot) < 0.65 and bot:WasRecentlyDamagedByAnyHero(2)))
 		and J.IsValidHero(nInRangeEnemy[1])
@@ -321,7 +321,7 @@ function X.ConsiderResonantPulse()
 	local nEnemyHeroes = J.GetNearbyHeroes(bot,nRadius, true, BOT_MODE_NONE)
 	for _, enemyHero in pairs(nEnemyHeroes)
 	do
-		if  J.IsValidTarget(enemyHero)
+		if J.IsValidTarget(enemyHero)
 		and J.CanCastOnNonMagicImmune(enemyHero)
 		and J.IsInRange(bot, enemyHero, nRadius)
 		and J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_MAGICAL)
@@ -336,13 +336,13 @@ function X.ConsiderResonantPulse()
 		end
 	end
 
-	if  J.IsGoingOnSomeone(bot)
+	if J.IsGoingOnSomeone(bot)
 	-- and not CanQuadCombo()
 	then
 		local nInRangeAlly = J.GetNearbyHeroes(bot,nRadius + 150, false, BOT_MODE_NONE)
 		local nInRangeEnemy = J.GetNearbyHeroes(bot,nRadius, true, BOT_MODE_NONE)
 
-		if  J.IsValidHero(botTarget)
+		if J.IsValidHero(botTarget)
 		and J.CanCastOnNonMagicImmune(botTarget)
 		and J.IsInRange(bot, botTarget, nRadius)
 		and not J.IsSuspiciousIllusion(botTarget)
@@ -362,7 +362,7 @@ function X.ConsiderResonantPulse()
 		local nInRangeAlly = J.GetNearbyHeroes(bot,nRadius + 150, false, BOT_MODE_NONE)
 		local nInRangeEnemy = J.GetNearbyHeroes(bot,nRadius, true, BOT_MODE_NONE)
 
-		if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+		if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 		and ((#nInRangeEnemy > #nInRangeAlly)
 			or (J.GetHP(bot) < 0.65 and bot:WasRecentlyDamagedByAnyHero(1.5)))
 		and J.IsValidHero(nInRangeEnemy[1])
@@ -377,20 +377,20 @@ function X.ConsiderResonantPulse()
 		end
 	end
 
-	if  J.IsPushing(bot) or J.IsDefending(bot)
+	if J.IsPushing(bot) or J.IsDefending(bot)
 	and not bot:HasModifier('modifier_void_spirit_resonant_pulse_physical_buff')
 	then
 		local nInRangeEnemy = J.GetNearbyHeroes(bot,nRadius + 200, true, BOT_MODE_NONE)
 		local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nRadius, true)
 
-		if  nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 3
+		if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 3
 		and nInRangeEnemy ~= nil and #nInRangeEnemy == 0
 		then
 			return BOT_ACTION_DESIRE_HIGH
 		end
 	end
 
-	if  J.IsFarming(bot)
+	if J.IsFarming(bot)
 	and nMana > 0.38
 	and not bot:HasModifier('modifier_void_spirit_resonant_pulse_physical_buff')
 	then
@@ -402,20 +402,20 @@ function X.ConsiderResonantPulse()
 		end
 	end
 
-	if  J.IsLaning(bot)
+	if J.IsLaning(bot)
 	and nMana > 0.33
 	then
 		local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nRadius, true)
 
 		for _, creep in pairs(nEnemyLaneCreeps)
 		do
-			if  J.IsValid(creep)
+			if J.IsValid(creep)
 			and (J.IsKeyWordUnit('ranged', creep) or J.IsKeyWordUnit('siege', creep))
 			and creep:GetHealth() <= nDamage
 			then
 				local nInRangeEnemy = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE)
 
-				if  nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
+				if nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
 				and GetUnitToUnitDistance(creep, nInRangeEnemy[1]) <= 500
 				then
 					return BOT_ACTION_DESIRE_HIGH
@@ -444,7 +444,7 @@ function X.ConsiderAstralStep()
 		return BOT_ACTION_DESIRE_NONE, 0
 	end
 
-	if  J.IsStuck(bot)
+	if J.IsStuck(bot)
 	and not bot:HasModifier('modifier_void_spirit_astral_step_caster')
 	then
 		local loc = J.GetEscapeLoc()
@@ -454,7 +454,7 @@ function X.ConsiderAstralStep()
 	local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 	for _, enemyHero in pairs(nEnemyHeroes)
 	do
-		if  J.IsValidTarget(enemyHero)
+		if J.IsValidTarget(enemyHero)
 		and J.CanCastOnNonMagicImmune(enemyHero)
 		and J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_MAGICAL)
 		and not J.IsSuspiciousIllusion(enemyHero)
@@ -468,13 +468,13 @@ function X.ConsiderAstralStep()
 		end
 	end
 
-	if  J.IsGoingOnSomeone(bot)
+	if J.IsGoingOnSomeone(bot)
 	-- and not CanQuadCombo()
 	then
 		local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange + 100, false, BOT_MODE_NONE)
 		local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 
-		if  J.IsValidHero(botTarget)
+		if J.IsValidHero(botTarget)
 		and J.CanCastOnNonMagicImmune(botTarget)
 		and not J.IsInRange(bot, botTarget, bot:GetAttackRange() + 100)
 		and not J.IsSuspiciousIllusion(botTarget)
@@ -492,7 +492,7 @@ function X.ConsiderAstralStep()
 		local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange + 150, false, BOT_MODE_NONE)
 		local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 
-		if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+		if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 		and ((#nInRangeEnemy > #nInRangeAlly)
 			or (J.GetHP(bot) < 0.65 and bot:WasRecentlyDamagedByAnyHero(2)))
 		and J.IsValidHero(nInRangeEnemy[1])
@@ -526,7 +526,7 @@ end
 -- 			local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange + 100, false, BOT_MODE_NONE)
 -- 			local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 
--- 			if  J.IsValidHero(botTarget)
+-- 			if J.IsValidHero(botTarget)
 -- 			and J.CanCastOnNonMagicImmune(botTarget)
 -- 			and not J.IsInRange(bot, botTarget, bot:GetAttackRange() + 100)
 -- 			and not J.IsSuspiciousIllusion(botTarget)
@@ -544,7 +544,7 @@ end
 -- end
 
 -- function CanQuadCombo()
--- 	if  AetherRemnant:IsFullyCastable()
+-- 	if AetherRemnant:IsFullyCastable()
 --     and Dissimilate:IsFullyCastable()
 -- 	and ResonantPulse:IsFullyCastable()
 -- 	and AstralStep:IsFullyCastable()

@@ -774,7 +774,7 @@ function X.ConsiderGlacier()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
 		and (abilityE:IsFullyCastable() and J.CanCastOnNonMagicImmune(botTarget))
 		and J.IsInRange(bot, botTarget, abilityE:GetCastRange() + 200)
 		then

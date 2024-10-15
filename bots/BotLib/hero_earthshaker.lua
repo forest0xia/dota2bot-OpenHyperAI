@@ -213,7 +213,7 @@ function X.ConsiderFissure()
     local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
     for _, enemyHero in pairs(nEnemyHeroes)
     do
-        if  J.IsValidHero(enemyHero)
+        if J.IsValidHero(enemyHero)
         and J.CanCastOnNonMagicImmune(enemyHero)
         and not J.IsSuspiciousIllusion(enemyHero)
         then
@@ -222,7 +222,7 @@ function X.ConsiderFissure()
                 return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation()
             end
 
-            if  J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_MAGICAL)
+            if J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_MAGICAL)
             and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
             and not enemyHero:HasModifier('modifier_dazzle_shallow_grave')
             and not enemyHero:HasModifier('modifier_necrolyte_reapers_scythe')
@@ -239,12 +239,12 @@ function X.ConsiderFissure()
     do
         local nAllyInRangeEnemy = J.GetNearbyHeroes(allyHero, 1200, true, BOT_MODE_NONE)
 
-        if  J.IsValidHero(allyHero)
+        if J.IsValidHero(allyHero)
         and J.IsRetreating(allyHero)
         and allyHero:GetActiveModeDesire() >= 0.5
         and not allyHero:IsIllusion()
         then
-            if  nAllyInRangeEnemy ~= nil and #nAllyInRangeEnemy >= 1
+            if nAllyInRangeEnemy ~= nil and #nAllyInRangeEnemy >= 1
             and J.IsValidHero(nAllyInRangeEnemy[1])
             and J.CanCastOnNonMagicImmune(nAllyInRangeEnemy[1])
             and J.IsInRange(bot, nAllyInRangeEnemy[1], nCastRange)
@@ -270,7 +270,7 @@ function X.ConsiderFissure()
 
         for _, enemyHero in pairs(nInRangeEnemy)
         do
-            if  J.IsValidHero(enemyHero)
+            if J.IsValidHero(enemyHero)
             and J.CanCastOnNonMagicImmune(enemyHero)
             and not J.IsSuspiciousIllusion(enemyHero)
             and not J.IsDisabled(enemyHero)
@@ -300,7 +300,7 @@ function X.ConsiderFissure()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
         and not J.IsSuspiciousIllusion(botTarget)
@@ -311,7 +311,7 @@ function X.ConsiderFissure()
             local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1200, true, BOT_MODE_NONE)
             local nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1200, false, BOT_MODE_NONE)
 
-            if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+            if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
             and #nInRangeAlly >= #nInRangeEnemy
             then
                 nInRangeEnemy = J.GetEnemiesNearLoc(botTarget:GetLocation(), nRadius)
@@ -330,7 +330,7 @@ function X.ConsiderFissure()
         local nInRangeAlly = J.GetNearbyHeroes(bot,1200, false, BOT_MODE_NONE)
         local nInRangeEnemy = J.GetNearbyHeroes(bot,1200, true, BOT_MODE_NONE)
 
-        if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+        if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
         and #nInRangeEnemy > #nInRangeAlly
         and J.IsValidHero(nInRangeEnemy[1])
         and J.CanCastOnNonMagicImmune(nInRangeEnemy[1])
@@ -352,14 +352,14 @@ function X.ConsiderFissure()
     end
 
     nEnemyHeroes = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE)
-	if  (J.IsPushing(bot) or J.IsDefending(bot))
+	if (J.IsPushing(bot) or J.IsDefending(bot))
     and J.GetManaAfter(Fissure:GetManaCost()) * bot:GetMana() > EchoSlam:GetManaCost()
     and nAbilityLevel >= 3
     and nEnemyHeroes ~= nil and #nEnemyHeroes == 0
     and not J.IsThereCoreNearby(1000)
 	then
 		local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(1600, true)
-		if  nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 4
+		if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 4
 		and J.CanBeAttacked(nEnemyLaneCreeps[1])
 		then
             return BOT_ACTION_DESIRE_HIGH, J.GetCenterOfUnits(nEnemyLaneCreeps)
@@ -400,7 +400,7 @@ function X.ConsiderEnchantTotem()
             end
 
             nInRangeEnemy = J.GetEnemiesNearLoc(bot:GetLocation(), 1600)
-            if  nInRangeIllusion ~= nil and #nInRangeIllusion >= 2
+            if nInRangeIllusion ~= nil and #nInRangeIllusion >= 2
             and nInRangeEnemy ~= nil and #nInRangeEnemy == 0
             then
                 return BOT_ACTION_DESIRE_HIGH, 0, false
@@ -412,7 +412,7 @@ function X.ConsiderEnchantTotem()
             end
 
             nInRangeEnemy = J.GetEnemiesNearLoc(bot:GetLocation(), 1600)
-            if  nInRangeIllusion ~= nil and #nInRangeIllusion >= 2
+            if nInRangeIllusion ~= nil and #nInRangeIllusion >= 2
             and nInRangeEnemy ~= nil and #nInRangeEnemy == 0
             then
                 return BOT_ACTION_DESIRE_HIGH, 0, false
@@ -422,7 +422,7 @@ function X.ConsiderEnchantTotem()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and not J.IsSuspiciousIllusion(botTarget)
         and not J.IsDisabled(botTarget)
@@ -432,12 +432,12 @@ function X.ConsiderEnchantTotem()
             local nInRangeAlly = J.GetNearbyHeroes(bot,1000, false, BOT_MODE_NONE)
             local nInRangeEnemy = J.GetNearbyHeroes(bot,800, true, BOT_MODE_NONE)
 
-            if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+            if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
             and #nInRangeAlly >= #nInRangeEnemy
             then
                 if bot:HasScepter()
                 then
-                    if  J.IsInRange(bot, botTarget, nCastRange)
+                    if J.IsInRange(bot, botTarget, nCastRange)
                     and not J.IsInRange(bot, botTarget, nRadius)
                     and not botTarget:HasModifier('modifier_faceless_void_chronosphere')
                     then
@@ -458,13 +458,13 @@ function X.ConsiderEnchantTotem()
 		end
 	end
 
-    if  J.IsRetreating(bot)
+    if J.IsRetreating(bot)
     and bot:GetActiveModeDesire() > 0.7
     then
         local nInRangeEnemy = J.GetNearbyHeroes(bot,1200, true, BOT_MODE_NONE)
         for _, enemyHero in pairs(nInRangeEnemy)
         do
-            if  J.IsValidHero(enemyHero)
+            if J.IsValidHero(enemyHero)
             and J.IsChasingTarget(enemyHero, bot)
             and not J.IsSuspiciousIllusion(enemyHero)
             and not J.IsDisabled(enemyHero)
@@ -472,7 +472,7 @@ function X.ConsiderEnchantTotem()
                 local nInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, true, BOT_MODE_NONE)
                 local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
 
-                if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+                if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
                 and ((#nTargetInRangeAlly > #nInRangeAlly)
                     or bot:WasRecentlyDamagedByAnyHero(2))
                 then
@@ -490,7 +490,7 @@ function X.ConsiderEnchantTotem()
         end
     end
 
-    if  (J.IsPushing(bot) or J.IsDefending(bot))
+    if (J.IsPushing(bot) or J.IsDefending(bot))
     and J.GetManaAfter(EnchantTotem:GetManaCost()) * bot:GetMana() > Fissure:GetManaCost() * 2
     and J.GetManaAfter(EnchantTotem:GetManaCost()) * bot:GetMana() > EchoSlam:GetManaCost()
     and not bot:HasModifier('modifier_earthshaker_enchant_totem')
@@ -499,7 +499,7 @@ function X.ConsiderEnchantTotem()
 
         if bot:HasScepter()
         then
-            if  nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 3
+            if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 3
             and J.CanBeAttacked(nEnemyLaneCreeps[1])
             and not J.IsRunning(nEnemyLaneCreeps[1])
             then
@@ -510,7 +510,7 @@ function X.ConsiderEnchantTotem()
                 end
             end
 
-            if  J.IsValidBuilding(botTarget)
+            if J.IsValidBuilding(botTarget)
             and J.CanBeAttacked(botTarget)
             and J.IsAttacking(bot)
             then
@@ -518,13 +518,13 @@ function X.ConsiderEnchantTotem()
             end
         else
             nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nRadius, true)
-            if  nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 3
+            if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 3
             and J.CanBeAttacked(nEnemyLaneCreeps[1])
             then
                 return BOT_ACTION_DESIRE_HIGH, 0, false
             end
 
-            if  J.IsValidBuilding(botTarget)
+            if J.IsValidBuilding(botTarget)
             and J.CanBeAttacked(botTarget)
             and J.IsAttacking(bot)
             then
@@ -533,7 +533,7 @@ function X.ConsiderEnchantTotem()
         end
     end
 
-    if  J.IsLaning(bot)
+    if J.IsLaning(bot)
     and J.IsInLaningPhase()
     then
         local nInRangeEnemy = J.GetEnemiesNearLoc(bot:GetLocation(), nRadius)
@@ -550,7 +550,7 @@ function X.ConsiderEnchantTotem()
 
     if J.IsDoingRoshan(bot)
     then
-        if  J.IsRoshan(botTarget)
+        if J.IsRoshan(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, nRadius)
         and J.IsAttacking(bot)
@@ -561,7 +561,7 @@ function X.ConsiderEnchantTotem()
 
     if J.IsDoingTormentor(bot)
     then
-        if  J.IsTormentor(botTarget)
+        if J.IsTormentor(botTarget)
         and J.IsInRange(bot, botTarget, nRadius)
         and J.IsAttacking(bot)
         then
@@ -591,7 +591,7 @@ function X.ConsiderEchoSlam()
 
     if J.IsGoingOnSomeone(bot)
 	then
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, nRadius / 2)
         -- and J.IsCore(botTarget)
@@ -630,7 +630,7 @@ function X.ConsiderEchoSlam()
                     end
                 end
 
-                if  #nInRangeAlly >= #nInRangeEnemy
+                if #nInRangeAlly >= #nInRangeEnemy
                 and not (#nInRangeAlly >= #nInRangeEnemy + 2)
                 then
                     return BOT_ACTION_DESIRE_HIGH
@@ -665,12 +665,12 @@ function X.ConsiderBlinkSlam()
 end
 
 function X.CanDoBlinkSlam()
-    if  X.HasBlink()
+    if X.HasBlink()
     and EchoSlam:IsFullyCastable()
     then
         local nManaCost = EchoSlam:GetManaCost()
 
-        if  bot:GetMana() >= nManaCost
+        if bot:GetMana() >= nManaCost
         then
             bot.shouldBlink = true
             return true
@@ -705,13 +705,13 @@ function X.ConsiderTotemSlam()
 end
 
 function X.CanDoTotemSlam()
-    if  bot:HasScepter()
+    if bot:HasScepter()
     and EnchantTotem:IsFullyCastable()
     and EchoSlam:IsFullyCastable()
     then
         local nManaCost = EnchantTotem:GetManaCost() + EchoSlam:GetManaCost()
 
-        if  bot:GetMana() >= nManaCost
+        if bot:GetMana() >= nManaCost
         then
             return true
         end
@@ -721,7 +721,7 @@ function X.CanDoTotemSlam()
 end
 
 function X.CanJump()
-    if  bot:HasScepter()
+    if bot:HasScepter()
     and EnchantTotem:IsFullyCastable()
     then
         return true
@@ -745,7 +745,7 @@ function X.HasBlink()
 		end
 	end
 
-    if  blink ~= nil
+    if blink ~= nil
     and blink:IsFullyCastable()
 	then
         Blink = blink

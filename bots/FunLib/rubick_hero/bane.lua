@@ -327,7 +327,7 @@ function X.ConsiderNightmare()
     local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange + 150, true, BOT_MODE_NONE)
 	for _, enemyHero in pairs(nEnemyHeroes)
 	do
-		if  J.IsValidHero(enemyHero)
+		if J.IsValidHero(enemyHero)
         and J.CanCastOnNonMagicImmune(enemyHero)
         and J.CanCastOnTargetAdvanced(enemyHero)
         and enemyHero:IsChanneling()
@@ -348,12 +348,12 @@ function X.ConsiderNightmare()
         local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 		for _, enemyHero in pairs(nInRangeEnemy)
 		do
-			if  J.IsValidHero(enemyHero)
+			if J.IsValidHero(enemyHero)
             and J.CanCastOnNonMagicImmune(enemyHero)
             and not J.IsSuspiciousIllusion(enemyHero)
 			then
 				nEnemyCount = nEnemyCount + 1
-				if  J.CanCastOnTargetAdvanced(enemyHero)
+				if J.CanCastOnTargetAdvanced(enemyHero)
                 and not J.IsDisabled(enemyHero)
                 and not enemyHero:IsDisarmed()
                 and not enemyHero:HasModifier('modifier_legion_commander_duel')
@@ -382,7 +382,7 @@ function X.ConsiderNightmare()
             local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 			for _, enemyHero in pairs(nInRangeEnemy)
 			do
-				if  J.IsValid(enemyHero)
+				if J.IsValid(enemyHero)
                 and J.CanCastOnNonMagicImmune(enemyHero)
                 and J.CanCastOnTargetAdvanced(enemyHero)
                 and enemyHero:GetPlayerID() ~= botTarget:GetPlayerID()
@@ -396,7 +396,7 @@ function X.ConsiderNightmare()
 				end
 			end
 
-			if  J.IsInRange(bot, botTarget, nCastRange)
+			if J.IsInRange(bot, botTarget, nCastRange)
             and J.CanCastOnNonMagicImmune(botTarget)
             and J.CanCastOnTargetAdvanced(botTarget)
             and J.IsChasingTarget(bot, botTarget)
@@ -408,7 +408,7 @@ function X.ConsiderNightmare()
 				local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1200, true, BOT_MODE_NONE)
                 nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1200, false, BOT_MODE_NONE)
 
-				if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+				if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
                 and #nInRangeAlly >= #nInRangeEnemy
                 and not (#nInRangeAlly >= #nInRangeEnemy + 2)
 				then
@@ -418,12 +418,12 @@ function X.ConsiderNightmare()
 		end
 	end
 
-    if  J.IsRetreating(bot)
+    if J.IsRetreating(bot)
     and bot:GetActiveModeDesire() > 0.7
 	then
 		for _, enemyHero in pairs(nEnemyHeroes)
 		do
-			if  J.IsValidHero(enemyHero)
+			if J.IsValidHero(enemyHero)
             and J.CanCastOnNonMagicImmune(enemyHero)
             and J.CanCastOnTargetAdvanced(enemyHero)
             and not J.IsSuspiciousIllusion(enemyHero)
@@ -432,7 +432,7 @@ function X.ConsiderNightmare()
 			then
                 local nInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, true, BOT_MODE_NONE)
                 local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
-                if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+                if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
                 and (#nTargetInRangeAlly > #nInRangeAlly
                     or bot:WasRecentlyDamagedByAnyHero(2))
                 then
@@ -454,7 +454,7 @@ function X.ConsiderFiendsGrip()
     local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange + 150, true, BOT_MODE_NONE)
 	for _, enemyHero in pairs(nEnemyHeroes)
 	do
-		if  J.IsValidHero(enemyHero)
+		if J.IsValidHero(enemyHero)
         and J.CanCastOnNonMagicImmune(enemyHero)
         and J.CanCastOnTargetAdvanced(enemyHero)
         and not J.IsSuspiciousIllusion(enemyHero)
@@ -464,7 +464,7 @@ function X.ConsiderFiendsGrip()
 				return BOT_ACTION_DESIRE_HIGH, enemyHero
 			end
 
-			if  J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_PURE)
+			if J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_PURE)
             and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
             and not enemyHero:HasModifier('modifier_dazzle_shallow_grave')
             and not enemyHero:HasModifier('modifier_necrolyte_reapers_scythe')
@@ -484,7 +484,7 @@ function X.ConsiderFiendsGrip()
         local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange + 150, true, BOT_MODE_NONE)
 		for _, enemyHero in pairs(nInRangeEnemy)
 		do
-			if  J.IsValidHero(enemyHero)
+			if J.IsValidHero(enemyHero)
             and J.CanCastOnNonMagicImmune(enemyHero)
             and J.CanCastOnTargetAdvanced(enemyHero)
             and not J.IsDisabled(enemyHero)
@@ -510,7 +510,7 @@ function X.ConsiderFiendsGrip()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		if  J.IsValidHero(botTarget)
+		if J.IsValidHero(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.CanCastOnTargetAdvanced(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)

@@ -56,7 +56,7 @@ function ConsiderStoneForm(hMinionUnit, ability)
 		local nInRangeEnemy = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE)
 		for _, enemyHero in pairs(nInRangeEnemy)
 		do
-			if  J.IsValidHero(enemyHero)
+			if J.IsValidHero(enemyHero)
 			and J.CanCastOnNonMagicImmune(enemyHero)
 			and J.CanCastOnTargetAdvanced(enemyHero)
 			and J.IsChasingTarget(enemyHero, bot)
@@ -66,7 +66,7 @@ function ConsiderStoneForm(hMinionUnit, ability)
 				local nInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, true, BOT_MODE_NONE)
 				local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
 
-				if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+				if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
 				and ((#nTargetInRangeAlly > #nInRangeAlly)
 					or bot:WasRecentlyDamagedByAnyHero(2.5))
 				then
@@ -88,7 +88,7 @@ function ConsiderStoneForm(hMinionUnit, ability)
 	local nEnemyHeroes = hMinionUnit:GetNearbyHeroes(nRadius, true, BOT_MODE_NONE)
 	for _, enemyHero in pairs(nEnemyHeroes)
 	do
-		if  J.IsValidHero(enemyHero)
+		if J.IsValidHero(enemyHero)
 		and J.CanCastOnNonMagicImmune(enemyHero)
 		and enemyHero:IsChanneling()
 		and not J.IsSuspiciousIllusion(enemyHero)
@@ -98,7 +98,7 @@ function ConsiderStoneForm(hMinionUnit, ability)
 	end
 
 	local attackTarget = hMinionUnit:GetAttackTarget()
-	if  J.IsValidHero(attackTarget)
+	if J.IsValidHero(attackTarget)
 	and not J.IsSuspiciousIllusion(attackTarget)
 	and not J.IsDisabled(attackTarget)
 	then
@@ -140,7 +140,7 @@ function ConsiderFamiliarAttack(hMinionUnit)
 	local nUnits = bot:GetNearbyCreeps(700, true)
 	for _, creep in pairs(nUnits)
 	do
-		if  J.IsValid(creep)
+		if J.IsValid(creep)
 		and J.CanBeAttacked(creep)
 		and GetUnitToUnitDistance(bot, hMinionUnit) < 1600
 		then
@@ -152,14 +152,14 @@ function ConsiderFamiliarAttack(hMinionUnit)
 	nUnits = bot:GetNearbyTowers(700, true)
 	for _, tower in pairs(nUnits)
 	do
-		if  J.IsValidBuilding(tower)
+		if J.IsValidBuilding(tower)
 		and J.CanBeAttacked(tower)
 		and tower:GetAttackTarget() ~= hMinionUnit
 		and not hMinionUnit:WasRecentlyDamagedByTower(1)
 		then
 			local nInRangeEnemy = J.GetEnemiesNearLoc(tower:GetLocation(), 700)
 
-			if  nInRangeEnemy ~= nil and #nInRangeEnemy == 0
+			if nInRangeEnemy ~= nil and #nInRangeEnemy == 0
 			and GetUnitToUnitDistance(bot, hMinionUnit) < 1600
 			then
 				IsAttackingSomethingNotHero = true
@@ -183,7 +183,7 @@ function ConsiderFamiliarMove(hMinionUnit)
 	local nEnemyHeroes = hMinionUnit:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
 	for _, enemyHero in pairs(nEnemyHeroes)
 	do
-		if  J.IsValidHero(enemyHero)
+		if J.IsValidHero(enemyHero)
 		and J.CanCastOnNonMagicImmune(enemyHero)
 		and enemyHero:IsChanneling()
 		and not J.IsSuspiciousIllusion(enemyHero)
@@ -191,7 +191,7 @@ function ConsiderFamiliarMove(hMinionUnit)
 			local nInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, true, BOT_MODE_NONE)
 			local nInRangeEnemy = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
 
-			if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+			if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 			and #nInRangeAlly >= #nInRangeEnemy
 			then
 				return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation()
@@ -199,7 +199,7 @@ function ConsiderFamiliarMove(hMinionUnit)
 		end
 	end
 
-	if  GetUnitToUnitDistance(hMinionUnit, bot) > hMinionUnit:GetAttackRange()
+	if GetUnitToUnitDistance(hMinionUnit, bot) > hMinionUnit:GetAttackRange()
 	and not IsAttackingSomethingNotHero
 	then
 		return BOT_ACTION_DESIRE_HIGH, bot:GetLocation() + RandomVector(hMinionUnit:GetAttackRange())
@@ -284,18 +284,18 @@ function ConsiderBearRetreat(hMinionUnit)
         local nInRangeAlly = hMinionUnit:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
         local nInRangeEnemy = hMinionUnit:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
 
-        if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+        if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
         and #nInRangeEnemy > #nInRangeAlly
         then
             return BOT_ACTION_DESIRE_HIGH, bot:GetLocation()
         end
     end
 
-    if  hMinionUnit:WasRecentlyDamagedByTower(1)
+    if hMinionUnit:WasRecentlyDamagedByTower(1)
     and J.GetHP(hMinionUnit) < 0.5
     then
         local nEnemyTower = hMinionUnit:GetNearbyTowers(700, true)
-        if  nEnemyTower ~= nil and #nEnemyTower >= 1
+        if nEnemyTower ~= nil and #nEnemyTower >= 1
         and GetUnitToUnitDistance(hMinionUnit, nEnemyTower[1]) < 700
         then
             return BOT_ACTION_DESIRE_HIGH, bot:GetLocation()
@@ -329,7 +329,7 @@ function ConsiderBearAttack(hMinionUnit)
         then
             for _, creep in pairs(nEnemyLaneCreeps)
             do
-                if  J.IsValid(creep)
+                if J.IsValid(creep)
                 and J.CanBeAttacked(creep)
                 and creep:GetHealth() <= hMinionUnit:GetAttackDamage()
                 then
@@ -342,14 +342,14 @@ function ConsiderBearAttack(hMinionUnit)
     if J.IsFarming(bot)
     then
         local nCreeps = hMinionUnit:GetNearbyCreeps(1600, true)
-        if  nCreeps ~= nil and #nCreeps >= 1
+        if nCreeps ~= nil and #nCreeps >= 1
         and J.IsAttacking(bot)
         then
             local target = nil
             local hp = 0
             for _, creep in pairs(nCreeps)
             do
-                if  J.IsValid(creep)
+                if J.IsValid(creep)
                 and J.CanBeAttacked(creep)
                 and hp < creep:GetHealth()
                 then
@@ -367,7 +367,7 @@ function ConsiderBearAttack(hMinionUnit)
 
     if J.IsDoingRoshan(bot) or J.IsDoingTormentor(bot)
     then
-        if  (J.IsRoshan(bot) or J.IsDoingTormentor(bot))
+        if (J.IsRoshan(bot) or J.IsDoingTormentor(bot))
         and J.IsInRange(bot, botTarget, 500)
         and J.IsAttacking(bot)
         then

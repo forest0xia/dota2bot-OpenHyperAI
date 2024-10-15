@@ -219,10 +219,6 @@ local nKeepMana, nMP, nHP, nLV, nInRangeEnemy, botTarget
 function X.SkillsComplement()
 	J.ConsiderTarget()
 	if J.CanNotUseAbility( bot ) then return end
-	if abilityR:IsFullyCastable()
-	and (bot:IsInvisible() and not bot:HasModifier( 'modifier_item_dustofappearance' ))
-	and bot:GetActiveMode() ~= BOT_MODE_RETREAT
-	then return end
 
 	nKeepMana = 340
 	nLV = bot:GetLevel()
@@ -242,8 +238,10 @@ function X.SkillsComplement()
 
 	end
 
-	-- invis ult can be a good combo
-	if bot:IsInvisible() then return end
+	-- invis ult can be a good combo, dont use other spells yet.
+	if abilityR:IsFullyCastable()
+	and J.Utils.isTruelyInvisible(bot)
+	then return end
 
 	-- this one is more important
 	castXDesire = X.Consider( abilityX, 450 )
@@ -337,7 +335,7 @@ function X.ConsiderR()
 	do
 		if J.IsValidHero( enemy )
 		and ((enemy:HasModifier( "modifier_brewmaster_storm_cyclone" ) and J.GetModifierTime( enemy, "modifier_brewmaster_storm_cyclone" ) < 1.66)
-			or (bot:IsInvisible() and not bot:HasModifier( 'modifier_item_dustofappearance' )))
+			or J.Utils.isTruelyInvisible(bot))
 		and enemy:GetHealth() > 800
 		then
 			return BOT_ACTION_DESIRE_HIGH
@@ -509,7 +507,7 @@ function X.ConsiderFeastOfSouls()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
         and J.IsInRange(bot, botTarget, nAttackRange)
         and not J.IsChasingTarget(bot, botTarget)
         and not J.IsSuspiciousIllusion(botTarget)
@@ -520,7 +518,7 @@ function X.ConsiderFeastOfSouls()
             local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1200, true, BOT_MODE_NONE)
             local nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1200, false, BOT_MODE_NONE)
 
-            if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+            if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
             and #nInRangeAlly >= #nInRangeEnemy
             then
                 return BOT_ACTION_DESIRE_HIGH
@@ -528,13 +526,13 @@ function X.ConsiderFeastOfSouls()
 		end
 	end
 
-    if  J.IsFarming(bot)
+    if J.IsFarming(bot)
 	and nManaAfter > 0.3
     then
         if J.IsAttacking(bot)
         then
             local nNeutralCreeps = bot:GetNearbyNeutralCreeps(1000)
-            if  nNeutralCreeps ~= nil
+            if nNeutralCreeps ~= nil
             and (#nNeutralCreeps >= 3
                 or (#nNeutralCreeps >= 2 and nNeutralCreeps[1]:IsAncientCreep()))
             then
@@ -553,14 +551,14 @@ function X.ConsiderFeastOfSouls()
     then
         local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(1000, true)
 
-        if  nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 4
+        if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 4
 		and nInRangeEnemy ~= nil and #nInRangeEnemy == 0
 		and nManaAfter > 0.3
         then
 			return BOT_ACTION_DESIRE_HIGH
         end
 
-		if  J.IsValidBuilding(botTarget)
+		if J.IsValidBuilding(botTarget)
 		and J.CanBeAttacked(botTarget)
 		and J.IsAttacking(bot)
 		then
@@ -570,7 +568,7 @@ function X.ConsiderFeastOfSouls()
 
 	if J.IsDoingRoshan(bot) or J.IsDoingTormentor(bot)
 	then
-		if  (J.IsRoshan(botTarget) or J.IsTormentor(botTarget))
+		if (J.IsRoshan(botTarget) or J.IsTormentor(botTarget))
         and J.IsInRange(bot, botTarget, nAttackRange)
         and J.IsAttacking(bot)
 		then

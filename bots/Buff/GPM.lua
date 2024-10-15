@@ -27,7 +27,7 @@ function GPM.UpdateBotGold(bot)
 
     if goldPerTick < 1 then goldPerTick = 1 end
 
-    if  bot:IsAlive()
+    if bot:IsAlive()
     and gameTime > 0
     then
         bot:ModifyGold(1 + math.ceil(goldPerTick), true, 0)

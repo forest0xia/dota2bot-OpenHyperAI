@@ -282,7 +282,7 @@ function X.ConsiderShockwave()
     local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
     for _, enemyHero in pairs(nEnemyHeroes)
     do
-        if  J.IsValidHero(enemyHero)
+        if J.IsValidHero(enemyHero)
         and J.CanCastOnNonMagicImmune(enemyHero)
         and J.IsInRange(bot, enemyHero, nCastRange)
         and J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_MAGICAL)
@@ -302,7 +302,7 @@ function X.ConsiderShockwave()
         local nInRangeAlly = J.GetNearbyHeroes(bot,1000, false, BOT_MODE_NONE)
         local nInRangeEnemy = J.GetNearbyHeroes(bot,800, true, BOT_MODE_NONE)
 
-        if  J.IsValidTarget(botTarget)
+        if J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange - 200)
         and not J.IsSuspiciousIllusion(botTarget)
@@ -323,7 +323,7 @@ function X.ConsiderShockwave()
 		local nEnemyLanecreeps = bot:GetNearbyLaneCreeps(nCastRange - 200, true)
 		local nLocationAoE = bot:FindAoELocation(true, false, bot:GetLocation(), nCastRange - 200, nRadius, 0, 0)
 
-		if  nEnemyLanecreeps ~= nil and #nEnemyLanecreeps >= 4
+		if nEnemyLanecreeps ~= nil and #nEnemyLanecreeps >= 4
         and nLocationAoE.count >= 4
 		then
 			return BOT_ACTION_DESIRE_HIGH, nLocationAoE.targetloc
@@ -343,14 +343,14 @@ function X.ConsiderShockwave()
 
         if J.IsAttacking(bot)
         then
-            if  nEnemyLanecreeps ~= nil and #nEnemyLanecreeps >= 3
+            if nEnemyLanecreeps ~= nil and #nEnemyLanecreeps >= 3
             and nLocationAoE.count >= 3
             then
                 return BOT_ACTION_DESIRE_HIGH, nLocationAoE.targetloc
             end
 
             local nNeutralCreeps = bot:GetNearbyNeutralCreeps(600)
-            if  nNeutralCreeps ~= nil
+            if nNeutralCreeps ~= nil
             and ((#nNeutralCreeps >= 3 and nLocationAoE.count >= 3)
                 or (#nNeutralCreeps >= 2 and nLocationAoE.count >= 2 and nNeutralCreeps[1]:IsAncientCreep()))
             and nMana > 0.27
@@ -360,20 +360,20 @@ function X.ConsiderShockwave()
         end
     end
 
-    if  J.IsLaning(bot)
+    if J.IsLaning(bot)
     and nMana > 0.39
 	then
 		local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nCastRange, true)
 
 		for _, creep in pairs(nEnemyLaneCreeps)
 		do
-			if  J.IsValid(creep)
+			if J.IsValid(creep)
 			and (J.IsKeyWordUnit('ranged', creep) or J.IsKeyWordUnit('siege', creep) or J.IsKeyWordUnit('flagbearer', creep))
 			and creep:GetHealth() <= nDamage
 			then
 				local nInRangeEnemy = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE)
 
-				if  nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
+				if nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
 				and GetUnitToUnitDistance(creep, nInRangeEnemy[1]) <= 500
 				then
 					return BOT_ACTION_DESIRE_HIGH, creep:GetLocation()
@@ -384,7 +384,7 @@ function X.ConsiderShockwave()
 
     if J.IsDoingTormentor(bot)
     then
-        if  J.IsTormentor(botTarget)
+        if J.IsTormentor(botTarget)
         and J.IsInRange(bot, botTarget, 400)
         and J.IsAttacking(bot)
         then
@@ -397,12 +397,12 @@ function X.ConsiderShockwave()
     do
         local nAllyInRangeEnemy = J.GetNearbyHeroes(allyHero, nCastRange, true, BOT_MODE_NONE)
 
-        if  J.IsRetreating(allyHero)
+        if J.IsRetreating(allyHero)
         and allyHero:WasRecentlyDamagedByAnyHero(2.1)
         and not allyHero:IsIllusion()
         and nMana > 0.48
         then
-            if  nAllyInRangeEnemy ~= nil and #nAllyInRangeEnemy >= 1
+            if nAllyInRangeEnemy ~= nil and #nAllyInRangeEnemy >= 1
             and J.IsValidHero(nAllyInRangeEnemy[1])
             and J.CanCastOnNonMagicImmune(nAllyInRangeEnemy[1])
             and J.IsInRange(allyHero, nAllyInRangeEnemy[1], 400)
@@ -439,7 +439,7 @@ function X.ConsiderEmpower()
     local nAllyHeroes = J.GetNearbyHeroes(bot,nCastRange, false, BOT_MODE_NONE)
 	for _, allyHero in pairs(nAllyHeroes)
 	do
-		if  J.IsValidHero(allyHero)
+		if J.IsValidHero(allyHero)
         and J.IsCore(allyHero)
         and not allyHero:IsIllusion()
         and not J.IsDisabled(allyHero)
@@ -457,7 +457,7 @@ function X.ConsiderEmpower()
         local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange + 200, false, BOT_MODE_NONE)
         local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
         and J.CanBeAttacked(botTarget)
         and not J.IsSuspiciousIllusion(botTarget)
         and not botTarget:HasModifier('modifier_abaddon_borrowed_time')
@@ -468,13 +468,13 @@ function X.ConsiderEmpower()
 		then
             if buffAllyUnit ~= nil
             then
-                if  buffAllyUnit == bot
+                if buffAllyUnit == bot
                 and J.IsInRange(bot, botTarget, 500)
                 then
                     return BOT_ACTION_DESIRE_HIGH, buffAllyUnit
                 end
 
-                if  buffAllyUnit ~= bot
+                if buffAllyUnit ~= bot
                 and J.IsInRange(buffAllyUnit, botTarget, buffAllyUnit:GetAttackRange() + 100)
                 and J.IsInRange(bot, buffAllyUnit, nCastRange)
                 then
@@ -484,7 +484,7 @@ function X.ConsiderEmpower()
 		end
 	end
 
-	if  (J.IsPushing(bot) or J.IsDefending(bot))
+	if (J.IsPushing(bot) or J.IsDefending(bot))
     and not bot:HasModifier('modifier_magnataur_empower')
 	then
 		local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(600, true)
@@ -494,7 +494,7 @@ function X.ConsiderEmpower()
 		end
 
 		local nEnemyTowers = bot:GetNearbyTowers(700, true)
-		if  nEnemyTowers ~= nil and #nEnemyTowers > 0
+		if nEnemyTowers ~= nil and #nEnemyTowers > 0
         and buffAllyUnit ~= nil
         then
             if buffAllyUnit == bot
@@ -502,7 +502,7 @@ function X.ConsiderEmpower()
                 return BOT_ACTION_DESIRE_HIGH, buffAllyUnit
             end
 
-            if  buffAllyUnit ~= bot
+            if buffAllyUnit ~= bot
             and J.IsInRange(buffAllyUnit, nEnemyTowers[1], buffAllyUnit:GetAttackRange() + 100)
             and J.IsInRange(bot, buffAllyUnit, nCastRange)
             then
@@ -527,17 +527,17 @@ function X.ConsiderEmpower()
     then
         local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(600, true)
 
-        if  nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 3
+        if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 3
         and J.IsAttacking(bot)
         then
             return BOT_ACTION_DESIRE_HIGH, bot
         end
     end
 
-	if  J.IsDoingRoshan(bot)
+	if J.IsDoingRoshan(bot)
     and buffAllyUnit ~= nil
 	then
-		if  J.IsRoshan(botTarget)
+		if J.IsRoshan(botTarget)
 		and J.IsInRange(bot, botTarget, 500)
         and J.IsAttacking(buffAllyUnit)
 		then
@@ -545,10 +545,10 @@ function X.ConsiderEmpower()
 		end
 	end
 
-    if  J.IsDoingTormentor(bot)
+    if J.IsDoingTormentor(bot)
     and buffAllyUnit ~= nil
     then
-        if  J.IsTormentor(botTarget)
+        if J.IsTormentor(botTarget)
         and J.IsInRange(bot, botTarget, 400)
         and J.IsAttacking(buffAllyUnit)
         then
@@ -577,13 +577,13 @@ function X.ConsiderSkewer()
 		return BOT_ACTION_DESIRE_HIGH, J.Site.GetXUnitsTowardsLocation(bot, loc, nDist)
 	end
 
-	if  J.IsGoingOnSomeone(bot)
+	if J.IsGoingOnSomeone(bot)
     and (not CanDoBlinkSkewer() or not CanDoBlinkRPSkewer() or not CanDoBlinkHornTossSkewer())
 	then
         local nInRangeAlly = J.GetNearbyHeroes(bot,1000, false, BOT_MODE_NONE)
         local nInRangeEnemy = J.GetNearbyHeroes(bot,1000, true, BOT_MODE_NONE)
 
-        if  J.IsValidTarget(botTarget)
+        if J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and not J.IsSuspiciousIllusion(botTarget)
         and not botTarget:HasModifier('modifier_enigma_black_hole_pull')
@@ -591,7 +591,7 @@ function X.ConsiderSkewer()
         and nInRangeAlly ~= nil and nInRangeEnemy
         and #nInRangeAlly >= #nInRangeEnemy
         then
-            if  J.IsEnemyBetweenMeAndLocation(bot, J.GetEscapeLoc(), nDist)
+            if J.IsEnemyBetweenMeAndLocation(bot, J.GetEscapeLoc(), nDist)
             and J.IsInRange(bot, botTarget, nRadius)
             then
                 if #nInRangeAlly >= 1
@@ -602,7 +602,7 @@ function X.ConsiderSkewer()
                 end
             end
 
-            if  J.IsRunning(bot)
+            if J.IsRunning(bot)
             and J.IsRunning(botTarget)
             and J.IsInRange(bot, botTarget, nDist)
             and bot:IsFacingLocation(botTarget:GetLocation(), 30)
@@ -619,7 +619,7 @@ function X.ConsiderSkewer()
         local nInRangeAlly = J.GetNearbyHeroes(bot,800, false, BOT_MODE_NONE)
         local nInRangeEnemy = J.GetNearbyHeroes(bot,600, true, BOT_MODE_NONE)
 
-        if  nInRangeAlly ~= nil and nInRangeEnemy
+        if nInRangeAlly ~= nil and nInRangeEnemy
         and ((#nInRangeEnemy > #nInRangeAlly)
             or (J.GetHP(bot) < 0.68 and bot:WasRecentlyDamagedByAnyHero(1.9)))
         and J.IsValidHero(nInRangeEnemy[1])
@@ -646,7 +646,7 @@ function X.ConsiderReversePolarity()
     local nRadius = ReversePolarity:GetSpecialValueInt('pull_radius')
 	local nDamage = ReversePolarity:GetSpecialValueInt('polarity_damage')
 
-    if  J.IsInTeamFight(bot, 1200)
+    if J.IsInTeamFight(bot, 1200)
     and (not CanDoBlinkRP() or not CanDoBlinkRPSkewer())
 	then
 		local nInRangeEnemy = J.GetNearbyHeroes(bot,nRadius, true, BOT_MODE_NONE)
@@ -655,7 +655,7 @@ function X.ConsiderReversePolarity()
         then
             local realEnemyCount = J.GetEnemiesNearLoc(bot:GetLocation(), nRadius)
 
-            if  realEnemyCount ~= nil and #realEnemyCount >= 2
+            if realEnemyCount ~= nil and #realEnemyCount >= 2
             and not J.IsLocationInChrono(nInRangeEnemy[1]:GetLocation())
             and not J.IsLocationInBlackHole(nInRangeEnemy[1]:GetLocation())
             then
@@ -669,13 +669,13 @@ function X.ConsiderReversePolarity()
         local nInRangeAlly = J.GetNearbyHeroes(bot,nRadius + 200, false, BOT_MODE_NONE)
         local nInRangeEnemy = J.GetNearbyHeroes(bot,nRadius, true, BOT_MODE_NONE)
 
-        if  nInRangeAlly ~= nil and nInRangeEnemy
+        if nInRangeAlly ~= nil and nInRangeEnemy
         and ((#nInRangeEnemy > #nInRangeAlly)
             or (J.GetHP(bot) < 0.5 and bot:WasRecentlyDamagedByAnyHero(1.6)))
         then
             for _, enemyHero in pairs(nInRangeEnemy)
             do
-                if  J.IsValidHero(enemyHero)
+                if J.IsValidHero(enemyHero)
                 and J.CanCastOnMagicImmune(enemyHero)
                 and J.IsInRange(bot, enemyHero, nRadius)
                 and J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_MAGICAL)
@@ -706,13 +706,13 @@ function X.ConsiderHornToss()
     local nRadius = HornToss:GetSpecialValueInt('radius')
     local botTarget = J.GetProperTarget(bot)
 
-    if  J.IsGoingOnSomeone(bot)
+    if J.IsGoingOnSomeone(bot)
     and not CanDoBlinkHornTossSkewer()
     then
         local nInRangeAlly = J.GetNearbyHeroes(bot,800, false, BOT_MODE_NONE)
         local nInRangeEnemy = J.GetNearbyHeroes(bot,800, true, BOT_MODE_NONE)
 
-        if  J.IsValidTarget(botTarget)
+        if J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, nRadius)
         and bot:IsFacingLocation(botTarget:GetLocation(), 15)
@@ -732,13 +732,13 @@ function X.ConsiderHornToss()
         local nInRangeAlly = J.GetNearbyHeroes(bot,nRadius + 200, false, BOT_MODE_NONE)
         local nInRangeEnemy = J.GetNearbyHeroes(bot,nRadius, true, BOT_MODE_NONE)
 
-        if  nInRangeAlly ~= nil and nInRangeEnemy
+        if nInRangeAlly ~= nil and nInRangeEnemy
         and ((#nInRangeEnemy > #nInRangeAlly)
             or (J.GetHP(bot) < 0.61 and bot:WasRecentlyDamagedByAnyHero(2)))
         then
             for _, enemyHero in pairs(nInRangeEnemy)
             do
-                if  J.IsValidHero(enemyHero)
+                if J.IsValidHero(enemyHero)
                 and J.CanCastOnNonMagicImmune(enemyHero)
                 and J.IsInRange(bot, enemyHero, nRadius)
                 and J.IsEnemyBetweenMeAndLocation(bot, J.GetEscapeLoc(), nRadius)
@@ -768,7 +768,7 @@ function X.ConsiderBlinkRP()
             then
                 local realEnemyCount = J.GetEnemiesNearLoc(nLocationAoE.targetloc, nRadius)
 
-                if  realEnemyCount ~= nil and #realEnemyCount >= 2
+                if realEnemyCount ~= nil and #realEnemyCount >= 2
                 and not J.IsLocationInChrono(nLocationAoE.targetloc)
                 and not J.IsLocationInBlackHole(nLocationAoE.targetloc)
                 then
@@ -783,7 +783,7 @@ function X.ConsiderBlinkRP()
 end
 
 function CanDoBlinkRP()
-    if  ReversePolarity:IsFullyCastable()
+    if ReversePolarity:IsFullyCastable()
     and HasBlink()
     then
         local nManaCost = ReversePolarity:GetManaCost()
@@ -809,7 +809,7 @@ function X.ConsiderBlinkForSkewer()
             local nInRangeAlly = J.GetNearbyHeroes(bot,1000, false, BOT_MODE_NONE)
             local nInRangeEnemy = J.GetNearbyHeroes(bot,800, true, BOT_MODE_NONE)
 
-            if  J.IsValidTarget(botTarget)
+            if J.IsValidTarget(botTarget)
             and J.CanCastOnNonMagicImmune(botTarget)
             and J.IsInRange(bot, botTarget, 1199)
             and not J.IsSuspiciousIllusion(botTarget)
@@ -837,7 +837,7 @@ function X.ConsiderSkewer2()
 
     for _, enemyHero in pairs(nInRangeEnemy2)
     do
-        if  J.IsValidHero(enemyHero)
+        if J.IsValidHero(enemyHero)
         and J.CanCastOnNonMagicImmune(enemyHero)
         and not J.IsSuspiciousIllusion(enemyHero)
         and not enemyHero:HasModifier('modifier_enigma_black_hole_pull')
@@ -845,7 +845,7 @@ function X.ConsiderSkewer2()
         and nInRangeAlly ~= nil and nInRangeEnemy
         and #nInRangeAlly >= #nInRangeEnemy
         then
-            if  J.IsEnemyBetweenMeAndLocation(bot, J.GetEscapeLoc(), nDist)
+            if J.IsEnemyBetweenMeAndLocation(bot, J.GetEscapeLoc(), nDist)
             and J.IsInRange(bot, enemyHero, nRadius)
             then
                 if #nInRangeAlly >= 1
@@ -862,7 +862,7 @@ function X.ConsiderSkewer2()
 end
 
 function CanDoBlinkSkewer()
-    if  Skewer:IsFullyCastable()
+    if Skewer:IsFullyCastable()
     and HasBlink()
     then
         local nManaCost = Skewer:GetManaCost()
@@ -894,7 +894,7 @@ function X.ConsiderBlinkRPSkewer()
                 BlinkLocation = nLocationAoE.targetloc
                 local realEnemyCount = J.GetEnemiesNearLoc(nLocationAoE.targetloc, nRPRadius)
 
-                if  realEnemyCount ~= nil and #realEnemyCount >= 2
+                if realEnemyCount ~= nil and #realEnemyCount >= 2
                 and not J.IsLocationInChrono(nLocationAoE.targetloc)
                 and not J.IsLocationInBlackHole(nLocationAoE.targetloc)
                 then
@@ -908,7 +908,7 @@ function X.ConsiderBlinkRPSkewer()
 end
 
 function CanDoBlinkRPSkewer()
-    if  Skewer:IsFullyCastable()
+    if Skewer:IsFullyCastable()
     and ReversePolarity:IsFullyCastable()
     and HasBlink()
     then
@@ -935,7 +935,7 @@ function X.ConsiderBlinkForHornTossSkewer()
             local nInRangeAlly = J.GetNearbyHeroes(bot,800, false, BOT_MODE_NONE)
             local nInRangeEnemy = J.GetNearbyHeroes(bot,800, true, BOT_MODE_NONE)
 
-            if  J.IsValidTarget(botTarget)
+            if J.IsValidTarget(botTarget)
             and J.CanCastOnNonMagicImmune(botTarget)
             and J.IsInRange(bot, botTarget, 1199)
             and not J.IsSuspiciousIllusion(botTarget)
@@ -955,7 +955,7 @@ function X.ConsiderBlinkForHornTossSkewer()
 end
 
 function CanDoBlinkHornTossSkewer()
-    if  (HornToss:IsTrained() and HornToss:IsFullyCastable())
+    if (HornToss:IsTrained() and HornToss:IsFullyCastable())
     and Skewer:IsFullyCastable()
     and ReversePolarity:IsFullyCastable()
     and HasBlink()
@@ -980,7 +980,7 @@ function HasBlink()
     do
 		local item = bot:GetItemInSlot(i)
 
-		if  item ~= nil
+		if item ~= nil
         and (item:GetName() == "item_blink" or item:GetName() == "item_overwhelming_blink" or item:GetName() == "item_arcane_blink" or item:GetName() == "item_swift_blink")
         then
 			blink = item
@@ -988,7 +988,7 @@ function HasBlink()
 		end
 	end
 
-    if  blink ~= nil
+    if blink ~= nil
     and blink:IsFullyCastable()
 	then
         Blink = blink
@@ -1005,7 +1005,7 @@ function CanBKB()
     do
 		local item = bot:GetItemInSlot(i)
 
-		if  item ~= nil
+		if item ~= nil
         and item:GetName() == "item_black_king_bar"
         then
 			bkb = item
@@ -1013,7 +1013,7 @@ function CanBKB()
 		end
 	end
 
-    if  bkb ~= nil
+    if bkb ~= nil
     and bkb:IsFullyCastable()
     and bot:GetMana() >= 75
 	then

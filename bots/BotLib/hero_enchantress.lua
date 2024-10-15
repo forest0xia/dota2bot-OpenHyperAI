@@ -216,7 +216,7 @@ function X.ConsiderImpetus()
         local nInRangeAlly = J.GetNearbyHeroes(bot,1200, false, BOT_MODE_NONE)
         local nInRangeEnemy = J.GetNearbyHeroes(bot,1200, true, BOT_MODE_NONE)
 
-        if  J.IsValidTarget(botTarget)
+        if J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and not J.IsSuspiciousIllusion(botTarget)
         and not botTarget:HasModifier('modifier_abaddon_borrowed_time')
@@ -233,12 +233,12 @@ function X.ConsiderImpetus()
         end
     end
 
-    if  J.IsFarming(bot)
+    if J.IsFarming(bot)
     and nAbilityLevel == 4
     then
         local nNeutralCreeps = bot:GetNearbyNeutralCreeps(nAttackRange)
 
-        if  nNeutralCreeps ~= nil and #nNeutralCreeps >= 1
+        if nNeutralCreeps ~= nil and #nNeutralCreeps >= 1
         and J.IsValid(nNeutralCreeps[1])
         then
             if not Impetus:GetAutoCastState()
@@ -246,7 +246,7 @@ function X.ConsiderImpetus()
                 Impetus:ToggleAutoCast()
                 return BOT_ACTION_DESIRE_HIGH
             else
-                if  Impetus:GetAutoCastState()
+                if Impetus:GetAutoCastState()
                 and J.GetMP(bot) < 0.25
                 then
                     Impetus:ToggleAutoCast()
@@ -260,7 +260,7 @@ function X.ConsiderImpetus()
 
     if J.IsDoingRoshan(bot)
     then
-        if  J.IsRoshan(botTarget)
+        if J.IsRoshan(botTarget)
         and J.IsInRange(bot, botTarget, 500)
         and J.IsAttacking(bot)
         then
@@ -269,7 +269,7 @@ function X.ConsiderImpetus()
                 Impetus:ToggleAutoCast()
                 return BOT_ACTION_DESIRE_HIGH
             else
-                if  Impetus:GetAutoCastState()
+                if Impetus:GetAutoCastState()
                 and J.GetMP(bot) < 0.25
                 then
                     Impetus:ToggleAutoCast()
@@ -283,7 +283,7 @@ function X.ConsiderImpetus()
 
     if J.IsDoingTormentor(bot)
     then
-        if  J.IsTormentor(botTarget)
+        if J.IsTormentor(botTarget)
         and J.IsInRange(bot, botTarget, 400)
         and J.IsAttacking(bot)
         then
@@ -292,7 +292,7 @@ function X.ConsiderImpetus()
                 Impetus:ToggleAutoCast()
                 return BOT_ACTION_DESIRE_HIGH
             else
-                if  Impetus:GetAutoCastState()
+                if Impetus:GetAutoCastState()
                 and J.GetMP(bot) < 0.25
                 then
                     Impetus:ToggleAutoCast()
@@ -328,7 +328,7 @@ function X.ConsiderEnchant()
     -- local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
     -- for _, enemyHero in pairs(nEnemyHeroes)
     -- do
-    --     if  J.IsValidHero(enemyHero)
+    --     if J.IsValidHero(enemyHero)
     --     and J.CanCastOnNonMagicImmune(enemyHero)
     --     and J.CanKillTarget(enemyHero, nDamage * nDuration, DAMAGE_TYPE_ALL)
     --     and not J.IsSuspiciousIllusion(enemyHero)
@@ -342,7 +342,7 @@ function X.ConsiderEnchant()
     do
         local nAllyInRangeEnemy = J.GetNearbyHeroes(allyHero, nCastRange, true, BOT_MODE_NONE)
 
-        if  J.IsRetreating(allyHero)
+        if J.IsRetreating(allyHero)
         and J.IsValidHero(nAllyInRangeEnemy[1])
         and not J.IsSuspiciousIllusion(nAllyInRangeEnemy[1])
         and not J.IsDisabled(nAllyInRangeEnemy[1])
@@ -359,7 +359,7 @@ function X.ConsiderEnchant()
         local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange + 100, false, BOT_MODE_NONE)
         local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 
-        if  J.IsValidTarget(botTarget)
+        if J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
         and not J.IsSuspiciousIllusion(botTarget)
@@ -384,7 +384,7 @@ function X.ConsiderEnchant()
 
     for _, creep in pairs(nNeutralCreeps)
     do
-        if  J.IsValid(creep)
+        if J.IsValid(creep)
         and creep:GetLevel() <= nMaxLevel
         then
             for _, gCreep in pairs(nGoodCreep)
@@ -408,7 +408,7 @@ function X.ConsiderNaturesAttendant()
 
     if J.IsRetreating(bot)
     then
-        if  J.GetHP(bot) < 0.65
+        if J.GetHP(bot) < 0.65
         and bot:DistanceFromFountain() > 800
         then
             return BOT_ACTION_DESIRE_HIGH
@@ -434,7 +434,7 @@ function X.ConsiderSproink()
 
     for _, enemyHero in pairs(nEnemyHeroes)
     do
-        if  J.IsValidHero(enemyHero)
+        if J.IsValidHero(enemyHero)
         and J.CanKillTarget(enemyHero, nImpetusMul * GetUnitToUnitDistance(bot, enemyHero), DAMAGE_TYPE_PURE)
         and bot:IsFacingLocation(enemyHero:GetLocation(), 15)
         and not J.IsSuspiciousIllusion(enemyHero)
@@ -447,7 +447,7 @@ function X.ConsiderSproink()
 
     if J.IsGoingOnSomeone(bot)
     then
-        if  J.IsValidTarget(botTarget)
+        if J.IsValidTarget(botTarget)
         and bot:IsFacingLocation(botTarget:GetLocation(), 15)
         and not J.IsSuspiciousIllusion(botTarget)
         and not botTarget:HasModifier('modifier_abaddon_borrowed_time')
@@ -459,7 +459,7 @@ function X.ConsiderSproink()
 
     if J.IsRetreating(bot)
     then
-        if  nAllyHeroes ~= nil and nEnemyHeroes ~= nil
+        if nAllyHeroes ~= nil and nEnemyHeroes ~= nil
         and #nEnemyHeroes > #nAllyHeroes
         and J.IsValidHero(nEnemyHeroes[1])
         and bot:IsFacingLocation(nEnemyHeroes[1]:GetLocation(), 30)
@@ -486,7 +486,7 @@ function X.ConsiderLittleFriends()
     local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
     for _, enemyHero in pairs(nEnemyHeroes)
     do
-        if  J.IsValidHero(enemyHero)
+        if J.IsValidHero(enemyHero)
         and J.GetHP(enemyHero) < 0.33
         and not J.IsSuspiciousIllusion(enemyHero)
         and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
@@ -499,7 +499,7 @@ function X.ConsiderLittleFriends()
 
     if J.IsGoingOnSomeone(bot, 1200)
     then
-        if  J.IsValidTarget(botTarget)
+        if J.IsValidTarget(botTarget)
         and nInRangeAlly ~= nil and nInRangeEnemy
         and #nInRangeAlly >= #nInRangeEnemy
         and #nTargetInRangeEnemy >= 1
@@ -520,7 +520,7 @@ function X.ConsiderLittleFriends()
         local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange + 150, false, BOT_MODE_NONE)
         local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 
-        if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+        if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
         and #nInRangeEnemy > #nInRangeAlly
         and J.IsValidHero(nInRangeEnemy[1])
         and J.IsInRange(bot, nInRangeEnemy[1], nCastRange)
@@ -534,7 +534,7 @@ function X.ConsiderLittleFriends()
     then
         local botTarget = bot:GetAttackTarget()
 
-        if  J.IsRoshan(botTarget)
+        if J.IsRoshan(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
         then

@@ -55,7 +55,7 @@ function TormentorDesire()
         return BOT_ACTION_DESIRE_NONE
 	end
 
-	if  J.GetHP(bot) < 0.3
+	if J.GetHP(bot) < 0.3
 	and J.IsTormentor(Tormentor)
 	and J.GetHP(Tormentor) > 0.2
 	then
@@ -122,7 +122,7 @@ function TormentorDesire()
 	do
 		local member = GetTeamMember(i)
 
-		if  member ~= nil
+		if member ~= nil
 		and not member:IsIllusion()
 		and not member:HasModifier("modifier_arc_warden_tempest_double")
 		and not J.IsMeepoClone(member)
@@ -155,7 +155,7 @@ function TormentorDesire()
 					local dist = 100000
 					for _, allyHero in pairs(GetUnitList(UNIT_LIST_ALLIED_HEROES))
 					do
-						if  J.IsValidHero(allyHero)
+						if J.IsValidHero(allyHero)
 						and allyHero:IsAlive()
 						and not allyHero:IsIllusion()
 						and not J.IsCore(allyHero)
@@ -168,7 +168,7 @@ function TormentorDesire()
 						end
 					end
 
-					if  closestAlly ~= nil
+					if closestAlly ~= nil
 					and bot == closestAlly
 					and bot.tormentorState == false
 					then
@@ -190,7 +190,7 @@ function TormentorDesire()
 			end
 		end
 
-		if  bot.tormentorState
+		if bot.tormentorState
 		and aveCoreLevel > 12.9
 		and aveSuppLevel > 9.9
 		and (((bot.lastKillTime == 0 and aliveAlly >= 3)
@@ -328,7 +328,7 @@ function GetAveTeamDistance()
 		end
 	end
 
-	if  heroCount > 0
+	if heroCount > 0
     and coreCount >= 2
 	then
 		return aveDistance / heroCount, heroCount
@@ -359,7 +359,7 @@ function GetAttackingCount()
 	do
 		local member = GetTeamMember(i)
 
-		if  member ~= nil
+		if member ~= nil
 		and member:IsAlive()
 		and member.wasAttackingTormentor
 		then
@@ -375,7 +375,7 @@ function IsHumanInLoc()
 	do
 		local member = GetTeamMember(i)
 
-		if  member ~= nil
+		if member ~= nil
 		and member:IsAlive()
 		and not member:IsBot()
 		and not member:IsIllusion()
@@ -397,7 +397,7 @@ function WasHealthy()
 	do
 		local member = GetTeamMember(i)
 
-		if  member ~= nil
+		if member ~= nil
 		and member:IsAlive()
 		and J.GetHP(member) > 0.5
 		then
@@ -516,7 +516,7 @@ function WisdomRuneThink()
 end
 
 function TormentorThink()
-	if  J.GetHP(bot) < 0.2
+	if J.GetHP(bot) < 0.2
 	then
 		bot:Action_ClearActions(false)
 		bot:Action_MoveToLocation(J.GetTeamFountain())

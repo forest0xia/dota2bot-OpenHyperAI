@@ -161,7 +161,7 @@ function X.ConsiderAcidSpray()
 		if nLocationAoE.count >= 2
 		then
 			local realEnemyCount = J.GetEnemiesNearLoc(nLocationAoE.targetloc, nRadius)
-            if  realEnemyCount ~= nil and #realEnemyCount >= 2
+            if realEnemyCount ~= nil and #realEnemyCount >= 2
             then
                 return BOT_ACTION_DESIRE_HIGH, nLocationAoE.targetloc
             end
@@ -172,7 +172,7 @@ function X.ConsiderAcidSpray()
 	then
 		local nInRangeAlly = J.GetNearbyHeroes(bot,900, false, BOT_MODE_NONE)
 
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
 		and J.CanCastOnNonMagicImmune(botTarget)
 		and J.IsInRange(bot, botTarget, nCastRange)
 		and J.IsAttacking(botTarget)
@@ -185,7 +185,7 @@ function X.ConsiderAcidSpray()
 		then
 			local nTargetInRangeAlly = J.GetNearbyHeroes(botTarget, 900, false, BOT_MODE_NONE)
 
-            if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+            if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
             and #nInRangeAlly >= #nTargetInRangeAlly
             then
                 return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
@@ -198,7 +198,7 @@ function X.ConsiderAcidSpray()
 		local nInRangeAlly = J.GetNearbyHeroes(bot,1000, false, BOT_MODE_NONE)
         local nInRangeEnemy = J.GetNearbyHeroes(bot,1000, true, BOT_MODE_NONE)
 
-        if  nInRangeAlly ~= nil and nInRangeEnemy
+        if nInRangeAlly ~= nil and nInRangeEnemy
         and J.IsValidHero(nInRangeEnemy[1])
         and J.CanCastOnNonMagicImmune(nInRangeEnemy[1])
         and J.IsInRange(bot, nInRangeEnemy[1], 600)
@@ -209,7 +209,7 @@ function X.ConsiderAcidSpray()
         then
             local nTargetInRangeAlly = J.GetNearbyHeroes(nInRangeEnemy[1], 800, false, BOT_MODE_NONE)
 
-            if  nTargetInRangeAlly ~= nil
+            if nTargetInRangeAlly ~= nil
             and ((#nTargetInRangeAlly > #nInRangeAlly)
                 or (J.GetHP(bot) < 0.45 and bot:WasRecentlyDamagedByAnyHero(2.5)))
             then
@@ -225,7 +225,7 @@ function X.ConsiderAcidSpray()
 		local nTeamLaneFrontLoc = GetLaneFrontLocation(GetTeam(), bot:GetAssignedLane(), 0)
 		local nEnemyLaneFrontLoc = GetLaneFrontLocation(GetOpposingTeam(), bot:GetAssignedLane(), 0)
 
-		if  nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 5
+		if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 5
 		and nLocationAoE.count >= 5
 		and J.GetLocationToLocationDistance(nTeamLaneFrontLoc, nEnemyLaneFrontLoc) < 150
 		then
@@ -239,17 +239,17 @@ function X.ConsiderAcidSpray()
 		local nNeutralCreeps = bot:GetNearbyNeutralCreeps(600)
 		local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(600, true)
 
-		if  J.IsAttacking(bot)
+		if J.IsAttacking(bot)
 		and J.GetMP(bot) > 0.33
 		then
-			if  nNeutralCreeps ~= nil
+			if nNeutralCreeps ~= nil
 			and ((#nNeutralCreeps >= 3 and nLocationAoE.count >= 3)
 				or (#nNeutralCreeps >= 2 and nLocationAoE.count >= 2 and nNeutralCreeps[1]:IsAncientCreep()))
 			then
 				return BOT_ACTION_DESIRE_HIGH, nLocationAoE.targetloc
 			end
 
-			if  nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 4
+			if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 4
 			and nLocationAoE.count >= 4
 			then
 				return BOT_ACTION_DESIRE_HIGH, nLocationAoE.targetloc
@@ -262,7 +262,7 @@ function X.ConsiderAcidSpray()
 		local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(600, true)
 		local nLocationAoE = bot:FindAoELocation(true, false, bot:GetLocation(), nCastRange, nRadius, 0, 0)
 
-		if  J.IsAttacking(bot)
+		if J.IsAttacking(bot)
 		and J.GetMP(bot) > 0.65
 		then
 			if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 4
@@ -275,7 +275,7 @@ function X.ConsiderAcidSpray()
 
     if J.IsDoingRoshan(bot)
     then
-        if  J.IsRoshan(botTarget)
+        if J.IsRoshan(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, 500)
         and J.IsAttacking(bot)
@@ -286,7 +286,7 @@ function X.ConsiderAcidSpray()
 
     if J.IsDoingTormentor(bot)
     then
-        if  J.IsTormentor(botTarget)
+        if J.IsTormentor(botTarget)
         and J.IsInRange(bot, botTarget, 400)
         and J.IsAttacking(bot)
         then
@@ -309,7 +309,7 @@ function X.ConsiderUnstableConcoction()
 	local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 	for _, enemyHero in pairs(nEnemyHeroes)
 	do
-		if  J.IsValidHero(enemyHero)
+		if J.IsValidHero(enemyHero)
 		and J.CanCastOnNonMagicImmune(enemyHero)
 		and J.IsInRange(bot, enemyHero, nCastRange - 200)
 		and not J.IsSuspiciousIllusion(enemyHero)
@@ -319,7 +319,7 @@ function X.ConsiderUnstableConcoction()
 				return BOT_ACTION_DESIRE_HIGH
 			end
 
-			if  J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_PHYSICAL)
+			if J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_PHYSICAL)
 			and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
 			and not enemyHero:HasModifier('modifier_abaddon_aphotic_shield')
 			and not enemyHero:HasModifier('modifier_dazzle_shallow_grave')
@@ -340,7 +340,7 @@ function X.ConsiderUnstableConcoction()
 
 		for _, enemyHero in pairs(nInRangeEnemy)
 		do
-			if  J.IsValidTarget(enemyHero)
+			if J.IsValidTarget(enemyHero)
 			and J.CanCastOnNonMagicImmune(enemyHero)
 			and not J.IsSuspiciousIllusion(enemyHero)
 			and not J.IsDisabled(enemyHero)
@@ -351,7 +351,7 @@ function X.ConsiderUnstableConcoction()
 			then
 				local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 1000, false, BOT_MODE_NONE)
 
-				if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+				if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
 				and #nInRangeAlly >= #nTargetInRangeAlly
 				then
 					return BOT_ACTION_DESIRE_HIGH, enemyHero
@@ -365,7 +365,7 @@ function X.ConsiderUnstableConcoction()
 		local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange + 175, false, BOT_MODE_NONE)
 		local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 
-		if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+		if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 		and J.IsValidHero(nInRangeEnemy[1])
 		and J.CanCastOnNonMagicImmune(nInRangeEnemy[1])
 		and J.IsInRange(bot, nInRangeEnemy[1], nCastRange - 175)
@@ -379,7 +379,7 @@ function X.ConsiderUnstableConcoction()
 		then
 			local nTargetInRangeAlly = J.GetNearbyHeroes(nInRangeEnemy[1], 800, false, BOT_MODE_NONE)
 
-            if  nTargetInRangeAlly ~= nil
+            if nTargetInRangeAlly ~= nil
             and ((#nTargetInRangeAlly > #nInRangeAlly)
                 or (J.GetHP(bot) < 0.6 and bot:WasRecentlyDamagedByAnyHero(2.2)))
             then
@@ -404,7 +404,7 @@ function X.ConsiderUnstableConcoctionThrow()
 	local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 	for _, enemyHero in pairs(nEnemyHeroes)
 	do
-		if  J.IsValidHero(enemyHero)
+		if J.IsValidHero(enemyHero)
 		and J.CanCastOnNonMagicImmune(enemyHero)
 		and not J.IsSuspiciousIllusion(enemyHero)
 		and DotaTime() >= ConcoctionThrowTime + offDuration
@@ -414,7 +414,7 @@ function X.ConsiderUnstableConcoctionThrow()
 				return BOT_ACTION_DESIRE_HIGH, enemyHero
 			end
 
-			if  J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_PHYSICAL)
+			if J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_PHYSICAL)
 			and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
 			and not enemyHero:HasModifier('modifier_abaddon_aphotic_shield')
 			and not enemyHero:HasModifier('modifier_dazzle_shallow_grave')
@@ -435,7 +435,7 @@ function X.ConsiderUnstableConcoctionThrow()
 
 		for _, enemyHero in pairs(nInRangeEnemy)
 		do
-			if  J.IsValidTarget(enemyHero)
+			if J.IsValidTarget(enemyHero)
 			and J.CanCastOnNonMagicImmune(enemyHero)
 			and not J.IsSuspiciousIllusion(enemyHero)
 			and not J.IsDisabled(enemyHero)
@@ -447,7 +447,7 @@ function X.ConsiderUnstableConcoctionThrow()
 			then
 				local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 1000, false, BOT_MODE_NONE)
 
-				if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+				if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
 				and #nInRangeAlly >= #nTargetInRangeAlly
 				then
 					return BOT_ACTION_DESIRE_HIGH, enemyHero
@@ -461,7 +461,7 @@ function X.ConsiderUnstableConcoctionThrow()
 		local nInRangeAlly = J.GetNearbyHeroes(bot,800, false, BOT_MODE_NONE)
 		local nInRangeEnemy = J.GetNearbyHeroes(bot,1000, true, BOT_MODE_NONE)
 
-		if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+		if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 		and J.IsValidHero(nInRangeEnemy[1])
 		and J.CanCastOnNonMagicImmune(nInRangeEnemy[1])
 		and J.IsInRange(bot, nInRangeEnemy[1], nCastRange)
@@ -473,7 +473,7 @@ function X.ConsiderUnstableConcoctionThrow()
 		then
 			local nTargetInRangeAlly = J.GetNearbyHeroes(nInRangeEnemy[1], 800, false, BOT_MODE_NONE)
 
-            if  nTargetInRangeAlly ~= nil
+            if nTargetInRangeAlly ~= nil
             and ((#nTargetInRangeAlly > #nInRangeAlly)
                 or (J.GetHP(bot) < 0.6 and bot:WasRecentlyDamagedByAnyHero(2.2)))
             then
@@ -482,7 +482,7 @@ function X.ConsiderUnstableConcoctionThrow()
 		end
 	end
 
-	if  nEnemyHeroes ~= nil and #nEnemyHeroes >= 1
+	if nEnemyHeroes ~= nil and #nEnemyHeroes >= 1
 	and DotaTime() >= ConcoctionThrowTime + defDuration
 	then
 		return BOT_ACTION_DESIRE_HIGH, nEnemyHeroes[1]
@@ -512,7 +512,7 @@ function X.ConsiderChemicalRage()
 	then
 		local nInRangeAlly = J.GetNearbyHeroes(bot,1000, false, BOT_MODE_NONE)
 
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
 		and J.IsInRange(bot, botTarget, 800)
 		and not J.IsSuspiciousIllusion(botTarget)
 		and not botTarget:HasModifier('modifier_enigma_black_hole_pull')
@@ -521,7 +521,7 @@ function X.ConsiderChemicalRage()
 		then
             local nTargetInRangeAlly = J.GetNearbyHeroes(botTarget, 1000, false, BOT_MODE_NONE)
 
-            if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+            if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
             and #nInRangeAlly >= #nTargetInRangeAlly
             then
                 return BOT_ACTION_DESIRE_HIGH
@@ -534,7 +534,7 @@ function X.ConsiderChemicalRage()
 		local nInRangeAlly = J.GetNearbyHeroes(bot,800, false, BOT_MODE_NONE)
 		local nInRangeEnemy = J.GetNearbyHeroes(bot,800, true, BOT_MODE_NONE)
 
-		if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+		if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 		and J.IsValidHero(nInRangeEnemy[1])
 		and J.IsRunning(nInRangeEnemy[1])
         and nInRangeEnemy[1]:IsFacingLocation(bot:GetLocation(), 30)
@@ -546,7 +546,7 @@ function X.ConsiderChemicalRage()
 		then
 			local nTargetInRangeAlly = J.GetNearbyHeroes(nInRangeEnemy[1], 800, false, BOT_MODE_NONE)
 
-            if  nTargetInRangeAlly ~= nil
+            if nTargetInRangeAlly ~= nil
             and ((#nTargetInRangeAlly > #nInRangeAlly)
                 or (J.GetHP(bot) < 0.35 and bot:WasRecentlyDamagedByAnyHero(1.5)))
             then
@@ -557,7 +557,7 @@ function X.ConsiderChemicalRage()
 
 	if J.IsFarming(bot)
 	then
-		if  J.IsAttacking(bot)
+		if J.IsAttacking(bot)
 		and J.IsValid(botTarget)
 		and botTarget:IsCreep()
 		and J.GetHP(bot) < 0.3
@@ -568,7 +568,7 @@ function X.ConsiderChemicalRage()
 
 	if J.IsDoingRoshan(bot)
     then
-        if  J.IsRoshan(botTarget)
+        if J.IsRoshan(botTarget)
         and J.IsInRange(bot, botTarget, 500)
         and J.IsAttacking(bot)
 		and (J.IsModeTurbo() and DotaTime() < 15 * 60 or DotaTime() < 30 * 60)
@@ -579,7 +579,7 @@ function X.ConsiderChemicalRage()
 
     if J.IsDoingTormentor(bot)
     then
-        if  J.IsTormentor(botTarget)
+        if J.IsTormentor(botTarget)
         and J.IsInRange(bot, botTarget, 400)
         and J.IsAttacking(bot)
 		and (J.IsModeTurbo() and DotaTime() < 16 * 60 or DotaTime() < 32 * 60)
@@ -603,7 +603,7 @@ function X.ConsiderBerserkPotion()
 	local nAllyHeroes = J.GetNearbyHeroes(bot,nCastRange, false, BOT_MODE_NONE)
 	for _, allyHero in pairs(nAllyHeroes)
 	do
-		if  J.IsValidHero(allyHero)
+		if J.IsValidHero(allyHero)
 		and J.IsInRange(bot, allyHero, nCastRange)
 		and not allyHero:HasModifier('modifier_legion_commander_press_the_attack')
 		and not allyHero:HasModifier('modifier_item_satanic_unholy')
@@ -617,7 +617,7 @@ function X.ConsiderBerserkPotion()
 				return BOT_ACTION_DESIRE_HIGH, allyHero
 			end
 
-			if  J.IsRetreating(allyHero)
+			if J.IsRetreating(allyHero)
 			and J.IsRunning(allyHero)
 			and J.GetHP(allyHero) < 0.6
 			and allyHero:WasRecentlyDamagedByAnyHero(2.5)
@@ -630,7 +630,7 @@ function X.ConsiderBerserkPotion()
 			then
 				local allyTarget = J.GetProperTarget(allyHero)
 
-				if  J.IsValidHero(allyTarget)
+				if J.IsValidHero(allyTarget)
 				and allyHero:IsFacingLocation( allyTarget:GetLocation(), 20)
 				and J.IsInRange(allyHero, allyTarget, allyHero:GetAttackRange() + 100)
 				then

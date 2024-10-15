@@ -924,4 +924,7 @@ function ____exports.getEnemyHeroByPlayerId(id)
     end
     return nil
 end
+function ____exports.isTruelyInvisible(unit)
+    return unit:IsInvisible() and not unit:HasModifier("modifier_item_dustofappearance") and not ____exports.RecentlyTookDamage(unit, 1.5)
+end
 return ____exports

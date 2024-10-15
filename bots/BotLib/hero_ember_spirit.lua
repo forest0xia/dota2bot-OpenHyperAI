@@ -190,7 +190,7 @@ function X.ConsiderSearingChains()
 
 	for _, enemyHero in pairs(nEnemyHeroes)
 	do
-		if  J.IsValidHero(enemyHero)
+		if J.IsValidHero(enemyHero)
 		and J.CanCastOnNonMagicImmune(enemyHero)
 		and J.IsInRange(bot, enemyHero, nRadius)
 		and not J.IsSuspiciousIllusion(enemyHero)
@@ -213,14 +213,14 @@ function X.ConsiderSearingChains()
 		local nInRangeAlly = J.GetNearbyHeroes(bot,nRadius + 200, false, BOT_MODE_NONE)
 		local nInRangeEnemy = J.GetNearbyHeroes(bot,nRadius + 50, true, BOT_MODE_NONE)
 
-		if  J.IsValidHero(botTarget)
+		if J.IsValidHero(botTarget)
 		and J.IsInRange(bot, botTarget, nRadius)
 		and J.CanCastOnNonMagicImmune(botTarget )
 		and J.CanCastOnTargetAdvanced(botTarget)
 		and not J.IsDisabled(botTarget)
 		and not J.IsSuspiciousIllusion(botTarget)
 		then
-			if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+			if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 			and #nInRangeAlly >= #nInRangeEnemy
 			then
 				return BOT_ACTION_DESIRE_HIGH
@@ -235,7 +235,7 @@ function X.ConsiderSearingChains()
 				or enemyHero:HasModifier('modifier_invisible')
 				or enemyHero:HasModifier('modifier_item_shadow_amulet_fade')
 				then
-					if  not enemyHero:HasModifier('modifier_item_dustofappearance')
+					if not enemyHero:HasModifier('modifier_item_dustofappearance')
 					and not enemyHero:HasModifier('modifier_slardar_amplify_damage')
 					and not enemyHero:HasModifier('modifier_bloodseeker_thirst_vision')
 					and not enemyHero:HasModifier('modifier_sniper_assassinate')
@@ -253,11 +253,11 @@ function X.ConsiderSearingChains()
 		local nInRangeAlly = J.GetNearbyHeroes(bot,nRadius + 200, false, BOT_MODE_NONE)
 		local nInRangeEnemy = J.GetNearbyHeroes(bot,nRadius + 50, true, BOT_MODE_NONE)
 
-		if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+		if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 		and #nInRangeEnemy > #nInRangeAlly
 		and (#nInRangeEnemy >= 2 or (J.GetHP(bot) < 0.6 or bot:WasRecentlyDamagedByAnyHero(2)))
 		then
-			if  J.IsValidHero(nInRangeEnemy[1])
+			if J.IsValidHero(nInRangeEnemy[1])
 			and J.CanCastOnNonMagicImmune(nInRangeEnemy[1])
 			and not J.IsDisabled(nInRangeEnemy[1])
 			and not J.IsSuspiciousIllusion(nInRangeEnemy[1])
@@ -270,7 +270,7 @@ function X.ConsiderSearingChains()
 
 	if J.IsDoingRoshan(bot)
 	then
-		if  J.IsRoshan(botTarget)
+		if J.IsRoshan(botTarget)
 		and J.CanCastOnNonMagicImmune(botTarget)
 		and J.IsInRange(bot, botTarget, nRadius)
 		and not J.IsDisabled(botTarget)
@@ -299,7 +299,7 @@ function X.ConsiderSleightOfFist()
 	local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 	for _, enemyHero in pairs(nEnemyHeroes)
 	do
-		if  J.IsValidHero(enemyHero)
+		if J.IsValidHero(enemyHero)
 		and J.CanCastOnMagicImmune(enemyHero)
 		and J.IsInRange(bot, enemyHero, nCastRange)
 		and J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_MAGICAL)
@@ -338,13 +338,13 @@ function X.ConsiderSleightOfFist()
 		local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange + 100, false, BOT_MODE_NONE)
 		local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
 		and J.CanCastOnMagicImmune(botTarget)
 		and J.IsInRange(bot, botTarget, nCastRange)
 		and not J.IsSuspiciousIllusion(botTarget)
 		and not botTarget:HasModifier('modifier_faceless_void_chronosphere')
 		then
-			if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+			if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 			and ((#nInRangeAlly >= #nInRangeEnemy) or (#nInRangeEnemy > #nInRangeAlly and J.WeAreStronger(bot, 1000)))
 			then
 				return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
@@ -357,11 +357,11 @@ function X.ConsiderSleightOfFist()
 		local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange + 250, false, BOT_MODE_NONE)
 		local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange + 100, true, BOT_MODE_NONE)
 
-		if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+		if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 		and #nInRangeEnemy > #nInRangeAlly
 		and (#nInRangeEnemy >= 2 or (J.GetHP(bot) < 0.6 or bot:WasRecentlyDamagedByAnyHero(2.5)))
 		then
-			if  J.IsValidHero(nInRangeEnemy[1])
+			if J.IsValidHero(nInRangeEnemy[1])
 			and J.CanCastOnMagicImmune(nInRangeEnemy[1])
 			and not J.IsDisabled(nInRangeEnemy[1])
 			and not J.IsSuspiciousIllusion(nInRangeEnemy[1])
@@ -372,7 +372,7 @@ function X.ConsiderSleightOfFist()
 		end
 	end
 
-    if  J.IsFarming(bot)
+    if J.IsFarming(bot)
 	and nAbilityLevel >= 3
 	then
 		local nNeutralCreeps = bot:GetNearbyNeutralCreeps(nCastRange)
@@ -391,13 +391,13 @@ function X.ConsiderSleightOfFist()
 
 		for _, creep in pairs(nEnemyLaneCreeps)
 		do
-			if  J.IsValid(creep)
+			if J.IsValid(creep)
 			and (J.IsKeyWordUnit('ranged', creep) or J.IsKeyWordUnit('siege', creep))
 			and creep:GetHealth() <= creepDamage
 			then
 				local nInRangeEnemy = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE)
 
-				if  nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
+				if nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
 				and GetUnitToUnitDistance(creep, nInRangeEnemy[1]) <= 500
 				then
 					return BOT_ACTION_DESIRE_HIGH, creep:GetLocation()
@@ -406,13 +406,13 @@ function X.ConsiderSleightOfFist()
 		end
 	end
 
-	if  J.IsPushing(bot) or J.IsDefending(bot)
+	if J.IsPushing(bot) or J.IsDefending(bot)
 	and nAbilityLevel >= 3
 	then
 		local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nCastRange, true)
 		local nLocationAoE = bot:FindAoELocation( true, false, bot:GetLocation(), nCastRange, nRadius, nCastPoint, 0)
 
-		if  nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 4
+		if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 4
 		and nLocationAoE.count >= 4
 		then
             return BOT_ACTION_DESIRE_HIGH, nLocationAoE.targetloc
@@ -435,7 +435,7 @@ function X.ConsiderFlameGuard()
 	then
 		local nEnemyHeroes = J.GetNearbyHeroes(bot,nRadius, true, BOT_MODE_NONE)
 
-		if  nEnemyHeroes ~= nil and #nEnemyHeroes >= 2
+		if nEnemyHeroes ~= nil and #nEnemyHeroes >= 2
 		and J.IsInRange(bot, nEnemyHeroes[1], nRadius)
 		then
 			return BOT_ACTION_DESIRE_HIGH
@@ -444,7 +444,7 @@ function X.ConsiderFlameGuard()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
 		and J.CanCastOnNonMagicImmune(botTarget)
 		and J.IsInRange(bot, botTarget, nRadius - 75)
 		and not J.IsSuspiciousIllusion(botTarget)
@@ -459,7 +459,7 @@ function X.ConsiderFlameGuard()
 		local nInRangeAlly = J.GetNearbyHeroes(bot,nRadius + 200, false, BOT_MODE_NONE)
 		local nInRangeEnemy = J.GetNearbyHeroes(bot,nRadius, true, BOT_MODE_NONE)
 
-		if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+		if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 		and #nInRangeEnemy > #nInRangeAlly
 		and #nInRangeEnemy >= 2 or (J.GetHP(bot) < 0.7 and bot:WasRecentlyDamagedByAnyHero(2))
 		then
@@ -479,7 +479,7 @@ function X.ConsiderFlameGuard()
 
 	if J.IsDoingRoshan(bot)
 	then
-		if  J.IsRoshan(botTarget)
+		if J.IsRoshan(botTarget)
 		and J.CanCastOnNonMagicImmune(botTarget)
 		and J.IsInRange(bot, botTarget, nRadius)
 		then
@@ -498,7 +498,7 @@ function X.ConsiderActivateFireRemnant()
 
 	local botTarget = J.GetProperTarget(bot)
 
-	if  J.IsGoingOnSomeone(bot)
+	if J.IsGoingOnSomeone(bot)
 	and not CanDoSleightChains()
 	then
 		local nInRangeAlly = J.GetNearbyHeroes(bot,1200, false, BOT_MODE_NONE)
@@ -508,7 +508,7 @@ function X.ConsiderActivateFireRemnant()
 
 		for _, u in pairs(GetUnitList(UNIT_LIST_ALLIES))
 		do
-			if  u ~= nil
+			if u ~= nil
 			and J.IsValidTarget(botTarget)
 			and u:GetUnitName() == 'npc_dota_ember_spirit_remnant'
 			then
@@ -521,7 +521,7 @@ function X.ConsiderActivateFireRemnant()
 			end
 		end
 
-		if  closestRemnantToTarget ~= nil
+		if closestRemnantToTarget ~= nil
 		and nInRangeAlly ~= nil and nInRangeAlly ~= nil
 		and ((#nInRangeAlly >= #nInRangeEnemy) or (#nInRangeEnemy > #nInRangeAlly and J.WeAreStronger(bot, 1200)))
 		then
@@ -538,7 +538,7 @@ function X.ConsiderActivateFireRemnant()
 
 		for _, u in pairs(GetUnitList(UNIT_LIST_ALLIES))
 		do
-			if  u ~= nil
+			if u ~= nil
 			and u:GetUnitName() == 'npc_dota_ember_spirit_remnant'
 			then
 				local dist = GetUnitToUnitDistance(u, GetAncient(GetTeam()))
@@ -550,7 +550,7 @@ function X.ConsiderActivateFireRemnant()
 			end
 		end
 
-		if  closestRemnantToAncient ~= nil
+		if closestRemnantToAncient ~= nil
 		and nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 		and (#nInRangeEnemy >= #nInRangeAlly)
 		and (#nInRangeEnemy >= 2 or J.GetHP(bot) < 0.7)
@@ -578,7 +578,7 @@ function X.ConsiderFireRemnant()
 	local remnantCount = 0
 	for _, u in pairs(GetUnitList(UNIT_LIST_ALLIES))
 	do
-		if  u ~= nil
+		if u ~= nil
 		and u:GetUnitName() == 'npc_dota_ember_spirit_remnant'
 		and GetUnitToUnitDistance(bot, u) < 1600
 		then
@@ -602,7 +602,7 @@ function X.ConsiderFireRemnant()
 	local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 	for _, enemyHero in pairs(nEnemyHeroes)
 	do
-		if  J.CanCastOnNonMagicImmune(enemyHero)
+		if J.CanCastOnNonMagicImmune(enemyHero)
 		and J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_MAGICAL)
 		and not J.IsSuspiciousIllusion(enemyHero)
 		and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
@@ -614,10 +614,10 @@ function X.ConsiderFireRemnant()
 		end
 	end
 
-	if  J.IsGoingOnSomeone(bot)
+	if J.IsGoingOnSomeone(bot)
 	and not CanDoSleightChains()
 	then
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
 		and J.CanCastOnMagicImmune(botTarget)
 		and J.IsInRange(bot, botTarget, nCastRange)
 		and not J.IsSuspiciousIllusion(botTarget)
@@ -627,7 +627,7 @@ function X.ConsiderFireRemnant()
 			local nInRangeAlly = J.GetNearbyHeroes(botTarget, nCastRange + 100, false, BOT_MODE_NONE)
 			local nInRangeEnemy = J.GetNearbyHeroes(botTarget, nCastRange, true, BOT_MODE_NONE)
 
-			if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+			if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 			and #nInRangeAlly >= #nInRangeEnemy
 			and GetUnitToUnitDistance(bot, botTarget) > 600
 			then
@@ -642,7 +642,7 @@ function X.ConsiderFireRemnant()
 		local nInRangeAlly = J.GetNearbyHeroes(bot,1200, false, BOT_MODE_NONE)
 		local nInRangeEnemy = J.GetNearbyHeroes(bot,1200, true, BOT_MODE_NONE)
 
-		if  bot:WasRecentlyDamagedByAnyHero(2.5)
+		if bot:WasRecentlyDamagedByAnyHero(2.5)
 		and nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 		and (#nInRangeEnemy >= #nInRangeAlly)
 		and (#nInRangeEnemy >= 2 or J.GetHP(bot) < 0.7)
@@ -671,7 +671,7 @@ function X.ConsiderSleightChains()
 			local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange + 100, false, BOT_MODE_NONE)
 			local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 
-			if  J.IsValidTarget(botTarget)
+			if J.IsValidTarget(botTarget)
 			and J.CanCastOnMagicImmune(botTarget)
 			and J.IsInRange(bot, botTarget, nCastRange)
 			and not J.IsInRange(bot, botTarget, bot:GetAttackRange() + 75)
@@ -679,7 +679,7 @@ function X.ConsiderSleightChains()
 			and not J.IsDisabled(botTarget)
 			and not botTarget:HasModifier('modifier_faceless_void_chronosphere')
 			then
-				if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+				if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 				and ((#nInRangeAlly >= #nInRangeEnemy) or (#nInRangeEnemy > #nInRangeAlly and J.WeAreStronger(bot, 1000)))
 				then
 					return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
@@ -692,11 +692,11 @@ function X.ConsiderSleightChains()
 			local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange + 250, false, BOT_MODE_NONE)
 			local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange + 100, true, BOT_MODE_NONE)
 
-			if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+			if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 			and #nInRangeEnemy > #nInRangeAlly
 			and (#nInRangeEnemy >= 2 or (J.GetHP(bot) < 0.6 or bot:WasRecentlyDamagedByAnyHero(2)))
 			then
-				if  J.IsValidHero(nInRangeEnemy[1])
+				if J.IsValidHero(nInRangeEnemy[1])
 				and J.CanCastOnNonMagicImmune(nInRangeEnemy[1])
 				and J.IsInRange(bot, nInRangeEnemy[1], nCastRange)
 				and not J.IsInRange(bot, nInRangeEnemy[1], bot:GetAttackRange() + 75)
@@ -714,12 +714,12 @@ function X.ConsiderSleightChains()
 end
 
 function CanDoSleightChains()
-	if  SleightOfFist:IsFullyCastable()
+	if SleightOfFist:IsFullyCastable()
     and SearingChains:IsFullyCastable()
     then
         local manaCost = SleightOfFist:GetManaCost() + SearingChains:GetManaCost()
 
-        if  bot:GetMana() >= manaCost
+        if bot:GetMana() >= manaCost
         then
             return true
         end

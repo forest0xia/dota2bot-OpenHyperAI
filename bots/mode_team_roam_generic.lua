@@ -123,7 +123,7 @@ function GetDesire()
 		return BOT_ACTION_DESIRE_VERYHIGH + 0.1
 	end
 
-	if  J.IsPushing(bot)
+	if J.IsPushing(bot)
 	and bot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH
 	then
 		return BOT_ACTION_DESIRE_NONE
@@ -212,7 +212,7 @@ function ItemOpsDesire()
 					if itemName == 'item_cheese' and J.GetPosition(bot) <= 3 and not J.HasItem(bot, 'item_aegis') then PickedItem = droppedItem end
 					if itemName == 'item_refresher_shard' then
 						local mostCDHero = J.GetMostUltimateCDUnit()
-						if  mostCDHero ~= nil
+						if mostCDHero ~= nil
 						and mostCDHero:IsBot()
 						and bot == mostCDHero then
 							PickedItem = droppedItem
@@ -434,7 +434,7 @@ function X.SupportFindTarget()
 		
 	
 	local attackDamage = botBAD - 1;
-	if  IsModeSuitHit
+	if IsModeSuitHit
 		and not X.HasHumanAlly( bot )
 		and ( J.GetHP(bot) > 0.5 or not bot:WasRecentlyDamagedByAnyHero(2.0) )
 	then
@@ -479,7 +479,7 @@ function X.SupportFindTarget()
 	
 	local denyDamage = botAD + 3
 	local nNearbyEnemyHeroes = J.GetNearbyHeroes(bot,750,true,BOT_MODE_NONE); -----------*************
-	if  IsModeSuitHit 
+	if IsModeSuitHit 
 		and bot:GetLevel() <= 8
 		and bot:GetNetWorth() < 13998   -----------*************
 		and ( J.GetHP(bot) > 0.38 or not bot:WasRecentlyDamagedByAnyHero(3.0))
@@ -513,7 +513,7 @@ function X.SupportFindTarget()
 	end
 		
 	
-	if  IsModeSuitHit 
+	if IsModeSuitHit 
 		and bot:GetLevel() <= 7
 		and X.CanAttackTogether(bot)
 		and (nNearbyEnemyHeroes[1] == nil or nNearbyEnemyHeroes[1]:GetLevel() < 12)
@@ -534,7 +534,7 @@ function X.SupportFindTarget()
 				local nTowerTarget = nAllyTower[1]:GetAttackTarget();
 				for _,creep in pairs(nTowerCreeps)
 				do
-					if  nTowerTarget == creep
+					if nTowerTarget == creep
 						and X.CanBeAttacked(creep)
 						and creep:GetHealth() < X.GetLastHitHealth(nAllyTower[1],creep)
 						and creep:GetHealth() > X.GetLastHitHealth(bot,creep)
@@ -600,7 +600,7 @@ function X.SupportFindTarget()
 	local nNearbyEnemyHeroes = J.GetNearbyHeroes(bot,1600,true,BOT_MODE_NONE);
 	local nEnemyLaneCreep = bot:GetNearbyLaneCreeps(1200, true);
 	local nWillAttackCreeps = X.GetExceptRangeLastHitCreep(true, attackDamage *1.2, 0, nAttackRange + 120, bot);
-	if  IsModeSuitHit
+	if IsModeSuitHit
 		and botLV >= 6  -----------*************
 		and nNearbyEnemyHeroes[1] == nil
 		and ( attackDamage > 108 or bot:GetSecondsPerAttack() < 0.7 ) -----------*************
@@ -628,7 +628,7 @@ function X.SupportFindTarget()
 			end
 		end
 				
-		if  bot:DistanceFromFountain() > 3800 
+		if bot:DistanceFromFountain() > 3800 
 			and not bePvNMode and bot:GetLevel() <= 6
 			and J.GetDistanceFromEnemyFountain(bot) > 5000
 			and nEnemyTowers[1] == nil
@@ -674,7 +674,7 @@ function X.CarryFindTarget()
 	local botBAD  = X.GetAttackDamageToCreep(bot) - 1.2; 
 	
 	
-	if  X.CanBeAttacked(nTarget) and nTarget == targetUnit
+	if X.CanBeAttacked(nTarget) and nTarget == targetUnit
 		and GetUnitToUnitDistance(bot,nTarget) <= 1600
 	then
 	    if nTarget:GetTeam() == bot:GetTeam() 
@@ -755,7 +755,7 @@ function X.CarryFindTarget()
 		
 	
 	local cItem = J.IsItemAvailable("item_echo_sabre")
-    if  cItem ~= nil and (cItem:IsFullyCastable() or cItem:GetCooldownTimeRemaining() < bot:GetAttackPoint() +0.8)
+    if cItem ~= nil and (cItem:IsFullyCastable() or cItem:GetCooldownTimeRemaining() < bot:GetAttackPoint() +0.8)
 		and IsModeSuitHit
 		and (J.GetHP(bot) > 0.35 or not bot:WasRecentlyDamagedByAnyHero(1.0))
 	then
@@ -782,7 +782,7 @@ function X.CarryFindTarget()
 	
 	
 	local attackDamage = botBAD;
-	if  IsModeSuitHit
+	if IsModeSuitHit
 		and not X.HasHumanAlly( bot )
 		and ( J.GetHP(bot) > 0.5 or not bot:WasRecentlyDamagedByAnyHero(2.0))
 	then
@@ -825,7 +825,7 @@ function X.CarryFindTarget()
 
 	local denyDamage = botAD + 3
 	local nNearbyEnemyHeroes = J.GetNearbyHeroes(bot,650,true,BOT_MODE_NONE);
-	if  IsModeSuitHit 
+	if IsModeSuitHit 
 		and ( J.GetHP(bot) > 0.38 or not bot:WasRecentlyDamagedByAnyHero(3.0))
 		and (nNearbyEnemyHeroes[1] == nil or nNearbyEnemyHeroes[1]:GetLevel() < 12)
 		and bot:DistanceFromFountain() > 3800
@@ -861,7 +861,7 @@ function X.CarryFindTarget()
 		end
 	end
 		
-	if  IsModeSuitHit 
+	if IsModeSuitHit 
 		and bot:GetLevel() <= 8
 		and X.CanAttackTogether(bot)
 		and (nNearbyEnemyHeroes[1] == nil or nNearbyEnemyHeroes[1]:GetLevel() < 12)
@@ -882,7 +882,7 @@ function X.CarryFindTarget()
 				local nTowerTarget = nAllyTower[1]:GetAttackTarget();
 				for _,creep in pairs(nTowerCreeps)
 				do
-					if  nTowerTarget == creep
+					if nTowerTarget == creep
 						and X.CanBeAttacked(creep)
 						and creep:GetHealth() < X.GetLastHitHealth(nAllyTower[1],creep)
 						and creep:GetHealth() > X.GetLastHitHealth(bot,creep)
@@ -949,7 +949,7 @@ function X.CarryFindTarget()
 	local nNearbyEnemyHeroes = J.GetNearbyHeroes(bot,1600,true,BOT_MODE_NONE);
 	local nEnemyLaneCreep = bot:GetNearbyLaneCreeps(1200, true);
 	local nWillAttackCreeps = X.GetExceptRangeLastHitCreep(true, attackDamage *1.2, 0, nAttackRange + 120, bot);
-	if  IsModeSuitHit
+	if IsModeSuitHit
 		and botLV >= 8
 		and nNearbyEnemyHeroes[1] == nil
 		and ( attackDamage > 118 or bot:GetSecondsPerAttack() < 0.7 )
@@ -981,7 +981,7 @@ function X.CarryFindTarget()
 			
 		end
 		
-		if  bot:DistanceFromFountain() > 3800 
+		if bot:DistanceFromFountain() > 3800 
 			and not bePvNMode and bot:GetLevel() <= 6
 			and J.GetDistanceFromEnemyFountain(bot) > 5000
 			and nEnemyTowers[1] == nil
@@ -1010,7 +1010,7 @@ function X.CarryFindTarget()
 		local nTeamFightLocation = J.GetTeamFightLocation(bot);
 		local nDefendLane, nDefendDesire = J.GetMostDefendLaneDesire();
 
-		if  X.CanBeAttacked(nEnemysCreeps[1])
+		if X.CanBeAttacked(nEnemysCreeps[1])
 		and bot:GetHealth() > 300
 		and not X.IsAllysTarget(nEnemysCreeps[1])
 		and not J.IsRoshan(nEnemysCreeps[1])
@@ -1270,7 +1270,7 @@ function X.GetNearbyLastHitCreep(ignorAlly, bEnemy, nDamage, nRadius, bot)
 	local botName = bot:GetUnitName();
 
 	
-	if  bEnemy 
+	if bEnemy 
 		and botName == "npc_dota_hero_templar_assassin" --V bug
 		and bot:HasModifier("modifier_templar_assassin_refraction_damage")
 	then
@@ -1279,7 +1279,7 @@ function X.GetNearbyLastHitCreep(ignorAlly, bEnemy, nDamage, nRadius, bot)
 		nDamage = nDamage + bonusDamage;
 	end
 	
-	if  bEnemy
+	if bEnemy
 		and botName == "npc_dota_hero_kunkka"
 	then
 		local cAbility = bot:GetAbilityByName( "kunkka_tidebringer" );
@@ -1392,7 +1392,7 @@ function X.IsAllysTarget(unit)
 	
 	for _,ally in pairs(allies) 
 	do
-		if  ally ~= bot
+		if ally ~= bot
 			and not ally:IsIllusion()
 			and ( ally:GetTarget() == unit or ally:GetAttackTarget() == unit )
 		then
@@ -1408,7 +1408,7 @@ function X.IsEnemysTarget(unit)
 	local enemys = J.GetNearbyHeroes(bot,1600,true,BOT_MODE_NONE);
 	for _,enemy in pairs(enemys) 
 	do
-		if  X.IsValid(enemy) and J.GetProperTarget(enemy) == unit 
+		if X.IsValid(enemy) and J.GetProperTarget(enemy) == unit 
 		then
 			return true;
 		end
@@ -1562,7 +1562,7 @@ function X.IsCreepTarget(nUnit)
 	local nCreeps = bot:GetNearbyCreeps(1200,true);
 	for _,creep in pairs(nCreeps)
 	do
-		if  creep ~= nil and creep:IsAlive()
+		if creep ~= nil and creep:IsAlive()
 		and creep:GetAttackTarget() == nUnit
 		and not J.IsTormentor(creep)
 		and not J.IsRoshan(creep)
@@ -1795,7 +1795,7 @@ function X.ShouldAttackTowerCreep(bot)
 
 	if X.CanNotUseAttack(bot) then return 0 end
 	
-	if  bot:GetLevel() > 2
+	if bot:GetLevel() > 2
 		and bot:GetAnimActivity() == 1502
 		and bot:GetTarget() == nil 
 	    and bot:GetAttackTarget() == nil
@@ -1874,7 +1874,7 @@ function X.ShouldAttackTowerCreep(bot)
 			local attackTime = bot:GetSecondsPerAttack() -0.3;
 			local towerTargetHealth = towerTarget:GetHealth();
 			
-			if  towerRealDamage > botRealDamage
+			if towerRealDamage > botRealDamage
 				and towerTargetHealth > towerRealDamage 
 				and towerTargetHealth % towerRealDamage > botRealDamage 
 			then
@@ -1898,7 +1898,7 @@ function X.ShouldNotRetreat(bot)
 	end
 	
 	local nAttackAlly = J.GetNearbyHeroes(bot,1000,false,BOT_MODE_ATTACK);
-	if  ( bot:HasModifier("modifier_item_mask_of_madness_berserk")
+	if ( bot:HasModifier("modifier_item_mask_of_madness_berserk")
 			or bot:HasModifier("modifier_oracle_false_promise_timer") )
 		and ( #nAttackAlly >= 1 or J.GetHP(bot) > 0.6 )
 		and (bot:WasRecentlyDamagedByAnyHero(1) or bot:WasRecentlyDamagedByTower(1))
@@ -1935,7 +1935,7 @@ function X.ShouldNotRetreat(bot)
 	do
 		if J.IsValid(ally) 
 		then
-			if  J.GetHP(bot) >= 0.3 and ( J.GetHP(ally) > 0.88 and ally:GetLevel() >= 12 and ally:GetActiveMode() ~= BOT_MODE_RETREAT)
+			if J.GetHP(bot) >= 0.3 and ( J.GetHP(ally) > 0.88 and ally:GetLevel() >= 12 and ally:GetActiveMode() ~= BOT_MODE_RETREAT)
 			    or ( ally:HasModifier("modifier_black_king_bar_immune") or ally:IsMagicImmune() )
 				or ( ally:HasModifier("modifier_item_mask_of_madness_berserk") and ally:GetAttackTarget() ~= nil )
 				or ally:HasModifier("modifier_abaddon_borrowed_time")
@@ -2004,7 +2004,7 @@ function CanAttackSpecialUnit()
 					for i = 1, 5
 					do
 						local allyHero = GetTeamMember(i)
-						if  J.IsValidHero(allyHero)
+						if J.IsValidHero(allyHero)
 						and allyHero:GetUnitName() == 'npc_dota_hero_rattletrap'
 						then
 							isClockwerkInTeam = true
@@ -2053,7 +2053,7 @@ function CanAttackSpecialUnit()
 					end
 				end
 
-				if  GetUnitToUnitDistance(bot, unit) <= nAttackRange + 600
+				if GetUnitToUnitDistance(bot, unit) <= nAttackRange + 600
 				and J.CanBeAttacked(unit)
 				then
 					SpecialUnitTarget = unit
@@ -2106,7 +2106,7 @@ function ConsiderHarassInLaningPhase()
 
 			for _, creep in pairs(nEnemyLaneCreeps)
 			do
-				if  J.IsValid(creep)
+				if J.IsValid(creep)
 				and J.CanBeAttacked(creep)
 				and J.GetHP(creep) <= 0.5
 				then
@@ -2114,7 +2114,7 @@ function ConsiderHarassInLaningPhase()
 				end
 			end
 
-			if  J.GetHP(bot) > 0.41
+			if J.GetHP(bot) > 0.41
 			and ((J.IsCore(bot) and not canLastHitCount == 0)
 				or (not J.IsCore(bot)))
 			then
@@ -2127,7 +2127,7 @@ function ConsiderHarassInLaningPhase()
 				nInRangeEnemy = J.GetNearbyHeroes(bot,nAttackRange, true, BOT_MODE_NONE)
 				if nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
 				then
-					if  J.IsValidHero(nInRangeEnemy[1])
+					if J.IsValidHero(nInRangeEnemy[1])
 					and J.CanBeAttacked(nInRangeEnemy[1])
 					and not J.IsSuspiciousIllusion(nInRangeEnemy[1])
 					and not J.IsRetreating(bot)
@@ -2189,7 +2189,7 @@ function SwapSmokeSupport()
 	then
 		local botTarget = bot:GetAttackTarget()
 
-		if  J.IsRoshan(botTarget)
+		if J.IsRoshan(botTarget)
 		and J.IsAttacking(bot)
 		then
 			local smokeSlot = bot:FindItemSlot('item_smoke_of_deceit')
@@ -2336,13 +2336,13 @@ function J.FindLeastExpensiveItemSlot()
 
 	for i = 0, 5
 	do
-		if  bot:GetItemInSlot(i) ~= nil
+		if bot:GetItemInSlot(i) ~= nil
 		and bot:GetItemInSlot(i):GetName() ~= 'item_aegis'
 		and bot:GetItemInSlot(i):GetName() ~= 'item_rapier'
 		then
 			local item = bot:GetItemInSlot(i):GetName()
 
-			if  GetItemCost(item) < minCost
+			if GetItemCost(item) < minCost
 			and not (item == 'item_ward_observer' or item == 'item_ward_sentry')
 			then
 				minCost = GetItemCost(item)

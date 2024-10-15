@@ -109,7 +109,7 @@ function GetDesire()
 	for _, c in pairs(nNeutralCreeps)
 	do
 		local nInRangeAlly = J.GetAlliesNearLoc(TormentorLocation, 700)
-		if  c ~= nil
+		if c ~= nil
 		and (c:GetUnitName() == "npc_dota_miniboss" and nInRangeAlly ~= nil and #nInRangeAlly >= 2)
 		then
 			return BOT_ACTION_DESIRE_NONE
@@ -213,14 +213,14 @@ function GetDesire()
 		return 0.99;
 	end
 
-	if  bot:IsAlive()
+	if bot:IsAlive()
 	and J.IsMeepoClone(bot)
 	then
 		if J.IsDoingRoshan(bot)
 		then
 			local botTarget = bot:GetAttackTarget()
 
-			if  J.IsRoshan(botTarget)
+			if J.IsRoshan(botTarget)
 			and J.IsInRange(bot, botTarget, 400)
 			and J.GetHP(botTarget) < 0.33
 			then
@@ -404,7 +404,7 @@ function GetDesire()
 							
 							if beHighFarmer or bot:GetAttackRange() < 310
 							then
-								if  bot:GetActiveModeDesire() <= BOT_MODE_DESIRE_MODERATE 
+								if bot:GetActiveModeDesire() <= BOT_MODE_DESIRE_MODERATE 
 									and enemyAncientDistance > 1600
 									and enemyAncientDistance < 5800
 									and #allies < 2
@@ -609,7 +609,7 @@ function Think()
 				return;
 			end
 			
-		elseif  farmState == 0 
+		elseif farmState == 0 
 				and #nNeutrals == 0
 		        and cDist > 240
 		        and ( not X.IsLocCanBeSeen(targetFarmLoc) or cDist > 600 )
@@ -890,7 +890,7 @@ function X.ShouldRun(bot)
 			return 2.5;
 		end
 		
-		if  enemyAncientDistance > 2100
+		if enemyAncientDistance > 2100
 			and enemyAncientDistance < GetUnitToUnitDistance(nEnemyTowers[1],enemyAncient) - rushEnemyTowerDistance
 		then
 			local nTarget = J.GetProperTarget(bot);
@@ -924,7 +924,7 @@ function X.ShouldRun(bot)
 	end
 	
 
-	if  botLevel <= 10
+	if botLevel <= 10
 		and (#hEnemyHeroList > 0 or bot:GetHealth() < 700)
 	then
 		local nLongEnemyTowers = bot:GetNearbyTowers(999, true);
@@ -953,7 +953,7 @@ function X.ShouldRun(bot)
 		end
 	end
 	
-	if  bot:IsInvisible() and DotaTime() > 8 * 60
+	if bot:IsInvisible() and DotaTime() > 8 * 60
 		and botMode == BOT_MODE_RETREAT
 		and bot:GetActiveModeDesire() > 0.4
 		and #hAllyHeroList <= 1
@@ -999,7 +999,7 @@ function X.ShouldRun(bot)
 				return 4;
 			end
 		end	
-		if  botLevel >= 9 and botLevel <= 17  
+		if botLevel >= 9 and botLevel <= 17  
 			and (enemyCount >= 3 or #hEnemyHeroList >= 3) 
 			and botMode ~= BOT_MODE_LANING
 			and bot:GetCurrentMovementSpeed() > 300

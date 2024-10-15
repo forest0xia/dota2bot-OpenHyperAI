@@ -181,7 +181,7 @@ function X.SkillsComplement()
     then
         bot:Action_ClearActions(false)
 
-        if  X.CanBKB()
+        if X.CanBKB()
         and not bot:IsMagicImmune()
         then
             bot:ActionQueue_UseAbility(BlackKingBar)
@@ -201,7 +201,7 @@ function X.SkillsComplement()
     then
         bot:Action_ClearActions(false)
 
-        if  X.CanBKB()
+        if X.CanBKB()
         and not bot:IsMagicImmune()
         then
             bot:ActionQueue_UseAbility(BlackKingBar)
@@ -224,7 +224,7 @@ function X.SkillsComplement()
     BlackHoleDesire, BlackHoleLocation = X.ConsiderBlackHole()
     if BlackHoleDesire > 0
     then
-        if  X.CanBKB()
+        if X.CanBKB()
         and not bot:IsMagicImmune()
         then
             bot:ActionQueue_UseAbility(BlackKingBar)
@@ -271,7 +271,7 @@ function X.ConsiderMalefice()
 	local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange + 150, true, BOT_MODE_NONE)
 	for _, enemyHero in pairs(nEnemyHeroes)
 	do
-		if  J.IsValidHero(enemyHero)
+		if J.IsValidHero(enemyHero)
         and J.CanCastOnNonMagicImmune(enemyHero)
         and J.CanCastOnTargetAdvanced(enemyHero)
         and not J.IsSuspiciousIllusion(enemyHero)
@@ -281,7 +281,7 @@ function X.ConsiderMalefice()
                 return BOT_ACTION_DESIRE_HIGH, enemyHero
             end
 
-            if  J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_MAGICAL)
+            if J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_MAGICAL)
             and not enemyHero:HasModifier('modifier_abaddon_aphotic_shield')
             and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
             and not enemyHero:HasModifier('modifier_dazzle_shallow_grave')
@@ -297,7 +297,7 @@ function X.ConsiderMalefice()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.CanCastOnTargetAdvanced(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange + 150)
@@ -312,7 +312,7 @@ function X.ConsiderMalefice()
             local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1400, true, BOT_MODE_NONE)
             local nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1400, false, BOT_MODE_NONE)
 
-            if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+            if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
             and #nInRangeAlly >= #nInRangeEnemy
             then
                 return BOT_ACTION_DESIRE_HIGH, botTarget
@@ -324,7 +324,7 @@ function X.ConsiderMalefice()
 	then
         local nInRangeEnemy = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE)
 
-        if  J.IsValidHero(nInRangeEnemy[1])
+        if J.IsValidHero(nInRangeEnemy[1])
         and J.CanCastOnNonMagicImmune(nInRangeEnemy[1])
         and J.CanCastOnTargetAdvanced(nInRangeEnemy[1])
         and J.IsInRange(bot, nInRangeEnemy[1], nCastRange)
@@ -335,7 +335,7 @@ function X.ConsiderMalefice()
             local nInRangeAlly = J.GetNearbyHeroes(nInRangeEnemy[1], 1200, true, BOT_MODE_NONE)
             local nTargetInRangeAlly = J.GetNearbyHeroes(nInRangeEnemy[1], 1200, false, BOT_MODE_NONE)
 
-            if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+            if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
             and (#nTargetInRangeAlly > #nInRangeAlly
                 or bot:WasRecentlyDamagedByAnyHero(2))
             then
@@ -349,13 +349,13 @@ function X.ConsiderMalefice()
     do
         local nAllyInRangeEnemy = J.GetNearbyHeroes(allyHero, 1600, true, BOT_MODE_NONE)
 
-        if  J.IsValidHero(allyHero)
+        if J.IsValidHero(allyHero)
         and (not J.IsCore(bot) or J.IsCore(bot) and J.GetManaAfter(Malefice:GetManaCost()) > 0.66)
         and J.IsRetreating(allyHero)
         and allyHero:WasRecentlyDamagedByAnyHero(2)
         and not allyHero:IsIllusion()
         then
-            if  nAllyInRangeEnemy ~= nil and #nAllyInRangeEnemy >= 1
+            if nAllyInRangeEnemy ~= nil and #nAllyInRangeEnemy >= 1
             and J.IsValidHero(nAllyInRangeEnemy[1])
             and J.CanCastOnNonMagicImmune(nAllyInRangeEnemy[1])
             and J.CanCastOnTargetAdvanced(nAllyInRangeEnemy[1])
@@ -375,7 +375,7 @@ function X.ConsiderMalefice()
 
 	if J.IsDoingRoshan(bot)
 	then
-        if  J.IsRoshan(botTarget)
+        if J.IsRoshan(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
         and J.IsAttacking(bot)
@@ -387,7 +387,7 @@ function X.ConsiderMalefice()
 
     if J.IsDoingTormentor(bot)
 	then
-        if  J.IsTormentor(botTarget)
+        if J.IsTormentor(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
         and J.IsAttacking(bot)
         then
@@ -407,10 +407,10 @@ function X.ConsiderDemonicSummoning()
     local nCastRange = J.GetProperCastRange(false, bot, DemonicSummoning:GetCastRange())
     local nHPCost = 75 + (25 * (DemonicSummoning:GetLevel() - 1))
 
-    if  J.IsGoingOnSomeone(bot)
+    if J.IsGoingOnSomeone(bot)
     and J.GetHP(bot) > 0.5
 	then
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
         and not J.IsSuspiciousIllusion(botTarget)
         and not botTarget:HasModifier('modifier_abaddon_borrowed_time')
@@ -420,7 +420,7 @@ function X.ConsiderDemonicSummoning()
             local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1400, true, BOT_MODE_NONE)
             local nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1400, false, BOT_MODE_NONE)
 
-            if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+            if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
             and #nInRangeAlly >= #nInRangeEnemy
             then
                 if DotaTime() < 10 * 60
@@ -430,7 +430,7 @@ function X.ConsiderDemonicSummoning()
                     then
                         if J.IsChasingTarget(bot, botTarget)
                         then
-                            if  J.IsInRange(bot, botTarget, nCastRange)
+                            if J.IsInRange(bot, botTarget, nCastRange)
                             and #nEnemyTowers == 0
                             then
                                 return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
@@ -481,7 +481,7 @@ function X.ConsiderDemonicSummoning()
             local nEnemyBarracks = bot:GetNearbyBarracks(800,true)
             local nEnemyFillers = bot:GetNearbyFillers(800, true)
 
-            if  J.IsValidBuilding(bot:GetAttackTarget())
+            if J.IsValidBuilding(bot:GetAttackTarget())
             and (nEnemyTowers ~= nil and #nEnemyTowers >= 1
                 or nEnemyBarracks ~= nil and #nEnemyBarracks >= 1
                 or nEnemyFillers ~= nil and #nEnemyFillers >= 1)
@@ -491,7 +491,7 @@ function X.ConsiderDemonicSummoning()
         end
 	end
 
-    if  J.IsFarming(bot)
+    if J.IsFarming(bot)
     and J.GetHealthAfter(nHPCost) > 0.5
     and J.GetManaAfter(DemonicSummoning:GetManaCost()) > 0.33
     and J.IsAttacking(bot)
@@ -509,7 +509,7 @@ function X.ConsiderDemonicSummoning()
         end
     end
 
-    if  J.IsLaning(bot)
+    if J.IsLaning(bot)
     and J.GetHealthAfter(nHPCost) > 0.61
     and J.GetManaAfter(DemonicSummoning:GetManaCost()) > 0.5
     then
@@ -520,10 +520,10 @@ function X.ConsiderDemonicSummoning()
         end
     end
 
-    if  J.IsDoingRoshan(bot)
+    if J.IsDoingRoshan(bot)
     and J.GetHealthAfter(nHPCost) > 0.5
 	then
-        if  J.IsRoshan(botTarget)
+        if J.IsRoshan(botTarget)
         and J.IsInRange(bot, botTarget, bot:GetAttackRange())
         and J.IsAttacking(bot)
         then
@@ -531,10 +531,10 @@ function X.ConsiderDemonicSummoning()
         end
 	end
 
-    if  J.IsDoingTormentor(bot)
+    if J.IsDoingTormentor(bot)
     and J.GetHealthAfter(nHPCost) > 0.63
 	then
-        if  J.IsTormentor(botTarget)
+        if J.IsTormentor(botTarget)
         and J.IsInRange(bot, botTarget, bot:GetAttackRange())
         and J.IsAttacking(bot)
         then
@@ -572,7 +572,7 @@ function X.ConsiderMidnightPulse()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and not J.IsSuspiciousIllusion(botTarget)
         and not botTarget:HasModifier('modifier_abaddon_borrowed_time')
@@ -580,7 +580,7 @@ function X.ConsiderMidnightPulse()
             local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1400, true, BOT_MODE_NONE)
             local nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1400, false, BOT_MODE_NONE)
 
-            if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+            if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
             and #nInRangeAlly >= #nInRangeEnemy
             then
                 nInRangeEnemy = J.GetEnemiesNearLoc(botTarget:GetLocation(), nRadius * 0.66)
@@ -598,7 +598,7 @@ function X.ConsiderMidnightPulse()
                         return BOT_ACTION_DESIRE_HIGH, botTarget:GetExtrapolatedLocation(1)
                     end
                 else
-                    if  J.IsInRange(bot, botTarget, nCastRange + nRadius)
+                    if J.IsInRange(bot, botTarget, nCastRange + nRadius)
                     and not J.IsInRange(bot, botTarget, nCastRange)
                     and not J.IsChasingTarget(bot, botTarget)
                     then
@@ -611,7 +611,7 @@ function X.ConsiderMidnightPulse()
 
     if J.IsDoingRoshan(bot)
 	then
-        if  J.IsRoshan(botTarget)
+        if J.IsRoshan(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
         and J.IsAttacking(bot)
@@ -622,7 +622,7 @@ function X.ConsiderMidnightPulse()
 
     if J.IsDoingTormentor(bot)
 	then
-        if  J.IsTormentor(botTarget)
+        if J.IsTormentor(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
         and J.IsAttacking(bot)
         then
@@ -657,7 +657,7 @@ function X.ConsiderBlackHole()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
         and J.CanCastOnMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, 800)
         and not J.IsSuspiciousIllusion(botTarget)
@@ -671,12 +671,12 @@ function X.ConsiderBlackHole()
             local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1200, true, BOT_MODE_NONE)
             local nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1200, false, BOT_MODE_NONE)
 
-            if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+            if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
             then
-                if  #nInRangeEnemy >= #nInRangeAlly
+                if #nInRangeEnemy >= #nInRangeAlly
                 and #nInRangeEnemy <= 1
                 then
-                    if  J.CanKillTarget(botTarget, nDamage * nDuration, DAMAGE_TYPE_PURE)
+                    if J.CanKillTarget(botTarget, nDamage * nDuration, DAMAGE_TYPE_PURE)
                     -- and J.IsCore(botTarget)
                     and botTarget:GetHealth() > 200
                     then
@@ -685,7 +685,7 @@ function X.ConsiderBlackHole()
                         then
                             return BOT_ACTION_DESIRE_HIGH, J.GetCenterOfUnits(nInRangeEnemy)
                         else
-                            if  J.IsInRange(bot, botTarget, nCastRange + nRadius)
+                            if J.IsInRange(bot, botTarget, nCastRange + nRadius)
                             and not J.IsInRange(bot, botTarget, nCastRange)
                             then
                                 return BOT_ACTION_DESIRE_HIGH, J.Site.GetXUnitsTowardsLocation(bot, botTarget:GetLocation(), nCastRange)
@@ -696,10 +696,10 @@ function X.ConsiderBlackHole()
                     end
                 end
 
-                if  #nInRangeAlly >= #nInRangeEnemy
+                if #nInRangeAlly >= #nInRangeEnemy
                 -- and J.IsCore(botTarget)
                 then
-                    if  #nInRangeAlly <= 1
+                    if #nInRangeAlly <= 1
                     and J.CanKillTarget(botTarget, nDamage * 1.1 * nDuration, DAMAGE_TYPE_PURE)
                     then
                         return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
@@ -709,7 +709,7 @@ function X.ConsiderBlackHole()
                         then
                             return BOT_ACTION_DESIRE_HIGH, J.GetCenterOfUnits(nInRangeEnemy)
                         else
-                            if  J.IsInRange(bot, botTarget, nCastRange + nRadius)
+                            if J.IsInRange(bot, botTarget, nCastRange + nRadius)
                             and not J.IsInRange(bot, botTarget, nCastRange)
                             then
                                 return BOT_ACTION_DESIRE_HIGH, J.Site.GetXUnitsTowardsLocation(bot, botTarget:GetLocation(), nCastRange)
@@ -748,7 +748,7 @@ function X.ConsiderBlinkHole()
 end
 
 function X.CanDoBlinkHole()
-    if  BlackHole:IsFullyCastable()
+    if BlackHole:IsFullyCastable()
     and Blink ~= nil and Blink:IsFullyCastable()
     then
         local nManaCost = BlackHole:GetManaCost()
@@ -783,7 +783,7 @@ function X.ConsiderBlinkPulseHole()
 end
 
 function X.CanDoBlinkPulseHole()
-    if  BlackHole:IsFullyCastable()
+    if BlackHole:IsFullyCastable()
     and MidnightPulse:IsFullyCastable()
     and Blink ~= nil and Blink:IsFullyCastable()
     then
@@ -806,7 +806,7 @@ function X.HasBlink()
     do
 		local item = bot:GetItemInSlot(i)
 
-		if  item ~= nil
+		if item ~= nil
         and (item:GetName() == "item_blink" or item:GetName() == "item_overwhelming_blink" or item:GetName() == "item_arcane_blink" or item:GetName() == "item_swift_blink")
         then
 			blink = item
@@ -814,7 +814,7 @@ function X.HasBlink()
 		end
 	end
 
-    if  blink ~= nil
+    if blink ~= nil
     and blink:IsFullyCastable()
 	then
         Blink = blink
@@ -831,7 +831,7 @@ function X.CanBKB()
     do
 		local item = bot:GetItemInSlot(i)
 
-		if  item ~= nil
+		if item ~= nil
         and item:GetName() == "item_black_king_bar"
         then
 			bkb = item
@@ -839,7 +839,7 @@ function X.CanBKB()
 		end
 	end
 
-    if  bkb ~= nil
+    if bkb ~= nil
     and bkb:IsFullyCastable()
 	then
         BlackKingBar = bkb

@@ -230,7 +230,7 @@ function X.ConsiderFlux()
 	local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 	for _, enemyHero in pairs(nEnemyHeroes)
 	do
-		if  J.IsValidHero(enemyHero)
+		if J.IsValidHero(enemyHero)
 		and J.CanCastOnNonMagicImmune(enemyHero)
 		and J.CanCastOnTargetAdvanced(enemyHero)
 		and J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_MAGICAL)
@@ -253,7 +253,7 @@ function X.ConsiderFlux()
 		local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange + 150, true, BOT_MODE_NONE)
 		for _, enemyHero in pairs(nInRangeEnemy)
 		do
-			if  J.IsValid(enemyHero)
+			if J.IsValid(enemyHero)
 			and J.CanCastOnNonMagicImmune(enemyHero)
 			and J.CanCastOnTargetAdvanced(enemyHero)
 			and not J.IsSuspiciousIllusion(enemyHero)
@@ -278,7 +278,7 @@ function X.ConsiderFlux()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		if  J.IsValidHero(botTarget)
+		if J.IsValidHero(botTarget)
 		and J.CanCastOnNonMagicImmune(botTarget)
 		and J.CanCastOnTargetAdvanced(botTarget)
 		and J.IsInRange(bot, botTarget, nCastRange + 75)
@@ -289,7 +289,7 @@ function X.ConsiderFlux()
 			local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1600, true, BOT_MODE_NONE)
 			local nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1600, false, BOT_MODE_NONE)
 
-			if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+			if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 			and #nInRangeAlly >= #nInRangeEnemy
 			then
 				return BOT_ACTION_DESIRE_HIGH, botTarget
@@ -300,7 +300,7 @@ function X.ConsiderFlux()
 	if J.IsRetreating(bot)
 	then
         local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
-		if  J.IsValidHero(nInRangeEnemy[1])
+		if J.IsValidHero(nInRangeEnemy[1])
 		and J.CanCastOnNonMagicImmune(nInRangeEnemy[1])
 		and J.CanCastOnTargetAdvanced(nInRangeEnemy[1])
 		and J.IsChasingTarget(nInRangeEnemy[1], bot)
@@ -310,7 +310,7 @@ function X.ConsiderFlux()
 			local nInRangeAlly = J.GetNearbyHeroes(nInRangeEnemy[1], 1200, true, BOT_MODE_NONE)
 			local nTargetInRangeAlly = J.GetNearbyHeroes(nInRangeEnemy[1], 1200, false, BOT_MODE_NONE)
 
-			if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+			if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
 			and ((#nTargetInRangeAlly > #nInRangeAlly)
 				or bot:WasRecentlyDamagedByAnyHero(2))
 			then
@@ -321,7 +321,7 @@ function X.ConsiderFlux()
 
 	if J.IsDoingRoshan(bot)
 	then
-		if  J.IsRoshan(botTarget)
+		if J.IsRoshan(botTarget)
 		and J.CanCastOnMagicImmune(botTarget)
 		and J.IsInRange(bot, botTarget, nCastRange)
 		and J.IsAttacking(bot)
@@ -332,7 +332,7 @@ function X.ConsiderFlux()
 
 	if J.IsDoingTormentor(bot)
 	then
-		if  J.IsTormentor(botTarget)
+		if J.IsTormentor(botTarget)
 		and J.IsInRange(bot, botTarget, nCastRange)
 		and J.IsAttacking(bot)
 		then
@@ -357,11 +357,11 @@ function X.ConsiderMagneticField()
 	then
 		local nLocationAoE = bot:FindAoELocation(false, true, bot:GetLocation(), nCastRange, nRadius, 0, 0)
 
-		if  nLocationAoE.count >= 2
+		if nLocationAoE.count >= 2
 		and GetUnitToLocationDistance(bot, nLocationAoE.targetloc) <= bot:GetAttackRange()
 		then
 			local nInRangeAlly = J.GetAlliesNearLoc(nLocationAoE.targetloc, nRadius)
-			if  J.IsValidHero(nInRangeAlly[1])
+			if J.IsValidHero(nInRangeAlly[1])
 			and nInRangeAlly[1]:GetAttackTarget() ~= nil
 			and GetUnitToUnitDistance(nInRangeAlly[1], nInRangeAlly[1]:GetAttackTarget()) <= nInRangeAlly[1]:GetAttackRange() + 50
 			and not nInRangeAlly[1]:HasModifier('modifier_arc_warden_magnetic_field')
@@ -373,14 +373,14 @@ function X.ConsiderMagneticField()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
 		and J.IsInRange(bot, botTarget, nCastRange)
 		then
 			local nInRangeAllyAttack = J.GetNearbyHeroes(bot,nCastRange, false, BOT_MODE_ATTACK)
 			for _, allyHero in pairs(nInRangeAllyAttack)
 			do
 				local allyTarget = allyHero:GetAttackTarget()
-				if  J.IsValidHero(allyHero)
+				if J.IsValidHero(allyHero)
 				and (J.IsInRange(bot, allyHero, nRadius) and not allyHero:HasModifier('modifier_arc_warden_magnetic_field'))
 				and (J.IsValidTarget(allyTarget) and GetUnitToUnitDistance(allyHero, allyTarget) <= allyHero:GetAttackRange())
 				and not J.IsSuspiciousIllusion(allyHero)
@@ -390,7 +390,7 @@ function X.ConsiderMagneticField()
 					local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1600, true, BOT_MODE_NONE)
 					local nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1600, false, BOT_MODE_NONE)
 
-					if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+					if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 					and #nInRangeAlly >= #nInRangeEnemy
 					then
 						return BOT_ACTION_DESIRE_HIGH
@@ -400,7 +400,7 @@ function X.ConsiderMagneticField()
 		end
 	end
 
-	if  (J.IsDefending(bot) or J.IsPushing(bot))
+	if (J.IsDefending(bot) or J.IsPushing(bot))
 	and not bot:HasModifier('modifier_arc_warden_magnetic_field')
 	then
 		local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(888, true)
@@ -420,7 +420,7 @@ function X.ConsiderMagneticField()
 		end
 	end
 
-	if  J.IsFarming(bot)
+	if J.IsFarming(bot)
 	and J.GetManaAfter(MagneticField:GetManaCost()) * bot:GetMana() > MagneticField:GetManaCost() * 1.5
 	and not bot:HasModifier('modifier_arc_warden_magnetic_field')
 	then
@@ -434,7 +434,7 @@ function X.ConsiderMagneticField()
 			end
 
 			local nNeutralCreeps = bot:GetNearbyNeutralCreeps(888)
-			if  nNeutralCreeps ~= nil
+			if nNeutralCreeps ~= nil
 			and (#nNeutralCreeps >= 3 or (#nNeutralCreeps >= 2 and nNeutralCreeps[1]:IsAncientCreep()))
 			then
 				return BOT_ACTION_DESIRE_HIGH
@@ -442,10 +442,10 @@ function X.ConsiderMagneticField()
 		end
 	end
 
-	if  J.IsDoingRoshan(bot)
+	if J.IsDoingRoshan(bot)
 	and not bot:HasModifier('modifier_arc_warden_magnetic_field')
 	then
-		if  J.IsRoshan(botTarget)
+		if J.IsRoshan(botTarget)
 		and J.IsInRange(bot, botTarget, bot:GetAttackRange())
 		and J.IsAttacking(bot)
 		then
@@ -453,10 +453,10 @@ function X.ConsiderMagneticField()
 		end
 	end
 
-	if  J.IsDoingTormentor(bot)
+	if J.IsDoingTormentor(bot)
 	and not bot:HasModifier('modifier_arc_warden_magnetic_field')
 	then
-		if  J.IsTormentor(botTarget)
+		if J.IsTormentor(botTarget)
 		and J.IsInRange(bot, botTarget, bot:GetAttackRange())
 		and J.IsAttacking(bot)
 		then
@@ -479,7 +479,7 @@ function X.ConsiderSparkWraith()
 	local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 	for _, enemyHero in pairs(nEnemyHeroes)
 	do
-		if  J.IsValidHero(enemyHero)
+		if J.IsValidHero(enemyHero)
 		and J.CanCastOnNonMagicImmune(enemyHero)
 		and J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_MAGICAL)
 		and not J.IsSuspiciousIllusion(enemyHero)
@@ -495,7 +495,7 @@ function X.ConsiderSparkWraith()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		if  J.IsValidHero(botTarget)
+		if J.IsValidHero(botTarget)
 		and J.CanCastOnNonMagicImmune(botTarget)
 		and J.IsInRange(bot, botTarget, nCastRange)
 		and not J.IsSuspiciousIllusion(botTarget)
@@ -522,7 +522,7 @@ function X.ConsiderSparkWraith()
 		local nLocationAoE = bot:FindAoELocation(true, true, bot:GetLocation(), 1400, nRadius, 2, 0)
 		local nInRangeEnemy = J.GetEnemiesNearLoc(nLocationAoE.targetloc, nRadius)
 
-		if  nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
+		if nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
 		and J.GetManaAfter(SparkWraith:GetManaCost()) * bot:GetMana() > Flux:GetManaCost() + MagneticField:GetManaCost() + SparkWraith:GetManaCost()
 		and not bot:HasModifier('modifier_silencer_curse_of_the_silent')
 		then
@@ -535,14 +535,14 @@ function X.ConsiderSparkWraith()
 		end
 	end
 
-	if  J.IsRetreating(bot)
+	if J.IsRetreating(bot)
 	and bot:GetActiveModeDesire() > BOT_ACTION_DESIRE_HIGH
 	and not bot:HasModifier('modifier_silencer_curse_of_the_silent')
 	then
 		local nInRangeEnemy = J.GetNearbyHeroes(bot,800, true, BOT_MODE_NONE)
 		for _, enemyHero in pairs(nInRangeEnemy)
 		do
-			if  J.IsValid(enemyHero)
+			if J.IsValid(enemyHero)
 			and bot:WasRecentlyDamagedByHero(enemyHero, 1)
 			and J.CanCastOnNonMagicImmune(enemyHero)
 			then
@@ -556,7 +556,7 @@ function X.ConsiderSparkWraith()
 	or J.IsDefending(bot)
 	then
 		local nLocationAoE = bot:FindAoELocation(true, false, bot:GetLocation(), 1400, nRadius, 2, 0)
-		if  nLocationAoE.count > 2
+		if nLocationAoE.count > 2
 		and not bot:HasModifier('modifier_silencer_curse_of_the_silent')
 		then
 			if bot:HasModifier('modifier_arc_warden_tempest_double')
@@ -580,14 +580,14 @@ function X.ConsiderSparkWraith()
 		end
 	end
 
-	if  J.IsLaning(bot)
+	if J.IsLaning(bot)
 	and J.IsInLaningPhase()
     and bot:GetLevel() < 7
 	then
 		local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(1600, true)
 		for _, creep in pairs(nEnemyLaneCreeps)
 		do
-			if  J.IsValid(creep)
+			if J.IsValid(creep)
             and J.CanBeAttacked(creep)
 			and J.IsKeyWordUnit('ranged', creep)
 			and creep:GetHealth() <= nDamage
@@ -599,7 +599,7 @@ function X.ConsiderSparkWraith()
 		end
 	end
 
-	if  SparkWraith:GetLevel() >= 3
+	if SparkWraith:GetLevel() >= 3
 	and J.GetManaAfter(SparkWraith:GetManaCost()) * bot:GetMana() > Flux:GetManaCost() + MagneticField:GetManaCost() + SparkWraith:GetManaCost()
 	and not J.IsLaning(bot)
 	then
@@ -611,7 +611,7 @@ function X.ConsiderSparkWraith()
 		end
 	end
 
-	if  bot:GetLevel() >= 10
+	if bot:GetLevel() >= 10
 	and ((J.GetManaAfter(SparkWraith:GetManaCost()) * bot:GetMana() > Flux:GetManaCost() + MagneticField:GetManaCost() + SparkWraith:GetManaCost())
 		or bot:HasModifier('modifier_arc_warden_tempest_double'))
 	and DotaTime() > 8 * 60
@@ -621,7 +621,7 @@ function X.ConsiderSparkWraith()
 		local nTargetHeroHealth = 99999
 		for _, enemyHero in pairs( nEnemysHerosCanSeen )
 		do
-			if  J.IsValidHero(enemyHero)
+			if J.IsValidHero(enemyHero)
 			and GetUnitToUnitDistance(bot, enemyHero) <= nCastRange
 			and enemyHero:GetHealth() < nTargetHeroHealth
 			then
@@ -646,7 +646,7 @@ function X.ConsiderSparkWraith()
 		if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 3
 		then
 			local targetCreep = nEnemyLaneCreeps[#nEnemyLaneCreeps]
-			if  J.IsValid(targetCreep)
+			if J.IsValid(targetCreep)
 			and J.CanBeAttacked(targetCreep)
 			then
 				local nCastLocation = J.GetFaceTowardDistanceLocation(targetCreep, 375)
@@ -657,7 +657,7 @@ function X.ConsiderSparkWraith()
 		local nEnemyHeroesInView = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE)
 		local nEnemyLaneFront = J.GetNearestLaneFrontLocation(bot:GetLocation(), true, nRadius / 2)
 
-		if  nEnemyHeroesInView ~= nil and #nEnemyHeroesInView == 0 and nEnemyLaneFront ~= nil
+		if nEnemyHeroesInView ~= nil and #nEnemyHeroesInView == 0 and nEnemyLaneFront ~= nil
 		and GetUnitToLocationDistance(bot, nEnemyLaneFront) <= nCastRange + nRadius
 		and GetUnitToLocationDistance(bot, nEnemyLaneFront) >= 800
 		then
@@ -676,7 +676,7 @@ function X.ConsiderSparkWraith()
 	or (J.GetMP(bot) > 0.92 and bot:GetLevel() > 11 and not IsLocationVisible(nCastLocation))
 	or (J.GetMP(bot) > 0.38 and J.GetDistanceFromEnemyFountain(bot) < 4300)
 	then
-		if  IsLocationPassable(nCastLocation)
+		if IsLocationPassable(nCastLocation)
 		and not bot:HasModifier('modifier_silencer_curse_of_the_silent')
 		then
 			return BOT_ACTION_DESIRE_HIGH, nCastLocation
@@ -685,7 +685,7 @@ function X.ConsiderSparkWraith()
 
 	if J.IsDoingRoshan(bot)
 	then
-		if  J.IsRoshan(botTarget)
+		if J.IsRoshan(botTarget)
 		and J.IsInRange(bot, botTarget, nCastRange)
 		and J.GetHP(botTarget) > 0.2
 		and J.IsAttacking(bot)
@@ -696,7 +696,7 @@ function X.ConsiderSparkWraith()
 
 	if J.IsDoingTormentor(bot)
 	then
-		if  J.IsTormentor(botTarget)
+		if J.IsTormentor(botTarget)
 		and J.IsInRange(bot, botTarget, nCastRange)
 		and J.GetHP(botTarget) > 0.2
 		and J.IsAttacking(bot)
@@ -742,7 +742,7 @@ function X.ConsiderTempestDouble()
 		local nInRangeEnemy = J.GetNearbyHeroes(bot,1200, true, BOT_MODE_NONE)
 		for _, enemyHero in pairs(nInRangeEnemy)
 		do
-			if  J.IsValidHero(enemyHero)
+			if J.IsValidHero(enemyHero)
 			and J.IsInRange(bot, enemyHero, nCastRange)
 			and not J.IsSuspiciousIllusion(enemyHero)
 			and not enemyHero:HasModifier('modifier_faceless_void_chronosphere_freeze')
@@ -769,7 +769,7 @@ function X.ConsiderTempestDouble()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		if  J.IsValidHero(botTarget)
+		if J.IsValidHero(botTarget)
 		and J.IsInRange(bot, botTarget, 1600)
 		and not J.IsSuspiciousIllusion(botTarget)
 		and not botTarget:HasModifier('modifier_abaddon_borrowed_time')
@@ -778,7 +778,7 @@ function X.ConsiderTempestDouble()
 			local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1600, true, BOT_MODE_NONE)
 			local nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1600, false, BOT_MODE_NONE)
 
-			if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+			if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 			and #nInRangeAlly + 1 >= #nInRangeEnemy
 			then
 				if botTarget:HasModifier('modifier_faceless_void_chronosphere_freeze')
@@ -805,7 +805,7 @@ function X.ConsiderTempestDouble()
 	end
 
 	local Midas = J.GetComboItem(bot, 'item_hand_of_midas')
-	if  Midas ~= nil
+	if Midas ~= nil
 	and X.IsDoubleMidasCooldown()
 	and bot:DistanceFromFountain() > 600
 	then
@@ -818,7 +818,7 @@ function X.ConsiderTempestDouble()
 
 	if J.IsDoingRoshan(bot)
 	then
-		if  J.IsRoshan(botTarget)
+		if J.IsRoshan(botTarget)
 		and J.IsInRange(bot, botTarget, bot:GetAttackRange())
 		and J.GetHP(botTarget) > 0.5
 		and J.IsAttacking(bot)
@@ -829,7 +829,7 @@ function X.ConsiderTempestDouble()
 
 	if J.IsDoingTormentor(bot)
 	then
-		if  J.IsTormentor(botTarget)
+		if J.IsTormentor(botTarget)
 		and J.IsInRange(bot, botTarget, bot:GetAttackRange())
 		and J.IsAttacking(bot)
 		then
@@ -846,7 +846,7 @@ function X.IsDoubleMidasCooldown()
 	if npcDouble ~= nil
 	then
 		local Midas = J.GetComboItem(npcDouble, 'item_hand_of_midas')
-		if  Midas ~= nil
+		if Midas ~= nil
 		and (Midas:IsFullyCastable() or Midas:GetCooldownTimeRemaining() <= 3)
 		then
 			return true
@@ -857,12 +857,12 @@ function X.IsDoubleMidasCooldown()
 end
 
 function X.UpdateDoubleStatus()
-	if  npcDouble == nil
+	if npcDouble == nil
 	and bot:GetLevel() >= 6
 	then
 		for _, allyHero in pairs(GetUnitList(UNIT_LIST_ALLIED_HEROES))
 		do
-			if  allyHero ~= nil
+			if allyHero ~= nil
 			and allyHero:IsAlive()
 			and allyHero:HasModifier('modifier_arc_warden_tempest_double')
 			then

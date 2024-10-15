@@ -188,7 +188,7 @@ function X.ConsiderDisruption()
     local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange + 150, true, BOT_MODE_NONE)
     for _, enemyHero in pairs(nEnemyHeroes)
     do
-        if  J.IsValidHero(enemyHero)
+        if J.IsValidHero(enemyHero)
         and J.CanCastOnNonMagicImmune(enemyHero)
         and J.CanCastOnTargetAdvanced(enemyHero)
         and (enemyHero:IsChanneling() or J.IsCastingUltimateAbility(enemyHero))
@@ -201,7 +201,7 @@ function X.ConsiderDisruption()
     local nAllyHeroes = J.GetNearbyHeroes(bot,nCastRange + 150, false, BOT_MODE_NONE)
     for _, allyHero in pairs(nAllyHeroes)
     do
-        if  J.IsValidHero(allyHero)
+        if J.IsValidHero(allyHero)
         and not allyHero:IsIllusion()
         and not allyHero:HasModifier('modifier_obsidian_destroyer_astral_imprisonment_prison')
         then
@@ -216,11 +216,11 @@ function X.ConsiderDisruption()
 
         local nAllyInRangeEnemy = J.GetNearbyHeroes(allyHero, 1200, true, BOT_MODE_NONE)
 
-        if  J.IsRetreating(allyHero)
+        if J.IsRetreating(allyHero)
         and allyHero:WasRecentlyDamagedByAnyHero(2)
         and not allyHero:IsIllusion()
         then
-            if  nAllyInRangeEnemy ~= nil and #nAllyInRangeEnemy >= 1
+            if nAllyInRangeEnemy ~= nil and #nAllyInRangeEnemy >= 1
             and J.IsValidHero(nAllyInRangeEnemy[1])
             and J.CanCastOnNonMagicImmune(nAllyInRangeEnemy[1])
             and J.CanCastOnTargetAdvanced(nAllyInRangeEnemy[1])
@@ -246,7 +246,7 @@ function X.ConsiderDisruption()
         local nInRangeAlly = J.GetNearbyHeroes(bot,1200, false, BOT_MODE_NONE)
         local nInRangeEnemy = J.GetNearbyHeroes(bot,1200, true, BOT_MODE_NONE)
 
-        if  nInRangeAlly ~= nil and nInRangeEnemy
+        if nInRangeAlly ~= nil and nInRangeEnemy
         and J.IsValidHero(nInRangeEnemy[1])
         and J.CanCastOnNonMagicImmune(nInRangeEnemy[1])
         and J.CanCastOnTargetAdvanced(nInRangeEnemy[1])
@@ -259,7 +259,7 @@ function X.ConsiderDisruption()
         then
             local nTargetInRangeAlly = J.GetNearbyHeroes(nInRangeEnemy[1], 1000, false, BOT_MODE_NONE)
 
-            if  nTargetInRangeAlly ~= nil
+            if nTargetInRangeAlly ~= nil
             and ((#nTargetInRangeAlly > #nInRangeAlly)
                 or (J.GetHP(bot) < 0.75 and bot:WasRecentlyDamagedByAnyHero(2)))
             then
@@ -273,7 +273,7 @@ function X.ConsiderDisruption()
         local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange, false, BOT_MODE_NONE)
         for _, allyHero in pairs(nInRangeAlly)
         do
-            if  J.IsValidHero(allyHero)
+            if J.IsValidHero(allyHero)
             and not allyHero:IsIllusion()
             then
                 if allyHero:HasModifier('modifier_enigma_black_hole_pull')
@@ -294,7 +294,7 @@ function X.ConsiderDisruption()
             strongestTarget = J.GetStrongestUnit(nCastRange, bot, true, true, nDuration)
         end
 
-		if  J.IsValidTarget(strongestTarget)
+		if J.IsValidTarget(strongestTarget)
         and J.CanCastOnNonMagicImmune(strongestTarget)
         and J.CanCastOnTargetAdvanced(strongestTarget)
         and J.IsInRange(bot, strongestTarget, nCastRange)
@@ -312,11 +312,11 @@ function X.ConsiderDisruption()
 		end
 	end
 
-    if  J.IsGoingOnSomeone(bot)
+    if J.IsGoingOnSomeone(bot)
 	then
         local strongestTarget = J.GetStrongestUnit(nCastRange, bot, true, false, nDuration)
 
-		if  J.IsValidTarget(strongestTarget)
+		if J.IsValidTarget(strongestTarget)
         and J.CanCastOnNonMagicImmune(strongestTarget)
         and J.CanCastOnTargetAdvanced(strongestTarget)
         and J.IsInRange(bot, strongestTarget, nCastRange + 150)
@@ -326,7 +326,7 @@ function X.ConsiderDisruption()
             local nTargetInRangeAlly = J.GetNearbyHeroes(strongestTarget, 1200, false, BOT_MODE_NONE)
             local nTargetInRangeEnemy = J.GetNearbyHeroes(strongestTarget, 1200, true, BOT_MODE_NONE)
 
-            if  nTargetInRangeAlly ~= nil and nTargetInRangeEnemy ~= nil
+            if nTargetInRangeAlly ~= nil and nTargetInRangeEnemy ~= nil
             and #nTargetInRangeAlly >= #nTargetInRangeEnemy
             then
                 return BOT_ACTION_DESIRE_HIGH, strongestTarget
@@ -336,7 +336,7 @@ function X.ConsiderDisruption()
 
     if J.IsDoingTormentor(bot)
     then
-        if  J.IsTormentor(botTarget)
+        if J.IsTormentor(botTarget)
         and J.IsInRange(bot, botTarget, 400)
         then
             if J.GetHP(bot) < 0.2
@@ -347,7 +347,7 @@ function X.ConsiderDisruption()
             local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange, false, BOT_MODE_NONE)
             for _, allyHero in pairs(nInRangeAlly)
             do
-                if  J.IsValidHero(allyHero)
+                if J.IsValidHero(allyHero)
                 and J.GetHP(allyHero) < 0.3
                 and not allyHero:IsIllusion()
                 and not allyHero:HasModifier('modifier_abaddon_borrowed_time')
@@ -381,7 +381,7 @@ function X.ConsiderDisseminate()
 
 		if nInRangeEnemy ~= nil and #nInRangeEnemy >= 2
 		then
-			if  J.IsValidHero(nInRangeEnemy[1])
+			if J.IsValidHero(nInRangeEnemy[1])
             and J.CanCastOnNonMagicImmune(nInRangeEnemy[1])
             and J.CanCastOnTargetAdvanced(nInRangeEnemy[1])
 			then
@@ -392,7 +392,7 @@ function X.ConsiderDisseminate()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		if  J.IsValidHero(botTarget)
+		if J.IsValidHero(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.CanCastOnTargetAdvanced(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
@@ -410,7 +410,7 @@ function X.ConsiderDisseminate()
 	then
 		botTarget = J.GetVulnerableWeakestUnit(bot, true, true, nCastRange - 100)
 
-		if  J.IsValidHero(botTarget)
+		if J.IsValidHero(botTarget)
         and J.GetUnitAllyCountAroundEnemyTarget(botTarget, nRadius ) >= 3
         then
 			return BOT_ACTION_DESIRE_HIGH, botTarget
@@ -434,7 +434,7 @@ function X.ConsiderShadowPoison()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
         and not J.IsSuspiciousIllusion(botTarget)
@@ -466,7 +466,7 @@ function X.ConsiderShadowPoison()
 	then
 		local strongestTarget = J.GetStrongestUnit(nCastRange, bot, true, false, nDuration)
 
-		if  J.IsValidTarget(strongestTarget)
+		if J.IsValidTarget(strongestTarget)
         and J.CanCastOnNonMagicImmune(strongestTarget)
         and not J.IsSuspiciousIllusion(strongestTarget)
         and not strongestTarget:HasModifier('modifier_abaddon_borrowed_time')
@@ -496,7 +496,7 @@ function X.ConsiderShadowPoison()
 
     if J.IsDoingRoshan(bot)
     then
-        if  J.IsRoshan(botTarget)
+        if J.IsRoshan(botTarget)
         and J.IsInRange(bot, botTarget, 400)
         and J.IsAttacking(bot)
         then
@@ -506,7 +506,7 @@ function X.ConsiderShadowPoison()
 
     if J.IsDoingTormentor(bot)
     then
-        if  J.IsTormentor(botTarget)
+        if J.IsTormentor(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, 400)
         and J.IsAttacking(bot)
@@ -534,7 +534,7 @@ function X.ConsiderDemonicPurge()
         local nInRangeEnemy = J.GetEnemiesNearLoc(bot:GetLocation(), nCastRange + 200)
         for _, enemyHero in pairs(nInRangeEnemy)
         do
-            if  J.IsValidTarget(enemyHero)
+            if J.IsValidTarget(enemyHero)
             and J.CanCastOnNonMagicImmune(enemyHero)
             and J.CanCastOnTargetAdvanced(enemyHero)
             and not J.IsSuspiciousIllusion(enemyHero)
@@ -558,7 +558,7 @@ function X.ConsiderDemonicPurge()
             end
         end
 
-		if  J.IsValidTarget(strongestTarget)
+		if J.IsValidTarget(strongestTarget)
         and J.CanCastOnNonMagicImmune(strongestTarget)
         and J.CanCastOnTargetAdvanced(strongestTarget)
         and not J.IsSuspiciousIllusion(strongestTarget)
@@ -576,11 +576,11 @@ function X.ConsiderDemonicPurge()
 		end
 	end
 
-    if  J.IsGoingOnSomeone(bot)
+    if J.IsGoingOnSomeone(bot)
 	then
         local strongestTarget = J.GetStrongestUnit(nCastRange, bot, true, false, nDuration)
 
-		if  J.IsValidTarget(strongestTarget)
+		if J.IsValidTarget(strongestTarget)
         and J.CanCastOnNonMagicImmune(strongestTarget)
         and J.CanCastOnTargetAdvanced(strongestTarget)
         and J.IsInRange(bot, strongestTarget, nCastRange + 150)
@@ -591,7 +591,7 @@ function X.ConsiderDemonicPurge()
             local nTargetInRangeAlly = J.GetNearbyHeroes(strongestTarget, 1200, false, BOT_MODE_NONE)
             local nInRangeAlly = J.GetNearbyHeroes(strongestTarget, 1200, true, BOT_MODE_NONE)
 
-            if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+            if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
             and #nInRangeAlly >= #nTargetInRangeAlly
             and (#nInRangeAlly == 1 or #nInRangeAlly == 2)
             and #nTargetInRangeAlly <= 1
@@ -618,7 +618,7 @@ function X.ConsiderDemonicCleanse()
         local nInRangeAlly = J.GetEnemiesNearLoc(bot:GetLocation(), nCastRange + 200)
         for _, allyHero in pairs(nInRangeAlly)
         do
-            if  J.IsValidHero(allyHero)
+            if J.IsValidHero(allyHero)
             and J.IsDisabled(allyHero)
             and J.IsTaunted(allyHero)
             and not J.IsSuspiciousIllusion(allyHero)

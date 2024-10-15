@@ -188,7 +188,7 @@ function X.ConsiderSummonWolves()
         local nInRangeAlly = J.GetNearbyHeroes(bot,1200, false, BOT_MODE_NONE)
         local nInRangeEnemy = J.GetNearbyHeroes(bot,1200, true, BOT_MODE_NONE)
 
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
         and J.IsInRange(bot, botTarget, 800)
         and not J.IsSuspiciousIllusion(botTarget)
         and nInRangeAlly ~= nil and nInRangeEnemy
@@ -235,7 +235,7 @@ function X.ConsiderSummonWolves()
 
     if J.IsDoingRoshan(bot)
     then
-        if  J.IsRoshan(botTarget)
+        if J.IsRoshan(botTarget)
         and J.IsInRange(bot, botTarget, 400)
         and J.IsAttacking(bot)
         then
@@ -245,7 +245,7 @@ function X.ConsiderSummonWolves()
 
     if J.IsDoingTormentor(bot)
     then
-        if  J.IsTormentor(botTarget)
+        if J.IsTormentor(botTarget)
         and J.IsInRange(bot, botTarget, 400)
         and J.IsAttacking(bot)
         then
@@ -269,15 +269,15 @@ function X.ConsiderHowl()
     then
         for _, allyHero in pairs(GetUnitList(UNIT_LIST_ALLIED_HEROES))
         do
-            if  J.IsValidHero(allyHero)
+            if J.IsValidHero(allyHero)
             and not allyHero:IsIllusion()
             then
-                if  J.IsCore(allyHero)
+                if J.IsCore(allyHero)
                 and J.IsGoingOnSomeone(allyHero)
                 then
                     local allyTarget = allyHero:GetAttackTarget()
 
-                    if  J.IsValidTarget(allyTarget)
+                    if J.IsValidTarget(allyTarget)
                     and J.IsInRange(bot, allyTarget, allyHero:GetAttackRange())
                     and allyHero:IsFacingLocation(allyTarget:GetLocation(), 30)
                     and J.IsAttacking(allyHero)
@@ -305,7 +305,7 @@ function X.ConsiderHowl()
         local nInRangeAlly = J.GetNearbyHeroes(bot,1200, false, BOT_MODE_NONE)
         local nInRangeEnemy = J.GetNearbyHeroes(bot,1200, true, BOT_MODE_NONE)
 
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
         and J.IsInRange(bot, botTarget, 800)
         and not J.IsSuspiciousIllusion(botTarget)
         and nInRangeAlly ~= nil and nInRangeEnemy
@@ -320,7 +320,7 @@ function X.ConsiderHowl()
         local nInRangeAlly = J.GetNearbyHeroes(bot,800, false, BOT_MODE_NONE)
         local nInRangeEnemy = J.GetNearbyHeroes(bot,800, true, BOT_MODE_NONE)
 
-		if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+		if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
         and ((#nInRangeEnemy > #nInRangeAlly)
             or (J.GetHP(bot) < 0.75 and bot:WasRecentlyDamagedByAnyHero(1.7)))
         and J.IsValidHero(nInRangeEnemy[1])
@@ -371,7 +371,7 @@ function X.ConsiderHowl()
 
     if J.IsDoingRoshan(bot)
     then
-        if  J.IsRoshan(botTarget)
+        if J.IsRoshan(botTarget)
         and J.IsInRange(bot, botTarget, 400)
         and J.IsAttacking(bot)
         then
@@ -381,7 +381,7 @@ function X.ConsiderHowl()
 
     if J.IsDoingTormentor(bot)
     then
-        if  J.IsTormentor(botTarget)
+        if J.IsTormentor(botTarget)
         and J.IsInRange(bot, botTarget, 400)
         and J.IsAttacking(bot)
         then

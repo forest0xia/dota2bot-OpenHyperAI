@@ -187,7 +187,7 @@ function X.ConsiderBrambleMaze()
 
 	for _, enemyHero in pairs(nEnemyHeroes)
 	do
-		if  J.IsValid(enemyHero)
+		if J.IsValid(enemyHero)
 		and (enemyHero:IsChanneling() or J.IsCastingUltimateAbility(enemyHero))
         and J.CanCastOnNonMagicImmune(enemyHero)
         and not J.IsSuspiciousIllusion(enemyHero)
@@ -198,7 +198,7 @@ function X.ConsiderBrambleMaze()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
         and J.IsMoving(botTarget)
@@ -209,7 +209,7 @@ function X.ConsiderBrambleMaze()
 		end
 	end
 
-	if  J.IsRetreating(bot)
+	if J.IsRetreating(bot)
     and	J.IsValid(nEnemyHeroes[1])
     and J.CanCastOnNonMagicImmune(nEnemyHeroes[1])
     and not J.IsDisabled(nEnemyHeroes[1])
@@ -235,7 +235,7 @@ function X.ConsiderShadowRealm()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		if  J.GetHP(bot) < 0.5
+		if J.GetHP(bot) < 0.5
         and J.IsValidHero(botTarget)
         and J.CanCastOnMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, bot:GetAttackRange())
@@ -248,7 +248,7 @@ function X.ConsiderShadowRealm()
 		end
 	end
 
-	if  (J.IsRetreating(bot) or (J.IsRetreating(bot) and J.GetHP(bot) < 0.6 and bot:WasRecentlyDamagedByAnyHero(2)))
+	if (J.IsRetreating(bot) or (J.IsRetreating(bot) and J.GetHP(bot) < 0.6 and bot:WasRecentlyDamagedByAnyHero(2)))
     and not J.IsRealInvisible(bot)
     and nEnemyHeroes ~= nil and #nEnemyHeroes >= 1
 	then
@@ -286,7 +286,7 @@ function X.ConsiderCurseCrown()
 
 		for _, enemyHero in pairs(nEnemyHeroes)
 		do
-			if  J.IsValidHero(enemyHero)
+			if J.IsValidHero(enemyHero)
             and J.CanCastOnNonMagicImmune(enemyHero)
             and J.CanCastOnTargetAdvanced(enemyHero)
             and not J.IsDisabled(enemyHero)
@@ -311,7 +311,7 @@ function X.ConsiderCurseCrown()
 	then
 		local botTarget = J.GetProperTarget(bot)
 
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.CanCastOnTargetAdvanced(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
@@ -326,7 +326,7 @@ function X.ConsiderCurseCrown()
 	then
 		for _, enemyHero in pairs(nEnemysHeroesInRange)
 		do
-			if  J.IsValidHero(enemyHero)
+			if J.IsValidHero(enemyHero)
             and J.CanCastOnNonMagicImmune(enemyHero)
             and J.CanCastOnTargetAdvanced(enemyHero)
             and J.IsInRange(bot, enemyHero, nCastRange)
@@ -340,13 +340,13 @@ function X.ConsiderCurseCrown()
 		end
 	end
 
-	if  bot:WasRecentlyDamagedByAnyHero(2)
+	if bot:WasRecentlyDamagedByAnyHero(2)
     and nEnemysHeroesInRange[1] ~= nil
     and #nEnemysHeroesInRange >= 1
 	then
 		for _, enemyHero in pairs(nEnemysHeroesInRange)
 		do
-			if  J.IsValidHero(enemyHero)
+			if J.IsValidHero(enemyHero)
             and J.CanCastOnNonMagicImmune(enemyHero)
             and J.CanCastOnTargetAdvanced(enemyHero)
             and bot:IsFacingLocation(enemyHero:GetLocation(), 30)
@@ -363,7 +363,7 @@ function X.ConsiderCurseCrown()
 	then
 		if nMana > 0.7
 		then
-			if  J.IsValidHero(nWeakestEnemyHeroInRange)
+			if J.IsValidHero(nWeakestEnemyHeroInRange)
             and not J.IsDisabled(nWeakestEnemyHeroInRange)
 			then
                 return BOT_ACTION_DESIRE_HIGH, nWeakestEnemyHeroInRange
@@ -374,7 +374,7 @@ function X.ConsiderCurseCrown()
 		then
 			local nEnemysCreeps = bot:GetNearbyCreeps(1200, true)
 
-			if  J.IsValidHero(nWeakestEnemyHeroInBonus)
+			if J.IsValidHero(nWeakestEnemyHeroInBonus)
             and J.GetHP(bot) > 0.6
             and #nTowers == 0
             and ((#nEnemysCreeps + #nEnemysHeroesInBonus ) <= 5 or DotaTime() > 12 * 60)
@@ -384,7 +384,7 @@ function X.ConsiderCurseCrown()
 			end
 		end
 
-		if  J.IsValidHero(nWeakestEnemyHeroInRange)
+		if J.IsValidHero(nWeakestEnemyHeroInRange)
         and J.GetHP(nWeakestEnemyHeroInRange) < 0.4
 		then
             return BOT_ACTION_DESIRE_HIGH, nWeakestEnemyHeroInRange
@@ -462,7 +462,7 @@ function X.ConsiderTerrorize()
         local nEnemyHeroes = J.GetNearbyHeroes(bot,1200, true, BOT_MODE_NONE)
         for _, enemyHero in pairs(nEnemyHeroes)
         do
-            if  J.IsValidHero(enemyHero)
+            if J.IsValidHero(enemyHero)
             and not J.IsSuspiciousIllusion(enemyHero)
             and enemyHero:HasModifier('modifier_mars_arena_of_blood')
             then
@@ -483,7 +483,7 @@ function X.ConsiderTerrorize()
 
 		for _, allyHero in pairs(nAllyHeroes)
         do
-			if  J.IsValidHero(allyHero)
+			if J.IsValidHero(allyHero)
             and J.IsDisabled(allyHero)
             and not allyHero:IsIllusion()
             then
@@ -491,7 +491,7 @@ function X.ConsiderTerrorize()
 			end
 
             -----
-            if  J.IsValidHero(allyHero)
+            if J.IsValidHero(allyHero)
             and J.IsCore(allyHero)
             and allyHero:HasModifier('modifier_faceless_void_chronosphere_freeze')
             then
@@ -508,7 +508,7 @@ function X.ConsiderTerrorize()
 		end
 
         -----
-        if  nChronodAlly ~= nil
+        if nChronodAlly ~= nil
         and IsCoreAllyInChronosphere
         then
             return BOT_ACTION_DESIRE_HIGH, ChronodAlly:GetLocation()
@@ -530,7 +530,7 @@ function X.ConsiderTerrorize()
 	then
 		local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 
-		if  bot:WasRecentlyDamagedByAnyHero(2.0)
+		if bot:WasRecentlyDamagedByAnyHero(2.0)
         and #nEnemyHeroes >= 2
 		then
 			local nLocationAoE = bot:FindAoELocation(true, true, bot:GetLocation(), nCastRange, nRadius, 0, 0)
@@ -562,7 +562,7 @@ function X.ConsiderTerrorize()
     local nAllyHeroes = J.GetNearbyHeroes(bot,1200, false, BOT_MODE_NONE)
     for _, allyHero in pairs(nAllyHeroes)
     do
-        if  J.IsValidHero(allyHero)
+        if J.IsValidHero(allyHero)
         and J.IsRetreating(allyHero) or (J.IsRetreating(allyHero) and J.GetHP(allyHero) < 0.4)
         and J.IsCore(allyHero)
         and allyHero:WasRecentlyDamagedByAnyHero(2)

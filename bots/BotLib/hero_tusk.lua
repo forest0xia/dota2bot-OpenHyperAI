@@ -188,7 +188,7 @@ function X.ConsiderIceShards()
     local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
     for _, enemyHero in pairs(nEnemyHeroes)
     do
-        if  J.IsValidHero(enemyHero)
+        if J.IsValidHero(enemyHero)
         and J.CanCastOnNonMagicImmune(enemyHero)
         and J.IsInRange(bot, enemyHero, nCastRange)
         and J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_MAGICAL)
@@ -209,7 +209,7 @@ function X.ConsiderIceShards()
         local nLocationAoE = bot:FindAoELocation(true, true, bot:GetLocation(), nCastRange, nRadius, 0, 0)
         local nInRangeEnemy = J.GetEnemiesNearLoc(nLocationAoE.targetloc, nRadius)
 
-        if  nInRangeEnemy ~= nil and #nInRangeEnemy >= 2
+        if nInRangeEnemy ~= nil and #nInRangeEnemy >= 2
         and not J.IsLocationInChrono(nLocationAoE.targetloc)
         and not J.IsLocationInBlackHole(nLocationAoE.targetloc)
         then
@@ -219,7 +219,7 @@ function X.ConsiderIceShards()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
         and J.CanCastOnMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
         and J.IsChasingTarget(bot, botTarget)
@@ -232,7 +232,7 @@ function X.ConsiderIceShards()
             local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1200, true, BOT_MODE_NONE)
             local nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1200, false, BOT_MODE_NONE)
 
-            if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+            if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
             and #nInRangeAlly >= #nInRangeEnemy
             then
                 local eta =  (GetUnitToUnitDistance(bot, botTarget) / nSpeed) + nCastPoint + 2
@@ -246,7 +246,7 @@ function X.ConsiderIceShards()
     --     local nInRangeAlly = J.GetNearbyHeroes(bot,1200, false, BOT_MODE_NONE)
     --     local nInRangeEnemy = J.GetNearbyHeroes(bot,1200, true, BOT_MODE_NONE)
 
-    --     if  nInRangeAlly ~= nil and nInRangeEnemy
+    --     if nInRangeAlly ~= nil and nInRangeEnemy
     --     and J.IsValidHero(nInRangeEnemy[1])
     --     and J.IsChasingTarget(nInRangeEnemy[1], bot)
     --     and not J.IsSuspiciousIllusion(nInRangeEnemy[1])
@@ -258,7 +258,7 @@ function X.ConsiderIceShards()
     --     then
     --         local nTargetInRangeAlly = J.GetNearbyHeroes(nInRangeEnemy[1], 1200, false, BOT_MODE_NONE)
 
-    --         if  nTargetInRangeAlly ~= nil
+    --         if nTargetInRangeAlly ~= nil
     --         and ((#nTargetInRangeAlly > #nInRangeAlly)
     --             or bot:WasRecentlyDamagedByAnyHero(2))
     --         then
@@ -268,7 +268,7 @@ function X.ConsiderIceShards()
     --     end
     -- end
 
-    if  J.IsLaning(bot) or J.IsPushing(bot)
+    if J.IsLaning(bot) or J.IsPushing(bot)
     and not J.IsThereCoreNearby(1200)
 	then
         if not J.IsInLaningPhase()
@@ -302,7 +302,7 @@ function X.ConsiderSnowball()
 		local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 		for _, enemyHero in pairs(nInRangeEnemy)
 		do
-			if  J.IsValidHero(enemyHero)
+			if J.IsValidHero(enemyHero)
             and J.CanCastOnNonMagicImmune(enemyHero)
             and not J.IsSuspiciousIllusion(enemyHero)
             and not enemyHero:HasModifier('modifier_enigma_black_hole_pull')
@@ -324,7 +324,7 @@ function X.ConsiderSnowball()
             local nInRangeAlly = J.GetNearbyHeroes(strongestTarget, 1200, true, BOT_MODE_NONE)
             nInRangeEnemy = J.GetNearbyHeroes(strongestTarget, 1200, false, BOT_MODE_NONE)
 
-            if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+            if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
             and #nInRangeAlly >= #nInRangeEnemy
             then
                 return BOT_ACTION_DESIRE_HIGH, strongestTarget
@@ -339,12 +339,12 @@ function X.ConsiderSnowball()
         local targetCreep = nil
         local dist = 0
 
-        if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+        if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
         and #nInRangeEnemy > #nInRangeAlly
         then
             for _, enemyHero in pairs(nInRangeEnemy)
             do
-                if  J.IsValidHero(enemyHero)
+                if J.IsValidHero(enemyHero)
                 and J.CanCastOnNonMagicImmune(enemyHero)
                 and J.IsInRange(bot, enemyHero, 600)
                 and J.IsChasingTarget(enemyHero, bot)
@@ -355,7 +355,7 @@ function X.ConsiderSnowball()
                     local nCreeps = bot:GetNearbyCreeps(nCastRange, true)
                     for _, creep in pairs(nCreeps)
                     do
-                        if  J.IsValid(creep)
+                        if J.IsValid(creep)
                         and GetUnitToLocationDistance(creep, GetAncient(GetTeam()):GetLocation()) < GetUnitToLocationDistance(bot, GetAncient(GetTeam()):GetLocation())
                         and GetUnitToUnitDistance(bot, creep) > nCastRange / 2
                         and dist > GetUnitToUnitDistance(bot, creep)
@@ -375,7 +375,7 @@ function X.ConsiderSnowball()
             nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
             for _, enemyHero in pairs(nInRangeEnemy)
             do
-                if  J.IsValidHero(enemyHero)
+                if J.IsValidHero(enemyHero)
                 and J.CanCastOnNonMagicImmune(enemyHero)
                 and J.IsInRange(bot, enemyHero, 600)
                 and J.IsChasingTarget(enemyHero, bot)
@@ -396,7 +396,7 @@ function X.ConsiderSnowball()
 
     if J.IsDoingRoshan(bot)
     then
-        if  J.IsRoshan(botTarget)
+        if J.IsRoshan(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, 500)
         and J.IsAttacking(bot)
@@ -407,7 +407,7 @@ function X.ConsiderSnowball()
 
     if J.IsDoingTormentor(bot)
     then
-        if  J.IsTormentor(botTarget)
+        if J.IsTormentor(botTarget)
         and J.IsInRange(bot, botTarget, 500)
         and J.IsAttacking(bot)
         then
@@ -449,7 +449,7 @@ function X.ConsiderTagTeam()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
         and J.IsInRange(bot, botTarget, nRadius)
         and not J.IsSuspiciousIllusion(botTarget)
         and not J.IsDisabled(botTarget)
@@ -462,7 +462,7 @@ function X.ConsiderTagTeam()
             local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1200, true, BOT_MODE_NONE)
             local nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1200, false, BOT_MODE_NONE)
 
-            if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+            if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
             and #nInRangeAlly >= #nInRangeEnemy
             then
                 return BOT_ACTION_DESIRE_HIGH
@@ -474,7 +474,7 @@ function X.ConsiderTagTeam()
     then
         local nInRangeAlly = J.GetNearbyHeroes(bot,600, false, BOT_MODE_NONE)
 
-        if  J.IsRoshan(botTarget)
+        if J.IsRoshan(botTarget)
         and J.IsInRange(bot, botTarget, 500)
         and J.IsAttacking(bot)
         and nInRangeAlly ~= nil and #nInRangeAlly >= 2
@@ -487,7 +487,7 @@ function X.ConsiderTagTeam()
 
     if J.IsDoingTormentor(bot)
     then
-        if  J.IsTormentor(botTarget)
+        if J.IsTormentor(botTarget)
         and J.IsInRange(bot, botTarget, 500)
         and J.IsAttacking(bot)
         then
@@ -514,7 +514,7 @@ function X.ConsiderWalrusPunch()
 		local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 		for _, enemyHero in pairs(nInRangeEnemy)
 		do
-			if  J.IsValidHero(enemyHero)
+			if J.IsValidHero(enemyHero)
             and J.CanCastOnMagicImmune(enemyHero)
             and not J.IsSuspiciousIllusion(enemyHero)
             and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
@@ -545,7 +545,7 @@ function X.ConsiderWalrusPunch()
     then
         local nInRangeAlly = J.GetNearbyHeroes(bot,600, false, BOT_MODE_NONE)
 
-        if  J.IsRoshan(botTarget)
+        if J.IsRoshan(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, 500)
         and J.IsAttacking(bot)
@@ -559,7 +559,7 @@ function X.ConsiderWalrusPunch()
 
     if J.IsDoingTormentor(bot)
     then
-        if  J.IsTormentor(botTarget)
+        if J.IsTormentor(botTarget)
         and J.IsInRange(bot, botTarget, 500)
         and J.IsAttacking(bot)
         then

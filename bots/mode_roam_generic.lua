@@ -35,16 +35,17 @@ local enableGateUsage = false -- to be fixed
 local arriveRoamLocTime = 0
 local roamTimeAfterArrival = 0.55 * 60 -- stay to roam after arriving the location
 local roamGapTime = 3 * 60 -- don't roam again within this duration after roaming once.
-local nInRangeEnemy, allyTowers
-local trySeduce = false
+local nInRangeEnemy, allyTowers, enemyTowers, trySeduce, shouldTempRetreat
 
 function GetDesire()
 
 	trySeduce = false
+	shouldTempRetreat = false
 	TPScroll = J.GetItem2(bot, 'item_tpscroll')
 
 	nInRangeEnemy = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
 	allyTowers = bot:GetNearbyTowers(1600, false)
+	enemyTowers = bot:GetNearbyTowers(1600, true)
 
 	if ConsiderWaitInBaseToHeal()
 	and GetUnitToLocationDistance(bot, J.GetTeamFountain()) > 5500
@@ -105,13 +106,13 @@ function ThinkIndividualRoaming()
 		if GetUnitToLocationDistance(bot, J.GetTeamFountain()) > 150
 		then
 			nInRangeEnemy = J.GetEnemiesNearLoc(bot:GetLocation(), 1600)
-			if  J.Item.GetItemCharges(bot, 'item_tpscroll') >= 1
+			if J.Item.GetItemCharges(bot, 'item_tpscroll') >= 1
 			and nInRangeEnemy ~= nil and #nInRangeEnemy == 0
 			then
 				if bot:GetUnitName() == 'npc_dota_hero_furion'
 				then
 					local Teleportation = bot:GetAbilityByName('furion_teleportation')
-					if  Teleportation:IsTrained()
+					if Teleportation:IsTrained()
 					and Teleportation:IsFullyCastable()
 					then
 						bot:Action_UseAbilityOnLocation(Teleportation, J.GetTeamFountain())
@@ -119,7 +120,7 @@ function ThinkIndividualRoaming()
 					end
 				end
 
-				if  TPScroll ~= nil
+				if TPScroll ~= nil
 				and not TPScroll:IsNull()
 				and TPScroll:IsFullyCastable()
 				then
@@ -130,7 +131,7 @@ function ThinkIndividualRoaming()
 		else
 			if J.GetHP(bot) < 0.85 or J.GetMP(bot) < 0.85
 			then
-				if  J.Item.GetItemCharges(bot, 'item_tpscroll') <= 1
+				if J.Item.GetItemCharges(bot, 'item_tpscroll') <= 1
 				and bot:GetGold() >= GetItemCost('item_tpscroll')
 				then
 					bot:ActionImmediate_PurchaseItem('item_tpscroll')
@@ -159,7 +160,7 @@ function ThinkIndividualRoaming()
 	if bot:HasModifier('modifier_spirit_breaker_charge_of_darkness')
 	then
 		bot:Action_ClearActions(false)
-		if  bot.chargeRetreat
+		if bot.chargeRetreat
 		and nInRangeEnemy ~= nil and #nInRangeEnemy == 0
 		then
 			bot:Action_MoveToLocation(bot:GetLocation() + RandomVector(150))
@@ -484,6 +485,17 @@ function ThinkIndividualRoaming()
 		end
 		bot:ActionQueue_AttackUnit(botTarget, false)
 	end
+
+	if botName == 'npc_dota_hero_nevermore' then
+		if J.Utils.isTruelyInvisible(bot) then
+			local botTarget = J.GetProperTarget(bot)
+			if GetUnitToUnitDistance(bot, botTarget) > 400
+			then
+				bot:Action_MoveToLocation(botTarget:GetLocation())
+				return
+			end
+		end
+	end
 end
 
 function ThinkGeneralRoaming()
@@ -560,7 +572,7 @@ function ThinkGeneralRoaming()
 		return
 	end
 
-	if bot:HasModifier("modifier_warlock_golem_permanent_immolation_debuff") then
+	if shouldTempRetreat then
 		bot:Action_MoveToLocation(J.GetTeamFountain())
 		return
 	end
@@ -731,7 +743,7 @@ end
 
 
 function TinkerWaitInBaseAndHeal()
-	if  bot:GetUnitName() == 'npc_dota_hero_tinker'
+	if bot:GetUnitName() == 'npc_dota_hero_tinker'
 	and bot.healInBase
 	and GetUnitToLocationDistance(bot, J.GetTeamFountain()) < 500
 	then
@@ -744,7 +756,7 @@ end
 function GetMortimerKissesTarget()
 	for _, enemyHero in pairs(GetUnitList(UNIT_LIST_ENEMY_HEROES))
 	do
-		if  J.IsValidHero(enemyHero)
+		if J.IsValidHero(enemyHero)
 		and J.IsInRange(bot, enemyHero, 3000 + (275 / 2))
 		and J.CanCastOnNonMagicImmune(enemyHero)
 		and not J.IsInRange(bot, enemyHero, 600)
@@ -756,7 +768,7 @@ function GetMortimerKissesTarget()
 			end
 		end
 
-		if  J.IsValidHero(enemyHero)
+		if J.IsValidHero(enemyHero)
 		and J.IsInRange(bot, enemyHero, 3000 + (275 / 2))
 		and J.CanCastOnNonMagicImmune(enemyHero)
 		and not J.IsInRange(bot, enemyHero, 600)
@@ -787,14 +799,14 @@ function ConsiderWaitInBaseToHeal()
 		ProphetTP = bot:GetAbilityByName('furion_teleportation')
 	end
 
-	if  not J.IsInLaningPhase()
+	if not J.IsInLaningPhase()
 	and not (J.IsFarming(bot) and J.IsAttacking(bot))
 	and nInRangeEnemy ~= nil and #nInRangeEnemy == 0
 	and GetUnitToUnitDistance(bot, GetAncient(GetOpposingTeam())) > 2400
 	and (  (TPScroll ~= nil and TPScroll:IsFullyCastable())
 		or (ProphetTP ~= nil and ProphetTP:IsTrained() and ProphetTP:IsFullyCastable()))
 	then
-		if  (J.GetHP(bot) < 0.25
+		if (J.GetHP(bot) < 0.25
 			and bot:GetHealthRegen() < 15
 			and bot:GetUnitName() ~= 'npc_dota_hero_huskar'
 			and bot:GetUnitName() ~= 'npc_dota_hero_slark'
@@ -910,9 +922,8 @@ function ConsiderGeneralRoamingInConditions()
 		if #nInRangeEnemy >=1 and J.Utils.IsValidHero(nInRangeEnemy[1])
 		and #allyTowers >= 1 and GetUnitToUnitDistance(allyTowers[1], bot) < 1600 then
 			local cloestEnemy = nInRangeEnemy[1]
-			if (J.IsRunning(cloestEnemy) or J.IsAttacking(cloestEnemy))
-			and cloestEnemy:IsFacingLocation(bot:GetLocation(), 15)
-			and J.IsInRange(bot, cloestEnemy, cloestEnemy:GetAttackRange() + 350)
+			if cloestEnemy:IsFacingLocation(bot:GetLocation(), 15)
+			and J.IsInRange(bot, cloestEnemy, cloestEnemy:GetAttackRange() + 250)
 			and J.GetHP(cloestEnemy) >= J.GetHP(bot) - 0.2
 			then
 				trySeduce = true
@@ -931,14 +942,26 @@ function ConsiderGeneralRoamingInConditions()
 			and string.find(unit:GetUnitName(), 'warlock_golem')
 			then
 				if (J.GetHP(bot) < J.GetHP(unit)
-				and J.GetHP(bot) < 0.7)
-				or J.GetHP(bot) < 0.2 then
+				and J.GetHP(bot) < 0.75)
+				or J.GetHP(bot) < 0.5 then
+					shouldTempRetreat = true
 					return BOT_ACTION_DESIRE_VERYHIGH
 				end
 			end
 		end
 	end
 
+	if bot:WasRecentlyDamagedByTower(0.2) then
+		local nInRangeAlly = bot:GetNearbyHeroes(1000, false, BOT_MODE_NONE)
+		if #nInRangeAlly >= 2 and J.GetHP(nInRangeAlly[2]) > J.GetHP(bot) then
+			bot:Action_AttackUnit(nInRangeAlly[2], true)
+		else
+			local allyCreeps = bot:GetNearbyCreeps(1000, false)
+			if #allyCreeps >= 1 and J.IsValid(allyCreeps[1]) then
+				bot:Action_AttackUnit(allyCreeps[1], true)
+			end
+		end
+	end
 
 	return BOT_ACTION_DESIRE_NONE
 end
@@ -1161,7 +1184,7 @@ ConsiderHeroSpecificRoaming['npc_dota_hero_leshrac'] = function ()
 			then
 				local nEnemyTowers = bot:GetNearbyTowers(1600, true)
 				local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nRadius, true)
-				if  nEnemyTowers ~= nil and #nEnemyTowers >= 1
+				if nEnemyTowers ~= nil and #nEnemyTowers >= 1
 				and J.IsValidBuilding(nEnemyTowers[1])
 				and J.CanBeAttacked(nEnemyTowers[1])
 				and not J.IsInRange(bot, nEnemyTowers[1], nRadius - 75)
@@ -1266,7 +1289,9 @@ ConsiderHeroSpecificRoaming['npc_dota_hero_razor'] = function ()
 	then
 		local botTarget = J.GetProperTarget(bot)
 		if J.IsValidHero(botTarget) and J.GetHP(bot) > 0.3 and J.GetHP(bot) >= J.GetHP(botTarget) then
-			return BOT_MODE_DESIRE_VERYHIGH * 1.1
+			if enemyTowers == nil or #enemyTowers == 0 or GetUnitToUnitDistance(bot, enemyTowers[1]) > 850 then
+				return BOT_MODE_DESIRE_VERYHIGH
+			end
 		end
 	end
 	return BOT_MODE_DESIRE_NONE
@@ -1284,3 +1309,15 @@ ConsiderHeroSpecificRoaming['npc_dota_hero_faceless_void'] = function ()
 	return BOT_MODE_DESIRE_NONE
 end
 
+ConsiderHeroSpecificRoaming['npc_dota_hero_nevermore'] = function ()
+	if J.Utils.isTruelyInvisible(bot)
+	then
+		local botTarget = J.GetProperTarget(bot)
+		if botTarget ~= nil and J.GetHP(bot) > 0.5 then
+			if enemyTowers == nil or #enemyTowers == 0 or GetUnitToUnitDistance(bot, enemyTowers[1]) > 850 then
+				return BOT_MODE_DESIRE_VERYHIGH
+			end
+		end
+	end
+	return BOT_MODE_DESIRE_NONE
+end

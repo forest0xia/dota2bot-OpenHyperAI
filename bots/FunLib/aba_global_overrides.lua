@@ -40,7 +40,7 @@ function GetTeamPlayers(nTeam)
 				local hCount = 0
 				if nIDs[i] > 4 then
 					for j = 1, #nIDs do
-						if  nIDs[j + i] ~= nil and nIDs[j + i] < 5 then
+						if nIDs[j + i] ~= nil and nIDs[j + i] < 5 then
 							hCount = hCount + 1
 						end
 					end

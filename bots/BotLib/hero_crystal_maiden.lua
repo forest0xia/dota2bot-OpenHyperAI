@@ -888,7 +888,7 @@ function X.ConsiderCrystalClone()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
 		and J.IsInRange(bot, botTarget, nRadius)
 		and J.CanCastOnNonMagicImmune(botTarget)
 		and not J.IsSuspiciousIllusion(botTarget)
@@ -897,7 +897,7 @@ function X.ConsiderCrystalClone()
 			local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1200, true, BOT_MODE_NONE)
 			local nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1200, false, BOT_MODE_NONE)
 
-			if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+			if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 			and #nInRangeAlly >= #nInRangeEnemy
 			then
 				return BOT_ACTION_DESIRE_HIGH, J.Site.GetXUnitsTowardsLocation(bot, J.GetTeamFountain(), nRadius)
@@ -909,7 +909,7 @@ function X.ConsiderCrystalClone()
     then
         local nInRangeEnemy = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE)
 
-        if  nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
+        if nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
         and J.IsValidHero(nInRangeEnemy[1])
         and J.IsInRange(bot, nInRangeEnemy[1], nRadius)
         and not J.IsSuspiciousIllusion(nInRangeEnemy[1])
@@ -917,7 +917,7 @@ function X.ConsiderCrystalClone()
             local nInRangeAlly = J.GetNearbyHeroes(nInRangeEnemy[1], 1200, true, BOT_MODE_NONE)
             local nTargetInRangeAlly = J.GetNearbyHeroes(nInRangeEnemy[1], 1200, false, BOT_MODE_NONE)
 
-            if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+            if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
             and (#nTargetInRangeAlly > #nInRangeAlly
                 or bot:WasRecentlyDamagedByAnyHero(1))
             then

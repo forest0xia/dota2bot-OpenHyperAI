@@ -1132,7 +1132,7 @@ function X.AttackWardThink(hMinionUnit)
 		local hp = 100000
 		for _, enemyHero in pairs(nUnits)
 		do
-			if  J.IsValidHero(enemyHero)
+			if J.IsValidHero(enemyHero)
 			and hp > enemyHero:GetHealth()
 			then
 				hp = enemyHero:GetHealth()
@@ -1149,7 +1149,7 @@ function X.AttackWardThink(hMinionUnit)
 		nUnits = bot:GetNearbyCreeps(bot:GetAttackRange(), true)
 		for _, creep in pairs(nUnits)
 		do
-			if  J.IsValid(creep)
+			if J.IsValid(creep)
 			and J.CanBeAttacked(creep)
 			then
 				hMinionUnit:Action_AttackUnit(creep, false)

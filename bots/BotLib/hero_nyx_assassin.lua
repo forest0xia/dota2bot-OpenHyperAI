@@ -201,7 +201,7 @@ function X.ConsiderImpale()
     local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
     for _, enemyHero in pairs(nEnemyHeroes)
     do
-        if  J.IsValidHero(enemyHero)
+        if J.IsValidHero(enemyHero)
         and J.CanCastOnNonMagicImmune(enemyHero)
         and not J.IsSuspiciousIllusion(enemyHero)
         then
@@ -210,7 +210,7 @@ function X.ConsiderImpale()
                 return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation()
             end
 
-            if  J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_MAGICAL)
+            if J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_MAGICAL)
             and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
             and not enemyHero:HasModifier('modifier_dazzle_shallow_grave')
             and not enemyHero:HasModifier('modifier_oracle_false_promise_timer')
@@ -226,12 +226,12 @@ function X.ConsiderImpale()
     do
         local nAllyInRangeEnemy = J.GetNearbyHeroes(allyHero, nCastRange, true, BOT_MODE_NONE)
 
-        if  J.IsRetreating(allyHero)
+        if J.IsRetreating(allyHero)
         and allyHero:WasRecentlyDamagedByAnyHero(2.1)
         and not allyHero:IsIllusion()
         and J.GetMP(bot) > 0.31
         then
-            if  nAllyInRangeEnemy ~= nil and #nAllyInRangeEnemy >= 1
+            if nAllyInRangeEnemy ~= nil and #nAllyInRangeEnemy >= 1
             and J.IsValidHero(nAllyInRangeEnemy[1])
             and J.CanCastOnNonMagicImmune(nAllyInRangeEnemy[1])
             and J.IsInRange(allyHero, nAllyInRangeEnemy[1], 400)
@@ -260,7 +260,7 @@ function X.ConsiderImpale()
             strongestTarget = J.GetStrongestUnit(nCastRange, bot, true, true, nStunDuration)
         end
 
-		if  J.IsValidTarget(strongestTarget)
+		if J.IsValidTarget(strongestTarget)
         and J.IsInRange(bot, strongestTarget, nCastRange)
         and not J.IsSuspiciousIllusion(strongestTarget)
         and not J.IsDisabled(strongestTarget)
@@ -274,7 +274,7 @@ function X.ConsiderImpale()
 		then
             local nTargetInRangeAlly = J.GetNearbyHeroes(strongestTarget, 1200, false, BOT_MODE_NONE)
 
-            if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+            if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
             and #nInRangeAlly >= #nTargetInRangeAlly
             then
                 return BOT_ACTION_DESIRE_HIGH, strongestTarget:GetExtrapolatedLocation(nCastPoint)
@@ -287,7 +287,7 @@ function X.ConsiderImpale()
         local nInRangeAlly = J.GetNearbyHeroes(bot,800, false, BOT_MODE_NONE)
         local nInRangeEnemy = J.GetNearbyHeroes(bot,800, true, BOT_MODE_NONE)
 
-        if  nInRangeAlly ~= nil and nInRangeEnemy
+        if nInRangeAlly ~= nil and nInRangeEnemy
         and J.IsValidHero(nInRangeEnemy[1])
         and J.CanCastOnNonMagicImmune(nInRangeEnemy[1])
         and J.IsInRange(bot, nInRangeEnemy[1], nCastRange)
@@ -297,7 +297,7 @@ function X.ConsiderImpale()
         then
             local nTargetInRangeAlly = J.GetNearbyHeroes(nInRangeEnemy[1], 800, false, BOT_MODE_NONE)
 
-            if  nTargetInRangeAlly ~= nil
+            if nTargetInRangeAlly ~= nil
             and ((#nTargetInRangeAlly > #nInRangeAlly)
                 or (J.GetHP(bot) < 0.82 and bot:WasRecentlyDamagedByAnyHero(1.5)))
             then
@@ -306,7 +306,7 @@ function X.ConsiderImpale()
         end
     end
 
-    if  J.IsLaning(bot)
+    if J.IsLaning(bot)
     and not J.IsThereCoreNearby(1200)
 	then
         local canKill = 0
@@ -316,20 +316,20 @@ function X.ConsiderImpale()
 
 		for _, creep in pairs(nEnemyLaneCreeps)
 		do
-			-- if  J.IsValid(creep)
+			-- if J.IsValid(creep)
 			-- and (J.IsKeyWordUnit('ranged', creep) or J.IsKeyWordUnit('siege', creep) or J.IsKeyWordUnit('flagbearer', creep))
 			-- and creep:GetHealth() <= nDamage
 			-- then
 			-- 	local nCreepInRangeHero = creep:GetNearbyHeroes(500, false, BOT_MODE_NONE)
 
-			-- 	if  nCreepInRangeHero ~= nil and #nCreepInRangeHero >= 1
+			-- 	if nCreepInRangeHero ~= nil and #nCreepInRangeHero >= 1
             --     and J.GetMP(bot) > 0.41
 			-- 	then
 			-- 		return BOT_ACTION_DESIRE_HIGH, creep:GetLocation()
 			-- 	end
 			-- end
 
-            if  J.IsValid(creep)
+            if J.IsValid(creep)
             and creep:GetHealth() <= nDamage
             then
                 canKill = canKill + 1
@@ -337,7 +337,7 @@ function X.ConsiderImpale()
             end
 		end
 
-        if  canKill >= 2
+        if canKill >= 2
         and J.GetMP(bot) > 0.25
         and nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
         then
@@ -347,7 +347,7 @@ function X.ConsiderImpale()
 
     if J.IsDoingRoshan(bot)
     then
-        if  J.IsRoshan(botTarget)
+        if J.IsRoshan(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, 500)
         and J.IsAttacking(bot)
@@ -359,7 +359,7 @@ function X.ConsiderImpale()
 
     if J.IsDoingTormentor(bot)
     then
-        if  J.IsTormentor(botTarget)
+        if J.IsTormentor(botTarget)
         and J.IsInRange(bot, botTarget, 400)
         and J.IsAttacking(bot)
         then
@@ -383,7 +383,7 @@ function X.ConsiderMindflare()
     local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
     for _, enemyHero in pairs(nEnemyHeroes)
     do
-        if  J.IsValidHero(enemyHero)
+        if J.IsValidHero(enemyHero)
         and J.CanCastOnNonMagicImmune(enemyHero)
         and J.CanKillTarget(enemyHero, enemyHero:GetMaxMana() * (nDmgPct / 100), DAMAGE_TYPE_MAGICAL)
         and not J.IsSuspiciousIllusion(enemyHero)
@@ -401,7 +401,7 @@ function X.ConsiderMindflare()
         local weakestTarget = J.GetVulnerableWeakestUnit(bot, true, true, nCastRange)
         local nInRangeAlly = J.GetNearbyHeroes(bot,800, false, BOT_MODE_NONE)
 
-		if  J.IsValidTarget(weakestTarget)
+		if J.IsValidTarget(weakestTarget)
         and not J.IsSuspiciousIllusion(weakestTarget)
         and not weakestTarget:HasModifier('modifier_abaddon_borrowed_time')
         and not weakestTarget:HasModifier('modifier_dazzle_shallow_grave')
@@ -410,7 +410,7 @@ function X.ConsiderMindflare()
 		then
             local nTargetInRangeAlly = J.GetNearbyHeroes(weakestTarget, 800, false, BOT_MODE_NONE)
 
-            if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+            if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
             and #nInRangeAlly >= #nTargetInRangeAlly
             then
                 return BOT_ACTION_DESIRE_HIGH, weakestTarget
@@ -433,7 +433,7 @@ function X.ConsiderSpikedCarapace()
 		return BOT_ACTION_DESIRE_HIGH
 	end
 
-	if  not bot:HasModifier('modifier_sniper_assassinate')
+	if not bot:HasModifier('modifier_sniper_assassinate')
 	and not bot:IsMagicImmune()
 	then
 		if J.IsWillBeCastUnitTargetSpell(bot, 1400)
@@ -457,7 +457,7 @@ function X.ConsiderBurrow()
     then
         local realEnemyCount = J.GetEnemiesNearLoc(bot:GetLocation(), nCarapaceRadius)
 
-        if  realEnemyCount ~= nil and #realEnemyCount >= 2
+        if realEnemyCount ~= nil and #realEnemyCount >= 2
         then
             return BOT_ACTION_DESIRE_HIGH
         end
@@ -495,7 +495,7 @@ function X.ConsiderVendetta()
     local nEnemyHeroes = J.GetNearbyHeroes(bot,800, true, BOT_MODE_NONE)
     for _, enemyHero in pairs(nEnemyHeroes)
     do
-        if  J.IsValidHero(enemyHero)
+        if J.IsValidHero(enemyHero)
         and J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_PURE)
         and not J.IsSuspiciousIllusion(enemyHero)
         and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
@@ -506,7 +506,7 @@ function X.ConsiderVendetta()
             local nInRangeAlly = J.GetNearbyHeroes(bot,800, false, BOT_MODE_NONE)
             local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 800, false, BOT_MODE_NONE)
 
-            if  nInRangeAlly ~= nil
+            if nInRangeAlly ~= nil
             and nInRangeAlly >= nTargetInRangeAlly
             then
                 bot.canVendettaKill = true
@@ -519,7 +519,7 @@ function X.ConsiderVendetta()
         end
     end
 
-    if  J.IsRetreating(bot)
+    if J.IsRetreating(bot)
     and not J.IsRealInvisible(bot)
     then
         return BOT_ACTION_DESIRE_HIGH
@@ -529,7 +529,7 @@ function X.ConsiderVendetta()
 	then
         local nInRangeAlly = J.GetNearbyHeroes(bot,1600, false, BOT_MODE_NONE)
 
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
         and J.IsInRange(bot, botTarget, 2200)
         and not J.IsSuspiciousIllusion(botTarget)
         and not J.IsDisabled(botTarget)
@@ -543,7 +543,7 @@ function X.ConsiderVendetta()
 		then
             local nTargetInRangeAlly = J.GetNearbyHeroes(botTarget, 1600, false, BOT_MODE_NONE)
 
-            if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+            if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
             and #nInRangeAlly >= #nTargetInRangeAlly
             then
                 return BOT_ACTION_DESIRE_HIGH

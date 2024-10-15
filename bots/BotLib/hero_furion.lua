@@ -145,7 +145,7 @@ end
 function X.SkillsComplement()
     if J.CanNotUseAbility(bot) then return end
 
-    if  bot.useProphetTP
+    if bot.useProphetTP
     and bot.ProphetTPLocation ~= nil
     then
         bot:Action_UseAbilityOnLocation(Teleportation, bot.ProphetTPLocation)
@@ -219,7 +219,7 @@ function X.ConsiderSprout()
             strongestTarget = J.GetStrongestUnit(nCastRange, bot, true, true, nDuration)
         end
 
-        if  J.IsValidTarget(strongestTarget)
+        if J.IsValidTarget(strongestTarget)
         and not J.IsSuspiciousIllusion(strongestTarget)
         and not J.IsDisabled(strongestTarget)
         and not J.IsTaunted(strongestTarget)
@@ -236,7 +236,7 @@ function X.ConsiderSprout()
     then
         local nInRangeAlly = J.GetNearbyHeroes(bot,1000, false, BOT_MODE_NONE)
 
-        if  J.IsValidTarget(botTarget)
+        if J.IsValidTarget(botTarget)
         and J.CanCastOnMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
         and not J.IsSuspiciousIllusion(botTarget)
@@ -245,7 +245,7 @@ function X.ConsiderSprout()
         then
             local nTargetInRangeAlly = J.GetNearbyHeroes(botTarget, 1000, false, BOT_MODE_NONE)
 
-            if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+            if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
             and #nInRangeAlly >= #nTargetInRangeAlly
             then
                 return BOT_ACTION_DESIRE_HIGH, botTarget
@@ -258,7 +258,7 @@ function X.ConsiderSprout()
         local nInRangeAlly = J.GetNearbyHeroes(bot,800, false, BOT_MODE_NONE)
         local nInRangeEnemy = J.GetNearbyHeroes(bot,900, true, BOT_MODE_NONE)
 
-        if  nInRangeAlly ~= nil and nInRangeEnemy
+        if nInRangeAlly ~= nil and nInRangeEnemy
         and J.IsValidHero(nInRangeEnemy[1])
         and J.CanCastOnMagicImmune(nInRangeEnemy[1])
         and J.IsInRange(bot, nInRangeEnemy[1], nCastRange)
@@ -272,7 +272,7 @@ function X.ConsiderSprout()
         then
             local nTargetInRangeAlly = J.GetNearbyHeroes(nInRangeEnemy[1], 900, false, BOT_MODE_NONE)
 
-            if  nTargetInRangeAlly ~= nil
+            if nTargetInRangeAlly ~= nil
             and ((#nTargetInRangeAlly > #nInRangeAlly)
                 or (J.GetHP(bot) < 0.72 and bot:WasRecentlyDamagedByAnyHero(2.4)))
             then
@@ -286,12 +286,12 @@ function X.ConsiderSprout()
     do
         local nAllyInRangeEnemy = J.GetNearbyHeroes(allyHero, nCastRange, true, BOT_MODE_NONE)
 
-        if  J.IsRetreating(allyHero)
+        if J.IsRetreating(allyHero)
         and allyHero:WasRecentlyDamagedByAnyHero(2.3)
         and not allyHero:IsIllusion()
         and J.GetMP(bot) > 0.41
         then
-            if  nAllyInRangeEnemy ~= nil and #nAllyInRangeEnemy >= 1
+            if nAllyInRangeEnemy ~= nil and #nAllyInRangeEnemy >= 1
             and J.IsValidHero(nAllyInRangeEnemy[1])
             and J.CanCastOnMagicImmune(nAllyInRangeEnemy[1])
             and J.IsInRange(allyHero, nAllyInRangeEnemy[1], nCastRange)
@@ -342,7 +342,7 @@ function X.ConsiderTeleportation()
 
     for _, allyHero in pairs(GetUnitList(UNIT_LIST_ALLIED_HEROES))
     do
-        if  J.IsValidHero(allyHero)
+        if J.IsValidHero(allyHero)
         and J.IsGoingOnSomeone(allyHero)
         and GetUnitToUnitDistance(bot, allyHero) > 2000
         and not J.IsInLaningPhase()
@@ -351,14 +351,14 @@ function X.ConsiderTeleportation()
             local allyTarget = allyHero:GetAttackTarget()
             local nAllyInRangeAlly = J.GetNearbyHeroes(allyHero, 800, false, BOT_MODE_NONE)
 
-            if  J.IsValidTarget(allyTarget)
+            if J.IsValidTarget(allyTarget)
             and J.IsInRange(allyHero, allyTarget, 800)
             and J.GetHP(allyHero) > 0.25
             and not J.IsSuspiciousIllusion(allyTarget)
             then
                 local nTargetInRangeAlly = J.GetNearbyHeroes(allyTarget, 800, false, BOT_MODE_NONE)
 
-                if  nAllyInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+                if nAllyInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
                 and #nAllyInRangeAlly + 1 >= #nTargetInRangeAlly
                 and #nTargetInRangeAlly >= 2
                 and not J.IsLocationInChrono(allyHero:GetExtrapolatedLocation(nChannelTime))
@@ -374,7 +374,7 @@ function X.ConsiderTeleportation()
         local nInRangeAlly = J.GetNearbyHeroes(bot,1200, false, BOT_MODE_NONE)
         local nInRangeEnemy = J.GetNearbyHeroes(bot,1200, true, BOT_MODE_NONE)
 
-        if  nInRangeAlly ~= nil and nInRangeEnemy
+        if nInRangeAlly ~= nil and nInRangeEnemy
         and J.IsValidHero(nInRangeEnemy[1])
         and J.IsRunning(nInRangeEnemy[1])
         and nInRangeEnemy[1]:IsFacingLocation(bot:GetLocation(), 30)
@@ -385,7 +385,7 @@ function X.ConsiderTeleportation()
         then
             local nTargetInRangeAlly = J.GetNearbyHeroes(nInRangeEnemy[1], 1200, false, BOT_MODE_NONE)
 
-            if  nTargetInRangeAlly ~= nil
+            if nTargetInRangeAlly ~= nil
             and ((#nTargetInRangeAlly > #nInRangeAlly)
                 or (J.GetHP(bot) < 0.8 and bot:WasRecentlyDamagedByAnyHero(2.9)))
             then
@@ -420,7 +420,7 @@ function X.ConsiderNaturesCall()
 	then
         local nInRangeAlly = J.GetNearbyHeroes(bot,1000, false, BOT_MODE_NONE)
 
-        if  J.IsValidTarget(botTarget)
+        if J.IsValidTarget(botTarget)
         and J.IsInRange(bot, botTarget, 900)
         and not J.IsSuspiciousIllusion(botTarget)
         and not botTarget:HasModifier('modifier_abaddon_borrowed_time')
@@ -429,7 +429,7 @@ function X.ConsiderNaturesCall()
             local nTargetInRangeAlly = J.GetNearbyHeroes(botTarget, 1000, false, BOT_MODE_NONE)
             local nInRangeTrees = bot:GetNearbyTrees(nCastRange)
 
-            if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+            if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
             and #nInRangeAlly >= #nTargetInRangeAlly
             and nInRangeTrees ~= nil and #nInRangeTrees >= 1
             then
@@ -442,7 +442,7 @@ function X.ConsiderNaturesCall()
 
     if nInRangeTrees ~= nil and #nInRangeTrees >= 1
     then
-        if  J.IsPushing(bot) or J.IsDefending(bot)
+        if J.IsPushing(bot) or J.IsDefending(bot)
         and not CanDoSproutCall()
         then
             local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nCastRange, true)
@@ -452,13 +452,13 @@ function X.ConsiderNaturesCall()
             end
         end
 
-        if  J.IsFarming(bot)
+        if J.IsFarming(bot)
         and J.GetMP(bot) > 0.3
         then
             if J.IsAttacking(bot)
             then
                 local nNeutralCreeps = bot:GetNearbyNeutralCreeps(nCastRange)
-                if  nNeutralCreeps ~= nil
+                if nNeutralCreeps ~= nil
                 and ((#nNeutralCreeps >= 3)
                     or (#nNeutralCreeps >= 2 and nNeutralCreeps[1]:IsAncientCreep()))
                 then
@@ -473,7 +473,7 @@ function X.ConsiderNaturesCall()
             end
         end
 
-        if  J.IsLaning(bot)
+        if J.IsLaning(bot)
         and J.GetMP(bot) > 0.55
         then
             if J.IsAttacking(bot)
@@ -486,10 +486,10 @@ function X.ConsiderNaturesCall()
             end
         end
 
-        if  J.IsDoingRoshan(bot)
+        if J.IsDoingRoshan(bot)
         and not CanDoSproutCall()
         then
-            if  J.IsRoshan(botTarget)
+            if J.IsRoshan(botTarget)
             and J.IsInRange(bot, botTarget, 1000)
             and J.IsAttacking(bot)
             then
@@ -497,10 +497,10 @@ function X.ConsiderNaturesCall()
             end
         end
 
-        if  J.IsDoingTormentor(bot)
+        if J.IsDoingTormentor(bot)
         and not CanDoSproutCall()
         then
-            if  J.IsTormentor(botTarget)
+            if J.IsTormentor(botTarget)
             and J.IsInRange(bot, botTarget, 400)
             and J.IsAttacking(bot)
             then
@@ -522,7 +522,7 @@ function X.ConsiderWrathOfNature()
 
     for _, enemyHero in pairs(GetUnitList(UNIT_LIST_ALLIED_HEROES))
     do
-        if  J.IsValidHero(enemyHero)
+        if J.IsValidHero(enemyHero)
         and J.CanCastOnNonMagicImmune(enemyHero)
         and J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_MAGICAL)
         and not J.IsSuspiciousIllusion(enemyHero)
@@ -539,7 +539,7 @@ function X.ConsiderWrathOfNature()
 	then
 		local weakestTarget = J.GetVulnerableWeakestUnit(bot, true, true, 1600)
 
-        if  J.IsValidTarget(weakestTarget)
+        if J.IsValidTarget(weakestTarget)
         and J.CanCastOnNonMagicImmune(weakestTarget)
         and not J.IsSuspiciousIllusion(weakestTarget)
         and not weakestTarget:HasModifier('modifier_abaddon_borrowed_time')
@@ -557,7 +557,7 @@ function X.ConsiderWrathOfNature()
         local nInRangeEnemy = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE)
         for _, enemyHero in pairs(nInRangeEnemy)
         do
-            if  J.IsValidHero(enemyHero)
+            if J.IsValidHero(enemyHero)
             and J.CanCastOnNonMagicImmune(enemyHero)
             and not J.IsSuspiciousIllusion(enemyHero)
             and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
@@ -567,7 +567,7 @@ function X.ConsiderWrathOfNature()
             then
                 local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 1000, false, BOT_MODE_NONE)
 
-                if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+                if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
                 and #nInRangeAlly >= #nTargetInRangeAlly
                 then
                     return BOT_ACTION_DESIRE_HIGH, enemyHero
@@ -630,13 +630,13 @@ function X.ConsiderSproutCall()
                 end
             end
 
-            if  J.IsFarming(bot)
+            if J.IsFarming(bot)
             and J.GetMP(bot) > 0.33
             then
                 if J.IsAttacking(bot)
                 then
                     local nNeutralCreeps = bot:GetNearbyNeutralCreeps(nCastRange)
-                    if  nNeutralCreeps ~= nil
+                    if nNeutralCreeps ~= nil
                     and ((#nNeutralCreeps >= 3)
                         or (#nNeutralCreeps >= 2 and nNeutralCreeps[1]:IsAncientCreep()))
                     then
@@ -651,7 +651,7 @@ function X.ConsiderSproutCall()
                 end
             end
 
-            if  J.IsLaning(bot)
+            if J.IsLaning(bot)
             and J.GetMP(bot) > 0.65
             then
                 if J.IsAttacking(bot)
@@ -666,7 +666,7 @@ function X.ConsiderSproutCall()
 
             if J.IsDoingRoshan(bot)
             then
-                if  J.IsRoshan(botTarget)
+                if J.IsRoshan(botTarget)
                 and J.IsInRange(bot, botTarget, 1000)
                 and J.IsAttacking(bot)
                 then
@@ -676,7 +676,7 @@ function X.ConsiderSproutCall()
 
             if J.IsDoingTormentor(bot)
             then
-                if  J.IsTormentor(botTarget)
+                if J.IsTormentor(botTarget)
                 and J.IsInRange(bot, botTarget, 400)
                 and J.IsAttacking(bot)
                 then
@@ -690,7 +690,7 @@ function X.ConsiderSproutCall()
 end
 
 function CanDoSproutCall()
-    if  Sprout:IsFullyCastable()
+    if Sprout:IsFullyCastable()
     and NaturesCall:IsFullyCastable()
     then
         local nManaCost = Sprout:GetManaCost() + NaturesCall:GetManaCost()

@@ -392,7 +392,7 @@ function X.GetItemWard(bot)
     do
 		local item = bot:GetItemInSlot(i)
 
-		if  item ~= nil
+		if item ~= nil
 		and (item:GetName() == 'item_ward_observer'
 			or (item:GetName() == 'item_ward_sentry' and IsPinged))
         then
@@ -412,7 +412,7 @@ function X.IsPingedByHumanPlayer(bot)
         then
 			local member = GetTeamMember(i)
 
-			if  member ~= nil
+			if member ~= nil
             and member:IsAlive()
             and GetUnitToUnitDistance(bot, member) < 1200
             then
@@ -426,7 +426,7 @@ function X.IsPingedByHumanPlayer(bot)
 
 				local wardSlot = member:FindItemSlot(wardType)
 
-				if  GetUnitToLocationDistance(bot, ping.location) <= 700
+				if GetUnitToLocationDistance(bot, ping.location) <= 700
                 and DotaTime() - ping.time < 5
                 and wardSlot == -1
 				and not ping.normal_ping
@@ -495,7 +495,7 @@ function X.IsOtherWardClose(wardLoc)
 
 	for _, ward in pairs(nWardList)
     do
-		if  X.IsWard(ward)
+		if X.IsWard(ward)
         and GetUnitToLocationDistance(ward, wardLoc) <= nVisionRadius
         then
 			return true
@@ -542,7 +542,7 @@ function X.GetHumanPing()
 	do
 		local member = GetTeamMember(id)
 
-		if  member ~= nil
+		if member ~= nil
         and not member:IsBot()
         then
 			return member:GetMostRecentPing()

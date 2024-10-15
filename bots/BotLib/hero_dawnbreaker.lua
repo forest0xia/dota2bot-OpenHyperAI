@@ -133,7 +133,7 @@ function X.SkillsComplement()
     SolarGuardianDesire, SolarGuardianLocation = X.ConsiderSolarGuardian()
     if SolarGuardianDesire > 0
     then
-        if  CanBKB()
+        if CanBKB()
         and ShouldBKB
         then
             bot:Action_UseAbility(BlackKingBar)
@@ -163,7 +163,7 @@ function X.ConsiderStarBreaker()
     local nEnemyHeroes = J.GetNearbyHeroes(bot,nRadius, true, BOT_MODE_NONE)
     for _, enemyHero in pairs(nEnemyHeroes)
 	do
-        if  J.IsValidHero(enemyHero)
+        if J.IsValidHero(enemyHero)
         and J.CanCastOnNonMagicImmune(enemyHero)
         and J.IsInRange(bot, enemyHero, nRadius)
         and not J.IsSuspiciousIllusion(enemyHero)
@@ -174,7 +174,7 @@ function X.ConsiderStarBreaker()
                 return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation()
             end
 
-            if  J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_PHYSICAL)
+            if J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_PHYSICAL)
             and J.IsInRange(bot, enemyHero, nRadius)
             and not enemyHero:HasModifier('modifier_abaddon_aphotic_shield')
             and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
@@ -191,7 +191,7 @@ function X.ConsiderStarBreaker()
 	then
 		local nLocationAoE = bot:FindAoELocation(true, true, bot:GetLocation(), nRadius, nRadius, nComboDuration + nCastPoint, 0)
 
-		if  nLocationAoE.count >= 2
+		if nLocationAoE.count >= 2
         and not IsTargetLocInBigUlt(nLocationAoE.targetloc)
         then
             return BOT_ACTION_DESIRE_HIGH, nLocationAoE.targetloc
@@ -203,7 +203,7 @@ function X.ConsiderStarBreaker()
         local nInRangeAlly = J.GetNearbyHeroes(bot,nRadius * 2, false, BOT_MODE_NONE)
         local nInRangeEnemy = J.GetNearbyHeroes(bot,nRadius * 1.5, true, BOT_MODE_NONE)
 
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, nRadius)
         and not J.IsSuspiciousIllusion(botTarget)
@@ -222,7 +222,7 @@ function X.ConsiderStarBreaker()
         local nNeutralCreeps = bot:GetNearbyNeutralCreeps(300)
         local nLocationAoE = bot:FindAoELocation(true, false, bot:GetLocation(), nRadius, nRadius, 0, 0)
 
-        if  nNeutralCreeps ~= nil and ((#nNeutralCreeps >= 3 and nLocationAoE.count >= 3)
+        if nNeutralCreeps ~= nil and ((#nNeutralCreeps >= 3 and nLocationAoE.count >= 3)
                                     or (#nNeutralCreeps >= 2 and nNeutralCreeps[1]:IsAncientCreep() and nLocationAoE.count >= 3))
         then
             return BOT_ACTION_DESIRE_HIGH, nLocationAoE.targetloc
@@ -234,14 +234,14 @@ function X.ConsiderStarBreaker()
         local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nRadius, true)
         local nLocationAoE = bot:FindAoELocation(true, false, bot:GetLocation(), nRadius, nRadius, 0, 0)
 
-        if  nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 4
+        if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 4
         and nLocationAoE.count >= 4
         then
             return BOT_ACTION_DESIRE_HIGH, nLocationAoE.targetloc
         end
     end
 
-    if  J.IsLaning(bot)
+    if J.IsLaning(bot)
 	and nMana > 0.4
 	then
         local creepCount = 0
@@ -250,7 +250,7 @@ function X.ConsiderStarBreaker()
 
 		for _, creep in pairs(nEnemyLaneCreeps)
 		do
-			if  J.IsValid(creep)
+			if J.IsValid(creep)
 			and (J.IsKeyWordUnit('ranged', creep) or J.IsKeyWordUnit('siege', creep))
 			and creep:GetHealth() <= nDamage
 			then
@@ -259,7 +259,7 @@ function X.ConsiderStarBreaker()
 			end
 		end
 
-        if  creepCount >= 2
+        if creepCount >= 2
         and loc ~= nil
         then
             return BOT_ACTION_DESIRE_HIGH, loc
@@ -268,7 +268,7 @@ function X.ConsiderStarBreaker()
 
     if J.IsDoingRoshan(bot)
     then
-        if  J.IsRoshan(botTarget)
+        if J.IsRoshan(botTarget)
         and J.IsInRange(bot, botTarget, nRadius)
         then
             return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
@@ -300,7 +300,7 @@ function X.ConsiderCelestialHammer()
     local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
     for _, enemyHero in pairs(nEnemyHeroes)
 	do
-		if  J.IsValidHero(enemyHero)
+		if J.IsValidHero(enemyHero)
         and J.CanCastOnNonMagicImmune(enemyHero)
         and not J.IsSuspiciousIllusion(enemyHero)
         and not enemyHero:HasModifier('modifier_abaddon_aphotic_shield')
@@ -320,7 +320,7 @@ function X.ConsiderCelestialHammer()
         local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange, false, BOT_MODE_NONE)
         local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
         and not J.IsInRange(bot, botTarget, 300)
@@ -339,7 +339,7 @@ function X.ConsiderCelestialHammer()
         local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange, false, BOT_MODE_NONE)
         local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 
-		if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+		if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
         and ((#nInRangeEnemy > #nInRangeAlly)
             or J.GetHP(bot) < 0.7 and bot:WasRecentlyDamagedByAnyHero(2))
         and J.IsValidHero(nInRangeEnemy[1])
@@ -361,20 +361,20 @@ function X.ConsiderCelestialHammer()
 		end
 	end
 
-    if  J.IsLaning(bot)
+    if J.IsLaning(bot)
     and nMana > 0.75
 	then
         local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nCastRange, true)
 
         for _, creep in pairs(nEnemyLaneCreeps)
         do
-            if  J.IsValid(creep)
+            if J.IsValid(creep)
             and (J.IsKeyWordUnit('ranged', creep) or J.IsKeyWordUnit('siege', creep))
             and creep:GetHealth() <= nDamage
             then
                 local nInRangeEnemy = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE)
 
-                if  nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
+                if nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
                 and GetUnitToUnitDistance(creep, nInRangeEnemy[1]) <= 600
                 then
                     return BOT_ACTION_DESIRE_HIGH, creep:GetLocation()
@@ -403,13 +403,13 @@ function X.ConsiderConverge()
         nSpeed = nSpeed * (1 + (CelestialHammerCastRangeTalent:GetSpecialValueInt('value') / 100))
     end
 
-    if  J.IsGoingOnSomeone(bot)
+    if J.IsGoingOnSomeone(bot)
     and ConvergeHammerLocation ~= nil
     then
         local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange, false, BOT_MODE_NONE)
         local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
         and not J.IsInRange(bot, botTarget, 300)
@@ -420,7 +420,7 @@ function X.ConsiderConverge()
 		then
             local nTargetInRangeAlly = J.GetNearbyHeroes(botTarget, 600, false, BOT_MODE_NONE)
 
-            if  nTargetInRangeAlly ~= nil
+            if nTargetInRangeAlly ~= nil
             and #nInRangeAlly >= #nTargetInRangeAlly
             and GetUnitToLocationDistance(botTarget, ConvergeHammerLocation) < GetUnitToLocationDistance(bot, ConvergeHammerLocation)
             and DotaTime() >= CelestialHammerTime
@@ -430,13 +430,13 @@ function X.ConsiderConverge()
 		end
     end
 
-    if  J.IsRetreating(bot)
+    if J.IsRetreating(bot)
     and not IsHammerCastedWhenRetreatingToEnemy
     then
         local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange, false, BOT_MODE_NONE)
         local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 
-		if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+		if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
         and ((#nInRangeEnemy > #nInRangeAlly)
             or J.GetHP(bot) and bot:WasRecentlyDamagedByAnyHero(2))
         and J.IsValidHero(nInRangeEnemy[1])
@@ -445,7 +445,7 @@ function X.ConsiderConverge()
 		and not J.IsRealInvisible(bot)
 		then
             local loc = J.GetEscapeLoc()
-            if  bot:IsFacingLocation(loc, 30)
+            if bot:IsFacingLocation(loc, 30)
             and DotaTime() >= CelestialHammerTime
             then
                 return BOT_ACTION_DESIRE_HIGH
@@ -479,16 +479,16 @@ function X.ConsiderSolarGuardian()
         then
             local nNeabyEnemyNearAllyList = nAllyList[#nAllyList]:GetNearbyHeroes(nRadius, true, BOT_MODE_NONE)
 
-            if  not IsTargetLocInBigUlt(nTeamFightLocation)
+            if not IsTargetLocInBigUlt(nTeamFightLocation)
             and (nNeabyEnemyNearAllyList ~= nil and #nNeabyEnemyNearAllyList >= 1)
             then
                 local aLocationAoE = bot:FindAoELocation(false, true, nTeamFightLocation, GetUnitToLocationDistance(bot, nTeamFightLocation), nRadius, nTotalCastTime, 0)
                 local eLocationAoE = bot:FindAoELocation(true, true, nTeamFightLocation, GetUnitToLocationDistance(bot, nTeamFightLocation), nRadius, nTotalCastTime, 0)
                 local nInRangeEnemy = J.GetNearbyHeroes(bot,nRadius, true, BOT_MODE_NONE)
 
-                if  aLocationAoE.count >= 1 and eLocationAoE.count >= 1
+                if aLocationAoE.count >= 1 and eLocationAoE.count >= 1
                 then
-                    if  nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
+                    if nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
                     and not bot:IsMagicImmune()
                     then
                         ShouldBKB = true
@@ -505,7 +505,7 @@ function X.ConsiderSolarGuardian()
 	then
 		for _, enemyHero in pairs(nEnemyHeroes)
 		do
-			if  bot:WasRecentlyDamagedByHero(enemyHero, 2.0)
+			if bot:WasRecentlyDamagedByHero(enemyHero, 2.0)
 			and not J.IsSuspiciousIllusion(enemyHero)
 			and not J.IsRealInvisible(bot)
 			then
@@ -517,7 +517,7 @@ function X.ConsiderSolarGuardian()
                     local ally = GetTeamMember(i)
                     local dist = 0
 
-                    if  ally ~= nil
+                    if ally ~= nil
                     and ally:IsAlive()
                     and GetUnitToUnitDistance(bot, ally) > dist
                     then
@@ -526,7 +526,7 @@ function X.ConsiderSolarGuardian()
                     end
                 end
 
-				if  nAllyHeroes ~= nil
+				if nAllyHeroes ~= nil
 				and (#nAllyHeroes <= 1 and #nEnemyHeroes >= 3)
                 and furthestAlly ~= nil and GetUnitToUnitDistance(bot, furthestAlly) > 2500
                 and bot:IsMagicImmune()
@@ -544,7 +544,7 @@ end
 function IsTargetLocInBigUlt(loc)
 	for _, enemyHero in pairs(GetUnitList(UNIT_LIST_ENEMY_HEROES))
 	do
-		if  J.IsValidHero(enemyHero)
+		if J.IsValidHero(enemyHero)
 		and not J.IsSuspiciousIllusion(enemyHero)
 		and GetUnitToLocationDistance(enemyHero, loc) < 450
 		and enemyHero:HasModifier('modifier_faceless_void_chronosphere_freeze')
@@ -563,7 +563,7 @@ function CanBKB()
     do
 		local item = bot:GetItemInSlot(i)
 
-		if  item ~= nil
+		if item ~= nil
         and item:GetName() == "item_black_king_bar"
         then
 			bkb = item
@@ -571,7 +571,7 @@ function CanBKB()
 		end
 	end
 
-    if  bkb ~= nil
+    if bkb ~= nil
     and bkb:IsFullyCastable()
 	then
         BlackKingBar = bkb

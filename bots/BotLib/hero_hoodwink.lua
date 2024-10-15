@@ -204,7 +204,7 @@ function X.ConsiderAcornShot()
     local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
     for _, enemyHero in pairs(nEnemyHeroes)
     do
-        if  J.IsValidHero(enemyHero)
+        if J.IsValidHero(enemyHero)
         and J.CanBeAttacked(enemyHero)
         and J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_PHYSICAL)
         and not J.IsSuspiciousIllusion(enemyHero)
@@ -222,13 +222,13 @@ function X.ConsiderAcornShot()
     do
         local nAllyInRangeEnemy = J.GetNearbyHeroes(allyHero, nCastRange, true, BOT_MODE_NONE)
 
-        if  J.IsValidHero(allyHero)
+        if J.IsValidHero(allyHero)
         and (J.IsRetreating(allyHero)
             and J.GetHP(allyHero) < 0.75
             and allyHero:WasRecentlyDamagedByAnyHero(2))
         and not allyHero:IsIllusion()
         then
-            if  nAllyInRangeEnemy ~= nil and #nAllyInRangeEnemy >= 1
+            if nAllyInRangeEnemy ~= nil and #nAllyInRangeEnemy >= 1
             and J.IsValidHero(nAllyInRangeEnemy[1])
             and J.IsInRange(bot, nAllyInRangeEnemy[1], nCastRange)
             and not J.IsSuspiciousIllusion(nAllyInRangeEnemy[1])
@@ -245,7 +245,7 @@ function X.ConsiderAcornShot()
         local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange + 100, false, BOT_MODE_NONE)
         local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
 		and J.CanCastOnNonMagicImmune(botTarget)
 		and J.IsInRange(bot, botTarget, nCastRange)
         and not J.IsSuspiciousIllusion(botTarget)
@@ -264,7 +264,7 @@ function X.ConsiderAcornShot()
         local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange + 100, false, BOT_MODE_NONE)
         local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 
-        if  nInRangeAlly ~= nil and nInRangeEnemy
+        if nInRangeAlly ~= nil and nInRangeEnemy
         and ((#nInRangeEnemy > #nInRangeAlly)
             or (J.GetHP(bot) < 0.65 and bot:WasRecentlyDamagedByAnyHero(2.5)))
         and J.IsValidHero(nInRangeEnemy[1])
@@ -275,7 +275,7 @@ function X.ConsiderAcornShot()
 		end
 	end
 
-	if  (J.IsPushing(bot) or J.IsDefending(bot))
+	if (J.IsPushing(bot) or J.IsDefending(bot))
     and (J.HasItem(bot, 'item_maelstrom') or J.HasItem(bot, 'item_gungir') or J.HasItem(bot, 'item_mjollnir'))
     and nAbilityLevel >= 3
     and not J.IsThereCoreNearby(600)
@@ -283,7 +283,7 @@ function X.ConsiderAcornShot()
 		local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nCastRange, true)
         local nLocationAoE = bot:FindAoELocation(true, false, bot:GetLocation(), nCastRange, nRadius, nCastPoint, 0)
 
-        if  nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 4
+        if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 4
         and nLocationAoE.count >= 4
         then
             return BOT_ACTION_DESIRE_HIGH, nLocationAoE.targetloc
@@ -315,7 +315,7 @@ function X.ConsiderBushwhack()
     local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
     for _, enemyHero in pairs(nEnemyHeroes)
     do
-        if  J.IsValidHero(enemyHero)
+        if J.IsValidHero(enemyHero)
         and J.CanCastOnNonMagicImmune(enemyHero)
         and not J.IsSuspiciousIllusion(enemyHero)
 		then
@@ -328,7 +328,7 @@ function X.ConsiderBushwhack()
                     return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation()
                 end
 
-                if  J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_MAGICAL)
+                if J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_MAGICAL)
                 and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
                 and not enemyHero:HasModifier('modifier_dazzle_shallow_grave')
                 and not enemyHero:HasModifier('modifier_oracle_false_promise_timer')
@@ -346,12 +346,12 @@ function X.ConsiderBushwhack()
     do
         local nAllyInRangeEnemy = J.GetNearbyHeroes(allyHero, nCastRange, true, BOT_MODE_NONE)
 
-        if  J.IsValidHero(allyHero)
+        if J.IsValidHero(allyHero)
         and (J.IsRetreating(allyHero)
             and allyHero:WasRecentlyDamagedByAnyHero(2.5))
         and not allyHero:IsIllusion()
         then
-            if  nAllyInRangeEnemy ~= nil and #nAllyInRangeEnemy >= 1
+            if nAllyInRangeEnemy ~= nil and #nAllyInRangeEnemy >= 1
             and J.IsValidHero(nAllyInRangeEnemy[1])
             and J.IsInRange(bot, nAllyInRangeEnemy[1], nCastRange)
             and not J.IsSuspiciousIllusion(nAllyInRangeEnemy[1])
@@ -377,7 +377,7 @@ function X.ConsiderBushwhack()
         then
             for _, enemyHero in pairs(nInRangeEnemy)
             do
-                if  J.IsValidHero(enemyHero)
+                if J.IsValidHero(enemyHero)
                 and J.CanCastOnNonMagicImmune(enemyHero)
                 and not J.IsSuspiciousIllusion(enemyHero)
                 and not J.IsDisabled(enemyHero)
@@ -398,7 +398,7 @@ function X.ConsiderBushwhack()
 
     if J.IsGoingOnSomeone(bot)
 	then
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
         and not J.IsSuspiciousIllusion(botTarget)
@@ -419,7 +419,7 @@ function X.ConsiderBushwhack()
         local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange + 100, false, BOT_MODE_NONE)
         local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 
-        if  nInRangeAlly ~= nil and nInRangeEnemy
+        if nInRangeAlly ~= nil and nInRangeEnemy
         and ((#nInRangeEnemy > #nInRangeAlly)
             or (J.GetHP(bot) < 0.65 and bot:WasRecentlyDamagedByAnyHero(2.5)))
         and J.IsValidHero(nInRangeEnemy[1])
@@ -455,7 +455,7 @@ function X.ConsiderScurry()
 
         if bot:IsFacingLocation(loc, 30)
         then
-            if  nInRangeAlly ~= nil and nInRangeEnemy
+            if nInRangeAlly ~= nil and nInRangeEnemy
             and ((#nInRangeEnemy > #nInRangeAlly)
                 or (J.GetHP(bot) < 0.55 and bot:WasRecentlyDamagedByAnyHero(2)))
             and J.IsValidHero(nInRangeEnemy[1])
@@ -488,7 +488,7 @@ function X.ConsiderSharpshooter()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
         and not J.IsInRange(bot, botTarget, nAttackRange)
@@ -517,7 +517,7 @@ function X.ConsiderSharpshooter()
 
 		for _, enemyHero in pairs(nInRangeEnemy)
         do
-			if  J.IsValidHero(enemyHero)
+			if J.IsValidHero(enemyHero)
             and J.CanCastOnNonMagicImmune(enemyHero)
             and J.IsInRange(bot, enemyHero, nCastRange)
             and not J.IsSuspiciousIllusion(enemyHero)
@@ -554,7 +554,7 @@ function X.ConsiderHuntersBoomerang()
         then
             for _, enemyHero in pairs(nInRangeEnemy)
             do
-                if  J.IsValidHero(enemyHero)
+                if J.IsValidHero(enemyHero)
                 and J.CanCastOnNonMagicImmune(enemyHero)
                 and not J.IsSuspiciousIllusion(enemyHero)
                 and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')

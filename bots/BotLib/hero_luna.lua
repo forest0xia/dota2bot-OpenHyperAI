@@ -168,7 +168,7 @@ function X.ConsiderLucentBeam()
 	local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange + 300, true, BOT_MODE_NONE)
 	for _, enemyHero in pairs(nEnemyHeroes)
 	do
-		if  J.IsValidHero(enemyHero)
+		if J.IsValidHero(enemyHero)
 		and J.CanCastOnNonMagicImmune(enemyHero)
 		and J.CanCastOnTargetAdvanced(enemyHero)
 		and not J.IsSuspiciousIllusion(enemyHero)
@@ -178,7 +178,7 @@ function X.ConsiderLucentBeam()
 				return BOT_ACTION_DESIRE_HIGH, enemyHero
 			end
 
-			if  J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_MAGICAL)
+			if J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_MAGICAL)
 			and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
 			and not enemyHero:HasModifier('modifier_dazzle_shallow_grave')
 			and not enemyHero:HasModifier('modifier_necrolyte_reapers_scythe')
@@ -223,7 +223,7 @@ function X.ConsiderLucentBeam()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
 		and J.CanCastOnNonMagicImmune(botTarget)
 		and J.CanCastOnTargetAdvanced(botTarget)
 		and J.IsInRange(bot, botTarget, nCastRange + 75)
@@ -233,7 +233,7 @@ function X.ConsiderLucentBeam()
 			local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1200, true, BOT_MODE_NONE)
 			local nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1200, true, BOT_MODE_NONE)
 
-			if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+			if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 			and #nInRangeAlly >= #nInRangeEnemy
 			then
 				return BOT_ACTION_DESIRE_HIGH, botTarget
@@ -241,13 +241,13 @@ function X.ConsiderLucentBeam()
 		end
 	end
 
-	if  J.IsRetreating(bot)
+	if J.IsRetreating(bot)
 	and bot:GetActiveModeDesire() > 0.5
     then
         local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
         for _, enemyHero in pairs(nInRangeEnemy)
         do
-            if  J.IsValidHero(enemyHero)
+            if J.IsValidHero(enemyHero)
             and J.CanCastOnNonMagicImmune(enemyHero)
 			and J.CanCastOnTargetAdvanced(enemyHero)
             and J.IsChasingTarget(enemyHero, bot)
@@ -258,7 +258,7 @@ function X.ConsiderLucentBeam()
                 local nInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, true, BOT_MODE_NONE)
                 local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
 
-                if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+                if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
                 and ((#nTargetInRangeAlly > #nInRangeAlly)
                     or bot:WasRecentlyDamagedByAnyHero(2))
                 then
@@ -273,7 +273,7 @@ function X.ConsiderLucentBeam()
 		local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nCastRange + 200, true)
 		for _, creep in pairs(nEnemyLaneCreeps)
 		do
-			if  J.IsValid(creep)
+			if J.IsValid(creep)
 			and J.CanBeAttacked(creep)
 			and (J.IsKeyWordUnit('ranged', creep) or J.IsKeyWordUnit('siege', creep) or J.IsKeyWordUnit('flagbearer', creep))
 			and J.CanKillTarget(creep, nDamage, DAMAGE_TYPE_MAGICAL)
@@ -288,7 +288,7 @@ function X.ConsiderLucentBeam()
 		then
 			for _, creep in pairs(nEnemyLaneCreeps)
 			do
-				if  J.IsValid(creep)
+				if J.IsValid(creep)
 				and J.CanBeAttacked(creep)
 				and J.IsKeyWordUnit('melee', creep)
 				and J.CanKillTarget(creep, nDamage, DAMAGE_TYPE_MAGICAL)
@@ -305,7 +305,7 @@ function X.ConsiderLucentBeam()
 		local nNeutralCreeps = bot:GetNearbyNeutralCreeps(nCastRange + 100)
 		local targetCreep = J.GetMostHpUnit(nNeutralCreeps)
 
-		if  J.IsValid(targetCreep)
+		if J.IsValid(targetCreep)
 		and (#nNeutralCreeps >= 2 or GetUnitToUnitDistance(targetCreep, bot) <= 400)
 		and not J.IsRoshan(targetCreep)
 		and not J.CanKillTarget(targetCreep, bot:GetAttackDamage() * 1.68, DAMAGE_TYPE_PHYSICAL)
@@ -319,7 +319,7 @@ function X.ConsiderLucentBeam()
 	if J.IsDoingRoshan(bot)
     then
 		-- Remove Spell Block
-        if  J.IsRoshan(botTarget)
+        if J.IsRoshan(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
 		and J.IsAttacking(bot)
@@ -331,7 +331,7 @@ function X.ConsiderLucentBeam()
 
     if J.IsDoingTormentor(bot)
     then
-        if  J.IsTormentor(botTarget)
+        if J.IsTormentor(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
         and J.IsAttacking(bot)
         then
@@ -344,14 +344,14 @@ function X.ConsiderLucentBeam()
     do
         local nAllyInRangeEnemy = J.GetNearbyHeroes(allyHero, 1200, true, BOT_MODE_NONE)
 
-        if  J.IsValidHero(allyHero)
+        if J.IsValidHero(allyHero)
         and J.IsRetreating(allyHero)
         and J.IsCore(allyHero)
         and allyHero:WasRecentlyDamagedByAnyHero(2)
         and allyHero:GetActiveModeDesire() >= 0.5
         and not allyHero:IsIllusion()
         then
-            if  nAllyInRangeEnemy ~= nil and #nAllyInRangeEnemy >= 1
+            if nAllyInRangeEnemy ~= nil and #nAllyInRangeEnemy >= 1
             and J.IsValidHero(nAllyInRangeEnemy[1])
             and J.CanCastOnNonMagicImmune(nAllyInRangeEnemy[1])
             and J.CanCastOnTargetAdvanced(nAllyInRangeEnemy[1])
@@ -380,7 +380,7 @@ function X.ConsiderLunarOrbit()
 	local nRadius = LunarOrbit:GetSpecialValueInt('rotating_glaives_movement_radius')
 	local nEnemyHeroes = J.GetNearbyHeroes(bot,700, true, BOT_MODE_NONE)
 
-	if  J.GetHP(bot) < 0.5
+	if J.GetHP(bot) < 0.5
 	and bot:WasRecentlyDamagedByAnyHero(1)
 	and nEnemyHeroes ~= nil and #nEnemyHeroes >= 1
 	then
@@ -389,7 +389,7 @@ function X.ConsiderLunarOrbit()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
 		and J.IsInRange(bot, botTarget, nRadius)
 		and bot:WasRecentlyDamagedByAnyHero(1)
 		and not J.IsDisabled(botTarget)
@@ -403,7 +403,7 @@ function X.ConsiderLunarOrbit()
         local nInRangeEnemy = J.GetNearbyHeroes(bot,1200, true, BOT_MODE_NONE)
         for _, enemyHero in pairs(nInRangeEnemy)
         do
-            if  J.IsValidHero(enemyHero)
+            if J.IsValidHero(enemyHero)
             and J.IsChasingTarget(enemyHero, bot)
 			and J.IsInRange(bot, enemyHero, 700)
             and not J.IsSuspiciousIllusion(enemyHero)
@@ -412,7 +412,7 @@ function X.ConsiderLunarOrbit()
                 local nInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, true, BOT_MODE_NONE)
                 local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
 
-                if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+                if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
                 and ((#nTargetInRangeAlly > #nInRangeAlly)
                     or bot:WasRecentlyDamagedByAnyHero(1.5))
                 then
@@ -426,7 +426,7 @@ function X.ConsiderLunarOrbit()
 	then
 		local nCreeps = bot:GetNearbyCreeps(nRadius, true)
 
-		if  nCreeps ~= nil
+		if nCreeps ~= nil
 		and (#nCreeps >= 3 or (#nCreeps >= 2 and nCreeps[1]:IsAncientCreep()))
 		and J.CanBeAttacked(nCreeps[1])
 		and J.IsAttacking(bot)
@@ -449,7 +449,7 @@ function X.ConsiderMoonGlaives()
 	local nRadius = 175
 	local nEnemyHeroes = J.GetNearbyHeroes(bot,700, true, BOT_MODE_NONE)
 
-	if  J.GetHP(bot) < 0.5
+	if J.GetHP(bot) < 0.5
 	and bot:WasRecentlyDamagedByAnyHero(1)
 	and nEnemyHeroes ~= nil and #nEnemyHeroes >= 1
 	then
@@ -458,7 +458,7 @@ function X.ConsiderMoonGlaives()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
 		and J.IsInRange(bot, botTarget, nRadius)
 		and bot:WasRecentlyDamagedByAnyHero(1)
 		and not J.IsDisabled(botTarget)
@@ -472,7 +472,7 @@ function X.ConsiderMoonGlaives()
         local nInRangeEnemy = J.GetNearbyHeroes(bot,1200, true, BOT_MODE_NONE)
         for _, enemyHero in pairs(nInRangeEnemy)
         do
-            if  J.IsValidHero(enemyHero)
+            if J.IsValidHero(enemyHero)
             and J.IsChasingTarget(enemyHero, bot)
 			and J.IsInRange(bot, enemyHero, 700)
             and not J.IsSuspiciousIllusion(enemyHero)
@@ -481,7 +481,7 @@ function X.ConsiderMoonGlaives()
                 local nInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, true, BOT_MODE_NONE)
                 local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
 
-                if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+                if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
                 and ((#nTargetInRangeAlly > #nInRangeAlly)
                     or bot:WasRecentlyDamagedByAnyHero(1.5))
                 then
@@ -495,7 +495,7 @@ function X.ConsiderMoonGlaives()
 	then
 		local nCreeps = bot:GetNearbyCreeps(nRadius, true)
 
-		if  nCreeps ~= nil
+		if nCreeps ~= nil
 		and (#nCreeps >= 3 or (#nCreeps >= 2 and nCreeps[1]:IsAncientCreep()))
 		and J.CanBeAttacked(nCreeps[1])
 		and J.IsAttacking(bot)
@@ -525,7 +525,7 @@ function X.ConsiderEclipse()
 			local canKillACore = false
 			for _, enemyHero in pairs(nInRangeEnemy)
 			do
-				if  J.IsValidHero(enemyHero)
+				if J.IsValidHero(enemyHero)
 				and J.CanCastOnNonMagicImmune(enemyHero)
 				and J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_MAGICAL)
 				-- and J.IsCore(enemyHero)
@@ -550,7 +550,7 @@ function X.ConsiderEclipse()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
 		and J.CanCastOnNonMagicImmune(botTarget)
 		and J.IsInRange(bot, botTarget, nRadius)
 		and not botTarget:HasModifier('modifier_abaddon_borrowed_time')
@@ -561,7 +561,7 @@ function X.ConsiderEclipse()
 			local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1200, true, BOT_MODE_NONE)
 			local nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1200, true, BOT_MODE_NONE)
 
-			if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+			if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 			and #nInRangeAlly >= #nInRangeEnemy
 			and not (#nInRangeAlly >= #nInRangeEnemy + 3)
 			then

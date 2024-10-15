@@ -489,7 +489,7 @@ function X.IsTheClosestOne(r)
 	for k,v in pairs(teamPlayers)
 	do	
 		local member = GetTeamMember(k)
-		if  member ~= nil and not member:IsIllusion() and member:IsAlive() then
+		if member ~= nil and not member:IsIllusion() and member:IsAlive() then
 			local dist = GetUnitToLocationDistance(member, r)
 			if dist < minDist then
 				minDist = dist
@@ -663,7 +663,7 @@ function X.IsEnemyPickRune(bot,nRune)
 	
 	for _,enemy in pairs(nEnemys)
 	do
-		if  enemy ~= nil and enemy:IsAlive()
+		if enemy ~= nil and enemy:IsAlive()
 			and ( enemy:IsFacingLocation(runeLocation,30) or enemy:IsFacingLocation(bot:GetLocation(),30) or GetUnitToLocationDistance(enemy,runeLocation) < 500 )
 			and GetUnitToLocationDistance(enemy,runeLocation) < GetUnitToLocationDistance(bot,runeLocation) + 300
 		then

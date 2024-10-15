@@ -45,7 +45,7 @@ function GetDesire()
 	end
 
 	ClosestOutpost, ClosestOutpostDist = GetClosestOutpost()
-	if  ClosestOutpost ~= nil and ClosestOutpostDist < 3500
+	if ClosestOutpost ~= nil and ClosestOutpostDist < 3500
 	and not IsEnemyCloserToOutpostLoc(ClosestOutpost:GetLocation(), ClosestOutpostDist)
 	and IsSuitableToCaptureOutpost()
 	then
@@ -96,7 +96,7 @@ function GetClosestOutpost()
 
 	for i = 1, 2
 	do
-		if  Outposts[i] ~= nil
+		if Outposts[i] ~= nil
 		and Outposts[i]:GetTeam() ~= GetTeam()
 		and GetUnitToUnitDistance(bot, Outposts[i]) < dist
 		and not Outposts[i]:IsNull()
@@ -120,7 +120,7 @@ function IsEnemyCloserToOutpostLoc(opLoc, botDist)
 			local dInfo = info[1]
 			if dInfo ~= nil
 			then
-				if  dInfo ~= nil
+				if dInfo ~= nil
 				and dInfo.time_since_seen < 5
 				and J.GetDistance(dInfo.location, opLoc) < botDist
 				then

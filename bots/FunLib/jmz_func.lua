@@ -410,7 +410,7 @@ function J.GetEnemiesNearLoc(vLoc, nRadius)
 	local enemies = {}
 	for _, enemyHero in pairs(GetUnitList(UNIT_LIST_ENEMY_HEROES))
 	do
-		if  J.IsValidHero(enemyHero)
+		if J.IsValidHero(enemyHero)
 		and GetUnitToLocationDistance(enemyHero, vLoc) <= nRadius
 		and not J.IsSuspiciousIllusion(enemyHero)
 		and not J.IsMeepoClone(enemyHero)
@@ -427,7 +427,7 @@ function J.GetIllusionsNearLoc(vLoc, nRadius)
 	local illusions = {}
 	for _, enemyHero in pairs(GetUnitList(UNIT_LIST_ENEMY_HEROES))
 	do
-		if  J.IsValidHero(enemyHero)
+		if J.IsValidHero(enemyHero)
 		and GetUnitToLocationDistance(enemyHero, vLoc) <= nRadius
 		and J.IsSuspiciousIllusion(enemyHero)
 		and not J.IsMeepoClone(enemyHero)
@@ -699,7 +699,7 @@ function J.CanBlinkDagger(bot)
     do
 		local item = bot:GetItemInSlot(i)
 
-		if  item ~= nil
+		if item ~= nil
         and (item:GetName() == "item_blink" or item:GetName() == "item_overwhelming_blink" or item:GetName() == "item_arcane_blink" or item:GetName() == "item_swift_blink")
         then
 			blink = item
@@ -1219,7 +1219,7 @@ function J.GetMostHpUnit( unitList )
 	for _, unit in pairs( unitList )
 	do
 		local uHp = unit:GetHealth()
-		if  unit ~= nil
+		if unit ~= nil
 		and not J.IsRoshan(unit)
 		and not J.IsTormentor(unit)
 		and uHp > maxHP
@@ -3637,7 +3637,7 @@ end
 function J.IsModeTurbo()
 	for _, u in pairs(GetUnitList(UNIT_LIST_ALLIES))
 	do
-		if  u ~= nil
+		if u ~= nil
 		and u:GetUnitName() == 'npc_dota_courier'
 		then
 			if u:GetCurrentMovementSpeed() == 1100
@@ -3932,7 +3932,7 @@ function J.GetAliveAllyCoreCount()
 	local count = 0
 	for _, allyHero in pairs(GetUnitList(UNIT_LIST_ALLIED_HEROES))
 	do
-		if  J.IsValidHero(allyHero)
+		if J.IsValidHero(allyHero)
 		and J.IsCore(allyHero)
 		and not allyHero:IsIllusion()
 		then
@@ -3980,7 +3980,7 @@ function J.IsHeroBetweenMeAndLocation(hSource, vLoc, nRadius)
 		if allyHero ~= hSource
 		then
 			local tResult = PointToLineDistance(vStart, vEnd, allyHero:GetLocation())
-			if  tResult ~= nil and tResult.within and tResult.distance < nRadius then return true end
+			if tResult ~= nil and tResult.within and tResult.distance < nRadius then return true end
 		end
 	end
 
@@ -3991,7 +3991,7 @@ function J.IsHeroBetweenMeAndLocation(hSource, vLoc, nRadius)
 		and not J.IsSuspiciousIllusion(enemyHero)
 		then
 			local tResult = PointToLineDistance(vStart, vEnd, enemyHero:GetLocation())
-			if  tResult ~= nil and tResult.within and tResult.distance < nRadius then return true end
+			if tResult ~= nil and tResult.within and tResult.distance < nRadius then return true end
 		end
 	end
 
@@ -4010,7 +4010,7 @@ function J.IsEnemyBetweenMeAndLocation(hSource, vLoc, nRadius)
 		and not J.IsSuspiciousIllusion(enemyHero)
 		then
 			local tResult = PointToLineDistance(vStart, vEnd, enemyHero:GetLocation())
-			if  tResult ~= nil and tResult.within and tResult.distance < nRadius then return true end
+			if tResult ~= nil and tResult.within and tResult.distance < nRadius then return true end
 		end
 	end
 
@@ -4027,7 +4027,7 @@ function J.IsHeroBetweenMeAndTarget(hSource, hTarget, vLoc, nRadius)
 		if allyHero ~= hTarget and allyHero ~= hSource
 		then
 			local tResult = PointToLineDistance(vStart, vEnd, allyHero:GetLocation())
-			if  tResult ~= nil and tResult.within == true and tResult.distance < nRadius then return true end
+			if tResult ~= nil and tResult.within == true and tResult.distance < nRadius then return true end
 		end
 	end
 
@@ -4037,7 +4037,7 @@ function J.IsHeroBetweenMeAndTarget(hSource, hTarget, vLoc, nRadius)
 		if enemyHero ~= hTarget and enemyHero ~= hSource
 		then
 			local tResult = PointToLineDistance(vStart, vEnd, enemyHero:GetLocation())
-			if  tResult ~= nil and tResult.within and tResult.distance < nRadius then return true end
+			if tResult ~= nil and tResult.within and tResult.distance < nRadius then return true end
 		end
 	end
 
@@ -4053,7 +4053,7 @@ function J.IsCreepBetweenMeAndLocation(hSource, vLoc, nRadius)
 	for _, creep in pairs(nAllyLaneCreeps)
     do
 		local tResult = PointToLineDistance(vStart, vEnd, creep:GetLocation())
-		if  tResult ~= nil and tResult.within and tResult.distance < nRadius then return true end
+		if tResult ~= nil and tResult.within and tResult.distance < nRadius then return true end
 	end
 
 	local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(1600, false)
@@ -4061,7 +4061,7 @@ function J.IsCreepBetweenMeAndLocation(hSource, vLoc, nRadius)
     do
 		local tResult = PointToLineDistance(vStart, vEnd, creep:GetLocation())
 
-		if  tResult ~= nil and tResult.within and tResult.distance < nRadius then return true end
+		if tResult ~= nil and tResult.within and tResult.distance < nRadius then return true end
 	end
 
 	return false
@@ -4074,7 +4074,7 @@ function J.IsNonSiegeCreepBetweenMeAndLocation(hSource, vLoc, nRadius)
 	local nAllyLaneCreeps = hSource:GetNearbyLaneCreeps(1600, true)
 	for _, creep in pairs(nAllyLaneCreeps)
     do
-		if  J.IsValid(creep)
+		if J.IsValid(creep)
 		and not J.IsKeyWordUnit('siege', creep)
 		then
 			local tResult = PointToLineDistance(vStart, vEnd, creep:GetLocation())
@@ -4085,7 +4085,7 @@ function J.IsNonSiegeCreepBetweenMeAndLocation(hSource, vLoc, nRadius)
 	local nEnemyLaneCreeps = hSource:GetNearbyLaneCreeps(1600, false)
 	for _, creep in pairs(nEnemyLaneCreeps)
     do
-		if  J.IsValid(creep)
+		if J.IsValid(creep)
 		and not J.IsKeyWordUnit('siege', creep)
 		then
 			local tResult = PointToLineDistance(vStart, vEnd, creep:GetLocation())
@@ -4241,7 +4241,7 @@ function J.DidEnemyCastAbility()
 
 	for _, npcEnemy in pairs(nEnemyHeroes)
 	do
-		if  npcEnemy ~= nil and npcEnemy:IsAlive()
+		if npcEnemy ~= nil and npcEnemy:IsAlive()
 		and npcEnemy:IsFacingLocation(bot:GetLocation(), 30)
 		and (npcEnemy:IsCastingAbility() or npcEnemy:IsUsingAbility())
 		then
@@ -4258,7 +4258,7 @@ function J.DidEnemyCastAbility()
 					return true
 				end
 
-				if  nAbilityBehavior == ABILITY_BEHAVIOR_UNIT_TARGET
+				if nAbilityBehavior == ABILITY_BEHAVIOR_UNIT_TARGET
 				and npcEnemy:GetLevel() >= 6
 				and not npcEnemy:IsBot()
 				and not J.IsAllyUnitSpell(sAbilityName)
@@ -4348,7 +4348,7 @@ end
 function J.IsLocationInChrono(loc)
 	for _, enemyHero in pairs(GetUnitList(UNIT_LIST_ENEMY_HEROES))
 	do
-		if  J.IsValidHero(enemyHero)
+		if J.IsValidHero(enemyHero)
 		and not J.IsSuspiciousIllusion(enemyHero)
 		and GetUnitToLocationDistance(enemyHero, loc) < 300
 		and enemyHero:HasModifier('modifier_faceless_void_chronosphere_freeze')
@@ -4359,7 +4359,7 @@ function J.IsLocationInChrono(loc)
 
 	for _, allyHero in pairs(GetUnitList(UNIT_LIST_ALLIED_HEROES))
 	do
-		if  J.IsValidHero(allyHero)
+		if J.IsValidHero(allyHero)
 		and not allyHero:IsIllusion()
 		and GetUnitToLocationDistance(allyHero, loc) < 300
 		and (allyHero:HasModifier('modifier_faceless_void_chronosphere_freeze'))
@@ -4374,7 +4374,7 @@ end
 function J.IsLocationInBlackHole(loc)
 	for _, enemyHero in pairs(GetUnitList(UNIT_LIST_ENEMY_HEROES))
 	do
-		if  J.IsValidHero(enemyHero)
+		if J.IsValidHero(enemyHero)
 		and not J.IsSuspiciousIllusion(enemyHero)
 		and GetUnitToLocationDistance(enemyHero, loc) < 300
 		and (enemyHero:HasModifier('modifier_enigma_black_hole_pull')
@@ -4390,7 +4390,7 @@ end
 function J.IsLocationInArena(loc, radius)
 	for _, enemyHero in pairs(GetUnitList(UNIT_LIST_ENEMY_HEROES))
 	do
-		if  J.IsValidHero(enemyHero)
+		if J.IsValidHero(enemyHero)
 		and not J.IsSuspiciousIllusion(enemyHero)
 		and GetUnitToLocationDistance(enemyHero, loc) < radius
 		and (enemyHero:HasModifier('modifier_mars_arena_of_blood_leash')
@@ -4402,7 +4402,7 @@ function J.IsLocationInArena(loc, radius)
 
 	for _, allyHero in pairs(GetUnitList(UNIT_LIST_ALLIED_HEROES))
 	do
-		if  J.IsValidHero(allyHero)
+		if J.IsValidHero(allyHero)
 		and not allyHero:IsIllusion()
 		and GetUnitToLocationDistance(allyHero, loc) < radius
 		and (allyHero:HasModifier('modifier_mars_arena_of_blood_animation'))
@@ -4419,7 +4419,7 @@ function J.GetMeepos()
 
 	for _, allyHero in pairs(GetUnitList(UNIT_LIST_ALLIED_HEROES))
 	do
-		if  J.IsValidHero(allyHero)
+		if J.IsValidHero(allyHero)
 		and allyHero:GetUnitName() == 'npc_dota_hero_meepo'
 		and not J.IsSuspiciousIllusion(allyHero)
 		then
@@ -4431,14 +4431,14 @@ function J.GetMeepos()
 end
 
 function J.IsMeepoClone(hero)
-	if  J.IsValidHero(hero)
+	if J.IsValidHero(hero)
 	and hero:GetUnitName() == 'npc_dota_hero_meepo'
 	then
 		for i = 0, 5
 		do
 			local hItem = hero:GetItemInSlot(i)
 
-			if  hItem ~= nil
+			if hItem ~= nil
 			and not (hItem:GetName() == 'item_boots'
 					or hItem:GetName() == 'item_tranquil_boots'
 					or hItem:GetName() == 'item_arcane_boots'
@@ -4461,7 +4461,7 @@ end
 function J.DoesSomeoneHaveModifier(nUnitList, modifierName)
 	for _, unit in pairs(nUnitList)
 	do
-		if  J.IsValid(unit)
+		if J.IsValid(unit)
 		and unit:HasModifier(modifierName)
 		then
 			return true
@@ -4601,7 +4601,7 @@ function J.IsClosestToDustLocation(bot, loc)
 	do
 		local member = GetTeamMember(id)
 
-		if  J.IsValidHero(member)		
+		if J.IsValidHero(member)		
 		and member:GetItemSlotType(member:FindItemSlot('item_dust')) == ITEM_SLOT_TYPE_MAIN
 		and member:GetItemInSlot(member:FindItemSlot('item_dust')):IsFullyCastable()
 		and not J.IsSuspiciousIllusion(member)
@@ -4666,7 +4666,7 @@ function J.GetUnderlordPortal()
 	do
 		if u:GetUnitName() == 'npc_dota_unit_underlord_portal'
 		then
-			if  #portal == 1
+			if #portal == 1
 			and portal[1] ~= u
 			then
 				table.insert(portal, u)
@@ -4734,7 +4734,7 @@ function J.GetEnemyCountInLane(lane)
 			then
 				local dInfo = info[1]
 
-				if  dInfo ~= nil
+				if dInfo ~= nil
 				and J.GetDistance(GetLaneFrontLocation(GetTeam(), lane, 0), dInfo.location) < 1600
 				and dInfo.time_since_seen < 10
 				then
@@ -4766,7 +4766,7 @@ function J.GetCreepListAroundTargetCanKill(target, nRadius, damage, bEnemy, bNeu
 		then
 			for _, creep in pairs(GetUnitList(UNIT_LIST_NEUTRAL_CREEPS))
 			do
-				if  J.IsValid(creep)
+				if J.IsValid(creep)
 				and target ~= creep
 				and GetUnitToUnitDistance(target, creep) <= nRadius
 				and creep:GetHealth() <= damage
@@ -4784,7 +4784,7 @@ function J.GetCreepListAroundTargetCanKill(target, nRadius, damage, bEnemy, bNeu
 
 			for _, creep in pairs(unitList)
 			do
-				if  J.IsValid(creep)
+				if J.IsValid(creep)
 				and target ~= creep
 				and GetUnitToUnitDistance(target, creep) <= nRadius
 				and creep:GetHealth() <= damage
@@ -4801,7 +4801,7 @@ function J.GetCreepListAroundTargetCanKill(target, nRadius, damage, bEnemy, bNeu
 
 			for _, creep in pairs(unitList)
 			do
-				if  J.IsValid(creep)
+				if J.IsValid(creep)
 				and target ~= creep
 				and GetUnitToUnitDistance(target, creep) <= nRadius
 				and creep:GetHealth() <= damage
@@ -4813,7 +4813,7 @@ function J.GetCreepListAroundTargetCanKill(target, nRadius, damage, bEnemy, bNeu
 			unitList = GetUnitList(UNIT_LIST_NEUTRAL_CREEPS)
 			for _, creep in pairs(unitList)
 			do
-				if  J.IsValid(creep)
+				if J.IsValid(creep)
 				and target ~= creep
 				and GetUnitToUnitDistance(target, creep) <= nRadius
 				and creep:GetHealth() <= damage
@@ -4853,7 +4853,7 @@ function J.GetItem(itemName)
     do
 		local item = GetBot():GetItemInSlot(i)
 
-		if  item ~= nil
+		if item ~= nil
         and item:GetName() == itemName
         then
 			return item
@@ -4883,7 +4883,7 @@ function J.GetHeroCountAttackingTarget(nUnits, target)
 	local count = 0
 	for _, hero in pairs(nUnits)
 	do
-		if  J.IsValidHero(hero)
+		if J.IsValidHero(hero)
 		and J.IsInRange(hero, target, 1600)
 		and J.IsGoingOnSomeone(hero)
 		and hero:CanBeSeen()
@@ -4902,7 +4902,7 @@ function J.GetHighestRightClickDamageHero(nUnits)
 	local dmg = 0
 	for _, hero in pairs(nUnits)
 	do
-		if  J.IsValidHero(hero)
+		if J.IsValidHero(hero)
 		and not J.IsMeepoClone(hero)
 		and not J.IsSuspiciousIllusion(hero)
 		then
@@ -4944,7 +4944,7 @@ function J.GetTechiesMines()
 
 	for _, unit in pairs(GetUnitList(UNIT_LIST_ALLIES))
     do
-		if  unit ~= nil
+		if unit ~= nil
         and unit:GetUnitName() == 'npc_dota_techies_land_mine'
         then
 			table.insert(nMinesList, unit)
@@ -4959,7 +4959,7 @@ function J.GetTechiesMinesInLoc(loc, nRadius)
 
 	for _, unit in pairs(GetUnitList(UNIT_LIST_ALLIES))
     do
-		if  unit ~= nil
+		if unit ~= nil
         and unit:GetUnitName() == 'npc_dota_techies_land_mine'
 		and GetUnitToLocationDistance(unit, loc) <= nRadius
         then
@@ -4978,7 +4978,7 @@ function J.GetPowerCogsCountInLoc(loc, nRadius)
 	local count = 0
 	for _, unit in pairs(GetUnitList(UNIT_LIST_ALL))
 	do
-		if  J.IsValid(unit)
+		if J.IsValid(unit)
 		and string.find(unit:GetUnitName(), 'rattletrap_cog')
 		and GetUnitToLocationDistance(unit, loc) <= nRadius
 		then
@@ -5011,7 +5011,7 @@ function J.GetLanePartner(bot)
 	do
 		local member = GetTeamMember(i)
 
-		if  member ~= nil
+		if member ~= nil
 		and member:IsAlive()
 		and member ~= bot
 		and member:GetAssignedLane() == bot:GetAssignedLane()
@@ -5024,7 +5024,7 @@ function J.GetLanePartner(bot)
 end
 
 function J.IsEnemyHero(hero)
-	if  hero ~= nil
+	if hero ~= nil
 	and hero:GetTeam() ~= GetBot():GetTeam()
 	then
 		return true

@@ -140,7 +140,7 @@ function X.Think()
 	if J.IsValidHero(botTarget) and J.IsInRange(botTarget, bot, MaxTrackingDistance) then
 		local distance = GetUnitToUnitDistance(bot, botTarget)
 		if distance <= nAttackRange + attackDeltaDistance then
-			bot:Action_AttackUnit(botTarget, true)
+			bot:Action_AttackUnit(botTarget, false)
             MoveAfterAttack(botTarget)
 			return
 		else
@@ -154,25 +154,29 @@ function X.Think()
 
 	botTarget = ChooseAndAttackEnemyHero(nEnemyHeroes)
 
+	J.ConsiderTarget()
+	botTarget = J.GetProperTarget(bot)
 	-- if again no direct target, try hitting any unit
 	if bot:GetTarget() == nil then
-		-- don't hit high hp creeps during laning time in the lane.
 		if J.IsInLaningPhase() then
 			local vLaneFront = GetLaneFrontLocation(GetTeam(), bot:GetAssignedLane(), 0)
-			if GetUnitToLocationDistance(bot, vLaneFront) < 700 then
-				return
-			end
+			bot:ActionQueue_AttackMove(vLaneFront)
+			return
 		end
 
 		local units = GetUnitList(UNIT_LIST_ENEMIES)
 		for _, unit in pairs(units) do
 			if J.Utils.IsValidUnit(unit)
 			and GetUnitToUnitDistance(bot, unit) <= nAttackRange + attackDeltaDistance then
-				bot:Action_AttackUnit(unit, true)
-				MoveAfterAttack(botTarget)
+				bot:Action_AttackUnit(unit, false)
+				MoveAfterAttack(unit)
 				return
 			end
 		end
+	else
+		bot:Action_AttackUnit(botTarget, false)
+		MoveAfterAttack(botTarget)
+		return
 	end
 end
 
@@ -180,8 +184,8 @@ function ChooseAndAttackEnemyHero(hEnemyList)
 	local nInAttackRangeWeakestEnemyHero = J.GetAttackableWeakestUnit( bot, nAttackRange + attackDeltaDistance, true, true )
 	if nInAttackRangeWeakestEnemyHero ~= nil then
 		bot:SetTarget(nInAttackRangeWeakestEnemyHero)
-		bot:Action_AttackUnit(nInAttackRangeWeakestEnemyHero, true)
-		MoveAfterAttack(botTarget)
+		bot:Action_AttackUnit(nInAttackRangeWeakestEnemyHero, false)
+		MoveAfterAttack(nInAttackRangeWeakestEnemyHero)
 		return nInAttackRangeWeakestEnemyHero
 	end
 
@@ -194,8 +198,8 @@ function ChooseAndAttackEnemyHero(hEnemyList)
 			if J.IsInRange(bot, enemyHero, nAttackRange + attackDeltaDistance)
 			then
 				bot:SetTarget(enemyHero)
-				bot:Action_AttackUnit(enemyHero, true)
-				MoveAfterAttack(botTarget)
+				bot:Action_AttackUnit(enemyHero, false)
+				MoveAfterAttack(enemyHero)
 				return enemyHero
 			end
         end

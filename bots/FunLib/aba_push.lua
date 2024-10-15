@@ -52,7 +52,7 @@ function Push.GetPushDesireHelper(bot, lane)
 
     if ShouldNotPushLane
     then
-        if  DotaTime() < LanePushCooldown + 10
+        if DotaTime() < LanePushCooldown + 10
         and LanePush == lane
         then
             return BOT_MODE_DESIRE_NONE
@@ -73,7 +73,7 @@ function Push.GetPushDesireHelper(bot, lane)
     local botTarget = bot:GetAttackTarget()
     if J.IsValidBuilding(botTarget)
     then
-        if  botTarget:HasModifier('modifier_fountain_glyph')
+        if botTarget:HasModifier('modifier_fountain_glyph')
         and not (aAliveCount >= eAliveCount + 2)
         then
             ShoulNotPushTower = true
@@ -158,19 +158,19 @@ function Push.WhichLaneToPush(bot)
         end
     end
 
-    if  distanceToTop < distanceToMid
+    if distanceToTop < distanceToMid
     and distanceToTop < distanceToBot
     then
         return LANE_TOP
     end
 
-    if  distanceToMid < distanceToTop
+    if distanceToMid < distanceToTop
     and distanceToMid < distanceToBot
     then
         return LANE_MID
     end
 
-    if  distanceToBot < distanceToTop
+    if distanceToBot < distanceToTop
     and distanceToBot < distanceToMid
     then
         return LANE_BOT
@@ -271,7 +271,7 @@ function Push.PushThink(bot, lane)
     local targetLoc = GetLaneFrontLocation(GetTeam(), lane, offset)
 
     local nEnemyAncient = GetAncient(GetOpposingTeam())
-    if  GetUnitToUnitDistance(bot, nEnemyAncient) < 1600
+    if GetUnitToUnitDistance(bot, nEnemyAncient) < 1600
     and J.CanBeAttacked(nEnemyAncient)
     then
         bot:Action_AttackUnit(nEnemyAncient, true)
@@ -285,7 +285,7 @@ function Push.PushThink(bot, lane)
         nCreeps = bot:GetNearbyCreeps(math.min(700 + nRange, 1600), true)
     end
 
-    if  nCreeps ~= nil and #nCreeps > 0
+    if nCreeps ~= nil and #nCreeps > 0
     and J.CanBeAttacked(nCreeps[1])
     then
         bot:Action_AttackUnit(nCreeps[1], true)
@@ -293,14 +293,14 @@ function Push.PushThink(bot, lane)
     end
 
     local nBarracks = bot:GetNearbyBarracks(math.min(700 + nRange, 1600), true)
-    if  nBarracks ~= nil and #nBarracks > 0
+    if nBarracks ~= nil and #nBarracks > 0
     and Push.CanBeAttacked(nBarracks[1])
     then
         bot:Action_AttackUnit(nBarracks[1], true)
         return
     end
 
-    if  nEnemyTowers ~= nil and #nEnemyTowers > 0
+    if nEnemyTowers ~= nil and #nEnemyTowers > 0
     and Push.CanBeAttacked(nEnemyTowers[1])
     then
         bot:Action_AttackUnit(nEnemyTowers[1], true)
@@ -308,7 +308,7 @@ function Push.PushThink(bot, lane)
     end
 
     local sEnemyTowers = bot:GetNearbyFillers(math.min(700 + nRange, 1600), true)
-    if  sEnemyTowers ~= nil and #sEnemyTowers > 0
+    if sEnemyTowers ~= nil and #sEnemyTowers > 0
     and Push.CanBeAttacked(sEnemyTowers[1])
     then
         bot:Action_AttackUnit(sEnemyTowers[1], true)
@@ -319,7 +319,7 @@ function Push.PushThink(bot, lane)
 end
 
 function Push.CanBeAttacked(building)
-    if  building ~= nil
+    if building ~= nil
     and building:CanBeSeen()
     and not building:IsInvulnerable()
     then

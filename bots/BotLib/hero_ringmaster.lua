@@ -406,7 +406,7 @@ function X.ConsiderTameTheBeasts()
 
     if J.IsDoingRoshan(bot)
 	then
-		if  J.IsRoshan(botTarget)
+		if J.IsRoshan(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
         and J.IsAttacking(bot)
@@ -418,7 +418,7 @@ function X.ConsiderTameTheBeasts()
 
     if J.IsDoingTormentor(bot)
 	then
-		if  J.IsTormentor(botTarget)
+		if J.IsTormentor(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
         and J.IsAttacking(bot)
@@ -879,7 +879,7 @@ function X.ConsiderFunhouseMirror()
         return BOT_ACTION_DESIRE_HIGH
     end
 
-	if  not bot:HasModifier('modifier_sniper_assassinate')
+	if not bot:HasModifier('modifier_sniper_assassinate')
 	and not bot:IsMagicImmune()
     and J.IsWillBeCastUnitTargetSpell(bot, 300)
 	then

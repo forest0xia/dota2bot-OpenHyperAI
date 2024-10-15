@@ -257,7 +257,7 @@ function X.ConsiderTelekinesis()
 	local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange + 300, true, BOT_MODE_NONE)
 	for _, enemyHero in pairs(nEnemyHeroes)
 	do
-		if  J.IsValidHero(enemyHero)
+		if J.IsValidHero(enemyHero)
         and J.CanCastOnNonMagicImmune(enemyHero)
         and J.CanCastOnTargetAdvanced(enemyHero)
         and not J.IsSuspiciousIllusion(enemyHero)
@@ -276,7 +276,7 @@ function X.ConsiderTelekinesis()
         local nInRangeEnemy = J.GetEnemiesNearLoc(bot:GetLocation(), 1200)
         for _, allyHero in pairs(nInRangeAlly)
         do
-            if  J.IsValidHero(allyHero)
+            if J.IsValidHero(allyHero)
             and J.IsCore(allyHero)
             and not J.IsSuspiciousIllusion(allyHero)
             and not allyHero:IsInvulnerable()
@@ -294,7 +294,7 @@ function X.ConsiderTelekinesis()
             end
         end
 
-		if  J.IsValidTarget(botTarget)
+		if J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.CanCastOnTargetAdvanced(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange + 150)
@@ -307,7 +307,7 @@ function X.ConsiderTelekinesis()
             nInRangeAlly =  J.GetAlliesNearLoc(botTarget:GetLocation(), 1200)
             nInRangeEnemy = J.GetEnemiesNearLoc(botTarget:GetLocation(), 1200)
 
-            if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+            if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
             and #nInRangeAlly >= #nInRangeEnemy
             and not (#nInRangeEnemy == 0 and #nInRangeAlly >= #nInRangeEnemy + 2)
             then
@@ -322,7 +322,7 @@ function X.ConsiderTelekinesis()
 		local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 		for _, enemyHero in pairs(nInRangeEnemy)
 		do
-			if  J.IsValidHero(enemyHero)
+			if J.IsValidHero(enemyHero)
             and J.CanCastOnNonMagicImmune(enemyHero)
             and J.CanCastOnTargetAdvanced(enemyHero)
             and not J.IsSuspiciousIllusion(enemyHero)
@@ -332,7 +332,7 @@ function X.ConsiderTelekinesis()
                 local nInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, true, BOT_MODE_NONE)
                 local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
 
-                if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+                if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
                 and (#nTargetInRangeAlly > #nInRangeAlly
                     or bot:WasRecentlyDamagedByAnyHero(2))
                 then
@@ -348,12 +348,12 @@ function X.ConsiderTelekinesis()
     do
         local nAllyInRangeEnemy = J.GetNearbyHeroes(allyHero, 1200, true, BOT_MODE_NONE)
 
-        if  J.IsValidHero(allyHero)
+        if J.IsValidHero(allyHero)
         and J.IsRetreating(allyHero)
         and allyHero:WasRecentlyDamagedByAnyHero(2)
         and not allyHero:IsIllusion()
         then
-            if  nAllyInRangeEnemy ~= nil and #nAllyInRangeEnemy >= 1
+            if nAllyInRangeEnemy ~= nil and #nAllyInRangeEnemy >= 1
             and J.IsValidHero(nAllyInRangeEnemy[1])
             and J.CanCastOnNonMagicImmune(nAllyInRangeEnemy[1])
             and J.CanCastOnTargetAdvanced(nAllyInRangeEnemy[1])
@@ -378,7 +378,7 @@ function X.ConsiderTelekinesis()
 	if J.IsDoingRoshan(bot)
 	then
         -- Remove Spell Block
-		if  J.IsRoshan(botTarget)
+		if J.IsRoshan(botTarget)
         and J.CanCastOnMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
         and J.IsAttacking(bot)
@@ -408,17 +408,17 @@ function X.ConsiderTelekinesisLand()
     local nInRangeAlly = J.GetAlliesNearLoc(bot:GetLocation(), 1200)
     local nInRangeEnemy = J.GetEnemiesNearLoc(bot:GetLocation(), 1200)
 
-    if  J.IsValidHero(botTarget)
+    if J.IsValidHero(botTarget)
     and not J.IsSuspiciousIllusion(botTarget)
     then
         nInRangeAlly = J.GetAlliesNearLoc(botTarget:GetLocation(), 1200)
         nInRangeEnemy = J.GetEnemiesNearLoc(botTarget:GetLocation(), 1200)
     end
 
-    if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+    if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
     and bot.teleTarget ~= nil
     then
-        if  bot.isChannelLand ~= nil
+        if bot.isChannelLand ~= nil
         and bot.isChannelLand == true
         then
             if #nInRangeAlly >= #nInRangeEnemy
@@ -440,25 +440,25 @@ function X.ConsiderTelekinesisLand()
             end
         end
 
-        if  bot.isSaveUltLand ~= nil
+        if bot.isSaveUltLand ~= nil
         and bot.isSaveUltLand == true
         then
             return BOT_ACTION_DESIRE_HIGH, J.Site.GetXUnitsTowardsLocation(bot, J.GetTeamFountain(), nDistance)
         end
 
-        if  bot.isEngagingLand ~= nil
+        if bot.isEngagingLand ~= nil
         and bot.isEngagingLand == true
         then
             return BOT_ACTION_DESIRE_HIGH, bot:GetLocation()
         end
 
-        if  bot.isRetreatLand ~= nil
+        if bot.isRetreatLand ~= nil
         and bot.isRetreatLand == true
         then
             return BOT_ACTION_DESIRE_HIGH, J.Site.GetXUnitsTowardsLocation(bot, J.GetEnemyFountain(), nDistance)
         end
 
-        if  bot.isSaveAllyLand ~= nil
+        if bot.isSaveAllyLand ~= nil
         and bot.isSaveAllyLand == true
         then
             return BOT_ACTION_DESIRE_HIGH, J.Site.GetXUnitsTowardsLocation(bot, J.GetTeamFountain(), nDistance)
@@ -481,7 +481,7 @@ function X.ConsiderFadeBolt()
     local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
     for _, enemyHero in pairs(nEnemyHeroes)
     do
-        if  J.IsValidHero(enemyHero)
+        if J.IsValidHero(enemyHero)
         and J.CanCastOnNonMagicImmune(enemyHero)
         and J.CanCastOnTargetAdvanced(enemyHero)
         and not J.IsSuspiciousIllusion(enemyHero)
@@ -509,12 +509,12 @@ function X.ConsiderFadeBolt()
     do
         local nAllyInRangeEnemy = J.GetNearbyHeroes(allyHero, 1200, true, BOT_MODE_NONE)
 
-        if  J.IsValidHero(allyHero)
+        if J.IsValidHero(allyHero)
         and J.IsRetreating(allyHero)
         and allyHero:WasRecentlyDamagedByAnyHero(1.5)
         and not allyHero:IsIllusion()
         then
-            if  nAllyInRangeEnemy ~= nil and #nAllyInRangeEnemy >= 1
+            if nAllyInRangeEnemy ~= nil and #nAllyInRangeEnemy >= 1
             and J.IsValidHero(nAllyInRangeEnemy[1])
             and J.CanCastOnNonMagicImmune(nAllyInRangeEnemy[1])
             and J.CanCastOnTargetAdvanced(nAllyInRangeEnemy[1])
@@ -542,7 +542,7 @@ function X.ConsiderFadeBolt()
 
         for _, enemyHero in pairs(nInRangeEnemy)
         do
-            if  J.IsValidHero(enemyHero)
+            if J.IsValidHero(enemyHero)
             and J.CanCastOnNonMagicImmune(enemyHero)
             and J.CanCastOnTargetAdvanced(enemyHero)
             and not J.IsSuspiciousIllusion(enemyHero)
@@ -555,7 +555,7 @@ function X.ConsiderFadeBolt()
                 local nTargetInRangeAlly = J.GetEnemiesNearLoc(enemyHero:GetLocation(), nRadius)
                 local currHP = enemyHero:GetHealth()
 
-                if  nTargetInRangeAlly ~= nil and #nTargetInRangeAlly >= 1
+                if nTargetInRangeAlly ~= nil and #nTargetInRangeAlly >= 1
                 and currHP < hp
                 then
                     hp = currHP
@@ -572,7 +572,7 @@ function X.ConsiderFadeBolt()
 
     if J.IsGoingOnSomeone(bot)
     then
-        if  J.IsValidTarget(botTarget)
+        if J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.CanCastOnTargetAdvanced(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
@@ -587,7 +587,7 @@ function X.ConsiderFadeBolt()
             local nInRangeAlly = J.GetNearbyHeroes(bot,1200, false, BOT_MODE_NONE)
             local nInRangeEnemy = J.GetNearbyHeroes(bot,1200, true, BOT_MODE_NONE)
 
-            if  nInRangeAlly ~= nil and nInRangeEnemy ~= nil
+            if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
             and #nInRangeAlly >= #nInRangeEnemy
             then
                 return BOT_ACTION_DESIRE_HIGH, botTarget
@@ -600,7 +600,7 @@ function X.ConsiderFadeBolt()
         local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
         for _, enemyHero in pairs(nInRangeEnemy)
         do
-            if  J.IsValidHero(enemyHero)
+            if J.IsValidHero(enemyHero)
             and J.CanCastOnNonMagicImmune(enemyHero)
             and J.CanCastOnTargetAdvanced(enemyHero)
             and J.IsChasingTarget(enemyHero, bot)
@@ -612,7 +612,7 @@ function X.ConsiderFadeBolt()
                 local nInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, true, BOT_MODE_NONE)
                 local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
 
-                if  nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+                if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
                 and ((#nTargetInRangeAlly > #nInRangeAlly)
                     or bot:WasRecentlyDamagedByAnyHero(2))
                 then
@@ -625,14 +625,14 @@ function X.ConsiderFadeBolt()
     if J.IsPushing(bot) or J.IsDefending(bot)
     then
         local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(1200, true)
-        if  nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 3
+        if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 3
         and J.CanBeAttacked(nEnemyLaneCreeps[1])
         then
             return BOT_ACTION_DESIRE_HIGH, nEnemyLaneCreeps[1]
         end
     end
 
-    if  J.IsLaning(bot)
+    if J.IsLaning(bot)
     and not J.IsThereCoreNearby(800)
 	then
         local creepList = {}
@@ -640,27 +640,27 @@ function X.ConsiderFadeBolt()
 		local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nCastRange, true)
 		for _, creep in pairs(nEnemyLaneCreeps)
 		do
-			if  J.IsValid(creep)
+			if J.IsValid(creep)
             and J.CanBeAttacked(creep)
 			and (J.IsKeyWordUnit('ranged', creep) or J.IsKeyWordUnit('siege', creep) or J.IsKeyWordUnit('flagbearer', creep))
 			and creep:GetHealth() <= nDamage
             and J.GetMP(bot) > 0.3
 			then
-				if  nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
+				if nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
 				and GetUnitToUnitDistance(creep, nInRangeEnemy[1]) < 500
 				then
 					return BOT_ACTION_DESIRE_HIGH, creep
 				end
 			end
 
-            if  J.IsValid(creep)
+            if J.IsValid(creep)
             and creep:GetHealth() <= nDamage
             then
                 table.insert(creepList, creep)
             end
 		end
 
-        if  J.GetMP(bot) > 0.3
+        if J.GetMP(bot) > 0.3
         and nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
         and #creepList >= 2
         and J.CanBeAttacked(creepList[1])
@@ -671,7 +671,7 @@ function X.ConsiderFadeBolt()
 
     if J.IsDoingRoshan(bot)
     then
-        if  J.IsRoshan(botTarget)
+        if J.IsRoshan(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
         and not botTarget:HasModifier('modifier_roshan_spell_block')
@@ -682,7 +682,7 @@ function X.ConsiderFadeBolt()
 
     if J.IsDoingTormentor(bot)
     then
-        if  J.IsTormentor(botTarget)
+        if J.IsTormentor(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
         and J.IsAttacking(bot)
         then
@@ -729,7 +729,7 @@ function X.ConsiderSpellSteal()
     for _, enemyHero in pairs(nInRangeEnemy)
     do
         -- print("Rubick considering spell steal on an enemy...")
-        if  J.IsValidHero(enemyHero)
+        if J.IsValidHero(enemyHero)
         and J.CanCastOnTargetAdvanced(enemyHero)
         -- and X.ShouldStealSpellFrom(enemyHero)
         and not J.IsSuspiciousIllusion(enemyHero)
