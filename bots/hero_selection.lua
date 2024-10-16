@@ -111,7 +111,7 @@ function GetPositionedPool(heroRoleMap, position)
 			return sortedHeroNames
 		end
     end
-	if #sortedHeroNames < 15 then -- in case all selections is unavailable or have been picked.
+	if #sortedHeroNames < 10 then -- in case all selections is unavailable or have been picked.
 		sortedHeroNames = Utils.CombineTablesUnique(sortedHeroNames, GetPositionedPool(heroRoleMap, position))
 	end
 	print("For position: " .. position .. ", pool size count: ".. #sortedHeroNames)

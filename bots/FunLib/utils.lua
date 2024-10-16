@@ -587,7 +587,7 @@ function ____exports.IsPingedByAnyPlayer(bot, pingTimeGap, minDistance, maxDista
     return nil
 end
 function ____exports.IsValidUnit(target)
-    return target ~= nil and not target:IsNull() and target:CanBeSeen() and target:IsAlive()
+    return target ~= nil and not target:IsNull() and target:CanBeSeen() and target:IsAlive() and not target:IsInvulnerable()
 end
 function ____exports.IsValidHero(target)
     return ____exports.IsValidUnit(target) and target:IsHero()
@@ -931,6 +931,9 @@ function ____exports.isTruelyInvisible(unit)
     return unit:IsInvisible() and not unit:HasModifier("modifier_item_dustofappearance") and not ____exports.RecentlyTookDamage(unit, 1.5)
 end
 function ____exports.hasModifierContainsName(unit, name)
+    if not ____exports.IsValidUnit(unit) then
+        return false
+    end
     local modifierCount = unit:NumModifiers()
     do
         local i = 0

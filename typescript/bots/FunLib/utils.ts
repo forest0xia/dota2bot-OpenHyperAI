@@ -763,6 +763,9 @@ export function isTruelyInvisible(unit: Unit): boolean {
 }
 
 export function hasModifierContainsName(unit: Unit, name: string): boolean {
+    if (!IsValidUnit(unit)) {
+        return false;
+    }
     const modifierCount = unit.NumModifiers();
     for (let i = 0; i < modifierCount; i++) {
         const modifierName = unit.GetModifierName(i);

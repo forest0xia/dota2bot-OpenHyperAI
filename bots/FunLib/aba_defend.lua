@@ -9,21 +9,23 @@ local highgroundTowers = {
 	TOWER_BASE_1,
 	TOWER_BASE_2
 }
-local nInRangeEnemy, weAreStronger, distanceToLane
+local nInRangeAlly, nInRangeEnemy, weAreStronger, distanceToLane
 local defDurationHoldTime = 6 -- once trying to def, hold the state for longer period.
 local defDurationCacheTime = {}
 
 function Defend.GetDefendDesire(bot, lane)
 
 	-- 如果在打高地 就别撤退去干别的
-	local nAllyList = J.GetNearbyHeroes(bot,1600,false,BOT_MODE_NONE);
-	if #nAllyList > 2 and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 5000 then
+	nInRangeAlly = J.GetNearbyHeroes(bot,1600,false,BOT_MODE_NONE)
+	nInRangeEnemy = J.GetLastSeenEnemiesNearLoc( bot:GetLocation(), 2200 )
+
+	if #nInRangeAlly > 2 and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 5000 then
 		return BOT_MODE_DESIRE_NONE
 	end
 
 	if bot.DefendLaneDesire == nil then bot.DefendLaneDesire = {0, 0, 0} end
 	bot.DefendLaneDesire[lane] = Defend.GetDefendDesireHelper(bot, lane)
-	local toBeReturnedDesire = bot.DefendLaneDesire[lane]
+	local defendDesire = bot.DefendLaneDesire[lane]
 
 	if not defDurationCacheTime[bot:GetPlayerID()]
 	or not defDurationCacheTime[bot:GetPlayerID()][lane]
@@ -32,33 +34,32 @@ function Defend.GetDefendDesire(bot, lane)
 	end
 	if not defDurationCacheTime[bot:GetPlayerID()][lane].time
 	or defDurationCacheTime[bot:GetPlayerID()][lane].time + defDurationHoldTime <= DotaTime()
-	or defDurationCacheTime[bot:GetPlayerID()][lane].desire < toBeReturnedDesire
+	or defDurationCacheTime[bot:GetPlayerID()][lane].desire < defendDesire
 	then
 		defDurationCacheTime[bot:GetPlayerID()][lane].time = DotaTime()
-		defDurationCacheTime[bot:GetPlayerID()][lane].desire = toBeReturnedDesire
+		defDurationCacheTime[bot:GetPlayerID()][lane].desire = defendDesire
 	end
 	if defDurationCacheTime[bot:GetPlayerID()][lane].time + defDurationHoldTime > DotaTime() then
-		toBeReturnedDesire = defDurationCacheTime[bot:GetPlayerID()][lane].desire
+		defendDesire = defDurationCacheTime[bot:GetPlayerID()][lane].desire
 	end
 
-	if (distanceToLane > 1600 and #nInRangeEnemy > 0) or not weAreStronger then
+	if (distanceToLane < 2000 and #nInRangeEnemy > #nInRangeAlly) or not weAreStronger then
 		-- 1. if we are not stronger, most likely defend == feed
 		-- 2. we dont want to get stuck in defend mode too much because other modes are also important after bots arrive the location.
-		toBeReturnedDesire = toBeReturnedDesire * 0.6
+		defendDesire = RemapValClamped(defendDesire, 0, 1.5, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_HIGH)
 	end
 
 	local mostDesireLane, desire = J.GetMostDefendLaneDesire()
 	bot.laneToDefend = mostDesireLane
 	if mostDesireLane ~= lane then
-		return toBeReturnedDesire * 0.8
+		return defendDesire * 0.8
 	end
-	return toBeReturnedDesire
+	return defendDesire
 end
 
 function Defend.GetDefendDesireHelper(bot, lane)
 
 	local nDefendDesire = 0
-	nInRangeEnemy = J.GetLastSeenEnemiesNearLoc( bot:GetLocation(), 2200 )
 	weAreStronger = J.WeAreStronger(bot, 2200)
 	local team = GetTeam()
 	distanceToLane = GetUnitToLocationDistance(bot, GetLaneFrontLocation(team, lane, 0))

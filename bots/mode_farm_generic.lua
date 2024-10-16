@@ -64,6 +64,7 @@ local lastAnnouncePrintedTime = 0
 local numberAnnouncePrinted = 1
 local announcementGap = 6
 local hasPickedOneAnnouncer = false
+local checkGoFarmTimeGap = 5
 
 if bot.farmLocation == nil then bot.farmLocation = bot:GetLocation() end
 
@@ -72,7 +73,7 @@ function GetDesire()
 
 	PickOneAnnouncer()
 	AnnounceMessages()
-	if DotaTime() - ShouldGoFarmTime > 5 then
+	if DotaTime() - ShouldGoFarmTime > checkGoFarmTimeGap then
 		IsShouldGoFarm = false
 	end
 
@@ -91,9 +92,13 @@ function GetDesire()
 	if IsShouldGoFarm or (#nAllyList <= 2 and #nAllyList <= J.GetNumOfAliveHeroes(true)
 	and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 6000
 	and bot:GetActiveModeDesire() <= BOT_ACTION_DESIRE_HIGH) then
-		IsShouldGoFarm = true
-		ShouldGoFarmTime = DotaTime()
-		return BOT_ACTION_DESIRE_ABSOLUTE * 0.98
+		if J.IsCore(bot) then
+			if DotaTime() - ShouldGoFarmTime >= checkGoFarmTimeGap then
+				IsShouldGoFarm = true
+				ShouldGoFarmTime = DotaTime()
+			end
+			return BOT_ACTION_DESIRE_ABSOLUTE * 0.98
+		end
 	end
 
 	if not bInitDone
@@ -870,7 +875,7 @@ function X.ShouldRun(bot)
 		end
 	end
 
-	local nEnemyTowers = bot:GetNearbyTowers(898, true);
+	local nEnemyTowers = bot:GetNearbyTowers(1000, true);
 	local nEnemyBrracks = bot:GetNearbyBarracks(800,true);
 
 	if #nEnemyBrracks >= 1 and aliveEnemyCount >= 2
@@ -890,7 +895,7 @@ function X.ShouldRun(bot)
 			return 2.5;
 		end
 
-		if  enemyAncientDistance > 2100
+		if enemyAncientDistance > 2100
 			and enemyAncientDistance < GetUnitToUnitDistance(nEnemyTowers[1],enemyAncient) - rushEnemyTowerDistance
 		then
 			local nTarget = J.GetProperTarget(bot);
@@ -919,24 +924,25 @@ function X.ShouldRun(bot)
 		end
 	end
 
-	if  botLevel <= 10
+	-- 前期谨慎冲塔
+	if botLevel <= 10
 		and (#hEnemyHeroList > 0 or bot:GetHealth() < 700)
 	then
-		local nLongEnemyTowers = bot:GetNearbyTowers(999, true);
+		local nLongEnemyTowers = bot:GetNearbyTowers(1200, true);
 		if bot:GetAssignedLane() == LANE_MID
 		then
-			 nLongEnemyTowers = bot:GetNearbyTowers(988, true);
-			 nEnemyTowers     = bot:GetNearbyTowers(966, true);
+			 nLongEnemyTowers = bot:GetNearbyTowers(1100, true);
+			 nEnemyTowers     = bot:GetNearbyTowers(980, true);
 		end
 		if ( botLevel <= 2 or DotaTime() < 2 * 60 )
 			and nLongEnemyTowers[1] ~= nil
 		then
-			return 1;
+			return 2;
 		end
 		if ( botLevel <= 4 or DotaTime() < 3 * 60 )
 			and nEnemyTowers[1] ~= nil
 		then
-			return 1;
+			return 2;
 		end
 		if botLevel <= 9
 			and nEnemyTowers[1] ~= nil
@@ -944,11 +950,22 @@ function X.ShouldRun(bot)
 			and nEnemyTowers[1]:GetAttackTarget() == bot
 			and #hAllyHeroList <= 1
 		then
-			return 1;
+			return 2;
 		end
 	end
 
-	if  bot:IsInvisible() and DotaTime() > 8 * 60
+	if #nEnemyTowers >= 1
+	and enemyAncientDistance < 7000 then -- 推2塔或者高地不要无视防御符文下的防御塔
+		local cloestTower = nEnemyTowers[1]
+		if cloestTower:HasModifier("modifier_fountain_glyph")
+		or cloestTower:HasModifier("modifier_invulnerable")
+		or cloestTower:HasModifier("modifier_backdoor_protection_active")
+		then
+			return 5
+		end
+	end
+
+	if bot:IsInvisible() and DotaTime() > 8 * 60
 		and botMode == BOT_MODE_RETREAT
 		and bot:GetActiveModeDesire() > 0.4
 		and #hAllyHeroList <= 1
@@ -959,6 +976,23 @@ function X.ShouldRun(bot)
 		and J.GetDistanceFromAncient(bot,false) < J.GetDistanceFromAncient(hEnemyHeroList[1], false)
 	then
 		return 5;
+	end
+
+	if J.Utils.hasModifierContainsName(bot, "warlock_golem") then
+		local nUnits = GetUnitList(UNIT_LIST_ENEMIES)
+		for _, unit in pairs(nUnits)
+		do
+			if J.IsValid(unit)
+			and J.IsInRange(bot, unit, unit:GetAttackRange() + 400)
+			-- and string.find(unit:GetUnitName(), 'warlock_golem')
+			then
+				if (J.GetHP(bot) < J.GetHP(unit)
+				and J.GetHP(bot) < 0.75)
+				or J.GetHP(bot) < 0.5 then
+					return 3
+				end
+			end
+		end
 	end
 
 	if #hAllyHeroList <= 1
@@ -1172,7 +1206,6 @@ function X.IsNormalFarmer(bot)
 	or botName == "npc_dota_hero_leshrac"
 	or botName == "npc_dota_hero_lycan"
 	or botName == "npc_dota_hero_magnataur"
-	or botName == "npc_dota_hero_marci"
 	or botName == "npc_dota_hero_furion"
 	or botName == "npc_dota_hero_night_stalker"
 	or botName == "npc_dota_hero_pangolier"
@@ -1197,6 +1230,7 @@ function X.IsHighFarmer(bot)
 	or botName == "npc_dota_hero_mirana"
 	or botName == "npc_dota_hero_razor"
 	or botName == "npc_dota_hero_sniper"
+	or botName == "npc_dota_hero_phantom_lancer"
 	or botName == "npc_dota_hero_viper"
 	or botName == "npc_dota_hero_nevermore"
 	or botName == "npc_dota_hero_lina"
@@ -1231,7 +1265,6 @@ function X.IsHighFarmer(bot)
 	or botName == "npc_dota_hero_pudge"
 	or botName == "npc_dota_hero_snapfire"
 	or botName == "npc_dota_hero_windrunner"
-	or botName == "npc_dota_hero_lone_druid"
 	or botName == "npc_dota_hero_tinker"
 	or botName == "npc_dota_hero_lone_druid"
 	or botName == "npc_dota_hero_lone_druid_bear"
@@ -1285,7 +1318,6 @@ function X.IsVeryHighFarmer(bot)
 	or botName == "npc_dota_hero_windrunner"
 	or botName == "npc_dota_hero_lone_druid"
 	or botName == "npc_dota_hero_lone_druid_bear"
-	or botName == "npc_dota_hero_muerta"
 	)
 end
 

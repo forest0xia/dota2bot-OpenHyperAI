@@ -2879,8 +2879,8 @@ function J.GetAttackableWeakestUnitFromList( bot, unitList )
         then
             -- Calculate score: lower score is better
             -- Can adjust the weight factors for hp and offensive power to tune the behavior
-            local hpWeight = 0.7
-            local powerWeight = 0.3
+            local hpWeight = 0.4
+            local powerWeight = 0.6
             local score = (hp * hpWeight) - (offensivePower * powerWeight)
 
             -- If the new score is lower, choose this unit as the weakest
@@ -2909,6 +2909,8 @@ function J.CanBeAttacked( unit )
 			and not unit:IsAttackImmune()
 			and not unit:IsInvulnerable()
 			and not unit:HasModifier("modifier_fountain_glyph")
+			and not unit:HasModifier("modifier_omninight_guardian_angel")
+			and not unit:HasModifier("modifier_winter_wyvern_cold_embrace")
 			and (unit:GetTeam() == GetTeam() 
 					or not unit:HasModifier("modifier_crystal_maiden_frostbite") )
 			and (unit:GetTeam() ~= GetTeam() 

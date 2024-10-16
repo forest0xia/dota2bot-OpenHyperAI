@@ -217,6 +217,8 @@ local castRDesire
 local nKeepMana, nMP, nHP, nLV, nInRangeEnemy, botTarget
 
 function X.SkillsComplement()
+	if bot.invisUltCombo then return end
+
 	J.ConsiderTarget()
 	if J.CanNotUseAbility( bot ) then return end
 

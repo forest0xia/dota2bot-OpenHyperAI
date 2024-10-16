@@ -35,12 +35,14 @@ local enableGateUsage = false -- to be fixed
 local arriveRoamLocTime = 0
 local roamTimeAfterArrival = 0.55 * 60 -- stay to roam after arriving the location
 local roamGapTime = 3 * 60 -- don't roam again within this duration after roaming once.
-local nInRangeEnemy, allyTowers, enemyTowers, trySeduce, shouldTempRetreat, botTarget
+local lastStaticLinkDebuffStack = 0
+local nInRangeEnemy, allyTowers, enemyTowers, trySeduce, shouldTempRetreat, botTarget, shouldGoBackToFountain
 
 function GetDesire()
 
 	trySeduce = false
 	shouldTempRetreat = false
+	shouldGoBackToFountain = false
 	TPScroll = J.GetItem2(bot, 'item_tpscroll')
 	botTarget = J.GetProperTarget(bot)
 	nInRangeEnemy = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
@@ -551,6 +553,11 @@ function ThinkGeneralRoaming()
 		return
 	end
 
+	if bot:HasModifier("modifier_razor_static_link_debuff") then
+		MoveAwayFromTarget(GetTargetEnemy("npc_dota_hero_razor"), 1200)
+		return
+	end
+
 	if bot:HasModifier("modifier_ursa_fury_swipes_damage_increase") then
 		bot:Action_MoveToLocation(J.GetTeamFountain())
 		return
@@ -600,6 +607,11 @@ function ThinkGeneralRoaming()
 	end
 
 	if shouldTempRetreat then
+		bot:Action_MoveToLocation(J.GetTeamFountain())
+		return
+	end
+
+	if shouldGoBackToFountain then
 		bot:Action_MoveToLocation(J.GetTeamFountain())
 		return
 	end
@@ -695,6 +707,7 @@ end
 function OnEnd()
 	laneToRoam = nil
 	targetGate = nil
+	shouldGoBackToFountain = false
 end
 
 function CheckLaneToRoam()
@@ -893,7 +906,22 @@ function ConsiderGeneralRoamingInConditions()
 		end
 	end
 
+	if bot:HasModifier("modifier_razor_static_link_debuff") then
+		local staticLinkDebuffStack = J.GetModifierCount( bot, "modifier_razor_static_link_debuff" )
+		if staticLinkDebuffStack > lastStaticLinkDebuffStack then
+			local enemy = GetTargetEnemy("npc_dota_hero_razor")
+			if enemy ~= nil and J.GetHP(bot) - 0.2 < J.GetHP(enemy) and GetUnitToUnitDistance(bot, enemy) <= 850 then
+				return BOT_ACTION_DESIRE_ABSOLUTE
+			end
+		end
+	end
+
 	if J.IsInLaningPhase() then
+		if shouldGoBackToFountain or ((J.GetHP(bot) < 0.25 or (J.GetHP(bot) < 0.4 and J.GetMP(bot) < 0.3)) and not J.HasItem(bot, "item_tango") and not J.HasItem(bot, "item_flask") and not J.HasItem(bot, "item_bottle")) then
+			shouldGoBackToFountain = true
+			return BOT_ACTION_DESIRE_ABSOLUTE
+		end
+
 		if J.GetModifierCount(bot, "modifier_nevermore_shadowraze_debuff") >= 2 then -- 7s
 			local enemy = GetTargetEnemy("npc_dota_hero_nevermore")
 			if enemy ~= nil and J.GetHP(bot) < J.GetHP(enemy) and GetUnitToUnitDistance(bot, enemy) <= 1200 then
@@ -961,31 +989,12 @@ function ConsiderGeneralRoamingInConditions()
 				if J.Utils.IsValidHero(enemy) then
 					if enemy:IsFacingLocation(bot:GetLocation(), 15)
 					and J.IsInRange(bot, enemy, enemy:GetAttackRange() + 450)
-					and J.GetHP(enemy) > J.GetHP(bot)
+					and J.GetHP(enemy) > J.GetHP(bot) + 0.15
 					and J.GetHP(bot) < 0.75
 					then
 						trySeduce = true
 						return BOT_ACTION_DESIRE_ABSOLUTE
 					end
-				end
-			end
-		end
-	end
-
-	if bot:HasModifier("modifier_warlock_golem_permanent_immolation_debuff")
-	and bot:GetNetWorth() < 18000 -- 其实即使是后期也怕多个大火人
-	then
-		local nUnits = GetUnitList(UNIT_LIST_ENEMIES)
-		for _, unit in pairs(nUnits)
-		do
-			if J.IsValid(unit)
-			and string.find(unit:GetUnitName(), 'warlock_golem')
-			then
-				if (J.GetHP(bot) < J.GetHP(unit)
-				and J.GetHP(bot) < 0.75)
-				or J.GetHP(bot) < 0.5 then
-					shouldTempRetreat = true
-					return BOT_ACTION_DESIRE_VERYHIGH
 				end
 			end
 		end
@@ -1389,11 +1398,14 @@ ConsiderHeroSpecificRoaming['npc_dota_hero_faceless_void'] = function ()
 end
 
 ConsiderHeroSpecificRoaming['npc_dota_hero_nevermore'] = function ()
+	bot.invisUltCombo = false
 	if J.Utils.isTruelyInvisible(bot)
+	and bot:GetAbilityByName("nevermore_requiem"):IsFullyCastable()
 	then
 		local botTarget = J.GetProperTarget(bot)
-		if botTarget ~= nil and J.GetHP(bot) > 0.5 then
+		if J.IsValidHero(botTarget) and J.GetHP(bot) > 0.5 and J.GetHP(botTarget) > 0.5 and botTarget:GetHealth() > 800 then
 			if enemyTowers == nil or #enemyTowers == 0 or GetUnitToUnitDistance(bot, enemyTowers[1]) > 850 then
+				bot.invisUltCombo = true
 				return BOT_MODE_DESIRE_VERYHIGH
 			end
 		end

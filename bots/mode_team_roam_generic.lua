@@ -56,6 +56,7 @@ local TormentorLocation
 local IsAvoidingAbilityZone = false
 local IsShouldFindTeammates = false
 local ShouldFindTeammatesTime = 0
+local ShouldFindTeammatesTimeGap = 5
 
 if team == TEAM_RADIANT
 then
@@ -69,7 +70,7 @@ function GetDesire()
 
 	IsAvoidingAbilityZone = false
 
-	if IsShouldFindTeammates and DotaTime() - ShouldFindTeammatesTime > 8 then
+	if IsShouldFindTeammates and DotaTime() - ShouldFindTeammatesTime > ShouldFindTeammatesTimeGap then
 		IsShouldFindTeammates = false
 	end
 	-- check if bot is idle
@@ -97,7 +98,9 @@ function GetDesire()
 	end
 
 	-- 如果在上高，对面人活着，其他队友活着却不在附近，赶紧溜去其他地方游走
-	if #J.GetNearbyHeroes(bot, 1600, false, BOT_MODE_NONE) <= 2
+	if IsShouldFindTeammates then
+		return BOT_ACTION_DESIRE_ABSOLUTE * 0.98
+	elseif #J.GetNearbyHeroes(bot, 1600, false, BOT_MODE_NONE) <= 2
 	and J.GetNumOfAliveHeroes(true) > 3 and J.GetNumOfAliveHeroes(false) > 3
 	and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 6000 then
 		IsShouldFindTeammates = true
@@ -271,6 +274,7 @@ function Think()
 	end
 
 	if IsShouldFindTeammates then
+		local targetAlly = nil
 		for i, id in pairs( GetTeamPlayers( team ) )
 		do
 			if IsHeroAlive( id )
@@ -278,14 +282,17 @@ function Think()
 				local member = GetTeamMember(id)
 				if member ~= nil then
 					local distanceToMember = GetUnitToLocationDistance(bot, member:GetLocation())
-					if distanceToMember > 2200 then
-						bot:Action_MoveToLocation(member:GetLocation() + RandomVector(500))
-					else
-						IsShouldFindTeammates = false
+					if distanceToMember >= 1600 then
+						targetAlly = member
 					end
 					return
 				end
 			end
+		end
+		if targetAlly then
+			bot:Action_MoveToLocation(member:GetLocation() + RandomVector(500))
+		else
+			IsShouldFindTeammates = false
 		end
 		return
 	end
@@ -2144,8 +2151,8 @@ function ConsiderHarassInLaningPhase()
 				if nInRangeTower ~= nil
 				and (#nInRangeTower == 0
 					or (J.IsValidBuilding(nInRangeTower[1])
-						and GetUnitToUnitDistance(bot, nInRangeTower[1]) > 888
-						and GetUnitToUnitDistance(nInRangeEnemy[1], nInRangeTower[1]) > 888))
+						and GetUnitToUnitDistance(bot, nInRangeTower[1]) > 1300
+						and GetUnitToUnitDistance(nInRangeEnemy[1], nInRangeTower[1]) > 1100))
 				and not bot:WasRecentlyDamagedByTower(3.5)
 				then
 					shouldHarass = true
