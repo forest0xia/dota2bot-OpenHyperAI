@@ -77,30 +77,6 @@ function GetDesire()
 		IsShouldGoFarm = false
 	end
 
-	-- 如果在打高地 就别撤退去打钱了
-	local nAllyList = J.GetNearbyHeroes(bot,1600,false,BOT_MODE_NONE);
-	if #nAllyList > 2 and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 5000 then
-		return BOT_MODE_DESIRE_NONE;
-	end
-
-	-- 如果在打推塔 就别撤退去打钱了
-	local nEnemyTowers = bot:GetNearbyTowers(1200, true);
-	if #nAllyList >= 2 and nEnemyTowers ~= nil and #nEnemyTowers > 0 and GetUnitToLocationDistance(bot, nEnemyTowers[1]:GetLocation()) < 1300 then
-		return BOT_MODE_DESIRE_NONE;
-	end
-	-- 如果自己在上高，对面人活着，队友却不够，赶紧溜去farm
-	if IsShouldGoFarm or (#nAllyList <= 2 and #nAllyList <= J.GetNumOfAliveHeroes(true)
-	and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 6000
-	and bot:GetActiveModeDesire() <= BOT_ACTION_DESIRE_HIGH) then
-		if J.IsCore(bot) then
-			if DotaTime() - ShouldGoFarmTime >= checkGoFarmTimeGap then
-				IsShouldGoFarm = true
-				ShouldGoFarmTime = DotaTime()
-			end
-			return BOT_ACTION_DESIRE_ABSOLUTE * 0.98
-		end
-	end
-
 	if not bInitDone
 	then
 		bInitDone = true
@@ -129,7 +105,7 @@ function GetDesire()
 			return BOT_ACTION_DESIRE_NONE
 		end
 	end
-	
+
 	local nNeutrals = bot:GetNearbyNeutralCreeps( bot:GetAttackRange() );
 	local nDefendLane, nDefendDesire = J.GetMostDefendLaneDesire();
 	if nDefendDesire > 0.8 and #nNeutrals == 0 and (not beVeryHighFarmer or bot:GetLevel() >= 13)
@@ -138,8 +114,9 @@ function GetDesire()
 	end
 
 	if teamPlayers == nil then teamPlayers = GetTeamPlayers(team) end
-	
-	if bot:IsAlive() --For sometime to run
+
+	-- For sometime to run
+	if bot:IsAlive()
 	then
 		if runTime ~= 0
 			and DotaTime() < runTime + shouldRunTime
@@ -149,12 +126,11 @@ function GetDesire()
 			runTime = 0;
 			runMode = false;
 		end
-		
 		shouldRunTime = X.ShouldRun(bot);
 		if shouldRunTime ~= 0
 		then
-			if runTime == 0 then 
-				runTime = DotaTime(); 
+			if runTime == 0 then
+				runTime = DotaTime();
 				runMode = true;
 				preferedCamp = nil;
 				bot:Action_ClearActions(true);
@@ -162,17 +138,40 @@ function GetDesire()
 			return BOT_MODE_DESIRE_ABSOLUTE * 1.1;
 		end
 	end
-	
+
+	-- 如果在打高地 就别撤退去打钱了
+	local nAllyList = J.GetNearbyHeroes(bot,1600,false,BOT_MODE_NONE);
+	if #nAllyList > 2 and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 5000 then
+		return BOT_MODE_DESIRE_NONE;
+	end
+
+	-- 如果在打推塔 就别撤退去打钱了
+	local nEnemyTowers = bot:GetNearbyTowers(1200, true);
+	if #nAllyList >= 2 and nEnemyTowers ~= nil and #nEnemyTowers > 0 and GetUnitToLocationDistance(bot, nEnemyTowers[1]:GetLocation()) < 1300 then
+		return BOT_MODE_DESIRE_NONE;
+	end
+	-- 如果自己在上高，对面人活着，队友却不够，赶紧溜去farm
+	if IsShouldGoFarm or (#nAllyList <= 2 and #nAllyList <= J.GetNumOfAliveHeroes(true)
+	and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 6000
+	and bot:GetActiveModeDesire() <= BOT_ACTION_DESIRE_HIGH) then
+		if J.IsCore(bot) then
+			if DotaTime() - ShouldGoFarmTime >= checkGoFarmTimeGap then
+				IsShouldGoFarm = true
+				ShouldGoFarmTime = DotaTime()
+			end
+			return BOT_ACTION_DESIRE_ABSOLUTE * 0.98
+		end
+	end
+
 	if DotaTime() < 50 then return 0.0 end
-	
+
 	if X.IsUnitAroundLocation(GetAncient(team):GetLocation(), 3000) then
 		return BOT_MODE_DESIRE_NONE;
 	end
-	
+
 	minute = math.floor(DotaTime() / 60);
 	sec = DotaTime() % 60;
-	
-		
+
 	if not J.Role.IsCampRefreshDone()
 	   and J.Role.GetAvailableCampCount() < J.Role.GetCampCount()
 	   and ( DotaTime() > 20 and  sec > 0 and sec < 2 )  
@@ -888,6 +887,18 @@ function X.ShouldRun(bot)
 		end
 	end
 
+	if #nEnemyTowers >= 1
+	and enemyAncientDistance < 7000 then -- 推2塔或者高地不要无视防御符文下的防御塔
+		local cloestTower = nEnemyTowers[1]
+		if J.IsValidBuilding(cloestTower) and
+		(cloestTower:HasModifier("modifier_fountain_glyph")
+		or cloestTower:HasModifier("modifier_invulnerable")
+		or cloestTower:HasModifier("modifier_backdoor_protection_active"))
+		then
+			return 5
+		end
+	end
+
 	if J.IsValidBuilding(nEnemyTowers[1]) and botLevel < 20
 	then
 		if nEnemyTowers[1]:HasModifier("modifier_invulnerable") and aliveEnemyCount > 1
@@ -951,17 +962,6 @@ function X.ShouldRun(bot)
 			and #hAllyHeroList <= 1
 		then
 			return 2;
-		end
-	end
-
-	if #nEnemyTowers >= 1
-	and enemyAncientDistance < 7000 then -- 推2塔或者高地不要无视防御符文下的防御塔
-		local cloestTower = nEnemyTowers[1]
-		if cloestTower:HasModifier("modifier_fountain_glyph")
-		or cloestTower:HasModifier("modifier_invulnerable")
-		or cloestTower:HasModifier("modifier_backdoor_protection_active")
-		then
-			return 5
 		end
 	end
 
