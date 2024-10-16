@@ -17,6 +17,7 @@ import {
     Lane,
     Ping,
     Team,
+    Tower,
     Unit,
     UnitType,
     Vector,
@@ -61,6 +62,16 @@ export const BuggyHeroesDueToValveTooLazy = {
     npc_dota_hero_hoodwink: true,
     npc_dota_hero_wisp: true,
 };
+
+export const HighGroundTowers = [
+    Tower.Top3,
+    Tower.Mid3,
+    Tower.Bot3,
+    Tower.Base1,
+    Tower.Base2,
+];
+
+export const SecondTierTowers = [Tower.Top2, Tower.Mid2, Tower.Bot2];
 
 // Global array to store avoidance zones
 let avoidanceZones: AvoidanceZone[] = [];
@@ -770,6 +781,34 @@ export function hasModifierContainsName(unit: Unit, name: string): boolean {
     for (let i = 0; i < modifierCount; i++) {
         const modifierName = unit.GetModifierName(i);
         if (modifierName.indexOf(name) > -1) {
+            return true;
+        }
+    }
+    return false;
+}
+
+export function isNearEnemySecondTierTower(unit: Unit, range: number): boolean {
+    for (const towerId of SecondTierTowers) {
+        const tower = GetTower(GetOpposingTeam(), towerId);
+        if (
+            tower !== null &&
+            IsValidBuilding(tower) &&
+            GetUnitToUnitDistance(unit, tower) < range
+        ) {
+            return true;
+        }
+    }
+    return false;
+}
+
+export function isNearEnemyHighGroundTower(unit: Unit, range: number): boolean {
+    for (const towerId of HighGroundTowers) {
+        const tower = GetTower(GetOpposingTeam(), towerId);
+        if (
+            tower !== null &&
+            IsValidBuilding(tower) &&
+            GetUnitToUnitDistance(unit, tower) < range
+        ) {
             return true;
         }
     }

@@ -15,6 +15,7 @@ import {
     GameStates,
     IsPingedByAnyPlayer,
     IsValidHero,
+    HighGroundTowers,
 } from "bots/FunLib/utils";
 import { add } from "bots/ts_libs/utils/native-operators";
 
@@ -121,16 +122,9 @@ export function GetDefendDesireHelper(bot: Unit, lane: Lane): BotModeDesire {
         pingedTime: GameTime(),
     };
     if (GameTime() - GameStates.defendPings.pingedTime > PING_TIME_DELTA) {
-        const highGroundTowers = [
-            Tower.Top3,
-            Tower.Mid3,
-            Tower.Bot3,
-            Tower.Base1,
-            Tower.Base2,
-        ];
         let enemyIsPushingBase = false;
         let defendLocation: Vector | null = null;
-        for (const towerId of highGroundTowers) {
+        for (const towerId of HighGroundTowers) {
             const tower = GetTower(team, towerId);
             if (
                 tower !== null &&

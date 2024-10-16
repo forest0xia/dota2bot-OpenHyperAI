@@ -139,9 +139,21 @@ function GetDesire()
 		end
 	end
 
+	local numOfAliveEnemyHeroes = J.GetNumOfAliveHeroes(true)
+	-- 避免过早推2塔或者高地
+	if bot:GetLevel() < 12 and numOfAliveEnemyHeroes >= 3 then
+		if J.Utils.isNearEnemySecondTierTower(bot, 1500) then
+			return BOT_MODE_DESIRE_ABSOLUTE * 1.1;
+		end
+	elseif bot:GetLevel() < 18 and numOfAliveEnemyHeroes >= 3 then
+		if J.Utils.isNearEnemyHighGroundTower(bot, 1500) then
+			return BOT_MODE_DESIRE_ABSOLUTE * 1.1;
+		end
+	end
+
 	-- 如果在打高地 就别撤退去打钱了
 	local nAllyList = J.GetNearbyHeroes(bot,1600,false,BOT_MODE_NONE);
-	if #nAllyList > 2 and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 5000 then
+	if #nAllyList > 2 and (J.Utils.isNearEnemyHighGroundTower(bot, 2500) or J.Utils.isNearEnemySecondTierTower(bot, 2500)) then
 		return BOT_MODE_DESIRE_NONE;
 	end
 
@@ -151,16 +163,15 @@ function GetDesire()
 		return BOT_MODE_DESIRE_NONE;
 	end
 	-- 如果自己在上高，对面人活着，队友却不够，赶紧溜去farm
-	if IsShouldGoFarm or (#nAllyList <= 2 and #nAllyList <= J.GetNumOfAliveHeroes(true)
-	and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 6000
+	if IsShouldGoFarm or (#nAllyList <= 2 and #nAllyList <= numOfAliveEnemyHeroes
+	and J.IsCore(bot)
+	and (J.Utils.isNearEnemyHighGroundTower(bot, 2500) or J.Utils.isNearEnemySecondTierTower(bot, 2500))
 	and bot:GetActiveModeDesire() <= BOT_ACTION_DESIRE_HIGH) then
-		if J.IsCore(bot) then
-			if DotaTime() - ShouldGoFarmTime >= checkGoFarmTimeGap then
-				IsShouldGoFarm = true
-				ShouldGoFarmTime = DotaTime()
-			end
-			return BOT_ACTION_DESIRE_ABSOLUTE * 0.98
+		if DotaTime() - ShouldGoFarmTime >= checkGoFarmTimeGap then
+			IsShouldGoFarm = true
+			ShouldGoFarmTime = DotaTime()
 		end
+		return BOT_ACTION_DESIRE_ABSOLUTE * 0.98
 	end
 
 	if DotaTime() < 50 then return 0.0 end

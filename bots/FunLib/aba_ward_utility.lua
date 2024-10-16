@@ -6,9 +6,9 @@ local nVisionRadius = 1600
 
 -- Radiant Warding Spots
 -- Game Start
-local RADIANT_GAME_START_1 = Vector(-300, -1200, 128) -- radiant mid lane bot right
-local RADIANT_GAME_START_1_2 = Vector(-1350, -360, 128) -- radiant mid lane top left
-local RADIANT_GAME_START_2 = Vector(2026, -3003, 128) -- radiant bot river to jungle enterance
+local RADIANT_GAME_START_1 = Vector(-491, 303, 128) -- dire mid lane top left
+local RADIANT_GAME_START_1_2 = Vector(800, -400, 128) -- dire mid lane bot right
+local RADIANT_GAME_START_2 = Vector(-4000, 4000, 128) -- dire top river enterance besides the first left jungle.
 
 -- Laning Phase
 local RADIANT_LANE_PHASE_1 = Vector(2306, -3001, 128)
@@ -17,9 +17,9 @@ local RADIANT_LANE_PHASE_3 = Vector(-3556, 6446, 128)
 
 -- Dire Warding Spots
 -- Game Start
-local DIRE_GAME_START_1 = Vector(-491, 303, 128) -- dire mid lane top left
-local DIRE_GAME_START_1_2 = Vector(800, -400, 128) -- dire mid lane bot right
-local DIRE_GAME_START_2 = Vector(-4000, 4000, 128) -- dire top river enterance besides the first left jungle.
+local DIRE_GAME_START_1 = Vector(-300, -1200, 128) -- radiant mid lane bot right
+local DIRE_GAME_START_1_2 = Vector(-1350, -360, 128) -- radiant mid lane top left
+local DIRE_GAME_START_2 = Vector(2026, -3003, 128) -- radiant bot river to jungle enterance
 
 -- Laning Phase
 local DIRE_LANE_PHASE_1 = Vector(-5183, 3780, 128) -- radian ward near t1 on the left side of the river top left enterance.

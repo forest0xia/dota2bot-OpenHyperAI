@@ -3421,7 +3421,6 @@ function J.GetAverageLevel( bEnemy )
 
 end
 
-
 function J.GetNumOfTeamTotalKills( bEnemy )
 
 	local count = 0
@@ -3437,6 +3436,30 @@ function J.GetNumOfTeamTotalKills( bEnemy )
 
 end
 
+function J.IsEarlyGame()
+	if DotaTime() < (J.IsModeTurbo() and 8 * 60 or 15 * 60) then
+		return true
+	end
+	return false
+end
+
+function J.IsMidGame()
+	if DotaTime() > (J.IsModeTurbo() and 8 * 60 or 15 * 60) and DotaTime() < (J.IsModeTurbo() and 18 * 60 or 30 * 60) then
+		return true
+	end
+	return false
+end
+
+function J.IsLateGame()
+	if DotaTime() > (J.IsModeTurbo() and 18 * 60 or 30 * 60) then
+		return true
+	end
+	return false
+end
+
+function J.DotProduct(A, B)
+	return A.x * B.x + A.y * B.y + A.z * B.z
+end
 
 function J.ConsiderForMkbDisassembleMask( bot )
 

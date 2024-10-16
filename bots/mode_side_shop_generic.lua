@@ -16,30 +16,14 @@ if bot.wasAttackingTormentor == nil then bot.wasAttackingTormentor = false end
 
 local NoTormentorAfterThisTime = 35 * 60 -- do not do tormentor again since it's late and doing tormentor only slows down the game more.
 
-local WisdomRuneSpawned = {
-	[TEAM_RADIANT] = false,
-	[TEAM_DIRE] = false
-}
-
-local ClosestAllyToWisdomRune
-local TeamWisdomRune = J.Utils.WisdomRunes
-
-local LastWisdomRuneTime = 0
-local TeamWisdomTimer = 0
-local WisdomRuneTimeGap = 420 - 5
-
 function GetDesire()
 
 	-- 如果在打高地 就别撤退去干别的
 	local nAllyList = J.GetNearbyHeroes(bot,1600,false,BOT_MODE_NONE);
-	if #nAllyList > 2 and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 5000 then
+	if #nAllyList > 2 and (J.Utils.isNearEnemyHighGroundTower(bot, 2500) or J.Utils.isNearEnemySecondTierTower(bot, 2500)) then
 		return BOT_MODE_DESIRE_NONE
 	end
 
-	local wisdomRuneDesire = WisdomRuneDesire()
-	if wisdomRuneDesire > 0 and WisdomRuneSpawned[botTeam] then
-		return wisdomRuneDesire
-	end
 	local tormentorDesire = TormentorDesire()
 	if tormentorDesire > 0 then
 		return tormentorDesire
@@ -237,10 +221,6 @@ function Think()
 	if DotaTime() - bot.lastSideShopFrameProcessTime < bot.frameProcessTime then return end
 	bot.lastSideShopFrameProcessTime = DotaTime()
 
-	if WisdomRuneThink() >= 1 then
-		return
-	end
-
 	if TormentorThink() >= 1 then
 		return
 	end
@@ -413,113 +393,6 @@ function WasHealthy()
 	end
 
 	return count == J.GetNumOfAliveHeroes(false)
-end
-
-local humanSideTimeGap = WisdomRuneTimeGap
-local function CheckWisdomRuneAvailability()
-	if not WisdomRuneSpawned[botTeam] then
-		if humanSideTimeGap ~= WisdomRuneTimeGap and J.IsHumanPlayerInTeam() then
-			humanSideTimeGap = WisdomRuneTimeGap + 90
-		end
-
-		if DotaTime() - LastWisdomRuneTime >= humanSideTimeGap then
-			LastWisdomRuneTime = DotaTime()
-			WisdomRuneSpawned[botTeam] = true
-		end
-	end
-end
-
-local function GetClosestAllyToWisdomRune()
-	local Allies = GetUnitList(UNIT_LIST_ALLIED_HEROES)
-	
-	if J.IsLaning(bot) then
-		for v, Ally in pairs(Allies) do
-			if Ally:IsAlive() and J.IsValidHero(Ally) and not Ally:IsIllusion() and J.GetPosition(Ally) > 3 then
-				return Ally
-			end
-		end
-	else
-		local ClosestAllyToTeamRune = bot
-		local ClosestDistanceToTheirRune = 99999
-		
-		for v, Ally in pairs(Allies) do
-			if Ally:IsAlive() and J.IsValidHero(Ally) and not Ally:IsIllusion() then
-				local dist = GetUnitToLocationDistance(Ally, TeamWisdomRune[botTeam])
-				if dist < ClosestDistanceToTheirRune then
-					ClosestAllyToTeamRune = Ally
-					ClosestDistanceToTheirRune = dist
-				end
-				
-			end
-		end
-		
-		return ClosestAllyToTeamRune
-	end
-	
-	return bot
-end
-
-function WisdomRuneDesire()
-	if J.Utils.BuggyHeroesDueToValveTooLazy[botName] then return BOT_MODE_DESIRE_NONE end
-	-- don't worry about wisdom rune if human player exist in the team.
-	if J.IsHumanPlayerInTeam() or J.IsCore(bot) then
-		return BOT_MODE_DESIRE_NONE
-	end
-
-	-- 先杀小兵，别带着小兵去吃符，过程中可能攻击tormentor因为那东西在代码里也是Creep
-	local nCreeps = bot:GetNearbyLaneCreeps(700, true)
-	if #nCreeps > 1 then
-		return BOT_MODE_DESIRE_NONE
-	end
-
-	CheckWisdomRuneAvailability()
-
-	if WisdomRuneSpawned[botTeam] then
-		ClosestAllyToWisdomRune = GetClosestAllyToWisdomRune()
-		if ClosestAllyToWisdomRune ~= nil then
-			if GetUnitToLocationDistance(ClosestAllyToWisdomRune, TeamWisdomRune[botTeam]) > 600 then
-				TeamWisdomTimer = DotaTime()
-			else
-				if (DotaTime() - TeamWisdomTimer) > 3 then
-					WisdomRuneSpawned[botTeam] = false
-				end
-			end
-		end
-	end
-
-	local botLvl = bot:GetLevel()
-	if ClosestAllyToWisdomRune == bot then
-		if WisdomRuneSpawned[botTeam] then
-			local distance = GetUnitToLocationDistance(ClosestAllyToWisdomRune, TeamWisdomRune[botTeam])
-			if botLvl < 12 then
-				return RemapValClamped(distance, 6400, 100, BOT_ACTION_DESIRE_MODERATE, BOT_ACTION_DESIRE_VERYHIGH )
-			elseif botLvl < 18 then
-				return RemapValClamped(distance, 6400, 100, BOT_ACTION_DESIRE_MODERATE , BOT_ACTION_DESIRE_VERYHIGH )
-			elseif botLvl < 25 then
-				return RemapValClamped(distance, 6400, 100, BOT_ACTION_DESIRE_MODERATE, BOT_ACTION_DESIRE_HIGH )
-			elseif botLvl < 30 then
-				return RemapValClamped(distance, 6400, 100, BOT_ACTION_DESIRE_LOW , BOT_ACTION_DESIRE_HIGH )
-			end
-		end
-	end
-
-	return BOT_MODE_DESIRE_NONE
-end
-
-function WisdomRuneThink()
-	-- don't worry about wisdom rune if human player exist in the team.
-	if J.IsHumanPlayerInTeam() then
-		return 0
-	end
-
-	if WisdomRuneSpawned[botTeam] then
-		if ClosestAllyToWisdomRune == bot then
-			bot:Action_MoveToLocation(TeamWisdomRune[botTeam] + RandomVector(50))
-			return 1
-		end
-	end
-
-	return 0
 end
 
 function TormentorThink()

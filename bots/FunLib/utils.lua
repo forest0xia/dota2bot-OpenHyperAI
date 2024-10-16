@@ -344,6 +344,7 @@ local ____dota = require(GetScriptDirectory().."/ts_libs/dota/index")
 local Barracks = ____dota.Barracks
 local Lane = ____dota.Lane
 local Team = ____dota.Team
+local Tower = ____dota.Tower
 local UnitType = ____dota.UnitType
 local ____http_req = require(GetScriptDirectory().."/ts_libs/utils/http_utils/http_req")
 local Request = ____http_req.Request
@@ -416,6 +417,14 @@ ____exports.BuggyHeroesDueToValveTooLazy = {
     npc_dota_hero_hoodwink = true,
     npc_dota_hero_wisp = true
 }
+____exports.HighGroundTowers = {
+    Tower.Top3,
+    Tower.Mid3,
+    Tower.Bot3,
+    Tower.Base1,
+    Tower.Base2
+}
+____exports.SecondTierTowers = {Tower.Top2, Tower.Mid2, Tower.Bot2}
 avoidanceZones = {}
 ____exports.GameStates = {defendPings = nil}
 ____exports.LoneDruid = {}
@@ -943,6 +952,30 @@ function ____exports.hasModifierContainsName(unit, name)
                 return true
             end
             i = i + 1
+        end
+    end
+    return false
+end
+function ____exports.isNearEnemySecondTierTower(unit, range)
+    for ____, towerId in ipairs(____exports.SecondTierTowers) do
+        local tower = GetTower(
+            GetOpposingTeam(),
+            towerId
+        )
+        if tower ~= nil and ____exports.IsValidBuilding(tower) and GetUnitToUnitDistance(unit, tower) < range then
+            return true
+        end
+    end
+    return false
+end
+function ____exports.isNearEnemyHighGroundTower(unit, range)
+    for ____, towerId in ipairs(____exports.HighGroundTowers) do
+        local tower = GetTower(
+            GetOpposingTeam(),
+            towerId
+        )
+        if tower ~= nil and ____exports.IsValidBuilding(tower) and GetUnitToUnitDistance(unit, tower) < range then
+            return true
         end
     end
     return false

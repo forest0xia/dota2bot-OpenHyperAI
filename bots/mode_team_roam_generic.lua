@@ -57,6 +57,9 @@ local IsAvoidingAbilityZone = false
 local IsShouldFindTeammates = false
 local ShouldFindTeammatesTime = 0
 local ShouldFindTeammatesTimeGap = 5
+local pingedDefendDesire = 0
+local pingedDefendLocation = nil
+local pingTimeDelta = 5
 
 if team == TEAM_RADIANT
 then
@@ -69,6 +72,7 @@ function GetDesire()
 	Utils.SetFrameProcessTime(bot)
 
 	IsAvoidingAbilityZone = false
+	pingedDefendDesire = 0
 
 	if IsShouldFindTeammates and DotaTime() - ShouldFindTeammatesTime > ShouldFindTeammatesTimeGap then
 		IsShouldFindTeammates = false
@@ -102,10 +106,15 @@ function GetDesire()
 		return BOT_ACTION_DESIRE_ABSOLUTE * 0.98
 	elseif #J.GetNearbyHeroes(bot, 1600, false, BOT_MODE_NONE) <= 2
 	and J.GetNumOfAliveHeroes(true) > 3 and J.GetNumOfAliveHeroes(false) > 3
-	and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 6000 then
+	and (J.Utils.isNearEnemyHighGroundTower(bot, 2500) or J.Utils.isNearEnemySecondTierTower(bot, 2500)) then
 		IsShouldFindTeammates = true
 		ShouldFindTeammatesTime = DotaTime()
 		return BOT_ACTION_DESIRE_ABSOLUTE * 0.98
+	end
+
+	pingedDefendDesire = PingedDefendDesire()
+	if pingedDefendDesire > 0 then
+		return pingedDefendDesire
 	end
 
 	if not bot:IsAlive() or bot:GetCurrentActionType() == BOT_ACTION_TYPE_DELAY then
@@ -197,6 +206,57 @@ function HasBetterAvoidAbilityEffects()
 		or bot:HasModifier('modifier_lich_chainfrost_slow'))
 		and (not bot:HasModifier("modifier_black_king_bar_immune") or not bot:HasModifier("modifier_magic_immune") or not bot:HasModifier("modifier_omniknight_repel"))
 	)
+end
+
+function PingedDefendDesire()
+	-- 判断是否要提醒回防
+	if J.IsInLaningPhase() then return 0 end
+
+	J.Utils['GameStates']['defendPings'] = J.Utils['GameStates']['defendPings'] ~= nil and J.Utils['GameStates']['defendPings'] or { pingedTime = GameTime() }
+	if GameTime() - J.Utils['GameStates']['defendPings'].pingedTime > pingTimeDelta then
+
+		local enemeyPushingBase = false
+		local nDefendLoc
+
+		local barrack = J.Utils.IsAnyBarrackAttackByEnemyHero()
+		if barrack ~= nil then
+			nDefendLoc = barrack:GetLocation()
+			enemeyPushingBase = true
+		end
+
+		if not enemeyPushingBase then
+			for _, t in pairs( J.Utils.HighGroundTowers )
+			do
+				local tower = GetTower( team, t )
+				if tower ~= nil and tower:GetHealth()/tower:GetMaxHealth() < 0.8
+				and #J.GetLastSeenEnemiesNearLoc( tower:GetLocation(), 2000 ) >= 1
+				then
+					nDefendLoc = tower:GetLocation()
+					enemeyPushingBase = true
+				end
+			end
+		end
+		if not enemeyPushingBase and #J.GetLastSeenEnemiesNearLoc( GetAncient(team):GetLocation(), 2000 ) >= 1 then
+			nDefendLoc = GetAncient(team):GetLocation() -- GetLaneFrontLocation(team, nDefendLane, 100)
+			enemeyPushingBase = true
+		end
+
+		if nDefendLoc ~= nil and enemeyPushingBase then
+			local saferLoc = J.AdjustLocationWithOffsetTowardsFountain(nDefendLoc, 850) + RandomVector(50)
+
+			enemeyPushingBase = false
+			local nDefendAllies = J.GetAlliesNearLoc(saferLoc, 2500);
+			if #nDefendAllies < J.GetNumOfAliveHeroes(false) then
+				J.Utils['GameStates']['defendPings'].pingedTime = GameTime()
+				bot:ActionImmediate_Chat("Please come defending", false)
+				bot:ActionImmediate_Ping(saferLoc.x, saferLoc.y, false)
+			end
+
+			pingedDefendLocation = saferLoc
+			return 0.966
+		end
+	end
+	return 0
 end
 
 function ItemOpsDesire()
@@ -309,6 +369,10 @@ function Think()
 		AttackSpecialUnit.Think()
 	end
 
+	if pingedDefendDesire > 0 and pingedDefendLocation then
+		PingedDefendThink()
+	end
+
 	if towerCreepMode
 	then
 		bot:Action_AttackUnit(towerCreep, false)
@@ -325,6 +389,73 @@ function Think()
 		bot:Action_AttackUnit(targetUnit, false)
 		return
 	end
+end
+
+function PingedDefendThink()
+	local attackRange = bot:GetAttackRange()
+	local enemySearchRange = 1400
+	local nSearchRange = attackRange < 600 and 600 or math.min(attackRange + 100, enemySearchRange)
+
+	local tps = bot:GetItemInSlot(nTpSolt)
+	local saferLoc = pingedDefendLocation
+	local bestTpLoc = J.GetNearbyLocationToTp(saferLoc)
+	local distance = GetUnitToLocationDistance(bot, pingedDefendLocation)
+	if distance > 3500 then
+		if tps ~= nil and tps:IsFullyCastable() then
+			bot:Action_UseAbilityOnLocation(tps, bestTpLoc + RandomVector(30))
+			return
+		else
+			bot:Action_MoveToLocation(saferLoc + RandomVector(30));
+			return
+		end
+	elseif distance > 2000 and distance <= 3500 then
+		bot:Action_AttackMove(saferLoc + RandomVector(30));
+	elseif distance <= 2000 and bot:GetTarget() == nil then
+		local hNearbyEnemyHeroList = J.GetHeroesNearLocation( true, pingedDefendLocation, 1300 )
+		for _, npcEnemy in pairs( hNearbyEnemyHeroList )
+		do
+			if J.IsValidHero(npcEnemy)
+			then
+				bot:SetTarget( npcEnemy )
+                bot:Action_AttackUnit( npcEnemy, false )
+				return
+			end
+		end
+	end
+
+	if distance < enemySearchRange then
+		local nInRangeEnemy = bot:GetNearbyHeroes(nSearchRange, true, BOT_MODE_NONE)
+		if J.IsValidHero(nInRangeEnemy[1])
+		then
+			bot:SetTarget( nInRangeEnemy[1] )
+            bot:Action_AttackUnit( nInRangeEnemy[1], false )
+			return
+		end
+
+		local nEnemyLaneCreeps = bot:GetNearbyCreeps(900, true)
+		if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps > 0
+		then
+			local targetCreep = nil
+			local attackDMG = 0
+			for _, creep in pairs(nEnemyLaneCreeps)
+			do
+				if J.IsValid(creep)
+				and J.CanBeAttacked(creep)
+				and creep:GetAttackDamage() > attackDMG
+				then
+					attackDMG = creep:GetAttackDamage()
+					targetCreep = creep
+				end
+
+				if targetCreep ~= nil
+				then
+					bot:Action_AttackUnit(creep, true)
+					return
+				end
+			end
+		end
+	end
+	bot:Action_AttackMove(saferLoc + RandomVector(75))
 end
 
 function ItemOpsThink()

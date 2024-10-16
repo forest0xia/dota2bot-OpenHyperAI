@@ -43,6 +43,7 @@ local ____utils = require(GetScriptDirectory().."/FunLib/utils")
 local GameStates = ____utils.GameStates
 local IsPingedByAnyPlayer = ____utils.IsPingedByAnyPlayer
 local IsValidHero = ____utils.IsValidHero
+local HighGroundTowers = ____utils.HighGroundTowers
 local ____native_2Doperators = require(GetScriptDirectory().."/ts_libs/utils/native-operators")
 local add = ____native_2Doperators.add
 function ____exports.GetDefendDesireHelper(bot, lane)
@@ -84,16 +85,9 @@ function ____exports.GetDefendDesireHelper(bot, lane)
     end
     GameStates.defendPings = GameStates.defendPings or ({pingedTime = GameTime()})
     if GameTime() - GameStates.defendPings.pingedTime > PING_TIME_DELTA then
-        local highGroundTowers = {
-            Tower.Top3,
-            Tower.Mid3,
-            Tower.Bot3,
-            Tower.Base1,
-            Tower.Base2
-        }
         local enemyIsPushingBase = false
         local defendLocation = nil
-        for ____, towerId in ipairs(highGroundTowers) do
+        for ____, towerId in ipairs(HighGroundTowers) do
             local tower = GetTower(team, towerId)
             if tower ~= nil and tower:GetHealth() / tower:GetMaxHealth() < 0.8 and #jmz.GetLastSeenEnemiesNearLoc(
                 tower:GetLocation(),

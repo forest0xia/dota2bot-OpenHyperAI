@@ -13,27 +13,12 @@ local RAD_SECRET_SHOP = GetShopLocation(GetTeam(), SHOP_SECRET )
 local DIRE_SECRET_SHOP = GetShopLocation(GetTeam(), SHOP_SECRET2 )
 local hasItemToSell = false;
 
-local ClosestAllyToEnemyRune
-local WisdomRuneSpawned = {
-	[TEAM_RADIANT] = false,
-	[TEAM_DIRE] = false
-}
-local TeamWisdomRune = J.Utils.WisdomRunes
-local WisdomRuneTimeGap = 420 - 5
-local LastWisdomRuneTime = 0
-local EnemyWisdomTimer = 0
-
 function GetDesire()
 
 	-- 如果在打高地 就别撤退去干别的
 	local nAllyList = J.GetNearbyHeroes(bot,1600,false,BOT_MODE_NONE);
-	if #nAllyList > 2 and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 5000 then
+	if #nAllyList > 2 and (J.Utils.isNearEnemyHighGroundTower(bot, 2500) or J.Utils.isNearEnemySecondTierTower(bot, 2500)) then
 		return BOT_MODE_DESIRE_NONE
-	end
-
-	local wisdomRuneDesire = WisdomRuneDesire()
-	if wisdomRuneDesire > 0 and WisdomRuneSpawned[enemyTeam] then
-		return wisdomRuneDesire
 	end
 
 	if not X.IsSuitableToBuy()
@@ -88,70 +73,6 @@ function OnEnd()
 
 end
 
-local function GetClosestAllyToWisdomRune()
-	local Allies = GetUnitList(UNIT_LIST_ALLIED_HEROES)
-	local ClosestDistanceToEnemyRune = 99999
-	for v, Ally in pairs(Allies) do
-		if Ally:IsAlive() and J.IsValidHero(Ally) and not Ally:IsIllusion() then
-			local dist2 = GetUnitToLocationDistance(Ally, TeamWisdomRune[enemyTeam])
-			if dist2 ~= nil and dist2 < ClosestDistanceToEnemyRune then
-				ClosestAllyToEnemyRune = Ally
-				ClosestDistanceToEnemyRune = dist2
-			end
-		end
-	end
-	return ClosestAllyToEnemyRune
-end
-
-local function CheckWisdomRuneAvailability()
-	if DotaTime() - LastWisdomRuneTime >= WisdomRuneTimeGap then
-		LastWisdomRuneTime = DotaTime()
-		WisdomRuneSpawned[enemyTeam] = true
-	end
-end
-
-function WisdomRuneDesire()
-	if J.Utils.BuggyHeroesDueToValveTooLazy[botName] then return BOT_MODE_DESIRE_NONE end
-	if J.IsCore(bot) then
-		return BOT_MODE_DESIRE_NONE
-	end
-
-	CheckWisdomRuneAvailability()
-
-	ClosestAllyToEnemyRune = GetClosestAllyToWisdomRune()
-
-	if ClosestAllyToEnemyRune ~= nil then
-		if GetUnitToLocationDistance(ClosestAllyToEnemyRune, TeamWisdomRune[enemyTeam]) > 600 then
-			EnemyWisdomTimer = DotaTime()
-		else
-			if (DotaTime() - EnemyWisdomTimer) > 3 then
-				WisdomRuneSpawned[enemyTeam] = false
-			end
-		end
-	end
-
-	if ClosestAllyToEnemyRune == bot then
-		local nNearbyEnemyHeroes = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE)
-		if #nNearbyEnemyHeroes >= 1 then
-			-- no pick rune if enemey near by. deal with enemy first.
-			return BOT_MODE_DESIRE_NONE
-		end
-
-		-- no pick rune if t1 towers still alive, too dangerous and can turn to feed in early games. don't want to use near-by-towers neither which is too dumb.
-		local towers = { TOWER_BOT_1, TOWER_TOP_1, }
-		for _, t in pairs(towers) do
-			local tower = GetTower(GetOpposingTeam(), t);
-			if tower ~= nil and tower:IsAlive() then
-				return BOT_MODE_DESIRE_NONE
-			end
-		end
-		local distance = GetUnitToLocationDistance(ClosestAllyToEnemyRune, TeamWisdomRune[enemyTeam])
-		return RemapValClamped(distance, 6400, 100, BOT_MODE_DESIRE_MODERATE, BOT_ACTION_DESIRE_ABSOLUTE) * 0.9
-	end
-
-	return BOT_MODE_DESIRE_NONE
-end
-
 function Think()
 
 	if bot:IsChanneling() 
@@ -159,10 +80,6 @@ function Think()
 		or bot:IsCastingAbility()
 		or bot:IsUsingAbility()
 	then 
-		return
-	end
-
-	if WisdomRuneThink() >= 1 then
 		return
 	end
 	
@@ -178,17 +95,6 @@ function Think()
 		return;
 	end
 	
-end
-
-function WisdomRuneThink()
-	if WisdomRuneSpawned[enemyTeam] then
-		if ClosestAllyToEnemyRune == bot then
-			bot:Action_MoveToLocation(TeamWisdomRune[enemyTeam] + RandomVector(50))
-			return 1
-		end
-	end
-
-	return 0
 end
 
 --这些是AI会主动走到商店出售的物品

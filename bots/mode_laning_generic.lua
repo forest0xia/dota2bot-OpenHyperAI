@@ -33,7 +33,7 @@ function GetDesire()
 
 	-- 如果在打高地 就别撤退去干别的
 	local nAllyList = J.GetNearbyHeroes(bot,1600,false,BOT_MODE_NONE);
-	if #nAllyList > 2 and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 5000 then
+	if #nAllyList > 2 and (J.Utils.isNearEnemyHighGroundTower(bot, 2500) or J.Utils.isNearEnemySecondTierTower(bot, 2500)) then
 		return BOT_MODE_DESIRE_NONE
 	end
 

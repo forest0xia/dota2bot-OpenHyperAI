@@ -19,7 +19,7 @@ function Defend.GetDefendDesire(bot, lane)
 	nInRangeAlly = J.GetNearbyHeroes(bot,1600,false,BOT_MODE_NONE)
 	nInRangeEnemy = J.GetLastSeenEnemiesNearLoc( bot:GetLocation(), 2200 )
 
-	if #nInRangeAlly > 2 and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 5000 then
+	if #nInRangeAlly > 2 and (J.Utils.isNearEnemyHighGroundTower(bot, 2500) or J.Utils.isNearEnemySecondTierTower(bot, 2500)) then
 		return BOT_MODE_DESIRE_NONE
 	end
 
