@@ -275,7 +275,7 @@ local function TurboModeGeneralPurchase()
 	
 
 	if not bot.hasBuyShard
-		and DotaTime() > 6 * 60
+		and DotaTime() > 8 * 60
 	then
 		local shardCDTime = 10 * 60 - DotaTime()
 		if shardCDTime < 0
