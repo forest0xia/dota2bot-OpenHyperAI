@@ -9,6 +9,7 @@ X = {}
 -- ["disabler"] has a guaranteed disable for one or more of their spells.
 -- ["initiator"] good at starting a teamfight. Better tanky so it can initiate and then servive.
 -- ["jungler"] can farm effectively from neutral creeps inside the jungle early in the game.
+-- ["healer"] can heal allies.
 
 X["hero_roles"] = {
     ["npc_dota_hero_abaddon"] = { carry = 1, disabler = 0, durable = 2, escape = 0, initiator = 0, jungler = 0, nuker = 0, support = 2, pusher = 0 },
@@ -27,7 +28,7 @@ X["hero_roles"] = {
     ["npc_dota_hero_elder_titan"] = { carry = 0, disabler = 1, durable = 1, escape = 0, initiator = 2, jungler = 0, nuker = 1, support = 0, pusher = 0 },
     ["npc_dota_hero_grimstroke"] = { carry = 0, disabler = 2, durable = 0, escape = 1, initiator = 0, jungler = 0, nuker = 3, support = 3, pusher = 0 },
     ["npc_dota_hero_huskar"] = { carry = 2, disabler = 0, durable = 2, escape = 0, initiator = 1, jungler = 0, nuker = 0, support = 0, pusher = 0 },
-    ["npc_dota_hero_wisp"] = { carry = 0, disabler = 0, durable = 0, escape = 2, initiator = 0, jungler = 0, nuker = 1, support = 3, pusher = 0 },
+    ["npc_dota_hero_wisp"] = { carry = 0, disabler = 0, durable = 0, escape = 2, initiator = 0, jungler = 0, nuker = 0, support = 1, pusher = 0 },
     ["npc_dota_hero_kunkka"] = { carry = 1, disabler = 1, durable = 1, escape = 0, initiator = 1, jungler = 0, nuker = 1, support = 0, pusher = 0 },
     ["npc_dota_hero_legion_commander"] = { carry = 1, disabler = 2, durable = 1, escape = 0, initiator = 1, jungler = 0, nuker = 1, support = 0, pusher = 0 },
     ["npc_dota_hero_life_stealer"] = { carry = 2, disabler = 1, durable = 2, escape = 1, initiator = 0, jungler = 1, nuker = 0, support = 0, pusher = 0 },
@@ -55,7 +56,7 @@ X["hero_roles"] = {
     ["npc_dota_hero_bounty_hunter"] = { carry = 0, disabler = 0, durable = 0, escape = 2, initiator = 0, jungler = 0, nuker = 1, support = 0, pusher = 0 },
     ["npc_dota_hero_broodmother"] = { carry = 1, disabler = 1, durable = 0, escape = 3, initiator = 0, jungler = 0, nuker = 1, support = 0, pusher = 3 },
     ["npc_dota_hero_clinkz"] = { carry = 2, disabler = 0, durable = 0, escape = 3, initiator = 0, jungler = 0, nuker = 1, support = 0, pusher = 1 },
-    ["npc_dota_hero_dark_willow"] = { carry = 0, disabler = 3, durable = 0, escape = 0, initiator = 2, jungler = 0, nuker = 3, support = 2, pusher = 0 },
+    ["npc_dota_hero_dark_willow"] = { carry = 0, disabler = 3, durable = 0, escape = 0, initiator = 2, jungler = 0, nuker = 1, support = 2, pusher = 0 },
     ["npc_dota_hero_drow_ranger"] = { carry = 2, disabler = 1, durable = 0, escape = 0, initiator = 0, jungler = 0, nuker = 0, support = 0, pusher = 0 },
     ["npc_dota_hero_ember_spirit"] = { carry = 2, disabler = 1, durable = 0, escape = 3, initiator = 1, jungler = 0, nuker = 1, support = 0, pusher = 0 },
     ["npc_dota_hero_faceless_void"] = { carry = 2, disabler = 2, durable = 1, escape = 1, initiator = 3, jungler = 0, nuker = 0, support = 0, pusher = 0 },
@@ -105,7 +106,7 @@ X["hero_roles"] = {
     ["npc_dota_hero_lina"] = { carry = 1, disabler = 1, durable = 0, escape = 0, initiator = 0, jungler = 0, nuker = 3, support = 1, pusher = 0 },
     ["npc_dota_hero_lion"] = { carry = 0, disabler = 3, durable = 0, escape = 0, initiator = 2, jungler = 0, nuker = 3, support = 2, pusher = 0 },
     ["npc_dota_hero_furion"] = { carry = 1, disabler = 0, durable = 0, escape = 1, initiator = 0, jungler = 3, nuker = 1, support = 0, pusher = 3 },
-    ["npc_dota_hero_necrolyte"] = { carry = 0, disabler = 1, durable = 1, escape = 0, initiator = 0, jungler = 0, nuker = 2, support = 2, pusher = 0 },
+    ["npc_dota_hero_necrolyte"] = { carry = 1, disabler = 1, durable = 1, escape = 0, initiator = 0, jungler = 0, nuker = 2, support = 2, pusher = 0 },
     ["npc_dota_hero_ogre_magi"] = { carry = 1, disabler = 2, durable = 1, escape = 0, initiator = 1, jungler = 0, nuker = 2, support = 2, pusher = 0 },
     ["npc_dota_hero_oracle"] = { carry = 0, disabler = 2, durable = 0, escape = 1, initiator = 0, jungler = 0, nuker = 3, support = 3, pusher = 0 },
     ["npc_dota_hero_obsidian_destroyer"] = { carry = 2, disabler = 1, durable = 0, escape = 0, initiator = 0, jungler = 0, nuker = 2, support = 0, pusher = 0 },

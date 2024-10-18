@@ -94,6 +94,7 @@ end
 -- Function to get a list of heroes suitable for a given position. Sort the list by weight。
 function GetPositionedPool(heroPosMap, position)
     local heroList = {}
+	-- Pick from weighted options for the pos first.
     for heroName, roleWeights in pairs(heroPosMap) do
         local weight = roleWeights[position]
         if weight > RandomInt(5, ROLE_WEIGHT_THRESHOLD) then
@@ -107,9 +108,9 @@ function GetPositionedPool(heroPosMap, position)
     for _, hero in ipairs(heroList) do
 		local name = hero.name
 		print('Picking for position: '.. tostring(position) .. ", checking role for hero: "..name)
-		if (position == 1 and Role.IsCarry(name))
-		or (position == 2 and Role.IsCarry(name))
-		or (position == 3 and Role.IsInitiator(name))
+		if (position == 1 and (Role.IsDisabler(name) or Role.IsNuker(name)))
+		or (position == 2 and (Role.IsDisabler(name) or Role.IsNuker(name) or Role.IsDurable(name)))
+		or (position == 3 and (Role.IsInitiator(name) or Role.IsDisabler(name) or Role.IsDurable(name)))
 		or (position == 4 and (Role.IsSupport(name) or Role.IsDisabler(name)))
 		or (position == 5 and (Role.IsSupport(name) and Role.IsDisabler(name)))
 		then

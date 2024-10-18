@@ -6,8 +6,8 @@ local nVisionRadius = 1600
 
 -- Radiant Warding Spots
 -- Game Start
-local RADIANT_GAME_START_1 = Vector(-491, 303, 128) -- dire mid lane top left
-local RADIANT_GAME_START_1_2 = Vector(800, -400, 128) -- dire mid lane bot right
+local RADIANT_GAME_START_1 = Vector(-450, 456, 128) -- dire mid lane top left
+local RADIANT_GAME_START_1_2 = Vector(719, -369, 128) -- dire mid lane bot right
 local RADIANT_GAME_START_2 = Vector(-4000, 4000, 128) -- dire top river enterance besides the first left jungle.
 
 -- Laning Phase
@@ -17,8 +17,8 @@ local RADIANT_LANE_PHASE_3 = Vector(-3556, 6446, 128)
 
 -- Dire Warding Spots
 -- Game Start
-local DIRE_GAME_START_1 = Vector(-300, -1200, 128) -- radiant mid lane bot right
-local DIRE_GAME_START_1_2 = Vector(-1350, -360, 128) -- radiant mid lane top left
+local DIRE_GAME_START_1 = Vector(57, -1335, 128) -- radiant mid lane bot right
+local DIRE_GAME_START_1_2 = Vector(-1337, -355, 128) -- radiant mid lane top left
 local DIRE_GAME_START_2 = Vector(2026, -3003, 128) -- radiant bot river to jungle enterance
 
 -- Laning Phase
@@ -266,7 +266,7 @@ end
 
 function X.GetGameStartWardSpots()
 	local radianStartWard1
-	if (RandomInt(1, 3) == 1) then
+	if (RandomInt(1, 9) >= 5) then
 		radianStartWard1 = RADIANT_GAME_START_1_2
 	else
 		radianStartWard1 = RADIANT_GAME_START_1
@@ -278,7 +278,7 @@ function X.GetGameStartWardSpots()
 	}
 
 	local direStartWard1
-	if (RandomInt(1, 3) == 1) then
+	if (RandomInt(1, 9) >= 5) then
 		direStartWard1 = DIRE_GAME_START_1_2
 	else
 		direStartWard1 = DIRE_GAME_START_1

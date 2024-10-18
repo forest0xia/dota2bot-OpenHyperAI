@@ -67,7 +67,6 @@ function GetDesire()
 	Utils.SetFrameProcessTime(bot)
 
 	IsAvoidingAbilityZone = false
-	pingedDefendDesire = 0
 
 	if IsShouldFindTeammates and DotaTime() - ShouldFindTeammatesTime > ShouldFindTeammatesTimeGap then
 		IsShouldFindTeammates = false
@@ -124,7 +123,10 @@ function GetDesire()
 		end
 	end
 
-	pingedDefendDesire = PingedDefendDesire()
+	if pingedDefendDesire <= 0
+	or (J.Utils['GameStates']['defendPings'] and (GameTime() - J.Utils['GameStates']['defendPings'].pingedTime > pingTimeDelta)) then
+		pingedDefendDesire = PingedDefendDesire()
+	end
 	if pingedDefendDesire > 0 then
 		return pingedDefendDesire
 	end
@@ -229,51 +231,48 @@ end
 
 function PingedDefendDesire()
 	-- 判断是否要提醒回防
-	if J.IsInLaningPhase() then return 0 end
+	if J.IsInLaningPhase() or bot:WasRecentlyDamagedByAnyHero(2) then return 0 end
 
 	J.Utils['GameStates']['defendPings'] = J.Utils['GameStates']['defendPings'] ~= nil and J.Utils['GameStates']['defendPings'] or { pingedTime = GameTime() }
-	if GameTime() - J.Utils['GameStates']['defendPings'].pingedTime > pingTimeDelta then
+	local enemeyPushingBase = false
+	local nDefendLoc
 
-		local enemeyPushingBase = false
-		local nDefendLoc
+	local barrack = J.Utils.IsAnyBarrackAttackByEnemyHero()
+	if barrack ~= nil then
+		nDefendLoc = barrack:GetLocation()
+		enemeyPushingBase = true
+	end
 
-		local barrack = J.Utils.IsAnyBarrackAttackByEnemyHero()
-		if barrack ~= nil then
-			nDefendLoc = barrack:GetLocation()
-			enemeyPushingBase = true
-		end
-
-		if not enemeyPushingBase then
-			for _, t in pairs( J.Utils.HighGroundTowers )
-			do
-				local tower = GetTower( team, t )
-				if tower ~= nil and tower:GetHealth()/tower:GetMaxHealth() < 0.8
-				and #J.GetLastSeenEnemiesNearLoc( tower:GetLocation(), 2000 ) >= 1
-				then
-					nDefendLoc = tower:GetLocation()
-					enemeyPushingBase = true
-				end
+	if not enemeyPushingBase then
+		for _, t in pairs( J.Utils.HighGroundTowers )
+		do
+			local tower = GetTower( team, t )
+			if tower ~= nil and tower:GetHealth()/tower:GetMaxHealth() < 0.8
+			and #J.GetLastSeenEnemiesNearLoc( tower:GetLocation(), 2000 ) >= 1
+			then
+				nDefendLoc = tower:GetLocation()
+				enemeyPushingBase = true
 			end
 		end
-		if not enemeyPushingBase and #J.GetLastSeenEnemiesNearLoc( GetAncient(team):GetLocation(), 2000 ) >= 1 then
-			nDefendLoc = GetAncient(team):GetLocation() -- GetLaneFrontLocation(team, nDefendLane, 100)
-			enemeyPushingBase = true
+	end
+	if not enemeyPushingBase and #J.GetLastSeenEnemiesNearLoc( GetAncient(team):GetLocation(), 2000 ) >= 1 then
+		nDefendLoc = GetAncient(team):GetLocation() -- GetLaneFrontLocation(team, nDefendLane, 100)
+		enemeyPushingBase = true
+	end
+
+	if nDefendLoc ~= nil and enemeyPushingBase then
+		local saferLoc = J.AdjustLocationWithOffsetTowardsFountain(nDefendLoc, 850) + RandomVector(50)
+
+		enemeyPushingBase = false
+		local nDefendAllies = J.GetAlliesNearLoc(saferLoc, 2500);
+		if #nDefendAllies < J.GetNumOfAliveHeroes(false) then
+			J.Utils['GameStates']['defendPings'].pingedTime = GameTime()
+			bot:ActionImmediate_Chat("Please come defending", false)
+			bot:ActionImmediate_Ping(saferLoc.x, saferLoc.y, false)
 		end
 
-		if nDefendLoc ~= nil and enemeyPushingBase then
-			local saferLoc = J.AdjustLocationWithOffsetTowardsFountain(nDefendLoc, 850) + RandomVector(50)
-
-			enemeyPushingBase = false
-			local nDefendAllies = J.GetAlliesNearLoc(saferLoc, 2500);
-			if #nDefendAllies < J.GetNumOfAliveHeroes(false) then
-				J.Utils['GameStates']['defendPings'].pingedTime = GameTime()
-				bot:ActionImmediate_Chat("Please come defending", false)
-				bot:ActionImmediate_Ping(saferLoc.x, saferLoc.y, false)
-			end
-
-			pingedDefendLocation = saferLoc
-			return 0.966
-		end
+		pingedDefendLocation = saferLoc
+		return 0.966
 	end
 	return 0
 end
@@ -339,6 +338,7 @@ function OnEnd()
 	bot:SetTarget(nil)
 	harassTarget = nil
 	PickedItem = nil
+	pingedDefendDesire = 0
 end
 
 function Think()

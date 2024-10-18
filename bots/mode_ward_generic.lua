@@ -76,7 +76,7 @@ function GetDesire()
 		and not IsEnemyCloserToWardLocation(WardTargetLocation, WardTargetDist)
 		then
 			bot.ward = true
-			return BOT_MODE_DESIRE_ABSOLUTE
+			return BOT_MODE_DESIRE_HIGH
 		end
 
 		if  WardTargetLocation ~= nil
