@@ -14,6 +14,7 @@ require("bots/ts_libs/utils/json");
 import {
     Barracks,
     BotActionType,
+    BotMode,
     Lane,
     Ping,
     Team,
@@ -813,4 +814,12 @@ export function isNearEnemyHighGroundTower(unit: Unit, range: number): boolean {
         }
     }
     return false;
+}
+
+export function isTeamPushingSecondTierOrHighGround(bot: Unit): boolean {
+    return (
+        bot.GetNearbyHeroes(1600, false, BotMode.None).length > 2 &&
+        (isNearEnemySecondTierTower(bot, 2500) ||
+            isNearEnemyHighGroundTower(bot, 2500))
+    );
 }

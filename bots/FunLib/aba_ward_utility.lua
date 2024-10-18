@@ -266,7 +266,7 @@ end
 
 function X.GetGameStartWardSpots()
 	local radianStartWard1
-	if (RandomInt(1, 2) >= 2) then
+	if (RandomInt(1, 3) == 1) then
 		radianStartWard1 = RADIANT_GAME_START_1_2
 	else
 		radianStartWard1 = RADIANT_GAME_START_1
@@ -278,7 +278,7 @@ function X.GetGameStartWardSpots()
 	}
 
 	local direStartWard1
-	if (RandomInt(1, 2) >= 2) then
+	if (RandomInt(1, 3) == 1) then
 		direStartWard1 = DIRE_GAME_START_1_2
 	else
 		direStartWard1 = DIRE_GAME_START_1

@@ -117,7 +117,6 @@ This script is based on Valve's default bot script and many other people's work 
 - Carl sell Ashes.
 - Skeleton King sell Armlet and Phase.
 - If Refresher Orb was just used. If there are more than 3 allies and more than 2 enemies nearby, don't use Cyclone. Consider other combo skills directly.
-- If you have the state of Wraith King's Aghanim's, it proves you died, don't retreat.
 - Random role location.
 - In the first 5 minutes, if stacked by Huskar's spears 3 layers or more, health less than half and the enemy won't be killed immediately, or the enemy has more health, retreat until the spears expire. Similarly for Monkey King, Slardar, etc. In late game, if stacked many layers, just TP.
 - In the first 5 minutes, don't roam, especially as a mid-laner.

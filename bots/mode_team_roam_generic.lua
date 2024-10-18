@@ -1,19 +1,14 @@
+local bot = GetBot()
+local botName = bot:GetUnitName();
+if bot == nil or bot:IsInvulnerable() or not bot:IsHero() or not bot:IsAlive() or not string.find(botName, "hero") or bot:IsIllusion() then return end
 local Utils = require( GetScriptDirectory()..'/FunLib/utils' )
 
-if GetBot():IsInvulnerable() or not GetBot():IsHero() or not string.find(GetBot():GetUnitName(), "hero") or  GetBot():IsIllusion() then
-	return;
-end
-
-
-local bot = GetBot();
 local team = GetTeam()
 local X = {}
 
 local J = require( GetScriptDirectory()..'/FunLib/jmz_func')
 local Item = require( GetScriptDirectory()..'/FunLib/aba_item')
 local AttackSpecialUnit = dofile( GetScriptDirectory()..'/FunLib/aba_special_units')
-
-local botName = bot:GetUnitName();
 
 local targetUnit = nil;
 
@@ -29,13 +24,12 @@ local beFirstStop = false
 local bePvNMode = false
 
 local ShouldAttackSpecialUnit = false
-local SpecialUnitTarget = nil
 
 local shouldHarass = false
 local harassTarget = nil
 local lastIdleStateCheck = -1
 local isInIdleState = false
-
+local ShouldHelpAlly = false
 
 local PickedItem = nil
 local minPickItemCost = 200
@@ -60,6 +54,7 @@ local ShouldFindTeammatesTimeGap = 5
 local pingedDefendDesire = 0
 local pingedDefendLocation = nil
 local pingTimeDelta = 5
+local goToTargetAlly = nil
 
 if team == TEAM_RADIANT
 then
@@ -102,19 +97,43 @@ function GetDesire()
 	end
 
 	-- 如果在上高，对面人活着，其他队友活着却不在附近，赶紧溜去其他地方游走
-	if IsShouldFindTeammates then
+	if IsShouldFindTeammates and goToTargetAlly then
 		return BOT_ACTION_DESIRE_ABSOLUTE * 0.98
 	elseif #J.GetNearbyHeroes(bot, 1600, false, BOT_MODE_NONE) <= 2
 	and J.GetNumOfAliveHeroes(true) > 3 and J.GetNumOfAliveHeroes(false) > 3
 	and (J.Utils.isNearEnemyHighGroundTower(bot, 2500) or J.Utils.isNearEnemySecondTierTower(bot, 2500)) then
-		IsShouldFindTeammates = true
-		ShouldFindTeammatesTime = DotaTime()
-		return BOT_ACTION_DESIRE_ABSOLUTE * 0.98
+		goToTargetAlly = nil
+		for i, id in pairs( GetTeamPlayers( team ) )
+		do
+			if IsHeroAlive( id )
+			then
+				local member = GetTeamMember(id)
+				if member ~= nil then
+					local distanceToMember = GetUnitToLocationDistance(bot, member:GetLocation())
+					if distanceToMember >= 1600 then
+						goToTargetAlly = member
+					end
+					return
+				end
+			end
+		end
+		if goToTargetAlly then
+			IsShouldFindTeammates = true
+			ShouldFindTeammatesTime = DotaTime()
+			return BOT_ACTION_DESIRE_ABSOLUTE * 0.98
+		end
 	end
 
 	pingedDefendDesire = PingedDefendDesire()
 	if pingedDefendDesire > 0 then
 		return pingedDefendDesire
+	end
+
+	targetUnit, ShouldHelpAlly = ConsiderHelpAlly()
+	if ShouldHelpAlly
+	then
+		bot:SetTarget(targetUnit)
+		return BOT_ACTION_DESIRE_ABSOLUTE * 0.98
 	end
 
 	if not bot:IsAlive() or bot:GetCurrentActionType() == BOT_ACTION_TYPE_DELAY then
@@ -334,23 +353,8 @@ function Think()
 	end
 
 	if IsShouldFindTeammates then
-		local targetAlly = nil
-		for i, id in pairs( GetTeamPlayers( team ) )
-		do
-			if IsHeroAlive( id )
-			then
-				local member = GetTeamMember(id)
-				if member ~= nil then
-					local distanceToMember = GetUnitToLocationDistance(bot, member:GetLocation())
-					if distanceToMember >= 1600 then
-						targetAlly = member
-					end
-					return
-				end
-			end
-		end
-		if targetAlly then
-			bot:Action_MoveToLocation(member:GetLocation() + RandomVector(500))
+		if J.IsValidHero(goToTargetAlly) then
+			bot:Action_MoveToLocation(goToTargetAlly:GetLocation() + RandomVector(500))
 		else
 			IsShouldFindTeammates = false
 		end
@@ -360,7 +364,11 @@ function Think()
 	if shouldHarass
 	and harassTarget ~= nil
 	then
-		bot:Action_AttackUnit(harassTarget, false)
+		if J.IsInRange(bot, harassTarget, bot:GetAttackRange()) then
+			bot:Action_AttackUnit(harassTarget, false)
+		else
+			bot:Action_MoveToLocation(harassTarget:GetLocation())
+		end
 		return
 	end
 
@@ -381,6 +389,12 @@ function Think()
 
 	if isInIdleState then
 		isInIdleState = J.CheckBotIdleState()
+	end
+
+	if ShouldHelpAlly
+	and J.Utils.IsValidUnit(targetUnit) then
+		bot:Action_AttackUnit(targetUnit, false)
+		return
 	end
 
 	if (IsHeroCore or IsSupport)
@@ -456,6 +470,38 @@ function PingedDefendThink()
 		end
 	end
 	bot:Action_AttackMove(saferLoc + RandomVector(75))
+end
+
+function ConsiderHelpAlly()
+	local nRadius = 3500
+	local nModeDesire = bot:GetActiveModeDesire()
+	local nClosestAlly = J.GetClosestAlly(bot, nRadius)
+
+	if nClosestAlly ~= nil
+	and J.GetHP(bot) >= J.GetHP(nClosestAlly)
+	and (not J.IsCore(bot) or (J.IsCore(bot) and (not J.IsInLaningPhase() or J.IsInRange(bot, nClosestAlly, 1600))))
+	and not J.IsGoingOnSomeone(bot)
+	and not (J.IsRetreating(bot) and nModeDesire > 0.8)
+	then
+		local nInRangeAlly = J.GetAlliesNearLoc(nClosestAlly:GetLocation(), 1200)
+		local nInRangeEnemy = J.GetEnemiesNearLoc(nClosestAlly:GetLocation(), 1600)
+
+		for _, enemyHero in pairs(nInRangeEnemy)
+		do
+			if J.IsValidHero(enemyHero)
+			and GetUnitToUnitDistance(enemyHero, nClosestAlly) <= 1600
+			and (#nInRangeAlly + 1 >= #nInRangeEnemy)
+			then
+				if (enemyHero:GetAttackTarget() == nClosestAlly or J.IsChasingTarget(enemyHero, nClosestAlly))
+				or nClosestAlly:WasRecentlyDamagedByHero(enemyHero, 2.5)
+				then
+					return enemyHero, true
+				end
+			end
+		end
+	end
+
+	return nil, false
 end
 
 function ItemOpsThink()
@@ -2253,7 +2299,7 @@ function ConsiderHarassInLaningPhase()
 
 		for _, creep in pairs(nEnemyLaneCreeps)
 		do
-			if  J.IsValid(creep)
+			if J.IsValid(creep)
 			and J.CanBeAttacked(creep)
 			and J.GetHP(creep) <= 0.5
 			then
@@ -2261,15 +2307,17 @@ function ConsiderHarassInLaningPhase()
 			end
 		end
 
-		if J.GetHP(bot) > 0.6
+		if J.GetHP(bot) > 0.65
+		and (#nEnemyLaneCreeps < 3 or not bot:WasRecentlyDamagedByCreep(1))
+		and (J.IsCore(bot) and canLastHitCount <= 1)
 		then
 			if nAttackRange < 300
 			then
 				nAttackRange = 300
 			end
 
-			nInRangeEnemy = bot:GetNearbyHeroes(nAttackRange, true, BOT_MODE_NONE)
-			if  J.IsValidHero(nInRangeEnemy[1])
+			nInRangeEnemy = bot:GetNearbyHeroes(nAttackRange + 300, true, BOT_MODE_NONE)
+			if J.IsValidHero(nInRangeEnemy[1])
 			and J.CanBeAttacked(nInRangeEnemy[1])
 			and not J.IsSuspiciousIllusion(nInRangeEnemy[1])
 			and not J.IsRetreating(bot)
@@ -2282,8 +2330,8 @@ function ConsiderHarassInLaningPhase()
 				if nInRangeTower ~= nil
 				and (#nInRangeTower == 0
 					or (J.IsValidBuilding(nInRangeTower[1])
-						and GetUnitToUnitDistance(bot, nInRangeTower[1]) > 1300
-						and GetUnitToUnitDistance(nInRangeEnemy[1], nInRangeTower[1]) > 1100))
+						and GetUnitToUnitDistance(bot, nInRangeTower[1]) > 2000
+						and GetUnitToUnitDistance(nInRangeEnemy[1], nInRangeTower[1]) > 1500))
 				and not bot:WasRecentlyDamagedByTower(3.5)
 				then
 					shouldHarass = true

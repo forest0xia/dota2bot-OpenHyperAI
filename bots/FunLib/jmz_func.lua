@@ -2879,8 +2879,8 @@ function J.GetAttackableWeakestUnitFromList( bot, unitList )
         then
             -- Calculate score: lower score is better
             -- Can adjust the weight factors for hp and offensive power to tune the behavior
-            local hpWeight = 0.4
-            local powerWeight = 0.6
+            local hpWeight = 0.7
+            local powerWeight = 0.3
             local score = (hp * hpWeight) - (offensivePower * powerWeight)
 
             -- If the new score is lower, choose this unit as the weakest

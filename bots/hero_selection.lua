@@ -16,7 +16,7 @@ local Utils = require( GetScriptDirectory()..'/FunLib/utils' )
 local Dota2Teams = require( GetScriptDirectory()..'/FunLib/aba_team_names' )
 local CM = require( GetScriptDirectory()..'/FunLib/captain_mode' )
 local Customize = require( GetScriptDirectory()..'/Customize/general' )
-local HeroRoleMap = require( GetScriptDirectory()..'/FunLib/aba_hero_role_weights' )
+local HeroPositionMap = require( GetScriptDirectory()..'/FunLib/aba_hero_pos_weights' )
 local SupportedHeroes = {}
 local UseCustomizedPicks = false
 
@@ -25,7 +25,7 @@ local CorrectDireAssignedLanes = false
 local CorrectDirePlayerIndexToLaneIndex = { }
 
 -- Define the upper bound threshold for considering a hero a good fit for a position
-local ROLE_WEIGHT_THRESHOLD = 50
+local ROLE_WEIGHT_THRESHOLD = 40
 -- Only pick the top k result of the heroes that have the heighest weight for the role.
 local ROLE_LIST_TOP_K_LIMIT = 25
 
@@ -82,19 +82,19 @@ local WeakHeroes = {
     'npc_dota_hero_wisp',
 }
 
--- Function to get a list of all hero names from the heroRoleMap
-function GetAllHeroNames(roleMap)
+-- Function to get a list of all hero names from the HeroPositionMap
+function GetAllHeroNames(heroPosMap)
     local heroNames = {}
-    for heroName, _ in pairs(roleMap) do
+    for heroName, _ in pairs(heroPosMap) do
         table.insert(heroNames, heroName)
     end
     return heroNames
 end
 
 -- Function to get a list of heroes suitable for a given position. Sort the list by weight。
-function GetPositionedPool(heroRoleMap, position)
+function GetPositionedPool(heroPosMap, position)
     local heroList = {}
-    for heroName, roleWeights in pairs(heroRoleMap) do
+    for heroName, roleWeights in pairs(heroPosMap) do
         local weight = roleWeights[position]
         if weight > RandomInt(5, ROLE_WEIGHT_THRESHOLD) then
             table.insert(heroList, {name = heroName, weight = weight})
@@ -105,30 +105,40 @@ function GetPositionedPool(heroRoleMap, position)
     -- Extract hero names
     local sortedHeroNames = {}
     for _, hero in ipairs(heroList) do
-        table.insert(sortedHeroNames, hero.name)
-		-- Only return top k (ROLE_LIST_TOP_K_LIMIT) results.
-		if #sortedHeroNames >= ROLE_LIST_TOP_K_LIMIT then
-			return sortedHeroNames
+		local name = hero.name
+		print('Picking for position: '.. tostring(position) .. ", checking role for hero: "..name)
+		if (position == 1 and Role.IsCarry(name))
+		or (position == 2 and Role.IsCarry(name))
+		or (position == 3 and Role.IsInitiator(name))
+		or (position == 4 and (Role.IsSupport(name) or Role.IsDisabler(name)))
+		or (position == 5 and (Role.IsSupport(name) and Role.IsDisabler(name)))
+		then
+			print("Selected hero: " ..name .. " as an option for position: ".. tostring(position))
+			table.insert(sortedHeroNames, name)
+			-- Only return top k (ROLE_LIST_TOP_K_LIMIT) results.
+			if #sortedHeroNames >= ROLE_LIST_TOP_K_LIMIT then
+				return sortedHeroNames
+			end
 		end
     end
-	if #sortedHeroNames < 10 then -- in case all selections is unavailable or have been picked.
-		sortedHeroNames = Utils.CombineTablesUnique(sortedHeroNames, GetPositionedPool(heroRoleMap, position))
+	if #sortedHeroNames < 6 then -- in case all selections is unavailable or have been picked.
+		sortedHeroNames = Utils.CombineTablesUnique(sortedHeroNames, GetPositionedPool(heroPosMap, position))
 	end
 	print("For position: " .. position .. ", pool size count: ".. #sortedHeroNames)
 	Utils.PrintTable(sortedHeroNames)
     return sortedHeroNames
 end
 
-SupportedHeroes = GetAllHeroNames(HeroRoleMap)
+SupportedHeroes = GetAllHeroNames(HeroPositionMap)
 
 if Customize and not Customize.Enable then Customize = nil end
 
 tSelectPoolList = {
-	[1] = GetPositionedPool(HeroRoleMap, 1),
-	[2] = GetPositionedPool(HeroRoleMap, 2),
-	[3] = GetPositionedPool(HeroRoleMap, 3),
-	[4] = GetPositionedPool(HeroRoleMap, 4),
-	[5] = GetPositionedPool(HeroRoleMap, 5),
+	[1] = GetPositionedPool(HeroPositionMap, 1),
+	[2] = GetPositionedPool(HeroPositionMap, 2),
+	[3] = GetPositionedPool(HeroPositionMap, 3),
+	[4] = GetPositionedPool(HeroPositionMap, 4),
+	[5] = GetPositionedPool(HeroPositionMap, 5),
 }
 
 sSelectList = {

@@ -1,7 +1,8 @@
+local bot = GetBot()
+local botName = bot:GetUnitName();
+if bot == nil or bot:IsInvulnerable() or not bot:IsHero() or not bot:IsAlive() or not string.find(botName, "hero") or bot:IsIllusion() then return end
 local X = {}
 local J = require(GetScriptDirectory()..'/FunLib/jmz_func')
-
-local bot = GetBot()
 
 local MAX_DIST = 1600
 local minute = 0
@@ -148,7 +149,7 @@ function GetDesire()
 end
 
 function ConsiderWisdomRune()
-	if bot:GetLevel() < 30 then
+	if bot:GetLevel() < 30 and not J.IsCore(bot) then
 		timeInMin = X.GetMulTime()
 		X.UpdateWisdom()
 		if DotaTime() >= 7 * 60
@@ -647,9 +648,9 @@ function X.GetWisdomDesire(vWisdomLoc)
 	elseif botLevel < 18 then
 		nDesire = RemapValClamped(distFromLoc, 6400, 1500, BOT_ACTION_DESIRE_MODERATE , BOT_ACTION_DESIRE_VERYHIGH )
 	elseif botLevel < 25 then
-		nDesire = RemapValClamped(distFromLoc, 5800, 1600, BOT_ACTION_DESIRE_MODERATE, BOT_ACTION_DESIRE_HIGH )
+		nDesire = RemapValClamped(distFromLoc, 5800, 1200, BOT_ACTION_DESIRE_MODERATE, BOT_ACTION_DESIRE_HIGH )
 	elseif botLevel < 30 then
-		nDesire = RemapValClamped(distFromLoc, 5800, 1600, BOT_ACTION_DESIRE_LOW , BOT_ACTION_DESIRE_HIGH )
+		nDesire = RemapValClamped(distFromLoc, 5800, 1200, BOT_ACTION_DESIRE_LOW , BOT_ACTION_DESIRE_HIGH )
 	end
 
 	return nDesire

@@ -1,24 +1,14 @@
-----------------------------------------------------------------------------------------------------
---- The Creation Come From: BOT EXPERIMENT Credit:FURIOUSPUPPY
---- BOT EXPERIMENT Author: Arizona Fauzie 2018.11.21
---- Link:http://steamcommunity.com/sharedfiles/filedetails/?id=837040016
---- Refactor: 决明子 Email: dota2jmz@163.com 微博@Dota2_决明子
---- Link:http://steamcommunity.com/sharedfiles/filedetails/?id=1573671599
---- Link:http://steamcommunity.com/sharedfiles/filedetails/?id=1627071163
-----------------------------------------------------------------------------------------------------
-
-
 local X = {}
 local bot = GetBot()
+local botName = bot:GetUnitName()
+if bot == nil or bot:IsInvulnerable() or not bot:IsHero() or not bot:IsAlive() or not string.find(botName, "hero") or bot:IsIllusion() then return end
+
 local team = GetTeam()
 local bDebugMode = ( 1 == 10 )
 
-if bot:IsInvulnerable() or not bot:IsHero() or bot:IsIllusion()
-then return end
-
 local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
 local Utils = require( GetScriptDirectory()..'/FunLib/utils' )
-local BotBuild = dofile( GetScriptDirectory().."/BotLib/"..string.gsub( bot:GetUnitName(), "npc_dota_", "" ) )
+local BotBuild = dofile( GetScriptDirectory().."/BotLib/"..string.gsub( botName, "npc_dota_", "" ) )
 
 if BotBuild == nil then return end
 
@@ -40,14 +30,14 @@ local function AbilityLevelUpComplement()
 	end
 	
 	if bot:GetLevel() >= 30 
-		and bot:GetUnitName() == "npc_dota_hero_bloodseeker"
+		and botName == "npc_dota_hero_bloodseeker"
 	then
 		return
 	end
 
 	if DotaTime() < 15
 	then
-		bot.theRole = J.Role.GetCurrentSuitableRole( bot, bot:GetUnitName() )
+		bot.theRole = J.Role.GetCurrentSuitableRole( bot, botName )
 	end
 
 	local botLoc = bot:GetLocation()
@@ -91,14 +81,14 @@ local function AbilityLevelUpComplement()
 			table.remove( sAbilityLevelUpList, 1 )
 		elseif abilityName == 'generic_hidden' then
 			local nextAbility = sAbilityLevelUpList[2]
-			print("[WARN] Level up ability "..abilityName.." for "..bot:GetUnitName().." does not make sense. try to upgrade the next ability: "..tostring(nextAbility))
+			print("[WARN] Level up ability "..abilityName.." for "..botName.." does not make sense. try to upgrade the next ability: "..tostring(nextAbility))
 			table.remove( sAbilityLevelUpList, 1 )
 			if nextAbility then
 				bot:ActionImmediate_LevelAbility(nextAbility)
 			end
 		else
 			-- still try it
-			print("[WARN] Level up ability "..abilityName.." for "..bot:GetUnitName().." may fail because it was called on ability that's not available or can't get upgraded anymore.")
+			print("[WARN] Level up ability "..abilityName.." for "..botName.." may fail because it was called on ability that's not available or can't get upgraded anymore.")
 			bot:ActionImmediate_LevelAbility(abilityName)
 			table.remove( sAbilityLevelUpList, 1 )
 			-- bot:ActionImmediate_LevelAbility('special_bonus_attributes')
@@ -174,7 +164,7 @@ function X.SetTalkMessage()
 		if not bInstallChatCallbackDone
 		then
 			bInstallChatCallbackDone = true
-			--print(bot:GetUnitName())
+			--print(botName)
 			InstallChatCallback( function( tChat ) X.SetReplyHumanTime( tChat ) end )
 		end
 
@@ -845,7 +835,7 @@ end
 
 function X.WillBreakInvisible( bot )
 
-	local botName = bot:GetUnitName()
+	local botName = botName
 
 	if bot:IsInvisible()
 	then
@@ -1254,14 +1244,14 @@ X.ConsiderItemDesire["item_blink"] = function( hItem )
 	then
 		if bot.shouldBlink ~= nil
 		and bot.shouldBlink
-		and (bot:GetUnitName() == 'npc_dota_hero_batrider'
-			or bot:GetUnitName() == 'npc_dota_hero_beastmaster'
-			or bot:GetUnitName() == 'npc_dota_hero_dark_seer'
-			or bot:GetUnitName() == 'npc_dota_hero_earthshaker'
-			or bot:GetUnitName() == 'npc_dota_hero_magnataur'
-			or bot:GetUnitName() == 'npc_dota_hero_rubick'
-			or bot:GetUnitName() == 'npc_dota_hero_tinker'
-			or bot:GetUnitName() == 'npc_dota_hero_treant')
+		and (botName == 'npc_dota_hero_batrider'
+			or botName == 'npc_dota_hero_beastmaster'
+			or botName == 'npc_dota_hero_dark_seer'
+			or botName == 'npc_dota_hero_earthshaker'
+			or botName == 'npc_dota_hero_magnataur'
+			or botName == 'npc_dota_hero_rubick'
+			or botName == 'npc_dota_hero_tinker'
+			or botName == 'npc_dota_hero_treant')
 		then
 			return BOT_ACTION_DESIRE_NONE
 		end
@@ -1596,7 +1586,7 @@ X.ConsiderItemDesire["item_cyclone"] = function( hItem )
 		and J.IsInRange( bot, botTarget, nCastRange + 200 )
 	then
 		---- Invoker combo with item_cyclone ----
-		if bot:GetUnitName() == "npc_dota_hero_invoker" and J.IsGoingOnSomeone(bot) then
+		if botName == "npc_dota_hero_invoker" and J.IsGoingOnSomeone(bot) then
 			if J.IsValidHero(botTarget)
 			and not J.IsSuspiciousIllusion(botTarget)
 			and J.GetMP(bot) > 0.5 then
@@ -3027,7 +3017,7 @@ end
 --疯脸
 X.ConsiderItemDesire["item_mask_of_madness"] = function( hItem )
 
-	if bot:GetUnitName() == 'npc_dota_hero_drow_ranger' then return BOT_ACTION_DESIRE_NONE end
+	if botName == 'npc_dota_hero_drow_ranger' then return BOT_ACTION_DESIRE_NONE end
 
 	local nAttackTarget = bot:GetAttackTarget()
 	local nCastRange = bot:GetAttackRange() + 100
@@ -3048,9 +3038,9 @@ X.ConsiderItemDesire["item_mask_of_madness"] = function( hItem )
 			or ( #nEnemyHeroInView == 0 and not bot:WasRecentlyDamagedByAnyHero( 2.0 ) )
 		then
 			if ( #nEnemyHeroInView == 0 )
-			or ( bot:GetUnitName() ~= "npc_dota_hero_sniper"
-				or bot:GetUnitName() ~= "npc_dota_hero_medusa"
-				or bot:GetUnitName() ~= "npc_dota_hero_faceless_void" and J.GetUltimateAbility(bot):GetCooldown() > 0)
+			or ( botName ~= "npc_dota_hero_sniper"
+				or botName ~= "npc_dota_hero_medusa"
+				or botName ~= "npc_dota_hero_faceless_void" and J.GetUltimateAbility(bot):GetCooldown() > 0)
 			then
 				bot:SetTarget( nAttackTarget )
 				hEffectTarget = nAttackTarget
@@ -4397,7 +4387,7 @@ function X.IsFarmingAlways( bot )
 		and not J.IsRoshan( nTarget )
 		and not J.IsKeyWordUnit( "warlock", nTarget )
 		and bot:GetPrimaryAttribute() == ATTRIBUTE_INTELLECT
-		and bot:GetUnitName() ~= 'npc_dota_hero_ogre_magi'
+		and botName ~= 'npc_dota_hero_ogre_magi'
 		and #nNearAllyList < 2
 	then
 		return true
@@ -4486,7 +4476,7 @@ X.ConsiderItemDesire["item_tpscroll"] = function( hItem )
 		sCastMotive = '出去发育'
 		if shouldTp
 		then
-			if bot:GetUnitName() == 'npc_dota_hero_furion'
+			if botName == 'npc_dota_hero_furion'
 			then
 				local Teleportation = bot:GetAbilityByName('furion_teleportation')
 				if Teleportation:IsTrained()
@@ -4512,7 +4502,7 @@ X.ConsiderItemDesire["item_tpscroll"] = function( hItem )
 		hEffectTarget = J.GetTeamFountain()
 		sCastMotive = '撤退:1'
 
-		if bot:GetUnitName() == 'npc_dota_hero_furion'
+		if botName == 'npc_dota_hero_furion'
 		then
 			local Teleportation = bot:GetAbilityByName('furion_teleportation')
 			if Teleportation:IsTrained()
@@ -4542,7 +4532,7 @@ X.ConsiderItemDesire["item_tpscroll"] = function( hItem )
 		and roshanLocDist > 5000
 		and roshanLocDist > tpLocDist
 		then
-			if bot:GetUnitName() == 'npc_dota_hero_furion'
+			if botName == 'npc_dota_hero_furion'
 			then
 				local Teleportation = bot:GetAbilityByName('furion_teleportation')
 				if Teleportation:IsTrained()
@@ -4572,7 +4562,7 @@ X.ConsiderItemDesire["item_tpscroll"] = function( hItem )
 
 		if J.GetLocationToLocationDistance(bot:GetLocation(), hEffectTarget) > 4400
 		then
-			if bot:GetUnitName() == 'npc_dota_hero_furion'
+			if botName == 'npc_dota_hero_furion'
 			then
 				local Teleportation = bot:GetAbilityByName('furion_teleportation')
 				if Teleportation:IsTrained()
@@ -4611,7 +4601,7 @@ X.ConsiderItemDesire["item_tpscroll"] = function( hItem )
 			hEffectTarget = tpLoc
 			sCastMotive = '前往守塔:'..sLane
 
-			if bot:GetUnitName() == 'npc_dota_hero_furion'
+			if botName == 'npc_dota_hero_furion'
 			then
 				local Teleportation = bot:GetAbilityByName('furion_teleportation')
 				if Teleportation:IsTrained()
@@ -4651,7 +4641,7 @@ X.ConsiderItemDesire["item_tpscroll"] = function( hItem )
 			hEffectTarget = tpLoc
 			sCastMotive = '前往推塔:'..sLane
 
-			if bot:GetUnitName() == 'npc_dota_hero_furion'
+			if botName == 'npc_dota_hero_furion'
 			then
 				local Teleportation = bot:GetAbilityByName('furion_teleportation')
 				if Teleportation:IsTrained()
@@ -4671,7 +4661,7 @@ X.ConsiderItemDesire["item_tpscroll"] = function( hItem )
 	--保人
 	if nMode == BOT_MODE_DEFEND_ALLY
 		and nModeDesire >= BOT_MODE_DESIRE_MODERATE
-		and J.Role.CanBeSupport( bot:GetUnitName() )
+		and J.Role.CanBeSupport( botName )
 		and nEnemyCount == 0
 	then
 		local target = bot:GetTarget()
@@ -4692,7 +4682,7 @@ X.ConsiderItemDesire["item_tpscroll"] = function( hItem )
 			hEffectTarget = tpLoc
 			sCastMotive = '支援队友:'..J.Chat.GetNormName( target )
 
-			if bot:GetUnitName() == 'npc_dota_hero_furion'
+			if botName == 'npc_dota_hero_furion'
 			then
 				local Teleportation = bot:GetAbilityByName('furion_teleportation')
 				if Teleportation:IsTrained()
@@ -4723,8 +4713,8 @@ X.ConsiderItemDesire["item_tpscroll"] = function( hItem )
 		--第一种情况:无敌人无大药回家恢复
 		if botHP < 0.19
 			and ( bot:WasRecentlyDamagedByAnyHero( 8.0 ) or botHP < 0.12 )
-			and bot:GetUnitName() ~= 'npc_dota_hero_huskar'
-			and ( bot:GetUnitName() ~= 'npc_dota_hero_slark' or bot:GetLevel() <= 5 )
+			and botName ~= 'npc_dota_hero_huskar'
+			and ( botName ~= 'npc_dota_hero_slark' or bot:GetLevel() <= 5 )
 			and nEnemyCount == 0
 			and itemFlask == nil
 			and not bot:HasModifier( "modifier_tango_heal" )
@@ -4737,7 +4727,7 @@ X.ConsiderItemDesire["item_tpscroll"] = function( hItem )
 			tpLoc = J.GetTeamFountain()
 			sCastMotive = '撤退:1'
 
-			if bot:GetUnitName() == 'npc_dota_hero_furion'
+			if botName == 'npc_dota_hero_furion'
 			then
 				local Teleportation = bot:GetAbilityByName('furion_teleportation')
 				if Teleportation:IsTrained()
@@ -4772,7 +4762,7 @@ X.ConsiderItemDesire["item_tpscroll"] = function( hItem )
 			tpLoc = J.GetTeamFountain()
 			sCastMotive = '撤退:2'
 
-			if bot:GetUnitName() == 'npc_dota_hero_furion'
+			if botName == 'npc_dota_hero_furion'
 			then
 				local Teleportation = bot:GetAbilityByName('furion_teleportation')
 				if Teleportation:IsTrained()
@@ -4797,8 +4787,8 @@ X.ConsiderItemDesire["item_tpscroll"] = function( hItem )
 			and nAllyCount <= 2
 			and itemFlask == nil
 			and bot:GetAttackTarget() == nil
-			and bot:GetUnitName() ~= 'npc_dota_hero_huskar'
-			and bot:GetUnitName() ~= 'npc_dota_hero_slark'
+			and botName ~= 'npc_dota_hero_huskar'
+			and botName ~= 'npc_dota_hero_slark'
 			and not bot:HasModifier( "modifier_flask_healing" )
 			and not bot:HasModifier( "modifier_clarity_potion" )
 			and not bot:HasModifier( "modifier_filler_heal" )
@@ -4812,7 +4802,7 @@ X.ConsiderItemDesire["item_tpscroll"] = function( hItem )
 			tpLoc = J.GetTeamFountain()
 			sCastMotive = '撤退:3'
 
-			if bot:GetUnitName() == 'npc_dota_hero_furion'
+			if botName == 'npc_dota_hero_furion'
 			then
 				local Teleportation = bot:GetAbilityByName('furion_teleportation')
 				if Teleportation:IsTrained()
@@ -4855,7 +4845,7 @@ X.ConsiderItemDesire["item_tpscroll"] = function( hItem )
 			hEffectTarget = tpLoc
 			sCastMotive = '出去发育'
 
-			if bot:GetUnitName() == 'npc_dota_hero_furion'
+			if botName == 'npc_dota_hero_furion'
 			then
 				local Teleportation = bot:GetAbilityByName('furion_teleportation')
 				if Teleportation:IsTrained()
@@ -4880,7 +4870,7 @@ X.ConsiderItemDesire["item_tpscroll"] = function( hItem )
 		and J.GetAllyCount( bot, 1600 ) <= 2
 		and J.Role.ShouldTpToFarm()
 		and not J.Role.IsAllyHaveAegis()
-		and not J.Role.CanBeSupport( bot:GetUnitName() )
+		and not J.Role.CanBeSupport( botName )
 		and not J.IsEnemyHeroAroundLocation( GetAncient( team ):GetLocation(), 3300 )
 	then
 		local nAttackAllyList = J.GetNearbyHeroes(bot, 1600, false, BOT_MODE_ATTACK )
@@ -4911,7 +4901,7 @@ X.ConsiderItemDesire["item_tpscroll"] = function( hItem )
 					J.Role['lastFarmTpTime'] = DotaTime()
 					sCastMotive = '飞鞋带线'
 
-					if bot:GetUnitName() == 'npc_dota_hero_furion'
+					if botName == 'npc_dota_hero_furion'
 					then
 						local Teleportation = bot:GetAbilityByName('furion_teleportation')
 						if Teleportation:IsTrained()
@@ -4938,7 +4928,7 @@ X.ConsiderItemDesire["item_tpscroll"] = function( hItem )
 				J.Role['lastFarmTpTime'] = DotaTime()
 				sCastMotive = '线上打钱'
 
-				if bot:GetUnitName() == 'npc_dota_hero_furion'
+				if botName == 'npc_dota_hero_furion'
 				then
 					local Teleportation = bot:GetAbilityByName('furion_teleportation')
 					if Teleportation:IsTrained()
@@ -4973,7 +4963,7 @@ X.ConsiderItemDesire["item_tpscroll"] = function( hItem )
 			isTravelBootsAvailable = true
 		end
 
-		if bot:GetUnitName() == 'npc_dota_hero_spectre'
+		if botName == 'npc_dota_hero_spectre'
 		then
 			local ShadowStep = bot:GetAbilityByName('spectre_haunt_single')
 			local Haunt = bot:GetAbilityByName('spectre_haunt')
@@ -4994,7 +4984,7 @@ X.ConsiderItemDesire["item_tpscroll"] = function( hItem )
 			then
 				sCastMotive = '飞鞋支援团战距离:'..GetUnitToLocationDistance( bot, nTeamFightLocation )
 
-				if bot:GetUnitName() == 'npc_dota_hero_furion'
+				if botName == 'npc_dota_hero_furion'
 				then
 					local Teleportation = bot:GetAbilityByName('furion_teleportation')
 					if Teleportation:IsTrained()
@@ -5016,7 +5006,7 @@ X.ConsiderItemDesire["item_tpscroll"] = function( hItem )
 			then
 				sCastMotive = '支援团战:'..GetUnitToLocationDistance( bot, nTeamFightLocation )
 
-				if bot:GetUnitName() == 'npc_dota_hero_furion'
+				if botName == 'npc_dota_hero_furion'
 				then
 					local Teleportation = bot:GetAbilityByName('furion_teleportation')
 					if Teleportation:IsTrained()
@@ -5049,7 +5039,7 @@ X.ConsiderItemDesire["item_tpscroll"] = function( hItem )
 				J.Role['lastFarmTpTime'] = DotaTime()
 				sCastMotive = '守护遗迹'
 
-				if bot:GetUnitName() == 'npc_dota_hero_furion'
+				if botName == 'npc_dota_hero_furion'
 				then
 					local Teleportation = bot:GetAbilityByName('furion_teleportation')
 					if Teleportation:IsTrained()
@@ -5079,7 +5069,7 @@ X.ConsiderItemDesire["item_tpscroll"] = function( hItem )
 						J.Role['lastFarmTpTime'] = DotaTime()
 						sCastMotive = '保护遗迹'
 
-						if bot:GetUnitName() == 'npc_dota_hero_furion'
+						if botName == 'npc_dota_hero_furion'
 						then
 							local Teleportation = bot:GetAbilityByName('furion_teleportation')
 							if Teleportation:IsTrained()
@@ -5103,8 +5093,8 @@ X.ConsiderItemDesire["item_tpscroll"] = function( hItem )
 	--回复状态
 	if ( botHP + botMP < 0.3 or botHP < 0.2 )
 		and bot:GetLevel() >= 6
-		and bot:GetUnitName() ~= 'npc_dota_hero_huskar'
-		and bot:GetUnitName() ~= 'npc_dota_hero_slark'
+		and botName ~= 'npc_dota_hero_huskar'
+		and botName ~= 'npc_dota_hero_slark'
 		and not bot:HasModifier( "modifier_arc_warden_tempest_double" )
 	then
 		if	X.CanJuke()
@@ -5130,7 +5120,7 @@ X.ConsiderItemDesire["item_tpscroll"] = function( hItem )
 			hEffectTarget = tpLoc
 			sCastMotive = '回复状态'
 
-			if bot:GetUnitName() == 'npc_dota_hero_furion'
+			if botName == 'npc_dota_hero_furion'
 			then
 				local Teleportation = bot:GetAbilityByName('furion_teleportation')
 				if Teleportation:IsTrained()
@@ -5161,7 +5151,7 @@ X.ConsiderItemDesire["item_tpscroll"] = function( hItem )
 			hEffectTarget = tpLoc
 			sCastMotive = '躲血魔大'
 
-			if bot:GetUnitName() == 'npc_dota_hero_furion'
+			if botName == 'npc_dota_hero_furion'
 			then
 				local Teleportation = bot:GetAbilityByName('furion_teleportation')
 				if Teleportation:IsTrained()
@@ -5183,7 +5173,7 @@ X.ConsiderItemDesire["item_tpscroll"] = function( hItem )
 		tpLoc = GetAncient( team ):GetLocation()
 		sCastMotive = '处理特殊情况一'
 
-		if bot:GetUnitName() == 'npc_dota_hero_furion'
+		if botName == 'npc_dota_hero_furion'
 		then
 			local Teleportation = bot:GetAbilityByName('furion_teleportation')
 			if Teleportation:IsTrained()
@@ -5204,7 +5194,7 @@ X.ConsiderItemDesire["item_tpscroll"] = function( hItem )
 		tpLoc = GetAncient( team ):GetLocation()
 		sCastMotive = '处理特殊情况二'
 
-		if bot:GetUnitName() == 'npc_dota_hero_furion'
+		if botName == 'npc_dota_hero_furion'
 		then
 			local Teleportation = bot:GetAbilityByName('furion_teleportation')
 			if Teleportation:IsTrained()
@@ -7258,7 +7248,7 @@ function AbilityUsageThink()
 	if bot.lastAbilityFrameProcessTime == nil then bot.lastAbilityFrameProcessTime = DotaTime() end
 	if DotaTime() - bot.lastAbilityFrameProcessTime < bot.frameProcessTime and bot.isBear == nil then return end
 	bot.lastAbilityFrameProcessTime = DotaTime()
-	BotBuild.SkillsComplement()
+	if ShouldUseAbility() then BotBuild.SkillsComplement() end
 end
 
 function BuybackUsageThink()
@@ -7287,6 +7277,19 @@ function X.SetAbilityItemList(heroAbility, items, abilityLvlup)
 	bDeafaultAbilityHero = heroAbility
 	bDeafaultItemHero = items
 	sAbilityLevelUpList = abilityLvlup
+end
+
+function ShouldUseAbility()
+	local isTargetHero = J.IsValidHero(botTarget)
+	if J.IsInLaningPhase(bot)
+	and (botName ~= 'npc_dota_hero_huskar' and botName ~= 'npc_dota_hero_lion' and botName ~= 'npc_dota_hero_obsidian_destroyer')
+	and (
+		(not isTargetHero or bot:GetMana() < 150 or J.GetMP(bot) < 0.2)
+		or (isTargetHero and J.GetHP(botTarget) > 0.5 and (bot:GetMana() < 150 or J.GetMP(bot) < 0.2))
+	) then
+		return false
+	end
+	return true
 end
 
 X.AbilityLevelUpThink = AbilityLevelUpThink

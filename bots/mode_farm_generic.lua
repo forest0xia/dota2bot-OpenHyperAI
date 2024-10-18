@@ -1,11 +1,9 @@
+local bot = GetBot()
+local botName = bot:GetUnitName()
+if bot == nil or bot:IsInvulnerable() or not bot:IsHero() or not bot:IsAlive() or not string.find(botName, "hero") or bot:IsIllusion() then return end
+
 local Utils = require( GetScriptDirectory()..'/FunLib/utils' )
 local Version = require(GetScriptDirectory()..'/FunLib/version')
-
-local bot = GetBot()
-
-if bot:IsInvulnerable() or not bot:IsHero() or not string.find(bot:GetUnitName(), "hero") or bot:IsIllusion() then
-	return;
-end
 
 local team = GetTeam()
 
@@ -14,7 +12,6 @@ local J = require( GetScriptDirectory()..'/FunLib/jmz_func')
 local RadiantBase = Vector(-7174.000000, -6671.00000, 0.000000)
 local DireBase = Vector(7023.000000, 6450.000000, 0.000000)
 
-local botName = bot:GetUnitName();
 local minute = 0;
 local sec = 0;
 local preferedCamp = nil;
@@ -94,6 +91,18 @@ function GetDesire()
         return BOT_ACTION_DESIRE_NONE
     end
 
+	-- laning is too hard for the bot, try go farming somewhere else.
+	if J.IsInLaningPhase()
+	and GetHeroDeaths(bot:GetPlayerID()) >= 4
+	and (GetHeroKills(bot:GetPlayerID()) == 0 or GetHeroKills(bot:GetPlayerID()) / GetHeroDeaths(bot:GetPlayerID()) < 0.5)
+	and J.IsCore(bot)
+	and bot:GetLevel() >= 5
+	and bot:GetLevel() < 10
+	and J.GetEnemyCountInLane(lane) >= 1
+	then
+        return BOT_ACTION_DESIRE_HIGH
+	end
+
 	local TormentorLocation = J.GetTormentorLocation(team)
 	local nNeutralCreeps = bot:GetNearbyNeutralCreeps(700)
 	for _, c in pairs(nNeutralCreeps)
@@ -141,23 +150,23 @@ function GetDesire()
 
 	local numOfAliveEnemyHeroes = J.GetNumOfAliveHeroes(true)
 	-- 避免过早推2塔或者高地
-	if bot:GetLevel() < 12 and numOfAliveEnemyHeroes >= 3 then
+	if bot:GetLevel() < 10 and numOfAliveEnemyHeroes >= 3 then
 		if J.Utils.isNearEnemySecondTierTower(bot, 1500) then
 			return BOT_MODE_DESIRE_ABSOLUTE * 1.1;
 		end
-	elseif bot:GetLevel() < 18 and numOfAliveEnemyHeroes >= 3 then
+	elseif bot:GetLevel() < 15 and numOfAliveEnemyHeroes >= 3 then
 		if J.Utils.isNearEnemyHighGroundTower(bot, 1500) then
 			return BOT_MODE_DESIRE_ABSOLUTE * 1.1;
 		end
 	end
 
 	-- 如果在打高地 就别撤退去打钱了
-	local nAllyList = J.GetNearbyHeroes(bot,1600,false,BOT_MODE_NONE);
-	if #nAllyList > 2 and (J.Utils.isNearEnemyHighGroundTower(bot, 2500) or J.Utils.isNearEnemySecondTierTower(bot, 2500)) then
+	if J.Utils.isTeamPushingSecondTierOrHighGround(bot) then
 		return BOT_MODE_DESIRE_NONE;
 	end
 
 	-- 如果在打推塔 就别撤退去打钱了
+	local nAllyList = J.GetNearbyHeroes(bot,1600,false,BOT_MODE_NONE);
 	local nEnemyTowers = bot:GetNearbyTowers(1200, true);
 	if #nAllyList >= 2 and nEnemyTowers ~= nil and #nEnemyTowers > 0 and GetUnitToLocationDistance(bot, nEnemyTowers[1]:GetLocation()) < 1300 then
 		return BOT_MODE_DESIRE_NONE;
@@ -885,6 +894,15 @@ function X.ShouldRun(bot)
 		end
 	end
 
+	-- 前期线上别顶着小兵打太凶
+	if botLevel < 5
+	and bot:WasRecentlyDamagedByCreep(1)
+	and J.GetHP(bot) < 0.7
+	and botTarget ~= nil
+	and J.GetHP(botTarget) > J.GetHP(bot) - 0.15 then
+		return 2;
+	end
+
 	local nEnemyTowers = bot:GetNearbyTowers(1000, true);
 	local nEnemyBrracks = bot:GetNearbyBarracks(800,true);
 
@@ -947,7 +965,7 @@ function X.ShouldRun(bot)
 	end
 
 	-- 前期谨慎冲塔
-	if botLevel <= 10
+	if botLevel <= 10 and DotaTime() > 0
 		and (#hEnemyHeroList > 0 or bot:GetHealth() < 700)
 	then
 		local nLongEnemyTowers = bot:GetNearbyTowers(1200, true);

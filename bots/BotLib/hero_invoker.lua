@@ -93,7 +93,7 @@ sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_2']
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 if Utils['GameStates']['invoker'] == nil then
-    if (sRole == 'pos_2' or sRole == 'pos_1') and RandomInt( 1, 9 ) > 3 then
+    if (sRole == 'pos_2' or sRole == 'pos_1') and RandomInt( 1, 9 ) >= 3 then
         Utils['GameStates']['invoker'] = { roleType = 'pos_2_qe' }
     else
         Utils['GameStates']['invoker'] = { roleType = 'pos_2' }

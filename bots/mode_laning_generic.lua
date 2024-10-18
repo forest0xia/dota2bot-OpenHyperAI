@@ -1,9 +1,10 @@
+local bot = GetBot()
+local botName = bot:GetUnitName()
+if bot == nil or bot:IsInvulnerable() or not bot:IsHero() or not bot:IsAlive() or not string.find(botName, "hero") or bot:IsIllusion() then return end
 
 local Utils = require( GetScriptDirectory()..'/FunLib/utils')
 local J = require( GetScriptDirectory()..'/FunLib/jmz_func')
 
-local bot = GetBot()
-local botName = bot:GetUnitName()
 local local_mode_laning_generic
 
 local skipLaningState = {
@@ -11,10 +12,6 @@ local skipLaningState = {
 	lastCheckTime = 0,
 	checkGap = 3,
 }
-
-if bot:IsInvulnerable() or not bot:IsHero() or not string.find(botName, "hero") or bot:IsIllusion() then
-	return
-end
 
 if Utils.BuggyHeroesDueToValveTooLazy[botName] then
 	local_mode_laning_generic = dofile( GetScriptDirectory().."/FunLib/override_generic/mode_laning_generic" )
@@ -32,8 +29,7 @@ function GetDesire()
 	end
 
 	-- 如果在打高地 就别撤退去干别的
-	local nAllyList = J.GetNearbyHeroes(bot,1600,false,BOT_MODE_NONE);
-	if #nAllyList > 2 and (J.Utils.isNearEnemyHighGroundTower(bot, 2500) or J.Utils.isNearEnemySecondTierTower(bot, 2500)) then
+	if J.Utils.isTeamPushingSecondTierOrHighGround(bot) then
 		return BOT_MODE_DESIRE_NONE
 	end
 

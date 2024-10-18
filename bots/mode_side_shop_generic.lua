@@ -1,4 +1,7 @@
 local bot = GetBot()
+local botName = bot:GetUnitName();
+if bot == nil or bot:IsInvulnerable() or not bot:IsHero() or not bot:IsAlive() or not string.find(botName, "hero") or bot:IsIllusion() then return end
+
 local botTeam = bot:GetTeam()
 local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
 
@@ -19,8 +22,7 @@ local NoTormentorAfterThisTime = 35 * 60 -- do not do tormentor again since it's
 function GetDesire()
 
 	-- 如果在打高地 就别撤退去干别的
-	local nAllyList = J.GetNearbyHeroes(bot,1600,false,BOT_MODE_NONE);
-	if #nAllyList > 2 and (J.Utils.isNearEnemyHighGroundTower(bot, 2500) or J.Utils.isNearEnemySecondTierTower(bot, 2500)) then
+	if J.Utils.isTeamPushingSecondTierOrHighGround(bot) then
 		return BOT_MODE_DESIRE_NONE
 	end
 

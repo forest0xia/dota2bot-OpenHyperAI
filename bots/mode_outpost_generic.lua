@@ -1,8 +1,7 @@
-if GetBot():IsInvulnerable() or not GetBot():IsHero() or not string.find(GetBot():GetUnitName(), "hero") or GetBot():IsIllusion() then
-	return
-end
-
 local bot = GetBot()
+local botName = bot:GetUnitName()
+if bot == nil or bot:IsInvulnerable() or not bot:IsHero() or not bot:IsAlive() or not string.find(botName, "hero") or bot:IsIllusion() then return end
+
 local J = require( GetScriptDirectory()..'/FunLib/jmz_func')
 
 local Outposts = {}
@@ -31,7 +30,7 @@ function GetDesire()
 
 	if not DidWeGetOutpost
 	then
-		if bot:GetUnitName() == 'npc_dota_hero_invoker' then return BOT_ACTION_DESIRE_NONE end
+		if botName == 'npc_dota_hero_invoker' then return BOT_ACTION_DESIRE_NONE end
 		for _, unit in pairs(GetUnitList(UNIT_LIST_ALL))
 		do
 			if unit:GetUnitName() == '#DOTA_OutpostName_North'

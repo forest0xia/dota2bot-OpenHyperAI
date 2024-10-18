@@ -282,15 +282,15 @@ function X.GetDesire(bot__)
                             if not X.IsUnitAfterUnit(unit, bot)
                             or (X.IsUnitAfterUnit(unit, bot) and canKillGolem)
                             then
-                                return 0.95
+                                return 0.35
                             else
-                                return 0.75
+                                return 0.25
                             end
                         else
                             if not X.IsUnitAfterUnit(unit, bot)
                             or (X.IsUnitAfterUnit(unit, bot) and canKillGolem)
                             then
-                                return 0.75
+                                return 0.25
                             end
                         end
                     end

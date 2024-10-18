@@ -1,4 +1,4 @@
-local HeroRoleMap = {
+local HeroPositionMap = {
     ['npc_dota_hero_abaddon'] = {5, 5, 30, 10, 50},      -- Positions 3,5; some 4,1,2
     ['npc_dota_hero_abyssal_underlord'] = {5, 10, 80, 5, 0}, -- Positions 3 primarily, some mid, safe
     ['npc_dota_hero_alchemist'] = {50, 30, 15, 5, 0},    -- Positions 1,2,3
@@ -126,4 +126,4 @@ local HeroRoleMap = {
     ['npc_dota_hero_muerta'] = {30, 5, 5, 15, 5},        -- Positions 1,3, occasional support
 }
 
-return HeroRoleMap
+return HeroPositionMap

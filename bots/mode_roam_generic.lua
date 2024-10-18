@@ -1,12 +1,9 @@
-local J = require( GetScriptDirectory()..'/FunLib/jmz_func')
-
 local bot = GetBot()
 local botName = bot:GetUnitName()
 
-if bot:IsInvulnerable() or not bot:IsHero() or not string.find(botName, "hero") or bot:IsIllusion() then
-	return
-end
+if bot == nil or bot:IsInvulnerable() or not bot:IsHero() or not bot:IsAlive() or not string.find(botName, "hero") or bot:IsIllusion() then return end
 
+local J = require( GetScriptDirectory()..'/FunLib/jmz_func')
 
 local cAbility = nil
 local TinkerShouldWaitInBaseToHeal = false
@@ -24,7 +21,6 @@ local BearAttackLimitDistance = 1100
 local TetherBreakDistance = 1000
 local ConsiderHeroSpecificRoaming = {}
 
-
 local laneToRoam = nil
 local lastRoamDecisionTime = DotaTime()
 local roamDecisionHoldTime = 1.25 * 60 -- cant change dicision within this time
@@ -36,7 +32,7 @@ local arriveRoamLocTime = 0
 local roamTimeAfterArrival = 0.55 * 60 -- stay to roam after arriving the location
 local roamGapTime = 3 * 60 -- don't roam again within this duration after roaming once.
 local lastStaticLinkDebuffStack = 0
-local nInRangeEnemy, allyTowers, enemyTowers, trySeduce, shouldTempRetreat, botTarget, shouldGoBackToFountain
+local nInRangeEnemy, nInRangeAlly, allyTowers, enemyTowers, trySeduce, shouldTempRetreat, botTarget, shouldGoBackToFountain
 
 function GetDesire()
 
@@ -45,14 +41,15 @@ function GetDesire()
 	TPScroll = J.GetItem2(bot, 'item_tpscroll')
 	botTarget = J.GetProperTarget(bot)
 	nInRangeEnemy = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+	nInRangeAlly = bot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
 	allyTowers = bot:GetNearbyTowers(1600, false)
 	enemyTowers = bot:GetNearbyTowers(1600, true)
 
-	if ConsiderWaitInBaseToHeal()
-	and GetUnitToLocationDistance(bot, J.GetTeamFountain()) > 5500
-	then
-		return BOT_ACTION_DESIRE_ABSOLUTE
-	end
+	-- if ConsiderWaitInBaseToHeal()
+	-- and GetUnitToLocationDistance(bot, J.GetTeamFountain()) > 5500
+	-- then
+	-- 	return BOT_ACTION_DESIRE_ABSOLUTE
+	-- end
 
 	TinkerShouldWaitInBaseToHeal = TinkerWaitInBaseAndHeal()
 	if TinkerShouldWaitInBaseToHeal
@@ -717,7 +714,7 @@ function OnEnd()
 end
 
 function IsInHealthyState()
-	return J.GetHP(bot) > 0.7 and J.GetMP(bot) > 0.7
+	return J.GetHP(bot) > 0.7 and J.GetMP(bot) > 0.6
 end
 
 function CheckLaneToRoam()
@@ -927,8 +924,16 @@ function ConsiderGeneralRoamingInConditions()
 	end
 
 	if J.IsInLaningPhase() then
-		if (shouldGoBackToFountain and not IsInHealthyState())
-		or ((J.GetHP(bot) < 0.25 or (J.GetHP(bot) < 0.4 and J.GetMP(bot) < 0.3)) and not J.HasItem(bot, "item_tango") and not J.HasItem(bot, "item_flask") and not J.HasItem(bot, "item_bottle")) then
+
+		-- 状态不好 回泉水补给
+		if not bot:WasRecentlyDamagedByAnyHero(1.5)
+		and (
+			(shouldGoBackToFountain and not IsInHealthyState())
+			or ((J.GetHP(bot) < 0.25 or (J.GetHP(bot) < 0.4 and J.GetMP(bot) < 0.3))
+				and (not J.HasItem(bot, "item_tango") or not bot:HasModifier("modifier_tango_heal"))
+				and (not J.HasItem(bot, "item_flask") or not bot:HasModifier("modifier_flask_healing"))
+				and (not J.HasItem(bot, "item_bottle") or not bot:HasModifier("modifier_bottle_regeneration")))
+		) then
 			shouldGoBackToFountain = true
 			return BOT_ACTION_DESIRE_ABSOLUTE * 1.5
 		end
@@ -1002,16 +1007,18 @@ function ConsiderGeneralRoamingInConditions()
 		-- 尝试勾引
 		if #nInRangeEnemy >= 1
 		and #allyTowers >= 1
-		and GetUnitToUnitDistance(allyTowers[1], bot) < 1600 then
+		and GetUnitToUnitDistance(allyTowers[1], bot) < 1600
+		and #nInRangeAlly <= #nInRangeEnemy then
 			for _, enemy in pairs(nInRangeEnemy) do
 				if J.Utils.IsValidHero(enemy) then
 					if enemy:IsFacingLocation(bot:GetLocation(), 15)
 					and J.IsInRange(bot, enemy, enemy:GetAttackRange() + 450)
 					and J.GetHP(enemy) > J.GetHP(bot) + 0.15
-					and J.GetHP(bot) < 0.75
+					and bot:WasRecentlyDamagedByAnyHero(3)
+					and J.GetHP(bot) < 0.75 and J.GetHP(bot) > 0.3 -- don't block real retreat action
 					then
 						trySeduce = true
-						return BOT_ACTION_DESIRE_ABSOLUTE
+						return BOT_ACTION_DESIRE_VERYHIGH
 					end
 				end
 			end
@@ -1030,46 +1037,7 @@ function ConsiderGeneralRoamingInConditions()
 		end
 	end
 
-	local targetUnit, ShouldHelpAlly = ConsiderHelpAlly()
-	if ShouldHelpAlly
-	then
-		bot:SetTarget(targetUnit)
-		return BOT_ACTION_DESIRE_ABSOLUTE * 0.98
-	end
-
 	return BOT_ACTION_DESIRE_NONE
-end
-
-function ConsiderHelpAlly()
-	local nRadius = 3500
-	local nModeDesire = bot:GetActiveModeDesire()
-	local nClosestAlly = J.GetClosestAlly(bot, nRadius)
-
-	if nClosestAlly ~= nil
-	and J.GetHP(nClosestAlly) > 0.2
-	and (not J.IsCore(bot) or (J.IsCore(bot) and (not J.IsInLaningPhase() or J.IsInRange(bot, nClosestAlly, 1600))))
-	and not J.IsGoingOnSomeone(bot)
-	and not (J.IsRetreating(bot) and nModeDesire > 0.8)
-	then
-		local nInRangeAlly = J.GetAlliesNearLoc(nClosestAlly:GetLocation(), 1200)
-		local nInRangeEnemy = J.GetEnemiesNearLoc(nClosestAlly:GetLocation(), 1600)
-
-		for _, enemyHero in pairs(nInRangeEnemy)
-		do
-			if J.IsValidHero(enemyHero)
-			and GetUnitToUnitDistance(enemyHero, nClosestAlly) <= 1600
-			and (#nInRangeAlly + 1 >= #nInRangeEnemy)
-			then
-				if (enemyHero:GetAttackTarget() == nClosestAlly or J.IsChasingTarget(enemyHero, nClosestAlly))
-				or nClosestAlly:WasRecentlyDamagedByHero(enemyHero, 2.5)
-				then
-					return enemyHero, true
-				end
-			end
-		end
-	end
-
-	return nil, false
 end
 
 function GetTargetEnemy(unitName)

@@ -1,10 +1,11 @@
+local bot = GetBot()
+local botName = bot:GetUnitName()
+if bot == nil or bot:IsInvulnerable() or not bot:IsHero() or not bot:IsAlive() or not string.find(botName, "hero") or bot:IsIllusion() then return end
+
 local Item = require( GetScriptDirectory()..'/FunLib/aba_item' )
 local Role = require( GetScriptDirectory()..'/FunLib/aba_role' )
 local J = require( GetScriptDirectory()..'/FunLib/jmz_func')
 local Utils = require( GetScriptDirectory()..'/FunLib/utils')
-
-local bot = GetBot()
-local botName = bot:GetUnitName()
 
 local X = {}
 
@@ -413,7 +414,7 @@ function ItemPurchaseThink()
 	end
 
 	--辅助定位英雄购买辅助物品
-	if bot.theRole == 'support'
+	if J.GetPosition(bot) >= 4
 	then
 		if currentTime > 30 and not bot.hasBuyClarity
 			and botGold >= GetItemCost( "item_clarity" )
@@ -610,15 +611,12 @@ function ItemPurchaseThink()
 		bot:ActionImmediate_PurchaseItem( "item_aghanims_shard" )
 	end
 
-
 	--防止非辅助购买魂泪
 	if buyRD == false
 		and currentTime < 0
-		and bot.theRole ~= 'support'
 	then
 		buyRD = true
 	end
-
 
 	--死前如果会损失金钱则购买额外TP
 	local tpCost = GetItemCost( "item_tpscroll" )
@@ -657,7 +655,7 @@ function ItemPurchaseThink()
 	if botGold >= GetItemCost( "item_dust" )
 		and bot:IsAlive()
 		and botLevel > 6
-		and bot.theRole == 'support'
+		and J.GetPosition(bot) >= 4
 		and botGold < ( GetItemCost( "item_dust" )  + botWorth / 40 )
 		and botHP < 0.06
 		and bot:WasRecentlyDamagedByAnyHero( 3.1 )

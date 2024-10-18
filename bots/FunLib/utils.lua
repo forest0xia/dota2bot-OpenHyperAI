@@ -342,6 +342,7 @@ local ____exports = {}
 local avoidanceZones
 local ____dota = require(GetScriptDirectory().."/ts_libs/dota/index")
 local Barracks = ____dota.Barracks
+local BotMode = ____dota.BotMode
 local Lane = ____dota.Lane
 local Team = ____dota.Team
 local Tower = ____dota.Tower
@@ -979,5 +980,8 @@ function ____exports.isNearEnemyHighGroundTower(unit, range)
         end
     end
     return false
+end
+function ____exports.isTeamPushingSecondTierOrHighGround(bot)
+    return #bot:GetNearbyHeroes(1600, false, BotMode.None) > 2 and (____exports.isNearEnemySecondTierTower(bot, 2500) or ____exports.isNearEnemyHighGroundTower(bot, 2500))
 end
 return ____exports
