@@ -242,7 +242,7 @@ function X.SkillsComplement()
 
 	-- invis ult can be a good combo, dont use other spells yet.
 	if abilityR:IsFullyCastable()
-	and J.Utils.isTruelyInvisible(bot)
+	and J.Utils.IsTruelyInvisible(bot)
 	then return end
 
 	-- this one is more important
@@ -337,7 +337,7 @@ function X.ConsiderR()
 	do
 		if J.IsValidHero( enemy )
 		and ((enemy:HasModifier( "modifier_brewmaster_storm_cyclone" ) and J.GetModifierTime( enemy, "modifier_brewmaster_storm_cyclone" ) < 1.66)
-			or J.Utils.isTruelyInvisible(bot))
+			or J.Utils.IsTruelyInvisible(bot))
 		and enemy:GetHealth() > 800
 		then
 			return BOT_ACTION_DESIRE_HIGH

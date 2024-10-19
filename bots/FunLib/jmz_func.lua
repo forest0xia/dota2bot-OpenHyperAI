@@ -2808,7 +2808,7 @@ function J.GetClosestAlly(bot, nRadius)
 	do
 		local member = GetTeamMember(i)
 
-		if  member ~= nil
+		if member ~= nil
 		and member:IsAlive()
 		and member ~= bot
 		and GetUnitToUnitDistance(bot, member) <= nRadius
@@ -3352,7 +3352,7 @@ function J.GetLastSeenEnemiesNearLoc(vLoc, nRadius)
 					and J.GetLocationToLocationDistance( vLoc, dInfo.location ) <= nRadius
 					and dInfo.time_since_seen < 5.0
 				then
-					table.insert(enemies, enemyHero)
+					table.insert(enemies, id)
 				end
 			end
 		end

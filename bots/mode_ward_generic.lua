@@ -50,27 +50,27 @@ function GetDesire()
 	if bot.WardTable == nil then bot.WardTable = {} end
 
 	-- 如果在打高地 就别撤退去干别的
-	if J.Utils.isTeamPushingSecondTierOrHighGround(bot) then
+	if J.Utils.IsTeamPushingSecondTierOrHighGround(bot) then
 		return BOT_MODE_DESIRE_NONE
 	end
 
-	if  ItemWard ~= nil
+	if ItemWard ~= nil
 	and ItemWard:GetCooldownTimeRemaining() == 0
 	then
 
 		Pinged, WardTargetLocation = Ward.IsPingedByHumanPlayer(bot)
-		if  Pinged
+		if Pinged
 		and WardTargetLocation ~= nil
 		and not Ward.IsOtherWardClose(WardTargetLocation)
 		then
 			bot.ward = true
-			return RemapValClamped(GetUnitToLocationDistance(bot, WardTargetLocation), 1200, 0, BOT_MODE_DESIRE_HIGH, BOT_ACTION_DESIRE_VERYHIGH)
+			return RemapValClamped(GetUnitToLocationDistance(bot, WardTargetLocation), 1200, 0, BOT_MODE_DESIRE_MODERATE, BOT_MODE_DESIRE_HIGH)
 		end
 
 		AvailableSpots = Ward.GetAvailableSpot(bot)
 		WardTargetLocation, WardTargetDist = Ward.GetClosestSpot(bot, AvailableSpots)
 
-		if  WardTargetLocation ~= nil
+		if WardTargetLocation ~= nil
 		and DotaTime() > (J.IsModeTurbo() and -45 or -60)
 		and DotaTime() < 0
 		and not IsEnemyCloserToWardLocation(WardTargetLocation, WardTargetDist)
@@ -79,12 +79,12 @@ function GetDesire()
 			return BOT_MODE_DESIRE_HIGH
 		end
 
-		if  WardTargetLocation ~= nil
+		if WardTargetLocation ~= nil
 		and DotaTime() > WardCastTime + 1.0
 		and not IsEnemyCloserToWardLocation(WardTargetLocation, WardTargetDist)
 		then
 			bot.ward = true
-			return RemapValClamped(WardTargetDist, 6400, 0, BOT_MODE_DESIRE_MODERATE, BOT_MODE_DESIRE_VERYHIGH * 1.1)
+			return RemapValClamped(WardTargetDist, 3500, 200, BOT_MODE_DESIRE_NONE, BOT_MODE_DESIRE_HIGH)
 		end
 	else
 		bot.lastPlayerChat = nil
@@ -122,7 +122,7 @@ function OnEnd()
 	then
 		local wardSlot = bot:FindItemSlot(ItemWard:GetName())
 
-		if  wardSlot >= 0
+		if wardSlot >= 0
 		and wardSlot <= 5
 		then
 			local mostCostItem = FindMostItemSlot()
@@ -137,7 +137,7 @@ function OnEnd()
 end
 
 function Think()
-	if  GetGameState() ~= GAME_STATE_PRE_GAME
+	if GetGameState() ~= GAME_STATE_PRE_GAME
 	and GetGameState()~= GAME_STATE_GAME_IN_PROGRESS
 	then
 		return
@@ -193,7 +193,7 @@ function CountStealingUnit()
 	do
 		local member = GetTeamMember(i)
 
-		if  IsPlayerBot(id)
+		if IsPlayerBot(id)
 		and member ~= nil
 		and member.steal
 		then
@@ -211,7 +211,7 @@ function CountStealUnitNearLoc(loc, nRadius)
 	do
 		local member = GetTeamMember(i)
 
-		if  member ~= nil
+		if member ~= nil
 		and member.steal
 		and GetUnitToLocationDistance(member, loc) <= nRadius
 		then
@@ -228,7 +228,7 @@ function FindLeastItemSlot()
 
 	for i = 0,5
 	do
-		if  bot:GetItemInSlot(i) ~= nil
+		if bot:GetItemInSlot(i) ~= nil
 		and bot:GetItemInSlot(i):GetName() ~= 'item_aegis'
 		then
 			local item = bot:GetItemInSlot(i):GetName()
@@ -290,7 +290,7 @@ end
 function IsIBecameTheTarget(units)
 	for _, u in pairs(units)
 	do
-		if  u ~= nil
+		if u ~= nil
 		and u:IsAlive()
 		and u:CanBeSeen()
 		and u:GetAttackTarget() == bot
@@ -316,7 +316,7 @@ function IsEnemyCloserToWardLocation(wardLoc, botDist)
 		then
 			local dInfo = info[1]
 
-			if  dInfo ~= nil
+			if dInfo ~= nil
 			and dInfo.time_since_seen < 3.0
 			and J.GetDistance(dInfo.location, wardLoc) <  botDist
 			then
@@ -333,7 +333,7 @@ function GetItem(item_name)
 	do
 		local item = bot:GetItemInSlot(i)
 
-		if  item ~= nil
+		if item ~= nil
 		and item:GetName() == item_name
 		then
 			return item

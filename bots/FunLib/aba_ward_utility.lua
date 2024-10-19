@@ -6,8 +6,8 @@ local nVisionRadius = 1600
 
 -- Radiant Warding Spots
 -- Game Start
-local RADIANT_GAME_START_1 = Vector(-450, 456, 128) -- dire mid lane top left
-local RADIANT_GAME_START_1_2 = Vector(719, -369, 128) -- dire mid lane bot right
+local RADIANT_GAME_START_1 = Vector(-490, 302, 128) -- dire mid lane top left
+local RADIANT_GAME_START_1_2 = Vector(801, -401, 128) -- dire mid lane bot right
 local RADIANT_GAME_START_2 = Vector(-4000, 4000, 128) -- dire top river enterance besides the first left jungle.
 
 -- Laning Phase
@@ -17,8 +17,8 @@ local RADIANT_LANE_PHASE_3 = Vector(-3556, 6446, 128)
 
 -- Dire Warding Spots
 -- Game Start
-local DIRE_GAME_START_1 = Vector(57, -1335, 128) -- radiant mid lane bot right
-local DIRE_GAME_START_1_2 = Vector(-1337, -355, 128) -- radiant mid lane top left
+local DIRE_GAME_START_1 = Vector(-301, -1201, 128) -- radiant mid lane bot right
+local DIRE_GAME_START_1_2 = Vector(-1351, -361, 128) -- radiant mid lane top left
 local DIRE_GAME_START_2 = Vector(2026, -3003, 128) -- radiant bot river to jungle enterance
 
 -- Laning Phase
@@ -391,7 +391,7 @@ function X.GetItemWard(bot)
     do
 		local item = bot:GetItemInSlot(i)
 
-		if  item ~= nil
+		if item ~= nil
 		and (item:GetName() == 'item_ward_observer'
 			or (item:GetName() == 'item_ward_sentry' and IsPinged))
         then
@@ -411,7 +411,7 @@ function X.IsPingedByHumanPlayer(bot)
         then
 			local member = GetTeamMember(i)
 
-			if  member ~= nil
+			if member ~= nil
             and member:IsAlive()
             and GetUnitToUnitDistance(bot, member) < 1200
             then
@@ -425,7 +425,7 @@ function X.IsPingedByHumanPlayer(bot)
 
 				local wardSlot = member:FindItemSlot(wardType)
 
-				if  GetUnitToLocationDistance(bot, ping.location) <= 700
+				if GetUnitToLocationDistance(bot, ping.location) <= 700
                 and DotaTime() - ping.time < 5
                 and wardSlot == -1
 				and not ping.normal_ping
@@ -496,7 +496,7 @@ function X.IsOtherWardClose(wardLoc)
 
 	for _, ward in pairs(nWardList)
     do
-		if  X.IsWard(ward)
+		if X.IsWard(ward)
         and GetUnitToLocationDistance(ward, wardLoc) <= nVisionRadius
         then
 			return true
@@ -543,7 +543,7 @@ function X.GetHumanPing()
 	do
 		local member = GetTeamMember(id)
 
-		if  member ~= nil
+		if member ~= nil
         and not member:IsBot()
         then
 			return member:GetMostRecentPing()

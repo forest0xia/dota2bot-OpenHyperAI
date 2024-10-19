@@ -171,10 +171,14 @@ local MeatHookDesire, MeatHookLocation
 local RotDesire
 local MeatShieldDesire
 -- local EjectDesire
-local DismemberDesire, DismemberTarget
+local DismemberDesire, DismemberTarget, nEnemyHeroesNearRot, botTarget, nRotRadius
 
 function X.SkillsComplement()
     if J.CanNotUseAbility(bot) then return end
+
+	nRotRadius = Rot:GetSpecialValueInt('rot_radius')
+    nEnemyHeroesNearRot = J.GetNearbyHeroes(bot, nRotRadius + 50, true, BOT_MODE_NONE)
+    botTarget = J.GetProperTarget(bot)
 
     MeatHookDesire, MeatHookLocation = X.ConsiderMeatHook()
     if MeatHookDesire > 0
@@ -202,6 +206,7 @@ function X.SkillsComplement()
     then
         if Rot:IsTrained()
         and Rot:GetToggleState() == false
+        and #nEnemyHeroesNearRot >= 1
         then
             bot:Action_UseAbility(Rot)
         end
@@ -235,7 +240,6 @@ function X.ConsiderMeatHook()
 	local nRadius = MeatHook:GetSpecialValueInt('hook_width')
 	local nSpeed = MeatHook:GetSpecialValueInt('hook_speed')
 	local nDamage = MeatHook:GetSpecialValueInt('damage')
-    local botTarget = J.GetProperTarget(bot)
 
     local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
     for _, enemyHero in pairs(nEnemyHeroes)
@@ -478,16 +482,16 @@ function X.ConsiderRot()
         return BOT_ACTION_DESIRE_NONE
     end
 
-	local nRadius = Rot:GetSpecialValueInt('rot_radius')
-    local nEnemyHeroes = J.GetNearbyHeroes(bot,nRadius, true, BOT_MODE_NONE)
-    local botTarget = J.GetProperTarget(bot)
+    if Rot:GetToggleState() and #nEnemyHeroesNearRot <= 0 then
+        return BOT_ACTION_DESIRE_HIGH
+    end
 
     if J.IsGoingOnSomeone(bot)
     then
-        for _, enemyHero in pairs(nEnemyHeroes)
+        for _, enemyHero in pairs(nEnemyHeroesNearRot)
         do
             if J.IsValidHero(enemyHero)
-            and (J.CanCastOnNonMagicImmune(enemyHero) or #nEnemyHeroes >= 2)
+            and (J.CanCastOnNonMagicImmune(enemyHero) or #nEnemyHeroesNearRot >= 2)
             and not J.IsSuspiciousIllusion(enemyHero)
             and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
             and not enemyHero:HasModifier('modifier_dazzle_shallow_grave')
@@ -505,10 +509,10 @@ function X.ConsiderRot()
 
     if J.IsRetreating(bot)
     then
-        for _, enemyHero in pairs(nEnemyHeroes)
+        for _, enemyHero in pairs(nEnemyHeroesNearRot)
         do
             if J.IsValidHero(enemyHero)
-            and (J.CanCastOnNonMagicImmune(enemyHero) or #nEnemyHeroes >= 2)
+            and (J.CanCastOnNonMagicImmune(enemyHero) or #nEnemyHeroesNearRot >= 2)
             and not J.IsSuspiciousIllusion(enemyHero)
             and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
             and not enemyHero:HasModifier('modifier_necrolyte_reapers_scythe')
@@ -525,7 +529,7 @@ function X.ConsiderRot()
 
     if (J.IsPushing(bot) or J.IsDefending(bot))
     then
-        local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nRadius, true)
+        local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nRotRadius, true)
 
         if nEnemyLaneCreeps ~= nil
         then
@@ -549,7 +553,7 @@ function X.ConsiderRot()
 
     if J.IsFarming(bot)
     then
-        local nNeutralCreeps = bot:GetNearbyNeutralCreeps(nRadius)
+        local nNeutralCreeps = bot:GetNearbyNeutralCreeps(nRotRadius)
         if nNeutralCreeps ~= nil
         then
             if #nNeutralCreeps >= 1
@@ -569,7 +573,7 @@ function X.ConsiderRot()
             end
         end
 
-        local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nRadius, true)
+        local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nRotRadius, true)
         if nEnemyLaneCreeps ~= nil
         then
             if #nEnemyLaneCreeps >= 1
@@ -593,7 +597,7 @@ function X.ConsiderRot()
     if J.IsLaning(bot)
     and (J.IsCore(bot) or not J.IsCore(bot) and not J.IsThereCoreNearby(1200))
 	then
-        local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nRadius, true)
+        local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nRotRadius, true)
         local nInRangeEnemy = J.GetNearbyHeroes(bot,1200, true, BOT_MODE_NONE)
 
         if nEnemyLaneCreeps ~= nil
@@ -621,7 +625,7 @@ function X.ConsiderRot()
     then
         if J.IsRoshan(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
-        and J.IsInRange(bot, botTarget, nRadius)
+        and J.IsInRange(bot, botTarget, nRotRadius)
         and J.IsAttacking(bot)
         and J.GetHP(bot) > 0.4
         then
@@ -644,7 +648,7 @@ function X.ConsiderRot()
     if J.IsDoingTormentor(bot)
     then
         if J.IsTormentor(botTarget)
-        and J.IsInRange(bot, botTarget, nRadius)
+        and J.IsInRange(bot, botTarget, nRotRadius)
         and J.IsAttacking(bot)
         then
             if Rot:GetToggleState() == false
@@ -660,11 +664,6 @@ function X.ConsiderRot()
                 return BOT_ACTION_DESIRE_NONE
             end
         end
-    end
-
-    if Rot:GetToggleState() == true
-    then
-        return BOT_ACTION_DESIRE_HIGH
     end
 
     return BOT_ACTION_DESIRE_NONE

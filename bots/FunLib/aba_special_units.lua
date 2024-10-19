@@ -98,11 +98,11 @@ function X.GetDesire(bot__)
                 or string.find(unitName, 'clinkz_skeleton_archer')
                 then
                     if J.IsInRange(bot, unit, botAttackRange + 300) then
-                        return 0.80
+                        return 0.50
                     end
 
                     if #tEnemyHeroes == 0 then
-                        return 0.90
+                        return 0.60
                     end
                 end
 
@@ -212,7 +212,7 @@ function X.GetDesire(bot__)
                     and withinAttackRange
                     and botAttackDamage > unitHP and unitAttackDamage < botHealth
                     then
-                        return 0.9
+                        return 0.5
                     end
                 end
 
@@ -233,7 +233,7 @@ function X.GetDesire(bot__)
                     and withinAttackRange
                     and botAttackDamage > totalUnitHP and unitAttackDamage < botHealth
                     then
-                        return 0.9
+                        return 0.2
                     end
                 end
 

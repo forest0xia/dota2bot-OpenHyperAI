@@ -104,8 +104,8 @@ function Think()
 	nInRangeEnemy = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
 
 	ThinkIndividualRoaming() -- unit special abilities
-	-- ThinkActualRoamingInLanes()
 	ThinkGeneralRoaming() -- general items or conditions.
+	ThinkActualRoamingInLanes()
 end
 
 function ThinkIndividualRoaming()
@@ -256,52 +256,86 @@ function ThinkIndividualRoaming()
 
 	-- Primal Beast
 	if bot:HasModifier('modifier_primal_beast_trample') then
-		if J.IsInTeamFight(bot, 1600)
-		then
-			local target = nil
-			local hp = 0
-			for _, enemyHero in pairs(GetUnitList(UNIT_LIST_ENEMY_HEROES))
-			do
-				if J.IsValidHero(enemyHero)
-				and J.IsInRange(bot, enemyHero, 2200)
-				and J.CanBeAttacked(enemyHero)
-				and J.CanCastOnNonMagicImmune(enemyHero)
-				and not enemyHero:HasModifier('modifier_faceless_void_chronosphere_freeze')
-				and not enemyHero:HasModifier('modifier_necrolyte_reapers_scythe')
-				and hp < enemyHero:GetHealth()
+		local tAllyHeroes = J.GetAlliesNearLoc(bot:GetLocation(), 1200)
+		local tEnemyHeroes = J.GetEnemiesNearLoc(bot:GetLocation(), 1200)
+
+		if #tEnemyHeroes > #tAllyHeroes + 1
+		or (not J.WeAreStronger(bot, 800) and J.GetHP(bot) < 0.55)
+		or (#tEnemyHeroes > 0 and J.GetHP(bot) < 0.3) then
+			TrampleToBase()
+			return
+		end
+
+		-- bot.trample_status {1 - type, 2 - location, 3 - target, if any}
+		if bot.trample_status ~= nil and type(bot.trample_status) == "table" then
+			if bot.trample_status[1] == 'engaging' then
+				if J.IsValidHero(bot.trample_status[3]) then
+					DoTrample(bot.trample_status[3]:GetLocation())
+					return
+				elseif #tEnemyHeroes > 0 then
+					local target = nil
+					local hp = 0
+					for _, enemyHero in pairs(tEnemyHeroes) do
+						if J.IsValidHero(enemyHero)
+						and J.IsInRange(bot, enemyHero, 2200)
+						and J.CanBeAttacked(enemyHero)
+						and J.CanCastOnNonMagicImmune(enemyHero)
+						and not enemyHero:HasModifier('modifier_faceless_void_chronosphere_freeze')
+						and not enemyHero:HasModifier('modifier_necrolyte_reapers_scythe')
+						and hp < enemyHero:GetHealth()
+						then
+							hp = enemyHero:GetHealth()
+							target = enemyHero
+						end
+					end
+
+					if target ~= nil then
+						DoTrample(target:GetLocation())
+						return
+					end
+				else
+					if #tAllyHeroes >= #tEnemyHeroes and J.WeAreStronger(bot, 800) then
+						for _, ally in pairs(tAllyHeroes) do
+							if J.IsValidHero(ally) and not J.IsSuspiciousIllusion(ally) then
+								local allyTarget = ally:GetAttackTarget()
+								if J.IsValidHero(allyTarget) then
+									DoTrample(allyTarget:GetLocation())
+									return
+								end
+							end
+						end
+					end
+				end
+				-- TrampleToBase()
+				return
+			elseif bot.trample_status[1] == 'retreating' then
+				TrampleToBase()
+				return
+			elseif bot.trample_status[1] == 'farming' or bot.trample_status[1] == 'laning' then
+				local tCreeps = bot:GetNearbyCreeps(1200, true)
+				if J.IsValid(tCreeps[1]) and J.CanBeAttacked(tCreeps[1])
 				then
-					hp = enemyHero:GetHealth()
-					target = enemyHero
+					local nLocationAoE = bot:FindAoELocation(true, false, tCreeps[1]:GetLocation(), 0, 300, 0, 0)
+					if nLocationAoE.count > 0 then
+						DoTrample(nLocationAoE.targetloc)
+						return
+					end
+				else
+					TrampleToBase()
+					return
+				end
+			elseif bot.trample_status[1] == 'miniboss' then
+				if J.IsValid(bot.trample_status[3]) then
+					DoTrample(bot.trample_status[2])
+					return
+				else
+					TrampleToBase()
+					return
 				end
 			end
-
-			if target ~= nil
-			then
-				bot:ActionQueue_MoveToLocation(target:GetLocation() + RandomVector(200))
-				return
-			end
 		end
-
-		if J.IsRetreating(bot)
-		then
-			bot:ActionQueue_MoveToLocation(J.GetTeamFountain() + RandomVector(200))
-			return
-		end
-
-		local tEnemyHeroes = bot:GetNearbyHeroes(880, true, BOT_MODE_NONE)
-		if J.IsValidHero(tEnemyHeroes[1])
-		and not tEnemyHeroes[1]:HasModifier('modifier_faceless_void_chronosphere_freeze')
-		then
-			bot:ActionQueue_MoveToLocation(tEnemyHeroes[1]:GetLocation() + RandomVector(200))
-			return
-		end
-
-		local tCreeps = bot:GetNearbyCreeps(880, true)
-		if J.IsValid(tCreeps[1])
-		then
-			bot:ActionQueue_MoveToLocation(tCreeps[1]:GetLocation() + RandomVector(200))
-			return
-		end
+		TrampleToBase()
+		return
 	end
 
 	-- Phoenix
@@ -311,6 +345,63 @@ function ThinkIndividualRoaming()
 		then
 			bot:Action_MoveToLocation(bot.targetSunRay:GetLocation())
 			return
+		end
+	end
+
+	if bot:HasModifier('modifier_hoodwink_sharpshooter_windup') then
+		local Sharpshooter = bot:GetAbilityByName('hoodwink_sharpshooter')
+		local nCastRange = Sharpshooter:GetCastRange()
+
+		if J.IsValidHero(bot.sharpshooter_target) then
+			bot:Action_MoveToLocation(bot.sharpshooter_target:GetLocation())
+			return
+		else
+			local target = nil
+			local targetHealth = math.huge
+			for _, enemy in pairs(GetUnitList(UNIT_LIST_ENEMY_HEROES)) do
+				if J.IsValidHero(enemy)
+				and J.IsInRange(bot, enemy, nCastRange * 0.8)
+				and J.CanCastOnNonMagicImmune(enemy)
+				and not enemy:HasModifier('modifier_abaddon_borrowed_time')
+				and not enemy:HasModifier('modifier_dazzle_shallow_grave')
+				and not enemy:HasModifier('modifier_necrolyte_reapers_scythe')
+				and not enemy:HasModifier('modifier_item_aeon_disk_buff')
+				and not enemy:HasModifier('modifier_item_blade_mail_reflect')
+				then
+					local enemyHealth = enemy:GetHealth()
+					if enemyHealth < targetHealth then
+						targetHealth = enemyHealth
+						target = enemy
+					end
+				end
+			end
+
+			if target ~= nil then
+				bot:Action_MoveToLocation(target:GetLocation())
+				return
+			end
+
+			--
+			for i = 1, 5 do
+				local member = GetTeamMember(i)
+				if J.IsValidHero(member)
+				and J.IsInRange(bot, member, 1600)
+				then
+					local memberTarget = member:GetAttackTarget()
+					if J.IsValidHero(memberTarget)
+					and J.IsInRange(bot, memberTarget, nCastRange)
+					and J.CanCastOnNonMagicImmune(memberTarget)
+					and not memberTarget:HasModifier('modifier_abaddon_borrowed_time')
+					and not memberTarget:HasModifier('modifier_dazzle_shallow_grave')
+					and not memberTarget:HasModifier('modifier_necrolyte_reapers_scythe')
+					and not memberTarget:HasModifier('modifier_item_aeon_disk_buff')
+					and not memberTarget:HasModifier('modifier_item_blade_mail_reflect')
+					then
+						bot:Action_MoveToLocation(memberTarget:GetLocation())
+						return
+					end
+				end
+			end
 		end
 	end
 
@@ -497,7 +588,7 @@ function ThinkIndividualRoaming()
 	end
 
 	if botName == 'npc_dota_hero_nevermore' then
-		if J.Utils.isTruelyInvisible(bot) then
+		if J.Utils.IsTruelyInvisible(bot) then
 			local botTarget = J.GetProperTarget(bot)
 			if GetUnitToUnitDistance(bot, botTarget) > 400
 			then
@@ -506,6 +597,23 @@ function ThinkIndividualRoaming()
 			end
 		end
 	end
+end
+
+local trample_step = 12
+local trample = {}
+function DoTrample(vLoc)
+	trample = J.Utils.GetCirclarPointsAroundCenterPoint(vLoc, 300, 12)
+	if trample_step < 12 then
+		bot:Action_MoveToLocation(trample[trample_step])
+		trample_step = trample_step + 1
+	else
+		trample_step = 1
+	end
+end
+function TrampleToBase()
+	trample_step = 12
+	trample = {}
+	bot:Action_MoveToLocation(J.GetTeamFountain())
 end
 
 function ThinkGeneralRoaming()
@@ -640,9 +748,22 @@ function MoveAwayFromTarget(target, keepDistance)
 	end
 end
 
-function GankWithTwinGateDesire()
+function GankDesire()
 	if J.CanNotUseAction(bot) or bot:IsUsingAbility() or bot:IsChanneling() or not bot:IsAlive() or gateWarp == nil then return BOT_ACTION_DESIRE_NONE end
+	SetupTwinGates()
 
+	if J.IsInLaningPhase() then
+		local botLvl = bot:GetLevel()
+		if (J.GetPosition(bot) == 2 and botLvl >= 6 and J.GetHP(bot) > 0.7 and J.GetMP(bot) > 0.6) -- mid player roaming
+		or (J.GetPosition(bot) > 3 and botLvl >= 3 and J.GetHP(bot) > 0.6 and J.GetMP(bot) > 0.6) -- supports roaming
+		then
+			return CheckLaneToRoam()
+		end
+	end
+	return BOT_MODE_DESIRE_NONE
+end
+
+function SetupTwinGates()
 	if #TwinGates == 0 then
 		for _, unit in pairs(GetUnitList(UNIT_LIST_ALL))
 		do
@@ -655,16 +776,6 @@ function GankWithTwinGateDesire()
 			end
 		end
 	end
-
-	if J.IsInLaningPhase() then
-		local botLvl = bot:GetLevel()
-		if (J.GetPosition(bot) == 2 and botLvl >= 6) -- mid player roaming
-		or (J.GetPosition(bot) > 3 and botLvl >= 3) -- supports roaming
-		then
-			return CheckLaneToRoam()
-		end
-	end
-	return BOT_MODE_DESIRE_NONE
 end
 
 function ThinkActualRoamingInLanes()
@@ -929,7 +1040,7 @@ function ConsiderGeneralRoamingInConditions()
 		if not bot:WasRecentlyDamagedByAnyHero(1.5)
 		and (
 			(shouldGoBackToFountain and not IsInHealthyState())
-			or ((J.GetHP(bot) < 0.25 or (J.GetHP(bot) < 0.4 and J.GetMP(bot) < 0.3))
+			or ((J.GetHP(bot) < 0.22 or (J.GetHP(bot) < 0.3 and J.GetMP(bot) < 0.22))
 				and (not J.HasItem(bot, "item_tango") or not bot:HasModifier("modifier_tango_heal"))
 				and (not J.HasItem(bot, "item_flask") or not bot:HasModifier("modifier_flask_healing"))
 				and (not J.HasItem(bot, "item_bottle") or not bot:HasModifier("modifier_bottle_regeneration")))
@@ -1037,7 +1148,8 @@ function ConsiderGeneralRoamingInConditions()
 		end
 	end
 
-	return BOT_ACTION_DESIRE_NONE
+	return GankDesire()
+	-- return BOT_ACTION_DESIRE_NONE
 end
 
 function GetTargetEnemy(unitName)
@@ -1089,6 +1201,16 @@ ConsiderHeroSpecificRoaming['npc_dota_hero_tiny'] = function ()
 	return CheckHighPriorityChannelAbility("tiny_tree_channel")
 end
 
+ConsiderHeroSpecificRoaming['npc_dota_hero_hoodwink'] = function ()
+	if cAbility == nil then cAbility = bot:GetAbilityByName("hoodwink_sharpshooter") end
+	if cAbility:IsTrained()
+	then
+		if cAbility:IsInAbilityPhase() or bot:HasModifier('modifier_hoodwink_sharpshooter_windup') then
+			return BOT_MODE_DESIRE_ABSOLUTE
+		end
+	end
+end
+
 ConsiderHeroSpecificRoaming['npc_dota_hero_void_spirit'] = function ()
 	if cAbility == nil then cAbility = bot:GetAbilityByName("void_spirit_dissimilate") end
 	if cAbility:IsTrained()
@@ -1102,8 +1224,28 @@ ConsiderHeroSpecificRoaming['npc_dota_hero_void_spirit'] = function ()
 end
 
 ConsiderHeroSpecificRoaming['npc_dota_hero_primal_beast'] = function ()
-	if bot:HasModifier('modifier_primal_beast_trample') and J.GetHP(bot) > 0.4 then
-		return BOT_MODE_DESIRE_ABSOLUTE
+	cAbility = bot:GetAbilityByName("primal_beast_onslaught")
+	if cAbility:IsTrained()
+	then
+		if cAbility:IsInAbilityPhase() or bot:HasModifier('modifier_primal_beast_onslaught_windup') or bot:HasModifier('modifier_prevent_taunts') or bot:HasModifier('modifier_primal_beast_onslaught_movement_adjustable') then
+			return BOT_MODE_DESIRE_ABSOLUTE
+		end
+	end
+
+	cAbility = bot:GetAbilityByName("primal_beast_trample")
+	if cAbility:IsTrained()
+	then
+		if cAbility:IsInAbilityPhase() or (bot:HasModifier('modifier_primal_beast_trample') and J.GetHP(bot) > 0.3) then
+			return BOT_MODE_DESIRE_ABSOLUTE
+		end
+	end
+
+	cAbility = bot:GetAbilityByName("primal_beast_pulverize")
+	if cAbility:IsTrained()
+	then
+		if cAbility:IsInAbilityPhase() or bot:HasModifier('modifier_primal_beast_pulverize_self') then
+			return BOT_MODE_DESIRE_ABSOLUTE
+		end
 	end
 	return BOT_MODE_DESIRE_NONE
 end
@@ -1385,7 +1527,7 @@ end
 
 ConsiderHeroSpecificRoaming['npc_dota_hero_nevermore'] = function ()
 	bot.invisUltCombo = false
-	if J.Utils.isTruelyInvisible(bot)
+	if J.Utils.IsTruelyInvisible(bot)
 	and bot:GetAbilityByName("nevermore_requiem"):IsFullyCastable()
 	then
 		local botTarget = J.GetProperTarget(bot)

@@ -43,7 +43,10 @@ function X.GetDesire()
 	attackSpeed = bot:GetAttackSpeed()
 	timeToAttack = attackPoint -- / attackSpeed
 
-	if J.GetModifierTime(bot, "modifier_muerta_pierce_the_veil_buff") > 1
+	if (J.GetModifierTime(bot, "modifier_muerta_pierce_the_veil_buff") > 1
+	or bot:HasModifier("modifier_marci_unleash"))
+	and J.GetHP(bot) > 0.5
+	and #nEnemyHeroes >= 1
 	then
 		return BOT_MODE_DESIRE_VERYHIGH * 1.1
 	end
@@ -93,9 +96,19 @@ function X.GetDesire()
 	-- time to direct attack any creeps
 	if #nEnemyCreeps > 0 then
 		if J.IsInLaningPhase() then
+			for _, enemyCreep in pairs(nEnemyCreeps)
+			do
+				if J.IsValid(enemyCreep) and enemyCreep:GetHealth() < nAttackDamage * 1.5 then
+					return GetDesireBasedOnHp(nil)
+				end
+			end
+
 			if not J.IsCore(bot) and #nAllyHeroes > 1 then
 				return BOT_ACTION_DESIRE_NONE
 			end
+
+			-- humble in laning.
+			return BOT_ACTION_DESIRE_NONE
 		end
 		return GetDesireBasedOnHp(nil)
 	end
@@ -105,9 +118,9 @@ end
 
 function GetDesireBasedOnHp(target)
 	-- check if can/already hit by creeps
-	if target ~= nil
+	if J.IsValidHero(target)
 	and J.IsInLaningPhase()
-	and bot:WasRecentlyDamagedByCreep(2)
+	and bot:WasRecentlyDamagedByCreep(0.3)
 	and #nEnemyCreeps >= 3
 	and J.GetHP(bot) < J.GetHP(target) then
 		return BOT_ACTION_DESIRE_NONE

@@ -62,6 +62,7 @@ local numberAnnouncePrinted = 1
 local announcementGap = 6
 local hasPickedOneAnnouncer = false
 local checkGoFarmTimeGap = 5
+local botTarget = nil
 
 if bot.farmLocation == nil then bot.farmLocation = bot:GetLocation() end
 
@@ -70,6 +71,9 @@ function GetDesire()
 
 	PickOneAnnouncer()
 	AnnounceMessages()
+
+	botTarget = bot:GetAttackTarget()
+
 	if DotaTime() - ShouldGoFarmTime > checkGoFarmTimeGap then
 		IsShouldGoFarm = false
 	end
@@ -148,41 +152,6 @@ function GetDesire()
 		end
 	end
 
-	local numOfAliveEnemyHeroes = J.GetNumOfAliveHeroes(true)
-	-- 避免过早推2塔或者高地
-	if bot:GetLevel() < 10 and numOfAliveEnemyHeroes >= 3 then
-		if J.Utils.isNearEnemySecondTierTower(bot, 1500) then
-			return BOT_MODE_DESIRE_ABSOLUTE * 1.1;
-		end
-	elseif bot:GetLevel() < 15 and numOfAliveEnemyHeroes >= 3 then
-		if J.Utils.isNearEnemyHighGroundTower(bot, 1500) then
-			return BOT_MODE_DESIRE_ABSOLUTE * 1.1;
-		end
-	end
-
-	-- 如果在打高地 就别撤退去打钱了
-	if J.Utils.isTeamPushingSecondTierOrHighGround(bot) then
-		return BOT_MODE_DESIRE_NONE;
-	end
-
-	-- 如果在打推塔 就别撤退去打钱了
-	local nAllyList = J.GetNearbyHeroes(bot,1600,false,BOT_MODE_NONE);
-	local nEnemyTowers = bot:GetNearbyTowers(1200, true);
-	if #nAllyList >= 2 and nEnemyTowers ~= nil and #nEnemyTowers > 0 and GetUnitToLocationDistance(bot, nEnemyTowers[1]:GetLocation()) < 1300 then
-		return BOT_MODE_DESIRE_NONE;
-	end
-	-- 如果自己在上高，对面人活着，队友却不够，赶紧溜去farm
-	if IsShouldGoFarm or (#nAllyList <= 2 and #nAllyList <= numOfAliveEnemyHeroes
-	and J.IsCore(bot)
-	and (J.Utils.isNearEnemyHighGroundTower(bot, 2500) or J.Utils.isNearEnemySecondTierTower(bot, 2500))
-	and bot:GetActiveModeDesire() <= BOT_ACTION_DESIRE_HIGH) then
-		if DotaTime() - ShouldGoFarmTime >= checkGoFarmTimeGap then
-			IsShouldGoFarm = true
-			ShouldGoFarmTime = DotaTime()
-		end
-		return BOT_ACTION_DESIRE_ABSOLUTE * 0.98
-	end
-
 	if DotaTime() < 50 then return 0.0 end
 
 	if X.IsUnitAroundLocation(GetAncient(team):GetLocation(), 3000) then
@@ -194,33 +163,88 @@ function GetDesire()
 
 	if not J.Role.IsCampRefreshDone()
 	   and J.Role.GetAvailableCampCount() < J.Role.GetCampCount()
-	   and ( DotaTime() > 20 and  sec > 0 and sec < 2 )  
+	   and ( DotaTime() > 20 and  sec > 0 and sec < 2 )
 	then
 		J.Role['availableCampTable'], J.Role['campCount'] = J.Site.RefreshCamp(bot);
 		J.Role['hasRefreshDone'] = true;
 	end
-	
+
 	if J.Role.IsCampRefreshDone() and sec > 52
 	then
 		J.Role['hasRefreshDone'] = false;
 	end
-	
+
 	availableCamp = J.Role['availableCampTable'];
-	
+
+	if J.Utils.IsBotPushingTowerInDanger(bot)
+	and (J.IsCore(bot) and bot:GetNetWorth() < 18000)
+	and (botMode == BOT_MODE_PUSH_TOWER_BOT
+	or botMode == BOT_MODE_PUSH_TOWER_MID
+	or botMode == BOT_MODE_PUSH_TOWER_TOP
+	or bot:WasRecentlyDamagedByTower(3)
+	or J.Utils.IsValidBuilding(botTarget)) then
+		hLaneCreepList = nil
+		if preferedCamp == nil then preferedCamp = J.Site.GetClosestNeutralSpwan(bot, availableCamp) end;
+		return BOT_MODE_DESIRE_ABSOLUTE * 1.1;
+	end
+	local numOfAliveEnemyHeroes = J.GetNumOfAliveHeroes(true)
+	-- 避免过早推2塔或者高地
+	if bot:GetLevel() < 10 and numOfAliveEnemyHeroes >= 3 then
+		if J.Utils.IsNearEnemySecondTierTower(bot, 1500)
+		and (J.IsCore(bot) and bot:GetNetWorth() < 18000) then
+			hLaneCreepList = nil
+			if preferedCamp == nil then preferedCamp = J.Site.GetClosestNeutralSpwan(bot, availableCamp) end;
+			return BOT_MODE_DESIRE_ABSOLUTE * 1.1;
+		end
+	elseif bot:GetLevel() < 15 and numOfAliveEnemyHeroes >= 3 then
+		if J.Utils.IsNearEnemyHighGroundTower(bot, 1500)
+		and (J.IsCore(bot) and bot:GetNetWorth() < 18000) then
+			hLaneCreepList = nil
+			if preferedCamp == nil then preferedCamp = J.Site.GetClosestNeutralSpwan(bot, availableCamp) end;
+			return BOT_MODE_DESIRE_ABSOLUTE * 1.1;
+		end
+	end
+
+	-- 如果在打高地 就别撤退去打钱了
+	if J.Utils.IsTeamPushingSecondTierOrHighGround(bot) then
+		return BOT_MODE_DESIRE_NONE;
+	end
+
+	-- 如果在打推塔 就别撤退去打钱了
+	local nAllyList = J.GetNearbyHeroes(bot,1600,false,BOT_MODE_NONE);
+	local nEnemyTowers = bot:GetNearbyTowers(1200, true);
+	if #nAllyList >= 2 and nEnemyTowers ~= nil and #nEnemyTowers > 0 and GetUnitToLocationDistance(bot, nEnemyTowers[1]:GetLocation()) < 1300 then
+		return BOT_MODE_DESIRE_NONE;
+	end
+	-- 如果在上高，对面人活着，其他队友活着却不在附近，赶紧溜去其他地方farm
+	if IsShouldGoFarm or ((#nAllyList <= 2 or #nAllyList <= numOfAliveEnemyHeroes)
+	and (J.IsCore(bot) and bot:GetNetWorth() < 18000)
+	and (J.Utils.IsTeamPushingSecondTierOrHighGround(bot))
+	and bot:GetActiveModeDesire() <= BOT_ACTION_DESIRE_HIGH)
+	and #J.Utils.GetLastSeenEnemyIdsNearLocation(bot:GetLocation(), 2500) > 1 then
+		if DotaTime() - ShouldGoFarmTime >= checkGoFarmTimeGap then
+			IsShouldGoFarm = true
+			ShouldGoFarmTime = DotaTime()
+		end
+		hLaneCreepList = nil
+		if preferedCamp == nil then preferedCamp = J.Site.GetClosestNeutralSpwan(bot, availableCamp) end;
+		return BOT_ACTION_DESIRE_ABSOLUTE * 0.98
+	end
+
 	local hEnemyHeroList = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE);
 	local hNearbyAttackAllyHeroList  = J.GetNearbyHeroes(bot,1600, false,BOT_MODE_ATTACK);
-	
+
 	if #hEnemyHeroList > 0 or #hNearbyAttackAllyHeroList > 0
 	then
 		return BOT_MODE_DESIRE_NONE;
-	end	
+	end
 
 	local nAttackAllys = J.GetSpecialModeAllies(bot,1600,BOT_MODE_ATTACK);
 	if #nAttackAllys > 0 and (not beVeryHighFarmer or bot:GetLevel() >= 16)
 	then
 		return BOT_MODE_DESIRE_NONE;
-	end	
-	
+	end
+
 	local nRetreatAllyList = J.GetNearbyHeroes(bot,1600,false,BOT_MODE_RETREAT);
 	if J.IsValid(nRetreatAllyList[1]) and (not beVeryHighFarmer or bot:GetLevel() >= 16)
 	   and nRetreatAllyList[1]:GetActiveModeDesire() > BOT_MODE_DESIRE_HIGH
@@ -691,9 +715,9 @@ function Think()
 					end
 				end
 				
-				if hLaneCreepList[1] ~= nil 
-				   and not hLaneCreepList[1]:IsNull() 
-				   and hLaneCreepList[1]:IsAlive() 
+				if hLaneCreepList and hLaneCreepList[1]
+				   and not hLaneCreepList[1]:IsNull()
+				   and hLaneCreepList[1]:IsAlive()
 				then
 					bot:Action_MoveToLocation( hLaneCreepList[1]:GetLocation() );
 					return;
@@ -1007,7 +1031,7 @@ function X.ShouldRun(bot)
 		return 5;
 	end
 
-	if J.Utils.hasModifierContainsName(bot, "warlock_golem") then
+	if J.Utils.HasModifierContainsName(bot, "warlock_golem") then
 		local nUnits = GetUnitList(UNIT_LIST_ENEMIES)
 		for _, unit in pairs(nUnits)
 		do
@@ -1057,7 +1081,7 @@ function X.ShouldRun(bot)
 				return 4;
 			end
 		end
-		if  botLevel >= 9 and botLevel <= 17
+		if botLevel >= 9 and botLevel <= 17
 			and (enemyCount >= 3 or #hEnemyHeroList >= 3)
 			and botMode ~= BOT_MODE_LANING
 			and bot:GetCurrentMovementSpeed() > 300

@@ -65,7 +65,7 @@ function XP.UpdateXP(bot, team)
 
     xp = xp * timeMul
 
-    -- if    gameTime <=  5 * 60 then mul = 1
+    -- if   gameTime <=  5 * 60 then mul = 1
     -- elseif gameTime <= 10 * 60 then mul = 1.1
     -- elseif gameTime <= 15 * 60 then mul = 1.2
     -- elseif gameTime <= 20 * 60 then mul = 1.3

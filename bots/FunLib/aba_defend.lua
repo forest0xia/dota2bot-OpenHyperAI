@@ -19,7 +19,7 @@ function Defend.GetDefendDesire(bot, lane)
 	nInRangeAlly = J.GetNearbyHeroes(bot,1600,false,BOT_MODE_NONE)
 	nInRangeEnemy = J.GetLastSeenEnemiesNearLoc( bot:GetLocation(), 2200 )
 
-	if J.Utils.isTeamPushingSecondTierOrHighGround(bot) then
+	if J.Utils.IsTeamPushingSecondTierOrHighGround(bot) then
 		return BOT_MODE_DESIRE_NONE
 	end
 

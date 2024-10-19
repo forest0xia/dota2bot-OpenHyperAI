@@ -14,6 +14,8 @@ declare global {
 
     function GetTeam(): Team;
 
+    function IsHeroAlive(nPlayerID: number): boolean;
+
     function GetTeamPlayers(team: Team): number[];
 
     function GetTeamMember(playerNumberOnTeam: number): Unit | null;
@@ -31,6 +33,8 @@ declare global {
     function Vector(x: number, y: number, z: number): Vector;
 
     function DotaTime(): number;
+
+    function GetHeroLastSeenInfo(nPlayerID: number): LastSeenInfo[];
 
     function DebugDrawCircle(
         vCenter: Vector,
@@ -74,6 +78,11 @@ declare global {
             bString: string
         ): boolean;
         Send(callback: (result: any) => void): void;
+    }
+
+    interface LastSeenInfo {
+        location: Vector;
+        time_since_seen: number;
     }
 
     function CreateRemoteHTTPRequest(url: string): HTTPRequest;

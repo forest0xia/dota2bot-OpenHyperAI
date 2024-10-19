@@ -355,6 +355,24 @@ local dot = ____native_2Doperators.dot
 local length2D = ____native_2Doperators.length2D
 local multiply = ____native_2Doperators.multiply
 local sub = ____native_2Doperators.sub
+function ____exports.GetEnemyFountainTpPoint()
+    if GetTeam() == Team.Dire then
+        return ____exports.RadiantFountainTpPoint
+    end
+    return ____exports.DireFountainTpPoint
+end
+function ____exports.GetTeamFountainTpPoint()
+    if GetTeam() == Team.Dire then
+        return ____exports.DireFountainTpPoint
+    end
+    return ____exports.RadiantFountainTpPoint
+end
+function ____exports.IsValidUnit(target)
+    return target ~= nil and not target:IsNull() and target:CanBeSeen() and target:IsAlive() and not target:IsInvulnerable()
+end
+function ____exports.IsValidHero(target)
+    return ____exports.IsValidUnit(target) and target:IsHero()
+end
 function ____exports.GetLocationToLocationDistance(fLoc, sLoc)
     local x1 = fLoc.x
     local x2 = sLoc.x
@@ -391,8 +409,54 @@ function ____exports.projectPointOntoLine(startPoint, endPoint, point)
         multiply(lineDir, projectionLength)
     )
 end
+function ____exports.GetEnemyHeroByPlayerId(id)
+    for ____, hero in ipairs(GetUnitList(UnitType.EnemyHeroes)) do
+        if ____exports.IsValidHero(hero) and hero:GetPlayerID() == id then
+            return hero
+        end
+    end
+    return nil
+end
+function ____exports.GetLastSeenEnemyIdsNearLocation(vLoc, nDistance)
+    local enemies = {}
+    for ____, playerdId in ipairs(GetTeamPlayers(GetOpposingTeam())) do
+        do
+            local __continue198
+            repeat
+                if IsHeroAlive(playerdId) then
+                    local lastSeenInfo = GetHeroLastSeenInfo(playerdId)
+                    if lastSeenInfo ~= nil and lastSeenInfo[1] ~= nil then
+                        local firstInfo = lastSeenInfo[1]
+                        if ____exports.GetLocationToLocationDistance(firstInfo.location, vLoc) <= nDistance and firstInfo.time_since_seen <= 3 then
+                            enemies[#enemies + 1] = playerdId
+                            __continue198 = true
+                            break
+                        end
+                        if ____exports.GetLocationToLocationDistance(
+                            firstInfo.location,
+                            ____exports.GetEnemyFountainTpPoint()
+                        ) < ____exports.GetLocationToLocationDistance(
+                            firstInfo.location,
+                            ____exports.GetTeamFountainTpPoint()
+                        ) then
+                            local enemyHero = ____exports.GetEnemyHeroByPlayerId(playerdId)
+                            if enemyHero and enemyHero:HasModifier("modifier_teleporting") then
+                                enemies[#enemies + 1] = playerdId
+                            end
+                        end
+                    end
+                end
+                __continue198 = true
+            until true
+            if not __continue198 then
+                break
+            end
+        end
+    end
+    return enemies
+end
 require(GetScriptDirectory().."/ts_libs/utils/json")
-____exports.DebugMode = false
+____exports.DebugMode = true
 ____exports.ScriptID = 3246316298
 ____exports.RadiantFountainTpPoint = Vector(-7172, -6652, 384)
 ____exports.DireFountainTpPoint = Vector(6982, 6422, 392)
@@ -425,7 +489,18 @@ ____exports.HighGroundTowers = {
     Tower.Base1,
     Tower.Base2
 }
+____exports.FirstTierTowers = {Tower.Top1, Tower.Mid1, Tower.Bot1}
 ____exports.SecondTierTowers = {Tower.Top2, Tower.Mid2, Tower.Bot2}
+____exports.NonTier1Towers = {
+    Tower.Top2,
+    Tower.Mid2,
+    Tower.Bot2,
+    Tower.Top3,
+    Tower.Mid3,
+    Tower.Bot3,
+    Tower.Base1,
+    Tower.Base2
+}
 avoidanceZones = {}
 ____exports.GameStates = {defendPings = nil}
 ____exports.LoneDruid = {}
@@ -507,18 +582,6 @@ function ____exports.PrintAllAbilities(unit)
         end
     end
 end
-function ____exports.GetEnemyFountainTpPoint()
-    if GetTeam() == Team.Dire then
-        return ____exports.RadiantFountainTpPoint
-    end
-    return ____exports.DireFountainTpPoint
-end
-function ____exports.GetTeamFountainTpPoint()
-    if GetTeam() == Team.Dire then
-        return ____exports.DireFountainTpPoint
-    end
-    return ____exports.RadiantFountainTpPoint
-end
 function ____exports.Shuffle(tbl)
     do
         local i = #tbl - 1
@@ -595,12 +658,6 @@ function ____exports.IsPingedByAnyPlayer(bot, pingTimeGap, minDistance, maxDista
         end
     end
     return nil
-end
-function ____exports.IsValidUnit(target)
-    return target ~= nil and not target:IsNull() and target:CanBeSeen() and target:IsAlive() and not target:IsInvulnerable()
-end
-function ____exports.IsValidHero(target)
-    return ____exports.IsValidUnit(target) and target:IsHero()
 end
 function ____exports.IsValidCreep(target)
     return ____exports.IsValidUnit(target) and target:GetHealth() < 5000 and not target:IsHero() and (GetBot():GetLevel() > 9 or not target:IsAncientCreep())
@@ -929,18 +986,10 @@ function ____exports.IsAnyBarrackAttackByEnemyHero()
     end
     return nil
 end
-function ____exports.getEnemyHeroByPlayerId(id)
-    for ____, hero in ipairs(GetUnitList(UnitType.EnemyHeroes)) do
-        if ____exports.IsValidHero(hero) and hero:GetPlayerID() == id then
-            return hero
-        end
-    end
-    return nil
-end
-function ____exports.isTruelyInvisible(unit)
+function ____exports.IsTruelyInvisible(unit)
     return unit:IsInvisible() and not unit:HasModifier("modifier_item_dustofappearance") and not ____exports.RecentlyTookDamage(unit, 1.5)
 end
-function ____exports.hasModifierContainsName(unit, name)
+function ____exports.HasModifierContainsName(unit, name)
     if not ____exports.IsValidUnit(unit) then
         return false
     end
@@ -957,7 +1006,7 @@ function ____exports.hasModifierContainsName(unit, name)
     end
     return false
 end
-function ____exports.isNearEnemySecondTierTower(unit, range)
+function ____exports.IsNearEnemySecondTierTower(unit, range)
     for ____, towerId in ipairs(____exports.SecondTierTowers) do
         local tower = GetTower(
             GetOpposingTeam(),
@@ -969,7 +1018,40 @@ function ____exports.isNearEnemySecondTierTower(unit, range)
     end
     return false
 end
-function ____exports.isNearEnemyHighGroundTower(unit, range)
+function ____exports.GetEnemyIdsNearNonTier1Towers(range)
+    local result = {}
+    for ____, towerId in ipairs(____exports.NonTier1Towers) do
+        local tower = GetTower(
+            GetTeam(),
+            towerId
+        )
+        if tower ~= nil and ____exports.IsValidBuilding(tower) then
+            local eIds = ____exports.GetLastSeenEnemyIdsNearLocation(
+                tower:GetLocation(),
+                range
+            )
+            result[towerId] = {tower = tower, enemyIds = eIds}
+        end
+    end
+    return result
+end
+function ____exports.GetNonTier1TowerWithLeastEnemiesAround(range)
+    local towerEneCounts = ____exports.GetEnemyIdsNearNonTier1Towers(range)
+    local minCount = 999
+    local minCountTower = nil
+    for ____, towerId in ipairs(____exports.NonTier1Towers) do
+        local te = towerEneCounts[towerId]
+        if te ~= nil and #te.enemyIds <= minCount then
+            minCountTower = te.tower
+            minCount = #te.enemyIds
+        end
+    end
+    if minCount ~= 0 then
+        return minCountTower
+    end
+    return nil
+end
+function ____exports.IsNearEnemyHighGroundTower(unit, range)
     for ____, towerId in ipairs(____exports.HighGroundTowers) do
         local tower = GetTower(
             GetOpposingTeam(),
@@ -981,7 +1063,103 @@ function ____exports.isNearEnemyHighGroundTower(unit, range)
     end
     return false
 end
-function ____exports.isTeamPushingSecondTierOrHighGround(bot)
-    return #bot:GetNearbyHeroes(1600, false, BotMode.None) > 2 and (____exports.isNearEnemySecondTierTower(bot, 2500) or ____exports.isNearEnemyHighGroundTower(bot, 2500))
+function ____exports.IsTeamPushingSecondTierOrHighGround(bot)
+    return #bot:GetNearbyHeroes(1600, false, BotMode.None) > 2 and (____exports.IsNearEnemySecondTierTower(bot, 2500) or ____exports.IsNearEnemyHighGroundTower(bot, 2500))
+end
+function ____exports.GetNumOfAliveHeroes(bEnemy)
+    local count = 0
+    local nTeam = GetTeam()
+    if bEnemy then
+        nTeam = GetOpposingTeam()
+    end
+    for ____, playerdId in ipairs(GetTeamPlayers(nTeam)) do
+        if IsHeroAlive(playerdId) then
+            count = count + 1
+        end
+    end
+    return count
+end
+function ____exports.CountMissingEnemyHeroes()
+    local count = 0
+    for ____, playerdId in ipairs(GetTeamPlayers(GetOpposingTeam())) do
+        do
+            local __continue186
+            repeat
+                if IsHeroAlive(playerdId) then
+                    local lastSeenInfo = GetHeroLastSeenInfo(playerdId)
+                    if lastSeenInfo ~= nil and lastSeenInfo[1] ~= nil then
+                        local firstInfo = lastSeenInfo[1]
+                        if firstInfo.time_since_seen >= 2.5 then
+                            count = count + 1
+                            __continue186 = true
+                            break
+                        end
+                        local enemyHero = ____exports.GetEnemyHeroByPlayerId(playerdId)
+                        if enemyHero and enemyHero:HasModifier("modifier_teleporting") then
+                            count = count + 1
+                        end
+                    end
+                end
+                __continue186 = true
+            until true
+            if not __continue186 then
+                break
+            end
+        end
+    end
+    return count
+end
+function ____exports.FindAllyWithAtLeastDistanceAway(bot, nDistance)
+    if bot:GetTeam() ~= GetTeam() then
+        print("[ERROR] Wrong usage of the method")
+        return nil
+    end
+    local teamPlayers = GetTeamPlayers(GetTeam())
+    for ____, ____value in __TS__Iterator(__TS__ArrayEntries(teamPlayers)) do
+        local index = ____value[1]
+        local _ = ____value[2]
+        local teamMember = GetTeamMember(index)
+        if teamMember ~= nil and teamMember:IsAlive() and GetUnitToUnitDistance(teamMember, bot) >= nDistance then
+            return teamMember
+        end
+    end
+    return nil
+end
+function ____exports.IsBotPushingTowerInDanger(bot)
+    local enemyTowerNearby = #bot:GetNearbyTowers(1100, true) >= 1
+    if not enemyTowerNearby then
+        return false
+    end
+    local nearbyAllies = bot:GetNearbyHeroes(1600, false, BotMode.None)
+    local countAliveEnemies = ____exports.GetNumOfAliveHeroes(true)
+    if enemyTowerNearby and #nearbyAllies < countAliveEnemies then
+        return true
+    end
+    local nearbyEnemy = ____exports.GetLastSeenEnemyIdsNearLocation(
+        bot:GetLocation(),
+        2000
+    )
+    if enemyTowerNearby and #nearbyEnemy >= #nearbyAllies then
+        return true
+    end
+    return false
+end
+function ____exports.GetCirclarPointsAroundCenterPoint(vCenter, nRadius, numPoints)
+    local points = {vCenter}
+    local angleStep = 360 / numPoints
+    do
+        local i = 1
+        while i <= numPoints do
+            local angleRad = angleStep * i * (math.pi / 180)
+            local point = Vector(
+                vCenter.x + nRadius * math.cos(angleRad),
+                vCenter.y + nRadius * math.sin(angleRad),
+                vCenter.z
+            )
+            points[#points + 1] = point
+            i = i + 1
+        end
+    end
+    return points
 end
 return ____exports

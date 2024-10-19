@@ -43,48 +43,50 @@ local sRoleItemsBuyList = {}
 
 sRoleItemsBuyList['pos_2'] = {
     "item_tango",
-	"item_enchanted_mango",
-	"item_enchanted_mango",
-	"item_enchanted_mango",
-	"item_clarity",
-	"item_clarity",
-	"item_flask",
-	"item_faerie_fire",
-	"item_quelling_blade",
+    "item_double_branches",
+    "item_faerie_fire",
+    "item_quelling_blade",
 
-    "item_tranquil_boots",
     "item_bottle",
+    "item_phase_boots",
+    "item_magic_wand",
     "item_blade_mail",
-    "item_vanguard",
-    "item_talisman_of_evasion",
-    "item_radiance", -- ks = more gold
-    "item_kaya_and_sange",
-    "item_heart",
-    "item_crimson_guard",
-    "item_boots_of_bearing",
+    "item_radiance",--
+    "item_black_king_bar",--
+    "item_blink",
+    "item_veil_of_discord",
+    "item_shivas_guard",--
+    "item_heart",--
+    "item_travel_boots",
+    "item_overwhelming_blink",--
+    "item_travel_boots_2",--
     "item_aghanims_shard",
-    "item_ultimate_scepter_2",
     "item_moon_shard",
+    "item_ultimate_scepter",
+    "item_ultimate_scepter_2",
 }
 
 sRoleItemsBuyList['pos_3'] = {
     "item_tango",
     "item_double_branches",
+    "item_quelling_blade",
     "item_magic_stick",
 
+    "item_bracer",
     "item_magic_wand",
-    "item_tranquil_boots",
-    "item_talisman_of_evasion",
-    "item_radiance", -- ks = more gold
+    "item_phase_boots",
     "item_blade_mail",
-    "item_vanguard",
-    "item_kaya_and_sange",
-    "item_heart",
-    "item_crimson_guard",
-    "item_boots_of_bearing",
+    "item_radiance",--
+    "item_veil_of_discord",
+    "item_crimson_guard",--
+    "item_black_king_bar",--
+    "item_lotus_orb",--
+    "item_shivas_guard",--
+    "item_travel_boots",
     "item_aghanims_shard",
-    "item_ultimate_scepter_2",
+    "item_travel_boots_2",--
     "item_moon_shard",
+    "item_ultimate_scepter_2",
 }
 
 sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
@@ -327,139 +329,115 @@ end
 
 function X.ConsiderW()
     if not Trample:IsFullyCastable()
+    or bot:IsRooted()
     then
         return BOT_ACTION_DESIRE_NONE
     end
 
+    local nRadius = Trample:GetSpecialValueInt('effect_radius')
+    local nDuration = Trample:GetSpecialValueFloat('duration')
+    local nBaseDamage = Trample:GetSpecialValueInt('base_damage')
+    local botTarget = J.GetProperTarget(bot)
+
+    local nEnemyHeroes = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+    local nEnemyTowers = bot:GetNearbyTowers(1600, true)
+
     if J.IsGoingOnSomeone(bot)
-    then
-        for _, enemyHero in pairs(bysideEnemeyHeroes)
-        do
-            if J.IsValidHero(enemyHero)
-            and (J.CanCastOnNonMagicImmune(enemyHero) or #bysideEnemeyHeroes >= 2)
-            and J.IsInRange(bot, enemyHero, nTrampleRadius)
-            and not J.IsSuspiciousIllusion(enemyHero)
-            and not J.HasMovableUndyingModifier(enemyHero, 0.1)
-            then
-                return BOT_ACTION_DESIRE_HIGH
-            end
-        end
-    end
-
-    if J.IsRetreating(bot)
-    then
-        for _, enemyHero in pairs(bysideEnemeyHeroes)
-        do
-            if J.IsValidHero(enemyHero)
-            and bot:GetMana() > (bot:GetMaxMana() / 3) --and J.IsInRange(bot, enemyHero, nTrampleRadius) -- free magic resist while escaping + anti body block
-            and (J.CanCastOnNonMagicImmune(enemyHero) or #bysideEnemeyHeroes >= 2)
-            and not J.IsSuspiciousIllusion(enemyHero)
-            and not J.HasMovableUndyingModifier(enemyHero, 0.1)
-            then
-                return BOT_ACTION_DESIRE_HIGH
-            end
-        end
-    end
-
-    --[[if J.IsPushing(bot) or J.IsDefending(bot)
-    then
-        local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nTrampleRadius, true)
-
-        if nEnemyLaneCreeps ~= nil
-        then
-            if #nEnemyLaneCreeps >= 1
-            and J.IsAttacking(bot)
-            and J.GetHP(bot) > 0.2
-            then
-                return BOT_ACTION_DESIRE_HIGH
-            end
-        end
-    end
-
-    if J.IsFarming(bot)
-    then
-        local nNeutralCreeps = bot:GetNearbyNeutralCreeps(nTrampleRadius)
-        if nNeutralCreeps ~= nil
-        then
-            if #nNeutralCreeps >= 1
-            and J.IsAttacking(bot)
-            and J.GetHP(bot) > 0.35
-            then
-                return BOT_ACTION_DESIRE_HIGH
-            else
-                if J.GetHP(bot) < 0.35
-                then
-                    return BOT_ACTION_DESIRE_HIGH
-                end
-
-                return BOT_ACTION_DESIRE_NONE
-            end
-        end
-
-        local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nTrampleRadius, true)
-        if nEnemyLaneCreeps ~= nil
-        then
-            if #nEnemyLaneCreeps >= 1
-            and J.IsAttacking(bot)
-            and J.GetHP(bot) > 0.2
-            then
-                return BOT_ACTION_DESIRE_HIGH
-            else
-                if J.GetHP(bot) < 0.2
-                then
-                    return BOT_ACTION_DESIRE_HIGH
-                end
-
-                return BOT_ACTION_DESIRE_NONE
-            end
-        end
-    end
-
-    if J.IsLaning(bot)
 	then
-        local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nTrampleRadius, true)
-
-        if nEnemyLaneCreeps ~= nil
-        and bysideEnemeyHeroes ~= nil and #bysideEnemeyHeroes <= 2
+        if J.IsValidHero(botTarget)
+        and J.CanBeAttacked(botTarget)
+        and J.IsInRange(bot, botTarget, nRadius)
+        and not botTarget:HasModifier('modifier_abaddon_borrowed_time')
+        and not botTarget:HasModifier('modifier_dazzle_shallow_grave')
+        and not botTarget:HasModifier('modifier_necrolyte_reapers_scythe')
+        and not botTarget:HasModifier('modifier_oracle_false_promise_timer')
         then
-            if #nEnemyLaneCreeps >= 1
-            and J.IsAttacking(bot)
-            then
-                return BOT_ACTION_DESIRE_HIGH
-            end
+            bot.trample_status = {'engaging', botTarget:GetLocation(), botTarget}
+            return BOT_ACTION_DESIRE_HIGH
         end
 	end
 
-    if J.IsDoingRoshan(bot)
+    if J.IsRetreating(bot)
+    and not J.IsRealInvisible(bot)
+    and bot:WasRecentlyDamagedByAnyHero(3)
     then
-        if J.IsRoshan(botTarget)
-        and J.CanCastOnNonMagicImmune(botTarget)
-        and J.IsInRange(bot, botTarget, nTrampleRadius)
+        if J.IsValidHero(nEnemyHeroes[1])
+        and J.CanBeAttacked(botTarget)
+        and J.IsInRange(bot, botTarget, nRadius)
+        then
+            bot.trample_status = {'retreating', J.GetTeamFountain(), nil}
+            return BOT_ACTION_DESIRE_HIGH
+        end
+    end
+
+    local nCreeps = bot:GetNearbyCreeps(800, true)
+    local nAllyHeroes = J.GetAlliesNearLoc(bot:GetLocation(), 800)
+
+    if (J.IsFarming(bot) or (J.IsPushing(bot) and #nAllyHeroes <= 1) or J.IsDefending(bot)) and J.GetManaAfter(Trample:GetManaCost()) > 0.35 then
+        if J.IsValid(nCreeps[1])
+        and ((#nCreeps >= 3 and not J.HasItem(bot, 'item_radiance')) or #nCreeps >= 2 and nCreeps[1]:IsAncientCreep())
+        and not J.IsRunning(nCreeps[1])
+        and J.CanBeAttacked(nCreeps[1])
         and J.IsAttacking(bot)
         then
-            if J.GetHP(bot) > 0.4
-            then
+            bot.trample_status = {'farming', 0, nil}
+            return BOT_ACTION_DESIRE_HIGH
+        end
+    end
+
+    if J.IsLaning(bot) and #nEnemyHeroes == 0 then
+        if #nCreeps >= 3
+        and J.IsValid(nCreeps[1])
+        and not J.IsRunning(nCreeps[1])
+        and J.CanBeAttacked(nCreeps[1])
+        and J.IsAttacking(bot)
+        then
+            if #nEnemyTowers == 0
+            or J.IsValidBuilding(nEnemyTowers[1]) and GetUnitToUnitDistance(nCreeps[1], nEnemyTowers[1]) > 900 then
+                bot.trample_status = {'laning', 0, nil}
                 return BOT_ACTION_DESIRE_HIGH
             end
         end
     end
 
-    if J.IsDoingTormentor(bot)
-    then
-        if J.IsTormentor(botTarget)
-        and J.IsInRange(bot, botTarget, nTrampleRadius)
+    for _, enemyHero in pairs(nEnemyHeroes) do
+        if J.IsValidHero(enemyHero)
+        and not enemyHero:IsInvulnerable()
+        and J.IsInRange(bot, enemyHero, nRadius)
+        and J.CanKillTarget(enemyHero, nBaseDamage * nDuration, DAMAGE_TYPE_PHYSICAL)
+        and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
+        and not enemyHero:HasModifier('modifier_dazzle_shallow_grave')
+        and not enemyHero:HasModifier('modifier_necrolyte_reapers_scythe')
+        and not enemyHero:HasModifier('modifier_oracle_false_promise_timer')
+        then
+            bot.trample_status = {'engaging', enemyHero:GetLocation(), enemyHero}
+            return BOT_ACTION_DESIRE_HIGH
+        end
+    end
+
+    if J.IsDoingRoshan(bot) then
+        if J.IsRoshan(botTarget)
+        and not botTarget:IsAttackImmune()
+        and J.IsInRange(bot, botTarget, nRadius)
         and J.IsAttacking(bot)
         then
-            if J.GetHP(bot) > 0.4
-            then
-                return BOT_ACTION_DESIRE_HIGH
-            end
+            bot.trample_status = {'miniboss', botTarget:GetLocation(), botTarget}
+            return BOT_ACTION_DESIRE_HIGH
         end
-    end]]--
+    end
+
+    if J.IsDoingTormentor(bot) then
+        if J.IsTormentor(botTarget)
+        and J.IsInRange(bot, botTarget, nRadius)
+        and J.IsAttacking(bot)
+        then
+            bot.trample_status = {'miniboss', botTarget:GetLocation(), botTarget}
+            return BOT_ACTION_DESIRE_HIGH
+        end
+    end
 
     return BOT_ACTION_DESIRE_NONE
 end
-
 
 function X.ConsiderE()
     if not Uproar:IsFullyCastable()
@@ -540,6 +518,7 @@ function X.ConsiderR()
 		if J.IsValidTarget(weakestTarget)
 		and not J.IsSuspiciousIllusion(weakestTarget)
         and not J.HasMovableUndyingModifier(weakestTarget, 0.1)
+        and J.GetHP(bot) > 0.3
 		then
             if nInRangeAlly ~= nil and nEnemyHeroes ~= nil
             and #nEnemyHeroes > #nInRangeAlly

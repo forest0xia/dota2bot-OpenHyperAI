@@ -22,7 +22,7 @@ local NoTormentorAfterThisTime = 35 * 60 -- do not do tormentor again since it's
 function GetDesire()
 
 	-- 如果在打高地 就别撤退去干别的
-	if J.Utils.isTeamPushingSecondTierOrHighGround(bot) then
+	if J.Utils.IsTeamPushingSecondTierOrHighGround(bot) then
 		return BOT_MODE_DESIRE_NONE
 	end
 

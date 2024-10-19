@@ -72,7 +72,20 @@ export const HighGroundTowers = [
     Tower.Base2,
 ];
 
+export const FirstTierTowers = [Tower.Top1, Tower.Mid1, Tower.Bot1];
+
 export const SecondTierTowers = [Tower.Top2, Tower.Mid2, Tower.Bot2];
+
+export const NonTier1Towers = [
+    Tower.Top2,
+    Tower.Mid2,
+    Tower.Bot2,
+    Tower.Top3,
+    Tower.Mid3,
+    Tower.Bot3,
+    Tower.Base1,
+    Tower.Base2,
+];
 
 // Global array to store avoidance zones
 let avoidanceZones: AvoidanceZone[] = [];
@@ -757,7 +770,7 @@ export function IsAnyBarrackAttackByEnemyHero(): Unit | null {
     return null;
 }
 
-export function getEnemyHeroByPlayerId(id: number): Unit | null {
+export function GetEnemyHeroByPlayerId(id: number): Unit | null {
     for (const hero of GetUnitList(UnitType.EnemyHeroes)) {
         if (IsValidHero(hero) && hero.GetPlayerID() == id) {
             return hero;
@@ -766,7 +779,7 @@ export function getEnemyHeroByPlayerId(id: number): Unit | null {
     return null;
 }
 
-export function isTruelyInvisible(unit: Unit): boolean {
+export function IsTruelyInvisible(unit: Unit): boolean {
     return (
         unit.IsInvisible() &&
         !unit.HasModifier("modifier_item_dustofappearance") &&
@@ -774,7 +787,7 @@ export function isTruelyInvisible(unit: Unit): boolean {
     ); // use 1.5s because invisibility may have delayed effect.
 }
 
-export function hasModifierContainsName(unit: Unit, name: string): boolean {
+export function HasModifierContainsName(unit: Unit, name: string): boolean {
     if (!IsValidUnit(unit)) {
         return false;
     }
@@ -788,7 +801,7 @@ export function hasModifierContainsName(unit: Unit, name: string): boolean {
     return false;
 }
 
-export function isNearEnemySecondTierTower(unit: Unit, range: number): boolean {
+export function IsNearEnemySecondTierTower(unit: Unit, range: number): boolean {
     for (const towerId of SecondTierTowers) {
         const tower = GetTower(GetOpposingTeam(), towerId);
         if (
@@ -802,7 +815,45 @@ export function isNearEnemySecondTierTower(unit: Unit, range: number): boolean {
     return false;
 }
 
-export function isNearEnemyHighGroundTower(unit: Unit, range: number): boolean {
+export function GetEnemyIdsNearNonTier1Towers(range: number) {
+    let result = {} as { [key: number]: { tower: Unit; enemyIds: number[] } };
+    for (const towerId of NonTier1Towers) {
+        const tower = GetTower(GetTeam(), towerId);
+        if (tower !== null && IsValidBuilding(tower)) {
+            const eIds = GetLastSeenEnemyIdsNearLocation(
+                tower.GetLocation(),
+                range
+            );
+            result[towerId] = {
+                tower: tower,
+                enemyIds: eIds,
+            };
+        }
+    }
+    return result;
+}
+
+export function GetNonTier1TowerWithLeastEnemiesAround(
+    range: number
+): Unit | null {
+    const towerEneCounts = GetEnemyIdsNearNonTier1Towers(range);
+    let minCount = 999;
+    let minCountTower = null;
+    for (const towerId of NonTier1Towers) {
+        const te = towerEneCounts[towerId];
+        if (te !== null && te.enemyIds.length <= minCount) {
+            minCountTower = te.tower;
+            minCount = te.enemyIds.length;
+        }
+    }
+    // if 0, no enemy near those towers anymore.
+    if (minCount != 0) {
+        return minCountTower;
+    }
+    return null;
+}
+
+export function IsNearEnemyHighGroundTower(unit: Unit, range: number): boolean {
     for (const towerId of HighGroundTowers) {
         const tower = GetTower(GetOpposingTeam(), towerId);
         if (
@@ -816,10 +867,159 @@ export function isNearEnemyHighGroundTower(unit: Unit, range: number): boolean {
     return false;
 }
 
-export function isTeamPushingSecondTierOrHighGround(bot: Unit): boolean {
+export function IsTeamPushingSecondTierOrHighGround(bot: Unit): boolean {
     return (
         bot.GetNearbyHeroes(1600, false, BotMode.None).length > 2 &&
-        (isNearEnemySecondTierTower(bot, 2500) ||
-            isNearEnemyHighGroundTower(bot, 2500))
+        (IsNearEnemySecondTierTower(bot, 2500) ||
+            IsNearEnemyHighGroundTower(bot, 2500))
     );
+}
+
+export function GetNumOfAliveHeroes(bEnemy: boolean): number {
+    let count = 0;
+    let nTeam = GetTeam();
+    if (bEnemy) {
+        nTeam = GetOpposingTeam();
+    }
+    for (let playerdId of GetTeamPlayers(nTeam)) {
+        if (IsHeroAlive(playerdId)) {
+            count += 1;
+        }
+    }
+
+    // print(`count alive hero for enemy: ${bEnemy} is ${count}`);
+    return count;
+}
+
+export function CountMissingEnemyHeroes(): number {
+    let count = 0;
+    for (let playerdId of GetTeamPlayers(GetOpposingTeam())) {
+        if (IsHeroAlive(playerdId)) {
+            const lastSeenInfo = GetHeroLastSeenInfo(playerdId);
+            if (lastSeenInfo !== null && lastSeenInfo[0] !== null) {
+                const firstInfo = lastSeenInfo[0];
+                if (firstInfo.time_since_seen >= 2.5) {
+                    count += 1;
+                    continue;
+                }
+                const enemyHero = GetEnemyHeroByPlayerId(playerdId);
+                if (
+                    enemyHero &&
+                    enemyHero.HasModifier("modifier_teleporting")
+                ) {
+                    count += 1;
+                }
+            }
+        }
+    }
+    // print(`count missing alive hero for enemy: ${count}`);
+    return count;
+}
+
+export function FindAllyWithAtLeastDistanceAway(bot: Unit, nDistance: number) {
+    if (bot.GetTeam() !== GetTeam()) {
+        print("[ERROR] Wrong usage of the method");
+        return null;
+    }
+
+    const teamPlayers = GetTeamPlayers(GetTeam());
+    for (const [index, _] of teamPlayers.entries()) {
+        const teamMember = GetTeamMember(index);
+        if (
+            teamMember !== null &&
+            teamMember.IsAlive() &&
+            GetUnitToUnitDistance(teamMember, bot) >= nDistance
+        ) {
+            return teamMember;
+        }
+    }
+    return null;
+}
+
+export function GetLastSeenEnemyIdsNearLocation(
+    vLoc: Vector,
+    nDistance: number
+): number[] {
+    const enemies = [];
+    for (let playerdId of GetTeamPlayers(GetOpposingTeam())) {
+        if (IsHeroAlive(playerdId)) {
+            const lastSeenInfo = GetHeroLastSeenInfo(playerdId);
+            if (lastSeenInfo !== null && lastSeenInfo[0] !== null) {
+                const firstInfo = lastSeenInfo[0];
+                if (
+                    GetLocationToLocationDistance(firstInfo.location, vLoc) <=
+                        nDistance &&
+                    firstInfo.time_since_seen <= 3
+                ) {
+                    enemies.push(playerdId);
+                    continue;
+                }
+
+                // could be TPing to here
+                if (
+                    GetLocationToLocationDistance(
+                        firstInfo.location,
+                        GetEnemyFountainTpPoint()
+                    ) <
+                    GetLocationToLocationDistance(
+                        firstInfo.location,
+                        GetTeamFountainTpPoint()
+                    )
+                ) {
+                    const enemyHero = GetEnemyHeroByPlayerId(playerdId);
+                    if (
+                        enemyHero &&
+                        enemyHero.HasModifier("modifier_teleporting")
+                    ) {
+                        enemies.push(playerdId);
+                    }
+                }
+            }
+        }
+    }
+    return enemies;
+}
+
+export function IsBotPushingTowerInDanger(bot: Unit): boolean {
+    const enemyTowerNearby = bot.GetNearbyTowers(1100, true).length >= 1; // want to come a bit closer to the tower and be cautious while seducing enemy to defend.
+    if (!enemyTowerNearby) {
+        return false;
+    }
+
+    const nearbyAllies = bot.GetNearbyHeroes(1600, false, BotMode.None);
+    const countAliveEnemies = GetNumOfAliveHeroes(true);
+    if (enemyTowerNearby && nearbyAllies.length < countAliveEnemies) {
+        return true;
+    }
+
+    // const missingEnemeyHeroes = CountMissingEnemyHeroes();
+    const nearbyEnemy = GetLastSeenEnemyIdsNearLocation(
+        bot.GetLocation(),
+        2000
+    );
+    if (enemyTowerNearby && nearbyEnemy.length >= nearbyAllies.length) {
+        return true;
+    }
+    return false;
+}
+
+export function GetCirclarPointsAroundCenterPoint(
+    vCenter: Vector,
+    nRadius: number,
+    numPoints: number
+): Vector[] {
+    const points: Vector[] = [vCenter];
+    const angleStep = 360 / numPoints;
+
+    for (let i = 1; i <= numPoints; i++) {
+        const angleRad = angleStep * i * (Math.PI / 180); // Convert degrees to radians
+        const point: Vector = Vector(
+            vCenter.x + nRadius * Math.cos(angleRad),
+            vCenter.y + nRadius * Math.sin(angleRad),
+            vCenter.z
+        );
+        points.push(point);
+    }
+
+    return points;
 }

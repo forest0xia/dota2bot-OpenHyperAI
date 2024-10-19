@@ -98,7 +98,10 @@ function GetPositionedPool(heroPosMap, position)
     for heroName, roleWeights in pairs(heroPosMap) do
         local weight = roleWeights[position]
         if weight > RandomInt(5, ROLE_WEIGHT_THRESHOLD) then
-            table.insert(heroList, {name = heroName, weight = weight})
+			if not Utils.HasValue(WeakHeroes, heroName)
+			or RandomInt(1, 10) > 7 then
+				table.insert(heroList, {name = heroName, weight = weight})
+			end
         end
     end
     -- Sort the list by weight in descending order
@@ -498,7 +501,7 @@ function AllPickHeros()
 			sSelectHero = sSelectList[i]
 
 			-- Give a chance to pick counter/synergy heroes
-			if not UseCustomizedPicks and RandomInt(1, 5) >= 4 then
+			if not UseCustomizedPicks and RandomInt(1, 5) >= 3 then
 				local nCurrEnmCores = X.GetCurrEnmCores(nEnmTeam)
 				local selectCounter = nil
 

@@ -157,7 +157,7 @@ function ConsiderWisdomRune()
 		and not bot:HasModifier('modifier_arc_warden_tempest_double') then
 			if DotaTime() < wisdomRuneInfo[1] + 3.0 then
 				if not bot:WasRecentlyDamagedByAnyHero(3.0) then
-					return BOT_MODE_DESIRE_ABSOLUTE
+					return BOT_MODE_DESIRE_HIGH
 				end
 			else
 				wisdomRuneInfo[1] = 0
@@ -519,9 +519,9 @@ function X.IsEnemyPickRune(nRune)
 end
 
 function X.GetScaledDesire(nBase, nCurrDist, nMaxDist)
-    local desire = Clamp(nBase + RemapValClamped(nCurrDist, 600, nMaxDist, 1 - nBase, 0), 0, 0.95)
+    local desire = Clamp(nBase + RemapValClamped(nCurrDist, 600, nMaxDist, 1 - nBase, 0), 0, 0.65)
 	if bot:GetNetWorth() < 15000 then
-		return desireend
+		return desire
 	end
 	return desire * 0.7
 end
@@ -644,13 +644,13 @@ function X.GetWisdomDesire(vWisdomLoc)
 	local botLevel = bot:GetLevel()
 	local distFromLoc = GetUnitToLocationDistance(bot, vWisdomLoc)
 	if botLevel < 12 then
-		nDesire = RemapValClamped(distFromLoc, 6400, 1500, BOT_ACTION_DESIRE_HIGH, BOT_ACTION_DESIRE_VERYHIGH )
+		nDesire = RemapValClamped(distFromLoc, 3000, 300, BOT_ACTION_DESIRE_HIGH, BOT_ACTION_DESIRE_VERYHIGH )
 	elseif botLevel < 18 then
-		nDesire = RemapValClamped(distFromLoc, 6400, 1500, BOT_ACTION_DESIRE_MODERATE , BOT_ACTION_DESIRE_VERYHIGH )
+		nDesire = RemapValClamped(distFromLoc, 3000, 300, BOT_ACTION_DESIRE_MODERATE , BOT_ACTION_DESIRE_HIGH )
 	elseif botLevel < 25 then
-		nDesire = RemapValClamped(distFromLoc, 5800, 1200, BOT_ACTION_DESIRE_MODERATE, BOT_ACTION_DESIRE_HIGH )
+		nDesire = RemapValClamped(distFromLoc, 3000, 300, BOT_ACTION_DESIRE_LOW, BOT_ACTION_DESIRE_HIGH )
 	elseif botLevel < 30 then
-		nDesire = RemapValClamped(distFromLoc, 5800, 1200, BOT_ACTION_DESIRE_LOW , BOT_ACTION_DESIRE_HIGH )
+		nDesire = RemapValClamped(distFromLoc, 3000, 300, BOT_ACTION_DESIRE_LOW , BOT_ACTION_DESIRE_MODERATE )
 	end
 
 	return nDesire

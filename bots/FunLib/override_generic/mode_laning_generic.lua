@@ -13,12 +13,17 @@ function X.OnEnd() end
 local nEnemyTowers, nEnemyCreeps, assignedLane
 
 function X.GetDesire()
+	if J.IsAttacking( bot )
+	or (bot:GetActiveMode() == BOT_MODE_ATTACK and bot:GetActiveModeDesire() > BOT_MODE_DESIRE_MODERATE) then
+		return 0.2
+	end
+
 	assignedLane = GetBotTargetLane()
 	local vLaneFront = GetLaneFrontLocation(GetTeam(), assignedLane, 400)
 	local laneFrontEnemies = J.GetLastSeenEnemiesNearLoc(vLaneFront, 1200)
 	if #laneFrontEnemies >= 2 then
 		local hAllyList = J.GetNearbyHeroes(bot, 800, false, BOT_MODE_NONE )
-		if #laneFrontEnemies > hAllyList then
+		if #laneFrontEnemies > #hAllyList then
 			return 0.22
 		end
 	end
