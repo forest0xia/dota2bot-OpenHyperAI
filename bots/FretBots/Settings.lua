@@ -12,10 +12,6 @@ require('bots.FretBots.HeroSounds')
 -- HeroSounds
 local Chat = require('bots.FretBots.Chat')
 
--- max scales to vote
-local difficultyMax = 10
-local allyScaleMax = 1
-
 -- default difficulty if no one votes
 local DefaultDifficulty = 2 -- [0, 10]
 local DefaultAllyScale = 0.5 -- [0, 1]
@@ -25,6 +21,11 @@ Settings = nil
 -- Other local variables
 local settingsTimerName = 'settingsTimerName'
 -- table to keep track of player votes
+
+-- max scales to vote
+local difficultyMax = 10
+local allyScaleMax = 1
+
 local playerVoted = {}
 -- is voting closed
 local isVotingClosed = false

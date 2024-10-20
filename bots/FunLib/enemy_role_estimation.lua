@@ -230,7 +230,7 @@ function ____exports.UpdateEnemyHeroPositions()
         AssignPositions()
     end
 end
-function ____exports.GetEnemyPositions()
-    return cachedPositions
+function ____exports.GetEnemyPosition(playerId)
+    return cachedPositions[playerId]
 end
 return ____exports

@@ -4604,7 +4604,7 @@ function J.GetEnemiesAroundLoc(vLoc, nRadius)
 	for _, unit in pairs(GetUnitList(UNIT_LIST_ENEMIES))
 	do
 		if J.IsValid(unit)
-		and GetUnitToLocationDistance(unit:GetLocation(), vLoc) <= nRadius
+		and GetUnitToLocationDistance(unit, vLoc) <= nRadius
 		then
 			local unitName = unit:GetUnitName()
 			if unit:IsCreep() then

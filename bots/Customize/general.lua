@@ -51,7 +51,7 @@ Customize.Dire_Heros = {
 --]]
 Customize.Allow_Repeated_Heroes = false
 
--- To set the names for the Radiant bots. Don't need to provide a value for all 5 bots, any missing slot will fallback to a Random value.
+-- To set the names for the Radiant bots. Don't need to provide a value for all 5 bots, missing names will have a Random value.
 Customize.Radiant_Names = {
     'Random',
     'Random',

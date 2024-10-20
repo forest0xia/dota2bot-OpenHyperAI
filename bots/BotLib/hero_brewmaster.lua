@@ -47,9 +47,9 @@ sRoleItemsBuyList['pos_2'] = {
     "item_double_branches",
     "item_quelling_blade",
 
+    "item_magic_wand",
     "item_double_bracer",
     "item_boots",
-    "item_magic_wand",
     "item_hand_of_midas",
     "item_radiance",--
     "item_aghanims_shard",
@@ -68,9 +68,9 @@ sRoleItemsBuyList['pos_3'] = {
     "item_double_branches",
     "item_quelling_blade",
 
+    "item_magic_wand",
     "item_double_bracer",
     "item_boots",
-    "item_magic_wand",
     "item_radiance",--
     "item_pipe",--
     "item_black_king_bar",--

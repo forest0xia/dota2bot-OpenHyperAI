@@ -29,9 +29,9 @@ sRoleItemsBuyList['pos_3'] = {
     "item_double_branches",
     "item_quelling_blade",
 
+    "item_magic_wand",
     "item_bracer",
     "item_phase_boots",
-    "item_magic_wand",
     "item_soul_ring",
     "item_echo_sabre",
     "item_desolator",--
@@ -50,15 +50,47 @@ sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
 
 sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_3']
 
-sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_3']
+sRoleItemsBuyList['pos_4'] = {
+	'item_priest_outfit',
+	"item_hand_of_midas",
+	"item_mekansm",
+	"item_glimmer_cape",--
+	"item_guardian_greaves",--
+    "item_aghanims_shard",
+	"item_assault",--
+	"item_heavens_halberd",--
+    "item_shivas_guard",--
+    "item_refresher",--
+    "item_ultimate_scepter_2",
+    "item_moon_shard",
+}
 
-sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_3']
+sRoleItemsBuyList['pos_5'] = {
+	'item_priest_outfit',
+	"item_hand_of_midas",
+	"item_mekansm",
+	"item_glimmer_cape",--
+	"item_pipe",--
+    "item_aghanims_shard",
+	"item_assault",--
+	"item_heavens_halberd",--
+    "item_shivas_guard",--
+    "item_refresher",--
+    "item_ultimate_scepter_2",
+    "item_moon_shard",
+}
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 X['sSellList'] = {
-	"item_power_treads",
+	"item_heavens_halberd",
 	"item_quelling_blade",
+
+	"item_abyssal_blade",
+	"item_magic_wand",
+
+	"item_assault",
+	"item_ancient_janggo",
 }
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_antimage' }, {} end
