@@ -1,56 +1,63 @@
 --[[
-
 This is a place for you to customize the Open Hyper AI bots.
 
-When modiftying this file, be VERY careful to the spelling, punctuation and variable names - it's very easy to cause syntax errors and could be hard for you to debug.
-In the case you saw the bots having some random names or picks (heroes not what you have set or without "OHA" name suffix), that means you had made some mistakes/errors while modifying this file. 
-In any case this file got messed up and caused the bots to malfunction, you can try to restore the file. Either you have a copy to replace, or resubscribe the script, or download from github.
+1. When modiftying this file, be VERY careful to the spelling, punctuation and variable names - it's very easy to cause 
+   syntax errors and could be hard for you to debug.
+2. In the case you saw the bots having some random names or picks (heroes not what you have set or without "OHA" name suffix), 
+   that means you had made some mistakes/errors while modifying this file. 
+3. In any case this file got messed up and caused the bots to malfunction, you can try to restore the file. Either you have a 
+   copy to replace, or resubscribe the script, or download from github.
 
-Workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=3246316298
-Github: https://github.com/forest0xia/dota2bot-OpenHyperAI
-
+- Workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=3246316298
+- Github: https://github.com/forest0xia/dota2bot-OpenHyperAI
 --]]
 
--- Variable to hold the settings. Only modify if you know exactly what you are doing.
+
+-- The variable to hold the settings. Only modify if you know exactly what you are doing.
 local Customize = { }
 
 -- Set it to true to turn on ALL of the custom settings in this file, or set it to false to turn off the settings.
 Customize.Enable = true
 
--- Set the heroes you DON'T want the bots to pick. Use hero internal names.
+-- To ban some heroes for bots - Set the heroes you DO NOT want the bots to pick. Use hero internal names.
 -- Hero name ref: https://steamcommunity.com/workshop/filedetails/discussion/3246316298/4848777260032086340/
 Customize.Ban = {
     'example_npc_dota_hero_internal_name_to_ban',
 }
 
--- Set the heroes you want Radiant bots to pick. You have to use hero's internal name.
--- Hero internal name ref: https://steamcommunity.com/workshop/filedetails/discussion/3246316298/4848777260032086340/
--- Don't need to provide a value for all 5 bots, any empty/missing value will fallback to a Random value.
--- The position is ranked by the order of the names you put in the below list, pos 1 - 5, from top to down.
--- There are sample team picks in Appendix section below.
+--[[
+1. To pick heroes for the Radiant bots. You have to use hero's internal name.
+2. Hero internal name ref: https://steamcommunity.com/workshop/filedetails/discussion/3246316298/4848777260032086340/
+3. Don't need to provide a value for all 5 bots, any empty/missing value will fallback to a Random value.
+4. The position is ranked by the order of the names you put in the below list, pos 1 - 5, from top to down.
+5. There are sample team picks in Appendix section below. 
+6. Check Appendix to ensure you DO NOT pick more than 1 "weak" heroes in a team for your game experience.
+--]]
 Customize.Radiant_Heros = {
     'Random',
     'Random',
 }
 
--- Same notes as for Radiant_Heros above
+-- Same notes as above for picking heroes but for the Dire side.
 Customize.Dire_Heros = {
     'Random',
 }
 
--- Set whether or not allowing bots to pick same/repeated heroes. 
--- By setting it to true, you can have bots picking for example all pudges, all techies, or the same set of heroes on both teams. 
--- WARNING: Setting this to true CAN reduce the gaming experience due to the fact some heroes are kind of buggy or weak at the moment (listed below) and 
---          are currently intentionally having reduced chances to get picked by bots. Set this to true will break this limit.
+--[[
+1. To allow bots to randomly pick heroes that can be the same/repeated. 
+2. WARNING: Setting this to true CAN reduce the gaming experience due to the fact some heroes are kind of weak or buggy
+   at the moment (listed below) and are intentionally having reduced chances to get picked by bots. Setting this to true
+   may cause the bots to pick multiple weak heroes. See Appendix below about "weak" heroes.
+--]]
 Customize.Allow_Repeated_Heroes = false
 
--- Set the names of the heroes for Radiant bots. Don't need to provide a value for all 5 bots, any empty/missing value will fallback to a Random value.
+-- To set the names for the Radiant bots. Don't need to provide a value for all 5 bots, any missing slot will fallback to a Random value.
 Customize.Radiant_Names = {
     'Random',
     'Random',
 }
 
--- Set the names of the heroes for Dire bots. Don't need to provide a value for all 5 bots, any empty/missing value will fallback to a Random value.
+-- Same notes as above for setting the bots' names but for the Dire side.
 Customize.Dire_Names = {
     'Random',
 }
@@ -60,13 +67,21 @@ return Customize
 
 
 
+
 --[[
 
 ----------------------------------------------------------------------------------------------------
 |                                        --- Appendix ---                                          |
 ----------------------------------------------------------------------------------------------------
 
-[1.] -- Some sample team picks: --
+[Appendix - 1] -- Some sample team picks: --
+
+    -- -- All Pudges
+    -- "npc_dota_hero_pudge",
+    -- "npc_dota_hero_pudge",
+    -- "npc_dota_hero_pudge",
+    -- "npc_dota_hero_pudge",
+    -- "npc_dota_hero_pudge",
 
     -- -- All Spirits/Pandas
     -- "npc_dota_hero_void_spirit",
@@ -97,7 +112,7 @@ return Customize
     -- "npc_dota_hero_zuus",
 
 
-[2.] -- Below is a few lists of to-be-improved heroes, as of 2024/8/25 --
+[Appendix - 2] -- List of to-be-improved (aka weak) heroes, as of 2024/10/20 --
 
     They are relatively weaker than others and can still get selected by bots, 
     but there SHOULD NOT have more than 1 of those in a team to ensure the bar of gaming experience for human players.

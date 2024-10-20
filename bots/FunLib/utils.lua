@@ -355,24 +355,6 @@ local dot = ____native_2Doperators.dot
 local length2D = ____native_2Doperators.length2D
 local multiply = ____native_2Doperators.multiply
 local sub = ____native_2Doperators.sub
-function ____exports.GetEnemyFountainTpPoint()
-    if GetTeam() == Team.Dire then
-        return ____exports.RadiantFountainTpPoint
-    end
-    return ____exports.DireFountainTpPoint
-end
-function ____exports.GetTeamFountainTpPoint()
-    if GetTeam() == Team.Dire then
-        return ____exports.DireFountainTpPoint
-    end
-    return ____exports.RadiantFountainTpPoint
-end
-function ____exports.IsValidUnit(target)
-    return target ~= nil and not target:IsNull() and target:CanBeSeen() and target:IsAlive() and not target:IsInvulnerable()
-end
-function ____exports.IsValidHero(target)
-    return ____exports.IsValidUnit(target) and target:IsHero()
-end
 function ____exports.GetLocationToLocationDistance(fLoc, sLoc)
     local x1 = fLoc.x
     local x2 = sLoc.x
@@ -409,14 +391,6 @@ function ____exports.projectPointOntoLine(startPoint, endPoint, point)
         multiply(lineDir, projectionLength)
     )
 end
-function ____exports.GetEnemyHeroByPlayerId(id)
-    for ____, hero in ipairs(GetUnitList(UnitType.EnemyHeroes)) do
-        if ____exports.IsValidHero(hero) and hero:GetPlayerID() == id then
-            return hero
-        end
-    end
-    return nil
-end
 function ____exports.GetLastSeenEnemyIdsNearLocation(vLoc, nDistance)
     local enemies = {}
     for ____, playerdId in ipairs(GetTeamPlayers(GetOpposingTeam())) do
@@ -432,18 +406,6 @@ function ____exports.GetLastSeenEnemyIdsNearLocation(vLoc, nDistance)
                             __continue198 = true
                             break
                         end
-                        if ____exports.GetLocationToLocationDistance(
-                            firstInfo.location,
-                            ____exports.GetEnemyFountainTpPoint()
-                        ) < ____exports.GetLocationToLocationDistance(
-                            firstInfo.location,
-                            ____exports.GetTeamFountainTpPoint()
-                        ) then
-                            local enemyHero = ____exports.GetEnemyHeroByPlayerId(playerdId)
-                            if enemyHero and enemyHero:HasModifier("modifier_teleporting") then
-                                enemies[#enemies + 1] = playerdId
-                            end
-                        end
                     end
                 end
                 __continue198 = true
@@ -456,7 +418,7 @@ function ____exports.GetLastSeenEnemyIdsNearLocation(vLoc, nDistance)
     return enemies
 end
 require(GetScriptDirectory().."/ts_libs/utils/json")
-____exports.DebugMode = true
+____exports.DebugMode = false
 ____exports.ScriptID = 3246316298
 ____exports.RadiantFountainTpPoint = Vector(-7172, -6652, 384)
 ____exports.DireFountainTpPoint = Vector(6982, 6422, 392)
@@ -582,6 +544,18 @@ function ____exports.PrintAllAbilities(unit)
         end
     end
 end
+function ____exports.GetEnemyFountainTpPoint()
+    if GetTeam() == Team.Dire then
+        return ____exports.RadiantFountainTpPoint
+    end
+    return ____exports.DireFountainTpPoint
+end
+function ____exports.GetTeamFountainTpPoint()
+    if GetTeam() == Team.Dire then
+        return ____exports.DireFountainTpPoint
+    end
+    return ____exports.RadiantFountainTpPoint
+end
 function ____exports.Shuffle(tbl)
     do
         local i = #tbl - 1
@@ -658,6 +632,12 @@ function ____exports.IsPingedByAnyPlayer(bot, pingTimeGap, minDistance, maxDista
         end
     end
     return nil
+end
+function ____exports.IsValidUnit(target)
+    return target ~= nil and not target:IsNull() and target:CanBeSeen() and target:IsAlive() and not target:IsInvulnerable()
+end
+function ____exports.IsValidHero(target)
+    return ____exports.IsValidUnit(target) and target:IsHero()
 end
 function ____exports.IsValidCreep(target)
     return ____exports.IsValidUnit(target) and target:GetHealth() < 5000 and not target:IsHero() and (GetBot():GetLevel() > 9 or not target:IsAncientCreep())
@@ -982,6 +962,14 @@ function ____exports.IsAnyBarrackAttackByEnemyHero()
             if bar ~= nil then
                 return bar
             end
+        end
+    end
+    return nil
+end
+function ____exports.GetEnemyHeroByPlayerId(id)
+    for ____, hero in ipairs(GetUnitList(UnitType.EnemyHeroes)) do
+        if ____exports.IsValidHero(hero) and hero:GetPlayerID() == id then
+            return hero
         end
     end
     return nil

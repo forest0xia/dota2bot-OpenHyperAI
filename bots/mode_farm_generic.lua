@@ -174,31 +174,55 @@ function GetDesire()
 		J.Role['hasRefreshDone'] = false;
 	end
 
+	local nAllyList = J.GetNearbyHeroes(bot,1600,false,BOT_MODE_NONE);
+	local hEnemyHeroList = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE);
+
 	availableCamp = J.Role['availableCampTable'];
 
 	if J.Utils.IsBotPushingTowerInDanger(bot)
+	and not (#nAllyList >= 3 and #nAllyList >= #hEnemyHeroList) -- 我们人挺多，对面人也挺多，大战似乎在所难免，别跑了
 	and (J.IsCore(bot) and bot:GetNetWorth() < 18000)
 	and (botMode == BOT_MODE_PUSH_TOWER_BOT
 	or botMode == BOT_MODE_PUSH_TOWER_MID
 	or botMode == BOT_MODE_PUSH_TOWER_TOP
 	or bot:WasRecentlyDamagedByTower(3)
 	or J.Utils.IsValidBuilding(botTarget)) then
+		if DotaTime() - ShouldGoFarmTime >= checkGoFarmTimeGap then
+			IsShouldGoFarm = true
+			ShouldGoFarmTime = DotaTime()
+		end
 		hLaneCreepList = nil
 		if preferedCamp == nil then preferedCamp = J.Site.GetClosestNeutralSpwan(bot, availableCamp) end;
 		return BOT_MODE_DESIRE_ABSOLUTE * 1.1;
 	end
 	local numOfAliveEnemyHeroes = J.GetNumOfAliveHeroes(true)
 	-- 避免过早推2塔或者高地
-	if bot:GetLevel() < 10 and numOfAliveEnemyHeroes >= 3 then
+	if bot:GetLevel() < 10
+	and #hEnemyHeroList >= 2
+	and numOfAliveEnemyHeroes >= 3
+	and not (#nAllyList >= 3 and #nAllyList >= #hEnemyHeroList) -- 我们人挺多，对面人也挺多，大战似乎在所难免，别跑了
+	then
 		if J.Utils.IsNearEnemySecondTierTower(bot, 1500)
 		and (J.IsCore(bot) and bot:GetNetWorth() < 18000) then
+			if DotaTime() - ShouldGoFarmTime >= checkGoFarmTimeGap then
+				IsShouldGoFarm = true
+				ShouldGoFarmTime = DotaTime()
+			end
 			hLaneCreepList = nil
 			if preferedCamp == nil then preferedCamp = J.Site.GetClosestNeutralSpwan(bot, availableCamp) end;
 			return BOT_MODE_DESIRE_ABSOLUTE * 1.1;
 		end
-	elseif bot:GetLevel() < 15 and numOfAliveEnemyHeroes >= 3 then
+	elseif bot:GetLevel() < 15
+	and #hEnemyHeroList >= 2
+	and numOfAliveEnemyHeroes >= 3
+	and not (#nAllyList >= 3 and #nAllyList >= #hEnemyHeroList) -- 我们人挺多，对面人也挺多，大战似乎在所难免，别跑了
+	then
 		if J.Utils.IsNearEnemyHighGroundTower(bot, 1500)
 		and (J.IsCore(bot) and bot:GetNetWorth() < 18000) then
+			if DotaTime() - ShouldGoFarmTime >= checkGoFarmTimeGap then
+				IsShouldGoFarm = true
+				ShouldGoFarmTime = DotaTime()
+			end
 			hLaneCreepList = nil
 			if preferedCamp == nil then preferedCamp = J.Site.GetClosestNeutralSpwan(bot, availableCamp) end;
 			return BOT_MODE_DESIRE_ABSOLUTE * 1.1;
@@ -211,7 +235,7 @@ function GetDesire()
 	end
 
 	-- 如果在打推塔 就别撤退去打钱了
-	local nAllyList = J.GetNearbyHeroes(bot,1600,false,BOT_MODE_NONE);
+
 	local nEnemyTowers = bot:GetNearbyTowers(1200, true);
 	if #nAllyList >= 2 and nEnemyTowers ~= nil and #nEnemyTowers > 0 and GetUnitToLocationDistance(bot, nEnemyTowers[1]:GetLocation()) < 1300 then
 		return BOT_MODE_DESIRE_NONE;
@@ -221,7 +245,8 @@ function GetDesire()
 	and (J.IsCore(bot) and bot:GetNetWorth() < 18000)
 	and (J.Utils.IsTeamPushingSecondTierOrHighGround(bot))
 	and bot:GetActiveModeDesire() <= BOT_ACTION_DESIRE_HIGH)
-	and #J.Utils.GetLastSeenEnemyIdsNearLocation(bot:GetLocation(), 2500) > 1 then
+	and #J.Utils.GetLastSeenEnemyIdsNearLocation(bot:GetLocation(), 2500) > 1
+	and #hEnemyHeroList >= 2 then
 		if DotaTime() - ShouldGoFarmTime >= checkGoFarmTimeGap then
 			IsShouldGoFarm = true
 			ShouldGoFarmTime = DotaTime()
@@ -231,7 +256,6 @@ function GetDesire()
 		return BOT_ACTION_DESIRE_ABSOLUTE * 0.98
 	end
 
-	local hEnemyHeroList = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE);
 	local hNearbyAttackAllyHeroList  = J.GetNearbyHeroes(bot,1600, false,BOT_MODE_ATTACK);
 
 	if #hEnemyHeroList > 0 or #hNearbyAttackAllyHeroList > 0

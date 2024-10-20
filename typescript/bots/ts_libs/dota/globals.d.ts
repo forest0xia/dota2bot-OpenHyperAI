@@ -34,6 +34,8 @@ declare global {
 
     function DotaTime(): number;
 
+    function GetItemCost(itemName: string): number;
+
     function GetHeroLastSeenInfo(nPlayerID: number): LastSeenInfo[];
 
     function DebugDrawCircle(

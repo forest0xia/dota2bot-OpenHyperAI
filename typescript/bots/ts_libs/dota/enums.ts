@@ -80,6 +80,8 @@ declare enum BotScriptEnums {
     ATTRIBUTE_STRENGTH,
     ATTRIBUTE_AGILITY,
     ATTRIBUTE_INTELLECT,
+    ATTRIBUTE_ALL,
+    ATTRIBUTE_MAX,
     // Item Purchase Results,
     PURCHASE_ITEM_SUCCESS,
     PURCHASE_ITEM_OUT_OF_STOCK,
@@ -504,4 +506,13 @@ export enum Shop {
     Secret = BotScriptEnums.SHOP_SECRET || 2,
     Side2 = BotScriptEnums.SHOP_SIDE2 || 4,
     Secret2 = BotScriptEnums.SHOP_SECRET2 || 5,
+}
+
+export enum AttributeType {
+    Strength = BotScriptEnums.ATTRIBUTE_STRENGTH || 0,
+    Agility = BotScriptEnums.ATTRIBUTE_AGILITY || 1,
+    Intellect = BotScriptEnums.ATTRIBUTE_INTELLECT || 2,
+    All = BotScriptEnums.ATTRIBUTE_ALL || 3,
+    Max = BotScriptEnums.ATTRIBUTE_MAX || 4,
+    Invalid = BotScriptEnums.ATTRIBUTE_INVALID || -1,
 }

@@ -188,4 +188,17 @@ ____exports.Shop.Side2 = SHOP_SIDE2 or 4
 ____exports.Shop[____exports.Shop.Side2] = "Side2"
 ____exports.Shop.Secret2 = SHOP_SECRET2 or 5
 ____exports.Shop[____exports.Shop.Secret2] = "Secret2"
+____exports.AttributeType = AttributeType or ({})
+____exports.AttributeType.Strength = ATTRIBUTE_STRENGTH or 0
+____exports.AttributeType[____exports.AttributeType.Strength] = "Strength"
+____exports.AttributeType.Agility = ATTRIBUTE_AGILITY or 1
+____exports.AttributeType[____exports.AttributeType.Agility] = "Agility"
+____exports.AttributeType.Intellect = ATTRIBUTE_INTELLECT or 2
+____exports.AttributeType[____exports.AttributeType.Intellect] = "Intellect"
+____exports.AttributeType.All = ATTRIBUTE_ALL or 3
+____exports.AttributeType[____exports.AttributeType.All] = "All"
+____exports.AttributeType.Max = ATTRIBUTE_MAX or 4
+____exports.AttributeType[____exports.AttributeType.Max] = "Max"
+____exports.AttributeType.Invalid = ATTRIBUTE_INVALID or -1
+____exports.AttributeType[____exports.AttributeType.Invalid] = "Invalid"
 return ____exports

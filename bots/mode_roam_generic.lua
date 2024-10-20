@@ -21,18 +21,24 @@ local BearAttackLimitDistance = 1100
 local TetherBreakDistance = 1000
 local ConsiderHeroSpecificRoaming = {}
 
-local laneToRoam = nil
-local lastRoamDecisionTime = DotaTime()
-local roamDecisionHoldTime = 1.25 * 60 -- cant change dicision within this time
+local laneToGank = nil
+local lastGankDecisionTime = DotaTime()
+local gankDecisionHoldTime = 1.25 * 60 -- cant change dicision within this time
 local TwinGates = { }
 local targetGate
 local gateWarp = bot:GetAbilityByName("twin_gate_portal_warp")
 local enableGateUsage = false -- to be fixed
 local arriveRoamLocTime = 0
 local roamTimeAfterArrival = 0.55 * 60 -- stay to roam after arriving the location
-local roamGapTime = 3 * 60 -- don't roam again within this duration after roaming once.
+local gankGapTime = 2 * 60 -- don't roam again within this duration after roaming once.
 local lastStaticLinkDebuffStack = 0
 local nInRangeEnemy, nInRangeAlly, allyTowers, enemyTowers, trySeduce, shouldTempRetreat, botTarget, shouldGoBackToFountain
+
+local laneAndT1s = {
+	{LANE_TOP, TOWER_TOP_1},
+	{LANE_MID, TOWER_MID_1},
+	{LANE_BOT, TOWER_BOT_1}
+}
 
 function GetDesire()
 
@@ -227,7 +233,7 @@ function ThinkIndividualRoaming()
 
 			if target ~= nil
 			then
-				bot:Action_MoveToLocation(target:GetLocation())
+				bot:Action_MoveToLocation(J.GetCorrectLoc(target, 0.2))
 				return
 			end
 		end
@@ -242,14 +248,14 @@ function ThinkIndividualRoaming()
 		if J.IsValidHero(tEnemyHeroes[1])
 		and not tEnemyHeroes[1]:HasModifier('modifier_faceless_void_chronosphere_freeze')
 		then
-			bot:Action_MoveToLocation(tEnemyHeroes[1]:GetLocation())
+			bot:Action_MoveToLocation(J.GetCorrectLoc(tEnemyHeroes[1], 0.2))
 			return
 		end
 
 		local tCreeps = bot:GetNearbyCreeps(880, true)
 		if J.IsValid(tCreeps[1])
 		then
-			bot:Action_MoveToLocation(tCreeps[1]:GetLocation())
+			bot:Action_MoveToLocation(J.GetCorrectLoc(tCreeps[1], 0.2))
 			return
 		end
 	end
@@ -270,7 +276,7 @@ function ThinkIndividualRoaming()
 		if bot.trample_status ~= nil and type(bot.trample_status) == "table" then
 			if bot.trample_status[1] == 'engaging' then
 				if J.IsValidHero(bot.trample_status[3]) then
-					DoTrample(bot.trample_status[3]:GetLocation())
+					DoTrample(J.GetCorrectLoc( bot.trample_status[3], 0.2 ))
 					return
 				elseif #tEnemyHeroes > 0 then
 					local target = nil
@@ -290,7 +296,7 @@ function ThinkIndividualRoaming()
 					end
 
 					if target ~= nil then
-						DoTrample(target:GetLocation())
+						DoTrample(J.GetCorrectLoc( target, 0.2 ))
 						return
 					end
 				else
@@ -299,7 +305,7 @@ function ThinkIndividualRoaming()
 							if J.IsValidHero(ally) and not J.IsSuspiciousIllusion(ally) then
 								local allyTarget = ally:GetAttackTarget()
 								if J.IsValidHero(allyTarget) then
-									DoTrample(allyTarget:GetLocation())
+									DoTrample(J.GetCorrectLoc( allyTarget, 0.2 ))
 									return
 								end
 							end
@@ -480,14 +486,16 @@ function ThinkIndividualRoaming()
 
 	if bot:HasModifier('modifier_razor_static_link_buff') then
 		local botTarget = J.GetProperTarget(bot)
-		local distanceFromHero = GetUnitToUnitDistance(bot, botTarget)
-		if botTarget and distanceFromHero > bot:GetAttackRange()
-		then
-			bot:Action_MoveToLocation(botTarget:GetLocation() + RandomVector(200))
-			return
-		elseif botTarget and distanceFromHero <= bot:GetAttackRange() / 2 then
-			bot:Action_AttackUnit(botTarget, false)
-			return
+		if botTarget then
+			local distanceFromHero = GetUnitToUnitDistance(bot, botTarget)
+			if distanceFromHero > bot:GetAttackRange()
+			then
+				bot:Action_MoveToLocation(botTarget:GetLocation() + RandomVector(200))
+				return
+			elseif distanceFromHero <= bot:GetAttackRange() / 2 then
+				bot:Action_AttackUnit(botTarget, false)
+				return
+			end
 		end
 	end
 
@@ -578,7 +586,7 @@ function ThinkIndividualRoaming()
 		if Rot:GetToggleState()
 		then
 			local botTarget = J.GetProperTarget(bot)
-			if GetUnitToUnitDistance(bot, botTarget) > 400
+			if botTarget and GetUnitToUnitDistance(bot, botTarget) > 400
 			then
 				bot:Action_MoveToLocation(botTarget:GetLocation())
 				return
@@ -590,7 +598,7 @@ function ThinkIndividualRoaming()
 	if botName == 'npc_dota_hero_nevermore' then
 		if J.Utils.IsTruelyInvisible(bot) then
 			local botTarget = J.GetProperTarget(bot)
-			if GetUnitToUnitDistance(bot, botTarget) > 400
+			if botTarget and GetUnitToUnitDistance(bot, botTarget) > 400
 			then
 				bot:Action_MoveToLocation(botTarget:GetLocation())
 				return
@@ -748,16 +756,15 @@ function MoveAwayFromTarget(target, keepDistance)
 	end
 end
 
-function GankDesire()
-	if J.CanNotUseAction(bot) or bot:IsUsingAbility() or bot:IsChanneling() or not bot:IsAlive() or gateWarp == nil then return BOT_ACTION_DESIRE_NONE end
+function ActualGankDesire()
 	SetupTwinGates()
 
-	if J.IsInLaningPhase() then
+	if J.IsInLaningPhase() and bot:WasRecentlyDamagedByAnyHero(2) then
 		local botLvl = bot:GetLevel()
 		if (J.GetPosition(bot) == 2 and botLvl >= 6 and J.GetHP(bot) > 0.7 and J.GetMP(bot) > 0.6) -- mid player roaming
 		or (J.GetPosition(bot) > 3 and botLvl >= 3 and J.GetHP(bot) > 0.6 and J.GetMP(bot) > 0.6) -- supports roaming
 		then
-			return CheckLaneToRoam()
+			return CheckLaneToGank()
 		end
 	end
 	return BOT_MODE_DESIRE_NONE
@@ -779,8 +786,8 @@ function SetupTwinGates()
 end
 
 function ThinkActualRoamingInLanes()
-	if laneToRoam ~= nil then
-		local targetLoc = GetLaneFrontLocation(GetTeam(), laneToRoam, -300)
+	if laneToGank ~= nil then
+		local targetLoc = GetLaneFrontLocation(GetTeam(), laneToGank, -300)
 		local distanceToRoamLoc = GetUnitToLocationDistance(bot, targetLoc)
 		if distanceToRoamLoc > 5000 then
 			if J.GetPosition(bot) > 3
@@ -807,17 +814,16 @@ function ThinkActualRoamingInLanes()
 			arriveRoamLocTime = DotaTime()
 		end
 		if DotaTime() - arriveRoamLocTime > roamTimeAfterArrival then
-			laneToRoam = nil
+			laneToGank = nil
 		end
 	end
 end
 
 function OnStart()
-	lastRoamDecisionTime = DotaTime()
 end
 
 function OnEnd()
-	laneToRoam = nil
+	laneToGank = nil
 	targetGate = nil
 	if shouldGoBackToFountain and IsInHealthyState() then
 		shouldGoBackToFountain = false
@@ -828,51 +834,44 @@ function IsInHealthyState()
 	return J.GetHP(bot) > 0.7 and J.GetMP(bot) > 0.6
 end
 
-function CheckLaneToRoam()
+function CheckLaneToGank()
 
-	if DotaTime() - lastRoamDecisionTime <= roamDecisionHoldTime and laneToRoam ~= nil then
+	if DotaTime() - lastGankDecisionTime <= gankDecisionHoldTime and laneToGank ~= nil then
 		return BOT_ACTION_DESIRE_VERYHIGH
 	end
 
-	if DotaTime() - lastRoamDecisionTime < roamGapTime then
+	if DotaTime() - lastGankDecisionTime < gankGapTime then
 		return BOT_MODE_DESIRE_NONE
 	end
 
 	if not HasSufficientMana(300) then -- idelaly should have mana at least able to use 2 abilities + tp.
 		return BOT_MODE_DESIRE_NONE
 	end
-
-	local lanes = {
-		{LANE_TOP, TOWER_TOP_1},
-		{LANE_MID, TOWER_MID_1},
-		{LANE_BOT, TOWER_BOT_1}
-	}
-
-	for _, lane in pairs(lanes)
+	for _, lane in pairs(laneAndT1s)
 	do
 		local enemyCountInLane = J.GetEnemyCountInLane(lane[1])
 		if enemyCountInLane > 0
 		then
-			local laneFront = GetLaneFrontLocation(GetTeam(), lane[1], 0)
 			local tTower = GetTower(GetTeam(), lane[2])
-			local laneFrontToT1Dist = GetUnitToLocationDistance(tTower, laneFront)
-			local nInRangeAlly = J.GetAlliesNearLoc(laneFront, 1200)
+			if tTower ~= nil then
+				local laneFront = GetLaneFrontLocation(GetTeam(), lane[1], 0)
+				local laneFrontToT1Dist = GetUnitToLocationDistance(tTower, laneFront)
+				local nInRangeAlly = J.GetAlliesNearLoc(laneFront, 1200)
 
-			if tTower ~= nil
-			and enableGateUsage
-			and laneFrontToT1Dist < 2000
-			then
-				targetGate = GetGateNearLane(laneFront)
-
-				if enemyCountInLane >= #nInRangeAlly
+				if enableGateUsage
+				and laneFrontToT1Dist < 2000
 				then
-					laneToRoam = lane[1]
-					return RemapValClamped(GetUnitToUnitDistance(bot, targetGate), 5000, 600, BOT_ACTION_DESIRE_VERYLOW, BOT_ACTION_DESIRE_VERYHIGH )
+					targetGate = GetGateNearLane(laneFront)
+					if enemyCountInLane >= #nInRangeAlly
+					then
+						laneToGank = lane[1]
+						return RemapValClamped(GetUnitToUnitDistance(bot, targetGate), 5000, 600, BOT_ACTION_DESIRE_VERYLOW, BOT_ACTION_DESIRE_VERYHIGH )
+					end
 				end
-			end
 
-			if #enemyCountInLane >= 1 then
-				return RemapValClamped(laneFrontToT1Dist, 4000, 400, BOT_ACTION_DESIRE_LOW, BOT_ACTION_DESIRE_VERYHIGH)
+				if #enemyCountInLane >= 1 and GetUnitToUnitDistance(bot, tTower) > 3000 then
+					return RemapValClamped(laneFrontToT1Dist, 2500, 900, BOT_ACTION_DESIRE_LOW, BOT_ACTION_DESIRE_VERYHIGH)
+				end
 			end
 
 		end
@@ -1148,8 +1147,12 @@ function ConsiderGeneralRoamingInConditions()
 		end
 	end
 
-	return GankDesire()
-	-- return BOT_ACTION_DESIRE_NONE
+	local actualGankingDesire = ActualGankDesire()
+	if actualGankingDesire > 0 then
+		lastGankDecisionTime = DotaTime()
+		return actualGankingDesire
+	end
+	return BOT_ACTION_DESIRE_NONE
 end
 
 function GetTargetEnemy(unitName)

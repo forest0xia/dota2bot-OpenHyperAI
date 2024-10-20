@@ -18,7 +18,6 @@ local CM = require( GetScriptDirectory()..'/FunLib/captain_mode' )
 local Customize = require( GetScriptDirectory()..'/Customize/general' )
 local HeroPositionMap = require( GetScriptDirectory()..'/FunLib/aba_hero_pos_weights' )
 local SupportedHeroes = {}
-local UseCustomizedPicks = false
 
 local CorrectRadiantAssignedLanes = false
 local CorrectDireAssignedLanes = false
@@ -113,9 +112,9 @@ function GetPositionedPool(heroPosMap, position)
 		print('Picking for position: '.. tostring(position) .. ", checking role for hero: "..name)
 		if (position == 1 and (Role.IsDisabler(name) or Role.IsNuker(name)))
 		or (position == 2 and (Role.IsDisabler(name) or Role.IsNuker(name) or Role.IsDurable(name)))
-		or (position == 3 and (Role.IsInitiator(name) or Role.IsDisabler(name) or Role.IsDurable(name)))
-		or (position == 4 and (Role.IsSupport(name) or Role.IsDisabler(name)))
-		or (position == 5 and (Role.IsSupport(name) and Role.IsDisabler(name)))
+		or (position == 3 and (not Role.IsRanged(name)) and (Role.IsInitiator(name) or Role.IsDisabler(name) or Role.IsDurable(name)))
+		or (position == 4 and Role.IsSupport(name) and (Role.IsDisabler(name) or Role.IsHealer(name)))
+		or (position == 5 and Role.IsSupport(name) and Role.IsRanged(name) and (Role.IsDisabler(name) or Role.IsHealer(name)))
 		then
 			print("Selected hero: " ..name .. " as an option for position: ".. tostring(position))
 			table.insert(sortedHeroNames, name)
@@ -195,7 +194,6 @@ if Customize then
 			local hero = Utils.TrimString(Customize.Radiant_Heros[i])
 			if hero and hero ~= 'Random' and Utils.HasValue(SupportedHeroes, hero) then
 				sSelectList[i] = hero
-				UseCustomizedPicks = true
 			end
 		end
 	elseif GetTeam() == TEAM_DIRE and Customize.Dire_Heros then
@@ -203,10 +201,23 @@ if Customize then
 			local hero = Utils.TrimString(Customize.Dire_Heros[i])
 			if hero and hero ~= 'Random' and Utils.HasValue(SupportedHeroes, hero) then
 				sSelectList[i] = hero
-				UseCustomizedPicks = true
 			end
 		end
 	end
+end
+
+function X.IsInCustomizedPicks(name)
+	if not Customize then
+		return false
+	end
+
+	local heroes = {}
+	if GetTeam() == TEAM_RADIANT and Customize.Radiant_Heros then
+		heroes = Customize.Radiant_Heros
+	elseif GetTeam() == TEAM_DIRE and Customize.Dire_Heros then
+		heroes = Customize.Dire_Heros
+	end
+	return Utils.HasValue(heroes, name)
 end
 
 function X.ShuffleArray(array)
@@ -317,7 +328,7 @@ function X.GetNotRepeatHero( nTable )
 end
 
 function X.IsRepeatHero( sHero )
-	if Customize and Customize.Allow_Repeated_Heroes then
+	if X.IsInCustomizedPicks(sHero) or (Customize and Customize.Allow_Repeated_Heroes) then
 		return false
 	end
 
@@ -354,6 +365,10 @@ function X.SetChatHeroBan( sChatText )
 end
 
 function X.IsBannedHero( sHero )
+
+	if not sHero then
+		return true
+	end
 
 	if GetGameMode() == GAMEMODE_CM and IsCMBannedHero(sHero) then
 		return true
@@ -490,7 +505,7 @@ function AllPickHeros()
 		X.ShufflePickOrder(teamPlayers)
 		ShuffledPickOrder[sTeamName] = true
 	end
-	
+
 	local nOwnTeam = X.GetCurrentTeam(GetTeam(), false)
 	local nEnmTeam = X.GetCurrentTeam(GetOpposingTeam(), true)
 
@@ -501,7 +516,7 @@ function AllPickHeros()
 			sSelectHero = sSelectList[i]
 
 			-- Give a chance to pick counter/synergy heroes
-			if not UseCustomizedPicks and RandomInt(1, 5) >= 3 then
+			if not X.IsInCustomizedPicks(sSelectHero) and RandomInt(1, 5) >= 3 then
 				local nCurrEnmCores = X.GetCurrEnmCores(nEnmTeam)
 				local selectCounter = nil
 
@@ -531,7 +546,7 @@ function AllPickHeros()
 					end
 				end
 			else
-				print('Team '..GetTeam()..'. Skip picking counter/synergy heroes. For more chance to see any heroes')
+				-- print('Team '..GetTeam()..'. Skip picking counter/synergy heroes. For more chance to see any heroes')
 			end
 
 			if X.IsRepeatHero(sSelectHero) then sSelectHero = X.GetNotRepeatHero( tSelectPoolList[i] ) end

@@ -1936,7 +1936,17 @@ function J.GetNearbyHeroes(bot, nRadius, bEnemy)
 	-- 	printN = printN + 1
 	-- 	J.Utils.PrintTable(nearbyHeroes)
 	-- end
-	return bot:GetNearbyHeroes(nRadius, bEnemy, BOT_MODE_NONE)
+	local nearby = bot:GetNearbyHeroes(nRadius, bEnemy, BOT_MODE_NONE)
+	local heroes = {}
+	for _, hero in pairs( nearby )
+	do
+		if J.IsValidHero(hero)
+		and not J.IsMeepoClone(hero)
+		and not bot:HasModifier('modifier_arc_warden_tempest_double') then
+			table.insert(heroes, hero)
+		end
+	end
+	return heroes
 
     -- Cap the radius to a maximum value
     -- if nRadius > 1600 then nRadius = 1600 end
@@ -4567,19 +4577,10 @@ function J.NumHumanBotPlayersInTeam()
 end
 
 function J.GetEnemiesAroundAncient(nRadius)
-	-- local nUnitList = {}
+	return J.GetEnemiesAroundLoc(GetAncient(GetTeam()):GetLocation(), nRadius)
+end
 
-	-- for _, unit in pairs(GetUnitList(UNIT_LIST_ENEMIES))
-	-- do
-	-- 	if J.IsValid(unit)
-	-- 	and GetUnitToUnitDistance(unit, GetAncient(GetTeam())) <= 2500
-	-- 	then
-	-- 		table.insert(nUnitList, creep)
-	-- 	end
-	-- end
-
-	-- return nUnitList
-
+function J.GetEnemiesAroundLoc(vLoc, nRadius)
 	if not nRadius then nRadius = 2000 end
 
 	local nUnitCount = 0
@@ -4591,7 +4592,7 @@ function J.GetEnemiesAroundAncient(nRadius)
 			if info ~= nil then
 				local dInfo = info[1]
 				if dInfo ~= nil
-				and GetUnitToLocationDistance(GetAncient(GetTeam()), dInfo.location) <= nRadius
+				and J.GetLocationToLocationDistance(vLoc, dInfo.location) <= nRadius
 				and dInfo.time_since_seen < 5.0
 				then
 					nUnitCount = nUnitCount + 1
@@ -4603,7 +4604,7 @@ function J.GetEnemiesAroundAncient(nRadius)
 	for _, unit in pairs(GetUnitList(UNIT_LIST_ENEMIES))
 	do
 		if J.IsValid(unit)
-		and GetUnitToUnitDistance(unit, GetAncient(GetTeam())) <= nRadius
+		and GetUnitToLocationDistance(unit:GetLocation(), vLoc) <= nRadius
 		then
 			local unitName = unit:GetUnitName()
 			if unit:IsCreep() then
@@ -4616,12 +4617,15 @@ function J.GetEnemiesAroundAncient(nRadius)
 				nUnitCount = nUnitCount + 2
 			elseif string.find(unitName, 'shadow_shaman_ward') then
 				nUnitCount = nUnitCount + 2
+			elseif not (
+				string.find(unitName, 'observer_wards')
+				or string.find(unitName, 'sentry_wards'))
+			then
+				nUnitCount = nUnitCount + 1
 			end
 		end
 	end
-
 	return nUnitCount
-
 end
 
 function J.GetCurrentRoshanLocation()

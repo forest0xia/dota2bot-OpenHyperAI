@@ -2,6 +2,7 @@ local X = {}
 
 local Utils = require( GetScriptDirectory()..'/FunLib/utils' )
 local RolesMap = require( GetScriptDirectory()..'/FunLib/aba_hero_roles_map' )
+local EnemyRoles = require( GetScriptDirectory()..'/FunLib/enemy_role_estimation' )
 
 ----------------------------------------------------------------------------------------------------
 
@@ -52,6 +53,12 @@ function X.IsSupport( hero )
 end
 function X.IsPusher( hero )
 	return RolesMap.IsPusher( hero )
+end
+function X.IsRanged( hero )
+	return RolesMap.IsRanged( hero )
+end
+function X.IsHealer( hero )
+	return RolesMap.IsHealer( hero )
 end
 
 function X.IsMelee( attackRange )
@@ -355,14 +362,19 @@ function X.GetRuneActionTime()
 end
 
 function X.GetPositionForCM(bot)
+	local role
+
 	if GetTeam() ~= bot:GetTeam() then
+		role = EnemyRoles.GetEnemyPosition(bot:GetPlayerID())
+		if role then
+			return role
+		end
 		print('[WARNING] Cannot determine the role of an enemy bot. Return default pos as 3')
 		print("Stack Trace:", debug.traceback())
 		return 3
 	end
 
 	local lane = bot:GetAssignedLane()
-	local role
 	if lane == LANE_MID then
 		role = 2
 	elseif lane == LANE_TOP then
@@ -441,7 +453,18 @@ function X.GetPosition(bot)
 	end
 
 	bot.assignedRole = role
-	
+
+	if GetTeam() ~= bot:GetTeam() then
+		role = EnemyRoles.GetEnemyPosition(bot:GetPlayerID())
+		print('[WARNING] Trying to get role for enemy. The estimated role is: '.. role .. ', for bot: ' .. bot:GetUnitName())
+		if role then
+			return role
+		end
+		print('[WARNING] Cannot determine the role of an enemy bot. Return default pos as 3')
+		print("Stack Trace:", debug.traceback())
+		return 3
+	end
+
 	if role == nil and GetGameState() ~= GAME_STATE_PRE_GAME then
 		if HeroPositions[playerId] == nil then
 			HeroPositions[playerId] = X.GetRoleFromId(bot)

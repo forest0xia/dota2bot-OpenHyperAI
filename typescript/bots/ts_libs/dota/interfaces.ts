@@ -38,6 +38,10 @@ export interface Unit {
 
     CanBeSeen(): boolean;
 
+    GetPrimaryAttribute(): number;
+
+    GetAttributeValue(nAttr: number): number;
+
     GetPlayerID(): number;
 
     GetLocation(): Vector;

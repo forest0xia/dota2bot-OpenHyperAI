@@ -180,6 +180,11 @@ function X.SkillsComplement()
     nEnemyHeroesNearRot = J.GetNearbyHeroes(bot, nRotRadius + 50, true, BOT_MODE_NONE)
     botTarget = J.GetProperTarget(bot)
 
+    if Rot:GetToggleState() and #nEnemyHeroesNearRot <= 0 then
+        bot:Action_UseAbility(Rot)
+        return
+    end
+
     MeatHookDesire, MeatHookLocation = X.ConsiderMeatHook()
     if MeatHookDesire > 0
     then
@@ -595,7 +600,7 @@ function X.ConsiderRot()
     end
 
     if J.IsLaning(bot)
-    and (J.IsCore(bot) or not J.IsCore(bot) and not J.IsThereCoreNearby(1200))
+    and (J.IsCore(bot) or (not J.IsCore(bot) and not J.IsThereCoreNearby(1200)))
 	then
         local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nRotRadius, true)
         local nInRangeEnemy = J.GetNearbyHeroes(bot,1200, true, BOT_MODE_NONE)

@@ -2,6 +2,7 @@ local bot = GetBot()
 local botName = bot:GetUnitName();
 if bot == nil or bot:IsInvulnerable() or not bot:IsHero() or not bot:IsAlive() or not string.find(botName, "hero") or bot:IsIllusion() then return end
 local Utils = require( GetScriptDirectory()..'/FunLib/utils' )
+local EnemyRoles = require( GetScriptDirectory()..'/FunLib/enemy_role_estimation' )
 
 local team = GetTeam()
 local X = {}
@@ -57,6 +58,7 @@ local pingedDefendDesire = 0
 local pingedDefendLocation = nil
 local pingTimeDelta = 10
 local goToTargetAlly = nil
+local nearbyAllies, nearbyEnemies
 
 if team == TEAM_RADIANT
 then
@@ -67,6 +69,7 @@ end
 
 function GetDesire()
 	Utils.SetFrameProcessTime(bot)
+	EnemyRoles.UpdateEnemyHeroPositions()
 
 	IsAvoidingAbilityZone = false
 	pingedDefendDesire = 0
@@ -102,14 +105,17 @@ function GetDesire()
 	nDesire = ConsiderHarassInLaningPhase()
 	if nDesire > 0
 	then
+		print("doing harass in lane: " .. botName .. ", lane: " .. bot:GetAssignedLane())
 		return nDesire
 	end
 
 	local nAliveAllies = J.GetNumOfAliveHeroes(false)
 	local nAliveEnemies = J.GetNumOfAliveHeroes(true)
-	local nearbyAllies = J.GetNearbyHeroes(bot, 1600, false, BOT_MODE_NONE)
+	nearbyAllies = J.GetNearbyHeroes(bot, 1600, false, BOT_MODE_NONE)
+	nearbyEnemies = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE)
 
 	if J.Utils.IsBotPushingTowerInDanger(bot)
+	and not (#nearbyAllies >= 3 and #nearbyAllies >= #nearbyEnemies) -- 我们人挺多，对面人也挺多，大战似乎在所难免，别跑了
 	and (botMode == BOT_MODE_PUSH_TOWER_BOT
 	or botMode == BOT_MODE_PUSH_TOWER_MID
 	or botMode == BOT_MODE_PUSH_TOWER_TOP
@@ -119,6 +125,7 @@ function GetDesire()
 		if goToTargetAlly then
 			IsShouldFindTeammates = true
 			ShouldFindTeammatesTime = DotaTime()
+			print("avoid pushing tower for bot: " .. botName)
 			return BOT_ACTION_DESIRE_ABSOLUTE * 0.98
 		end
 	end
@@ -126,24 +133,30 @@ function GetDesire()
 	if bot:GetLevel() < 10
 	and nAliveEnemies >= 3
 	and (#nearbyAllies <= 2
+	and #nearbyEnemies >= 2
+	and not (#nearbyAllies >= 3 and #nearbyAllies >= #nearbyEnemies) -- 我们人挺多，对面人也挺多，大战似乎在所难免，别跑了
 	or (nAliveEnemies >= #nearbyAllies and nAliveAllies > 3)) then
 		if J.Utils.IsNearEnemySecondTierTower(bot, 1500) then
 			goToTargetAlly = J.Utils.FindAllyWithAtLeastDistanceAway(bot, 1600)
 			if goToTargetAlly then
 				IsShouldFindTeammates = true
 				ShouldFindTeammatesTime = DotaTime()
+				print("avoid pushing t2 tower for bot: " .. botName)
 				return BOT_ACTION_DESIRE_ABSOLUTE * 0.98
 			end
 		end
 	elseif bot:GetLevel() < 15
 	and nAliveEnemies >= 3
 	and (#nearbyAllies <= 2
+	and #nearbyEnemies >= 2
+	and not (#nearbyAllies >= 3 and #nearbyAllies >= #nearbyEnemies) -- 我们人挺多，对面人也挺多，大战似乎在所难免，别跑了
 	or (nAliveEnemies >= #nearbyAllies and nAliveAllies > 3)) then
 		if J.Utils.IsNearEnemyHighGroundTower(bot, 1500) then
 			goToTargetAlly = J.Utils.FindAllyWithAtLeastDistanceAway(bot, 1600)
 			if goToTargetAlly then
 				IsShouldFindTeammates = true
 				ShouldFindTeammatesTime = DotaTime()
+				print("avoid pushing t2+ tower for bot: " .. botName)
 				return BOT_ACTION_DESIRE_ABSOLUTE * 0.98
 			end
 		end
@@ -155,11 +168,13 @@ function GetDesire()
 	elseif (#nearbyAllies <= 2
 	or (nAliveEnemies >= #nearbyAllies and nAliveAllies > 3))
 	and J.Utils.IsTeamPushingSecondTierOrHighGround(bot)
-	and #J.Utils.GetLastSeenEnemyIdsNearLocation(bot:GetLocation(), 2500) > 1 then
+	and #J.Utils.GetLastSeenEnemyIdsNearLocation(bot:GetLocation(), 2500) > 1
+	and #nearbyEnemies >= 2 then
 		goToTargetAlly = J.Utils.FindAllyWithAtLeastDistanceAway(bot, 1600)
 		if goToTargetAlly then
 			IsShouldFindTeammates = true
 			ShouldFindTeammatesTime = DotaTime()
+			print("avoid pushing HG for bot: " .. botName)
 			return BOT_ACTION_DESIRE_ABSOLUTE * 0.98
 		end
 	end
@@ -167,7 +182,8 @@ function GetDesire()
 	if pingedDefendDesire <= 0 then
 		pingedDefendDesire = ConsiderPingedDefendDesire()
 	end
-	if pingedDefendDesire > 0 and pingedDefendLocation then
+	if pingedDefendDesire > 0 and pingedDefendLocation and #nearbyEnemies <= 0 then
+		print("got pinged to defend for bot: " .. botName)
 		return pingedDefendDesire
 	end
 
@@ -175,6 +191,7 @@ function GetDesire()
 	if ShouldHelpAlly
 	then
 		bot:SetTarget(targetUnit)
+		-- print("bot to help ally near it: " .. botName)
 		return BOT_ACTION_DESIRE_ABSOLUTE * 0.98
 	end
 
@@ -184,6 +201,7 @@ function GetDesire()
 
 	nDesire = AttackSpecialUnit.GetDesire(bot)
 	if nDesire > 0 then
+		print("bot to attack special unit: " .. botName .. ', desire: ' .. nDesire)
 		ShouldAttackSpecialUnit = true
 		return nDesire
 	end
@@ -199,6 +217,7 @@ function GetDesire()
 		-- local botLoc = bot:GetLocation()
 		-- J.AddAvoidanceZone(Vector(botLoc.x, botLoc.y, 100.0), 5)
 		IsAvoidingAbilityZone = true
+		print("bot to avoid some abilities: " .. botName)
 		return BOT_ACTION_DESIRE_VERYHIGH + 0.1
 	end
 
@@ -214,6 +233,7 @@ function GetDesire()
 			then
 				targetUnit = botTarget
 				bot:SetTarget(botTarget)
+				-- print("carry found a target. bot: " .. botName .. ', targetDesire: ' .. targetDesire)
 				return targetDesire
 			end
 		end
@@ -225,6 +245,7 @@ function GetDesire()
 			then
 				targetUnit = botTarget
 				bot:SetTarget(botTarget)
+				-- print("support found a target. bot: " .. botName .. ', targetDesire: ' .. targetDesire)
 				return targetDesire
 			end
 		end
@@ -234,7 +255,8 @@ function GetDesire()
 			if towerTime ~= 0 and X.IsValid(towerCreep)
 				and DotaTime() < towerTime + towerCreepTime
 			then
-				return BOT_MODE_DESIRE_ABSOLUTE *0.9;
+				print("bot should attack tower creep 1: " .. botName)
+				return BOT_MODE_DESIRE_ABSOLUTE * 0.9;
 			else
 				towerTime = 0;
 				towerCreepMode = false;
@@ -248,7 +270,8 @@ function GetDesire()
 					towerCreepMode = true;
 				end
 				bot:SetTarget(towerCreep);
-				return BOT_MODE_DESIRE_ABSOLUTE *0.9;
+				print("bot should attack tower creep 2: " .. botName)
+				return BOT_MODE_DESIRE_ABSOLUTE * 0.9;
 			end
 		end
 	end
@@ -318,8 +341,10 @@ function ConsiderPingedDefendDesire()
 		local towerWithLeastEnemiesAround = J.Utils.GetNonTier1TowerWithLeastEnemiesAround(1400)
 		if towerWithLeastEnemiesAround then
 			nDefendLoc = towerWithLeastEnemiesAround:GetLocation()
-			enemeyPushingBase = true
-			print("Non-tier-1 towers are in danger for team " .. team)
+			if nDefendLoc and J.GetEnemiesAroundLoc(nDefendLoc, 1400) >= 1 then
+				enemeyPushingBase = true
+				print("Non-tier-1 towers are in danger for team " .. team)
+			end
 		end
 	end
 
@@ -2350,6 +2375,7 @@ end
 function ConsiderHarassInLaningPhase()
 	if J.IsInLaningPhase()
 	and not J.IsCore(bot)
+	and J.GetHP(bot) > 0.7
 	and not bot:WasRecentlyDamagedByAnyHero(1.5)
 	then
 		local nModeDesire = bot:GetActiveModeDesire()
@@ -2371,8 +2397,7 @@ function ConsiderHarassInLaningPhase()
 			end
 		end
 
-		if J.GetHP(bot) > 0.65
-		and (#nEnemyLaneCreeps < 3 or not bot:WasRecentlyDamagedByCreep(1))
+		if (#nEnemyLaneCreeps < 3 or not bot:WasRecentlyDamagedByCreep(1))
 		and (J.IsCore(bot) and canLastHitCount <= 1)
 		then
 			if nAttackRange < 300

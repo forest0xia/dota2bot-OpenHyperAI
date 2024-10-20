@@ -956,24 +956,24 @@ export function GetLastSeenEnemyIdsNearLocation(
                 }
 
                 // could be TPing to here
-                if (
-                    GetLocationToLocationDistance(
-                        firstInfo.location,
-                        GetEnemyFountainTpPoint()
-                    ) <
-                    GetLocationToLocationDistance(
-                        firstInfo.location,
-                        GetTeamFountainTpPoint()
-                    )
-                ) {
-                    const enemyHero = GetEnemyHeroByPlayerId(playerdId);
-                    if (
-                        enemyHero &&
-                        enemyHero.HasModifier("modifier_teleporting")
-                    ) {
-                        enemies.push(playerdId);
-                    }
-                }
+                // if (
+                //     GetLocationToLocationDistance(
+                //         firstInfo.location,
+                //         GetEnemyFountainTpPoint()
+                //     ) <
+                //     GetLocationToLocationDistance(
+                //         firstInfo.location,
+                //         GetTeamFountainTpPoint()
+                //     )
+                // ) {
+                //     const enemyHero = GetEnemyHeroByPlayerId(playerdId);
+                //     if (
+                //         enemyHero &&
+                //         enemyHero.HasModifier("modifier_teleporting")
+                //     ) {
+                //         enemies.push(playerdId);
+                //     }
+                // }
             }
         }
     }

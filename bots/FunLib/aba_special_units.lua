@@ -14,7 +14,7 @@ function X.GetDesire(bot__)
         return 0
     end
 
-    local botHealth = bot:GetHealth()
+    local botHealth = J.GetEffectiveHP( bot )
     local botHP = J.GetHP(bot)
     local botLocation = bot:GetLocation()
 	local botAttackRange = bot:GetAttackRange()
@@ -24,11 +24,6 @@ function X.GetDesire(bot__)
 
     local tAllyHeroes_all = bot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
     local tEnemyHeroes_all = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
-
-    if string.find(bot:GetUnitName(), 'medusa')
-    then
-        botHealth = botHealth + bot:GetMana()
-    end
 
 	local isClockwerkInTeam = false
 
@@ -42,7 +37,7 @@ function X.GetDesire(bot__)
 		end
 	end
 
-	for _, unit in pairs(GetUnitList(UNIT_LIST_ALL))
+	for _, unit in pairs(GetUnitList(UNIT_LIST_ENEMIES))
 	do
 		if J.IsValid(unit)
         and J.CanBeAttacked(unit)
@@ -233,17 +228,18 @@ function X.GetDesire(bot__)
                     and withinAttackRange
                     and botAttackDamage > totalUnitHP and unitAttackDamage < botHealth
                     then
-                        return 0.2
+                        return 0.4
                     end
                 end
 
-                if string.find(unitName, 'observer_wards')
-                or string.find(unitName, 'sentry_wards')
+                if (string.find(unitName, 'observer_wards')
+                or string.find(unitName, 'sentry_wards'))
+                and X.IsThereSentry(unit:GetLocation())
                 then
                     if not X.IsBeingAttackedByHero(bot) or #tEnemyHeroes <= 1
                     then
-                        if J.IsInRange(bot, unit, botAttackRange * 1.5) then return 0.95 end
-                        return 0.75
+                        if J.IsInRange(bot, unit, botAttackRange * 1.5) then return 0.6 end
+                        return 0.5
                     end
                 end
 
@@ -379,6 +375,22 @@ function X.IsHeroWithinRadius(tUnits, nRadius)
     end
 
     return false
+end
+
+function X.IsThereSentry(loc)
+	local nWardList = GetUnitList(UNIT_LIST_ALLIED_WARDS)
+
+	for _, ward in pairs(nWardList)
+    do
+		if ward ~= nil
+		and ward:GetUnitName() == "npc_dota_sentry_wards"
+        and GetUnitToLocationDistance(ward, loc) <= 600
+        then
+			return true
+		end
+	end
+
+	return false
 end
 
 return X

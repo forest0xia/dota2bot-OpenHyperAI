@@ -7280,16 +7280,18 @@ function X.SetAbilityItemList(heroAbility, items, abilityLvlup)
 end
 
 function ShouldUseAbility()
-	local isTargetHero = J.IsValidHero(botTarget)
-	if J.IsInLaningPhase(bot)
-	and (botName ~= 'npc_dota_hero_huskar' and botName ~= 'npc_dota_hero_lion' and botName ~= 'npc_dota_hero_obsidian_destroyer')
-	and (
-		(not isTargetHero or bot:GetMana() < 150 or J.GetMP(bot) < 0.2)
-		or (isTargetHero and J.GetHP(botTarget) > 0.5 and (bot:GetMana() < 150 or J.GetMP(bot) < 0.2))
-	) then
-		return false
-	end
 	return true
+
+	-- local isTargetHero = J.IsValidHero(botTarget)
+	-- if J.IsInLaningPhase(bot)
+	-- and (botName ~= 'npc_dota_hero_huskar' and botName ~= 'npc_dota_hero_lion' and botName ~= 'npc_dota_hero_obsidian_destroyer')
+	-- and (
+	-- 	(not isTargetHero or bot:GetMana() < 150 or J.GetMP(bot) < 0.2)
+	-- 	or (isTargetHero and J.GetHP(botTarget) > 0.5 and (bot:GetMana() < 150 or J.GetMP(bot) < 0.2))
+	-- ) then
+	-- 	return false
+	-- end
+	-- return true
 end
 
 X.AbilityLevelUpThink = AbilityLevelUpThink
