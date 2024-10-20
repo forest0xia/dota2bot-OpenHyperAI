@@ -47,10 +47,10 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_faerie_fire",
 	"item_circlet",
 
+	"item_magic_wand",
 	"item_boots",
 	"item_ring_of_basilius",
 	"item_arcane_boots",
-	"item_magic_wand",
 	"item_shivas_guard",--
 	"item_rod_of_atos",
 	"item_gungir",--

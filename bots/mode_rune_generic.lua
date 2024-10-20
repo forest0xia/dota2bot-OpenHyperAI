@@ -520,10 +520,13 @@ end
 
 function X.GetScaledDesire(nBase, nCurrDist, nMaxDist)
     local desire = Clamp(nBase + RemapValClamped(nCurrDist, 600, nMaxDist, 1 - nBase, 0), 0, 0.65)
-	if bot:GetNetWorth() < 15000 then
-		return desire
+	if not J.IsInLaningPhase() and J.IsCore(bot) then
+		return desire * 0.4
 	end
-	return desire * 0.7
+	if bot:GetNetWorth() > 15000 then
+		return desire * 0.6
+	end
+	return desire
 end
 
 function X.GetGoOutLocation()

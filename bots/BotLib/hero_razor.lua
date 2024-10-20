@@ -56,8 +56,8 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_magic_stick",
 	"item_quelling_blade",
 
-	"item_power_treads",
 	"item_magic_wand",
+	"item_power_treads",
 	"item_falcon_blade",
 	"item_manta",--
 	"item_black_king_bar",--
@@ -79,9 +79,9 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_slippers",
 	"item_circlet",
 
+	"item_magic_wand",
 	"item_wraith_band",
 	"item_boots",
-	"item_magic_wand",
 	"item_falcon_blade",
 	"item_power_treads",
 	"item_manta",--

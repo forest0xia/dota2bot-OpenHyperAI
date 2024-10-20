@@ -49,9 +49,9 @@ sRoleItemsBuyList['pos_1'] = {
     "item_tango",
     "item_faerie_fire",
     "item_double_branches",
+    "item_magic_wand",
 
     "item_power_treads",
-    "item_magic_wand",
     "item_gungir",--
     "item_black_king_bar",--
     "item_aghanims_shard",
@@ -69,9 +69,9 @@ sRoleItemsBuyList['pos_3'] = {
     "item_tango",
     "item_faerie_fire",
     "item_double_branches",
+    "item_magic_wand",
 
     "item_power_treads",
-    "item_magic_wand",
     "item_gungir",--
     "item_black_king_bar",--
     "item_aghanims_shard",

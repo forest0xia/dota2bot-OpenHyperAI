@@ -68,8 +68,8 @@ sRoleItemsBuyList['pos_4'] = {
 	"item_enchanted_mango",
 	"item_blood_grenade",
 
-	"item_arcane_boots",
 	"item_magic_wand",
+	"item_arcane_boots",
 	"item_glimmer_cape",--
 	"item_guardian_greaves",--
 	"item_orchid",
@@ -90,8 +90,8 @@ sRoleItemsBuyList['pos_5'] = {
 	"item_enchanted_mango",
 	"item_blood_grenade",
 
-	"item_arcane_boots",
 	"item_magic_wand",
+	"item_arcane_boots",
 	"item_orchid",
 	"item_glimmer_cape",--
     "item_pavise",

@@ -213,7 +213,7 @@ function GetDesire()
 		end
 	end
 
-	if HasBetterAvoidAbilityEffects() and not J.WeAreStronger(bot, 1500) then
+	if HasModifierThatNeedToAvoidEffects() and not J.WeAreStronger(bot, 1500) then
 		-- local botLoc = bot:GetLocation()
 		-- J.AddAvoidanceZone(Vector(botLoc.x, botLoc.y, 100.0), 5)
 		IsAvoidingAbilityZone = true
@@ -281,7 +281,7 @@ function GetDesire()
 end
 
 -- Leave from the area that's affected by some spells like ults of Lich, Jakiro, etc.
-function HasBetterAvoidAbilityEffects()
+function HasModifierThatNeedToAvoidEffects()
 	return bot:HasModifier('modifier_jakiro_macropyre_burn') -- 可能无视魔免的技能
 	or bot:HasModifier('modifier_dark_seer_wall_slow')
 	or ( -- 不无视魔免的技能

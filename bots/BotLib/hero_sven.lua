@@ -39,9 +39,9 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_faerie_fire",
 	"item_quelling_blade",
 
+	"item_magic_wand",
 	"item_power_treads",
 	"item_mask_of_madness",
-	"item_magic_wand",
 	"item_echo_sabre",
 	"item_blink",
 	"item_black_king_bar",--

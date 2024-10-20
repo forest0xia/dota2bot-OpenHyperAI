@@ -58,9 +58,9 @@ sRoleItemsBuyList['pos_2'] = {
 	"item_circlet",
 
 	"item_bottle",
+	"item_magic_wand",
 	"item_bracer",
 	"item_phase_boots",
-	"item_magic_wand",
 	"item_blade_mail",
 	"item_ultimate_scepter",
 	"item_aghanims_shard",
@@ -82,9 +82,9 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_quelling_blade",
 	"item_double_gauntlets",
 
+	"item_magic_wand",
 	"item_double_bracer",
 	"item_phase_boots",
-	"item_magic_wand",
 	"item_blade_mail",
 	"item_ultimate_scepter",
 	"item_aghanims_shard",

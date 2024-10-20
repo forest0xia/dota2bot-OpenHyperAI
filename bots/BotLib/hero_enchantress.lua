@@ -48,9 +48,9 @@ sRoleItemsBuyList['pos_3'] = {
     "item_double_branches",
     "item_circlet",
 
+    "item_magic_wand",
     "item_bracer",
     "item_power_treads",
-    "item_magic_wand",
     "item_mage_slayer",--
     "item_force_staff",
     "item_hurricane_pike",--

@@ -40,8 +40,8 @@ sRoleItemsBuyList['pos_4'] = {
 	"item_double_branches",
 	"item_blood_grenade",
 
-	"item_arcane_boots",
 	"item_magic_wand",
+	"item_arcane_boots",
 	"item_aghanims_shard",
 	"item_glimmer_cape",--
 	"item_guardian_greaves",--
@@ -60,8 +60,8 @@ sRoleItemsBuyList['pos_5'] = {
     "item_double_branches",
     "item_blood_grenade",
 
-    "item_boots",
     "item_magic_wand",
+    "item_boots",
     "item_urn_of_shadows",
     "item_tranquil_boots",
     "item_pavise",
@@ -83,8 +83,8 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_enchanted_mango",
 	"item_double_branches",
 
-	"item_arcane_boots",
 	"item_magic_wand",
+	"item_arcane_boots",
 	"item_aghanims_shard",
 	"item_glimmer_cape",--
     'item_veil_of_discord',

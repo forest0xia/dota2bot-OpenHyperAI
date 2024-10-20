@@ -40,9 +40,9 @@ sRoleItemsBuyList['pos_4'] = {
 	"item_enchanted_mango",
 	"item_blood_grenade",
 
+	"item_magic_wand",
 	"item_boots",
 	"item_arcane_boots",
-	"item_magic_wand",
 	"item_glimmer_cape",--
 	"item_aether_lens",--
 	"item_aghanims_shard",
@@ -62,9 +62,9 @@ sRoleItemsBuyList['pos_5'] = {
 	"item_enchanted_mango",
 	"item_blood_grenade",
 
+	"item_magic_wand",
 	"item_boots",
 	"item_tranquil_boots",
-	"item_magic_wand",
 	"item_glimmer_cape",--
 	"item_pipe",--
 	"item_aether_lens",--
@@ -106,8 +106,8 @@ sRoleItemsBuyList['pos_2'] = {
     "item_faerie_fire",
 
     "item_bottle",
-    "item_boots",
     "item_magic_wand",
+    "item_boots",
     "item_dagon_2",
     "item_travel_boots",
     "item_aghanims_shard",
@@ -129,8 +129,8 @@ sRoleItemsBuyList['pos_3'] = {
     "item_magic_stick",
     "item_ring_of_protection",
 
-    "item_boots",
     "item_magic_wand",
+    "item_boots",
     "item_phase_boots",
     "item_lotus_orb",--
     "item_veil_of_discord",

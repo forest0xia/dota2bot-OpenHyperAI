@@ -31,8 +31,8 @@ sRoleItemsBuyList['pos_2'] = {
     "item_quelling_blade",
 
     "item_bottle",
-    "item_boots",
     "item_magic_wand",
+    "item_boots",
     "item_urn_of_shadows",
     "item_spirit_vessel",
     "item_blade_mail",
@@ -54,9 +54,9 @@ sRoleItemsBuyList['pos_1'] = {
     "item_double_branches",
     "item_faerie_fire",
     "item_quelling_blade",
+    "item_magic_wand",
 
     "item_boots",
-    "item_magic_wand",
     "item_urn_of_shadows",
     "item_spirit_vessel",
     "item_blade_mail",

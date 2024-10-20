@@ -40,10 +40,10 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_double_branches",
 	"item_double_enchanted_mango",
 	"item_quelling_blade",
+	"item_magic_wand",
 
 	"item_vanguard",
 	"item_arcane_boots",
-	"item_magic_wand",
 	"item_ultimate_scepter",
 	"item_bloodstone",--
 	"item_kaya_and_sange",--
@@ -61,10 +61,10 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_double_branches",
 	"item_double_enchanted_mango",
 	"item_quelling_blade",
+	"item_magic_wand",
 
 	"item_vanguard",
 	"item_arcane_boots",
-	"item_magic_wand",
 	"item_ultimate_scepter",
 	"item_eternal_shroud",--
 	"item_bloodstone",--

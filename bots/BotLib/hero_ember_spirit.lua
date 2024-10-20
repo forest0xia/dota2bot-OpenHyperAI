@@ -33,9 +33,9 @@ sRoleItemsBuyList['pos_2'] = {
     "item_quelling_blade",
 
 	"item_bottle",
+    "item_magic_wand",
 	"item_boots",
     "item_phase_boots",
-    "item_magic_wand",
 	"item_mage_slayer",
     "item_maelstrom",
 	"item_kaya_and_sange",--
@@ -57,9 +57,9 @@ sRoleItemsBuyList['pos_3'] = {
     "item_faerie_fire",
     "item_quelling_blade",
 
+    "item_magic_wand",
 	"item_boots",
     "item_phase_boots",
-    "item_magic_wand",
 	"item_mage_slayer",
     "item_maelstrom",
 	"item_kaya_and_sange",--

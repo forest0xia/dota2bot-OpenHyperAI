@@ -38,9 +38,9 @@ sRoleItemsBuyList['pos_2'] = {
 	"item_faerie_fire",
 
 	"item_bottle",
+	"item_magic_wand",
 	"item_arcane_boots",
 	"item_phylactery",
-	"item_magic_wand",
 	"item_aghanims_shard",
 	"item_kaya_and_sange",--
 	"item_travel_boots",
@@ -74,9 +74,9 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_tango",
 	"item_double_branches",
 
+	"item_magic_wand",
 	"item_arcane_boots",
 	"item_phylactery",
-	"item_magic_wand",
 	"item_aghanims_shard",
 	"item_kaya_and_sange",--
 	"item_travel_boots",

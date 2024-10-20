@@ -40,8 +40,8 @@ sRoleItemsBuyList['pos_4'] = {
 	"item_faerie_fire",
 	"item_blood_grenade",
 
-	"item_arcane_boots",
 	"item_magic_wand",
+	"item_arcane_boots",
 	"item_rod_of_atos",
 	"item_glimmer_cape",--
 	"item_aether_lens",--
@@ -62,8 +62,8 @@ sRoleItemsBuyList['pos_5'] = {
 	"item_faerie_fire",
 	"item_blood_grenade",
 
-	"item_tranquil_boots",
 	"item_magic_wand",
+	"item_tranquil_boots",
 	"item_glimmer_cape",--
 	"item_pipe",
 	"item_rod_of_atos",

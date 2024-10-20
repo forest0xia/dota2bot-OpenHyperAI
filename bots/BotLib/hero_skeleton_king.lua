@@ -41,8 +41,8 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_gauntlets",
 	"item_quelling_blade",
 
-	"item_phase_boots",
 	"item_magic_wand",
+	"item_phase_boots",
 	"item_armlet",
 	"item_radiance",--
 	"item_blink",
@@ -65,8 +65,8 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_magic_stick",
 	"item_branches",
 
-	"item_bracer",
 	"item_magic_wand",
+	"item_bracer",
 	"item_phase_boots",
 	"item_radiance",--
 	"item_blink",

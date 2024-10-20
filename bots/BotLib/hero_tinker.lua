@@ -52,8 +52,8 @@ sRoleItemsBuyList['pos_3'] = {
     "item_faerie_fire",
     "item_double_circlet",
 
-    "item_soul_ring",
     "item_magic_wand",
+    "item_soul_ring",
     "item_blink",
 	"item_kaya_and_sange",--
 	"item_angels_demise",--
@@ -76,8 +76,8 @@ sRoleItemsBuyList['pos_4'] = {
 	"item_faerie_fire",
 	"item_blood_grenade",
 
-	"item_arcane_boots",
 	"item_magic_wand",
+	"item_arcane_boots",
 	"item_rod_of_atos",
 	"item_glimmer_cape",--
 	"item_aether_lens",--

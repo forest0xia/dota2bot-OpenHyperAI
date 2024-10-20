@@ -49,11 +49,11 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_quelling_blade",
 	"item_slippers",
 	"item_circlet",
+	"item_magic_wand",
 
 	"item_wraith_band",
 	"item_phase_boots",
 	"item_maelstrom",
-	"item_magic_wand",
     "item_yasha",
     "item_black_king_bar",--
     "item_sange_and_yasha",--
@@ -74,12 +74,12 @@ sRoleItemsBuyList['pos_2'] = {
 	"item_quelling_blade",
 	"item_slippers",
 	"item_circlet",
+	"item_magic_wand",
 
 	"item_wraith_band",
 	"item_bottle",
 	"item_phase_boots",
 	"item_maelstrom",
-	"item_magic_wand",
     "item_yasha",
     "item_black_king_bar",--
     "item_sange_and_yasha",--
@@ -99,10 +99,10 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_tango",
 	"item_double_branches",
 	"item_quelling_blade",
+	"item_magic_wand",
 
 	"item_double_wraith_band",
 	"item_boots",
-	"item_magic_wand",
 	"item_phase_boots",
 	"item_maelstrom",
 	"item_black_king_bar",--

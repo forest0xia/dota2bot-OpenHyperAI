@@ -57,10 +57,10 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_quelling_blade",
 	"item_tango",
 	"item_faerie_fire",
+	"item_magic_wand",
 
 	"item_bottle",
 	"item_phase_boots",
-	"item_magic_wand",
 	"item_phylactery",
 	"item_ultimate_scepter",
 	"item_octarine_core",--
@@ -82,9 +82,9 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_quelling_blade",
 	"item_tango",
 	"item_faerie_fire",
+	"item_magic_wand",
 
 	"item_boots",
-	"item_magic_wand",
 	"item_phase_boots",
 	"item_phylactery",
 	"item_pipe",
@@ -105,9 +105,9 @@ sRoleItemsBuyList['pos_4'] = {
 	"item_double_branches",
 	"item_blood_grenade",
 	"item_orb_of_venom",
+	"item_magic_wand",
 
 	"item_boots",
-	"item_magic_wand",
 	"item_tranquil_boots",
 	"item_ancient_janggo",
 	"item_guardian_greaves",--
@@ -126,9 +126,9 @@ sRoleItemsBuyList['pos_5'] = {
 	"item_double_branches",
 	"item_blood_grenade",
 	"item_orb_of_venom",
+	"item_magic_wand",
 
 	"item_boots",
-	"item_magic_wand",
 	"item_arcane_boots",
 	"item_ancient_janggo",
 	"item_pipe",--

@@ -31,8 +31,8 @@ sRoleItemsBuyList['pos_4'] = {
     "item_double_branches",
     "item_blood_grenade",
 
-    "item_arcane_boots",
     "item_magic_wand",
+    "item_arcane_boots",
     "item_aether_lens",--
     "item_blink",
     nRandItem,--
@@ -52,9 +52,9 @@ sRoleItemsBuyList['pos_5'] = {
 	"item_enchanted_mango",
 	"item_blood_grenade",
 
+	"item_magic_wand",
 	"item_boots",
 	"item_tranquil_boots",
-	"item_magic_wand",
 	"item_glimmer_cape",--
     "item_pipe",--
 	-- "item_aether_lens",--

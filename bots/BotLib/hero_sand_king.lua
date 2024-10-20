@@ -42,10 +42,10 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_circlet",
 	"item_quelling_blade",
 
+	"item_magic_wand",
 	"item_bracer",
 	"item_boots",
 	"item_veil_of_discord",
-	"item_magic_wand",
 	"item_blink",
 	"item_cyclone",
 	"item_shivas_guard",--

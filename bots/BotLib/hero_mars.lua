@@ -34,9 +34,9 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_double_branches",
     "item_quelling_blade",
 
+	"item_magic_wand",
 	"item_double_bracer",
 	"item_boots",
-	"item_magic_wand",
     "item_phase_boots",
 	"item_soul_ring",
     "item_blink",

@@ -41,8 +41,8 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_quelling_blade",
 	"item_gauntlets",
 
-	"item_boots",
 	"item_magic_wand",
+	"item_boots",
 	"item_soul_ring",
 	"item_phase_boots",
 	"item_vladmir",--
@@ -66,8 +66,8 @@ sRoleItemsBuyList['pos_4'] = {
     "item_faerie_fire",
     "item_wind_lace",
 
-    "item_arcane_boots",
     "item_magic_wand",
+    "item_arcane_boots",
     "item_guardian_greaves",--
     "item_blink",
     "item_ultimate_scepter",
@@ -87,8 +87,8 @@ sRoleItemsBuyList['pos_5'] = {
     "item_faerie_fire",
     "item_wind_lace",
 
-    "item_arcane_boots",
     "item_magic_wand",
+    "item_arcane_boots",
     "item_pipe",--
     "item_blink",
     "item_ultimate_scepter",

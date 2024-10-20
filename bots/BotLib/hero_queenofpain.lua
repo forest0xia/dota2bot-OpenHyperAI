@@ -40,9 +40,9 @@ sRoleItemsBuyList['pos_2'] = {
 
 	'item_null_talisman',
 	"item_bottle",
+	"item_magic_wand",
 	'item_null_talisman',
 	"item_boots",
-	"item_magic_wand",
 	"item_power_treads",
 	"item_witch_blade",
 	"item_kaya_and_sange",--
@@ -63,8 +63,8 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_tango",
 	"item_double_branches",
 
-	"item_boots",
 	"item_magic_wand",
+	"item_boots",
 	"item_power_treads",
 	"item_witch_blade",
 	"item_kaya_and_sange",--
@@ -90,9 +90,9 @@ sRoleItemsBuyList['pos_4'] = {
 	"item_enchanted_mango",
 	"item_blood_grenade",
 
+	"item_magic_wand",
 	"item_boots",
 	"item_arcane_boots",
-	"item_magic_wand",
 	"item_glimmer_cape",--
 	"item_aether_lens",--
 	"item_aghanims_shard",
@@ -113,9 +113,9 @@ sRoleItemsBuyList['pos_5'] = {
 	"item_enchanted_mango",
 	"item_blood_grenade",
 
+	"item_magic_wand",
 	"item_boots",
 	"item_tranquil_boots",
-	"item_magic_wand",
 	"item_glimmer_cape",--
 	"item_pipe",
 	"item_aether_lens",--

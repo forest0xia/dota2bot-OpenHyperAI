@@ -481,10 +481,10 @@ function X.ConsiderUnleash()
     local botTarget = J.GetProperTarget(bot)
 
     local nAllyHeroes = J.GetAlliesNearLoc(bot:GetLocation(), 800)
-    local nEnemyHeroes = J.GetEnemiesNearLoc(bot:GetLocation(), 600)
+    local nEnemyHeroes = J.GetEnemiesNearLoc(bot:GetLocation(), 1200)
 
-    if J.IsInTeamFight(bot, 600) then
-        local nInRangeEnemy = J.GetEnemiesNearLoc(bot:GetLocation(), 700)
+    if J.IsInTeamFight(bot, 1200) then
+        local nInRangeEnemy = J.GetEnemiesNearLoc(bot:GetLocation(), 600)
         local nCoreCount = 0
         for _, enemy in pairs(nInRangeEnemy) do
             if J.IsValidHero(enemy) and J.IsCore(enemy) then
@@ -499,25 +499,22 @@ function X.ConsiderUnleash()
 
     if J.IsGoingOnSomeone(bot) then
         if J.IsValidHero(botTarget)
-        and J.IsInRange(bot, botTarget, bot:GetAttackRange() * 1.2)
+        and J.IsInRange(bot, botTarget, bot:GetAttackRange() * 1.5)
         and J.CanBeAttacked(botTarget)
-        and botTarget:GetHealth() > (nPulseDamage + bot:GetAttackDamage() * (nPunchCount + 2))
+        and J.GetEffectiveHP(botTarget) > (nPulseDamage + bot:GetAttackDamage() * (nPunchCount + 2))
         and not J.IsChasingTarget(bot, botTarget)
         and not botTarget:HasModifier('modifier_abaddon_borrowed_time')
         and not botTarget:HasModifier('modifier_dazzle_shallow_grave')
         and not botTarget:HasModifier('modifier_faceless_void_chronosphere_freeze')
         and not botTarget:HasModifier('modifier_item_blade_mail_reflect')
         and not botTarget:HasModifier('modifier_item_aeon_disk_buff')
-        and not (#nAllyHeroes >= #nEnemyHeroes + 2)
+        and not (#nAllyHeroes >= #nEnemyHeroes + 3)
         then
             if J.IsInLaningPhase() and #nAllyHeroes <= 2 and #nEnemyHeroes <= 1 then
-                if J.IsCore(botTarget) and botTarget:GetHealth() <= bot:GetEstimatedDamageToTarget(true, botTarget, 8.0, DAMAGE_TYPE_ALL) then
-                    return BOT_ACTION_DESIRE_HIGH
-                end
-            else
-                if J.IsCore(botTarget) then
-                    return BOT_ACTION_DESIRE_HIGH
-                end
+                return BOT_ACTION_DESIRE_HIGH
+            end
+            if J.IsCore(botTarget) then
+                return BOT_ACTION_DESIRE_HIGH
             end
         end
     end

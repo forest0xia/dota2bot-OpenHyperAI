@@ -88,20 +88,20 @@ function X.GetDesire(bot__)
             if bot:GetTeam() ~= unit:GetTeam()
             then
                 if string.find(unitName, 'juggernaut_healing_ward')
-                or string.find(unitName, 'invoker_forged_spirit')
-                or string.find(unitName, 'venomancer_plague_ward')
-                or string.find(unitName, 'clinkz_skeleton_archer')
                 then
-                    if J.IsInRange(bot, unit, botAttackRange + 300) then
-                        return 0.50
+                    if J.IsInRange(bot, unit, botAttackRange + 200) then
+                        return 0.8
                     end
 
                     if #tEnemyHeroes == 0 then
-                        return 0.60
+                        return 0.7
                     end
                 end
 
-                if string.find(unitName, 'shadow_shaman_ward') then
+                if string.find(unitName, 'shadow_shaman_ward')
+                or string.find(unitName, 'invoker_forged_spirit')
+                or string.find(unitName, 'venomancer_plague_ward')
+                or string.find(unitName, 'clinkz_skeleton_archer') then
                     local tSerpents = X.GetUnitTypeAttackingBot(botLocation, 1600, unitName)
                     local unitsAttackDamage = X.GetTotalAttackDamage(tSerpents, 8.0)
                     botAttackDamage = X.GetUnitAttackDamageWithinTime(bot, 5.0)
@@ -111,7 +111,7 @@ function X.GetDesire(bot__)
                     then
                         if unitsAttackDamage < botHealth
                         or J.IsInRange(bot, unit, botAttackRange) and not J.IsInRange(bot, unit, unit:GetAttackRange()) then
-                            return 0.95
+                            return 0.45
                         end
                     end
                 end
@@ -120,14 +120,14 @@ function X.GetDesire(bot__)
                 then
                     if J.IsInRange(bot, unit, botAttackRange + 150) then
                         if J.IsGoingOnSomeone(bot) and (not X.IsHeroWithinRadius(tEnemyHeroes, 450) or not X.IsBeingAttackedByHero(bot)) then
-                            return 0.80
+                            return 0.65
                         else
                             if not X.IsBeingAttackedByHero(bot) then
-                                return 0.90
+                                return 0.60
                             end
                         end
                     else
-                        return 0.75
+                        return 0.55
                     end
                 end
 
@@ -135,16 +135,16 @@ function X.GetDesire(bot__)
                 or string.find(unitName, 'weaver_swarm')
                 then
                     if #tEnemyHeroes == 0 then
-                        return 0.95
+                        return 0.75
                     end
 
                     if J.IsGoingOnSomeone(bot) and (not X.IsHeroWithinRadius(tEnemyHeroes, 450) or not X.IsBeingAttackedByHero(bot))
                     then
-                        return 0.9
+                        return 0.7
                     else
                         if not X.IsHeroWithinRadius(tEnemyHeroes, 450)
                         then
-                            return 0.75
+                            return 0.55
                         end
                     end
                 end

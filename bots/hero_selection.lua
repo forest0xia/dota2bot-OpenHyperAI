@@ -60,7 +60,7 @@ local WeakHeroes = {
 	'npc_dota_hero_keeper_of_the_light',
 	'npc_dota_hero_winter_wyvern',
 	'npc_dota_hero_ancient_apparition',
-	'npc_dota_hero_phoenix',
+	-- 'npc_dota_hero_phoenix',
 	'npc_dota_hero_tinker',
 	'npc_dota_hero_pangolier',
 	'npc_dota_hero_furion',
