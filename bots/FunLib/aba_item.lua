@@ -403,6 +403,12 @@ Item['sSellList'] = {
 	"item_assault",
 	"item_magic_wand",
 
+	"item_assault",
+	"item_quelling_blade",
+
+	"item_assault",
+	"item_orb_of_corrosion",
+
 	"item_travel_boots",
 	"item_magic_wand",
 

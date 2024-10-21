@@ -62,6 +62,7 @@ local UnitType = ____dota.UnitType
 local AttributeType = ____dota.AttributeType
 local ____utils = require(GetScriptDirectory().."/FunLib/utils")
 local IsValidHero = ____utils.IsValidHero
+local PrintTable = ____utils.PrintTable
 function GetHeroNetWorth(hero)
     local totalNetWorth = 0
     do
@@ -204,7 +205,6 @@ local function AssignPositions()
         heroList,
         function(____, a, b) return b.totalScore - a.totalScore end
     )
-    local positions = {}
     do
         local index = 0
         while index < #heroList do
@@ -214,12 +214,11 @@ local function AssignPositions()
                 pos = 5
             end
             if IsValidHero(data.hero) then
-                positions[data.hero:GetPlayerID()] = pos
+                cachedPositions[data.hero:GetPlayerID()] = pos
             end
             index = index + 1
         end
     end
-    cachedPositions = positions
     return cachedPositions
 end
 function ____exports.UpdateEnemyHeroPositions()
@@ -228,6 +227,8 @@ function ____exports.UpdateEnemyHeroPositions()
         local enemyHeroes = GetUnitList(UnitType.EnemyHeroes)
         UpdateEnemyHeroData(enemyHeroes)
         AssignPositions()
+        print("Enemy roles:")
+        PrintTable(cachedPositions)
     end
 end
 function ____exports.GetEnemyPosition(playerId)

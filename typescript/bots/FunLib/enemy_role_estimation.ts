@@ -1,5 +1,5 @@
 import { UnitType, Unit, AttributeType } from "bots/ts_libs/dota";
-import { IsValidHero } from "bots/FunLib/utils";
+import { IsValidHero, PrintTable } from "bots/FunLib/utils";
 
 const enemyHeroData: { [playerId: number]: EnemyHeroData } = {};
 
@@ -148,16 +148,14 @@ function AssignPositions(): EnemyHeroPosition {
     heroList.sort((a, b) => b.totalScore - a.totalScore);
 
     // Assign positions
-    const positions: EnemyHeroPosition = {};
     for (let index = 0; index < heroList.length; index++) {
         const data = heroList[index];
         let pos = index + 1; // Positions 1 to 5
         if (pos > 5) pos = 5; // Ensure position does not exceed 5
         if (IsValidHero(data.hero)) {
-            positions[data.hero.GetPlayerID()] = pos;
+            cachedPositions[data.hero.GetPlayerID()] = pos;
         }
     }
-    cachedPositions = positions;
     return cachedPositions;
 }
 
@@ -191,6 +189,9 @@ export function UpdateEnemyHeroPositions() {
         const enemyHeroes = GetUnitList(UnitType.EnemyHeroes);
         UpdateEnemyHeroData(enemyHeroes);
         AssignPositions();
+
+        // print("Enemy roles:");
+        // PrintTable(cachedPositions);
     }
 }
 

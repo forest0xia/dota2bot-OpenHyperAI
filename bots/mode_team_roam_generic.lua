@@ -9,6 +9,7 @@ local X = {}
 
 local J = require( GetScriptDirectory()..'/FunLib/jmz_func')
 local Item = require( GetScriptDirectory()..'/FunLib/aba_item')
+local Roles = require( GetScriptDirectory()..'/FunLib/aba_role')
 local AttackSpecialUnit = dofile( GetScriptDirectory()..'/FunLib/aba_special_units')
 
 local targetUnit = nil;
@@ -635,21 +636,18 @@ function GoPickUpItem(goPickItem)
 end
 
 function X.SupportFindTarget()
-	
 	if X.CanNotUseAttack(bot) or DotaTime() < 0 then return nil,0 end
-	
+
 	local IsModeSuitHit = X.IsModeSuitToHitCreep(bot);
 	local nAttackRange = bot:GetAttackRange() + 50;
 	if nAttackRange > 1200 then nAttackRange = 1200 end
-	
-	
-	local nTarget = J.GetProperTarget(bot);	
+
+	local nTarget = J.GetProperTarget(bot);
 	local botMode = bot:GetActiveMode();
 	local botLV   = bot:GetLevel();
 	local botAD   = bot:GetAttackDamage();
-	local botBAD  = X.GetAttackDamageToCreep(bot) - 1; 
-	
-	
+	local botBAD  = X.GetAttackDamageToCreep(bot) - 1;
+
 	if X.CanBeAttacked(nTarget) and nTarget == targetUnit
 	   and GetUnitToUnitDistance(bot,nTarget) <= 1600
 	then
@@ -659,39 +657,38 @@ function X.SupportFindTarget()
 			then
 				return nTarget,BOT_MODE_DESIRE_VERYHIGH * 1.08;
 			end
-			
+
 			return nTarget,BOT_MODE_DESIRE_VERYHIGH * 1.04;
-		end	
-		
-		if nTarget:IsCourier() 
+		end
+
+		if nTarget:IsCourier()
 			and GetUnitToUnitDistance(bot,nTarget) <= nAttackRange + 300
 			and J.GetHP(bot) > 0.3 and not J.IsRetreating(bot)
 		then
 			return nTarget,BOT_MODE_DESIRE_ABSOLUTE *1.5;
 		end
-		
-		if nTarget:IsHero() 
+
+		if nTarget:IsHero()
 		   and (bot:GetCurrentMovementSpeed() < 300 or botLV >= 25)
-		then	
+		then
 		    return nTarget,BOT_MODE_DESIRE_ABSOLUTE *1.2;
 		end
-		
-		if not nTarget:IsHero() 
+
+		if not nTarget:IsHero()
 		   and GetUnitToUnitDistance(bot,nTarget) < nAttackRange +50
 		then
 			return nTarget,BOT_MODE_DESIRE_ABSOLUTE *0.98;
 		end
-		
-		if not nTarget:IsHero() 
+
+		if not nTarget:IsHero()
 		   and GetUnitToUnitDistance(bot,nTarget) > nAttackRange +300
 		then
 			return nTarget,BOT_MODE_DESIRE_ABSOLUTE *0.7;
 		end
-		
+
 		return nTarget,BOT_MODE_DESIRE_ABSOLUTE *0.96;
 	end
-	
-	
+
 	local enemyCourier = X.GetEnemyCourier(bot, nAttackRange + botLV * 2 + 20 );
 	if enemyCourier ~= nil 
 		and not enemyCourier:IsAttackImmune()
@@ -699,22 +696,20 @@ function X.SupportFindTarget()
 		and J.GetHP(bot) > 0.3 and not J.IsRetreating(bot)
 	then
 		return enemyCourier,BOT_MODE_DESIRE_ABSOLUTE * 1.5;
-	end		
-	
-	
+	end
+
 	if botMode == BOT_MODE_RETREAT
 	   and botLV > 9
 	   and not X.CanBeInVisible(bot)
 	   and X.ShouldNotRetreat(bot)
 	then
 	    nTarget = X.WeakestUnitCanBeAttacked(true, true, nAttackRange + 50, bot)
-		if nTarget ~= nil 
-		then 
+		if nTarget ~= nil
+		then
 		    return nTarget,BOT_MODE_DESIRE_ABSOLUTE * 1.09;
-		end			    
+		end
 	end
-		
-	
+
 	local attackDamage = botBAD - 1;
 	if IsModeSuitHit
 		and not X.HasHumanAlly( bot )
@@ -725,43 +720,43 @@ function X.SupportFindTarget()
 		if botLV > 20 then nBonusRange = 200; end
 
 		nTarget = X.GetNearbyLastHitCreep(false, true, attackDamage, nAttackRange + nBonusRange, bot); -----**************
-		if nTarget ~= nil 
-		then		
+		if nTarget ~= nil
+		then
 			return nTarget,BOT_MODE_DESIRE_ABSOLUTE; 
-		end		
-		
+		end
+
 		local nEnemyTowers = bot:GetNearbyTowers(nAttackRange + 150,true);
 		if X.CanBeAttacked(nEnemyTowers[1])
 		   and J.IsWithoutTarget(bot)
 		   and X.IsLastHitCreep(nEnemyTowers[1],botAD * 2)
-		then 
+		then
 			return nEnemyTowers[1],BOT_MODE_DESIRE_ABSOLUTE; 
-		end	
-		
+		end
+
 		local nNeutrals = bot:GetNearbyNeutralCreeps(nAttackRange + 150);
 		local nAllies = J.GetNearbyHeroes(bot,1300,false,BOT_MODE_NONE); -----***************
 		if J.IsWithoutTarget(bot)
 			and botMode ~= BOT_MODE_FARM 
 			and #nNeutrals > 0
 			and #nAllies <= 1 ----******************
-		then			
+		then
 			for i = 1,#nNeutrals
-			do	
+			do
 				if X.CanBeAttacked(nNeutrals[i])
 					and not X.IsAllysTarget(nNeutrals[i])
 					and not J.IsTormentor(nNeutrals[i])
 					and not J.IsRoshan(nNeutrals[i])
 					and X.IsLastHitCreep(nNeutrals[i],attackDamage)
-				then 
+				then
 					return nNeutrals[i],BOT_MODE_DESIRE_ABSOLUTE; 
-				end	
+				end
 			end
 		end
 	end
-	
+
 	local denyDamage = botAD + 3
 	local nNearbyEnemyHeroes = J.GetNearbyHeroes(bot,750,true,BOT_MODE_NONE); -----------*************
-	if IsModeSuitHit 
+	if IsModeSuitHit
 		and bot:GetLevel() <= 8
 		and bot:GetNetWorth() < 13998   -----------*************
 		and ( J.GetHP(bot) > 0.38 or not bot:WasRecentlyDamagedByAnyHero(3.0))
@@ -770,17 +765,17 @@ function X.SupportFindTarget()
 		and J.GetDistanceFromEnemyFountain(bot) > 5000
 	then
 		local nWillAttackCreeps = X.GetExceptRangeLastHitCreep(true, attackDamage *1.5, 0, nAttackRange +60, bot);
-		if nWillAttackCreeps == nil 
+		if nWillAttackCreeps == nil
 			or denyDamage > 130
 			or not X.IsOthersTarget(nWillAttackCreeps)
 			or not X.IsMostAttackDamage(bot)
 		then
-			nTarget = X.GetNearbyLastHitCreep(false, false, denyDamage, nAttackRange +300, bot); 
-			if nTarget ~= nil then 	
-				return nTarget,BOT_MODE_DESIRE_ABSOLUTE *0.97; 
-			end		
+			nTarget = X.GetNearbyLastHitCreep(false, false, denyDamage, nAttackRange +300, bot);
+			if nTarget ~= nil then
+				return nTarget,BOT_MODE_DESIRE_ABSOLUTE *0.97;
+			end
 		end
-		
+
 		local nAllyTowers = bot:GetNearbyTowers(nAttackRange + 300,false);
 		if J.IsWithoutTarget(bot)
 		   and #nAllyTowers > 0
@@ -788,14 +783,13 @@ function X.SupportFindTarget()
 			if X.CanBeAttacked(nAllyTowers[1])
 			   and J.GetHP(nAllyTowers[1]) < 0.08
 			   and X.IsLastHitCreep(nAllyTowers[1],denyDamage * 3)
-			then 
-				return nAllyTowers[1],BOT_MODE_DESIRE_ABSOLUTE; 
-			end	
+			then
+				return nAllyTowers[1],BOT_MODE_DESIRE_ABSOLUTE;
+			end
 		end
 	end
-		
-	
-	if IsModeSuitHit 
+
+	if IsModeSuitHit
 		and bot:GetLevel() <= 7
 		and X.CanAttackTogether(bot)
 		and (nNearbyEnemyHeroes[1] == nil or nNearbyEnemyHeroes[1]:GetLevel() < 12)
@@ -843,9 +837,9 @@ function X.SupportFindTarget()
 		    end
 			
 			local nWillAttackCreeps = X.GetExceptRangeLastHitCreep(true, centerAlly:GetAttackDamage() * 1.2, 0, 800, centerAlly);
-			if nWillAttackCreeps == nil 
+			if nWillAttackCreeps == nil
 				or not X.IsOthersTarget(nWillAttackCreeps)
-			then				
+			then
 				local nDenyCreeps = centerAlly:GetNearbyCreeps(1600,false);
 				for _,creep in pairs(nDenyCreeps)
 				do
@@ -876,9 +870,9 @@ function X.SupportFindTarget()
 				end
 			end
 		end
-		
+
 	end
-	
+
 	local nNearbyEnemyHeroes = J.GetNearbyHeroes(bot,1600,true,BOT_MODE_NONE);
 	local nEnemyLaneCreep = bot:GetNearbyLaneCreeps(1200, true);
 	local nWillAttackCreeps = X.GetExceptRangeLastHitCreep(true, attackDamage *1.2, 0, nAttackRange + 120, bot);
@@ -888,9 +882,9 @@ function X.SupportFindTarget()
 		and ( attackDamage > 108 or bot:GetSecondsPerAttack() < 0.7 ) -----------*************
 		and ( nWillAttackCreeps == nil or not X.IsMostAttackDamage(bot) or not X.IsOthersTarget(nWillAttackCreeps))
 	then
-		
+
 		local nEnemyTowers = bot:GetNearbyTowers(900,true);
-		
+
 		local nTwoHitCreeps = bot:GetNearbyLaneCreeps(nAttackRange +150, true);
 		for _,creep in pairs(nTwoHitCreeps)
 		do
@@ -909,7 +903,7 @@ function X.SupportFindTarget()
 				end
 			end
 		end
-				
+
 		if bot:DistanceFromFountain() > 3800 
 			and not bePvNMode and bot:GetLevel() <= 6
 			and J.GetDistanceFromEnemyFountain(bot) > 5000
@@ -929,33 +923,29 @@ function X.SupportFindTarget()
 				and not J.IsRoshan(creep)
 				then
 					return creep,BOT_MODE_DESIRE_ABSOLUTE;
-				end			
+				end
 			end
-		end	
-		
-	end	 
-	 
-    return nil,0;   
-end	
+		end
+	end
+
+    return nil,0;
+end
 
 
 function X.CarryFindTarget()
-	
 	if X.CanNotUseAttack(bot) or DotaTime() < 0 then return nil,0 end
-	
+
 	local IsModeSuitHit = X.IsModeSuitToHitCreep(bot);
 	local nAttackRange = bot:GetAttackRange() + 50;
 	if nAttackRange > 1170 then nAttackRange = 1170 end
 	if botName == "npc_dota_hero_templar_assassin" then nAttackRange = nAttackRange + 100 end;
-	
-	
-	local nTarget = J.GetProperTarget(bot);	
+
+	local nTarget = J.GetProperTarget(bot);
 	local botMode = bot:GetActiveMode();
 	local botLV   = bot:GetLevel();
 	local botAD   = bot:GetAttackDamage() - 0.8;
-	local botBAD  = X.GetAttackDamageToCreep(bot) - 1.2; 
-	
-	
+	local botBAD  = X.GetAttackDamageToCreep(bot) - 1.2;
+
 	if X.CanBeAttacked(nTarget) and nTarget == targetUnit
 		and GetUnitToUnitDistance(bot,nTarget) <= 1600
 	then
@@ -965,18 +955,18 @@ function X.CarryFindTarget()
 			then
 				return nTarget,BOT_MODE_DESIRE_VERYHIGH * 1.08;
 			end
-			
+
 			return nTarget,BOT_MODE_DESIRE_VERYHIGH * 1.04;
-		end	
-		
-		if nTarget:IsCourier() 
+		end
+
+		if nTarget:IsCourier()
 			and GetUnitToUnitDistance(bot,nTarget) <= nAttackRange + 300
 			and J.GetHP(bot) > 0.3 and not J.IsRetreating(bot)
 		then
 			return nTarget,BOT_MODE_DESIRE_ABSOLUTE *1.5;
 		end
-		
-		if nTarget:IsHero() 
+
+		if nTarget:IsHero()
 		   and (bot:GetCurrentMovementSpeed() < 300 or botLV >= 25)
 		then
 			if botName == "npc_dota_hero_antimage"
@@ -986,42 +976,39 @@ function X.CarryFindTarget()
 				then
 					return nil,BOT_MODE_DESIRE_NONE;
 				end
-			end		
+			end
 		    return nTarget,BOT_MODE_DESIRE_ABSOLUTE *1.2;
 		end
-		
-		if not nTarget:IsHero() 
+
+		if not nTarget:IsHero()
 		   and GetUnitToUnitDistance(bot,nTarget) < nAttackRange +50
 		then
 			return nTarget,BOT_MODE_DESIRE_ABSOLUTE *0.98;
 		end
-		
-		if not nTarget:IsHero() 
+
+		if not nTarget:IsHero()
 		   and GetUnitToUnitDistance(bot,nTarget) > nAttackRange +300
 		then
 			return nTarget,BOT_MODE_DESIRE_ABSOLUTE *0.7;
 		end
-		
+
 		return nTarget,BOT_MODE_DESIRE_ABSOLUTE *0.96;
 	end
-	
-	
+
 	if bot:HasModifier('modifier_phantom_lancer_phantom_edge_boost')
 	then
-		return nil,0 
+		return nil,0
 	end
-	
-	
+
 	local enemyCourier = X.GetEnemyCourier(bot, nAttackRange + botLV * 2 + 30);
 	if enemyCourier ~= nil
 		and not enemyCourier:IsAttackImmune()
 		and not enemyCourier:IsInvulnerable()
 		and J.GetHP(bot) > 0.3 and not J.IsRetreating(bot)
 	then
-		return enemyCourier,BOT_MODE_DESIRE_ABSOLUTE * 1.5; 
-	end		
-	
-	
+		return enemyCourier,BOT_MODE_DESIRE_ABSOLUTE * 1.5;
+	end
+
 	if botMode == BOT_MODE_RETREAT
 	   and botName ~= "npc_dota_hero_bristleback"
 	   and botLV > 9
@@ -1029,40 +1016,38 @@ function X.CarryFindTarget()
 	   and X.ShouldNotRetreat(bot)
 	then
 	    nTarget = X.WeakestUnitCanBeAttacked(true, true, nAttackRange + 50, bot)
-		if nTarget ~= nil 
-		then 
-		    return nTarget,BOT_MODE_DESIRE_ABSOLUTE * 1.09; 
-		end			    
+		if nTarget ~= nil
+		then
+		    return nTarget,BOT_MODE_DESIRE_ABSOLUTE * 1.09;
+		end
 	end
-		
-	
+
 	local cItem = J.IsItemAvailable("item_echo_sabre")
     if cItem ~= nil and (cItem:IsFullyCastable() or cItem:GetCooldownTimeRemaining() < bot:GetAttackPoint() +0.8)
 		and IsModeSuitHit
 		and (J.GetHP(bot) > 0.35 or not bot:WasRecentlyDamagedByAnyHero(1.0))
 	then
-		
+
 		local echoDamage = botBAD *2;
-		
+
 		if (cItem:IsFullyCastable() or cItem:GetCooldownTimeRemaining() <  bot:GetAttackPoint())
 		then
 			nTarget = X.GetNearbyLastHitCreep(true, true, echoDamage, 350, bot);
-			if nTarget ~= nil then return nTarget,BOT_MODE_DESIRE_ABSOLUTE *0.98; end		
+			if nTarget ~= nil then return nTarget,BOT_MODE_DESIRE_ABSOLUTE *0.98; end
 		end
-		
-		local nEnemyTowers = bot:GetNearbyTowers(1000,true);			
+
+		local nEnemyTowers = bot:GetNearbyTowers(1000,true);	
 		if (cItem:IsFullyCastable() or cItem:GetCooldownTimeRemaining() <  bot:GetAttackPoint() +0.8)
 			and #nEnemyTowers == 0
 		then
 			for i=400, 580, 60 do
 				nTarget = X.GetExceptRangeLastHitCreep(true, echoDamage, 350, i, bot);
-				if nTarget ~= nil 
-				   then return nTarget,BOT_MODE_DESIRE_HIGH; end					
+				if nTarget ~= nil
+				   then return nTarget,BOT_MODE_DESIRE_HIGH; end
 			end
 		end
 	end
-	
-	
+
 	local attackDamage = botBAD;
 	if IsModeSuitHit
 		and not X.HasHumanAlly( bot )
@@ -1086,7 +1071,7 @@ function X.CarryFindTarget()
 		then
 			return nEnemyTowers[1],BOT_MODE_DESIRE_ABSOLUTE;
 		end
-		
+
 		--补一刀野
 		local nNeutrals = bot:GetNearbyNeutralCreeps(nAttackRange + 150);
 		if J.IsWithoutTarget(bot)
@@ -1922,164 +1907,33 @@ function X.UpdateCommonCamp(creep, AvailableCamp)
 end
 
 function X.IsSpecialCore(bot)
-    if J.GetPosition(bot) == 1
-	or J.GetPosition(bot) == 2
-	or J.GetPosition(bot) == 3
+    if J.IsCore(bot)
 	then
 		local botName = bot:GetUnitName();
-		
-		local tSpecialCarryList = {
-			["npc_dota_hero_abyssal_underlord"] = true,
-			["npc_dota_hero_alchemist"] = true,
-			["npc_dota_hero_antimage"] = true,
-			["npc_dota_hero_arc_warden"] = true,
-			["npc_dota_hero_axe"] = true,
-			["npc_dota_hero_batrider"] = true,
-			["npc_dota_hero_beastmaster"] = true,
-			["npc_dota_hero_brewmaster"] = true,
-			["npc_dota_hero_bloodseeker"] = true,
-			["npc_dota_hero_bounty_hunter"] = true,
-			["npc_dota_hero_bristleback"] = true,
-			["npc_dota_hero_broodmother"] = true,
-			["npc_dota_hero_centaur"] = true,
-			["npc_dota_hero_chaos_knight"] = true,
-			["npc_dota_hero_clinkz"] = true,
-			["npc_dota_hero_dark_seer"] = true,
-			["npc_dota_hero_dawnbreaker"] = true,
-			["npc_dota_hero_death_prophet"] = true,
-			["npc_dota_hero_doom_bringer"] = true,
-			["npc_dota_hero_dragon_knight"] = true,
-			["npc_dota_hero_drow_ranger"] = true,
-			["npc_dota_hero_earth_spirit"] = true,
-			["npc_dota_hero_ember_spirit"] = true,
-			["npc_dota_hero_enigma"] = true,
-			["npc_dota_hero_faceless_void"] = true,
-			["npc_dota_hero_furion"] = true,
-			["npc_dota_hero_gyrocopter"] = true,
-			["npc_dota_hero_huskar"] = true,
-			["npc_dota_hero_invoker"] = true,
-			["npc_dota_hero_juggernaut"] = true,
-			["npc_dota_hero_keeper_of_the_light"] = true,
-			["npc_dota_hero_kunkka"] = true,
-			["npc_dota_hero_legion_commander"] = true,
-			["npc_dota_hero_leshrac"] = true,
-			["npc_dota_hero_life_stealer"] = true,
-			["npc_dota_hero_lina"] = true,
-			["npc_dota_hero_lone_druid"] = true,
-			["npc_dota_hero_luna"] = true,
-			["npc_dota_hero_lycan"] = true,
-			["npc_dota_hero_magnataur"] = true,
-			["npc_dota_hero_marci"] = true,
-			["npc_dota_hero_mars"] = true,
-			["npc_dota_hero_medusa"] = true,
-			["npc_dota_hero_meepo"] = true,
-			["npc_dota_hero_mirana"] = true,
-			["npc_dota_hero_monkey_king"] = true,
-			["npc_dota_hero_morphling"] = true,
-			["npc_dota_hero_muerta"] = true,
-			["npc_dota_hero_naga_siren"] = true,
-			["npc_dota_hero_necrolyte"] = true,
-			["npc_dota_hero_nevermore"] = true,
-			["npc_dota_hero_night_stalker"] = true,
-			["npc_dota_hero_obsidian_destroyer"] = true,
-			["npc_dota_hero_ogre_magi"] = true,
-			["npc_dota_hero_omniknight"] = true,
-			["npc_dota_hero_pangolier"] = true,
-			["npc_dota_hero_phantom_assassin"] = true,
-			["npc_dota_hero_phantom_lancer"] = true,
-			["npc_dota_hero_puck"] = true,
-			["npc_dota_hero_pudge"] = true,
-			["npc_dota_hero_queenofpain"] = true,
-			["npc_dota_hero_razor"] = true,
-			["npc_dota_hero_riki"] = true,
-			["npc_dota_hero_skeleton_king"] = true,
-			["npc_dota_hero_sand_king"] = true,
-			["npc_dota_hero_shredder"] = true,
-			["npc_dota_hero_slardar"] = true,
-			["npc_dota_hero_slark"] = true,
-			["npc_dota_hero_snapfire"] = true,
-			["npc_dota_hero_sniper"] = true,
-			["npc_dota_hero_spectre"] = true,
-			["npc_dota_hero_spirit_breaker"] = true,
-			["npc_dota_hero_storm_spirit"] = true,
-			["npc_dota_hero_sven"] = true,
-			["npc_dota_hero_templar_assassin"] = true,
-			["npc_dota_hero_terrorblade"] = true,
-			["npc_dota_hero_tidehunter"] = true,
-			["npc_dota_hero_tinker"] = true,
-			["npc_dota_hero_tiny"] = true,
-			["npc_dota_hero_troll_warlord"] = true,
-			["npc_dota_hero_ursa"] = true,
-			["npc_dota_hero_viper"] = true,
-			["npc_dota_hero_visage"] = true,
-			["npc_dota_hero_void_spirit"] = true,
-			["npc_dota_hero_weaver"] = true,
-			["npc_dota_hero_windrunner"] = true,
-			["npc_dota_hero_zuus"] = true,
-		}
-
-		return tSpecialCarryList[botName] == true
+		if Roles.IsNuker(botName) and Roles.IsCarry(botName) then
+			return true
+		end
 	end
 
 	return false
 end
 
-
 function X.IsSpecialSupport(bot)
-    
-	local botName = bot:GetUnitName();
-	
-	local tSpecialSupportList = {	  
-		["npc_dota_hero_crystal_maiden"] = true,
-		["npc_dota_hero_jakiro"] = true,
-		["npc_dota_hero_lich"] = true,
-		["npc_dota_hero_oracle"] = true,
-		["npc_dota_hero_pugna"] = true,
-		["npc_dota_hero_shadow_shaman"] = true,
-		["npc_dota_hero_silencer"] = true,
-		["npc_dota_hero_skywrath_mage"] = true,
-		["npc_dota_hero_warlock"] = true,
-		["npc_dota_hero_witch_doctor"] = true,
-		["npc_dota_hero_lion"] = true,
-		["npc_dota_hero_dazzle"] = true,
-		["npc_dota_hero_bane"] = true,
-
-		["npc_dota_hero_abaddon"] = true,
-		["npc_dota_hero_ancient_apparition"] = true,
-		["npc_dota_hero_chen"] = true,
-		["npc_dota_hero_rattletrap"] = true,
-		["npc_dota_hero_dark_willow"] = true,
-		["npc_dota_hero_disruptor"] = true,
-		["npc_dota_hero_earthshaker"] = true,
-		["npc_dota_hero_elder_titan"] = true,
-		["npc_dota_hero_enchantress"] = true,
-		["npc_dota_hero_grimstroke"] = true,
-		["npc_dota_hero_hoodwink"] = true,
-		["npc_dota_hero_nyx_assassin"] = true,
-		["npc_dota_hero_phoenix"] = true,
-		["npc_dota_hero_rubick"] = true,
-		["npc_dota_hero_shadow_demon"] = true,
-		["npc_dota_hero_techies"] = true,
-		["npc_dota_hero_treant"] = true,
-		["npc_dota_hero_tusk"] = true,
-		["npc_dota_hero_undying"] = true,
-		["npc_dota_hero_vengefulspirit"] = true,
-		["npc_dota_hero_venomancer"] = true,
-		["npc_dota_hero_winter_wyvern"] = true,
-	}
-	
-	return tSpecialSupportList[botName] == true
-			
-end 
+	if not J.IsCore(bot) then
+		local botName = bot:GetUnitName();
+		if Roles.IsSupport(botName) and (Roles.IsHealer(botName) or Roles.IsDisabler(botName) or Roles.IsDurable(botName)) then
+			return true
+		end
+	end
+	return false
+end
 
 local fLastReturnTime = 0
 function X.ShouldAttackTowerCreep(bot)
-
 	if X.CanNotUseAttack(bot) then return 0 end
-	
 	if bot:GetLevel() > 2
 		and bot:GetAnimActivity() == 1502
-		and bot:GetTarget() == nil 
+		and bot:GetTarget() == nil
 	    and bot:GetAttackTarget() == nil
 		and X.IsModeSuitToHitCreep(bot)
 		and J.GetHP(bot) > 0.38
@@ -2106,7 +1960,7 @@ function X.ShouldAttackTowerCreep(bot)
 			fLastReturnTime = DotaTime();
 			return attackTime,attackTarget;
 		end
-		
+
 		local nEnemyBarracks = bot:GetNearbyBarracks(nRange,true);
 		if X.CanBeAttacked(nEnemyBarracks[1]) and #allyCreeps > 0
 			-- and not nEnemyBarracks[1]:HasModifier('modifier_backdoor_protection')
@@ -2116,7 +1970,7 @@ function X.ShouldAttackTowerCreep(bot)
 			if nDist > 0 then attackTime = attackTime + nDist/botMoveSpeed;end
 			return attackTime,attackTarget;
 		end
-		
+
 		local nEnemyAncient = GetAncient(GetOpposingTeam())
 		if J.IsInRange(bot,nEnemyAncient,nRange + 80)
 			and X.CanBeAttacked(nEnemyAncient) and #enemyCreeps == 0
@@ -2130,7 +1984,7 @@ function X.ShouldAttackTowerCreep(bot)
 			if nDist > 0 then attackTime = attackTime + nDist/botMoveSpeed;end
 			return attackTime,attackTarget;
 		end
-	end		
+	end
 
 	local nTowers = bot:GetNearbyTowers(1600,false);
 	if nTowers[1] == nil
@@ -2139,7 +1993,7 @@ function X.ShouldAttackTowerCreep(bot)
 	then
 		return 0,nil;
 	end
-	
+
 	if nTowers[1] ~= nil
 		and nTowers[1]:GetAttackTarget() ~= nil
 	then
@@ -2155,30 +2009,26 @@ function X.ShouldAttackTowerCreep(bot)
 			local botRealDamage =	X.GetLastHitHealth(bot,towerTarget);
 			local attackTime = bot:GetSecondsPerAttack() -0.3;
 			local towerTargetHealth = towerTarget:GetHealth();
-			
+
 			if towerRealDamage > botRealDamage
-				and towerTargetHealth > towerRealDamage 
-				and towerTargetHealth % towerRealDamage > botRealDamage 
+				and towerTargetHealth > towerRealDamage
+				and towerTargetHealth % towerRealDamage > botRealDamage
 			then
 				return attackTime,towerTarget;
-			end			
+			end
 		end
 	end
-	
-	
 	return 0,nil;
 end
 
 function X.ShouldNotRetreat(bot)
-	
 	if bot:HasModifier("modifier_skeleton_king_reincarnation_scepter_active")
 	   or bot:HasModifier("modifier_item_satanic_unholy")
 	   or bot:HasModifier("modifier_abaddon_borrowed_time")
 	   or ( bot:GetCurrentMovementSpeed() < 240 and not bot:HasModifier("modifier_arc_warden_spark_wraith_purge") )
-	then 
-		return true; 
+	then
+		return true;
 	end
-	
 	local nAttackAlly = J.GetNearbyHeroes(bot,1000,false,BOT_MODE_ATTACK);
 	if ( bot:HasModifier("modifier_item_mask_of_madness_berserk")
 			or bot:HasModifier("modifier_oracle_false_promise_timer") )
@@ -2186,14 +2036,14 @@ function X.ShouldNotRetreat(bot)
 		and (bot:WasRecentlyDamagedByAnyHero(1) or bot:WasRecentlyDamagedByTower(1))
 	then
 		return true;
-	end		
-	
+	end
+
 	local nAllies = J.GetAllyList(bot,800);
-    if #nAllies <= 1 
-	then 
+    if #nAllies <= 1
+	then
 	    return false;
 	end
-	
+
 	if ( botName == "npc_dota_hero_medusa" 
 	     or bot:FindItemSlot("item_abyssal_blade") >= 0 )
 		 or bot:HasModifier('modifier_muerta_pierce_the_veil_buff')
@@ -2202,9 +2052,9 @@ function X.ShouldNotRetreat(bot)
 	then
 		return true;
 	end
-	
+
 	if botName == "npc_dota_hero_skeleton_king"
-		and bot:GetLevel() >= 6 and #nAttackAlly >= 1 
+		and bot:GetLevel() >= 6 and #nAttackAlly >= 1
 	then
 		local abilityR = bot:GetAbilityByName( "skeleton_king_reincarnation" );
 		if abilityR:GetCooldownTimeRemaining() <= 1.0 and bot:GetMana() >= 160
@@ -2212,10 +2062,10 @@ function X.ShouldNotRetreat(bot)
 			return true;
 		end
 	end
-	
+
 	for _,ally in pairs(nAllies)
 	do
-		if J.IsValid(ally) 
+		if J.IsValid(ally)
 		then
 			if J.GetHP(bot) >= 0.3 and ( J.GetHP(ally) > 0.88 and ally:GetLevel() >= 12 and ally:GetActiveMode() ~= BOT_MODE_RETREAT)
 			    or ( ally:HasModifier("modifier_black_king_bar_immune") or ally:IsMagicImmune() )
@@ -2228,7 +2078,6 @@ function X.ShouldNotRetreat(bot)
 			end
 		end
 	end
-	
 	return false;
 end
 

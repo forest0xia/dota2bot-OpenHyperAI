@@ -526,6 +526,9 @@ function X.GetScaledDesire(nBase, nCurrDist, nMaxDist)
 	if bot:GetNetWorth() > 15000 then
 		return desire * 0.6
 	end
+	if GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 4300 then
+		return desire * 0.2
+	end
 	return desire
 end
 
