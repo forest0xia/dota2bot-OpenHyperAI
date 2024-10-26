@@ -226,7 +226,7 @@ function GetDesire()
 	and bot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH
 	then
 		return BOT_ACTION_DESIRE_NONE
-	else
+	elseif #nearbyAllies >= #nearbyEnemies then
 		if IsHeroCore
 		then
 			local botTarget, targetDesire = X.CarryFindTarget()
@@ -2226,7 +2226,7 @@ function ConsiderHarassInLaningPhase()
 	and not J.IsCore(bot)
 	and (bot:GetLevel() >= 3 or (bot:GetLevel() >= 2 and J.GetPosition(bot) == 4))
 	and J.GetHP(bot) > 0.7
-	and not bot:WasRecentlyDamagedByAnyHero(1.5)
+	and not bot:WasRecentlyDamagedByAnyHero(2)
 	then
 		local nModeDesire = bot:GetActiveModeDesire()
 		local nInRangeAlly = J.GetNearbyHeroes(bot,700, false, BOT_MODE_NONE)

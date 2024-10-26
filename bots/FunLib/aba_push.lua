@@ -19,8 +19,18 @@ function Push.GetPushDesire(bot, lane)
     local nInRangeEnemy = bot:GetNearbyHeroes(900, true, BOT_MODE_NONE)
 
 	if nInRangeEnemy ~= nil and #nInRangeEnemy > 0
-    or (bot:GetAssignedLane() ~= lane and J.GetPosition(bot) == 1 and bot:GetLevel() < 9)
+    or (bot:GetAssignedLane() ~= lane and J.GetPosition(bot) == 1 and bot:GetLevel() < 12)
     or (J.IsDoingRoshan(bot) and #J.GetAlliesNearLoc(J.GetCurrentRoshanLocation(), 2800) >= 3)
+	then
+		return BOT_MODE_DESIRE_NONE
+	end
+
+    -- do not push too early.
+	local currentTime = DotaTime()
+	if GetGameMode() == 23 then
+		currentTime = currentTime * 1.6
+	end
+	if currentTime <= 18 * 60
 	then
 		return BOT_MODE_DESIRE_NONE
 	end
@@ -260,6 +270,7 @@ function Push.PushThink(bot, lane)
     local fDeltaFromFront = (Min(J.GetHP(bot), 0.7) * 1000 - 700) + RemapValClamped(botAttackRange, 300, 700, 0, -600)
     local nEnemyTowers = bot:GetNearbyTowers(1600, true)
     local targetLoc = GetLaneFrontLocation(GetTeam(), lane, fDeltaFromFront)
+    targetLoc = J.Utils.GetOffsetLocationTowardsTargetLocation(targetLoc, J.GetTeamFountain(), 200 + RandomVector(300))
 
     local nEnemyAncient = GetAncient(GetOpposingTeam())
     if  GetUnitToUnitDistance(bot, nEnemyAncient) < 1600

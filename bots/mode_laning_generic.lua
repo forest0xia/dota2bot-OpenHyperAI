@@ -13,9 +13,7 @@ local skipLaningState = {
 	checkGap = 3,
 }
 
-if Utils.BuggyHeroesDueToValveTooLazy[botName] then
-	local_mode_laning_generic = dofile( GetScriptDirectory().."/FunLib/override_generic/mode_laning_generic" )
-end
+if Utils.BuggyHeroesDueToValveTooLazy[botName] then local_mode_laning_generic = dofile( GetScriptDirectory().."/FunLib/override_generic/mode_laning_generic" ) end
 
 function GetDesire()
 	if DotaTime() - skipLaningState.lastCheckTime < skipLaningState.checkGap then
@@ -40,33 +38,14 @@ function GetDesire()
 	end
 
 	local currentTime = DotaTime()
-	if GetGameMode() == 23 then
-		currentTime = currentTime * 1.65
-	end
+	if GetGameMode() == 23 then currentTime = currentTime * 1.65 end
 
 	local botLV = bot:GetLevel()
 
-	if currentTime <= 10
-	then
-		return 0.268
-	end
-	
-	if currentTime <= 9 * 60
-		and botLV <= 7
-	then
-		return 0.446
-	end
-	
-	if currentTime <= 12 * 60
-		and botLV <= 11
-	then
-		return 0.369
-	end
-	
-	if botLV <= 17
-	then
-		return 0.228
-	end
+	if currentTime <= 10 then return 0.268 end
+	if currentTime <= 9 * 60 and botLV <= 7 then return 0.446 end
+	if currentTime <= 12 * 60 and botLV <= 11 then return 0.369 end
+	if botLV <= 17 then return 0.228 end
 
 	return 0
 

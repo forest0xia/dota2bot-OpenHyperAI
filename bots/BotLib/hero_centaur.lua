@@ -32,10 +32,10 @@ sRoleItemsBuyList['pos_3'] = {
     "item_double_branches",
     "item_quelling_blade",
     "item_ring_of_protection",
+    "item_magic_wand",
 
     "item_helm_of_iron_will",
     "item_phase_boots",
-    "item_magic_wand",
     "item_veil_of_discord",
     "item_blink",
     "item_eternal_shroud",--

@@ -972,7 +972,7 @@ function X.ShouldRun(bot)
 		or cloestTower:HasModifier("modifier_invulnerable")
 		or cloestTower:HasModifier("modifier_backdoor_protection_active"))
 		then
-			return 5
+			return 4
 		end
 	end
 

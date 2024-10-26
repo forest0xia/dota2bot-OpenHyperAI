@@ -267,7 +267,8 @@ function X.ConsiderQ()
 				return BOT_ACTION_DESIRE_LOW, npcEnemy
 			end
 
-			if J.CanCastOnNonMagicImmune( npcEnemy )
+			if J.GetHP(npcEnemy) < J.GetHP(bot)
+				and J.CanCastOnNonMagicImmune( npcEnemy )
 				and J.CanCastOnTargetAdvanced( npcEnemy )
 				and ( bot:IsFacingLocation( npcEnemy:GetLocation(), 10 ) or #nEnemyHeroes <= 1 )
 				and ( bot:WasRecentlyDamagedByHero( npcEnemy, 2.0 ) or nLV >= 10 )
