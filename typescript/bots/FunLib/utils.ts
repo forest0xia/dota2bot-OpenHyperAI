@@ -940,7 +940,7 @@ export function GetLastSeenEnemyIdsNearLocation(
     vLoc: Vector,
     nDistance: number
 ): number[] {
-    const enemies = [];
+    let enemies = [];
     for (let playerdId of GetTeamPlayers(GetOpposingTeam())) {
         if (IsHeroAlive(playerdId)) {
             const lastSeenInfo = GetHeroLastSeenInfo(playerdId);
@@ -956,9 +956,23 @@ export function GetLastSeenEnemyIdsNearLocation(
             }
         }
     }
-    
+
+    enemies = enemies.concat(GetPlayerIdsInTpToLocation(vLoc, nDistance));
+
+    return enemies;
+}
+
+export function GetPlayerIdsInTpToLocation(
+    vLoc: Vector,
+    nDistance: number
+): number[] {
+    const enemies = [];
     for (let tp of GetIncomingTeleports()) {
-        if (tp !== null && GetLocationToLocationDistance(vLoc, tp.location) <= 1600 && !IsTeamPlayer(tp.playerid)) {
+        if (
+            tp !== null &&
+            GetLocationToLocationDistance(vLoc, tp.location) <= nDistance &&
+            !IsTeamPlayer(tp.playerid)
+        ) {
             enemies.push(tp.playerid);
         }
     }

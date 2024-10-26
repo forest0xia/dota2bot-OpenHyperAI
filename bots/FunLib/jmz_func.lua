@@ -4640,6 +4640,53 @@ function J.GetEnemiesAroundLoc(vLoc, nRadius)
 	return nUnitCount
 end
 
+function J.GetHumanPing()
+	local ping = nil
+
+	for i = 1, 5
+	do
+		local member = GetTeamMember(i)
+		if  member ~= nil
+		and not member:IsBot()
+		then
+			return member, member:GetMostRecentPing()
+		end
+	end
+
+	return nil, ping
+end
+
+function J.HasAbility(bot, abilityName)
+	for i = 0, 23
+	do
+		local ability = bot:GetAbilityInSlot(i)
+		if  ability ~= nil
+		and ability:GetName() == abilityName
+		then
+			return true, ability
+		end
+	end
+
+	return false, nil
+end
+
+function J.IsHumanInLoc(vLoc, nRadius)
+	for i = 1, 5
+	do
+		local member = GetTeamMember(i)
+
+		if  member ~= nil and member:IsAlive() and not member:IsBot() and not member:IsIllusion()
+		and not member:HasModifier("modifier_arc_warden_tempest_double")
+		and not J.IsMeepoClone(member)
+		and GetUnitToLocationDistance(member, vLoc) <= nRadius
+		then
+			return true
+		end
+	end
+
+	return false
+end
+
 function J.GetCurrentRoshanLocation()
 	local timeOfDay = J.CheckTimeOfDay()
 

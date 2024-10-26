@@ -94,7 +94,7 @@ declare global {
     interface IncomingTeleport {
         playerid: number; // 回城卷轴使用者的玩家ID
         location: Vector; // 回城卷轴的使用位置
-        time_remaining : number; // 回城卷轴离传送完毕的剩余时间
+        time_remaining: number; // 回城卷轴离传送完毕的剩余时间
     }
 
     function CreateRemoteHTTPRequest(url: string): HTTPRequest;

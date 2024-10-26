@@ -325,7 +325,7 @@ function ConsiderPingedDefendDesire()
 		do
 			local tower = GetTower( team, t )
 			if tower ~= nil and tower:GetHealth()/tower:GetMaxHealth() < 0.8
-			and #J.GetLastSeenEnemiesNearLoc( tower:GetLocation(), 1400 ) >= 1
+			and #J.GetHeroesNearLocation(true, tower:GetLocation(), 1400) >= 1
 			then
 				nDefendLoc = tower:GetLocation()
 				enemeyPushingBase = true

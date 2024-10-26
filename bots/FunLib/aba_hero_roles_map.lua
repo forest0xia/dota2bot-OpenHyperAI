@@ -24,7 +24,7 @@ X["hero_roles"] = {
     ["npc_dota_hero_batrider"] = { carry = 0, disabler = 2, durable = 0, escape = 1, initiator = 3, jungler = 2, nuker = 0, support = 0, pusher = 0, ranged = 1, healer = 0 },
     ["npc_dota_hero_beastmaster"] = { carry = 0, disabler = 2, durable = 2, escape = 0, initiator = 2, jungler = 0, nuker = 1, support = 0, pusher = 0, ranged = 0, healer = 0 },
     ["npc_dota_hero_bloodseeker"] = { carry = 1, disabler = 1, durable = 0, escape = 0, initiator = 1, jungler = 1, nuker = 1, support = 0, pusher = 0, ranged = 0, healer = 0 },
-    ["npc_dota_hero_bounty_hunter"] = { carry = 0, disabler = 0, durable = 0, escape = 2, initiator = 0, jungler = 0, nuker = 1, support = 0, pusher = 0, ranged = 0, healer = 0 },
+    ["npc_dota_hero_bounty_hunter"] = { carry = 1, disabler = 0, durable = 0, escape = 2, initiator = 0, jungler = 0, nuker = 1, support = 0, pusher = 0, ranged = 0, healer = 0 },
     ["npc_dota_hero_brewmaster"] = { carry = 1, disabler = 2, durable = 2, escape = 0, initiator = 3, jungler = 0, nuker = 1, support = 0, pusher = 0, ranged = 0, healer = 0 },
     ["npc_dota_hero_bristleback"] = { carry = 2, disabler = 0, durable = 3, escape = 0, initiator = 1, jungler = 0, nuker = 1, support = 0, pusher = 0, ranged = 0, healer = 0 },
     ["npc_dota_hero_broodmother"] = { carry = 1, disabler = 1, durable = 0, escape = 3, initiator = 0, jungler = 0, nuker = 1, support = 0, pusher = 3, ranged = 0, healer = 0 },

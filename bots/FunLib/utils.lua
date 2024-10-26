@@ -394,31 +394,25 @@ end
 function ____exports.GetLastSeenEnemyIdsNearLocation(vLoc, nDistance)
     local enemies = {}
     for ____, playerdId in ipairs(GetTeamPlayers(GetOpposingTeam())) do
-        do
-            local __continue198
-            repeat
-                if IsHeroAlive(playerdId) then
-                    local lastSeenInfo = GetHeroLastSeenInfo(playerdId)
-                    if lastSeenInfo ~= nil and lastSeenInfo[1] ~= nil then
-                        local firstInfo = lastSeenInfo[1]
-                        if ____exports.GetLocationToLocationDistance(firstInfo.location, vLoc) <= nDistance and firstInfo.time_since_seen <= 3 then
-                            enemies[#enemies + 1] = playerdId
-                            __continue198 = true
-                            break
-                        end
-                    end
+        if IsHeroAlive(playerdId) then
+            local lastSeenInfo = GetHeroLastSeenInfo(playerdId)
+            if lastSeenInfo ~= nil and lastSeenInfo[1] ~= nil then
+                local firstInfo = lastSeenInfo[1]
+                if ____exports.GetLocationToLocationDistance(firstInfo.location, vLoc) <= nDistance and firstInfo.time_since_seen <= 3 then
+                    enemies[#enemies + 1] = playerdId
                 end
-                __continue198 = true
-            until true
-            if not __continue198 then
-                break
             end
+        end
+    end
+    for ____, tp in ipairs(GetIncomingTeleports()) do
+        if tp ~= nil and ____exports.GetLocationToLocationDistance(vLoc, tp.location) <= 1600 and not IsTeamPlayer(tp.playerid) then
+            enemies[#enemies + 1] = tp.playerid
         end
     end
     return enemies
 end
 require(GetScriptDirectory().."/ts_libs/utils/json")
-____exports.DebugMode = true
+____exports.DebugMode = false
 ____exports.ScriptID = 3246316298
 ____exports.RadiantFountainTpPoint = Vector(-7172, -6652, 384)
 ____exports.DireFountainTpPoint = Vector(6982, 6422, 392)
@@ -1081,10 +1075,6 @@ function ____exports.CountMissingEnemyHeroes()
                             count = count + 1
                             __continue186 = true
                             break
-                        end
-                        local enemyHero = ____exports.GetEnemyHeroByPlayerId(playerdId)
-                        if enemyHero and enemyHero:HasModifier("modifier_teleporting") then
-                            count = count + 1
                         end
                     end
                 end

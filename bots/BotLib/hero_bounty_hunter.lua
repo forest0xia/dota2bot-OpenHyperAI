@@ -75,7 +75,28 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_aghanims_shard",
 }
 
-sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
+sRoleItemsBuyList['pos_2'] = {
+	"item_double_branches",
+	"item_quelling_blade",
+	"item_tango",
+	"item_faerie_fire",
+
+	"item_bottle",
+	"item_phase_boots",
+	"item_magic_wand",
+	"item_phylactery",
+	"item_ultimate_scepter",
+	"item_octarine_core",--
+	"item_black_king_bar",--
+	"item_angels_demise",--
+	"item_assault",--
+	"item_travel_boots",
+	"item_wind_waker",--
+	"item_ultimate_scepter_2",
+	"item_travel_boots_2",--
+	"item_moon_shard",
+	"item_aghanims_shard",
+}
 
 sRoleItemsBuyList['pos_3'] = {
 	"item_double_branches",
