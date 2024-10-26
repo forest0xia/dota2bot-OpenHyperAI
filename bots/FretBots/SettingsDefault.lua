@@ -117,7 +117,7 @@
 			{
 				gold 			= true,
 				armor 			= true,
-				magicResist 	= false,
+				magicResist 	= true,
 				levels 			= true,
 				neutral 		= true,
 				stats 			= true
@@ -151,7 +151,7 @@
 			{
 				gold 			= {100, 500},
 				armor 			= {1, 3},
-				magicResist 	= {1, 3},
+				magicResist 	= {1, 5},
 				levels 			= {0.5, 2},
 				neutral 		= {30, 180},
 				stats			= {1, 3}
@@ -178,7 +178,7 @@
 			{
 				gold 			= {100, 1500},
 				armor 			= {1, 3},
-				magicResist 	= {1, 3},
+				magicResist 	= {1, 5},
 				levels 			= {0.5, 2},
 				neutral 		= {30, 180},
 				stats			= {1, 3}
@@ -212,7 +212,7 @@
 			{
 				gold 			= 0.15,
 				armor 			= 0.05,
-				magicResist 	= 0.05,
+				magicResist 	= 0.08,
 				levels 			= 0.10,
 				neutral 		= 0.10,
 				stats 			= 0.05
@@ -264,7 +264,7 @@
 				armor 			= false,
 				magicResist 	= false,
 				levels 			= true,
-				neutral 		= true,
+				neutral 		= false,
 				stats 			= false
 			},
 			-- is this award loud if it gets clamped on the high side?
@@ -327,7 +327,7 @@
 		{
 			gold 				= 30000,
 			armor 				= 35,
-			magicResist 		= 35,
+			magicResist 		= 40,
 			levels 				= 15,
 			neutral 			= 1500,
 			stats 				= 45,

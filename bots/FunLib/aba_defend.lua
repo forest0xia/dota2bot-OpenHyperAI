@@ -67,7 +67,7 @@ function Defend.GetDefendDesireHelper(bot, lane)
 
 	nInRangeEnemy = J.GetEnemiesNearLoc(bot:GetLocation(), nSearchRange)
 	if #nInRangeEnemy > 0 and GetUnitToLocationDistance(bot, GetLaneFrontLocation(team, lane, 0)) < 1200
-	or (bot:GetAssignedLane() ~= lane and J.GetPosition(bot) == 1 and DotaTime() < 12 * 60) -- reduce carry feeds
+	or (bot:GetAssignedLane() ~= lane and ((J.GetPosition(bot) == 1 and DotaTime() < 12 * 60) or (J.GetPosition(bot) == 2 and DotaTime() < 7 * 60))) -- reduce carry feeds
 	or (J.IsDoingRoshan(bot) and #J.GetAlliesNearLoc(J.GetCurrentRoshanLocation(), 2800) >= 3)
 	or (J.IsDoingTormentor(bot) and #J.GetAlliesNearLoc(J.GetTormentorLocation(team), 900) >= 2 and nEnemyAroundAncient == 0)
 	then

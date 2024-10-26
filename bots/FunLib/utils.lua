@@ -404,8 +404,16 @@ function ____exports.GetLastSeenEnemyIdsNearLocation(vLoc, nDistance)
             end
         end
     end
+    enemies = __TS__ArrayConcat(
+        enemies,
+        ____exports.GetPlayerIdsInTpToLocation(vLoc, nDistance)
+    )
+    return enemies
+end
+function ____exports.GetPlayerIdsInTpToLocation(vLoc, nDistance)
+    local enemies = {}
     for ____, tp in ipairs(GetIncomingTeleports()) do
-        if tp ~= nil and ____exports.GetLocationToLocationDistance(vLoc, tp.location) <= 1600 and not IsTeamPlayer(tp.playerid) then
+        if tp ~= nil and ____exports.GetLocationToLocationDistance(vLoc, tp.location) <= nDistance and not IsTeamPlayer(tp.playerid) then
             enemies[#enemies + 1] = tp.playerid
         end
     end

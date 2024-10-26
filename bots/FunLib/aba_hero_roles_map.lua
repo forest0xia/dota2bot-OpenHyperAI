@@ -67,7 +67,7 @@ X["hero_roles"] = {
     ["npc_dota_hero_lion"] = { carry = 0, disabler = 3, durable = 0, escape = 0, initiator = 2, jungler = 0, nuker = 3, support = 2, pusher = 0, ranged = 1, healer = 0 },
     ["npc_dota_hero_lone_druid"] = { carry = 2, disabler = 0, durable = 1, escape = 0, initiator = 0, jungler = 1, nuker = 0, support = 0, pusher = 3, ranged = 1, healer = 0 },
     ["npc_dota_hero_luna"] = { carry = 2, disabler = 0, durable = 0, escape = 0, initiator = 0, jungler = 0, nuker = 2, support = 0, pusher = 0, ranged = 1, healer = 0 },
-    ["npc_dota_hero_lycan"] = { carry = 2, disabler = 0, durable = 1, escape = 1, initiator = 0, jungler = 1, nuker = 0, support = 0, pusher = 3, ranged = 0, healer = 0 },
+    ["npc_dota_hero_lycan"] = { carry = 2, disabler = 0, durable = 1, escape = 1, initiator = 0, jungler = 1, nuker = 1, support = 0, pusher = 3, ranged = 0, healer = 0 },
     ["npc_dota_hero_magnataur"] = { carry = 0, disabler = 2, durable = 0, escape = 1, initiator = 3, jungler = 0, nuker = 1, support = 0, pusher = 0, ranged = 0, healer = 0 },
     ["npc_dota_hero_marci"] = { carry = 1, disabler = 1, durable = 0, escape = 1, initiator = 0, jungler = 0, nuker = 1, support = 1, pusher = 0, ranged = 0, healer = 0 },
     ["npc_dota_hero_mars"] = { carry = 1, disabler = 2, durable = 2, escape = 0, initiator = 3, jungler = 0, nuker = 1, support = 0, pusher = 1, ranged = 0, healer = 0 },

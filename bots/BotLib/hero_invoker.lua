@@ -988,7 +988,7 @@ function X.ConsiderEMP()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-		if J.IsValidTarget(botTarget)
+		if J.IsValidHero(botTarget)
 		and J.CanCastOnNonMagicImmune(botTarget)
 		and J.IsInRange(bot, botTarget, nCastRange)
         and not J.IsSuspiciousIllusion(botTarget)
@@ -1415,8 +1415,18 @@ function X.ConsiderSunstrike()
     for _, enemyHero in pairs(nAllEnemyHeroes)
     do
         if J.IsValidHero(enemyHero) and not J.IsSuspiciousIllusion(enemyHero) then
-            -- 杀掉残血
-            if J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_PURE) then
+            -- Check if we can kill the enemy with Sunstrike
+            if J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_PURE)
+            and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
+            and not enemyHero:HasModifier('modifier_brewmaster_storm_cyclone')
+            and not enemyHero:HasModifier('modifier_dazzle_shallow_grave')
+            and not enemyHero:HasModifier('modifier_eul_cyclone')
+            and not enemyHero:HasModifier(modifier_invoker_tornado)
+            and not enemyHero:HasModifier('modifier_necrolyte_reapers_scythe')
+            and not enemyHero:HasModifier('modifier_oracle_false_promise_timer')
+            and not enemyHero:HasModifier('modifier_templar_assassin_refraction_absorb')
+            and not enemyHero:HasModifier('modifier_item_aeon_disk_buff')
+            then
                 -- 残血tp
                 if enemyHero:HasModifier( 'modifier_teleporting' ) then
                     local remaining = J.GetModifierTime(enemyHero, 'modifier_teleporting')
@@ -1428,26 +1438,28 @@ function X.ConsiderSunstrike()
                         return BOT_ACTION_DESIRE_HIGH, Utils.GetEnemyFountainTpPoint()
                     end
                 end
-                -- 预判杀掉逃跑
-                return BOT_ACTION_DESIRE_HIGH, J.GetCorrectLoc(enemyHero, nDelay + nCastPoint)
+
+                -- Predict the enemy's location
+                local targetLoc = J.GetCorrectLoc(enemyHero, nDelay + nCastPoint)
+                return BOT_ACTION_DESIRE_HIGH, targetLoc
             end
 
-            -- 敌人可能可以被天火击杀
-            if J.CanKillTarget(enemyHero, nDamage * 2, DAMAGE_TYPE_PURE) then
-                -- if our allys are near by the target, assuming allys will deal with enough dmg within the delay of sunstrike
-                if J.GetNearbyHeroes(enemyHero, 500, true) >= 2
-                then
-                    return BOT_ACTION_DESIRE_HIGH, J.GetCorrectLoc(enemyHero, nDelay + nCastPoint)
-                end
-
-                -- 敌人是否有即将结束的无敌状态 并且有可能在被天火击中后被击杀
-                if X.CheckTempModifiers(TempNonMovableModifierNames, enemyHero, (nDelay + nCastPoint)) > 0 then
-                    return BOT_ACTION_DESIRE_HIGH, J.GetCorrectLoc(enemyHero, nDelay + nCastPoint)
-                end
-
-                -- 敌人被长时间大招控制
-                if X.IsUnderLongDurationStun(enemyHero) then
-                    return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation()
+            -- Additional checks for low HP enemies
+            if J.CanKillTarget(enemyHero, nDamage * 2, DAMAGE_TYPE_PURE)
+            and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
+            and not enemyHero:HasModifier('modifier_brewmaster_storm_cyclone')
+            and not enemyHero:HasModifier('modifier_dazzle_shallow_grave')
+            and not enemyHero:HasModifier('modifier_eul_cyclone')
+            and not enemyHero:HasModifier(modifier_invoker_tornado)
+            and not enemyHero:HasModifier('modifier_necrolyte_reapers_scythe')
+            and not enemyHero:HasModifier('modifier_oracle_false_promise_timer')
+            and not enemyHero:HasModifier('modifier_templar_assassin_refraction_absorb')
+            and not enemyHero:HasModifier('modifier_item_aeon_disk_buff')
+            then
+                -- If allies are nearby, assume they will help
+                if J.GetNearbyHeroes(enemyHero:GetLocation(), 500, false) >= 1 then
+                    local targetLoc = J.GetCorrectLoc(enemyHero, nDelay + nCastPoint)
+                    return BOT_ACTION_DESIRE_HIGH, targetLoc
                 end
             end
         end
