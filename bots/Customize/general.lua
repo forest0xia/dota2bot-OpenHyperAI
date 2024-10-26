@@ -7,6 +7,7 @@ This is a place for you to customize the Open Hyper AI bots.
    that means you had made some mistakes/errors while modifying this file. 
 3. In any case this file got messed up and caused the bots to malfunction, you can try to restore the file. Either you have a 
    copy to replace, or resubscribe the script, or download from github.
+4. Note there is a list of known to-be-improved (aka weak) heroes, check out [Appendix - 2] on the bottom of this file.
 
 - Workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=3246316298
 - Github: https://github.com/forest0xia/dota2bot-OpenHyperAI

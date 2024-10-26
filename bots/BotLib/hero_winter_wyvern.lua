@@ -55,14 +55,14 @@ sRoleItemsBuyList['pos_5'] = {
     "item_blood_grenade",
     "item_circlet",
 
-    "item_boots",
     "item_magic_wand",
-    "item_tranquil_boots",
-	"item_glimmer_cape",--
+    "item_boots",
     "item_pipe",
+    "item_tranquil_boots",
+    "item_boots_of_bearing",--
+	"item_glimmer_cape",--
     "item_force_staff",
     "item_aether_lens",--
-    "item_boots_of_bearing",--
     nUtility,--
     "item_aghanims_shard",
     "item_refresher",--

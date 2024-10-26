@@ -193,7 +193,7 @@ function GetDesire()
 		end
 		hLaneCreepList = nil
 		if preferedCamp == nil then preferedCamp = J.Site.GetClosestNeutralSpwan(bot, availableCamp) end;
-		return BOT_MODE_DESIRE_ABSOLUTE * 1.1;
+		return BOT_MODE_DESIRE_VERYHIGH;
 	end
 	local numOfAliveEnemyHeroes = J.GetNumOfAliveHeroes(true)
 	-- 避免过早推2塔或者高地

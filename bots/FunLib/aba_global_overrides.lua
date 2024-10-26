@@ -325,6 +325,55 @@ function CDOTA_Bot_Script:GetUnitToLocationDistance(unit, location)
     return originalGetUnitToLocationDistance(self, unit, location)
 end
 
+local original_GetHealth = CDOTA_Bot_Script.GetHealth
+function CDOTA_Bot_Script:GetHealth()
+	local nCurHealth = original_GetHealth(self)
+    if self ~= nil and self:GetUnitName() == 'npc_dota_hero_medusa' and nCurHealth > 0
+    then
+		local mana = self:GetMana()
+		-- Assuming max level Mana Shield (95% absorption and 2.5 damage absorbed per point of mana)
+		local manaAbsorptionRate = 0.95
+		if self:GetLevel() < 12 then manaAbsorptionRate = 0.5 end -- workaround e.g. to not retreat too often due to low mana.
+		local damagePerMana = 2.6
+		-- Calculate how much damage her current mana can absorb
+		local manaEffectiveHP = mana * damagePerMana * manaAbsorptionRate
+		-- Effective HP is her base HP plus the effective HP from her mana shield
+		return nCurHealth + manaEffectiveHP
+    end
+    return nCurHealth
+end
+
+local originalGetMaxHealth = CDOTA_Bot_Script.GetMaxHealth
+function CDOTA_Bot_Script:GetMaxHealth()
+    if self ~= nil and self:GetUnitName() == 'npc_dota_hero_medusa'
+    then
+		-- Assuming max level Mana Shield (95% absorption and 2.5 damage absorbed per point of mana)
+		local manaAbsorptionRate = 0.95
+		if self:GetLevel() < 12 then manaAbsorptionRate = 0.5 end -- workaround e.g. to not retreat too often due to low mana.
+		local damagePerMana = 2.6
+		local maxManaEffectiveHP = self:GetMaxMana() * damagePerMana * manaAbsorptionRate
+		-- Total max effective HP
+        return originalGetMaxHealth(self) + maxManaEffectiveHP
+    end
+    return originalGetMaxHealth(self)
+end
+
+local originalGetMana = CDOTA_Bot_Script.GetMana
+function CDOTA_Bot_Script:GetMana()
+    if self ~= nil and (self:GetUnitName() == 'npc_dota_hero_huskar')
+    then
+        return 0
+    end
+    return originalGetMana(self)
+end
+local originalGetMaxMana = CDOTA_Bot_Script.GetMaxMana
+function CDOTA_Bot_Script:GetMaxMana()
+    if self ~= nil and (self:GetUnitName() == 'npc_dota_hero_huskar')
+    then
+        return 0
+    end
+    return originalGetMaxMana(self)
+end
 
 local X = {
 	orig_GetTeamPlayers = orig_GetTeamPlayers,

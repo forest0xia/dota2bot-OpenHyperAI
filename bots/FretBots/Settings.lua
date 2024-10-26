@@ -13,7 +13,7 @@ require('bots.FretBots.HeroSounds')
 local Chat = require('bots.FretBots.Chat')
 
 -- default difficulty if no one votes
-local DefaultDifficulty = 2 -- [0, 10]
+local DefaultDifficulty = 5 -- [0, 10]
 local DefaultAllyScale = 0.5 -- [0, 1]
 
 Settings = nil
@@ -213,7 +213,7 @@ function Settings:DifficultySelectTimer()
 	if not isVotingOpened then
 		local msg = 'Difficulty voting is now open!'..' Default difficulty is: '..tostring(DefaultDifficulty)
 		Utilities:Print(msg, MSG_GOOD)
-		msg = 'Enter a number (0 through '..difficultyMax..') in chat to vote.'
+		msg = 'Enter a number (0 to '..difficultyMax..') in chat to vote.'
 		Utilities:Print(msg, MSG_GOOD)
 		isVotingOpened = true
 	end
@@ -297,7 +297,7 @@ function Settings:ApplyVoteSettings()
 
 		msg = 'Now vote for the bonus scale for ally bots in your team comparing to the other side. The default scale is: '..tostring(DefaultAllyScale)
 		Utilities:Print(msg, MSG_WARNING)
-		msg = 'Enter a number (0 through '..tostring(allyScaleMax)..')  e.g. vote 0.5 means your ally bots get half of the bonus amount vs the bonus for enemy bots.'
+		msg = 'Enter a number (0 to '..tostring(allyScaleMax)..')  e.g. vote 0.5 means your ally bots get half of the bonus amount vs the bonus for enemy bots.'
 		Utilities:Print(msg, MSG_WARNING)
 
 		Timers:CreateTimer(settingsTimerName, {endTime = 1, callback =  Settings['DifficultySelectTimer']} )

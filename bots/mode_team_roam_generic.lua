@@ -2224,6 +2224,7 @@ end
 function ConsiderHarassInLaningPhase()
 	if J.IsInLaningPhase()
 	and not J.IsCore(bot)
+	and (bot:GetLevel() >= 3 or (bot:GetLevel() >= 2 and J.GetPosition(bot) == 4))
 	and J.GetHP(bot) > 0.7
 	and not bot:WasRecentlyDamagedByAnyHero(1.5)
 	then

@@ -70,6 +70,13 @@ local function AbilityLevelUpComplement()
 	then
 		local abilityName = sAbilityLevelUpList[1]
 		local abilityToLevelup = bot:GetAbilityByName( abilityName )
+
+		-- fix phoenix_fire_spirits can't upgrade bug.
+		if abilityName == 'phoenix_fire_spirits'
+		and not bot:GetAbilityByName('phoenix_launch_fire_spirit'):IsHidden() then
+			return
+		end
+
 		if abilityToLevelup ~= nil
 			and not abilityToLevelup:IsHidden()
 		    and bot:GetLevel() >= abilityToLevelup:GetHeroLevelRequiredToUpgrade()

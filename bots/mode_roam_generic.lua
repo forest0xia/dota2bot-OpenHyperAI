@@ -712,15 +712,17 @@ function ThinkGeneralRoaming()
 
 	if trySeduce then
 		allyTowers = bot:GetNearbyTowers(1600, false)
-		local distanceFromFountain = GetUnitToLocationDistance(bot, J.GetTeamFountain())
-		local towerFromFountain = GetUnitToLocationDistance(allyTowers[1], J.GetTeamFountain())
-		local distanceToTower = GetUnitToUnitDistance(bot, allyTowers[1])
-		if distanceFromFountain > towerFromFountain and distanceToTower > 300 then
-			bot:Action_MoveToLocation(allyTowers[1]:GetLocation() + RandomVector(150))
-		else
-			bot:Action_MoveToLocation(J.GetTeamFountain())
+		if allyTowers[1] then
+			local distanceFromFountain = GetUnitToLocationDistance(bot, J.GetTeamFountain())
+			local towerFromFountain = GetUnitToLocationDistance(allyTowers[1], J.GetTeamFountain())
+			local distanceToTower = GetUnitToUnitDistance(bot, allyTowers[1])
+			if distanceFromFountain > towerFromFountain and distanceToTower > 300 then
+				bot:Action_MoveToLocation(allyTowers[1]:GetLocation() + RandomVector(150))
+			else
+				bot:Action_MoveToLocation(J.GetTeamFountain())
+			end
+			return
 		end
-		return
 	end
 
 	if shouldTempRetreat then

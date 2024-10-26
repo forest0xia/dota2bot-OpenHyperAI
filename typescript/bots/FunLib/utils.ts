@@ -902,13 +902,13 @@ export function CountMissingEnemyHeroes(): number {
                     count += 1;
                     continue;
                 }
-                const enemyHero = GetEnemyHeroByPlayerId(playerdId);
-                if (
-                    enemyHero &&
-                    enemyHero.HasModifier("modifier_teleporting")
-                ) {
-                    count += 1;
-                }
+                // const enemyHero = GetEnemyHeroByPlayerId(playerdId);
+                // if (
+                //     enemyHero &&
+                //     enemyHero.HasModifier("modifier_teleporting")
+                // ) {
+                //     count += 1;
+                // }
             }
         }
     }
@@ -952,29 +952,14 @@ export function GetLastSeenEnemyIdsNearLocation(
                     firstInfo.time_since_seen <= 3
                 ) {
                     enemies.push(playerdId);
-                    continue;
                 }
-
-                // could be TPing to here
-                // if (
-                //     GetLocationToLocationDistance(
-                //         firstInfo.location,
-                //         GetEnemyFountainTpPoint()
-                //     ) <
-                //     GetLocationToLocationDistance(
-                //         firstInfo.location,
-                //         GetTeamFountainTpPoint()
-                //     )
-                // ) {
-                //     const enemyHero = GetEnemyHeroByPlayerId(playerdId);
-                //     if (
-                //         enemyHero &&
-                //         enemyHero.HasModifier("modifier_teleporting")
-                //     ) {
-                //         enemies.push(playerdId);
-                //     }
-                // }
             }
+        }
+    }
+    
+    for (let tp of GetIncomingTeleports()) {
+        if (tp !== null && GetLocationToLocationDistance(vLoc, tp.location) <= 1600 && !IsTeamPlayer(tp.playerid)) {
+            enemies.push(tp.playerid);
         }
     }
     return enemies;

@@ -676,6 +676,30 @@ function J.CanCastAbility(ability)
 	return true
 end
 
+function J.IsTier1(tower)
+	local nTower = {
+		TOWER_TOP_1,
+		TOWER_MID_1,
+		TOWER_BOT_1,
+	}
+
+	for i = 1, #nTower do if nTower[i] == tower then return true end end
+
+	return false
+end
+
+function J.IsTier2(tower)
+	local nTower = {
+		TOWER_TOP_2,
+		TOWER_MID_2,
+		TOWER_BOT_2,
+	}
+
+	for i = 1, #nTower do if nTower[i] == tower then return true end end
+
+	return false
+end
+
 function J.CanBlinkDagger(bot)
     local blink = nil
 
@@ -2874,7 +2898,7 @@ function J.GetAttackableWeakestUnitFromList( bot, unitList )
     local bestScore = math.huge
 
     for _, unit in pairs( unitList ) do
-        local hp = J.GetEffectiveHP( unit )
+        local hp = unit:GetHealth()
         local offensivePower = 0
         if J.IsValidHero(unit) then
             offensivePower = unit:GetRawOffensivePower()
@@ -2930,21 +2954,9 @@ end
 
 
 function J.GetHP( bot )
-	local nCurHealth = J.GetEffectiveHP( bot )
+	local nCurHealth = bot:GetHealth()
     local nMaxHealth = bot:GetMaxHealth()
-
 	if nCurHealth <= 0 then return 0 end
-
-	if bot:GetUnitName() == 'npc_dota_hero_medusa'
-    then
-		-- Assuming max level Mana Shield (95% absorption and 2.5 damage absorbed per point of mana)
-		local manaAbsorptionRate = 0.95
-		local damagePerMana = 2.6
-		local maxManaEffectiveHP = bot:GetMaxMana() * damagePerMana * manaAbsorptionRate
-		-- Total max effective HP
-        nMaxHealth = nMaxHealth + maxManaEffectiveHP
-    end
-
 	return nCurHealth / nMaxHealth
 end
 

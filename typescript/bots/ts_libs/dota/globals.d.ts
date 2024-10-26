@@ -36,6 +36,10 @@ declare global {
 
     function GetItemCost(itemName: string): number;
 
+    function IsTeamPlayer(nPlayerID: number): boolean;
+
+    function GetIncomingTeleports(): IncomingTeleport[];
+
     function GetHeroLastSeenInfo(nPlayerID: number): LastSeenInfo[];
 
     function DebugDrawCircle(
@@ -85,6 +89,12 @@ declare global {
     interface LastSeenInfo {
         location: Vector;
         time_since_seen: number;
+    }
+
+    interface IncomingTeleport {
+        playerid: number; // 回城卷轴使用者的玩家ID
+        location: Vector; // 回城卷轴的使用位置
+        time_remaining : number; // 回城卷轴离传送完毕的剩余时间
     }
 
     function CreateRemoteHTTPRequest(url: string): HTTPRequest;

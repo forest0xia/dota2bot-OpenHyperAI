@@ -14,7 +14,7 @@ function X.GetDesire(bot__)
         return 0
     end
 
-    local botHealth = J.GetEffectiveHP( bot )
+    local botHealth = bot:GetHealth()
     local botHP = J.GetHP(bot)
     local botLocation = bot:GetLocation()
 	local botAttackRange = bot:GetAttackRange()
