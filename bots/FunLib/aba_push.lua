@@ -8,6 +8,7 @@ local LanePush = LANE_MID
 local GlyphDuration = 7
 local ShoulNotPushTower = false
 local TowerPushCooldown = 0
+local StartToPushTime = 18 * 60 -- after x mins, start considering to push.
 
 local pingTimeDelta = 5
 
@@ -30,10 +31,16 @@ function Push.GetPushDesire(bot, lane)
 	if GetGameMode() == 23 then
 		currentTime = currentTime * 1.6
 	end
-	if currentTime <= 18 * 60
+	if currentTime <= StartToPushTime
 	then
 		return BOT_MODE_DESIRE_NONE
 	end
+
+    if currentTime > StartToPushTime
+    and (J.GetCoresAverageNetworth() <= 10000
+    or not J.DoesTeamHaveAegis()) then
+        return BOT_MODE_DESIRE_NONE
+    end
 
 	if J.IsDefending(bot) and nModeDesire > 0.8
     then
@@ -88,11 +95,12 @@ function Push.GetPushDesire(bot, lane)
     local aAliveCoreCount = J.GetAliveCoreCount(false)
     local eAliveCoreCount = J.GetAliveCoreCount(true)
     local nPushDesire = GetPushLaneDesire(lane)
+    local nEnemyAncient = GetAncient(GetOpposingTeam())
 
     local botTarget = bot:GetAttackTarget()
     if J.IsValidBuilding(botTarget)
     then
-        if  botTarget:HasModifier('modifier_fountain_glyph')
+        if botTarget:HasModifier('modifier_fountain_glyph')
         and not (aAliveCount >= eAliveCount + 2)
         then
             ShoulNotPushTower = true
@@ -106,6 +114,15 @@ function Push.GetPushDesire(bot, lane)
         then
             return BOT_ACTION_DESIRE_NONE
         end
+    end
+
+    if GetUnitToUnitDistance(bot, nEnemyAncient) < 1600
+    and J.CanBeAttacked(nEnemyAncient)
+    and not bot:WasRecentlyDamagedByAnyHero(1)
+    and J.GetHP(bot) > 0.5 then
+        bot:SetTarget(nEnemyAncient)
+        bot:Action_AttackUnit(nEnemyAncient, true)
+        return BOT_ACTION_DESIRE_ABSOLUTE * 0.95
     end
 
     if bot:WasRecentlyDamagedByTower(3)

@@ -210,12 +210,12 @@
 			-- chances per indivdual award.  current levels tracked in bot.stats.chance
 			chance =
 			{
-				gold 			= 0.15,
-				armor 			= 0.05,
-				magicResist 	= 0.08,
+				gold 			= 0.25,
+				armor 			= 0.10,
+				magicResist 	= 0.10,
 				levels 			= 0.10,
-				neutral 		= 0.10,
-				stats 			= 0.05
+				neutral 		= 0.15,
+				stats 			= 0.10,
 			},
 			-- if accrue is true, chances accumulate per death
 			accrue =
@@ -315,12 +315,21 @@
 		-- still, it's probably better to just fix neutral timing rather than award one here
 		gameStartBonus =
 		{
-				gold 			= 0,
-				armor 			= 0,
-				magicResist 	= 0,
+				gold 			= 100,
+				armor 			= 0.1,
+				magicResist 	= 0.1,
+				levels 			= 0.1,
+				neutral       	= 1,
+				stats 			= 1,
+		},
+		gameStartBonusTimesDifficulty =
+		{
+				gold 			= 60,
+				armor 			= 1,
+				magicResist 	= 1,
 				levels 			= 0,
-				neutral       	= 0,
-				stats 			= 0
+				neutral       	= 1,
+				stats 			= 1
 		},
 		-- caps for awards per game
 		awardCap =

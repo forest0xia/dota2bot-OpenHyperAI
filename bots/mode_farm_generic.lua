@@ -86,44 +86,29 @@ function GetDesire()
 		beVeryHighFarmer = J.GetPosition(bot) == 1
 	end
 
-	local nMode = bot:GetActiveMode()
-	local nModeDesire = bot:GetActiveModeDesire()
-	if (nMode == BOT_MODE_DEFEND_TOWER_TOP or nMode == BOT_MODE_DEFEND_TOWER_MID
-		or nMode == BOT_MODE_DEFEND_TOWER_BOT or nMode == BOT_MODE_RUNE)
-	and nModeDesire > BOT_MODE_DESIRE_MODERATE
-    then
-        return BOT_ACTION_DESIRE_NONE
-    end
+	local botActiveMode = bot:GetActiveMode()
+	local TormentorLocation = J.GetTormentorLocation(GetTeam())
+	local nInRangeAlly_tormentor = J.GetAlliesNearLoc(TormentorLocation, 900)
+	local nInRangeAlly_roshan = J.GetAlliesNearLoc(J.GetCurrentRoshanLocation(), 900)
+	local nNeutralCreeps = bot:GetNearbyNeutralCreeps(1600)
 
-	-- laning is too hard for the bot, try go farming somewhere else.
-	if J.IsInLaningPhase()
-	and GetHeroDeaths(bot:GetPlayerID()) >= 4
-	and (GetHeroKills(bot:GetPlayerID()) == 0 or GetHeroKills(bot:GetPlayerID()) / GetHeroDeaths(bot:GetPlayerID()) < 0.5)
-	and J.IsCore(bot)
-	and bot:GetLevel() >= 5
-	and bot:GetLevel() < 10
-	and J.GetEnemyCountInLane(lane) >= 1
+	if #nInRangeAlly_tormentor >= 2
+	or #nInRangeAlly_roshan >= 2
+	or J.IsDoingTormentor(bot)
+	or J.IsDoingRoshan(bot)
+	or J.IsDefending(bot)
 	then
-        return BOT_ACTION_DESIRE_HIGH
+		return BOT_MODE_DESIRE_NONE
 	end
 
-	local TormentorLocation = J.GetTormentorLocation(team)
-	local nNeutralCreeps = bot:GetNearbyNeutralCreeps(700)
-	for _, c in pairs(nNeutralCreeps)
+	for _, creep in pairs(nNeutralCreeps)
 	do
-		local nInRangeAlly = J.GetAlliesNearLoc(TormentorLocation, 700)
-		if c ~= nil
-		and (c:GetUnitName() == "npc_dota_miniboss" and nInRangeAlly ~= nil and #nInRangeAlly >= 2)
+		if J.IsValid(creep)
+		and J.IsInRange(bot, creep, 900)
+		and creep:GetUnitName() == "npc_dota_miniboss"
 		then
 			return BOT_ACTION_DESIRE_NONE
 		end
-	end
-
-	local nNeutrals = bot:GetNearbyNeutralCreeps( bot:GetAttackRange() );
-	local nDefendLane, nDefendDesire = J.GetMostDefendLaneDesire();
-	if nDefendDesire > 0.8 and #nNeutrals == 0 and (not beVeryHighFarmer or bot:GetLevel() >= 13)
-	then
-		teamTime = DotaTime();
 	end
 
 	if teamPlayers == nil then teamPlayers = GetTeamPlayers(team) end
@@ -152,7 +137,7 @@ function GetDesire()
 		end
 	end
 
-	if DotaTime() < 50 then return 0.0 end
+	if DotaTime() < 50 or botActiveMode == BOT_MODE_RUNE then return 0.0 end
 
 	if X.IsUnitAroundLocation(GetAncient(team):GetLocation(), 3000) then
 		return BOT_MODE_DESIRE_NONE;
@@ -263,7 +248,7 @@ function GetDesire()
 		return BOT_MODE_DESIRE_NONE;
 	end
 
-	local nAttackAllys = J.GetSpecialModeAllies(bot,1600,BOT_MODE_ATTACK);
+	local nAttackAllys = J.GetSpecialModeAllies(bot,2600,BOT_MODE_ATTACK);
 	if #nAttackAllys > 0 and (not beVeryHighFarmer or bot:GetLevel() >= 16)
 	then
 		return BOT_MODE_DESIRE_NONE;
@@ -310,7 +295,7 @@ function GetDesire()
 			end
 		end
 
-		if nMode == BOT_MODE_ITEM
+		if botActiveMode == BOT_MODE_ITEM
 		then
 			if preferedCamp == nil then preferedCamp = J.Site.GetClosestNeutralSpwan(bot, availableCamp) end
 			return bot:GetActiveModeDesire() + 0.1
@@ -415,48 +400,47 @@ function GetDesire()
 		return BOT_MODE_DESIRE_HIGH;
 	end
 
-	if GetGameMode() ~= GAMEMODE_MO 
-	and (J.Site.IsTimeToFarm(bot) or pushTime > DotaTime() - 8.0)
+	if GetGameMode() ~= GAMEMODE_MO
+	and (J.Site.IsTimeToFarm(bot) or pushTime > DotaTime() - 8.0 or ShouldGoFarmDuringLaning())
 	-- and J.Site.IsTimeToFarm(bot)
 	-- and (not J.IsHumanPlayerInTeam() or enemyKills > allyKills + 16)
 	-- and ( bot:GetNextItemPurchaseValue() > 0 or not bot:HasModifier("modifier_item_moon_shard_consumed") )
-	-- and ( DotaTime() > 7 * 60 or bot:GetLevel() >= 8 or ( bot:GetAttackRange() < 220 and bot:GetLevel() >= 6 ) )	   
-	and not J.IsInLaningPhase()
+	and ( DotaTime() > 8 * 60 or bot:GetLevel() >= 8 or ( bot:GetAttackRange() < 220 and bot:GetLevel() >= 6 ))
 	then
-		if J.GetDistanceFromEnemyFountain(bot) > 4000 
+		if J.GetDistanceFromEnemyFountain(bot) > 4000
 		then
 			hLaneCreepList = bot:GetNearbyLaneCreeps(1600, true);
-			if #hLaneCreepList == 0	
+			if #hLaneCreepList == 0
 			   and J.IsInAllyArea( bot )
 			   and X.IsNearLaneFront( bot )
 			then
 				hLaneCreepList = bot:GetNearbyLaneCreeps(1600, false);
 			end
-		end;		
-		
-		if #hLaneCreepList > 0 
+		end;
+
+		if #hLaneCreepList > 0
 		then
 			bot.farmLocation = J.GetCenterOfUnits(hLaneCreepList)
-			return BOT_MODE_DESIRE_HIGH;
+			return BOT_MODE_DESIRE_ABSOLUTE;
 		else
 			if preferedCamp == nil then preferedCamp = J.Site.GetClosestNeutralSpwan(bot, availableCamp);end
-			
+
 			if preferedCamp ~= nil then
-				if not J.Site.IsModeSuitableToFarm(bot) 
-				then 
+				if not J.Site.IsModeSuitableToFarm(bot)
+				then
 					preferedCamp = nil;
 					return BOT_MODE_DESIRE_NONE;
 				elseif bot:GetHealth() <= 200 
-					then 
+					then
 						preferedCamp = nil;
 						teamTime = DotaTime();
 						return BOT_MODE_DESIRE_VERYLOW;
 				elseif farmState == 1
-				    then 
+				    then
 						bot.farmLocation = preferedCamp.cattr.location
-					    return BOT_MODE_DESIRE_ABSOLUTE *0.89;
+					    return BOT_MODE_DESIRE_ABSOLUTE * 0.96;
 				else
-					
+
 					if aliveEnemyCount >= 3
 					then
 						if pushTime > DotaTime() - 8.0
@@ -465,7 +449,7 @@ function GetDesire()
 							bot.farmLocation = preferedCamp.cattr.location
 							return BOT_MODE_DESIRE_MODERATE;
 						end
-						
+
 						if bot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT
 							or bot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID
 							or bot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP
@@ -480,9 +464,9 @@ function GetDesire()
 							then
 								pushTime = DotaTime();
 								bot.farmLocation = preferedCamp.cattr.location
-								return  BOT_MODE_DESIRE_ABSOLUTE *0.93;
+								return  BOT_MODE_DESIRE_ABSOLUTE * 0.93;
 							end
-							
+
 							if beHighFarmer or bot:GetAttackRange() < 310
 							then
 								if bot:GetActiveModeDesire() <= BOT_MODE_DESIRE_MODERATE 
@@ -492,25 +476,30 @@ function GetDesire()
 								then
 									pushTime = DotaTime();
 									bot.farmLocation = preferedCamp.cattr.location
-									return  BOT_MODE_DESIRE_ABSOLUTE *0.98;
+									return  BOT_MODE_DESIRE_ABSOLUTE * 0.98;
 								end
 							end
-						
 						end
 					end
-					
-					local farmDistance = GetUnitToLocationDistance(bot,preferedCamp.cattr.location);
-					
-					if botName == 'npc_dota_hero_medusa' and farmDistance < 133 then return 0.33 end 
+					local farmDistance = GetUnitToLocationDistance(bot, preferedCamp.cattr.location);
 					bot.farmLocation = preferedCamp.cattr.location
-					return math.floor((RemapValClamped(farmDistance, 6000, 0, BOT_MODE_DESIRE_MODERATE, BOT_MODE_DESIRE_VERYHIGH))*10)/10;
+					return RemapValClamped(farmDistance, 6400, 600, BOT_MODE_DESIRE_MODERATE, BOT_MODE_DESIRE_ABSOLUTE * 0.95)
 				end
 			end
 		end
 	end
-	
 	return BOT_MODE_DESIRE_NONE;
-	
+end
+
+function ShouldGoFarmDuringLaning()
+	-- laning is too hard for the bot, try go farming somewhere else.
+	return J.IsInLaningPhase()
+	and GetHeroDeaths(bot:GetPlayerID()) >= 4
+	and (GetHeroKills(bot:GetPlayerID()) == 0 or GetHeroKills(bot:GetPlayerID()) / GetHeroDeaths(bot:GetPlayerID()) < 0.5)
+	and J.IsCore(bot)
+	and bot:GetLevel() >= 4
+	and bot:GetLevel() < 10
+	and J.GetEnemyCountInLane(lane) >= 1
 end
 
 function OnStart()
@@ -882,6 +871,14 @@ function X.ShouldRun(bot)
 	if enemyFountainDistance < 1560
 	then
 		return 2;
+	end
+
+	if bot:HasModifier('modifier_abyssal_underlord_firestorm_burn')
+	and #hEnemyHeroList >= 1
+	and J.IsValidHero(hEnemyHeroList[1] ) and J.GetHP(hEnemyHeroList) > J.GetHP(bot) - 0.15
+	and J.GetHP(bot) < 0.85 and J.GetHP(bot) > 0.2 -- don't block real retreat action
+	then
+		return 2
 	end
 
 	if bot:DistanceFromFountain() < 200

@@ -51,21 +51,26 @@ sRoleItemsBuyList['pos_1'] = {
 }
 
 sRoleItemsBuyList['pos_2'] = {
-	"item_mage_outfit",
-	"item_ancient_janggo",
-	"item_glimmer_cape",
-	"item_boots_of_bearing",
-	"item_pipe",
-	"item_aghanims_shard",
-	--"item_holy_locket",
-	"item_veil_of_discord",
+	"item_tango",
+	"item_double_branches",
+	"item_double_circlet",
+
+	"item_bottle",
+	"item_arcane_boots",
+	"item_magic_wand",
+	"item_orchid",
 	"item_ultimate_scepter",
-	"item_mystic_staff",
-	"item_shivas_guard",
+	"item_aghanims_shard",
+	"item_black_king_bar",--
+	"item_octarine_core",--
+	"item_force_staff",
+	"item_bloodthorn",--
 	"item_ultimate_scepter_2",
-	"item_sheepstick",
-    "item_moon_shard",
-    "item_wind_waker",
+	"item_travel_boots",
+	"item_hurricane_pike",--
+	"item_wind_waker",--
+	"item_travel_boots_2",--
+	"item_moon_shard",
 }
 
 sRoleItemsBuyList['pos_4'] = {

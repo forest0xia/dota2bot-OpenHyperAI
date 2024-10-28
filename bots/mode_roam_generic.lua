@@ -1125,9 +1125,9 @@ function ConsiderGeneralRoamingInConditions()
 				if J.Utils.IsValidHero(enemy) then
 					if enemy:IsFacingLocation(bot:GetLocation(), 15)
 					and J.IsInRange(bot, enemy, enemy:GetAttackRange() + 450)
-					and J.GetHP(enemy) > J.GetHP(bot) + 0.15
+					and J.GetHP(enemy) > J.GetHP(bot) - 0.15
 					and bot:WasRecentlyDamagedByAnyHero(3)
-					and J.GetHP(bot) < 0.75 and J.GetHP(bot) > 0.3 -- don't block real retreat action
+					and J.GetHP(bot) < 0.75 and J.GetHP(bot) > 0.2 -- don't block real retreat action
 					then
 						trySeduce = true
 						return BOT_ACTION_DESIRE_VERYHIGH

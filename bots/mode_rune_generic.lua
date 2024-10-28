@@ -89,7 +89,7 @@ function GetDesire()
 
         if ClosestRune == RUNE_BOUNTY_1 or ClosestRune == RUNE_BOUNTY_2 then
             if nRuneStatus == RUNE_STATUS_AVAILABLE then
-				if botPos == 1 and DotaTime() > 2 * 60 and DotaTime() < 4 * 60 then
+				if botPos <= 3 and DotaTime() > 2 * 60 and DotaTime() < 8 * 60 then
 					return X.GetScaledDesire(BOT_MODE_DESIRE_MODERATE, ClosestDistance, 1200)
 				end
 
@@ -98,7 +98,7 @@ function GetDesire()
                 and DotaTime() > 2 * 60 + 50
                 and ((minute % 3 == 0) or (minute % 3 == 2 and second > 45))
             then
-				if botPos == 1 and DotaTime() > 2 * 60 and DotaTime() < 4 * 60 then
+				if botPos <= 3 and DotaTime() > 2 * 60 and DotaTime() < 8 * 60 then
 					return X.GetScaledDesire(BOT_MODE_DESIRE_MODERATE, ClosestDistance, MAX_DIST / 2)
 				end
 
@@ -107,7 +107,7 @@ function GetDesire()
                 and DotaTime() > 2 * 60
                 and (minute % 3 == 2 and second > 52)
             then
-				if botPos == 1 and DotaTime() > 2 * 60 and DotaTime() < 4 * 60 then
+				if botPos <= 3 and DotaTime() > 2 * 60 and DotaTime() < 8 * 60 then
 					return X.GetScaledDesire(BOT_MODE_DESIRE_MODERATE, ClosestDistance, MAX_DIST / 2)
 				end
 

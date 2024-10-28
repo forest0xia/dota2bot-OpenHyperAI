@@ -407,31 +407,24 @@ export const RefreshCamp = function (
 ): LuaMultiReturn<[any[], number]> {
     const camps = GetNeutralSpawners();
     const allCampList: any[] = [];
-    let totalSum = 0;
-    let count = 0;
-
-    for (const id of GetTeamPlayers(GetTeam())) {
-        totalSum += GetHeroLevel(id);
-        count += 1;
-    }
-    const averageLevel = totalSum / count;
+    const botLevel = bot.GetLevel();
 
     for (const aCamp of Object.values(camps)) {
         const camp = aCamp as any;
         if (
-            (averageLevel <= 7 || bot.GetAttackDamage() <= 80) &&
+            (botLevel <= 7 || bot.GetAttackDamage() <= 80) &&
             !IsEnemyCamp(camp) &&
             !IsLargeCamp(camp) &&
             !IsAncientCamp(camp)
         ) {
             allCampList.push({ idx: camp.idx, cattr: camp });
         } else if (
-            averageLevel <= 11 &&
+            botLevel <= 11 &&
             !IsEnemyCamp(camp) &&
             !IsAncientCamp(camp)
         ) {
             allCampList.push({ idx: camp.idx, cattr: camp });
-        } else if (averageLevel <= 14 && !IsEnemyCamp(camp)) {
+        } else if (botLevel <= 14 && !IsEnemyCamp(camp)) {
             allCampList.push({ idx: camp.idx, cattr: camp });
         } else {
             allCampList.push({ idx: camp.idx, cattr: camp });
@@ -441,8 +434,8 @@ export const RefreshCamp = function (
     return $multi(allCampList, allCampList.length);
 };
 export const GetPosition = function (bot: Unit): number {
-    if (bot["assignedRole"]) {
-        return bot["assignedRole"];
+    if (bot.assignedRole) {
+        return bot.assignedRole;
     }
     return 1;
 };
@@ -450,7 +443,7 @@ export const IsSpecialFarmer = function (bot: Unit): boolean {
     return GetPosition(bot) === 1;
 };
 export const IsShouldFarmHero = function (bot: Unit): boolean {
-    return GetPosition(bot) <= 2;
+    return GetPosition(bot) <= 3;
 };
 export const HasArmorReduction = function (nUnit: Unit): boolean {
     return (
@@ -708,6 +701,7 @@ export const IsTimeToFarm = function (bot: Unit): boolean {
 
     const botName = bot.GetUnitName();
 
+	// 防止单独无用的推进
     if (
         bot.GetActiveMode() === BotMode.PushTowerTop ||
         bot.GetActiveMode() === BotMode.PushTowerMid ||
@@ -737,15 +731,24 @@ export const IsTimeToFarm = function (bot: Unit): boolean {
         }
     }
 
-    const considerFarmForBot = ConsiderIsTimeToFarm[botName];
+    let considerResult = false;
 
+    const considerFarmForBot = ConsiderIsTimeToFarm[botName];
     if (considerFarmForBot !== undefined) {
-        return considerFarmForBot();
-    } else {
-        return ConsiderIsTimeToFarm["default"]();
+        considerResult = considerFarmForBot();
     }
 
-    return false;
+    // default base line farm logic.
+    if (!considerResult && GetPosition(bot) <= 3) {
+        const botNetWorth = bot.GetNetWorth();
+        const botLvl = bot.GetLevel();
+        if (botLvl < 10 && botNetWorth < 5000) considerResult = true;
+        else if (botLvl < 15 && botNetWorth < 10000) considerResult = true;
+        else if (botLvl < 20 && botNetWorth < 16000) considerResult = true;
+        else if (botLvl < 25 && botNetWorth < 21000) considerResult = true;
+    }
+
+    return considerResult;
 };
 
 // --根据地点来刷新阵营
@@ -2065,21 +2068,6 @@ ConsiderIsTimeToFarm["npc_dota_hero_ringmaster"] = function () {
 
     if (!HasItem(bot, "item_dagon_5") && botNetWorth < 22000) {
         return true;
-    }
-
-    return false;
-};
-
-// In case of missing heroes, use a default logic
-ConsiderIsTimeToFarm["default"] = function () {
-    const bot = GetBot();
-    const botNetWorth = bot.GetNetWorth();
-
-    if (!IsInLaningPhase() && GetPosition(bot) < 3) {
-        if (bot.GetLevel() < 10 || botNetWorth < 6000) return true;
-        if (bot.GetLevel() < 15 || botNetWorth < 8000) return true;
-        if (bot.GetLevel() < 20 || botNetWorth < 15000) return true;
-        if (bot.GetLevel() < 25 || botNetWorth < 20000) return true;
     }
 
     return false;

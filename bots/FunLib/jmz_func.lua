@@ -3144,6 +3144,41 @@ function J.DoesTeamHaveAegis()
 end
 
 
+function J.GetCoresAverageNetworth()
+	local totalNetWorth = 0
+	local coreCount = 0
+	for i = 1, #GetTeamPlayers( GetTeam() )
+	do
+		local member = GetTeamMember(i)
+		if J.IsValidHero(member)
+		and J.IsCore(member)
+		then
+			totalNetWorth = totalNetWorth + member:GetNetWorth()
+			coreCount = coreCount + 1
+		end
+	end
+
+	return totalNetWorth / coreCount
+end
+
+function J.GetCoresMaxNetworth()
+	local maxNetWorth = 0
+	for i = 1, #GetTeamPlayers( GetTeam() )
+	do
+		local member = GetTeamMember(i)
+		if J.IsValidHero(member)
+		and J.IsCore(member) then
+			local networth = member:GetNetWorth()
+			if networth > maxNetWorth
+			then
+				maxNetWorth = networth
+			end
+		end
+	end
+
+	return maxNetWorth
+end
+
 function J.IsLocHaveTower( nRadius, bEnemy, nLoc )
 
 	local nTeam = GetTeam()

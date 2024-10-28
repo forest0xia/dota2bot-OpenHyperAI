@@ -264,12 +264,20 @@ function X.GetLaningPhaseWardSpots()
 	end
 end
 
-function X.GetGameStartWardSpots()
+function X.GetGameStartWardSpots(bot)
 	local radianStartWard1
-	if (RandomInt(1, 9) >= 5) then
-		radianStartWard1 = RADIANT_GAME_START_1_2
+	if bot:HasModifier("modifier_smoke_of_deceit") then
+		if (RandomInt(1, 9) >= 5) then
+			radianStartWard1 = RADIANT_GAME_START_1_2
+		else
+			radianStartWard1 = RADIANT_GAME_START_1
+		end
 	else
-		radianStartWard1 = RADIANT_GAME_START_1
+		if (RandomInt(1, 9) >= 5) then
+			radianStartWard1 = DIRE_GAME_START_1_2
+		else
+			radianStartWard1 = DIRE_GAME_START_1
+		end
 	end
 
 	local WardSpotRadiant = {
@@ -278,10 +286,18 @@ function X.GetGameStartWardSpots()
 	}
 
 	local direStartWard1
-	if (RandomInt(1, 9) >= 5) then
-		direStartWard1 = DIRE_GAME_START_1_2
+	if bot:HasModifier("modifier_smoke_of_deceit") then
+		if (RandomInt(1, 9) >= 5) then
+			direStartWard1 = DIRE_GAME_START_1_2
+		else
+			direStartWard1 = DIRE_GAME_START_1
+		end
 	else
-		direStartWard1 = DIRE_GAME_START_1
+		if (RandomInt(1, 9) >= 5) then
+			direStartWard1 = RADIANT_GAME_START_1_2
+		else
+			direStartWard1 = RADIANT_GAME_START_1
+		end
 	end
 	local WardSpotDire = {
 		direStartWard1,
@@ -447,7 +463,7 @@ function X.GetAvailableSpot(bot)
 
 	if DotaTime() < 0
 	then
-		for _, spot in pairs(X.GetGameStartWardSpots())
+		for _, spot in pairs(X.GetGameStartWardSpots(bot))
 		do
 			if not X.IsOtherWardClose(spot)
 			then

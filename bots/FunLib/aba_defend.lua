@@ -41,6 +41,10 @@ function Defend.GetDefendDesire(bot, lane)
 		defendDesire = RemapValClamped(defendDesire, 0, 1.5, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_HIGH)
 	end
 
+	if bot:WasRecentlyDamagedByAnyHero(2) then
+		defendDesire = 0
+	end
+
 	-- local mostDesireLane, desire = J.GetMostDefendLaneDesire()
 	-- bot.laneToDefend = mostDesireLane
 	-- if mostDesireLane ~= lane then
@@ -74,7 +78,7 @@ function Defend.GetDefendDesireHelper(bot, lane)
 		return BOT_MODE_DESIRE_NONE
 	end
 
-	if DotaTime() < 10 * 60
+	if DotaTime() < 15 * 60
 	and J.IsCore(bot)
 	and bot:GetAssignedLane() ~= lane
 	and GetUnitToLocationDistance(bot, GetLaneFrontLocation(team, lane, 0)) > 4400
@@ -134,7 +138,7 @@ function Defend.GetDefendDesireHelper(bot, lane)
 
 	bot.laneToDefend = lane
 	local mul = Defend.GetEnemyAmountMul(lane)
-	return Clamp(GetDefendLaneDesire(lane) * mul, 0.1, 0.96)
+	return RemapValClamped(J.GetHP(bot), 0.75, 0, Clamp(GetDefendLaneDesire(lane) * mul, 0.1, 0.96), BOT_ACTION_DESIRE_NONE)
 end
 
 function Defend.DefendThink(bot, lane)

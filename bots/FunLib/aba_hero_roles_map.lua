@@ -36,7 +36,7 @@ X["hero_roles"] = {
     ["npc_dota_hero_dark_seer"] = { carry = 0, disabler = 1, durable = 0, escape = 1, initiator = 1, jungler = 1, nuker = 0, support = 0, pusher = 0, ranged = 0, healer = 0 },
     ["npc_dota_hero_dark_willow"] = { carry = 0, disabler = 3, durable = 0, escape = 0, initiator = 2, jungler = 0, nuker = 1, support = 2, pusher = 0, ranged = 1, healer = 0 },
     ["npc_dota_hero_dawnbreaker"] = { carry = 1, disabler = 2, durable = 1, escape = 1, initiator = 1, jungler = 0, nuker = 1, support = 3, pusher = 0, ranged = 0, healer = 1 },
-    ["npc_dota_hero_dazzle"] = { carry = 0, disabler = 1, durable = 0, escape = 0, initiator = 0, jungler = 0, nuker = 1, support = 3, pusher = 0, ranged = 1, healer = 1 },
+    ["npc_dota_hero_dazzle"] = { carry = 1, disabler = 1, durable = 0, escape = 0, initiator = 0, jungler = 0, nuker = 1, support = 3, pusher = 0, ranged = 1, healer = 1 },
     ["npc_dota_hero_death_prophet"] = { carry = 1, disabler = 1, durable = 0, escape = 0, initiator = 0, jungler = 0, nuker = 1, support = 0, pusher = 3, ranged = 1, healer = 0 },
     ["npc_dota_hero_disruptor"] = { carry = 0, disabler = 2, durable = 0, escape = 0, initiator = 1, jungler = 0, nuker = 1, support = 2, pusher = 0, ranged = 1, healer = 0 },
     ["npc_dota_hero_doom_bringer"] = { carry = 1, disabler = 2, durable = 2, escape = 0, initiator = 2, jungler = 0, nuker = 0, support = 0, pusher = 0, ranged = 0, healer = 0 },

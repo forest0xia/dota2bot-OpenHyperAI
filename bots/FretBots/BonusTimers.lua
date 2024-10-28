@@ -323,13 +323,16 @@ function BonusTimers:GameStartBonus()
 			-- bot:SetManaRegenGain(5 * Settings.difficultyScale)
 		end
 	end
+	if Settings.difficulty >= 5 and Settings.deathBonus.maxAwards <= 2 then
+		Settings.deathBonus.maxAwards = 2 + Utilities:Clamp(Settings.difficulty / 3, 1, 3)
+	end
 
 	-- Gold
 	if Settings.gameStartBonus.gold  > 0 then
 		msg = msg .. ' Gold: '.. Settings.gameStartBonus.gold
 		awarded = true
 		for _, bot in pairs(AllBots[team]) do
-			AwardBonus:gold(bot, Settings.gameStartBonus.gold)
+			AwardBonus:gold(bot, Settings.gameStartBonus.gold + Settings.difficulty * Settings.gameStartBonusTimesDifficulty.gold)
 		end
 	end
 	-- Armor
@@ -337,7 +340,7 @@ function BonusTimers:GameStartBonus()
 		msg = msg .. ' Armor: '.. Settings.gameStartBonus.armor
 		awarded = true
 		for _, bot in pairs(AllBots[team]) do
-			AwardBonus:armor(bot, Settings.gameStartBonus.armor)
+			AwardBonus:armor(bot, Settings.gameStartBonus.armor + Settings.difficulty * Settings.gameStartBonusTimesDifficulty.armor)
 		end
 	end
 	-- magicResist
@@ -345,7 +348,7 @@ function BonusTimers:GameStartBonus()
 		msg = msg .. ' Magic Resist: '.. Settings.gameStartBonus.magicResist
 		awarded = true
 		for _, bot in pairs(AllBots[team]) do
-			AwardBonus:magicResist(bot, Settings.gameStartBonus.magicResist)
+			AwardBonus:magicResist(bot, Settings.gameStartBonus.magicResist + Settings.difficulty * Settings.gameStartBonusTimesDifficulty.magicResist)
 		end
 	end
 	-- Levels
@@ -353,15 +356,7 @@ function BonusTimers:GameStartBonus()
 		msg = msg .. ' Levels: '.. Settings.gameStartBonus.levels
 		awarded = true
 		for _, bot in pairs(AllBots[team]) do
-			AwardBonus:levels(bot, Settings.gameStartBonus.levels)
-		end
-	end
-	-- Levels
-	if Settings.gameStartBonus.levels  > 0 then
-		msg = msg .. ' Levels: '.. Settings.gameStartBonus.levels
-		awarded = true
-		for _, bot in pairs(AllBots[team]) do
-			AwardBonus:levels(bot, Settings.gameStartBonus.levels)
+			AwardBonus:levels(bot, Settings.gameStartBonus.levels + Settings.difficulty * Settings.gameStartBonusTimesDifficulty.levels)
 		end
 	end
 	-- Stats
@@ -369,7 +364,7 @@ function BonusTimers:GameStartBonus()
 		msg = msg .. ' Stats: '.. Settings.gameStartBonus.stats
 		awarded = true
 		for _, bot in pairs(AllBots[team]) do
-			AwardBonus:stats(bot, Settings.gameStartBonus.stats)
+			AwardBonus:stats(bot, Settings.gameStartBonus.stats + Settings.difficulty * Settings.gameStartBonusTimesDifficulty.stats)
 		end
 	end
 	-- neutral
@@ -377,12 +372,14 @@ function BonusTimers:GameStartBonus()
 		msg = msg .. ' Neutral: '.. Settings.gameStartBonus.neutral
 		awarded = true
 		for _, bot in pairs(AllBots[team]) do
-			AwardBonus:neutral(bot, Settings.gameStartBonus.neutral)
+			AwardBonus:neutral(bot, Settings.gameStartBonus.neutral + Settings.difficulty * Settings.gameStartBonusTimesDifficulty.neutral)
 		end
 	end
-	if awarded then
-		Utilities:Print(msg, MSG_WARNING, ATTENTION)
-	end
+
+	-- -- do not announce, not accurate now.
+	-- if awarded then
+	-- 	Utilities:Print(msg, MSG_WARNING, ATTENTION)
+	-- end
 end
 end
 

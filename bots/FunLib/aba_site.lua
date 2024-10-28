@@ -406,20 +406,14 @@ end
 ____exports.RefreshCamp = function(bot)
     local camps = GetNeutralSpawners()
     local allCampList = {}
-    local totalSum = 0
-    local count = 0
-    for ____, id in ipairs(GetTeamPlayers(GetTeam())) do
-        totalSum = totalSum + GetHeroLevel(id)
-        count = count + 1
-    end
-    local averageLevel = totalSum / count
+    local botLevel = bot:GetLevel()
     for ____, aCamp in ipairs(__TS__ObjectValues(camps)) do
         local camp = aCamp
-        if (averageLevel <= 7 or bot:GetAttackDamage() <= 80) and not ____exports.IsEnemyCamp(camp) and not ____exports.IsLargeCamp(camp) and not ____exports.IsAncientCamp(camp) then
+        if (botLevel <= 7 or bot:GetAttackDamage() <= 80) and not ____exports.IsEnemyCamp(camp) and not ____exports.IsLargeCamp(camp) and not ____exports.IsAncientCamp(camp) then
             allCampList[#allCampList + 1] = {idx = camp.idx, cattr = camp}
-        elseif averageLevel <= 11 and not ____exports.IsEnemyCamp(camp) and not ____exports.IsAncientCamp(camp) then
+        elseif botLevel <= 11 and not ____exports.IsEnemyCamp(camp) and not ____exports.IsAncientCamp(camp) then
             allCampList[#allCampList + 1] = {idx = camp.idx, cattr = camp}
-        elseif averageLevel <= 14 and not ____exports.IsEnemyCamp(camp) then
+        elseif botLevel <= 14 and not ____exports.IsEnemyCamp(camp) then
             allCampList[#allCampList + 1] = {idx = camp.idx, cattr = camp}
         else
             allCampList[#allCampList + 1] = {idx = camp.idx, cattr = camp}
@@ -437,7 +431,7 @@ ____exports.IsSpecialFarmer = function(bot)
     return ____exports.GetPosition(bot) == 1
 end
 ____exports.IsShouldFarmHero = function(bot)
-    return ____exports.GetPosition(bot) <= 2
+    return ____exports.GetPosition(bot) <= 3
 end
 ____exports.HasArmorReduction = function(nUnit)
     return nUnit:HasModifier("modifier_templar_assassin_meld_armor") or nUnit:HasModifier("modifier_item_medallion_of_courage_armor_reduction") or nUnit:HasModifier("modifier_item_solar_crest_armor_reduction") or nUnit:HasModifier("modifier_slardar_amplify_damage")
@@ -615,13 +609,25 @@ ____exports.IsTimeToFarm = function(bot)
             end
         end
     end
+    local considerResult = false
     local considerFarmForBot = ____exports.ConsiderIsTimeToFarm[botName]
     if considerFarmForBot ~= nil then
-        return considerFarmForBot()
-    else
-        return ____exports.ConsiderIsTimeToFarm.default()
+        considerResult = considerFarmForBot()
     end
-    return false
+    if not considerResult and ____exports.GetPosition(bot) <= 3 then
+        local botNetWorth = bot:GetNetWorth()
+        local botLvl = bot:GetLevel()
+        if botLvl < 10 and botNetWorth < 5000 then
+            considerResult = true
+        elseif botLvl < 15 and botNetWorth < 10000 then
+            considerResult = true
+        elseif botLvl < 20 and botNetWorth < 16000 then
+            considerResult = true
+        elseif botLvl < 25 and botNetWorth < 21000 then
+            considerResult = true
+        end
+    end
+    return considerResult
 end
 ____exports.UpdateAvailableCamp = function(bot, preferredCamp, availableCampList)
     if preferredCamp ~= nil then
@@ -1518,25 +1524,6 @@ ____exports.ConsiderIsTimeToFarm.npc_dota_hero_ringmaster = function()
     end
     if not HasItem(bot, "item_dagon_5") and botNetWorth < 22000 then
         return true
-    end
-    return false
-end
-____exports.ConsiderIsTimeToFarm.default = function()
-    local bot = GetBot()
-    local botNetWorth = bot:GetNetWorth()
-    if not ____exports.IsInLaningPhase() and ____exports.GetPosition(bot) < 3 then
-        if bot:GetLevel() < 10 or botNetWorth < 6000 then
-            return true
-        end
-        if bot:GetLevel() < 15 or botNetWorth < 8000 then
-            return true
-        end
-        if bot:GetLevel() < 20 or botNetWorth < 15000 then
-            return true
-        end
-        if bot:GetLevel() < 25 or botNetWorth < 20000 then
-            return true
-        end
     end
     return false
 end

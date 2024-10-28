@@ -127,7 +127,7 @@ function GetDesire()
 			IsShouldFindTeammates = true
 			ShouldFindTeammatesTime = DotaTime()
 			print("avoid pushing tower for bot: " .. botName)
-			return BOT_ACTION_DESIRE_ABSOLUTE * 0.98
+			return BOT_ACTION_DESIRE_ABSOLUTE * 0.85
 		end
 	end
 	-- 避免过早推2塔或者高地
@@ -310,6 +310,10 @@ function ConsiderPingedDefendDesire()
 		end
 	end
 
+	local enemyNearAncient = #J.GetLastSeenEnemiesNearLoc( GetAncient(team):GetLocation(), 3000 )
+	local nH, nB = J.NumHumanBotPlayersInTeam()
+	if nH == 0 and enemyNearAncient <= 1 then return 0 end
+
 	local enemeyPushingBase = false
 	local nDefendLoc = nil
 
@@ -333,7 +337,7 @@ function ConsiderPingedDefendDesire()
 			end
 		end
 	end
-	if not enemeyPushingBase and #J.GetLastSeenEnemiesNearLoc( GetAncient(team):GetLocation(), 1400 ) >= 1 then
+	if not enemeyPushingBase and enemyNearAncient >= 1 then
 		nDefendLoc = GetAncient(team):GetLocation() -- GetLaneFrontLocation(team, nDefendLane, 100)
 		enemeyPushingBase = true
 		print("Ancient is in danger for team " .. team)
@@ -2224,68 +2228,83 @@ end
 function ConsiderHarassInLaningPhase()
 	if J.IsInLaningPhase()
 	and not J.IsCore(bot)
-	and (bot:GetLevel() >= 3 or (bot:GetLevel() >= 2 and J.GetPosition(bot) == 4))
+	and (bot:GetLevel() >= 4 or (bot:GetLevel() >= 3 and J.GetPosition(bot) == 4))
 	and J.GetHP(bot) > 0.7
 	and not bot:WasRecentlyDamagedByAnyHero(2)
 	then
 		local nModeDesire = bot:GetActiveModeDesire()
 		local nInRangeAlly = J.GetNearbyHeroes(bot,700, false, BOT_MODE_NONE)
 		local nInRangeEnemy = J.GetNearbyHeroes(bot,700, true, BOT_MODE_NONE)
-		local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(700, true)
+		local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(800, true)
 		local nAttackRange = bot:GetAttackRange()
-
-		-- Harass
-		local canLastHitCount = 0
-
-		for _, creep in pairs(nEnemyLaneCreeps)
-		do
-			if J.IsValid(creep)
-			and J.CanBeAttacked(creep)
-			and J.GetHP(creep) <= 0.5
-			then
-				canLastHitCount = canLastHitCount + 1
-			end
+		local nInRangeTower = bot:GetNearbyTowers(1200, true)
+		if nInRangeTower ~= nil and #nInRangeTower >= 1
+		and #nEnemyLaneCreeps >= 3
+		then
+			return BOT_ACTION_DESIRE_NONE
 		end
 
-		if (#nEnemyLaneCreeps < 3 or not bot:WasRecentlyDamagedByCreep(1))
-		and (J.IsCore(bot) and canLastHitCount <= 1)
+		-- Harass
+		if not shouldHarass
 		then
-			if nAttackRange < 300
-			then
-				nAttackRange = 300
-			end
+			local canLastHitCount = 0
 
-			nInRangeEnemy = bot:GetNearbyHeroes(nAttackRange + 300, true, BOT_MODE_NONE)
-			if J.IsValidHero(nInRangeEnemy[1])
-			and J.CanBeAttacked(nInRangeEnemy[1])
-			and not J.IsSuspiciousIllusion(nInRangeEnemy[1])
-			and not J.IsRetreating(bot)
-			and nInRangeAlly ~= nil and nInRangeEnemy ~= nil
-			and #nInRangeAlly >= #nInRangeEnemy
-			and nInRangeEnemy[1]:GetLevel() < 6
-			then
-				local nInRangeTower = bot:GetNearbyTowers(1600, true)
-
-				if nInRangeTower ~= nil
-				and (#nInRangeTower == 0
-					or (J.IsValidBuilding(nInRangeTower[1])
-						and GetUnitToUnitDistance(bot, nInRangeTower[1]) > 2000
-						and GetUnitToUnitDistance(nInRangeEnemy[1], nInRangeTower[1]) > 1500))
-				and not bot:WasRecentlyDamagedByTower(3.5)
+			for _, creep in pairs(nEnemyLaneCreeps)
+			do
+				if  J.IsValid(creep)
+				and J.CanBeAttacked(creep)
+				and J.GetHP(creep) <= 0.5
 				then
-					shouldHarass = true
-					harassTarget = nInRangeEnemy[1]
-
-					if J.IsHumanPlayer(nInRangeEnemy[1])
-					then
-						return 0.666
-					else
-						return 0.555
-					end
-				else
-					shouldHarass = false
+					canLastHitCount = canLastHitCount + 1
 				end
 			end
+
+			if  J.GetHP(bot) > 0.41
+			and ((J.IsCore(bot) and not canLastHitCount == 0)
+				or (not J.IsCore(bot)))
+			then
+				-- MK Range
+				if nAttackRange < 300
+				then
+					nAttackRange = 300
+				end
+
+				nInRangeEnemy = J.GetNearbyHeroes(bot,nAttackRange, true, BOT_MODE_NONE)
+				if nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
+				then
+					if  J.IsValidHero(nInRangeEnemy[1])
+					and J.CanBeAttacked(nInRangeEnemy[1])
+					and not J.IsSuspiciousIllusion(nInRangeEnemy[1])
+					and not J.IsRetreating(bot)
+					and nInRangeAlly ~= nil and nInRangeEnemy
+					and #nInRangeAlly >= #nInRangeEnemy
+					then
+						local nTargetInRangeTower = nInRangeEnemy[1]:GetNearbyTowers(850, false)
+
+						if (nInRangeTower ~= nil and #nInRangeTower == 0
+							or nTargetInRangeTower ~= nil and #nTargetInRangeTower == 0)
+						and not bot:WasRecentlyDamagedByAnyHero(2.2)
+						and not bot:WasRecentlyDamagedByTower(2)
+						and not bot:WasRecentlyDamagedByCreep(1.5)
+						then
+							shouldHarass = true
+							harassTarget = nInRangeEnemy[1]
+
+							if J.IsLaning(bot)
+							then
+								if J.IsHumanPlayer(nInRangeEnemy[1]) then
+									return nModeDesire + 0.1
+								end
+								return BOT_MODE_DESIRE_MODERATE * 1.15
+							else
+								return BOT_MODE_DESIRE_MODERATE * 1.16
+							end
+						end
+					end
+				end
+			end
+		else
+			shouldHarass = false
 		end
 	end
 
