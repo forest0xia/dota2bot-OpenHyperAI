@@ -28,6 +28,7 @@ local sCrimsonPipe = RandomInt(1, 2) == 1 and "item_crimson_guard" or "item_pipe
 
 sRoleItemsBuyList['pos_1'] = {
 	"item_bristleback_outfit",
+    "item_ultimate_scepter",
 	"item_heavens_halberd",--
 	"item_travel_boots",
 	"item_assault",--
@@ -45,6 +46,7 @@ sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
 
 sRoleItemsBuyList['pos_3'] = {
 	"item_tank_outfit",
+    "item_ultimate_scepter",
     sCrimsonPipe,--
 	"item_aghanims_shard",
 	"item_heavens_halberd",
@@ -62,6 +64,7 @@ sRoleItemsBuyList['pos_3'] = {
 sRoleItemsBuyList['pos_4'] = {
 	'item_priest_outfit',
 	"item_hand_of_midas",
+	"item_ultimate_scepter",
 	"item_mekansm",
 	"item_glimmer_cape",
 	"item_aghanims_shard",
@@ -69,7 +72,6 @@ sRoleItemsBuyList['pos_4'] = {
     "item_blink",
 	"item_lotus_orb",
 	"item_gungir",--
-	"item_ultimate_scepter",
 	"item_sheepstick",
 	"item_mystic_staff",
 	"item_ultimate_scepter_2",
@@ -84,12 +86,12 @@ sRoleItemsBuyList['pos_5'] = {
 	"item_glimmer_cape",
 
     "item_pavise",
+	"item_ultimate_scepter",
 	"item_pipe",--
     "item_solar_crest",--
 	"item_lotus_orb",--
 	"item_aghanims_shard",
     "item_blink",
-	"item_ultimate_scepter",
 	"item_shivas_guard",--
 	"item_mystic_staff",
 	"item_ultimate_scepter_2",
