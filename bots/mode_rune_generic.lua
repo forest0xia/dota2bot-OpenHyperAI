@@ -33,6 +33,7 @@ local Bottle = nil
 local lastMin = 0
 
 function GetDesire()
+	if bot:IsInvulnerable() or not bot:IsHero() or not bot:IsAlive() or not string.find(botName, "hero") or bot:IsIllusion() then return BOT_MODE_DESIRE_NONE end
     if not bot:IsAlive()
 	or (DotaTime() > 2 * 60 and DotaTime() < 6 * 60 and GetUnitToLocationDistance(bot, GetRuneSpawnLocation(RUNE_POWERUP_2)) < 150)
 	then
@@ -89,8 +90,8 @@ function GetDesire()
 
         if ClosestRune == RUNE_BOUNTY_1 or ClosestRune == RUNE_BOUNTY_2 then
             if nRuneStatus == RUNE_STATUS_AVAILABLE then
-				if botPos <= 3 and DotaTime() > 2 * 60 and DotaTime() < 8 * 60 then
-					return X.GetScaledDesire(BOT_MODE_DESIRE_MODERATE, ClosestDistance, 1200)
+				if botPos <= 3 and DotaTime() > 2 * 60 and DotaTime() < 20 * 60 then
+					return X.GetScaledDesire(BOT_MODE_DESIRE_VERYLOW, ClosestDistance, 3500)
 				end
 
                 return X.GetScaledDesire(BOT_MODE_DESIRE_HIGH, ClosestDistance, 3500)
@@ -98,8 +99,8 @@ function GetDesire()
                 and DotaTime() > 2 * 60 + 50
                 and ((minute % 3 == 0) or (minute % 3 == 2 and second > 45))
             then
-				if botPos <= 3 and DotaTime() > 2 * 60 and DotaTime() < 8 * 60 then
-					return X.GetScaledDesire(BOT_MODE_DESIRE_MODERATE, ClosestDistance, MAX_DIST / 2)
+				if botPos <= 3 and DotaTime() > 2 * 60 and DotaTime() < 20 * 60 then
+					return X.GetScaledDesire(BOT_MODE_DESIRE_VERYLOW, ClosestDistance, MAX_DIST)
 				end
 
                 return X.GetScaledDesire(BOT_MODE_DESIRE_HIGH, ClosestDistance, MAX_DIST)
@@ -107,8 +108,8 @@ function GetDesire()
                 and DotaTime() > 2 * 60
                 and (minute % 3 == 2 and second > 52)
             then
-				if botPos <= 3 and DotaTime() > 2 * 60 and DotaTime() < 8 * 60 then
-					return X.GetScaledDesire(BOT_MODE_DESIRE_MODERATE, ClosestDistance, MAX_DIST / 2)
+				if botPos <= 3 and DotaTime() > 2 * 60 and DotaTime() < 20 * 60 then
+					return X.GetScaledDesire(BOT_MODE_DESIRE_VERYLOW, ClosestDistance, MAX_DIST)
 				end
 
                 return X.GetScaledDesire(BOT_MODE_DESIRE_MODERATE, ClosestDistance, MAX_DIST * 2)
@@ -521,7 +522,7 @@ end
 function X.GetScaledDesire(nBase, nCurrDist, nMaxDist)
     local desire = Clamp(nBase + RemapValClamped(nCurrDist, 600, nMaxDist, 1 - nBase, 0), 0, 0.65)
 	if not J.IsInLaningPhase() and J.IsCore(bot) then
-		return desire * 0.4
+		return desire * 0.3
 	end
 	if bot:GetNetWorth() > 15000 then
 		return desire * 0.6

@@ -82,7 +82,29 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_bloodthorn",
 }
 
-sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
+sRoleItemsBuyList['pos_2'] = {
+	"item_tango",
+	"item_double_branches",
+
+	"item_bracer",
+	"item_bottle",
+	"item_phase_boots",
+	"item_soul_ring",
+	"item_magic_wand",
+	"item_hand_of_midas",
+	"item_blade_mail",
+	"item_heart",--
+	"item_black_king_bar",--
+	"item_shivas_guard",--
+	"item_ultimate_scepter",
+	"item_octarine_core",--
+	"item_travel_boots",
+	"item_ultimate_scepter_2",
+	"item_sheepstick",--
+	"item_travel_boots_2",--
+	"item_moon_shard",
+	"item_aghanims_shard",
+}
 
 sRoleItemsBuyList['pos_4'] = {
 	'item_priest_outfit',

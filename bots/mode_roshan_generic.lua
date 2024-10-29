@@ -23,6 +23,7 @@ local initDPSFlag = false
 local Roshan
 
 function GetDesire()
+	if bot:IsInvulnerable() or not bot:IsHero() or not bot:IsAlive() or not string.find(botName, "hero") or bot:IsIllusion() then return BOT_MODE_DESIRE_NONE end
     if Roshan == nil then
         local nCreeps = bot:GetNearbyNeutralCreeps(700)
         for _, creepOrRoshan in pairs(nCreeps)

@@ -41,6 +41,7 @@ local laneAndT1s = {
 }
 
 function GetDesire()
+	if bot:IsInvulnerable() or not bot:IsHero() or not bot:IsAlive() or not string.find(botName, "hero") or bot:IsIllusion() then return BOT_MODE_DESIRE_NONE end
 
 	trySeduce = false
 	shouldTempRetreat = false
@@ -761,7 +762,9 @@ end
 function ActualGankDesire()
 	SetupTwinGates()
 
-	if J.IsInLaningPhase() and bot:WasRecentlyDamagedByAnyHero(2) then
+	if J.IsInLaningPhase()
+	and bot:WasRecentlyDamagedByAnyHero(2)
+	and (botTarget == nil or #nInRangeEnemy <= 0 or nInRangeEnemy[1] ~= botTarget) then
 		local botLvl = bot:GetLevel()
 		if (J.GetPosition(bot) == 2 and botLvl >= 6 and J.GetHP(bot) > 0.7 and J.GetMP(bot) > 0.6) -- mid player roaming
 		or (J.GetPosition(bot) > 3 and botLvl >= 3 and J.GetHP(bot) > 0.6 and J.GetMP(bot) > 0.6) -- supports roaming
@@ -867,12 +870,12 @@ function CheckLaneToGank()
 					if enemyCountInLane >= #nInRangeAlly
 					then
 						laneToGank = lane[1]
-						return RemapValClamped(GetUnitToUnitDistance(bot, targetGate), 5000, 600, BOT_ACTION_DESIRE_VERYLOW, BOT_ACTION_DESIRE_VERYHIGH )
+						return RemapValClamped(GetUnitToUnitDistance(bot, targetGate), 5000, 600, BOT_ACTION_DESIRE_HIGH, BOT_ACTION_DESIRE_ABSOLUTE * 0.96 )
 					end
 				end
 
 				if #enemyCountInLane >= 1 and GetUnitToUnitDistance(bot, tTower) > 3000 then
-					return RemapValClamped(laneFrontToT1Dist, 2500, 900, BOT_ACTION_DESIRE_LOW, BOT_ACTION_DESIRE_VERYHIGH)
+					return RemapValClamped(laneFrontToT1Dist, 5000, 600, BOT_ACTION_DESIRE_HIGH, BOT_ACTION_DESIRE_ABSOLUTE * 0.96 )
 				end
 			end
 

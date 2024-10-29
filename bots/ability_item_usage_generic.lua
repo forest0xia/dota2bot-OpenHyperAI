@@ -1034,7 +1034,7 @@ X.ConsiderItemDesire["item_armlet"] = function( hItem )
 	end
 
 
-	if bot:GetHealth() <= 600
+	if bot:OriginalGetHealth() <= 600
 		and ( bot:WasRecentlyDamagedByAnyHero( 2.0 ) or J.IsAttackProjectileIncoming( bot, 1600 ) )
 	then
 		nLastActiveArmletTime = DotaTime()
@@ -1049,7 +1049,7 @@ X.ConsiderItemDesire["item_armlet"] = function( hItem )
 
 	if bActive
 		and DotaTime() > nLastActiveArmletTime + 0.9
-		and ( #nInRangeEnmyList == 0 or bot:GetHealth() > 990 )
+		and ( #nInRangeEnmyList == 0 or bot:OriginalGetHealth() > 990 )
 	then
 		hEffectTarget = bot
 		sCastMotive = '关闭臂章'
@@ -1423,7 +1423,7 @@ X.ConsiderItemDesire["item_bottle"] = function( hItem )
 	local hEffectTarget = nil
 	local sCastMotive = nil
 	local nLostMana = bot:GetMaxMana() - bot:GetMana()
-	local nLostHealth = bot:GetMaxHealth() - bot:GetHealth()
+	local nLostHealth = bot:OriginalGetMaxHealth() - bot:OriginalGetHealth()
 
 
 	--泉水喝
@@ -1538,7 +1538,7 @@ X.ConsiderItemDesire["item_crimson_guard"] = function( hItem )
 	for _, npcAlly in pairs( hNearbyAllyList )
 	do
 		if J.IsValid( npcAlly )
-			and npcAlly:GetHealth() / npcAlly:GetMaxHealth() < 0.8
+			and npcAlly:OriginalGetHealth() / npcAlly:OriginalGetMaxHealth() < 0.8
 			and npcAlly:WasRecentlyDamagedByAnyHero( 2.0 )
 			and not npcAlly:HasModifier( "modifier_item_crimson_guard_nostack" )
 			and #hNearbyEnemyHeroList > 0
@@ -1878,7 +1878,7 @@ X.ConsiderItemDesire["item_faerie_fire"] = function( hItem )
 	if nMode == BOT_MODE_RETREAT
 		 and bot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH
 		 and bot:WasRecentlyDamagedByAnyHero( 3.0 )
-		 and bot:GetHealth() < 90
+		 and bot:OriginalGetHealth() < 90
 	then
 		hEffectTarget = bot
 		sCastMotive = "撤退"
@@ -1900,7 +1900,7 @@ X.ConsiderItemDesire["item_faerie_fire"] = function( hItem )
 	if DotaTime() > 10 * 60
 		and hItem:GetName() == "item_faerie_fire"
 		and bot:GetItemInSlot( 6 ) ~= nil
-		and bot:GetMaxHealth() - bot:GetHealth() > 200
+		and bot:GetMaxHealth() - bot:OriginalGetHealth() > 200
 	then
 		hEffectTarget = bot
 		sCastMotive = '自己吃'
@@ -1923,7 +1923,7 @@ X.ConsiderItemDesire["item_flask"] = function( hItem )
 	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 
-	if bot:GetMaxHealth() - bot:GetHealth() > 500
+	if bot:OriginalGetMaxHealth() - bot:OriginalGetHealth() > 500
 		and #nInRangeEnmyList == 0
 		and not bot:WasRecentlyDamagedByAnyHero( 3.2 )
 		and not bot:HasModifier( "modifier_filler_heal" )
@@ -1949,12 +1949,12 @@ X.ConsiderItemDesire["item_flask"] = function( hItem )
 			and not npcAlly:WasRecentlyDamagedByAnyHero( 4.0 )
 			and not npcAlly:IsIllusion()
 			and not npcAlly:IsChanneling()
-			and npcAlly:GetMaxHealth() - npcAlly:GetHealth() > 550 
+			and npcAlly:OriginalGetMaxHealth() - npcAlly:OriginalGetHealth() > 550 
 		then
-			if( npcAlly:GetHealth() < nNeedHealAllyHealth )
+			if( npcAlly:OriginalGetHealth() < nNeedHealAllyHealth )
 			then
 				hNeedHealAlly = npcAlly
-				nNeedHealAllyHealth = npcAlly:GetHealth()
+				nNeedHealAllyHealth = npcAlly:OriginalGetHealth()
 			end
 		end
 	end
@@ -3686,7 +3686,7 @@ X.ConsiderItemDesire["item_satanic"] = function( hItem )
 	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 
-	if bot:GetHealth() / bot:GetMaxHealth() < 0.62
+	if bot:OriginalGetHealth() / bot:OriginalGetMaxHealth() < 0.62
 		and #hNearbyEnemyHeroList > 0
 		and ( J.IsValidHero( botTarget ) and J.IsInRange( bot, botTarget, nCastRange )
 			 or ( J.IsValidHero( hNearbyEnemyHeroList[1] ) and J.IsInRange( bot, hNearbyEnemyHeroList[1], nCastRange - 200 ) ) )
@@ -4038,7 +4038,7 @@ X.ConsiderItemDesire["item_tango"] = function( hItem )
 					local tangoSlot = npcAlly:FindItemSlot( 'item_tango' )
 					if tangoSlot == -1
 						and not npcAlly:IsIllusion()
-						and npcAlly:GetMaxHealth() - npcAlly:GetHealth() > 200
+						and npcAlly:OriginalGetMaxHealth() - npcAlly:OriginalGetHealth() > 200
 						and not npcAlly:HasModifier( "modifier_tango_heal" )
 						and not npcAlly:HasModifier( "modifier_arc_warden_tempest_double" )
 						and not J.IsMeepoClone(bot)
@@ -4071,7 +4071,7 @@ X.ConsiderItemDesire["item_tango_single"] = function( hItem )
 	local hEffectTarget = nil
 	local sCastMotive = nil
 	local nUseTangoLostHealth = ( hItem:GetName() == 'item_tango' ) and 200 or 160
-	local nLostHealth = bot:GetMaxHealth() - bot:GetHealth()
+	local nLostHealth = bot:OriginalGetMaxHealth() - bot:OriginalGetHealth()
 
 	-- 解开先知的树框。bug: 因为先知的树不是正常的树。GetNearbyTrees 不会返回先知的树，此方式行不通
 	if bot:HasModifier('modifier_furion_sprout_damage') then
@@ -4342,7 +4342,7 @@ function X.CanJuke()
 	do
 		local enemyDamage = enemy:GetEstimatedDamageToTarget( true, bot, 4.0, DAMAGE_TYPE_ALL )
 		totalDamage = totalDamage + enemyDamage
-		if bot:GetHealth() <= totalDamage
+		if bot:OriginalGetHealth() <= totalDamage
 		then
 			return false
 		end
@@ -5274,13 +5274,13 @@ X.ConsiderItemDesire["item_urn_of_shadows"] = function( hItem )
 				and not npcAlly:HasModifier( "modifier_item_urn_heal" )
 				and not npcAlly:HasModifier( "modifier_fountain_aura" )
 				and not npcAlly:HasModifier( "modifier_arc_warden_tempest_double" )
-				and npcAlly:GetMaxHealth() - npcAlly:GetHealth() > 450
+				and npcAlly:OriginalGetMaxHealth() - npcAlly:OriginalGetHealth() > 450
 				and #hNearbyEnemyHeroList == 0 
 			then
-				if( npcAlly:GetHealth() < nNeedHealAllyHealth )
+				if( npcAlly:OriginalGetHealth() < nNeedHealAllyHealth )
 				then
 					hNeedHealAlly = npcAlly
-					nNeedHealAllyHealth = npcAlly:GetHealth()
+					nNeedHealAllyHealth = npcAlly:OriginalGetHealth()
 				end
 			end
 		end
@@ -5876,7 +5876,7 @@ X.ConsiderItemDesire['item_soul_ring'] = function(item)
 	local aMode = bot:GetActiveMode()
 
 	local currMana = bot:GetMana() / bot:GetMaxMana()
-	local currHealth = bot:GetHealth() / bot:GetMaxHealth()
+	local currHealth = bot:OriginalGetHealth() / bot:OriginalGetMaxHealth()
 
 	if (aMode == BOT_MODE_FARM or aMode == BOT_MODE_LANING)
 	and currHealth > 0.5 and currMana < 0.5
@@ -5895,7 +5895,7 @@ X.ConsiderItemDesire['item_pavise'] = function(item)
 	local sCastMotive = nil
 	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 	local nNearAllyList = J.GetNearbyHeroes(bot, nCastRange, false, BOT_MODE_NONE )
-	local health = bot:GetHealth() / bot:GetMaxHealth()
+	local health = bot:OriginalGetHealth() / bot:OriginalGetMaxHealth()
 
 	--对可能被作为敌方目标的队友使用
 	for _, npcAlly in pairs( nNearAllyList )
@@ -7245,6 +7245,7 @@ local function UseGlyph()
 end
 
 function ItemUsageThink()
+	if bot:IsInvulnerable() or not bot:IsHero() or not bot:IsAlive() or not string.find(botName, "hero") or bot:IsIllusion() then return end
 	if bot.lastItemFrameProcessTime == nil then bot.lastItemFrameProcessTime = DotaTime() end
 	if DotaTime() - bot.lastItemFrameProcessTime < bot.frameProcessTime then return end
 	bot.lastItemFrameProcessTime = DotaTime()
@@ -7252,6 +7253,7 @@ function ItemUsageThink()
 end
 
 function AbilityUsageThink()
+	if bot:IsInvulnerable() or not bot:IsHero() or not bot:IsAlive() or not string.find(botName, "hero") or bot:IsIllusion() then return end
 	if bot.lastAbilityFrameProcessTime == nil then bot.lastAbilityFrameProcessTime = DotaTime() end
 	if DotaTime() - bot.lastAbilityFrameProcessTime < bot.frameProcessTime and bot.isBear == nil then return end
 	bot.lastAbilityFrameProcessTime = DotaTime()

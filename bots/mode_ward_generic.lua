@@ -1,4 +1,5 @@
 local bot = GetBot()
+local botName = bot:GetUnitName()
 if bot == nil or bot:IsInvulnerable() or not bot:IsHero() or not bot:IsAlive() or not string.find(bot:GetUnitName(), "hero") or bot:IsIllusion() then return end
 
 local J = require(GetScriptDirectory()..'/FunLib/jmz_func')
@@ -35,6 +36,7 @@ local vNonStuck = Vector(-2610, 538, 0)
 local hasChatted = false
 
 function GetDesire()
+	if bot:IsInvulnerable() or not bot:IsHero() or not bot:IsAlive() or not string.find(botName, "hero") or bot:IsIllusion() then return BOT_MODE_DESIRE_NONE end
 	if bot:IsChanneling()
 	or bot:IsIllusion()
 	or bot:IsInvulnerable()

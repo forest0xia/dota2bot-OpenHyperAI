@@ -701,7 +701,7 @@ export const IsTimeToFarm = function (bot: Unit): boolean {
 
     const botName = bot.GetUnitName();
 
-	// 防止单独无用的推进
+    // 防止单独无用的推进
     if (
         bot.GetActiveMode() === BotMode.PushTowerTop ||
         bot.GetActiveMode() === BotMode.PushTowerMid ||

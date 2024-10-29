@@ -357,6 +357,12 @@ function CDOTA_Bot_Script:GetMaxHealth()
     end
     return originalGetMaxHealth(self)
 end
+function CDOTA_Bot_Script:OriginalGetHealth()
+    return original_GetHealth(self)
+end
+function CDOTA_Bot_Script:OriginalGetMaxHealth()
+    return originalGetMaxHealth(self)
+end
 
 local originalGetMana = CDOTA_Bot_Script.GetMana
 function CDOTA_Bot_Script:GetMana()

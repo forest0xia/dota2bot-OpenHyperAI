@@ -16,6 +16,7 @@ local skipLaningState = {
 if Utils.BuggyHeroesDueToValveTooLazy[botName] then local_mode_laning_generic = dofile( GetScriptDirectory().."/FunLib/override_generic/mode_laning_generic" ) end
 
 function GetDesire()
+	if bot:IsInvulnerable() or not bot:IsHero() or not bot:IsAlive() or not string.find(botName, "hero") or bot:IsIllusion() then return BOT_MODE_DESIRE_NONE end
 	local currentTime = DotaTime()
 	local botLV = bot:GetLevel()
 	if GetGameMode() == 23 then currentTime = currentTime * 1.65 end

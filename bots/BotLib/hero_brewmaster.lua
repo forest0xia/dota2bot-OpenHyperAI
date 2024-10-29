@@ -207,6 +207,10 @@ function X.SkillsComplement()
                 state = 1
             end
 
+            if not curr then
+                return
+            end
+
             steps = ((state - curr) + 4) % 4
             if steps > 0
             then

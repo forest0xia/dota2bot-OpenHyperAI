@@ -270,7 +270,7 @@ function IsEnoughAllies()
 		end
 	end
 	
-	local nInRangeAlly = J.GetNearbyHeroes(bot, 900, false)
+	local nInRangeAlly = J.GetNearbyHeroes(bot, 900, false, BOT_MODE_NONE)
 
 	return #nInRangeAlly >= 3 and bot.lastKillTime >= 0 and heroCount >= 4 and coreCount >= 2
 end

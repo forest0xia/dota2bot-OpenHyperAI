@@ -8,11 +8,14 @@ local LanePush = LANE_MID
 local GlyphDuration = 7
 local ShoulNotPushTower = false
 local TowerPushCooldown = 0
-local StartToPushTime = 18 * 60 -- after x mins, start considering to push.
+local StartToPushTime = 20 * 60 -- after x mins, start considering to push.
 
 local pingTimeDelta = 5
 
 function Push.GetPushDesire(bot, lane)
+    local botName = bot:GetUnitName()
+	if bot:IsInvulnerable() or not bot:IsHero() or not bot:IsAlive() or not string.find(botName, "hero") or bot:IsIllusion() then return BOT_MODE_DESIRE_NONE end
+
     if bot.laneToPush == nil then bot.laneToPush = lane end
 
     local maxDesire = 0.95
@@ -35,12 +38,6 @@ function Push.GetPushDesire(bot, lane)
 	then
 		return BOT_MODE_DESIRE_NONE
 	end
-
-    if currentTime > StartToPushTime
-    and (J.GetCoresAverageNetworth() <= 10000
-    or not J.DoesTeamHaveAegis()) then
-        return BOT_MODE_DESIRE_NONE
-    end
 
 	if J.IsDefending(bot) and nModeDesire > 0.8
     then

@@ -33,7 +33,7 @@ import {
     sub,
 } from "bots/ts_libs/utils/native-operators";
 
-export const DebugMode = false;
+export const DebugMode = true;
 
 export const ScriptID = 3246316298;
 
@@ -152,7 +152,7 @@ export function PrintPings(pingTimeGap: number): void {
         if (ping.time !== 0 && GameTime() - ping.time < pingTimeGap) {
             listPings.push(ping);
 
-            // print units and modifiers.
+            // // print units and modifiers.
             // for (const unit of GetUnitList(UnitType.All)) {
             //     if (
             //         IsValidHero(unit) &&

@@ -1115,6 +1115,20 @@ function J.IsPushing( bot )
 
 end
 
+function J.MultipleAlliesArePushing()
+	local pushingAlly = 0
+	for i, id in pairs( GetTeamPlayers( GetTeam() ) )
+	do
+		if IsHeroAlive( id )
+		then
+			local member = GetTeamMember( i )
+			if J.IsValidHero(member) and J.IsPushing( member ) then
+				pushingAlly = pushingAlly + 1
+			end
+		end
+	end
+	return pushingAlly >= 2
+end
 
 function J.IsLaning( bot )
 	local mode = bot:GetActiveMode()
@@ -1954,13 +1968,14 @@ local printN = 0
 
 -- Method to refresh and cache nearby hero lists for each hero unit
 -- Unknown why but it seems to cause dota2 to crash due to changing the caching frequence, or maybe it's due to some nil exceptions.
-function J.GetNearbyHeroes(bot, nRadius, bEnemy)
-	-- local nearbyHeroes = bot:GetNearbyHeroes(nRadius, bEnemy, BOT_MODE_NONE)
+function J.GetNearbyHeroes(bot, nRadius, bEnemy, bBotMode)
+	if not bBotMode then bBotMode = BOT_MODE_NONE end
+	-- local nearbyHeroes = bot:GetNearbyHeroes(nRadius, bEnemy, bBotMode)
 	-- if printN <= 100000 then
 	-- 	printN = printN + 1
 	-- 	J.Utils.PrintTable(nearbyHeroes)
 	-- end
-	local nearby = bot:GetNearbyHeroes(nRadius, bEnemy, BOT_MODE_NONE)
+	local nearby = bot:GetNearbyHeroes(nRadius, bEnemy, bBotMode)
 	local heroes = {}
 	for _, hero in pairs( nearby )
 	do

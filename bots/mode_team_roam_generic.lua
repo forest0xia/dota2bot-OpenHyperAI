@@ -69,6 +69,7 @@ else
 end
 
 function GetDesire()
+	if bot:IsInvulnerable() or not bot:IsHero() or not bot:IsAlive() or not string.find(botName, "hero") or bot:IsIllusion() then return BOT_MODE_DESIRE_NONE end
 	Utils.SetFrameProcessTime(bot)
 	EnemyRoles.UpdateEnemyHeroPositions()
 

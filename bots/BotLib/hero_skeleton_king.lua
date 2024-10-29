@@ -148,10 +148,10 @@ modifier_skeleton_king_reincarnation_scepter_active
 
 --]]
 
-local abilityQ = bot:GetAbilityByName( sAbilityList[1] )
-local abilityW = bot:GetAbilityByName( sAbilityList[2] )
-local abilityE = bot:GetAbilityByName( sAbilityList[3] )
-local abilityR = bot:GetAbilityByName( sAbilityList[6] )
+local abilityQ = bot:GetAbilityByName('skeleton_king_hellfire_blast')
+local abilityW = bot:GetAbilityByName('skeleton_king_bone_guard')
+local abilityE = bot:GetAbilityByName('skeleton_king_mortal_strike')
+local abilityR = bot:GetAbilityByName('skeleton_king_reincarnation')
 local talent5 = bot:GetAbilityByName( sTalentList[5] )
 local talent6 = bot:GetAbilityByName( sTalentList[6] )
 
@@ -415,14 +415,13 @@ function X.ConsiderQ()
 end
 
 function X.ConsiderW()
-
 	if not abilityW:IsFullyCastable()
-		or not bot:HasModifier( "modifier_skeleton_king_vampiric_aura" )
+		or not bot:HasModifier( "modifier_skeleton_king_bone_guard" )
 		or X.ShouldSaveMana( abilityW )
 	then return 0 end
 
 	local nStack = 0
-	local modIdx = bot:GetModifierByName( "modifier_skeleton_king_vampiric_aura" )
+	local modIdx = bot:GetModifierByName( "modifier_skeleton_king_bone_guard" )
 	if modIdx > -1 then
 		nStack = bot:GetModifierStackCount( modIdx )
 	end
@@ -470,8 +469,10 @@ function X.ShouldSaveMana( nAbility )
 --	if talent5:IsTrained() then return false end
 
 	if nLV >= 6
-		and abilityR:GetCooldownTimeRemaining() <= 3.0
-		and ( bot:GetMana() - nAbility:GetManaCost() < abilityR:GetManaCost() )
+	and nAbility ~= nil
+	and abilityR ~= nil
+	and abilityR:GetCooldownTimeRemaining() <= 3.0
+	and ( bot:GetMana() - nAbility:GetManaCost() < abilityR:GetManaCost() )
 	then
 		return true
 	end

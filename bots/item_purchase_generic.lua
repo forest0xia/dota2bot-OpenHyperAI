@@ -763,6 +763,12 @@ function ItemPurchaseThink()
 		-- specific list
 		SetPairedItems(sItemSellList)
 
+		if botWorth > 23000 then
+			if Item.HasItem( bot, "item_hand_of_midas" ) then
+				bot:ActionImmediate_SellItem(bot:GetItemInSlot(bot:FindItemSlot('item_hand_of_midas')))
+			end
+		end
+
 		if (currentTime > 18 * 60 or botWorth > 20000)
 			and ( Item.HasItem( bot, "item_travel_boots" ) or Item.HasItem( bot, "item_travel_boots_2" ) )
 		then

@@ -67,6 +67,8 @@ local botTarget = nil
 if bot.farmLocation == nil then bot.farmLocation = bot:GetLocation() end
 
 function GetDesire()
+	if bot:IsInvulnerable() or not bot:IsHero() or not bot:IsAlive() or not string.find(botName, "hero") or bot:IsIllusion() then return BOT_MODE_DESIRE_NONE end
+
 	Utils.PrintPings(0.15)
 
 	PickOneAnnouncer()
@@ -159,10 +161,10 @@ function GetDesire()
 		J.Role['hasRefreshDone'] = false;
 	end
 
+	availableCamp = J.Role['availableCampTable'];
+
 	local nAllyList = J.GetNearbyHeroes(bot,1600,false,BOT_MODE_NONE);
 	local hEnemyHeroList = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE);
-
-	availableCamp = J.Role['availableCampTable'];
 
 	if J.Utils.IsBotPushingTowerInDanger(bot)
 	and not (#nAllyList >= 3 and #nAllyList >= #hEnemyHeroList) -- 我们人挺多，对面人也挺多，大战似乎在所难免，别跑了
@@ -241,7 +243,7 @@ function GetDesire()
 		return BOT_ACTION_DESIRE_ABSOLUTE * 0.98
 	end
 
-	local hNearbyAttackAllyHeroList  = J.GetNearbyHeroes(bot,1600, false,BOT_MODE_ATTACK);
+	local hNearbyAttackAllyHeroList = J.GetNearbyHeroes(bot,1600, false, BOT_MODE_ATTACK);
 
 	if #hEnemyHeroList > 0 or #hNearbyAttackAllyHeroList > 0
 	then
@@ -249,13 +251,13 @@ function GetDesire()
 	end
 
 	local nAttackAllys = J.GetSpecialModeAllies(bot,2600,BOT_MODE_ATTACK);
-	if #nAttackAllys > 0 and (not beVeryHighFarmer or bot:GetLevel() >= 16)
+	if #nAttackAllys > 0 and (not beVeryHighFarmer or bot:GetLevel() >= 18)
 	then
 		return BOT_MODE_DESIRE_NONE;
 	end
 
 	local nRetreatAllyList = J.GetNearbyHeroes(bot,1600,false,BOT_MODE_RETREAT);
-	if J.IsValid(nRetreatAllyList[1]) and (not beVeryHighFarmer or bot:GetLevel() >= 16)
+	if J.IsValid(nRetreatAllyList[1]) and (not beVeryHighFarmer or bot:GetLevel() >= 18)
 	   and nRetreatAllyList[1]:GetActiveModeDesire() > BOT_MODE_DESIRE_HIGH
 	then
 		return BOT_MODE_DESIRE_NONE;
@@ -263,7 +265,7 @@ function GetDesire()
 	
 	local nTeamFightLocation = J.GetTeamFightLocation(bot);
 	if nTeamFightLocation ~= nil 
-	   and ( not beVeryHighFarmer or bot:GetLevel() >= 15 )
+	   and ( not beVeryHighFarmer or bot:GetLevel() >= 16 )
 	   and GetUnitToLocationDistance(bot,nTeamFightLocation) < 2800
 	then
 		return BOT_MODE_DESIRE_NONE;
@@ -401,11 +403,12 @@ function GetDesire()
 	end
 
 	if GetGameMode() ~= GAMEMODE_MO
+	and J.IsCore(bot)
+	and J.GetCoresAverageNetworth() < 12000
 	and (J.Site.IsTimeToFarm(bot) or pushTime > DotaTime() - 8.0 or ShouldGoFarmDuringLaning())
-	-- and J.Site.IsTimeToFarm(bot)
 	-- and (not J.IsHumanPlayerInTeam() or enemyKills > allyKills + 16)
 	-- and ( bot:GetNextItemPurchaseValue() > 0 or not bot:HasModifier("modifier_item_moon_shard_consumed") )
-	and ( DotaTime() > 8 * 60 or bot:GetLevel() >= 8 or ( bot:GetAttackRange() < 220 and bot:GetLevel() >= 6 ))
+	and ( DotaTime() > 7 * 60 or bot:GetLevel() >= 8 or ( bot:GetAttackRange() < 220 and bot:GetLevel() >= 6 ) )
 	then
 		if J.GetDistanceFromEnemyFountain(bot) > 4000
 		then
@@ -438,7 +441,7 @@ function GetDesire()
 				elseif farmState == 1
 				    then
 						bot.farmLocation = preferedCamp.cattr.location
-					    return BOT_MODE_DESIRE_ABSOLUTE * 0.96;
+					    return BOT_MODE_DESIRE_ABSOLUTE;
 				else
 
 					if aliveEnemyCount >= 3
@@ -450,9 +453,7 @@ function GetDesire()
 							return BOT_MODE_DESIRE_MODERATE;
 						end
 
-						if bot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT
-							or bot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID
-							or bot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP
+						if J.IsPushing( bot )
 						then
 							local enemyAncient = GetAncient(GetOpposingTeam());
 							local allies       = J.GetNearbyHeroes(bot,1400,false,BOT_MODE_NONE);
@@ -483,7 +484,7 @@ function GetDesire()
 					end
 					local farmDistance = GetUnitToLocationDistance(bot, preferedCamp.cattr.location);
 					bot.farmLocation = preferedCamp.cattr.location
-					return RemapValClamped(farmDistance, 6400, 600, BOT_MODE_DESIRE_MODERATE, BOT_MODE_DESIRE_ABSOLUTE * 0.95)
+					return RemapValClamped(farmDistance, 6400, 600, BOT_MODE_DESIRE_MODERATE, BOT_MODE_DESIRE_ABSOLUTE)
 				end
 			end
 		end
