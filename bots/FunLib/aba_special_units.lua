@@ -27,7 +27,7 @@ function X.GetDesire(bot__)
 
 	local isClockwerkInTeam = false
 
-	for i = 1, 5
+	for i = 1, #GetTeamPlayers( GetTeam() )
 	do
 		local allyHero = GetTeamMember(i)
 		if allyHero ~= nil and allyHero:GetUnitName() == 'npc_dota_hero_rattletrap'

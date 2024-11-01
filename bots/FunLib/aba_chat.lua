@@ -3906,7 +3906,7 @@ function Chat.GetRandomLineupFromHeroPool( sLocalHeroPoolList )
 	end	
 	
 	local nLineupPosition = RandomInt(1, nLineupCount)	
-	for i = 1, 5
+	for i = 1, #GetTeamPlayers( GetTeam() )
 	do 
 		local sHeroName = sHeroList[nLineupPosition * 5 + i - 5]
 		if sHeroName == nil	then sHeroName = 'sRandomHero' end

@@ -3158,7 +3158,7 @@ X.ConsiderItemDesire["item_moon_shard"] = function( hItem )
 
 	local targetMember = nil
 	local targetDamage = 0
-	for i = 1, 5
+	for i = 1, #GetTeamPlayers( GetTeam() )
 	do
 		local member = GetTeamMember( i )
 		if member ~= nil and member:IsAlive()
@@ -5731,7 +5731,7 @@ X.ConsiderItemDesire["item_heavy_blade"] = function( hItem )
 
 
 	--驱散友军
-	for i = 1, 5
+	for i = 1, #GetTeamPlayers( GetTeam() )
 	do 
 		local npcAlly = GetTeamMember( i )
 		if J.IsValidHero( npcAlly )
@@ -6440,7 +6440,7 @@ X.ConsiderItemDesire["item_royal_jelly"] = function(hItem)
 		then
 			local targetAlly = nil
 
-			for i = 1, 5
+			for i = 1, #GetTeamPlayers( GetTeam() )
 			do
 				local allyHero = GetTeamMember(i)
 

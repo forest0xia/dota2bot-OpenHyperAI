@@ -44,7 +44,7 @@ function Push.GetPushDesire(bot, lane)
         maxDesire = 0.80
     end
 
-    for i = 1, 5
+    for i = 1, #GetTeamPlayers( GetTeam() )
     do
 		local member = GetTeamMember(i)
         if member ~= nil and member:GetLevel() < 8 then return BOT_MODE_DESIRE_NONE end
@@ -183,7 +183,7 @@ end
 
 local TeamLocation = {}
 function Push.WhichLaneToPush(bot)
-    for i = 1, 5 do
+    for i = 1, #GetTeamPlayers( GetTeam() ) do
         local member = GetTeamMember(i)
         if member ~= nil and member:IsAlive() then
             TeamLocation[member:GetPlayerID()] = member:GetLocation()

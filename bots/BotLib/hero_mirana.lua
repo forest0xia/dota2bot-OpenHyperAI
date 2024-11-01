@@ -622,7 +622,7 @@ function X.ConsiderR()
 
 	
 	
-	for i = 1, 5
+	for i = 1, #GetTeamPlayers( GetTeam() )
 	do 
 		local npcAlly = GetTeamMember( i )
 		if npcAlly ~= nil

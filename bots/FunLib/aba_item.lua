@@ -1001,7 +1001,7 @@ end
 function Item.GetMinTeamNeutralItemLevel()
 
 	local nMinItemLevel = 999
-	for i = 1, 5
+	for i = 1, #GetTeamPlayers( GetTeam() )
 	do
 		local member = GetTeamMember( i )
 		if	member ~= nil
@@ -1482,7 +1482,7 @@ function Item.GetOutfitType( bot )
 		[5] = 'outfit_priest',
 	}
 	local nTeamPlayerIDs = GetTeamPlayers( GetTeam() )
-	for i = 1, 5
+	for i = 1, #GetTeamPlayers( GetTeam() )
 	do
 		local memberID = nTeamPlayerIDs[i]
 		if bot:GetPlayerID() == memberID
@@ -1496,7 +1496,7 @@ end
 -- returns pos_1, pos_2, pos_3, depends on the roles...
 function Item.GetRoleItemsBuyList( bot )
 	-- local nTeamPlayerIDs = GetTeamPlayers( GetTeam() )
-	-- for i = 1, 5
+	-- for i = 1, #GetTeamPlayers( GetTeam() )
 	-- do
 	-- 	local memberID = nTeamPlayerIDs[i]
 	-- 	if bot:GetPlayerID() == memberID

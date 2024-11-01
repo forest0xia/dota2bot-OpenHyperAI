@@ -544,7 +544,7 @@ function X.ConsiderSolarGuardian()
                 local nAllyHeroes = J.GetNearbyHeroes(bot,1000, false, BOT_MODE_NONE)
                 local furthestAlly = nil
 
-                for i = 1, 5
+                for i = 1, #GetTeamPlayers( GetTeam() )
                 do
                     local ally = GetTeamMember(i)
                     local dist = 0

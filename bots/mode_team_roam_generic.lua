@@ -57,7 +57,7 @@ local ShouldFindTeammatesTime = 0
 local ShouldFindTeammatesTimeGap = 10
 local pingedDefendDesire = 0
 local pingedDefendLocation = nil
-local pingTimeDelta = 10
+local pingTimeDelta = 12
 local goToTargetAlly = nil
 local nearbyAllies, nearbyEnemies
 
@@ -299,12 +299,12 @@ function ConsiderPingedDefendDesire()
 	if J.IsInLaningPhase() then return 0 end
 
 	J.Utils['GameStates']['defendPings'] = J.Utils['GameStates']['defendPings'] ~= nil and J.Utils['GameStates']['defendPings'] or { pingedTime = GameTime() }
-	if bot:WasRecentlyDamagedByAnyHero(3)
-	or (pingedDefendLocation and GetUnitToLocationDistance(bot, pingedDefendLocation) < SearchNearLocAllyForPingDistance) then
+	local botIsCloseToPing = pingedDefendLocation and GetUnitToLocationDistance(bot, pingedDefendLocation) < SearchNearLocAllyForPingDistance
+	if bot:WasRecentlyDamagedByAnyHero(3) or botIsCloseToPing then
 		return 0
 	else
 		local timeDiff = GameTime() - J.Utils['GameStates']['defendPings'].pingedTime
-		if timeDiff <= pingTimeDelta * 0.5 then
+		if timeDiff <= 5 and pingedDefendLocation then
 			return 0.966
 		elseif timeDiff < pingTimeDelta then
 			return 0
@@ -347,7 +347,7 @@ function ConsiderPingedDefendDesire()
 		local towerWithLeastEnemiesAround = J.Utils.GetNonTier1TowerWithLeastEnemiesAround(1400)
 		if towerWithLeastEnemiesAround then
 			nDefendLoc = towerWithLeastEnemiesAround:GetLocation()
-			if nDefendLoc and J.GetEnemiesAroundLoc(nDefendLoc, 1400) >= 1 then
+			if nDefendLoc then
 				enemeyPushingBase = true
 				print("Non-tier-1 towers are in danger for team " .. team)
 			end
@@ -356,15 +356,17 @@ function ConsiderPingedDefendDesire()
 
 	if nDefendLoc ~= nil and enemeyPushingBase then
 		local saferLoc = J.AdjustLocationWithOffsetTowardsFountain(nDefendLoc, 850) + RandomVector(50)
-		nDefendLoc = nil
-		enemeyPushingBase = false
 		local nDefendAllies = J.GetAlliesNearLoc(saferLoc, SearchNearLocAllyForPingDistance);
-		if #nDefendAllies < J.GetNumOfAliveHeroes(false) * 0.7 then -- 大部分来了就好了，避免一直ping导致影响已经在场的bot的行为，剩下的可以看防御策略
+		if #nDefendAllies < J.GetNumOfAliveHeroes(false) * 0.7 -- 大部分来了就好了，避免一直ping导致影响已经在场的bot的行为，剩下的可以看防御策略
+		and J.GetEnemiesAroundLoc(nDefendLoc, 2000) >= 1 -- 再确认一次附近还有敌人
+		then
 			J.Utils['GameStates']['defendPings'].pingedTime = GameTime()
 			bot:ActionImmediate_Chat("Please come defending", false)
 			bot:ActionImmediate_Ping(saferLoc.x, saferLoc.y, false)
 		end
 
+		enemeyPushingBase = false
+		nDefendLoc = nil
 		pingedDefendLocation = saferLoc
 		return 0.966
 	end
@@ -2137,7 +2139,7 @@ function CanAttackSpecialUnit()
 					local cogsCount1 = J.GetPowerCogsCountInLoc(bot:GetLocation(), 800)
 					local cogsCount2 = J.GetPowerCogsCountInLoc(bot:GetLocation(), 255)
 					local isClockwerkInTeam = false
-					for i = 1, 5
+					for i = 1, #GetTeamPlayers( GetTeam() )
 					do
 						local allyHero = GetTeamMember(i)
 						if J.IsValidHero(allyHero)

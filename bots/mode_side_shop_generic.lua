@@ -97,7 +97,7 @@ function TormentorDesire()
 		bot.tormentorState = true
 	end
 
-	for i = 1, 5
+	for i = 1, #GetTeamPlayers( GetTeam() )
 	do
 		local member = GetTeamMember(i)
 
@@ -111,7 +111,7 @@ function TormentorDesire()
 		end
 	end
 
-	for i = 1, 5
+	for i = 1, #GetTeamPlayers( GetTeam() )
 	do
 		local member = GetTeamMember(i)
 
@@ -251,7 +251,7 @@ function IsEnoughAllies()
 	local heroCount = 0
     local coreCount = 0
 
-	for i = 1, 5
+	for i = 1, #GetTeamPlayers( GetTeam() )
 	do
 		local member = GetTeamMember(i)
 
@@ -278,7 +278,7 @@ end
 function DoesAllHaveShard()
 	local heroCount = 0
 
-	for i = 1, 5
+	for i = 1, #GetTeamPlayers( GetTeam() )
 	do
 		local member = GetTeamMember(i)
 
@@ -297,7 +297,7 @@ function GetAveTeamDistance()
 	local aveDistance = 0
     local coreCount = 0
 
-	for i = 1, 5
+	for i = 1, #GetTeamPlayers( GetTeam() )
 	do
 		local member = GetTeamMember(i)
 
@@ -327,7 +327,7 @@ function GetAveTeamDistance()
 end
 
 function DidSomeoneSeeTormentorAlive()
-	for i = 1, 5
+	for i = 1, #GetTeamPlayers( GetTeam() )
 	do
 		local member = GetTeamMember(i)
 
@@ -344,7 +344,7 @@ end
 function GetAttackingCount()
 	local count = 0
 
-	for i = 1, 5
+	for i = 1, #GetTeamPlayers( GetTeam() )
 	do
 		local member = GetTeamMember(i)
 
@@ -360,7 +360,7 @@ function GetAttackingCount()
 end
 
 function IsHumanInLoc()
-	for i = 1, 5
+	for i = 1, #GetTeamPlayers( GetTeam() )
 	do
 		local member = GetTeamMember(i)
 
@@ -382,7 +382,7 @@ end
 function WasHealthy()
 	local count = 0
 
-	for i = 1, 5
+	for i = 1, #GetTeamPlayers( GetTeam() )
 	do
 		local member = GetTeamMember(i)
 

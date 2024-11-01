@@ -375,7 +375,7 @@ end
 function J.GetAlliesNearLoc( vLoc, nRadius )
 
 	local allies = {}
-	for i = 1, 5
+	for i = 1, #GetTeamPlayers( GetTeam() )
 	do
 		local member = GetTeamMember( i )
 		if member ~= nil
@@ -2853,7 +2853,7 @@ function J.GetMostPushLaneDesire()
 end
 
 function J.GetClosestAlly(bot, nRadius)
-	for i = 1, 5
+	for i = 1, #GetTeamPlayers( GetTeam() )
 	do
 		local member = GetTeamMember(i)
 
@@ -3373,7 +3373,7 @@ end
 
 function J.IsAllyHeroAroundLocation( vLoc, nRadius )
 
-	for i = 1, 5
+	for i = 1, #GetTeamPlayers( GetTeam() )
 	do
 		local npcAlly = GetTeamMember( i )
 		if npcAlly ~= nil
@@ -4693,7 +4693,7 @@ end
 function J.GetHumanPing()
 	local ping = nil
 
-	for i = 1, 5
+	for i = 1, #GetTeamPlayers( GetTeam() )
 	do
 		local member = GetTeamMember(i)
 		if  member ~= nil
@@ -4721,7 +4721,7 @@ function J.HasAbility(bot, abilityName)
 end
 
 function J.IsHumanInLoc(vLoc, nRadius)
-	for i = 1, 5
+	for i = 1, #GetTeamPlayers( GetTeam() )
 	do
 		local member = GetTeamMember(i)
 
@@ -5174,7 +5174,7 @@ function J.GetLanePartner(bot)
 		return nil
 	end
 
-	for i = 1, 5
+	for i = 1, #GetTeamPlayers( GetTeam() )
 	do
 		local member = GetTeamMember(i)
 

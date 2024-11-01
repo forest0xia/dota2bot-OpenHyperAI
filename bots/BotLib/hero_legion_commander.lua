@@ -567,7 +567,7 @@ function X.GetAllyToTargetDamage( npcEnemy, nDuration )
 	local nTotalDamage = 0
 	local nDamageType = DAMAGE_TYPE_PHYSICAL
 
-	for i = 1, 5
+	for i = 1, #GetTeamPlayers( GetTeam() )
 	do
 		local ally = GetTeamMember( i )
 		if ally ~= nil

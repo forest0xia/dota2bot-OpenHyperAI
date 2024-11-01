@@ -33,7 +33,7 @@ import {
     sub,
 } from "bots/ts_libs/utils/native-operators";
 
-export const DebugMode = true;
+export const DebugMode = false;
 
 export const ScriptID = 3246316298;
 
