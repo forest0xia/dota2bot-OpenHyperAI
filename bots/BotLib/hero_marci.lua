@@ -260,8 +260,8 @@ function X.ConsiderDispose()
             and bot:IsFacingLocation(J.GetTeamFountain(), 30)
             and bot:IsFacingLocation(enemyHero:GetLocation(), 30)
             and enemyHero:GetAttackTarget() == bot
-            and not botTarget:HasModifier('modifier_enigma_black_hole_pull')
-            and not botTarget:HasModifier('modifier_faceless_void_chronosphere_freeze')
+            and not enemyHero:HasModifier('modifier_enigma_black_hole_pull')
+            and not enemyHero:HasModifier('modifier_faceless_void_chronosphere_freeze')
             then
                 return BOT_ACTION_DESIRE_HIGH, enemyHero
             end

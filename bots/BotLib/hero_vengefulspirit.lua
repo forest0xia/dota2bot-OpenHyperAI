@@ -43,34 +43,57 @@ sRoleItemsBuyList['pos_4'] = {
     "item_lotus_orb",--
     "item_aghanims_shard",
     "item_hurricane_pike",--
+    "item_moon_shard",
     "item_ultimate_scepter_2",
 	"item_sheepstick",--
-    "item_moon_shard",
 }
 
-sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_4']
+sRoleItemsBuyList['pos_5'] = {
+	"item_tango",
+	"item_tango",
+	"item_double_branches",
+	"item_enchanted_mango",
+	"item_enchanted_mango",
+	"item_blood_grenade",
+
+	"item_tranquil_boots",
+	"item_magic_wand",
+	"item_force_staff",
+	"item_glimmer_cape",--
+	"item_pipe",
+	"item_boots_of_bearing",--
+    "item_pavise",
+    "item_solar_crest",--
+	"item_aghanims_shard",
+	"item_hurricane_pike",--
+	"item_sheepstick",--
+	"item_orchid",
+	"item_bloodthorn",--
+	"item_moon_shard",
+	"item_ultimate_scepter_2",
+}
 
 sRoleItemsBuyList['pos_3'] = {
-    "item_double_tango",
-    "item_double_branches",
-    "item_circlet",
+	"item_tango",
+	"item_double_branches",
+	"item_faerie_fire",
+	"item_enchanted_mango",
 
-    "item_boots",
-    "item_magic_wand",
-    "item_arcane_boots",
-    "item_pavise",
-    "item_pipe",--
-    "item_solar_crest",--
-    "item_glimmer_cape",--
-    "item_ultimate_scepter",
-    "item_aghanims_shard",
+	"item_power_treads",
+	"item_magic_wand",
+	"item_witch_blade",
     "item_force_staff",
-    "item_lotus_orb",--
-    "item_aghanims_shard",
-    "item_hurricane_pike",--
-    "item_ultimate_scepter_2",
+	"item_hurricane_pike",--
+	"item_aghanims_shard",
+	"item_black_king_bar",--
+	"item_devastator",--
+	"item_orchid",
+	"item_bloodthorn",--
 	"item_sheepstick",--
-    "item_moon_shard",
+	"item_travel_boots",
+	"item_moon_shard",
+	"item_travel_boots_2",--
+	"item_ultimate_scepter_2",
 }
 
 sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']

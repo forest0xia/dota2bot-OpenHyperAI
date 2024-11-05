@@ -116,6 +116,7 @@ local Rage          = bot:GetAbilityByName('life_stealer_rage')
 local OpenWounds    = bot:GetAbilityByName('life_stealer_open_wounds')
 local Infest        = bot:GetAbilityByName('life_stealer_infest')
 local Consume       = bot:GetAbilityByName('life_stealer_consume')
+local Control       = bot:GetAbilityByName('life_stealer_control')
 
 local announceCount, lastAnnouncedTime = 0, GameTime()
 
@@ -125,15 +126,19 @@ local InfestDesire, InfestTarget
 local ConsumeDesire
 
 function X.SkillsComplement()
-    if not bot:HasModifier('modifier_life_stealer_infest')
-    then
-        if J.CanNotUseAbility(bot) then return end
-    end
+	if J.CanNotUseAbility(bot) then return end
 
     ConsumeDesire = X.ConsiderConsume()
     if ConsumeDesire > 0
     then
         bot:Action_UseAbility(Consume)
+        return
+    end
+
+    ControlDesire = X.ConsiderControl()
+    if ControlDesire > 0
+    then
+        bot:Action_UseAbility(Control)
         return
     end
 
@@ -311,13 +316,28 @@ function X.ConsiderInfest()
     if Infest:IsHidden()
     or not Infest:IsFullyCastable()
     or bot:HasModifier('modifier_life_stealer_infest')
+    or not bot:HasScepter() -- it seems there's a bug that bot can't give commands when it's infesting allies.
     then
         return BOT_ACTION_DESIRE_NONE, nil
     end
 
-    local nAttackRange = bot:GetAttackRange()
     local botTarget = J.GetProperTarget(bot)
 
+    if J.IsValidTarget(botTarget)
+    and J.CanCastOnNonMagicImmune(botTarget)
+    and J.IsInRange(bot, botTarget, 600)
+    and not J.IsSuspiciousIllusion(botTarget)
+    and not J.IsDisabled(botTarget)
+    and not J.IsAttacking(bot)
+    and not botTarget:HasModifier('modifier_abaddon_borrowed_time')
+    and not botTarget:HasModifier('modifier_enigma_black_hole_pull')
+    and not botTarget:HasModifier('modifier_faceless_void_chronosphere_freeze')
+    and (J.IsRunning( botTarget ) or J.GetHP(bot) < 0.7)
+    then
+        return BOT_ACTION_DESIRE_HIGH, botTarget
+    end
+
+    --[[
 	if J.IsGoingOnSomeone(bot)
 	then
         local nInRangeAlly = J.GetNearbyHeroes(bot,1000, false, BOT_MODE_NONE)
@@ -395,12 +415,12 @@ function X.ConsiderInfest()
             end
 		end
 	end
-
+    --]]
     return BOT_ACTION_DESIRE_NONE, nil
 end
 
 function X.ConsiderConsume()
-    if Consume:IsHidden()
+    if not J.CanCastAbility(Consume)
     then
         return BOT_ACTION_DESIRE_NONE
     end
@@ -411,12 +431,12 @@ function X.ConsiderConsume()
 
 	if J.IsGoingOnSomeone(bot)
 	then
-        local nInRangeAlly = J.GetNearbyHeroes(bot,800, false, BOT_MODE_NONE)
-		local nInRangeEnemy = J.GetNearbyHeroes(bot,800, true, BOT_MODE_NONE)
+        local nInRangeAlly = J.GetNearbyHeroes(bot,600, false, BOT_MODE_NONE)
+		local nInRangeEnemy = J.GetNearbyHeroes(bot,600, true, BOT_MODE_NONE)
 
 		if J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
-        and J.IsInRange(bot, botTarget, nRadius - 200)
+        and J.IsInRange(bot, botTarget, nRadius - 100)
         and not J.IsSuspiciousIllusion(botTarget)
         and not J.IsDisabled(botTarget)
         and not botTarget:HasModifier('modifier_abaddon_borrowed_time')
@@ -428,23 +448,6 @@ function X.ConsiderConsume()
 		then
 			return BOT_ACTION_DESIRE_HIGH
 		end
-
-        nInRangeEnemy = J.GetNearbyHeroes(bot,nRadius - 100, true, BOT_MODE_NONE)
-        for _, enemyHero in pairs(nInRangeEnemy)
-        do
-            if J.IsValidHero(enemyHero)
-            and J.CanCastOnNonMagicImmune(enemyHero)
-            and J.IsInRange(bot, enemyHero, nRadius - 100)
-            and J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_MAGICAL)
-            and not J.IsSuspiciousIllusion(enemyHero)
-            and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
-            and not enemyHero:HasModifier('modifier_dazzle_shallow_grave')
-            and not enemyHero:HasModifier('modifier_oracle_false_promise_timer')
-            and not enemyHero:HasModifier('modifier_templar_assassin_refraction_absorb')
-            then
-                return BOT_ACTION_DESIRE_HIGH
-            end
-        end
 	end
 
 	if J.IsRetreating(bot)
@@ -462,12 +465,39 @@ function X.ConsiderConsume()
         end
 	end
 
-    if J.GetHP(bot) > 0.75
+    local nInRangeEnemy = J.GetNearbyHeroes(bot,nRadius - 100, true, BOT_MODE_NONE)
+    for _, enemyHero in pairs(nInRangeEnemy)
+    do
+        if J.IsValidHero(enemyHero)
+        and J.CanCastOnNonMagicImmune(enemyHero)
+        and J.IsInRange(bot, enemyHero, nRadius - 100)
+        and J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_MAGICAL)
+        and not J.IsSuspiciousIllusion(enemyHero)
+        and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
+        and not enemyHero:HasModifier('modifier_dazzle_shallow_grave')
+        and not enemyHero:HasModifier('modifier_oracle_false_promise_timer')
+        and not enemyHero:HasModifier('modifier_templar_assassin_refraction_absorb')
+        then
+            return BOT_ACTION_DESIRE_HIGH
+        end
+    end
+
+    local nInRangeEnemy = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE)
+    if not J.IsGoingOnSomeone(bot) and (J.GetHP(bot) > 0.75 or #nInRangeEnemy <= 0)
     then
         return BOT_ACTION_DESIRE_HIGH
     end
 
     return BOT_ACTION_DESIRE_NONE
+end
+
+function X.ConsiderControl()
+    if not J.CanCastAbility(Control)
+    then
+        return BOT_ACTION_DESIRE_NONE
+    end
+
+    return BOT_ACTION_DESIRE_HIGH
 end
 
 return X

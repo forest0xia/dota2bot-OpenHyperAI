@@ -33,13 +33,13 @@ sRoleItemsBuyList['pos_4'] = {
     "item_magic_wand",
     "item_guardian_greaves",--
     "item_blink",
-    "item_ultimate_scepter",
     "item_aghanims_shard",
     "item_black_king_bar",--
     "item_lotus_orb",--
 	"item_gungir",--
     "item_wind_waker",--
     -- "item_ultimate_scepter_2",
+    "item_ultimate_scepter",
     "item_overwhelming_blink",--
     "item_ultimate_scepter_2",
     "item_moon_shard",
@@ -183,7 +183,7 @@ function X.SkillsComplement()
     EyesInTheForestDesire, EyesInTheForestTarget = X.ConsiderEyesInTheForest()
     if EyesInTheForestDesire > 0
     then
-        bot:Action_UseAbilityOnEntity(EyesInTheForest, EyesInTheForestTarget)
+        bot:Action_UseAbilityOnTree(EyesInTheForest, EyesInTheForestTarget)
         return
     end
 

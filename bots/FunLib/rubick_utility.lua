@@ -40,6 +40,8 @@ if DOTA_UNIT_TARGET_TEAM_BOTH == nil then DOTA_UNIT_TARGET_TEAM_BOTH = 3 end
 
 
 function X.ConsiderStolenSpell(ability)
+    botTarget = J.GetProperTarget(bot)
+
     Abaddon.ConsiderStolenSpell(ability)
     AbyssalUnderlord.ConsiderStolenSpell(ability)
     Alchemist.ConsiderStolenSpell(ability)
@@ -70,143 +72,88 @@ function X.ConsiderStolenSpell(ability)
     then return end
 
     -- print("Rubick considering default usage of the spell...")
-    castRDesire, castRTarget, sMotive = X.ConsiderSpellBehavior(ability)
+    local abilityProps = X.LoadAbilityProperties(ability)
+    local castRDesire, castTarget, sMotive = X.ConsiderSpellBehavior(ability, abilityProps)
     if ( castRDesire > 0 )
     then
         J.SetReportMotive( bDebugMode, sMotive )
-
         J.SetQueuePtToINT( bot, true )
-
-        if X.IsAbilityForSinglePoint(ability) then
-            bot:ActionQueue_UseAbilityOnLocation( ability, castRTarget )
-        elseif X.IsAbilityForUnitTarget(ability) then
-            bot:ActionQueue_UseAbilityOnEntity( ability, castRTarget )
-        elseif X.IsAbilityForNoTarget(ability) then
-            bot:ActionQueue_UseAbility( ability )
-        elseif X.IsAbilityForAOE(ability) then
-            bot:ActionQueue_UseAbilityOnLocation(ability, castRTarget)
+        if abilityProps.isForSinglePoint or abilityProps.isForAOE then
+            bot:ActionQueue_UseAbilityOnLocation(ability, castTarget)
+        elseif abilityProps.isForUnitTarget then
+            bot:ActionQueue_UseAbilityOnEntity(ability, castTarget)
+        elseif abilityProps.isForNoTarget then
+            bot:ActionQueue_UseAbility(ability)
         end
-
         return
-
     end
-
-
 end
 
--- About ABILITY_BEHAVIOR: https://moddota.com/api/#!/vscripts/DOTA_ABILITY_BEHAVIOR
-function X.ConsiderSpellBehavior(ability)
+function X.ConsiderSpellBehavior(ability, props)
+    if not props.isReady then return BOT_ACTION_DESIRE_NONE end
 
-    local nCastRange = ability:GetCastRange() + 200
-    local nCastPoint = ability:GetCastPoint()
-    local nManaCost = ability:GetManaCost()
-    local nRadius = 200 -- ability:GetSpecialValueInt( "xxx" )
-    -- local nDamage = ability:GetSpecialValueInt( "damage" )
-    -- local nDamage2 = ability:GetSpecialValueInt( "AbilityDamage" )
-    -- local nInRangeEnemyList = J.GetNearbyHeroes(bot, nCastRange -80, true, BOT_MODE_NONE )
+    local nCastRange = props.castRange + 200
+    local nManaCost = props.manaCost
+    local nRadius = 250 -- Optional: Adjust based on ability specifics
 
-    if X.IsAbilityForTargetEnemy(ability) then
-        -- print("Rubick considering using a spell to enemy team...")
-        botTarget = J.GetProperTarget(bot)
+    -- Determine target for enemy abilities
+    if props.isForTargetEnemy or not props.isForTargetAllies then
+        if J.IsValidHero(botTarget)
+            and X.CanCastAbilityROnTarget(botTarget)
+            and J.IsInRange(botTarget, bot, nCastRange)
+            and J.IsAllowedToSpam(bot, nManaCost * 0.5) then
 
-        if J.IsValidHero( botTarget )
-            and X.CanCastAbilityROnTarget( botTarget )
-            and J.IsInRange( botTarget, bot, nCastRange )
-            and J.IsAllowedToSpam( bot, nManaCost * 0.5 )
-        then
-
-            if X.IsAbilityForTargetHero(ability) then
-                -- print("Rubick to use a spell on enemy hero target...")
-                if X.IsAbilityForSinglePoint(ability) then
-                    print("Rubick to use a spell on single point...")
-                    return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation(), "打架"
-                elseif X.IsAbilityForUnitTarget(ability) then
-                    print("Rubick to use a spell on single point...")
-                    return BOT_ACTION_DESIRE_HIGH, botTarget, "打架"
-                end
-
+            if props.isForUnitTarget then
+                print("Rubick using a single-target spell on enemy hero...")
+                return BOT_ACTION_DESIRE_HIGH, botTarget, "打架"
             end
 
-            if X.IsAbilityForNoTarget(ability) then
-                print("Rubick to use a spell direcly...")
+            if props.isForSinglePoint then
+                print("Rubick using a point-target spell on enemy location...")
+                return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation(), "打架"
+            end
+
+            if props.isForNoTarget then
+                print("Rubick using a no-target spell...")
                 return BOT_ACTION_DESIRE_HIGH, nil, "打架"
             end
 
-            if X.IsAbilityForAOE(ability) then
-                print("Rubick to use a spell as AOE...")
-                local nCanHurtEnemyAoE = bot:FindAoELocation( true, true, bot:GetLocation(), nCastRange, nRadius, 0, 0 )
-                local nTargetLocation = nCanHurtEnemyAoE.targetloc
-                return BOT_ACTION_DESIRE_HIGH, nTargetLocation, '打架'
+            if props.isForAOE then
+                print("Rubick using an AoE spell...")
+                local nCanHurtEnemyAoE = bot:FindAoELocation(true, true, bot:GetLocation(), nCastRange, nRadius, 0, 0)
+                if nCanHurtEnemyAoE.count >= 2 then
+                    return BOT_ACTION_DESIRE_HIGH, nCanHurtEnemyAoE.targetloc, "打架"
+                end
             end
         end
     end
 
-    if X.IsAbilityForTargetAllies(ability) and not X.IsAbilityForTargetEnemy(ability) and X.IsAbilityForTargetHero(ability) then
+    -- Determine target for ally abilities
+    if (props.isForTargetAllies or not props.isForTargetEnemy) and props.isForTargetHero then
         if DotaTime() >= lastCheck + 0.5 then
             local weakest = nil
             local minHP = 100000
-            local allies = J.GetNearbyHeroes(bot, nCastRange, false, BOT_MODE_NONE )
-            if #allies > 0 then
-                for i=1, #allies do
-                    if not allies[i]:HasModifier( "modifier_"..ability:GetName() )
-                        and J.CanCastOnNonMagicImmune( allies[i] )
-                        and allies[i]:GetHealth() <= minHP
-                        and allies[i]:GetHealth() <= 0.65 * allies[i]:GetMaxHealth()
-                    then
-                        weakest = allies[i]
-                        minHP = allies[i]:GetHealth()
-                    end
+            local allies = J.GetNearbyHeroes(bot, nCastRange, false, BOT_MODE_NONE)
+
+            for _, ally in ipairs(allies) do
+                if not ally:HasModifier("modifier_" .. ability:GetName())
+                    and J.CanCastOnNonMagicImmune(ally)
+                    and ally:GetHealth() <= minHP
+                    and ally:GetHealth() <= 0.65 * ally:GetMaxHealth() then
+                    weakest = ally
+                    minHP = ally:GetHealth()
                 end
             end
-            if weakest ~= nil 
-            then
-                print("Rubick to use a spell on allies...")
-                return BOT_ACTION_DESIRE_HIGH, weakest, '辅助技能'
+
+            if weakest then
+                print("Rubick using a supportive spell on ally...")
+                return BOT_ACTION_DESIRE_HIGH, weakest, "辅助技能"
             end
             lastCheck = DotaTime()
         end
-
     end
 
-
     return BOT_ACTION_DESIRE_NONE
-end
-
-function X.IsAbilityForTargetHero(ability)
-    local nTargetTypeFlags = ability:GetTargetType()
-    return bit.band( DOTA_UNIT_TARGET_HERO, nTargetTypeFlags ) ~= 0
-end
-
-function X.IsAbilityForTargetEnemy(ability)
-    local nTargetTeamFlags = ability:GetTargetTeam()
-    return bit.band( DOTA_UNIT_TARGET_TEAM_ENEMY, nTargetTeamFlags ) ~= 0
-end
-
-function X.IsAbilityForTargetAllies(ability)
-    local nTargetTeamFlags = ability:GetTargetTeam()
-    return bit.band( DOTA_UNIT_TARGET_TEAM_FRIENDLY, nTargetTeamFlags ) ~= 0 or bit.band( DOTA_UNIT_TARGET_TEAM_BOTH, nTargetTeamFlags ) ~= 0  
-end
-
--- Targeting a unit (a table)
-function X.IsAbilityForUnitTarget(ability)
-    local nBehaviorFlags = ability:GetBehavior()
-    return bit.band( DOTA_ABILITY_BEHAVIOR_UNIT_TARGET, nBehaviorFlags ) ~= 0
-end
-
--- Targeting to a point (x, y)
-function X.IsAbilityForSinglePoint(ability)
-    local nBehaviorFlags = ability:GetBehavior()
-    return bit.band( DOTA_ABILITY_BEHAVIOR_POINT, nBehaviorFlags ) ~= 0
-end
-
-function X.IsAbilityForNoTarget(ability)
-    local nBehaviorFlags = ability:GetBehavior()
-    return bit.band( DOTA_ABILITY_BEHAVIOR_NO_TARGET, nBehaviorFlags ) ~= 0
-end
-
-function X.IsAbilityForAOE(ability)
-    local nBehaviorFlags = ability:GetBehavior()
-    return bit.band( DOTA_ABILITY_BEHAVIOR_AOE, nBehaviorFlags ) ~= 0
 end
 
 function X.CanCastAbilityROnTarget( nTarget )
@@ -219,6 +166,31 @@ function X.CanCastAbilityROnTarget( nTarget )
 
     return false
 
+end
+
+-- About ABILITY_BEHAVIOR: https://moddota.com/api/#!/vscripts/DOTA_ABILITY_BEHAVIOR
+function X.LoadAbilityProperties(ability)
+    local targetType = ability:GetTargetType()
+    local targetTeam = ability:GetTargetTeam()
+    local behavior = ability:GetBehavior()
+
+    return {
+        targetType = targetType,
+        targetTeam = targetTeam,
+        behavior = behavior,
+        castRange = ability:GetCastRange(),
+        manaCost = ability:GetManaCost(),
+        cooldownRemaining = ability:GetCooldownTimeRemaining(),
+        isReady = ability:IsCooldownReady() and ability:IsFullyCastable(),
+        aoeRadius = ability:GetAOERadius() or 0,
+        isForTargetHero = bit.band(DOTA_UNIT_TARGET_HERO, targetType) ~= 0,
+        isForTargetEnemy = bit.band(DOTA_UNIT_TARGET_TEAM_ENEMY, targetTeam) ~= 0,
+        isForTargetAllies = bit.band(DOTA_UNIT_TARGET_TEAM_FRIENDLY, targetTeam) ~= 0,
+        isForUnitTarget = bit.band(DOTA_ABILITY_BEHAVIOR_UNIT_TARGET, behavior) ~= 0,
+        isForSinglePoint = bit.band(DOTA_ABILITY_BEHAVIOR_POINT, behavior) ~= 0,
+        isForNoTarget = bit.band(DOTA_ABILITY_BEHAVIOR_NO_TARGET, behavior) ~= 0,
+        isForAOE = bit.band(DOTA_ABILITY_BEHAVIOR_AOE, behavior) ~= 0
+    }
 end
 
 return X

@@ -151,7 +151,7 @@
 			{
 				gold 			= {100, 500},
 				armor 			= {1, 3},
-				magicResist 	= {1, 5},
+				magicResist 	= {1, 3},
 				levels 			= {0.5, 2},
 				neutral 		= {30, 180},
 				stats			= {1, 3}
@@ -177,7 +177,7 @@
 			clamp =
 			{
 				gold 			= {100, 1500},
-				armor 			= {1, 3},
+				armor 			= {1, 5},
 				magicResist 	= {1, 5},
 				levels 			= {0.5, 2},
 				neutral 		= {30, 180},
@@ -335,8 +335,8 @@
 		awardCap =
 		{
 			gold 				= 30000,
-			armor 				= 35,
-			magicResist 		= 40,
+			armor 				= 30,
+			magicResist 		= 28,
 			levels 				= 15,
 			neutral 			= 1500,
 			stats 				= 45,

@@ -125,7 +125,7 @@ function Settings:Initialize(difficulty)
 	Settings.difficultyScale = 1 + ((difficulty - 5) / diffMaxDenominator)
 	-- increase diff scale for diffculty > 5.
 	if difficulty >= 5 and difficulty < diffMaxDenominator then
-		Settings.difficultyScale = 1 + ((difficulty - 2.7) / diffMaxDenominator)
+		Settings.difficultyScale = 1 + ((difficulty - 3.2) / diffMaxDenominator)
 	elseif difficulty >= diffMaxDenominator then
 		Settings.difficultyScale = 1 + (difficulty / diffMaxDenominator)
 	end

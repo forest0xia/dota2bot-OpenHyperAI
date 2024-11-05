@@ -285,6 +285,15 @@ function AwardBonus:GetValue(bot, award)
 	-- add offset
 	scaled = scaled + Settings.deathBonus.offset[award]
 	debugTable.scaled = scaled
+
+	local diffMultiplier = 1
+	if Settings.difficulty < Settings.diffMaxDenominator / 2 then
+		diffMultiplier = 0.5
+	else
+		diffMultiplier = 1.5
+	end
+	scaled = scaled * diffMultiplier
+
 	-- Round and maybe clamp
 	local clamped = 0
 	if Settings.deathBonus.clampOverride[award] then

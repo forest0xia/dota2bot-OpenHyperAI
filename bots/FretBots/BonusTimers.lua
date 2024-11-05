@@ -340,7 +340,7 @@ function BonusTimers:GameStartBonus()
 		msg = msg .. ' Armor: '.. Settings.gameStartBonus.armor
 		awarded = true
 		for _, bot in pairs(AllBots[team]) do
-			AwardBonus:armor(bot, Settings.gameStartBonus.armor + Settings.difficulty * Settings.gameStartBonusTimesDifficulty.armor)
+			AwardBonus:armor(bot, Settings.gameStartBonus.armor + Settings.difficulty / 2 * Settings.gameStartBonusTimesDifficulty.armor)
 		end
 	end
 	-- magicResist
@@ -348,7 +348,7 @@ function BonusTimers:GameStartBonus()
 		msg = msg .. ' Magic Resist: '.. Settings.gameStartBonus.magicResist
 		awarded = true
 		for _, bot in pairs(AllBots[team]) do
-			AwardBonus:magicResist(bot, Settings.gameStartBonus.magicResist + Settings.difficulty * Settings.gameStartBonusTimesDifficulty.magicResist)
+			AwardBonus:magicResist(bot, Settings.gameStartBonus.magicResist + Settings.difficulty / 2 * Settings.gameStartBonusTimesDifficulty.magicResist)
 		end
 	end
 	-- Levels
@@ -356,7 +356,7 @@ function BonusTimers:GameStartBonus()
 		msg = msg .. ' Levels: '.. Settings.gameStartBonus.levels
 		awarded = true
 		for _, bot in pairs(AllBots[team]) do
-			AwardBonus:levels(bot, Settings.gameStartBonus.levels + Settings.difficulty * Settings.gameStartBonusTimesDifficulty.levels)
+			AwardBonus:levels(bot, Settings.gameStartBonus.levels + Settings.difficulty / 2 * Settings.gameStartBonusTimesDifficulty.levels)
 		end
 	end
 	-- Stats
@@ -364,7 +364,7 @@ function BonusTimers:GameStartBonus()
 		msg = msg .. ' Stats: '.. Settings.gameStartBonus.stats
 		awarded = true
 		for _, bot in pairs(AllBots[team]) do
-			AwardBonus:stats(bot, Settings.gameStartBonus.stats + Settings.difficulty * Settings.gameStartBonusTimesDifficulty.stats)
+			AwardBonus:stats(bot, Settings.gameStartBonus.stats + Settings.difficulty / 2 * Settings.gameStartBonusTimesDifficulty.stats)
 		end
 	end
 	-- neutral
@@ -372,7 +372,7 @@ function BonusTimers:GameStartBonus()
 		msg = msg .. ' Neutral: '.. Settings.gameStartBonus.neutral
 		awarded = true
 		for _, bot in pairs(AllBots[team]) do
-			AwardBonus:neutral(bot, Settings.gameStartBonus.neutral + Settings.difficulty * Settings.gameStartBonusTimesDifficulty.neutral)
+			AwardBonus:neutral(bot, Settings.gameStartBonus.neutral + Settings.difficulty / 2 * Settings.gameStartBonusTimesDifficulty.neutral)
 		end
 	end
 
