@@ -1239,6 +1239,16 @@ function X.IsLocCanBeSeen(vLoc)
 		   and IsLocationVisible(tempLocDown)
 end
 
+--[[
+all ai, all human, ai talk global
+all ai, all ai, ai talk private
+all ai, some ai, ai talk p
+some ai, all human, ai talk g
+some ai, all ai, ai talk p
+some ai, some ai, ai talk p
+all human, all ai, ai talk g
+all human, some ai, ai talk g
+]]--
 function PickOneAnnouncer()
 	if not hasPickedOneAnnouncer then
 		for i, id in pairs(GetTeamPlayers(GetTeam())) do

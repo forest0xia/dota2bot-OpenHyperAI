@@ -406,11 +406,11 @@ function ____exports.GetLastSeenEnemyIdsNearLocation(vLoc, nDistance)
     end
     enemies = __TS__ArrayConcat(
         enemies,
-        ____exports.GetPlayerIdsInTpToLocation(vLoc, nDistance)
+        ____exports.GetEnemyIdsInTpToLocation(vLoc, nDistance)
     )
     return enemies
 end
-function ____exports.GetPlayerIdsInTpToLocation(vLoc, nDistance)
+function ____exports.GetEnemyIdsInTpToLocation(vLoc, nDistance)
     local enemies = {}
     for ____, tp in ipairs(GetIncomingTeleports()) do
         if tp ~= nil and ____exports.GetLocationToLocationDistance(vLoc, tp.location) <= nDistance and not IsTeamPlayer(tp.playerid) then
@@ -1110,6 +1110,15 @@ function ____exports.FindAllyWithAtLeastDistanceAway(bot, nDistance)
         end
     end
     return nil
+end
+function ____exports.GetAllyIdsInTpToLocation(vLoc, nDistance)
+    local allies = {}
+    for ____, tp in ipairs(GetIncomingTeleports()) do
+        if tp ~= nil and ____exports.GetLocationToLocationDistance(vLoc, tp.location) <= nDistance and IsTeamPlayer(tp.playerid) then
+            allies[#allies + 1] = tp.playerid
+        end
+    end
+    return allies
 end
 function ____exports.IsBotPushingTowerInDanger(bot)
     local enemyTowerNearby = #bot:GetNearbyTowers(1100, true) >= 1

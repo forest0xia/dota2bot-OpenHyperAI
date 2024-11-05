@@ -8,7 +8,10 @@ local LanePush = LANE_MID
 local GlyphDuration = 7
 local ShoulNotPushTower = false
 local TowerPushCooldown = 0
-local StartToPushTime = 20 * 60 -- after x mins, start considering to push.
+local StartToPushTime = 16 * 60 -- after x mins, start considering to push.
+local PushDuration = 3 * 60 -- keep pushing for x mins.
+local PushGapMinutes = 5 -- only push once in x mins.
+local lastPushTime = 0
 
 local pingTimeDelta = 5
 
@@ -93,6 +96,7 @@ function Push.GetPushDesire(bot, lane)
     local eAliveCoreCount = J.GetAliveCoreCount(true)
     local nPushDesire = GetPushLaneDesire(lane)
     local nEnemyAncient = GetAncient(GetOpposingTeam())
+    local teamHasAegis = J.DoesTeamHaveAegis()
 
     local botTarget = bot:GetAttackTarget()
     if J.IsValidBuilding(botTarget)
@@ -120,6 +124,11 @@ function Push.GetPushDesire(bot, lane)
         bot:SetTarget(nEnemyAncient)
         bot:Action_AttackUnit(nEnemyAncient, true)
         return BOT_ACTION_DESIRE_ABSOLUTE * 0.95
+    end
+
+    local nH, _ = J.Utils.NumHumanBotPlayersInTeam(GetOpposingTeam())
+    if nH > 0 and not ShouldPushAgainstHuman(nH) and not teamHasAegis then
+		return BOT_MODE_DESIRE_NONE
     end
 
     if bot:WasRecentlyDamagedByTower(3)
@@ -160,7 +169,7 @@ function Push.GetPushDesire(bot, lane)
         or aAliveCoreCount >= eAliveCoreCount
         or (aAliveCoreCount >= 1 and aAliveCount >= eAliveCount + 2)
         then
-            if J.DoesTeamHaveAegis()
+            if teamHasAegis
             then
                 local aegis = 1.3
                 nPushDesire = nPushDesire * aegis
@@ -179,6 +188,12 @@ function Push.GetPushDesire(bot, lane)
     end
 
     return BOT_MODE_DESIRE_NONE
+end
+
+function ShouldPushAgainstHuman(nH)
+    local minute = math.floor(DotaTime() / 60)
+    return math.fmod(minute, PushGapMinutes) == 0
+        or DotaTime() - lastPushTime < PushDuration
 end
 
 local TeamLocation = {}

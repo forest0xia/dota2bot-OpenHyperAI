@@ -957,12 +957,12 @@ export function GetLastSeenEnemyIdsNearLocation(
         }
     }
 
-    enemies = enemies.concat(GetPlayerIdsInTpToLocation(vLoc, nDistance));
+    enemies = enemies.concat(GetEnemyIdsInTpToLocation(vLoc, nDistance));
 
     return enemies;
 }
 
-export function GetPlayerIdsInTpToLocation(
+export function GetEnemyIdsInTpToLocation(
     vLoc: Vector,
     nDistance: number
 ): number[] {
@@ -977,6 +977,23 @@ export function GetPlayerIdsInTpToLocation(
         }
     }
     return enemies;
+}
+
+export function GetAllyIdsInTpToLocation(
+    vLoc: Vector,
+    nDistance: number
+): number[] {
+    const allies = [];
+    for (let tp of GetIncomingTeleports()) {
+        if (
+            tp !== null &&
+            GetLocationToLocationDistance(vLoc, tp.location) <= nDistance &&
+            IsTeamPlayer(tp.playerid)
+        ) {
+            allies.push(tp.playerid);
+        }
+    }
+    return allies;
 }
 
 export function IsBotPushingTowerInDanger(bot: Unit): boolean {

@@ -51,8 +51,8 @@ sRoleItemsBuyList['pos_1'] = {
     "item_black_king_bar",--
     "item_bloodthorn",--
     "item_skadi",--
-    "item_travel_boots_2",--
     "item_moon_shard",
+    "item_travel_boots_2",--
     "item_ultimate_scepter_2",
 }
 
@@ -75,8 +75,8 @@ sRoleItemsBuyList['pos_2'] = {
     "item_bloodthorn",--
     "item_travel_boots",
     "item_skadi",--
-    "item_travel_boots_2",--
     "item_moon_shard",
+    "item_travel_boots_2",--
     "item_ultimate_scepter_2",
 }
 
@@ -97,9 +97,9 @@ sRoleItemsBuyList['pos_3'] = {
     nUtility,--
     "item_travel_boots",
     "item_sheepstick",--
+    "item_moon_shard",
     "item_travel_boots_2",--
     "item_ultimate_scepter_2",
-    "item_moon_shard",
 }
 
 sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_3']
