@@ -474,6 +474,10 @@ function X.GetPosition(bot)
 		print("[ERROR] Failed to match bot role for bot: "..unitName..', PlayerID: '..playerId..', set it to play pos: '..tostring(role))
 		print("Stack Trace:", debug.traceback())
 	end
+	if not role then
+		print('[ERROR] Failed to determine role for bot '..bot:GetUnitName()..'. Set it to pos: 3.')
+		role = 3
+	end
 	return role
 end
 

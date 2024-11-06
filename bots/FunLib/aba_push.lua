@@ -127,7 +127,7 @@ function Push.GetPushDesire(bot, lane)
     end
 
     local nH, _ = J.Utils.NumHumanBotPlayersInTeam(GetOpposingTeam())
-    if nH > 0 and not ShouldPushAgainstHuman(nH) and not teamHasAegis then
+    if nH > 0 and not IsPushAgainstHumanTiming(nH) and not teamHasAegis then
 		return BOT_MODE_DESIRE_NONE
     end
 
@@ -190,10 +190,11 @@ function Push.GetPushDesire(bot, lane)
     return BOT_MODE_DESIRE_NONE
 end
 
-function ShouldPushAgainstHuman(nH)
+function IsPushAgainstHumanTiming(nH)
     local minute = math.floor(DotaTime() / 60)
     return math.fmod(minute, PushGapMinutes) == 0
         or DotaTime() - lastPushTime < PushDuration
+        or J.IsAnyAllyHeroSurroundedByManyAllies()
 end
 
 local TeamLocation = {}

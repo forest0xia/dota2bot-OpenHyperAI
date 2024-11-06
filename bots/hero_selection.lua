@@ -238,7 +238,7 @@ function X.ShufflePickOrder(teamPlayers)
 	-- print('Random pick order: '..table.concat(shuffleSelection, ", "))
 	for i = 1, #shuffleSelection do
 		local targetIndex = shuffleSelection[i]
-		if IsPlayerBot(teamPlayers[i]) and IsPlayerBot(teamPlayers[targetIndex]) then
+		if teamPlayers[i] and teamPlayers[i] >= 0 and IsPlayerBot(teamPlayers[i]) and IsPlayerBot(teamPlayers[targetIndex]) then
 			-- print('Shuffle team '..GetTeam()..', swap '..i.." with "..targetIndex)
 			sSelectList[i], sSelectList[targetIndex] = sSelectList[targetIndex], sSelectList[i]
 			tSelectPoolList[i], tSelectPoolList[targetIndex] = tSelectPoolList[targetIndex], tSelectPoolList[i]

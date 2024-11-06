@@ -6,8 +6,6 @@ local Utils = require( GetScriptDirectory()..'/FunLib/utils' )
 
 local BotBuild = dofile(GetScriptDirectory() .. "/BotLib/" .. string.gsub(botName, "npc_dota_", ""));
 
-if bot.PushLaneDesire == nil then bot.PushLaneDesire = {0, 0, 0} end
-
 if BotBuild == nil
 then
 	print('[ERROR] No build config file found for bot: '..botName)

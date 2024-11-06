@@ -1511,7 +1511,7 @@ function Item.GetRoleItemsBuyList( bot )
 	-- 		return 'pos_'..tostring(Role.roleAssignment[team][i])
 	-- 	end
 	-- end
-	return 'pos_'..Role.GetPosition(bot)
+	return 'pos_'..tostring(Role.GetPosition(bot))
 end
 
 function Item.GetItemWardSolt()

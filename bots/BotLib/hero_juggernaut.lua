@@ -41,9 +41,9 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_quelling_blade",
 
 	"item_wraith_band",
+	"item_magic_wand",
 	"item_power_treads",
 	"item_maelstrom",
-	"item_magic_wand",
 	"item_manta",--
 	"item_mjollnir",--
 	"item_skadi",--

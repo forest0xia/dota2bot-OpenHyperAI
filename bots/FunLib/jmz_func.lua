@@ -3371,6 +3371,23 @@ function J.IsInEnemyArea( bot )
 end
 
 
+function J.IsAnyAllyHeroSurroundedByManyAllies()
+
+	for i = 1, #GetTeamPlayers( GetTeam() )
+	do
+		local npcAlly = GetTeamMember( i )
+		if npcAlly ~= nil
+			and npcAlly:IsAlive()
+			and #J.GetNearbyHeroes(npcAlly, 1400, false, BOT_MODE_NONE) >= 3
+		then
+			return true
+		end
+	end
+
+	return false
+
+end
+
 function J.IsAllyHeroAroundLocation( vLoc, nRadius )
 
 	for i = 1, #GetTeamPlayers( GetTeam() )
