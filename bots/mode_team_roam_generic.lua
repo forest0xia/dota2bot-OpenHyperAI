@@ -311,7 +311,7 @@ function ConsiderPingedDefendDesire()
 		end
 	end
 
-	local enemyNearAncient = #J.GetLastSeenEnemiesNearLoc( GetAncient(team):GetLocation(), 3000 )
+	local enemyNearAncient = #J.GetLastSeenEnemiesNearLoc( GetAncient(team):GetLocation(), 2400 )
 
 	local enemeyPushingBase = false
 	local nDefendLoc = nil

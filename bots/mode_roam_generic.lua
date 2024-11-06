@@ -836,7 +836,7 @@ function OnEnd()
 end
 
 function IsInHealthyState()
-	return J.GetHP(bot) > 0.7 and J.GetMP(bot) > 0.6
+	return botName ~= 'npc_dota_hero_huskar' and J.GetHP(bot) > 0.7 and J.GetMP(bot) > 0.6
 end
 
 function CheckLaneToGank()
@@ -1127,7 +1127,7 @@ function ConsiderGeneralRoamingInConditions()
 			for _, enemy in pairs(nInRangeEnemy) do
 				if J.Utils.IsValidHero(enemy) then
 					if enemy:IsFacingLocation(bot:GetLocation(), 15)
-					and J.IsInRange(bot, enemy, enemy:GetAttackRange() + 450)
+					and J.IsInRange(bot, enemy, enemy:GetAttackRange() * 1.5 + 350)
 					and J.GetHP(enemy) > J.GetHP(bot) - 0.15
 					and bot:WasRecentlyDamagedByAnyHero(3)
 					and J.GetHP(bot) < 0.75 and J.GetHP(bot) > 0.2 -- don't block real retreat action
