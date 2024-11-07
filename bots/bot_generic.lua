@@ -14,5 +14,9 @@ end
 
 function MinionThink(hMinionUnit)
 	if not Utils.IsValidUnit(hMinionUnit) then return end
+	if hMinionUnit.lastMinionFrameProcessTime == nil then hMinionUnit.lastMinionFrameProcessTime = DotaTime() end
+	if DotaTime() - hMinionUnit.lastMinionFrameProcessTime < 0.3 then return end
+	hMinionUnit.lastMinionFrameProcessTime = DotaTime()
+
 	BotBuild.MinionThink(hMinionUnit)
 end

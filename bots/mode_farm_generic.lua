@@ -876,7 +876,7 @@ function X.ShouldRun(bot)
 
 	if bot:HasModifier('modifier_abyssal_underlord_firestorm_burn')
 	and #hEnemyHeroList >= 1
-	and J.IsValidHero(hEnemyHeroList[1] ) and J.GetHP(hEnemyHeroList) > J.GetHP(bot) - 0.15
+	and J.IsValidHero(hEnemyHeroList[1] ) and J.GetHP(hEnemyHeroList[1]) > J.GetHP(bot) - 0.15
 	and J.GetHP(bot) < 0.85 and J.GetHP(bot) > 0.2 -- don't block real retreat action
 	then
 		return 2

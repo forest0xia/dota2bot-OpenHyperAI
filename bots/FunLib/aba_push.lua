@@ -9,7 +9,7 @@ local GlyphDuration = 7
 local ShoulNotPushTower = false
 local TowerPushCooldown = 0
 local StartToPushTime = 16 * 60 -- after x mins, start considering to push.
-local PushDuration = 3 * 60 -- keep pushing for x mins.
+local PushDuration = 3.5 * 60 -- keep pushing for x mins.
 local PushGapMinutes = 5 -- only push once in x mins.
 local lastPushTime = 0
 
@@ -127,7 +127,11 @@ function Push.GetPushDesire(bot, lane)
     end
 
     local nH, _ = J.Utils.NumHumanBotPlayersInTeam(GetOpposingTeam())
-    if nH > 0 and not IsPushAgainstHumanTiming(nH) and not teamHasAegis then
+    if nH > 0
+    and not IsPushAgainstHumanTiming(nH)
+    and not teamHasAegis
+    and GetUnitToUnitDistance(bot, GetAncient(GetOpposingTeam())) > 4000
+    then
 		return BOT_MODE_DESIRE_NONE
     end
 
@@ -195,6 +199,7 @@ function IsPushAgainstHumanTiming(nH)
     return math.fmod(minute, PushGapMinutes) == 0
         or DotaTime() - lastPushTime < PushDuration
         or J.IsAnyAllyHeroSurroundedByManyAllies()
+        or minute >= 50
 end
 
 local TeamLocation = {}

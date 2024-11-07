@@ -186,7 +186,11 @@ function GetDesire()
 	end
 	if pingedDefendDesire > 0 and pingedDefendLocation and #nearbyEnemies <= 0 then
 		print("got pinged to defend for bot: " .. botName)
-		return pingedDefendDesire
+		local effctiveAllies = J.GetAlliesNearLoc(pingedDefendLocation, 1600) + #J.Utils.GetAllyIdsInTpToLocation(pingedDefendLocation, 1000)
+		local enemiesAroundLoc = J.GetEnemiesAroundLoc(pingedDefendLocation, 1600)
+		if effctiveAllies < enemiesAroundLoc * 0.7 then
+			return pingedDefendDesire
+		end
 	end
 
 	targetUnit, ShouldHelpAlly = ConsiderHelpAlly()
@@ -460,7 +464,7 @@ function Think()
 	end
 
 	if shouldHarass
-	and harassTarget ~= nil
+	and J.Utils.IsValidUnit(harassTarget)
 	then
 		if J.IsInRange(bot, harassTarget, bot:GetAttackRange()) then
 			bot:Action_AttackUnit(harassTarget, false)
