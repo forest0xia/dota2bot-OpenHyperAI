@@ -328,6 +328,10 @@ function X.ConsiderIllusionMove(minion)
 end
 
 function X.IllusionThink(minion)
+	if minion.lastMinionFrameProcessTime == nil then minion.lastMinionFrameProcessTime = DotaTime() end
+	if DotaTime() - minion.lastMinionFrameProcessTime < 0.3 then return end
+	minion.lastMinionFrameProcessTime = DotaTime()
+
 	minion.attackDesire, minion.target = X.ConsiderIllusionAttack(minion);
 	minion.moveDesire, minion.loc      = X.ConsiderIllusionMove(minion);
 
@@ -1172,7 +1176,7 @@ end
 -- MINION THINK
 function X.MinionThink(hMinionUnit)
 	if hMinionUnit.lastMinionFrameProcessTime == nil then hMinionUnit.lastMinionFrameProcessTime = DotaTime() end
-	if DotaTime() - hMinionUnit.lastMinionFrameProcessTime < 0.1 then return end
+	if DotaTime() - hMinionUnit.lastMinionFrameProcessTime < 0.2 then return end
 	hMinionUnit.lastMinionFrameProcessTime = DotaTime()
 
 	if X.IsValidUnit(hMinionUnit)

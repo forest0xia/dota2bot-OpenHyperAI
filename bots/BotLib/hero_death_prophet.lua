@@ -123,8 +123,8 @@ sRoleItemsBuyList['pos_5'] = {
 
 	"item_boots",
 	"item_ring_of_basilius",
-	"item_arcane_boots",
 	"item_magic_wand",
+	"item_arcane_boots",
 	"item_pipe",--
 	"item_shivas_guard",--
 	"item_cyclone",

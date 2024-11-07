@@ -57,8 +57,8 @@ sRoleItemsBuyList['pos_2'] = {
 
     "item_bracer",
     "item_bottle",
-    "item_boots",
     "item_magic_wand",
+    "item_boots",
     "item_eternal_shroud",--
     "item_blink",
     "item_ultimate_scepter",
@@ -79,9 +79,9 @@ sRoleItemsBuyList['pos_3'] = {
     "item_magic_stick",
     "item_ring_of_protection",
 
+    "item_magic_wand",
     "item_helm_of_iron_will",
     "item_boots",
-    "item_magic_wand",
     "item_phase_boots",
     "item_veil_of_discord",
     "item_eternal_shroud",--
@@ -122,8 +122,8 @@ sRoleItemsBuyList['pos_5'] = {
     "item_wind_lace",
     "item_blood_grenade",
 
-    "item_arcane_boots",
     "item_magic_wand",
+    "item_arcane_boots",
     "item_pipe",--
     "item_blink",
     "item_aether_lens",--

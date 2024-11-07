@@ -744,8 +744,8 @@ local function ItemUsageComplement()
 					--	and J.Item.IsDebugItem( sItemName )
 						and J.Item.IsSpecifiedItem( sItemName )
 					then
-						local sReportItemName = J.Chat.GetItemCnName( sItemName )
-						J.SetReportMotive( bDebugMode, sReportItemName..'→'..sMotive )
+						-- local sReportItemName = J.Chat.GetItemCnName( sItemName )
+						J.SetReportMotive( bDebugMode, sItemName..'→'..sMotive )
 					end
 
 					X.SetUseItem( hItem, hItemTarget, sCastType )

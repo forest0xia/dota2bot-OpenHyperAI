@@ -56,8 +56,8 @@ sRoleItemsBuyList['pos_5'] = {
 	"item_enchanted_mango",
 	"item_blood_grenade",
 
-	"item_tranquil_boots",
 	"item_magic_wand",
+	"item_tranquil_boots",
 	"item_force_staff",
 	"item_glimmer_cape",--
 	"item_pipe",
@@ -79,8 +79,8 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_faerie_fire",
 	"item_enchanted_mango",
 
-	"item_power_treads",
 	"item_magic_wand",
+	"item_power_treads",
 	"item_witch_blade",
     "item_force_staff",
 	"item_hurricane_pike",--

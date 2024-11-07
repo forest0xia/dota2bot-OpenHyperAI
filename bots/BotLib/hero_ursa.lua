@@ -32,8 +32,8 @@ sRoleItemsBuyList['pos_1'] = {
     "item_quelling_blade",
 	"item_circlet",
 
-    "item_phase_boots",
     "item_magic_wand",
+    "item_phase_boots",
 	"item_diffusal_blade",
     -- "item_bfury",--
     "item_blink",

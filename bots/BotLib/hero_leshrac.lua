@@ -53,8 +53,8 @@ sRoleItemsBuyList['pos_2'] = {
 
     "item_bottle",
     "item_null_talisman",
-    "item_arcane_boots",
     "item_magic_wand",
+    "item_arcane_boots",
     "item_cyclone",
     "item_kaya_and_sange",--
     "item_bloodstone",--
@@ -75,8 +75,8 @@ sRoleItemsBuyList['pos_3'] = {
     "item_enchanted_mango",
 
     "item_null_talisman",
-    "item_arcane_boots",
     "item_magic_wand",
+    "item_arcane_boots",
     "item_kaya",
     "item_bloodstone",--
     "item_black_king_bar",--

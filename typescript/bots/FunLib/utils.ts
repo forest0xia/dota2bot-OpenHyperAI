@@ -869,7 +869,7 @@ export function IsNearEnemyHighGroundTower(unit: Unit, range: number): boolean {
 
 export function IsTeamPushingSecondTierOrHighGround(bot: Unit): boolean {
     return (
-        bot.GetNearbyHeroes(1600, false, BotMode.None).length > 2 &&
+        bot.GetNearbyHeroes(2000, false, BotMode.None).length > 2 &&
         (IsNearEnemySecondTierTower(bot, 1800) ||
             IsNearEnemyHighGroundTower(bot, 3000))
     );

@@ -2945,8 +2945,13 @@ end
 
 function J.CannotBeKilled(bot, botTarget)
 	return J.IsValidHero( botTarget )
-	and ((J.GetModifierTime(botTarget, 'modifier_dazzle_shallow_grave') > 0.8 and J.GetHP(botTarget) < 0.15 and (bot == nil or bot:GetUnitName() ~= "npc_dota_hero_axe"))
-	or J.GetModifierTime(botTarget, 'modifier_oracle_false_promise_timer') > 0.8)
+	and ((J.GetModifierTime(botTarget, 'modifier_dazzle_shallow_grave') > 0.6 and J.GetHP(botTarget) < 0.15 and (bot == nil or bot:GetUnitName() ~= "npc_dota_hero_axe"))
+	or J.GetModifierTime(botTarget, 'modifier_oracle_false_promise_timer') > 0.6)
+end
+
+function J.CanIgnoreLowHp(bot)
+	return J.GetModifierTime(bot, 'modifier_dazzle_shallow_grave') > 1
+	or J.GetModifierTime(bot, 'modifier_oracle_false_promise_timer') > 1
 end
 
 function J.CanBeAttacked( unit )

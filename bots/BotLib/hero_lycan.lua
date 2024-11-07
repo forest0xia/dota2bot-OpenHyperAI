@@ -39,9 +39,9 @@ sRoleItemsBuyList['pos_1'] = {
     "item_double_branches",
     "item_double_circlet",
 
+    "item_magic_wand",
     "item_double_bracer",
     "item_power_treads",
-    "item_magic_wand",
     "item_ring_of_basilius",
     "item_echo_sabre",
     "item_manta",--
@@ -62,9 +62,9 @@ sRoleItemsBuyList['pos_2'] = {
     "item_double_circlet",
 
     "item_bottle",
+    "item_magic_wand",
     "item_double_bracer",
     "item_power_treads",
-    "item_magic_wand",
     "item_ring_of_basilius",
     "item_echo_sabre",
     "item_manta",--

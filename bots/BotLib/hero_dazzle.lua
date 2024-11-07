@@ -56,8 +56,8 @@ sRoleItemsBuyList['pos_2'] = {
 	"item_double_circlet",
 
 	"item_bottle",
-	"item_arcane_boots",
 	"item_magic_wand",
+	"item_arcane_boots",
 	"item_orchid",
 	"item_ultimate_scepter",
 	"item_aghanims_shard",

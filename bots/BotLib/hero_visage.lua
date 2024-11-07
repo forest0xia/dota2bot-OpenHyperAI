@@ -34,8 +34,8 @@ sRoleItemsBuyList['pos_2'] = {
     "item_enchanted_mango",
 
     "item_bottle",
-    "item_double_bracer",
     "item_magic_wand",
+    "item_double_bracer",
     "item_boots",
     "item_vladmir",--
     "item_orchid",
@@ -57,8 +57,8 @@ sRoleItemsBuyList['pos_3'] = {
     "item_double_circlet",
     "item_enchanted_mango",
 
-    "item_double_bracer",
     "item_magic_wand",
+    "item_double_bracer",
     "item_boots",
     "item_vladmir",--
     "item_orchid",

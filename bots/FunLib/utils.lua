@@ -1054,7 +1054,7 @@ function ____exports.IsNearEnemyHighGroundTower(unit, range)
     return false
 end
 function ____exports.IsTeamPushingSecondTierOrHighGround(bot)
-    return #bot:GetNearbyHeroes(1600, false, BotMode.None) > 2 and (____exports.IsNearEnemySecondTierTower(bot, 1800) or ____exports.IsNearEnemyHighGroundTower(bot, 3000))
+    return #bot:GetNearbyHeroes(2000, false, BotMode.None) > 2 and (____exports.IsNearEnemySecondTierTower(bot, 1800) or ____exports.IsNearEnemyHighGroundTower(bot, 3000))
 end
 function ____exports.GetNumOfAliveHeroes(bEnemy)
     local count = 0

@@ -51,9 +51,9 @@ sRoleItemsBuyList['pos_2'] = {
     "item_magic_stick",
 
     "item_bottle",
+    "item_magic_wand",
     "item_helm_of_iron_will",
     "item_boots",
-    "item_magic_wand",
     "item_phase_boots",
     "item_shivas_guard",--
     "item_blink",
@@ -75,9 +75,9 @@ sRoleItemsBuyList['pos_3'] = {
     "item_magic_stick",
     "item_enchanted_mango",
 
+    "item_magic_wand",
     "item_helm_of_iron_will",
     "item_boots",
-    "item_magic_wand",
     "item_phase_boots",
     "item_shivas_guard",--
     "item_blink",

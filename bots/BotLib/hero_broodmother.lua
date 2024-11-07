@@ -122,6 +122,8 @@ local SpinWebDesire, SpinWebLocation
 -- local SilkenBolaDesire, SilkenBolaTarget
 -- local SpinnersSnareDesire, SpinnersSnareLocation -- No Unit.
 local SpawnSpiderlingsDesire, SpirderlingsTarget
+local WebGapTime = 1
+local LastWebTime = 0
 
 function X.SkillsComplement()
 	if J.CanNotUseAbility(bot) then return end
@@ -136,7 +138,10 @@ function X.SkillsComplement()
     SpinWebDesire, SpinWebLocation = X.ConsiderSpinWeb()
     if SpinWebDesire > 0
     then
-        bot:Action_UseAbilityOnLocation(SpinWeb, SpinWebLocation)
+        if DotaTime() - LastWebTime > WebGapTime then
+            bot:Action_UseAbilityOnLocation(SpinWeb, SpinWebLocation)
+            LastWebTime = DotaTime()
+        end
         return
     end
 

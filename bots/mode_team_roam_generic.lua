@@ -2040,7 +2040,7 @@ function X.ShouldNotRetreat(bot)
 	end
 	local nAttackAlly = J.GetNearbyHeroes(bot,1000,false,BOT_MODE_ATTACK);
 	if ( bot:HasModifier("modifier_item_mask_of_madness_berserk")
-			or bot:HasModifier("modifier_oracle_false_promise_timer") )
+			or J.CanIgnoreLowHp(bot) )
 		and ( #nAttackAlly >= 1 or J.GetHP(bot) > 0.6 )
 		and (bot:WasRecentlyDamagedByAnyHero(1) or bot:WasRecentlyDamagedByTower(1))
 	then
@@ -2081,7 +2081,7 @@ function X.ShouldNotRetreat(bot)
 				or ( ally:HasModifier("modifier_item_mask_of_madness_berserk") and ally:GetAttackTarget() ~= nil )
 				or ally:HasModifier("modifier_abaddon_borrowed_time")
 				or ally:HasModifier("modifier_item_satanic_unholy")
-				or ally:HasModifier("modifier_oracle_false_promise_timer")
+				or J.CanIgnoreLowHp(ally)
 			then
 				return true;
 			end

@@ -33,8 +33,8 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_circlet",
 	
     "item_wraith_band",
-    "item_power_treads",
     "item_magic_wand",
+    "item_power_treads",
     "item_dragon_lance",
     "item_manta",--
     "item_skadi",--

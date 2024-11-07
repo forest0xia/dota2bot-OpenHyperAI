@@ -264,10 +264,11 @@ function X.GetLaningPhaseWardSpots()
 	end
 end
 
+local radianStartWard1 = nil
+local direStartWard1 = nil
 function X.GetGameStartWardSpots(bot)
-	local radianStartWard1
 	if bot:HasModifier("modifier_smoke_of_deceit") then
-		if (RandomInt(1, 9) >= 5) then
+		if radianStartWard1 == nil and (RandomInt(1, 9) >= 5) then
 			radianStartWard1 = RADIANT_GAME_START_1_2
 		else
 			radianStartWard1 = RADIANT_GAME_START_1
@@ -285,9 +286,8 @@ function X.GetGameStartWardSpots(bot)
 		RADIANT_GAME_START_2,
 	}
 
-	local direStartWard1
 	if bot:HasModifier("modifier_smoke_of_deceit") then
-		if (RandomInt(1, 9) >= 5) then
+		if direStartWard1 == nil and (RandomInt(1, 9) >= 5) then
 			direStartWard1 = DIRE_GAME_START_1_2
 		else
 			direStartWard1 = DIRE_GAME_START_1
