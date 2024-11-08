@@ -366,12 +366,12 @@ function X.ConsiderTimberChain()
 		and J.IsInRange(bot, botTarget, nCastRange)
 		and not J.IsSuspiciousIllusion(botTarget)
 		and not botTarget:HasModifier('modifier_faceless_void_chronosphere_freeze')
-		and not AreTreesBetween(botTarget:GetLocation(), nRadius)
+		and not J.AreTreesBetween(bot, botTarget:GetLocation(), nRadius)
 		and nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 		and #nInRangeAlly >= #nInRangeEnemy
 		then
 			local nDelay = (GetUnitToUnitDistance(bot, botTarget) / nSpeed) + nCastPoint
-			local nTargetTree = GetBestTree(botTarget:GetExtrapolatedLocation(nDelay), botTarget, nCastRange, nRadius)
+			local nTargetTree = J.GetBestTree(bot, botTarget:GetExtrapolatedLocation(nDelay), botTarget, nCastRange, nRadius)
 
 			if nTargetTree ~= nil
 			then
@@ -401,7 +401,7 @@ function X.ConsiderTimberChain()
 		and not J.IsSuspiciousIllusion(nInRangeEnemy[1])
 		and not J.IsDisabled(nInRangeEnemy[1])
 		then
-			local nTargetTree = GetBestRetreatTree(nCastRange)
+			local nTargetTree = J.GetBestRetreatTree(bot, nCastRange)
 
 			if nTargetTree ~= nil
 			then
@@ -490,7 +490,7 @@ function X.ConsiderChakram()
 		and nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 		and #nInRangeAlly >= #nInRangeEnemy
 		then
-			local loc = GetUltLoc(botTarget, nManaCost, nCastRange, nSpeed)
+			local loc = J.GetUltLoc(bot, botTarget, nManaCost, nCastRange, nSpeed)
 
 			if loc ~= nil
 			then
@@ -862,158 +862,6 @@ function X.ConsiderFlamethrower()
 end
 
 -- HELPER FUNCS
-function AreTreesBetween(loc, r)
-	local nTrees = bot:GetNearbyTrees(GetUnitToLocationDistance(bot, loc))
-
-	for _, tree in pairs(nTrees)
-	do
-		local x = GetTreeLocation(tree)
-		local y = bot:GetLocation()
-		local z = loc
-
-		if x ~= y
-		then
-			local a = 1
-			local b = 1
-			local c = 0
-
-			if x.x - y.x == 0
-			then
-				b = 0
-				c = -x.x
-			else
-				a = -(x.y - y.y) / (x.x - y.x)
-				c = -(x.y + x.x * a)
-			end
-
-			local d = math.abs((a*z.x+b*z.y+c)/math.sqrt(a*a+b*b))
-
-			if d <= r
-			and GetUnitToLocationDistance(bot,loc) > J.GetDistance(x, loc) + 50
-			then
-				return true
-			end
-		end
-	end
-
-	return false
-end
-
-function VectorTowards(s, t, d)
-	local f = t - s
-
-	f = f / J.GetDistance(f, Vector(0, 0))
-
-	return s + (f * d)
-end
-
-function GetBestRetreatTree(nCastRange)
-	local nTrees = bot:GetNearbyTrees(nCastRange)
-	local dest = VectorTowards(bot:GetLocation(), J.GetTeamFountain(), 1000)
-
-	local bestRetreatTree = nil
-	local maxDist = 0
-
-	for _, tree in pairs(nTrees)
-	do
-		local nTreeLoc = GetTreeLocation(tree)
-
-		if not AreTreesBetween(nTreeLoc, 100)
-		and GetUnitToLocationDistance(bot, nTreeLoc) > maxDist
-		and GetUnitToLocationDistance(bot, nTreeLoc) < nCastRange
-		and J.GetDistance(nTreeLoc, dest) < 880
-		then
-			maxDist = GetUnitToLocationDistance(bot, nTreeLoc)
-			bestRetreatTree = loc
-		end
-	end
-
-	if bestRetreatTree ~= nil
-	and maxDist > bot:GetAttackRange()
-	then
-		return bestRetreatTree
-	end
-
-	return bestRetreatTree
-end
-
-function GetBestTree(enemyLoc, enemy, nCastRange, hitRadios)
-	local bestTree = nil
-	local nTrees = bot:GetNearbyTrees(nCastRange)
-	local dist = 10000
-
-	for _, tree in pairs(nTrees)
-	do
-		local x = GetTreeLocation(tree)
-		local y = bot:GetLocation()
-		local z = enemyLoc
-
-		if x ~= y
-		then
-			local a = 1
-			local b = 1
-			local c = 0
-
-			if x.x - y.x == 0
-			then
-				b = 0
-				c = -x.x
-			else
-				a=-(x.y-y.y)/(x.x-y.x);
-				c=-(x.y + x.x*a);
-			end
-
-			local d = math.abs((a * z.x + b * z.y + c) / math.sqrt(a * a + b * b))
-			if d <= hitRadios
-			and dist > GetUnitToLocationDistance(enemy, x)
-			and (GetUnitToLocationDistance(enemy, x) <= GetUnitToLocationDistance(bot, x))
-			then
-				bestTree = tree
-				dist = GetUnitToLocationDistance(enemy, x)
-			end
-		end
-	end
-
-	return bestTree
-end
-
-function GetUltLoc(target, nManaCost, nCastRange, s)
-	local v = target:GetVelocity()
-	local sv = J.GetDistance(Vector(0,0), v)
-	if sv > 800
-	then
-		v = (v / sv) * target:GetCurrentMovementSpeed()
-	end
-
-	local x= bot:GetLocation()
-	local y= target:GetLocation()
-
-	local a = v.x * v.x + v.y * v.y - s * s
-	local b = -2 * (v.x * (x.x - y.x) + v.y * (x.y - y.y))
-	local c = (x.x - y.x) * (x.x - y.x) + (x.y - y.y) * (x.y - y.y)
-
-	local t = math.max((-b + math.sqrt(b * b - 4 * a * c)) / (2 * a), (-b - math.sqrt(b * b - 4 * a * c)) / (2 * a))
-	local dest = (t + 0.35) * v + y
-
-	if GetUnitToLocationDistance(bot, dest) > nCastRange
-	or bot:GetMana() < 100 + nManaCost
-	then
-		return nil
-	end
-
-	if target:GetMovementDirectionStability() < 0.4
-	or not bot:IsFacingLocation(target:GetLocation(), 60)
-	then
-		dest = VectorTowards(y, J.GetEnemyFountain(), 180)
-	end
-
-	if J.IsDisabled(target)
-	then
-		dest = target:GetLocation()
-	end
-
-	return dest
-end
 
 function StillTraveling(cType)
 	local proj = GetLinearProjectiles()

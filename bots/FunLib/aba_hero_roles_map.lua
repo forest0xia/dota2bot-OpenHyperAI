@@ -138,6 +138,7 @@ X["hero_roles"] = {
     ["npc_dota_hero_wisp"] = { carry = 0, disabler = 0, durable = 0, escape = 2, initiator = 0, jungler = 0, nuker = 0, support = 1, pusher = 0, ranged = 0, healer = 1 },
     ["npc_dota_hero_witch_doctor"] = { carry = 0, disabler = 1, durable = 0, escape = 0, initiator = 0, jungler = 0, nuker = 2, support = 3, pusher = 0, ranged = 1, healer = 1 },
     ["npc_dota_hero_zuus"] = { carry = 1, disabler = 0, durable = 0, escape = 0, initiator = 0, jungler = 0, nuker = 3, support = 1, pusher = 0, ranged = 1, healer = 0 },
+    ["npc_dota_hero_kez"] = { carry = 1, disabler = 0, durable = 0, escape = 0, initiator = 0, jungler = 0, nuker = 1, support = 1, pusher = 0, ranged = 0, healer = 0 },
 }
 
 -- General function to check hero roles

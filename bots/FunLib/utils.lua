@@ -444,7 +444,8 @@ ____exports.BuggyHeroesDueToValveTooLazy = {
     npc_dota_hero_dark_willow = true,
     npc_dota_hero_elder_titan = true,
     npc_dota_hero_hoodwink = true,
-    npc_dota_hero_wisp = true
+    npc_dota_hero_wisp = true,
+    npc_dota_hero_kez = true
 }
 ____exports.HighGroundTowers = {
     Tower.Top3,

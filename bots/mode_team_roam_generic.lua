@@ -186,7 +186,7 @@ function GetDesire()
 	end
 	if pingedDefendDesire > 0 and pingedDefendLocation and #nearbyEnemies <= 0 then
 		print("got pinged to defend for bot: " .. botName)
-		local effctiveAllies = J.GetAlliesNearLoc(pingedDefendLocation, 1600) + #J.Utils.GetAllyIdsInTpToLocation(pingedDefendLocation, 1000)
+		local effctiveAllies = #J.GetAlliesNearLoc(pingedDefendLocation, 1600) + #J.Utils.GetAllyIdsInTpToLocation(pingedDefendLocation, 1000)
 		local enemiesAroundLoc = J.GetEnemiesAroundLoc(pingedDefendLocation, 1600)
 		if effctiveAllies < enemiesAroundLoc * 0.7 then
 			return pingedDefendDesire
@@ -315,7 +315,7 @@ function ConsiderPingedDefendDesire()
 		end
 	end
 
-	local enemyNearAncient = #J.GetLastSeenEnemiesNearLoc( GetAncient(team):GetLocation(), 2400 )
+	local enemyNearAncient = #J.GetLastSeenEnemiesNearLoc( GetAncient(team):GetLocation(), 1600 )
 
 	local enemeyPushingBase = false
 	local nDefendLoc = nil

@@ -64,9 +64,9 @@ sRoleItemsBuyList['pos_2'] = {
     "item_abyssal_blade",--
     "item_ultimate_scepter_2",
     "item_travel_boots",
+    "item_moon_shard",
     "item_overwhelming_blink",--
     "item_travel_boots_2",--
-    "item_moon_shard",
 }
 
 sRoleItemsBuyList['pos_3'] = {
@@ -87,9 +87,9 @@ sRoleItemsBuyList['pos_3'] = {
     "item_disperser",--
     "item_ultimate_scepter_2",
     "item_travel_boots",
+    "item_moon_shard",
     "item_overwhelming_blink",--
     "item_travel_boots_2",--
-    "item_moon_shard",
 }
 
 sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']

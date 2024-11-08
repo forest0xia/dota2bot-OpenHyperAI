@@ -59,7 +59,6 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_faerie_fire",
 	"item_magic_wand",
 
-	"item_bottle",
 	"item_phase_boots",
 	"item_phylactery",
 	"item_ultimate_scepter",

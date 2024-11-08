@@ -62,6 +62,7 @@ export const BuggyHeroesDueToValveTooLazy = {
     npc_dota_hero_elder_titan: true,
     npc_dota_hero_hoodwink: true,
     npc_dota_hero_wisp: true,
+    npc_dota_hero_kez: true,
 };
 
 export const HighGroundTowers = [

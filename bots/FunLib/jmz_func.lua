@@ -5330,4 +5330,158 @@ function J.CheckBotIdleState()
 	return false
 end
 
+function J.AreTreesBetween(bot, loc, r)
+	local nTrees = bot:GetNearbyTrees(GetUnitToLocationDistance(bot, loc))
+
+	for _, tree in pairs(nTrees)
+	do
+		local x = GetTreeLocation(tree)
+		local y = bot:GetLocation()
+		local z = loc
+
+		if x ~= y
+		then
+			local a = 1
+			local b = 1
+			local c = 0
+
+			if x.x - y.x == 0
+			then
+				b = 0
+				c = -x.x
+			else
+				a = -(x.y - y.y) / (x.x - y.x)
+				c = -(x.y + x.x * a)
+			end
+
+			local d = math.abs((a*z.x+b*z.y+c)/math.sqrt(a*a+b*b))
+
+			if d <= r
+			and GetUnitToLocationDistance(bot,loc) > J.GetDistance(x, loc) + 50
+			then
+				return true
+			end
+		end
+	end
+
+	return false
+end
+
+function J.VectorTowards(s, t, d)
+	local f = t - s
+
+	f = f / J.GetDistance(f, Vector(0, 0))
+
+	return s + (f * d)
+end
+
+function J.GetBestRetreatTree(bot, nCastRange)
+	local nTrees = bot:GetNearbyTrees(nCastRange)
+	local dest = J.VectorTowards(bot:GetLocation(), J.GetTeamFountain(), 1000)
+
+	local bestRetreatTree = nil
+	local maxDist = 0
+
+	for _, tree in pairs(nTrees)
+	do
+		local nTreeLoc = GetTreeLocation(tree)
+
+		if not J.AreTreesBetween(bot, nTreeLoc, 100)
+		and GetUnitToLocationDistance(bot, nTreeLoc) > maxDist
+		and GetUnitToLocationDistance(bot, nTreeLoc) < nCastRange
+		and J.GetDistance(nTreeLoc, dest) < 880
+		then
+			maxDist = GetUnitToLocationDistance(bot, nTreeLoc)
+			bestRetreatTree = loc
+		end
+	end
+
+	if bestRetreatTree ~= nil
+	and maxDist > bot:GetAttackRange()
+	then
+		return bestRetreatTree
+	end
+
+	return bestRetreatTree
+end
+
+function J.GetBestTree(bot, enemyLoc, enemy, nCastRange, hitRadios)
+	local bestTree = nil
+	local nTrees = bot:GetNearbyTrees(nCastRange)
+	local dist = 10000
+
+	for _, tree in pairs(nTrees)
+	do
+		local x = GetTreeLocation(tree)
+		local y = bot:GetLocation()
+		local z = enemyLoc
+
+		if x ~= y
+		then
+			local a = 1
+			local b = 1
+			local c = 0
+
+			if x.x - y.x == 0
+			then
+				b = 0
+				c = -x.x
+			else
+				a=-(x.y-y.y)/(x.x-y.x);
+				c=-(x.y + x.x*a);
+			end
+
+			local d = math.abs((a * z.x + b * z.y + c) / math.sqrt(a * a + b * b))
+			if d <= hitRadios
+			and dist > GetUnitToLocationDistance(enemy, x)
+			and (GetUnitToLocationDistance(enemy, x) <= GetUnitToLocationDistance(bot, x))
+			then
+				bestTree = tree
+				dist = GetUnitToLocationDistance(enemy, x)
+			end
+		end
+	end
+
+	return bestTree
+end
+
+function J.GetUltLoc(bot, target, nManaCost, nCastRange, s)
+	local v = target:GetVelocity()
+	local sv = J.GetDistance(Vector(0,0), v)
+	if sv > 800
+	then
+		v = (v / sv) * target:GetCurrentMovementSpeed()
+	end
+
+	local x= bot:GetLocation()
+	local y= target:GetLocation()
+
+	local a = v.x * v.x + v.y * v.y - s * s
+	local b = -2 * (v.x * (x.x - y.x) + v.y * (x.y - y.y))
+	local c = (x.x - y.x) * (x.x - y.x) + (x.y - y.y) * (x.y - y.y)
+
+	local t = math.max((-b + math.sqrt(b * b - 4 * a * c)) / (2 * a), (-b - math.sqrt(b * b - 4 * a * c)) / (2 * a))
+	local dest = (t + 0.35) * v + y
+
+	if GetUnitToLocationDistance(bot, dest) > nCastRange
+	or bot:GetMana() < 100 + nManaCost
+	then
+		return nil
+	end
+
+	if target:GetMovementDirectionStability() < 0.4
+	or not bot:IsFacingLocation(target:GetLocation(), 60)
+	then
+		dest = J.VectorTowards(y, J.GetEnemyFountain(), 180)
+	end
+
+	if J.IsDisabled(target)
+	then
+		dest = target:GetLocation()
+	end
+
+	return dest
+end
+
+
 return J
