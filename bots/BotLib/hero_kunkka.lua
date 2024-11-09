@@ -102,9 +102,40 @@ sRoleItemsBuyList['pos_3'] = {
 
 sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
 
-sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_3']
+sRoleItemsBuyList['pos_4'] = {
+	'item_priest_outfit',
+	"item_hand_of_midas",
+	"item_mekansm",
+	"item_glimmer_cape",--
+	"item_guardian_greaves",--
+    "item_basher",
+    "item_monkey_king_bar",--
+	"item_assault",--
+	"item_heavens_halberd",--
+	"item_aghanims_shard",
+    "item_abyssal_blade",--
+	"item_ultimate_scepter",
+	"item_moon_shard",
+	"item_ultimate_scepter_2",
+}
 
-sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_3']
+sRoleItemsBuyList['pos_5'] = {
+	'item_priest_outfit',
+	"item_hand_of_midas",
+	"item_mekansm",
+	"item_glimmer_cape",--
+	"item_pipe",--
+    "item_basher",
+    "item_monkey_king_bar",--
+	"item_assault",--
+	"item_heavens_halberd",--
+	"item_aghanims_shard",
+    "item_abyssal_blade",--
+	"item_ultimate_scepter",
+	"item_moon_shard",
+	"item_ultimate_scepter_2",
+}
+
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 

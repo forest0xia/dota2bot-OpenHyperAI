@@ -71,6 +71,35 @@ local function AbilityLevelUpComplement()
 		local abilityName = sAbilityLevelUpList[1]
 		local abilityToLevelup = bot:GetAbilityByName( abilityName )
 
+		-- Kez abilities
+		if botName == 'npc_dota_hero_kez' then
+			if bot.kez_mode == 'sai' then
+				for i = 0, 6 do
+					local hAbility = bot:GetAbilityInSlot(i)
+					local sAbilityName = hAbility:GetName()
+					if hAbility ~= nil then
+						if sAbilityLevelUpList[1] == 'kez_echo_slash' and sAbilityName == 'kez_falcon_rush'
+						then
+							abilityToLevelup = hAbility
+							sAbilityLevelUpList[1] = 'kez_falcon_rush'
+						elseif sAbilityLevelUpList[1] == 'kez_grappling_claw' and sAbilityName == 'kez_talon_toss'
+						then
+							abilityToLevelup = hAbility
+							sAbilityLevelUpList[1] = 'kez_talon_toss'
+						elseif sAbilityLevelUpList[1] == 'kez_kazurai_katana' and sAbilityName == 'kez_shodo_sai'
+						then
+							abilityToLevelup = hAbility
+							sAbilityLevelUpList[1] = 'kez_shodo_sai'
+						elseif sAbilityLevelUpList[1] == 'kez_raptor_dance' and sAbilityName == 'kez_ravens_veil'
+						then
+							abilityToLevelup = hAbility
+							sAbilityLevelUpList[1] = 'kez_ravens_veil'
+						end
+					end
+				end
+			end
+		end
+
 		-- fix phoenix_fire_spirits can't upgrade bug.
 		if abilityName == 'phoenix_fire_spirits'
 		and not bot:GetAbilityByName('phoenix_launch_fire_spirit'):IsHidden() then

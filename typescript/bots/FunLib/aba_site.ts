@@ -1997,6 +1997,26 @@ ConsiderIsTimeToFarm["npc_dota_hero_troll_warlord"] = function () {
     return false;
 };
 
+// Kez
+ConsiderIsTimeToFarm["npc_dota_hero_kez"] = function () {
+    const bot = GetBot();
+    const botNetWorth = bot.GetNetWorth();
+
+    if (!HasItem(bot, "item_maelstrom") && botNetWorth < 10000) {
+        return true;
+    }
+
+    if (!HasItem(bot, "item_black_king_bar") && botNetWorth < 16000) {
+        return true;
+    }
+
+    if (botNetWorth < 24000) {
+        return true;
+    }
+
+    return false;
+};
+
 // Ursa
 ConsiderIsTimeToFarm["npc_dota_hero_ursa"] = function () {
     const bot = GetBot();

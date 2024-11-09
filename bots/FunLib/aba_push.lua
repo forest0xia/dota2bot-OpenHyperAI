@@ -199,6 +199,7 @@ function IsPushAgainstHumanTiming(nH)
     return math.fmod(minute, PushGapMinutes) == 0
         or DotaTime() - lastPushTime < PushDuration
         or J.IsAnyAllyHeroSurroundedByManyAllies()
+        or J.GetCoresAverageNetworth() > 22000
         or minute >= 50
 end
 

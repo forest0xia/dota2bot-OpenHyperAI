@@ -57,6 +57,7 @@ local ShouldFindTeammatesTime = 0
 local ShouldFindTeammatesTimeGap = 10
 local pingedDefendDesire = 0
 local pingedDefendLocation = nil
+local nEffctiveAlliesNearPingedDefendLoc = nil
 local pingTimeDelta = 12
 local goToTargetAlly = nil
 local nearbyAllies, nearbyEnemies
@@ -186,9 +187,8 @@ function GetDesire()
 	end
 	if pingedDefendDesire > 0 and pingedDefendLocation and #nearbyEnemies <= 0 then
 		print("got pinged to defend for bot: " .. botName)
-		local effctiveAllies = #J.GetAlliesNearLoc(pingedDefendLocation, 1600) + #J.Utils.GetAllyIdsInTpToLocation(pingedDefendLocation, 1000)
 		local enemiesAroundLoc = J.GetEnemiesAroundLoc(pingedDefendLocation, 1600)
-		if effctiveAllies < enemiesAroundLoc * 0.7 then
+		if nEffctiveAlliesNearPingedDefendLoc and nEffctiveAlliesNearPingedDefendLoc < enemiesAroundLoc * 0.7 then
 			return pingedDefendDesire
 		end
 	end
@@ -360,11 +360,11 @@ function ConsiderPingedDefendDesire()
 		local saferLoc = J.AdjustLocationWithOffsetTowardsFountain(nDefendLoc, 850) + RandomVector(50)
 		local nDefendAllies = J.GetAlliesNearLoc(saferLoc, SearchNearLocAllyForPingDistance);
 		local nH, _ = J.Utils.NumHumanBotPlayersInTeam(GetOpposingTeam())
-		local effctiveAllies = #nDefendAllies + #J.Utils.GetAllyIdsInTpToLocation(saferLoc, 1000)
+		nEffctiveAlliesNearPingedDefendLoc = #nDefendAllies + #J.Utils.GetAllyIdsInTpToLocation(saferLoc, 1000)
 		local enemiesAroundLoc = J.GetEnemiesAroundLoc(nDefendLoc, 1600)
 		if enemiesAroundLoc >= 1 -- 再确认一次附近还有敌人
-		and ((nH <= 0 and effctiveAllies < J.GetNumOfAliveHeroes(false) * 0.8) -- 大部分来了就好了，避免一直ping导致影响已经在场的bot的行为，剩下的可以看防御策略
-	         or (nH > 0 and effctiveAllies < enemiesAroundLoc * 0.7 ))
+		and ((nH <= 0 and nEffctiveAlliesNearPingedDefendLoc < J.GetNumOfAliveHeroes(false) * 0.8) -- 大部分来了就好了，避免一直ping导致影响已经在场的bot的行为，剩下的可以看防御策略
+	         or (nH > 0 and nEffctiveAlliesNearPingedDefendLoc < enemiesAroundLoc * 0.7 ))
 		then
 			J.Utils['GameStates']['defendPings'].pingedTime = GameTime()
 			bot:ActionImmediate_Chat("Please come defending", false)
@@ -441,6 +441,7 @@ function OnEnd()
 	harassTarget = nil
 	PickedItem = nil
 	pingedDefendDesire = 0
+	nEffctiveAlliesNearPingedDefendLoc = nil
 end
 
 function Think()
@@ -517,6 +518,7 @@ function PingedDefendThink()
 	local saferLoc = pingedDefendLocation
 	local bestTpLoc = J.GetNearbyLocationToTp(saferLoc)
 	local distance = GetUnitToLocationDistance(bot, pingedDefendLocation)
+
 	if distance > 3500 then
 		if tps ~= nil and tps:IsFullyCastable() then
 			bot:Action_UseAbilityOnLocation(tps, bestTpLoc + RandomVector(30))

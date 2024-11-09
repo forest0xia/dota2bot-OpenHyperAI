@@ -1475,6 +1475,20 @@ ____exports.ConsiderIsTimeToFarm.npc_dota_hero_troll_warlord = function()
     end
     return false
 end
+____exports.ConsiderIsTimeToFarm.npc_dota_hero_kez = function()
+    local bot = GetBot()
+    local botNetWorth = bot:GetNetWorth()
+    if not HasItem(bot, "item_maelstrom") and botNetWorth < 10000 then
+        return true
+    end
+    if not HasItem(bot, "item_black_king_bar") and botNetWorth < 16000 then
+        return true
+    end
+    if botNetWorth < 24000 then
+        return true
+    end
+    return false
+end
 ____exports.ConsiderIsTimeToFarm.npc_dota_hero_ursa = function()
     local bot = GetBot()
     local botNetWorth = bot:GetNetWorth()
