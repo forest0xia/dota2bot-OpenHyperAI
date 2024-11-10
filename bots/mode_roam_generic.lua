@@ -261,7 +261,7 @@ function ThinkIndividualRoaming()
 		end
 	end
 
-	-- Primal Beast
+	-- Primal Beast (Trample)
 	if bot:HasModifier('modifier_primal_beast_trample') then
 		local tAllyHeroes = J.GetAlliesNearLoc(bot:GetLocation(), 1200)
 		local tEnemyHeroes = J.GetEnemiesNearLoc(bot:GetLocation(), 1200)
@@ -343,6 +343,79 @@ function ThinkIndividualRoaming()
 		end
 		TrampleToBase()
 		return
+	end
+
+	-- Primal Beast (Onslaught)
+	if bot:HasModifier('modifier_primal_beast_onslaught_windup')
+	or bot:HasModifier('modifier_prevent_taunts')
+	or bot:HasModifier('modifier_primal_beast_onslaught_movement_adjustable')
+	then
+		if bot.onslaught_status ~= nil then
+			if bot.onslaught_status[1] == 'engage' then
+				if J.IsValidHero(bot.onslaught_status[2]) then
+					bot:Action_MoveToLocation(J.GetCorrectLoc(bot.onslaught_status[2], 0.3))
+					return
+				else
+					local target = nil
+					local targetHealth = math.huge
+					for _, enemy in pairs(GetUnitList(UNIT_LIST_ENEMY_HEROES)) do
+						if J.IsValidHero(enemy)
+						and J.IsInRange(bot, enemy, 1600)
+						and J.CanBeAttacked(enemy)
+						and not J.IsEnemyBlackHoleInLocation(enemy:GetLocation())
+						and not J.IsEnemyChronosphereInLocation(enemy:GetLocation())
+						and not enemy:HasModifier('modifier_necrolyte_reapers_scythe')
+						then
+							local enemyHealth = enemy:GetHealth()
+							if enemyHealth < targetHealth then
+								targetHealth = enemyHealth
+								target = enemy
+							end
+						end
+					end
+
+					if target ~= nil then
+						bot:Action_MoveToLocation(J.GetCorrectLoc(target, 0.3))
+						return
+					end
+
+					for i = 1, 5 do
+						local member = GetTeamMember(i)
+						if J.IsValidHero(member)
+						and J.IsInRange(bot, member, 1600)
+						then
+							local memberTarget = member:GetAttackTarget()
+							if J.IsValidHero(memberTarget)
+							and J.IsInRange(bot, memberTarget, 1600)
+							and not J.IsEnemyBlackHoleInLocation(memberTarget:GetLocation())
+							and not J.IsEnemyChronosphereInLocation(memberTarget:GetLocation())
+							and not memberTarget:HasModifier('modifier_necrolyte_reapers_scythe')
+							then
+								bot:Action_MoveToLocation(J.GetCorrectLoc(memberTarget, 0.3))
+								return
+							end
+						end
+					end
+				end
+			end
+		elseif bot.onslaught_status[1] == 'retreat' then
+			bot:Action_MoveToLocation(bot.onslaught_status[2])
+			return
+		elseif bot.onslaught_status[1] == 'farm' then
+			local nCreeps = bot:GetNearbyCreeps(800, true)
+			if J.IsValid(nCreeps[1])
+			and not J.IsRunning(nCreeps[1])
+			and J.CanBeAttacked(nCreeps[1])
+			then
+				local nLocationAoE = bot:FindAoELocation(true, false, nCreeps[1]:GetLocation(), 0, 200, 0, 0)
+				if ((#nCreeps >= 4 and nLocationAoE.count >= 4))
+				or (#nCreeps >= 2 and nLocationAoE.count >= 2 and nCreeps[1]:IsAncientCreep())
+				then
+					bot:Action_MoveToLocation(nLocationAoE.targetloc)
+					return
+				end
+			end
+		end
 	end
 
 	-- Phoenix

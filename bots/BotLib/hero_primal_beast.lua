@@ -9,14 +9,14 @@ local sRole = J.Item.GetRoleItemsBuyList( bot )
 
 local tTalentTreeList = {
 						{--pos2
-                            ['t25'] = {0, 10},
+                            ['t25'] = {10, 0},
                             ['t20'] = {0, 10},
-                            ['t15'] = {10, 0},
+                            ['t15'] = {0, 10},
                             ['t10'] = {10, 0},
                         },--pos3
                         {
-                            ['t25'] = {0, 10},
-                            ['t20'] = {0, 10},
+                            ['t25'] = {10, 0},
+                            ['t20'] = {10, 0},
                             ['t15'] = {0, 10},
                             ['t10'] = {10, 0},
                         }
@@ -152,182 +152,192 @@ local Trample           = bot:GetAbilityByName('primal_beast_trample') -- W 踏
 local Uproar            = bot:GetAbilityByName('primal_beast_uproar') -- E 咤
 local RockThrow         = bot:GetAbilityByName('primal_beast_rock_throw') -- D 砸
 local Pulverize         = bot:GetAbilityByName('primal_beast_pulverize') -- R 捶
+local BeginOnslaught    = bot:GetAbilityByName('primal_beast_onslaught_release')
 
-local nTrampleRadius    = Trample:GetSpecialValueInt('effect_radius')
-local nUproarRadius    = Trample:GetSpecialValueInt('radius')
+local botTarget, nEnemyHeroes, nInRangeAlly
+local OnslaughtDesire, OnslaughtLocation
+local BeginOnslaughtDesire
+local TrampleDesire
+local UproarDesire
+local RockThrowDesire, RockThrowLocation
+local PulverizeDesire, PulverizeTarget
 
-local QDesire, QLocation
-local WDesire
-local EDesire
-local DDesire, DLocation
-local RDesire, RTarget
-local botTarget
-
-local nOnslaughtSpeed = Onslaught:GetSpecialValueInt('charge_speed')
-local maxOnslaughtDistance = Onslaught:GetSpecialValueInt('max_distance')
-local nAssumeOnSlaughtDistance = 1500
-local nOnslaughtDamage = 200
-local nAssumeOnslaughtDelay = 0.8  -- max_charge_time = 1.7, assume we will use ~half of the time
-
-local nRockThrowCastRange = RockThrow:GetCastRange() -- 1800
-local nRockThrowMinRange = RockThrow:GetSpecialValueInt('min_range')
-local nRockThrowCastPoint = RockThrow:GetCastPoint()
-local nRockThrowSpeed = 1200
-local nRockThrowRadius = RockThrow:GetSpecialValueInt('impact_radius') + RockThrow:GetSpecialValueInt('fragment_impact_radius')
-
-local nPulverizeCastRange
-local nPulverizeDuration
-local nPulverizeDamage
-
-local chargedTime
-local chargedDistance
-local distanceToTarget
-local nEnemyHeroes
-local nInRangeAlly
-local bysideEnemeyHeroes
+local OnslaughtStartTime = 0
+local OnslaughtETA = 0
 
 function X.SkillsComplement()
-    if J.CanNotUseAbility(bot) then return end
-
-    if bot:HasModifier('modifier_primal_beast_pulverize_self')
-    or bot:IsCastingAbility()
-    or bot:IsUsingAbility()
-    or bot:IsChanneling() then return end
 
     botTarget = J.GetProperTarget(bot)
 	nEnemyHeroes = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE)
 	nInRangeAlly = J.GetNearbyHeroes(bot, 1600, false, BOT_MODE_NONE)
 
-    bysideEnemeyHeroes = J.GetNearbyHeroes(bot,nTrampleRadius, true, BOT_MODE_NONE)
-
-    X.ConsiderStopQ()
-
-	QDesire, QLocation = X.ConsiderQ()
-    if QDesire > 0
-	then
-        bot:Action_ClearActions(false)
-		bot:Action_UseAbilityOnLocation(Onslaught, QLocation)
-		return
-	end
-
-	WDesire = X.ConsiderW()
-    if WDesire > 0
-	then
-        bot:Action_ClearActions(false)
-		bot:Action_UseAbility(Trample)
-		return
-	end
-
-	EDesire = X.ConsiderE()
-    if EDesire > 0
-	then
-        bot:Action_ClearActions(false)
-		bot:Action_UseAbility(Uproar)
-		return
-	end
-
-	DDesire, DLocation = X.ConsiderD()
-    if DDesire > 0
-	then
-        bot:Action_ClearActions(false)
-		bot:Action_UseAbilityOnLocation(RockThrow, DLocation)
-		return
-	end
-
-	RDesire, RTarget = X.ConsiderR()
-    if RDesire > 0
-	then
-        bot:Action_ClearActions(false)
-		bot:Action_UseAbilityOnEntity(Pulverize, RTarget)
-		return
-	end
-
-
-end
-
-function X.ConsiderQ()
-    if not Onslaught:IsFullyCastable() or bot:IsRooted()
-	then
-		return BOT_ACTION_DESIRE_NONE, 0, false
-	end
-
-	-- retreat
-	if J.IsRetreating(bot) and (J.GetHP(bot) < 0.6 or (nInRangeAlly ~= nil and nEnemyHeroes ~= nil and #nEnemyHeroes > #nInRangeAlly))
-	then
-		return BOT_ACTION_DESIRE_HIGH, J.GetTeamFountain(), false
-	end
-
-	if J.GetHP(bot) < 0.66 then
-        return BOT_ACTION_DESIRE_NONE, 0, false
+    if not bot:HasModifier('modifier_primal_beast_trample') then
+        bot.trample_status = {'', 0, nil}
     end
 
-	nOnslaughtDamage = Onslaught:GetSpecialValueInt('knockback_damage') + 200
-
-    -- 打断技能
-	for _, enemyHero in pairs(nEnemyHeroes)
-	do
-        botTarget = enemyHero
-		if botTarget:IsChanneling() or J.IsCastingUltimateAbility(botTarget)
-		and not J.IsSuspiciousIllusion(botTarget)
-		then
-			return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation(), true
-		end
-	end
-
-	if J.IsStuck(bot)
-	then
-		local loc = J.GetEscapeLoc()
-		return BOT_ACTION_DESIRE_HIGH, J.Site.GetXUnitsTowardsLocation(bot, loc, nAssumeOnSlaughtDistance)
-	end
-
-	-- 击杀
-    local target = J.GetCanBeKilledUnit(nEnemyHeroes, nOnslaughtDamage, DAMAGE_TYPE_MAGICAL, false)
-    if target ~= nil
-    and not J.IsSuspiciousIllusion(target)
+    if J.CanNotUseAbility(bot)
+    or bot:HasModifier('modifier_prevent_taunts')
+    or bot:HasModifier('modifier_primal_beast_onslaught_movement_adjustable')
+    or bot:HasModifier('modifier_primal_beast_trample')
+    or bot:HasModifier('modifier_primal_beast_pulverize_self')
     then
-        botTarget = target
-        local loc = J.GetCorrectLoc(botTarget, (GetUnitToUnitDistance(bot, botTarget) / nOnslaughtSpeed) + nAssumeOnslaughtDelay)
-        return BOT_ACTION_DESIRE_HIGH, loc
+        return
     end
 
-    -- gank
-	if J.IsGoingOnSomeone(bot)
-	then
-		if J.IsValidTarget(botTarget)
-		and J.CanCastOnNonMagicImmune(botTarget)
-		and J.IsInRange(bot, botTarget, nAssumeOnSlaughtDistance)
-		and not J.IsSuspiciousIllusion(botTarget)
-		and not botTarget:HasModifier('modifier_faceless_void_chronosphere')
-		then
-			local loc = J.GetCorrectLoc(botTarget, nAssumeOnslaughtDelay)
-			return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation(), false
-		end
-	end
+    UproarDesire = X.ConsiderUproar()
+    if UproarDesire > 0
+    then
+        bot:Action_UseAbility(Uproar)
+        return
+    end
 
-	return BOT_ACTION_DESIRE_NONE, 0, false
+    PulverizeDesire, PulverizeTarget = X.ConsiderPulverize()
+    if PulverizeDesire > 0
+    then
+        if J.CanBlackKingBar(bot) and bot.BlackKingBar ~= nil then
+            bot:Action_ClearActions(false)
+            bot:ActionQueue_UseAbility(bot.BlackKingBar)
+            bot:ActionQueue_UseAbilityOnEntity(Pulverize, PulverizeTarget)
+            return
+        end
+
+        bot:Action_UseAbilityOnEntity(Pulverize, PulverizeTarget)
+        return
+    end
+
+    TrampleDesire = X.ConsiderTrample()
+    if TrampleDesire > 0
+    then
+        bot:Action_UseAbility(Trample)
+        return
+    end
+
+    BeginOnslaughtDesire = X.ConsiderBeginOnslaughtDesire()
+    if BeginOnslaughtDesire > 0
+    then
+        bot:Action_UseAbility(BeginOnslaught)
+        OnslaughtETA = 0
+        return
+    end
+
+    OnslaughtDesire, OnslaughtLocation = X.ConsiderOnslaught()
+    if OnslaughtDesire > 0
+    then
+        bot:Action_UseAbilityOnLocation(Onslaught, OnslaughtLocation)
+        bot.onslaught_location = OnslaughtLocation
+        OnslaughtStartTime = DotaTime()
+        return
+    end
+
+    RockThrowDesire, RockThrowLocation = X.ConsiderRockThrow()
+    if RockThrowDesire > 0
+    then
+        bot:Action_UseAbilityOnLocation(RockThrow, RockThrowLocation)
+        return
+    end
 end
 
-function X.ConsiderStopQ()
-    if bot:HasModifier('modifier_primal_beast_onslaught_movement_adjustable')
-    and J.IsValidTarget(botTarget) then
-        chargedTime = 1.7 - J.GetModifierTime(bot, 'modifier_primal_beast_onslaught_movement_adjustable')
-        if chargedTime >= 0.3 then
-            distanceToTarget = GetUnitToUnitDistance(bot, botTarget)
-            
-            local loc = J.GetCorrectLoc(botTarget, (distanceToTarget / nOnslaughtSpeed) + 0.1)
-            chargedDistance = maxOnslaughtDistance * (chargedTime / 1.7)
-    
-            if J.GetLocationToLocationDistance(bot:GetLocation(), loc) <= chargedDistance then
-                return BOT_ACTION_DESIRE_HIGH
+-- can be a feed spell
+function X.ConsiderOnslaught()
+    if not J.CanCastAbility(Onslaught)
+    or bot:IsRooted()
+    or bot:HasModifier('modifier_bloodseeker_rupture')
+    then
+        return BOT_ACTION_DESIRE_NONE, 0
+    end
+
+    local nDistance = Onslaught:GetSpecialValueInt('max_distance')
+    local nRadius = Onslaught:GetSpecialValueInt('knockback_distance')
+    local nChannelTime = Onslaught:GetSpecialValueFloat('chargeup_time')
+
+    -- only tp
+    for _, enemyHero in pairs(nEnemyHeroes) do
+        if J.IsValidHero(enemyHero)
+        and J.IsInRange(bot, enemyHero, 600)
+        and J.CanCastOnNonMagicImmune(enemyHero) then
+            local tInRangeAlly = J.GetAlliesNearLoc(enemyHero:GetLocation(), 1200)
+            local tInRangeEnemy = J.GetEnemiesNearLoc(enemyHero:GetLocation(), 1200)
+            if #tInRangeAlly >= #tInRangeEnemy and enemyHero:HasModifier('modifier_teleporting') then
+                local dist = GetUnitToUnitDistance(bot, enemyHero)
+                OnslaughtETA = RemapValClamped(dist, 100, nDistance, 0.3, nChannelTime)
+                bot.onslaught_status = {'engage', botTarget}
+                return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation()
             end
         end
+    end
+
+    if J.IsGoingOnSomeone(bot) then
+        if J.IsValidHero(botTarget)
+        and J.CanBeAttacked(botTarget)
+        and J.IsInRange(bot, botTarget, nDistance)
+        and not J.IsEnemyBlackHoleInLocation(botTarget:GetLocation())
+        and not J.IsEnemyChronosphereInLocation(botTarget:GetLocation())
+        and not botTarget:HasModifier('modifier_necrolyte_reapers_scythe')
+        then
+            local tInRangeAlly = J.GetAlliesNearLoc(botTarget:GetLocation(), 1200)
+            local tInRangeEnemy = J.GetEnemiesNearLoc(botTarget:GetLocation(), 1200)
+            if #tInRangeAlly >= #tInRangeEnemy then
+                local dist = GetUnitToUnitDistance(bot, botTarget)
+                OnslaughtETA = RemapValClamped(dist, 100, nDistance, 0.3, nChannelTime)
+                bot.onslaught_status = {'engage', botTarget}
+                return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
+            end
+        end
+    end
+
+    if J.IsRetreating(bot)
+    and not J.IsRealInvisible(bot)
+    and bot:WasRecentlyDamagedByAnyHero(4)
+    and bot:GetActiveModeDesire() > 0.7
+    then
+        if J.IsValidHero(nEnemyHeroes[1])
+        and ((not J.WeAreStronger(bot, 1200) and J.GetHP(bot) < 0.75)
+            or J.IsChasingTarget(nEnemyHeroes[1], bot))
+        then
+            local dist = RemapValClamped(GetUnitToUnitDistance(bot, nEnemyHeroes[1]), 600, 1200, nChannelTime * 0.6, nChannelTime)
+            OnslaughtETA = RemapValClamped(dist, 100, nDistance, 0.3, nChannelTime)
+            bot.onslaught_status = {'retreat', J.GetTeamFountain()}
+            return BOT_ACTION_DESIRE_HIGH, J.GetTeamFountain()
+        end
+    end
+
+    if J.IsFarming(bot) or (J.IsPushing(bot) and #nInRangeAlly <= 1) or (J.IsDefending(bot) and #nEnemyHeroes == 0) then
+        local nCreeps = bot:GetNearbyCreeps(800, true)
+        if J.IsValid(nCreeps[1])
+        and J.GetMP(bot) > 0.5
+        and not J.IsRunning(nCreeps[1])
+        and J.CanBeAttacked(nCreeps[1])
+        and J.IsAttacking(bot)
+        then
+            local nLocationAoE = bot:FindAoELocation(true, false, nCreeps[1]:GetLocation(), 0, nRadius, 0, 0)
+            if ((#nCreeps >= 4 and nLocationAoE.count >= 4) and not J.HasItem(bot, 'item_radiance'))
+            or (#nCreeps >= 2 and nLocationAoE.count >= 2 and nCreeps[1]:IsAncientCreep())
+            then
+                local dist = GetUnitToLocationDistance(bot, nLocationAoE.targetloc)
+                OnslaughtETA = RemapValClamped(dist, 100, nDistance, 0.3, nChannelTime)
+                bot.onslaught_status = {'farm', nLocationAoE.targetloc}
+                return BOT_ACTION_DESIRE_HIGH, nLocationAoE.targetloc
+            end
+        end
+    end
+
+    return BOT_ACTION_DESIRE_NONE, 0
+end
+
+function X.ConsiderBeginOnslaughtDesire()
+    if not J.CanCastAbility(BeginOnslaught)
+    then
+        return BOT_ACTION_DESIRE_NONE
+    end
+
+    if DotaTime() >= OnslaughtStartTime + OnslaughtETA then
+        return BOT_ACTION_DESIRE_HIGH
     end
 
     return BOT_ACTION_DESIRE_NONE
 end
 
-
-function X.ConsiderW()
+function X.ConsiderTrample()
     if not Trample:IsFullyCastable()
     or bot:IsRooted()
     then
@@ -337,9 +347,7 @@ function X.ConsiderW()
     local nRadius = Trample:GetSpecialValueInt('effect_radius')
     local nDuration = Trample:GetSpecialValueFloat('duration')
     local nBaseDamage = Trample:GetSpecialValueInt('base_damage')
-    local botTarget = J.GetProperTarget(bot)
 
-    local nEnemyHeroes = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
     local nEnemyTowers = bot:GetNearbyTowers(1600, true)
 
     if J.IsGoingOnSomeone(bot)
@@ -439,126 +447,147 @@ function X.ConsiderW()
     return BOT_ACTION_DESIRE_NONE
 end
 
-function X.ConsiderE()
-    if not Uproar:IsFullyCastable()
+function X.ConsiderUproar()
+    if not J.CanCastAbility(Uproar)
     then
         return BOT_ACTION_DESIRE_NONE
     end
 
-    if (J.IsGoingOnSomeone(bot) or J.IsRetreating(bot) or J.IsInTeamFight(bot, 1000))
-    and bot:WasRecentlyDamagedByAnyHero(2.2)
+    local nRadius = Uproar:GetSpecialValueInt('radius')
+    local nStacks = J.GetModifierCount(bot, 'modifier_primal_beast_uproar')
+
+    if J.IsGoingOnSomeone(bot)
     then
-        local nModifierCount = J.GetModifierCount( bot, 'modifier_primal_beast_uproar' )
-        if J.GetHP(bot) > 0.5 and nModifierCount > 3
-        or J.GetHP(bot) < 0.5 and nModifierCount > 2
-        or J.GetHP(bot) < 0.3 and nModifierCount >= 1
+        if J.IsValidTarget(botTarget)
+        and J.IsInRange(bot, botTarget, nRadius)
+        and not J.IsDisabled(botTarget)
+        and not botTarget:HasModifier('modifier_necrolyte_reapers_scythe')
+        then
+            if nStacks >= 4
+            or J.IsChasingTarget(bot, botTarget) and nStacks >= 2
+            or J.GetHP(bot) < 0.5 and nStacks >= 3
+            or J.GetHP(bot) < 0.25 and nStacks >= 1
+            then
+                return BOT_ACTION_DESIRE_HIGH
+            end
+        end
+    end
+
+    if J.IsRetreating(bot)
+    and not J.IsRealInvisible(bot)
+    and bot:WasRecentlyDamagedByAnyHero(3)
+    then
+        if J.IsValidTarget(nEnemyHeroes[1])
+        and J.IsInRange(bot, nEnemyHeroes[1], nRadius)
+        and (J.IsChasingTarget(nEnemyHeroes[1], bot) or J.GetHP(bot) < 0.5)
+        and not J.IsDisabled(nEnemyHeroes[1])
+        and nStacks >= 2
         then
             return BOT_ACTION_DESIRE_HIGH
         end
     end
 
     return BOT_ACTION_DESIRE_NONE
+
 end
 
-function X.ConsiderD()
-    if not RockThrow:IsTrained() or RockThrow:IsFullyCastable()
+function X.ConsiderRockThrow()
+    if not J.CanCastAbility(RockThrow)
     then
-        return BOT_ACTION_DESIRE_NONE
+        return BOT_ACTION_DESIRE_NONE, 0
     end
 
-    if #nEnemyHeroes >= 2
-    then
-        local nLocationAoE = bot:FindAoELocation(true, true, bot:GetLocation(), nRockThrowCastRange, nRockThrowRadius, 0, 0)
-        if nLocationAoE.count >= 2
+    local nCastRange = J.GetProperCastRange(false, bot, RockThrow:GetCastRange())
+    local nCastPoint = RockThrow:GetCastPoint()
+    local nRadius = RockThrow:GetSpecialValueInt('impact_radius')
+    local nMaxTime = RockThrow:GetSpecialValueFloat('max_travel_time')
+    local nMinDistance = RockThrow:GetSpecialValueInt('min_range')
+    local nDamage = RockThrow:GetSpecialValueInt('base_damage')
+
+    for _, enemyHero in pairs(nEnemyHeroes)
+    do
+        if J.IsValidHero(enemyHero)
+        and J.CanCastOnNonMagicImmune(enemyHero)
+        and not J.IsInRange(bot, enemyHero, nMinDistance)
+        and not J.IsSuspiciousIllusion(enemyHero)
         then
+            if enemyHero:IsChanneling() then
+                return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation()
+            end
+
+            if J.WillKillTarget(enemyHero, nDamage, DAMAGE_TYPE_PHYSICAL, nCastPoint + nMaxTime)
+            and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
+            and not enemyHero:HasModifier('modifier_dazzle_shallow_grave')
+            and not enemyHero:HasModifier('modifier_necrolyte_reapers_scythe')
+            and not enemyHero:HasModifier('modifier_oracle_false_promise_timer')
+            then
+                return BOT_ACTION_DESIRE_HIGH, J.GetCorrectLoc(enemyHero, nCastPoint + nMaxTime)
+            end
+        end
+    end
+
+    if J.IsInTeamFight(bot, 1200) then
+        local nLocationAoE = bot:FindAoELocation(true, true, bot:GetLocation(), nCastRange, nRadius, nCastPoint, 0)
+        local nInRangeEnemy = J.GetEnemiesNearLoc(nLocationAoE.targetloc, nRadius)
+        if #nInRangeEnemy >= 2 then
             return BOT_ACTION_DESIRE_HIGH, nLocationAoE.targetloc
         end
     end
 
-    -- 打断技能
-	for _, enemyHero in pairs(nEnemyHeroes)
-	do
-        botTarget = enemyHero
-		if botTarget:IsChanneling() or J.IsCastingUltimateAbility(botTarget)
-		then
-			return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
-		end
-	end
-
-    return BOT_ACTION_DESIRE_NONE
+    return BOT_ACTION_DESIRE_NONE, 0
 end
 
-
-function X.ConsiderR()
-    if not Pulverize:IsFullyCastable()
+function X.ConsiderPulverize()
+    if not J.CanCastAbility(Pulverize)
     then
         return BOT_ACTION_DESIRE_NONE, nil
     end
 
-    nPulverizeCastRange = J.GetProperCastRange(false, bot, Pulverize:GetCastRange())
-    nPulverizeDuration = Pulverize:GetSpecialValueFloat('channel_time')
-    nPulverizeDamage = Pulverize:GetSpecialValueInt('damage') * 3.3 -- hit 3 times with extra dmg each hit
+    local nCastRange = J.GetProperCastRange(false, bot, Pulverize:GetCastRange())
+    local nBonusDamagePerHit = Pulverize:GetSpecialValueInt('bonus_damage_per_hit')
+    local nDamage = Pulverize:GetSpecialValueInt('damage') + nBonusDamagePerHit * 3
+    local nDuration = Pulverize:GetSpecialValueFloat('channel_time')
 
-    if J.IsGoingOnSomeone(bot)
-	then
-        local strongestTarget = J.GetStrongestUnit(nPulverizeCastRange, bot, true, true, 5)
-
-		if J.IsValidTarget(strongestTarget)
-		and not J.IsSuspiciousIllusion(strongestTarget)
-        and not J.HasMovableUndyingModifier(strongestTarget, 0.1)
-		then
-            return BOT_ACTION_DESIRE_HIGH, strongestTarget
-		end
-	end
-
-    if J.IsRetreating(bot)
-    then
-        local weakestTarget = J.GetAttackableWeakestUnit(bot, nPulverizeCastRange, true, true)
-
-		if J.IsValidTarget(weakestTarget)
-		and not J.IsSuspiciousIllusion(weakestTarget)
-        and not J.HasMovableUndyingModifier(weakestTarget, 0.1)
-        and J.GetHP(bot) > 0.3
-		then
-            if nInRangeAlly ~= nil and nEnemyHeroes ~= nil
-            and #nEnemyHeroes > #nInRangeAlly
-            and bot:WasRecentlyDamagedByAnyHero(2)
-            then
-                return BOT_ACTION_DESIRE_HIGH, weakestTarget
+    for _, enemyHero in pairs(nEnemyHeroes) do
+        if J.IsValidHero(enemyHero)
+        and J.IsInRange(bot, enemyHero, nCastRange * 2)
+        and J.CanCastOnMagicImmune(enemyHero)
+        and J.CanCastOnTargetAdvanced(enemyHero)
+        then
+            if enemyHero:IsChanneling() and not J.IsInLaningPhase() then
+                return BOT_ACTION_DESIRE_HIGH, enemyHero
             end
-		end
+
+            if J.CanKillTarget(enemyHero, nDamage * nDuration, DAMAGE_TYPE_MAGICAL)
+            and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
+            and not enemyHero:HasModifier('modifier_dazzle_shallow_grave')
+            and not enemyHero:HasModifier('modifier_necrolyte_reapers_scythe')
+            and not enemyHero:HasModifier('modifier_oracle_false_promise_timer')
+            then
+                return BOT_ACTION_DESIRE_HIGH, enemyHero
+            end
+        end
     end
 
-    
-	for _, enemyHero in pairs(nEnemyHeroes)
-	do
-        botTarget = enemyHero
-
-        -- get the kill
-        if J.IsValidHero(botTarget)
-        and J.WillKillTarget(botTarget, nPulverizeDamage, DAMAGE_TYPE_MAGICAL, 0)
-        and not J.IsSuspiciousIllusion(botTarget)
-        and not J.HasMovableUndyingModifier(botTarget, 0.1)
+    if J.IsGoingOnSomeone(bot) then
+        if J.IsValidTarget(botTarget)
+        and J.IsInRange(bot, botTarget, nCastRange * 2)
+        and J.CanCastOnMagicImmune(botTarget)
+        and J.CanCastOnTargetAdvanced(botTarget)
+        and not botTarget:HasModifier('modifier_abaddon_borrowed_time')
+        and not botTarget:HasModifier('modifier_dazzle_shallow_grave')
+        and not botTarget:HasModifier('modifier_necrolyte_reapers_scythe')
+        and not botTarget:HasModifier('modifier_oracle_false_promise_timer')
         then
-            return BOT_ACTION_DESIRE_HIGH, botTarget
-        end
-
-        -- 打断技能
-		if botTarget:IsChanneling() or J.IsCastingUltimateAbility(botTarget)
-		and not J.IsSuspiciousIllusion(botTarget)
-		then
-			return BOT_ACTION_DESIRE_HIGH, botTarget
-		end
-	end
-
-    if J.IsDoingRoshan(bot)
-    then
-        if J.IsRoshan(botTarget)
-        and J.CanCastOnNonMagicImmune(botTarget)
-        and J.IsInRange(bot, botTarget, 500)
-        and J.IsAttacking(bot)
-        then
-            return BOT_ACTION_DESIRE_HIGH, botTarget
+            if J.IsInLaningPhase() and not J.IsInTeamFight(bot, 1600) then
+                local nAllyHeroes = J.GetAlliesNearLoc(botTarget:GetLocation(), 800)
+                if botTarget:GetHealth() <= J.GetTotalEstimatedDamageToTarget(nAllyHeroes, botTarget)
+                then
+                    return BOT_ACTION_DESIRE_HIGH, botTarget
+                end
+            else
+                return BOT_ACTION_DESIRE_HIGH, botTarget
+            end
         end
     end
 

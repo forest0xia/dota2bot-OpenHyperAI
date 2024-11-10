@@ -201,6 +201,7 @@ function IsPushAgainstHumanTiming(nH)
         or J.IsAnyAllyHeroSurroundedByManyAllies()
         or J.GetCoresAverageNetworth() > 22000
         or minute >= 50
+        or J.GetNumOfTeamTotalKills( false ) <= J.GetNumOfTeamTotalKills(true) - 20
 end
 
 local TeamLocation = {}
