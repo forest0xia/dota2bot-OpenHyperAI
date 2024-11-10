@@ -293,8 +293,7 @@ function HasModifierThatNeedToAvoidEffects()
 	or bot:HasModifier('modifier_dark_seer_wall_slow')
 	or ( -- 不无视魔免的技能
 		(bot:HasModifier('modifier_sandking_sand_storm_slow')
-		or bot:HasModifier('modifier_sand_king_epicenter_slow')
-		or bot:HasModifier('modifier_lich_chainfrost_slow'))
+		or bot:HasModifier('modifier_sand_king_epicenter_slow'))
 		and (not bot:HasModifier("modifier_black_king_bar_immune") or not bot:HasModifier("modifier_magic_immune") or not bot:HasModifier("modifier_omniknight_repel"))
 	)
 end

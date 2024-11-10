@@ -317,16 +317,19 @@ function PickWisdomRune()
 end
 
 function X.IsSuitableToPickRune()
-    if X.IsNearRune(bot) then return true end
+	if X.IsNearRune(bot) then return true end
 
 	local nEnemyHeroes = J.GetEnemiesNearLoc(bot:GetLocation(), 1200)
 
-	if (J.IsRetreating(bot) and bot:GetActiveModeDesire() > BOT_MODE_DESIRE_HIGH)
-    or (#nEnemyHeroes >= 1 and X.IsIBecameTheTarget(nEnemyHeroes))
-    or (bot:WasRecentlyDamagedByAnyHero(3.0) and J.IsRetreating(bot))
-    or (GetUnitToUnitDistance(bot, GetAncient(GetTeam())) < 2500 and DotaTime() > 0)
-    or GetUnitToUnitDistance(bot, GetAncient(GetOpposingTeam())) < 4000
-    or bot:HasModifier('modifier_item_shadow_amulet_fade')
+	local botMode = bot:GetActiveMode();
+	if ((J.IsPushing(bot) or J.IsDefending(bot) or J.IsDoingRoshan(bot) or J.IsDoingTormentor(bot)
+	or botMode == BOT_MODE_SECRET_SHOP or botMode == BOT_MODE_WARD or botMode == BOT_MODE_ROAM)
+	and bot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH)
+	or (#nEnemyHeroes >= 1 and X.IsIBecameTheTarget(nEnemyHeroes))
+	or (bot:WasRecentlyDamagedByAnyHero(4.0) and J.IsRetreating(bot))
+	or (GetUnitToUnitDistance(bot, GetAncient(GetTeam())) < 2500 and DotaTime() > 0)
+	or GetUnitToUnitDistance(bot, GetAncient(GetOpposingTeam())) < 4000
+	or bot:HasModifier('modifier_item_shadow_amulet_fade')
 	then
 		return false
 	end
@@ -522,15 +525,14 @@ end
 function X.GetScaledDesire(nBase, nCurrDist, nMaxDist)
     local desire = Clamp(nBase + RemapValClamped(nCurrDist, 600, nMaxDist, 1 - nBase, 0), 0, 0.65)
 	if not J.IsInLaningPhase() and J.IsCore(bot) then
-		return desire * 0.3
+		desire = desire * 0.3
+	elseif bot:GetNetWorth() > 15000 then
+		desire = desire * 0.6
+	elseif GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 4300 then
+		desire = desire * 0.2
 	end
-	if bot:GetNetWorth() > 15000 then
-		return desire * 0.6
-	end
-	if GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 4300 then
-		return desire * 0.2
-	end
-	return desire
+
+	return RemapValClamped(J.GetHP(bot), 0, 0.8, desire * 0.3, desire)
 end
 
 function X.GetGoOutLocation()

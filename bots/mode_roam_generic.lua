@@ -32,6 +32,8 @@ local arriveRoamLocTime = 0
 local roamTimeAfterArrival = 0.55 * 60 -- stay to roam after arriving the location
 local gankGapTime = 2 * 60 -- don't roam again within this duration after roaming once.
 local lastStaticLinkDebuffStack = 0
+local anyAllyAffectedByChainFrost = false
+local nChainFrostBounceDistance = 600
 local nInRangeEnemy, nInRangeAlly, allyTowers, enemyTowers, trySeduce, shouldTempRetreat, botTarget, shouldGoBackToFountain
 
 local laneAndT1s = {
@@ -698,12 +700,47 @@ function TrampleToBase()
 	bot:Action_MoveToLocation(J.GetTeamFountain())
 end
 
+function MoveTeamApartDir()
+	local botLoc = bot:GetLocation()
+	for _, ally in pairs(nInRangeAlly) do -- should also consider Lich's shard unit, neutral creeps etc. tba.
+		if J.IsValid(ally)
+		and ally ~= bot
+		and J.IsInRange(bot, ally, nChainFrostBounceDistance)
+		then
+			local dir = botLoc - ally:GetLocation()
+			return dir:Normalized() * nChainFrostBounceDistance
+		end
+	end
+	return nil
+end
+
 function ThinkGeneralRoaming()
 	-- Get out of fountain if in item mode
 	if ShouldMoveOutsideFountain
 	then
 		bot:Action_AttackMove(J.Utils.GetOffsetLocationTowardsTargetLocation(J.GetTeamFountain(), J.GetEnemyFountain(), MoveOutsideFountainDistance))
 		return
+	end
+
+	if anyAllyAffectedByChainFrost then
+		local dir = MoveTeamApartDir()
+		if dir then
+			local botLoc = bot:GetLocation()
+			local targetLoc = botLoc + dir
+
+			-- Check if the target location is toward the enemy fountain
+			if J.GetDistanceFromAncient( bot, true ) < 2600 then
+				local enemyFountainDir = J.GetEnemyFountain() - botLoc
+				if (targetLoc - botLoc):Dot(enemyFountainDir:Normalized()) > 0 then
+					-- Redirect movement toward the team's fountain
+					local teamFountainDir = J.GetTeamFountain() - botLoc
+					dir = teamFountainDir:Normalized() * nChainFrostBounceDistance
+					targetLoc = botLoc + dir
+				end
+			end
+
+			bot:Action_MoveToLocation(targetLoc)
+		end
 	end
 
 	if bot:HasModifier("modifier_item_mask_of_madness_berserk") then
@@ -1085,6 +1122,22 @@ function ConsiderHeroMoveOutsideFountain()
 	return false
 end
 
+function IsAnyAllyAffectedByChainFrost()
+	if bot:HasModifier("modifier_black_king_bar_immune") or bot:IsMagicImmune() then
+		return false
+	end
+
+	for _, ally in pairs(nInRangeAlly) do -- should also consider Lich's shard unit, neutral creeps etc. tba.
+        if J.IsValid(ally)
+        and J.IsInRange(bot, ally, nChainFrostBounceDistance)
+		and #nInRangeAlly >= 2
+        and ally:HasModifier('modifier_lich_chainfrost_slow') then
+            return true
+        end
+    end
+    return false
+end
+
 function ConsiderGeneralRoamingInConditions()
 	if bot:HasModifier("modifier_item_mask_of_madness_berserk") then
 		local botTarget = J.GetProperTarget(bot)
@@ -1109,6 +1162,11 @@ function ConsiderGeneralRoamingInConditions()
 				return BOT_ACTION_DESIRE_ABSOLUTE
 			end
 		end
+	end
+
+	anyAllyAffectedByChainFrost = IsAnyAllyAffectedByChainFrost()
+	if anyAllyAffectedByChainFrost then
+		return 0.91
 	end
 
 	if J.IsInLaningPhase() then

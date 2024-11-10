@@ -39,7 +39,7 @@ function X.GetDesire()
 	if currentTime <= 12 * 60 and botLV <= 11 then return 0.369 end
 	if botLV <= 17 then return 0.328 end
 
-	return 0.23
+	return 0.1
 
 end
 

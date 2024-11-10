@@ -270,16 +270,14 @@ end
 function IsSuitableToWard()
 	local nEnemyHeroes = bot:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
 
-	local nMode = bot:GetActiveMode()
+	local botMode = bot:GetActiveMode()
 
-	if (nMode == BOT_MODE_RETREAT
-		and bot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH)
-	or nMode == BOT_MODE_ATTACK
-	or (nMode == BOT_MODE_RUNE and DotaTime() > 0)
-	or nMode == BOT_MODE_DEFEND_ALLY
-	or nMode == BOT_MODE_DEFEND_TOWER_TOP
-	or nMode == BOT_MODE_DEFEND_TOWER_MID
-	or nMode == BOT_MODE_DEFEND_TOWER_BOT
+	if ((J.IsPushing(bot) or J.IsDefending(bot) or J.IsDoingRoshan(bot) or J.IsDoingTormentor(bot)
+	or botMode == BOT_MODE_SECRET_SHOP or botMode == BOT_MODE_WARD or botMode == BOT_MODE_ROAM)
+	and bot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH)
+	or botMode == BOT_MODE_ATTACK
+	or (botMode == BOT_MODE_RUNE and DotaTime() > 0)
+	or botMode == BOT_MODE_DEFEND_ALLY
 	or (nEnemyHeroes ~= nil and #nEnemyHeroes >= 1 and IsIBecameTheTarget(nEnemyHeroes))
 	or bot:WasRecentlyDamagedByAnyHero(5.0)
 	then

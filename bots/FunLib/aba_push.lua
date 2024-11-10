@@ -129,7 +129,6 @@ function Push.GetPushDesire(bot, lane)
     local nH, _ = J.Utils.NumHumanBotPlayersInTeam(GetOpposingTeam())
     if nH > 0
     and not IsPushAgainstHumanTiming(nH)
-    and not teamHasAegis
     and GetUnitToUnitDistance(bot, GetAncient(GetOpposingTeam())) > 4000
     then
 		return BOT_MODE_DESIRE_NONE
@@ -201,6 +200,7 @@ function IsPushAgainstHumanTiming(nH)
         or J.IsAnyAllyHeroSurroundedByManyAllies()
         or J.GetCoresAverageNetworth() > 22000
         or minute >= 50
+        or teamHasAegis
         or J.GetNumOfTeamTotalKills( false ) <= J.GetNumOfTeamTotalKills(true) - 20
 end
 
