@@ -126,7 +126,7 @@ local FireRemnantDesire, FireRemnantLocation
 local SleightChainsDesire, SCLocation
 
 local remnantCastTime = -100
-local remnantCastGap  = 0.2
+local remnantCastGap  = 0.5
 
 function X.SkillsComplement()
     if J.CanNotUseAbility(bot) then return end
@@ -492,6 +492,11 @@ end
 
 function X.ConsiderActivateFireRemnant()
 	if not ActivateFireRemnant:IsFullyCastable()
+	then
+		return BOT_ACTION_DESIRE_NONE, 0
+	end
+
+	if DotaTime() < remnantCastTime + remnantCastGap + 1
 	then
 		return BOT_ACTION_DESIRE_NONE, 0
 	end

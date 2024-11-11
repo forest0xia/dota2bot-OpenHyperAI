@@ -125,4 +125,5 @@ export enum HeroName {
     IO = "npc_dota_hero_wisp",
     WitchDoctor = "npc_dota_hero_witch_doctor",
     Zeus = "npc_dota_hero_zuus",
+    Kez = "npc_dota_hero_kez",
 }

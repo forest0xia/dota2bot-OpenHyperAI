@@ -36,6 +36,9 @@ function GetDesire()
 	if J.Utils.IsTeamPushingSecondTierOrHighGround(bot) then
 		return BOT_MODE_DESIRE_NONE
 	end
+	if J.ShouldGoFarmDuringLaning(bot) then
+		return 0.2
+	end
 
 	if local_mode_laning_generic ~= nil and local_mode_laning_generic.GetDesire ~= nil then return local_mode_laning_generic.GetDesire() end
 

@@ -22,6 +22,18 @@ function GetDesire()
 		end
 	end
 
+	-- 如果在打高地 就别撤退去干别的
+	if J.Utils.IsTeamPushingSecondTierOrHighGround(bot) then
+		return BOT_MODE_DESIRE_NONE
+	end
+
+	local botMode = bot:GetActiveMode()
+	if (J.IsPushing(bot) or J.IsDefending(bot) or J.IsDoingRoshan(bot) or J.IsDoingTormentor(bot)
+	or botMode == BOT_MODE_RUNE or botMode == BOT_MODE_SECRET_SHOP or botMode == BOT_MODE_WARD or botMode == BOT_MODE_ROAM)
+	and bot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH then
+		return BOT_MODE_DESIRE_NONE
+	end
+
 	----------
 	-- Outpost
 	----------

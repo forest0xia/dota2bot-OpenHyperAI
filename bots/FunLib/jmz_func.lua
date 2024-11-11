@@ -1857,6 +1857,23 @@ function J.GetInvUnitCount( pierceImmune, unitList )
 
 end
 
+function J.HasHealingItem(bot)
+	return (J.HasItem(bot, "item_tango") or bot:HasModifier("modifier_tango_heal"))
+		or (J.HasItem(bot, "item_flask") or bot:HasModifier("modifier_flask_healing"))
+		or (J.HasItem(bot, "item_bottle") or bot:HasModifier("modifier_bottle_regeneration"))
+end
+
+function J.ShouldGoFarmDuringLaning(bot)
+	-- laning is too hard for the bot, try go farming somewhere else.
+	local lane = bot:GetAssignedLane()
+	return J.IsInLaningPhase()
+	and GetHeroDeaths(bot:GetPlayerID()) >= 4
+	and (GetHeroKills(bot:GetPlayerID()) == 0 or GetHeroKills(bot:GetPlayerID()) / GetHeroDeaths(bot:GetPlayerID()) < 0.5)
+	and J.IsCore(bot)
+	and bot:GetLevel() >= 4
+	and bot:GetLevel() < 10
+	and J.GetEnemyCountInLane(lane) >= 1
+end
 
 --------------------------------------------------ew functions 2018.12.7
 

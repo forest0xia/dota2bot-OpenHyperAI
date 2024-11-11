@@ -126,6 +126,7 @@ local heroNames=
 	npc_dota_hero_witch_doctor				= 'Witch Doctor',
 	npc_dota_hero_zuus						= 'Zeus',
 	npc_dota_hero_ringmaster				= 'RingMaster',
+	npc_dota_hero_kez						= 'Kez',
 }
 
 return heroNames

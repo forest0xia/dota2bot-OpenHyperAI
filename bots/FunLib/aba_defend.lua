@@ -2,7 +2,8 @@ local J = require( GetScriptDirectory()..'/FunLib/jmz_func')
 
 local Defend = {}
 local pingTimeDelta = 5
-local nInRangeAlly, nInRangeEnemy, weAreStronger, distanceToLane
+local nInRangeAlly, nInRangeEnemy, weAreStronger
+local distanceToLane = {[1] = 0, [2] = 0, [3] = 0}
 local defDurationHoldTime = 6 -- once trying to def, hold the state for longer period.
 local defDurationCacheTime = {}
 
@@ -12,7 +13,7 @@ function Defend.GetDefendDesire(bot, lane)
 	weAreStronger = false
 
 	local laneFrontLocation = GetLaneFrontLocation( bot:GetTeam(), lane, 0 )
-	distanceToLane = GetUnitToLocationDistance(bot, laneFrontLocation)
+	distanceToLane[lane] = GetUnitToLocationDistance(bot, laneFrontLocation)
 	nInRangeAlly = J.GetNearbyHeroes(bot,1600,false,BOT_MODE_NONE)
 	nInRangeEnemy = J.GetLastSeenEnemiesNearLoc( bot:GetLocation(), 2200 )
 
@@ -35,7 +36,7 @@ function Defend.GetDefendDesire(bot, lane)
 		defendDesire = defDurationCacheTime[bot:GetPlayerID()][lane].desire
 	end
 
-	if (distanceToLane < 2000 and #nInRangeEnemy > #nInRangeAlly) and not weAreStronger then
+	if (distanceToLane[lane] and distanceToLane[lane] < 1600 and #nInRangeEnemy > #nInRangeAlly) and not weAreStronger then
 		-- 1. if we are not stronger, most likely defend == feed
 		-- 2. we dont want to get stuck in defend mode too much because other modes are also important after bots arrive the location.
 		defendDesire = RemapValClamped(defendDesire, 0, 1.5, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_HIGH)
@@ -92,21 +93,31 @@ function Defend.GetDefendDesireHelper(bot, lane)
 	local furthestBuilding = Defend.GetFurthestBuildingOnLane(lane)
 	if J.CanBeAttacked(furthestBuilding) and furthestBuilding ~= GetAncient(team)
 	then
-		local isOnlyCreeps = Defend.IsOnlyCreepsAroundBuilding(furthestBuilding)
+		local unitsAroundBuilding = Defend.UnitsAroundBuilding(furthestBuilding)
 
 		if (J.IsTier1(furthestBuilding) and J.GetHP(furthestBuilding) <= 0.2
 			or J.IsTier2(furthestBuilding) and J.GetHP(furthestBuilding) <= 0.2)
-		and not isOnlyCreeps
+		and unitsAroundBuilding[2] > 0
 		then
 			return BOT_MODE_DESIRE_NONE
 		end
 
 		if (J.IsTier1(furthestBuilding) or J.IsTier2(furthestBuilding))
-		and isOnlyCreeps
+		and unitsAroundBuilding[1] > 0 and unitsAroundBuilding[2] == 0
 		and J.IsCore(bot) and GetUnitToUnitDistance(bot, furthestBuilding) > 2200
 		then
 			return BOT_MODE_DESIRE_NONE
 		end
+
+		local nH, _ = J.Utils.NumHumanBotPlayersInTeam(GetOpposingTeam())
+		if nH > 0 then
+			local nDefendAllies = J.GetAlliesNearLoc(furthestBuilding, 2200);
+			local nEffctiveAlliesNearPingedDefendLoc = #nDefendAllies + #J.Utils.GetAllyIdsInTpToLocation(furthestBuilding, 2200)
+			if nEffctiveAlliesNearPingedDefendLoc > #J.GetEnemiesNearLoc(furthestBuilding, 2200) then
+				return BOT_MODE_DESIRE_NONE
+			end
+		end
+
 	end
 
 	local nDefendDesire = 0
@@ -184,7 +195,11 @@ function Defend.DefendThink(bot, lane)
 		end
 	end
 
-	bot:Action_MoveToLocation(vDefendLane + J.RandomForwardVector(1200))
+	if (weAreStronger or #nInRangeAlly >= #nEnemyHeroes_real) and distanceToLane[lane] and  distanceToLane[lane] < 1600 then
+		bot:Action_AttackMove(vDefendLane + J.RandomForwardVector(1200))
+	elseif distanceToLane[lane] and distanceToLane[lane] > 1600 then
+		bot:Action_MoveToLocation(vDefendLane + J.RandomForwardVector(1200))
+	end
 end
 
 function Defend.GetFurthestBuildingOnLane(lane)
@@ -404,7 +419,7 @@ function Defend.GetEnemyCountInLane(lane, nRadius)
 	return nUnitCount
 end
 
-function Defend.IsOnlyCreepsAroundBuilding(furthestBuilding)
+function Defend.UnitsAroundBuilding(furthestBuilding)
 	local creepCount = 0
 	local heroCount = 0
 	for _, unit in pairs(GetUnitList(UNIT_LIST_ENEMIES))
@@ -439,7 +454,7 @@ function Defend.IsOnlyCreepsAroundBuilding(furthestBuilding)
 		end
 	end
 
-	return creepCount > 0 and heroCount == 0
+	return creepCount, heroCount
 end
 
 function Defend.OnEnd()

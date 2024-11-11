@@ -1173,12 +1173,10 @@ function ConsiderGeneralRoamingInConditions()
 
 		-- 状态不好 回泉水补给
 		if not bot:WasRecentlyDamagedByAnyHero(1.5)
+		and not J.HasHealingItem(bot)
 		and (
 			(shouldGoBackToFountain and not IsInHealthyState())
-			or ((J.GetHP(bot) < 0.22 or (J.GetHP(bot) < 0.3 and J.GetMP(bot) < 0.22))
-				and (not J.HasItem(bot, "item_tango") or not bot:HasModifier("modifier_tango_heal"))
-				and (not J.HasItem(bot, "item_flask") or not bot:HasModifier("modifier_flask_healing"))
-				and (not J.HasItem(bot, "item_bottle") or not bot:HasModifier("modifier_bottle_regeneration")))
+			or (J.GetHP(bot) < 0.22 or (J.GetHP(bot) < 0.3 and J.GetMP(bot) < 0.22))
 		) then
 			shouldGoBackToFountain = true
 			return BOT_ACTION_DESIRE_ABSOLUTE * 1.5

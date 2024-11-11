@@ -402,13 +402,17 @@ function GetDesire()
 		return BOT_MODE_DESIRE_HIGH;
 	end
 
+	local shouldGoFarmDuringLaning = J.ShouldGoFarmDuringLaning(bot)
 	if GetGameMode() ~= GAMEMODE_MO
-	and J.IsCore(bot)
-	and J.GetCoresAverageNetworth() < 12000
-	and (J.Site.IsTimeToFarm(bot) or pushTime > DotaTime() - 8.0 or ShouldGoFarmDuringLaning())
-	-- and (not J.IsHumanPlayerInTeam() or enemyKills > allyKills + 16)
-	-- and ( bot:GetNextItemPurchaseValue() > 0 or not bot:HasModifier("modifier_item_moon_shard_consumed") )
-	and ( DotaTime() > 7 * 60 or bot:GetLevel() >= 8 or ( bot:GetAttackRange() < 220 and bot:GetLevel() >= 6 ) )
+	and (
+		shouldGoFarmDuringLaning or (
+			J.IsCore(bot)
+			and J.GetCoresAverageNetworth() < 12000
+			and (J.Site.IsTimeToFarm(bot) or pushTime > DotaTime() - 8.0)
+			-- and (not J.IsHumanPlayerInTeam() or enemyKills > allyKills + 16)
+			-- and ( bot:GetNextItemPurchaseValue() > 0 or not bot:HasModifier("modifier_item_moon_shard_consumed") )
+			and ( DotaTime() > 7 * 60 or bot:GetLevel() >= 8 or (bot:GetAttackRange() < 220 and bot:GetLevel() >= 6) ))
+		)
 	then
 		if J.GetDistanceFromEnemyFountain(bot) > 4000
 		then
@@ -490,17 +494,6 @@ function GetDesire()
 		end
 	end
 	return BOT_MODE_DESIRE_NONE;
-end
-
-function ShouldGoFarmDuringLaning()
-	-- laning is too hard for the bot, try go farming somewhere else.
-	return J.IsInLaningPhase()
-	and GetHeroDeaths(bot:GetPlayerID()) >= 4
-	and (GetHeroKills(bot:GetPlayerID()) == 0 or GetHeroKills(bot:GetPlayerID()) / GetHeroDeaths(bot:GetPlayerID()) < 0.5)
-	and J.IsCore(bot)
-	and bot:GetLevel() >= 4
-	and bot:GetLevel() < 10
-	and J.GetEnemyCountInLane(lane) >= 1
 end
 
 function OnStart()

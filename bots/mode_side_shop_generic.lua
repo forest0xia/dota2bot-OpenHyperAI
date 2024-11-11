@@ -12,12 +12,13 @@ local tormentorMessageTime = DotaTime()
 local canDoTormentor = false
 
 local IsTeamHealthy = false
+local TormentorSpawnTime = J.IsModeTurbo() and 18 or 28 -- give bots more time. original: 10 or 20
 
 if bot.tormentorState == nil then bot.tormentorState = false end
 if bot.lastKillTime == nil then bot.lastKillTime = 0 end
 if bot.wasAttackingTormentor == nil then bot.wasAttackingTormentor = false end
 
-local NoTormentorAfterThisTime = 35 * 60 -- do not do tormentor again since it's late and doing tormentor only slows down the game more.
+local NoTormentorAfterThisTime = 30 * 60 -- do not do tormentor again since it's late and doing tormentor only slows down the game more.
 
 function GetDesire()
 
@@ -35,14 +36,20 @@ function GetDesire()
 end
 
 function TormentorDesire()
+	local currentTime = DotaTime()
+	if GetGameMode() == 23 then currentTime = currentTime * 1.65 end
+	if DotaTime() > NoTormentorAfterThisTime then
+        return BOT_ACTION_DESIRE_NONE
+	end
+
     local aliveAlly = J.GetNumOfAliveHeroes(false)
     local aliveEnemy = J.GetNumOfAliveHeroes(true)
-    local hasSameOrMoreHero = aliveAlly >= aliveEnemy + 2
+    local hasSameOrMoreHero = aliveAlly >= aliveEnemy
     if not hasSameOrMoreHero then
         return BOT_ACTION_DESIRE_NONE
     end
 
-	if J.GetHP(bot) < 0.1 then
+	if J.GetHP(bot) < 0.2 then
 		bot:Action_ClearActions(false)
 		bot:Action_MoveToLocation(J.GetTeamFountain())
         return BOT_ACTION_DESIRE_NONE
@@ -60,13 +67,15 @@ function TormentorDesire()
 	TormentorLocation = J.GetTormentorLocation(GetTeam())
 
 	if not IsEnoughAllies()
+	or ((J.IsPushing(bot) or J.IsDefending(bot) or J.IsDoingRoshan(bot)
+		or botMode == BOT_MODE_RUNE or botMode == BOT_MODE_SECRET_SHOP or botMode == BOT_MODE_WARD or botMode == BOT_MODE_ROAM)
+		and bot:GetActiveModeDesire() >= BOT_MODE_DESIRE_MODERATE)
 	then
 		return BOT_ACTION_DESIRE_NONE
 	end
 
     local nAllyInLoc = J.GetAlliesNearLoc(TormentorLocation, 700)
 	-- local aveDistance, heroCount = GetAveTeamDistance()
-	local spawnTime = J.IsModeTurbo() and 18 or 28 -- give bots more time. original: 10 or 20
 	local topFrontP = GetLaneFrontAmount(GetOpposingTeam(), LANE_TOP, true)
 	local midFrontP = GetLaneFrontAmount(GetOpposingTeam(), LANE_MID, true)
 	local botFrontP = GetLaneFrontAmount(GetOpposingTeam(), LANE_BOT, true)
@@ -85,9 +94,6 @@ function TormentorDesire()
 	if GetUnitToUnitDistance(bot, enemyAncient) < 3200
 	or (topFrontP > 0.9 or midFrontP > 0.9 or botFrontP > 0.9)
 	or (topFrontD > 0.9 or midFrontD > 0.9 or botFrontD > 0.9)
-	or J.IsPushing(bot)
-	or J.IsDefending(bot)
-	or J.IsDoingRoshan(bot)
 	then
 		return BOT_ACTION_DESIRE_NONE
 	end
@@ -132,78 +138,76 @@ function TormentorDesire()
 	aveCoreLevel = aveCoreLevel / 3
 	aveSuppLevel = aveSuppLevel / 2
 
-	if DotaTime() <= NoTormentorAfterThisTime then
-		if DotaTime() >= spawnTime * 60
-		and (DotaTime() - bot.lastKillTime) >= (spawnTime / 2) * 60
+	if DotaTime() >= TormentorSpawnTime * 60
+		and (DotaTime() - bot.lastKillTime) >= (TormentorSpawnTime / 2) * 60
+	then
+		-- Go check
+		if not IsTormentorAlive()
 		then
-			-- Go check
-			if not IsTormentorAlive()
+			if not J.IsCore(bot)
+			and (GetUnitToUnitDistance(bot, enemyAncient) > 2000
+			or (topFrontP < 0.9 or midFrontP < 0.9 or botFrontP < 0.9)
+			or (topFrontD < 0.9 or midFrontD < 0.9 or botFrontD < 0.9))
 			then
-				if not J.IsCore(bot)
-				and (GetUnitToUnitDistance(bot, enemyAncient) > 2000
-				or (topFrontP < 0.9 or midFrontP < 0.9 or botFrontP < 0.9)
-				or (topFrontD < 0.9 or midFrontD < 0.9 or botFrontD < 0.9))
-				then
-					local closestAlly = nil
-					local dist = 100000
-					for _, allyHero in pairs(GetUnitList(UNIT_LIST_ALLIED_HEROES))
-					do
-						if J.IsValidHero(allyHero)
-						and allyHero:IsAlive()
-						and not allyHero:IsIllusion()
-						and not J.IsCore(allyHero)
+				local closestAlly = nil
+				local dist = 100000
+				for _, allyHero in pairs(GetUnitList(UNIT_LIST_ALLIED_HEROES))
+				do
+					if J.IsValidHero(allyHero)
+					and allyHero:IsAlive()
+					and not allyHero:IsIllusion()
+					and not J.IsCore(allyHero)
+					then
+						if GetUnitToLocationDistance(allyHero, TormentorLocation) < dist
 						then
-							if GetUnitToLocationDistance(allyHero, TormentorLocation) < dist
-							then
-								closestAlly = allyHero
-								dist = GetUnitToLocationDistance(allyHero, TormentorLocation)
-							end
+							closestAlly = allyHero
+							dist = GetUnitToLocationDistance(allyHero, TormentorLocation)
 						end
 					end
-
-					if closestAlly ~= nil
-					and bot == closestAlly
-					and bot.tormentorState == false
-					then
-						return nModeDesire
-					end
 				end
-			else
-				bot.tormentorState = true
+
+				if closestAlly ~= nil
+				and bot == closestAlly
+				and bot.tormentorState == false
+				then
+					return nModeDesire
+				end
 			end
 		else
-			bot.tormentorState = false
+			bot.tormentorState = true
 		end
+	else
+		bot.tormentorState = false
+	end
 
+	if not IsTeamHealthy
+	then
+		if WasHealthy()
+		then
+			IsTeamHealthy = true
+		end
+	end
+
+	if bot.tormentorState
+	and aveCoreLevel > 12.9
+	and aveSuppLevel > 9.9
+	and (((bot.lastKillTime == 0 and aliveAlly >= 3)
+		or (bot.lastKillTime > 0 and aliveAlly >= 2)
+		or (GetAttackingCount() >= 3 and J.GetAliveAllyCoreCount() >= 2)))
+	then
 		if not IsTeamHealthy
 		then
-			if WasHealthy()
-			then
-				IsTeamHealthy = true
-			end
+			return BOT_ACTION_DESIRE_NONE
 		end
 
-		if bot.tormentorState
-		and aveCoreLevel > 12.9
-		and aveSuppLevel > 9.9
-		and (((bot.lastKillTime == 0 and aliveAlly >= 3)
-			or (bot.lastKillTime > 0 and aliveAlly >= 2)
-			or (GetAttackingCount() >= 3 and J.GetAliveAllyCoreCount() >= 2)))
+		canDoTormentor = IsTeamHealthy
+
+		if nAllyInLoc ~= nil and #nAllyInLoc >= 3
+		or IsHumanInLoc()
 		then
-			if not IsTeamHealthy
-			then
-				return BOT_ACTION_DESIRE_NONE
-			end
-
-			canDoTormentor = IsTeamHealthy
-
-			if nAllyInLoc ~= nil and #nAllyInLoc >= 3
-			or IsHumanInLoc()
-			then
-				return BOT_ACTION_DESIRE_VERYHIGH
-			else
-				return nModeDesire
-			end
+			return BOT_ACTION_DESIRE_VERYHIGH
+		else
+			return nModeDesire
 		end
 	end
 
