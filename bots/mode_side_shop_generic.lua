@@ -66,6 +66,7 @@ function TormentorDesire()
 
 	TormentorLocation = J.GetTormentorLocation(GetTeam())
 
+	local botMode = bot:GetActiveMode()
 	if not IsEnoughAllies()
 	or ((J.IsPushing(bot) or J.IsDefending(bot) or J.IsDoingRoshan(bot)
 		or botMode == BOT_MODE_RUNE or botMode == BOT_MODE_SECRET_SHOP or botMode == BOT_MODE_WARD or botMode == BOT_MODE_ROAM)

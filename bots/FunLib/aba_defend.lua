@@ -111,9 +111,10 @@ function Defend.GetDefendDesireHelper(bot, lane)
 
 		local nH, _ = J.Utils.NumHumanBotPlayersInTeam(GetOpposingTeam())
 		if nH > 0 then
-			local nDefendAllies = J.GetAlliesNearLoc(furthestBuilding, 2200);
-			local nEffctiveAlliesNearPingedDefendLoc = #nDefendAllies + #J.Utils.GetAllyIdsInTpToLocation(furthestBuilding, 2200)
-			if nEffctiveAlliesNearPingedDefendLoc > #J.GetEnemiesNearLoc(furthestBuilding, 2200) then
+			local loc = furthestBuilding:GetLocation()
+			local nDefendAllies = J.GetAlliesNearLoc(loc, 2200);
+			local nEffctiveAlliesNearPingedDefendLoc = #nDefendAllies + #J.Utils.GetAllyIdsInTpToLocation(loc, 2200)
+			if nEffctiveAlliesNearPingedDefendLoc > #J.GetEnemiesNearLoc(loc, 2200) then
 				return BOT_MODE_DESIRE_NONE
 			end
 		end

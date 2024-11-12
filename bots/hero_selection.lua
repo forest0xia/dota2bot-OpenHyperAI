@@ -26,7 +26,7 @@ local CorrectDirePlayerIndexToLaneIndex = { }
 -- Define the upper bound threshold for considering a hero a good fit for a position
 local ROLE_WEIGHT_THRESHOLD = 40
 -- Only pick the top k result of the heroes that have the heighest weight for the role.
-local ROLE_LIST_TOP_K_LIMIT = 25
+local ROLE_LIST_TOP_K_LIMIT = 30
 
 --[[
 Game Modes
@@ -69,6 +69,7 @@ local WeakHeroes = {
 	'npc_dota_hero_visage',
 	'npc_dota_hero_void_spirit',
 	'npc_dota_hero_pudge',
+	'npc_dota_hero_ember_spirit',
 
 	-- Buggys, meaning they have bugs on Valves side, as of (still) 2024/8/1:
     'npc_dota_hero_muerta',

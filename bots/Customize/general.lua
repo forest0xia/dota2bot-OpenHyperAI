@@ -141,6 +141,7 @@ return Customize
         'npc_dota_hero_visage',
         'npc_dota_hero_void_spirit',
         'npc_dota_hero_pudge',
+        'npc_dota_hero_ember_spirit',
 
     -- -- List B. Buggy ones, meaning they have bugs on Valves side:
         'npc_dota_hero_muerta',

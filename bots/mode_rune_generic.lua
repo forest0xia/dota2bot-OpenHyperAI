@@ -48,6 +48,12 @@ function GetDesire()
     botActiveMode = bot:GetActiveMode()
 	bBottle = J.HasItem(bot, 'item_bottle')
 
+	if (J.IsPushing(bot) or J.IsDefending(bot) or J.IsDoingRoshan(bot) or J.IsDoingTormentor(bot)
+	or botActiveMode == BOT_MODE_SECRET_SHOP or botActiveMode == BOT_MODE_WARD or botActiveMode == BOT_MODE_ROAM)
+	and bot:GetActiveModeDesire() >= BOT_MODE_DESIRE_MODERATE then
+		return BOT_MODE_DESIRE_NONE
+	end
+
     if bot:IsInvulnerable() and J.GetHP(bot) > 0.95 and bot:DistanceFromFountain() < 100 then
         return BOT_MODE_DESIRE_ABSOLUTE
     end
@@ -70,11 +76,12 @@ function GetDesire()
         return BOT_MODE_DESIRE_NONE
     end
 
-    if DotaTime() < 0 and not bot:WasRecentlyDamagedByAnyHero(10.0)
+    if DotaTime() < 0
     then
+		local nAllyHeroes = J.GetAlliesNearLoc(bot:GetLocation(), 1000)
         local nEnemyHeroes = J.GetEnemiesNearLoc(bot:GetLocation(), 1600)
-        if #nEnemyHeroes <= 1 then
-            return BOT_MODE_DESIRE_MODERATE
+        if #nAllyHeroes < #nEnemyHeroes then
+            return BOT_MODE_DESIRE_NONE
         end
     end
 
@@ -258,7 +265,7 @@ function Think()
 		end
     end
 
-    local botAttackRange = bot:GetAttackRange() + 150
+    local botAttackRange = bot:GetAttackRange() + 550
     if botAttackRange > 1400 then botAttackRange = 1400 end
     local nEnemyHeroes = J.GetEnemiesNearLoc(bot:GetLocation(), botAttackRange)
 	nRuneStatus = GetRuneStatus(ClosestRune)
@@ -329,7 +336,7 @@ function X.IsSuitableToPickRune()
 	local botMode = bot:GetActiveMode();
 	if ((J.IsPushing(bot) or J.IsDefending(bot) or J.IsDoingRoshan(bot) or J.IsDoingTormentor(bot)
 	or botMode == BOT_MODE_SECRET_SHOP or botMode == BOT_MODE_WARD or botMode == BOT_MODE_ROAM)
-	and bot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH)
+	and bot:GetActiveModeDesire() >= BOT_MODE_DESIRE_MODERATE)
 	or (#nEnemyHeroes >= 1 and X.IsIBecameTheTarget(nEnemyHeroes))
 	or (bot:WasRecentlyDamagedByAnyHero(4.0) and J.IsRetreating(bot))
 	or (GetUnitToUnitDistance(bot, GetAncient(GetTeam())) < 2500 and DotaTime() > 0)
