@@ -34,8 +34,7 @@ local lastMin = 0
 
 function GetDesire()
 	if not bot:IsHero() or not bot:IsAlive() or not string.find(botName, "hero") or bot:IsIllusion() then return BOT_MODE_DESIRE_NONE end
-    if not bot:IsAlive()
-	or (DotaTime() > 2 * 60 and DotaTime() < 6 * 60 and GetUnitToLocationDistance(bot, GetRuneSpawnLocation(RUNE_POWERUP_2)) < 150)
+    if DotaTime() > 2 * 60 and DotaTime() < 6 * 60 and GetUnitToLocationDistance(bot, GetRuneSpawnLocation(RUNE_POWERUP_2)) < 150
 	then
         return 0
     end
@@ -48,11 +47,11 @@ function GetDesire()
     botActiveMode = bot:GetActiveMode()
 	bBottle = J.HasItem(bot, 'item_bottle')
 
-	if (J.IsPushing(bot) or J.IsDefending(bot) or J.IsDoingRoshan(bot) or J.IsDoingTormentor(bot)
-	or botActiveMode == BOT_MODE_SECRET_SHOP or botActiveMode == BOT_MODE_WARD or botActiveMode == BOT_MODE_ROAM)
-	and bot:GetActiveModeDesire() >= BOT_MODE_DESIRE_MODERATE then
-		return BOT_MODE_DESIRE_NONE
-	end
+	-- if DotaTime() > 10 and (J.IsPushing(bot) or J.IsDefending(bot) or J.IsDoingRoshan(bot) or J.IsDoingTormentor(bot)
+	-- or botActiveMode == BOT_MODE_SECRET_SHOP or botActiveMode == BOT_MODE_WARD or botActiveMode == BOT_MODE_ROAM)
+	-- and bot:GetActiveModeDesire() >= BOT_MODE_DESIRE_MODERATE then
+	-- 	return BOT_MODE_DESIRE_NONE
+	-- end
 
     if bot:IsInvulnerable() and J.GetHP(bot) > 0.95 and bot:DistanceFromFountain() < 100 then
         return BOT_MODE_DESIRE_ABSOLUTE
@@ -76,12 +75,11 @@ function GetDesire()
         return BOT_MODE_DESIRE_NONE
     end
 
-    if DotaTime() < 0
+    if DotaTime() < 0 and not bot:WasRecentlyDamagedByAnyHero(5.0)
     then
-		local nAllyHeroes = J.GetAlliesNearLoc(bot:GetLocation(), 1000)
-        local nEnemyHeroes = J.GetEnemiesNearLoc(bot:GetLocation(), 1600)
-        if #nAllyHeroes < #nEnemyHeroes then
-            return BOT_MODE_DESIRE_NONE
+        local nEnemyHeroes = J.GetEnemiesNearLoc(bot:GetLocation(), 1200)
+        if #nEnemyHeroes <= 1 then
+            return RemapValClamped(J.GetHP(bot), 0.3, 1, BOT_MODE_DESIRE_NONE, BOT_MODE_DESIRE_HIGH)
         end
     end
 
@@ -333,11 +331,7 @@ function X.IsSuitableToPickRune()
 
 	local nEnemyHeroes = J.GetEnemiesNearLoc(bot:GetLocation(), 1200)
 
-	local botMode = bot:GetActiveMode();
-	if ((J.IsPushing(bot) or J.IsDefending(bot) or J.IsDoingRoshan(bot) or J.IsDoingTormentor(bot)
-	or botMode == BOT_MODE_SECRET_SHOP or botMode == BOT_MODE_WARD or botMode == BOT_MODE_ROAM)
-	and bot:GetActiveModeDesire() >= BOT_MODE_DESIRE_MODERATE)
-	or (#nEnemyHeroes >= 1 and X.IsIBecameTheTarget(nEnemyHeroes))
+	if (#nEnemyHeroes >= 1 and X.IsIBecameTheTarget(nEnemyHeroes))
 	or (bot:WasRecentlyDamagedByAnyHero(4.0) and J.IsRetreating(bot))
 	or (GetUnitToUnitDistance(bot, GetAncient(GetTeam())) < 2500 and DotaTime() > 0)
 	or GetUnitToUnitDistance(bot, GetAncient(GetOpposingTeam())) < 4000
@@ -536,7 +530,9 @@ end
 
 function X.GetScaledDesire(nBase, nCurrDist, nMaxDist)
     local desire = Clamp(nBase + RemapValClamped(nCurrDist, 600, nMaxDist, 1 - nBase, 0), 0, 0.65)
-	if not J.IsInLaningPhase() and J.IsCore(bot) then
+	if J.IsInLaningPhase() and (J.GetPosition(bot) == 1 or J.GetPosition(bot) == 3) then
+		desire = desire * 0.2
+	elseif not J.IsInLaningPhase() and J.IsCore(bot) then
 		desire = desire * 0.3
 	elseif bot:GetNetWorth() > 15000 then
 		desire = desire * 0.6
@@ -544,7 +540,7 @@ function X.GetScaledDesire(nBase, nCurrDist, nMaxDist)
 		desire = desire * 0.2
 	end
 
-	return RemapValClamped(J.GetHP(bot), 0, 0.8, desire * 0.3, desire)
+	return RemapValClamped(J.GetHP(bot), 0.3, 0.8, desire * 0.3, desire)
 end
 
 function X.GetGoOutLocation()

@@ -3060,7 +3060,7 @@ X.ConsiderItemDesire["item_mask_of_madness"] = function( hItem )
 	local sCastType = 'none'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
+	-- local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 
 	if ( J.IsValid( nAttackTarget ) or J.IsValidBuilding( nAttackTarget ) )
@@ -3098,7 +3098,7 @@ X.ConsiderItemDesire["item_medallion_of_courage"] = function( hItem )
 	local sCastType = 'unit'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
+	-- local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 
 	if J.IsGoingOnSomeone( bot )
@@ -6118,17 +6118,19 @@ X.ConsiderItemDesire['item_blood_grenade'] = function(item)
 	local nDPS = 15
 	local nDuration = 5
 	local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
+	local totalDmg = nImpactDamage + (nDPS * nDuration)
 
 	for _, enemyHero in pairs(nEnemyHeroes)
 	do
+		local canKillTarget = J.CanKillTarget(enemyHero, totalDmg, DAMAGE_TYPE_MAGICAL)
+		if J.IsInRange(bot, enemyHero, bot:GetAttackRange()) and bot:IsFacingLocation(enemyHero:GetLocation(), 15) then
+			canKillTarget = canKillTarget or J.CanKillTarget(enemyHero, totalDmg + 150, DAMAGE_TYPE_MAGICAL)
+		end
+
 		if J.IsValidHero(enemyHero)
 		and J.CanCastOnNonMagicImmune(enemyHero)
-		and J.CanKillTarget(enemyHero, nImpactDamage + (nDPS * nDuration), DAMAGE_TYPE_MAGICAL)
+		and canKillTarget
 		and not J.IsSuspiciousIllusion(enemyHero)
-		and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
-        and not enemyHero:HasModifier('modifier_dazzle_shallow_grave')
-        and not enemyHero:HasModifier('modifier_necrolyte_reapers_scythe')
-        and not enemyHero:HasModifier('modifier_oracle_false_promise_timer')
 		and nHealth > nHealthCost * 2
 		then
 			local nInRangeEnemy = J.GetEnemiesNearLoc(enemyHero:GetLocation(), nRadius)
@@ -6150,10 +6152,6 @@ X.ConsiderItemDesire['item_blood_grenade'] = function(item)
 			and J.CanCastOnNonMagicImmune(enemyHero)
 			and J.IsChasingTarget(bot, enemyHero)
 			and not J.IsSuspiciousIllusion(enemyHero)
-			and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
-			and not enemyHero:HasModifier('modifier_dazzle_shallow_grave')
-			and not enemyHero:HasModifier('modifier_necrolyte_reapers_scythe')
-			and not enemyHero:HasModifier('modifier_oracle_false_promise_timer')
 			and nHealth > nHealthCost * 2
 			then
 				local nInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, true, BOT_MODE_NONE)

@@ -129,15 +129,15 @@ end
 
 --敌军生物数量
 function J.GetAroundTargetEnemyUnitCount( target, nRadius )
-
 	local targetLoc = target:GetLocation()
-	local heroCount = J.GetNearbyAroundLocationUnitCount( true, true, nRadius, targetLoc )
-	local creepCount = J.GetNearbyAroundLocationUnitCount( true, false, nRadius, targetLoc )
-
-	return heroCount + creepCount
-
+	return J.GetAroundTargetLocEnemyUnitCount( targetLoc, nRadius )
 end
 
+function J.GetAroundTargetLocEnemyUnitCount( targetLoc, nRadius )
+	local heroCount = J.GetNearbyAroundLocationUnitCount( true, true, nRadius, targetLoc )
+	local creepCount = J.GetNearbyAroundLocationUnitCount( true, false, nRadius, targetLoc )
+	return heroCount + creepCount
+end
 
 --敌军英雄数量
 function J.GetAroundTargetEnemyHeroCount( target, nRadius )

@@ -33,16 +33,15 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_wraith_band",
 	"item_magic_wand",
 	"item_power_treads",
-	"item_maelstrom",
+	"item_bfury",--
+	"item_lesser_crit",
 	"item_manta",--
 	"item_black_king_bar",--
+	"item_greater_crit",--
 	"item_ultimate_scepter",
-	"item_mjollnir",--
-	"item_lesser_crit",
 	"item_aghanims_shard",
 	"item_butterfly",--
 	"item_ultimate_scepter_2",
-	"item_greater_crit",--
 	"item_travel_boots_2",--
 	"item_moon_shard",
 }
@@ -56,12 +55,11 @@ sRoleItemsBuyList['pos_2'] = {
     "item_wraith_band",
     "item_power_treads",
 	"item_maelstrom",
-    "item_black_king_bar",--
 	"item_ultimate_scepter",
-    "item_yasha",
-    "item_sange_and_yasha",--
-    "item_aghanims_shard",
+    "item_black_king_bar",--
 	"item_mjollnir",--
+    "item_greater_crit",--
+    "item_aghanims_shard",
     "item_monkey_king_bar",--
     "item_satanic",--
     "item_moon_shard",
@@ -591,6 +589,8 @@ function X.ConsiderFalconRush()
     end
 
     local nRushRange = FalconRush:GetSpecialValueInt('rush_range')
+    local nManaAfter = J.GetManaAfter(FalconRush:GetManaCost())
+    local nDistance = 400
 
     if J.IsGoingOnSomeone(bot) then
         if J.IsValidHero(botTarget)
@@ -601,6 +601,41 @@ function X.ConsiderFalconRush()
         and not J.IsEnemyChronosphereInLocation(botTarget:GetLocation())
         and not botTarget:HasModifier('modifier_necrolyte_reapers_scythe')
         and not botTarget:HasModifier('modifier_troll_warlord_battle_trance')
+        then
+            return BOT_ACTION_DESIRE_HIGH
+        end
+    end
+
+    if J.IsFarming(bot)
+    and not J.IsThereCoreNearby(1200)
+    and nManaAfter > 0.4
+    then
+        local nCreeps = bot:GetNearbyCreeps(nDistance, true)
+        if #nCreeps >= 3
+        then
+            return BOT_ACTION_DESIRE_HIGH
+        end
+    end
+
+    if J.IsDoingRoshan(bot) then
+        if J.IsRoshan(botTarget)
+        and J.CanBeAttacked(botTarget)
+        and bot:IsFacingLocation(botTarget:GetLocation(), 15)
+        and J.IsInRange(bot, botTarget, nDistance)
+        and J.IsAttacking(bot)
+        and nManaAfter > 0.25
+        then
+            return BOT_ACTION_DESIRE_HIGH
+        end
+    end
+
+    if J.IsDoingTormentor(bot) then
+        if J.IsTormentor(botTarget)
+        and J.CanBeAttacked(botTarget)
+        and bot:IsFacingLocation(botTarget:GetLocation(), 15)
+        and J.IsInRange(bot, botTarget, nDistance)
+        and J.IsAttacking(bot)
+        and nManaAfter > 0.25
         then
             return BOT_ACTION_DESIRE_HIGH
         end
@@ -802,7 +837,9 @@ function X.ConsiderSwitchDiscipline()
     or J.IsDoingTormentor(bot)
     then
         if bot.kez_mode == 'sai' then
-            return BOT_ACTION_DESIRE_HIGH
+            if bot:GetNetWorth() < 18000 or not J.CanCastAbility(FalconRush) then
+                return BOT_ACTION_DESIRE_HIGH
+            end
         end
     end
 
@@ -811,12 +848,12 @@ end
 
 function X.DoCombo()
     if bot.kez_mode == 'sai' then
-        if bot:HasScepter() then
-            if J.CanCastAbility(FalconRush) and J.CanCastAbility(RavensVeil) and not bot:IsRooted() then
-                local nManaCost_falconRush = FalconRush:GetManaCost()
+        if bot:HasScepter() and not J.CanCastAbility(FalconRush) then
+            if J.CanCastAbility(RavensVeil) and not bot:IsRooted() then
+                local nManaCost_falconRush = 0 -- FalconRush:GetManaCost()
                 local nManaCost_ravensVeil = RavensVeil:GetManaCost()
                 local nManaCost_grapplingClaw = 50
-                local nManaCost_echoSlash = 85 + (15 * (FalconRush:GetLevel() - 1))
+                local nManaCost_echoSlash = 85  -- + (15 * (FalconRush:GetLevel() - 1))
 
                 if J.GetManaAfter(nManaCost_falconRush + nManaCost_ravensVeil + nManaCost_grapplingClaw + nManaCost_echoSlash) > 0.1 then
                     local nCastRange = 700 + (100 * (TalonToss:GetLevel() - 1))
@@ -857,7 +894,7 @@ function X.DoCombo()
                         local eta = nDistFromTarget / 1800 + nDistFromTarget / 3000
 
                         bot:Action_ClearActions(false)
-                        bot:ActionQueue_UseAbility(FalconRush)
+                        -- bot:ActionQueue_UseAbility(FalconRush)
                         bot:ActionQueue_UseAbility(RavensVeil)
                         bot:ActionQueue_Delay(0.3)
                         bot:ActionQueue_UseAbility(SwitchWeapons)

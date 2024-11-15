@@ -625,6 +625,8 @@ function Utilities:GetPInfo()
 			table.insert(pSteamInfoList, { name = name, steamId = tostring(steamId) } )
 		end
 	end
+
+	if not Settings then Settings = {difficulty=-1, allyScale=-1} end
 	return {
 		version = Version.number,
 		pinfo = pSteamInfoList,

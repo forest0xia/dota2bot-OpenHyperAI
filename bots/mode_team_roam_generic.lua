@@ -314,7 +314,8 @@ function ConsiderPingedDefendDesire()
 			return 0
 		end
 	end
-
+	
+	local team = GetTeam()
 	local enemyNearAncient = #J.GetLastSeenEnemiesNearLoc( GetAncient(team):GetLocation(), 1600 )
 
 	local enemeyPushingBase = false
@@ -361,7 +362,7 @@ function ConsiderPingedDefendDesire()
 		local nDefendAllies = J.GetAlliesNearLoc(saferLoc, SearchNearLocAllyForPingDistance);
 		local nH, _ = J.Utils.NumHumanBotPlayersInTeam(GetOpposingTeam())
 		nEffctiveAlliesNearPingedDefendLoc = #nDefendAllies + #J.Utils.GetAllyIdsInTpToLocation(saferLoc, 1000)
-		local enemiesAroundLoc = J.GetEnemiesAroundLoc(nDefendLoc, 1600)
+		local enemiesAroundLoc = J.GetAroundTargetLocEnemyUnitCount(nDefendLoc, 1600)
 		if enemiesAroundLoc >= 1 -- 再确认一次附近还有敌人
 		and ((nH <= 0 and nEffctiveAlliesNearPingedDefendLoc < J.GetNumOfAliveHeroes(false) * 0.8) -- 大部分来了就好了，避免一直ping导致影响已经在场的bot的行为，剩下的可以看防御策略
 	         or (nH > 0 and nEffctiveAlliesNearPingedDefendLoc < enemiesAroundLoc * 0.7 ))

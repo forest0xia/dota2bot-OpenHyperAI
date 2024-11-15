@@ -26,7 +26,7 @@ local Clockwerk = require(GetScriptDirectory()..'/FunLib/rubick_hero/rattletrap'
 local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
 local botTarget = nil
 local lastCheck = -90
-
+local abilityProps = nil
 
 if DOTA_ABILITY_BEHAVIOR_UNIT_TARGET == nil then DOTA_ABILITY_BEHAVIOR_UNIT_TARGET = 8 end
 if DOTA_ABILITY_BEHAVIOR_NO_TARGET == nil then DOTA_ABILITY_BEHAVIOR_NO_TARGET = 4 end
@@ -72,7 +72,7 @@ function X.ConsiderStolenSpell(ability)
     then return end
 
     -- print("Rubick considering default usage of the spell...")
-    local abilityProps = X.LoadAbilityProperties(ability)
+    abilityProps = X.LoadAbilityProperties(ability)
     local castRDesire, castTarget, sMotive = X.ConsiderSpellBehavior(ability, abilityProps)
     if ( castRDesire > 0 )
     then

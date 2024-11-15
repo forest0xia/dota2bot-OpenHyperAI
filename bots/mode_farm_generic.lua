@@ -113,6 +113,11 @@ function GetDesire()
 		end
 	end
 
+	-- 如果在打高地 就别撤退去打钱了
+	if J.Utils.IsTeamPushingSecondTierOrHighGround(bot) then
+		return BOT_MODE_DESIRE_NONE;
+	end
+
 	if teamPlayers == nil then teamPlayers = GetTeamPlayers(team) end
 
 	-- For sometime to run
@@ -214,11 +219,6 @@ function GetDesire()
 			if preferedCamp == nil then preferedCamp = J.Site.GetClosestNeutralSpwan(bot, availableCamp) end;
 			return BOT_MODE_DESIRE_ABSOLUTE * 1.1;
 		end
-	end
-
-	-- 如果在打高地 就别撤退去打钱了
-	if J.Utils.IsTeamPushingSecondTierOrHighGround(bot) then
-		return BOT_MODE_DESIRE_NONE;
 	end
 
 	-- 如果在打推塔 就别撤退去打钱了
@@ -404,6 +404,7 @@ function GetDesire()
 
 	local shouldGoFarmDuringLaning = J.ShouldGoFarmDuringLaning(bot)
 	if GetGameMode() ~= GAMEMODE_MO
+	and not bot:WasRecentlyDamagedByAnyHero(5)
 	and (
 		shouldGoFarmDuringLaning or (
 			J.IsCore(bot)

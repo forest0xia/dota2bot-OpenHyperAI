@@ -108,6 +108,7 @@ local castEDesire, castRDesire
 local castASDesire, castASTarget
 
 local nKeepMana = 280
+local botTarget = nil
 
 -- was for fully takeover, but not used atm.
 function X.Think()
@@ -144,6 +145,8 @@ function X.SkillsComplement()
 	J.ConsiderForMkbDisassembleMask( bot )
 
 	if J.CanNotUseAbility( bot ) or bot:IsInvisible() then return end
+
+	botTarget = J.GetProperTarget(bot)
 
     castQDesire, castQTarget = X.ConsiderQ()
     if castQDesire > 0
@@ -213,8 +216,6 @@ end
 function X.ConsiderQ()
 	if not abilityQ:IsFullyCastable() then return 0 end
 
-	local botTarget = J.GetProperTarget(bot)
-
 	local nCastRange = J.GetProperCastRange(false, bot, abilityQ:GetCastRange())
     local nDamage = abilityQ:GetSpecialValueInt('damage')
 	
@@ -271,15 +272,13 @@ function X.ConsiderW()
 
 	if not abilityW:IsFullyCastable() then return 0 end
 
-	local botTarget = J.GetProperTarget(bot)
-
 	local nCastRange = abilityW:GetCastRange() + 200
 	local nSkillLV = abilityW:GetLevel()
 	local nRadius = abilityW:GetAOERadius()
 	local nCastPoint = abilityW:GetCastPoint()
 	local botLocation = bot:GetLocation()
 
-	local nEnemysHeroesInSkillRange = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
+	local nEnemysHeroesInSkillRange = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
 
 	local nCanHurtHeroLocationAoE = bot:FindAoELocation( true, true, botLocation, nCastRange, nRadius-30, 0.8, 0 )
 
@@ -293,61 +292,64 @@ function X.ConsiderW()
 	end
 
 	--对当前目标英雄使用
-	if J.IsValidHero( botTarget )
-		and J.CanCastOnNonMagicImmune( botTarget )
-		and J.IsInRange( botTarget, bot, nCastRange + 300 )
-		and ( nSkillLV >= 3 or bot:GetMana() >= nKeepMana )
+	if J.IsGoingOnSomeone(bot)
 	then
-
-		if botTarget:IsFacingLocation( J.GetEnemyFountain(), 30 )
-			and J.GetHP( botTarget ) < 0.4
-			and J.IsRunning( botTarget )
+		if J.IsValidHero( botTarget )
+			and J.CanCastOnNonMagicImmune( botTarget )
+			and J.IsInRange( botTarget, bot, nCastRange + 300 )
+			and ( nSkillLV >= 3 or bot:GetMana() >= nKeepMana )
 		then
-			--追击减速当前目标
-			for i=0, 800, 200
-			do
-				local nCastLocation = J.GetLocationTowardDistanceLocation( botTarget, J.GetEnemyFountain(), nRadius + 800 - i )
-				if GetUnitToLocationDistance( bot, nCastLocation ) <= nCastRange + 200
-				then
-					return BOT_ACTION_DESIRE_HIGH, nCastLocation
+
+			if botTarget:IsFacingLocation( J.GetEnemyFountain(), 30 )
+				and J.GetHP( botTarget ) < 0.4
+				and J.IsRunning( botTarget )
+			then
+				--追击减速当前目标
+				for i=0, 800, 200
+				do
+					local nCastLocation = J.GetLocationTowardDistanceLocation( botTarget, J.GetEnemyFountain(), nRadius + 800 - i )
+					if GetUnitToLocationDistance( bot, nCastLocation ) <= nCastRange + 200
+					then
+						return BOT_ACTION_DESIRE_HIGH, nCastLocation
+					end
 				end
 			end
-		end
 
-		--对当前目标使用技能
-		local npcTargetLocInFuture = J.GetCorrectLoc( botTarget, nCastPoint + 1.8 )
-		if J.GetLocationToLocationDistance( botTarget:GetLocation(), npcTargetLocInFuture ) > 300
-			and botTarget:GetMovementDirectionStability() > 0.4
-		then
-			return BOT_ACTION_DESIRE_HIGH, npcTargetLocInFuture
-		end
-
-		--近处预测将到近处来的目标
-		local castDistance = GetUnitToUnitDistance( bot, botTarget )
-		if botTarget:IsFacingLocation( botLocation, 30 ) and J.IsMoving( botTarget )
-		then
-			if castDistance > 400
+			--对当前目标使用技能
+			local npcTargetLocInFuture = J.GetCorrectLoc( botTarget, nCastPoint + 1.8 )
+			if J.GetLocationToLocationDistance( botTarget:GetLocation(), npcTargetLocInFuture ) > 300
+				and botTarget:GetMovementDirectionStability() > 0.4
 			then
-				castDistance = castDistance - 200
+				return BOT_ACTION_DESIRE_HIGH, npcTargetLocInFuture
 			end
-			return BOT_ACTION_DESIRE_HIGH, J.GetUnitTowardDistanceLocation( bot, botTarget, castDistance )
-		end
 
-		--远处预测将到远处去的目标
-		if bot:IsFacingLocation( botTarget:GetLocation(), 30 )
-		then
-			if castDistance <= nCastRange - 200
+			--近处预测将到近处来的目标
+			local castDistance = GetUnitToUnitDistance( bot, botTarget )
+			if botTarget:IsFacingLocation( botLocation, 30 ) and J.IsMoving( botTarget )
 			then
-				castDistance = castDistance + 400
-			else
-				castDistance = nCastRange + 300
+				if castDistance > 400
+				then
+					castDistance = castDistance - 200
+				end
+				return BOT_ACTION_DESIRE_HIGH, J.GetUnitTowardDistanceLocation( bot, botTarget, castDistance )
 			end
-			return BOT_ACTION_DESIRE_HIGH, J.GetUnitTowardDistanceLocation( bot, botTarget, castDistance )
+
+			--远处预测将到远处去的目标
+			if bot:IsFacingLocation( botTarget:GetLocation(), 30 )
+			then
+				if castDistance <= nCastRange - 200
+				then
+					castDistance = castDistance + 400
+				else
+					castDistance = nCastRange + 300
+				end
+				return BOT_ACTION_DESIRE_HIGH, J.GetUnitTowardDistanceLocation( bot, botTarget, castDistance )
+			end
+
+			--目标位置无规律
+			return BOT_ACTION_DESIRE_HIGH, J.GetLocationTowardDistanceLocation( botTarget, J.GetEnemyFountain(), nRadius/2 )
+
 		end
-
-		--目标位置无规律
-		return BOT_ACTION_DESIRE_HIGH, J.GetLocationTowardDistanceLocation( botTarget, J.GetEnemyFountain(), nRadius/2 )
-
 	end
 
 	--撤退时

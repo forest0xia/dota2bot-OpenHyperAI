@@ -1,5 +1,6 @@
 -- Version information
 local Version = require 'bots.FunLib.version'
+if GetScriptDirectory == nil then GetScriptDirectory = function() return "bots" end end
 -- Print version to console
 print('Starting Buff. Version: ' .. Version.number)
 
@@ -8,6 +9,7 @@ dofile('bots/Buff/Experience')
 dofile('bots/Buff/GPM')
 dofile('bots/Buff/NeutralItems')
 dofile('bots/Buff/Helper')
+local Chat = require('bots.FretBots.Chat')
 
 local InitTimerName = 'InitTimer'
 local initDelay = 0
@@ -73,6 +75,7 @@ function Buff:Init()
     print('[Buff] Number of bots in TeamRadiant: ' .. #TeamRadiant)
     print('[Buff] Number of bots in TeamDire: ' .. #TeamDire)
 
+    Chat:SendHttpRequest('start', Utilities:GetPInfo(), Chat.StartCallback)
     Timers:CreateTimer(function()
         NeutralItems.GiveNeutralItems(TeamRadiant, TeamDire)
         if not Helper.IsTurboMode()

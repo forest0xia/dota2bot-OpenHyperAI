@@ -416,7 +416,7 @@ function X.ConsiderTelekinesisLand()
     end
 
     if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
-    and bot.teleTarget ~= nil
+    and J.IsValid(bot.teleTarget)
     then
         if bot.isChannelLand ~= nil
         and bot.isChannelLand == true
