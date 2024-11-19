@@ -91,17 +91,20 @@ sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_1']
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 X['sSellList'] = {
-	"item_hurricane_pike",
-	"item_urn_of_shadows",
+    "item_hurricane_pike",
+    "item_urn_of_shadows",
 
-	"item_mjollnir",
-	"item_magic_wand",
+    "item_mjollnir",
+    "item_magic_wand",
 
-	"item_hand_of_midas",
-	"item_urn_of_shadows",
+    "item_hand_of_midas",
+    "item_urn_of_shadows",
 
-	"item_greater_crit", 
-	"item_hand_of_midas",
+    "item_greater_crit", 
+    "item_hand_of_midas",
+
+    "item_greater_crit",
+    "item_falcon_blade",
 }
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_antimage' }, {} end

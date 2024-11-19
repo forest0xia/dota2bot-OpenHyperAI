@@ -78,7 +78,7 @@ function X.ConsiderStolenSpell(ability)
     then
         J.SetReportMotive( bDebugMode, sMotive )
         J.SetQueuePtToINT( bot, true )
-        if (abilityProps.isForSinglePoint and not abilityProps.isForUnitTarget) or abilityProps.isForAOE then
+        if not abilityProps.isForUnitTarget and (abilityProps.isForSinglePoint or abilityProps.isForAOE) then
             bot:ActionQueue_UseAbilityOnLocation(ability, castTarget)
         elseif abilityProps.isForUnitTarget then
             bot:ActionQueue_UseAbilityOnEntity(ability, castTarget)
@@ -103,16 +103,14 @@ function X.ConsiderSpellBehavior(ability, props)
             and J.IsInRange(botTarget, bot, nCastRange)
             and J.IsAllowedToSpam(bot, nManaCost * 0.5) then
 
+            if not props.isForUnitTarget and (props.isForSinglePoint or props.isForAOE) then
+                print("Rubick using a point-target spell on enemy location...")
+                return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation(), "打架"
+            end
             if props.isForUnitTarget then
                 print("Rubick using a single-target spell on enemy hero...")
                 return BOT_ACTION_DESIRE_HIGH, botTarget, "打架"
             end
-
-            if (abilityProps.isForSinglePoint and not abilityProps.isForUnitTarget) then
-                print("Rubick using a point-target spell on enemy location...")
-                return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation(), "打架"
-            end
-
             if props.isForNoTarget then
                 print("Rubick using a no-target spell...")
                 return BOT_ACTION_DESIRE_HIGH, nil, "打架"

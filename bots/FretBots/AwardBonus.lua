@@ -410,9 +410,9 @@ function AwardBonus:GetPerMinuteBonus(bot, gpm, xpm)
 		-- 增加基础回蓝，按照难度和分钟数翻倍
 		-- print('Enabled bots with extra regens for diffculty scale = '..Settings.difficultyScale)
 		if Utilities:IsTurboMode() then
-			bot:SetBaseManaRegen((0.4 + Settings.difficultyScale * 0.5) * Utilities:GetAbsoluteTime() / 60)
+			bot:SetBaseManaRegen((0.4 + Settings.difficultyScale * 0.5) * 0.5 * Utilities:GetAbsoluteTime() / 60)
 		else
-			bot:SetBaseManaRegen((0.2 + Settings.difficultyScale * 0.5) * Utilities:GetAbsoluteTime() / 60)
+			bot:SetBaseManaRegen((0.2 + Settings.difficultyScale * 0.5) * 0.5 * Utilities:GetAbsoluteTime() / 60)
 		end
 	end
 

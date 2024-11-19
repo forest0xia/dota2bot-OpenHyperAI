@@ -13,7 +13,7 @@ require('bots.FretBots.HeroSounds')
 local Chat = require('bots.FretBots.Chat')
 
 -- default difficulty if no one votes
-local DefaultDifficulty = 4 -- [0, 10]
+local DefaultDifficulty = 2 -- [0, 10]
 local DefaultAllyScale = 0.5 -- [0, 1]
 
 Settings = nil

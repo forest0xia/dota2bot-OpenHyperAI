@@ -124,6 +124,7 @@ sRoleItemsBuyList['pos_4'] = {
 --	"item_wraith_pact",
 	"item_ultimate_scepter",
 	"item_shivas_guard",
+	"item_silver_edge",--
 	"item_moon_shard",
 	"item_ultimate_scepter_2",
 	"item_sheepstick",
@@ -141,6 +142,7 @@ sRoleItemsBuyList['pos_5'] = {
 --	"item_wraith_pact",
 	"item_shivas_guard",
 	"item_sheepstick",
+	"item_silver_edge",--
 	"item_moon_shard",
 	"item_ultimate_scepter_2",
 }
@@ -152,6 +154,8 @@ X['sSellList'] = {
 	"item_black_king_bar",
 	"item_null_talisman",
 
+	"item_silver_edge",
+	"item_glimmer_cape",
 }
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_mage' }, {} end

@@ -63,6 +63,7 @@ function Defend.GetDefendDesireHelper(bot, lane)
 	local nEnemyAroundAncient = Defend.GetEnemiesAroundAncient(2200)
 	local nSearchRange = 2200
 	local team = GetTeam()
+	local laneFront = GetLaneFrontLocation(team, lane, 0)
 	weAreStronger = J.WeAreStronger(bot, 2200)
 	if nEnemyAroundAncient > 0
 	then
@@ -70,7 +71,7 @@ function Defend.GetDefendDesireHelper(bot, lane)
 	end
 
 	nInRangeEnemy = J.GetEnemiesNearLoc(bot:GetLocation(), nSearchRange)
-	if #nInRangeEnemy > 0 and GetUnitToLocationDistance(bot, GetLaneFrontLocation(team, lane, 0)) < 1200
+	if #nInRangeEnemy > 0 and GetUnitToLocationDistance(bot, laneFront) < 1200
 	or bot:GetLevel() < 3
 	or (bot:GetAssignedLane() ~= lane and ((J.GetPosition(bot) == 1 and DotaTime() < 12 * 60) or (J.GetPosition(bot) == 2 and DotaTime() < 7 * 60))) -- reduce carry feeds
 	or (J.IsDoingRoshan(bot) and #J.GetAlliesNearLoc(J.GetCurrentRoshanLocation(), 2800) >= 3)
@@ -82,7 +83,7 @@ function Defend.GetDefendDesireHelper(bot, lane)
 	if DotaTime() < 15 * 60
 	and J.IsCore(bot)
 	and bot:GetAssignedLane() ~= lane
-	and GetUnitToLocationDistance(bot, GetLaneFrontLocation(team, lane, 0)) > 4400
+	and GetUnitToLocationDistance(bot, laneFront) > 4400
 	then
 		local tpScoll = J.GetItem2(bot, 'item_tpscroll')
 		if not J.CanCastAbility(tpScoll) or J.GetMP(bot) < 0.45 then
@@ -108,17 +109,6 @@ function Defend.GetDefendDesireHelper(bot, lane)
 		then
 			return BOT_MODE_DESIRE_NONE
 		end
-
-		local nH, _ = J.Utils.NumHumanBotPlayersInTeam(GetOpposingTeam())
-		if nH > 0 then
-			local loc = furthestBuilding:GetLocation()
-			local nDefendAllies = J.GetAlliesNearLoc(loc, 2200);
-			local nEffctiveAlliesNearPingedDefendLoc = #nDefendAllies + #J.Utils.GetAllyIdsInTpToLocation(loc, 2200)
-			if nEffctiveAlliesNearPingedDefendLoc > #J.GetEnemiesNearLoc(loc, 2200) then
-				return BOT_MODE_DESIRE_NONE
-			end
-		end
-
 	end
 
 	local nDefendDesire = 0
@@ -131,6 +121,16 @@ function Defend.GetDefendDesireHelper(bot, lane)
 	or J.GetPosition(bot) == 5 and botLevel < 5
 	then
 		return BOT_MODE_DESIRE_NONE
+	end
+
+	local nH, _ = J.Utils.NumHumanBotPlayersInTeam(GetOpposingTeam())
+	if nH > 0 then
+		local nDistance = 2500
+		local nDefendAllies = J.GetAlliesNearLoc(laneFront, nDistance);
+		local nEffctiveAlliesNearPingedDefendLoc = #nDefendAllies + #J.Utils.GetAllyIdsInTpToLocation(laneFront, nDistance)
+		if nEffctiveAlliesNearPingedDefendLoc >= #J.GetEnemiesNearLoc(laneFront, nDistance) then
+			return BOT_MODE_DESIRE_NONE
+		end
 	end
 
 	-- if pinged by bots or players to defend.

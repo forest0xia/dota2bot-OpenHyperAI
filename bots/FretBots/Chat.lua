@@ -86,11 +86,18 @@ local function botNameListInTheGame()
     end
 end
 
+local function getFormattedGameTime()
+    local gameTime = Utilities:GetTime()
+    local minutes = math.floor(gameTime / 60)
+    local seconds = math.floor(gameTime % 60)
+    return string.format("%d minutes, %d seconds", minutes, seconds)
+end
+
 function ConstructChatBotRequest(inputContent)
     -- if next(inGamePlayers) == nil then botNameListInTheGame() end -- only load bots once to save cpu.
     botNameListInTheGame()
 
-    table.insert(recordedMessages, 1, { role = "user", content = 'Players in this game: ' .. json.encode(inGamePlayers) .. ', current game time in seconds: ' .. tostring(math.floor(GameRules:GetGameTime()))})
+    table.insert(recordedMessages, 1, { role = "user", content = 'Players in this game: ' .. json.encode(inGamePlayers) .. ', current game time in seconds: ' .. getFormattedGameTime()})
     table.insert(recordedMessages, { role = "user", content = inputContent })
 
     -- Initialize data table

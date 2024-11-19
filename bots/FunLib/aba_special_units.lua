@@ -88,13 +88,21 @@ function X.GetDesire(bot__)
             if bot:GetTeam() ~= unit:GetTeam()
             then
                 if string.find(unitName, 'juggernaut_healing_ward')
+                or string.find(unitName, 'roshans_banner')
+                or string.find(unitName, 'visage_familiar')
+                or string.find(unitName, 'tidehunter_anchor')
+                or string.find(unitName, 'land_mine')
+                or string.find(unitName, 'ignis_fatuus')
+                or string.find(unitName, 'siege')
                 then
                     if J.IsInRange(bot, unit, botAttackRange + 200) then
                         return 0.8
                     end
-
-                    if #tEnemyHeroes == 0 then
-                        return 0.7
+                    if #tEnemyHeroes_all == 0 then
+                        return 0.9
+                    end
+                    if #tAllyHeroes >= #tEnemyHeroes then
+                        return 0.75
                     end
                 end
 
@@ -163,13 +171,12 @@ function X.GetDesire(bot__)
                     end
                 end
 
-                if string.find(unitName, 'ignis_fatuss')
-                or string.find(unitName, 'zeus_cloud')
+                if string.find(unitName, 'zeus_cloud')
                 then
                     if #tAllyHeroes >= #tEnemyHeroes or #tEnemyHeroes_all == 0
                     then
-                        if withinAttackRange then return 0.9 end
-                        return 0.75
+                        if withinAttackRange then return 0.7 end
+                        return 0.65
                     end
                 end
 
@@ -177,7 +184,7 @@ function X.GetDesire(bot__)
                 then
                     if #tAllyHeroes >= 2 and #tAllyHeroes_all > #tEnemyHeroes_all
                     then
-                        return 0.95
+                        return 0.85
                     end
 
                     if not X.IsUnitAfterUnit(unit, bot)

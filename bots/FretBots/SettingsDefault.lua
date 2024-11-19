@@ -319,7 +319,7 @@
 				armor 			= 0.1,
 				magicResist 	= 0.1,
 				levels 			= 0.1,
-				neutral       	= 1,
+				neutral       	= 0,
 				stats 			= 1,
 		},
 		gameStartBonusTimesDifficulty =

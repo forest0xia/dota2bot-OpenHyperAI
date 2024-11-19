@@ -316,9 +316,9 @@ function BonusTimers:GameStartBonus()
 	if Settings.difficulty >= 1 then
 		for _, bot in pairs(AllBots[team]) do
 			-- HP regen
-			bot:SetBaseHealthRegen(3 * Settings.difficultyScale)
+			bot:SetBaseHealthRegen(2 * Settings.difficultyScale)
 			-- Mana regen
-			bot:SetBaseManaRegen(3 * Settings.difficultyScale)
+			bot:SetBaseManaRegen(2 * Settings.difficultyScale)
 			-- bot:SetHPRegenGain(5 * Settings.difficultyScale)
 			-- bot:SetManaRegenGain(5 * Settings.difficultyScale)
 		end
