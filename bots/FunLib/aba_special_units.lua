@@ -89,11 +89,8 @@ function X.GetDesire(bot__)
             then
                 if string.find(unitName, 'juggernaut_healing_ward')
                 or string.find(unitName, 'roshans_banner')
-                or string.find(unitName, 'visage_familiar')
-                or string.find(unitName, 'tidehunter_anchor')
                 or string.find(unitName, 'land_mine')
                 or string.find(unitName, 'ignis_fatuus')
-                or string.find(unitName, 'siege')
                 then
                     if J.IsInRange(bot, unit, botAttackRange + 200) then
                         return 0.8
@@ -106,9 +103,16 @@ function X.GetDesire(bot__)
                     end
                 end
 
+                if string.find(unitName, 'siege') then
+                    if #tEnemyHeroes_all == 0 and J.GetDistanceFromAncient(bot, false) < 3000 then
+                        return 0.9
+                    end
+                end
+
                 if string.find(unitName, 'shadow_shaman_ward')
                 or string.find(unitName, 'invoker_forged_spirit')
                 or string.find(unitName, 'venomancer_plague_ward')
+                or string.find(unitName, 'visage_familiar')
                 or string.find(unitName, 'clinkz_skeleton_archer') then
                     local tSerpents = X.GetUnitTypeAttackingBot(botLocation, 1600, unitName)
                     local unitsAttackDamage = X.GetTotalAttackDamage(tSerpents, 8.0)
@@ -128,19 +132,20 @@ function X.GetDesire(bot__)
                 then
                     if J.IsInRange(bot, unit, botAttackRange + 150) then
                         if J.IsGoingOnSomeone(bot) and (not X.IsHeroWithinRadius(tEnemyHeroes, 450) or not X.IsBeingAttackedByHero(bot)) then
-                            return 0.65
+                            return 0.55
                         else
                             if not X.IsBeingAttackedByHero(bot) then
-                                return 0.60
+                                return 0.50
                             end
                         end
                     else
-                        return 0.55
+                        return 0.45
                     end
                 end
 
                 if string.find(unitName, 'grimstroke_ink_creature')
                 or string.find(unitName, 'weaver_swarm')
+                or string.find(unitName, 'tidehunter_anchor')
                 then
                     if #tEnemyHeroes == 0 then
                         return 0.75
@@ -184,7 +189,7 @@ function X.GetDesire(bot__)
                 then
                     if #tAllyHeroes >= 2 and #tAllyHeroes_all > #tEnemyHeroes_all
                     then
-                        return 0.85
+                        return 0.65
                     end
 
                     if not X.IsUnitAfterUnit(unit, bot)

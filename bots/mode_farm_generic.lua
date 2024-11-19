@@ -172,6 +172,7 @@ function GetDesire()
 	local hEnemyHeroList = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE);
 
 	if J.Utils.IsBotPushingTowerInDanger(bot)
+	and not J.IsInLaningPhase()
 	and not (#nAllyList >= 3 and #nAllyList >= #hEnemyHeroList) -- 我们人挺多，对面人也挺多，大战似乎在所难免，别跑了
 	and (J.IsCore(bot) and bot:GetNetWorth() < 18000)
 	and (botMode == BOT_MODE_PUSH_TOWER_BOT
