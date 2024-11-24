@@ -24,7 +24,7 @@ local CorrectDireAssignedLanes = false
 local CorrectDirePlayerIndexToLaneIndex = { }
 
 -- Define the upper bound threshold for considering a hero a good fit for a position
-local ROLE_WEIGHT_THRESHOLD = 30
+local ROLE_WEIGHT_THRESHOLD = 50
 -- Only pick the top k result of the heroes that have the heighest weight for the role.
 local ROLE_LIST_TOP_K_LIMIT = 40
 

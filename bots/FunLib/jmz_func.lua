@@ -1993,6 +1993,10 @@ function J.GetNearbyHeroes(bot, nRadius, bEnemy, bBotMode)
 	-- 	J.Utils.PrintTable(nearbyHeroes)
 	-- end
 	local nearby = bot:GetNearbyHeroes(nRadius, bEnemy, bBotMode)
+	if not nearby then
+		return nearby
+	end
+
 	local heroes = {}
 	for _, hero in pairs( nearby )
 	do

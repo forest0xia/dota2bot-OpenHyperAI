@@ -32,6 +32,10 @@ function GetDesire()
 		skipLaningState.count = 0
 	end
 
+	if DotaTime() - J.Utils.GameStates.recentDefendTime < 5 then
+		return BOT_MODE_DESIRE_NONE
+	end
+
 	if DotaTime() < 30 and bot:WasRecentlyDamagedByAnyHero(5) then
 		local nLane = bot:GetAssignedLane()
 		local nLaneFrontLocation = GetLaneFrontLocation(GetTeam(), nLane, 0)
@@ -47,9 +51,9 @@ function GetDesire()
 	if J.Utils.IsTeamPushingSecondTierOrHighGround(bot) then
 		return BOT_MODE_DESIRE_NONE
 	end
-	if J.ShouldGoFarmDuringLaning(bot) then
-		return 0.2
-	end
+	-- if J.ShouldGoFarmDuringLaning(bot) then
+	-- 	return 0.2
+	-- end
 
 	if local_mode_laning_generic ~= nil and local_mode_laning_generic.GetDesire ~= nil then return local_mode_laning_generic.GetDesire() end
 
@@ -62,7 +66,8 @@ function GetDesire()
 	if currentTime <= 12 * 60 and botLV <= 11 then return 0.369 end
 	if botLV <= 17 then return 0.328 end
 
-	return 0.1
+	-- J.Utils.GameStates.passiveLaningTime = true
+	return 0.05
 
 end
 

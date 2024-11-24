@@ -44,6 +44,10 @@ function GetDesire()
 		return BOT_MODE_DESIRE_NONE
 	end
 
+	if DotaTime() - J.Utils.GameStates.recentDefendTime < 5 then
+		return BOT_MODE_DESIRE_NONE
+	end
+
     botActiveMode = bot:GetActiveMode()
 	bBottle = J.HasItem(bot, 'item_bottle')
 
@@ -58,7 +62,7 @@ function GetDesire()
     end
 
 	local wrDesire = ConsiderWisdomRune()
-	if wrDesire > 0 then
+	if wrDesire > 0.1 then
 		return wrDesire
 	end
 
@@ -77,9 +81,9 @@ function GetDesire()
 
     if DotaTime() < 0 and not bot:WasRecentlyDamagedByAnyHero(5.0)
     then
-        local nEnemyHeroes = J.GetEnemiesNearLoc(bot:GetLocation(), 1200)
+        local nEnemyHeroes = J.GetLastSeenEnemiesNearLoc(bot:GetLocation(), 2000)
         if #nEnemyHeroes <= 1 then
-            return RemapValClamped(J.GetHP(bot), 0.3, 1, BOT_MODE_DESIRE_NONE, BOT_MODE_DESIRE_HIGH)
+            return RemapValClamped(J.GetHP(bot), 0.2, 0.8, BOT_MODE_DESIRE_NONE, BOT_MODE_DESIRE_MODERATE)
         end
     end
 
@@ -331,7 +335,8 @@ function X.IsSuitableToPickRune()
 
 	local nEnemyHeroes = J.GetEnemiesNearLoc(bot:GetLocation(), 1200)
 
-	if (#nEnemyHeroes >= 1 and X.IsIBecameTheTarget(nEnemyHeroes))
+	if (J.IsRetreating(bot) and bot:GetActiveModeDesire() > BOT_MODE_DESIRE_HIGH)
+	or (#nEnemyHeroes >= 1 and X.IsIBecameTheTarget(nEnemyHeroes))
 	or (bot:WasRecentlyDamagedByAnyHero(4.0) and J.IsRetreating(bot))
 	or (GetUnitToUnitDistance(bot, GetAncient(GetTeam())) < 2500 and DotaTime() > 0)
 	or GetUnitToUnitDistance(bot, GetAncient(GetOpposingTeam())) < 4000
@@ -539,6 +544,9 @@ function X.GetScaledDesire(nBase, nCurrDist, nMaxDist)
 	elseif GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 4300 then
 		desire = desire * 0.2
 	end
+	if nCurrDist > 3300 and not J.IsInLaningPhase() then
+		desire = desire * 0.2
+	end
 
 	return RemapValClamped(J.GetHP(bot), 0.3, 0.8, desire * 0.3, desire)
 end
@@ -663,11 +671,11 @@ function X.GetWisdomDesire(vWisdomLoc)
 	if botLevel < 12 then
 		nDesire = RemapValClamped(distFromLoc, 3000, 300, BOT_ACTION_DESIRE_HIGH, BOT_ACTION_DESIRE_VERYHIGH )
 	elseif botLevel < 18 then
-		nDesire = RemapValClamped(distFromLoc, 3000, 300, BOT_ACTION_DESIRE_MODERATE , BOT_ACTION_DESIRE_HIGH )
+		nDesire = RemapValClamped(distFromLoc, 3000, 300, BOT_ACTION_DESIRE_LOW , BOT_ACTION_DESIRE_HIGH )
 	elseif botLevel < 25 then
-		nDesire = RemapValClamped(distFromLoc, 3000, 300, BOT_ACTION_DESIRE_LOW, BOT_ACTION_DESIRE_HIGH )
+		nDesire = RemapValClamped(distFromLoc, 3000, 300, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_HIGH )
 	elseif botLevel < 30 then
-		nDesire = RemapValClamped(distFromLoc, 3000, 300, BOT_ACTION_DESIRE_LOW , BOT_ACTION_DESIRE_MODERATE )
+		nDesire = RemapValClamped(distFromLoc, 3000, 300, BOT_ACTION_DESIRE_NONE , BOT_ACTION_DESIRE_MODERATE )
 	end
 
 	return nDesire

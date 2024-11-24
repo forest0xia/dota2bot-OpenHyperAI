@@ -88,12 +88,24 @@ export const NonTier1Towers = [
     Tower.Base2,
 ];
 
+const SpecialAOEHeroes = [
+    "npc_dota_hero_axe",
+    "npc_dota_hero_enigma",
+    "npc_dota_hero_earthshaker",
+    "npc_dota_hero_invoker",
+    "npc_dota_hero_sand_king",
+    "npc_dota_hero_troll_warlord",
+];
+let ShouldBotsSpreadOutCache: null | boolean = null;
+let ShouldBotsSpreadOutCacheTime = 0;
+
 // Global array to store avoidance zones
 let avoidanceZones: AvoidanceZone[] = [];
 
 // Some gaming state keepers to keep a record of different states to avoid recomupte or anything.
 export const GameStates: GameState = {
     defendPings: null,
+    recentDefendTime: -200,
 };
 export const LoneDruid = {} as { [key: number]: any };
 export const FrameProcessTime = 0.05;
@@ -980,6 +992,45 @@ export function GetEnemyIdsInTpToLocation(
     return enemies;
 }
 
+export function ShouldBotsSpreadOut(bot: Unit, minDistance: number): boolean {
+    if (bot.GetNearbyHeroes(minDistance, false, BotMode.None).length < 2) {
+        return false;
+    }
+
+    if (
+        ShouldBotsSpreadOutCache &&
+        DotaTime() - ShouldBotsSpreadOutCacheTime < 10 &&
+        !bot.WasRecentlyDamagedByAnyHero(1)
+    ) {
+        return true;
+    }
+
+    for (const hero of GetUnitList(UnitType.EnemyHeroes)) {
+        if (IsValidHero(hero)) {
+            const heroName = hero.GetUnitName();
+            if (HasValue(SpecialAOEHeroes, heroName)) {
+                if (hero.GetLevel() >= 8) {
+                    ShouldBotsSpreadOutCache = true;
+                    ShouldBotsSpreadOutCacheTime = DotaTime();
+                    return true;
+                }
+            } else {
+                ShouldBotsSpreadOutCache = false;
+            }
+            if (heroName === "npc_dota_hero_troll_warlord") {
+                if (
+                    HasItem(hero, "item_bfury") &&
+                    hero.HasModifier("modifier_troll_warlord_battle_trance") &&
+                    hero.GetAttackRange() < 500
+                ) {
+                    return true; // Troll Warlord with Battle Fury and ultimate active
+                }
+            }
+        }
+    }
+    return false;
+}
+
 export function GetAllyIdsInTpToLocation(
     vLoc: Vector,
     nDistance: number
@@ -1005,16 +1056,17 @@ export function IsBotPushingTowerInDanger(bot: Unit): boolean {
 
     const nearbyAllies = bot.GetNearbyHeroes(1600, false, BotMode.None);
     const countAliveEnemies = GetNumOfAliveHeroes(true);
-    if (enemyTowerNearby && nearbyAllies.length < countAliveEnemies) {
-        return true;
-    }
 
-    // const missingEnemeyHeroes = CountMissingEnemyHeroes();
     const nearbyEnemy = GetLastSeenEnemyIdsNearLocation(
         bot.GetLocation(),
         2000
     );
-    if (enemyTowerNearby && nearbyEnemy.length >= nearbyAllies.length) {
+
+    if (
+        enemyTowerNearby &&
+        nearbyAllies.length < countAliveEnemies &&
+        nearbyEnemy.length >= nearbyAllies.length - 1
+    ) {
         return true;
     }
     return false;

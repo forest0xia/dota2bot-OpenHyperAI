@@ -274,7 +274,7 @@ function X.GetGameStartWardSpots(bot)
 			radianStartWard1 = RADIANT_GAME_START_1
 		end
 	else
-		if (RandomInt(1, 9) >= 5) then
+		if radianStartWard1 == nil and (RandomInt(1, 9) >= 5) then
 			radianStartWard1 = DIRE_GAME_START_1_2
 		else
 			radianStartWard1 = DIRE_GAME_START_1
@@ -293,7 +293,7 @@ function X.GetGameStartWardSpots(bot)
 			direStartWard1 = DIRE_GAME_START_1
 		end
 	else
-		if (RandomInt(1, 9) >= 5) then
+		if direStartWard1 == nil and (RandomInt(1, 9) >= 5) then
 			direStartWard1 = RADIANT_GAME_START_1_2
 		else
 			direStartWard1 = RADIANT_GAME_START_1

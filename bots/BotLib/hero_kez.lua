@@ -41,9 +41,9 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_ultimate_scepter",
 	"item_aghanims_shard",
 	"item_butterfly",--
+	"item_moon_shard",
 	"item_ultimate_scepter_2",
 	"item_travel_boots_2",--
-	"item_moon_shard",
 }
 
 sRoleItemsBuyList['pos_2'] = {
@@ -86,9 +86,9 @@ sRoleItemsBuyList['pos_4'] = {
 	"item_sheepstick",--
 	"item_lotus_orb",--
 	"item_assault",--
+	"item_moon_shard",
 	"item_aghanims_shard",
 	"item_ultimate_scepter_2",
-	"item_moon_shard",
 }
 
 sRoleItemsBuyList['pos_5'] = {
@@ -109,9 +109,9 @@ sRoleItemsBuyList['pos_5'] = {
 	"item_ultimate_scepter",
 	"item_sheepstick",--
 	"item_lotus_orb",--
+	"item_moon_shard",
 	"item_aghanims_shard",
 	"item_ultimate_scepter_2",
-	"item_moon_shard",
 }
 
 
@@ -612,6 +612,17 @@ function X.ConsiderFalconRush()
     then
         local nCreeps = bot:GetNearbyCreeps(nDistance, true)
         if #nCreeps >= 3
+        then
+            return BOT_ACTION_DESIRE_HIGH
+        end
+    end
+
+    if J.IsPushing(bot) then
+        if J.IsValidBuilding(botTarget)
+        and J.CanBeAttacked(botTarget)
+        and J.IsInRange(bot, botTarget, bot:GetAttackRange() + 150)
+        and J.IsAttacking(botTarget)
+        and J.GetManaAfter(botTarget) > 0.3
         then
             return BOT_ACTION_DESIRE_HIGH
         end

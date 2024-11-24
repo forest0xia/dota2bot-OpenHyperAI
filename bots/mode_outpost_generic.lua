@@ -27,12 +27,12 @@ function GetDesire()
 		return BOT_MODE_DESIRE_NONE
 	end
 
-	local botMode = bot:GetActiveMode()
-	if (J.IsPushing(bot) or J.IsDefending(bot) or J.IsDoingRoshan(bot) or J.IsDoingTormentor(bot)
-	or botMode == BOT_MODE_RUNE or botMode == BOT_MODE_SECRET_SHOP or botMode == BOT_MODE_WARD or botMode == BOT_MODE_ROAM)
-	and bot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH then
-		return BOT_MODE_DESIRE_NONE
-	end
+	-- local botMode = bot:GetActiveMode()
+	-- if (J.IsPushing(bot) or J.IsDefending(bot) or J.IsDoingRoshan(bot) or J.IsDoingTormentor(bot)
+	-- or botMode == BOT_MODE_RUNE or botMode == BOT_MODE_SECRET_SHOP or botMode == BOT_MODE_WARD or botMode == BOT_MODE_ROAM)
+	-- and bot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH then
+	-- 	return BOT_MODE_DESIRE_NONE
+	-- end
 
 	----------
 	-- Outpost
@@ -56,7 +56,7 @@ function GetDesire()
 	end
 
 	ClosestOutpost, ClosestOutpostDist = GetClosestOutpost()
-	if ClosestOutpost ~= nil and ClosestOutpostDist < 3500
+	if ClosestOutpost ~= nil and ClosestOutpostDist < 3000
 	and not IsEnemyCloserToOutpostLoc(ClosestOutpost:GetLocation(), ClosestOutpostDist)
 	and IsSuitableToCaptureOutpost()
 	then
@@ -69,7 +69,7 @@ function GetDesire()
 			end
 		end
 
-		return RemapValClamped(GetUnitToUnitDistance(bot, ClosestOutpost), 3500, 0, BOT_ACTION_DESIRE_VERYLOW, BOT_ACTION_DESIRE_HIGH )
+		return RemapValClamped(GetUnitToUnitDistance(bot, ClosestOutpost), 3000, 0, BOT_ACTION_DESIRE_VERYLOW, BOT_ACTION_DESIRE_HIGH )
 	end
 
 	return BOT_ACTION_DESIRE_NONE
@@ -152,8 +152,9 @@ function IsSuitableToCaptureOutpost()
 	or (J.IsDoingTormentor(bot) and J.IsTormentor(botTarget) and J.IsAttacking(bot))
 	or (J.IsDoingRoshan(bot) and J.IsRoshan(botTarget) and J.IsAttacking(bot))
 	or (J.IsRetreating(bot) and bot:GetActiveModeDesire() > BOT_MODE_DESIRE_HIGH)
-	or bot:WasRecentlyDamagedByAnyHero(1.5)
+	or bot:WasRecentlyDamagedByAnyHero(5)
 	or bot:GetActiveMode() == BOT_MODE_DEFEND_ALLY
+	or J.GetNumOfAliveHeroes( false ) < J.GetNumOfAliveHeroes( true )
 	then
 		return false
 	end

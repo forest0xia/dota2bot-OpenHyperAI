@@ -28,11 +28,12 @@ local TwinGates = { }
 local targetGate
 local gateWarp = bot:GetAbilityByName("twin_gate_portal_warp")
 local enableGateUsage = false -- to be fixed
-local arriveRoamLocTime = 0
-local roamTimeAfterArrival = 0.55 * 60 -- stay to roam after arriving the location
-local gankGapTime = 2 * 60 -- don't roam again within this duration after roaming once.
+local arriveGankLocTime = 0
+local gankTimeAfterArrival = 0.55 * 60 -- stay to roam after arriving the location
+local gankGapTime = 3 * 60 -- don't roam again within this duration after roaming once.
 local lastStaticLinkDebuffStack = 0
-local anyAllyAffectedByChainFrost = false
+local AnyAllyAffectedByChainFrost = false
+local ShouldBotsSpreadOut = false
 local nChainFrostBounceDistance = 600
 local nInRangeEnemy, nInRangeAlly, allyTowers, enemyTowers, trySeduce, shouldTempRetreat, botTarget, shouldGoBackToFountain
 
@@ -114,7 +115,7 @@ function Think()
 
 	ThinkIndividualRoaming() -- unit special abilities
 	ThinkGeneralRoaming() -- general items or conditions.
-	ThinkActualRoamingInLanes()
+	ThinkActualGankingInLanes()
 end
 
 function ThinkIndividualRoaming()
@@ -700,15 +701,15 @@ function TrampleToBase()
 	bot:Action_MoveToLocation(J.GetTeamFountain())
 end
 
-function MoveTeamApartDir()
+function MoveTeamApartDir(distance)
 	local botLoc = bot:GetLocation()
 	for _, ally in pairs(nInRangeAlly) do -- should also consider Lich's shard unit, neutral creeps etc. tba.
 		if J.IsValid(ally)
 		and ally ~= bot
-		and J.IsInRange(bot, ally, nChainFrostBounceDistance)
+		and J.IsInRange(bot, ally, distance)
 		then
 			local dir = botLoc - ally:GetLocation()
-			return dir:Normalized() * nChainFrostBounceDistance
+			return dir:Normalized() * distance
 		end
 	end
 	return nil
@@ -722,8 +723,13 @@ function ThinkGeneralRoaming()
 		return
 	end
 
-	if anyAllyAffectedByChainFrost then
-		local dir = MoveTeamApartDir()
+	if ShouldBotsSpreadOut or AnyAllyAffectedByChainFrost then
+		local distance = 450
+		if AnyAllyAffectedByChainFrost then
+			distance = nChainFrostBounceDistance
+		end
+
+		local dir = MoveTeamApartDir(distance)
 		if dir then
 			local botLoc = bot:GetLocation()
 			local targetLoc = botLoc + dir
@@ -734,12 +740,12 @@ function ThinkGeneralRoaming()
 				if (targetLoc - botLoc):Dot(enemyFountainDir:Normalized()) > 0 then
 					-- Redirect movement toward the team's fountain
 					local teamFountainDir = J.GetTeamFountain() - botLoc
-					dir = teamFountainDir:Normalized() * nChainFrostBounceDistance
+					dir = teamFountainDir:Normalized() * distance
 					targetLoc = botLoc + dir
 				end
 			end
 
-			bot:Action_MoveToLocation(targetLoc)
+			bot:Action_MoveToLocation(targetLoc + RandomVector(50))
 		end
 	end
 
@@ -900,11 +906,11 @@ function SetupTwinGates()
 	end
 end
 
-function ThinkActualRoamingInLanes()
+function ThinkActualGankingInLanes()
 	if laneToGank ~= nil then
 		local targetLoc = GetLaneFrontLocation(GetTeam(), laneToGank, -300)
-		local distanceToRoamLoc = GetUnitToLocationDistance(bot, targetLoc)
-		if distanceToRoamLoc > 5000 then
+		local distanceToGankLoc = GetUnitToLocationDistance(bot, targetLoc)
+		if distanceToGankLoc > 5000 then
 			if J.GetPosition(bot) > 3
 			and targetGate ~= nil
 			and enableGateUsage
@@ -922,13 +928,13 @@ function ThinkActualRoamingInLanes()
 			end
 		end
 
-		if distanceToRoamLoc > bot:GetAttackRange() + 300 and bot:WasRecentlyDamagedByAnyHero(1.5) then
+		if distanceToGankLoc > bot:GetAttackRange() + 300 and bot:WasRecentlyDamagedByAnyHero(1.5) then
 			bot:Action_MoveToLocation(targetLoc)
 		end
-		if distanceToRoamLoc < 600 and DotaTime() - arriveRoamLocTime > roamTimeAfterArrival * 1.1 then
-			arriveRoamLocTime = DotaTime()
+		if distanceToGankLoc < 600 and DotaTime() - arriveGankLocTime > gankTimeAfterArrival * 1.1 then
+			arriveGankLocTime = DotaTime()
 		end
-		if DotaTime() - arriveRoamLocTime > roamTimeAfterArrival then
+		if DotaTime() - arriveGankLocTime > gankTimeAfterArrival then
 			laneToGank = nil
 		end
 	end
@@ -1164,10 +1170,16 @@ function ConsiderGeneralRoamingInConditions()
 		end
 	end
 
-	anyAllyAffectedByChainFrost = IsAnyAllyAffectedByChainFrost()
-	if anyAllyAffectedByChainFrost then
+	AnyAllyAffectedByChainFrost = IsAnyAllyAffectedByChainFrost()
+	if AnyAllyAffectedByChainFrost then
 		return 0.91
 	end
+
+	-- 目前可能会导致bot往敌方队伍里走
+	-- ShouldBotsSpreadOut = J.Utils.ShouldBotsSpreadOut(bot, 450)
+	-- if ShouldBotsSpreadOut then
+	-- 	return 0.91
+	-- end
 
 	if J.IsInLaningPhase() then
 

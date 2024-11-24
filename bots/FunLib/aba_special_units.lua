@@ -64,7 +64,7 @@ function X.GetDesire(bot__)
                         if #nInRangeEnemy == 0
                         or J.IsGoingOnSomeone(bot)
                         or J.IsRetreating(bot) and #nInRangeEnemy >= 1
-                        or #tAllyHeroes < #tEnemyHeroes
+                        or #tAllyHeroes <= #tEnemyHeroes
                         then
                             return 0.95
                         end
@@ -93,26 +93,25 @@ function X.GetDesire(bot__)
                 or string.find(unitName, 'ignis_fatuus')
                 then
                     if J.IsInRange(bot, unit, botAttackRange + 200) then
-                        return 0.8
+                        return 0.7
                     end
                     if #tEnemyHeroes_all == 0 then
                         return 0.9
                     end
                     if #tAllyHeroes >= #tEnemyHeroes then
-                        return 0.75
+                        return 0.65
                     end
                 end
 
                 if string.find(unitName, 'siege') then
                     if #tEnemyHeroes_all == 0 and J.GetDistanceFromAncient(bot, false) < 3000 then
-                        return 0.9
+                        return 0.5
                     end
                 end
 
                 if string.find(unitName, 'shadow_shaman_ward')
                 or string.find(unitName, 'invoker_forged_spirit')
                 or string.find(unitName, 'venomancer_plague_ward')
-                or string.find(unitName, 'visage_familiar')
                 or string.find(unitName, 'clinkz_skeleton_archer') then
                     local tSerpents = X.GetUnitTypeAttackingBot(botLocation, 1600, unitName)
                     local unitsAttackDamage = X.GetTotalAttackDamage(tSerpents, 8.0)
@@ -123,7 +122,7 @@ function X.GetDesire(bot__)
                     then
                         if unitsAttackDamage < botHealth
                         or J.IsInRange(bot, unit, botAttackRange) and not J.IsInRange(bot, unit, unit:GetAttackRange()) then
-                            return 0.45
+                            return 0.31
                         end
                     end
                 end
@@ -132,14 +131,14 @@ function X.GetDesire(bot__)
                 then
                     if J.IsInRange(bot, unit, botAttackRange + 150) then
                         if J.IsGoingOnSomeone(bot) and (not X.IsHeroWithinRadius(tEnemyHeroes, 450) or not X.IsBeingAttackedByHero(bot)) then
-                            return 0.55
+                            return 0.35
                         else
                             if not X.IsBeingAttackedByHero(bot) then
-                                return 0.50
+                                return 0.30
                             end
                         end
                     else
-                        return 0.45
+                        return 0.35
                     end
                 end
 
@@ -148,7 +147,7 @@ function X.GetDesire(bot__)
                 or string.find(unitName, 'tidehunter_anchor')
                 then
                     if #tEnemyHeroes == 0 then
-                        return 0.75
+                        return 0.9
                     end
 
                     if J.IsGoingOnSomeone(bot) and (not X.IsHeroWithinRadius(tEnemyHeroes, 450) or not X.IsBeingAttackedByHero(bot))
@@ -189,7 +188,7 @@ function X.GetDesire(bot__)
                 then
                     if #tAllyHeroes >= 2 and #tAllyHeroes_all > #tEnemyHeroes_all
                     then
-                        return 0.65
+                        return 0.45
                     end
 
                     if not X.IsUnitAfterUnit(unit, bot)
@@ -201,9 +200,9 @@ function X.GetDesire(bot__)
                     then
                         if X.IsUnitAfterUnit(unit, bot)
                         then
-                            return RemapValClamped(botHP, 0.25, 0.5, 0.5, 0.9)
+                            return RemapValClamped(botHP, 0.25, 0.9, 0.2, 0.9)
                         else
-                            return BOT_ACTION_DESIRE_VERYHIGH
+                            return 0.45
                         end
                     end
                 end
@@ -240,7 +239,7 @@ function X.GetDesire(bot__)
                     and withinAttackRange
                     and botAttackDamage > totalUnitHP and unitAttackDamage < botHealth
                     then
-                        return 0.4
+                        return 0.29
                     end
                 end
 
@@ -271,7 +270,7 @@ function X.GetDesire(bot__)
                     if #tAllyHeroes_all >= #tEnemyHeroes_all and not J.IsRetreating(bot)
                     then
                         if withinAttackRange then return 0.95 end
-                        return 0.75
+                        return 0.55
                     end
                 end
 

@@ -9,7 +9,7 @@ local GlyphDuration = 7
 local ShoulNotPushTower = false
 local TowerPushCooldown = 0
 local StartToPushTime = 16 * 60 -- after x mins, start considering to push.
-local PushDuration = 3.5 * 60 -- keep pushing for x mins.
+local PushDuration = 4 * 60 -- keep pushing for x mins.
 local PushGapMinutes = 5 -- only push once in x mins.
 local lastPushTime = 0
 
@@ -123,16 +123,15 @@ function Push.GetPushDesire(bot, lane)
     and J.GetHP(bot) > 0.5 then
         bot:SetTarget(nEnemyAncient)
         bot:Action_AttackUnit(nEnemyAncient, true)
-        return BOT_ACTION_DESIRE_ABSOLUTE * 0.95
+        return BOT_ACTION_DESIRE_ABSOLUTE * 0.98
     end
 
-    local nH, _ = J.Utils.NumHumanBotPlayersInTeam(GetOpposingTeam())
-    if nH > 0
-    and not IsPushAgainstHumanTiming(nH)
-    and GetUnitToUnitDistance(bot, GetAncient(GetOpposingTeam())) > 4000
-    then
-		return BOT_MODE_DESIRE_NONE
-    end
+    -- local nH, _ = J.Utils.NumHumanBotPlayersInTeam(GetOpposingTeam())
+    -- if nH > 0
+    -- and not IsPushAgainstHumanTiming(nH, bot)
+    -- then
+	-- 	return BOT_MODE_DESIRE_NONE
+    -- end
 
     if bot:WasRecentlyDamagedByTower(3)
     or J.GetHP(bot) < 0.45
@@ -193,15 +192,21 @@ function Push.GetPushDesire(bot, lane)
     return BOT_MODE_DESIRE_NONE
 end
 
-function IsPushAgainstHumanTiming(nH)
+function IsPushAgainstHumanTiming(nH, bot)
     local minute = math.floor(DotaTime() / 60)
-    return math.fmod(minute, PushGapMinutes) == 0
+    local isTime = math.fmod(minute, PushGapMinutes) == 0
         or DotaTime() - lastPushTime < PushDuration
         or J.IsAnyAllyHeroSurroundedByManyAllies()
         or J.GetCoresAverageNetworth() > 22000
         or minute >= 50
         or teamHasAegis
         or J.GetNumOfTeamTotalKills( false ) <= J.GetNumOfTeamTotalKills(true) - 20
+        or J.Utils.IsTeamPushingSecondTierOrHighGround(bot)
+    J.Utils.GameStates.isTimeForPush = false
+    if isTime then
+        J.Utils.GameStates.isTimeForPush = true
+    end
+    return time
 end
 
 local TeamLocation = {}

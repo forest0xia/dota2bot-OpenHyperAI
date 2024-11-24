@@ -407,13 +407,15 @@ function GetDesire()
 	if GetGameMode() ~= GAMEMODE_MO
 	and not bot:WasRecentlyDamagedByAnyHero(5)
 	and (
-		shouldGoFarmDuringLaning or (
+		shouldGoFarmDuringLaning
+		or (
 			J.IsCore(bot)
 			and J.GetCoresAverageNetworth() < 12000
 			and (J.Site.IsTimeToFarm(bot) or pushTime > DotaTime() - 8.0)
 			-- and (not J.IsHumanPlayerInTeam() or enemyKills > allyKills + 16)
 			-- and ( bot:GetNextItemPurchaseValue() > 0 or not bot:HasModifier("modifier_item_moon_shard_consumed") )
 			and ( DotaTime() > 7 * 60 or bot:GetLevel() >= 8 or (bot:GetAttackRange() < 220 and bot:GetLevel() >= 6) ))
+		-- or (J.Utils.GameStates.passiveLaningTime and not J.Utils.GameStates.isTimeForPush)
 		)
 	then
 		if J.GetDistanceFromEnemyFountain(bot) > 4000

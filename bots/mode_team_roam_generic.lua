@@ -43,6 +43,7 @@ local ConsiderDroppedTime = -90
 local SwappedCheeseTime = -90
 local SwappedClarityTime = -90
 local SwappedFlaskTime = -90
+local SwappedSmokeTime = -90
 local SwappedRefresherShardTime = -90
 local SwappedMoonshardTime = -90
 
@@ -58,7 +59,7 @@ local ShouldFindTeammatesTimeGap = 10
 local pingedDefendDesire = 0
 local pingedDefendLocation = nil
 local nEffctiveAlliesNearPingedDefendLoc = nil
-local pingTimeDelta = 12
+local pingTimeDelta = 5
 local goToTargetAlly = nil
 local nearbyAllies, nearbyEnemies
 
@@ -365,7 +366,7 @@ function ConsiderPingedDefendDesire()
 		local enemiesAroundLoc = J.GetAroundTargetLocEnemyUnitCount(nDefendLoc, 1600)
 		if enemiesAroundLoc >= 1 -- 再确认一次附近还有敌人
 		and ((nH <= 0 and nEffctiveAlliesNearPingedDefendLoc < J.GetNumOfAliveHeroes(false) * 0.8) -- 大部分来了就好了，避免一直ping导致影响已经在场的bot的行为，剩下的可以看防御策略
-	         or (nH > 0 and nEffctiveAlliesNearPingedDefendLoc < enemiesAroundLoc * 0.7 ))
+	         or (nH > 0 and nEffctiveAlliesNearPingedDefendLoc < enemiesAroundLoc ))
 		then
 			J.Utils['GameStates']['defendPings'].pingedTime = GameTime()
 			bot:ActionImmediate_Chat("Please come defending", false)
@@ -430,6 +431,7 @@ function ItemOpsDesire()
 	TrySwapInvItemForRefresherShard()
 	TrySwapInvItemForClarity()
 	TrySwapInvItemForFlask()
+	TrySwapInvItemForSmoke()
 	TrySwapInvItemForMoonshard()
 end
 
@@ -2106,141 +2108,34 @@ function X.HasHumanAlly( bot )
 	then
 		local teamPlayerIDList = GetTeamPlayers( team )
 		for i = 1, #teamPlayerIDList
-		do 
+		do
 			if not IsPlayerBot( teamPlayerIDList[i] )
 			then
 				bHumanAlly = true
 				break
 			end
-		end	
-		if bHumanAlly ~= true then bHumanAlly = false end		
+		end
+		if bHumanAlly ~= true then bHumanAlly = false end
 	end
-	
+
 	local allyHeroList = J.GetNearbyHeroes(bot, 900, false, BOT_MODE_NONE )
 	for _, npcAlly in pairs( allyHeroList )
-	do 
+	do
 		if not npcAlly:IsBot()
 		then
 			return true
-		end	
-	end
-	
-	return false 
-		
-end
-
-function CanAttackSpecialUnit()
-	local nInRangeEnemy = J.GetEnemiesNearLoc(bot:GetLocation(), bot:GetCurrentVisionRange())
-	local nAttackRange = bot:GetAttackRange()
-	local nUnits = GetUnitList(UNIT_LIST_ENEMIES)
-
-	for _, unit in pairs(nUnits)
-	do
-		if J.IsValid(unit)
-		then
-			-- Units the bots have to distroy no matter what
-			if string.find(unit:GetUnitName(), 'phoenix_sun')
-			or string.find(unit:GetUnitName(), 'grimstroke_ink_creature')
-			or string.find(unit:GetUnitName(), 'tombstone')
-			then
-				if unit:GetUnitName() == 'npc_dota_rattletrap_cog'
-				then
-					local cogsCount1 = J.GetPowerCogsCountInLoc(bot:GetLocation(), 800)
-					local cogsCount2 = J.GetPowerCogsCountInLoc(bot:GetLocation(), 255)
-					local isClockwerkInTeam = false
-					for i = 1, #GetTeamPlayers( GetTeam() )
-					do
-						local allyHero = GetTeamMember(i)
-						if J.IsValidHero(allyHero)
-						and allyHero:GetUnitName() == 'npc_dota_hero_rattletrap'
-						then
-							isClockwerkInTeam = true
-							break
-						end
-					end
-
-					if nInRangeEnemy ~= nil
-					then
-						if #nInRangeEnemy >= 1
-						then
-							local nInRangeEnemy2 = J.GetEnemiesNearLoc(bot:GetLocation(), 255)
-
-							-- Is stuck inside?
-							if cogsCount1 == 8 and cogsCount2 >= 4
-							then
-								if nInRangeEnemy2 ~= nil
-								then
-									if #nInRangeEnemy2 == 0
-									or (J.IsRetreating(bot) and #nInRangeEnemy2 >= 1)
-									then
-										SpecialUnitTarget = unit
-										return true
-									end
-								end
-							end
-						end
-
-						if #nInRangeEnemy == 0
-						then
-							if cogsCount1 == 8 and cogsCount2 >= 4
-							then
-								if isClockwerkInTeam
-								then
-									SpecialUnitTarget = unit
-									return true
-								end
-							else
-								if not isClockwerkInTeam
-								then
-									SpecialUnitTarget = unit
-									return true
-								end
-							end
-						end
-					end
-				end
-
-				if GetUnitToUnitDistance(bot, unit) <= nAttackRange + 600
-				and J.CanBeAttacked(unit)
-				then
-					SpecialUnitTarget = unit
-					return true
-				end
-			elseif J.GetHP(bot) > J.GetHP(unit) - 0.2 and J.GetHP(bot) > 0.5 and J.CanBeAttacked(unit) then
-				-- Extra units the bots should distory if they are in good situation
-				if string.find(unit:GetUnitName(), 'forged_spirit')
-				or string.find(unit:GetUnitName(), 'lone_druid_bear')
-				or string.find(unit:GetUnitName(), 'plague_ward')
-				or string.find(unit:GetUnitName(), 'observer_ward')
-				or string.find(unit:GetUnitName(), 'sentry_ward')
-				or string.find(unit:GetUnitName(), 'healing_ward')
-				or string.find(unit:GetUnitName(), 'warlock_golem')
-				or string.find(unit:GetUnitName(), 'weaver_swarm')
-				or string.find(unit:GetUnitName(), 'grimstroke_ink_creature')
-				then
-					local nInRangeAlly = J.GetNearbyHeroes(bot,1000, false, BOT_MODE_NONE)
-					local nInRangeEnemy = J.GetNearbyHeroes(bot,1000, true, BOT_MODE_NONE)
-
-					if nInRangeEnemy == nil 
-						or (nInRangeAlly ~= nil and nInRangeEnemy and #nInRangeAlly >= #nInRangeEnemy)
-					then
-						SpecialUnitTarget = unit
-						return true
-					end
-					
-				end
-			end
-
 		end
 	end
-
 	return false
 end
 
 function ConsiderHarassInLaningPhase()
+	local botLvl = bot:GetLevel()
+
 	if J.IsInLaningPhase()
+	and botLvl >= 2
 	and not J.IsCore(bot)
-	and (bot:GetLevel() >= 4 or (bot:GetLevel() >= 3 and J.GetPosition(bot) == 4))
+	and (botLvl >= 4 or (botLvl >= 3 and J.GetPosition(bot) == 4))
 	and J.GetHP(bot) > 0.7
 	and not bot:WasRecentlyDamagedByAnyHero(2)
 	then
@@ -2364,7 +2259,7 @@ function SwapSmokeSupport()
 end
 -- Swap Items for healing
 function TrySwapInvItemForClarity()
-	if 	DotaTime() >= SwappedClarityTime + 6.0
+	if 	DotaTime() >= SwappedClarityTime + 6.3
 	and bot:GetActiveMode() ~= BOT_MODE_WARD
 	then
 		local cSlot = bot:FindItemSlot('item_clarity')
@@ -2382,7 +2277,7 @@ function TrySwapInvItemForClarity()
 	end
 end
 function TrySwapInvItemForFlask()
-	if 	DotaTime() >= SwappedFlaskTime + 6.0
+	if 	DotaTime() >= SwappedFlaskTime + 6.2
 	and bot:GetActiveMode() ~= BOT_MODE_WARD
 	then
 		local cSlot = bot:FindItemSlot('item_flask')
@@ -2397,6 +2292,24 @@ function TrySwapInvItemForFlask()
 		end
 
 		SwappedFlaskTime = DotaTime()
+	end
+end
+
+function TrySwapInvItemForSmoke()
+	if 	DotaTime() >= SwappedSmokeTime + 15
+	then
+		local cSlot = bot:FindItemSlot('item_smoke_of_deceit')
+		if cSlot and bot:GetItemSlotType(cSlot) == ITEM_SLOT_TYPE_BACKPACK
+		then
+			local lessValItem = J.Item.GetMainInvLessValItemSlot(bot)
+
+			if lessValItem ~= -1
+			then
+				bot:ActionImmediate_SwapItems(cSlot, lessValItem)
+			end
+		end
+
+		SwappedSmokeTime = DotaTime()
 	end
 end
 
@@ -2421,7 +2334,7 @@ end
 
 -- Swap Items for Cheese
 function TrySwapInvItemForCheese()
-	if 	DotaTime() >= SwappedCheeseTime + 2.0
+	if 	DotaTime() >= SwappedCheeseTime + 2.3
 	and bot:GetActiveMode() ~= BOT_MODE_WARD
 	then
 		local cSlot = bot:FindItemSlot('item_cheese')
@@ -2442,7 +2355,7 @@ end
 
 -- Swap Items for Refresher Shard
 function TrySwapInvItemForRefresherShard()
-	if 	DotaTime() >= SwappedRefresherShardTime + 2.0
+	if 	DotaTime() >= SwappedRefresherShardTime + 2.2
 	and bot:GetActiveMode() ~= BOT_MODE_WARD
 	then
 		local rSlot = bot:FindItemSlot('item_refresher_shard')

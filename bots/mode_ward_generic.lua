@@ -37,11 +37,9 @@ local hasChatted = false
 
 function GetDesire()
 	if bot:IsInvulnerable() or not bot:IsHero() or not bot:IsAlive() or not string.find(botName, "hero") or bot:IsIllusion() then return BOT_MODE_DESIRE_NONE end
+
 	if bot:IsChanneling()
-	or bot:IsIllusion()
-	or bot:IsInvulnerable()
 	or bot:GetCurrentActionType() == BOT_ACTION_TYPE_IDLE
-	or not bot:IsHero()
 	or not IsSuitableToWard()
 	then
 		return BOT_MODE_DESIRE_NONE
@@ -56,12 +54,16 @@ function GetDesire()
 		return BOT_MODE_DESIRE_NONE
 	end
 
-	local botMode = bot:GetActiveMode()
-	if DotaTime() > 10 and (J.IsPushing(bot) or J.IsDefending(bot) or J.IsDoingRoshan(bot) or J.IsDoingTormentor(bot)
-	or botMode == BOT_MODE_RUNE or botMode == BOT_MODE_SECRET_SHOP or botMode == BOT_MODE_ROAM)
-	and bot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH then
+	if DotaTime() - J.Utils.GameStates.recentDefendTime < 5 then
 		return BOT_MODE_DESIRE_NONE
 	end
+
+	-- local botMode = bot:GetActiveMode()
+	-- if DotaTime() > 10 and (J.IsPushing(bot) or J.IsDefending(bot) or J.IsDoingRoshan(bot) or J.IsDoingTormentor(bot)
+	-- or botMode == BOT_MODE_RUNE or botMode == BOT_MODE_SECRET_SHOP or botMode == BOT_MODE_ROAM)
+	-- and bot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH then
+	-- 	return BOT_MODE_DESIRE_NONE
+	-- end
 
 	if ItemWard ~= nil
 	and ItemWard:GetCooldownTimeRemaining() == 0
@@ -146,11 +148,11 @@ function OnEnd()
 end
 
 function Think()
-	if GetGameState() ~= GAME_STATE_PRE_GAME
-	and GetGameState()~= GAME_STATE_GAME_IN_PROGRESS
-	then
-		return
-	end
+	-- if GetGameState() ~= GAME_STATE_PRE_GAME
+	-- and GetGameState()~= GAME_STATE_GAME_IN_PROGRESS
+	-- then
+	-- 	return
+	-- end
 
 	if bot.ward
 	then
@@ -277,14 +279,16 @@ end
 function IsSuitableToWard()
 	local nEnemyHeroes = bot:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
 
-	local botMode = bot:GetActiveMode()
+	local nMode = bot:GetActiveMode()
 
-	if ((J.IsPushing(bot) or J.IsDefending(bot) or J.IsDoingRoshan(bot) or J.IsDoingTormentor(bot)
-	or botMode == BOT_MODE_SECRET_SHOP or botMode == BOT_MODE_WARD or botMode == BOT_MODE_ROAM)
-	and bot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH)
-	or botMode == BOT_MODE_ATTACK
-	or (botMode == BOT_MODE_RUNE and DotaTime() > 0)
-	or botMode == BOT_MODE_DEFEND_ALLY
+	if (nMode == BOT_MODE_RETREAT
+		and bot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH)
+	or nMode == BOT_MODE_ATTACK
+	or (nMode == BOT_MODE_RUNE and DotaTime() > 0)
+	or nMode == BOT_MODE_DEFEND_ALLY
+	or nMode == BOT_MODE_DEFEND_TOWER_TOP
+	or nMode == BOT_MODE_DEFEND_TOWER_MID
+	or nMode == BOT_MODE_DEFEND_TOWER_BOT
 	or (nEnemyHeroes ~= nil and #nEnemyHeroes >= 1 and IsIBecameTheTarget(nEnemyHeroes))
 	or bot:WasRecentlyDamagedByAnyHero(5.0)
 	then

@@ -4,37 +4,39 @@ local Defend = {}
 local pingTimeDelta = 5
 local nInRangeAlly, nInRangeEnemy, weAreStronger
 local distanceToLane = {[1] = 0, [2] = 0, [3] = 0}
-local defDurationHoldTime = 6 -- once trying to def, hold the state for longer period.
+local defDurationHoldTime = 5 -- once trying to def, hold the state for longer period.
 local defDurationCacheTime = {}
+local defendLoc = nil
+local nEnemyAroundAncient = 0
 
 function Defend.GetDefendDesire(bot, lane)
 	if bot.laneToDefend == nil then bot.laneToDefend = lane end
 	if bot.DefendLaneDesire == nil then bot.DefendLaneDesire = {0, 0, 0} end
 	weAreStronger = false
 
-	local laneFrontLocation = GetLaneFrontLocation( bot:GetTeam(), lane, 0 )
-	distanceToLane[lane] = GetUnitToLocationDistance(bot, laneFrontLocation)
+	defendLoc = GetLaneFrontLocation( bot:GetTeam(), lane, 0 )
+	distanceToLane[lane] = GetUnitToLocationDistance(bot, defendLoc)
 	nInRangeAlly = J.GetNearbyHeroes(bot,1600,false,BOT_MODE_NONE)
 	nInRangeEnemy = J.GetLastSeenEnemiesNearLoc( bot:GetLocation(), 2200 )
 
 	bot.DefendLaneDesire[lane] = Defend.GetDefendDesireHelper(bot, lane)
 	local defendDesire = bot.DefendLaneDesire[lane]
 
-	if not defDurationCacheTime[bot:GetPlayerID()]
-	or not defDurationCacheTime[bot:GetPlayerID()][lane]
-	then
-		defDurationCacheTime[bot:GetPlayerID()] = { [lane] = { } }
-	end
-	if not defDurationCacheTime[bot:GetPlayerID()][lane].time
-	or defDurationCacheTime[bot:GetPlayerID()][lane].time + defDurationHoldTime <= DotaTime()
-	or defDurationCacheTime[bot:GetPlayerID()][lane].desire < defendDesire
-	then
-		defDurationCacheTime[bot:GetPlayerID()][lane].time = DotaTime()
-		defDurationCacheTime[bot:GetPlayerID()][lane].desire = defendDesire
-	end
-	if defDurationCacheTime[bot:GetPlayerID()][lane].time + defDurationHoldTime > DotaTime() then
-		defendDesire = defDurationCacheTime[bot:GetPlayerID()][lane].desire
-	end
+	-- if not defDurationCacheTime[bot:GetPlayerID()]
+	-- or not defDurationCacheTime[bot:GetPlayerID()][lane]
+	-- then
+	-- 	defDurationCacheTime[bot:GetPlayerID()] = { [lane] = { } }
+	-- end
+	-- if not defDurationCacheTime[bot:GetPlayerID()][lane].time
+	-- or defDurationCacheTime[bot:GetPlayerID()][lane].time + defDurationHoldTime <= DotaTime()
+	-- or defDurationCacheTime[bot:GetPlayerID()][lane].desire < defendDesire
+	-- then
+	-- 	defDurationCacheTime[bot:GetPlayerID()][lane].time = DotaTime()
+	-- 	defDurationCacheTime[bot:GetPlayerID()][lane].desire = defendDesire
+	-- end
+	-- if defDurationCacheTime[bot:GetPlayerID()][lane].time + defDurationHoldTime > DotaTime() then
+	-- 	defendDesire = defDurationCacheTime[bot:GetPlayerID()][lane].desire
+	-- end
 
 	if (distanceToLane[lane] and distanceToLane[lane] < 1600 and #nInRangeEnemy > #nInRangeAlly) and not weAreStronger then
 		-- 1. if we are not stronger, most likely defend == feed
@@ -42,8 +44,8 @@ function Defend.GetDefendDesire(bot, lane)
 		defendDesire = RemapValClamped(defendDesire, 0, 1.5, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_HIGH)
 	end
 
-	if bot:WasRecentlyDamagedByAnyHero(2) then
-		defendDesire = 0
+	if bot:WasRecentlyDamagedByAnyHero(2) and distanceToLane[lane] > 3000 then
+		defendDesire = defendDesire * 0.5
 	end
 
 	-- local mostDesireLane, desire = J.GetMostDefendLaneDesire()
@@ -51,6 +53,9 @@ function Defend.GetDefendDesire(bot, lane)
 	-- if mostDesireLane ~= lane then
 	-- 	return defendDesire * 0.8
 	-- end
+	if defendDesire > 0.9 then
+		J.Utils.GameStates['recentDefendTime'] = DotaTime()
+	end
 	return defendDesire
 end
 
@@ -60,18 +65,28 @@ function Defend.GetDefendDesireHelper(bot, lane)
 		return BOT_MODE_DESIRE_NONE
 	end
 
-	local nEnemyAroundAncient = Defend.GetEnemiesAroundAncient(2200)
+	nEnemyAroundAncient = Defend.GetEnemiesAroundAncient(1600)
 	local nSearchRange = 2200
 	local team = GetTeam()
 	local laneFront = GetLaneFrontLocation(team, lane, 0)
+
+	defendLoc = laneFront
 	weAreStronger = J.WeAreStronger(bot, 2200)
+	nInRangeEnemy = J.GetEnemiesNearLoc(bot:GetLocation(), nSearchRange)
+
 	if nEnemyAroundAncient > 0
 	then
-		nSearchRange = 880
+		nSearchRange = 1000
+		local ancient = GetAncient(GetTeam())
+		defendLoc = ancient:GetLocation()
+
+		if J.GetUnitAllyCountAroundEnemyTarget( ancient, 1600 ) < nEnemyAroundAncient
+		and (#nInRangeEnemy <= 1 or not bot:WasRecentlyDamagedByAnyHero(2)) then
+			return BOT_ACTION_DESIRE_ABSOLUTE * 0.96
+		end
 	end
 
-	nInRangeEnemy = J.GetEnemiesNearLoc(bot:GetLocation(), nSearchRange)
-	if #nInRangeEnemy > 0 and GetUnitToLocationDistance(bot, laneFront) < 1200
+	if #nInRangeEnemy > 0 and GetUnitToLocationDistance(bot, defendLoc) < 1200
 	or bot:GetLevel() < 3
 	or (bot:GetAssignedLane() ~= lane and ((J.GetPosition(bot) == 1 and DotaTime() < 12 * 60) or (J.GetPosition(bot) == 2 and DotaTime() < 7 * 60))) -- reduce carry feeds
 	or (J.IsDoingRoshan(bot) and #J.GetAlliesNearLoc(J.GetCurrentRoshanLocation(), 2800) >= 3)
@@ -80,10 +95,10 @@ function Defend.GetDefendDesireHelper(bot, lane)
 		return BOT_MODE_DESIRE_NONE
 	end
 
-	if DotaTime() < 15 * 60
+	if DotaTime() < 7 * 60
 	and J.IsCore(bot)
 	and bot:GetAssignedLane() ~= lane
-	and GetUnitToLocationDistance(bot, laneFront) > 4400
+	and GetUnitToLocationDistance(bot, defendLoc) > 4400
 	then
 		local tpScoll = J.GetItem2(bot, 'item_tpscroll')
 		if not J.CanCastAbility(tpScoll) or J.GetMP(bot) < 0.45 then
@@ -94,17 +109,18 @@ function Defend.GetDefendDesireHelper(bot, lane)
 	local furthestBuilding = Defend.GetFurthestBuildingOnLane(lane)
 	if J.CanBeAttacked(furthestBuilding) and furthestBuilding ~= GetAncient(team)
 	then
-		local unitsAroundBuilding = Defend.UnitsAroundBuilding(furthestBuilding)
+		local heroesAroundBuilding = Defend.CountWeightedHeroes(furthestBuilding, 1600)
+		local unitsAroundBuilding = Defend.CountWeightedUnits(furthestBuilding, 1600)
 
 		if (J.IsTier1(furthestBuilding) and J.GetHP(furthestBuilding) <= 0.2
 			or J.IsTier2(furthestBuilding) and J.GetHP(furthestBuilding) <= 0.2)
-		and unitsAroundBuilding[2] > 0
+		and heroesAroundBuilding > 0
 		then
 			return BOT_MODE_DESIRE_NONE
 		end
 
 		if (J.IsTier1(furthestBuilding) or J.IsTier2(furthestBuilding))
-		and unitsAroundBuilding[1] > 0 and unitsAroundBuilding[2] == 0
+		and unitsAroundBuilding > 0 and heroesAroundBuilding == 0
 		and J.IsCore(bot) and GetUnitToUnitDistance(bot, furthestBuilding) > 2200
 		then
 			return BOT_MODE_DESIRE_NONE
@@ -125,10 +141,11 @@ function Defend.GetDefendDesireHelper(bot, lane)
 
 	local nH, _ = J.Utils.NumHumanBotPlayersInTeam(GetOpposingTeam())
 	if nH > 0 then
-		local nDistance = 2500
-		local nDefendAllies = J.GetAlliesNearLoc(laneFront, nDistance);
-		local nEffctiveAlliesNearPingedDefendLoc = #nDefendAllies + #J.Utils.GetAllyIdsInTpToLocation(laneFront, nDistance)
-		if nEffctiveAlliesNearPingedDefendLoc >= #J.GetEnemiesNearLoc(laneFront, nDistance) then
+		local nDistance = 2100
+		local nDefendAllies = J.GetAlliesNearLoc(defendLoc, nDistance);
+		local nEffctiveAlliesNearPingedDefendLoc = #nDefendAllies + #J.Utils.GetAllyIdsInTpToLocation(defendLoc, nDistance)
+		if nEffctiveAlliesNearPingedDefendLoc > #J.GetEnemiesNearLoc(defendLoc, nDistance)
+		and GetUnitToLocationDistance(bot, defendLoc) > 3000 then
 			return BOT_MODE_DESIRE_NONE
 		end
 	end
@@ -157,24 +174,37 @@ function Defend.DefendThink(bot, lane)
     if J.CanNotUseAction(bot) then return end
 
 	local attackRange = bot:GetAttackRange()
-	local vDefendLane = GetLaneFrontLocation(GetTeam(), lane, 0)
-	local nSearchRange = attackRange < 900 and 900 or math.min(attackRange, 1600)
+	if not defendLoc then
+		defendLoc = GetLaneFrontLocation(GetTeam(), lane, 0)
+	end
+	local nAttackSearchRange = attackRange < 900 and 900 or math.min(attackRange, 1600)
 
 	local nEnemyHeroes = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
-	local nEnemyHeroes_real = J.GetEnemiesNearLoc(bot:GetLocation(), 1600)
+	local nEnemyHeroes_real = J.GetEnemiesNearLoc(defendLoc, 1600)
 
-	if J.IsValidHero(nEnemyHeroes_real[1]) and J.IsInRange(bot, nEnemyHeroes_real[1], nSearchRange)
+	if nEnemyAroundAncient > 0 then
+		local ancient = GetAncient(GetTeam())
+		if GetUnitToLocationDistance(ancient, defendLoc) < 100 then
+			if GetUnitToUnitDistance(bot, ancient) > 2500 then
+				bot:Action_MoveToLocation(defendLoc + J.RandomForwardVector(300))
+				return
+			end
+		end
+	end
+
+	if J.IsValidHero(nEnemyHeroes_real[1]) and J.IsInRange(bot, nEnemyHeroes_real[1], nAttackSearchRange)
 	then
 		bot:Action_AttackUnit(nEnemyHeroes_real[1], true)
 		return
-	elseif J.IsValidHero(nEnemyHeroes[1]) and J.IsInRange(bot, nEnemyHeroes[1], nSearchRange)
+	elseif J.IsValidHero(nEnemyHeroes[1]) and J.IsInRange(bot, nEnemyHeroes[1], nAttackSearchRange)
 	then
 		bot:Action_AttackUnit(nEnemyHeroes[1], true)
 		return
 	end
 
 	local nEnemyLaneCreeps = bot:GetNearbyCreeps(900, true)
-	if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps > 0
+	if (nEnemyHeroes_real == nil or #nEnemyHeroes_real <= 0)
+	and nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps > 0
 	then
 		local targetCreep = nil
 		local attackDMG = 0
@@ -197,9 +227,9 @@ function Defend.DefendThink(bot, lane)
 	end
 
 	if (weAreStronger or #nInRangeAlly >= #nEnemyHeroes_real) and distanceToLane[lane] and  distanceToLane[lane] < 1600 then
-		bot:Action_AttackMove(vDefendLane + J.RandomForwardVector(1200))
+		bot:Action_AttackMove(defendLoc + J.RandomForwardVector(300))
 	elseif distanceToLane[lane] and distanceToLane[lane] > 1600 then
-		bot:Action_MoveToLocation(vDefendLane + J.RandomForwardVector(1200))
+		bot:Action_MoveToLocation(defendLoc + J.RandomForwardVector(300))
 	end
 end
 
@@ -380,82 +410,77 @@ function Defend.GetEnemyCountInLane(lane, nRadius)
 	local nUnitCount = 0
 	local furthestBuilding = Defend.GetFurthestBuildingOnLane(lane)
 
+	nUnitCount = nUnitCount + Defend.CountWeightedHeroes(furthestBuilding, nRadius)
+	nUnitCount = nUnitCount + Defend.CountWeightedUnits(furthestBuilding, nRadius)
+
+	return nUnitCount
+end
+
+function Defend.CountWeightedHeroes(building, nRadius)
+	local nUnitCount = 0
+	local isBuildingAncient = building == GetAncient(GetBot():GetTeam())
 	for _, id in pairs(GetTeamPlayers(GetOpposingTeam())) do
 		if IsHeroAlive(id) then
 			local info = GetHeroLastSeenInfo(id)
 			if info ~= nil then
 				local dInfo = info[1]
 				if dInfo ~= nil
-				and J.IsValidBuilding(furthestBuilding)
-				and GetUnitToLocationDistance(furthestBuilding, dInfo.location) <= nRadius
+				and J.IsValidBuilding(building)
+				and GetUnitToLocationDistance(building, dInfo.location) <= nRadius
 				and dInfo.time_since_seen < 3.0
 				then
 					nUnitCount = nUnitCount + 1
+					if isBuildingAncient then
+						nUnitCount = nUnitCount + 1 -- Increase weight for critical defense.
+					end
 				end
 			end
 		end
 	end
-
-	for _, unit in pairs(GetUnitList(UNIT_LIST_ENEMIES))
-	do
-		if J.IsValid(unit)
-		and J.IsValidBuilding(furthestBuilding)
-		and GetUnitToUnitDistance(unit, furthestBuilding) <= nRadius
-		then
-			local unitName = unit:GetUnitName()
-			if string.find(unitName, 'siege') and not string.find(unitName, 'upgraded') then
-				nUnitCount = nUnitCount + 0.5
-			elseif string.find(unitName, 'upgraded') then
-				nUnitCount = nUnitCount + 1
-			elseif string.find(unitName, 'warlock_golem') then
-				nUnitCount = nUnitCount + 1
-			elseif string.find(unitName, 'lone_druid_bear') then
-				nUnitCount = nUnitCount + 1
-			elseif string.find(unitName, 'shadow_shaman_ward') then
-				nUnitCount = nUnitCount + 1
-			end
-		end
-	end
-
 	return nUnitCount
 end
 
-function Defend.UnitsAroundBuilding(furthestBuilding)
-	local creepCount = 0
-	local heroCount = 0
+function Defend.CountWeightedUnits(building, nRadius)
+	local nUnitCount = 0
+	local isBuildingAncient = building == GetAncient(GetBot():GetTeam())
 	for _, unit in pairs(GetUnitList(UNIT_LIST_ENEMIES))
 	do
 		if J.IsValid(unit)
-		and GetUnitToUnitDistance(furthestBuilding, unit) <= 1600
+		and J.IsValidBuilding(building)
+		and GetUnitToUnitDistance(unit, building) <= nRadius
 		then
+			local unitName = unit:GetUnitName()
 			if unit:IsCreep()
 			or unit:IsAncientCreep()
 			or unit:HasModifier('modifier_chen_holy_persuasion')
 			or unit:HasModifier('modifier_dominated')
 			then
-				creepCount = creepCount + 1
+				nUnitCount = nUnitCount + 1.5
+			elseif string.find(unitName, 'siege') and not string.find(unitName, 'upgraded') then
+				nUnitCount = nUnitCount + 0.6
+			elseif string.find(unitName, 'upgraded') then
+				nUnitCount = nUnitCount + 1
+			elseif string.find(unitName, 'warlock_golem') then
+				nUnitCount = nUnitCount + 2
+			elseif string.find(unitName, 'lone_druid_bear') then
+				nUnitCount = nUnitCount + 2.5
+			elseif string.find(unitName, 'shadow_shaman_ward') then
+				nUnitCount = nUnitCount + 1.5
+			elseif J.IsSuspiciousIllusion(unit) then
+				if unit:HasModifier('modifier_arc_warden_tempest_double')
+				or string.find(unit:GetUnitName(), 'chaos_knight')
+				or string.find(unit:GetUnitName(), 'naga_siren') then
+					nUnitCount = nUnitCount + 1
+				end
+			else
+				nUnitCount = nUnitCount + 0.3
 			end
-
-			local isIllusion = J.IsSuspiciousIllusion(unit)
-
-			if unit:IsHero()
-			and (not isIllusion
-				or isIllusion and unit:HasModifier('modifier_arc_warden_tempest_double')
-				or isIllusion and string.find(unit:GetUnitName(), 'chaos_knight')
-				or isIllusion and string.find(unit:GetUnitName(), 'naga_siren')
-			)
-			then
-				heroCount = heroCount + 1
-			end
-
-			if string.find(unit:GetUnitName(), 'warlock_golem')
-			or string.find(unit:GetUnitName(), 'lone_druid_bear') then
-				heroCount = heroCount + 1
+			if isBuildingAncient then
+				nUnitCount = nUnitCount + 1 -- Increase weight for critical defense.
 			end
 		end
 	end
-
-	return creepCount, heroCount
+	return nUnitCount
 end
 
 function Defend.OnEnd()
@@ -463,41 +488,9 @@ end
 
 function Defend.GetEnemiesAroundAncient(nRadius)
 	local nUnitCount = 0
-
-	for _, id in pairs(GetTeamPlayers(GetOpposingTeam())) do
-		if IsHeroAlive(id) then
-			local info = GetHeroLastSeenInfo(id)
-			if info ~= nil then
-				local dInfo = info[1]
-				if dInfo ~= nil
-				and GetUnitToLocationDistance(GetAncient(GetTeam()), dInfo.location) <= nRadius
-				and dInfo.time_since_seen < 3.0
-				then
-					nUnitCount = nUnitCount + 1
-				end
-			end
-		end
-	end
-
-	for _, unit in pairs(GetUnitList(UNIT_LIST_ENEMIES))
-	do
-		if J.IsValid(unit)
-		and GetUnitToUnitDistance(unit, GetAncient(GetTeam())) <= nRadius
-		then
-			local unitName = unit:GetUnitName()
-			if unit:IsCreep() then
-				nUnitCount = nUnitCount + 0.5
-			elseif string.find(unitName, 'upgraded') then
-				nUnitCount = nUnitCount + 1
-			elseif string.find(unitName, 'warlock_golem') then
-				nUnitCount = nUnitCount + 1.5
-			elseif string.find(unitName, 'lone_druid_bear') then
-				nUnitCount = nUnitCount + 2
-			elseif string.find(unitName, 'shadow_shaman_ward') then
-				nUnitCount = nUnitCount + 1.5
-			end
-		end
-	end
+	local ancient = GetAncient(GetTeam())
+	nUnitCount = nUnitCount + Defend.CountWeightedHeroes(ancient, nRadius)
+	nUnitCount = nUnitCount + Defend.CountWeightedUnits(ancient, nRadius)
 
 	return nUnitCount
 end

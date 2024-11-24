@@ -466,8 +466,18 @@ ____exports.NonTier1Towers = {
     Tower.Base1,
     Tower.Base2
 }
+local SpecialAOEHeroes = {
+    "npc_dota_hero_axe",
+    "npc_dota_hero_enigma",
+    "npc_dota_hero_earthshaker",
+    "npc_dota_hero_invoker",
+    "npc_dota_hero_sand_king",
+    "npc_dota_hero_troll_warlord"
+}
+local ShouldBotsSpreadOutCache = nil
+local ShouldBotsSpreadOutCacheTime = 0
 avoidanceZones = {}
-____exports.GameStates = {defendPings = nil}
+____exports.GameStates = {defendPings = nil, recentDefendTime = -200}
 ____exports.LoneDruid = {}
 ____exports.FrameProcessTime = 0.05
 ____exports.EstimatedEnemyRoles = {npc_dota_hero_any = {lane = Lane.Mid, role = 2}}
@@ -1112,6 +1122,34 @@ function ____exports.FindAllyWithAtLeastDistanceAway(bot, nDistance)
     end
     return nil
 end
+function ____exports.ShouldBotsSpreadOut(bot, minDistance)
+    if #bot:GetNearbyHeroes(minDistance, false, BotMode.None) < 2 then
+        return false
+    end
+    if ShouldBotsSpreadOutCache and DotaTime() - ShouldBotsSpreadOutCacheTime < 10 and not bot:WasRecentlyDamagedByAnyHero(1) then
+        return true
+    end
+    for ____, hero in ipairs(GetUnitList(UnitType.EnemyHeroes)) do
+        if ____exports.IsValidHero(hero) then
+            local heroName = hero:GetUnitName()
+            if ____exports.HasValue(SpecialAOEHeroes, heroName) then
+                if hero:GetLevel() >= 8 then
+                    ShouldBotsSpreadOutCache = true
+                    ShouldBotsSpreadOutCacheTime = DotaTime()
+                    return true
+                end
+            else
+                ShouldBotsSpreadOutCache = false
+            end
+            if heroName == "npc_dota_hero_troll_warlord" then
+                if ____exports.HasItem(hero, "item_bfury") and hero:HasModifier("modifier_troll_warlord_battle_trance") and hero:GetAttackRange() < 500 then
+                    return true
+                end
+            end
+        end
+    end
+    return false
+end
 function ____exports.GetAllyIdsInTpToLocation(vLoc, nDistance)
     local allies = {}
     for ____, tp in ipairs(GetIncomingTeleports()) do
@@ -1128,14 +1166,11 @@ function ____exports.IsBotPushingTowerInDanger(bot)
     end
     local nearbyAllies = bot:GetNearbyHeroes(1600, false, BotMode.None)
     local countAliveEnemies = ____exports.GetNumOfAliveHeroes(true)
-    if enemyTowerNearby and #nearbyAllies < countAliveEnemies then
-        return true
-    end
     local nearbyEnemy = ____exports.GetLastSeenEnemyIdsNearLocation(
         bot:GetLocation(),
         2000
     )
-    if enemyTowerNearby and #nearbyEnemy >= #nearbyAllies then
+    if enemyTowerNearby and #nearbyAllies < countAliveEnemies and #nearbyEnemy >= #nearbyAllies - 1 then
         return true
     end
     return false

@@ -32,6 +32,7 @@ export interface GameState {
     defendPings: {
         pingedTime: number;
     } | null;
+    recentDefendTime: number;
 }
 
 export interface AvoidanceZone {
