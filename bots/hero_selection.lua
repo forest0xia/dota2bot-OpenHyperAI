@@ -17,6 +17,8 @@ local Dota2Teams = require( GetScriptDirectory()..'/FunLib/aba_team_names' )
 local CM = require( GetScriptDirectory()..'/FunLib/captain_mode' )
 local Customize = require( GetScriptDirectory()..'/Customize/general' )
 local HeroPositionMap = require( GetScriptDirectory()..'/FunLib/aba_hero_pos_weights' )
+local heroUnitNames = require( GetScriptDirectory()..'/FretBots/HeroNames')
+
 local SupportedHeroes = {}
 
 local CorrectRadiantAssignedLanes = false
@@ -578,10 +580,10 @@ end
 local userSwitchedRole = false
 
 -- Function to handle the command
-local function handleCommand(command, PlayerID, bTeamOnly)
-    local action, text = parseCommand(command)
-	if action == nil then
-		print('[WARN] Invalid command: '..tostring(command))
+local function handleCommand(inputStr, PlayerID, bTeamOnly)
+    local actionKey, actionVal = parseCommand(inputStr)
+	if actionKey == nil then
+		print('[WARN] Invalid command: '..tostring(inputStr))
 		return
 	end
 	-- if GetGameMode() == GAMEMODE_CM then
@@ -591,92 +593,100 @@ local function handleCommand(command, PlayerID, bTeamOnly)
 
 	local teamPlayers = GetTeamPlayers(GetTeam())
 
-	print('Handling command: '..tostring(action)..', text: '..tostring(text))
+	print('Handling command starting with: '..tostring(actionKey)..', text: '..tostring(actionVal))
 
-    if action == "!pick" and GetGameMode() ~= GAMEMODE_CM then
-        print("Picking hero " .. text)
-
-		local hero = GetHumanChatHero(text);
-		if hero ~= "" then
-			if X.IsRepeatHero(hero) then
-				print('Hero has already been picked')
-				return
-			end
-			if bTeamOnly then
-				for _, id in pairs(teamPlayers)
-				do
-					if IsPlayerBot(id) and IsPlayerInHeroSelectionControl(id) and GetSelectedHeroName(id) == "" then
-						SelectHero(id, hero);
-						break;
-					end
-				end
-			elseif bTeamOnly == false and GetTeamForPlayer(PlayerID) ~= GetTeam() then
-				for _, id in pairs(teamPlayers)
-				do
-					if IsPlayerBot(id) and IsPlayerInHeroSelectionControl(id) and GetSelectedHeroName(id) == "" then
-						SelectHero(id, hero);
-						break;
-					end
-				end
-			end
-			userSwitchedRole = true
-		else
-			print("Hero name not found or not supported! Please refer to the list of names here: https://steamcommunity.com/workshop/filedetails/discussion/3246316298/4848777260032086340/");
-		end
-    elseif action == "!ban" and GetGameState() == GAME_STATE_HERO_SELECTION then
-        print("Banning hero " .. text)
-
-		local hero = GetHumanChatHero(text);
-		if hero ~= "" then
-			if X.IsRepeatHero(hero) then
-				print('Hero has already been picked')
-				return
-			end
-			X.SetChatHeroBan( hero )
-			print("Banned hero " .. hero.. '. Banned list:')
-			Utils.PrintTable(sBanList)
-		else
-			print("Hero name not found or not supported! Please refer to the list of names here: https://steamcommunity.com/workshop/filedetails/discussion/3246316298/4848777260032086340/");
-		end
-    elseif action == "!pos" and GetGameState() == GAME_STATE_PRE_GAME then
-        print("Selecting pos " .. text)
-		local sTeamName = GetTeamForPlayer(PlayerID) == TEAM_RADIANT and 'TEAM_RADIANT' or 'TEAM_DIRE'
-		local remainingPos = RemainingPos[sTeamName]
-		if Utils.HasValue(remainingPos, text) then
-			local role = tonumber(text)
-			local playerIndex = PlayerID + 1 -- each team player id starts with 0, to 4 as the last player. 
-			-- this index can be differnt if the player choose a slot in lobby that has empty slots before the one the player chooses.
-			for idx, id in pairs(teamPlayers) do
-				if id == PlayerID then playerIndex = idx end
-			end
-
-			for index, id in pairs(teamPlayers)
-			do
-				if Role.roleAssignment[sTeamName][index] == role then
-					if IsPlayerBot(id) then
-						-- remove so can't re-swap
-						-- table.remove(RemainingPos[team], role)
-						Role.roleAssignment[sTeamName][playerIndex], Role.roleAssignment[sTeamName][index] = role, Role.roleAssignment[sTeamName][playerIndex]
-						if GetTeamForPlayer(PlayerID) == TEAM_DIRE then
-							tLaneAssignList[sTeamName][CorrectDirePlayerIndexToLaneIndex[playerIndex]], tLaneAssignList[sTeamName][CorrectDirePlayerIndexToLaneIndex[index]] =
-								tLaneAssignList[sTeamName][CorrectDirePlayerIndexToLaneIndex[index]], tLaneAssignList[sTeamName][CorrectDirePlayerIndexToLaneIndex[playerIndex]]
-						else
-							tLaneAssignList[sTeamName][playerIndex], tLaneAssignList[sTeamName][index] = tLaneAssignList[sTeamName][index], tLaneAssignList[sTeamName][playerIndex]
-						end
-						print('Switch role successfully. Team: '..sTeamName.. '. Player Id: '..PlayerID..', idx: '..playerIndex..', new role: '..Role.roleAssignment[sTeamName][playerIndex])
-						print('Switch role successfully. Team: '..sTeamName.. '. Player Id: '..id..', idx: '..index..', new role: '..Role.roleAssignment[sTeamName][index])
-					else
-						print('Switch role failed, the target role belongs to human player. Ask the player directly to switch role.')
-					end
-					break;
-				end
-			end
-		else
-			print("Cannot select pos: " .. text..' because it is not available.')
-		end
-	else
-        print("Unknown action: " .. action)
+	local commands = {}
+    -- Split input by semicolon to handle multiple !pick commands
+    for command in inputStr:gmatch("[^;]+") do
+        table.insert(commands, command:match("^%s*(.-)%s*$")) -- Trim whitespace
     end
+
+    for _, command in ipairs(commands) do
+		local subKey, subVal = command:match("(!%w+)%s*(.*)")
+
+		if subKey == "!pick" and GetGameMode() ~= GAMEMODE_CM then
+			print("Picking hero " .. subVal .. ', is-for-ally: ' .. tostring(bTeamOnly))
+			local hero = GetHumanChatHero(subVal);
+			if hero ~= "" then
+				if X.IsRepeatHero(hero) then
+					print('Hero ' .. hero .. ' has already been picked')
+					return
+				end
+				if bTeamOnly then
+					for _, id in pairs(teamPlayers)
+					do
+						if IsPlayerBot(id) and IsPlayerInHeroSelectionControl(id) and GetSelectedHeroName(id) == "" then
+							SelectHero(id, hero);
+							break;
+						end
+					end
+				elseif bTeamOnly == false and GetTeamForPlayer(PlayerID) ~= GetTeam() then
+					for _, id in pairs(teamPlayers)
+					do
+						if IsPlayerBot(id) and IsPlayerInHeroSelectionControl(id) and GetSelectedHeroName(id) == "" then
+							SelectHero(id, hero);
+							break;
+						end
+					end
+				end
+				userSwitchedRole = true
+			else
+				print("Hero name not found or not supported! Please refer to the list of names here: https://steamcommunity.com/workshop/filedetails/discussion/3246316298/4848777260032086340/");
+			end
+		elseif subKey == "!ban" and GetGameState() == GAME_STATE_HERO_SELECTION then
+			print("Banning hero " .. subVal)
+			local hero = GetHumanChatHero(subVal);
+			if hero ~= "" then
+				if X.IsRepeatHero(hero) then
+					print('Hero  ' .. hero .. ' has already been picked')
+					return
+				end
+				X.SetChatHeroBan( hero )
+				print("Banned hero " .. hero.. '. Banned list:')
+				Utils.PrintTable(sBanList)
+			else
+				print("Hero name not found or not supported! Please refer to the list of names here: https://steamcommunity.com/workshop/filedetails/discussion/3246316298/4848777260032086340/");
+			end
+		elseif subKey == "!pos" and GetGameState() == GAME_STATE_PRE_GAME then
+			print("Selecting pos " .. subVal)
+			local sTeamName = GetTeamForPlayer(PlayerID) == TEAM_RADIANT and 'TEAM_RADIANT' or 'TEAM_DIRE'
+			local remainingPos = RemainingPos[sTeamName]
+			if Utils.HasValue(remainingPos, subVal) then
+				local role = tonumber(subVal)
+				local playerIndex = PlayerID + 1 -- each team player id starts with 0, to 4 as the last player. 
+				-- this index can be differnt if the player choose a slot in lobby that has empty slots before the one the player chooses.
+				for idx, id in pairs(teamPlayers) do
+					if id == PlayerID then playerIndex = idx end
+				end
+				for index, id in pairs(teamPlayers)
+				do
+					if Role.roleAssignment[sTeamName][index] == role then
+						if IsPlayerBot(id) then
+							-- remove so can't re-swap
+							-- table.remove(RemainingPos[team], role)
+							Role.roleAssignment[sTeamName][playerIndex], Role.roleAssignment[sTeamName][index] = role, Role.roleAssignment[sTeamName][playerIndex]
+							if GetTeamForPlayer(PlayerID) == TEAM_DIRE then
+								tLaneAssignList[sTeamName][CorrectDirePlayerIndexToLaneIndex[playerIndex]], tLaneAssignList[sTeamName][CorrectDirePlayerIndexToLaneIndex[index]] =
+									tLaneAssignList[sTeamName][CorrectDirePlayerIndexToLaneIndex[index]], tLaneAssignList[sTeamName][CorrectDirePlayerIndexToLaneIndex[playerIndex]]
+							else
+								tLaneAssignList[sTeamName][playerIndex], tLaneAssignList[sTeamName][index] = tLaneAssignList[sTeamName][index], tLaneAssignList[sTeamName][playerIndex]
+							end
+							print('Switch role successfully. Team: '..sTeamName.. '. Player Id: '..PlayerID..', idx: '..playerIndex..', new role: '..Role.roleAssignment[sTeamName][playerIndex])
+							print('Switch role successfully. Team: '..sTeamName.. '. Player Id: '..id..', idx: '..index..', new role: '..Role.roleAssignment[sTeamName][index])
+						else
+							print('Switch role failed, the target role belongs to human player. Ask the player directly to switch role.')
+						end
+						break;
+					end
+				end
+			else
+				print("Cannot select pos: " .. subVal..' because it is not available.')
+			end
+		else
+			print("Unknown action: " .. subKey)
+		end
+	end
+
 end
 
 function Think()
@@ -704,9 +714,16 @@ end
 --function to get hero name that match the expression
 function GetHumanChatHero(name)
 	if name == nil then return ""; end
-
+	name = name:lower()
+	for _, hero in pairs(SupportedHeroes) do
+		if heroUnitNames[hero]:lower() == name then
+			print('Found hero ' .. hero .. ' for '..name)
+			return hero;
+		end
+	end
 	for _, hero in pairs(SupportedHeroes) do
 		if string.find(hero, name) then
+			print('Found hero ' .. hero .. ' for '..name)
 			return hero;
 		end
 	end

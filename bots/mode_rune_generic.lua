@@ -544,6 +544,10 @@ function X.GetScaledDesire(nBase, nCurrDist, nMaxDist)
 	elseif GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 4300 then
 		desire = desire * 0.2
 	end
+	if J.GetPosition(bot) == 2 and DotaTime() > 1 and DotaTime() < 110 then
+		desire = desire * 0.2
+	end
+
 	if nCurrDist > 3300 and not J.IsInLaningPhase() then
 		desire = desire * 0.2
 	end

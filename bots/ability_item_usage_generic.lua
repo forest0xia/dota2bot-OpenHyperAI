@@ -106,6 +106,12 @@ local function AbilityLevelUpComplement()
 			return
 		end
 
+		-- fix 'alchemist_unstable_concoction can't upgrade bug.
+		if abilityName == 'alchemist_unstable_concoction'
+		and not bot:GetAbilityByName('alchemist_unstable_concoction_throw'):IsHidden() then
+			return
+		end
+
 		if abilityToLevelup ~= nil
 			and not abilityToLevelup:IsHidden()
 		    and bot:GetLevel() >= abilityToLevelup:GetHeroLevelRequiredToUpgrade()

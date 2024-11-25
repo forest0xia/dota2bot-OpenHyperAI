@@ -1231,12 +1231,12 @@ function ConsiderGeneralRoamingInConditions()
 				end
 			end
 
-			if J.GetModifierCount(bot, "modifier_silencer_glaives_of_wisdom_debuff_counter") >= 2 then -- 20 - 35s
-				local enemy = GetTargetEnemy("npc_dota_hero_silencer")
-				if enemy ~= nil and J.GetHP(bot) < J.GetHP(enemy) and GetUnitToUnitDistance(bot, enemy) <= enemy:GetAttackRange() * 1.5 then
-					return BOT_ACTION_DESIRE_VERYHIGH * 1.2
-				end
-			end
+			-- if J.GetModifierCount(bot, "modifier_silencer_glaives_of_wisdom_debuff_counter") >= 2 then -- 20 - 35s
+			-- 	local enemy = GetTargetEnemy("npc_dota_hero_silencer")
+			-- 	if enemy ~= nil and J.GetHP(bot) < J.GetHP(enemy) and GetUnitToUnitDistance(bot, enemy) <= enemy:GetAttackRange() * 1.5 then
+			-- 		return BOT_ACTION_DESIRE_VERYHIGH * 1.2
+			-- 	end
+			-- end
 
 			if J.GetModifierCount(bot, "modifier_ursa_fury_swipes_damage_increase") >= 2 then -- 8 - 20s
 				local enemy = GetTargetEnemy("npc_dota_hero_ursa")
