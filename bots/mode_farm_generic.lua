@@ -415,7 +415,7 @@ function GetDesire()
 			-- and (not J.IsHumanPlayerInTeam() or enemyKills > allyKills + 16)
 			-- and ( bot:GetNextItemPurchaseValue() > 0 or not bot:HasModifier("modifier_item_moon_shard_consumed") )
 			and ( DotaTime() > 7 * 60 or bot:GetLevel() >= 8 or (bot:GetAttackRange() < 220 and bot:GetLevel() >= 6) ))
-		-- or (J.Utils.GameStates.passiveLaningTime and not J.Utils.GameStates.isTimeForPush)
+		-- or ((J.Utils.GameStates.passiveLaningTime or ((bot:GetActiveMode() == BOT_MODE_LANING or bot:GetActiveMode() == BOT_MODE_ATTACK) and bot:GetActiveModeDesire() < 0.2)) and not J.Utils.GameStates.isTimeForPush)
 		)
 	then
 		if J.GetDistanceFromEnemyFountain(bot) > 4000

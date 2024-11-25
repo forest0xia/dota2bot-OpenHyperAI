@@ -49,7 +49,7 @@ local SwappedMoonshardTime = -90
 
 local lastCheckBotToDropTime = 0
 
-local SearchNearLocAllyForPingDistance = 3000
+local SearchNearLocAllyForPingDistance = 2200
 
 local TormentorLocation
 local IsAvoidingAbilityZone = false
@@ -304,18 +304,16 @@ function ConsiderPingedDefendDesire()
 	if J.IsInLaningPhase() then return 0 end
 
 	J.Utils['GameStates']['defendPings'] = J.Utils['GameStates']['defendPings'] ~= nil and J.Utils['GameStates']['defendPings'] or { pingedTime = GameTime() }
-	local botIsCloseToPing = pingedDefendLocation and GetUnitToLocationDistance(bot, pingedDefendLocation) < SearchNearLocAllyForPingDistance
+	local botIsCloseToPing = pingedDefendLocation and GetUnitToLocationDistance(bot, pingedDefendLocation) < 1600
 	if bot:WasRecentlyDamagedByAnyHero(3) or botIsCloseToPing then
 		return 0
 	else
 		local timeDiff = GameTime() - J.Utils['GameStates']['defendPings'].pingedTime
 		if timeDiff <= 5 and pingedDefendLocation then
 			return 0.966
-		elseif timeDiff < pingTimeDelta then
-			return 0
 		end
 	end
-	
+
 	local team = GetTeam()
 	local enemyNearAncient = #J.GetLastSeenEnemiesNearLoc( GetAncient(team):GetLocation(), 1600 )
 
@@ -361,12 +359,12 @@ function ConsiderPingedDefendDesire()
 	if nDefendLoc ~= nil and enemeyPushingBase then
 		local saferLoc = J.AdjustLocationWithOffsetTowardsFountain(nDefendLoc, 850) + RandomVector(50)
 		local nDefendAllies = J.GetAlliesNearLoc(saferLoc, SearchNearLocAllyForPingDistance);
-		local nH, _ = J.Utils.NumHumanBotPlayersInTeam(GetOpposingTeam())
 		nEffctiveAlliesNearPingedDefendLoc = #nDefendAllies + #J.Utils.GetAllyIdsInTpToLocation(saferLoc, 1000)
-		local enemiesAroundLoc = J.GetAroundTargetLocEnemyUnitCount(nDefendLoc, 1600)
+		local enemiesAroundLoc = J.GetAroundTargetLocEnemyUnitCount(nDefendLoc, 2000)
+		local aliveAllies = J.GetNumOfAliveHeroes(false)
 		if enemiesAroundLoc >= 1 -- 再确认一次附近还有敌人
-		and ((nH <= 0 and nEffctiveAlliesNearPingedDefendLoc < J.GetNumOfAliveHeroes(false) * 0.8) -- 大部分来了就好了，避免一直ping导致影响已经在场的bot的行为，剩下的可以看防御策略
-	         or (nH > 0 and nEffctiveAlliesNearPingedDefendLoc < enemiesAroundLoc ))
+		and ((nEffctiveAlliesNearPingedDefendLoc < aliveAllies and nEffctiveAlliesNearPingedDefendLoc < enemiesAroundLoc )
+			or (enemiesAroundLoc >= 3 and nEffctiveAlliesNearPingedDefendLoc < aliveAllies))
 		then
 			J.Utils['GameStates']['defendPings'].pingedTime = GameTime()
 			bot:ActionImmediate_Chat("Please come defending", false)

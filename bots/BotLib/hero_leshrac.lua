@@ -789,7 +789,7 @@ function X.ConsiderPulseNova()
 	then
         if J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
-        and J.IsInRange(bot, botTarget, nRadius + 125)
+        and J.IsInRange(bot, botTarget, nRadius + 150)
         and not J.IsSuspiciousIllusion(botTarget)
         then
             local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1200, true, BOT_MODE_NONE)
@@ -937,7 +937,10 @@ function X.ConsiderPulseNova()
 
     if PulseNova:GetToggleState() == true
     then
-        return BOT_ACTION_DESIRE_HIGH
+        local nInRangeEnemy = J.GetNearbyHeroes(bot, nRadius + 220, true, BOT_MODE_NONE)
+        if #nInRangeEnemy <= 0 then
+            return BOT_ACTION_DESIRE_HIGH
+        end
     end
 
     return BOT_ACTION_DESIRE_NONE

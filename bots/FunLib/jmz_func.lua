@@ -3404,7 +3404,7 @@ function J.IsAnyAllyHeroSurroundedByManyAllies()
 		local npcAlly = GetTeamMember( i )
 		if npcAlly ~= nil
 			and npcAlly:IsAlive()
-			and #J.GetNearbyHeroes(npcAlly, 1400, false, BOT_MODE_NONE) >= 3
+			and #J.GetNearbyHeroes(npcAlly, 1600, false, BOT_MODE_NONE) >= 3
 		then
 			return true
 		end

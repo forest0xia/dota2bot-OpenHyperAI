@@ -9,8 +9,8 @@ local GlyphDuration = 7
 local ShoulNotPushTower = false
 local TowerPushCooldown = 0
 local StartToPushTime = 16 * 60 -- after x mins, start considering to push.
-local PushDuration = 4 * 60 -- keep pushing for x mins.
-local PushGapMinutes = 5 -- only push once in x mins.
+local PushDuration = 4.5 * 60 -- keep pushing for x mins.
+local PushGapMinutes = 6 -- only push once in x mins.
 local lastPushTime = 0
 
 local pingTimeDelta = 5
@@ -20,6 +20,7 @@ function Push.GetPushDesire(bot, lane)
 	if bot:IsInvulnerable() or not bot:IsHero() or not bot:IsAlive() or not string.find(botName, "hero") or bot:IsIllusion() then return BOT_MODE_DESIRE_NONE end
 
     if bot.laneToPush == nil then bot.laneToPush = lane end
+    J.Utils.GameStates.isTimeForPush = false
 
     local maxDesire = 0.95
     local nModeDesire = bot:GetActiveModeDesire()
@@ -60,6 +61,7 @@ function Push.GetPushDesire(bot, lane)
 		if isPinged and lane == pingedLane
 		and DotaTime() < humanPing.time + pingTimeDelta
 		then
+            J.Utils.GameStates.isTimeForPush = true
 			return BOT_ACTION_DESIRE_ABSOLUTE * 0.95
 		end
 	end
@@ -123,6 +125,7 @@ function Push.GetPushDesire(bot, lane)
     and J.GetHP(bot) > 0.5 then
         bot:SetTarget(nEnemyAncient)
         bot:Action_AttackUnit(nEnemyAncient, true)
+        J.Utils.GameStates.isTimeForPush = true
         return BOT_ACTION_DESIRE_ABSOLUTE * 0.98
     end
 
@@ -185,7 +188,12 @@ function Push.GetPushDesire(bot, lane)
             end
 
             bot.laneToPush = lane
-            return Clamp(nPushDesire, 0, maxDesire)
+
+            nPushDesire = Clamp(nPushDesire, 0, maxDesire)
+            if nPushDesire > 0.3 then
+                J.Utils.GameStates.isTimeForPush = true
+            end
+            return nPushDesire
         end
     end
 
@@ -201,8 +209,7 @@ function IsPushAgainstHumanTiming(nH, bot)
         or minute >= 50
         or teamHasAegis
         or J.GetNumOfTeamTotalKills( false ) <= J.GetNumOfTeamTotalKills(true) - 20
-        or J.Utils.IsTeamPushingSecondTierOrHighGround(bot)
-    J.Utils.GameStates.isTimeForPush = false
+        -- or J.Utils.IsTeamPushingSecondTierOrHighGround(bot)
     if isTime then
         J.Utils.GameStates.isTimeForPush = true
     end

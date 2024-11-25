@@ -566,6 +566,7 @@ function X.ConsiderPrimalRoar()
         and J.CanCastOnMagicImmune(enemyHero)
         and J.CanCastOnTargetAdvanced(enemyHero)
         and not J.IsSuspiciousIllusion(enemyHero)
+        and not enemyHero:HasModifier("modifier_stunned")
         then
             if J.IsCastingUltimateAbility(enemyHero)
             then
@@ -607,6 +608,7 @@ function X.ConsiderPrimalRoar()
         and not strongestTarget:HasModifier('modifier_enigma_black_hole_pull')
         and not strongestTarget:HasModifier('modifier_legion_commander_duel')
         and not strongestTarget:HasModifier('modifier_necrolyte_reapers_scythe')
+        and not enemyHero:HasModifier("modifier_stunned")
         then
 			return BOT_ACTION_DESIRE_HIGH, strongestTarget
 		end
@@ -633,6 +635,7 @@ function X.ConsiderPrimalRoar()
             and not enemyHero:HasModifier('modifier_faceless_void_chronosphere_freeze')
             and not enemyHero:HasModifier('modifier_legion_commander_duel')
             and not enemyHero:HasModifier('modifier_necrolyte_reapers_scythe')
+            and not enemyHero:HasModifier("modifier_stunned")
             then
                 local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 800, false, BOT_MODE_NONE)
 

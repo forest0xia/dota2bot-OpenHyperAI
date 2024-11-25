@@ -152,6 +152,24 @@ function X.SkillsComplement()
 	end
 end
 
+function X.CanUseRefresherShard()
+	local nCastRange = 1000
+	local sCastType = 'none'
+	local hEffectTarget = nil
+	local sCastMotive = '刷新技能'
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
+
+	if #nInRangeEnmyList > 0
+		and ( J.IsGoingOnSomeone( bot ) or J.IsInTeamFight( bot ) )
+		and J.CanUseRefresherShard( bot )
+		and not bot:HasModifier("modifier_faceless_void_chronosphere_speed")
+	then
+		return BOT_ACTION_DESIRE_HIGH, hEffectTarget, sCastType, sCastMotive
+	end
+
+	return false
+end
+
 function X.ConsiderTimeWalk()
 	if not TimeWalk:IsFullyCastable()
 	or bot:HasModifier("modifier_faceless_void_chronosphere_speed")

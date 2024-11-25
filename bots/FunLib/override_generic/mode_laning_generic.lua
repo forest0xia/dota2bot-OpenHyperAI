@@ -39,7 +39,7 @@ function X.GetDesire()
 	if currentTime <= 12 * 60 and botLV <= 11 then return 0.369 end
 	if botLV <= 17 then return 0.328 end
 
-	return 0.1
+	return BOT_MODE_DESIRE_NONE
 
 end
 
@@ -71,6 +71,9 @@ end
 
 function X.Think()
     if not bot:IsAlive() or J.CanNotUseAction(bot) or bot:IsUsingAbility() or bot:IsChanneling() or bot:IsDisarmed() then return BOT_ACTION_DESIRE_NONE end
+	if not assignedLane then
+		assignedLane = GetBotTargetLane()
+	end
 
 	GetBotTargetLane()
 	local AttackRange = bot:GetAttackRange()

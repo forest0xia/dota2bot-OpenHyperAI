@@ -47,6 +47,10 @@ function GetDesire()
 		end
 	end
 
+	if J.IsGoingOnSomeone( bot ) and J.WeAreStronger(bot, 1200) then
+		return BOT_MODE_DESIRE_NONE
+	end
+
 	-- 如果在打高地 就别撤退去干别的
 	if J.Utils.IsTeamPushingSecondTierOrHighGround(bot) then
 		return BOT_MODE_DESIRE_NONE
@@ -66,8 +70,8 @@ function GetDesire()
 	if currentTime <= 12 * 60 and botLV <= 11 then return 0.369 end
 	if botLV <= 17 then return 0.328 end
 
-	-- J.Utils.GameStates.passiveLaningTime = true
-	return 0.05
+	J.Utils.GameStates.passiveLaningTime = true
+	return BOT_MODE_DESIRE_NONE
 
 end
 

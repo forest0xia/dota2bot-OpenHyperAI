@@ -56,8 +56,8 @@ sRoleItemsBuyList['pos_5'] = {
     "item_tranquil_boots",
     "item_glimmer_cape",--
     "item_pipe",--
-    "item_boots_of_bearing",--
     "item_force_staff",--
+    "item_boots_of_bearing",--
     "item_octarine_core",--
     "item_sheepstick",--
     "item_aghanims_shard",
@@ -74,9 +74,10 @@ sRoleItemsBuyList['pos_3'] = {
     "item_magic_wand",
     "item_tranquil_boots",
     "item_glimmer_cape",--
-    "item_boots_of_bearing",--
+    "item_kaya",
     "item_force_staff",--
     "item_kaya_and_sange",--
+    "item_boots_of_bearing",--
     "item_octarine_core",--
     "item_sheepstick",--
     "item_aghanims_shard",
@@ -86,6 +87,7 @@ sRoleItemsBuyList['pos_3'] = {
 
 sRoleItemsBuyList['pos_1'] = {
 	"item_crystal_maiden_outfit",
+    "item_kaya",
     "item_kaya_and_sange",--
     "item_aether_lens",
     "item_black_king_bar",--
@@ -143,12 +145,17 @@ local MineCooldownTime = 0
 
 local ComboDesire, ComboLocation
 
-local botTarget
+local botTarget, nBlastOffDamage, nPMineDamage, nPMineTotalDmg, nComboDmg
 
 function X.SkillsComplement()
 	if J.CanNotUseAbility(bot) then return end
 
     botTarget = J.GetProperTarget(bot)
+
+    nBlastOffDamage = BlastOff:GetSpecialValueInt('damage')
+    nPMineDamage = ProximityMines:GetSpecialValueInt('damage')
+    nPMineTotalDmg = nPMineDamage * 2 -- ProximityMines:GetCurrentCharges()
+    nComboDmg = nBlastOffDamage + nPMineTotalDmg
 
     ComboDesire, ComboLocation, Flag = X.ConsiderCombo()
     if ComboDesire > 0
@@ -671,15 +678,13 @@ function X.ConsiderProximityMines()
     end
 
 	local nCastRange = J.GetProperCastRange(false, bot, ProximityMines:GetCastRange())
-    local nDamage = ProximityMines:GetSpecialValueInt('damage')
-    local nRadius = 350
 
-	if J.IsGoingOnSomeone(bot)
+    if J.IsGoingOnSomeone(bot)
 	then
 		if J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, 1200)
-        and J.IsAttacking(bot)
+        -- and J.IsAttacking(bot)
         and not J.IsChasingTarget(bot, botTarget)
         and not J.IsSuspiciousIllusion(botTarget)
         and not botTarget:HasModifier('modifier_abaddon_borrowed_time')
@@ -691,20 +696,22 @@ function X.ConsiderProximityMines()
             local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1200, true, BOT_MODE_NONE)
             local nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1200, false, BOT_MODE_NONE)
 
-            if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
-            and #nInRangeAlly >= #nInRangeEnemy
+            if J.CanKillTarget( botTarget, nPMineTotalDmg, DAMAGE_TYPE_MAGICAL )
+                or (nInRangeAlly ~= nil and nInRangeEnemy ~= nil and #nInRangeAlly >= #nInRangeEnemy)
             then
-                nInRangeEnemy = J.GetEnemiesNearLoc(botTarget:GetLocation(), nRadius)
+                nInRangeEnemy = J.GetEnemiesNearLoc(botTarget:GetLocation(), TU.nMinMineDistance)
                 if nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
                 then
-                    if not TU.IsOtherMinesClose(J.GetCenterOfUnits(nInRangeEnemy))
+                    local desire, loc = TU.GetGoodPlaceForMiningNear(J.GetCenterOfUnits(nInRangeEnemy))
+                    if desire > 0
                     then
-                        return BOT_ACTION_DESIRE_HIGH, J.GetCenterOfUnits(nInRangeEnemy)
+                        return BOT_ACTION_DESIRE_HIGH, loc
                     end
                 else
-                    if not TU.IsOtherMinesClose(botTarget:GetLocation())
+                    local desire, loc = TU.GetGoodPlaceForMiningNear(botTarget:GetLocation())
+                    if desire > 0
                     then
-                        return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
+                        return BOT_ACTION_DESIRE_HIGH, loc
                     end
                 end
             end
@@ -728,7 +735,7 @@ function X.ConsiderProximityMines()
                 if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
                 and ((#nTargetInRangeAlly > #nInRangeAlly)
                     or bot:WasRecentlyDamagedByAnyHero(1))
-                and J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_MAGICAL)
+                and J.CanKillTarget(enemyHero, nPMineDamage, DAMAGE_TYPE_MAGICAL)
                 then
                     local loc = (bot:GetLocation() + enemyHero:GetLocation()) / 2
                     if GetUnitToLocationDistance(bot, loc) <= nCastRange
@@ -797,14 +804,13 @@ function X.ConsiderProximityMines()
         and GetUnitToLocationDistance(bot, MineLocation) <= 4000
 		and not IsEnemyCloserToWardLocation(MineLocation, MineLocationDistance)
 		then
-            -- Try 100 times
-            for i = 0, 100
+            for i = 0, 10
             do
-                local loc = J.GetRandomLocationWithinDist(MineLocation, 0, nRadius * 3 + 100)
+                local loc = J.GetRandomLocationWithinDist(MineLocation, 0, TU.nMinMineDistance * 3 + 100)
                 if IsLocationPassable(loc)
                 and not TU.IsOtherMinesClose(loc)
                 then
-                    local nMineList = J.GetTechiesMinesInLoc(loc, nRadius * 3 + 100) --☠️, fine..
+                    local nMineList = J.GetTechiesMinesInLoc(loc, TU.nMinMineDistance * 3 + 100) --☠️, fine..
                     if #nMineList < 3
                     then
                         return BOT_ACTION_DESIRE_HIGH, loc
@@ -821,7 +827,7 @@ end
 
 -- Helper Funcs
 function IsSuitableToPlaceMine()
-	local nEnemyHeroes = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE)
+	local nEnemyHeroes = J.GetEnemiesNearLoc(bot:GetLocation(), 2400)
 
 	local nMode = bot:GetActiveMode()
     local nTeamFightLocation = J.GetTeamFightLocation(bot)
@@ -830,14 +836,15 @@ function IsSuitableToPlaceMine()
 		and bot:GetActiveModeDesire() > BOT_MODE_DESIRE_HIGH)
     or (nMode == BOT_MODE_RUNE and DotaTime() > 0)
     or nMode == BOT_MODE_DEFEND_ALLY
-    or J.IsGoingOnSomeone(bot) and bot:GetActiveModeDesire() > BOT_MODE_DESIRE_MODERATE
-    or J.IsPushing(bot) and bot:GetActiveModeDesire() > BOT_MODE_DESIRE_MODERATE
+    -- or J.IsGoingOnSomeone(bot) and bot:GetActiveModeDesire() > BOT_MODE_DESIRE_MODERATE
+    -- or J.IsPushing(bot) and bot:GetActiveModeDesire() > BOT_MODE_DESIRE_MODERATE
 	or J.IsDefending(bot)
-    or J.IsDoingRoshan(bot)
-    or J.IsDoingTormentor(bot)
-    or nTeamFightLocation ~= nil
-	or (nEnemyHeroes ~= nil and #nEnemyHeroes >= 1 and IsIBecameTheTarget(nEnemyHeroes))
-	or bot:WasRecentlyDamagedByAnyHero(5.0)
+    or not J.IsDoingRoshan(bot)
+    or not J.IsDoingTormentor(bot)
+    or nTeamFightLocation == nil
+    or #nEnemyHeroes == 0
+	-- or (nEnemyHeroes ~= nil and #nEnemyHeroes >= 1 and IsIBecameTheTarget(nEnemyHeroes))
+	or not bot:WasRecentlyDamagedByAnyHero(5.0)
 	then
 		return false
 	end
@@ -900,7 +907,7 @@ function X.ConsiderCombo()
             local nLocationAoE = bot:FindAoELocation(true, true, bot:GetLocation(), nCastRange, nRadius, 0, 0)
             local nInRangeEnemy = J.GetEnemiesNearLoc(nLocationAoE.targetloc, nRadius)
 
-            if nInRangeEnemy ~= nil and #nInRangeEnemy >= 2
+            if nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
             and (J.IsValidHero(nInRangeEnemy[1]) and not nInRangeEnemy[1]:IsMagicImmune()
                 or J.IsValidHero(nInRangeEnemy[2]) and not nInRangeEnemy[2]:IsMagicImmune())
             and not J.IsLocationInChrono(J.GetCenterOfUnits(nInRangeEnemy))
@@ -926,7 +933,7 @@ function X.ConsiderCombo()
                 and #nInRangeAlly >= #nInRangeEnemy
                 then
                     local eta = nCastPoint + nLeapDuration
-                    if J.IsChasingTarget(bot, botTarget)
+                    if J.IsChasingTarget(bot, botTarget) or J.CanKillTarget( botTarget, nComboDmg, DAMAGE_TYPE_MAGICAL )
                     then
                         return BOT_ACTION_DESIRE_HIGH, botTarget:GetExtrapolatedLocation(eta), ComboFlag
                     else

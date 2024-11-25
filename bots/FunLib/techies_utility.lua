@@ -1,7 +1,8 @@
 local X = {}
 local J = require(GetScriptDirectory()..'/FunLib/jmz_func')
 
-local nRadius = 350
+X.nMinMineDistance = 350
+X.nProximityMineDmgRadius = 500
 
 local nTowerList = {
 	TOWER_TOP_1,
@@ -232,11 +233,62 @@ function X.GetAvailableSpot()
 	return availableSpot
 end
 
+local searchRadius = 100 -- Distance to search for a passable location
+local searchStep = 50 -- Step size for checking nearby positions
+
+-- Function to find a nearby passable location
+local function FindNearbyPassableLocation(location, maxRadius, step)
+    for r = step, maxRadius, step do
+        for angle = 0, 360, 50 do -- Check every 50 degrees around the location
+            local offsetX = r * math.cos(math.rad(angle))
+            local offsetY = r * math.sin(math.rad(angle))
+            local nearbyLocation = location + Vector(offsetX, offsetY, 0)
+            if IsLocationPassable(nearbyLocation) then
+                return nearbyLocation
+            end
+        end
+    end
+    return nil -- No passable location found within the radius
+end
+
+local placementOffsets = {
+	Vector(300, 0, 0),
+	Vector(-300, 0, 0),
+	Vector(0, 300, 0),
+	Vector(0, -300, 0),
+	Vector(212, 212, 0),
+	Vector(-212, 212, 0),
+	Vector(212, -212, 0),
+	Vector(-212, -212, 0),
+}
+function X.GetGoodPlaceForMiningNear(targetLoc)
+	for _, offset in pairs(placementOffsets) do
+		local potentialMineLocation = targetLoc + offset
+		if not IsLocationPassable(potentialMineLocation) then
+			-- Try to find a nearby passable location
+			potentialMineLocation = FindNearbyPassableLocation(potentialMineLocation, searchRadius, searchStep)
+		end
+
+		for i = 0, 2
+		do
+			if potentialMineLocation then
+				if not X.IsOtherMinesClose(potentialMineLocation) then
+					potentialMineLocation = FindNearbyPassableLocation(potentialMineLocation, searchRadius, searchStep)
+				end
+				if J.GetLocationToLocationDistance(targetLoc, potentialMineLocation) < X.nProximityMineDmgRadius then
+					return BOT_ACTION_DESIRE_HIGH, potentialMineLocation
+				end
+			end
+		end
+	end
+	return BOT_ACTION_DESIRE_NONE
+end
+
 function X.IsOtherMinesClose(loc)
 	for _, mine in pairs(GetUnitList(UNIT_LIST_ALLIES))
     do
 		if X.IsMines(mine)
-        and GetUnitToLocationDistance(mine, loc) <= nRadius
+        and GetUnitToLocationDistance(mine, loc) <= X.nMinMineDistance
         then
 			return true
 		end

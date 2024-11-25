@@ -463,6 +463,7 @@ function X.ConsiderR()
 				and J.CanCastOnNonMagicImmune( npcEnemy )
 				and J.CanCastOnTargetAdvanced( npcEnemy )
 				and not npcEnemy:HasModifier( 'modifier_bloodseeker_bloodrage' )
+				and not npcEnemy:HasModifier('modifier_bloodseeker_rupture')
 			then
 				return BOT_ACTION_DESIRE_MODERATE, npcEnemy
 			end
@@ -477,6 +478,7 @@ function X.ConsiderR()
 				and J.CanCastOnTargetAdvanced( npcEnemy )
 				and J.Role.IsCarry( npcEnemy:GetUnitName() )
 				and not npcEnemy:HasModifier( 'modifier_bloodseeker_bloodrage' )
+				and not npcEnemy:HasModifier('modifier_bloodseeker_rupture')
 				and not J.IsDisabled( npcEnemy )
 			then
 				return BOT_ACTION_DESIRE_HIGH, npcEnemy
@@ -492,6 +494,7 @@ function X.ConsiderR()
 			and J.CanCastOnTargetAdvanced( npcTarget )
 			and J.IsInRange( npcTarget, bot, nCastRange + 100 )
 			and not npcTarget:HasModifier( 'modifier_bloodseeker_bloodrage' )
+			and not npcTarget:HasModifier('modifier_bloodseeker_rupture')
 			and not J.IsDisabled( npcTarget )
 		then
 			local allies = J.GetNearbyHeroes(npcTarget, 1200, true, BOT_MODE_NONE )
