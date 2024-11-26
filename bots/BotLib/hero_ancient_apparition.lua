@@ -208,9 +208,9 @@ function X.ConsiderColdFeet()
         then
             if nAllyInRangeEnemy ~= nil and #nAllyInRangeEnemy >= 1
             and J.IsValidHero(nAllyInRangeEnemy[1])
+            and J.IsInRange(bot, nAllyInRangeEnemy[1], nCastRange)
             and J.CanCastOnNonMagicImmune(nAllyInRangeEnemy[1])
             and J.CanCastOnTargetAdvanced(nAllyInRangeEnemy[1])
-            and J.IsInRange(bot, nAllyInRangeEnemy[1], nCastRange)
             and J.IsChasingTarget(nAllyInRangeEnemy[1], allyHero)
             and not J.IsDisabled(nAllyInRangeEnemy[1])
             and not J.IsTaunted(nAllyInRangeEnemy[1])
@@ -316,7 +316,7 @@ function X.ConsiderIceVortex()
         local nLocationAoE = bot:FindAoELocation(true, true, bot:GetLocation(), nCastRange, nRadius, 0, 0)
         local nInRangeEnemy = J.GetEnemiesNearLoc(nLocationAoE.targetloc, nRadius)
 
-        if nInRangeEnemy ~= nil and #nInRangeEnemy
+        if nInRangeEnemy ~= nil and #nInRangeEnemy and GetUnitToLocationDistance(bot, nLocationAoE.targetloc) <= nCastRange
         then
             return BOT_ACTION_DESIRE_HIGH, nLocationAoE.targetloc
         end
@@ -373,13 +373,13 @@ function X.ConsiderIceVortex()
 		local nLocationAoE = bot:FindAoELocation(true, false, bot:GetLocation(), nCastRange, nRadius, nCastPoint, 0)
 
 		if nEnemyLanecreeps ~= nil and #nEnemyLanecreeps >= 4
-        and nLocationAoE.count >= 4
+        and nLocationAoE.count >= 4 and GetUnitToLocationDistance(bot, nLocationAoE.targetloc) <= nCastRange
 		then
 			return BOT_ACTION_DESIRE_HIGH, nLocationAoE.targetloc
 		end
 
         nLocationAoE = bot:FindAoELocation(true, true, bot:GetLocation(), nCastRange, nRadius, nCastPoint, 0)
-        if nLocationAoE.count >= 2
+        if nLocationAoE.count >= 2 and GetUnitToLocationDistance(bot, nLocationAoE.targetloc) <= nCastRange
         then
             return BOT_ACTION_DESIRE_HIGH, nLocationAoE.targetloc
         end
@@ -419,7 +419,7 @@ function X.ConsiderChillingTouch()
     local nDamage = ChillingTouch:GetSpecialValueInt('damage')
     local botTarget = J.GetProperTarget(bot)
 
-    local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange + 150, true, BOT_MODE_NONE)
+    local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange + 50, true, BOT_MODE_NONE)
     for _, enemyHero in pairs(nEnemyHeroes)
     do
         if J.IsValidHero(enemyHero)
@@ -436,7 +436,7 @@ function X.ConsiderChillingTouch()
         end
     end
 
-    local nAllyHeroes = J.GetNearbyHeroes(bot,nCastRange + 150, false, BOT_MODE_NONE)
+    local nAllyHeroes = J.GetNearbyHeroes(bot,nCastRange + 50, false, BOT_MODE_NONE)
     for _, allyHero in pairs(nAllyHeroes)
     do
         local nAllyInRangeEnemy = J.GetNearbyHeroes(allyHero, 1200, true, BOT_MODE_NONE)

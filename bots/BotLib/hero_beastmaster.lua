@@ -608,7 +608,7 @@ function X.ConsiderPrimalRoar()
         and not strongestTarget:HasModifier('modifier_enigma_black_hole_pull')
         and not strongestTarget:HasModifier('modifier_legion_commander_duel')
         and not strongestTarget:HasModifier('modifier_necrolyte_reapers_scythe')
-        and not enemyHero:HasModifier("modifier_stunned")
+        and not strongestTarget:HasModifier("modifier_stunned")
         then
 			return BOT_ACTION_DESIRE_HIGH, strongestTarget
 		end

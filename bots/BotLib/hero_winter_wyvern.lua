@@ -332,7 +332,7 @@ function X.ConsiderSplinterBlast()
         if J.IsValidHero(enemyHero)
         and J.CanCastOnNonMagicImmune(enemyHero)
         and J.CanKillTarget(enemyHero, nDamage, DAMAGE_TYPE_MAGICAL)
-        and not J.IsInRange(bot, enemyHero, nCastRange + nRadius)
+        and not J.IsInRange(bot, enemyHero, nCastRange)
         and not J.IsSuspiciousIllusion(enemyHero)
         and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
         and not enemyHero:HasModifier('modifier_dazzle_shallow_grave')
@@ -410,6 +410,7 @@ function X.ConsiderSplinterBlast()
         do
             if J.IsValidHero(enemyHero)
             and J.IsChasingTarget(enemyHero, bot)
+            and J.IsInRange(bot, enemyHero, nCastRange)
             and not J.IsSuspiciousIllusion(enemyHero)
             and not J.IsDisabled(enemyHero)
             and not enemyHero:HasModifier('modifier_winter_wyvern_arctic_burn_slow')
@@ -493,6 +494,7 @@ function X.ConsiderSplinterBlast()
         local nLocationAoE = bot:FindAoELocation(true, true, bot:GetLocation(), 1600, nRadius, 0, 0)
         local nInRangeEnemy = J.GetEnemiesNearLoc(nLocationAoE.targetloc, nRadius)
         if nInRangeEnemy ~= nil and #nInRangeEnemy >= 2
+        and J.IsInRange(bot, nInRangeEnemy[1], nCastRange)
         then
             return BOT_ACTION_DESIRE_HIGH, nInRangeEnemy[1]
         end
@@ -536,7 +538,7 @@ function X.ConsiderSplinterBlast()
             return BOT_ACTION_DESIRE_HIGH, creepList[1]
         end
 
-        local nInRangeEnemy = J.GetEnemiesNearLoc(bot:GetLocation(), nCastRange + nRadius)
+        local nInRangeEnemy = J.GetEnemiesNearLoc(bot:GetLocation(), nCastRange)
         for _, enemyHero in pairs(nInRangeEnemy)
         do
             if J.IsValidHero(enemyHero)
@@ -758,6 +760,7 @@ function X.ConsiderWintersCurse()
 			for _, enemyHero in pairs(nInRangeEnemy)
 			do
 				if J.IsValidHero(enemyHero)
+                and J.IsInRange(bot, enemyHero, nCastRange)
                 and not J.IsSuspiciousIllusion(enemyHero)
                 and not J.IsDisabled(enemyHero)
                 and not enemyHero:HasModifier('modifier_enigma_black_hole_pull')
@@ -800,6 +803,7 @@ function X.ConsiderWintersCurse()
             and J.GetHP(bot) < 0.5
             and not J.IsSuspiciousIllusion(enemyHero)
             and not J.IsDisabled(enemyHero)
+            and J.IsInRange(bot, enemyHero, nCastRange)
             and not enemyHero:HasModifier('modifier_enigma_black_hole_pull')
             and not enemyHero:HasModifier('modifier_faceless_void_chronosphere_freeze')
             and not enemyHero:HasModifier('modifier_necrolyte_reapers_scythe')

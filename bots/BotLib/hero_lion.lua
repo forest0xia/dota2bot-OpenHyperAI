@@ -67,35 +67,38 @@ sRoleItemsBuyList['pos_5'] = {
 
 sRoleItemsBuyList['pos_1'] = {
 	"item_crystal_maiden_outfit",
+	"item_hand_of_midas",
 	"item_force_staff",
 --	"item_glimmer_cape",
-	"item_aghanims_shard",
-	"item_ultimate_scepter",
-	"item_cyclone",
-	"item_hurricane_pike",
+    "item_kaya",
+    "item_ultimate_scepter",
+    "item_kaya_and_sange",--
+	"item_hurricane_pike",--
 	"item_orchid",
-	"item_bloodthorn",
-	"item_wind_waker",
+	"item_aghanims_shard",
+	"item_bloodthorn",--
+	"item_sheepstick",--
 	"item_moon_shard",
-	"item_octarine_core",
-	"item_ultimate_scepter_2",
+	"item_octarine_core",--
+	"item_ultimate_scepter_2",--
 }
 
 sRoleItemsBuyList['pos_2'] = {
-	
-	"item_mage_outfit",
-	"item_ancient_janggo",
-	"item_glimmer_cape",
-	"item_boots_of_bearing",
-	"item_pipe",
-	"item_aghanims_shard",
-	"item_veil_of_discord",
-	"item_ultimate_scepter",
-	"item_cyclone",
-	"item_octarine_core",
-	"item_wind_waker",
-	"item_ultimate_scepter_2",
-
+	"item_crystal_maiden_outfit",
+	"item_hand_of_midas",
+    "item_kaya",
+    "item_ultimate_scepter",
+    "item_kaya_and_sange",--
+    "item_aether_lens",
+    "item_black_king_bar",--
+    "item_shivas_guard",--
+	"item_ethereal_blade",--
+    "item_aghanims_shard",
+	"item_octarine_core",--
+    -- "item_sheepstick",--
+    "item_moon_shard",
+    "item_ultimate_scepter_2",
+    "item_travel_boots_2",--
 }
 
 sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_2']
@@ -107,6 +110,8 @@ X['sSellList'] = {
 	"item_black_king_bar",
 	"item_quelling_blade",
 
+	"item_octarine_core",--
+	"item_hand_of_midas",
 }
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_mage' }, {} end

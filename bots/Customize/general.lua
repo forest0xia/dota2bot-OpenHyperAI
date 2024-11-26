@@ -36,7 +36,7 @@ Customize.Ban = {
 --]]
 Customize.Radiant_Heros = {
     'Random',
-    'Random',
+    'npc_dota_hero_techies',
 }
 
 -- Same notes as above for picking heroes but for the Dire side.

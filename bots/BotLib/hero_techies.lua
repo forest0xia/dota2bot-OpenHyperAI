@@ -97,10 +97,8 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_octarine_core",--
     -- "item_sheepstick",--
     "item_moon_shard",
-	'item_wind_waker',
     "item_ultimate_scepter_2",
     "item_travel_boots_2",--
-    "item_ultimate_scepter",
 }
 
 sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
@@ -357,6 +355,27 @@ function X.ConsiderStickyBomb()
             return BOT_ACTION_DESIRE_HIGH, J.GetCenterOfUnits(nEnemyLaneCreeps)
         end
 	end
+
+    if J.IsFarming(bot)
+    then
+        local nNeutralCreeps = bot:GetNearbyNeutralCreeps(nCastRange)
+        if nNeutralCreeps ~= nil
+        then
+            if #nNeutralCreeps >= 1
+            then
+                return BOT_ACTION_DESIRE_HIGH, nNeutralCreeps[1]:GetLocation()
+            end
+        end
+
+        local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nCastRange, true)
+        if nEnemyLaneCreeps ~= nil
+        then
+            if #nEnemyLaneCreeps >= 1
+            then
+                return BOT_ACTION_DESIRE_HIGH, nEnemyLaneCreeps[1]:GetLocation()
+            end
+        end
+    end
 
     if J.IsLaning(bot)
 	then
@@ -678,6 +697,33 @@ function X.ConsiderProximityMines()
     end
 
 	local nCastRange = J.GetProperCastRange(false, bot, ProximityMines:GetCastRange())
+    local nAffectRange = 400
+    local nPManaCost = ProximityMines:GetManaCost()
+
+    local nEnemyHeroes = J.GetNearbyHeroes(bot, nCastRange + nAffectRange, true, BOT_MODE_NONE)
+    for _, enemyHero in pairs(nEnemyHeroes)
+    do
+        if J.IsValidHero(enemyHero)
+        and J.CanCastOnNonMagicImmune(enemyHero)
+        and J.GetManaAfter(nPManaCost) > 0.7
+        and not J.IsRetreating(bot)
+        and J.GetHP(bot) - J.GetHP(enemyHero) > -0.2
+        and not J.IsSuspiciousIllusion(enemyHero)
+        and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
+        and not enemyHero:HasModifier('modifier_dazzle_shallow_grave')
+        and not enemyHero:HasModifier('modifier_oracle_false_promise_timer')
+        and not enemyHero:HasModifier('modifier_templar_assassin_refraction_absorb')
+        then
+            local nInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, true, BOT_MODE_NONE)
+            local nInRangeEnemy = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
+            if nInRangeAlly ~= nil and nInRangeEnemy ~= nil and #nInRangeAlly >= #nInRangeEnemy then
+                if J.IsInRange(bot, enemyHero, nCastRange) then
+                    return BOT_ACTION_DESIRE_HIGH, enemyHero:GetExtrapolatedLocation(0.5)
+                end
+                return BOT_ACTION_DESIRE_HIGH, J.Utils.GetOffsetLocationTowardsTargetLocation(bot:GetLocation(), enemyHero:GetLocation(), nCastRange)
+            end
+        end
+    end
 
     if J.IsGoingOnSomeone(bot)
 	then
@@ -762,7 +808,7 @@ function X.ConsiderProximityMines()
             if nInRangeAlly ~= nil and #nInRangeAlly >= 1
             and nInRangeEnemy ~= nil and #nInRangeEnemy == 0
             then
-                return BOT_ACTION_DESIRE_HIGH, nEnemyTowers[1]:GetLocation() + RandomVector(500)
+                return BOT_ACTION_DESIRE_HIGH, nEnemyTowers[1]:GetLocation() + RandomVector(200)
             end
 		end
 	end
@@ -771,7 +817,7 @@ function X.ConsiderProximityMines()
     then
         if J.IsRoshan(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
-        and J.IsInRange(bot, botTarget, 500)
+        and J.IsInRange(bot, botTarget, nAffectRange)
         and J.IsAttacking(bot)
         and not TU.IsOtherMinesClose(botTarget:GetLocation())
         then
@@ -787,6 +833,27 @@ function X.ConsiderProximityMines()
         and not TU.IsOtherMinesClose(botTarget:GetLocation())
         then
             return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
+        end
+    end
+
+    if J.IsFarming(bot)
+    then
+        local nNeutralCreeps = bot:GetNearbyNeutralCreeps(nAffectRange)
+        if nNeutralCreeps ~= nil
+        then
+            if #nNeutralCreeps > 1
+            then
+                return BOT_ACTION_DESIRE_HIGH, nNeutralCreeps[1]:GetLocation()
+            end
+        end
+
+        local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nAffectRange, true)
+        if nEnemyLaneCreeps ~= nil
+        then
+            if #nEnemyLaneCreeps > 1
+            then
+                return BOT_ACTION_DESIRE_HIGH, nEnemyLaneCreeps[1]:GetLocation()
+            end
         end
     end
 

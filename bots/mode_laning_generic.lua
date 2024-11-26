@@ -32,6 +32,10 @@ function GetDesire()
 		skipLaningState.count = 0
 	end
 
+	if #J.GetEnemiesNearLoc(GetAncient(GetTeam()):GetLocation(), 3200) > 0 then
+		return BOT_MODE_DESIRE_NONE
+	end
+
 	if DotaTime() - J.Utils.GameStates.recentDefendTime < 5 then
 		return BOT_MODE_DESIRE_NONE
 	end
@@ -68,7 +72,7 @@ function GetDesire()
 	if currentTime <= 10 then return 0.268 end
 	if currentTime <= 9 * 60 and botLV <= 7 then return 0.446 end
 	if currentTime <= 12 * 60 and botLV <= 11 then return 0.369 end
-	if botLV <= 17 then return 0.328 end
+	if botLV <= 17 and J.GetCoresAverageNetworth() < 13000 then return 0.328 end
 
 	J.Utils.GameStates.passiveLaningTime = true
 	return BOT_MODE_DESIRE_NONE
