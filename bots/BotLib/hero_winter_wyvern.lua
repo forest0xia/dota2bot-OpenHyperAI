@@ -749,6 +749,29 @@ function X.ConsiderWintersCurse()
     local nRadius = WintersCurse:GetSpecialValueInt('radius')
     local nDuration = WintersCurse:GetSpecialValueFloat('duration')
 
+    if J.IsInTeamFight(bot, nCastRange + 200)
+	then
+		local realEnemyCount = J.GetEnemiesNearLoc(bot:GetLocation(), nCastRange + 200)
+
+        if realEnemyCount ~= nil and #realEnemyCount >= 3
+        then
+            local nInRangeAlly = J.GetAlliesNearLoc(bot:GetLocation(), 1000)
+            if nInRangeAlly ~= nil and #nInRangeAlly <= #realEnemyCount then
+                local nWeakestEnemyHero = J.GetAttackableWeakestUnit( bot, nCastRange + 200, true, true )
+                if J.IsValidHero(nWeakestEnemyHero)
+                and J.GetHP(nWeakestEnemyHero) >= 0.5
+                and not J.IsSuspiciousIllusion(nWeakestEnemyHero)
+                and not J.IsDisabled(nWeakestEnemyHero)
+                and not nWeakestEnemyHero:HasModifier('modifier_enigma_black_hole_pull')
+                and not nWeakestEnemyHero:HasModifier('modifier_faceless_void_chronosphere_freeze')
+                and not nWeakestEnemyHero:HasModifier('modifier_necrolyte_reapers_scythe')
+                and not nWeakestEnemyHero:HasModifier('modifier_winter_wyvern_winters_curse_aura') then
+                    return BOT_ACTION_DESIRE_HIGH, nWeakestEnemyHero
+                end
+            end
+        end
+	end
+
 	if J.IsGoingOnSomeone(bot)
 	then
 		local target = nil

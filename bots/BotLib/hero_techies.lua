@@ -705,7 +705,7 @@ function X.ConsiderProximityMines()
     do
         if J.IsValidHero(enemyHero)
         and J.CanCastOnNonMagicImmune(enemyHero)
-        and J.GetManaAfter(nPManaCost) > 0.7
+        and J.GetManaAfter(nPManaCost) > 0.6
         and not J.IsRetreating(bot)
         and J.GetHP(bot) - J.GetHP(enemyHero) > -0.2
         and not J.IsSuspiciousIllusion(enemyHero)
@@ -860,9 +860,9 @@ function X.ConsiderProximityMines()
     -- General Mines
     local nManaCost = ReactiveTazer:GetManaCost() + BlastOff:GetManaCost()
 
-    if IsSuitableToPlaceMine()
-    and DotaTime() > MineCooldownTime + 1.2
+    if DotaTime() > MineCooldownTime + 1.5
     and J.GetManaAfter(nManaCost) * bot:GetMana() > ProximityMines:GetManaCost() * 2
+    and IsSuitableToPlaceMine()
     then
 		local nSpots = TU.GetAvailableSpot()
 		MineLocation, MineLocationDistance = TU.GetClosestSpot(bot, nSpots)
@@ -899,7 +899,7 @@ function IsSuitableToPlaceMine()
 	local nMode = bot:GetActiveMode()
     local nTeamFightLocation = J.GetTeamFightLocation(bot)
 
-	if (nMode == BOT_MODE_RETREAT
+	if ((nMode == BOT_MODE_RETREAT
 		and bot:GetActiveModeDesire() > BOT_MODE_DESIRE_HIGH)
     or (nMode == BOT_MODE_RUNE and DotaTime() > 0)
     or nMode == BOT_MODE_DEFEND_ALLY
@@ -909,9 +909,9 @@ function IsSuitableToPlaceMine()
     or not J.IsDoingRoshan(bot)
     or not J.IsDoingTormentor(bot)
     or nTeamFightLocation == nil
-    or #nEnemyHeroes == 0
+    or #nEnemyHeroes == 0)
 	-- or (nEnemyHeroes ~= nil and #nEnemyHeroes >= 1 and IsIBecameTheTarget(nEnemyHeroes))
-	or not bot:WasRecentlyDamagedByAnyHero(5.0)
+	and not bot:WasRecentlyDamagedByAnyHero(5.0)
 	then
 		return false
 	end

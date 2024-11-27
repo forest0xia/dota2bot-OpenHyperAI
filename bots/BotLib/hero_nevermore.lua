@@ -82,17 +82,17 @@ sRoleItemsBuyList['pos_2'] = {
 	"item_invis_sword", -- sf escaping with this
 	"item_kaya", -- fix mana problem & increase magical damage
 	"item_blink", -- chase enemy for last hit
-	"item_yasha",
-	"item_ultimate_scepter",
+	"item_yasha",--
 	"item_travel_boots", -- teleport faster
-	"item_silver_edge",
+	"item_black_king_bar",--
+	"item_silver_edge",--
+	"item_ultimate_scepter",
 	"item_ultimate_scepter_2",
-	"item_octarine_core",
 	"item_aghanims_shard",
-	"item_overwhelming_blink", -- for more magical damage + health, sf doesn't require others
-	"item_wind_waker",
-	"item_travel_boots_2",
 	"item_moon_shard",
+	"item_overwhelming_blink", ---- for more magical damage + health, sf doesn't require others
+	"item_wind_waker",--
+	"item_travel_boots_2",--
 }
 
 sRoleItemsBuyList['pos_4'] = {
@@ -148,6 +148,8 @@ X['sSellList'] = {
 	"item_kaya",
 	"item_quelling_blade",
 
+	"item_octarine_core",
+	"item_bottle",
 }
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_mid' }, {} end
@@ -335,10 +337,11 @@ function X.ConsiderR()
 
 	for _, enemy in pairs( nEnemysHerosNearby )
 	do
+		local cycloneTime = J.GetModifierTime( enemy, "modifier_brewmaster_storm_cyclone" )
 		if J.IsValidHero( enemy )
-		and ((enemy:HasModifier( "modifier_brewmaster_storm_cyclone" ) and J.GetModifierTime( enemy, "modifier_brewmaster_storm_cyclone" ) < 1.66)
+		and ((cycloneTime > 0 and cycloneTime <= 1.66)
 			or J.Utils.IsTruelyInvisible(bot))
-		and enemy:GetHealth() > 800
+		and enemy:GetHealth() > 700
 		then
 			return BOT_ACTION_DESIRE_HIGH
 		end
@@ -365,7 +368,7 @@ function X.ConsiderR()
 			and J.CanCastOnNonMagicImmune( npcTarget )
 			and not J.IsDisabled( npcTarget )
 			and GetUnitToUnitDistance( npcTarget, bot ) <= 400
-			and npcTarget:GetHealth() > 800
+			and npcTarget:GetHealth() > 700
 		then
 			return BOT_ACTION_DESIRE_HIGH
 		end
@@ -396,28 +399,26 @@ function X.Consider( nAbility, nDistance )
 	local nEnemyHeroes = J.GetNearbyHeroes(bot, 1000, true, BOT_MODE_NONE )
 	local npcTarget = J.GetProperTarget( bot )
 
-
 	if J.IsValidHero( npcTarget )
 		and J.CanCastOnNonMagicImmune( npcTarget )
 		and X.IsUnitNearLoc( npcTarget, nCastLocation, nRadius - 20, nCastPoint )
-		and not ( bot:GetMana() <= nKeepMana * ( 1 - nSkillLV/4 ) )
+		and ( not ( bot:GetMana() <= nKeepMana * ( 1 - nSkillLV/4 ) )
+				or X.IsUnitCanBeKill( npcTarget, nDamage, nBonus, nCastPoint )
+				or npcTarget:HasModifier("modifier_nevermore_requiem_fear") )
 	then
 		return BOT_ACTION_DESIRE_HIGH
 	end
-	
-	
-	if J.IsValid( npcTarget )
-	then
-		for _, enemy in pairs( nEnemyHeroes )
-		do
-			if J.IsValidHero( enemy )
-				and J.CanCastOnNonMagicImmune( enemy )
-				and X.IsUnitNearLoc( enemy, nCastLocation, nRadius - 30, nCastPoint )
-				and ( not ( bot:GetMana() <= nKeepMana * ( 1 - nSkillLV/4 ) )
-					or X.IsUnitCanBeKill( enemy, nDamage, nBonus, nCastPoint ) )
-			then
-				return BOT_ACTION_DESIRE_HIGH
-			end
+
+	for _, enemy in pairs( nEnemyHeroes )
+	do
+		if J.IsValidHero( enemy )
+			and J.CanCastOnNonMagicImmune( enemy )
+			and X.IsUnitNearLoc( enemy, nCastLocation, nRadius - 30, nCastPoint )
+			and ( not ( bot:GetMana() <= nKeepMana * ( 1 - nSkillLV/4 ) )
+			or X.IsUnitCanBeKill( enemy, nDamage, nBonus, nCastPoint )
+			or enemy:HasModifier("modifier_nevermore_requiem_fear") )
+		then
+			return BOT_ACTION_DESIRE_HIGH
 		end
 	end
 
@@ -605,26 +606,10 @@ end
 
 
 function X.IsUnitCanBeKill( nUnit, nDamage, nBonus, nCastPoint )
-
 	local nDamageType = DAMAGE_TYPE_MAGICAL
-
-	local nStack = 0
-	local nUnitModifier = nUnit:NumModifiers()
-
-	if nUnitModifier >= 1
-	then
-		for i = 0, nUnitModifier
-		do
-			if nUnit:GetModifierName( i ) == "modifier_nevermore_shadowraze_debuff"
-			then
-				nStack = nUnit:GetModifierStackCount( i )
-				break
-			end
-		end
-	end
+	local nStack = J.GetModifierCount( nUnit, "modifier_nevermore_shadowraze_debuff" )
 
 	local nRealDamage = nDamage + nStack * nBonus
-
 
 	return J.WillKillTarget( nUnit, nRealDamage, nDamageType, nCastPoint )
 
