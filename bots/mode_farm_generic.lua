@@ -410,6 +410,7 @@ function GetDesire()
 	local shouldGoFarmDuringLaning = J.ShouldGoFarmDuringLaning(bot)
 	if GetGameMode() ~= GAMEMODE_MO
 	and not bot:WasRecentlyDamagedByAnyHero(5)
+	and not (J.Utils['GameStates']['defendPings'] and GameTime() - J.Utils['GameStates']['defendPings'].pingedTime < 5)
 	and (
 		shouldGoFarmDuringLaning
 		or (

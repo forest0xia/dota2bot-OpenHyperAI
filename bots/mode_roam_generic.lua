@@ -1213,21 +1213,21 @@ function ConsiderGeneralRoamingInConditions()
 
 		if J.GetModifierCount(bot, "modifier_monkey_king_quadruple_tap_counter") >= 2 then -- 7 - 10s
 			local enemy = GetTargetEnemy("npc_dota_hero_monkey_king")
-			if enemy ~= nil and J.GetHP(bot) < J.GetHP(enemy) and GetUnitToUnitDistance(bot, enemy) <= enemy:GetAttackRange() * 1.5 then
+			if enemy ~= nil and J.GetHP(bot) < J.GetHP(enemy) and GetUnitToUnitDistance(bot, enemy) <= enemy:GetAttackRange() * 3 then
 				return BOT_ACTION_DESIRE_VERYHIGH * 1.2
 			end
 		end
 
 		if J.GetModifierCount(bot, "modifier_viper_poison_attack_slow") >= 2 then -- 4s
 			local enemy = GetTargetEnemy("npc_dota_hero_viper")
-			if enemy ~= nil and J.GetHP(bot) < J.GetHP(enemy) and GetUnitToUnitDistance(bot, enemy) <= enemy:GetAttackRange() * 1.5 then
+			if enemy ~= nil and J.GetHP(bot) < J.GetHP(enemy) and GetUnitToUnitDistance(bot, enemy) <= enemy:GetAttackRange() * 2 then
 				return BOT_ACTION_DESIRE_VERYHIGH * 1.2
 			end
 		end
 
 		if J.GetModifierCount(bot, "modifier_huskar_burning_spear_debuff") >= 3 then -- 9s
 			local enemy = GetTargetEnemy("npc_dota_hero_huskar")
-			if enemy ~= nil and J.GetHP(bot) < J.GetHP(enemy) and GetUnitToUnitDistance(bot, enemy) <= enemy:GetAttackRange() * 1.5 then
+			if enemy ~= nil and J.GetHP(bot) < J.GetHP(enemy) and GetUnitToUnitDistance(bot, enemy) <= enemy:GetAttackRange() * 2 then
 				return BOT_ACTION_DESIRE_VERYHIGH * 1.2
 			end
 		end
@@ -1236,35 +1236,35 @@ function ConsiderGeneralRoamingInConditions()
 		if not J.WeAreStronger(bot, 1200) then
 			if J.GetModifierCount(bot, "modifier_slark_essence_shift_debuff_counter") >= 2 then -- 20 - 80s
 				local enemy = GetTargetEnemy("npc_dota_hero_slark")
-				if enemy ~= nil and J.GetHP(bot) < J.GetHP(enemy) and GetUnitToUnitDistance(bot, enemy) <= enemy:GetAttackRange() * 1.5 then
+				if enemy ~= nil and J.GetHP(bot) < J.GetHP(enemy) and GetUnitToUnitDistance(bot, enemy) <= enemy:GetAttackRange() * 4 then
 					return BOT_ACTION_DESIRE_VERYHIGH * 1.2
 				end
 			end
 
 			-- if J.GetModifierCount(bot, "modifier_silencer_glaives_of_wisdom_debuff_counter") >= 2 then -- 20 - 35s
 			-- 	local enemy = GetTargetEnemy("npc_dota_hero_silencer")
-			-- 	if enemy ~= nil and J.GetHP(bot) < J.GetHP(enemy) and GetUnitToUnitDistance(bot, enemy) <= enemy:GetAttackRange() * 1.5 then
+			-- 	if enemy ~= nil and J.GetHP(bot) < J.GetHP(enemy) and GetUnitToUnitDistance(bot, enemy) <= enemy:GetAttackRange() * 2 then
 			-- 		return BOT_ACTION_DESIRE_VERYHIGH * 1.2
 			-- 	end
 			-- end
 
 			if J.GetModifierCount(bot, "modifier_ursa_fury_swipes_damage_increase") >= 2 then -- 8 - 20s
 				local enemy = GetTargetEnemy("npc_dota_hero_ursa")
-				if enemy ~= nil and J.GetHP(bot) < J.GetHP(enemy) and GetUnitToUnitDistance(bot, enemy) <= enemy:GetAttackRange() * 1.5 then
-					return BOT_ACTION_DESIRE_VERYHIGH * 1.2
+				if enemy ~= nil and J.GetHP(bot) < J.GetHP(enemy) and GetUnitToUnitDistance(bot, enemy) <= enemy:GetAttackRange() * 4 then
+					return BOT_ACTION_DESIRE_VERYHIGH
 				end
 			end
 
 			if bot:HasModifier("modifier_dazzle_poison_touch") then -- 5s - forever
 				local enemy = GetTargetEnemy("npc_dota_hero_dazzle")
-				if enemy ~= nil and J.GetHP(bot) < J.GetHP(enemy) and GetUnitToUnitDistance(bot, enemy) <= enemy:GetAttackRange() * 1.5 then
-					return BOT_ACTION_DESIRE_VERYHIGH * 1.2
+				if enemy ~= nil and J.GetHP(bot) < J.GetHP(enemy) and GetUnitToUnitDistance(bot, enemy) <= enemy:GetAttackRange() * 2 then
+					return BOT_ACTION_DESIRE_VERYHIGH
 				end
 			end
 
 			if bot:HasModifier("modifier_maledict") then -- 5s - forever
 				local enemy = GetTargetEnemy("npc_dota_hero_witch_doctor")
-				if enemy ~= nil and J.GetHP(bot) < J.GetHP(enemy) and GetUnitToUnitDistance(bot, enemy) <= enemy:GetAttackRange() * 1.5 then
+				if enemy ~= nil and J.GetHP(bot) < J.GetHP(enemy) and GetUnitToUnitDistance(bot, enemy) <= enemy:GetAttackRange() * 2 then
 					return BOT_ACTION_DESIRE_VERYHIGH * 1.2
 				end
 			end

@@ -60,7 +60,7 @@ local WeakHeroes = {
 	-- Weaks, meaning they are too far from being able to apply their power:
 	'npc_dota_hero_chen',
 	'npc_dota_hero_keeper_of_the_light',
-	'npc_dota_hero_winter_wyvern',
+	-- 'npc_dota_hero_winter_wyvern',
 	'npc_dota_hero_ancient_apparition',
 	'npc_dota_hero_phoenix',
 	'npc_dota_hero_tinker',
