@@ -66,6 +66,8 @@ declare function GetAlliesNearLoc(location: Vector, radius: number): Unit[];
 
 declare function GetEnemiesAroundAncient(radius: number | null): number;
 
+declare function GetProperTarget(bot: Unit): Unit;
+
 declare function IsPingCloseToValidTower(
     team: Team,
     ping: Ping

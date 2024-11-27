@@ -40,6 +40,30 @@ function GetDesire()
 		return BOT_MODE_DESIRE_NONE
 	end
 
+	if J.GetEnemiesAroundAncient(1800) > 0 then
+		return BOT_MODE_DESIRE_NONE
+	end
+
+    local timeOfDay = J.CheckTimeOfDay()
+
+    local nTeamFightLocation = J.GetTeamFightLocation(bot)
+    if nTeamFightLocation ~= nil
+    then
+        if timeOfDay == 'day'
+        and GetUnitToLocationDistance(bot, roshanRadiantLoc) < 1600
+        and GetUnitToLocationDistance(bot, nTeamFightLocation) < 2000
+        then
+            return BOT_ACTION_DESIRE_NONE
+        else
+            if timeOfDay == 'night'
+            and GetUnitToLocationDistance(bot, roshanDireLoc) < 1600
+            and GetUnitToLocationDistance(bot, nTeamFightLocation) < 2000
+            then
+                return BOT_ACTION_DESIRE_NONE
+            end
+        end
+    end
+
     -- if Roshan is about to get killed, kill it unless there are other absolute actions.
     if J.Utils.IsValidUnit(Roshan) then
         local roshHP = Roshan:GetHealth()/Roshan:GetMaxHealth()
@@ -55,8 +79,6 @@ function GetDesire()
     if not hasSameOrMoreHero then
         return BOT_ACTION_DESIRE_NONE
     end
-
-    local timeOfDay = J.CheckTimeOfDay()
 
     local nCoreWithNoEmptySlot = 0
     local aliveHeroesList = {}
@@ -93,24 +115,6 @@ function GetDesire()
     if J.HasEnoughDPSForRoshan(aliveHeroesList)
     then
         initDPSFlag = true
-    end
-
-    local nTeamFightLocation = J.GetTeamFightLocation(bot)
-    if nTeamFightLocation ~= nil
-    then
-        if timeOfDay == 'day'
-        and GetUnitToLocationDistance(bot, roshanRadiantLoc) < 1000
-        and GetUnitToLocationDistance(bot, nTeamFightLocation) < 1600
-        then
-            return BOT_ACTION_DESIRE_NONE
-        else
-            if timeOfDay == 'night'
-            and GetUnitToLocationDistance(bot, roshanDireLoc) < 1000
-            and GetUnitToLocationDistance(bot, nTeamFightLocation) < 1600
-            then
-                return BOT_ACTION_DESIRE_NONE
-            end
-        end
     end
 
     if J.IsRoshanCloseToChangingSides()

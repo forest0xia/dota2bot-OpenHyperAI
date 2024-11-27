@@ -188,48 +188,33 @@ function X.ConsiderSavageRoar()
     end
 
     local nRadius = SavageRoar:GetSpecialValueInt('radius')
+    local nInRangeEnemy = J.GetNearbyHeroes(bot, nRadius, true, BOT_MODE_NONE)
+
+    for _, enemyHero in pairs(nInRangeEnemy) do
+		if J.IsValidTarget(enemyHero)
+        -- and J.IsInRange(bot, enemyHero, nRadius)
+        and (J.IsChasingTarget(enemyHero, bot)
+            or J.IsAttacking(enemyHero)
+            or J.IsMoving(enemyHero)
+            or enemyHero:IsChanneling()
+            or enemyHero:IsUsingAbility())
+        and not J.IsSuspiciousIllusion(enemyHero)
+        and not J.IsDisabled(enemyHero)
+        and J.CanCastOnNonMagicImmune( enemyHero )
+        and J.CanCastOnTargetAdvanced( enemyHero )
+		then
+            return BOT_ACTION_DESIRE_HIGH
+		end
+    end
 
     if J.IsGoingOnSomeone(bot)
 	then
 		if J.IsValidTarget(botTarget)
         and J.IsInRange(bot, botTarget, nRadius)
         and not J.IsSuspiciousIllusion(botTarget)
-        and not botTarget:HasModifier('modifier_necrolyte_reapers_scythe')
 		then
-            local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1200, true, BOT_MODE_NONE)
-            local nInRangeEnemy = J.GetNearbyHeroes(botTarget, 1200, false, BOT_MODE_NONE)
-
-            if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
-            and #nInRangeAlly >= #nInRangeEnemy
-            and #nInRangeAlly >= 1
-            and not (#nInRangeAlly >= #nInRangeEnemy + 2)
-            then
-                return BOT_ACTION_DESIRE_HIGH
-            end
+            return BOT_ACTION_DESIRE_HIGH
 		end
-	end
-
-    if J.IsRetreating(bot)
-	then
-        local nInRangeEnemy = J.GetNearbyHeroes(bot,nRadius, true, BOT_MODE_NONE)
-        for _, enemyHero in pairs(nInRangeEnemy)
-        do
-            if J.IsValidHero(enemyHero)
-            and J.IsChasingTarget(enemyHero, bot)
-            and not J.IsSuspiciousIllusion(enemyHero)
-            and not J.IsDisabled(enemyHero)
-            then
-                local nInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, true, BOT_MODE_NONE)
-                local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
-
-                if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
-                and ((#nTargetInRangeAlly > #nInRangeAlly)
-                    or bot:WasRecentlyDamagedByAnyHero(2))
-                then
-                    return BOT_ACTION_DESIRE_HIGH
-                end
-            end
-        end
 	end
 
     if J.IsDoingRoshan(bot)
@@ -238,10 +223,7 @@ function X.ConsiderSavageRoar()
         and J.IsInRange(bot, botTarget, 500)
         and J.IsAttacking(bot)
         then
-            if J.GetHP(bot) < 0.25
-            then
-                return BOT_ACTION_DESIRE_HIGH
-            end
+            return BOT_ACTION_DESIRE_HIGH
         end
     end
 
@@ -251,10 +233,7 @@ function X.ConsiderSavageRoar()
         and J.IsInRange(bot, botTarget, 500)
         and J.IsAttacking(bot)
         then
-            if J.GetHP(bot) < 0.25
-            then
-                return BOT_ACTION_DESIRE_HIGH
-            end
+            return BOT_ACTION_DESIRE_HIGH
         end
     end
 
@@ -281,13 +260,16 @@ function X.ConsiderTrueForm()
 
             if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
             and #nInRangeAlly >= #nInRangeEnemy
-            and #nInRangeAlly >= 1
-            and not (#nInRangeAlly >= #nInRangeEnemy + 2)
+            and J.GetHP(bot) < 0.85
             then
                 return BOT_ACTION_DESIRE_HIGH
             end
 		end
 	end
+
+    if J.IsInTeamFight(bot, 1200) and J.GetHP(bot) < 0.85 then
+        return BOT_ACTION_DESIRE_HIGH
+    end
 
     if J.IsRetreating(bot)
 	then

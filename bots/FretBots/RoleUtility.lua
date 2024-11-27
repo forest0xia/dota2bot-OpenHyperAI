@@ -104,6 +104,7 @@ X['safe'] = {
 	'npc_dota_hero_ursa',
 	'npc_dota_hero_weaver',
 	'npc_dota_hero_muerta',
+	'npc_dota_hero_kez'
 }
 
 X['supp'] = {

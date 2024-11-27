@@ -78,7 +78,9 @@ function X.ConsiderStolenSpell(ability)
     then
         J.SetReportMotive( bDebugMode, sMotive )
         J.SetQueuePtToINT( bot, true )
-        if not abilityProps.isForUnitTarget and (abilityProps.isForSinglePoint or abilityProps.isForAOE) then
+        if type(castTarget) == "table" then
+            bot:ActionQueue_UseAbilityOnEntity(ability, castTarget)
+        elseif not abilityProps.isForUnitTarget and (abilityProps.isForSinglePoint or abilityProps.isForAOE) then
             bot:ActionQueue_UseAbilityOnLocation(ability, castTarget)
         elseif abilityProps.isForUnitTarget then
             bot:ActionQueue_UseAbilityOnEntity(ability, castTarget)

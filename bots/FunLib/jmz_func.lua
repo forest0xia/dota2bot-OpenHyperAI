@@ -14,6 +14,9 @@ local DireTormentorLoc = Vector(8132, 1102, 1000)
 
 local fKeepManaPercent = 0.39
 
+local cachedEnemyCountAroundLoc = {}
+local cachedEnemyCountAroundLocTime = {}
+
 for i, id in pairs( tAllyIDList )
 do
 
@@ -149,24 +152,34 @@ end
 
 --通用数量
 function J.GetNearbyAroundLocationUnitCount( bEnemy, bHero, nRadius, vLoc )
-
-	local bot = GetBot()
 	local nCount = 0
-	local unitList = {}
 
 	if bHero
 	then
-		unitList = J.GetNearbyHeroes(bot, 1600, bEnemy, BOT_MODE_NONE )
+		if bEnemy then
+			nCount = #J.GetAlliesNearLoc( vLoc, nRadius )
+		else
+			nCount = #J.GetEnemiesNearLoc(vLoc, nRadius)
+		end
 	else
-		unitList = bot:GetNearbyCreeps( 1600, bEnemy )
-	end
-
-	for _, u in pairs( unitList )
-	do
-		if u:IsAlive()
-			and GetUnitToLocationDistance( u, vLoc ) <= nRadius
-		then
-			nCount = nCount + 1
+		if bEnemy then
+			for _, unit in pairs(GetUnitList(UNIT_LIST_ENEMIES))
+			do
+				if J.IsValid(unit)
+				and GetUnitToLocationDistance(unit, vLoc) <= nRadius
+				then
+					nCount = nCount + 1
+				end
+			end
+		else
+			for _, unit in pairs(GetUnitList(UNIT_LIST_ALLIES))
+			do
+				if J.IsValid(unit)
+				and GetUnitToLocationDistance(unit, vLoc) <= nRadius
+				then
+					nCount = nCount + 1
+				end
+			end
 		end
 	end
 
@@ -399,6 +412,20 @@ function J.GetEnemiesNearLoc(vLoc, nRadius)
 		and not J.IsSuspiciousIllusion(enemyHero)
 		and not J.IsMeepoClone(enemyHero)
 		and not enemyHero:HasModifier('modifier_arc_warden_tempest_double')
+		then
+			table.insert(enemies, enemyHero)
+		end
+	end
+
+	return enemies
+end
+
+function J.GetAnyEnemiesNearLoc(vLoc, nRadius)
+	local enemies = {}
+	for _, enemyHero in pairs(GetUnitList(UNIT_LIST_ENEMY_HEROES))
+	do
+		if J.IsValidHero(enemyHero)
+		and GetUnitToLocationDistance(enemyHero, vLoc) <= nRadius
 		then
 			table.insert(enemies, enemyHero)
 		end
@@ -4721,6 +4748,9 @@ end
 
 function J.GetEnemiesAroundLoc(vLoc, nRadius)
 	if not nRadius then nRadius = 2000 end
+	local cacheKey = tostring(vLoc)..'-'..tostring(nRadius)
+	if cachedEnemyCountAroundLocTime[cacheKey] and DotaTime() - cachedEnemyCountAroundLocTime[cacheKey] < 2 then return cachedEnemyCountAroundLoc[cacheKey] end
+	cachedEnemyCountAroundLocTime[cacheKey] = DotaTime()
 
 	local nUnitCount = 0
 
@@ -4764,6 +4794,8 @@ function J.GetEnemiesAroundLoc(vLoc, nRadius)
 			end
 		end
 	end
+
+	cachedEnemyCountAroundLoc[cacheKey] = nUnitCount
 	return nUnitCount
 end
 

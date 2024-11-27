@@ -151,7 +151,7 @@
 			{
 				gold 			= {100, 500},
 				armor 			= {1, 3},
-				magicResist 	= {1, 3},
+				magicResist 	= {1, 2},
 				levels 			= {0.5, 2},
 				neutral 		= {30, 180},
 				stats			= {1, 3}
@@ -178,7 +178,7 @@
 			{
 				gold 			= {100, 1500},
 				armor 			= {1, 5},
-				magicResist 	= {1, 5},
+				magicResist 	= {1, 3},
 				levels 			= {0.5, 2},
 				neutral 		= {30, 180},
 				stats			= {1, 3}

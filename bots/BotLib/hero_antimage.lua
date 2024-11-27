@@ -525,6 +525,7 @@ end
 
 function X.ConsiderBlinkFragment()
 	if not bot:HasScepter()
+	or not BlinkFragment
 	or not BlinkFragment:IsTrained()
 	or not BlinkFragment:IsFullyCastable()
 	then

@@ -22,7 +22,7 @@ function GetDesire()
 	if GetGameMode() == 23 then currentTime = currentTime * 1.65 end
 	if currentTime < 0 then return BOT_ACTION_DESIRE_NONE end
 
-	if DotaTime() - skipLaningState.lastCheckTime < skipLaningState.checkGap then
+	if DotaTime() > 20 and DotaTime() - skipLaningState.lastCheckTime < skipLaningState.checkGap then
 		if skipLaningState.count > 6 then
 			print('[WARN] Bot ' ..botName.. ' switching modes too often, now stop it for laning to avoid conflicts.')
 			return 0
@@ -32,7 +32,7 @@ function GetDesire()
 		skipLaningState.count = 0
 	end
 
-	if #J.GetEnemiesNearLoc(GetAncient(GetTeam()):GetLocation(), 3200) > 0 then
+	if J.GetEnemiesAroundAncient(3200) > 0 then
 		return BOT_MODE_DESIRE_NONE
 	end
 

@@ -1170,6 +1170,16 @@ function ConsiderGeneralRoamingInConditions()
 		end
 	end
 
+	if bot:HasModifier("modifier_bloodseeker_rupture") then
+		if J.IsRunning(bot) and not J.IsAttacking(bot) then
+			return 0.6
+		end
+		local nInRangeEnemy = bot:GetNearbyHeroes(1000, true, BOT_MODE_NONE)
+		if not nInRangeEnemy or #nInRangeEnemy == 0 then
+			return 0.7
+		end
+	end
+
 	AnyAllyAffectedByChainFrost = IsAnyAllyAffectedByChainFrost()
 	if AnyAllyAffectedByChainFrost then
 		return 0.91

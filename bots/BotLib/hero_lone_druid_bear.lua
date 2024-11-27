@@ -124,32 +124,33 @@ function X.ConsiderSavageRoar()
     if not SavageRoar:IsFullyCastable() then return 0 end
 
     local nRadius = SavageRoar:GetSpecialValueInt('radius')
+    local nInRangeEnemy = J.GetNearbyHeroes(bear, nRadius, true, BOT_MODE_NONE)
+
+    for _, enemyHero in pairs(nInRangeEnemy) do
+		if J.IsValidTarget(enemyHero)
+        -- and J.IsInRange(bear, enemyHero, nRadius)
+        and (J.IsChasingTarget(enemyHero, bear)
+            or J.IsAttacking(enemyHero)
+            or J.IsMoving(enemyHero)
+            or enemyHero:IsChanneling()
+            or enemyHero:IsUsingAbility())
+        and not J.IsSuspiciousIllusion(enemyHero)
+        and not J.IsDisabled(enemyHero)
+        and J.CanCastOnNonMagicImmune( enemyHero )
+        and J.CanCastOnTargetAdvanced( enemyHero )
+		then
+            return BOT_ACTION_DESIRE_HIGH
+		end
+    end
 
     if J.IsGoingOnSomeone(bear)
 	then
 		if J.IsValidTarget(botTarget)
         and J.IsInRange(bear, botTarget, nRadius)
         and not J.IsSuspiciousIllusion(botTarget)
-        and not botTarget:HasModifier('modifier_necrolyte_reapers_scythe')
 		then
             return BOT_ACTION_DESIRE_HIGH
 		end
-	end
-
-    if J.IsRetreating(bear)
-	then
-        local nInRangeEnemy = J.GetNearbyHeroes(bear,nRadius, true, BOT_MODE_NONE)
-        for _, enemyHero in pairs(nInRangeEnemy)
-        do
-            if J.IsValidHero(enemyHero)
-            and J.IsChasingTarget(enemyHero, bear)
-            and J.IsInRange(bear, enemyHero, nRadius)
-            and not J.IsSuspiciousIllusion(enemyHero)
-            and not J.IsDisabled(enemyHero)
-            then
-                return BOT_ACTION_DESIRE_HIGH
-            end
-        end
 	end
 
     if J.IsDoingRoshan(bear)
@@ -158,10 +159,7 @@ function X.ConsiderSavageRoar()
         and J.IsInRange(bear, botTarget, 500)
         and J.IsAttacking(bear)
         then
-            if J.GetHP(bear) < 0.25
-            then
-                return BOT_ACTION_DESIRE_HIGH
-            end
+            return BOT_ACTION_DESIRE_HIGH
         end
     end
 
@@ -171,10 +169,7 @@ function X.ConsiderSavageRoar()
         and J.IsInRange(bear, botTarget, 500)
         and J.IsAttacking(bear)
         then
-            if J.GetHP(bear) < 0.25
-            then
-                return BOT_ACTION_DESIRE_HIGH
-            end
+            return BOT_ACTION_DESIRE_HIGH
         end
     end
 

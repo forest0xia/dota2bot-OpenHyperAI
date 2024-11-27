@@ -101,9 +101,12 @@ function AwardBonus:magicResist(bot, bonus)
 		local clamped = AwardBonus:Clamp(bonus, bot.stats.awards.magicResist, Settings.awardCap.magicResist)
 		local resistance
 		resistance = bot:GetBaseMagicalResistanceValue()
-		bot:SetBaseMagicalResistanceValue(resistance + clamped)
-		bot.stats.awards.magicResist = bot.stats.awards.magicResist + clamped
-		Debug:Print('Awarding '..tostring(clamped)..' magic resist to '..bot.stats.name..'.')
+		local newRes = resistance + clamped
+		if newRes < 60 then
+			bot:SetBaseMagicalResistanceValue(newRes)
+			bot.stats.awards.magicResist = bot.stats.awards.magicResist + clamped
+			Debug:Print('Awarding '..tostring(clamped)..' magic resist to '..bot.stats.name..'.')
+		end
 		return true
 	end
 	return false

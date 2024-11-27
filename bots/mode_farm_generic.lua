@@ -118,6 +118,10 @@ function GetDesire()
 		return BOT_MODE_DESIRE_NONE;
 	end
 
+	if J.GetEnemiesAroundAncient(3200) > 0 then
+		return BOT_MODE_DESIRE_NONE
+	end
+
 	if teamPlayers == nil then teamPlayers = GetTeamPlayers(team) end
 
 	-- For sometime to run
@@ -415,8 +419,10 @@ function GetDesire()
 			-- and (not J.IsHumanPlayerInTeam() or enemyKills > allyKills + 16)
 			-- and ( bot:GetNextItemPurchaseValue() > 0 or not bot:HasModifier("modifier_item_moon_shard_consumed") )
 			and ( DotaTime() > 7 * 60 or bot:GetLevel() >= 8 or (bot:GetAttackRange() < 220 and bot:GetLevel() >= 6) ))
+			and (not bot.isBear or (bot.isBear and GetUnitToUnitDistance(bot, Utils.GetLoneDruid(bot).hero) < 1100))
 		-- or ((J.Utils.GameStates.passiveLaningTime or ((bot:GetActiveMode() == BOT_MODE_LANING or bot:GetActiveMode() == BOT_MODE_ATTACK) and bot:GetActiveModeDesire() < 0.2)) and not J.Utils.GameStates.isTimeForPush)
 		)
+		or (DotaTime() > 420 and bot:GetActiveMode() == BOT_MODE_FARM and bot:GetActiveModeDesire() < 0.1)
 	then
 		if J.GetDistanceFromEnemyFountain(bot) > 4000
 		then
