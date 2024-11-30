@@ -72,25 +72,25 @@ sRoleItemsBuyList['pos_5'] = {
 }
 
 sRoleItemsBuyList['pos_3'] = {
-    "item_double_tango",
-    "item_double_branches",
+	"item_tango",
+	"item_double_branches",
+	"item_faerie_fire",
+	"item_circlet",
 
-    "item_boots",
-    "item_magic_wand",
-    "item_urn_of_shadows",
-    "item_arcane_boots",
-    "item_pavise",
-    "item_solar_crest",--
-    "item_spirit_vessel",--
-    "item_force_staff",--
-    "item_maelstrom",
-	"item_gungir",--
-    "item_aghanims_shard",
-    nUtility,--
-    "item_ultimate_scepter",
-    "item_wind_waker",--
-    "item_ultimate_scepter_2",
-    "item_moon_shard",
+	"item_magic_wand",
+	"item_boots",
+	"item_ring_of_basilius",
+	"item_arcane_boots",
+	"item_shivas_guard",--
+	"item_cyclone",
+	"item_kaya_and_sange",--
+	"item_eternal_shroud",--
+	"item_black_king_bar",--
+	"item_aghanims_shard",
+	"item_octarine_core",--
+	"item_refresher",--
+	"item_moon_shard",
+	"item_ultimate_scepter_2",
 }
 
 sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']

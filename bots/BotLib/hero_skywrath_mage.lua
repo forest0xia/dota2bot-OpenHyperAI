@@ -83,17 +83,18 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_priest_outfit",
 	"item_rod_of_atos",
 --	"item_glimmer_cape",
-	"item_aghanims_shard",
+    "item_kaya",
 	"item_ultimate_scepter",
     "item_kaya_and_sange",--
+	"item_aghanims_shard",
 	"item_octarine_core",--
 	"item_gungir",--
 	"item_cyclone",
 	"item_wind_waker",--
-	"item_ultimate_scepter_2",
-    "item_travel_boots_2",--
-	"item_sheepstick",--
 	"item_moon_shard",
+	"item_ultimate_scepter_2",
+	"item_sheepstick",--
+    "item_travel_boots_2",--
 }
 
 sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']

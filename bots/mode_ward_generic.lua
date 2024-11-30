@@ -49,12 +49,7 @@ function GetDesire()
 
 	if bot.WardTable == nil then bot.WardTable = {} end
 
-	-- 如果在打高地 就别撤退去干别的
-	if J.Utils.IsTeamPushingSecondTierOrHighGround(bot) then
-		return BOT_MODE_DESIRE_NONE
-	end
-
-	if DotaTime() - J.Utils.GameStates.recentDefendTime < 5 then
+	if DotaTime() - J.Utils.GameStates.recentDefendTime < 2 then
 		return BOT_MODE_DESIRE_NONE
 	end
 
@@ -70,6 +65,17 @@ function GetDesire()
 	then
 
 		Pinged, WardTargetLocation = Ward.IsPingedByHumanPlayer(bot)
+
+		if Pinged and GetUnitToLocationDistance(bot, WardTargetLocation) > 1200 then
+			if J.Utils.IsTeamPushingSecondTierOrHighGround(bot) then
+				return BOT_MODE_DESIRE_NONE;
+			end
+
+			if J.GetEnemiesAroundAncient(bot, 3200) > 0 then
+				return BOT_MODE_DESIRE_NONE
+			end
+		end
+
 		if Pinged
 		and WardTargetLocation ~= nil
 		and not Ward.IsOtherWardClose(WardTargetLocation)
@@ -80,6 +86,16 @@ function GetDesire()
 
 		AvailableSpots = Ward.GetAvailableSpot(bot)
 		WardTargetLocation, WardTargetDist = Ward.GetClosestSpot(bot, AvailableSpots)
+
+		if WardTargetLocation and GetUnitToLocationDistance(bot, WardTargetLocation) > 1200 then
+			if J.Utils.IsTeamPushingSecondTierOrHighGround(bot) then
+				return BOT_MODE_DESIRE_NONE;
+			end
+
+			if J.GetEnemiesAroundAncient(bot, 3200) > 0 then
+				return BOT_MODE_DESIRE_NONE
+			end
+		end
 
 		if WardTargetLocation ~= nil
 		and DotaTime() > (J.IsModeTurbo() and -45 or -60)

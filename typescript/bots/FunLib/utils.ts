@@ -99,6 +99,9 @@ const SpecialAOEHeroes = [
 let ShouldBotsSpreadOutCache: null | boolean = null;
 let ShouldBotsSpreadOutCacheTime = 0;
 
+let cachedIsTeamPushingHG = {} as { [key: number]: boolean };
+let cachedIsTeamPushingHGTime = {} as { [key: number]: number };
+
 // Global array to store avoidance zones
 let avoidanceZones: AvoidanceZone[] = [];
 
@@ -881,11 +884,19 @@ export function IsNearEnemyHighGroundTower(unit: Unit, range: number): boolean {
 }
 
 export function IsTeamPushingSecondTierOrHighGround(bot: Unit): boolean {
-    return (
+    if (
+        cachedIsTeamPushingHGTime[bot.GetPlayerID()] &&
+        DotaTime() - cachedIsTeamPushingHGTime[bot.GetPlayerID()] < 1
+    ) {
+        return cachedIsTeamPushingHG[bot.GetPlayerID()];
+    }
+    cachedIsTeamPushingHGTime[bot.GetPlayerID()] = DotaTime();
+    const res =
         bot.GetNearbyHeroes(2000, false, BotMode.None).length > 2 &&
-        (IsNearEnemySecondTierTower(bot, 1800) ||
-            IsNearEnemyHighGroundTower(bot, 3000))
-    );
+        (IsNearEnemySecondTierTower(bot, 2000) ||
+            IsNearEnemyHighGroundTower(bot, 3000));
+    cachedIsTeamPushingHG[bot.GetPlayerID()] = res;
+    return res;
 }
 
 export function GetNumOfAliveHeroes(bEnemy: boolean): number {
@@ -1065,7 +1076,7 @@ export function IsBotPushingTowerInDanger(bot: Unit): boolean {
     if (
         enemyTowerNearby &&
         nearbyAllies.length < countAliveEnemies &&
-        nearbyEnemy.length >= nearbyAllies.length - 1
+        nearbyEnemy.length >= nearbyAllies.length
     ) {
         return true;
     }

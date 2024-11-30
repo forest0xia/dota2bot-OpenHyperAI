@@ -52,7 +52,7 @@ local ShouldGoFarmTime = 0
 
 local MessagesToBeAnnounced = { -- {sMessage, bGlobalMessage, bEnabled}
 	{"Welcome to Open Hyper AI (OHA): " .. Version.number, true, true},
-	{"You can pre-define the heroes for bots to pick, e.g. 10 same heroes or your dream teams. Just modify the Customize/general file.", false, true},
+	{"You can select the heroes for bots to pick, e.g. 10 same heroes or your dream teams, or change their names. Just modify the Customize/general file.", false, true},
 	{"If you have any feedback, please post a comment to script's Workshop or Github repo.", false, true},
 	{"You can type !pos X to swap position with a bot. For example, type: `!pos 2` to go mid lane.", false, true},
 }
@@ -63,6 +63,11 @@ local announcementGap = 6
 local hasPickedOneAnnouncer = false
 local checkGoFarmTimeGap = 5
 local botTarget = nil
+local botActiveMode = nil
+
+local buggedFarmAttackHeroes = {
+	"npc_dota_hero_invoker"
+}
 
 if bot.farmLocation == nil then bot.farmLocation = bot:GetLocation() end
 
@@ -88,7 +93,7 @@ function GetDesire()
 		beVeryHighFarmer = J.GetPosition(bot) == 1
 	end
 
-	local botActiveMode = bot:GetActiveMode()
+	botActiveMode = bot:GetActiveMode()
 	local TormentorLocation = J.GetTormentorLocation(GetTeam())
 	local nInRangeAlly_tormentor = J.GetAlliesNearLoc(TormentorLocation, 900)
 	local nInRangeAlly_roshan = J.GetAlliesNearLoc(J.GetCurrentRoshanLocation(), 900)
@@ -118,7 +123,7 @@ function GetDesire()
 		return BOT_MODE_DESIRE_NONE;
 	end
 
-	if J.GetEnemiesAroundAncient(3200) > 0 then
+	if J.GetEnemiesAroundAncient(bot, 3200) > 0 then
 		return BOT_MODE_DESIRE_NONE
 	end
 
@@ -172,18 +177,15 @@ function GetDesire()
 
 	availableCamp = J.Role['availableCampTable'];
 
-	local nAllyList = J.GetNearbyHeroes(bot,1600,false,BOT_MODE_NONE);
+	local hAllyList = J.GetNearbyHeroes(bot,1600,false,BOT_MODE_NONE);
 	local hEnemyHeroList = J.GetNearbyHeroes(bot,1600, true, BOT_MODE_NONE);
 
 	if J.Utils.IsBotPushingTowerInDanger(bot)
 	and not J.IsInLaningPhase()
-	and not (#nAllyList >= 3 and #nAllyList >= #hEnemyHeroList) -- 我们人挺多，对面人也挺多，大战似乎在所难免，别跑了
+	and not (#hAllyList >= 3 or #hAllyList >= #hEnemyHeroList) -- 我们人挺多，对面人也挺多，大战似乎在所难免，别跑了
 	and (J.IsCore(bot) and bot:GetNetWorth() < 18000)
-	and (botMode == BOT_MODE_PUSH_TOWER_BOT
-	or botMode == BOT_MODE_PUSH_TOWER_MID
-	or botMode == BOT_MODE_PUSH_TOWER_TOP
-	or bot:WasRecentlyDamagedByTower(3)
-	or J.Utils.IsValidBuilding(botTarget)) then
+	and not bot:WasRecentlyDamagedByAnyHero(5)
+	then
 		if DotaTime() - ShouldGoFarmTime >= checkGoFarmTimeGap then
 			IsShouldGoFarm = true
 			ShouldGoFarmTime = DotaTime()
@@ -193,11 +195,12 @@ function GetDesire()
 		return BOT_MODE_DESIRE_VERYHIGH;
 	end
 	local numOfAliveEnemyHeroes = J.GetNumOfAliveHeroes(true)
+	local teamAveLvl = J.GetAverageLevel( false )
 	-- 避免过早推2塔或者高地
-	if bot:GetLevel() < 10
+	if teamAveLvl < 10
 	and #hEnemyHeroList >= 2
 	and numOfAliveEnemyHeroes >= 3
-	and not (#nAllyList >= 3 and #nAllyList >= #hEnemyHeroList) -- 我们人挺多，对面人也挺多，大战似乎在所难免，别跑了
+	and not (#hAllyList >= 3 and #hAllyList >= #hEnemyHeroList) -- 我们人挺多，对面人也挺多，大战似乎在所难免，别跑了
 	then
 		if J.Utils.IsNearEnemySecondTierTower(bot, 1500)
 		and (J.IsCore(bot) and bot:GetNetWorth() < 18000) then
@@ -209,10 +212,10 @@ function GetDesire()
 			if preferedCamp == nil then preferedCamp = J.Site.GetClosestNeutralSpwan(bot, availableCamp) end;
 			return BOT_MODE_DESIRE_ABSOLUTE * 1.1;
 		end
-	elseif bot:GetLevel() < 15
+	elseif teamAveLvl < 15
 	and #hEnemyHeroList >= 2
 	and numOfAliveEnemyHeroes >= 3
-	and not (#nAllyList >= 3 and #nAllyList >= #hEnemyHeroList) -- 我们人挺多，对面人也挺多，大战似乎在所难免，别跑了
+	and not (#hAllyList >= 3 and #hAllyList >= #hEnemyHeroList) -- 我们人挺多，对面人也挺多，大战似乎在所难免，别跑了
 	then
 		if J.Utils.IsNearEnemyHighGroundTower(bot, 1500)
 		and (J.IsCore(bot) and bot:GetNetWorth() < 18000) then
@@ -229,11 +232,11 @@ function GetDesire()
 	-- 如果在打推塔 就别撤退去打钱了
 
 	local nEnemyTowers = bot:GetNearbyTowers(1200, true);
-	if #nAllyList >= 2 and nEnemyTowers ~= nil and #nEnemyTowers > 0 and GetUnitToLocationDistance(bot, nEnemyTowers[1]:GetLocation()) < 1300 then
+	if #hAllyList >= 2 and nEnemyTowers ~= nil and #nEnemyTowers > 0 and GetUnitToLocationDistance(bot, nEnemyTowers[1]:GetLocation()) < 1300 then
 		return BOT_MODE_DESIRE_NONE;
 	end
 	-- 如果在上高，对面人活着，其他队友活着却不在附近，赶紧溜去其他地方farm
-	if IsShouldGoFarm or ((#nAllyList <= 2 or #nAllyList <= numOfAliveEnemyHeroes)
+	if IsShouldGoFarm or ((#hAllyList <= 2 or #hAllyList <= numOfAliveEnemyHeroes)
 	and (J.IsCore(bot) and bot:GetNetWorth() < 18000)
 	and (J.Utils.IsTeamPushingSecondTierOrHighGround(bot))
 	and bot:GetActiveModeDesire() <= BOT_ACTION_DESIRE_HIGH)
@@ -521,7 +524,6 @@ function OnEnd()
 	bot:SetTarget(nil);
 end
 
-
 function Think()
 	if J.CanNotUseAction(bot) then return end
 
@@ -557,7 +559,7 @@ function Think()
 				and not runModeBarracks[1]:HasModifier("modifier_invulnerable")
 				and not runModeBarracks[1]:HasModifier("modifier_backdoor_protection_active")
 			then
-				bot:Action_AttackUnit(runModeBarracks[1], true);
+				bot:Action_AttackUnit(runModeBarracks[1], not J.Utils.HasValue(buggedFarmAttackHeroes, botName));
 				return;
 			end			
 		end
@@ -632,17 +634,17 @@ function Think()
 						bot:Action_MoveToLocation(farmTarget:GetLocation());
 						return
 					else
-						bot:Action_AttackUnit(farmTarget, true);
+						bot:Action_AttackUnit(farmTarget, not J.Utils.HasValue(buggedFarmAttackHeroes, botName));
 						return
 					end
 				else
 					if ( GetUnitToUnitDistance(bot,farmTarget) > bot:GetAttackRange() + 100 )
 						or bot:GetAttackDamage() > 200
 					then
-						bot:Action_AttackUnit(hLaneCreepList[1], true);
+						bot:Action_AttackUnit(hLaneCreepList[1], not J.Utils.HasValue(buggedFarmAttackHeroes, botName));
 						return
 					else
-						bot:Action_AttackUnit(farmTarget, true);
+						bot:Action_AttackUnit(farmTarget, not J.Utils.HasValue(buggedFarmAttackHeroes, botName));
 						return
 					end
 				end
@@ -676,11 +678,11 @@ function Think()
 			if farmTarget ~= nil 
 			then
 				bot:SetTarget(farmTarget);
-				bot:Action_AttackUnit(farmTarget, true);
+				bot:Action_AttackUnit(farmTarget, not J.Utils.HasValue(buggedFarmAttackHeroes, botName));
 				return;
 			else
 				bot:SetTarget(nNeutrals[1]);
-				bot:Action_AttackUnit(nNeutrals[1], true);
+				bot:Action_AttackUnit(nNeutrals[1], not J.Utils.HasValue(buggedFarmAttackHeroes, botName));
 				return;
 			end
 			
@@ -721,7 +723,7 @@ function Think()
 					then
 						local tpLoc = GetLaneFrontLocation(team,mostFarmDesireLane,-600);
 						local nAllies = J.GetAlliesNearLoc(tpLoc, 1600);
-						if mostFarmDesire > BOT_MODE_DESIRE_HIGH * 1.12		
+						if mostFarmDesire > BOT_MODE_DESIRE_HIGH * 1.12
 						   and #nAllies == 0
 						   and GetUnitToLocationDistance(bot,tpLoc) > 3500
 						then
@@ -758,7 +760,7 @@ function Think()
 				if farmTarget ~= nil 
 				then
 					bot:SetTarget(farmTarget);
-					bot:Action_AttackUnit(farmTarget, true);
+					bot:Action_AttackUnit(farmTarget, not J.Utils.HasValue(buggedFarmAttackHeroes, botName));
 					return;
 				end
 				
@@ -775,7 +777,7 @@ function Think()
 					if farmTarget ~= nil 
 					then
 						bot:SetTarget(farmTarget);
-						bot:Action_AttackUnit(farmTarget, true);
+						bot:Action_AttackUnit(farmTarget, not J.Utils.HasValue(buggedFarmAttackHeroes, botName));
 						return;
 					end
 			else
@@ -784,7 +786,7 @@ function Think()
 				if farmTarget ~= nil 
 				then
 					bot:SetTarget(farmTarget);
-					bot:Action_AttackUnit(farmTarget, true);
+					bot:Action_AttackUnit(farmTarget, not J.Utils.HasValue(buggedFarmAttackHeroes, botName));
 					return;
 				end
 				
@@ -863,7 +865,6 @@ function X.ShouldRun(bot)
 	end
 
 	local botLevel    = bot:GetLevel();
-	local botMode     = bot:GetActiveMode();
 	local botTarget   = J.GetProperTarget(bot);
 	local hEnemyHeroList = J.GetEnemyList(bot,1600);
 	local hAllyHeroList  = J.GetAllyList(bot,1600);
@@ -887,7 +888,7 @@ function X.ShouldRun(bot)
 	end
 
 	if bot:DistanceFromFountain() < 200
-		and botMode ~= BOT_MODE_RETREAT
+		and botActiveMode ~= BOT_MODE_RETREAT
 		and ( J.GetHP(bot) + J.GetMP(bot) < 1.7 )
 	then
 		return 3;
@@ -1045,7 +1046,7 @@ function X.ShouldRun(bot)
 	end
 
 	if bot:IsInvisible() and DotaTime() > 8 * 60
-		and botMode == BOT_MODE_RETREAT
+		and botActiveMode == BOT_MODE_RETREAT
 		and bot:GetActiveModeDesire() > 0.4
 		and #hAllyHeroList <= 1
 		and J.IsValid(hEnemyHeroList[1])
@@ -1075,9 +1076,9 @@ function X.ShouldRun(bot)
 	end
 
 	if #hAllyHeroList <= 1
-	   and botMode ~= BOT_MODE_TEAM_ROAM
-	   and botMode ~= BOT_MODE_LANING
-	   and botMode ~= BOT_MODE_RETREAT
+	   and botActiveMode ~= BOT_MODE_TEAM_ROAM
+	   and botActiveMode ~= BOT_MODE_LANING
+	   and botActiveMode ~= BOT_MODE_RETREAT
 	   and ( botLevel <= 1 or botLevel > 5 )
 	   and bot:DistanceFromFountain() > 1400
 	then
@@ -1097,8 +1098,8 @@ function X.ShouldRun(bot)
 			end
 		end
 		if (enemyCount >= 4 or #hEnemyHeroList >= 4)
-			and botMode ~= BOT_MODE_ATTACK
-			and botMode ~= BOT_MODE_TEAM_ROAM
+			and botActiveMode ~= BOT_MODE_ATTACK
+			and botActiveMode ~= BOT_MODE_TEAM_ROAM
 			and bot:GetCurrentMovementSpeed() > 300
 		then
 			local nNearByHeroes = bot:GetNearbyHeroes(700,true,BOT_MODE_NONE);
@@ -1109,7 +1110,7 @@ function X.ShouldRun(bot)
 		end
 		if botLevel >= 9 and botLevel <= 17
 			and (enemyCount >= 3 or #hEnemyHeroList >= 3)
-			and botMode ~= BOT_MODE_LANING
+			and botActiveMode ~= BOT_MODE_LANING
 			and bot:GetCurrentMovementSpeed() > 300
 		then
 			local nNearByHeroes = bot:GetNearbyHeroes(700,true,BOT_MODE_NONE);

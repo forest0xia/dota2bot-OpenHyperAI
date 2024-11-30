@@ -44,11 +44,11 @@ function GetDesire()
 		return BOT_MODE_DESIRE_NONE
 	end
 
-	if J.GetEnemiesAroundAncient(3200) > 0 then
+	if J.GetEnemiesAroundAncient(bot, 3200) > 0 then
 		return BOT_MODE_DESIRE_NONE
 	end
 
-	if DotaTime() - J.Utils.GameStates.recentDefendTime < 5 then
+	if DotaTime() - J.Utils.GameStates.recentDefendTime < 2 then
 		return BOT_MODE_DESIRE_NONE
 	end
 

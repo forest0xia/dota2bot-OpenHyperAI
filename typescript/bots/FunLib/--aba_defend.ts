@@ -93,7 +93,7 @@ export function GetDefendDesireHelper(bot: Unit, lane: Lane): BotModeDesire {
         (jmz.IsDoingTormentor(bot) &&
             jmz.GetAlliesNearLoc(jmz.GetTormentorLocation(team), 900).length >=
                 2 &&
-            jmz.GetEnemiesAroundAncient(2200) > 0)
+            jmz.GetEnemiesAroundAncient(bot, 2200) > 0)
     ) {
         return BotModeDesire.None;
     }
@@ -167,7 +167,7 @@ export function GetDefendDesireHelper(bot: Unit, lane: Lane): BotModeDesire {
             defendDesire = 0.966;
         }
     }
-    const enemiesAroundAncient = jmz.GetEnemiesAroundAncient(2200);
+    const enemiesAroundAncient = jmz.GetEnemiesAroundAncient(bot, 2200);
     let ancientDefendDesire = BotModeDesire.Absolute;
     const midTowerDestroyed = GetTower(team, Tower.Mid3) === null;
     const laneTowersDestroyed =

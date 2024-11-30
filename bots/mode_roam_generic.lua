@@ -35,6 +35,7 @@ local lastStaticLinkDebuffStack = 0
 local AnyAllyAffectedByChainFrost = false
 local ShouldBotsSpreadOut = false
 local nChainFrostBounceDistance = 600
+local cachedTombstoneZombieSlowState = 0
 local nInRangeEnemy, nInRangeAlly, allyTowers, enemyTowers, trySeduce, shouldTempRetreat, botTarget, shouldGoBackToFountain
 
 local laneAndT1s = {
@@ -87,6 +88,10 @@ function GetDesire()
 		if specialDesire and specialDesire > 0 then return Clamp(specialDesire, 0, 0.99) end
 	end
 
+	if J.IsRetreating(bot) and not ShouldNotRetreat() then
+		return BOT_ACTION_DESIRE_NONE
+	end
+
 	-- general items or conditions.
 	local generalRoaming = ConsiderGeneralRoamingInConditions()
 	if generalRoaming then
@@ -106,6 +111,66 @@ function GetDesire()
 	end
 
 	return BOT_MODE_DESIRE_NONE
+end
+
+function ShouldNotRetreat()
+	if bot:HasModifier("modifier_item_satanic_unholy")
+	   or bot:HasModifier("modifier_skeleton_king_reincarnation_scepter_active")
+	   or J.GetModifierTime(bot, "modifier_abaddon_borrowed_time") > 1
+	   or ( bot:GetCurrentMovementSpeed() < 240 and not bot:HasModifier("modifier_arc_warden_spark_wraith_purge") )
+	then
+		return true;
+	end
+	local nAttackAlly = J.GetNearbyHeroes(bot,1000,false,BOT_MODE_ATTACK);
+	if ( bot:HasModifier("modifier_item_mask_of_madness_berserk")
+			or J.CanIgnoreLowHp(bot) )
+		and ( #nAttackAlly >= 1 or J.GetHP(bot) > 0.6 )
+		and (bot:WasRecentlyDamagedByAnyHero(1) or bot:WasRecentlyDamagedByTower(1))
+	then
+		return true;
+	end
+
+	local nAllies = J.GetAllyList(bot,800);
+    if #nAllies <= 1
+	then
+	    return false;
+	end
+
+	if ( botName == "npc_dota_hero_medusa"
+	     or bot:FindItemSlot("item_abyssal_blade") >= 0 )
+		 or bot:HasModifier('modifier_muerta_pierce_the_veil_buff')
+		 and (bot:WasRecentlyDamagedByAnyHero(1) or J.GetHP(bot) > 0.2 or bot:WasRecentlyDamagedByTower(1))
+		and #nAllies >= 3 and #nAttackAlly >= 1
+	then
+		return true;
+	end
+
+	if botName == "npc_dota_hero_skeleton_king"
+		and bot:GetLevel() >= 6 and #nAttackAlly >= 1
+	then
+		local abilityR = bot:GetAbilityByName( "skeleton_king_reincarnation" );
+		if abilityR:GetCooldownTimeRemaining() <= 1.0 and bot:GetMana() >= 160
+		then
+			return true;
+		end
+	end
+
+	for _,ally in pairs(nAllies)
+	do
+		if J.IsValid(ally)
+		then
+			if J.GetHP(bot) >= 0.3 and ( J.GetHP(ally) > 0.88 and ally:GetLevel() >= 12 and ally:GetActiveMode() ~= BOT_MODE_RETREAT)
+			    or ( ally:HasModifier("modifier_black_king_bar_immune") or ally:IsMagicImmune() )
+				or ( ally:HasModifier("modifier_item_mask_of_madness_berserk") and ally:GetAttackTarget() ~= nil )
+				or ally:HasModifier("modifier_abaddon_borrowed_time")
+				or ally:HasModifier("modifier_item_satanic_unholy")
+				or J.CanIgnoreLowHp(ally)
+			then
+				return true;
+			end
+		end
+	end
+	return false;
 end
 
 function Think()
@@ -822,7 +887,22 @@ function ThinkGeneralRoaming()
 		return
 	end
 
-	if J.GetModifierCount(bot, "modifier_huskar_burning_spear_debuff") >= 2 then
+	if J.GetModifierCount(bot, "modifier_huskar_burning_spear_debuff") >= 3 then
+		bot:Action_MoveToLocation(J.GetTeamFountain())
+		return
+	end
+
+	if J.GetModifierCount(bot, "modifier_batrider_sticky_napalm") >= 3 then
+		bot:Action_MoveToLocation(J.GetTeamFountain())
+		return
+	end
+
+	if bot:HasModifier("modifier_undying_tombstone_zombie_deathstrike_slow") then
+		bot:Action_MoveToLocation(J.GetTeamFountain())
+		return
+	end
+
+	if J.GetModifierCount(bot, "modifier_bristleback_quill_spray") >= 3 then
 		bot:Action_MoveToLocation(J.GetTeamFountain())
 		return
 	end
@@ -1145,15 +1225,18 @@ function IsAnyAllyAffectedByChainFrost()
 end
 
 function ConsiderGeneralRoamingInConditions()
+	if not botTarget then
+		botTarget = J.GetAttackableWeakestUnit( bot, 1500, true, true )
+		bot:SetTarget( botTarget )
+	end
+
 	if bot:HasModifier("modifier_item_mask_of_madness_berserk") then
-		local botTarget = J.GetProperTarget(bot)
 		if J.IsValid(botTarget) and J.GetHP(bot) > 0.3 then
 			return BOT_ACTION_DESIRE_ABSOLUTE
 		end
 	end
 
 	if bot:HasModifier("modifier_skeleton_king_reincarnation_scepter_active") then
-		local botTarget = J.GetAttackableWeakestUnit( bot, 1500, true, true )
 		if J.IsValidHero(botTarget) then
 			bot:SetTarget( botTarget )
 			return BOT_ACTION_DESIRE_ABSOLUTE * 2
@@ -1177,6 +1260,18 @@ function ConsiderGeneralRoamingInConditions()
 		local nInRangeEnemy = bot:GetNearbyHeroes(1000, true, BOT_MODE_NONE)
 		if not nInRangeEnemy or #nInRangeEnemy == 0 then
 			return 0.7
+		end
+	end
+
+	local quillSparyStack = J.GetModifierCount(bot, "modifier_bristleback_quill_spray")
+	if quillSparyStack >= 3 then -- 14s
+		local enemy = GetTargetEnemy("npc_dota_hero_bristleback")
+		if enemy ~= nil
+		and (#nInRangeEnemy >= #nInRangeAlly or enemy:GetLevel() >= bot:GetLevel())
+		and J.GetHP(bot) < J.GetHP(enemy) + 0.2
+		and GetUnitToUnitDistance(bot, enemy) <= 900
+		and GetUnitToLocationDistance(bot, J.GetTeamFountain()) > 1000 then
+			return RemapValClamped(quillSparyStack / J.GetHP(bot), 10, 50, BOT_ACTION_DESIRE_LOW, BOT_ACTION_DESIRE_ABSOLUTE)
 		end
 	end
 
@@ -1227,8 +1322,30 @@ function ConsiderGeneralRoamingInConditions()
 
 		if J.GetModifierCount(bot, "modifier_huskar_burning_spear_debuff") >= 3 then -- 9s
 			local enemy = GetTargetEnemy("npc_dota_hero_huskar")
-			if enemy ~= nil and J.GetHP(bot) < J.GetHP(enemy) and GetUnitToUnitDistance(bot, enemy) <= enemy:GetAttackRange() * 2 then
+			if enemy ~= nil and J.GetHP(bot) < J.GetHP(enemy) + 0.2 and GetUnitToUnitDistance(bot, enemy) <= enemy:GetAttackRange() * 2 then
 				return BOT_ACTION_DESIRE_VERYHIGH * 1.2
+			end
+		end
+
+		if J.GetModifierCount(bot, "modifier_batrider_sticky_napalm") >= 3 then -- 6s
+			local enemy = GetTargetEnemy("npc_dota_hero_batrider")
+			if enemy ~= nil and J.GetHP(bot) < J.GetHP(enemy) + 0.2 and GetUnitToUnitDistance(bot, enemy) <= enemy:GetAttackRange() * 3 then
+				return BOT_ACTION_DESIRE_VERYHIGH * 1.2
+			end
+		end
+
+		if bot:HasModifier("modifier_undying_tombstone_zombie_deathstrike_slow") then
+			cachedTombstoneZombieSlowState = DotaTime()
+			if botTarget and not J.Utils.IsUnitWithName(botTarget, "tombstone") then
+				local enemy = J.FindEnemyUnit("tombstone")
+				if not enemy then
+					enemy = GetTargetEnemy("npc_dota_hero_undying")
+				end
+				if J.GetHP(bot) < 0.8
+				and ((J.IsValid(enemy) and GetUnitToUnitDistance(enemy, bot) < 1200) or (DotaTime() - cachedTombstoneZombieSlowState < 3))
+				and J.IsValidHero(nInRangeEnemy[1]) and J.GetHP(nInRangeEnemy) > 0.35 then
+					return BOT_ACTION_DESIRE_VERYHIGH * 1.2
+				end
 			end
 		end
 
@@ -1236,35 +1353,35 @@ function ConsiderGeneralRoamingInConditions()
 		if not J.WeAreStronger(bot, 1200) then
 			if J.GetModifierCount(bot, "modifier_slark_essence_shift_debuff_counter") >= 2 then -- 20 - 80s
 				local enemy = GetTargetEnemy("npc_dota_hero_slark")
-				if enemy ~= nil and J.GetHP(bot) < J.GetHP(enemy) and GetUnitToUnitDistance(bot, enemy) <= enemy:GetAttackRange() * 4 then
-					return BOT_ACTION_DESIRE_VERYHIGH * 1.2
+				if enemy ~= nil and J.GetHP(bot) < J.GetHP(enemy) + 0.1 and GetUnitToUnitDistance(bot, enemy) <= 750 then
+					return BOT_ACTION_DESIRE_ABSOLUTE * 1.1
 				end
 			end
 
-			-- if J.GetModifierCount(bot, "modifier_silencer_glaives_of_wisdom_debuff_counter") >= 2 then -- 20 - 35s
-			-- 	local enemy = GetTargetEnemy("npc_dota_hero_silencer")
-			-- 	if enemy ~= nil and J.GetHP(bot) < J.GetHP(enemy) and GetUnitToUnitDistance(bot, enemy) <= enemy:GetAttackRange() * 2 then
-			-- 		return BOT_ACTION_DESIRE_VERYHIGH * 1.2
-			-- 	end
-			-- end
+			if J.GetModifierCount(bot, "modifier_silencer_glaives_of_wisdom_debuff_counter") >= 2 then -- 20 - 35s
+				local enemy = GetTargetEnemy("npc_dota_hero_silencer")
+				if enemy ~= nil and J.GetHP(bot) < 0.5 and J.GetHP(bot) < J.GetHP(enemy) + 0.1 and GetUnitToUnitDistance(bot, enemy) <= enemy:GetAttackRange() * 2.5 then
+					return BOT_ACTION_DESIRE_HIGH
+				end
+			end
 
 			if J.GetModifierCount(bot, "modifier_ursa_fury_swipes_damage_increase") >= 2 then -- 8 - 20s
 				local enemy = GetTargetEnemy("npc_dota_hero_ursa")
-				if enemy ~= nil and J.GetHP(bot) < J.GetHP(enemy) and GetUnitToUnitDistance(bot, enemy) <= enemy:GetAttackRange() * 4 then
+				if enemy ~= nil and J.GetHP(bot) < J.GetHP(enemy) + 0.1 and GetUnitToUnitDistance(bot, enemy) <= 450 then
 					return BOT_ACTION_DESIRE_VERYHIGH
 				end
 			end
 
 			if bot:HasModifier("modifier_dazzle_poison_touch") then -- 5s - forever
 				local enemy = GetTargetEnemy("npc_dota_hero_dazzle")
-				if enemy ~= nil and J.GetHP(bot) < J.GetHP(enemy) and GetUnitToUnitDistance(bot, enemy) <= enemy:GetAttackRange() * 2 then
+				if enemy ~= nil and J.GetHP(bot) < 0.6 and J.GetHP(bot) < J.GetHP(enemy) + 0.1 and GetUnitToUnitDistance(bot, enemy) <= enemy:GetAttackRange() * 2 then
 					return BOT_ACTION_DESIRE_VERYHIGH
 				end
 			end
 
 			if bot:HasModifier("modifier_maledict") then -- 5s - forever
 				local enemy = GetTargetEnemy("npc_dota_hero_witch_doctor")
-				if enemy ~= nil and J.GetHP(bot) < J.GetHP(enemy) and GetUnitToUnitDistance(bot, enemy) <= enemy:GetAttackRange() * 2 then
+				if enemy ~= nil and J.GetHP(bot) < 0.6 and J.GetHP(bot) < J.GetHP(enemy) + 0.1 and GetUnitToUnitDistance(bot, enemy) <= enemy:GetAttackRange() * 2 then
 					return BOT_ACTION_DESIRE_VERYHIGH * 1.2
 				end
 			end
@@ -1535,6 +1652,15 @@ end
 
 ConsiderHeroSpecificRoaming['npc_dota_hero_windrunner'] = function ()
 	return CheckHighPriorityChannelAbility("windrunner_powershot")
+end
+ConsiderHeroSpecificRoaming['npc_dota_hero_invoker'] = function ()
+	if J.IsValid(botTarget)
+	and GetUnitToUnitDistance(bot, botTarget) < bot:GetAttackRange() - 100
+	and (botTarget:HasModifier("modifier_invoker_tornado") or botTarget:HasModifier("modifier_item_wind_waker")
+		or botTarget:HasModifier("modifier_eul_cyclone") or botTarget:HasModifier("modifier_item_cyclone") or botTarget:IsInvulnerable())
+	and (J.GetHP(botTarget) > 0.3 or J.GetHP(botTarget) > J.GetHP(bot)) then
+		return BOT_MODE_DESIRE_ABSOLUTE * 0.96
+	end
 end
 
 ConsiderHeroSpecificRoaming['npc_dota_hero_tinker'] = function ()

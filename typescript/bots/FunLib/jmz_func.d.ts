@@ -64,7 +64,10 @@ declare function GetTormentorLocation(team: Team): Vector;
 
 declare function GetAlliesNearLoc(location: Vector, radius: number): Unit[];
 
-declare function GetEnemiesAroundAncient(radius: number | null): number;
+declare function GetEnemiesAroundAncient(
+    bot: Unit,
+    radius: number | null
+): number;
 
 declare function GetProperTarget(bot: Unit): Unit;
 

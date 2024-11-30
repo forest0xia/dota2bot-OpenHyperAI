@@ -269,8 +269,17 @@ function X.GetDesire(bot__)
                 then
                     if #tAllyHeroes_all >= #tEnemyHeroes_all and not J.IsRetreating(bot)
                     then
-                        if withinAttackRange then return 0.95 end
-                        return 0.55
+                        if withinAttackRange then return 0.96 end
+                        return 0.56
+                    end
+                end
+
+                if string.find(unitName, 'undying_zombie')
+                then
+                    if #tAllyHeroes_all >= #tEnemyHeroes_all and not J.IsRetreating(bot)
+                    then
+                        if withinAttackRange then return 0.6 end
+                        return 0.25
                     end
                 end
 

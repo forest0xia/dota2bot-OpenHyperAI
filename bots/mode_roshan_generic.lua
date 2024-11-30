@@ -40,7 +40,7 @@ function GetDesire()
 		return BOT_MODE_DESIRE_NONE
 	end
 
-	if J.GetEnemiesAroundAncient(1800) > 0 then
+	if J.GetEnemiesAroundAncient(bot, 1800) > 0 then
 		return BOT_MODE_DESIRE_NONE
 	end
 

@@ -17,6 +17,9 @@ local fKeepManaPercent = 0.39
 local cachedEnemyCountAroundLoc = {}
 local cachedEnemyCountAroundLocTime = {}
 
+local cachedTeamFightLocation = {}
+local cachedTeamFightLocationTime = 0
+
 for i, id in pairs( tAllyIDList )
 do
 
@@ -157,9 +160,9 @@ function J.GetNearbyAroundLocationUnitCount( bEnemy, bHero, nRadius, vLoc )
 	if bHero
 	then
 		if bEnemy then
-			nCount = #J.GetAlliesNearLoc( vLoc, nRadius )
-		else
 			nCount = #J.GetEnemiesNearLoc(vLoc, nRadius)
+		else
+			nCount = #J.GetAlliesNearLoc( vLoc, nRadius )
 		end
 	else
 		if bEnemy then
@@ -862,6 +865,9 @@ end
 
 
 function J.CanKillTarget( npcTarget, dmg, dmgType )
+	if dmgType == DAMAGE_TYPE_PURE then
+		return dmg >= npcTarget:GetHealth()
+	end
 
 	return npcTarget:GetActualIncomingDamage( dmg, dmgType ) >= npcTarget:GetHealth()
 
@@ -2692,8 +2698,15 @@ end
 
 function J.GetTeamFightLocation( bot )
 
+	local team = GetTeam()
+
+	if DotaTime() - cachedTeamFightLocationTime < 1 then
+		return cachedTeamFightLocation[team]
+	end
+	cachedTeamFightLocationTime = DotaTime()
+
 	local targetLocation = nil
-	local numPlayer = GetTeamPlayers( GetTeam() )
+	local numPlayer = GetTeamPlayers( team )
 
 	for i = 1, #numPlayer
 	do
@@ -2708,6 +2721,7 @@ function J.GetTeamFightLocation( bot )
 		end
 	end
 
+	cachedTeamFightLocation[team] = targetLocation
 	return targetLocation
 
 end
@@ -2998,8 +3012,8 @@ function J.CannotBeKilled(bot, botTarget)
 end
 
 function J.CanIgnoreLowHp(bot)
-	return J.GetModifierTime(bot, 'modifier_dazzle_shallow_grave') > 1
-	or J.GetModifierTime(bot, 'modifier_oracle_false_promise_timer') > 1
+	return J.GetModifierTime(bot, 'modifier_dazzle_shallow_grave') > 0.6
+	or J.GetModifierTime(bot, 'modifier_oracle_false_promise_timer') > 0.6
 end
 
 function J.CanBeAttacked( unit )
@@ -3021,9 +3035,13 @@ function J.CanBeAttacked( unit )
 end
 
 
-function J.GetHP( bot )
-	local nCurHealth = bot:GetHealth()
-    local nMaxHealth = bot:GetMaxHealth()
+function J.GetHP( unit )
+	local nCurHealth = unit:GetHealth()
+    local nMaxHealth = unit:GetMaxHealth()
+	if GetTeam() == unit:GetTeam() then
+		nCurHealth = unit:OriginalGetHealth()
+		nMaxHealth = unit:OriginalGetMaxHealth()
+	end
 	if nCurHealth <= 0 then return 0 end
 	return nCurHealth / nMaxHealth
 end
@@ -4527,7 +4545,7 @@ function J.IsInLaningPhase()
 		(J.IsModeTurbo() and DotaTime() < 8 * 60)
 		or DotaTime() < 12 * 60
 	)
-	and GetBot():GetNetWorth() < 3000
+	and GetBot():GetNetWorth() < 5000
 end
 
 function J.IsTormentor(nTarget)
@@ -4742,13 +4760,13 @@ function J.NumHumanBotPlayersInTeam()
 	return nHuman, nBot
 end
 
-function J.GetEnemiesAroundAncient(nRadius)
-	return J.GetEnemiesAroundLoc(GetAncient(GetTeam()):GetLocation(), nRadius)
+function J.GetEnemiesAroundAncient(bot, nRadius)
+	return J.GetEnemiesAroundLoc(GetAncient(bot:GetTeam()):GetLocation(), nRadius)
 end
 
 function J.GetEnemiesAroundLoc(vLoc, nRadius)
 	if not nRadius then nRadius = 2000 end
-	local cacheKey = tostring(vLoc)..'-'..tostring(nRadius)
+	local cacheKey = tostring(vLoc.x)..'-'..tostring(vLoc.y)..'-'..tostring(nRadius)
 	if cachedEnemyCountAroundLocTime[cacheKey] and DotaTime() - cachedEnemyCountAroundLocTime[cacheKey] < 2 then return cachedEnemyCountAroundLoc[cacheKey] end
 	cachedEnemyCountAroundLocTime[cacheKey] = DotaTime()
 
@@ -4797,6 +4815,19 @@ function J.GetEnemiesAroundLoc(vLoc, nRadius)
 
 	cachedEnemyCountAroundLoc[cacheKey] = nUnitCount
 	return nUnitCount
+end
+
+function J.FindEnemyUnit(name)
+	for _, unit in pairs(GetUnitList(UNIT_LIST_ENEMIES))
+	do
+		if J.IsValid(unit)
+		then
+			if string.find(unit:GetUnitName(), name) then
+				return unit
+			end
+		end
+	end
+	return nil
 end
 
 function J.GetHumanPing()

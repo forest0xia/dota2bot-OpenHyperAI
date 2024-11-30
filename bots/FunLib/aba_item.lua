@@ -435,6 +435,9 @@ Item['sSellList'] = {
 
 	"item_spirit_vessel",
 	"item_urn_of_shadows",
+
+	"item_magic_wand",
+	"item_recipe_magic_wand",
 }
 
 local tCanNotSwitchItemList = {}

@@ -637,6 +637,7 @@ function X.ConsiderStaticStorm()
         local nInRangeEnemy = J.GetEnemiesNearLoc(nLocationAoE.targetloc, nRadius * 0.8)
 
 		if nInRangeEnemy ~= nil and #nInRangeEnemy >= 2
+        and GetUnitToLocationDistance(bot, nLocationAoE.targetloc) <= nCastRange
         and not J.IsLocationInChrono(nLocationAoE.targetloc)
         and not J.IsLocationInBlackHole(nLocationAoE.targetloc)
         then
@@ -659,6 +660,7 @@ function X.ConsiderKineticStorm()
             local nInRangeEnemy = J.GetEnemiesNearLoc(nLocationAoE.targetloc, nRadius * 0.8)
 
             if nInRangeEnemy ~= nil and #nInRangeEnemy >= 2
+            and GetUnitToLocationDistance(bot, nLocationAoE.targetloc) <= nCastRange
             and not J.IsLocationInChrono(nLocationAoE.targetloc)
             and not J.IsLocationInBlackHole(nLocationAoE.targetloc)
             then

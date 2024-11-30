@@ -49,10 +49,10 @@ sRoleItemsBuyList['pos_4'] = {
 	"item_force_staff",--
 	"item_guardian_greaves",--
 	"item_cyclone",
+	"item_moon_shard",
 	"item_sheepstick",
 	"item_wind_waker",--
 	"item_ultimate_scepter_2",
-	"item_moon_shard",
 }
 
 sRoleItemsBuyList['pos_5'] = {
@@ -73,9 +73,9 @@ sRoleItemsBuyList['pos_5'] = {
 	"item_boots_of_bearing",--
 	"item_cyclone",
     -- "item_lotus_orb",--
+	"item_moon_shard",
 	"item_sheepstick",--
 	"item_ultimate_scepter_2",
-	"item_moon_shard",
 }
 
 sRoleItemsBuyList['pos_1'] = {
@@ -85,6 +85,7 @@ sRoleItemsBuyList['pos_1'] = {
 
     "item_boots",
     "item_magic_wand",
+    "item_kaya",
     "item_dagon_2",
     "item_travel_boots",
     "item_aghanims_shard",
@@ -92,12 +93,13 @@ sRoleItemsBuyList['pos_1'] = {
     "item_ultimate_scepter",
     "item_octarine_core",--
     "item_dagon_5",--
+    "item_kaya_and_sange",--
     "item_ultimate_scepter_2",
     "item_shivas_guard",
-    "item_travel_boots_2",--
     "item_ethereal_blade",--
-    "item_wind_waker",--
     "item_moon_shard",
+    "item_travel_boots_2",--
+    "item_wind_waker",--
 }
 
 sRoleItemsBuyList['pos_2'] = {
@@ -106,8 +108,9 @@ sRoleItemsBuyList['pos_2'] = {
     "item_faerie_fire",
 
     "item_bottle",
-    "item_magic_wand",
     "item_boots",
+    "item_magic_wand",
+    "item_kaya",
     "item_dagon_2",
     "item_travel_boots",
     "item_aghanims_shard",
@@ -115,12 +118,13 @@ sRoleItemsBuyList['pos_2'] = {
     "item_ultimate_scepter",
     "item_octarine_core",--
     "item_dagon_5",--
+    "item_kaya_and_sange",--
     "item_ultimate_scepter_2",
     "item_shivas_guard",
-    "item_travel_boots_2",--
     "item_ethereal_blade",--
-    "item_wind_waker",--
     "item_moon_shard",
+    "item_travel_boots_2",--
+    "item_wind_waker",--
 }
 
 sRoleItemsBuyList['pos_3'] = {

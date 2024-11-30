@@ -22,21 +22,17 @@ function GetDesire()
 	if GetGameMode() == 23 then currentTime = currentTime * 1.65 end
 	if currentTime < 0 then return BOT_ACTION_DESIRE_NONE end
 
-	if DotaTime() > 20 and DotaTime() - skipLaningState.lastCheckTime < skipLaningState.checkGap then
-		if skipLaningState.count > 6 then
-			print('[WARN] Bot ' ..botName.. ' switching modes too often, now stop it for laning to avoid conflicts.')
-			return 0
-		end
-	else
-		skipLaningState.lastCheckTime = DotaTime()
-		skipLaningState.count = 0
-	end
+	-- if DotaTime() > 20 and DotaTime() - skipLaningState.lastCheckTime < skipLaningState.checkGap then
+	-- 	if skipLaningState.count > 6 then
+	-- 		print('[WARN] Bot ' ..botName.. ' switching modes too often, now stop it for laning to avoid conflicts.')
+	-- 		return 0
+	-- 	end
+	-- else
+	-- 	skipLaningState.lastCheckTime = DotaTime()
+	-- 	skipLaningState.count = 0
+	-- end
 
-	if J.GetEnemiesAroundAncient(3200) > 0 then
-		return BOT_MODE_DESIRE_NONE
-	end
-
-	if DotaTime() - J.Utils.GameStates.recentDefendTime < 5 then
+	if J.GetEnemiesAroundAncient(bot, 3200) > 0 then
 		return BOT_MODE_DESIRE_NONE
 	end
 
@@ -49,10 +45,6 @@ function GetDesire()
 				return BOT_MODE_DESIRE_NONE
 			end
 		end
-	end
-
-	if J.IsGoingOnSomeone( bot ) and J.WeAreStronger(bot, 1200) then
-		return BOT_MODE_DESIRE_NONE
 	end
 
 	-- 如果在打高地 就别撤退去干别的

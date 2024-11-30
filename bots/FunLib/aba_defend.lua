@@ -80,9 +80,10 @@ function Defend.GetDefendDesireHelper(bot, lane)
 		local ancient = GetAncient(GetTeam())
 		defendLoc = ancient:GetLocation()
 
-		if J.GetUnitAllyCountAroundEnemyTarget( ancient, 1600 ) < nEnemyAroundAncient
+		local nDefendAllies = J.GetAlliesNearLoc(defendLoc, 2500)
+		if #nDefendAllies < nEnemyAroundAncient
 		and (#nInRangeEnemy <= 1 or not bot:WasRecentlyDamagedByAnyHero(2)) then
-			return BOT_ACTION_DESIRE_ABSOLUTE * 0.96
+			return BOT_ACTION_DESIRE_ABSOLUTE * 0.98
 		end
 	end
 
@@ -130,11 +131,11 @@ function Defend.GetDefendDesireHelper(bot, lane)
 	local nDefendDesire = 0
 
 	local botLevel = bot:GetLevel()
-	if J.GetPosition(bot) == 1 and botLevel < 8
+	if J.GetPosition(bot) == 1 and botLevel < 6
 	or J.GetPosition(bot) == 2 and botLevel < 6
-	or J.GetPosition(bot) == 3 and botLevel < 6
-	or J.GetPosition(bot) == 4 and botLevel < 5
-	or J.GetPosition(bot) == 5 and botLevel < 5
+	or J.GetPosition(bot) == 3 and botLevel < 5
+	or J.GetPosition(bot) == 4 and botLevel < 4
+	or J.GetPosition(bot) == 5 and botLevel < 4
 	then
 		return BOT_MODE_DESIRE_NONE
 	end
@@ -142,9 +143,11 @@ function Defend.GetDefendDesireHelper(bot, lane)
 	local nH, _ = J.Utils.NumHumanBotPlayersInTeam(GetOpposingTeam())
 	if nH > 0 then
 		local nDistance = 2100
-		local nDefendAllies = J.GetAlliesNearLoc(defendLoc, nDistance);
+		local nDefendAllies = J.GetAlliesNearLoc(defendLoc, nDistance)
+		local nNearEnemies = J.GetEnemiesNearLoc(defendLoc, nDistance)
 		local nEffctiveAlliesNearPingedDefendLoc = #nDefendAllies + #J.Utils.GetAllyIdsInTpToLocation(defendLoc, nDistance)
-		if nEffctiveAlliesNearPingedDefendLoc > #J.GetEnemiesNearLoc(defendLoc, nDistance)
+		if nEffctiveAlliesNearPingedDefendLoc > #nNearEnemies
+		and #nNearEnemies < 3
 		and GetUnitToLocationDistance(bot, defendLoc) > 3000 then
 			return BOT_MODE_DESIRE_NONE
 		end

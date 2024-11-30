@@ -378,17 +378,45 @@ function X.ConsiderE()
 
 end
 
+-- Calculate the best target for Mystic Snake
+local function GetBestSnakeTarget(nCastRange, nSnakeJumpRadius, nSnakeJumps)
+	local bestTarget = nil
+	local possibleTargets = 0
+	local nSnakeSearchRange = nSnakeJumpRadius * 1.2
+
+	local tableNearbyEnemyCreeps = bot:GetNearbyCreeps(nCastRange + nSnakeSearchRange, true)
+	if #tableNearbyEnemyCreeps < nSnakeJumps then
+		local creep = tableNearbyEnemyCreeps[1]
+		if J.IsValid(creep) then
+			-- Check if the creep is a valid starting target and maximize hero jumps
+			local nEnemies = #J.GetEnemiesNearLoc(creep:GetLocation(), nSnakeSearchRange)
+			if nEnemies >= 1 then
+				bestTarget = creep
+				possibleTargets = math.min(#tableNearbyEnemyCreeps + nEnemies, nSnakeJumps)
+			end
+		end
+	elseif #tableNearbyEnemyCreeps >= nSnakeJumps then
+		if (J.IsFarming(bot) or J.IsPushing(bot)) and J.IsValid(tableNearbyEnemyCreeps[1]) then
+			return tableNearbyEnemyCreeps[1], #tableNearbyEnemyCreeps
+		end
+	end
+
+	return bestTarget, possibleTargets
+end
+
 function X.ConsiderW()
 
 	if not abilityW:IsFullyCastable() then return 0 end
 
 	local nCastRange = abilityW:GetCastRange() + 20
-	local nDamage = abilityW:GetSpecialValueInt( 'snake_damage' ) * 2
+	local nSnakeJumps = abilityW:GetSpecialValueInt( 'snake_jumps' )
+	local nSnakeDamage = abilityW:GetSpecialValueInt( 'snake_damage' )
+	local nSnakeJumpRadius = abilityW:GetSpecialValueInt( 'radius' )
 	local nSkillLv = abilityW:GetLevel()
 
 	if J.IsRetreating( bot )
 	then
-		local tableNearbyEnemyHeroes = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
+		local tableNearbyEnemyHeroes = J.GetNearbyHeroes(bot, nCastRange - 200, true, BOT_MODE_NONE )
 		for _, npcEnemy in pairs( tableNearbyEnemyHeroes )
 		do
 			if J.IsValidHero( npcEnemy )
@@ -436,14 +464,27 @@ function X.ConsiderW()
 		if J.IsValidHero( npcTarget )
 			and J.CanCastOnNonMagicImmune( npcTarget )
 			and J.CanCastOnTargetAdvanced( npcTarget )
-			and J.IsInRange( npcTarget, bot, nCastRange + 90 )
 		then
-			return BOT_ACTION_DESIRE_HIGH, npcTarget
+			local snakeTarget, possibleTargets = GetBestSnakeTarget(nCastRange, nSnakeJumpRadius, nSnakeJumps)
+			if snakeTarget
+			and J.IsInRange( snakeTarget, bot, nCastRange + 50 ) then
+				return BOT_ACTION_DESIRE_HIGH, snakeTarget
+			end
+			if J.IsInRange( npcTarget, bot, nCastRange + 50 ) then
+				return BOT_ACTION_DESIRE_HIGH, snakeTarget
+			end
 		end
 	end
 
+	local snakeTarget, possibleTargets = GetBestSnakeTarget(nCastRange, nSnakeJumpRadius, nSnakeJumps)
+	if snakeTarget
+	and J.IsInRange( snakeTarget, bot, nCastRange + 50 ) then
+		return BOT_ACTION_DESIRE_HIGH, snakeTarget
+	end
+
+
 	if nSkillLv >= 3 then
-		local nAoe = bot:FindAoELocation( true, false, bot:GetLocation(), 900, 500, 0, 0 )
+		local nAoe = bot:FindAoELocation( true, false, bot:GetLocation(), nCastRange * 2, nSnakeJumpRadius * 1.2, 0, 0 )
 		local nShouldAoeCount = 5
 		local nCreeps = bot:GetNearbyCreeps( nCastRange, true )
 		local nLaneCreeps = bot:GetNearbyLaneCreeps( 1600, true )

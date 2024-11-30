@@ -476,6 +476,8 @@ local SpecialAOEHeroes = {
 }
 local ShouldBotsSpreadOutCache = nil
 local ShouldBotsSpreadOutCacheTime = 0
+local cachedIsTeamPushingHG = {}
+local cachedIsTeamPushingHGTime = {}
 avoidanceZones = {}
 ____exports.GameStates = {defendPings = nil, recentDefendTime = -200}
 ____exports.LoneDruid = {}
@@ -1065,7 +1067,13 @@ function ____exports.IsNearEnemyHighGroundTower(unit, range)
     return false
 end
 function ____exports.IsTeamPushingSecondTierOrHighGround(bot)
-    return #bot:GetNearbyHeroes(2000, false, BotMode.None) > 2 and (____exports.IsNearEnemySecondTierTower(bot, 1800) or ____exports.IsNearEnemyHighGroundTower(bot, 3000))
+    if cachedIsTeamPushingHGTime[bot:GetPlayerID()] and DotaTime() - cachedIsTeamPushingHGTime[bot:GetPlayerID()] < 1 then
+        return cachedIsTeamPushingHG[bot:GetPlayerID()]
+    end
+    cachedIsTeamPushingHGTime[bot:GetPlayerID()] = DotaTime()
+    local res = #bot:GetNearbyHeroes(2000, false, BotMode.None) > 2 and (____exports.IsNearEnemySecondTierTower(bot, 2000) or ____exports.IsNearEnemyHighGroundTower(bot, 3000))
+    cachedIsTeamPushingHG[bot:GetPlayerID()] = res
+    return res
 end
 function ____exports.GetNumOfAliveHeroes(bEnemy)
     local count = 0
@@ -1084,7 +1092,7 @@ function ____exports.CountMissingEnemyHeroes()
     local count = 0
     for ____, playerdId in ipairs(GetTeamPlayers(GetOpposingTeam())) do
         do
-            local __continue186
+            local __continue187
             repeat
                 if IsHeroAlive(playerdId) then
                     local lastSeenInfo = GetHeroLastSeenInfo(playerdId)
@@ -1092,14 +1100,14 @@ function ____exports.CountMissingEnemyHeroes()
                         local firstInfo = lastSeenInfo[1]
                         if firstInfo.time_since_seen >= 2.5 then
                             count = count + 1
-                            __continue186 = true
+                            __continue187 = true
                             break
                         end
                     end
                 end
-                __continue186 = true
+                __continue187 = true
             until true
-            if not __continue186 then
+            if not __continue187 then
                 break
             end
         end
@@ -1170,7 +1178,7 @@ function ____exports.IsBotPushingTowerInDanger(bot)
         bot:GetLocation(),
         2000
     )
-    if enemyTowerNearby and #nearbyAllies < countAliveEnemies and #nearbyEnemy >= #nearbyAllies - 1 then
+    if enemyTowerNearby and #nearbyAllies < countAliveEnemies and #nearbyEnemy >= #nearbyAllies then
         return true
     end
     return false

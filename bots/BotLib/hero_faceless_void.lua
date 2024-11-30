@@ -599,11 +599,11 @@ function X.ConsiderTimeWalkReverse()
 			end
 		end
 
-		if TimeDilation:IsTrained() and TimeDilation:IsFullyCastable()
-		and J.IsGoingOnSomeone(bot)
-		then
-			return BOT_ACTION_DESIRE_HIGH
-		end
+		-- if TimeDilation:IsTrained() and TimeDilation:IsFullyCastable()
+		-- and J.IsGoingOnSomeone(bot)
+		-- then
+		-- 	return BOT_ACTION_DESIRE_HIGH
+		-- end
 	end
 
 	return BOT_ACTION_DESIRE_NONE

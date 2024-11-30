@@ -36,21 +36,22 @@ local sRoleItemsBuyList = {}
 sRoleItemsBuyList['pos_1'] = {
 	"item_crystal_maiden_outfit",
 --	"item_glimmer_cape",
+    "item_kaya",
+    "item_dagon_2",
 	"item_rod_of_atos",
-	"item_glimmer_cape",--
-	"item_dagon_5",--
+	"item_glimmer_cape",
 	"item_force_staff",
+	"item_dagon_5",--
+	"item_kaya_and_sange",--
 	"item_hurricane_pike",--
 	"item_aghanims_shard",
-	"item_lotus_orb",
-	"item_sheepstick",--
-	"item_ultimate_scepter",
+	"item_shivas_guard",--
+	-- "item_sheepstick",--
 	"item_gungir",--
-	"item_ultimate_scepter_2",
-	"item_cyclone",
-	"item_wind_waker",--
-	"item_travel_boots_2",--
 	"item_moon_shard",
+	"item_ultimate_scepter",
+	"item_ultimate_scepter_2",
+	"item_travel_boots_2",--
 }
 
 sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
@@ -95,6 +96,8 @@ X['sSellList'] = {
 	"item_black_king_bar",
 	"item_quelling_blade",
 
+	"item_shivas_guard",--
+	"item_glimmer_cape",--
 }
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_mage' }, {} end

@@ -59,13 +59,13 @@ sRoleItemsBuyList['pos_2'] = {
     "item_bottle",
     "item_magic_wand",
     "item_boots",
-    "item_eternal_shroud",--
+    "item_kaya_and_sange",--
     "item_blink",
+    "item_eternal_shroud",--
     "item_ultimate_scepter",
     "item_travel_boots",
     "item_bloodstone",--
     "item_black_king_bar",--
-    "item_kaya_and_sange",--
     "item_ultimate_scepter_2",
     "item_overwhelming_blink",--
     "item_travel_boots_2",--

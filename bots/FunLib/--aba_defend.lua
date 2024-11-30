@@ -69,7 +69,7 @@ function ____exports.GetDefendDesireHelper(bot, lane)
     ) >= 3 or jmz.IsDoingTormentor(bot) and #jmz.GetAlliesNearLoc(
         jmz.GetTormentorLocation(team),
         900
-    ) >= 2 and jmz.GetEnemiesAroundAncient(2200) > 0 then
+    ) >= 2 and jmz.GetEnemiesAroundAncient(bot, 2200) > 0 then
         return BotModeDesire.None
     end
     local botLevel = bot:GetLevel()
@@ -119,7 +119,7 @@ function ____exports.GetDefendDesireHelper(bot, lane)
             defendDesire = 0.966
         end
     end
-    local enemiesAroundAncient = jmz.GetEnemiesAroundAncient(2200)
+    local enemiesAroundAncient = jmz.GetEnemiesAroundAncient(bot, 2200)
     local ancientDefendDesire = BotModeDesire.Absolute
     local midTowerDestroyed = GetTower(team, Tower.Mid3) == nil
     local laneTowersDestroyed = GetTower(team, Tower.Top3) == nil and GetTower(team, Tower.Bot3) == nil
