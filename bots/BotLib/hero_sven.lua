@@ -48,8 +48,8 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_greater_crit",--
 	"item_harpoon",--
 	"item_satanic",--
-	"item_swift_blink",--
 	"item_moon_shard",
+	"item_swift_blink",--
 	"item_orchid",
 	"item_bloodthorn",--
 	"item_ultimate_scepter_2",

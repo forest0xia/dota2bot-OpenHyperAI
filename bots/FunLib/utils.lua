@@ -391,6 +391,14 @@ function ____exports.projectPointOntoLine(startPoint, endPoint, point)
         multiply(lineDir, projectionLength)
     )
 end
+function ____exports.IsAnyOfTheBuildingsAlive(buildings)
+    for ____, building in ipairs(buildings) do
+        if building ~= nil and (not building:CanBeSeen() or building:GetHealth() > 0) then
+            return true
+        end
+    end
+    return false
+end
 function ____exports.GetLastSeenEnemyIdsNearLocation(vLoc, nDistance)
     local enemies = {}
     for ____, playerdId in ipairs(GetTeamPlayers(GetOpposingTeam())) do
@@ -479,7 +487,7 @@ local ShouldBotsSpreadOutCacheTime = 0
 local cachedIsTeamPushingHG = {}
 local cachedIsTeamPushingHGTime = {}
 avoidanceZones = {}
-____exports.GameStates = {defendPings = nil, recentDefendTime = -200}
+____exports.GameStates = {defendPings = nil, recentDefendTime = -200, cachedVars = nil}
 ____exports.LoneDruid = {}
 ____exports.FrameProcessTime = 0.05
 ____exports.EstimatedEnemyRoles = {npc_dota_hero_any = {lane = Lane.Mid, role = 2}}
@@ -645,6 +653,22 @@ function ____exports.IsPingedByAnyPlayer(bot, pingTimeGap, minDistance, maxDista
             print(("Bot " .. bot:GetUnitName()) .. " noticed the ping")
             return ping
         end
+    end
+    return nil
+end
+function ____exports.SetCachedVars(key, value)
+    if not ____exports.GameStates.cachedVars then
+        ____exports.GameStates.cachedVars = {}
+    end
+    ____exports.GameStates.cachedVars[key] = value
+    ____exports.GameStates.cachedVars[key .. "-Time"] = DotaTime()
+end
+function ____exports.GetCachedVars(key, withinTime)
+    if not ____exports.GameStates.cachedVars or not ____exports.GameStates.cachedVars[key] then
+        return nil
+    end
+    if DotaTime() - ____exports.GameStates.cachedVars[key .. "-Time"] <= withinTime then
+        return ____exports.GameStates.cachedVars[key]
     end
     return nil
 end
@@ -981,6 +1005,30 @@ function ____exports.IsAnyBarrackAttackByEnemyHero()
     end
     return nil
 end
+function ____exports.IsAnyBarracksOnLaneAlive(bEnemy, lane)
+    local barracks = {}
+    local team = GetTeam()
+    if bEnemy then
+        team = GetOpposingTeam()
+    end
+    if lane == Lane.Top then
+        barracks = {
+            GetBarracks(team, Barracks.TopMelee),
+            GetBarracks(team, Barracks.TopRanged)
+        }
+    elseif lane == Lane.Mid then
+        barracks = {
+            GetBarracks(team, Barracks.MidMelee),
+            GetBarracks(team, Barracks.MidRanged)
+        }
+    elseif lane == Lane.Bot then
+        barracks = {
+            GetBarracks(team, Barracks.BotMelee),
+            GetBarracks(team, Barracks.BotRanged)
+        }
+    end
+    return ____exports.IsAnyOfTheBuildingsAlive(barracks)
+end
 function ____exports.GetEnemyHeroByPlayerId(id)
     for ____, hero in ipairs(GetUnitList(UnitType.EnemyHeroes)) do
         if ____exports.IsValidHero(hero) and hero:GetPlayerID() == id then
@@ -1092,7 +1140,7 @@ function ____exports.CountMissingEnemyHeroes()
     local count = 0
     for ____, playerdId in ipairs(GetTeamPlayers(GetOpposingTeam())) do
         do
-            local __continue187
+            local __continue201
             repeat
                 if IsHeroAlive(playerdId) then
                     local lastSeenInfo = GetHeroLastSeenInfo(playerdId)
@@ -1100,14 +1148,14 @@ function ____exports.CountMissingEnemyHeroes()
                         local firstInfo = lastSeenInfo[1]
                         if firstInfo.time_since_seen >= 2.5 then
                             count = count + 1
-                            __continue187 = true
+                            __continue201 = true
                             break
                         end
                     end
                 end
-                __continue187 = true
+                __continue201 = true
             until true
-            if not __continue187 then
+            if not __continue201 then
                 break
             end
         end

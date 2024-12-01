@@ -33,6 +33,7 @@ export interface GameState {
         pingedTime: number;
     } | null;
     recentDefendTime: number;
+    cachedVars: any;
 }
 
 export interface AvoidanceZone {

@@ -14,12 +14,6 @@ local DireTormentorLoc = Vector(8132, 1102, 1000)
 
 local fKeepManaPercent = 0.39
 
-local cachedEnemyCountAroundLoc = {}
-local cachedEnemyCountAroundLocTime = {}
-
-local cachedTeamFightLocation = {}
-local cachedTeamFightLocationTime = 0
-
 for i, id in pairs( tAllyIDList )
 do
 
@@ -2700,10 +2694,8 @@ function J.GetTeamFightLocation( bot )
 
 	local team = GetTeam()
 
-	if DotaTime() - cachedTeamFightLocationTime < 1 then
-		return cachedTeamFightLocation[team]
-	end
-	cachedTeamFightLocationTime = DotaTime()
+	local res = J.Utils.GetCachedVars('GetTeamFightLocation'..tostring(team), 0.5)
+	if res then return res end
 
 	local targetLocation = nil
 	local numPlayer = GetTeamPlayers( team )
@@ -2721,7 +2713,7 @@ function J.GetTeamFightLocation( bot )
 		end
 	end
 
-	cachedTeamFightLocation[team] = targetLocation
+	J.Utils.SetCachedVars('GetTeamFightLocation', targetLocation)
 	return targetLocation
 
 end
@@ -3215,6 +3207,10 @@ function J.IsHaveAegis( bot )
 end
 
 function J.DoesTeamHaveAegis()
+	local cacheKey = tostring(GetTeam())
+	local res = J.Utils.GetCachedVars('DoesTeamHaveAegis'..cacheKey, 1)
+	if res then return res end
+
 	local numPlayer = GetTeamPlayers( GetTeam() )
 	for i = 1, #numPlayer
 	do
@@ -3222,15 +3218,21 @@ function J.DoesTeamHaveAegis()
 		if J.IsValidHero(member)
 		and J.IsHaveAegis(member)
 		then
+			J.Utils.SetCachedVars('DoesTeamHaveAegis'..cacheKey, true)
 			return true
 		end
 	end
 
+	J.Utils.SetCachedVars('DoesTeamHaveAegis'..cacheKey, false)
 	return false
 end
 
 
 function J.GetCoresAverageNetworth()
+	local cacheKey = tostring(GetTeam())
+	local cache = J.Utils.GetCachedVars('GetCoresAverageNetworth'..cacheKey, 2)
+	if cache then return cache end
+
 	local totalNetWorth = 0
 	local coreCount = 0
 	for i = 1, #GetTeamPlayers( GetTeam() )
@@ -3244,10 +3246,16 @@ function J.GetCoresAverageNetworth()
 		end
 	end
 
-	return totalNetWorth / coreCount
+	local res = totalNetWorth / coreCount
+	J.Utils.SetCachedVars('GetCoresAverageNetworth'..cacheKey, res)
+	return res
 end
 
 function J.GetCoresMaxNetworth()
+	local cacheKey = tostring(GetTeam())
+	local cache = J.Utils.GetCachedVars('GetCoresMaxNetworth'..cacheKey, 2)
+	if cache then return cache end
+
 	local maxNetWorth = 0
 	for i = 1, #GetTeamPlayers( GetTeam() )
 	do
@@ -3262,6 +3270,7 @@ function J.GetCoresMaxNetworth()
 		end
 	end
 
+	J.Utils.SetCachedVars('GetCoresMaxNetworth'..cacheKey, maxNetWorth)
 	return maxNetWorth
 end
 
@@ -3500,6 +3509,10 @@ function J.IsEnemyHeroAroundLocation( vLoc, nRadius )
 end
 
 function J.GetLastSeenEnemiesNearLoc(vLoc, nRadius)
+	local cacheKey = tostring(vLoc.x)..'-'..tostring(vLoc.y)..'-'..tostring(nRadius)
+	local cache = J.Utils.GetCachedVars('GetLastSeenEnemiesNearLoc'..cacheKey, 0.5)
+	if cache then return cache end
+
 	local enemies = {}
 
 	for i, id in pairs( GetTeamPlayers( GetOpposingTeam() ) )
@@ -3518,14 +3531,18 @@ function J.GetLastSeenEnemiesNearLoc(vLoc, nRadius)
 		end
 	end
 
+	J.Utils.SetCachedVars('GetLastSeenEnemiesNearLoc'..cacheKey, count)
 	return enemies
 end
 
 function J.GetNumOfAliveHeroes( bEnemy )
-
 	local count = 0
 	local nTeam = GetTeam()
 	if bEnemy then nTeam = GetOpposingTeam() end
+
+	local cacheKey = tostring(nTeam)
+	local cache = J.Utils.GetCachedVars('GetNumOfAliveHeroes'..cacheKey, 0.5)
+	if cache then return cache end
 
 	for i, id in pairs( GetTeamPlayers( nTeam ) )
 	do
@@ -3535,6 +3552,7 @@ function J.GetNumOfAliveHeroes( bEnemy )
 		end
 	end
 
+	J.Utils.SetCachedVars('GetNumOfAliveHeroes'..cacheKey, count)
 	return count
 
 end
@@ -3565,11 +3583,14 @@ function J.GetHeroesNearLocation( bEnemy, location, distance )
 end
 
 function J.GetAverageLevel( bEnemy )
-
 	local count = 0
 	local sum = 0
 	local nTeam = GetTeam()
 	if bEnemy then nTeam = GetOpposingTeam() end
+
+	local cacheKey = tostring(nTeam)
+	local cache = J.Utils.GetCachedVars('GetAverageLevel'..cacheKey, 1)
+	if cache then return cache end
 
 	for i, id in pairs( GetTeamPlayers( nTeam ) )
 	do
@@ -3577,7 +3598,10 @@ function J.GetAverageLevel( bEnemy )
 		count = count + 1
 	end
 
-	return sum / count
+	local res = sum / count
+
+	J.Utils.SetCachedVars('GetAverageLevel'..cacheKey, res)
+	return res
 
 end
 
@@ -4766,9 +4790,9 @@ end
 
 function J.GetEnemiesAroundLoc(vLoc, nRadius)
 	if not nRadius then nRadius = 2000 end
-	local cacheKey = tostring(vLoc.x)..'-'..tostring(vLoc.y)..'-'..tostring(nRadius)
-	if cachedEnemyCountAroundLocTime[cacheKey] and DotaTime() - cachedEnemyCountAroundLocTime[cacheKey] < 2 then return cachedEnemyCountAroundLoc[cacheKey] end
-	cachedEnemyCountAroundLocTime[cacheKey] = DotaTime()
+	local cacheKey = tostring(vLoc.x)..'-'..tostring(vLoc.y)..'-'..tostring(nRadius)..'-'..tostring(GetOpposingTeam())
+	local cache = J.Utils.GetCachedVars('GetEnemiesAroundLoc'..cacheKey, 0.5)
+	if cache then return cache end
 
 	local nUnitCount = 0
 
@@ -4813,7 +4837,7 @@ function J.GetEnemiesAroundLoc(vLoc, nRadius)
 		end
 	end
 
-	cachedEnemyCountAroundLoc[cacheKey] = nUnitCount
+	J.Utils.SetCachedVars('GetEnemiesAroundLoc'..cacheKey, nUnitCount)
 	return nUnitCount
 end
 
@@ -5021,11 +5045,16 @@ function J.GetAliveCoreCount(nEnemy)
 		team = GetOpposingTeam()
 	end
 
+	local cacheKey = tostring(team)
+	local cache = J.Utils.GetCachedVars('GetAliveCoreCount'..cacheKey, 0.5)
+	if cache then return cache end
+
 	local heroID = GetTeamPlayers(team)
 	if IsHeroAlive(heroID[1]) then count = count + 1 end
 	if IsHeroAlive(heroID[2]) then count = count + 1 end
 	if IsHeroAlive(heroID[3]) then count = count + 1 end
 
+	J.Utils.SetCachedVars('GetAliveCoreCount'..cacheKey, count)
 	return count
 end
 

@@ -119,27 +119,28 @@ function GetDesire()
 	nearbyAllies = J.GetAlliesNearLoc(bot:GetLocation(), 2200)
 	nearbyEnemies = J.GetEnemiesNearLoc(bot:GetLocation(), 2000)
 
-	if J.Utils.IsBotPushingTowerInDanger(bot)
-	and not (#nearbyAllies >= 3 and #nearbyAllies >= #nearbyEnemies) -- 我们人挺多，对面人也挺多，大战似乎在所难免，别跑了
-	and (botMode == BOT_MODE_PUSH_TOWER_BOT
-	or botMode == BOT_MODE_PUSH_TOWER_MID
-	or botMode == BOT_MODE_PUSH_TOWER_TOP
-	or bot:WasRecentlyDamagedByTower(3)
-	or J.Utils.IsValidBuilding(botTarget)) then
-		goToTargetAlly = J.Utils.FindAllyWithAtLeastDistanceAway(bot, 1600)
-		if goToTargetAlly then
-			IsShouldFindTeammates = true
-			ShouldFindTeammatesTime = DotaTime()
-			print("avoid pushing tower for bot: " .. botName)
-			return BOT_ACTION_DESIRE_ABSOLUTE * 0.85
-		end
-	end
+	-- if J.Utils.IsBotPushingTowerInDanger(bot)
+	-- and #nearbyAllies <= 2 and #nearbyAllies < #nearbyEnemies -- 我们人挺多，对面人也挺多，大战似乎在所难免，别跑了
+	-- and (botMode == BOT_MODE_PUSH_TOWER_BOT
+	-- 	or botMode == BOT_MODE_PUSH_TOWER_MID
+	-- 	or botMode == BOT_MODE_PUSH_TOWER_TOP
+	-- 	or bot:WasRecentlyDamagedByTower(3)
+	-- 	or J.Utils.IsValidBuilding(botTarget))
+	-- then
+	-- 	goToTargetAlly = J.Utils.FindAllyWithAtLeastDistanceAway(bot, 1600)
+	-- 	if goToTargetAlly then
+	-- 		IsShouldFindTeammates = true
+	-- 		ShouldFindTeammatesTime = DotaTime()
+	-- 		print("avoid pushing tower for bot: " .. botName)
+	-- 		return BOT_ACTION_DESIRE_ABSOLUTE * 0.85
+	-- 	end
+	-- end
 	-- 避免过早推2塔或者高地
 	if teamAveLvl < 10
 	and nAliveEnemies >= 3
 	and (#nearbyAllies <= 2
 	and #nearbyEnemies >= 2
-	and not (#nearbyAllies >= 3 and #nearbyAllies >= #nearbyEnemies) -- 我们人挺多，对面人也挺多，大战似乎在所难免，别跑了
+	and #nearbyAllies <= 2 and #nearbyAllies < #nearbyEnemies -- 我们人挺多，对面人也挺多，大战似乎在所难免，别跑了
 	or (nAliveEnemies >= #nearbyAllies and nAliveAllies > 3)) then
 		if J.Utils.IsNearEnemySecondTierTower(bot, 1500) then
 			goToTargetAlly = J.Utils.FindAllyWithAtLeastDistanceAway(bot, 1600)

@@ -109,6 +109,7 @@ let avoidanceZones: AvoidanceZone[] = [];
 export const GameStates: GameState = {
     defendPings: null,
     recentDefendTime: -200,
+    cachedVars: null,
 };
 export const LoneDruid = {} as { [key: number]: any };
 export const FrameProcessTime = 0.05;
@@ -291,6 +292,24 @@ export function IsPingedByAnyPlayer(
             print(`Bot ${bot.GetUnitName()} noticed the ping`);
             return ping;
         }
+    }
+    return null;
+}
+
+export function SetCachedVars(key: string, value: any) {
+    if (!GameStates.cachedVars) {
+        GameStates.cachedVars = {};
+    }
+    GameStates.cachedVars[key] = value;
+    GameStates.cachedVars[`${key}-Time`] = DotaTime();
+}
+
+export function GetCachedVars(key: string, withinTime: number) {
+    if (!GameStates.cachedVars || !GameStates.cachedVars[key]) {
+        return null;
+    }
+    if (DotaTime() - GameStates.cachedVars[`${key}-Time`] <= withinTime) {
+        return GameStates.cachedVars[key];
     }
     return null;
 }
@@ -784,6 +803,44 @@ export function IsAnyBarrackAttackByEnemyHero(): Unit | null {
         }
     }
     return null;
+}
+
+export function IsAnyBarracksOnLaneAlive(bEnemy: boolean, lane: Lane): boolean {
+    let barracks: (Unit | null)[] = [];
+    let team = GetTeam();
+    if (bEnemy) {
+        team = GetOpposingTeam();
+    }
+
+    if (lane == Lane.Top) {
+        barracks = [
+            GetBarracks(team, Barracks.TopMelee),
+            GetBarracks(team, Barracks.TopRanged),
+        ];
+    } else if (lane == Lane.Mid) {
+        barracks = [
+            GetBarracks(team, Barracks.MidMelee),
+            GetBarracks(team, Barracks.MidRanged),
+        ];
+    } else if (lane == Lane.Bot) {
+        barracks = [
+            GetBarracks(team, Barracks.BotMelee),
+            GetBarracks(team, Barracks.BotRanged),
+        ];
+    }
+    return IsAnyOfTheBuildingsAlive(barracks);
+}
+
+export function IsAnyOfTheBuildingsAlive(buildings: (Unit | null)[]): boolean {
+    for (const building of buildings) {
+        if (
+            building != null &&
+            (!building.CanBeSeen() || building.GetHealth() > 0)
+        ) {
+            return true;
+        }
+    }
+    return false;
 }
 
 export function GetEnemyHeroByPlayerId(id: number): Unit | null {

@@ -8,7 +8,7 @@ local LanePush = LANE_MID
 local GlyphDuration = 7
 local ShoulNotPushTower = false
 local TowerPushCooldown = 0
-local StartToPushTime = 16 * 60 -- after x mins, start considering to push.
+local StartToPushTime = 15 * 60 -- after x mins, start considering to push.
 local PushDuration = 4.5 * 60 -- keep pushing for x mins.
 local PushGapMinutes = 6 -- only push once in x mins.
 local lastPushTime = 0
@@ -25,6 +25,7 @@ function Push.GetPushDesire(bot, lane)
     local maxDesire = 0.95
     local nModeDesire = bot:GetActiveModeDesire()
     local nInRangeEnemy = bot:GetNearbyHeroes(900, true, BOT_MODE_NONE)
+	local teamAveLvl = J.GetAverageLevel( false )
 
 	if nInRangeEnemy ~= nil and #nInRangeEnemy > 0
     or (bot:GetAssignedLane() ~= lane and J.GetPosition(bot) == 1 and bot:GetLevel() < 12)
@@ -34,24 +35,22 @@ function Push.GetPushDesire(bot, lane)
 	end
 
     -- do not push too early.
-	local currentTime = DotaTime()
-	if GetGameMode() == 23 then
-		currentTime = currentTime * 1.6
-	end
-	if currentTime <= StartToPushTime
-	then
-		return BOT_MODE_DESIRE_NONE
-	end
+    local currentTime = DotaTime()
+    local nH, _ = J.Utils.NumHumanBotPlayersInTeam(GetOpposingTeam())
+    if nH > 0 then
+        if GetGameMode() == 23 then
+            currentTime = currentTime * 1.6
+        end
+        if currentTime <= StartToPushTime
+        then
+            return BOT_MODE_DESIRE_NONE
+        end
+    end
+    if teamAveLvl < 8 then return BOT_MODE_DESIRE_NONE end
 
 	if J.IsDefending(bot) and nModeDesire > 0.8
     then
         maxDesire = 0.80
-    end
-
-    for i = 1, #GetTeamPlayers( GetTeam() )
-    do
-		local member = GetTeamMember(i)
-        if member ~= nil and member:GetLevel() < 8 then return BOT_MODE_DESIRE_NONE end
     end
 
     local human, humanPing = J.GetHumanPing()
@@ -161,6 +160,16 @@ function Push.GetPushDesire(bot, lane)
     local nInRangeAlly__ = J.GetAlliesNearLoc(vEnemyLaneFrontLocation, 1600)
     local nInRangeEnemy__ = J.Utils.GetLastSeenEnemyIdsNearLocation(vEnemyLaneFrontLocation, 1600)
     if (#nInRangeAlly__ < #nInRangeEnemy__)
+    or (
+        teamAveLvl < 10
+        and J.Utils.IsNearEnemySecondTierTower(bot, 1800)
+        and #nInRangeAlly__ < eAliveCount
+    )
+    or (
+        teamAveLvl < 13
+        and J.Utils.IsNearEnemyHighGroundTower(bot, 1800)
+        and #nInRangeAlly__ < eAliveCount
+    )
     then
         ShouldNotPushLane = true
         LanePushCooldown = DotaTime()
@@ -181,7 +190,7 @@ function Push.GetPushDesire(bot, lane)
             end
 
             if aAliveCount >= eAliveCount
-            and J.GetAverageLevel(GetTeam()) >= 12
+            and J.GetAverageLevel( false ) >= 12
             then
                 -- nPushDesire = nPushDesire * RemapValClamped(allyKills / enemyKills, 1, 2, 1, 2)
                 nPushDesire = nPushDesire + RemapValClamped(allyKills / enemyKills, 1, 2, 0.0, 1)
@@ -216,51 +225,56 @@ function IsPushAgainstHumanTiming(nH, bot)
     return time
 end
 
-local TeamLocation = {}
 function Push.WhichLaneToPush(bot)
-    for i = 1, #GetTeamPlayers( GetTeam() ) do
-        local member = GetTeamMember(i)
-        if member ~= nil and member:IsAlive() then
-            TeamLocation[member:GetPlayerID()] = member:GetLocation()
-        end
-    end
 
     local distanceToTop = 0
     local distanceToMid = 0
     local distanceToBot = 0
 
-    for i, id in pairs(GetTeamPlayers(GetTeam()))
-    do
-        if TeamLocation[id] ~= nil and i <= 3
-        then
-            if IsHeroAlive(id)
-            then
-                distanceToTop = math.max(distanceToTop, J.GetDistance(GetLaneFrontLocation(GetTeam(),LANE_TOP, 0), TeamLocation[id]))
-                distanceToMid = math.max(distanceToMid, J.GetDistance(GetLaneFrontLocation(GetTeam(),LANE_MID, 0), TeamLocation[id]))
-                distanceToBot = math.max(distanceToBot, J.GetDistance(GetLaneFrontLocation(GetTeam(),LANE_BOT, 0), TeamLocation[id]))
+    for i = 1, #GetTeamPlayers( GetTeam() ) do
+        local member = GetTeamMember(i)
+        if member ~= nil and member:IsAlive() then
+            local teamLoc = member:GetLocation()
+            if J.GetPosition(member) <= 3 then
+                distanceToTop = math.max(distanceToTop, J.GetDistance(GetLaneFrontLocation(GetTeam(),LANE_TOP, 0), teamLoc))
+                distanceToMid = math.max(distanceToMid, J.GetDistance(GetLaneFrontLocation(GetTeam(),LANE_MID, 0), teamLoc))
+                distanceToBot = math.max(distanceToBot, J.GetDistance(GetLaneFrontLocation(GetTeam(),LANE_BOT, 0), teamLoc))
             end
         end
     end
 
-    if  distanceToTop < distanceToMid
-    and distanceToTop < distanceToBot
-    then
-        return LANE_TOP
-    end
+    local topLaneScore = CalculateLaneScore(distanceToTop, J.Utils.IsAnyBarracksOnLaneAlive(true, LANE_TOP))
+    local midLaneScore = CalculateLaneScore(distanceToMid, J.Utils.IsAnyBarracksOnLaneAlive(true, LANE_MID))
+    local botLaneScore = CalculateLaneScore(distanceToBot, J.Utils.IsAnyBarracksOnLaneAlive(true, LANE_BOT))
 
-    if  distanceToMid < distanceToTop
-    and distanceToMid < distanceToBot
+    if midLaneScore <= topLaneScore
+    and midLaneScore <= botLaneScore
     then
         return LANE_MID
     end
 
-    if  distanceToBot < distanceToTop
-    and distanceToBot < distanceToMid
+    if topLaneScore <= midLaneScore
+    and topLaneScore <= botLaneScore
+    then
+        return LANE_TOP
+    end
+
+    if botLaneScore <= topLaneScore
+    and botLaneScore <= midLaneScore
     then
         return LANE_BOT
     end
 
     return nil
+end
+
+-- the smaller the better
+function CalculateLaneScore(distance, hasBarracks)
+    local delta = 2500
+    if hasBarracks then
+        delta = 0
+    end
+    return distance + delta
 end
 
 function Push.TeamPushLane()
@@ -270,7 +284,7 @@ function Push.TeamPushLane()
     if GetTeam() == TEAM_RADIANT then
         team = TEAM_DIRE
     end
-  
+
     if GetTower(team, TOWER_MID_1) ~= nil then
         return LANE_MID;
     end
@@ -280,7 +294,7 @@ function Push.TeamPushLane()
     if GetTower(team, TOWER_TOP_1) ~= nil then
         return LANE_TOP;
     end
-  
+
     if GetTower(team, TOWER_MID_2) ~= nil then
         return LANE_MID;
     end
@@ -290,7 +304,7 @@ function Push.TeamPushLane()
     if GetTower(team, TOWER_TOP_2) ~= nil then
         return LANE_TOP;
     end
-  
+
     if GetTower(team, TOWER_MID_3) ~= nil
     or GetBarracks(team, BARRACKS_MID_MELEE) ~= nil
     or GetBarracks(team, BARRACKS_MID_RANGED) ~= nil then

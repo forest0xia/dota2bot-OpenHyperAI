@@ -93,7 +93,7 @@ function X.GetDesire(bot__)
                 or string.find(unitName, 'ignis_fatuus')
                 then
                     if J.IsInRange(bot, unit, botAttackRange + 200) then
-                        return 0.7
+                        return 0.96
                     end
                     if #tEnemyHeroes_all == 0 then
                         return 0.9

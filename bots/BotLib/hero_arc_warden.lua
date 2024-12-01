@@ -105,9 +105,9 @@ then
 		"item_sheepstick",--
 		"item_overwhelming_blink",--
 		"item_bloodthorn",--
+		"item_moon_shard",
 		"item_travel_boots_2",--
 		"item_ultimate_scepter_2",
-		"item_moon_shard",
 		"item_aghanims_shard",
 	}
 else
