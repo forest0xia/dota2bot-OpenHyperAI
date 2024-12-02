@@ -1,7 +1,7 @@
 local X = {}
 local bot = GetBot()
 local botName = bot:GetUnitName()
-if bot == nil or bot:IsInvulnerable() or not bot:IsHero() or not bot:IsAlive() or not string.find(botName, "hero") or bot:IsIllusion() then return end
+if bot == nil or bot:IsInvulnerable() or not bot:IsHero() or not string.find(botName, "hero") or bot:IsIllusion() then return end
 
 local team = GetTeam()
 local bDebugMode = ( 1 == 10 )
@@ -97,7 +97,36 @@ local function AbilityLevelUpComplement()
 						end
 					end
 				end
+			else
+				for i = 0, 6 do
+					local hAbility = bot:GetAbilityInSlot(i)
+					local sAbilityName = hAbility:GetName()
+					if hAbility ~= nil then
+						if sAbilityLevelUpList[1] == 'kez_falcon_rush' and sAbilityName == 'kez_echo_slash'
+						then
+							abilityToLevelup = hAbility
+							sAbilityLevelUpList[1] = 'kez_echo_slash'
+						elseif sAbilityLevelUpList[1] == 'kez_talon_toss' and sAbilityName == 'kez_grappling_claw'
+						then
+							abilityToLevelup = hAbility
+							sAbilityLevelUpList[1] = 'kez_grappling_claw'
+						elseif sAbilityLevelUpList[1] == 'kez_shodo_sai' and sAbilityName == 'kez_kazurai_katana'
+						then
+							abilityToLevelup = hAbility
+							sAbilityLevelUpList[1] = 'kez_kazurai_katana'
+						elseif sAbilityLevelUpList[1] == 'kez_ravens_veil' and sAbilityName == 'kez_raptor_dance'
+						then
+							abilityToLevelup = hAbility
+							sAbilityLevelUpList[1] = 'kez_raptor_dance'
+						end
+					end
+				end
 			end
+		end
+
+		if abilityName == 'npc_dota_hero_kez'
+		and (abilityToLevelup == nil or abilityToLevelup:IsHidden()) then
+			return
 		end
 
 		-- fix phoenix_fire_spirits can't upgrade bug.
@@ -1960,7 +1989,7 @@ X.ConsiderItemDesire["item_flask"] = function( hItem )
 
 	if bot:OriginalGetMaxHealth() - bot:OriginalGetHealth() > 500
 		and #nInRangeEnmyList == 0
-		and not bot:WasRecentlyDamagedByAnyHero( 3.2 )
+		and not bot:WasRecentlyDamagedByAnyHero( 2.2 )
 		and not bot:HasModifier( "modifier_filler_heal" )
 		and not bot:HasModifier( "modifier_elixer_healing" )
 		and not bot:HasModifier( "modifier_flask_healing" )
@@ -1981,7 +2010,7 @@ X.ConsiderItemDesire["item_flask"] = function( hItem )
 			and not npcAlly:HasModifier( "modifier_elixer_healing" )
 			and not npcAlly:HasModifier( "modifier_flask_healing" )
 			and not npcAlly:HasModifier( "modifier_juggernaut_healing_ward_heal" )
-			and not npcAlly:WasRecentlyDamagedByAnyHero( 4.0 )
+			and not npcAlly:WasRecentlyDamagedByAnyHero( 3.0 )
 			and not npcAlly:IsIllusion()
 			and not npcAlly:IsChanneling()
 			and npcAlly:OriginalGetMaxHealth() - npcAlly:OriginalGetHealth() > 550 
@@ -5106,7 +5135,7 @@ X.ConsiderItemDesire["item_tpscroll"] = function( hItem )
 				do
 					if J.IsValid(creep)
 					and GetUnitToUnitDistance( nAncient, creep ) <= 800
-					and ( creep:GetAttackTarget() == nAncient or botLV >= 15 )
+					and ( creep:GetAttackTarget() == nAncient or bot:GetLevel() >= 15 )
 					then
 						J.Role['lastFarmTpTime'] = DotaTime()
 						sCastMotive = '保护遗迹'

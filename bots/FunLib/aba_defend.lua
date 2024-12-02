@@ -140,11 +140,11 @@ function Defend.GetDefendDesireHelper(bot, lane)
 		return BOT_MODE_DESIRE_NONE
 	end
 
+	local nDistance = 2100
+	local nNearEnemies = J.GetEnemiesNearLoc(defendLoc, nDistance)
 	local nH, _ = J.Utils.NumHumanBotPlayersInTeam(GetOpposingTeam())
-	if nH > 0 then
-		local nDistance = 2100
+	if nH > 0 or nNearEnemies == 0 then
 		local nDefendAllies = J.GetAlliesNearLoc(defendLoc, nDistance)
-		local nNearEnemies = J.GetEnemiesNearLoc(defendLoc, nDistance)
 		local nEffctiveAlliesNearPingedDefendLoc = #nDefendAllies + #J.Utils.GetAllyIdsInTpToLocation(defendLoc, nDistance)
 		if nEffctiveAlliesNearPingedDefendLoc > #nNearEnemies
 		and #nNearEnemies < 3

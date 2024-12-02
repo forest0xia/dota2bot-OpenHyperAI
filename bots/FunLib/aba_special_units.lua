@@ -260,8 +260,11 @@ function X.GetDesire(bot__)
                     and not bot:HasModifier('modifier_phoenix_fire_spirit_burn')
                     and not J.IsRetreating(bot)
                     then
-                        if J.IsInRange(bot, unit, botAttackRange + 300) then return 0.95 end
-                        return 0.80
+                        local tCloseAllyHeroes = J.GetAlliesNearLoc(unit:GetLocation(), 900)
+                        if J.IsInRange(bot, unit, botAttackRange + 100) and tCloseAllyHeroes >= 2 then return 1.2 end
+                        if J.IsInRange(bot, unit, botAttackRange + 200) and tCloseAllyHeroes >= 2 then return 1 end
+                        if J.IsInRange(bot, unit, botAttackRange + 300) then return 0.99 end
+                        return 0.90
                     end
                 end
 

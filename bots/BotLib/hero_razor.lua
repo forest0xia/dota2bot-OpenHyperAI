@@ -441,7 +441,7 @@ function X.ConsiderW()
 		if J.IsValidHero( nCastTarget )
 			and J.CanCastOnNonMagicImmune( nCastTarget )
 			and J.CanCastOnTargetAdvanced( nCastTarget )
-			and J.IsInRange( bot, nCastTarget, nCastRange * 0.8 )
+			and J.IsInRange( bot, nCastTarget, nCastRange - 180 )
 			and not nCastTarget:HasModifier('modifier_razor_static_link_debuff')
 		then
 			bot:SetTarget( nCastTarget )
@@ -455,7 +455,7 @@ function X.ConsiderW()
 		and not botTarget:HasModifier('modifier_razor_static_link_debuff')
 		and J.CanCastOnNonMagicImmune( botTarget )
 		and J.CanCastOnTargetAdvanced( botTarget )
-		and J.IsInRange( bot, botTarget, nCastRange )
+		and J.IsInRange( bot, botTarget, nCastRange - 100 )
 		and J.GetAllyCount( bot, 1200 ) - J.GetEnemyCount( bot, 1600 ) < 3
 	then
 		return BOT_ACTION_DESIRE_HIGH, botTarget, 'W进攻'..J.Chat.GetNormName( botTarget )

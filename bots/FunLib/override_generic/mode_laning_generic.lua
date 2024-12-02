@@ -10,12 +10,25 @@ local safeAmountFromFront = 300
 function X.OnStart() end
 function X.OnEnd() end
 
-local nEnemyTowers, nEnemyCreeps, assignedLane
+local nEnemyTowers, nEnemyCreeps, assignedLane, tangoDesire, tangoTarget
 
 function X.GetDesire()
 	if J.IsAttacking( bot )
 	or (bot:GetActiveMode() == BOT_MODE_ATTACK and bot:GetActiveModeDesire() > BOT_MODE_DESIRE_MODERATE) then
 		return 0.2
+	end
+
+	tangoDesire = 0
+	if J.HasItem(bot, "item_tango")
+	and bot:OriginalGetMaxHealth() - bot:OriginalGetHealth() > 250
+	and J.GetHP(bot) > 0.15
+	and not J.IsAttacking(bot)
+	and not bot:WasRecentlyDamagedByAnyHero(2)
+	and not bot:HasModifier('modifier_tango_heal') then
+		tangoDesire, tangoTarget = ConsiderTango()
+		if tangoDesire > 0 then
+			return BOT_MODE_DESIRE_VERYHIGH
+		end
 	end
 
 	assignedLane = GetBotTargetLane()
@@ -75,6 +88,12 @@ function X.Think()
 		assignedLane = GetBotTargetLane()
 	end
 
+	if tangoDesire > 0 and tangoTarget then
+		local hItem = bot:GetItemInSlot( bot:FindItemSlot('item_tango') )
+		bot:Action_UseAbilityOnTree( hItem, tangoTarget )
+		return
+	end
+
 	GetBotTargetLane()
 	local AttackRange = bot:GetAttackRange()
 
@@ -105,6 +124,30 @@ function X.Think()
 		bot:Action_MoveToLocation(vLaneFront)
 		return
 	end
+end
+
+function ConsiderTango()
+	local trees = bot:GetNearbyTrees( 800 )
+	local targetTree = trees[1]
+	local nearEnemyList = J.GetNearbyHeroes(bot, 1000, true, BOT_MODE_NONE )
+	local nearestEnemy = nearEnemyList[1]
+	local nearTowerList = bot:GetNearbyTowers( 1400, true )
+	local nearestTower = nearTowerList[1]
+
+	--常规吃树
+	if targetTree ~= nil
+	then
+		local targetTreeLoc = GetTreeLocation( targetTree )
+		if IsLocationVisible( targetTreeLoc )
+			and IsLocationPassable( targetTreeLoc )
+			and ( #nearEnemyList == 0 or not J.IsInRange( bot, nearestEnemy, 800 ) )
+			and ( #nearEnemyList == 0 or GetUnitToLocationDistance( bot, targetTreeLoc ) * 1.6 < GetUnitToUnitDistance( bot, nearestEnemy ) )
+			and ( #nearTowerList == 0 or GetUnitToLocationDistance( nearestTower, targetTreeLoc ) > 920 )
+		then
+			return BOT_ACTION_DESIRE_HIGH, targetTree
+		end
+	end
+	return BOT_ACTION_DESIRE_NONE
 end
 
 return X

@@ -72,10 +72,12 @@ function GetDesire()
 			and not hero:HasModifier("modifier_arc_warden_tempest_double")
 			then
 				table.insert(uniqueEnemies, hero)
-				if hero:IsFacingLocation(bot:GetLocation(), 8) then
+				if J.IsAttacking( hero ) and hero:IsFacingLocation(bot:GetLocation(), 5) then
 					enemyPower = enemyPower + hero:GetRawOffensivePower()
+				elseif hero:IsFacingLocation(bot:GetLocation(), 10) and GetUnitToUnitDistance(hero, bot) < hero:GetAttackRange() + 150 then
+					enemyPower = enemyPower + hero:GetRawOffensivePower() * 0.4
 				else
-					enemyPower = enemyPower + hero:GetRawOffensivePower() / 2
+					enemyPower = enemyPower + hero:GetRawOffensivePower() * 0.2
 				end
 			end
 		end
@@ -200,7 +202,7 @@ function GetDesire()
 	retreatDesire = retreatDesire + RemapValClamped(enemyPower / ourPower, 0, 2, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_VERYHIGH )
 	retreatDesire = retreatDesire + RemapValClamped(nearbyEnemyUnits - nearbyAllyUnits, 0, 5, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_VERYHIGH )
 	retreatDesire = retreatDesire + RemapValClamped(#uniqueEnemies - #uniqueMates, 0, 2, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_VERYHIGH )
-	retreatDesire = retreatDesire + RemapValClamped(J.GetHP(bot), 1, 0.1, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_VERYHIGH * 1.3 )
+	retreatDesire = retreatDesire + RemapValClamped(J.GetHP(bot), 1, 0.1, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_VERYHIGH * 1.1 )
 	possibleMaxDesire = BOT_ACTION_DESIRE_VERYHIGH * 4
 
 	if J.IsValid(closestEnemy) and J.GetHP(bot) < J.GetHP(closestEnemy) then
@@ -259,7 +261,12 @@ function CountNearByUnits(bEnemy, range)
 			end
 			if string.find(unit:GetUnitName(), "tombstone") then deltaEnemy = 2 end
 
-			if not unit:IsFacingLocation(bot:GetLocation(), 8) then deltaEnemy = deltaEnemy/2 end
+			if unit:IsFacingLocation(bot:GetLocation(), 10) and GetUnitToUnitDistance(unit, bot) < unit:GetAttackRange() + 100
+			then
+				deltaEnemy = deltaEnemy * 0.8
+			else
+				deltaEnemy = deltaEnemy * 0.3
+			end
 			nearbyEnemies = nearbyEnemies + deltaEnemy
 		end
 	end

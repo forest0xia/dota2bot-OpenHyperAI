@@ -64,6 +64,7 @@ local hasPickedOneAnnouncer = false
 local checkGoFarmTimeGap = 5
 local botTarget = nil
 local botActiveMode = nil
+local CleanupCachedVarsTime = -100
 
 local buggedFarmAttackHeroes = {
 	"npc_dota_hero_invoker"
@@ -75,6 +76,11 @@ function GetDesire()
 	if bot:IsInvulnerable() or not bot:IsHero() or not bot:IsAlive() or not string.find(botName, "hero") or bot:IsIllusion() then return BOT_MODE_DESIRE_NONE end
 
 	Utils.PrintPings(0.15)
+
+	if DotaTime() - CleanupCachedVarsTime > Utils.CachedVarsCleanTime then
+		Utils.CleanupCachedVars()
+		CleanupCachedVarsTime = DotaTime()
+	end
 
 	PickOneAnnouncer()
 	AnnounceMessages()
@@ -413,7 +419,7 @@ function GetDesire()
 			and (not bot.isBear or (bot.isBear and GetUnitToUnitDistance(bot, Utils.GetLoneDruid(bot).hero) < 1100))
 		-- or ((J.Utils.GameStates.passiveLaningTime or ((bot:GetActiveMode() == BOT_MODE_LANING or bot:GetActiveMode() == BOT_MODE_ATTACK) and bot:GetActiveModeDesire() < 0.2)) and not J.Utils.GameStates.isTimeForPush)
 		)
-		or (DotaTime() > 420 and bot:GetActiveMode() == BOT_MODE_FARM and bot:GetActiveModeDesire() < 0.1)
+		or (DotaTime() > 420 and bot:GetActiveMode() ~= BOT_MODE_FARM and bot:GetActiveModeDesire() < 0.12)
 	then
 		if J.GetDistanceFromEnemyFountain(bot) > 4000
 		then
@@ -438,11 +444,11 @@ function GetDesire()
 				then
 					preferedCamp = nil;
 					return BOT_MODE_DESIRE_NONE;
-				elseif bot:GetHealth() <= 200 
+				elseif (bot:GetHealth() <= 200 or J.GetHP(bot) < 0.3)
 					then
 						preferedCamp = nil;
 						teamTime = DotaTime();
-						return BOT_MODE_DESIRE_VERYLOW;
+						return RemapValClamped(J.GetHP(bot), 0.1, 0.5, BOT_MODE_DESIRE_NONE, BOT_MODE_DESIRE_MODERATE);
 				elseif farmState == 1
 				    then
 						bot.farmLocation = preferedCamp.cattr.location

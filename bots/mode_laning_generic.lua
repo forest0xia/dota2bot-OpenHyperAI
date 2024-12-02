@@ -36,12 +36,12 @@ function GetDesire()
 		return BOT_MODE_DESIRE_NONE
 	end
 
-	if DotaTime() < 30 and bot:WasRecentlyDamagedByAnyHero(5) then
+	if DotaTime() < 30 or bot:WasRecentlyDamagedByAnyHero(5) then
 		local nLane = bot:GetAssignedLane()
 		local nLaneFrontLocation = GetLaneFrontLocation(GetTeam(), nLane, 0)
 		local nDistFromLane = GetUnitToLocationDistance(bot, nLaneFrontLocation)
-		if nDistFromLane > 800 and J.GetHP(bot) < 0.8 then
-			if J.GetHP(bot) < 0.3 or not J.WeAreStronger(bot, 1200) then
+		if nDistFromLane > 700 and J.GetHP(bot) < 0.8 then
+			if J.GetHP(bot) < 0.25 or not J.WeAreStronger(bot, 1200) then
 				return BOT_MODE_DESIRE_NONE
 			end
 		end

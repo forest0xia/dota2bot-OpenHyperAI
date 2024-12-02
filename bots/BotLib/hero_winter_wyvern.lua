@@ -93,9 +93,26 @@ sRoleItemsBuyList['pos_3'] = {
     "item_ultimate_scepter_2",
 }
 
-sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
+sRoleItemsBuyList['pos_2'] = {
+	"item_mid_outfit",
+	-- "item_falcon_blade",
+    "item_witch_blade",
+    "item_ultimate_scepter",
+    "item_force_staff",
+    "item_hurricane_pike",--
+    "item_orchid",
+    "item_yasha_and_kaya",--
+    -- "item_black_king_bar",--
+	"item_bloodthorn",--
+    "item_sphere",--
+    "item_aghanims_shard",
+    "item_skadi",--
+    "item_moon_shard",
+    "item_ultimate_scepter_2",
+    "item_travel_boots_2",--
+}
 
-sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_3']
+sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_2']
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 
@@ -104,6 +121,8 @@ X['sSellList'] = {
 	"item_black_king_bar",
 	"item_quelling_blade",
 
+	"item_skadi",--
+    "item_witch_blade",
 }
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_antimage' }, {} end
@@ -173,6 +192,7 @@ function X.ConsiderArcticBurn()
 
 	local nBonusRange = ArcticBurn:GetSpecialValueInt('attack_range_bonus')
 	local nAttackRange = bot:GetAttackRange()
+    local nNewAttackRange = nAttackRange + nBonusRange
 
 	if not bot:HasScepter()
     then
@@ -185,7 +205,7 @@ function X.ConsiderArcticBurn()
 		then
 			if J.IsValidTarget(botTarget)
             and J.CanCastOnNonMagicImmune(botTarget)
-            and J.IsInRange(bot, botTarget, nAttackRange + nBonusRange)
+            and J.IsInRange(bot, botTarget, nNewAttackRange)
             and not J.IsSuspiciousIllusion(botTarget)
             and not J.IsDisabled(botTarget)
             and not botTarget:HasModifier('modifier_necrolyte_reapers_scythe')
@@ -242,32 +262,33 @@ function X.ConsiderArcticBurn()
 		then
 			if J.IsValidTarget(botTarget)
             and J.CanCastOnNonMagicImmune(botTarget)
-            and J.IsInRange(bot, botTarget, nAttackRange + nBonusRange)
+            and J.IsInRange(bot, botTarget, nNewAttackRange)
             and not J.IsSuspiciousIllusion(botTarget)
             and not J.IsDisabled(botTarget)
             and not botTarget:HasModifier('modifier_necrolyte_reapers_scythe')
 			then
-                if not botTarget:HasModifier('modifier_winter_wyvern_arctic_burn_slow')
+                if ArcticBurn:GetToggleState() == false
                 then
-                    if ArcticBurn:GetToggleState() == false
-                    then
-                        return BOT_ACTION_DESIRE_HIGH
-                    else
-                        return BOT_ACTION_DESIRE_NONE
-                    end
-                end
-
-                if botTarget:HasModifier('modifier_winter_wyvern_arctic_burn_slow')
-                then
-                    if ArcticBurn:GetToggleState() == true
-                    then
-                        return BOT_ACTION_DESIRE_HIGH
-                    else
-                        return BOT_ACTION_DESIRE_NONE
-                    end
+                    return BOT_ACTION_DESIRE_HIGH
+                else
+                    return BOT_ACTION_DESIRE_NONE
                 end
 			end
 		end
+
+        if J.IsInTeamFight(bot, nNewAttackRange)
+        then
+            local realEnemyCount = J.GetEnemiesNearLoc(bot:GetLocation(), nNewAttackRange)
+            if realEnemyCount ~= nil and #realEnemyCount >= 1
+            then
+                if ArcticBurn:GetToggleState() == false
+                then
+                    return BOT_ACTION_DESIRE_HIGH
+                else
+                    return BOT_ACTION_DESIRE_NONE
+                end
+            end
+        end
 
         if J.IsRetreating(bot)
         then
@@ -308,7 +329,10 @@ function X.ConsiderArcticBurn()
 
         if ArcticBurn:GetToggleState() == true
         then
-            return BOT_ACTION_DESIRE_HIGH
+            local nInRangeEnemy = J.GetNearbyHeroes(bot, 1500, true, BOT_MODE_NONE)
+            if #nInRangeEnemy <= 0 then
+                return BOT_ACTION_DESIRE_HIGH
+            end
         end
 	end
 
@@ -758,15 +782,16 @@ function X.ConsiderWintersCurse()
             local nInRangeAlly = J.GetAlliesNearLoc(bot:GetLocation(), 1000)
             if nInRangeAlly ~= nil and #nInRangeAlly <= #realEnemyCount then
                 local nWeakestEnemyHero = J.GetAttackableWeakestUnit( bot, nCastRange + 200, true, true )
-                if J.IsValidHero(nWeakestEnemyHero)
-                and J.GetHP(nWeakestEnemyHero) >= 0.5
-                and not J.IsSuspiciousIllusion(nWeakestEnemyHero)
-                and not J.IsDisabled(nWeakestEnemyHero)
-                and not nWeakestEnemyHero:HasModifier('modifier_enigma_black_hole_pull')
-                and not nWeakestEnemyHero:HasModifier('modifier_faceless_void_chronosphere_freeze')
-                and not nWeakestEnemyHero:HasModifier('modifier_necrolyte_reapers_scythe')
-                and not nWeakestEnemyHero:HasModifier('modifier_winter_wyvern_winters_curse_aura') then
-                    return BOT_ACTION_DESIRE_HIGH, nWeakestEnemyHero
+                local nInRangeAlly = J.GetNearbyHeroes(nWeakestEnemyHero, 400, true, BOT_MODE_NONE)
+                if nInRangeAlly == nil or #nInRangeAlly <= 0 then
+                    if J.IsValidHero(nWeakestEnemyHero)
+                    and J.GetHP(nWeakestEnemyHero) >= 0.5
+                    and not J.IsSuspiciousIllusion(nWeakestEnemyHero)
+                    and not J.IsDisabled(nWeakestEnemyHero)
+                    and not nWeakestEnemyHero:HasModifier('modifier_necrolyte_reapers_scythe')
+                    and not J.IsUnderLongDurationStun(nWeakestEnemyHero) then
+                        return BOT_ACTION_DESIRE_HIGH, nWeakestEnemyHero
+                    end
                 end
             end
         end
@@ -786,17 +811,15 @@ function X.ConsiderWintersCurse()
                 and J.IsInRange(bot, enemyHero, nCastRange)
                 and not J.IsSuspiciousIllusion(enemyHero)
                 and not J.IsDisabled(enemyHero)
-                and not enemyHero:HasModifier('modifier_enigma_black_hole_pull')
-                and not enemyHero:HasModifier('modifier_faceless_void_chronosphere_freeze')
+                and J.GetHP(enemyHero) >= 0.5
                 and not enemyHero:HasModifier('modifier_necrolyte_reapers_scythe')
-                and not enemyHero:HasModifier('modifier_winter_wyvern_winters_curse_aura')
-				then
-					local nInRangeAlly = J.GetAlliesNearLoc(enemyHero:GetLocation(), 1200)
+                and not J.IsUnderLongDurationStun(enemyHero) then
+					local nInRangeAlly = J.GetAlliesNearLoc(enemyHero:GetLocation(), 400)
                     local nTargetInRangeAlly = J.GetEnemiesNearLoc(enemyHero:GetLocation(), 1200)
                     local currDmg = enemyHero:GetEstimatedDamageToTarget(true, bot, nDuration, DAMAGE_TYPE_ALL)
 
-                    if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
-                    and #nInRangeAlly >= #nTargetInRangeAlly
+                    if (nInRangeAlly == nil or #nInRangeAlly <= 0)
+                    and nTargetInRangeAlly ~= nil
                     and currDmg > dmg
                     then
                         nTargetInRangeAlly = J.GetEnemiesNearLoc(enemyHero:GetLocation(), nRadius)
@@ -827,10 +850,9 @@ function X.ConsiderWintersCurse()
             and not J.IsSuspiciousIllusion(enemyHero)
             and not J.IsDisabled(enemyHero)
             and J.IsInRange(bot, enemyHero, nCastRange)
-            and not enemyHero:HasModifier('modifier_enigma_black_hole_pull')
-            and not enemyHero:HasModifier('modifier_faceless_void_chronosphere_freeze')
+            and J.GetHP(enemyHero) > 0.5
             and not enemyHero:HasModifier('modifier_necrolyte_reapers_scythe')
-            and not enemyHero:HasModifier('modifier_winter_wyvern_winters_curse_aura')
+            and not J.IsUnderLongDurationStun(enemyHero)
             then
                 local nInRangeAlly = J.GetAlliesNearLoc(enemyHero:GetLocation(), 1200)
                 local nTargetInRangeAlly = J.GetEnemiesNearLoc(enemyHero:GetLocation(), 1200)
@@ -857,10 +879,14 @@ function X.ConsiderWintersCurse()
         and J.CanCastOnMagicImmune(enemyHero)
         and enemyHero:IsChanneling()
         and not J.IsSuspiciousIllusion(enemyHero)
-        and not enemyHero:HasModifier('modifier_winter_wyvern_winters_curse_aura')
+        and J.GetHP(enemyHero) >= 0.4
+        and not enemyHero:HasModifier('modifier_necrolyte_reapers_scythe')
+        and not J.IsUnderLongDurationStun(enemyHero)
 		then
+            local nInRangeAlly = J.GetAlliesNearLoc(enemyHero:GetLocation(), 400)
             local nInRangeEnemy = J.GetEnemiesNearLoc(enemyHero:GetLocation(), nRadius)
-            if nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
+            if (nInRangeAlly == nil or #nInRangeAlly <= 0)
+            and nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
             then
                 return BOT_ACTION_DESIRE_HIGH, enemyHero
             end

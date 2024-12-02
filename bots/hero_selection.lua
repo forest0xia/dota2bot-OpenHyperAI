@@ -30,6 +30,8 @@ local ROLE_WEIGHT_THRESHOLD = 50
 -- Only pick the top k result of the heroes that have the heighest weight for the role.
 local ROLE_LIST_TOP_K_LIMIT = 35
 
+local CountCounterPicks = 0
+
 --[[
 Game Modes
 [x]: to be added.
@@ -62,7 +64,7 @@ local WeakHeroes = {
 	'npc_dota_hero_keeper_of_the_light',
 	-- 'npc_dota_hero_winter_wyvern',
 	'npc_dota_hero_ancient_apparition',
-	'npc_dota_hero_phoenix',
+	-- 'npc_dota_hero_phoenix',
 	'npc_dota_hero_tinker',
 	'npc_dota_hero_pangolier',
 	'npc_dota_hero_furion',
@@ -253,28 +255,6 @@ function X.ShufflePickOrder(teamPlayers)
 	end
 end
 
-function X.GetMoveTable( nTable )
-
-	local nLenth = #nTable
-	local temp = nTable[nLenth]
-
-	table.remove( nTable, nLenth )
-	table.insert( nTable, 1, temp )
-
-	return nTable
-
-end
-
-function X.IsExistInTable( sString, sStringList )
-
-	for _, sTemp in pairs( sStringList )
-	do
-		if sString == sTemp then return true end
-	end
-
-	return false
-end
-
 function X.IsHumanNotReady( nTeam )
 
 	if GameTime() > 20 or bLineupReserve then return false end
@@ -331,15 +311,16 @@ function X.GetNotRepeatHero( nTable )
 end
 
 function X.IsRepeatHero( sHero )
-	if X.IsInCustomizedPicks(sHero) or (Customize and Customize.Allow_Repeated_Heroes) then
+	if Customize and Customize.Allow_Repeated_Heroes then
 		return false
 	end
 
 	for id = 0, 20
 	do
-		if ( IsTeamPlayer( id ) and GetSelectedHeroName( id ) == sHero )
+		local heroExist = IsTeamPlayer( id ) and GetSelectedHeroName( id ) == sHero
+		if heroExist
 			or ( X.IsBannedHero( sHero ) )
-			or ( X.SkipPickingWeakHeroes(sHero) )
+			or ( X.SkipPickingWeakHeroes(sHero) and not (X.IsInCustomizedPicks(sHero) and not heroExist) )
 		then
 			return true
 		end
@@ -539,8 +520,10 @@ function AllPickHeros()
 					end
 				end
 
-				if selectCounter ~= nil then
+				if CountCounterPicks < 2
+				and selectCounter ~= nil then
 					sSelectHero = selectCounter
+					CountCounterPicks = CountCounterPicks + 1
 				else
 					local synergy = X.GetBestHeroFromPool(i, nOwnTeam)
 					if synergy ~= '' and synergy ~= nil then

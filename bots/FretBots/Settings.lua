@@ -314,6 +314,13 @@ function Settings:ShouldCloseVoting()
 	if state > Settings.voteEndState then
 		return true
 	end
+	if Settings.voteEndTime - votingTimeElapsed == 10 then
+		if #VotedDifficulties <= 0 and (Settings.difficulty == DefaultDifficulty or not Settings.difficulty) and not isVoteForAllyScale then
+			local msg = 'The default difficulty is: '..tostring(DefaultDifficulty) .. '. Type a number to vote.'
+			Utilities:Print(msg, MSG_GOOD)
+		end
+	end
+
 	-- Warn about impending closure if necessary
 	Utilities:Warn(Settings.voteEndTime - votingTimeElapsed,
 									Settings.voteWarnTimes,

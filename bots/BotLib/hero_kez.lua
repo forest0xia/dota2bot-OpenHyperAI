@@ -370,7 +370,7 @@ function X.ConsiderEchoSlash()
         end
     end
 
-    if J.IsFarming(bot)
+    if (J.IsFarming(bot) or J.IsLaning(bot))
     and not J.IsThereCoreNearby(1200)
     and nManaAfter > 0.3
     then
@@ -589,9 +589,9 @@ function X.ConsiderFalconRush()
         return BOT_ACTION_DESIRE_NONE
     end
 
-    local nRushRange = FalconRush:GetSpecialValueInt('rush_range')
+    local nRushRange = FalconRush:GetSpecialValueInt('rush_range') - 50
     local nManaAfter = J.GetManaAfter(FalconRush:GetManaCost())
-    local nDistance = 400
+    local nDistance = bot:GetAttackRange()
 
     if J.IsGoingOnSomeone(bot) then
         if J.IsValidHero(botTarget)
@@ -621,9 +621,9 @@ function X.ConsiderFalconRush()
     if J.IsPushing(bot) then
         if J.IsValidBuilding(botTarget)
         and J.CanBeAttacked(botTarget)
-        and J.IsInRange(bot, botTarget, bot:GetAttackRange() + 150)
+        and J.IsInRange(bot, botTarget, nRushRange)
         and J.IsAttacking(botTarget)
-        and J.GetManaAfter(botTarget) > 0.3
+        and nManaAfter > 0.3
         then
             return BOT_ACTION_DESIRE_HIGH
         end
@@ -633,7 +633,7 @@ function X.ConsiderFalconRush()
         if J.IsRoshan(botTarget)
         and J.CanBeAttacked(botTarget)
         and bot:IsFacingLocation(botTarget:GetLocation(), 15)
-        and J.IsInRange(bot, botTarget, nDistance)
+        and J.IsInRange(bot, botTarget, nRushRange)
         and J.IsAttacking(bot)
         and nManaAfter > 0.25
         then
@@ -645,7 +645,7 @@ function X.ConsiderFalconRush()
         if J.IsTormentor(botTarget)
         and J.CanBeAttacked(botTarget)
         and bot:IsFacingLocation(botTarget:GetLocation(), 15)
-        and J.IsInRange(bot, botTarget, nDistance)
+        and J.IsInRange(bot, botTarget, nRushRange)
         and J.IsAttacking(bot)
         and nManaAfter > 0.25
         then

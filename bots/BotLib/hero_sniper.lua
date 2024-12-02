@@ -43,13 +43,13 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_hurricane_pike",--
 	"item_ultimate_scepter",
 	"item_travel_boots",
-	"item_skadi",--
+	"item_monkey_king_bar",--
 	"item_mjollnir",--
 	"item_broken_satanic",--
 	"item_moon_shard",
+	"item_skadi",--
 	"item_travel_boots_2",--
 	"item_ultimate_scepter_2",
-	"item_butterfly",--
 }
 
 sRoleItemsBuyList['pos_2'] = {
@@ -62,13 +62,13 @@ sRoleItemsBuyList['pos_2'] = {
 	"item_hurricane_pike",--
 	"item_ultimate_scepter",
 	"item_travel_boots",
-	"item_skadi",--
+	"item_monkey_king_bar",--
 	"item_mjollnir",--
 	"item_broken_satanic",--
 	"item_moon_shard",
+	"item_skadi",--
 	"item_travel_boots_2",--
 	"item_ultimate_scepter_2",
-	"item_butterfly",--
 }
 
 sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_1']
@@ -80,14 +80,8 @@ sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_1']
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 X['sSellList'] = {
-	"item_hurricane_pike",
-	"item_urn_of_shadows",
-
 	"item_mjollnir",
 	"item_magic_wand",
-
-	"item_hand_of_midas",
-	"item_urn_of_shadows",
 
 	"item_greater_crit", 
 	"item_hand_of_midas",

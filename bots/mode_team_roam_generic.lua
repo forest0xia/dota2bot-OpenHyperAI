@@ -174,10 +174,10 @@ function GetDesire()
 		pingedDefendDesire = ConsiderPingedDefendDesire()
 	end
 	if pingedDefendDesire > 0 and pingedDefendLocation then
-		print("got pinged to defend for bot: " .. botName)
 		if J.GetHP(GetAncient(team)) <= 0.9 or #nearbyEnemies <= 0 then
-			local enemiesAroundLoc = J.GetEnemiesAroundLoc(pingedDefendLocation, 1600)
-			if nEffctiveAlliesNearPingedDefendLoc and nEffctiveAlliesNearPingedDefendLoc < enemiesAroundLoc then
+			local nNearEnemies = J.GetEnemiesNearLoc(pingedDefendLocation, 1600)
+			if nEffctiveAlliesNearPingedDefendLoc and nEffctiveAlliesNearPingedDefendLoc < #nNearEnemies then
+				print("got pinged to defend for bot: " .. botName)
 				return pingedDefendDesire
 			end
 		end
@@ -305,8 +305,8 @@ function ConsiderPingedDefendDesire()
 
 	local team = GetTeam()
 	local ancient = GetAncient(team):GetLocation()
-	local nEnemyHeroNearAncient = #J.GetLastSeenEnemiesNearLoc(ancient, 2000)
-	local nEnemyUnitsAroundLoc = J.GetAroundTargetLocEnemyUnitCount(ancient, 3000)
+	local nEnemyHeroNearAncient = #J.GetLastSeenEnemiesNearLoc(ancient, 1800)
+	local nEnemyUnitsAroundLoc = J.GetAroundTargetLocEnemyUnitCount(ancient, 2300)
 
 	local enemeyPushingBase = false
 	local nDefendLoc = nil
@@ -353,10 +353,11 @@ function ConsiderPingedDefendDesire()
 		local nDefendAllies = J.GetAlliesNearLoc(saferLoc, SearchNearLocAllyForPingDistance);
 		nEffctiveAlliesNearPingedDefendLoc = #nDefendAllies + #J.Utils.GetAllyIdsInTpToLocation(saferLoc, 1000)
 		nEnemyUnitsAroundLoc = J.GetAroundTargetLocEnemyUnitCount(nDefendLoc, 2000)
+		local lEnemyHeroesAroundLoc = J.GetLastSeenEnemiesNearLoc(nDefendLoc, 2000)
 		local aliveAllies = J.GetNumOfAliveHeroes(false)
 		if nEnemyUnitsAroundLoc >= 1 -- 再确认一次附近还有敌人
-		and ((nEffctiveAlliesNearPingedDefendLoc < aliveAllies and nEffctiveAlliesNearPingedDefendLoc < nEnemyUnitsAroundLoc )
-			or (nEnemyUnitsAroundLoc >= 3 and nEffctiveAlliesNearPingedDefendLoc < aliveAllies))
+		and ((nEffctiveAlliesNearPingedDefendLoc < aliveAllies and nEffctiveAlliesNearPingedDefendLoc <= #lEnemyHeroesAroundLoc + 1 )
+			or (#lEnemyHeroesAroundLoc >= 3 and nEffctiveAlliesNearPingedDefendLoc < aliveAllies))
 		then
 			J.Utils['GameStates']['defendPings'].pingedTime = GameTime()
 			bot:ActionImmediate_Chat("Please come defending", false)
@@ -2123,7 +2124,6 @@ function ConsiderHarassInLaningPhase()
 	local botLvl = bot:GetLevel()
 
 	if J.IsInLaningPhase()
-	and botLvl >= 2
 	and not J.IsCore(bot)
 	and (botLvl >= 4 or (botLvl >= 3 and J.GetPosition(bot) == 4))
 	and J.GetHP(bot) > 0.7

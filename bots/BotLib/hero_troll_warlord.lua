@@ -760,6 +760,17 @@ function X.ConsiderBattleTrance()
         end
     end
 
+    if J.IsRetreating(bot) then
+        local nInRangeEnemy = J.GetEnemiesNearLoc(bot:GetLocation(), 500)
+        if nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
+        and J.GetHP(bot) < 0.3
+        and J.IsValidHero(nInRangeEnemy[1])
+        and nInRangeEnemy[1]:IsFacingLocation(bot:GetLocation(), 35)
+        then
+            return BOT_ACTION_DESIRE_HIGH
+        end
+    end
+
     return BOT_ACTION_DESIRE_NONE
 end
 

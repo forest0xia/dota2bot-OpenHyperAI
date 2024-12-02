@@ -487,67 +487,46 @@ function ThinkIndividualRoaming()
 	end
 
 	-- Phoenix
-	if bot:HasModifier('modifier_phoenix_sun_ray') and not bot:HasModifier('modifier_phoenix_supernova_hiding')
+	if bot:HasModifier('modifier_phoenix_sun_ray')
 	then
-		if J.IsValidHero(bot.targetSunRay)
-		then
-			bot:Action_MoveToLocation(bot.targetSunRay:GetLocation())
+		local nRadius = 130
+		local nBeamDistance = 1150
+		local vBeamEndLoc = J.GetFaceTowardDistanceLocation(bot, nBeamDistance)
+
+		if J.IsValidHero(bot.sun_ray_target) then
+			bot:Action_MoveToLocation(bot.sun_ray_target:GetLocation())
 			return
 		end
-	end
 
-	if bot:HasModifier('modifier_hoodwink_sharpshooter_windup') then
-		local Sharpshooter = bot:GetAbilityByName('hoodwink_sharpshooter')
-		local nCastRange = Sharpshooter:GetCastRange()
-
-		if J.IsValidHero(bot.sharpshooter_target) then
-			bot:Action_MoveToLocation(bot.sharpshooter_target:GetLocation())
-			return
-		else
-			local target = nil
-			local targetHealth = math.huge
-			for _, enemy in pairs(GetUnitList(UNIT_LIST_ENEMY_HEROES)) do
-				if J.IsValidHero(enemy)
-				and J.IsInRange(bot, enemy, nCastRange * 0.8)
-				and J.CanCastOnNonMagicImmune(enemy)
-				and not enemy:HasModifier('modifier_abaddon_borrowed_time')
-				and not enemy:HasModifier('modifier_dazzle_shallow_grave')
-				and not enemy:HasModifier('modifier_necrolyte_reapers_scythe')
-				and not enemy:HasModifier('modifier_item_aeon_disk_buff')
-				and not enemy:HasModifier('modifier_item_blade_mail_reflect')
-				then
-					local enemyHealth = enemy:GetHealth()
-					if enemyHealth < targetHealth then
-						targetHealth = enemyHealth
-						target = enemy
-					end
-				end
-			end
-
-			if target ~= nil then
-				bot:Action_MoveToLocation(target:GetLocation())
+		-- beam other enemy
+		local tEnemyHeroes = bot:GetNearbyHeroes(nBeamDistance, true, BOT_MODE_NONE)
+		for _, enemy in pairs(tEnemyHeroes) do
+			if J.IsValidHero(enemy)
+			and J.CanCastOnNonMagicImmune(enemy)
+			and not enemy:HasModifier('modifier_abaddon_borrowed_time')
+			and not enemy:HasModifier('modifier_dazzle_shallow_grave')
+			and not enemy:HasModifier('modifier_necrolyte_reapers_scythe') then
+				bot.sun_ray_target = enemy
+				bot:Action_MoveToLocation(enemy:GetLocation())
 				return
 			end
+		end
 
-			--
-			for i = 1, #GetTeamPlayers( GetTeam() ) do
-				local member = GetTeamMember(i)
-				if J.IsValidHero(member)
-				and J.IsInRange(bot, member, 1600)
-				then
-					local memberTarget = member:GetAttackTarget()
-					if J.IsValidHero(memberTarget)
-					and J.IsInRange(bot, memberTarget, nCastRange)
-					and J.CanCastOnNonMagicImmune(memberTarget)
-					and not memberTarget:HasModifier('modifier_abaddon_borrowed_time')
-					and not memberTarget:HasModifier('modifier_dazzle_shallow_grave')
-					and not memberTarget:HasModifier('modifier_necrolyte_reapers_scythe')
-					and not memberTarget:HasModifier('modifier_item_aeon_disk_buff')
-					and not memberTarget:HasModifier('modifier_item_blade_mail_reflect')
-					then
-						bot:Action_MoveToLocation(memberTarget:GetLocation())
-						return
-					end
+		-- heal ally
+		local tInRangeAlly = bot:GetNearbyHeroes(nBeamDistance, false, BOT_MODE_NONE)
+		for _, ally in pairs(tInRangeAlly)
+		do
+			if J.IsValidHero(ally)
+			and J.GetHP(ally) < 0.5
+			and ally:WasRecentlyDamagedByAnyHero(3.5)
+			and not ally:IsIllusion()
+			then
+				if not J.IsRunning(ally)
+				or ally:HasModifier('modifier_faceless_void_chronosphere_freeze')
+				or ally:HasModifier('modifier_enigma_black_hole_pull') then
+					bot.sun_ray_target = ally
+					bot:Action_MoveToLocation(ally:GetLocation())
+					return
 				end
 			end
 		end
@@ -1586,7 +1565,7 @@ ConsiderHeroSpecificRoaming['npc_dota_hero_pangolier'] = function ()
 end
 
 ConsiderHeroSpecificRoaming['npc_dota_hero_phoenix'] = function ()
-	if cAbility == nil then cAbility = bot:GetAbilityByName("phoenix_supernova") end
+	cAbility = bot:GetAbilityByName("phoenix_supernova")
 	if cAbility:IsTrained()
 	then
 		if bot:HasModifier('modifier_phoenix_supernova_hiding') then
@@ -1594,16 +1573,14 @@ ConsiderHeroSpecificRoaming['npc_dota_hero_phoenix'] = function ()
 		end
 	end
 
-	if cAbility == nil then cAbility = bot:GetAbilityByName("phoenix_sun_ray") end
+	cAbility = bot:GetAbilityByName("phoenix_sun_ray")
 	if cAbility:IsTrained()
 	then
 		if bot:HasModifier('modifier_phoenix_sun_ray')
-		and not bot:HasModifier('modifier_phoenix_supernova_hiding')
 		then
 			return BOT_MODE_DESIRE_ABSOLUTE
 		end
 	end
-	return BOT_MODE_DESIRE_NONE
 end
 
 ConsiderHeroSpecificRoaming['npc_dota_hero_puck'] = function ()

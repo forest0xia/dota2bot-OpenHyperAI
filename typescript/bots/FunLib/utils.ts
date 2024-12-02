@@ -88,6 +88,8 @@ export const NonTier1Towers = [
     Tower.Base2,
 ];
 
+export const CachedVarsCleanTime = 5;
+
 const SpecialAOEHeroes = [
     "npc_dota_hero_axe",
     "npc_dota_hero_enigma",
@@ -96,11 +98,6 @@ const SpecialAOEHeroes = [
     "npc_dota_hero_sand_king",
     "npc_dota_hero_troll_warlord",
 ];
-let ShouldBotsSpreadOutCache: null | boolean = null;
-let ShouldBotsSpreadOutCacheTime = 0;
-
-let cachedIsTeamPushingHG = {} as { [key: number]: boolean };
-let cachedIsTeamPushingHGTime = {} as { [key: number]: number };
 
 // Global array to store avoidance zones
 let avoidanceZones: AvoidanceZone[] = [];
@@ -314,6 +311,21 @@ export function GetCachedVars(key: string, withinTime: number) {
     return null;
 }
 
+export function CleanupCachedVars() {
+    if (!GameStates.cachedVars) {
+        return;
+    }
+    for (const key in GameStates.cachedVars) {
+        if (key.endsWith("-Time")) {
+            const originalKey = key.slice(0, -5);
+            if (DotaTime() - GameStates.cachedVars[key] > CachedVarsCleanTime) {
+                delete GameStates.cachedVars[originalKey];
+                delete GameStates.cachedVars[key];
+            }
+        }
+    }
+}
+
 // check if the target is a valid unit. can be hero, creep, or building.
 export function IsValidUnit(target: Unit): boolean {
     return (
@@ -410,10 +422,18 @@ export function MergeLists<T>(a: T[], b: T[]): T[] {
     return a.concat(b);
 }
 
-export function RemoveValueFromTable(table_: unknown[], valueToRemove: any) {
+export function RemoveValueFromTable(
+    table_: unknown[],
+    valueToRemove: any,
+    removeAll: boolean
+) {
     for (const index of $range(table_.length, 1, -1)) {
         if (table_[index - 1] === valueToRemove) {
-            table.remove(table_, index);
+            // table.remove(table_, index);
+            delete table_[index - 1];
+            if (!removeAll) {
+                return;
+            }
         }
     }
 }
@@ -926,6 +946,50 @@ export function GetNonTier1TowerWithLeastEnemiesAround(
     return null;
 }
 
+export function GetClosestTowerOrBarrackToAttack(unit: Unit): Unit | null {
+    let closestBuilding: Unit | null = null;
+    let closestDistance: number = Number.MAX_VALUE;
+
+    for (const barrackE of BarrackList) {
+        const barrack = GetBarracks(GetOpposingTeam(), barrackE);
+        if (
+            barrack != null &&
+            barrack.GetHealth() > 0 &&
+            !(
+                barrack.HasModifier("modifier_fountain_glyph") ||
+                barrack.HasModifier("modifier_invulnerable") ||
+                barrack.HasModifier("modifier_backdoor_protection_active")
+            )
+        ) {
+            const distance = GetUnitToUnitDistance(unit, barrack);
+            if (distance < closestDistance) {
+                closestDistance = distance;
+                closestBuilding = barrack;
+            }
+        }
+    }
+    for (const towerId of HighGroundTowers) {
+        const tower = GetTower(GetOpposingTeam(), towerId);
+        if (
+            tower !== null &&
+            IsValidBuilding(tower) &&
+            !(
+                tower.HasModifier("modifier_fountain_glyph") ||
+                tower.HasModifier("modifier_invulnerable") ||
+                tower.HasModifier("modifier_backdoor_protection_active")
+            )
+        ) {
+            const distance = GetUnitToUnitDistance(unit, tower);
+            if (distance < closestDistance) {
+                closestDistance = distance;
+                closestBuilding = tower;
+            }
+        }
+    }
+
+    return closestBuilding;
+}
+
 export function IsNearEnemyHighGroundTower(unit: Unit, range: number): boolean {
     for (const towerId of HighGroundTowers) {
         const tower = GetTower(GetOpposingTeam(), towerId);
@@ -941,18 +1005,21 @@ export function IsNearEnemyHighGroundTower(unit: Unit, range: number): boolean {
 }
 
 export function IsTeamPushingSecondTierOrHighGround(bot: Unit): boolean {
-    if (
-        cachedIsTeamPushingHGTime[bot.GetPlayerID()] &&
-        DotaTime() - cachedIsTeamPushingHGTime[bot.GetPlayerID()] < 1
-    ) {
-        return cachedIsTeamPushingHG[bot.GetPlayerID()];
+    const cachedRes = GetCachedVars(
+        "IsTeamPushingSecondTierOrHighGround" + tostring(bot.GetTeam()),
+        0.5
+    );
+    if (cachedRes !== null) {
+        return cachedRes;
     }
-    cachedIsTeamPushingHGTime[bot.GetPlayerID()] = DotaTime();
     const res =
         bot.GetNearbyHeroes(2000, false, BotMode.None).length > 2 &&
         (IsNearEnemySecondTierTower(bot, 2000) ||
             IsNearEnemyHighGroundTower(bot, 3000));
-    cachedIsTeamPushingHG[bot.GetPlayerID()] = res;
+    SetCachedVars(
+        "IsTeamPushingSecondTierOrHighGround" + tostring(bot.GetTeam()),
+        res
+    );
     return res;
 }
 
@@ -1065,12 +1132,12 @@ export function ShouldBotsSpreadOut(bot: Unit, minDistance: number): boolean {
         return false;
     }
 
-    if (
-        ShouldBotsSpreadOutCache &&
-        DotaTime() - ShouldBotsSpreadOutCacheTime < 10 &&
-        !bot.WasRecentlyDamagedByAnyHero(1)
-    ) {
-        return true;
+    const cachedRes = GetCachedVars(
+        "ShouldBotsSpreadOut" + tostring(bot.GetPlayerID()),
+        2
+    );
+    if (cachedRes !== null) {
+        return cachedRes;
     }
 
     for (const hero of GetUnitList(UnitType.EnemyHeroes)) {
@@ -1078,12 +1145,17 @@ export function ShouldBotsSpreadOut(bot: Unit, minDistance: number): boolean {
             const heroName = hero.GetUnitName();
             if (HasValue(SpecialAOEHeroes, heroName)) {
                 if (hero.GetLevel() >= 8) {
-                    ShouldBotsSpreadOutCache = true;
-                    ShouldBotsSpreadOutCacheTime = DotaTime();
+                    SetCachedVars(
+                        "ShouldBotsSpreadOut" + tostring(bot.GetPlayerID()),
+                        true
+                    );
                     return true;
                 }
             } else {
-                ShouldBotsSpreadOutCache = false;
+                SetCachedVars(
+                    "ShouldBotsSpreadOut" + tostring(bot.GetPlayerID()),
+                    false
+                );
             }
             if (heroName === "npc_dota_hero_troll_warlord") {
                 if (
@@ -1091,11 +1163,16 @@ export function ShouldBotsSpreadOut(bot: Unit, minDistance: number): boolean {
                     hero.HasModifier("modifier_troll_warlord_battle_trance") &&
                     hero.GetAttackRange() < 500
                 ) {
+                    SetCachedVars(
+                        "ShouldBotsSpreadOut" + tostring(bot.GetPlayerID()),
+                        true
+                    );
                     return true; // Troll Warlord with Battle Fury and ultimate active
                 }
             }
         }
     }
+    SetCachedVars("ShouldBotsSpreadOut" + tostring(bot.GetPlayerID()), false);
     return false;
 }
 

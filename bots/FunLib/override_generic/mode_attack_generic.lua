@@ -29,6 +29,10 @@ function X.GetDesire()
 		return bot:GetActiveModeDesire()
 	end
 
+	if J.IsInLaningPhase(bot) and bot:GetLevel() < 4 and J.IsValidHero(botTarget) then
+		return RemapValClamped(J.GetHP(botTarget), 0.5, 1, BOT_ACTION_DESIRE_MODERATE, BOT_ACTION_DESIRE_NONE )
+	end
+
     nEnemyHeroes = J.GetNearbyHeroes(bot, 1200, true)
     nAllyHeroes = J.GetNearbyHeroes(bot, 1200, false)
 	nEnemyTowers = bot:GetNearbyTowers(900, true )

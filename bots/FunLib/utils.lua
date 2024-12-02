@@ -83,6 +83,29 @@ do
     end
 end
 
+local function __TS__StringEndsWith(self, searchString, endPosition)
+    if endPosition == nil or endPosition > #self then
+        endPosition = #self
+    end
+    return string.sub(self, endPosition - #searchString + 1, endPosition) == searchString
+end
+
+local function __TS__StringIncludes(self, searchString, position)
+    if not position then
+        position = 1
+    else
+        position = position + 1
+    end
+    local index = string.find(self, searchString, position, true)
+    return index ~= nil
+end
+
+local function __TS__New(target, ...)
+    local instance = setmetatable({}, target.prototype)
+    instance:____constructor(...)
+    return instance
+end
+
 local function __TS__Class(self)
     local c = {prototype = {}}
     c.prototype.__index = c.prototype
@@ -90,10 +113,137 @@ local function __TS__Class(self)
     return c
 end
 
-local function __TS__New(target, ...)
-    local instance = setmetatable({}, target.prototype)
-    instance:____constructor(...)
-    return instance
+local function __TS__ClassExtends(target, base)
+    target.____super = base
+    local staticMetatable = setmetatable({__index = base}, base)
+    setmetatable(target, staticMetatable)
+    local baseMetatable = getmetatable(base)
+    if baseMetatable then
+        if type(baseMetatable.__index) == "function" then
+            staticMetatable.__index = baseMetatable.__index
+        end
+        if type(baseMetatable.__newindex) == "function" then
+            staticMetatable.__newindex = baseMetatable.__newindex
+        end
+    end
+    setmetatable(target.prototype, base.prototype)
+    if type(base.prototype.__index) == "function" then
+        target.prototype.__index = base.prototype.__index
+    end
+    if type(base.prototype.__newindex) == "function" then
+        target.prototype.__newindex = base.prototype.__newindex
+    end
+    if type(base.prototype.__tostring) == "function" then
+        target.prototype.__tostring = base.prototype.__tostring
+    end
+end
+
+local Error, RangeError, ReferenceError, SyntaxError, TypeError, URIError
+do
+    local function getErrorStack(self, constructor)
+        if debug == nil then
+            return nil
+        end
+        local level = 1
+        while true do
+            local info = debug.getinfo(level, "f")
+            level = level + 1
+            if not info then
+                level = 1
+                break
+            elseif info.func == constructor then
+                break
+            end
+        end
+        if __TS__StringIncludes(_VERSION, "Lua 5.0") then
+            return debug.traceback(("[Level " .. tostring(level)) .. "]")
+        else
+            return debug.traceback(nil, level)
+        end
+    end
+    local function wrapErrorToString(self, getDescription)
+        return function(self)
+            local description = getDescription(self)
+            local caller = debug.getinfo(3, "f")
+            local isClassicLua = __TS__StringIncludes(_VERSION, "Lua 5.0") or _VERSION == "Lua 5.1"
+            if isClassicLua or caller and caller.func ~= error then
+                return description
+            else
+                return (description .. "\n") .. tostring(self.stack)
+            end
+        end
+    end
+    local function initErrorClass(self, Type, name)
+        Type.name = name
+        return setmetatable(
+            Type,
+            {__call = function(____, _self, message) return __TS__New(Type, message) end}
+        )
+    end
+    local ____initErrorClass_1 = initErrorClass
+    local ____class_0 = __TS__Class()
+    ____class_0.name = ""
+    function ____class_0.prototype.____constructor(self, message)
+        if message == nil then
+            message = ""
+        end
+        self.message = message
+        self.name = "Error"
+        self.stack = getErrorStack(nil, self.constructor.new)
+        local metatable = getmetatable(self)
+        if metatable and not metatable.__errorToStringPatched then
+            metatable.__errorToStringPatched = true
+            metatable.__tostring = wrapErrorToString(nil, metatable.__tostring)
+        end
+    end
+    function ____class_0.prototype.__tostring(self)
+        return self.message ~= "" and (self.name .. ": ") .. self.message or self.name
+    end
+    Error = ____initErrorClass_1(nil, ____class_0, "Error")
+    local function createErrorClass(self, name)
+        local ____initErrorClass_3 = initErrorClass
+        local ____class_2 = __TS__Class()
+        ____class_2.name = ____class_2.name
+        __TS__ClassExtends(____class_2, Error)
+        function ____class_2.prototype.____constructor(self, ...)
+            ____class_2.____super.prototype.____constructor(self, ...)
+            self.name = name
+        end
+        return ____initErrorClass_3(nil, ____class_2, name)
+    end
+    RangeError = createErrorClass(nil, "RangeError")
+    ReferenceError = createErrorClass(nil, "ReferenceError")
+    SyntaxError = createErrorClass(nil, "SyntaxError")
+    TypeError = createErrorClass(nil, "TypeError")
+    URIError = createErrorClass(nil, "URIError")
+end
+
+local function __TS__ObjectGetOwnPropertyDescriptors(object)
+    local metatable = getmetatable(object)
+    if not metatable then
+        return {}
+    end
+    return rawget(metatable, "_descriptors") or ({})
+end
+
+local function __TS__Delete(target, key)
+    local descriptors = __TS__ObjectGetOwnPropertyDescriptors(target)
+    local descriptor = descriptors[key]
+    if descriptor then
+        if not descriptor.configurable then
+            error(
+                __TS__New(
+                    TypeError,
+                    ((("Cannot delete property " .. tostring(key)) .. " of ") .. tostring(target)) .. "."
+                ),
+                0
+            )
+        end
+        descriptors[key] = nil
+        return true
+    end
+    target[key] = nil
+    return true
 end
 
 local Set
@@ -474,6 +624,7 @@ ____exports.NonTier1Towers = {
     Tower.Base1,
     Tower.Base2
 }
+____exports.CachedVarsCleanTime = 5
 local SpecialAOEHeroes = {
     "npc_dota_hero_axe",
     "npc_dota_hero_enigma",
@@ -482,10 +633,6 @@ local SpecialAOEHeroes = {
     "npc_dota_hero_sand_king",
     "npc_dota_hero_troll_warlord"
 }
-local ShouldBotsSpreadOutCache = nil
-local ShouldBotsSpreadOutCacheTime = 0
-local cachedIsTeamPushingHG = {}
-local cachedIsTeamPushingHGTime = {}
 avoidanceZones = {}
 ____exports.GameStates = {defendPings = nil, recentDefendTime = -200, cachedVars = nil}
 ____exports.LoneDruid = {}
@@ -672,6 +819,20 @@ function ____exports.GetCachedVars(key, withinTime)
     end
     return nil
 end
+function ____exports.CleanupCachedVars()
+    if not ____exports.GameStates.cachedVars then
+        return
+    end
+    for key in pairs(____exports.GameStates.cachedVars) do
+        if __TS__StringEndsWith(key, "-Time") then
+            local originalKey = string.sub(key, 1, -6)
+            if DotaTime() - ____exports.GameStates.cachedVars[key] > ____exports.CachedVarsCleanTime then
+                __TS__Delete(____exports.GameStates.cachedVars, originalKey)
+                __TS__Delete(____exports.GameStates.cachedVars, key)
+            end
+        end
+    end
+end
 function ____exports.IsValidUnit(target)
     return target ~= nil and not target:IsNull() and target:CanBeSeen() and target:IsAlive() and not target:IsInvulnerable()
 end
@@ -739,10 +900,13 @@ end
 function ____exports.MergeLists(a, b)
     return __TS__ArrayConcat(a, b)
 end
-function ____exports.RemoveValueFromTable(table_, valueToRemove)
+function ____exports.RemoveValueFromTable(table_, valueToRemove, removeAll)
     for index = #table_, 1, -1 do
         if table_[index] == valueToRemove then
-            table.remove(table_, index)
+            __TS__Delete(table_, index)
+            if not removeAll then
+                return
+            end
         end
     end
 end
@@ -1102,6 +1266,37 @@ function ____exports.GetNonTier1TowerWithLeastEnemiesAround(range)
     end
     return nil
 end
+function ____exports.GetClosestTowerOrBarrackToAttack(unit)
+    local closestBuilding = nil
+    local closestDistance = 2 ^ 1024
+    for ____, barrackE in ipairs(____exports.BarrackList) do
+        local barrack = GetBarracks(
+            GetOpposingTeam(),
+            barrackE
+        )
+        if barrack ~= nil and barrack:GetHealth() > 0 and not (barrack:HasModifier("modifier_fountain_glyph") or barrack:HasModifier("modifier_invulnerable") or barrack:HasModifier("modifier_backdoor_protection_active")) then
+            local distance = GetUnitToUnitDistance(unit, barrack)
+            if distance < closestDistance then
+                closestDistance = distance
+                closestBuilding = barrack
+            end
+        end
+    end
+    for ____, towerId in ipairs(____exports.HighGroundTowers) do
+        local tower = GetTower(
+            GetOpposingTeam(),
+            towerId
+        )
+        if tower ~= nil and ____exports.IsValidBuilding(tower) and not (tower:HasModifier("modifier_fountain_glyph") or tower:HasModifier("modifier_invulnerable") or tower:HasModifier("modifier_backdoor_protection_active")) then
+            local distance = GetUnitToUnitDistance(unit, tower)
+            if distance < closestDistance then
+                closestDistance = distance
+                closestBuilding = tower
+            end
+        end
+    end
+    return closestBuilding
+end
 function ____exports.IsNearEnemyHighGroundTower(unit, range)
     for ____, towerId in ipairs(____exports.HighGroundTowers) do
         local tower = GetTower(
@@ -1115,12 +1310,18 @@ function ____exports.IsNearEnemyHighGroundTower(unit, range)
     return false
 end
 function ____exports.IsTeamPushingSecondTierOrHighGround(bot)
-    if cachedIsTeamPushingHGTime[bot:GetPlayerID()] and DotaTime() - cachedIsTeamPushingHGTime[bot:GetPlayerID()] < 1 then
-        return cachedIsTeamPushingHG[bot:GetPlayerID()]
+    local cachedRes = ____exports.GetCachedVars(
+        "IsTeamPushingSecondTierOrHighGround" .. tostring(bot:GetTeam()),
+        0.5
+    )
+    if cachedRes ~= nil then
+        return cachedRes
     end
-    cachedIsTeamPushingHGTime[bot:GetPlayerID()] = DotaTime()
     local res = #bot:GetNearbyHeroes(2000, false, BotMode.None) > 2 and (____exports.IsNearEnemySecondTierTower(bot, 2000) or ____exports.IsNearEnemyHighGroundTower(bot, 3000))
-    cachedIsTeamPushingHG[bot:GetPlayerID()] = res
+    ____exports.SetCachedVars(
+        "IsTeamPushingSecondTierOrHighGround" .. tostring(bot:GetTeam()),
+        res
+    )
     return res
 end
 function ____exports.GetNumOfAliveHeroes(bEnemy)
@@ -1140,7 +1341,7 @@ function ____exports.CountMissingEnemyHeroes()
     local count = 0
     for ____, playerdId in ipairs(GetTeamPlayers(GetOpposingTeam())) do
         do
-            local __continue201
+            local __continue217
             repeat
                 if IsHeroAlive(playerdId) then
                     local lastSeenInfo = GetHeroLastSeenInfo(playerdId)
@@ -1148,14 +1349,14 @@ function ____exports.CountMissingEnemyHeroes()
                         local firstInfo = lastSeenInfo[1]
                         if firstInfo.time_since_seen >= 2.5 then
                             count = count + 1
-                            __continue201 = true
+                            __continue217 = true
                             break
                         end
                     end
                 end
-                __continue201 = true
+                __continue217 = true
             until true
-            if not __continue201 then
+            if not __continue217 then
                 break
             end
         end
@@ -1182,28 +1383,45 @@ function ____exports.ShouldBotsSpreadOut(bot, minDistance)
     if #bot:GetNearbyHeroes(minDistance, false, BotMode.None) < 2 then
         return false
     end
-    if ShouldBotsSpreadOutCache and DotaTime() - ShouldBotsSpreadOutCacheTime < 10 and not bot:WasRecentlyDamagedByAnyHero(1) then
-        return true
+    local cachedRes = ____exports.GetCachedVars(
+        "ShouldBotsSpreadOut" .. tostring(bot:GetPlayerID()),
+        2
+    )
+    if cachedRes ~= nil then
+        return cachedRes
     end
     for ____, hero in ipairs(GetUnitList(UnitType.EnemyHeroes)) do
         if ____exports.IsValidHero(hero) then
             local heroName = hero:GetUnitName()
             if ____exports.HasValue(SpecialAOEHeroes, heroName) then
                 if hero:GetLevel() >= 8 then
-                    ShouldBotsSpreadOutCache = true
-                    ShouldBotsSpreadOutCacheTime = DotaTime()
+                    ____exports.SetCachedVars(
+                        "ShouldBotsSpreadOut" .. tostring(bot:GetPlayerID()),
+                        true
+                    )
                     return true
                 end
             else
-                ShouldBotsSpreadOutCache = false
+                ____exports.SetCachedVars(
+                    "ShouldBotsSpreadOut" .. tostring(bot:GetPlayerID()),
+                    false
+                )
             end
             if heroName == "npc_dota_hero_troll_warlord" then
                 if ____exports.HasItem(hero, "item_bfury") and hero:HasModifier("modifier_troll_warlord_battle_trance") and hero:GetAttackRange() < 500 then
+                    ____exports.SetCachedVars(
+                        "ShouldBotsSpreadOut" .. tostring(bot:GetPlayerID()),
+                        true
+                    )
                     return true
                 end
             end
         end
     end
+    ____exports.SetCachedVars(
+        "ShouldBotsSpreadOut" .. tostring(bot:GetPlayerID()),
+        false
+    )
     return false
 end
 function ____exports.GetAllyIdsInTpToLocation(vLoc, nDistance)

@@ -14,6 +14,7 @@ local PushGapMinutes = 6 -- only push once in x mins.
 local lastPushTime = 0
 
 local pingTimeDelta = 5
+local targetBuilding = nil
 
 function Push.GetPushDesire(bot, lane)
     local botName = bot:GetUnitName()
@@ -22,6 +23,7 @@ function Push.GetPushDesire(bot, lane)
     if bot.laneToPush == nil then bot.laneToPush = lane end
     J.Utils.GameStates.isTimeForPush = false
 
+    targetBuilding = nil
     local maxDesire = 0.95
     local nModeDesire = bot:GetActiveModeDesire()
     local nInRangeEnemy = bot:GetNearbyHeroes(900, true, BOT_MODE_NONE)
@@ -160,21 +162,30 @@ function Push.GetPushDesire(bot, lane)
     local nInRangeAlly__ = J.GetAlliesNearLoc(vEnemyLaneFrontLocation, 1600)
     local nInRangeEnemy__ = J.Utils.GetLastSeenEnemyIdsNearLocation(vEnemyLaneFrontLocation, 1600)
     if (#nInRangeAlly__ < #nInRangeEnemy__)
-    or (
-        teamAveLvl < 10
+    or ( teamAveLvl < 10
         and J.Utils.IsNearEnemySecondTierTower(bot, 1800)
-        and #nInRangeAlly__ < eAliveCount
-    )
-    or (
-        teamAveLvl < 13
+        and #nInRangeAlly__ < eAliveCount )
+    or ( teamAveLvl < 13
         and J.Utils.IsNearEnemyHighGroundTower(bot, 1800)
-        and #nInRangeAlly__ < eAliveCount
-    )
+        and #nInRangeAlly__ < eAliveCount )
     then
         ShouldNotPushLane = true
         LanePushCooldown = DotaTime()
         LanePush = lane
         return BOT_MODE_DESIRE_NONE
+    end
+
+    -- 应该攻击建筑物而不是英雄
+    if J.Utils.IsNearEnemyHighGroundTower(bot, 1000) then
+        if J.IsValidHero(botTarget)
+        and (J.GetHP(bot) < J.GetHP(botTarget) or not J.CanKillTarget(botTarget, bot:GetAttackDamage() * 2.5, DAMAGE_TYPE_PHYSICAL))
+        and not J.IsInRange(bot, botTarget, bot:GetAttackRange() - 30) then
+                targetBuilding = J.Utils.GetClosestTowerOrBarrackToAttack(bot)
+                if targetBuilding then
+                    bot:SetTarget(targetBuilding)
+                    return BOT_MODE_DESIRE_ABSOLUTE
+                end
+        end
     end
 
     -- General Push
@@ -328,6 +339,11 @@ end
 
 function Push.PushThink(bot, lane)
     if J.CanNotUseAction(bot) then return end
+
+    if J.IsValidBuilding(targetBuilding) then
+        bot:Action_AttackUnit(targetBuilding, true)
+        return
+    end
 
     local botAttackRange = bot:GetAttackRange()
     local fDeltaFromFront = (Min(J.GetHP(bot), 0.7) * 1000 - 700) + RemapValClamped(botAttackRange, 300, 700, 0, -600)

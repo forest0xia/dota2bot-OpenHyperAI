@@ -529,9 +529,14 @@ function X.IsEnemyPickRune(nRune)
         if J.IsValidHero(enemy)
         and (enemy:IsFacingLocation(vRuneLocation, 30) or GetUnitToLocationDistance(enemy, vRuneLocation) < 600)
         and (GetUnitToLocationDistance(enemy, vRuneLocation) < GetUnitToLocationDistance(bot, vRuneLocation) + 300)
+		and (bot:WasRecentlyDamagedByAnyHero(6) and GetUnitToUnitDistance(bot, enemy) < enemy:GetAttackRange() + 300) -- 别被无脑a
         then
             return true
         end
+	end
+
+	if #nEnemyHeroes >= 2 then
+		return true
 	end
 
 	return false

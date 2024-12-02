@@ -507,7 +507,7 @@ function X.ConsiderVendetta()
             local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 800, false, BOT_MODE_NONE)
 
             if nInRangeAlly ~= nil
-            and nInRangeAlly >= nTargetInRangeAlly
+            and #nInRangeAlly >= #nTargetInRangeAlly
             then
                 bot.canVendettaKill = true
                 bot.vendettaTarget = enemyHero

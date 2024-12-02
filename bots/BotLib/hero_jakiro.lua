@@ -33,22 +33,6 @@ local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 
 local sRoleItemsBuyList = {}
 
-sRoleItemsBuyList['pos_1'] = {
-	"item_crystal_maiden_outfit",
---	"item_glimmer_cape",
-	"item_aghanims_shard",
-	"item_force_staff",
-	"item_ultimate_scepter",
-	"item_hurricane_pike",
-	"item_gungir",--
-	"item_sheepstick",
-	"item_octarine_core",
-	"item_cyclone", 
-	"item_wind_waker",
-	"item_moon_shard",
-	"item_ultimate_scepter_2",
-}
-
 sRoleItemsBuyList['pos_3'] = {
 	"item_mage_outfit",
 	"item_ancient_janggo",
@@ -99,7 +83,27 @@ sRoleItemsBuyList['pos_5'] = {
 	"item_ultimate_scepter_2",
 }
 
-sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
+sRoleItemsBuyList['pos_2'] = {
+	"item_crystal_maiden_outfit",
+	-- "item_falcon_blade",
+    "item_witch_blade",
+    "item_orchid",
+    "item_force_staff",
+    "item_ultimate_scepter",
+    "item_hurricane_pike",--
+    "item_yasha_and_kaya",--
+    -- "item_black_king_bar",--
+	"item_bloodthorn",--
+	-- "item_gungir",--
+    "item_sphere",--
+    "item_aghanims_shard",
+    "item_skadi",--
+    "item_moon_shard",
+    "item_ultimate_scepter_2",
+    "item_travel_boots_2",--
+}
+
+sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_2']
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 
@@ -116,6 +120,9 @@ X['sSellList'] = {
 
 	"item_shivas_guard",
 	'item_magic_wand',
+
+	"item_skadi",--
+    "item_witch_blade",
 }
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_mage' }, {} end

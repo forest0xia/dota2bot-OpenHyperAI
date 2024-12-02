@@ -52,17 +52,16 @@ sRoleItemsBuyList['pos_2'] = {
 	"item_mid_outfit",
 	"item_dragon_lance",
 	"item_witch_blade",
-    "item_force_staff",
 	"item_hurricane_pike",--
-	"item_aghanims_shard",
 	"item_black_king_bar",--
-	"item_sheepstick",--
-	"item_devastator",--
-	"item_travel_boots",
-	"item_moon_shard",
-	"item_ultimate_scepter_2",
+	"item_aghanims_shard",
 	"item_orchid",
 	"item_bloodthorn",--
+	"item_devastator",--
+	"item_sheepstick",--
+	"item_moon_shard",
+	"item_travel_boots",
+	"item_ultimate_scepter_2",
 	"item_travel_boots_2",--
 }
 
@@ -91,19 +90,18 @@ sRoleItemsBuyList['pos_3'] = {
 
 sRoleItemsBuyList['pos_1'] = {
 	"item_crystal_maiden_outfit",
-	"item_aghanims_shard",
-	"item_force_staff",
-	"item_rod_of_atos",
+	"item_dragon_lance",
+	"item_witch_blade",
 	"item_hurricane_pike",--
 	"item_black_king_bar",--
-	"item_sheepstick",--
-	"item_gungir",--
-	"item_moon_shard",
-	"item_ultimate_scepter",
-	"item_ultimate_scepter_2",
+	"item_aghanims_shard",
 	"item_orchid",
 	"item_bloodthorn",--
+	"item_devastator",--
+	"item_sheepstick",--
+	"item_moon_shard",
 	"item_travel_boots",
+	"item_ultimate_scepter_2",
 	"item_travel_boots_2",--
 }
 

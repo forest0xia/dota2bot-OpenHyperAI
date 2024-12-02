@@ -432,8 +432,8 @@ function X.ConsiderFiresnapCookie()
             and not J.IsLocationInChrono(enemyHero:GetLocation())
             and not J.IsLocationInBlackHole(enemyHero:GetLocation())
             then
-                local nInRangeAlly = J.GetNearbyHeroes(botTarget, 1200, true, BOT_MODE_NONE)
-                local nTargetInRangeAlly = J.GetNearbyHeroes(botTarget, 1200, false, BOT_MODE_NONE)
+                local nInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, true, BOT_MODE_NONE)
+                local nTargetInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
 
                 if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
                 and #nInRangeAlly >= #nTargetInRangeAlly
