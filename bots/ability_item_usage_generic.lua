@@ -6305,7 +6305,7 @@ X.ConsiderItemDesire['item_dust'] = function(item)
 	if bot:HasModifier('modifier_sandking_sand_storm_slow')
 	or bot:HasModifier('modifier_sandking_sand_storm_slow_aura_thinker')
 	then
-		return BOT_ACTION_DESIRE_HIGH, bot, 'none', nil
+		return BOT_ACTION_DESIRE_VERYHIGH, bot, 'none', nil
 	end
 
 	local nInRangeEnemy = J.GetEnemiesNearLoc(bot:GetLocation(), nRadius)
@@ -6346,7 +6346,7 @@ X.ConsiderItemDesire['item_dust'] = function(item)
 				local nEnemyTowers = enemyHero:GetNearbyTowers(700, true)
 				if nEnemyTowers == nil or #nEnemyTowers == 0
 				then
-					return BOT_ACTION_DESIRE_HIGH, bot, 'none', nil
+					return BOT_ACTION_DESIRE_VERYHIGH, bot, 'none', nil
 				end
 			end	
 		end	
