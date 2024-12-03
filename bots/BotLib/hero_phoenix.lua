@@ -437,7 +437,7 @@ function X.ConsiderFireSpirits()
     local tEnemyLaneCreeps = bot:GetNearbyLaneCreeps(math.min(nCastRange, 1600), true)
 
     if (J.IsPushing(bot) or J.IsDefending(bot))
-    and not J.IsThereCoreNearby(1200)
+    and not J.IsThereNonSelfCoreNearby(1200)
     then
         if #tEnemyLaneCreeps >= 4
         and J.CanBeAttacked(tEnemyLaneCreeps[1])
@@ -463,7 +463,7 @@ function X.ConsiderFireSpirits()
 
         if #tEnemyLaneCreeps >= 3
         and not J.DoesSomeoneHaveModifier(tEnemyLaneCreeps, 'modifier_phoenix_fire_spirit_burn')
-        and not J.IsThereCoreNearby(1200)
+        and not J.IsThereNonSelfCoreNearby(1200)
         then
             return BOT_ACTION_DESIRE_HIGH
         end
@@ -600,7 +600,7 @@ function X.ConsiderFireSpiritsLaunch()
     local vCenterLaneCreeps = J.GetCenterOfUnits(tEnemyLaneCreeps)
 
     if (J.IsPushing(bot) or J.IsDefending(bot))
-    and not J.IsThereCoreNearby(1200)
+    and not J.IsThereNonSelfCoreNearby(1200)
     then
         if #tEnemyLaneCreeps >= 4
         and J.CanBeAttacked(tEnemyLaneCreeps[1])
@@ -634,7 +634,7 @@ function X.ConsiderFireSpiritsLaunch()
         if #tEnemyLaneCreeps >= 3
         and J.CanBeAttacked(tEnemyLaneCreeps[1])
         and not J.IsRunning(tEnemyLaneCreeps[1])
-        and not J.IsThereCoreNearby(1200)
+        and not J.IsThereNonSelfCoreNearby(1200)
         then
             local eta = GetUnitToLocationDistance(bot, vCenterLaneCreeps) / nSpeed
             if DotaTime() > FireSpiritsLaunchTime + eta + 0.25

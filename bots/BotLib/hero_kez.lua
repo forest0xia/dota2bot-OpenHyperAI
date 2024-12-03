@@ -345,7 +345,7 @@ function X.ConsiderEchoSlash()
     then
         if J.IsValidHero(hEnemyList[1])
         and J.IsInRange(bot, hEnemyList[1], 400)
-        and bot:IsFacingLocation(J.GetTeamFountain(), 30)
+        and bot:IsFacingLocation(J.GetTeamFountain(), 20)
         and J.CanBeAttacked(hEnemyList[1])
         and not hEnemyList[1]:HasModifier('modifier_abaddon_borrowed_time')
         and not hEnemyList[1]:HasModifier('modifier_necrolyte_reapers_scythe')
@@ -355,7 +355,7 @@ function X.ConsiderEchoSlash()
     end
 
     if (J.IsPushing(bot) or J.IsDefending(bot))
-    and not J.IsThereCoreNearby(1200)
+    and not J.IsThereNonSelfCoreNearby(1200)
     and nManaAfter > 0.4
     then
         local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nDistance, true)
@@ -364,14 +364,14 @@ function X.ConsiderEchoSlash()
         and not J.IsRunning(nEnemyLaneCreeps[1])
         then
             local nLocationAoE = bot:FindAoELocation(true, false, nEnemyLaneCreeps[1]:GetLocation(), 0, nRadius, 0, 0)
-            if nLocationAoE.count >= 4 and bot:IsFacingLocation(nLocationAoE.targetloc, 15) then
+            if nLocationAoE.count >= 4 and bot:IsFacingLocation(nLocationAoE.targetloc, 20) then
                 return BOT_ACTION_DESIRE_HIGH
             end
         end
     end
 
     if (J.IsFarming(bot) or J.IsLaning(bot))
-    and not J.IsThereCoreNearby(1200)
+    and not J.IsThereNonSelfCoreNearby(1200)
     and nManaAfter > 0.3
     then
         local nCreeps = bot:GetNearbyCreeps(nDistance, true)
@@ -380,8 +380,8 @@ function X.ConsiderEchoSlash()
         and not J.IsRunning(nCreeps[1])
         then
             local nLocationAoE = bot:FindAoELocation(true, false, nCreeps[1]:GetLocation(), 0, nRadius, 0, 0)
-            if (nLocationAoE.count >= 3 or (nLocationAoE.count >= 3 and nCreeps[1]:IsAncientCreep()))
-            and bot:IsFacingLocation(nLocationAoE.targetloc, 15)
+            if (nLocationAoE.count >= 3 or (nLocationAoE.count >= 2 and nCreeps[1]:IsAncientCreep()))
+            and bot:IsFacingLocation(nLocationAoE.targetloc, 20)
             then
                 return BOT_ACTION_DESIRE_HIGH
             end
@@ -391,7 +391,7 @@ function X.ConsiderEchoSlash()
     if J.IsDoingRoshan(bot) then
         if J.IsRoshan(botTarget)
         and J.CanBeAttacked(botTarget)
-        and bot:IsFacingLocation(botTarget:GetLocation(), 15)
+        and bot:IsFacingLocation(botTarget:GetLocation(), 20)
         and J.IsInRange(bot, botTarget, nDistance)
         and J.IsAttacking(bot)
         and nManaAfter > 0.25
@@ -403,7 +403,7 @@ function X.ConsiderEchoSlash()
     if J.IsDoingTormentor(bot) then
         if J.IsTormentor(botTarget)
         and J.CanBeAttacked(botTarget)
-        and bot:IsFacingLocation(botTarget:GetLocation(), 15)
+        and bot:IsFacingLocation(botTarget:GetLocation(), 20)
         and J.IsInRange(bot, botTarget, nDistance)
         and J.IsAttacking(bot)
         and nManaAfter > 0.25
@@ -608,7 +608,7 @@ function X.ConsiderFalconRush()
     end
 
     if J.IsFarming(bot)
-    and not J.IsThereCoreNearby(1200)
+    and not J.IsThereNonSelfCoreNearby(1200)
     and nManaAfter > 0.4
     then
         local nCreeps = bot:GetNearbyCreeps(nDistance, true)

@@ -62,9 +62,9 @@ local WeakHeroes = {
 	-- Weaks, meaning they are too far from being able to apply their power:
 	'npc_dota_hero_chen',
 	'npc_dota_hero_keeper_of_the_light',
-	-- 'npc_dota_hero_winter_wyvern',
+	-- 'npc_dota_hero_winter_wyvern', -- somewhat improved
 	'npc_dota_hero_ancient_apparition',
-	-- 'npc_dota_hero_phoenix',
+	-- 'npc_dota_hero_phoenix', -- somewhat improved
 	'npc_dota_hero_tinker',
 	'npc_dota_hero_pangolier',
 	'npc_dota_hero_furion',
@@ -84,6 +84,7 @@ local WeakHeroes = {
     'npc_dota_hero_elder_titan',
     'npc_dota_hero_hoodwink',
     'npc_dota_hero_wisp',
+	-- 'npc_dota_hero_kez', -- somewhat improved
 }
 
 -- Function to get a list of all hero names from the HeroPositionMap
@@ -665,8 +666,44 @@ local function handleCommand(inputStr, PlayerID, bTeamOnly)
 			else
 				print("Cannot select pos: " .. subVal..' because it is not available.')
 			end
+		elseif subKey:match("^!(%d+)pos$") ~= nil and GetGameState() == GAME_STATE_PRE_GAME then
+			local x, y = inputStr:match("^!(%d+)pos (%d+)$")
+			if x and y then
+				print("Swap position for #" .. x .. " to play pos " .. y)
+			else
+				print("Invalid command format for swapping pos")
+				return
+			end
+
+			local sTeamName = GetTeamForPlayer(PlayerID) == TEAM_RADIANT and 'TEAM_RADIANT' or 'TEAM_DIRE'
+			local remainingPos = RemainingPos[sTeamName]
+			if Utils.HasValue(remainingPos, y) then
+				local role = tonumber(y)
+				local playerIndex = PlayerID + 1 -- each team player id starts with 0, to 4 as the last player. 
+				-- this index can be differnt if the player choose a slot in lobby that has empty slots before the one the player chooses.
+				for idx, id in pairs(teamPlayers) do
+					if idx == tonumber(x) then playerIndex = idx end
+				end
+				for index, id in pairs(teamPlayers)
+				do
+					if Role.roleAssignment[sTeamName][index] == role then
+						Role.roleAssignment[sTeamName][playerIndex], Role.roleAssignment[sTeamName][index] = role, Role.roleAssignment[sTeamName][playerIndex]
+						if GetTeamForPlayer(PlayerID) == TEAM_DIRE then
+							tLaneAssignList[sTeamName][CorrectDirePlayerIndexToLaneIndex[playerIndex]], tLaneAssignList[sTeamName][CorrectDirePlayerIndexToLaneIndex[index]] =
+								tLaneAssignList[sTeamName][CorrectDirePlayerIndexToLaneIndex[index]], tLaneAssignList[sTeamName][CorrectDirePlayerIndexToLaneIndex[playerIndex]]
+						else
+							tLaneAssignList[sTeamName][playerIndex], tLaneAssignList[sTeamName][index] = tLaneAssignList[sTeamName][index], tLaneAssignList[sTeamName][playerIndex]
+						end
+						print('Switch role successfully. Team: '..sTeamName.. '. Player Id: '..PlayerID..', idx: '..playerIndex..', new role: '..Role.roleAssignment[sTeamName][playerIndex])
+						print('Switch role successfully. Team: '..sTeamName.. '. Player Id: '..id..', idx: '..index..', new role: '..Role.roleAssignment[sTeamName][index])
+						break;
+					end
+				end
+			else
+				print("Cannot select pos: " .. y..' because it is not available.')
+			end
 		else
-			print("Unknown action: " .. subKey)
+			print("Unknown action: " .. subKey .. ', command text: '..tostring(inputStr))
 		end
 	end
 

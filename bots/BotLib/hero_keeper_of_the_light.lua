@@ -305,7 +305,7 @@ function X.ConsiderIlluminate()
     end
 
     if J.IsLaning(bot)
-    and (J.IsCore(bot) or not J.IsCore(bot) and not J.IsThereCoreNearby(1200))
+    and (J.IsCore(bot) or not J.IsCore(bot) and not J.IsThereNonSelfCoreNearby(1200))
     and nMana > 0.33
 	then
 		local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nTravelDist, true)

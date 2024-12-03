@@ -281,7 +281,7 @@ function X.ConsiderDecay()
         and J.IsAttacking(bot)
         and J.GetMP(bot) > 0.5
         and nAbilityLevel >= 3
-        and not J.IsThereCoreNearby(1200)
+        and not J.IsThereNonSelfCoreNearby(1200)
         then
             return BOT_ACTION_DESIRE_HIGH, J.GetCenterOfUnits(nEnemyLaneCreeps)
         end

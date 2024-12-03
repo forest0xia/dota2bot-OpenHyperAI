@@ -41,8 +41,9 @@ Thanks and kudos to all that contributed to make bot games fun and exciting.
       1. You can type: `/all !pick XXX` to pick hero for enemy. For example: `/all !pick puck` to pick puck as enemy.
       1. For complex hero names or names that may apply to multiple heroes, please use the full internal code name. For example: `!pick npc_dota_hero_keeper_of_the_light` .
       1. You can find a list of hero's internal code names in here: https://steamcommunity.com/workshop/filedetails/discussion/3246316298/4848777260032086340/
+   1. `!Xpos Y` Swap other players' positions without changing your position. For example you can use `!3pos 5` to tell the 3rd bot on the team to play pos 5.
    1. `!ban XXX` You can type: `!ban XXX` to ban a hero so the bots won't pick that hero. For example: `!ban puck` to prevent any bots from picking puck.
-   1. You can put pick/ban multiple heroes at once by putting the commands in 1 line, for example: `!pick sand king; !pick io; !ban zuus; !ban sniper`
+   1. Batch commands. You can put pick/ban multiple heroes at once by putting the commands in 1 line, for example: `!pick sand king; !pick io; !ban zuus; !ban sniper` .
 1. You can change bot ban/picks, and roles, etc easily and permanently. Check out the file in [bots/Customize/general.lua](bots/Customize/general.lua)
 1. Pos1 and Pos5 bots go to safe lane. Pos3 and Pos4 bots go offlane. Pos2 bot goes to mid lane.
 

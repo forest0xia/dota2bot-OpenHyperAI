@@ -356,7 +356,7 @@ function X.ConsiderFissure()
     and J.GetManaAfter(Fissure:GetManaCost()) * bot:GetMana() > EchoSlam:GetManaCost()
     and nAbilityLevel >= 3
     and nEnemyHeroes ~= nil and #nEnemyHeroes == 0
-    and not J.IsThereCoreNearby(1000)
+    and not J.IsThereNonSelfCoreNearby(1000)
 	then
 		local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(1600, true)
 		if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 4

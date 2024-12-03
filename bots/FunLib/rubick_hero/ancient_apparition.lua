@@ -256,7 +256,7 @@ function X.ConsiderIceVortex()
     end
 
     if (J.IsDefending(bot) or J.IsPushing(bot))
-    and not J.IsThereCoreNearby(1000)
+    and not J.IsThereNonSelfCoreNearby(1000)
 	then
 		local nEnemyLanecreeps = bot:GetNearbyLaneCreeps(nCastRange, true)
 		local nLocationAoE = bot:FindAoELocation(true, false, bot:GetLocation(), nCastRange, nRadius, nCastPoint, 0)

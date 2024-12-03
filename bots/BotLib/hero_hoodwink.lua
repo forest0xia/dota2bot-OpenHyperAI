@@ -278,7 +278,7 @@ function X.ConsiderAcornShot()
 	if (J.IsPushing(bot) or J.IsDefending(bot))
     and (J.HasItem(bot, 'item_maelstrom') or J.HasItem(bot, 'item_gungir') or J.HasItem(bot, 'item_mjollnir'))
     and nAbilityLevel >= 3
-    and not J.IsThereCoreNearby(600)
+    and not J.IsThereNonSelfCoreNearby(600)
 	then
 		local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nCastRange, true)
         local nLocationAoE = bot:FindAoELocation(true, false, bot:GetLocation(), nCastRange, nRadius, nCastPoint, 0)

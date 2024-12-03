@@ -284,7 +284,7 @@ function X.ConsiderStrokeOfFate()
         and J.CanBeAttacked(nEnemyLaneCreeps[1])
         and nEnemyHeroes ~= nil and #nEnemyHeroes == 0
         and not J.IsRunning(nEnemyLaneCreeps[1])
-        and not J.IsThereCoreNearby(1000)
+        and not J.IsThereNonSelfCoreNearby(1000)
         then
 			return BOT_ACTION_DESIRE_HIGH, J.GetCenterOfUnits(nEnemyLaneCreeps)
 		end

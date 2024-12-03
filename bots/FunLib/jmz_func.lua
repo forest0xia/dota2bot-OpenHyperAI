@@ -387,6 +387,25 @@ function J.IsOtherAllyCanKillTarget( bot, target )
 end
 
 
+function J.GetRetreatingAlliesNearLoc( vLoc, nRadius )
+
+	local allies = {}
+	for i = 1, #GetTeamPlayers( GetTeam() )
+	do
+		local member = GetTeamMember( i )
+		if member ~= nil
+			and member:IsAlive()
+			and GetUnitToLocationDistance( member, vLoc ) <= nRadius
+			and J.IsRetreating( member )
+		then
+			table.insert( allies, member )
+		end
+	end
+
+	return allies
+
+end
+
 function J.GetAlliesNearLoc( vLoc, nRadius )
 
 	local allies = {}
@@ -4190,11 +4209,12 @@ function J.IsNotSelf(bot, ally)
 	return false
 end
 
-function J.IsThereCoreNearby(nRadius)
-    local nAllyHeroes = J.GetNearbyHeroes(GetBot(),nRadius, false, BOT_MODE_NONE)
+function J.IsThereNonSelfCoreNearby(nRadius)
+	local selfBot = GetBot()
+    local nAllyHeroes = J.GetNearbyHeroes(selfBot,nRadius, false, BOT_MODE_NONE)
 
     for _, ally in pairs(nAllyHeroes) do
-        if J.IsCore(ally)
+        if J.IsCore(ally) and selfBot ~= ally
         then
             return true
         end

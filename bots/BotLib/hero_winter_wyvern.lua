@@ -496,7 +496,7 @@ function X.ConsiderSplinterBlast()
         if creepTarget ~= nil
         and #creepList >= 3
         and J.GetManaAfter(nManaCost) > 0.4
-        and not J.IsThereCoreNearby(1200)
+        and not J.IsThereNonSelfCoreNearby(1200)
         then
             return BOT_ACTION_DESIRE_HIGH, creepTarget
         end
@@ -504,7 +504,7 @@ function X.ConsiderSplinterBlast()
         if creepTarget == nil
         and #creepList >= 4
         and J.GetManaAfter(nManaCost) > 0.4
-        and not J.IsThereCoreNearby(1200)
+        and not J.IsThereNonSelfCoreNearby(1200)
         then
             return BOT_ACTION_DESIRE_HIGH, creepList[1]
         end
@@ -549,7 +549,7 @@ function X.ConsiderSplinterBlast()
         if creepTarget ~= nil
         and #creepList >= 3
         and J.GetManaAfter(nManaCost) > 0.5
-        and not J.IsThereCoreNearby(1200)
+        and not J.IsThereNonSelfCoreNearby(1200)
         then
             return BOT_ACTION_DESIRE_HIGH, creepTarget
         end
@@ -557,7 +557,7 @@ function X.ConsiderSplinterBlast()
         if creepTarget == nil
         and #creepList >= 4
         and J.GetManaAfter(nManaCost) > 0.5
-        and not J.IsThereCoreNearby(1200)
+        and not J.IsThereNonSelfCoreNearby(1200)
         then
             return BOT_ACTION_DESIRE_HIGH, creepList[1]
         end
@@ -884,8 +884,9 @@ function X.ConsiderWintersCurse()
         and not J.IsUnderLongDurationStun(enemyHero)
 		then
             local nInRangeAlly = J.GetAlliesNearLoc(enemyHero:GetLocation(), 400)
+            local nInRangeRetreatingAlly = J.GetRetreatingAlliesNearLoc(enemyHero:GetLocation(), 400)
             local nInRangeEnemy = J.GetEnemiesNearLoc(enemyHero:GetLocation(), nRadius)
-            if (nInRangeAlly == nil or #nInRangeAlly <= 0)
+            if (nInRangeAlly == nil or #nInRangeAlly <= 0 or #nInRangeRetreatingAlly > 0)
             and nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
             then
                 return BOT_ACTION_DESIRE_HIGH, enemyHero

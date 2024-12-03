@@ -436,7 +436,7 @@ function X.ConsiderPowershot()
     end
 
     if J.IsLaning(bot)
-    and (J.IsCore(bot) or (not J.IsCore(bot) and not J.IsThereCoreNearby(1200)))
+    and (J.IsCore(bot) or (not J.IsCore(bot) and not J.IsThereNonSelfCoreNearby(1200)))
 	then
         local canKill = 0
         local creepList = {}

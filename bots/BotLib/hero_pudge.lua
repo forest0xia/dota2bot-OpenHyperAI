@@ -370,7 +370,7 @@ function X.ConsiderMeatHook()
         --             or not J.IsInRange(bot, creep, bot:GetAttackRange() + 25))
         --         and not J.IsHeroBetweenMeAndTarget(bot, creep, creep:GetLocation(), nRadius)
         --         and not J.IsNonSiegeCreepBetweenMeAndLocation(bot, creep:GetLocation(), nRadius)
-        --         and (J.IsCore(bot) or not J.IsCore(bot) and not J.IsThereCoreNearby(1200))
+        --         and (J.IsCore(bot) or not J.IsCore(bot) and not J.IsThereNonSelfCoreNearby(1200))
 		-- 		then
 		-- 			return BOT_ACTION_DESIRE_HIGH, creep:GetLocation()
 		-- 		end
@@ -600,7 +600,7 @@ function X.ConsiderRot()
     end
 
     if J.IsLaning(bot)
-    and (J.IsCore(bot) or (not J.IsCore(bot) and not J.IsThereCoreNearby(1200)))
+    and (J.IsCore(bot) or (not J.IsCore(bot) and not J.IsThereNonSelfCoreNearby(1200)))
 	then
         local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nRotRadius, true)
         local nInRangeEnemy = J.GetNearbyHeroes(bot,1200, true, BOT_MODE_NONE)

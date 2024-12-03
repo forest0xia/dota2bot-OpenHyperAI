@@ -633,7 +633,7 @@ function X.ConsiderFadeBolt()
     end
 
     if J.IsLaning(bot)
-    and not J.IsThereCoreNearby(800)
+    and not J.IsThereNonSelfCoreNearby(800)
 	then
         local creepList = {}
         local nInRangeEnemy = J.GetEnemiesNearLoc(bot:GetLocation(), 1200)

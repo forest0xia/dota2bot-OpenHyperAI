@@ -344,7 +344,7 @@ function X.ConsiderTameTheBeasts()
         if #tEnemyLaneCreeps >= 4
         and J.CanBeAttacked(tEnemyLaneCreeps[1])
         and not J.IsRunning(tEnemyLaneCreeps[1])
-        and (J.IsCore(bot) or not J.IsThereCoreNearby(1600))
+        and (J.IsCore(bot) or not J.IsThereNonSelfCoreNearby(1600))
         then
             local nLocationAoE = bot:FindAoELocation(true, false, tEnemyLaneCreeps[1]:GetLocation(), nInnerRadius, nInnerRadius, 0, 0)
             local targetLoc = J.GetCenterOfUnits(tEnemyLaneCreeps)
@@ -370,7 +370,7 @@ function X.ConsiderTameTheBeasts()
         if #tEnemyLaneCreeps >= 4
         and J.CanBeAttacked(tEnemyLaneCreeps[1])
         and not J.IsRunning(tEnemyLaneCreeps[1])
-        and (J.IsCore(bot) or not J.IsThereCoreNearby(1600))
+        and (J.IsCore(bot) or not J.IsThereNonSelfCoreNearby(1600))
         then
             nLocationAoE = bot:FindAoELocation(true, false, tEnemyLaneCreeps[1]:GetLocation(), nInnerRadius, nInnerRadius, 0, 0)
             local targetLoc = J.GetCenterOfUnits(tEnemyLaneCreeps)
@@ -429,7 +429,7 @@ function X.ConsiderTameTheBeasts()
 	end
 
     -- this part self-interrupts Q
-    if J.IsCore(bot) or not J.IsThereCoreNearby(1600)
+    if J.IsCore(bot) or not J.IsThereNonSelfCoreNearby(1600)
     then
         local tCreeps = bot:GetNearbyCreeps(nCastRange, true)
         local tCreepsCanKill = {}

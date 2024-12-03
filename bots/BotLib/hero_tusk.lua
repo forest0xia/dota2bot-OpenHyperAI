@@ -269,7 +269,7 @@ function X.ConsiderIceShards()
     -- end
 
     if J.IsLaning(bot) or J.IsPushing(bot)
-    and not J.IsThereCoreNearby(1200)
+    and not J.IsThereNonSelfCoreNearby(1200)
 	then
         if not J.IsInLaningPhase()
         then

@@ -382,7 +382,7 @@ function X.ConsiderLaser()
     end
 
     if J.IsLaning(bot)
-    and (J.IsCore(bot) or not J.IsCore(bot) and not J.IsThereCoreNearby(1200))
+    and (J.IsCore(bot) or not J.IsCore(bot) and not J.IsThereNonSelfCoreNearby(1200))
 	then
         local creepList = {}
 

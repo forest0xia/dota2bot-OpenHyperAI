@@ -370,7 +370,7 @@ function X.ConsiderRebound()
     
                 if J.IsLaning(bot) and nManaAfter > 0.25 then
                     local nCanKillCreeps = 0
-                    if J.IsCore(bot) or (not J.IsCore(bot) and not J.IsThereCoreNearby(1200)) then
+                    if J.IsCore(bot) or (not J.IsCore(bot) and not J.IsThereNonSelfCoreNearby(1200)) then
                         for _, creep in pairs(tCreeps) do
                             if J.IsValid(creep)
                             and J.CanBeAttacked(creep)

@@ -178,7 +178,7 @@ function X.ConsiderWaveOfTerror(hMinionUnit, WaveOfTerror)
 
     if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 3
     and nLocationAoE.count >= 3
-    and not J.IsThereCoreNearby(1000)
+    and not J.IsThereNonSelfCoreNearby(1000)
     then
         return BOT_ACTION_DESIRE_HIGH, J.GetCenterOfUnits(nEnemyLaneCreeps)
     end

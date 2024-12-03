@@ -311,7 +311,7 @@ function X.ConsiderMagicMissile()
     --             and J.GetMP(bot) > 0.3
     --             and J.CanBeAttacked(creep)
     --             and J.IsInLaningPhase()
-    --             and not J.IsThereCoreNearby(1200)
+    --             and not J.IsThereNonSelfCoreNearby(1200)
 	-- 			then
 	-- 				return BOT_ACTION_DESIRE_HIGH, creep
 	-- 			end
@@ -444,7 +444,7 @@ function X.ConsiderWaveOfTerror()
 	end
 
 	if (J.IsPushing(bot) or J.IsDefending(bot))
-    and not J.IsThereCoreNearby(1000)
+    and not J.IsThereNonSelfCoreNearby(1000)
 	then
         local nLocationAoE = bot:FindAoELocation(true, false, bot:GetLocation(), nCastRange, nRadius, 0, 0)
         local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nCastRange, true)
@@ -483,7 +483,7 @@ function X.ConsiderWaveOfTerror()
         and J.GetMP(bot) > 0.3
         and nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
         and J.CanBeAttacked(creepList[1])
-        and not J.IsThereCoreNearby(1200)
+        and not J.IsThereNonSelfCoreNearby(1200)
         then
             return BOT_ACTION_DESIRE_HIGH, J.GetCenterOfUnits(creepList)
         end

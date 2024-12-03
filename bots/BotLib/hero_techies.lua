@@ -345,7 +345,7 @@ function X.ConsiderStickyBomb()
 
     if (J.IsPushing(bot) or J.IsDefending(bot))
     and nAbilityLevel >= 3
-    and not J.IsThereCoreNearby(1000)
+    and not J.IsThereNonSelfCoreNearby(1000)
 	then
         local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(1600, true)
 
@@ -411,7 +411,7 @@ function X.ConsiderStickyBomb()
         if #creepList >= 2
         and J.GetMP(bot) > 0.35
         and J.CanBeAttacked(creepList[1])
-        and not J.IsThereCoreNearby(1200)
+        and not J.IsThereNonSelfCoreNearby(1200)
         then
             return BOT_ACTION_DESIRE_HIGH, J.GetCenterOfUnits(creepList)
         end
@@ -451,7 +451,7 @@ function X.ConsiderStickyBomb()
 
     if #creepList >= 3
     and J.CanBeAttacked(creepList[1])
-    and not J.IsThereCoreNearby(1200)
+    and not J.IsThereNonSelfCoreNearby(1200)
     then
         return BOT_ACTION_DESIRE_HIGH, J.GetCenterOfUnits(creepList)
     end

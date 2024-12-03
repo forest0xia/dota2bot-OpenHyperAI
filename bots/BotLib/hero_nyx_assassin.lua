@@ -307,7 +307,7 @@ function X.ConsiderImpale()
     end
 
     if J.IsLaning(bot)
-    and not J.IsThereCoreNearby(1200)
+    and not J.IsThereNonSelfCoreNearby(1200)
 	then
         local canKill = 0
         local creepList = {}
