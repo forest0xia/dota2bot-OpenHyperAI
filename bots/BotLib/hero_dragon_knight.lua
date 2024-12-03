@@ -32,8 +32,8 @@ local tTalentTreeList = {
 }
 
 local tAllAbilityBuildList = {
-						{1,3,3,2,3,6,1,1,1,2,6,2,2,3,6},--pos2
-						{2,3,3,1,1,6,1,1,2,2,2,6,3,3,6},--pos3
+						{1,2,3,3,3,6,3,1,1,1,6,2,2,2,6},--pos2
+						{2,1,1,3,3,6,1,1,2,2,2,6,3,3,6},--pos3
 }
 
 local nAbilityBuildList
@@ -54,19 +54,17 @@ sRoleItemsBuyList['pos_2'] = {
 	"item_tango",
 	"item_double_branches",
 	"item_quelling_blade",
-	"item_double_gauntlets",
+	"item_gauntlets",
 
-	"item_magic_wand",
-	"item_bracer",
 	"item_bracer",
 	"item_boots",
+	"item_magic_wand",
 	"item_power_treads",
-	"item_hand_of_midas",
+	"item_armlet",
 	"item_blink",
-	"item_manta",--
+	"item_sange_and_yasha",--
 	"item_ultimate_scepter",
 	"item_black_king_bar",--
-	"item_octarine_core",--
 	"item_assault",--
 	"item_travel_boots",
 	"item_ultimate_scepter_2",
@@ -87,26 +85,23 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_double_branches",
 	"item_quelling_blade",
 	"item_gauntlets",
-	"item_circlet",
-	"item_magic_wand",
 
 	"item_bracer",
 	"item_boots",
+	"item_magic_wand",
 	"item_power_treads",
-	"item_hand_of_midas",
+	"item_orchid",
 	"item_blink",
+	"item_sange_and_yasha",--
 	"item_ultimate_scepter",
 	"item_black_king_bar",--
+	"item_bloodthorn	",
 	"item_assault",--
-	"item_octarine_core",--
-	"item_orchid",
-	"item_moon_shard",
-	"item_bloodthorn",--
-	"item_ultimate_scepter_2",
 	"item_travel_boots",
+	"item_ultimate_scepter_2",
 	"item_overwhelming_blink",--
 	"item_travel_boots_2",--
-
+	"item_moon_shard",
 	"item_aghanims_shard",
 }
 
