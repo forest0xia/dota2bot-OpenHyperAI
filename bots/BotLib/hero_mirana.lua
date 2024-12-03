@@ -59,7 +59,6 @@ sRoleItemsBuyList['pos_4'] = {
 	"item_priest_outfit",
 	"item_mekansm",
 	"item_glimmer_cape",
-	"item_aghanims_shard",
 	"item_guardian_greaves",
 	"item_spirit_vessel",
 --	"item_wraith_pact",
