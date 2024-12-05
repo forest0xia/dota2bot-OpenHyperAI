@@ -16,6 +16,7 @@ local Utils = require( GetScriptDirectory()..'/FunLib/utils' )
 local Dota2Teams = require( GetScriptDirectory()..'/FunLib/aba_team_names' )
 local CM = require( GetScriptDirectory()..'/FunLib/captain_mode' )
 local Customize = require( GetScriptDirectory()..'/Customize/general' )
+local Localization = require( GetScriptDirectory()..'/FunLib/localization' )
 local HeroPositionMap = require( GetScriptDirectory()..'/FunLib/aba_hero_pos_weights' )
 local heroUnitNames = require( GetScriptDirectory()..'/FretBots/HeroNames')
 
@@ -119,8 +120,8 @@ function GetPositionedPool(heroPosMap, position)
 		if (position == 1 and (Role.IsDisabler(name) or Role.IsNuker(name)))
 		or (position == 2 and (Role.IsDisabler(name) or Role.IsNuker(name) or Role.IsDurable(name)))
 		or (position == 3 and (not Role.IsRanged(name)) and (Role.IsInitiator(name) or Role.IsDisabler(name) or Role.IsDurable(name)))
-		or (position == 4 and Role.IsSupport(name) and (Role.IsDisabler(name) or Role.IsHealer(name)))
-		or (position == 5 and Role.IsSupport(name) and Role.IsRanged(name) and (Role.IsDisabler(name) or Role.IsHealer(name)))
+		or (position == 4 and Role.IsSupport(name) and (Role.IsDisabler(name) or Role.IsHealer(name) or Role.IsDurable(name)))
+		or (position == 5 and Role.IsSupport(name) and Role.IsRanged(name) and (Role.IsDisabler(name) or Role.IsHealer(name) or Role.IsInitiator(name)))
 		then
 			print("Selected hero: " ..name .. " as an option for position: ".. tostring(position))
 			table.insert(sortedHeroNames, name)
@@ -702,11 +703,17 @@ local function handleCommand(inputStr, PlayerID, bTeamOnly)
 			else
 				print("Cannot select pos: " .. y..' because it is not available.')
 			end
+		elseif subKey == "!sp" or subKey == "!speak" then
+			HandleLocaleSetting(subVal)
 		else
 			print("Unknown action: " .. subKey .. ', command text: '..tostring(inputStr))
 		end
 	end
+end
 
+function HandleLocaleSetting(locale)
+	Customize.Localization = locale
+	print("Set to speak: ".. locale)
 end
 
 function Think()
@@ -753,6 +760,13 @@ end
 --function to decide which team should get the hero
 function SelectHeroChatCallback(PlayerID, ChatText, bTeamOnly)
 	local text = string.lower(ChatText);
+
+	if GetGameState() == GAME_STATE_HERO_SELECTION and string.len(ChatText) == 2 then
+		if Localization.Supported(ChatText) then
+			HandleLocaleSetting(ChatText)
+		end
+	end
+
 	if startsWithExclamation(text) then
 		handleCommand(text, PlayerID, bTeamOnly)
 	end

@@ -9,6 +9,8 @@ local bDebugMode = ( 1 == 10 )
 local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
 local Utils = require( GetScriptDirectory()..'/FunLib/utils' )
 local BotBuild = dofile( GetScriptDirectory().."/BotLib/"..string.gsub( botName, "npc_dota_", "" ) )
+local Customize = require( GetScriptDirectory()..'/Customize/general' )
+local Localization = require( GetScriptDirectory()..'/FunLib/localization' )
 
 if BotBuild == nil then return end
 
@@ -232,7 +234,7 @@ function X.SetTalkMessage()
 	if nBotID == J.Role.GetReplyMemberID()
 		and nReplyHumanCount <= nMaxReplyCount
 	then
-		if not bInstallChatCallbackDone
+		if not bInstallChatCallbackDone and GetGameState() == GAME_STATE_GAME_IN_PROGRESS
 		then
 			bInstallChatCallbackDone = true
 			--print(botName)
@@ -262,14 +264,14 @@ function X.SetTalkMessage()
 
 	--发问号
 	if bot:IsAlive()
-		and nCurrentGold > nLastGold + 600 * nRate
+		and nCurrentGold > nLastGold + 300 * nRate
 		and nCurrentKills > nLastKillCount
 		and RandomInt( 1, 9 ) > 4
 	then
-		local sTauntMark = "?"
-		if nCurrentGold > nLastGold + 800 * nRate then sTauntMark = "??" end
-		if nCurrentGold > nLastGold + 1000 * nRate then sTauntMark = "???" end
-		if nCurrentGold > nLastGold + 1500 * nRate then sTauntMark = "??????" end
+		local sTauntMark = Localization.Get('got_a_kill')[RandomInt( 1, #Localization.Get('got_a_kill') )]
+		if nCurrentGold > nLastGold + 800 * nRate then sTauntMark = Localization.Get('got_big_kill')[RandomInt( 1, #Localization.Get('got_big_kill') )] end
+		if nCurrentGold > nLastGold + 1000 * nRate then sTauntMark = Localization.Get('got_big_kill')[RandomInt( 1, #Localization.Get('got_big_kill_2') )] end
+		if nCurrentGold > nLastGold + 1500 * nRate then sTauntMark = Localization.Get('got_big_kill')[RandomInt( 1, #Localization.Get('got_big_kill_3') )] end
 		bot:ActionImmediate_Chat( sTauntMark, true )
 	end
 
@@ -286,7 +288,7 @@ function X.SetTalkMessage()
 		if nDeathReplyTime ~= -999
 			and nDeathReplyTime < DotaTime() - nTalkDelay
 		then
-			bot:ActionImmediate_Chat( "...", true )
+			bot:ActionImmediate_Chat( Localization.Get('kill_streak_ended')[RandomInt( 1, #Localization.Get('kill_streak_ended'))], true )
 			nDeathReplyTime = -999
 			nTalkDelay = RandomInt( 36, 49 )/10
 		end
@@ -297,8 +299,7 @@ function X.SetTalkMessage()
 		and nCurrentDeaths >= nJiDiCount
 		and J.Role.NotSayJiDi()
 	then
-		local sJiDi = RandomInt( 1, 9 ) >= 3 and "jidi, xiayiba" or "jidi, gkd"
-		bot:ActionImmediate_Chat( sJiDi, true )
+		bot:ActionImmediate_Chat( Localization.Get('say_end')[RandomInt( 1, #Localization.Get('say_end'))], true )
 		J.Role['sayJiDi'] = true
 	end
 
@@ -324,6 +325,13 @@ function X.SetReplyHumanTime( tChat )
 
 	local sChatString = tChat.string
 	local nChatID = tChat.player_id
+
+	if string.find(sChatString, "!sp") or string.find(sChatString, "!speak") then
+		local action, target = J.Utils.TrimString(sChatString):match("^(%S+)%s+(.*)$")
+		print("Set to speak: ".. target)
+		Customize.Localization = target
+		return
+	end
 
 	if sChatString ~= "-都来守家" or J.Role.IsAllyMemberID( nChatID )
 	then

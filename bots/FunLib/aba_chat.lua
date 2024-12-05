@@ -6,6 +6,8 @@
 -----------------------------------------------------------------------------
 local Chat = {}
 local sRawLanguage = 'sRawName'
+local Localization = require( GetScriptDirectory()..'/FunLib/localization' )
+local Customize = require( GetScriptDirectory()..'/Customize/general' )
 
 Chat['tItemNameList'] = {
 	{sRawName='item_cyclone', sShortName='itemNull', sCnName='EUL的神圣法杖', sEnName="Eul's Scepter of Divinity"},
@@ -502,27 +504,25 @@ end
 
 
 function Chat.GetReplyString( sString, bAllChat )
-
 	local sReplyString = nil
 
-	local nIndex = Chat.GetChatStringTableIndex( sString )
-
-	if nIndex ~= - 1
-	then
-		sReplyString = Chat.GetChatTableString( nIndex, bAllChat )
-	else
-		sReplyString = Chat.GetCheaterReplyString( sString )
-		if sReplyString == nil
+	if Customize.Localization == 'zh' then
+		local nIndex = Chat.GetChatStringTableIndex( sString )
+		if nIndex ~= - 1
 		then
-			sReplyString = Chat.GetRepeatString( sString )
-			if sReplyString == nil or RandomInt( 1, 99 ) > 88
-			then
-				sReplyString = "Okok."
-				if bAllChat then sReplyString = "Interesting" end
-			end
+			sReplyString = Chat.GetChatTableString( nIndex, bAllChat )
 		else
-			return nil
+			sReplyString = Chat.GetCheaterReplyString( sString )
+			if sReplyString == nil
+			then
+				sReplyString = Chat.GetRepeatString( sString )
+			end
 		end
+	end
+
+	if sReplyString == nil or RandomInt( 1, 99 ) > 66
+	then
+		sReplyString = Localization.Get('random_responses')[RandomInt( 1, #Localization.Get('random_responses'))]
 	end
 
 	return sReplyString
@@ -588,18 +588,8 @@ function Chat.GetReplyTauntString()
 	return sReplyTauntList[RandomInt( 1, #sReplyTauntList )]
 end
 
-local sStopStringList = {
-	"我已无话可说了。",
-	"我要专心打游戏了，下次再说吧。",
-	"不和你闹了，我要开始认真玩了。",
-	"我的心好累，不说了。",
-	"好了好了，别逗我玩了。",
-	"玩竞技游戏的时候就不能严肃点嘛。",
-	"打游戏呢，先不和你聊了。",
-	"我不想再分心聊天了。",
-	}
 function Chat.GetStopReplyString()
-	return sStopStringList[RandomInt( 1, #sStopStringList )]
+	return Localization.Get('no_more_talking')[RandomInt( 1, #Localization.Get('no_more_talking'))]
 end
 
 

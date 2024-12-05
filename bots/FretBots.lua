@@ -1,3 +1,7 @@
+if not GameRules or GameRules:State_Get() < DOTA_GAMERULES_STATE_HERO_SELECTION then
+	print('[Fretbots]: Start a lobby game and try to enable Fretbots after entering the Hero Selection phase.')
+	return
+end
 LinkLuaModifier("modifier_fret_damage_increase", "FretBots/modifiers/modifier_seasonal_party_hat.lua", LUA_MODIFIER_MOTION_NONE)
 if GetScriptDirectory == nil then GetScriptDirectory = function() return "bots" end end
 -- Version information
@@ -81,8 +85,6 @@ function FretBots:PlayersLoadedTimer()
 		EntityKilled:RegisterEvents()
 		-- Set all bots to find tier 1 neutrals
 		NeutralItems:InitializeFindTimings()
-		-- Set the host ID for whitelisting settings chat commands
-		Settings:SetHostPlayerID()
 		-- Start bonus timers (they require DataTables to exist)
 		BonusTimers:Initialize()
 		-- Start bot role determination timer
@@ -134,4 +136,6 @@ if not Flags.isFretBotsInitialized then
 	-- Register the listener that will run Initialize() once the game starts
 	Utilities:RegsiterGameStateListener(FretBots, 'Initialize', DOTA_GAMERULES_STATE_PRE_GAME )
 	Flags.isFretBotsInitialized = true
+else
+	print("Fretbots has already been enabled for this game.")
 end

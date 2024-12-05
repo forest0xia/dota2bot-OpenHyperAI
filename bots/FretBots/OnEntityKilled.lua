@@ -12,6 +12,7 @@ require 'bots.FretBots.Settings'
 -- Game State Tracker
 require 'bots.FretBots.GameState'
 require 'bots.FretBots.modifiers.Modifier'
+local Localization = require 'bots/FunLib/localization'
 
 -- local debug flag
 local thisDebug = false;
@@ -150,7 +151,7 @@ function EntityKilled:GetEntityKilledEventData(event)
 				local goldBounty = math.floor(goldPerLevel * heroLevel/4 * (Settings.difficultyScale * 3) - math.random(1, 30))
 				-- 给予击杀者赏金
 				killer:ModifyGold(goldBounty, true, DOTA_ModifyGold_HeroKill)
-				local msg = 'Balance Killer Award to ' .. PlayerResource:GetPlayerName(killer:GetPlayerID())..' for the kill. Gold: ' .. goldBounty
+				local msg = string.format(Localization.Get('fret_killer_panelty'), PlayerResource:GetPlayerName(killer:GetPlayerID()), goldBounty)
 				Utilities:Print(msg, Utilities:GetPlayerColor(killer:GetPlayerID()))
 			end
 		end
@@ -215,7 +216,7 @@ function EntityKilled:RegisterEvents()
 		Debug:Print('Registered Taunt Modifiers Timer.')
 
 		if Utilities:IsTurboMode() then
-			GoldPenaltyTimeFactor = GoldPenaltyTimeFactor / 2
+			GoldPenaltyTimeFactor = GoldPenaltyTimeFactor * 0.66
 		end
 		Flags.isEntityKilledRegistered = true;
 		if true then

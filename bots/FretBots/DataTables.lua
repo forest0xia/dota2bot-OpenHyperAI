@@ -15,6 +15,7 @@ require 'bots.FretBots.Utilities'
 local role 			= require('bots.FretBots.RoleUtility')
 local radiantTowers	= dofile('bots.FretBots.RadiantTowers')
 local direTowers	= dofile('bots.FretBots.DireTowers')
+local Localization = require 'bots/FunLib/localization'
 
 -- local debug flags
 local thisDebug = false
@@ -427,7 +428,7 @@ function DataTables:GenerateStatsTables(unit)
 	end
 	-- Warn humans about bot skill if enabled and skill is high
 	if Settings.skill.isWarn and stats.skill > Settings.skill.warningThreshold and thisIsBot then
-		Utilities:Print(stats.name.. ' is very talented!',  Utilities:GetPlayerColor(stats.id), ATTENTION)
+		Utilities:Print(stats.name.. Localization.Get('fret_talent_warn'),  Utilities:GetPlayerColor(stats.id), ATTENTION)
 	end
 end
 

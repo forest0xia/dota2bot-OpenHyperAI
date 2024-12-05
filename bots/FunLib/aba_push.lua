@@ -8,10 +8,11 @@ local LanePush = LANE_MID
 local GlyphDuration = 7
 local ShoulNotPushTower = false
 local TowerPushCooldown = 0
-local StartToPushTime = 15 * 60 -- after x mins, start considering to push.
+local StartToPushTime = 16 * 60 -- after x mins, start considering to push.
 local PushDuration = 4.5 * 60 -- keep pushing for x mins.
 local PushGapMinutes = 6 -- only push once in x mins.
 local lastPushTime = 0
+local teamAveLvl = 0
 
 local pingTimeDelta = 5
 local targetBuilding = nil
@@ -21,13 +22,14 @@ function Push.GetPushDesire(bot, lane)
 	if bot:IsInvulnerable() or not bot:IsHero() or not bot:IsAlive() or not string.find(botName, "hero") or bot:IsIllusion() then return BOT_MODE_DESIRE_NONE end
 
     if bot.laneToPush == nil then bot.laneToPush = lane end
-    J.Utils.GameStates.isTimeForPush = false
 
     targetBuilding = nil
     local maxDesire = 0.95
     local nModeDesire = bot:GetActiveModeDesire()
     local nInRangeEnemy = bot:GetNearbyHeroes(900, true, BOT_MODE_NONE)
-	local teamAveLvl = J.GetAverageLevel( false )
+    local laneFront = GetLaneFrontLocation(GetTeam(), lane, 0)
+    local distanceToLaneFront = GetUnitToLocationDistance(bot, laneFront)
+	teamAveLvl = J.GetAverageLevel( false )
 
 	if nInRangeEnemy ~= nil and #nInRangeEnemy > 0
     or (bot:GetAssignedLane() ~= lane and J.GetPosition(bot) == 1 and bot:GetLevel() < 12)
@@ -62,7 +64,6 @@ function Push.GetPushDesire(bot, lane)
 		if isPinged and lane == pingedLane
 		and DotaTime() < humanPing.time + pingTimeDelta
 		then
-            J.Utils.GameStates.isTimeForPush = true
 			return BOT_ACTION_DESIRE_ABSOLUTE * 0.95
 		end
 	end
@@ -126,16 +127,8 @@ function Push.GetPushDesire(bot, lane)
     and J.GetHP(bot) > 0.5 then
         bot:SetTarget(nEnemyAncient)
         bot:Action_AttackUnit(nEnemyAncient, true)
-        J.Utils.GameStates.isTimeForPush = true
         return BOT_ACTION_DESIRE_ABSOLUTE * 0.98
     end
-
-    -- local nH, _ = J.Utils.NumHumanBotPlayersInTeam(GetOpposingTeam())
-    -- if nH > 0
-    -- and not IsPushAgainstHumanTiming(nH, bot)
-    -- then
-	-- 	return BOT_MODE_DESIRE_NONE
-    -- end
 
     if bot:WasRecentlyDamagedByTower(3)
     or J.GetHP(bot) < 0.45
@@ -188,6 +181,22 @@ function Push.GetPushDesire(bot, lane)
         end
     end
 
+    -- 前中期推进
+    if teamAveLvl < 15 then
+        local nAllies = J.GetAlliesNearLoc(bot:GetLocation(), 1600)
+        if #nAllies > 2 then
+            if distanceToLaneFront < 2000 then
+                local nDistance, cTower = J.Utils.GetDistanceToCloestTower(bot)
+                if cTower and nDistance < 3000 then
+                    return RemapValClamped(J.GetHP(bot), 0, 0.8, BOT_MODE_DESIRE_NONE, BOT_MODE_DESIRE_HIGH)
+                end
+            end
+        else
+            return BOT_MODE_DESIRE_NONE
+        end
+        return BOT_MODE_DESIRE_LOW
+    end
+
     -- General Push
     if Push.WhichLaneToPush(bot) == lane then
         if eAliveCount == 0
@@ -210,9 +219,6 @@ function Push.GetPushDesire(bot, lane)
             bot.laneToPush = lane
 
             nPushDesire = Clamp(nPushDesire, 0, maxDesire)
-            if nPushDesire > 0.3 then
-                J.Utils.GameStates.isTimeForPush = true
-            end
             return nPushDesire
         end
     end
@@ -220,20 +226,17 @@ function Push.GetPushDesire(bot, lane)
     return BOT_MODE_DESIRE_NONE
 end
 
-function IsPushAgainstHumanTiming(nH, bot)
+function IsGroupPushingTime()
     local minute = math.floor(DotaTime() / 60)
-    local isTime = math.fmod(minute, PushGapMinutes) == 0
+    return math.fmod(minute, PushGapMinutes) == 0
         or DotaTime() - lastPushTime < PushDuration
         or J.IsAnyAllyHeroSurroundedByManyAllies()
         or J.GetCoresAverageNetworth() > 22000
         or minute >= 50
+        or teamAveLvl > 20
         or teamHasAegis
         or J.GetNumOfTeamTotalKills( false ) <= J.GetNumOfTeamTotalKills(true) - 20
         -- or J.Utils.IsTeamPushingSecondTierOrHighGround(bot)
-    if isTime then
-        J.Utils.GameStates.isTimeForPush = true
-    end
-    return time
 end
 
 function Push.WhichLaneToPush(bot)
@@ -254,33 +257,20 @@ function Push.WhichLaneToPush(bot)
         end
     end
 
-    local topLaneScore = CalculateLaneScore(distanceToTop, J.Utils.IsAnyBarracksOnLaneAlive(true, LANE_TOP))
-    local midLaneScore = CalculateLaneScore(distanceToMid, J.Utils.IsAnyBarracksOnLaneAlive(true, LANE_MID))
-    local botLaneScore = CalculateLaneScore(distanceToBot, J.Utils.IsAnyBarracksOnLaneAlive(true, LANE_BOT))
+    local topLaneScore = CalculateLaneScore(distanceToTop, LANE_TOP)
+    local midLaneScore = CalculateLaneScore(distanceToMid, LANE_MID)
+    local botLaneScore = CalculateLaneScore(distanceToBot, LANE_BOT)
 
-    if midLaneScore <= topLaneScore
-    and midLaneScore <= botLaneScore
-    then
-        return LANE_MID
-    end
-
-    if topLaneScore <= midLaneScore
-    and topLaneScore <= botLaneScore
-    then
-        return LANE_TOP
-    end
-
-    if botLaneScore <= topLaneScore
-    and botLaneScore <= midLaneScore
-    then
-        return LANE_BOT
-    end
+    if midLaneScore <= topLaneScore and midLaneScore <= botLaneScore then return LANE_MID end
+    if topLaneScore <= midLaneScore and topLaneScore <= botLaneScore then return LANE_TOP end
+    if botLaneScore <= topLaneScore and botLaneScore <= midLaneScore then return LANE_BOT end
 
     return nil
 end
 
 -- the smaller the better
-function CalculateLaneScore(distance, hasBarracks)
+function CalculateLaneScore(distance, lane)
+    local hasBarracks = J.Utils.IsAnyBarracksOnLaneAlive(true, lane)
     local delta = 2500
     if hasBarracks then
         delta = 0

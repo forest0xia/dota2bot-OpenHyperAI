@@ -9,6 +9,8 @@ require 'bots.FretBots.Timers'
 require 'bots.FretBots.Utilities'
 -- HeroSounds
 require('bots.FretBots.HeroSounds')
+local Customize = require('bots.Customize.general')
+local Localization = require 'bots/FunLib/localization'
 -- HeroSounds
 local Chat = require('bots.FretBots.Chat')
 
@@ -37,8 +39,6 @@ local numVotes = 0
 local maxVotes = DOTA_MAX_PLAYERS
 -- voting time elapsed (starts at -1 since the timer increments immediately)
 local votingTimeElapsed = -1
--- The playerID of the host.  Used to whitelist chat commands.
-local hostID = -1
 -- While the max difficulty can be 10+, if we use same max value for denominator later, it may decrease the difficulty.
 local diffMaxDenominator = 10
 -- Is repurcussion timer started?
@@ -46,6 +46,11 @@ local isRepurcussionTimerStarted = false
 -- can players freely enter cheating commands?
 local allowPlayersToCheat = false
 local isVoteForAllyScale = false
+local localeTimerName = 'localeTimerName'
+local selectLocaleTimeElapsed = -1
+local selectLocale = nil
+local isSelectLocaleOpen = false
+local hostID = Utilities:GetHostPlayerID()
 
 -- Instantiate ourself
 if Settings == nil then
@@ -65,22 +70,6 @@ local currentAnnouncePrintTime = 0
 local lastAnnouncePrintedTime = -2
 local numberAnnouncePrinted = 0
 local announcementGap = 2
-
--- RGB color and text. sample color pick web: https://htmlcolorcodes.com/
-local announcementList = {
-	{"#C0392B", "GLHF! Native bot scripts lack excitement. This script boosts bots with unfair advantages to make bot games more challenging:"},
-	{"#9B59B6", "* You can vote for difficulty scale from 0 to "..difficultyMax..", which affects the amount of bonus the bots will receive." },
-	{"#2980B9", "* If difficulty >= 0, bots get bonus neutral items, and get fair bonus in gold, exp, stats, etc every minute."},
-	{"#E59866", "* If difficulty >= 1, bots get above bonus upon their death; and also get new bonus in mana/hp regens."},
-	{"#1ABC9C", "* As difficulty increments, bots get neutral items sooner and higher bonus amount."},
-	{"#F39C12", "* If difficulty >= 5, when a player kills a bot, the killer receives a reduction in gold. The assisting players receive a smaller gold reduction. Bots also provide less exp on death."},
-	{"#7FB3D5", "* The higher the difficulty you vote, the more bonus the bots will get which can make the game more challenging." },
-	{"#E74C3C", "* High difficulty can be overwhelming or even frustrating, please choose the right difficulty for you and your team." },
-	{"#D4AC0D", "* Bot link for any feedback: https://steamcommunity.com/sharedfiles/filedetails/?id=3246316298 . Kudos to BeginnerAI, Fretbots, and ryndrb@; and thanks all for sharing your ideas." },
-	{"#839192", "* You can use simple commands like `info` to view difficulty info, or `getroles`, or other interesting commands - check script's Workshop page for details." },
-	-- {"#D4AC0D", "There are commands to play certain sounds like `ps love` or `ps dylm`. You can also explore other commands like `getroles`, `networth`, etc." }
-}
-
 
 -- Difficulty values voted for
 local VotedDifficulties = {}
@@ -115,21 +104,28 @@ local chatCommands =
 	'voc',				-- does the same thing as 'vo c': plays caster voiceovers
 	'enablecheat',      -- enable players to cheat without getting punishment.
 	'info',             -- basic info of the current difficulty and stats.
+	'speak', 'sp',      -- speak specific language
+
 }
+
+function Settings:CalculateDifficultyScale(difficulty)
+	-- no argument implies default, do nothing
+	if difficulty == nil then return nil end
+	-- Adjust bot skill values by the difficulty value
+	local difficultyScale = 1 + ((difficulty - 5) / diffMaxDenominator)
+	-- increase diff scale for diffculty > 5.
+	if difficulty >= 5 and difficulty < diffMaxDenominator then
+		difficultyScale = 1 + ((difficulty - 3.2) / diffMaxDenominator)
+	elseif difficulty >= diffMaxDenominator then
+		difficultyScale = 1 + (difficulty / diffMaxDenominator)
+	end
+	difficultyScale = Utilities:Round(difficultyScale, 2)
+	return difficultyScale
+end
 
 -- Sets difficulty value
 function Settings:Initialize(difficulty)
-	-- no argument implies default, do nothing
-	if difficulty == nil then return end
-	-- Adjust bot skill values by the difficulty value
-	Settings.difficultyScale = 1 + ((difficulty - 5) / diffMaxDenominator)
-	-- increase diff scale for diffculty > 5.
-	if difficulty >= 5 and difficulty < diffMaxDenominator then
-		Settings.difficultyScale = 1 + ((difficulty - 3.2) / diffMaxDenominator)
-	elseif difficulty >= diffMaxDenominator then
-		Settings.difficultyScale = 1 + (difficulty / diffMaxDenominator)
-	end
-	Settings.difficultyScale = Utilities:Round(Settings.difficultyScale, 2)
+	Settings.difficultyScale = Settings:CalculateDifficultyScale(difficulty)
 	-- Print
 	local msg = 'Difficulty Scale: '..Settings.difficultyScale
 	Debug:Print(msg)
@@ -199,6 +195,24 @@ function IsTimeToVoteForAllyBonusScale()
 	return isOnlyOneTeamMixed
 end
 
+function Settings:LocaleSelectTimer()
+	selectLocaleTimeElapsed = selectLocaleTimeElapsed + 1
+	if not isSelectLocaleOpen then
+		local msg = 'Current language/locale is: "'..Customize.Localization .. '". The host can select a language by typing one of: "en" for English, "zh" for 中文, "ru" for русский, and "ja" for 日本語'
+		Utilities:Print(msg, MSG_GOOD)
+		isSelectLocaleOpen = true
+	end
+
+	if selectLocale or selectLocaleTimeElapsed >= 6 then
+		selectLocale = selectLocale or 'default'
+		Utilities:Print('Language/local selected: ' .. selectLocale, MSG_GOOD)
+		Timers:RemoveTimer(localeTimerName)
+		isSelectLocaleOpen = false
+		Timers:CreateTimer(settingsTimerName, {endTime = 1, callback =  Settings['DifficultySelectTimer']} )
+	end
+	return 1
+end
+
 -- Periodically checks to see if settings have been chosen
 function Settings:DifficultySelectTimer()
 	-- increment elapsed time
@@ -211,13 +225,14 @@ function Settings:DifficultySelectTimer()
 	end
 	-- If voting not yet open, display directions
 	if not isVotingOpened then
-		local msg = 'Difficulty voting is now open!'..' Default difficulty is: '..tostring(DefaultDifficulty)
+		local msg = Localization.Get('fret_diff_open')..tostring(DefaultDifficulty)
 		Utilities:Print(msg, MSG_GOOD)
-		msg = 'Enter a number (0 to '..difficultyMax..') in chat to vote.'
+		msg = string.format(Localization.Get('fret_diff_vote_hint'), difficultyMax)
 		Utilities:Print(msg, MSG_GOOD)
 		isVotingOpened = true
 	end
 
+	local announcementList = Localization.Get('fretbots_wel_msgs')
 	if numberAnnouncePrinted < #announcementList + 1 then
 		if currentAnnouncePrintTime - lastAnnouncePrintedTime >= announcementGap then
 			local msg = announcementList[numberAnnouncePrinted]
@@ -278,7 +293,7 @@ function Settings:ApplyVoteSettings()
 		difficulty = Utilities:Round(difficulty, 1)
 	end
 
-	local msg = 'Difficulty selected: '..difficulty
+	local msg = Localization.Get("fret_diff_selected")..difficulty
 	Debug:Print(msg)
 	Utilities:Print(msg, MSG_GOOD)
 	Settings:Initialize(difficulty)
@@ -295,9 +310,9 @@ function Settings:ApplyVoteSettings()
 		numVotes = 0
 		playerVoted = {}
 
-		msg = 'Now vote for the bonus scale for ally bots in your team comparing to the other side. The default scale is: '..tostring(DefaultAllyScale)
+		msg = Localization.Get('fret_ally_scale_open')..tostring(DefaultAllyScale)
 		Utilities:Print(msg, MSG_WARNING)
-		msg = 'Enter a number (0 to '..tostring(allyScaleMax)..')  e.g. vote 0.5 means your ally bots get half of the bonus amount vs the bonus for enemy bots.'
+		msg = string.format(Localization.Get('fret_ally_vote_hint'), allyScaleMax)
 		Utilities:Print(msg, MSG_WARNING)
 
 		Timers:CreateTimer(settingsTimerName, {endTime = 1, callback =  Settings['DifficultySelectTimer']} )
@@ -316,7 +331,7 @@ function Settings:ShouldCloseVoting()
 	end
 	if Settings.voteEndTime - votingTimeElapsed == 10 then
 		if #VotedDifficulties <= 0 and (Settings.difficulty == DefaultDifficulty or not Settings.difficulty) and not isVoteForAllyScale then
-			local msg = 'The default difficulty is: '..tostring(DefaultDifficulty) .. '. Type a number to vote.'
+			local msg = string.format(Localization.Get('fret_default_diff_hint'), DefaultDifficulty)
 			Utilities:Print(msg, MSG_GOOD)
 		end
 	end
@@ -324,7 +339,7 @@ function Settings:ShouldCloseVoting()
 	-- Warn about impending closure if necessary
 	Utilities:Warn(Settings.voteEndTime - votingTimeElapsed,
 									Settings.voteWarnTimes,
-									"Voting ends in %d seconds!")
+									Localization.Get('fret_voting_ends'))
 	-- Voting ends a set number of seconds after it begins
 	if votingTimeElapsed >= Settings.voteEndTime then
 		return true
@@ -353,8 +368,11 @@ function Settings:OnPlayerChat(event)
 	end
 	-- Remove dashes (potentially)
 	local text = Utilities:CheckForDash(rawText)
+	text = Utilities:CheckForExcl(rawText)
 	-- Handle votes if we're still in the voting phase
-	if not isVotingClosed then
+	if isSelectLocaleOpen then
+		Settings:DoLocaleVoteParse(playerID, text)
+	elseif isVotingOpened and not isVotingClosed then
 		Settings:DoChatVoteParse(playerID, text)
 	end
 
@@ -411,7 +429,7 @@ function Settings:DoUserChatCommandParse(text, id)
 		return true
 	end
 	if command == 'enablecheat' then
-		if id == Utilities:GetHostPlayerID() then
+		if id == hostID then
 			Settings.allowPlayersToCheat = not Settings.allowPlayersToCheat
 			Utilities:Print('Free to cheat: '..tostring(Settings.allowPlayersToCheat), MSG_GOOD)
 		else
@@ -453,9 +471,9 @@ function Settings:DoUserChatCommandParse(text, id)
 	-- print info
 	if command == 'info' then
 		Settings:DoDisplayNetWorth()
-		local msg = 'Selected difficulty: '..tostring(Settings.difficulty)
+		local msg = Localization.Get('fret_select_diff')..tostring(Settings.difficulty)
 		if Settings.allyScale ~= nil then
-			msg = msg .. '. Ally bots bonus scale: ' .. Settings.allyScale
+			msg = msg .. Localization.Get('fret_select_ally_scale') .. Settings.allyScale
 		end
 		Utilities:Print(msg, MSG_GOOD)
 		return true
@@ -568,6 +586,9 @@ function Settings:DoSuperUserChatCommandParse(text)
 	if command == 'kb' then
 		Settings:DoKillBotCommand(tokens)
 	end
+	if command == 'speak' or command == 'sp' then
+		Settings:DoLocale(tokens)
+	end
 	return true
 end
 
@@ -596,11 +617,11 @@ end
 	end
 	roundedNetWorth = Utilities:Round(playerTeamNetWorth, -2)
 	roundedNetWorth = roundedNetWorth / 1000
-	msg = 'Players Total Net Worth: '..tostring(roundedNetWorth)..'k'
+	msg = string.format(Localization.Get('fret_player_total_networth'), roundedNetWorth)
 	Utilities:Print(msg, MSG_CONSOLE_GOOD)
 	roundedNetWorth = Utilities:Round(botTeamNetWorth, -2)
 	roundedNetWorth = roundedNetWorth / 1000
-	msg = 'Bots Total Net Worth: '..tostring(roundedNetWorth)..'k'
+	msg = string.format(Localization.Get('fret_bot_total_networth'), roundedNetWorth)
 	Utilities:Print(msg, MSG_CONSOLE_BAD)
 end
 
@@ -680,6 +701,14 @@ function Settings:DoDDEnableCommand(tokens)
 	Utilities:Print(msg, MSG_CONSOLE_GOOD)
 end
 
+function Settings:DoLocale(tokens)
+	DynamicDifficulty:Reset()
+	if tokens[2] ~= nil then
+		local locale = tostring(tokens[2])
+		Settings:ApplyLocale(locale)
+	end
+end
+
 -- Resets Dynamic difficulty (GPM/XPM to default)
 function Settings:DoDDResetCommand()
 	DynamicDifficulty:Reset()
@@ -716,6 +745,9 @@ function Settings:DoSetCommand(tokens)
 		return
 	end
 	local stringTarget = tokens[2]
+	if stringTarget == 'diff' then
+		stringTarget = 'difficulty'
+	end
 	local target = Settings:GetObject(stringTarget)
 	if target == nil then
 		Utilities:Print('Set requires a target object argument.', MSG_CONSOLE_BAD)
@@ -735,12 +767,12 @@ function Settings:DoSetCommand(tokens)
 		-- tables
 		if type(value) == 'table' then
 			Utilities:DeepCopy(value, target)
-			Utilities:Print(stringTarget..' set successfully: '..
+			Utilities:Print('Set `'..stringTarget..'` successfully: '..
 											Utilities:Inspect(value), MSG_CONSOLE_GOOD)
 		-- Otherwise a literal
 		else
 			if Settings:SetValue(stringTarget, value) then
-				Utilities:Print(stringTarget..' set successfully: '..
+				Utilities:Print('Set `'..stringTarget..'` successfully: '..
 											tostring(value), MSG_CONSOLE_GOOD)
 			else
 				Utilities:Print('Unable to set '..stringTarget..'.', MSG_CONSOLE_BAD)
@@ -816,6 +848,19 @@ function Settings:DoKillBotCommand(tokens)
 	end
 end
 
+function Settings:DoLocaleVoteParse(playerID, text)
+	if playerID == hostID and Localization.Supported(text) then
+		Settings:ApplyLocale(text)
+	end
+end
+
+function Settings:ApplyLocale(locale)
+	selectLocale = locale
+	Customize.Localization = locale
+	Utilities:Print('Set localization to: ' .. locale, MSG_CONSOLE_GOOD)
+	Utilities:UpdateCasterLocale()
+end
+
 -- Parses chat message for valid settings votes and handles them.
 function Settings:DoChatVoteParse(playerID, text)
 	local min, max = 0, difficultyMax
@@ -844,7 +889,7 @@ function Settings:DoChatVoteParse(playerID, text)
 			-- increment number of votes
 			numVotes = numVotes + 1
 			-- let players know the vote counted
-			local msg = PlayerResource:GetPlayerName(playerID)..' voted: '..difficulty..'.'
+			local msg = string.format(Localization.Get('fret_vote_for'), PlayerResource:GetPlayerName(playerID), tostring(difficulty))
 			Utilities:Print(msg, Utilities:GetPlayerColor(playerID))
 		end
 	end
@@ -949,6 +994,11 @@ function Settings:SetValue(objectText, value)
 	-- this is ugly
 	if #tokens == 1 then
 		Settings[tokens[1]] = value
+		if tokens[1] == 'difficulty' then
+			Settings.difficulty = value
+			Settings.difficultyScale = Settings:CalculateDifficultyScale(value)
+			print('New difficulty: ' .. tostring(Settings.difficulty) .. '. New difficultyScale: ' .. tostring(Settings.difficultyScale))
+		end
 	elseif #tokens == 2 then
 		Settings[tokens[1]][tokens[2]] = value
 	elseif #tokens == 3 then
@@ -983,18 +1033,13 @@ function Settings:GetChatEventData(event)
 	return playerID, text, teamonly
 end
 
--- set host ID to whitelist settings commands
-function Settings:SetHostPlayerID()
-	hostID = Utilities:GetHostPlayerID()
-end
-
 -- this callback gets run once when game state enters DOTA_GAMERULES_STATE_HERO_SELECTION
 -- this prevents us from attempting to get the number of players before they have all loaded
 function Settings:InitializationTimer()
 	-- Register settings vote timer and chat event monitor
 	Debug:Print('Begining Settings Initialization.')
 	Settings:RegisterChatEvent()
-	Timers:CreateTimer(settingsTimerName, {endTime = 1, callback =  Settings['DifficultySelectTimer']} )
+	Timers:CreateTimer(localeTimerName, {endTime = 1, callback =  Settings['LocaleSelectTimer']} )
 end
 
 --Don't run initialization until all players have loaded into the game.

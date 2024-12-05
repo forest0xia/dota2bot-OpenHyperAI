@@ -3,6 +3,7 @@ local botName = bot:GetUnitName();
 if bot == nil or bot:IsInvulnerable() or not bot:IsHero() or not bot:IsAlive() or not string.find(botName, "hero") or bot:IsIllusion() then return end
 local Utils = require( GetScriptDirectory()..'/FunLib/utils' )
 local EnemyRoles = require( GetScriptDirectory()..'/FunLib/enemy_role_estimation' )
+local Localization = require( GetScriptDirectory()..'/FunLib/localization' )
 
 local team = GetTeam()
 local X = {}
@@ -170,18 +171,26 @@ function GetDesire()
 		end
 	end
 
-	if pingedDefendDesire <= 0 then
-		pingedDefendDesire = ConsiderPingedDefendDesire()
-	end
-	if pingedDefendDesire > 0 and pingedDefendLocation then
-		if J.GetHP(GetAncient(team)) <= 0.9 or #nearbyEnemies <= 0 then
-			local nNearEnemies = J.GetEnemiesNearLoc(pingedDefendLocation, 1600)
-			if nEffctiveAlliesNearPingedDefendLoc and nEffctiveAlliesNearPingedDefendLoc < #nNearEnemies then
-				print("got pinged to defend for bot: " .. botName)
-				return pingedDefendDesire
-			end
-		end
-	end
+	-- if pingedDefendDesire <= 0 then
+	-- 	pingedDefendDesire = ConsiderPingedDefendDesire()
+	-- end
+	-- if pingedDefendDesire > 0 and pingedDefendLocation then
+	-- 	if J.GetHP(GetAncient(team)) <= 0.9 then
+	-- 		return RemapValClamped(J.GetHP(bot), 0, 0.7, BOT_MODE_DESIRE_NONE, pingedDefendDesire)
+	-- 	end
+	-- 	local nDefendAllies = J.GetAlliesNearLoc(pingedDefendLocation, 2000);
+	-- 	nEffctiveAlliesNearPingedDefendLoc = #nDefendAllies + #J.Utils.GetAllyIdsInTpToLocation(pingedDefendLocation, 1000)
+	-- 	local nEnemyUnitsAroundLoc = J.GetAroundTargetLocEnemyUnitCount(pingedDefendLocation, 2000)
+	-- 	local lEnemyHeroesAroundLoc = J.GetLastSeenEnemiesNearLoc(pingedDefendLocation, 2000)
+	-- 	local aliveAllies = J.GetNumOfAliveHeroes(false)
+	-- 	if nEnemyUnitsAroundLoc >= 1 -- 再确认一次附近还有敌人
+	-- 	and ((nEffctiveAlliesNearPingedDefendLoc < aliveAllies and nEffctiveAlliesNearPingedDefendLoc <= #lEnemyHeroesAroundLoc + 1 )
+	-- 		or (#lEnemyHeroesAroundLoc >= 3 and nEffctiveAlliesNearPingedDefendLoc < aliveAllies))
+	-- 	then
+	-- 		print("got pinged to defend for bot: " .. botName)
+	-- 		return pingedDefendDesire
+	-- 	end
+	-- end
 
 	targetUnit, ShouldHelpAlly = ConsiderHelpAlly()
 	if ShouldHelpAlly
@@ -298,15 +307,15 @@ function ConsiderPingedDefendDesire()
 		return 0
 	else
 		local timeDiff = GameTime() - J.Utils['GameStates']['defendPings'].pingedTime
-		if timeDiff <= 5 and pingedDefendLocation then
-			return 0.966
+		if pingedDefendDesire and timeDiff <= 5 and pingedDefendLocation then
+			return pingedDefendDesire
 		end
 	end
 
 	local team = GetTeam()
 	local ancient = GetAncient(team):GetLocation()
 	local nEnemyHeroNearAncient = #J.GetLastSeenEnemiesNearLoc(ancient, 1800)
-	local nEnemyUnitsAroundLoc = J.GetAroundTargetLocEnemyUnitCount(ancient, 2300)
+	local nEnemyUnitsAroundLoc = J.GetAroundTargetLocEnemyUnitCount(ancient, 1800)
 
 	local enemeyPushingBase = false
 	local nDefendLoc = nil
@@ -328,6 +337,7 @@ function ConsiderPingedDefendDesire()
 				nDefendLoc = tower:GetLocation()
 				enemeyPushingBase = true
 				print("HG towers are in danger for team " .. team)
+				pingedDefendDesire = 0.7
 			end
 		end
 	end
@@ -336,40 +346,30 @@ function ConsiderPingedDefendDesire()
 		nDefendLoc = GetAncient(team):GetLocation() -- GetLaneFrontLocation(team, nDefendLane, 100)
 		enemeyPushingBase = true
 		print("Ancient is in danger for team " .. team)
+		pingedDefendDesire = 0.96
 	end
-	if not enemeyPushingBase then
-		local towerWithLeastEnemiesAround = J.Utils.GetNonTier1TowerWithLeastEnemiesAround(1400)
-		if towerWithLeastEnemiesAround then
-			nDefendLoc = towerWithLeastEnemiesAround:GetLocation()
-			if nDefendLoc then
-				enemeyPushingBase = true
-				print("Non-tier-1 towers are in danger for team " .. team)
-			end
-		end
-	end
+	-- if not enemeyPushingBase then
+	-- 	local towerWithLeastEnemiesAround = J.Utils.GetNonTier1TowerWithLeastEnemiesAround(1400)
+	-- 	if towerWithLeastEnemiesAround then
+	-- 		nDefendLoc = towerWithLeastEnemiesAround:GetLocation()
+	-- 		if nDefendLoc then
+	-- 			enemeyPushingBase = true
+	-- 			print("Non-tier-1 towers are in danger for team " .. team)
+	-- 			pingedDefendDesire = 0.75
+	-- 		end
+	-- 	end
+	-- end
 
-	if nDefendLoc ~= nil and enemeyPushingBase then
+	if nDefendLoc ~= nil and pingedDefendDesire and enemeyPushingBase then
 		local saferLoc = J.AdjustLocationWithOffsetTowardsFountain(nDefendLoc, 850) + RandomVector(50)
-		local nDefendAllies = J.GetAlliesNearLoc(saferLoc, SearchNearLocAllyForPingDistance);
-		nEffctiveAlliesNearPingedDefendLoc = #nDefendAllies + #J.Utils.GetAllyIdsInTpToLocation(saferLoc, 1000)
-		nEnemyUnitsAroundLoc = J.GetAroundTargetLocEnemyUnitCount(nDefendLoc, 2000)
-		local lEnemyHeroesAroundLoc = J.GetLastSeenEnemiesNearLoc(nDefendLoc, 2000)
-		local aliveAllies = J.GetNumOfAliveHeroes(false)
-		if nEnemyUnitsAroundLoc >= 1 -- 再确认一次附近还有敌人
-		and ((nEffctiveAlliesNearPingedDefendLoc < aliveAllies and nEffctiveAlliesNearPingedDefendLoc <= #lEnemyHeroesAroundLoc + 1 )
-			or (#lEnemyHeroesAroundLoc >= 3 and nEffctiveAlliesNearPingedDefendLoc < aliveAllies))
-		then
-			J.Utils['GameStates']['defendPings'].pingedTime = GameTime()
-			bot:ActionImmediate_Chat("Please come defending", false)
-			bot:ActionImmediate_Ping(saferLoc.x, saferLoc.y, false)
-		end
 
-		enemeyPushingBase = false
-		nDefendLoc = nil
+		J.Utils['GameStates']['defendPings'].pingedTime = GameTime()
+		bot:ActionImmediate_Chat(Localization.Get('say_come_def'), false)
+		bot:ActionImmediate_Ping(saferLoc.x, saferLoc.y, false)
+
 		pingedDefendLocation = saferLoc
-		return 0.966
 	end
-	return 0
+	return pingedDefendDesire
 end
 
 function ItemOpsDesire()
@@ -474,10 +474,10 @@ function Think()
 		AttackSpecialUnit.Think()
 	end
 
-	if pingedDefendDesire > 0 and pingedDefendLocation then
-		PingedDefendThink()
-		return
-	end
+	-- if pingedDefendDesire > 0 and pingedDefendLocation then
+	-- 	PingedDefendThink()
+	-- 	return
+	-- end
 
 	if towerCreepMode
 	then

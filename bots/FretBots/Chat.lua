@@ -2,6 +2,7 @@ local json = require('bots.ts_libs.utils.json')
 local Version = require 'bots.FunLib.version'
 local Utils = require 'bots.FunLib.utils'
 local teamNames = require 'bots.FunLib.aba_team_names'
+local Localization = require 'bots/FunLib/localization'
 require 'bots.FretBots.Utilities'
 require 'bots.FretBots.Timers'
 
@@ -68,7 +69,7 @@ end
 function Chat:NotifyUpdate()
 	local gameTime = Utilities:GetAbsoluteTime()
 	if GameRules:State_Get() == DOTA_GAMERULES_STATE_PRE_GAME and gameTime > chatVersionDetermineTime then
-        Utilities:Print('New version of the script is available! Feel free to update the script by re-subscripting Open Hyper AI (OHA), or check the Workshop page if you need help.', MSG_WARNING)
+        Utilities:Print(Localization.Get('newer_version'), MSG_WARNING)
 		Timers:RemoveTimer(chatTimerName)
         return nil
     end

@@ -20,6 +20,11 @@ local Customize = { }
 -- Set it to true to turn on ALL of the custom settings in this file, or set it to false to turn off the settings.
 Customize.Enable = true
 
+-- Set the localization code to make bots speak the specific language when possible (not guaranteed to 100% localized). 
+-- Currently supprot: "en" for "English", "zh" for "中文", "ru" for Russian, "ja" for Japanese
+-- https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes
+Customize.Localization = "en"
+
 -- To ban some heroes for bots - Set the heroes you DO NOT want the bots to pick. Use hero internal names.
 -- Hero name ref: https://steamcommunity.com/workshop/filedetails/discussion/3246316298/4848777260032086340/
 Customize.Ban = {

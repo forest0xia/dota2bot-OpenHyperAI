@@ -4,6 +4,7 @@ if bot == nil or bot:IsInvulnerable() or not bot:IsHero() or not bot:IsAlive() o
 
 local botTeam = bot:GetTeam()
 local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
+local Localization = require( GetScriptDirectory()..'/FunLib/localization' )
 
 local Tormentor = nil
 local TormentorLocation
@@ -439,7 +440,7 @@ function TormentorThink()
 					and canDoTormentor
 					then
 						tormentorMessageTime = DotaTime()
-						bot:ActionImmediate_Chat("Let's try tormentor?", false)
+						bot:ActionImmediate_Chat(Localization.Get('can_try_tormentor'), false)
 						bot:ActionImmediate_Ping(creepOrTormentor:GetLocation().x, creepOrTormentor:GetLocation().y, true)
 					end
 					return 1

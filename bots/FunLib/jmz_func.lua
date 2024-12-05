@@ -740,7 +740,7 @@ function J.IsTier1(tower)
 		TOWER_BOT_1,
 	}
 
-	for i = 1, #nTower do if nTower[i] == tower then return true end end
+	for i = 1, #nTower do if GetTower( GetTeam(), nTower[i] ) == tower then return true end end
 
 	return false
 end
@@ -752,7 +752,21 @@ function J.IsTier2(tower)
 		TOWER_BOT_2,
 	}
 
-	for i = 1, #nTower do if nTower[i] == tower then return true end end
+	for i = 1, #nTower do if GetTower( GetTeam(), nTower[i] ) == tower then return true end end
+
+	return false
+end
+
+function J.IsTier3p(tower)
+	local nTower = {
+		TOWER_TOP_3,
+		TOWER_MID_3,
+		TOWER_BOT_3,
+		TOWER_BASE_1,
+		TOWER_BASE_2,
+	}
+
+	for i = 1, #nTower do if GetTower( GetTeam(), nTower[i] ) == tower then return true end end
 
 	return false
 end
@@ -5099,6 +5113,7 @@ end
 
 function J.GetEnemyCountInLane(lane)
 	local count = 0
+	local laneFront = GetLaneFrontLocation(GetTeam(), lane, 0)
 	for _, id in pairs( GetTeamPlayers( GetOpposingTeam()))
 	do
 		if IsHeroAlive(id)
@@ -5110,8 +5125,8 @@ function J.GetEnemyCountInLane(lane)
 				local dInfo = info[1]
 
 				if dInfo ~= nil
-				and J.GetDistance(GetLaneFrontLocation(GetTeam(), lane, 0), dInfo.location) < 1600
-				and dInfo.time_since_seen < 10
+				and J.GetDistance(laneFront, dInfo.location) < 1600
+				and dInfo.time_since_seen < 6
 				then
 					count = count + 1
 				end
@@ -5119,6 +5134,23 @@ function J.GetEnemyCountInLane(lane)
 		end
 	end
 
+	return count
+end
+
+function J.GetAllyCountInLane(lane, nRadius) -- not including self.
+	local count = 0
+	local laneFront = GetLaneFrontLocation(GetTeam(), lane, 0)
+	for i, id in pairs(GetTeamPlayers(GetTeam()))
+	do
+		local member = GetTeamMember(i)
+		if member:IsAlive()
+		and member ~= GetBot()
+		and not member:IsIllusion()
+		and GetUnitToLocationDistance(member, laneFront) <= nRadius
+		then
+			count = count + 1
+		end
+	end
 	return count
 end
 

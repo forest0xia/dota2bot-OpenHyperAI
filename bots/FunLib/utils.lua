@@ -614,6 +614,19 @@ ____exports.HighGroundTowers = {
 }
 ____exports.FirstTierTowers = {Tower.Top1, Tower.Mid1, Tower.Bot1}
 ____exports.SecondTierTowers = {Tower.Top2, Tower.Mid2, Tower.Bot2}
+____exports.AllTowers = {
+    Tower.Top1,
+    Tower.Mid1,
+    Tower.Bot1,
+    Tower.Top2,
+    Tower.Mid2,
+    Tower.Bot2,
+    Tower.Top3,
+    Tower.Mid3,
+    Tower.Bot3,
+    Tower.Base1,
+    Tower.Base2
+}
 ____exports.NonTier1Towers = {
     Tower.Top2,
     Tower.Mid2,
@@ -1448,6 +1461,24 @@ function ____exports.IsBotPushingTowerInDanger(bot)
         return true
     end
     return false
+end
+function ____exports.GetDistanceToCloestTower(bot)
+    local cTower = nil
+    local cDistance = 99999
+    for ____, towerId in ipairs(____exports.AllTowers) do
+        local tower = GetTower(
+            GetOpposingTeam(),
+            towerId
+        )
+        if tower ~= nil and ____exports.IsValidBuilding(tower) and not (tower:HasModifier("modifier_fountain_glyph") or tower:HasModifier("modifier_invulnerable") or tower:HasModifier("modifier_backdoor_protection_active")) then
+            local tDistance = GetUnitToUnitDistance(bot, tower)
+            if tDistance < cDistance then
+                cTower = tower
+                cDistance = tDistance
+            end
+        end
+    end
+    return cDistance, cTower
 end
 function ____exports.GetCirclarPointsAroundCenterPoint(vCenter, nRadius, numPoints)
     local points = {vCenter}

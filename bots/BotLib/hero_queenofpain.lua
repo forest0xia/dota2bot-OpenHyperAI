@@ -477,7 +477,7 @@ function X.ConsiderW()
 					hCastTarget = location
 					sCastMotive = 'W-对线赶路'
 					
-					if bot:GetTarget() ~= nil
+					if J.IsValidHero(bot:GetTarget())
 					then
 						if J.CanKillTarget( bot:GetTarget(), ScreamOfPainDamage, DAMAGE_TYPE_MAGICAL ) and abilityE.IsFullyCastable()
 						then

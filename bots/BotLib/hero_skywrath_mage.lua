@@ -79,8 +79,7 @@ sRoleItemsBuyList['pos_5'] = {
 }
 
 sRoleItemsBuyList['pos_1'] = {
-	
-	"item_priest_outfit",
+	"item_medusa_outfit",
 	"item_rod_of_atos",
 --	"item_glimmer_cape",
     "item_kaya",

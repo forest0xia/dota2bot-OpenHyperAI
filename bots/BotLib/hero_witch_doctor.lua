@@ -42,8 +42,8 @@ sRoleItemsBuyList['pos_4'] = {
 
 	"item_magic_wand",
 	"item_arcane_boots",
-	"item_aghanims_shard",
 	"item_glimmer_cape",--
+	"item_aghanims_shard",
 	"item_guardian_greaves",--
 	"item_force_staff",--
 	"item_ultimate_scepter",
@@ -63,9 +63,9 @@ sRoleItemsBuyList['pos_5'] = {
     "item_magic_wand",
     "item_boots",
     "item_tranquil_boots",
+	"item_glimmer_cape",--
     "item_pavise",
     'item_pipe',--
-	"item_glimmer_cape",--
     "item_solar_crest",--
     "item_force_staff",--
     "item_boots_of_bearing",--
@@ -84,8 +84,8 @@ sRoleItemsBuyList['pos_3'] = {
 
 	"item_magic_wand",
 	"item_arcane_boots",
-	"item_aghanims_shard",
 	"item_glimmer_cape",--
+	"item_aghanims_shard",
     'item_veil_of_discord',
 	"item_shivas_guard",--
 	"item_ultimate_scepter",

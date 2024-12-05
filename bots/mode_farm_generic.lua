@@ -4,6 +4,7 @@ if bot == nil or bot:IsInvulnerable() or not bot:IsHero() or not bot:IsAlive() o
 
 local Utils = require( GetScriptDirectory()..'/FunLib/utils' )
 local Version = require(GetScriptDirectory()..'/FunLib/version')
+local Localization = require( GetScriptDirectory()..'/FunLib/localization' )
 
 local team = GetTeam()
 
@@ -49,13 +50,7 @@ local isChangePosMessageDone = false
 
 local IsShouldGoFarm = false
 local ShouldGoFarmTime = 0
-
-local MessagesToBeAnnounced = { -- {sMessage, bGlobalMessage, bEnabled}
-	{"Welcome to Open Hyper AI (OHA): " .. Version.number, true, true},
-	{"You can select the heroes for bots to pick, e.g. 10 same heroes or your dream teams, or change their names. Just modify the Customize/general file.", false, true},
-	{"If you have any feedback, please post a comment to script's Workshop or Github repo.", false, true},
-	{"You can type !pos X to swap position with a bot. For example, type: `!pos 2` to go mid lane.", false, true},
-}
+local nH, nB = J.Utils.NumHumanBotPlayersInTeam(GetOpposingTeam())
 
 local lastAnnouncePrintedTime = 0
 local numberAnnouncePrinted = 1
@@ -338,9 +333,9 @@ function GetDesire()
 			J.Role['sayRate'] = true;
 			if RandomInt(1,6) < 3 
 			then
-				bot:ActionImmediate_Chat("We estimate that the probability of winning is less than 1%, so we are resigned to losing! Well played! ",true);
+				bot:ActionImmediate_Chat(Localization.Get('say_will_lose'),true);
 			else
-				bot:ActionImmediate_Chat("We estimate the probability of winning to be below 1%.Well played!",true);
+				bot:ActionImmediate_Chat(Localization.Get('say_will_lose_2'),true);
 			end
 		end
 		if allyKills > enemyKills + nWinCount and J.Role.NotSayRate() 
@@ -348,9 +343,9 @@ function GetDesire()
 		    J.Role['sayRate'] = true;
 			if RandomInt(1,6) < 3 
 			then
-				bot:ActionImmediate_Chat("We estimate that the probability of winning a team battle is over 90%",true);
+				bot:ActionImmediate_Chat(Localization.Get('say_will_win'),true);
 			else
-				bot:ActionImmediate_Chat("We estimate the probability of winning to above 90%.",true);
+				bot:ActionImmediate_Chat(Localization.Get('say_will_win_2'),true);
 			end
 		end
 	
@@ -410,14 +405,13 @@ function GetDesire()
 	and (
 		shouldGoFarmDuringLaning
 		or (
-			J.IsCore(bot)
-			and J.GetCoresAverageNetworth() < 12000
+			(J.IsCore(bot) or (not J.IsCore(bot) and DotaTime() > 7 * 60 and DotaTime() < 35 * 60))
+			and J.GetCoresAverageNetworth() < 15000
 			and (J.Site.IsTimeToFarm(bot) or pushTime > DotaTime() - 8.0)
 			-- and (not J.IsHumanPlayerInTeam() or enemyKills > allyKills + 16)
 			-- and ( bot:GetNextItemPurchaseValue() > 0 or not bot:HasModifier("modifier_item_moon_shard_consumed") )
 			and ( DotaTime() > 7 * 60 or bot:GetLevel() >= 8 or (bot:GetAttackRange() < 220 and bot:GetLevel() >= 6) ))
 			and (not bot.isBear or (bot.isBear and GetUnitToUnitDistance(bot, Utils.GetLoneDruid(bot).hero) < 1100))
-		-- or ((J.Utils.GameStates.passiveLaningTime or ((bot:GetActiveMode() == BOT_MODE_LANING or bot:GetActiveMode() == BOT_MODE_ATTACK) and bot:GetActiveModeDesire() < 0.2)) and not J.Utils.GameStates.isTimeForPush)
 		)
 		or (DotaTime() > 420 and bot:GetActiveMode() ~= BOT_MODE_FARM and bot:GetActiveModeDesire() < 0.12)
 	then
@@ -1260,15 +1254,16 @@ function PickOneAnnouncer()
 end
 
 function AnnounceMessages()
+	local welcome_msgs = Localization.Get('welcome_msgs')
 	if ((J.IsModeTurbo() and DotaTime() > -50 + team * 2) or (not J.IsModeTurbo() and DotaTime() > -75 + team * 2))
-	and numberAnnouncePrinted < #MessagesToBeAnnounced + 1
+	and numberAnnouncePrinted < #welcome_msgs + 1
 	and bot.isAnnouncer
 	and DotaTime() < 0
 	then
 		if GameTime() - lastAnnouncePrintedTime >= announcementGap then
-			local msg = MessagesToBeAnnounced[numberAnnouncePrinted]
-			if msg ~= nil and msg[3] then
-				bot:ActionImmediate_Chat(msg[1], msg[2])
+			local msg = welcome_msgs[numberAnnouncePrinted]
+			if msg then
+				bot:ActionImmediate_Chat(msg, nB == 0)
 			end
 			numberAnnouncePrinted = numberAnnouncePrinted + 1
 			lastAnnouncePrintedTime = GameTime()
@@ -1278,7 +1273,7 @@ function AnnounceMessages()
 	if GetGameMode() ~= GAMEMODE_1V1MID and GetGameState() == GAME_STATE_PRE_GAME and bot.isBear == nil
 	and (bot.announcedRole == nil or bot.announcedRole ~= J.GetPosition(bot)) then
 		bot.announcedRole = J.GetPosition(bot)
-		bot:ActionImmediate_Chat('I will play position '..J.GetPosition(bot), false)
+		bot:ActionImmediate_Chat(Localization.Get('say_play_pos')..J.GetPosition(bot), false)
 	end
 	if GetGameMode() ~= GAMEMODE_1V1MID
 	and not isChangePosMessageDone
@@ -1287,7 +1282,7 @@ function AnnounceMessages()
 		local nH, nB = J.NumHumanBotPlayersInTeam()
 		if DotaTime() >= 0 and nH > 0 and nB > 0
 		then
-			bot:ActionImmediate_Chat("Position selection closed.", true)
+			bot:ActionImmediate_Chat(Localization.Get('pos_select_closed'), true)
 			isChangePosMessageDone = true
 		end
 	end

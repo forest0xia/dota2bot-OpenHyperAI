@@ -40,7 +40,7 @@ function GetDesire()
 		return BOT_MODE_DESIRE_NONE
 	end
 
-	if J.GetEnemiesAroundAncient(bot, 1800) > 0 then
+	if J.GetEnemiesAroundAncient(bot, 2600) > 0 then
 		return BOT_MODE_DESIRE_NONE
 	end
 
@@ -66,8 +66,8 @@ function GetDesire()
 
     -- if Roshan is about to get killed, kill it unless there are other absolute actions.
     if J.Utils.IsValidUnit(Roshan) then
-        local roshHP = Roshan:GetHealth()/Roshan:GetMaxHealth()
-        if roshHP < 0.8 then
+        local roshHP = Roshan:GetHealth() / Roshan:GetMaxHealth()
+        if roshHP < 0.3 then
             return RemapValClamped(roshHP, 100, 0, BOT_MODE_DESIRE_MODERATE, BOT_MODE_DESIRE_ABSOLUTE )
         end
     end

@@ -10,6 +10,9 @@ end
 local heroNames = require('bots.FretBots.HeroNames')
 -- sweet DeepPrint function I cadged from GitHub
 local inspect = require('bots.FretBots.Inspect')
+local Customize
+if GetScriptDirectory() == 'bots' then Customize = require('bots.Customize.general')
+else Customize = require( GetScriptDirectory()..'/Customize/general' ) end
 
 if Utilities == nil then
 	Utilities =
@@ -42,6 +45,15 @@ PLAYER_DEATH_LIST   = Sounds.BadSounds
 ASIAN_LIST 					= Sounds.AsianCasters
 CIS_LIST 						= Sounds.CisCasters
 ENGLISH_LIST 	    	= Sounds.EnglishCasters
+
+function Utilities:UpdateCasterLocale()
+	if Customize.Localization == 'en' then
+		ENGLISH_LIST = Sounds.EnglishCasters
+		BAD_LIST = Sounds.EnglishCasters
+		GOOD_LIST = Sounds.EnglishCasters
+		PLAYER_DEATH_LIST = Sounds.EnglishCasters
+	end
+end
 
 -- duh
 TEAM_RADIANT		= 2
@@ -555,6 +567,12 @@ end
 -- player didn't want printed to chat
 function Utilities:CheckForDash(command)
 	if command:sub(1,1) == '-' then
+		return command:sub(2)
+	end
+	return command
+end
+function Utilities:CheckForExcl(command)
+	if command:sub(1,1) == '!' then
 		return command:sub(2)
 	end
 	return command

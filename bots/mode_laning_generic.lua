@@ -17,8 +17,8 @@ if Utils.BuggyHeroesDueToValveTooLazy[botName] then local_mode_laning_generic = 
 
 function GetDesire()
 	if bot:IsInvulnerable() or not bot:IsHero() or not bot:IsAlive() or not string.find(botName, "hero") or bot:IsIllusion() then return BOT_MODE_DESIRE_NONE end
-	local currentTime = DotaTime()
 	local botLV = bot:GetLevel()
+	local currentTime = DotaTime()
 	if GetGameMode() == 23 then currentTime = currentTime * 1.65 end
 	if currentTime < 0 then return BOT_ACTION_DESIRE_NONE end
 

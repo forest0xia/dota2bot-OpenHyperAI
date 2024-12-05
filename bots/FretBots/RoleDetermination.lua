@@ -3,6 +3,7 @@
 require 'bots.FretBots.Debug'
 -- Timers
 require 'bots.FretBots.Timers'
+local Localization = require 'bots/FunLib/localization'
 
 -- Instantiate ourself
 if RoleDetermination == nil then
@@ -16,7 +17,7 @@ local isDebug = Debug.IsDebug() and thisDebug
 -- other local vars
 local botRoleDeterminationTimerName = 'botRoleDeterminationTimerName'
 -- Time at which to stop the BotRoleDetermination timer and declare rols
-local BotRoleDeterminationTime = 45
+local BotRoleDeterminationTime = 10
 -- Bots found to be in each lane
 local laneCounts =
 {
@@ -42,9 +43,9 @@ function RoleDetermination:Timer()
 		return nil
 	end
 	-- Get Game Time
-	local gameTime = Utilities:GetAbsoluteTime()
+	local dotaTime = Utilities:GetTime()
 	-- If done, declare roles, stop timer
-	if gameTime > BotRoleDeterminationTime then
+	if dotaTime > BotRoleDeterminationTime then
 		RoleDetermination:DetermineRoles()
 		RoleDetermination:AnnounceRoles()
 		Timers:RemoveTimer(botRoleDeterminationTimerName)
@@ -56,7 +57,7 @@ function RoleDetermination:Timer()
 	-- minute so that we can resort the Bots array prior to the first
 	-- PerMinuteTimer tick.
 	for team = 2, 3 do
-		
+
 	for _, bot in ipairs(AllBots[team]) do
 		local midWeight = 0
 		local topWeight = 0
@@ -72,20 +73,13 @@ function RoleDetermination:Timer()
 			botWeight = CalcDistanceBetweenEntityOBB(bot, DireTowers.BotTier1)
 		end
 		-- save closest values
-		if bot.stats.laneWeights.mid > midWeight then
-			bot.stats.laneWeights.mid = midWeight
-		-- always replace default values
-		elseif bot.stats.laneWeights.mid < 0 then
+		if bot.stats.laneWeights.mid > midWeight or bot.stats.laneWeights.mid < 0 then
 			bot.stats.laneWeights.mid = midWeight
 		end
-		if bot.stats.laneWeights.top > topWeight then
-			bot.stats.laneWeights.top = topWeight
-		elseif bot.stats.laneWeights.top < 0 then
+		if bot.stats.laneWeights.top > topWeight or bot.stats.laneWeights.top < 0 then
 			bot.stats.laneWeights.top = topWeight
 		end
-		if bot.stats.laneWeights.bot > botWeight then
-			bot.stats.laneWeights.bot = botWeight
-		elseif bot.stats.laneWeights.bot < 0 then
+		if bot.stats.laneWeights.bot > botWeight or bot.stats.laneWeights.bot < 0 then
 			bot.stats.laneWeights.bot = botWeight
 		end
 	end
@@ -270,16 +264,16 @@ end
 end
 
 function RoleDetermination:AnnounceRoles()
-	Utilities:Print('Bot Roles have been determined.')
+	Utilities:Print(Localization.Get('fret_role_determined'))
 	for team = 2, 3 do
 		if team == 2 and #AllBots[team] >= 1 then
-			Utilities:Print('For Radiant team:')
+			Utilities:Print(Localization.Get('fret_role_rad'))
 		elseif team == 3 and #AllBots[team] >= 1 then
-			Utilities:Print('For Dire team:')
+			Utilities:Print(Localization.Get('fret_role_dire'))
 		end
 		for _, bot in ipairs(AllBots[team]) do
 			-- Print this role to chat
-			local msg = Utilities:ColorString('Position '..bot.stats.role..': '.. bot.stats.name .. ': ' .. bot.stats.skill, Utilities:GetPlayerColor(bot.stats.id))
+			local msg = Utilities:ColorString(Localization.Get('fret_role_position')..bot.stats.role..': '.. bot.stats.name .. ': ' .. bot.stats.skill, Utilities:GetPlayerColor(bot.stats.id))
 			Utilities:Print(msg)
 		end
 	end

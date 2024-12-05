@@ -887,7 +887,7 @@ function X.ConsiderWintersCurse()
             local nInRangeRetreatingAlly = J.GetRetreatingAlliesNearLoc(enemyHero:GetLocation(), 400)
             local nInRangeEnemy = J.GetEnemiesNearLoc(enemyHero:GetLocation(), nRadius)
             if (nInRangeAlly == nil or #nInRangeAlly <= 0 or #nInRangeRetreatingAlly > 0)
-            and nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
+            and nInRangeEnemy ~= nil and #nInRangeEnemy >= 2
             then
                 return BOT_ACTION_DESIRE_HIGH, enemyHero
             end

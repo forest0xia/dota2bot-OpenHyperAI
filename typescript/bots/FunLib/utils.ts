@@ -77,6 +77,20 @@ export const FirstTierTowers = [Tower.Top1, Tower.Mid1, Tower.Bot1];
 
 export const SecondTierTowers = [Tower.Top2, Tower.Mid2, Tower.Bot2];
 
+export const AllTowers = [
+    Tower.Top1,
+    Tower.Mid1,
+    Tower.Bot1,
+    Tower.Top2,
+    Tower.Mid2,
+    Tower.Bot2,
+    Tower.Top3,
+    Tower.Mid3,
+    Tower.Bot3,
+    Tower.Base1,
+    Tower.Base2,
+];
+
 export const NonTier1Towers = [
     Tower.Top2,
     Tower.Mid2,
@@ -1215,6 +1229,32 @@ export function IsBotPushingTowerInDanger(bot: Unit): boolean {
         return true;
     }
     return false;
+}
+
+export function GetDistanceToCloestTower(
+    bot: Unit
+): LuaMultiReturn<[number, Unit | null]> {
+    let cTower = null;
+    let cDistance = 99999;
+    for (const towerId of AllTowers) {
+        const tower = GetTower(GetOpposingTeam(), towerId);
+        if (
+            tower !== null &&
+            IsValidBuilding(tower) &&
+            !(
+                tower.HasModifier("modifier_fountain_glyph") ||
+                tower.HasModifier("modifier_invulnerable") ||
+                tower.HasModifier("modifier_backdoor_protection_active")
+            )
+        ) {
+            const tDistance = GetUnitToUnitDistance(bot, tower);
+            if (tDistance < cDistance) {
+                cTower = tower;
+                cDistance = tDistance;
+            }
+        }
+    }
+    return $multi(cDistance, cTower);
 }
 
 export function GetCirclarPointsAroundCenterPoint(

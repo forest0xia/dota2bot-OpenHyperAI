@@ -245,7 +245,6 @@ function X.SkillsComplement()
 		bot:ActionQueue_UseAbilityOnLocation( abilityR, castRFRLocation + RandomVector( 50 ) )
 		bot:ActionQueue_UseAbility( abilityRef )
 		bot:ActionQueue_UseAbilityOnLocation( abilityR, castRFRLocation + RandomVector( 50 ) )
-		--bot:ActionImmediate_Chat( "Heed my call! Hellfire from the abyss! Come out!!!", true )
 		return
 
 	end
