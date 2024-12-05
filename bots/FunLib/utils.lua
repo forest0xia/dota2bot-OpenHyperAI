@@ -1351,10 +1351,17 @@ function ____exports.GetNumOfAliveHeroes(bEnemy)
     return count
 end
 function ____exports.CountMissingEnemyHeroes()
+    local cachedRes = ____exports.GetCachedVars(
+        "CountMissingEnemyHeroes" .. tostring(GetTeam()),
+        0.5
+    )
+    if cachedRes ~= nil then
+        return cachedRes
+    end
     local count = 0
     for ____, playerdId in ipairs(GetTeamPlayers(GetOpposingTeam())) do
         do
-            local __continue217
+            local __continue218
             repeat
                 if IsHeroAlive(playerdId) then
                     local lastSeenInfo = GetHeroLastSeenInfo(playerdId)
@@ -1362,18 +1369,22 @@ function ____exports.CountMissingEnemyHeroes()
                         local firstInfo = lastSeenInfo[1]
                         if firstInfo.time_since_seen >= 2.5 then
                             count = count + 1
-                            __continue217 = true
+                            __continue218 = true
                             break
                         end
                     end
                 end
-                __continue217 = true
+                __continue218 = true
             until true
-            if not __continue217 then
+            if not __continue218 then
                 break
             end
         end
     end
+    ____exports.SetCachedVars(
+        "CountMissingEnemyHeroes" .. tostring(GetTeam()),
+        count
+    )
     return count
 end
 function ____exports.FindAllyWithAtLeastDistanceAway(bot, nDistance)

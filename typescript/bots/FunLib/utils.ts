@@ -1054,6 +1054,14 @@ export function GetNumOfAliveHeroes(bEnemy: boolean): number {
 }
 
 export function CountMissingEnemyHeroes(): number {
+    const cachedRes = GetCachedVars(
+        "CountMissingEnemyHeroes" + tostring(GetTeam()),
+        0.5
+    );
+    if (cachedRes !== null) {
+        return cachedRes;
+    }
+
     let count = 0;
     for (let playerdId of GetTeamPlayers(GetOpposingTeam())) {
         if (IsHeroAlive(playerdId)) {
@@ -1075,6 +1083,7 @@ export function CountMissingEnemyHeroes(): number {
         }
     }
     // print(`count missing alive hero for enemy: ${count}`);
+    SetCachedVars("CountMissingEnemyHeroes" + tostring(GetTeam()), count);
     return count;
 }
 

@@ -104,7 +104,7 @@ function GetDesire()
 	or #nInRangeAlly_roshan >= 2
 	or J.IsDoingTormentor(bot)
 	or J.IsDoingRoshan(bot)
-	or J.IsDefending(bot)
+	or (J.IsDefending(bot) and bot:GetActiveModeDesire() > 0.2)
 	then
 		return BOT_MODE_DESIRE_NONE
 	end
@@ -413,7 +413,7 @@ function GetDesire()
 			and ( DotaTime() > 7 * 60 or bot:GetLevel() >= 8 or (bot:GetAttackRange() < 220 and bot:GetLevel() >= 6) ))
 			and (not bot.isBear or (bot.isBear and GetUnitToUnitDistance(bot, Utils.GetLoneDruid(bot).hero) < 1100))
 		)
-		or (DotaTime() > 420 and bot:GetActiveMode() ~= BOT_MODE_FARM and bot:GetActiveModeDesire() < 0.12)
+		or (DotaTime() > 420 and bot:GetActiveModeDesire() < 0.15)
 	then
 		if J.GetDistanceFromEnemyFountain(bot) > 4000
 		then

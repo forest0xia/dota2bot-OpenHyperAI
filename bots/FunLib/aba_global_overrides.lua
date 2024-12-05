@@ -257,6 +257,16 @@ end
 --     return originalAction_AttackUnit(self, hUnit, bOnce)
 -- end
 
+local originalGetTarget = CDOTA_Bot_Script.GetTarget
+function CDOTA_Bot_Script:GetTarget()
+    if not self or not self:IsBot() then
+		-- print("GetTarget has been called on unit is not a bot")
+		-- print("Stack Trace:", debug.traceback())
+		return nil
+	end
+    return originalGetTarget(self)
+end
+
 local originalGetAttackRange = CDOTA_Bot_Script.GetAttackRange
 function CDOTA_Bot_Script:GetAttackRange()
     if not self:CanBeSeen() then

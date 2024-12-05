@@ -13,10 +13,11 @@ local Customize = require('bots.Customize.general')
 local Localization = require 'bots/FunLib/localization'
 -- HeroSounds
 local Chat = require('bots.FretBots.Chat')
+if not Customize.Fretbots then Customize.Fretbots = { } end
 
 -- default difficulty if no one votes
-local DefaultDifficulty = 2 -- [0, 10]
-local DefaultAllyScale = 0.5 -- [0, 1]
+local DefaultDifficulty  = Customize.Fretbots.Default_Difficulty   or  2     -- [0, 10]
+local DefaultAllyScale   = Customize.Fretbots.Default_Ally_Scale   or  0.5   -- [0,  1]
 
 Settings = nil
 
@@ -30,7 +31,7 @@ local allyScaleMax = 1
 
 local playerVoted = {}
 -- is voting closed
-local isVotingClosed = false
+local isVotingClosed = (Customize.Fretbots.Allow_To_Vote == false) or false
 -- Have voting directions been posted?
 local isVotingOpened = false
 -- Number of votes cast
@@ -205,7 +206,7 @@ function Settings:LocaleSelectTimer()
 
 	if selectLocale or selectLocaleTimeElapsed >= 6 then
 		selectLocale = selectLocale or 'default'
-		Utilities:Print('Language/local selected: ' .. selectLocale, MSG_GOOD)
+		Utilities:Print('Language/locale selected: ' .. selectLocale, MSG_GOOD)
 		Timers:RemoveTimer(localeTimerName)
 		isSelectLocaleOpen = false
 		Timers:CreateTimer(settingsTimerName, {endTime = 1, callback =  Settings['DifficultySelectTimer']} )
@@ -224,7 +225,7 @@ function Settings:DifficultySelectTimer()
 		return nil
 	end
 	-- If voting not yet open, display directions
-	if not isVotingOpened then
+	if not isVotingOpened and not isVotingClosed then
 		local msg = Localization.Get('fret_diff_open')..tostring(DefaultDifficulty)
 		Utilities:Print(msg, MSG_GOOD)
 		msg = string.format(Localization.Get('fret_diff_vote_hint'), difficultyMax)
@@ -270,7 +271,7 @@ function Settings:ApplyVoteSettings()
 			allyScale = Utilities:Round(allyScale, 3)
 		end
 
-		local msg = 'Ally bots bonus scale selected: '..allyScale
+		local msg = Localization.Get("fret_ally_scale_ended")..allyScale
 		Debug:Print(msg)
 		Utilities:Print(msg, MSG_GOOD)
 		Settings.allyScale = allyScale
@@ -300,7 +301,7 @@ function Settings:ApplyVoteSettings()
 	Settings.difficulty = difficulty
 
 	-- Vote again for ally bot difficulty scale.
-	if IsTimeToVoteForAllyBonusScale() then
+	if Customize.Fretbots.Allow_To_Vote and IsTimeToVoteForAllyBonusScale() then
 		isVoteForAllyScale = true
 		isVotingClosed = false
 		Settings.voteEndState = DOTA_GAMERULES_STATE_GAME_IN_PROGRESS

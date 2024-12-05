@@ -561,6 +561,9 @@ function X.GetScaledDesire(nBase, nCurrDist, nMaxDist)
 	if nCurrDist > 3300 and not J.IsInLaningPhase() then
 		desire = desire * 0.2
 	end
+	if J.Utils.CountMissingEnemyHeroes() >= 3 then
+		desire = desire * 0.3
+	end
 
 	return RemapValClamped(J.GetHP(bot), 0.3, 0.8, desire * 0.3, desire)
 end
@@ -682,14 +685,17 @@ function X.GetWisdomDesire(vWisdomLoc)
 	local nDesire = 0
 	local botLevel = bot:GetLevel()
 	local distFromLoc = GetUnitToLocationDistance(bot, vWisdomLoc)
+	if J.Utils.CountMissingEnemyHeroes() >= 3 then
+		distFromLoc = distFromLoc * 2
+	end
 	if botLevel < 12 then
-		nDesire = RemapValClamped(distFromLoc, 3000, 300, BOT_ACTION_DESIRE_HIGH, BOT_ACTION_DESIRE_VERYHIGH )
+		nDesire = RemapValClamped(distFromLoc, 4000, 300, BOT_ACTION_DESIRE_HIGH, BOT_ACTION_DESIRE_VERYHIGH )
 	elseif botLevel < 18 then
-		nDesire = RemapValClamped(distFromLoc, 3000, 300, BOT_ACTION_DESIRE_LOW , BOT_ACTION_DESIRE_HIGH )
+		nDesire = RemapValClamped(distFromLoc, 4000, 300, BOT_ACTION_DESIRE_LOW , BOT_ACTION_DESIRE_HIGH )
 	elseif botLevel < 25 then
-		nDesire = RemapValClamped(distFromLoc, 3000, 300, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_HIGH )
+		nDesire = RemapValClamped(distFromLoc, 4000, 300, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_HIGH )
 	elseif botLevel < 30 then
-		nDesire = RemapValClamped(distFromLoc, 3000, 300, BOT_ACTION_DESIRE_NONE , BOT_ACTION_DESIRE_MODERATE )
+		nDesire = RemapValClamped(distFromLoc, 4000, 300, BOT_ACTION_DESIRE_NONE , BOT_ACTION_DESIRE_MODERATE )
 	end
 
 	return nDesire

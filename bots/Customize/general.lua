@@ -68,6 +68,18 @@ Customize.Dire_Names = {
     'Random',
 }
 
+-- The Enhanced Fretbots mode settings:
+-- For more about Fretbots mode: https://steamcommunity.com/workshop/filedetails/discussion/3246316298/4764334012741504141/
+Customize.Fretbots = {
+    -- Default difficulty, a number between: [0, 10]
+    Default_Difficulty = 2,
+
+    -- Default ally bots bonus scale comparing to enemy bots, a number between: [0, 1]
+    Default_Ally_Scale = 0.5,
+
+    -- Set whether or not allowing the team to vote for difficulty. If false, will directly apply the default differently.
+    Allow_To_Vote = true
+}
 
 return Customize
 

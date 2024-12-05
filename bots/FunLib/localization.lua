@@ -22,11 +22,19 @@ local Localization = {
         say_will_win_2 = "We estimate the probability of winning to above 90%.",
         can_try_tormentor = "Let's try tormentor?",
         say_come_def = "Please come defending",
+        got_first_blood = {
+            'first blood! I am first on every thing',
+            'ez fb. you’re already losing, it’s only just started',
+            'ty for feeding',
+            'good job',
+            'wp',
+            'feels like we are going to have a good game',
+        },
         got_a_kill = {"?", "You’ll have to do better than that!", "ez", "Next time, keep your eyes closer", "I was not even getting warmed up yet"},
         got_big_kill = {"Did you forget to bring your skills today? Easy!", "thanks for your feed", "Maybe next time, you’ll stand a chance… or not.",
             "I’m on fire! Who’s next?", "Don’t feel bad, we all start somewhere… down there.", "Hope you enjoy respawn timers now and then."},
-        got_big_kill_2 = {"That’s what a real rampage looks like!", "Killing spree? More like practice session", "You should ask for a refund on those skills", "Don’t feel bad, we all start somewhere… down there."},
-        got_big_kill_3 = {"Is this supposed to be a challenge? Ez kills. Do better plz", "Too easy! Can you please give me some enjoyments noob?",
+        got_big_kill_2 = {"That’s what a real rampage looks like!", "Killing spree? can you do better", "You should ask for a refund on those skills", "Don’t feel bad, we all start somewhere… down there."},
+        got_big_kill_3 = {"I almost thought you were good. Do better plz", "Too easy! Can you please give me some enjoyments noob?",
             "???????", "thought you were better than that", "That’s how you get wiped", "Did someone died? Oh wait, no, noob shit."},
         kill_streak_ended = {"...", "well played", "noob team"},
         say_end = {"gg. end", "good game, well played", "noob team. ez"},
@@ -63,6 +71,8 @@ local Localization = {
         fret_role_position = 'Position ',
         fret_voting_ends = "Voting ends in %d seconds!",
         fret_diff_selected = "Difficulty selected: ",
+        fret_ally_scale_ended = "Ally bots bonus scale selected: ",
+        fret_found_netural_item = "Found Neutral Item: ",
         random_responses = {
             "?", 'glhf', 'gg',
             "Nice, my dog could do better",
@@ -139,6 +149,14 @@ local Localization = {
             "打游戏呢，先不和你聊了。",
             "我不想再分心聊天了。",
         },
+        got_first_blood = {
+            '一血！我总是第一',
+            '轻松拿下一血。比赛才刚刚开始 你们已经开始输啦',
+            '感谢送人头',
+            '干得漂亮',
+            '很棒棒哦',
+            '感觉这将会是一场不错的比赛',
+        },
         fretbots_wel_msgs = {
             {"#C0392B", "GLHF！原生机器人脚本缺乏乐趣。这段脚本通过不公平的优势提升机器人，使机器人游戏更具挑战性："},
             {"#9B59B6", "* 你可以投票选择难度等级，这会影响机器人获得的奖励量"},
@@ -148,7 +166,7 @@ local Localization = {
             {"#F39C12", "* 如果难度 >= 5，当玩家击杀机器人时，击杀者的金币会减少，协助击杀的玩家获得较少的金币减免。机器人死亡后也会提供更少的经验值"},
             {"#7FB3D5", "* 难度越高，机器人获得的奖励越多，这会让游戏更具挑战性"},
             {"#E74C3C", "* 高难度可能会让人感到有压力甚至沮丧，请为你和你的团队选择合适的难度来获得最好的娱乐需求"},
-            {"#D4AC0D", "* 机器人反馈链接： https://steamcommunity.com/sharedfiles/filedetails/?id=3246316298 。感谢大家分享你的想法"},
+            {"#D4AC0D", "* 机器人反馈链接： https://steamcommunity.com/sharedfiles/filedetails/?id=3246316298 。感谢大家分享你们的想法"},
             {"#839192", "* 你可以使用简单命令如 `-info` 查看难度信息，或使用 `-getroles` 及其他有趣的命令 - 查看脚本的创意工坊页面获取详情"}
         },
         newer_version = "有新版本可用！欢迎更新脚本 Open Hyper AI (OHA) ，或者访问创意工坊页面获取帮助。",
@@ -168,6 +186,9 @@ local Localization = {
         fret_role_rad = "天辉队伍角色：",
         fret_role_dire = "夜魇队伍角色：",
         fret_role_position = "位置 ",
+        fret_voting_ends = "投票将在 %d 秒后结束！",
+        fret_diff_selected = "选择的难度：",
+        fret_found_netural_item = "找到中立物品：",
         random_responses = {
             "?", 'glhf', 'gg',
             "不错，我家的狗都能做得更好。",
@@ -235,6 +256,14 @@ local Localization = {
         kill_streak_ended = {"...", "хорошая игра", "нубская команда"},
         say_end = {"gg. конец", "хорошая игра, молодцы", "нубская команда. ez"},
         no_more_talking = {"Я занят, поговорим позже", "ЗАТКНИСЬ, больше никаких разговоров", "Играй, а не болтай", "Сфокусируйся на игре, я больше не отвечу"},
+        got_first_blood = {
+            'Первая кровь! Я всегда первый во всём.',
+            'Лёгкая первая кровь. Вы уже проигрываете, хотя всё только началось.',
+            'Спасибо за фид.',
+            'Отличная работа.',
+            'Хорошая игра.',
+            'Похоже, нас ждёт хорошая игра.',
+        },
         fretbots_wel_msgs = {
             {"#C0392B", "Удачи! Обычные бот-скрипты скучны. Этот скрипт улучшает ботов, давая им нечестные преимущества, чтобы сделать игры с ботами более сложными:"},
             {"#9B59B6", "* Вы можете голосовать за уровень сложности, который влияет на бонусы, получаемые ботами."},
@@ -264,6 +293,9 @@ local Localization = {
         fret_role_rad = "Роли для команды Radiant:",
         fret_role_dire = "Роли для команды Dire:",
         fret_role_position = "Позиция ",
+        fret_voting_ends = "Голосование заканчивается через %d секунд!",
+        fret_diff_selected = "Выбранная сложность: ",
+        fret_found_netural_item = "Найден нейтральный предмет: ",
         random_responses = {
             "?", 'glhf', 'gg',
             "Неплохо, моя собака могла бы лучше.",
@@ -332,6 +364,14 @@ local Localization = {
         kill_streak_ended = {"...", "よくやった", "初心者チーム"},
         say_end = {"gg. 終了", "良いゲーム、よくやった", "初心者チーム。ez"},
         no_more_talking = {"忙しいから、また後でね", "黙れ、もう話すな", "プレイして、話さないで", "ゲームに集中して、これ以上返事しないよ"},
+        got_first_blood = {
+            'ファーストブラッド！何でも一番は私だ。',
+            '楽勝のFB。もう負けてるね、試合は始まったばかりなのに。',
+            '餌ありがとう。',
+            'ナイスジョブ。',
+            'いいプレイ。',
+            'これは良い試合になりそうな予感がする。',
+        },
         fretbots_wel_msgs = {
             {"#C0392B", "GLHF！標準のボットスクリプトはあまり面白くありません。このスクリプトはボットに不公平なアドバンテージを与え、ボットゲームをより挑戦的にします："},
             {"#9B59B6", "* 難易度スケールに投票でき、ボットが受けるボーナス量が変化します。"},
@@ -361,6 +401,9 @@ local Localization = {
         fret_role_rad = "Radiant チームの役割：",
         fret_role_dire = "Dire チームの役割：",
         fret_role_position = "ポジション ",
+        fret_voting_ends = "投票はあと %d 秒で終了します！",
+        fret_diff_selected = "選択された難易度：",
+        fret_found_netural_item = "中立アイテムを見つけました: ",
         random_responses = {
             "?", 'glhf', 'gg',
             "いいね、うちの犬の方が上手いよ。",
@@ -418,11 +461,8 @@ end
 
 function X.Get(key)
     LanguageCode = Customize.Localization or LanguageCode
-    local res = Localization[LanguageCode][key]
-    if not res then
-        print("[WARN] Cannot find a localization match for the key: "..key..'. Fallback to retrieve English')
-        res = Localization['en'][key]
-    end
+    local localeSet = Localization[LanguageCode] or Localization['en']
+    local res = localeSet[key] or Localization['en'][key]
     return res
 end
 

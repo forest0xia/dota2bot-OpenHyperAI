@@ -10,6 +10,7 @@ end
 local heroNames = require('bots.FretBots.HeroNames')
 -- sweet DeepPrint function I cadged from GitHub
 local inspect = require('bots.FretBots.Inspect')
+local Localization = require 'bots/FunLib/localization'
 local Customize
 if GetScriptDirectory() == 'bots' then Customize = require('bots.Customize.general')
 else Customize = require( GetScriptDirectory()..'/Customize/general' ) end
@@ -193,7 +194,7 @@ function Utilities:AnnounceNeutral(bot, item, msgType)
 	-- first artifact: hero name, by color
 	msg = msg..Utilities:ColorString(bot.stats.name..': ', Utilities:GetPlayerColor(bot.stats.id))
 	if msgType == MSG_NEUTRAL_FIND then
-		msg = msg..Utilities:ColorString('Found Neutral Item: ', awardColors.neutral)
+		msg = msg..Utilities:ColorString(Localization.Get('fret_found_netural_item'), awardColors.neutral)
 	elseif msgType == MSG_NEUTRAL_TAKE then
 		msg = msg..Utilities:ColorString('Took Neutral Item from Stash: ', awardColors.neutral)
 	elseif msgType == MSG_NEUTRAL_RETURN then
@@ -208,8 +209,10 @@ end
 
 -- Returns the localized hero name, if there is one
 function Utilities:GetName(name)
-	if heroNames[name] ~= nil then
-		return heroNames[name]
+	local names = heroNames[Customize.Localization] or heroNames['en']
+	local sName = names[name] or heroNames['en'][name]
+	if sName ~= nil then
+		return sName
 	end
 	return name
 end

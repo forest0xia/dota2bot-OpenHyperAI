@@ -4848,6 +4848,7 @@ function J.GetEnemiesAroundLoc(vLoc, nRadius)
 	if cache ~= nil then return cache end
 
 	local nUnitCount = 0
+	local ancientLoc = GetAncient(GetBot():GetTeam()):GetLocation()
 
 	-- Check Heroes. 
 	for _, id in pairs(GetTeamPlayers(GetOpposingTeam())) do
@@ -4859,7 +4860,10 @@ function J.GetEnemiesAroundLoc(vLoc, nRadius)
 				and J.GetLocationToLocationDistance(vLoc, dInfo.location) <= nRadius
 				and dInfo.time_since_seen < 5.0
 				then
-					nUnitCount = nUnitCount + 1
+					nUnitCount = nUnitCount + GetHeroLevel(id) / 3
+					if J.GetLocationToLocationDistance(ancientLoc, vLoc) < 1600 then
+						nUnitCount = nUnitCount + 2 -- Increase weight for critical defense.
+					end
 				end
 			end
 		end
@@ -4873,19 +4877,35 @@ function J.GetEnemiesAroundLoc(vLoc, nRadius)
 			local unitName = unit:GetUnitName()
 			if unit:IsCreep() then
 				nUnitCount = nUnitCount + 0.5
+				if unit:IsAncientCreep()
+				or unit:HasModifier('modifier_chen_holy_persuasion')
+				or unit:HasModifier('modifier_dominated') then
+					nUnitCount = nUnitCount + 1.5
+				end
+			elseif string.find(unitName, 'siege') and not string.find(unitName, 'upgraded') then
+				nUnitCount = nUnitCount + 0.6
 			elseif string.find(unitName, 'upgraded') then
 				nUnitCount = nUnitCount + 1
 			elseif string.find(unitName, 'warlock_golem') then
-				nUnitCount = nUnitCount + 1
+				nUnitCount = nUnitCount + 3
 			elseif string.find(unitName, 'lone_druid_bear') then
-				nUnitCount = nUnitCount + 2
+				nUnitCount = nUnitCount + 3
 			elseif string.find(unitName, 'shadow_shaman_ward') then
 				nUnitCount = nUnitCount + 2
+			elseif J.IsSuspiciousIllusion(unit) then
+				if unit:HasModifier('modifier_arc_warden_tempest_double')
+				or string.find(unit:GetUnitName(), 'chaos_knight')
+				or string.find(unit:GetUnitName(), 'naga_siren') then
+					nUnitCount = nUnitCount + 2
+				end
 			elseif not (
 				string.find(unitName, 'observer_wards')
 				or string.find(unitName, 'sentry_wards'))
 			then
 				nUnitCount = nUnitCount + 1
+			end
+			if J.GetLocationToLocationDistance(ancientLoc, vLoc) < 1600 then
+				nUnitCount = nUnitCount + 2
 			end
 		end
 	end

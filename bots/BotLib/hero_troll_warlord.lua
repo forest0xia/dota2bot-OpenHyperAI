@@ -156,7 +156,7 @@ function X.ConsiderBerserkersRage(BerserkersRage)
                 if J.IsAttacking(bot)
                 and J.IsInRange(bot, botTarget, 150)
                 and BerserkersRage:GetToggleState() == false
-                and not J.IsChasingTarget(botTarget)
+                and not J.IsChasingTarget(bot, botTarget)
                 then
                     if BerserkersRage:GetToggleState() == false
                     then

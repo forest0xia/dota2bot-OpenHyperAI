@@ -743,7 +743,7 @@ function GetHumanChatHero(name)
 	if name == nil then return ""; end
 	name = name:lower()
 	for _, hero in pairs(SupportedHeroes) do
-		if heroUnitNames[hero]:lower() == name then
+		if heroUnitNames['en'][hero]:lower() == name then
 			print('Found hero ' .. hero .. ' for '..name)
 			return hero;
 		end
