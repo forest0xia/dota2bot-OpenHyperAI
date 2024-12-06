@@ -21,7 +21,7 @@ Thanks and kudos to all that contributed to make bot games fun and exciting.
 ## Why it's enjoyable
 0. Support 7.37
 1. Support ALL 126 heroes! You will see bots playing Kez, Ringmaster, Invoker, Techies, Meepo, Lone Druid, Dark Willow, Hoodwink, io, Muerta, Primal Beast, etc. Just note that some of the newly added ones are not very strong and in progress to be further enhanced.
-1. Bots are customizable . E.g. you can easily set ban / picks for bots, change their names, etc. Check out the file in [bots/Customize/general.lua](bots/Customize/general.lua), or in local Workshop directory: `<steam folder>\steamapps\workshop\content\570\3246316298\Customize\general.lua`
+1. Bots are customizable . E.g. you can easily set ban / picks for bots, change their names, etc. Check out the file in [Customize/general.lua](bots/Customize/general.lua), or in local Workshop directory: `<steam folder>\steamapps\workshop\content\570\3246316298\Customize\general.lua`
 1. Dynamic difficulty. If you ever feel all existing bot scripts lack excitement. This script boosts bots with huge unfair advantages to make bot games a lot more challenging. You will need to copy the script into your local vscripts folder and then enable the Fretbots mode for this feature. See instructions below.
 1. Support almost ALL game modes: https://steamcommunity.com/workshop/filedetails/discussion/3246316298/4334231305373971730/
 1. Improved code structure & general logic for decision making for ability casting, item usages, defending, roaming as well as farming.
@@ -35,18 +35,21 @@ Thanks and kudos to all that contributed to make bot games fun and exciting.
 
 ## Bot roles, lanings and positioning
 1. In local lobby, the positions of the bots are the same as the order of the slots: 1, 2, 3, 4, 5 from top to bottom in the lobby.
-1. Support multiple in-game commands:
-   1. `!pos X` You can type: `!pos X` to swap the position with a bot. For example: `!pos 2` to swap role and lane with the bot that's going to mid.
-   1. `!pick XXX` During hero selection phase, you can type: `!pick XXX` to pick a hero. For example: `!pick puck` to pick puck as ally.
-      1. You can type: `/all !pick XXX` to pick hero for enemy. For example: `/all !pick puck` to pick puck as enemy.
-      1. For complex hero names or names that may apply to multiple heroes, please use the full internal code name. For example: `!pick npc_dota_hero_keeper_of_the_light` .
-      1. You can find a list of hero's internal code names in here: https://steamcommunity.com/workshop/filedetails/discussion/3246316298/4848777260032086340/
-   1. `!Xpos Y` Swap other players' positions without changing your position. For example you can use `!3pos 5` to tell the 3rd bot on the team to play pos 5.
-   1. `!ban XXX` You can type: `!ban XXX` to ban a hero so the bots won't pick that hero. For example: `!ban puck` to prevent any bots from picking puck.
-   1. `!sp XX` You can type `!sp en` or `!speak zh` to do localization - make bots talk in English, or other languages like: `!sp zh` for `Chinese`, `!sp ru` for `Russian`, `!sp ja` for `Japanese`, for now. Note, this localization switch only works for your ally bots - enemy bots will use default language, so you better change the setting in bots/Customize/general.lua .
-   1. Batch commands. You can put pick/ban multiple heroes at once by putting the commands in 1 line, for example: `!pick sand king; !pick io; !ban zuus; !ban sniper` .
-1. You can change bot ban/picks, and roles, etc easily and permanently. Check out the file in [bots/Customize/general.lua](bots/Customize/general.lua)
+1. You can change bot ban/picks, and roles, etc easily and permanently. Check out the file in [Customize/general.lua](bots/Customize/general.lua)
 1. Pos1 and Pos5 bots go to safe lane. Pos3 and Pos4 bots go offlane. Pos2 bot goes to mid lane.
+
+## Support multiple in-game commands
+1. `!pos X` You can type: `!pos X` to swap the position with a bot. For example: `!pos 2` to swap role and lane with the bot that's going to mid.
+1. `!pick XXX` During hero selection phase, you can type: `!pick XXX` to pick a hero. For example: `!pick puck` to pick puck as ally.
+   1. You can type: `/all !pick XXX` to pick hero for enemy. For example: `/all !pick puck` to pick puck as enemy.
+   1. For complex hero names or names that may apply to multiple heroes, please use the full internal code name. For example: `!pick npc_dota_hero_keeper_of_the_light` .
+   1. You can find a list of hero's internal code names in here: https://steamcommunity.com/workshop/filedetails/discussion/3246316298/4848777260032086340/
+1. `!Xpos Y` Swap other players' positions without changing your position. For example you can use `!3pos 5` to tell the 3rd bot on the team to play pos 5.
+1. `!ban XXX` You can type: `!ban XXX` to ban a hero so the bots won't pick that hero. For example: `!ban puck` to prevent any bots from picking puck.
+1. `!sp XX` You can type `!sp en` or `!speak zh` to do localization - make bots talk in English, or other languages like: `!sp zh` for `Chinese`, `!sp ru` for `Russian`, `!sp ja` for `Japanese`, for now. 
+   1. Note, if you use this localization command after the hero selection phase is started, this switch only works for your *ally* bots - enemy bots will use default language, so you better change the setting in [Customize/general.lua](bots/Customize/general.lua) . 
+   1. For all ally & enemy bots, you should set `Customize.Localization` in [Customize/general.lua](bots/Customize/general.lua).
+1. Batch commands. You can put pick/ban multiple heroes at once by putting the commands in 1 line, for example: `!pick sand king; !pick io; !ban zuus; !ban sniper` .
 
 ## If you want to contribute to this script
 1. Please feel very welcome to contribute to the Github repo any time you like. Just update the logic and create a pull request.
