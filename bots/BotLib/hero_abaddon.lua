@@ -142,7 +142,7 @@ function X.SkillsComplement()
     end
 
     MistCoilDesire, MistCoilTarget = X.ConsiderMistCoil()
-    if MistCoilDesire > 0
+    if MistCoilDesire > 0 and MistCoilTarget
     then
         bot:Action_UseAbilityOnEntity(MistCoil, MistCoilTarget)
         return
@@ -160,6 +160,7 @@ function X.ConsiderMistCoil()
 	local nSelfDamage = MistCoil:GetSpecialValueInt('self_damage')
     local nDamageType = DAMAGE_TYPE_MAGICAL
     local botTarget = J.GetProperTarget(bot)
+    local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
 
     if J.HasAghanimsShard(bot)
     then
@@ -167,18 +168,10 @@ function X.ConsiderMistCoil()
         nDamageType = DAMAGE_TYPE_PURE
     end
 
-    local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
-    for _, enemyHero in pairs(nEnemyHeroes)
-    do
-        if J.IsValidHero(enemyHero)
-        and J.CanCastOnMagicImmune(enemyHero)
-        and J.CanKillTarget(enemyHero, nDamage, nDamageType)
-        and not J.IsSuspiciousIllusion(enemyHero)
-        and not enemyHero:HasModifier('modifier_dazzle_shallow_grave')
-        and not enemyHero:HasModifier('modifier_oracle_false_promise_timer')
-        and not enemyHero:HasModifier('modifier_templar_assassin_refraction_absorb')
-        then
-            return BOT_ACTION_DESIRE_HIGH, enemyHero
+    if J.IsGoingOnSomeone(bot) then
+        if J.IsValidHero(botTarget)
+        and J.CanCastOnMagicImmune(botTarget) then
+            return BOT_ACTION_DESIRE_HIGH, botTarget
         end
     end
 
@@ -224,9 +217,11 @@ function X.ConsiderMistCoil()
 		end
 	end
 
-    if J.IsRetreating(bot)
-    and J.IsValidHero(botTarget)
-    and J.IsInRange(bot, botTarget, nCastRange)
+    if not J.IsRetreating(bot)
+    and nEnemyHeroes ~= nil
+    and J.IsValidHero(nEnemyHeroes[1])
+    and J.IsInRange(bot, nEnemyHeroes[1], nCastRange)
+    and J.GetMP(bot) > 0.25
 	then
         local nInRangeAlly = J.GetNearbyHeroes(bot,nCastRange + 200, false, BOT_MODE_NONE)
         local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
@@ -241,7 +236,7 @@ function X.ConsiderMistCoil()
         and not J.IsSuspiciousIllusion(nInRangeEnemy[1])
         and not J.IsDisabled(nInRangeEnemy[1])
         then
-            return BOT_ACTION_DESIRE_HIGH, bot
+            return BOT_ACTION_DESIRE_HIGH, nInRangeEnemy[1]
         end
 	end
 
@@ -263,6 +258,20 @@ function X.ConsiderMistCoil()
         and J.IsAttacking(bot)
         then
             return BOT_ACTION_DESIRE_HIGH, botTarget
+        end
+    end
+
+    for _, enemyHero in pairs(nEnemyHeroes)
+    do
+        if J.IsValidHero(enemyHero)
+        and J.CanCastOnMagicImmune(enemyHero)
+        and not J.IsSuspiciousIllusion(enemyHero)
+        and J.CanKillTarget(enemyHero, nDamage, nDamageType)
+        and not enemyHero:HasModifier('modifier_dazzle_shallow_grave')
+        and not enemyHero:HasModifier('modifier_oracle_false_promise_timer')
+        and not enemyHero:HasModifier('modifier_templar_assassin_refraction_absorb')
+        then
+            return BOT_ACTION_DESIRE_HIGH, enemyHero
         end
     end
 

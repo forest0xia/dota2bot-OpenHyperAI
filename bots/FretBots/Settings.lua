@@ -109,6 +109,9 @@ local chatCommands =
 
 }
 
+Settings.isPlaySounds = Customize.Fretbots.Play_Sounds or Settings.isPlaySounds
+Settings.isPlayerDeathSound = Customize.Fretbots.Player_Death_Sound or Settings.isPlayerDeathSound
+
 function Settings:CalculateDifficultyScale(difficulty)
 	-- no argument implies default, do nothing
 	if difficulty == nil then return nil end

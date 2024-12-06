@@ -96,7 +96,7 @@ function Defend.GetDefendDesireHelper(bot, lane)
 		or (#lEnemyHeroesAroundLoc >= 3 and nEffctiveAllyHeroesNearPingedDefendLoc < aliveAllyHeroes))
 		and J.GetLocationToLocationDistance(defendLoc, laneFront) < nSearchRange
 		and GetUnitToLocationDistance(bot, defendLoc) > nSearchRange * 0.8
-		and ((#nInRangeEnemy <= 1 and not (J.IsValidHero(botTarget) or J.GetHP(botTarget) < 0.3)) or not bot:WasRecentlyDamagedByAnyHero(2)) then
+		and ((#nInRangeEnemy <= 1 and not (J.IsValidHero(botTarget) and J.GetHP(botTarget) < 0.3)) or not bot:WasRecentlyDamagedByAnyHero(2)) then
 			print("Ancient is in danger for team " .. team)
 			local desire = BOT_ACTION_DESIRE_ABSOLUTE * 0.98
 			ConsiderPingedDefend(bot, desire, ancient, 4)

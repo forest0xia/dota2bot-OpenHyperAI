@@ -398,6 +398,7 @@ function GetDesire()
 		return BOT_MODE_DESIRE_HIGH;
 	end
 
+	local generalFarmDesire = BOT_MODE_DESIRE_NONE
 	local shouldGoFarmDuringLaning = J.ShouldGoFarmDuringLaning(bot)
 	if GetGameMode() ~= GAMEMODE_MO
 	and not bot:WasRecentlyDamagedByAnyHero(5)
@@ -429,7 +430,7 @@ function GetDesire()
 		if #hLaneCreepList > 0
 		then
 			bot.farmLocation = J.GetCenterOfUnits(hLaneCreepList)
-			return BOT_MODE_DESIRE_ABSOLUTE;
+			generalFarmDesire = BOT_MODE_DESIRE_ABSOLUTE
 		else
 			if preferedCamp == nil then preferedCamp = J.Site.GetClosestNeutralSpwan(bot, availableCamp);end
 
@@ -437,16 +438,16 @@ function GetDesire()
 				if not J.Site.IsModeSuitableToFarm(bot)
 				then
 					preferedCamp = nil;
-					return BOT_MODE_DESIRE_NONE;
-				elseif (bot:GetHealth() <= 200 or J.GetHP(bot) < 0.3)
+					generalFarmDesire = BOT_MODE_DESIRE_NONE;
+				elseif (bot:GetHealth() <= 400 or J.GetHP(bot) < 0.4)
 					then
 						preferedCamp = nil;
 						teamTime = DotaTime();
-						return RemapValClamped(J.GetHP(bot), 0.1, 0.5, BOT_MODE_DESIRE_NONE, BOT_MODE_DESIRE_MODERATE);
+						generalFarmDesire = BOT_MODE_DESIRE_MODERATE
 				elseif farmState == 1
 				    then
 						bot.farmLocation = preferedCamp.cattr.location
-					    return BOT_MODE_DESIRE_ABSOLUTE;
+					    generalFarmDesire = BOT_MODE_DESIRE_ABSOLUTE;
 				else
 
 					if aliveEnemyCount >= 3
@@ -455,7 +456,7 @@ function GetDesire()
 						then
 							if preferedCamp == nil then preferedCamp = J.Site.GetClosestNeutralSpwan(bot, availableCamp);end
 							bot.farmLocation = preferedCamp.cattr.location
-							return BOT_MODE_DESIRE_MODERATE;
+							generalFarmDesire = BOT_MODE_DESIRE_MODERATE;
 						end
 
 						if J.IsPushing( bot )
@@ -466,35 +467,40 @@ function GetDesire()
 							if enemyAncientDistance < 2800
 								and enemyAncientDistance > 1600
 								and bot:GetActiveModeDesire() < BOT_MODE_DESIRE_HIGH
-								and #allies < 2
+								and #allies <= 2
+								and (#hEnemyHeroList >= #allies
+									or numOfAliveEnemyHeroes > #allies)
 							then
 								pushTime = DotaTime();
 								bot.farmLocation = preferedCamp.cattr.location
-								return  BOT_MODE_DESIRE_ABSOLUTE * 0.93;
+								generalFarmDesire =  BOT_MODE_DESIRE_ABSOLUTE * 0.93;
 							end
 
 							if beHighFarmer or bot:GetAttackRange() < 310
 							then
-								if bot:GetActiveModeDesire() <= BOT_MODE_DESIRE_MODERATE 
+								if bot:GetActiveModeDesire() <= BOT_MODE_DESIRE_MODERATE
 									and enemyAncientDistance > 1600
 									and enemyAncientDistance < 5800
 									and #allies < 2
+									and (#hEnemyHeroList >= #allies
+										or numOfAliveEnemyHeroes > #allies)
 								then
 									pushTime = DotaTime();
 									bot.farmLocation = preferedCamp.cattr.location
-									return  BOT_MODE_DESIRE_ABSOLUTE * 0.98;
+									generalFarmDesire = BOT_MODE_DESIRE_ABSOLUTE * 0.98;
 								end
 							end
 						end
 					end
 					local farmDistance = GetUnitToLocationDistance(bot, preferedCamp.cattr.location);
 					bot.farmLocation = preferedCamp.cattr.location
-					return RemapValClamped(farmDistance, 6400, 600, BOT_MODE_DESIRE_MODERATE, BOT_MODE_DESIRE_ABSOLUTE)
+					generalFarmDesire = RemapValClamped(farmDistance, 6400, 600, BOT_MODE_DESIRE_MODERATE, BOT_MODE_DESIRE_ABSOLUTE)
 				end
 			end
 		end
 	end
-	return BOT_MODE_DESIRE_NONE;
+	generalFarmDesire = RemapValClamped(J.GetHP(bot), 0.2, 0.7, BOT_MODE_DESIRE_VERYLOW, generalFarmDesire)
+	return generalFarmDesire;
 end
 
 function OnStart()
@@ -1263,7 +1269,7 @@ function AnnounceMessages()
 		if GameTime() - lastAnnouncePrintedTime >= announcementGap then
 			local msg = welcome_msgs[numberAnnouncePrinted]
 			if msg then
-				bot:ActionImmediate_Chat(msg, nB == 0)
+				bot:ActionImmediate_Chat(msg, nB == 0 or numberAnnouncePrinted == 1)
 			end
 			numberAnnouncePrinted = numberAnnouncePrinted + 1
 			lastAnnouncePrintedTime = GameTime()

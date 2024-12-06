@@ -70,6 +70,7 @@ Customize.Dire_Names = {
 
 -- The Enhanced Fretbots mode settings:
 -- For more about Fretbots mode: https://steamcommunity.com/workshop/filedetails/discussion/3246316298/4764334012741504141/
+-- Note: these settings below will override the pre-defind settings in Fretbots folder.
 Customize.Fretbots = {
     -- Default difficulty, a number between: [0, 10]
     Default_Difficulty = 2,
@@ -78,7 +79,13 @@ Customize.Fretbots = {
     Default_Ally_Scale = 0.5,
 
     -- Set whether or not allowing the team to vote for difficulty. If false, will directly apply the default differently.
-    Allow_To_Vote = true
+    Allow_To_Vote = true,
+
+    -- Set to false disables all sounds
+    Play_Sounds = true,
+
+    -- Taunt sounds when human die with chatwheel sounds
+    Player_Death_Sound = true,
 }
 
 return Customize
