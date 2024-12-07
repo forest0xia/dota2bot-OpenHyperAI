@@ -218,9 +218,12 @@ function ConsiderPingedDefend(bot, desire, building, tier)
 	-- and (nEffctiveAllyHeroesNearPingedDefendLoc <= #lEnemyHeroesAroundLoc and nEffctiveAllyHeroesNearPingedDefendLoc < aliveAllyHeroes)
 	then
 		local saferLoc = J.AdjustLocationWithOffsetTowardsFountain(building:GetLocation(), 850) + RandomVector(50)
-		bot:ActionImmediate_Chat(Localization.Get('say_come_def'), false)
-		bot:ActionImmediate_Ping(saferLoc.x, saferLoc.y, false)
-		J.Utils['GameStates']['defendPings'].pingedTime = GameTime()
+		local reteatAllies = J.GetRetreatingAlliesNearLoc( saferLoc, 1600 )
+		if #reteatAllies <= 0 then
+			bot:ActionImmediate_Chat(Localization.Get('say_come_def'), false)
+			bot:ActionImmediate_Ping(saferLoc.x, saferLoc.y, false)
+			J.Utils['GameStates']['defendPings'].pingedTime = GameTime()
+		end
 	end
 end
 

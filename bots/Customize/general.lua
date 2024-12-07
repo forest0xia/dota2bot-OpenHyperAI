@@ -84,7 +84,7 @@ Customize.Fretbots = {
     -- Set to false disables all sounds
     Play_Sounds = true,
 
-    -- Taunt sounds when human die with chatwheel sounds
+    -- Set to play chatwheel taunt sounds when human player died
     Player_Death_Sound = true,
 }
 

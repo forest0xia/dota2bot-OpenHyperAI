@@ -2123,6 +2123,7 @@ end
 function ConsiderHarassInLaningPhase()
 	local botLvl = bot:GetLevel()
 
+	shouldHarass = false
 	if J.IsInLaningPhase()
 	and not J.IsCore(bot)
 	and (botLvl >= 4 or (botLvl >= 3 and J.GetPosition(bot) == 4))
@@ -2132,80 +2133,70 @@ function ConsiderHarassInLaningPhase()
 		local nModeDesire = bot:GetActiveModeDesire()
 		local nInRangeAlly = J.GetNearbyHeroes(bot,700, false, BOT_MODE_NONE)
 		local nInRangeEnemy = J.GetNearbyHeroes(bot,700, true, BOT_MODE_NONE)
-		local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(800, true)
+		local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(700, true)
 		local nAttackRange = bot:GetAttackRange()
 		local nInRangeTower = bot:GetNearbyTowers(1200, true)
-		if nInRangeTower ~= nil and #nInRangeTower >= 1
-		and #nEnemyLaneCreeps >= 3
+		if #nInRangeTower >= 1 or #nEnemyLaneCreeps >= 3
 		then
 			return BOT_ACTION_DESIRE_NONE
 		end
 
-		-- Harass
-		if not shouldHarass
-		then
-			local canLastHitCount = 0
+		local canLastHitCount = 0
+		for _, creep in pairs(nEnemyLaneCreeps)
+		do
+			if  J.IsValid(creep)
+			and J.CanBeAttacked(creep)
+			and J.GetHP(creep) <= 0.6
+			then
+				canLastHitCount = canLastHitCount + 1
+			end
+		end
 
-			for _, creep in pairs(nEnemyLaneCreeps)
-			do
-				if  J.IsValid(creep)
-				and J.CanBeAttacked(creep)
-				and J.GetHP(creep) <= 0.5
-				then
-					canLastHitCount = canLastHitCount + 1
-				end
+		if J.GetHP(bot) > 0.41
+		and ((J.IsCore(bot) and not canLastHitCount == 0)
+			or (not J.IsCore(bot)))
+		then
+			-- MK Range
+			if nAttackRange < 300
+			then
+				nAttackRange = 300
 			end
 
-			if  J.GetHP(bot) > 0.41
-			and ((J.IsCore(bot) and not canLastHitCount == 0)
-				or (not J.IsCore(bot)))
+			nInRangeEnemy = J.GetNearbyHeroes(bot,nAttackRange, true, BOT_MODE_NONE)
+			if nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
 			then
-				-- MK Range
-				if nAttackRange < 300
+				if J.IsValidHero(nInRangeEnemy[1])
+				and J.CanBeAttacked(nInRangeEnemy[1])
+				and not J.IsSuspiciousIllusion(nInRangeEnemy[1])
+				and not J.IsRetreating(bot)
+				and nInRangeAlly ~= nil and nInRangeEnemy
+				and #nInRangeAlly >= #nInRangeEnemy
 				then
-					nAttackRange = 300
-				end
+					local nTargetInRangeTower = nInRangeEnemy[1]:GetNearbyTowers(850, false)
 
-				nInRangeEnemy = J.GetNearbyHeroes(bot,nAttackRange, true, BOT_MODE_NONE)
-				if nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
-				then
-					if  J.IsValidHero(nInRangeEnemy[1])
-					and J.CanBeAttacked(nInRangeEnemy[1])
-					and not J.IsSuspiciousIllusion(nInRangeEnemy[1])
-					and not J.IsRetreating(bot)
-					and nInRangeAlly ~= nil and nInRangeEnemy
-					and #nInRangeAlly >= #nInRangeEnemy
+					if (nInRangeTower ~= nil and #nInRangeTower == 0
+						or nTargetInRangeTower ~= nil and #nTargetInRangeTower == 0)
+					and not bot:WasRecentlyDamagedByAnyHero(2.2)
+					and not bot:WasRecentlyDamagedByTower(2)
+					and not bot:WasRecentlyDamagedByCreep(1.5)
 					then
-						local nTargetInRangeTower = nInRangeEnemy[1]:GetNearbyTowers(850, false)
+						shouldHarass = true
+						harassTarget = nInRangeEnemy[1]
 
-						if (nInRangeTower ~= nil and #nInRangeTower == 0
-							or nTargetInRangeTower ~= nil and #nTargetInRangeTower == 0)
-						and not bot:WasRecentlyDamagedByAnyHero(2.2)
-						and not bot:WasRecentlyDamagedByTower(2)
-						and not bot:WasRecentlyDamagedByCreep(1.5)
+						if J.IsLaning(bot)
 						then
-							shouldHarass = true
-							harassTarget = nInRangeEnemy[1]
-
-							if J.IsLaning(bot)
-							then
-								if J.IsHumanPlayer(nInRangeEnemy[1]) then
-									return nModeDesire + 0.1
-								end
-								return BOT_MODE_DESIRE_MODERATE * 1.15
-							else
-								return BOT_MODE_DESIRE_MODERATE * 1.16
+							if J.IsHumanPlayer(nInRangeEnemy[1]) and bot:GetActiveMode() ~= BOT_MODE_TEAM_ROAM then
+								return nModeDesire + 0.1
 							end
+							return BOT_MODE_DESIRE_MODERATE * 1.15
+						else
+							return BOT_MODE_DESIRE_MODERATE * 1.16
 						end
 					end
 				end
 			end
-		else
-			shouldHarass = false
 		end
 	end
-
-	shouldHarass = false
 
 	return BOT_ACTION_DESIRE_NONE
 end

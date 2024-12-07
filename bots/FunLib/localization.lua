@@ -71,6 +71,7 @@ local Localization = {
         fret_role_position = 'Position ',
         fret_voting_ends = "Voting ends in %d seconds!",
         fret_diff_selected = "Difficulty selected: ",
+        fret_vote_for_ally = '%s voted ally scale: %s.',
         fret_ally_scale_ended = "Ally bots bonus scale selected: ",
         fret_found_netural_item = "Found Neutral Item: ",
         random_responses = {
@@ -189,6 +190,8 @@ local Localization = {
         fret_voting_ends = "投票将在 %d 秒后结束！",
         fret_diff_selected = "选择的难度：",
         fret_found_netural_item = "找到中立物品：",
+        fret_vote_for_ally = '%s 投票选择了盟友奖励比例：%s。',
+        fret_ally_scale_ended = "盟友机器人奖励比例已选择：",
         random_responses = {
             "?", 'glhf', 'gg',
             "不错，我家的狗都能做得更好。",
@@ -296,6 +299,8 @@ local Localization = {
         fret_voting_ends = "Голосование заканчивается через %d секунд!",
         fret_diff_selected = "Выбранная сложность: ",
         fret_found_netural_item = "Найден нейтральный предмет: ",
+        fret_vote_for_ally = '%s проголосовал за масштаб союзников: %s.',
+        fret_ally_scale_ended = "Выбран масштаб бонуса для союзных ботов: ",
         random_responses = {
             "?", 'glhf', 'gg',
             "Неплохо, моя собака могла бы лучше.",
@@ -404,6 +409,8 @@ local Localization = {
         fret_voting_ends = "投票はあと %d 秒で終了します！",
         fret_diff_selected = "選択された難易度：",
         fret_found_netural_item = "中立アイテムを見つけました: ",
+        fret_vote_for_ally = '%s が味方のスケールに投票しました: %s。',
+        fret_ally_scale_ended = "味方ボットのボーナススケールが選択されました: ",
         random_responses = {
             "?", 'glhf', 'gg',
             "いいね、うちの犬の方が上手いよ。",

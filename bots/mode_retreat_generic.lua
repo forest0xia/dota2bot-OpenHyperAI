@@ -202,7 +202,7 @@ function GetDesire()
 	retreatDesire = retreatDesire + RemapValClamped(enemyPower / ourPower, 0, 2, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_VERYHIGH )
 	retreatDesire = retreatDesire + RemapValClamped(nearbyEnemyUnits - nearbyAllyUnits, 0, 5, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_VERYHIGH )
 	retreatDesire = retreatDesire + RemapValClamped(#uniqueEnemies - #uniqueMates, 0, 2, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_VERYHIGH )
-	retreatDesire = retreatDesire + RemapValClamped(J.GetHP(bot), 1, 0.1, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_VERYHIGH * 1.1 )
+	retreatDesire = retreatDesire + RemapValClamped(J.GetHP(bot), 0.7, 0, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_ABSOLUTE )
 	possibleMaxDesire = BOT_ACTION_DESIRE_VERYHIGH * 4
 
 	if J.IsValid(closestEnemy) and J.GetHP(bot) < J.GetHP(closestEnemy) then

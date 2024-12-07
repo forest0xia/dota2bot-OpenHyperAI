@@ -527,7 +527,7 @@ function X.ConsiderNoxiousPlague()
 
     local nCastRange = J.GetProperCastRange(false, bot, NoxiousPlague:GetCastRange())
 
-    if J.IsGoingOnSomeone(bot)
+    if J.IsGoingOnSomeone(bot) or J.IsRetreating(bot) or J.IsInTeamFight( bot, 1200 )
 	then
         local target = nil
         local dmg = 0

@@ -99,12 +99,16 @@ function GetDesire()
 	local nInRangeAlly_tormentor = J.GetAlliesNearLoc(TormentorLocation, 900)
 	local nInRangeAlly_roshan = J.GetAlliesNearLoc(J.GetCurrentRoshanLocation(), 900)
 	local nNeutralCreeps = bot:GetNearbyNeutralCreeps(1600)
+	local lEnemyHeroesAroundAncient = J.GetLastSeenEnemiesNearLoc(GetAncient(team):GetLocation(), 3000)
+	local nEnemyUnitsAroundAncient = J.GetEnemiesAroundAncient(bot, 3000)
 
 	if #nInRangeAlly_tormentor >= 2
 	or #nInRangeAlly_roshan >= 2
 	or J.IsDoingTormentor(bot)
 	or J.IsDoingRoshan(bot)
 	or (J.IsDefending(bot) and bot:GetActiveModeDesire() > 0.2)
+	or #lEnemyHeroesAroundAncient > 0
+	or nEnemyUnitsAroundAncient > 0
 	then
 		return BOT_MODE_DESIRE_NONE
 	end
@@ -122,10 +126,6 @@ function GetDesire()
 	-- 如果在打高地 就别撤退去打钱了
 	if J.Utils.IsTeamPushingSecondTierOrHighGround(bot) then
 		return BOT_MODE_DESIRE_NONE;
-	end
-
-	if J.GetEnemiesAroundAncient(bot, 3200) > 0 then
-		return BOT_MODE_DESIRE_NONE
 	end
 
 	if teamPlayers == nil then teamPlayers = GetTeamPlayers(team) end

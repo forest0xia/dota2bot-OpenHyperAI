@@ -215,6 +215,7 @@ modifier_warlock_golem_permanent_immolation_debuff
 
 
 function X.SkillsComplement()
+	X.WarlockShouldMove()
 	if J.CanNotUseAbility( bot ) or bot:IsInvisible() then return end
 
 	nKeepMana = 400
@@ -224,13 +225,6 @@ function X.SkillsComplement()
 	nHP = bot:GetHealth()/bot:GetMaxHealth()
 	hEnemyHeroList = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 	abilityRef = J.IsItemAvailable( "item_refresher" )
-
-	if X.ConsiderStop() == true
-	then
-		bot:Action_ClearActions( true )
-		bot:Action_MoveToLocation(J.GetTeamFountain())
-		return
-	end
 
 	local aether = J.IsItemAvailable( "item_aether_lens" )
 	if aether ~= nil then aetherRange = 250 end
@@ -297,19 +291,19 @@ function X.SkillsComplement()
 
 end
 
-function X.ConsiderStop()
-
-	if bot:IsChanneling()
-		and not bot:HasModifier( "modifier_teleporting" )
-		and bot:GetActiveMode() ~= BOT_MODE_SIDE_SHOP
-		and #hEnemyHeroList >= 1
-		and bot:WasRecentlyDamagedByAnyHero(3)
-		and J.GetHP(bot) < 0.5
+function X.WarlockShouldMove()
+	if bot:IsAlive()
+	and bot:IsChanneling()
+	and not bot:HasModifier( "modifier_teleporting" )
+	and bot:GetActiveMode() ~= BOT_MODE_SIDE_SHOP
+	and #J.GetNearbyHeroes(bot, 1000, true, BOT_MODE_NONE ) >= 1
+	and bot:WasRecentlyDamagedByAnyHero(3)
+	and J.GetHP(bot) < 0.5
 	then
-		return true
+		bot:Action_ClearActions( true )
+		bot:Action_MoveToLocation(J.GetTeamFountain())
+		return
 	end
-
-	return false
 end
 
 function X.ConsiderR()

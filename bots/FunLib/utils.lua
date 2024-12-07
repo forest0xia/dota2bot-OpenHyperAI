@@ -1330,7 +1330,10 @@ function ____exports.IsTeamPushingSecondTierOrHighGround(bot)
     if cachedRes ~= nil then
         return cachedRes
     end
-    local res = #bot:GetNearbyHeroes(2000, false, BotMode.None) > 2 and (____exports.IsNearEnemySecondTierTower(bot, 2000) or ____exports.IsNearEnemyHighGroundTower(bot, 3000))
+    local res = #bot:GetNearbyHeroes(2000, false, BotMode.None) > 2 and (____exports.IsNearEnemySecondTierTower(bot, 2000) or ____exports.IsNearEnemyHighGroundTower(bot, 3000) or GetUnitToUnitDistance(
+        bot,
+        GetAncient(GetOpposingTeam())
+    ) < 3000)
     ____exports.SetCachedVars(
         "IsTeamPushingSecondTierOrHighGround" .. tostring(bot:GetTeam()),
         res

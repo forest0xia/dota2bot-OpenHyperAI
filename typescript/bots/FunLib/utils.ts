@@ -1029,7 +1029,8 @@ export function IsTeamPushingSecondTierOrHighGround(bot: Unit): boolean {
     const res =
         bot.GetNearbyHeroes(2000, false, BotMode.None).length > 2 &&
         (IsNearEnemySecondTierTower(bot, 2000) ||
-            IsNearEnemyHighGroundTower(bot, 3000));
+            IsNearEnemyHighGroundTower(bot, 3000) ||
+            GetUnitToUnitDistance(bot, GetAncient(GetOpposingTeam())) < 3000);
     SetCachedVars(
         "IsTeamPushingSecondTierOrHighGround" + tostring(bot.GetTeam()),
         res

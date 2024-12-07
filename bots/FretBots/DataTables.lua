@@ -88,7 +88,6 @@ function DataTables:Initialize()
 	for i, unit in pairs(Units) do
 		-- Initialize data tables for this unit
 		DataTables:GenerateStatsTables(unit)
-
 		-- DataTables:FixBuggedHeroAbilities()
 	end
 	print('There are '..#AllBots[RADIANT]..' Radiant bots!')

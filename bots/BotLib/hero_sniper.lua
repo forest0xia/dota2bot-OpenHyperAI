@@ -240,7 +240,7 @@ end
 function X.ConsiderQ()
 
 	if not abilityQ:IsFullyCastable()
-		or lastAbilityQTime > DotaTime() - 0.5
+		or DotaTime() - lastAbilityQTime < 1.5
 	then return 0 end
 
 	local nCastRange = 1600	--abilityQ:GetCastRange()
@@ -550,8 +550,7 @@ end
 
 function X.IsAbiltyQCastedHere( nLoc, nRadius )
 
-	if lastAbilityQTime < DotaTime() -10
-		or J.GetLocationToLocationDistance( lastAbilityQLocation, nLoc ) > nRadius * 1.14
+	if J.GetLocationToLocationDistance( lastAbilityQLocation, nLoc ) > nRadius * 1.14
 	then
 		return false
 	end

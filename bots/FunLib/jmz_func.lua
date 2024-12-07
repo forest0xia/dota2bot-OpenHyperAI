@@ -50,6 +50,12 @@ function J.HasQueuedAction( bot )
 	return bot:NumQueuedActions() > 0
 end
 
+function J.IsTryingtoUseAbility(bot)
+	return bot:IsCastingAbility()
+	or bot:IsUsingAbility()
+	or bot:IsChanneling()
+end
+
 function J.CanNotUseAction( bot )
 
 	return not bot:IsAlive()

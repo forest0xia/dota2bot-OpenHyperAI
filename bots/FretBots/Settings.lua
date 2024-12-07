@@ -380,10 +380,10 @@ function Settings:OnPlayerChat(event)
 		Settings:DoChatVoteParse(playerID, text)
 	end
 
+	Settings:OpenAIResponse(text, playerID, teamonly)
+
 	-- if Settings have been chosen then monitor for commands to change them
 	if Flags.isSettingsFinalized then
-		Settings:OpenAIResponse(text, playerID, teamonly)
-
 		-- Some commands are available for everyone
 		Settings:DoUserChatCommandParse(text, playerID)
 		if playerID == hostID then
@@ -893,8 +893,13 @@ function Settings:DoChatVoteParse(playerID, text)
 			-- increment number of votes
 			numVotes = numVotes + 1
 			-- let players know the vote counted
-			local msg = string.format(Localization.Get('fret_vote_for'), PlayerResource:GetPlayerName(playerID), tostring(difficulty))
-			Utilities:Print(msg, Utilities:GetPlayerColor(playerID))
+			if isVoteForAllyScale then
+				local msg = string.format(Localization.Get('fret_vote_for_ally'), PlayerResource:GetPlayerName(playerID), tostring(difficulty))
+				Utilities:Print(msg, Utilities:GetPlayerColor(playerID))
+			else
+				local msg = string.format(Localization.Get('fret_vote_for'), PlayerResource:GetPlayerName(playerID), tostring(difficulty))
+				Utilities:Print(msg, Utilities:GetPlayerColor(playerID))
+			end
 		end
 	end
 end

@@ -605,19 +605,16 @@ function X.ConsiderE()
 
 end
 
-
 function X.ConsiderR()
-
-
 	if not abilityR:IsFullyCastable() then return 0 end
 
-	local nSkillLV = abilityR:GetLevel()
-	local nCastRange = abilityR:GetCastRange() + aetherRange
-	local nCastPoint = abilityR:GetCastPoint()
-	local nManaCost = abilityR:GetManaCost()
-	local nDamage = abilityR:GetAbilityDamage()
-	local nDamageType = DAMAGE_TYPE_MAGICAL
-	local nInRangeEnemyList = J.GetAroundEnemyHeroList( nCastRange + 100 )
+	-- local nSkillLV = abilityR:GetLevel()
+	-- local nCastPoint = abilityR:GetCastPoint()
+	-- local nManaCost = abilityR:GetManaCost()
+	-- local nDamage = abilityR:GetAbilityDamage()
+	-- local nDamageType = DAMAGE_TYPE_MAGICAL
+	local nCastRange = abilityR:GetCastRange()
+	local nInRangeEnemyList = J.GetAroundEnemyHeroList( nCastRange )
 	local nCastTarget = nil
 
 	--见人就标血最少那个
@@ -633,6 +630,8 @@ function X.ConsiderR()
 		then
 			nCastTarget = npcEnemy
 			nMinHealth = npcEnemy:GetHealth()
+		elseif npcEnemy:HasModifier( "modifier_bounty_hunter_track" ) then
+			nMinHealth = 999999
 		end
 	end
 	if nCastTarget ~= nil
@@ -641,8 +640,6 @@ function X.ConsiderR()
 	end
 
 	return BOT_ACTION_DESIRE_NONE
-
-
 end
 
 function X.ConsiderFriendlyShadow()

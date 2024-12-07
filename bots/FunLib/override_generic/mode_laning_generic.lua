@@ -13,8 +13,8 @@ function X.OnEnd() end
 local nEnemyTowers, nEnemyCreeps, assignedLane, tangoDesire, tangoTarget
 
 function X.GetDesire()
-	if J.IsAttacking( bot )
-	or (bot:GetActiveMode() == BOT_MODE_ATTACK and bot:GetActiveModeDesire() > BOT_MODE_DESIRE_MODERATE) then
+	if J.IsAttacking( bot ) or J.IsTryingtoUseAbility(bot)
+	or (bot:GetActiveMode() ~= BOT_MODE_LANING and bot:GetActiveModeDesire() > BOT_MODE_DESIRE_MODERATE) then
 		return 0.2
 	end
 
