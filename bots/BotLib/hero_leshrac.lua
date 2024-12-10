@@ -481,14 +481,16 @@ function X.ConsiderDiabolicEdict()
     then
         local nNeutralCreeps = bot:GetNearbyNeutralCreeps(nRadius)
         if nNeutralCreeps ~= nil
-        and ((#nNeutralCreeps >= 3)
-            or (#nNeutralCreeps >= 2 and nNeutralCreeps[1]:IsAncientCreep()))
+        and #nNeutralCreeps > 0
+        and ((#nNeutralCreeps < 3)
+            or (#nNeutralCreeps <= 2 and nNeutralCreeps[1]:IsAncientCreep()))
         then
             return BOT_ACTION_DESIRE_HIGH
         end
 
         local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nRadius, true)
-        if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 4
+        if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps <= 3
+        and #nEnemyLaneCreeps > 0
         then
             return BOT_ACTION_DESIRE_HIGH
         end
@@ -644,8 +646,8 @@ function X.ConsiderLightningStorm()
     then
         local nNeutralCreeps = bot:GetNearbyNeutralCreeps(nCastRange)
         if nNeutralCreeps ~= nil
-        and ((#nNeutralCreeps >= 3)
-            or (#nNeutralCreeps >= 2 and nNeutralCreeps[1]:IsAncientCreep()))
+        and ((#nNeutralCreeps >= 2)
+            or (#nNeutralCreeps >= 1 and nNeutralCreeps[1]:IsAncientCreep()))
         then
             local nCreepNearbyAlly = nNeutralCreeps[1]:GetNearbyLaneCreeps(nJumpDist, false)
             if nCreepNearbyAlly ~= nil and #nCreepNearbyAlly >= 1
@@ -655,7 +657,7 @@ function X.ConsiderLightningStorm()
         end
 
         local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nCastRange, true)
-        if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 3
+        if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 2
         then
             local nCreepNearbyAlly = nEnemyLaneCreeps[1]:GetNearbyLaneCreeps(nJumpDist, false)
             if nCreepNearbyAlly ~= nil and #nCreepNearbyAlly >= 1

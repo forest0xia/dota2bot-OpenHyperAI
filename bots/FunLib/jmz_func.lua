@@ -1184,6 +1184,23 @@ function J.IsDefending( bot )
 
 end
 
+function J.IsAnyAllyDefending(bot, lane)
+	for _, allyHero in pairs(GetUnitList(UNIT_LIST_ALLIED_HEROES))
+	do
+		if J.IsValidHero(allyHero)
+		and J.IsNotSelf(bot, allyHero)
+		then
+			local mode = allyHero:GetActiveMode()
+			if (mode == BOT_MODE_DEFEND_TOWER_TOP and lane == LANE_TOP)
+			or (mode == BOT_MODE_DEFEND_TOWER_MID and lane == LANE_MID)
+			or (mode == BOT_MODE_DEFEND_TOWER_BOT and lane == LANE_BOT)
+			then
+				return true
+			end
+		end
+	end
+	return false
+end
 
 function J.IsPushing( bot )
 
@@ -3540,6 +3557,9 @@ end
 
 
 function J.IsEnemyHeroAroundLocation( vLoc, nRadius )
+	local cacheKey = tostring(vLoc.x)..'-'..tostring(vLoc.y)..'-'..tostring(nRadius)
+	local cache = J.Utils.GetCachedVars('IsEnemyHeroAroundLocation'..cacheKey, 0.5)
+	if cache ~= nil then return cache end
 
 	for i, id in pairs( GetTeamPlayers( GetOpposingTeam() ) )
 	do
@@ -3551,12 +3571,14 @@ function J.IsEnemyHeroAroundLocation( vLoc, nRadius )
 					and J.GetLocationToLocationDistance( vLoc, dInfo.location ) <= nRadius
 					and dInfo.time_since_seen < 2.0
 				then
+					J.Utils.SetCachedVars('IsEnemyHeroAroundLocation'..cacheKey, true)
 					return true
 				end
 			end
 		end
 	end
 
+	J.Utils.SetCachedVars('IsEnemyHeroAroundLocation'..cacheKey, false)
 	return false
 
 end

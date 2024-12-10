@@ -1259,6 +1259,12 @@ function ConsiderGeneralRoamingInConditions()
 		return 0.91
 	end
 
+
+	-- 留一个抵御超级兵 看家
+	-- if J.GetHP(GetAncient(bot:GetTeam())) < 0.99 then
+		
+	-- end
+
 	-- 目前可能会导致bot往敌方队伍里走
 	-- ShouldBotsSpreadOut = J.Utils.ShouldBotsSpreadOut(bot, 450)
 	-- if ShouldBotsSpreadOut then
@@ -1270,6 +1276,7 @@ function ConsiderGeneralRoamingInConditions()
 		-- 状态不好 回泉水补给
 		if not bot:WasRecentlyDamagedByAnyHero(1.5)
 		and not J.HasHealingItem(bot)
+		and not bot:GetUnitName() == 'npc_dota_hero_huskar'
 		and (
 			(shouldGoBackToFountain and not IsInHealthyState())
 			or (J.GetHP(bot) < 0.22 or (J.GetHP(bot) < 0.3 and J.GetMP(bot) < 0.22))

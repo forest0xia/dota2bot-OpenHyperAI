@@ -278,18 +278,18 @@ function GetDesire()
 	end
 
 	if bot:IsAlive()
-	and J.IsMeepoClone(bot)
 	then
 		if J.IsDoingRoshan(bot)
+		and J.IsMeepoClone(bot)
 		then
 			local botTarget = bot:GetAttackTarget()
 
 			if J.IsRoshan(botTarget)
 			and J.IsInRange(bot, botTarget, 400)
-			and J.GetHP(botTarget) < 0.33
+			and J.GetHP(botTarget) < 0.2
 			then
 				if preferedCamp == nil then preferedCamp = J.Site.GetClosestNeutralSpwan(bot, availableCamp) end
-				return BOT_MODE_DESIRE_ABSOLUTE
+				return BOT_MODE_DESIRE_ABSOLUTE * 0.99
 			end
 		end
 
@@ -499,6 +499,11 @@ function GetDesire()
 			end
 		end
 	end
+
+	local nNeutrals = bot:GetNearbyNeutralCreeps(600)
+	if nNeutrals and #nNeutrals >= 2 and bot:GetLevel() < 10 and not nNeutrals[1]:IsAncientCreep()
+	then generalFarmDesire = generalFarmDesire * 0.3 end;
+
 	generalFarmDesire = RemapValClamped(J.GetHP(bot), 0.2, 0.7, BOT_MODE_DESIRE_VERYLOW, generalFarmDesire)
 	return generalFarmDesire;
 end
@@ -1038,6 +1043,19 @@ function X.ShouldRun(bot)
 		end
 	end
 
+	local nLongEnemyTowers = bot:GetNearbyTowers(1600, true);
+	if #nLongEnemyTowers >= 2
+	and J.IsValidHero(botTarget)
+	and (
+		botLevel < botTarget:GetLevel() + 2
+		or not J.CanKillTarget(botTarget, bot:GetAttackDamage() * 5, DAMAGE_TYPE_PHYSICAL)
+	)
+	and #hAllyHeroList <= aliveEnemyCount + 1
+	then
+		return 3
+	end
+
+
 	if bot:IsInvisible() and DotaTime() > 8 * 60
 		and botActiveMode == BOT_MODE_RETREAT
 		and bot:GetActiveModeDesire() > 0.4
@@ -1268,8 +1286,9 @@ function AnnounceMessages()
 	then
 		if GameTime() - lastAnnouncePrintedTime >= announcementGap then
 			local msg = welcome_msgs[numberAnnouncePrinted]
+			local isFirstLine = numberAnnouncePrinted == 1
 			if msg then
-				bot:ActionImmediate_Chat(msg, nB == 0 or numberAnnouncePrinted == 1)
+				bot:ActionImmediate_Chat(isFirstLine and msg .. Version.number or msg, nB == 0 or isFirstLine)
 			end
 			numberAnnouncePrinted = numberAnnouncePrinted + 1
 			lastAnnouncePrintedTime = GameTime()

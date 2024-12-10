@@ -171,6 +171,16 @@ function GetDesire()
 		end
 	end
 
+	if bot:GetActiveModeDesire() < 0.15 and DotaTime() > 600 and not J.IsCore(bot) then
+		goToTargetAlly = J.Utils.FindAllyWithAtLeastDistanceAway(bot, 1600)
+		if goToTargetAlly then
+			IsShouldFindTeammates = true
+			ShouldFindTeammatesTime = DotaTime()
+			print("avoid low desire actions for bot: " .. botName)
+			return BOT_ACTION_DESIRE_ABSOLUTE * 0.98
+		end
+	end
+
 	-- if pingedDefendDesire <= 0 then
 	-- 	pingedDefendDesire = ConsiderPingedDefendDesire()
 	-- end

@@ -69,6 +69,7 @@ function Defend.GetDefendDesireHelper(bot, lane)
 	local team = bot:GetTeam()
 	local laneFront = GetLaneFrontLocation(team, lane, 0)
 	local ancient = GetAncient(team)
+	local attackRange = bot:GetAttackRange()
 	botTarget = J.GetProperTarget(bot);
 	defendLoc = laneFront
 	weAreStronger = J.WeAreStronger(bot, nSearchRange)
@@ -91,11 +92,11 @@ function Defend.GetDefendDesireHelper(bot, lane)
 		lEnemyHeroesAroundLoc = J.GetLastSeenEnemiesNearLoc(defendLoc, nSearchRange)
 
 		if (#nDefendAllyHeroes < nEnemyUnitsAroundAncient + 1
-		or ancientHp < 0.9
+		or ancientHp < 0.95
 		or (nEffctiveAllyHeroesNearPingedDefendLoc < aliveAllyHeroes and nEffctiveAllyHeroesNearPingedDefendLoc <= #lEnemyHeroesAroundLoc + 1 )
 		or (#lEnemyHeroesAroundLoc >= 3 and nEffctiveAllyHeroesNearPingedDefendLoc < aliveAllyHeroes))
 		and J.GetLocationToLocationDistance(defendLoc, laneFront) < nSearchRange
-		and GetUnitToLocationDistance(bot, defendLoc) > nSearchRange * 0.8
+		and #J.GetNearbyHeroes(bot, math.max(attackRange + 100, 1000), true, BOT_MODE_NONE) <= 0
 		and ((#nInRangeEnemy <= 1 and not (J.IsValidHero(botTarget) and J.GetHP(botTarget) < 0.3)) or not bot:WasRecentlyDamagedByAnyHero(2)) then
 			print("Ancient is in danger for team " .. team)
 			local desire = BOT_ACTION_DESIRE_ABSOLUTE * 0.98
@@ -151,7 +152,7 @@ function Defend.GetDefendDesireHelper(bot, lane)
 	local nDefendDesire = 0
 
 	local botLevel = bot:GetLevel()
-	if J.GetPosition(bot) == 1 and botLevel < 7
+	if J.GetPosition(bot) == 1 and botLevel < 6
 	or J.GetPosition(bot) == 2 and botLevel < 6
 	or J.GetPosition(bot) == 3 and botLevel < 5
 	or J.GetPosition(bot) == 4 and botLevel < 4
@@ -162,10 +163,10 @@ function Defend.GetDefendDesireHelper(bot, lane)
 
 	local nH, _ = J.Utils.NumHumanBotPlayersInTeam(GetOpposingTeam())
 	if nH > 0 or #lEnemyHeroesAroundLoc == 0 then
-		if nEffctiveAllyHeroesNearPingedDefendLoc > #lEnemyHeroesAroundLoc + 1
+		if (nEffctiveAllyHeroesNearPingedDefendLoc > #lEnemyHeroesAroundLoc or J.IsAnyAllyDefending(bot, lane))
 		and #lEnemyHeroesAroundLoc <= 2
 		and distanceToDefendLoc > 3600
-		and not J.CanCastAbility(tpScoll)
+		-- and not J.CanCastAbility(tpScoll)
 		and currentTime < 32 * 60 then
 			return BOT_MODE_DESIRE_NONE
 		end
@@ -176,6 +177,7 @@ function Defend.GetDefendDesireHelper(bot, lane)
 	if ping ~= nil then
 		local isPinged, pingedLane = J.IsPingCloseToValidTower(team, ping)
 		if isPinged and lane == pingedLane
+		and (#lEnemyHeroesAroundLoc >= 3 or nEffctiveAllyHeroesNearPingedDefendLoc < #lEnemyHeroesAroundLoc)
 		then
 			nDefendDesire = 0.88
 			if not weAreStronger and GetUnitToLocationDistance(bot, ping.location) < 1800 then
@@ -190,7 +192,7 @@ function Defend.GetDefendDesireHelper(bot, lane)
 	local nUnitsAroundBuilding = J.GetEnemiesAroundLoc(furthestBuilding:GetLocation(), nSearchRange)
 	local urgentMultipler = RemapValClamped(nUnitsAroundBuilding * urgentNum, 1, 20, 0, 2)
 
-	nDefendDesire = RemapValClamped(J.GetHP(bot), 0.75, 0, Clamp(GetDefendLaneDesire(lane) * urgentMultipler, BOT_ACTION_DESIRE_NONE, BOT_MODE_DESIRE_VERYHIGH), BOT_ACTION_DESIRE_NONE)
+	nDefendDesire = RemapValClamped(J.GetHP(bot), 0.75, 0.1, RemapValClamped(GetDefendLaneDesire(lane) * urgentMultipler, 0, 1, BOT_ACTION_DESIRE_NONE, 0.98), BOT_ACTION_DESIRE_NONE)
 	ConsiderPingedDefend(bot, nDefendDesire, furthestBuilding, nBuildingfTier)
 
 	if (distanceToLane[lane] and distanceToLane[lane] < 1600 and #nInRangeEnemy > #nInRangeAlly) and not weAreStronger then
@@ -199,7 +201,10 @@ function Defend.GetDefendDesireHelper(bot, lane)
 		nDefendDesire = RemapValClamped(nDefendDesire, 0, 1, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_HIGH)
 	end
 
-	if (bot:WasRecentlyDamagedByAnyHero(2) and distanceToLane[lane] > 3000) or (distanceToLane[lane] > 4500 and nBuildingfTier < 3 and not J.CanCastAbility(tpScoll)) then
+	if (bot:WasRecentlyDamagedByAnyHero(2) and distanceToLane[lane] > 3000)
+	or (distanceToLane[lane] > 4500 and nBuildingfTier < 3 and not J.CanCastAbility(tpScoll))
+	or (J.IsValidHero(botTarget) and J.GetHP(botTarget) < 0.6 and GetUnitToUnitDistance(bot, botTarget) < 1500)
+	then
 		nDefendDesire = nDefendDesire * 0.4
 	end
 
@@ -213,8 +218,8 @@ function ConsiderPingedDefend(bot, desire, building, tier)
 	J.Utils['GameStates']['defendPings'] = J.Utils['GameStates']['defendPings'] ~= nil and J.Utils['GameStates']['defendPings'] or { pingedTime = GameTime() }
 	if Defend.IsValidBuildingTarget(building) and tier >= 2
 	and desire > 0.5
-	and (GameTime() - J.Utils['GameStates']['defendPings'].pingedTime > 3)
-	and nEffctiveAllyHeroesNearPingedDefendLoc <= 2 -- 避免人多打起来了还一直ping
+	and (GameTime() - J.Utils['GameStates']['defendPings'].pingedTime > 6)
+	and nEffctiveAllyHeroesNearPingedDefendLoc < 1 -- 避免人多打起来了还一直ping
 	-- and (nEffctiveAllyHeroesNearPingedDefendLoc <= #lEnemyHeroesAroundLoc and nEffctiveAllyHeroesNearPingedDefendLoc < aliveAllyHeroes)
 	then
 		local saferLoc = J.AdjustLocationWithOffsetTowardsFountain(building:GetLocation(), 850) + RandomVector(50)

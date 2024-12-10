@@ -443,6 +443,20 @@ function X.ConsiderWaveOfTerror()
         end
 	end
 
+	if J.IsFarming( bot )
+	then
+		if J.IsValid( botTarget )
+			and botTarget:GetTeam() == TEAM_NEUTRAL
+			and J.IsInRange( bot, botTarget, 1000 )
+		then
+			local locationAoE = bot:FindAoELocation( true, false, bot:GetLocation(), nCastRange, nRadius, 0, 0 )
+			if locationAoE.count >= 2
+			then
+				return BOT_ACTION_DESIRE_HIGH, locationAoE.targetloc
+			end
+		end
+	end
+
 	if (J.IsPushing(bot) or J.IsDefending(bot))
     and not J.IsThereNonSelfCoreNearby(1000)
 	then

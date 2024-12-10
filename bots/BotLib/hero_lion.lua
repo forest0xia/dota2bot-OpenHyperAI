@@ -37,15 +37,17 @@ sRoleItemsBuyList['pos_4'] = {
 	"item_blood_grenade",
 	"item_priest_outfit",
 	"item_mekansm",
-	"item_glimmer_cape",
+	"item_glimmer_cape",--
+	"item_blink",
+	"item_guardian_greaves",--
 	"item_aghanims_shard",
-	"item_guardian_greaves",
-	"item_spirit_vessel",
+	"item_spirit_vessel",--
 	"item_ultimate_scepter",
 --	"item_wraith_pact",
-	"item_shivas_guard",
+	"item_shivas_guard",--
 	"item_moon_shard",
-	"item_octarine_core",
+	"item_octarine_core",--
+	"item_overwhelming_blink",
 	"item_ultimate_scepter_2",
 }
 
@@ -56,12 +58,14 @@ sRoleItemsBuyList['pos_5'] = {
 	"item_glimmer_cape",
 	"item_boots_of_bearing",
 	"item_pipe",
+	"item_blink",
     "item_ultimate_scepter",
-	"item_cyclone",
+	-- "item_cyclone",
 --	"item_wraith_pact",
 	"item_shivas_guard",
 	"item_sheepstick",
 	"item_moon_shard",
+	"item_overwhelming_blink",
 	"item_ultimate_scepter_2",
 }
 

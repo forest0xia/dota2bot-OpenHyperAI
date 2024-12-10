@@ -466,9 +466,12 @@ function X.Supported(key)
     return Localization[key] ~= nil
 end
 
+function X.GetLocale()
+    return Customize.Localization or LanguageCode
+end
+
 function X.Get(key)
-    LanguageCode = Customize.Localization or LanguageCode
-    local localeSet = Localization[LanguageCode] or Localization['en']
+    local localeSet = Localization[X.GetLocale()] or Localization['en']
     local res = localeSet[key] or Localization['en'][key]
     return res
 end

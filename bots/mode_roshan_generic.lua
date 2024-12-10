@@ -40,7 +40,7 @@ function GetDesire()
 		return BOT_MODE_DESIRE_NONE
 	end
 
-	if J.GetEnemiesAroundAncient(bot, 2600) > 0 then
+	if J.GetEnemiesAroundAncient(bot, 3200) > 0 or J.GetHP(GetAncient(bot:GetTeam())) < 0.8 then
 		return BOT_MODE_DESIRE_NONE
 	end
 

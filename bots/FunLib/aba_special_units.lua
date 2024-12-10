@@ -25,6 +25,7 @@ function X.GetDesire(bot__)
     local tAllyHeroes_all = bot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
     local tEnemyHeroes_all = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
 
+	local botTarget = J.GetProperTarget(bot)
 	local isClockwerkInTeam = false
 
 	for i = 1, #GetTeamPlayers( GetTeam() )
@@ -130,11 +131,16 @@ function X.GetDesire(bot__)
                 if string.find(unitName, 'pugna_nether_ward')
                 then
                     if J.IsInRange(bot, unit, botAttackRange + 150) then
-                        if J.IsGoingOnSomeone(bot) and (not X.IsHeroWithinRadius(tEnemyHeroes, 450) or not X.IsBeingAttackedByHero(bot)) then
+                        if (J.IsGoingOnSomeone(bot)
+                        and J.IsValidHero(botTarget)
+                        and J.IsInRange(bot, botTarget, botAttackRange - 130)
+                        and J.GetHP(botTarget) < 0.5)
+                        or (X.IsBeingAttackedByHero(bot) and botHP < 0.5)
+                        then
                             return 0.35
                         else
                             if not X.IsBeingAttackedByHero(bot) then
-                                return 0.30
+                                return 0.50
                             end
                         end
                     else
@@ -149,15 +155,22 @@ function X.GetDesire(bot__)
                     if #tEnemyHeroes == 0 then
                         return 0.9
                     end
-
-                    if J.IsGoingOnSomeone(bot) and (not X.IsHeroWithinRadius(tEnemyHeroes, 450) or not X.IsBeingAttackedByHero(bot))
+                    if (J.IsGoingOnSomeone(bot)
+                        and J.IsValidHero(botTarget)
+                        and J.IsInRange(bot, botTarget, botAttackRange - 130)
+                        and J.GetHP(botTarget) < 0.5)
+                        or (X.IsBeingAttackedByHero(bot) and botHP < 0.5)
                     then
-                        return 0.7
+                        return 0.35
+                    end
+                    if not X.IsHeroWithinRadius(tEnemyHeroes, botAttackRange - 130)
+                    then
+                        return 0.96
+                    end
+                    if not X.IsBeingAttackedByHero(bot)
+                    then
+                        return 0.8
                     else
-                        if not X.IsHeroWithinRadius(tEnemyHeroes, 450)
-                        then
-                            return 0.55
-                        end
                     end
                 end
 

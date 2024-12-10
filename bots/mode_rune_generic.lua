@@ -561,8 +561,8 @@ function X.GetScaledDesire(nBase, nCurrDist, nMaxDist)
 	if nCurrDist > 3300 and not J.IsInLaningPhase() then
 		desire = desire * 0.2
 	end
-	if J.Utils.CountMissingEnemyHeroes() >= 3 then
-		desire = desire * 0.3
+	if DotaTime() > 1800 and nCurrDist > 3000 and J.Utils.CountMissingEnemyHeroes() >= 3 then
+		desire = desire * 0.2
 	end
 
 	return RemapValClamped(J.GetHP(bot), 0.3, 0.8, desire * 0.3, desire)

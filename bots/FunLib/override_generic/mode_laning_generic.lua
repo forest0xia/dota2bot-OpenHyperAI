@@ -88,7 +88,7 @@ function X.Think()
 		assignedLane = GetBotTargetLane()
 	end
 
-	if tangoDesire > 0 and tangoTarget then
+	if tangoDesire and tangoDesire > 0 and tangoTarget then
 		local hItem = bot:GetItemInSlot( bot:FindItemSlot('item_tango') )
 		bot:Action_UseAbilityOnTree( hItem, tangoTarget )
 		return

@@ -700,36 +700,11 @@ function X.ConsiderProximityMines()
     local nAffectRange = 400
     local nPManaCost = ProximityMines:GetManaCost()
 
-    local nEnemyHeroes = J.GetNearbyHeroes(bot, nCastRange + nAffectRange, true, BOT_MODE_NONE)
-    for _, enemyHero in pairs(nEnemyHeroes)
-    do
-        if J.IsValidHero(enemyHero)
-        and J.CanCastOnNonMagicImmune(enemyHero)
-        and J.GetManaAfter(nPManaCost) > 0.6
-        and not J.IsRetreating(bot)
-        and J.GetHP(bot) - J.GetHP(enemyHero) > -0.2
-        and not J.IsSuspiciousIllusion(enemyHero)
-        and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
-        and not enemyHero:HasModifier('modifier_dazzle_shallow_grave')
-        and not enemyHero:HasModifier('modifier_oracle_false_promise_timer')
-        and not enemyHero:HasModifier('modifier_templar_assassin_refraction_absorb')
-        then
-            local nInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, true, BOT_MODE_NONE)
-            local nInRangeEnemy = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
-            if nInRangeAlly ~= nil and nInRangeEnemy ~= nil and #nInRangeAlly >= #nInRangeEnemy then
-                if J.IsInRange(bot, enemyHero, nCastRange) then
-                    return BOT_ACTION_DESIRE_HIGH, enemyHero:GetExtrapolatedLocation(0.5)
-                end
-                return BOT_ACTION_DESIRE_HIGH, J.Utils.GetOffsetLocationTowardsTargetLocation(bot:GetLocation(), enemyHero:GetLocation(), nCastRange)
-            end
-        end
-    end
-
     if J.IsGoingOnSomeone(bot)
 	then
 		if J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
-        and J.IsInRange(bot, botTarget, 1200)
+        and J.IsInRange(bot, botTarget, nCastRange + nAffectRange)
         -- and J.IsAttacking(bot)
         and not J.IsChasingTarget(bot, botTarget)
         and not J.IsSuspiciousIllusion(botTarget)
@@ -763,6 +738,31 @@ function X.ConsiderProximityMines()
             end
 		end
 	end
+
+    local nEnemyHeroes = J.GetNearbyHeroes(bot, nCastRange + nAffectRange, true, BOT_MODE_NONE)
+    for _, enemyHero in pairs(nEnemyHeroes)
+    do
+        if J.IsValidHero(enemyHero)
+        and J.CanCastOnNonMagicImmune(enemyHero)
+        and J.GetManaAfter(nPManaCost) > 0.6
+        and not J.IsRetreating(bot)
+        and J.GetHP(bot) - J.GetHP(enemyHero) > 0.2
+        and not J.IsSuspiciousIllusion(enemyHero)
+        and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
+        and not enemyHero:HasModifier('modifier_dazzle_shallow_grave')
+        and not enemyHero:HasModifier('modifier_oracle_false_promise_timer')
+        and not enemyHero:HasModifier('modifier_templar_assassin_refraction_absorb')
+        then
+            local nInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, true, BOT_MODE_NONE)
+            local nInRangeEnemy = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
+            if nInRangeAlly ~= nil and nInRangeEnemy ~= nil and #nInRangeAlly >= #nInRangeEnemy then
+                if J.IsInRange(bot, enemyHero, nCastRange) then
+                    return BOT_ACTION_DESIRE_HIGH, enemyHero:GetExtrapolatedLocation(0.5)
+                end
+                return BOT_ACTION_DESIRE_HIGH, J.Utils.GetOffsetLocationTowardsTargetLocation(bot:GetLocation(), enemyHero:GetLocation(), nCastRange)
+            end
+        end
+    end
 
 	if J.IsRetreating(bot)
 	then
@@ -868,7 +868,7 @@ function X.ConsiderProximityMines()
 		MineLocation, MineLocationDistance = TU.GetClosestSpot(bot, nSpots)
 
 		if MineLocation ~= nil
-        and GetUnitToLocationDistance(bot, MineLocation) <= 4000
+        and GetUnitToLocationDistance(bot, MineLocation) <= 2000
 		and not IsEnemyCloserToWardLocation(MineLocation, MineLocationDistance)
 		then
             for i = 0, 10
@@ -894,24 +894,23 @@ end
 
 -- Helper Funcs
 function IsSuitableToPlaceMine()
-	local nEnemyHeroes = J.GetEnemiesNearLoc(bot:GetLocation(), 2400)
+	local nEnemyHeroes = J.GetEnemiesNearLoc(bot:GetLocation(), 2000)
 
 	local nMode = bot:GetActiveMode()
     local nTeamFightLocation = J.GetTeamFightLocation(bot)
 
-	if ((nMode == BOT_MODE_RETREAT
+	if (nMode == BOT_MODE_RETREAT
 		and bot:GetActiveModeDesire() > BOT_MODE_DESIRE_HIGH)
     or (nMode == BOT_MODE_RUNE and DotaTime() > 0)
     or nMode == BOT_MODE_DEFEND_ALLY
-    -- or J.IsGoingOnSomeone(bot) and bot:GetActiveModeDesire() > BOT_MODE_DESIRE_MODERATE
-    -- or J.IsPushing(bot) and bot:GetActiveModeDesire() > BOT_MODE_DESIRE_MODERATE
+    or J.IsGoingOnSomeone(bot) and bot:GetActiveModeDesire() > BOT_MODE_DESIRE_MODERATE
+    or J.IsPushing(bot) and bot:GetActiveModeDesire() > BOT_MODE_DESIRE_MODERATE
 	or J.IsDefending(bot)
-    or not J.IsDoingRoshan(bot)
-    or not J.IsDoingTormentor(bot)
-    or nTeamFightLocation == nil
-    or #nEnemyHeroes == 0)
-	-- or (nEnemyHeroes ~= nil and #nEnemyHeroes >= 1 and IsIBecameTheTarget(nEnemyHeroes))
-	and not bot:WasRecentlyDamagedByAnyHero(5.0)
+    or J.IsDoingRoshan(bot)
+    or J.IsDoingTormentor(bot)
+    or bot:GetLevel() <= 6
+    or nTeamFightLocation ~= nil
+	or nEnemyHeroes ~= nil and #nEnemyHeroes >= 1
 	then
 		return false
 	end

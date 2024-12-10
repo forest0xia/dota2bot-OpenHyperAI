@@ -38,10 +38,9 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_manta",--
 	"item_black_king_bar",--
 	"item_greater_crit",--
-	"item_ultimate_scepter",
+    "item_satanic",--
 	"item_aghanims_shard",
 	-- "item_butterfly",--
-    "item_satanic",--
 	"item_moon_shard",
 	"item_ultimate_scepter_2",
 	"item_travel_boots_2",--
@@ -56,13 +55,12 @@ sRoleItemsBuyList['pos_2'] = {
     "item_wraith_band",
     "item_power_treads",
 	"item_maelstrom",
-	"item_ultimate_scepter",
     "item_black_king_bar",--
 	"item_mjollnir",--
     "item_greater_crit",--
+    "item_satanic",--
     "item_aghanims_shard",
     "item_monkey_king_bar",--
-    "item_satanic",--
     "item_moon_shard",
     "item_travel_boots_2",--
     "item_ultimate_scepter_2",
@@ -83,7 +81,6 @@ sRoleItemsBuyList['pos_4'] = {
 	"item_guardian_greaves",--
 	"item_solar_crest",--
 	"item_heavens_halberd",--
-	"item_ultimate_scepter",
 	"item_sheepstick",--
 	"item_lotus_orb",--
 	"item_assault",--
@@ -107,7 +104,6 @@ sRoleItemsBuyList['pos_5'] = {
 	"item_boots_of_bearing",--
 	-- "item_force_staff",--
 	"item_heavens_halberd",--
-	"item_ultimate_scepter",
 	"item_sheepstick",--
 	"item_lotus_orb",--
 	"item_moon_shard",

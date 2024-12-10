@@ -36,7 +36,8 @@ function GetDesire()
 		return BOT_MODE_DESIRE_NONE
 	end
 
-	if DotaTime() < 30 or bot:WasRecentlyDamagedByAnyHero(5) then
+	if DotaTime() < 30 or bot:WasRecentlyDamagedByAnyHero(5)
+	or #J.Utils.GetLastSeenEnemyIdsNearLocation(bot:GetLocation(), 1400) > 0 then
 		local nLane = bot:GetAssignedLane()
 		local nLaneFrontLocation = GetLaneFrontLocation(GetTeam(), nLane, 0)
 		local nDistFromLane = GetUnitToLocationDistance(bot, nLaneFrontLocation)

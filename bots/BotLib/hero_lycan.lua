@@ -398,9 +398,24 @@ function X.ConsiderShapeShift()
         return BOT_ACTION_DESIRE_NONE
     end
 
-    if J.IsInTeamFight(bot, 1200)
+    if J.IsInTeamFight(bot, 1000)
     then
         return BOT_ACTION_DESIRE_HIGH
+    end
+
+    if J.IsGoingOnSomeone(bot) then
+        local botTarget = J.GetProperTarget(bot)
+        local nInRangeAlly = J.GetNearbyHeroes(bot,1200, false, BOT_MODE_NONE)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot,1200, true, BOT_MODE_NONE)
+
+		if J.IsValidTarget(botTarget)
+        and J.IsInRange(bot, botTarget, 800)
+        and not J.IsSuspiciousIllusion(botTarget)
+        and nInRangeAlly ~= nil and nInRangeEnemy
+        and #nInRangeAlly >= #nInRangeEnemy
+		then
+			return BOT_ACTION_DESIRE_HIGH
+		end
     end
 
     return BOT_ACTION_DESIRE_NONE

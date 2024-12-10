@@ -98,7 +98,8 @@ function ConstructChatBotRequest(inputContent)
     -- if next(inGamePlayers) == nil then botNameListInTheGame() end -- only load bots once to save cpu.
     botNameListInTheGame()
 
-    table.insert(recordedMessages, 1, { role = "user", content = 'Players in this game: ' .. json.encode(inGamePlayers) .. ', current game time in seconds: ' .. getFormattedGameTime()})
+    table.insert(recordedMessages, 1, { role = "user", content = 'Players in this game: ' .. json.encode(inGamePlayers)
+    .. ', current game time in seconds: ' .. getFormattedGameTime() .. ', response locale language code: ' .. Localization.GetLocale()})
     table.insert(recordedMessages, { role = "user", content = inputContent })
 
     -- Initialize data table

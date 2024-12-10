@@ -187,8 +187,10 @@ function Push.GetPushDesire(bot, lane)
         end
     end
 
+    local pushLaneFront, pushLane = Push.WhichLaneToPush(bot)
+    local distantToPushFront = GetUnitToLocationDistance(bot, pushLaneFront)
     -- 前中期推进
-    if teamAveLvl < 12 then
+    if teamAveLvl < 12 or distantToPushFront > 4500 then
         local nAllies = J.GetAlliesNearLoc(bot:GetLocation(), nSearchRange * 0.8)
         if #nAllies >= nEffctiveEnemyHeroesNearPushLoc + nMissingEnemyHeroes - 2 then
             if distanceToLaneFront < 2000 then
@@ -201,7 +203,7 @@ function Push.GetPushDesire(bot, lane)
             return BOT_MODE_DESIRE_NONE
         end
         return BOT_MODE_DESIRE_LOW
-    elseif teamAveLvl < 18 then
+    elseif teamAveLvl < 18 or distantToPushFront > 4500 then
         local nAllies = J.GetAlliesNearLoc(bot:GetLocation(), nSearchRange * 0.8)
         if #nAllies > nEffctiveEnemyHeroesNearPushLoc + nMissingEnemyHeroes - 2 then
             if distanceToLaneFront < 2000 then
@@ -217,10 +219,10 @@ function Push.GetPushDesire(bot, lane)
     end
 
     -- General Push
-    if Push.WhichLaneToPush(bot) == lane then
+    if pushLane == lane then
         if eAliveCount == 0
         or aAliveCoreCount >= eAliveCoreCount
-        or (aAliveCoreCount >= 1 and aAliveCount >= eAliveCount + 2)
+        or (aAliveCoreCount >= 1 and aAliveCount >= eAliveCount)
         then
             if teamHasAegis
             then
@@ -264,14 +266,17 @@ function Push.WhichLaneToPush(bot)
     local distanceToMid = 0
     local distanceToBot = 0
 
+    local topFront = GetLaneFrontLocation(GetTeam(),LANE_TOP, 0)
+    local midFront = GetLaneFrontLocation(GetTeam(),LANE_MID, 0)
+    local botFront = GetLaneFrontLocation(GetTeam(),LANE_BOT, 0)
     for i = 1, #GetTeamPlayers( GetTeam() ) do
         local member = GetTeamMember(i)
         if member ~= nil and member:IsAlive() then
             local teamLoc = member:GetLocation()
             if J.GetPosition(member) <= 3 then
-                distanceToTop = math.max(distanceToTop, J.GetDistance(GetLaneFrontLocation(GetTeam(),LANE_TOP, 0), teamLoc))
-                distanceToMid = math.max(distanceToMid, J.GetDistance(GetLaneFrontLocation(GetTeam(),LANE_MID, 0), teamLoc))
-                distanceToBot = math.max(distanceToBot, J.GetDistance(GetLaneFrontLocation(GetTeam(),LANE_BOT, 0), teamLoc))
+                distanceToTop = math.max(distanceToTop, J.GetDistance(topFront, teamLoc))
+                distanceToMid = math.max(distanceToMid, J.GetDistance(midFront, teamLoc))
+                distanceToBot = math.max(distanceToBot, J.GetDistance(botFront, teamLoc))
             end
         end
     end
@@ -280,9 +285,9 @@ function Push.WhichLaneToPush(bot)
     local midLaneScore = CalculateLaneScore(distanceToMid, LANE_MID)
     local botLaneScore = CalculateLaneScore(distanceToBot, LANE_BOT)
 
-    if midLaneScore <= topLaneScore and midLaneScore <= botLaneScore then return LANE_MID end
-    if topLaneScore <= midLaneScore and topLaneScore <= botLaneScore then return LANE_TOP end
-    if botLaneScore <= topLaneScore and botLaneScore <= midLaneScore then return LANE_BOT end
+    if midLaneScore <= topLaneScore and midLaneScore <= botLaneScore then return midFront, LANE_MID end
+    if topLaneScore <= midLaneScore and topLaneScore <= botLaneScore then return topFront, LANE_TOP end
+    if botLaneScore <= topLaneScore and botLaneScore <= midLaneScore then return botFront, LANE_BOT end
 
     return nil
 end

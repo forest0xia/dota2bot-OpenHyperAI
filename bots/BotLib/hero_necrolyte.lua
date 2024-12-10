@@ -444,6 +444,20 @@ function X.ConsiderQ()
 		end
 	end
 
+	if J.IsFarming( bot )
+	then
+		local npcTarget = J.GetProperTarget( bot )
+		if J.IsValid( npcTarget )
+			and npcTarget:GetTeam() == TEAM_NEUTRAL
+			and J.IsInRange( bot, npcTarget, 500 )
+		then
+			local locationAoE = bot:FindAoELocation( true, false, bot:GetLocation(), nCastRange, nRadius, 0, 0 )
+			if locationAoE.count >= 2 or npcTarget:GetHealth() > nDamage
+			then
+				return BOT_ACTION_DESIRE_HIGH, locationAoE.targetloc
+			end
+		end
+	end
 
 	return BOT_ACTION_DESIRE_NONE
 
