@@ -65,8 +65,8 @@ sRoleItemsBuyList['pos_2_qe'] = {
     "item_hand_of_midas",
     "item_power_treads",
     -- "item_cyclone", --瞎吹还喜欢走到吹起的点上，以后再改
-    "item_sphere",--
     "item_orchid",
+    "item_sphere",--
     "item_black_king_bar",--
     "item_ultimate_scepter",
     "item_bloodthorn",--
@@ -482,7 +482,7 @@ function X.SkillsComplement()
 
     -- 物理攻击消耗敌人. 对线消耗
 
-    if J.IsLaning(bot)
+    if J.IsInLaningPhase(bot)
     and bot:GetLevel() >= 2
     and bot:GetLevel() <= 12
     and J.GetHP(bot) > 0.75
@@ -719,22 +719,22 @@ function X.CastInvokerSpell(ability, target)
         print(DotaTime()..' - Invoker has it on slot, going to cast '..sAbility)
         bot:Action_ClearActions(false)
 
-        -- bot:ActionPush_Delay(ability:GetCastPoint())
+        -- bot:ActionQueue_Delay(ability:GetCastPoint())
         if sAbility == Cataclysm then
-            bot:ActionPush_UseAbilityOnEntity(ability, bot)
+            bot:ActionQueue_UseAbilityOnEntity(ability, bot)
         elseif ability == ForgeSpirit
             or ability == IceWall
             or ability == GhostWalk then
-                bot:ActionPush_UseAbility(ability)
+                bot:ActionQueue_UseAbility(ability)
         elseif ability == DeafeningBlast
             or ability == Sunstrike
             or ability == ChaosMeteor
             or ability == EMP
             or ability == Tornado then
-                bot:ActionPush_UseAbilityOnLocation(ability, target)
+                bot:ActionQueue_UseAbilityOnLocation(ability, target)
         elseif ability == Alacrity
             or ability == ColdSnap then
-                bot:ActionPush_UseAbilityOnEntity(ability, target)
+                bot:ActionQueue_UseAbilityOnEntity(ability, target)
         else
             print(DotaTime()..' - [ERROR] Tried to cast unsupported spell: '..sAbility)
             print("Stack Trace:", debug.traceback())
@@ -1212,11 +1212,12 @@ function X.ConsiderChaosMeteor()
     -- local nManaCost = ChaosMeteor:GetManaCost()
     local nDelay = nLandTime -- + nCastPoint
 
-    if J.IsInTeamFight(bot) then
-        local nLocationAoE = bot:FindAoELocation(true, true, bot:GetLocation(), nTravelDistance, nRadius, nDelay, 0)
-        if nLocationAoE.count >= 2 then
-            return BOT_ACTION_DESIRE_HIGH, X.AdjustCMLocation(nLocationAoE.targetloc, nil)
-        end
+    if J.IsInTeamFight(bot, 1200) then
+		local nLocationAoE = J.GetAoeEnemyHeroLocation( bot, nCastRange, nRadius, 2 )
+		if nLocationAoE ~= nil
+		then
+			return BOT_ACTION_DESIRE_HIGH, X.AdjustCMLocation(nLocationAoE, nil)
+		end
     end
 
     if not J.IsRetreating(bot) then
@@ -1256,7 +1257,7 @@ function X.ConsiderChaosMeteor()
     --         end
     --     end
     -- end
-    
+
 	--对线
 	if J.IsLaning( bot ) then
 		local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(1400, true)
@@ -1312,11 +1313,11 @@ function X.AdjustCMLocation(loc, target)
         return loc
     end
 
-    local deltaDistance = 200
+    local deltaDistance = 250
     local distance = GetUnitToUnitDistance(bot, target)
-    -- 被追逐，往自己身前放
-    if J.IsChasingTarget(target, bot) and distance < deltaDistance then
-        return Utils.GetOffsetLocationTowardsTargetLocation(target:GetLocation(), bot:GetLocation(), distance + deltaDistance)
+    -- 往自己这边跑，则往身前放
+    if target:IsFacingLocation( bot:GetLocation(), 20 ) and J.IsRunning( target ) and distance < deltaDistance then
+        return Utils.GetOffsetLocationTowardsTargetLocation(target:GetLocation(), bot:GetLocation(), distance + 120)
     end
 
     if distance < deltaDistance + 50 then
@@ -1492,7 +1493,7 @@ function X.ConsiderSunstrike()
                 end
 
                 -- If allies are nearby, assume they will help
-                if #J.GetHeroesNearLocation(false, enemyHero:GetLocation(), 300) >= 1 then
+                if #J.GetHeroesNearLocation(false, enemyHero:GetLocation(), 300) >= 1 and (not J.IsInLaningPhase(bot) or nDamage > enemyHero:GetHealth()) then
                     local targetLoc = J.GetCorrectLoc(enemyHero, nDelay + nCastPoint)
                     return BOT_ACTION_DESIRE_HIGH, targetLoc
                 end
@@ -1579,17 +1580,17 @@ function X.ConsiderIceWall()
     end
 
     local nSpawnDistance = IceWall:GetSpecialValueInt('wall_place_distance')
-    local nSimpleIceWallCheckDistance = 440
+    local nSimpleIceWallCheckDistance = 300
     local nCastRange = 300
     local nRadius = 1000
 
 	if J.IsGoingOnSomeone(bot)
 	then
 		if J.IsValidHero(botTarget)
-        and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, nSimpleIceWallCheckDistance)
+        and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsRunning(botTarget)
-        and (not J.IsInLaningPhase(bot) or (J.IsInLaningPhase(bot) and J.GetManaAfter(IceWall:GetManaCost()) > 0.5) or J.GetHP(botTarget) < 0.5)
+        and (not J.IsInLaningPhase(bot) or (J.IsInLaningPhase(bot) and J.GetMP(bot) > 0.7) or J.GetHP(botTarget) < 0.3)
         and bot:IsFacingLocation(botTarget:GetLocation(), 30)
         and not J.IsSuspiciousIllusion(botTarget)
         and not J.IsDisabled(botTarget)
@@ -1597,24 +1598,23 @@ function X.ConsiderIceWall()
             return BOT_ACTION_DESIRE_HIGH
 		end
 
-        if X.CheckTempModifiers(TempNonMovableModifierNames, botTarget, 1) > 0
-        and nEnemyHeroes ~= nil and #nEnemyHeroes >= 1
-        and J.IsInRange(bot, botTarget, nSimpleIceWallCheckDistance)
-        and (not J.IsInLaningPhase(bot) or (J.IsInLaningPhase(bot) and J.GetManaAfter(IceWall:GetManaCost()) > 0.5) or J.GetHP(botTarget) < 0.5)
-        and J.CanCastOnNonMagicImmune(botTarget)
-        and bot:IsFacingLocation(botTarget:GetLocation(), 30) then
-            return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
+        if nEnemyHeroes ~= nil and #nEnemyHeroes >= 1
+        and J.IsValidHero(nEnemyHeroes[1])
+        and X.CheckTempModifiers(TempNonMovableModifierNames, nEnemyHeroes[1], 1) > 0
+        and J.IsInRange(bot, nEnemyHeroes[1], nSimpleIceWallCheckDistance)
+        and (not J.IsInLaningPhase(bot) or (J.IsInLaningPhase(bot) and J.GetMP(bot) > 0.7) or J.GetHP(nEnemyHeroes[1]) < 0.3)
+        and J.CanCastOnNonMagicImmune(nEnemyHeroes[1])
+        and bot:IsFacingLocation(nEnemyHeroes[1]:GetLocation(), 30) then
+            return BOT_ACTION_DESIRE_HIGH, nEnemyHeroes[1]:GetLocation()
         end
 	end
-    
-    if J.IsInTeamFight(bot) then
-        local nLocationAoE = bot:FindAoELocation(true, true, bot:GetLocation(), nRadius, nCastRange, 0, 0)
-        if nLocationAoE.count >= 2 and nEnemyHeroes ~= nil and #nEnemyHeroes >= 1
-        and GetUnitToLocationDistance(bot, nLocationAoE.targetloc) < nSimpleIceWallCheckDistance
-        then
-            return BOT_ACTION_DESIRE_HIGH, nLocationAoE.targetloc
-        end
-        
+
+    if J.IsInTeamFight(bot, 1200) then
+		local nLocationAoE = J.GetAoeEnemyHeroLocation( bot, nCastRange, nRadius, 2 )
+		if nLocationAoE ~= nil
+		then
+			return BOT_ACTION_DESIRE_HIGH, nLocationAoE
+		end
         if nEnemyHeroes ~= nil then
             for _, enemyHero in pairs(nEnemyHeroes) do
                 if J.IsValidHero(enemyHero)
@@ -1622,9 +1622,8 @@ function X.ConsiderIceWall()
                 and J.IsInRange(bot, enemyHero, nSimpleIceWallCheckDistance) then
                     return BOT_ACTION_DESIRE_HIGH, J.GetCorrectLoc(enemyHero, 0.5)
                 end
-                
-                if X.CheckTempModifiers(TempNonMovableModifierNames, enemyHero, 1) > 0 and
-                J.IsInRange(bot, enemyHero, nSimpleIceWallCheckDistance)
+                if X.CheckTempModifiers(TempNonMovableModifierNames, enemyHero, 1) > 0
+                and J.IsInRange(bot, enemyHero, nSimpleIceWallCheckDistance)
                 and J.CanCastOnNonMagicImmune(enemyHero)
                 and bot:IsFacingLocation(enemyHero:GetLocation(), 30) then
                     return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation()
@@ -1637,15 +1636,14 @@ function X.ConsiderIceWall()
 	then
         if nEnemyHeroes ~= nil and #nEnemyHeroes >= 1
         and J.IsValidHero(nEnemyHeroes[1])
+        and J.IsInRange(bot, nEnemyHeroes[1], nSimpleIceWallCheckDistance)
         and J.CanCastOnNonMagicImmune(nEnemyHeroes[1])
         and J.IsChasingTarget(nEnemyHeroes[1], bot)
         and bot:WasRecentlyDamagedByAnyHero(2)
-        and J.IsInRange(bot, nEnemyHeroes[1], nSimpleIceWallCheckDistance)
-        and J.IsChasingTarget(nEnemyHeroes[1], bot)
         and not J.IsSuspiciousIllusion(nEnemyHeroes[1])
         and not J.IsDisabled(nEnemyHeroes[1])
-        and J.GetHP(bot) < 0.7
-        and bot:WasRecentlyDamagedByAnyHero(1)
+        and (J.GetHP(bot) < 0.6 or J.GetTotalEstimatedDamageToTarget(nEnemyHeroes, bot) > bot:GetHealth())
+        and not J.IsInLaningPhase(bot)
 		then
             return BOT_ACTION_DESIRE_HIGH
 		end

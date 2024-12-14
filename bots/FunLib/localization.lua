@@ -11,7 +11,7 @@ local Localization = {
             "Welcome to Open Hyper AI (OHA): ",
             "You can select the heroes for bots to pick, e.g. 10 same heroes or your dream teams, or change their names. Just customize bots in the Customize/general file.",
             "If you feel bots are weak, try enabling the enhanced Fretbots mode to make the game a lot more challenging. Check Workshop page for details.",
-            "You can type !pos X to swap position with a bot. For example, type: `!pos 2` to go mid lane. Type `!sp zh` for ally bots to 说中文, or `!sp en` for english, ru for Russian. Not 100% translated, just be patient.",
+            "You can type !pos X to swap position with a bot. For example, type: `!pos 2` to go mid lane. Type `!sp zh` for ally bots to 说中文, or `!sp en` for English, `!sp ru` for русский, `!sp ja` for 日本語. Not 100% translated, just be patient.",
             "For more guides, or if you have any feedback, please check out script's Workshop or Github repo.",
         },
         say_play_pos = "I will play position ",

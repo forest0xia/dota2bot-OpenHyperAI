@@ -190,7 +190,7 @@ function Defend.GetDefendDesireHelper(bot, lane)
 
 	bot.laneToDefend = lane
 	local nUnitsAroundBuilding = J.GetEnemiesAroundLoc(furthestBuilding:GetLocation(), nSearchRange)
-	local urgentMultipler = RemapValClamped(nUnitsAroundBuilding * urgentNum, 1, 20, 0, 2)
+	local urgentMultipler = RemapValClamped(nUnitsAroundBuilding * urgentNum, 1, 15, 0, 2)
 
 	nDefendDesire = RemapValClamped(J.GetHP(bot), 0.75, 0.1, RemapValClamped(GetDefendLaneDesire(lane) * urgentMultipler, 0, 1, BOT_ACTION_DESIRE_NONE, 0.98), BOT_ACTION_DESIRE_NONE)
 	ConsiderPingedDefend(bot, nDefendDesire, furthestBuilding, nBuildingfTier)

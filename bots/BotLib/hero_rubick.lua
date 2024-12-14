@@ -182,6 +182,7 @@ local FadeBoltDesire, FadeBoltTarget
 local SpellStealDesire, SpellStealTarget
 
 local botTarget
+local lastTimeStealSpell = 0
 
 if bot.shouldBlink == nil then bot.shouldBlink = false end
 
@@ -214,6 +215,7 @@ function X.SkillsComplement()
     if SpellStealDesire > 0
     then
         bot:Action_UseAbilityOnEntity(SpellSteal, SpellStealTarget)
+        lastTimeStealSpell = DotaTime()
         return
     end
 
@@ -720,6 +722,21 @@ end
 function X.ConsiderSpellSteal()
     if not SpellSteal:IsFullyCastable()
     then
+        return BOT_ACTION_DESIRE_NONE, nil
+    end
+    if DotaTime() - lastTimeStealSpell < 15 then
+        -- or low cd high dmg spells
+        if StolenSpell1:IsFullyCastable() and StolenSpell1:IsUltimate() and not bot:HasScepter() then
+            return BOT_ACTION_DESIRE_NONE, nil
+        end
+        if StolenSpell2:IsFullyCastable() and StolenSpell2:IsUltimate() then
+            return BOT_ACTION_DESIRE_NONE, nil
+        end
+    end
+    if StolenSpell1:GetCooldownTimeRemaining() < 5 and StolenSpell1:GetAbilityDamage() > 300 then
+        return BOT_ACTION_DESIRE_NONE, nil
+    end
+    if StolenSpell2:GetCooldownTimeRemaining() < 5 and StolenSpell2:GetAbilityDamage() > 300 then
         return BOT_ACTION_DESIRE_NONE, nil
     end
 

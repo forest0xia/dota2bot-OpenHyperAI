@@ -39,7 +39,42 @@ J.Utils = require( GetScriptDirectory()..'/FunLib/utils' )
 
 function J.SetUserHeroInit( nAbilityBuildList, nTalentBuildList, sBuyList, sSellList )
 	-- A place to change the bot setup.
+	local bot = GetBot()
+	local botName = bot:GetUnitName()
+	local sBotDir, tBotSet = GetScriptDirectory() .. "/Customize/hero/" .. string.gsub(botName, "npc_dota_hero_", ""), nil
+	local status, _ = xpcall(function() tBotSet = require( sBotDir ) end, function( err ) print( '[ERROR] When loading customzed file: '..err ) end )
+	if status and tBotSet and tBotSet.Enable then
+		nAbilityBuildList = tBotSet.AbilityUpgrade
+		nTalentBuildList = J.GetTalentBuildList( tBotSet.Talent )
+		sBuyList = tBotSet.PurchaseList
+		sSellList = tBotSet.SellList
+	end
 	return nAbilityBuildList, nTalentBuildList, sBuyList, sSellList
+end
+
+function J.GetTalentBuildList( nLocalList )
+	local sTargetList = {}
+	for i = 1, #nLocalList
+    do
+		local rawTalent = nLocalList[i] == 'l' and 10 or 0
+		if rawTalent == 10
+		then
+			sTargetList[#sTargetList + 1] = i * 2
+		else
+			sTargetList[#sTargetList + 1] = i * 2 - 1
+		end
+	end
+	for i = 1, #nLocalList
+    do
+		local rawTalent = nLocalList[i] == 'r' and 10 or 0
+		if rawTalent ~= 10
+		then
+			sTargetList[#sTargetList + 1] = i * 2
+		else
+			sTargetList[#sTargetList + 1] = i * 2 - 1
+		end
+	end
+	return sTargetList
 end
 
 function J.HasQueuedAction( bot )
@@ -3663,8 +3698,8 @@ function J.GetAverageLevel( bEnemy )
 	local nTeam = GetTeam()
 	if bEnemy then nTeam = GetOpposingTeam() end
 
-	local cacheKey = tostring(nTeam)
-	local cache = J.Utils.GetCachedVars('GetAverageLevel'..cacheKey, 1)
+	local cacheKey = 'GetAverageLevel'..tostring(nTeam)
+	local cache = J.Utils.GetCachedVars(cacheKey, 1)
 	if cache ~= nil then return cache end
 
 	for i, id in pairs( GetTeamPlayers( nTeam ) )
@@ -3675,7 +3710,7 @@ function J.GetAverageLevel( bEnemy )
 
 	local res = sum / count
 
-	J.Utils.SetCachedVars('GetAverageLevel'..cacheKey, res)
+	J.Utils.SetCachedVars(cacheKey, res)
 	return res
 
 end
@@ -3686,11 +3721,16 @@ function J.GetNumOfTeamTotalKills( bEnemy )
 	local nTeam = GetOpposingTeam()
 	if bEnemy then nTeam = GetTeam() end
 
+	local cacheKey = 'GetNumOfTeamTotalKills'..tostring(nTeam)
+	local cache = J.Utils.GetCachedVars(cacheKey, 1)
+	if cache ~= nil then return cache end
+
 	for i, id in pairs( GetTeamPlayers( nTeam ) )
 	do
 		count = count + GetHeroDeaths( id )
 	end
 
+	J.Utils.SetCachedVars(cacheKey, count)
 	return count
 
 end
@@ -4002,6 +4042,8 @@ function J.GetPosition(bot)
 end
 
 function J.WeAreStronger(bot, radius)
+	if radius > 1600 then radius = 1600 end
+
 	local cacheKey = tostring(bot:GetPlayerID())..'-'..tostring(radius)
 	local cache = J.Utils.GetCachedVars('WeAreStronger'..cacheKey, 0.5)
 	if cache ~= nil then return cache end
@@ -4904,7 +4946,7 @@ function J.GetEnemiesAroundLoc(vLoc, nRadius)
 		then
 			local unitName = unit:GetUnitName()
 			if unit:IsCreep() then
-				nUnitCount = nUnitCount + 0.5
+				nUnitCount = nUnitCount + 1
 				if unit:IsAncientCreep()
 				or unit:HasModifier('modifier_chen_holy_persuasion')
 				or unit:HasModifier('modifier_dominated') then

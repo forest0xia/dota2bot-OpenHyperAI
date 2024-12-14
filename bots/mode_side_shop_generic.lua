@@ -12,7 +12,7 @@ local TormentorLocOffset = RandomVector(200)
 
 local tormentorMessageTime = 0
 local canDoTormentor = false
-local nTormentorSpawnTime = (J.IsModeTurbo() and 10 or 20) + 0 -- add some buff time
+local nTormentorSpawnTime = (J.IsModeTurbo() and 10 or 20) + 5 -- add some buff time
 
 if bot.tormentor_state == nil then bot.tormentor_state = false end
 if bot.tormentor_kill_time == nil then bot.tormentor_kill_time = 0 end
@@ -125,7 +125,7 @@ function TormentorDesire()
     nAveCoreLevel = nAveCoreLevel / 3
     nAveSuppLevel = nAveSuppLevel / 2
     local nAveDistance = nTotalDistance / #hAllAllyHeroList
-    if nAveDistance > 4500 then
+    if nAveDistance > 5500 then
         return BOT_MODE_DESIRE_NONE
     end
 

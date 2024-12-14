@@ -160,8 +160,9 @@ function GetDesire()
 	elseif (#nearbyAllies <= 2
 	or (nAliveEnemies >= #nearbyAllies and nAliveAllies > 3))
 	and J.Utils.IsTeamPushingSecondTierOrHighGround(bot)
-	and #J.Utils.GetLastSeenEnemyIdsNearLocation(bot:GetLocation(), 2500) > 1
-	and #nearbyEnemies >= 2 then
+	and #J.Utils.GetLastSeenEnemyIdsNearLocation(bot:GetLocation(), 2000) > 1
+	and #nearbyEnemies >= #nearbyAllies
+	and not J.WeAreStronger(bot, 2000) then
 		goToTargetAlly = J.Utils.FindAllyWithAtLeastDistanceAway(bot, 1600)
 		if goToTargetAlly then
 			IsShouldFindTeammates = true

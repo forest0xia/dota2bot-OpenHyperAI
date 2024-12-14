@@ -45,11 +45,11 @@ function Push.GetPushDesire(bot, lane)
 
     -- do not push too early.
     local currentTime = DotaTime()
+    if GetGameMode() == 23 then
+        currentTime = currentTime * 2
+    end
     local nH, _ = J.Utils.NumHumanBotPlayersInTeam(GetOpposingTeam())
     if nH > 0 then
-        if GetGameMode() == 23 then
-            currentTime = currentTime * 1.6
-        end
         if currentTime <= StartToPushTime
         then
             return BOT_MODE_DESIRE_NONE
@@ -107,6 +107,7 @@ function Push.GetPushDesire(bot, lane)
     local nEnemyAncient = GetAncient(GetOpposingTeam())
     local teamHasAegis = J.DoesTeamHaveAegis()
     local nMissingEnemyHeroes = J.Utils.CountMissingEnemyHeroes()
+    local teamKillsRatio = allyKills / enemyKills
 
     local botTarget = bot:GetAttackTarget()
     if J.IsValidBuilding(botTarget)
@@ -158,9 +159,9 @@ function Push.GetPushDesire(bot, lane)
 
     local vEnemyLaneFrontLocation = GetLaneFrontLocation(GetOpposingTeam(), lane, 0)
 
-    local nInRangeAlly__ = J.GetAlliesNearLoc(vEnemyLaneFrontLocation, nSearchRange * 0.8)
-    local nInRangeEnemy__ = J.Utils.GetLastSeenEnemyIdsNearLocation(vEnemyLaneFrontLocation, nSearchRange * 0.8)
-    if (#nInRangeAlly__ < #nInRangeEnemy__)
+    local nInRangeAlly__ = J.GetAlliesNearLoc(vEnemyLaneFrontLocation, nSearchRange)
+    local nInRangeEnemy__ = J.Utils.GetLastSeenEnemyIdsNearLocation(vEnemyLaneFrontLocation, nSearchRange)
+    if (#nInRangeAlly__ < #nInRangeEnemy__ and not J.WeAreStronger(bot, nSearchRange))
     or ( teamAveLvl < 10
         and J.Utils.IsNearEnemySecondTierTower(bot, nSearchRange * 0.9)
         and #nInRangeAlly__ < eAliveCount )
@@ -203,7 +204,7 @@ function Push.GetPushDesire(bot, lane)
             return BOT_MODE_DESIRE_NONE
         end
         return BOT_MODE_DESIRE_LOW
-    elseif teamAveLvl < 18 or distantToPushFront > 4500 then
+    elseif teamKillsRatio > 0.6 and (teamAveLvl < 18 or distantToPushFront > 4500) then
         local nAllies = J.GetAlliesNearLoc(bot:GetLocation(), nSearchRange * 0.8)
         if #nAllies > nEffctiveEnemyHeroesNearPushLoc + nMissingEnemyHeroes - 2 then
             if distanceToLaneFront < 2000 then
@@ -221,6 +222,7 @@ function Push.GetPushDesire(bot, lane)
     -- General Push
     if pushLane == lane then
         if eAliveCount == 0
+        or J.WeAreStronger(bot, nSearchRange)
         or aAliveCoreCount >= eAliveCoreCount
         or (aAliveCoreCount >= 1 and aAliveCount >= eAliveCount)
         then
@@ -239,7 +241,7 @@ function Push.GetPushDesire(bot, lane)
 
             bot.laneToPush = lane
 
-            nPushDesire = Clamp(nPushDesire, 0, maxDesire)
+            nPushDesire = Clamp(nPushDesire * RemapValClamped(J.GetHP(bot), 0.2, 0.5, BOT_MODE_DESIRE_NONE, BOT_MODE_DESIRE_ABSOLUTE), 0, maxDesire)
             return nPushDesire
         end
     end
