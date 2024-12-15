@@ -36,11 +36,11 @@ sRoleItemsBuyList['pos_2'] = {
     "item_magic_wand",
     "item_dagon_2",
     "item_travel_boots",
-    "item_aghanims_shard",
     "item_cyclone",
     "item_ultimate_scepter",
     "item_octarine_core",--
     "item_dagon_5",--
+    "item_aghanims_shard",
     "item_ultimate_scepter_2",
     "item_shivas_guard",
     "item_travel_boots_2",--
@@ -108,11 +108,11 @@ sRoleItemsBuyList['pos_1'] = {
     "item_magic_wand",
     "item_dagon_2",
     "item_travel_boots",
-    "item_aghanims_shard",
     "item_cyclone",
     "item_ultimate_scepter",
     "item_octarine_core",--
     "item_dagon_5",--
+    "item_aghanims_shard",
     "item_ultimate_scepter_2",
     "item_shivas_guard",
     "item_travel_boots_2",--
@@ -733,10 +733,10 @@ function X.ConsiderSpellSteal()
             return BOT_ACTION_DESIRE_NONE, nil
         end
     end
-    if StolenSpell1:GetCooldownTimeRemaining() < 5 and StolenSpell1:GetAbilityDamage() > 300 then
+    if StolenSpell1:GetCooldownTimeRemaining() < 5 and StolenSpell1:GetAbilityDamage() >= 280 then
         return BOT_ACTION_DESIRE_NONE, nil
     end
-    if StolenSpell2:GetCooldownTimeRemaining() < 5 and StolenSpell2:GetAbilityDamage() > 300 then
+    if StolenSpell2:GetCooldownTimeRemaining() < 5 and StolenSpell2:GetAbilityDamage() >= 280 then
         return BOT_ACTION_DESIRE_NONE, nil
     end
 

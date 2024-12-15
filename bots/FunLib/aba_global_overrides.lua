@@ -210,6 +210,11 @@ end
 
 local originalGetNearbyLaneCreeps = CDOTA_Bot_Script.GetNearbyLaneCreeps
 function CDOTA_Bot_Script:GetNearbyLaneCreeps( nRadius, bEnemies)
+    -- if not self or not self:IsBot() then
+	-- 	print("GetNearbyLaneCreeps has been called on unit is not a bot")
+	-- 	print("Stack Trace:", debug.traceback())
+	-- 	return nil
+	-- end
     return originalGetNearbyLaneCreeps(self, math.min(nRadius, 1600), bEnemies)
 end
 

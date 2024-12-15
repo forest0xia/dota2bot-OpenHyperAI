@@ -13,6 +13,7 @@ local PushDuration = 4.5 * 60 -- keep pushing for x mins.
 local PushGapMinutes = 6 -- only push once in x mins.
 local lastPushTime = 0
 local teamAveLvl = 0
+local enemyTeamAveLvl = 0
 local nEffctiveEnemyHeroesNearPushLoc = 0
 
 local pingTimeDelta = 5
@@ -28,17 +29,19 @@ function Push.GetPushDesire(bot, lane)
     local maxDesire = 0.95
 	local nSearchRange = 2000
     local nModeDesire = bot:GetActiveModeDesire()
-    local nInRangeEnemy = bot:GetNearbyHeroes(900, true, BOT_MODE_NONE)
+    local nInRangeAlly = bot:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+    local nInRangeEnemy = bot:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
     local laneFront = GetLaneFrontLocation(GetTeam(), lane, 0)
     local distanceToLaneFront = GetUnitToLocationDistance(bot, laneFront)
     local lEnemyHeroesAroundLoc = J.GetLastSeenEnemiesNearLoc(laneFront, nSearchRange)
     nEffctiveEnemyHeroesNearPushLoc = #lEnemyHeroesAroundLoc + #J.Utils.GetAllyIdsInTpToLocation(laneFront, nSearchRange)
 
 	teamAveLvl = J.GetAverageLevel( false )
+	enemyTeamAveLvl = J.GetAverageLevel( true )
 
-	if nInRangeEnemy ~= nil and #nInRangeEnemy > 0
-    or (bot:GetAssignedLane() ~= lane and J.GetPosition(bot) == 1 and bot:GetLevel() < 12)
-    or (J.IsDoingRoshan(bot) and #J.GetAlliesNearLoc(J.GetCurrentRoshanLocation(), 2800) >= 3)
+	if #nInRangeEnemy >= #nInRangeAlly
+    and ((bot:GetAssignedLane() ~= lane and teamAveLvl < 5)
+    or (J.IsDoingRoshan(bot) and #J.GetAlliesNearLoc(J.GetCurrentRoshanLocation(), 2800) >= 3))
 	then
 		return BOT_MODE_DESIRE_NONE
 	end
@@ -55,7 +58,7 @@ function Push.GetPushDesire(bot, lane)
             return BOT_MODE_DESIRE_NONE
         end
     end
-    if teamAveLvl < 8 then return BOT_MODE_DESIRE_NONE end
+    if teamAveLvl < 8 and #nInRangeAlly < nEffctiveEnemyHeroesNearPushLoc then return BOT_MODE_DESIRE_NONE end
 
 	if J.IsDefending(bot) and nModeDesire > 0.8
     then
@@ -117,14 +120,14 @@ function Push.GetPushDesire(bot, lane)
         then
             ShoulNotPushTower = true
             TowerPushCooldown = DotaTime()
-            return BOT_ACTION_DESIRE_NONE
+            return RemapValClamped(J.GetHP(bot), 0.1, 0.6, BOT_MODE_DESIRE_NONE, BOT_MODE_DESIRE_HIGH)
         end
 
         if botTarget:HasModifier('modifier_backdoor_protection')
         or botTarget:HasModifier('modifier_backdoor_protection_in_base')
         or botTarget:HasModifier('modifier_backdoor_protection_active')
         then
-            return BOT_ACTION_DESIRE_NONE
+            return RemapValClamped(J.GetHP(bot), 0.1, 0.6, BOT_MODE_DESIRE_NONE, BOT_MODE_DESIRE_HIGH)
         end
     end
 
@@ -197,20 +200,20 @@ function Push.GetPushDesire(bot, lane)
             if distanceToLaneFront < 2000 then
                 local nDistance, cTower = J.Utils.GetDistanceToCloestTower(bot)
                 if cTower and nDistance < 3000 then
-                    return RemapValClamped(J.GetHP(bot), 0, 0.8, BOT_MODE_DESIRE_NONE, BOT_MODE_DESIRE_HIGH)
+                    return RemapValClamped(J.GetHP(bot), 0.1, 0.8, BOT_MODE_DESIRE_NONE, BOT_MODE_DESIRE_HIGH)
                 end
             end
         else
             return BOT_MODE_DESIRE_NONE
         end
         return BOT_MODE_DESIRE_LOW
-    elseif teamKillsRatio > 0.6 and (teamAveLvl < 18 or distantToPushFront > 4500) then
+    elseif (teamKillsRatio > 0.6 or teamAveLvl > enemyTeamAveLvl) and (teamAveLvl < 18 or distantToPushFront > 4500) then
         local nAllies = J.GetAlliesNearLoc(bot:GetLocation(), nSearchRange * 0.8)
         if #nAllies > nEffctiveEnemyHeroesNearPushLoc + nMissingEnemyHeroes - 2 then
             if distanceToLaneFront < 2000 then
                 local nDistance, cTower = J.Utils.GetDistanceToCloestTower(bot)
                 if cTower and nDistance < 3000 then
-                    return RemapValClamped(J.GetHP(bot), 0, 0.8, BOT_MODE_DESIRE_NONE, BOT_MODE_DESIRE_HIGH)
+                    return RemapValClamped(J.GetHP(bot), 0.1, 0.8, BOT_MODE_DESIRE_NONE, BOT_MODE_DESIRE_HIGH)
                 end
             end
         else
@@ -296,12 +299,12 @@ end
 
 -- the smaller the better
 function CalculateLaneScore(distance, lane)
-    local hasBarracks = J.Utils.IsAnyBarracksOnLaneAlive(true, lane)
-    local delta = 2500
-    if hasBarracks then
-        delta = 0
-    end
-    return distance + delta
+    local hasAllyBarracks = J.Utils.IsAnyBarracksOnLaneAlive(false, lane)
+    local hasEnemyBarracks = J.Utils.IsAnyBarracksOnLaneAlive(true, lane)
+    local delta, aDelta = 5000, 5000
+    if not hasAllyBarracks then aDelta = aDelta - delta * 0.5 end
+    if hasEnemyBarracks then aDelta = aDelta - delta * 0.5 end
+    return distance + aDelta
 end
 
 function Push.TeamPushLane()

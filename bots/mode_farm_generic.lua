@@ -129,9 +129,9 @@ function GetDesire()
 	end
 
 	-- 如果在打高地 就别撤退去打钱了
-	if J.Utils.IsTeamPushingSecondTierOrHighGround(bot) then
-		return BOT_MODE_DESIRE_NONE;
-	end
+	-- if J.Utils.IsTeamPushingSecondTierOrHighGround(bot) then
+	-- 	return BOT_MODE_DESIRE_NONE;
+	-- end
 
 	if teamPlayers == nil then teamPlayers = GetTeamPlayers(team) end
 

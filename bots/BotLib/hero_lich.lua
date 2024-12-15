@@ -91,21 +91,41 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_travel_boots_2",--
 }
 
-sRoleItemsBuyList['pos_1'] = {
+sRoleItemsBuyList['pos_2'] = {
 	"item_crystal_maiden_outfit",
-	-- "item_glimmer_cape",
-	"item_aghanims_shard",
-	"item_ultimate_scepter",
+    "item_kaya",
 	"item_force_staff",
-	"item_cyclone",
-	"item_sheepstick",
-	"item_wind_waker",
+	"item_kaya_and_sange",--
+	"item_rod_of_atos",
+	"item_aghanims_shard",
+	"item_hurricane_pike",--
+	"item_shivas_guard",--
+	"item_octarine_core",--
+	"item_gungir",--
 	"item_moon_shard",
+	"item_ultimate_scepter",
 	"item_ultimate_scepter_2",
-	"item_refresher",
+	"item_travel_boots_2",--
 }
 
-sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_3']
+sRoleItemsBuyList['pos_1'] = {
+	"item_crystal_maiden_outfit",
+    "item_kaya",
+	"item_force_staff",
+	"item_kaya_and_sange",--
+    "item_dagon_2",
+	"item_rod_of_atos",
+	"item_aghanims_shard",
+	"item_dagon_5",--
+	"item_hurricane_pike",--
+	"item_shivas_guard",--
+	-- "item_sheepstick",--
+	"item_gungir",--
+	"item_moon_shard",
+	"item_ultimate_scepter",
+	"item_ultimate_scepter_2",
+	"item_travel_boots_2",--
+}
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 

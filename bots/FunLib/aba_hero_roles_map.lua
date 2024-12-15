@@ -61,7 +61,7 @@ X["hero_roles"] = {
     ["npc_dota_hero_kunkka"] = { carry = 1, disabler = 1, durable = 1, escape = 0, initiator = 1, jungler = 0, nuker = 1, support = 0, pusher = 0, ranged = 0, healer = 0 },
     ["npc_dota_hero_legion_commander"] = { carry = 1, disabler = 2, durable = 1, escape = 0, initiator = 1, jungler = 0, nuker = 1, support = 0, pusher = 0, ranged = 0, healer = 1 },
     ["npc_dota_hero_leshrac"] = { carry = 1, disabler = 1, durable = 0, escape = 0, initiator = 0, jungler = 0, nuker = 3, support = 1, pusher = 3, ranged = 1, healer = 0 },
-    ["npc_dota_hero_lich"] = { carry = 0, disabler = 0, durable = 0, escape = 0, initiator = 0, jungler = 0, nuker = 2, support = 3, pusher = 0, ranged = 1, healer = 0 },
+    ["npc_dota_hero_lich"] = { carry = 1, disabler = 0, durable = 0, escape = 0, initiator = 0, jungler = 0, nuker = 2, support = 3, pusher = 0, ranged = 1, healer = 0 },
     ["npc_dota_hero_life_stealer"] = { carry = 2, disabler = 1, durable = 2, escape = 1, initiator = 0, jungler = 1, nuker = 0, support = 0, pusher = 0, ranged = 0, healer = 0 },
     ["npc_dota_hero_lina"] = { carry = 1, disabler = 1, durable = 0, escape = 0, initiator = 0, jungler = 0, nuker = 3, support = 1, pusher = 0, ranged = 1, healer = 0 },
     ["npc_dota_hero_lion"] = { carry = 1, disabler = 3, durable = 0, escape = 0, initiator = 2, jungler = 0, nuker = 3, support = 2, pusher = 0, ranged = 1, healer = 0 },

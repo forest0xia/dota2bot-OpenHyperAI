@@ -32,11 +32,11 @@ local arriveGankLocTime = 0
 local gankTimeAfterArrival = 0.55 * 60 -- stay to roam after arriving the location
 local gankGapTime = 3 * 60 -- don't roam again within this duration after roaming once.
 local lastStaticLinkDebuffStack = 0
-local AnyAllyAffectedByChainFrost = false
+local AnyUnitAffectedByChainFrost = false
 local ShouldBotsSpreadOut = false
 local nChainFrostBounceDistance = 600
 local cachedTombstoneZombieSlowState = 0
-local nInRangeEnemy, nInRangeAlly, allyTowers, enemyTowers, trySeduce, shouldTempRetreat, botTarget, shouldGoBackToFountain
+local nInRangeEnemy, nInRangeAlly, allyTowers, enemyTowers, trySeduce, shouldTempRetreat, botTarget, shouldGoBackToFountain, nInCloseRangeEnemy, nInCloseRangeAlly
 
 local laneAndT1s = {
 	{LANE_TOP, TOWER_TOP_1},
@@ -53,6 +53,8 @@ function GetDesire()
 	botTarget = J.GetProperTarget(bot)
 	nInRangeEnemy = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
 	nInRangeAlly = bot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
+	nInCloseRangeEnemy = bot:GetNearbyHeroes(1000, true, BOT_MODE_NONE)
+	nInCloseRangeAlly = bot:GetNearbyHeroes(1000, false, BOT_MODE_NONE)
 	allyTowers = bot:GetNearbyTowers(1600, false)
 	enemyTowers = bot:GetNearbyTowers(1600, true)
 
@@ -767,9 +769,9 @@ function ThinkGeneralRoaming()
 		return
 	end
 
-	if ShouldBotsSpreadOut or AnyAllyAffectedByChainFrost then
+	if ShouldBotsSpreadOut or AnyUnitAffectedByChainFrost then
 		local distance = 450
-		if AnyAllyAffectedByChainFrost then
+		if AnyUnitAffectedByChainFrost then
 			distance = nChainFrostBounceDistance
 		end
 
@@ -804,6 +806,13 @@ function ThinkGeneralRoaming()
 				bot:Action_AttackUnit(botTarget, false)
 				return
 			end
+		end
+	end
+
+	if J.GetModifierTime(bot, "modifier_flask_healing") >= 1 then
+		if #bot:GetNearbyHeroes(1000, true, BOT_MODE_NONE) >= 1 and J.GetHP(bot) < 0.8 then
+			bot:Action_MoveToLocation(J.GetTeamFountain())
+			return
 		end
 	end
 
@@ -1187,20 +1196,19 @@ function ConsiderHeroMoveOutsideFountain()
 	return false
 end
 
-function IsAnyAllyAffectedByChainFrost()
+function CanBeAffectedByChainFrost()
 	if bot:HasModifier("modifier_black_king_bar_immune") or bot:IsMagicImmune() then
 		return false
 	end
-
-	for _, ally in pairs(nInRangeAlly) do -- should also consider Lich's shard unit, neutral creeps etc. tba.
-        if J.IsValid(ally)
-        and J.IsInRange(bot, ally, nChainFrostBounceDistance)
-		and #nInRangeAlly >= 2
-        and ally:HasModifier('modifier_lich_chainfrost_slow') then
-            return true
-        end
-    end
-    return false
+	local searchRange = nChainFrostBounceDistance + 50
+	if J.HasEnemyIceSpireNearby(bot, searchRange) then return true end
+	if bot:HasModifier('modifier_lich_chainfrost_slow') then
+		local allyCreeps = bot:GetNearbyCreeps(searchRange, false)
+		if #allyCreeps > 0 then return true end
+		local allyHeores = bot:GetNearbyHeroes(searchRange, false, BOT_MODE_NONE)
+		if #allyHeores > 1 then return true end
+	end
+	return J.AnyAllyAffectedByChainFrost(bot, searchRange)
 end
 
 function ConsiderGeneralRoamingInConditions()
@@ -1211,6 +1219,12 @@ function ConsiderGeneralRoamingInConditions()
 
 	if bot:HasModifier("modifier_item_mask_of_madness_berserk") then
 		if J.IsValid(botTarget) and J.GetHP(bot) > 0.3 then
+			return BOT_ACTION_DESIRE_ABSOLUTE
+		end
+	end
+
+	if J.GetModifierTime(bot, "modifier_flask_healing") >= 1.5 then
+		if #nInCloseRangeEnemy >= 1 and J.GetHP(bot) < 0.8 then
 			return BOT_ACTION_DESIRE_ABSOLUTE
 		end
 	end
@@ -1236,8 +1250,7 @@ function ConsiderGeneralRoamingInConditions()
 		if J.IsRunning(bot) and not J.IsAttacking(bot) then
 			return 0.6
 		end
-		local nInRangeEnemy = bot:GetNearbyHeroes(1000, true, BOT_MODE_NONE)
-		if not nInRangeEnemy or #nInRangeEnemy == 0 then
+		if not nInCloseRangeEnemy or #nInCloseRangeEnemy == 0 then
 			return 0.7
 		end
 	end
@@ -1254,9 +1267,17 @@ function ConsiderGeneralRoamingInConditions()
 		end
 	end
 
-	AnyAllyAffectedByChainFrost = IsAnyAllyAffectedByChainFrost()
-	if AnyAllyAffectedByChainFrost then
-		return 0.91
+	AnyUnitAffectedByChainFrost = CanBeAffectedByChainFrost()
+	if AnyUnitAffectedByChainFrost then
+		local hasLowHpEnemy = false
+		for _, enemy in pairs(nInCloseRangeEnemy) do
+			if J.Utils.IsValidHero(enemy) and J.GetHP(enemy) < 0.2 then
+				hasLowHpEnemy = true
+			end
+		end
+		if not hasLowHpEnemy then
+			return 0.98
+		end
 	end
 
 
@@ -1395,9 +1416,8 @@ function ConsiderGeneralRoamingInConditions()
 	end
 
 	if bot:WasRecentlyDamagedByTower(0.2) then
-		local nInRangeAlly = bot:GetNearbyHeroes(1000, false, BOT_MODE_NONE)
-		if #nInRangeAlly >= 2 and J.GetHP(nInRangeAlly[2]) > J.GetHP(bot) then
-			bot:Action_AttackUnit(nInRangeAlly[2], true)
+		if #nInCloseRangeAlly >= 2 and J.GetHP(nInCloseRangeAlly[2]) > J.GetHP(bot) then
+			bot:Action_AttackUnit(nInCloseRangeAlly[2], true)
 		else
 			local allyCreeps = bot:GetNearbyCreeps(1000, false)
 			if #allyCreeps >= 1 and J.IsValid(allyCreeps[1]) then

@@ -42,7 +42,7 @@ function J.SetUserHeroInit( nAbilityBuildList, nTalentBuildList, sBuyList, sSell
 	local bot = GetBot()
 	local botName = bot:GetUnitName()
 	local sBotDir, tBotSet = GetScriptDirectory() .. "/Customize/hero/" .. string.gsub(botName, "npc_dota_hero_", ""), nil
-	local status, _ = xpcall(function() tBotSet = require( sBotDir ) end, function( err ) print( '[ERROR] When loading customzed file: '..err ) end )
+	local status, _ = xpcall(function() tBotSet = require( sBotDir ) end, function( err ) print( '[WARN] When loading customzed file: '..err ) end )
 	if status and tBotSet and tBotSet.Enable then
 		nAbilityBuildList = tBotSet.AbilityUpgrade
 		nTalentBuildList = J.GetTalentBuildList( tBotSet.Talent )
@@ -2857,8 +2857,7 @@ function J.GetCenterOfUnits( nUnits )
 
 	for _, unit in pairs( nUnits )
 	do
-		if unit ~= nil
-			and unit:IsAlive()
+		if J.IsValid(unit)
 		then
 			sum = sum + unit:GetLocation()
 			num = num + 1
@@ -4671,6 +4670,44 @@ function J.HasInvisibilityOrItem( npcEnemy )
 
 end
 
+function J.HasEnemyIceSpireNearby(bot, nRange)
+	local cacheKey = 'HasEnemyIceSpireNearby'..tostring(bot:GetPlayerID())
+	local cache = J.Utils.GetCachedVars(cacheKey, 2)
+	if cache ~= nil then return cache end
+
+	-- should also consider neutral creeps etc. tba.
+	for _, enemy in pairs(GetUnitList(UNIT_LIST_ENEMIES)) do
+        if J.IsValid(enemy)
+		and enemy:GetUnitName() == "npc_dota_lich_ice_spire"
+		and J.IsInRange(bot, enemy, nRange) then
+			J.Utils.SetCachedVars(cacheKey, true)
+			return enemy
+		end
+	end
+	J.Utils.SetCachedVars(cacheKey, false)
+	return false
+end
+
+function J.AnyAllyAffectedByChainFrost(bot, nRange)
+	local cacheKey = 'AnyAllyAffectedByChainFrost'..tostring(bot:GetPlayerID())
+	local cache = J.Utils.GetCachedVars(cacheKey, 0.5)
+	if cache ~= nil then return cache end
+
+	-- ally heroes, creeps, units.
+	for _, ally in pairs(GetUnitList(UNIT_LIST_ALLIES))
+	do
+        if J.IsValid(ally)
+        and J.IsInRange(bot, ally, nRange)
+		and ally ~= bot
+        and ally:HasModifier('modifier_lich_chainfrost_slow') then
+			J.Utils.SetCachedVars(cacheKey, true)
+            return true
+        end
+    end
+	J.Utils.SetCachedVars(cacheKey, false)
+	return false
+end
+
 function J.AdjustLocationWithOffset(vLoc, offset, target)
 	local targetLoc = vLoc
 
@@ -4950,33 +4987,27 @@ function J.GetEnemiesAroundLoc(vLoc, nRadius)
 				if unit:IsAncientCreep()
 				or unit:HasModifier('modifier_chen_holy_persuasion')
 				or unit:HasModifier('modifier_dominated') then
-					nUnitCount = nUnitCount + 1.5
+					nUnitCount = nUnitCount + 1
 				end
+			elseif string.find(unit:GetUnitName(), 'spiderling') then nUnitCount = nUnitCount + 0.1
+			elseif string.find(unit:GetUnitName(), 'eidolon') then nUnitCount = nUnitCount + 0.3
 			elseif string.find(unitName, 'siege') and not string.find(unitName, 'upgraded') then
 				nUnitCount = nUnitCount + 0.6
-			elseif string.find(unitName, 'upgraded') then
-				nUnitCount = nUnitCount + 1
+			elseif string.find(unitName, 'upgraded') then nUnitCount = nUnitCount + 1
 			elseif string.find(unitName, 'warlock_golem') then
-				nUnitCount = nUnitCount + 3
-			elseif string.find(unitName, 'lone_druid_bear') then
-				nUnitCount = nUnitCount + 3
-			elseif string.find(unitName, 'shadow_shaman_ward') then
-				nUnitCount = nUnitCount + 2
+				if DotaTime() < 10 * 60 then nUnitCount = nUnitCount + 3
+				elseif DotaTime() < 20 * 60 then nUnitCount = nUnitCount + 2.5
+				elseif DotaTime() < 30 * 60 then nUnitCount = nUnitCount + 2
+				else nUnitCount = nUnitCount + 1.5 end
+			elseif string.find(unitName, 'lone_druid_bear') then nUnitCount = nUnitCount + 3
+			elseif string.find(unitName, 'shadow_shaman_ward') then nUnitCount = nUnitCount + 2
+			elseif string.find(unit:GetUnitName(), "tombstone") then nUnitCount = nUnitCount + 2
 			elseif J.IsSuspiciousIllusion(unit) then
 				if unit:HasModifier('modifier_arc_warden_tempest_double')
-				or string.find(unit:GetUnitName(), 'chaos_knight')
-				or string.find(unit:GetUnitName(), 'naga_siren') then
-					nUnitCount = nUnitCount + 2
-				end
-			elseif not (
-				string.find(unitName, 'observer_wards')
-				or string.find(unitName, 'sentry_wards'))
-			then
-				nUnitCount = nUnitCount + 1
-			end
-			if J.GetLocationToLocationDistance(ancientLoc, vLoc) < 1600 then
-				nUnitCount = nUnitCount + 2
-			end
+					or string.find(unit:GetUnitName(), 'chaos_knight')
+					or string.find(unit:GetUnitName(), 'naga_siren') then nUnitCount = nUnitCount + 2 end
+			elseif not (string.find(unitName, 'observer_wards') or string.find(unitName, 'sentry_wards')) then nUnitCount = nUnitCount + 1 end
+			if J.GetLocationToLocationDistance(ancientLoc, vLoc) < 1600 then nUnitCount = nUnitCount + 2 end
 		end
 	end
 

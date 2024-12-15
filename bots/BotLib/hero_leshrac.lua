@@ -649,21 +649,13 @@ function X.ConsiderLightningStorm()
         and ((#nNeutralCreeps >= 2)
             or (#nNeutralCreeps >= 1 and nNeutralCreeps[1]:IsAncientCreep()))
         then
-            local nCreepNearbyAlly = nNeutralCreeps[1]:GetNearbyLaneCreeps(nJumpDist, false)
-            if nCreepNearbyAlly ~= nil and #nCreepNearbyAlly >= 1
-            then
-                return BOT_ACTION_DESIRE_HIGH, nNeutralCreeps[1]
-            end
+            return BOT_ACTION_DESIRE_HIGH, nNeutralCreeps[1]
         end
 
         local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nCastRange, true)
         if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 2
         then
-            local nCreepNearbyAlly = nEnemyLaneCreeps[1]:GetNearbyLaneCreeps(nJumpDist, false)
-            if nCreepNearbyAlly ~= nil and #nCreepNearbyAlly >= 1
-            then
-                return BOT_ACTION_DESIRE_HIGH, nEnemyLaneCreeps[1]
-            end
+            return BOT_ACTION_DESIRE_HIGH, nEnemyLaneCreeps[1]
         end
     end
 

@@ -122,12 +122,17 @@ end
 
 function GetDesireBasedOnHp(target)
 	-- check if can/already hit by creeps
-	if J.IsValidHero(target)
-	and J.IsInLaningPhase()
-	and bot:WasRecentlyDamagedByCreep(0.3)
-	and #nEnemyCreeps >= 3
-	and J.GetHP(bot) < J.GetHP(target) then
-		return BOT_ACTION_DESIRE_NONE
+	if J.IsValidHero(target) then
+		if J.IsInLaningPhase()
+		and bot:WasRecentlyDamagedByCreep(0.3)
+		and #nEnemyCreeps >= 3
+		and J.GetHP(bot) < J.GetHP(target) then
+			return BOT_ACTION_DESIRE_NONE
+		end
+		if J.GetModifierTime( target, "modifier_item_blade_mail_reflect" ) > 0.2
+		and bot:GetHealth() - target:GetHealth() < 250 then
+			return BOT_ACTION_DESIRE_NONE
+		end
 	end
 
 	-- check if can be hit by tower

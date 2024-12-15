@@ -204,18 +204,17 @@ end
 local globRadius = 1600;
 
 function X.GetWeakest( unitList )
-
 	local target = nil
 	local minKillTime = 10000
 	if unitList ~= nil and #unitList > 0
 	then
-		for i=1, #unitList 
+		for i=1, #unitList
 		do
 			local unit = unitList[i]
-			if X.IsValidTarget( unit ) 
+			if X.IsValidTarget( unit )
 			then
 				local killUnitTime = unit:GetHealth() / unit:GetActualIncomingDamage( 3000, DAMAGE_TYPE_PHYSICAL )
-				if killUnitTime < minKillTime 
+				if killUnitTime < minKillTime
 				then
 					target = unit
 					minKillTime = killUnitTime
@@ -223,30 +222,21 @@ function X.GetWeakest( unitList )
 			end
 		end
 	end
-	
 	return target
-	
 end
 
 function X.GetWeakestHero(radius, minion)
-
 	local enemies = minion:GetNearbyHeroes( radius * 0.5, true, BOT_MODE_NONE);
-	
 	if enemies ~= nil and #enemies == 0 then enemies = minion:GetNearbyHeroes( radius, true, BOT_MODE_NONE) end
-	
 	return J.GetWeakestUnit(enemies)
 end
 
 function X.GetWeakestCreep(radius, minion)
-
+	if not minion or not minion:IsBot() then return nil end
 	local creeps = minion:GetNearbyLaneCreeps(radius, true)
-	
 	if #creeps == 0 then creeps = minion:GetNearbyNeutralCreeps(radius * 0.5) end
-	
 	if #creeps == 0 then creeps = minion:GetNearbyNeutralCreeps(radius) end
-	
 	return X.GetWeakest(creeps)
-	
 end
 
 function X.GetWeakestTower(radius, minion)

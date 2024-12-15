@@ -172,7 +172,10 @@ function GetDesire()
 		end
 	end
 
-	if bot:GetActiveModeDesire() < 0.15 and DotaTime() > 600 and not J.IsCore(bot) then
+	if bot:GetActiveModeDesire() < 0.15 and DotaTime() > 600
+	and #nearbyEnemies == 0
+	and not bot:WasRecentlyDamagedByAnyHero(2)
+	and not J.IsCore(bot) then
 		goToTargetAlly = J.Utils.FindAllyWithAtLeastDistanceAway(bot, 1600)
 		if goToTargetAlly then
 			IsShouldFindTeammates = true
@@ -1517,25 +1520,24 @@ function X.WeakestUnitExceptRangeCanBeAttacked(bHero, bEnemy, nRange, nRadius, b
 	local weakestHP = 4999;
 	local realHP = 0;
 	if nRadius > 1600 then nRadius = 1600 end;
-	
+
 	if bHero then
 		units = J.GetNearbyHeroes(bot,nRadius, bEnemy, BOT_MODE_NONE);
-	else	
+	else
 		units = bot:GetNearbyLaneCreeps(nRadius, bEnemy);
 	end
-	
+
 	for _,u in pairs(units) do
-		if GetUnitToUnitDistance(bot,u) > nRange 
+		if GetUnitToUnitDistance(bot,u) > nRange
 		   and X.CanBeAttacked(u)
 		--    and not u:HasModifier("modifier_crystal_maiden_frostbite")
 		then
 			realHP = u:GetHealth() / 1;
-			
 			if realHP < weakestHP
 			then
 				weakest = u;
 				weakestHP = realHP;
-			end			
+			end
 		end
 	end
 	return weakest;
@@ -1543,11 +1545,8 @@ end
 
 
 function X.GetSpecialDamageBonus(nDamage,nCreep,bot)
-
-		
 	return 0
 end
-
 
 function X.GetNearbyLastHitCreep(ignorAlly, bEnemy, nDamage, nRadius, bot)
 
@@ -1556,8 +1555,7 @@ function X.GetNearbyLastHitCreep(ignorAlly, bEnemy, nDamage, nRadius, bot)
 	local nDamageType = DAMAGE_TYPE_PHYSICAL;
 	local botName = bot:GetUnitName();
 
-	
-	if bEnemy 
+	if bEnemy
 		and botName == "npc_dota_hero_templar_assassin" --V bug
 		and bot:HasModifier("modifier_templar_assassin_refraction_damage")
 	then
@@ -1565,7 +1563,7 @@ function X.GetNearbyLastHitCreep(ignorAlly, bEnemy, nDamage, nRadius, bot)
 		local bonusDamage = cAbility:GetSpecialValueInt( 'bonus_damage' );
 		nDamage = nDamage + bonusDamage;
 	end
-	
+
 	if bEnemy
 		and botName == "npc_dota_hero_kunkka"
 	then
@@ -1576,16 +1574,13 @@ function X.GetNearbyLastHitCreep(ignorAlly, bEnemy, nDamage, nRadius, bot)
 			nDamage = nDamage + bonusDamage;
 		end
 	end
-	
-	
+
 	for _,nCreep in pairs(nNearbyCreeps)
 	do
 		if X.CanBeAttacked(nCreep) and nCreep:GetHealth() < ( nDamage + 256 )
 		   and ( ignorAlly or not X.IsAllysTarget(nCreep) )
 		then
-		
 			local nAttackProDelayTime = J.GetAttackProDelayTime(bot,nCreep) ;
-			
 			if bEnemy and botName == "npc_dota_hero_antimage"
 				and J.IsKeyWordUnit("ranged",nCreep)
 			then
@@ -1596,39 +1591,30 @@ function X.GetNearbyLastHitCreep(ignorAlly, bEnemy, nDamage, nRadius, bot)
 					nDamage = nDamage + bonusDamage;
 				end
 			end
-		
-			
+
 			local nRealDamage = nDamage * 1
-				
 			if J.WillKillTarget(nCreep,nRealDamage,nDamageType,nAttackProDelayTime)
 			then
 				return nCreep;
 			end
-		
 		end
 	end
-	
-	
 	return nil;
 end
 
 
 function X.GetExceptRangeLastHitCreep(bEnemy,nDamage,nRange,nRadius,bot)
-	
 	local nCreep = X.WeakestUnitExceptRangeCanBeAttacked(false, bEnemy, nRange, nRadius, bot);
 	local nDamageType = DAMAGE_TYPE_PHYSICAL;
 
 	if nCreep ~= nil and nCreep:IsAlive()
 	then
 		if not bEnemy and nCreep:GetHealth()/nCreep:GetMaxHealth() >= 0.5
-		then return nil end	
-	
+		then return nil end
 		nDamage = nDamage * 1 ;
-
 		local nAttackProDelayTime = J.GetAttackProDelayTime(bot,nCreep);
-		
 		if J.WillKillTarget(nCreep,nDamage,nDamageType,nAttackProDelayTime)
-		then		
+		then
 			return nCreep;
 		end
 
@@ -1636,7 +1622,6 @@ function X.GetExceptRangeLastHitCreep(bEnemy,nDamage,nRange,nRadius,bot)
 
 	return nil;
 end
-
 
 function X.IsLastHitCreep(nCreep,nDamage)
 	
