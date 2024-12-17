@@ -124,7 +124,7 @@ local HeroPositionMap = {
     ['npc_dota_hero_zuus'] = {25, 60, 15, 40, 20},           -- Positions 2, occasional support
     ['npc_dota_hero_ringmaster'] = {5, 20, 5, 50, 20},   -- Positions 4,5, occasional core
     ['npc_dota_hero_muerta'] = {35, 5, 5, 15, 5},        -- Positions 1,3, occasional support
-    ['npc_dota_hero_kez'] = {60, 65, 5, 0, 0},        -- Positions 1,2
+    ['npc_dota_hero_kez'] = {40, 45, 5, 0, 0},        -- Positions 1,2
 }
 
 return HeroPositionMap

@@ -282,7 +282,7 @@
 			{
 				gold 			= {1.2, 1.1, 1.0, 0.9, 0.9},
 				armor 			= {1.2, 1.1, 1.0, 0.8, 0.6},
-				magicResist 	= {1.2, 1.1, 1.0, 0.9, 0.9},
+				magicResist 	= {1.1, 1.0, 0.8, 0.6, 0.6},
 				levels 			= {1.2, 1.1, 1.0, 0.9, 0.9},
 				neutral 		= {1.2, 1.1, 1.0, 0.9, 0.9},
 				stats 			= {1.2, 1.1, 1.0, 0.9, 0.9},
@@ -335,8 +335,8 @@
 		awardCap =
 		{
 			gold 				= 30000,
-			armor 				= 30,
-			magicResist 		= 28,
+			armor 				= 25,
+			magicResist 		= 18,
 			levels 				= 15,
 			neutral 			= 1500,
 			stats 				= 45,

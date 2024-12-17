@@ -14,7 +14,7 @@ local recordedMessages = {}
 local maxpromptsLength = 3
 local inGamePlayers = {}
 local countErrorMsg = 0
-local chatTimerName = "chat"
+local chatUpdateTimerName = "chatUpdate"
 local chatVersionDetermineTime = -45
 
 function Chat:SendMessageToBackend(inputText, playerInfo)
@@ -51,18 +51,18 @@ function Chat:SendHttpRequest(api, inputData, callback)
         else
             local success, resJsonObj = pcall(function() return json.decode(res) end)
             if success and resJsonObj and resJsonObj.error then
-                Chat:HandleFailMessage(tostring(resJsonObj.error), true)
+                Chat:HandleFailMessage(tostring(resJsonObj.error), false)
             else
-                Chat:HandleFailMessage('Error occurred! Please try again later.', true)
+                Chat:HandleFailMessage(Localization.Get("fret_req_error_msg"), false)
             end
         end
     end)
 end
 
 function Chat.StartCallback(resJsonObj)
-	if resJsonObj.updates_behind > 0 then
+	if resJsonObj.updates_behind and resJsonObj.updates_behind > 0 then
         print('Script is out of date.')
-        Timers:CreateTimer(chatTimerName, {endTime = 1, callback = Chat['NotifyUpdate']} )
+        Timers:CreateTimer(chatUpdateTimerName, {endTime = 1, callback = Chat['NotifyUpdate']} )
     end
 end
 
@@ -70,7 +70,7 @@ function Chat:NotifyUpdate()
 	local gameTime = Utilities:GetAbsoluteTime()
 	if GameRules:State_Get() == DOTA_GAMERULES_STATE_PRE_GAME and gameTime > chatVersionDetermineTime then
         Utilities:Print(Localization.Get('newer_version'), MSG_WARNING)
-		Timers:RemoveTimer(chatTimerName)
+		Timers:RemoveTimer(chatUpdateTimerName)
         return nil
     end
 	return 1
@@ -147,10 +147,14 @@ end
 function Chat:HandleFailMessage(message, isBotSay)
     -- print("API Failure: " .. message)
     countErrorMsg = countErrorMsg + 1
-    if isBotSay and countErrorMsg <= 3 then
-        local aBot = getRandomBot()
-        if aBot ~= nil then
-            Say(aBot, message, false)
+    if countErrorMsg <= 3 then
+        if isBotSay then
+            local aBot = getRandomBot()
+            if aBot ~= nil then
+                Say(aBot, message, false)
+            end
+        else
+            Utilities:Print(message, MSG_WARNING)
         end
     else
         print("[ERROR] Cannot get valid repsonse from Chat server. Hide the errors to avoid spams.")

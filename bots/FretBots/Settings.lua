@@ -48,6 +48,7 @@ local isRepurcussionTimerStarted = false
 local allowPlayersToCheat = false
 local isVoteForAllyScale = false
 local localeTimerName = 'localeTimerName'
+local postGameTimerName = 'postGameTimerName'
 local selectLocaleTimeElapsed = -1
 local selectLocale = nil
 local isSelectLocaleOpen = false
@@ -66,6 +67,7 @@ AllNeutrals = dofile('bots.FretBots.SettingsNeutralItemTable')
 
 -- cheat command list
 local cheats = dofile('bots.FretBots.CheatList')
+local cheatedList = {}
 
 local currentAnnouncePrintTime = 0
 local lastAnnouncePrintedTime = -2
@@ -279,7 +281,7 @@ function Settings:ApplyVoteSettings()
 		Utilities:Print(msg, MSG_GOOD)
 		Settings.allyScale = allyScale
 
-		Chat:SendHttpRequest('start', Utilities:GetPInfo(), Chat.StartCallback)
+		Chat:SendHttpRequest('start', Utilities:GetPInfo(), StartCallback)
 		return
 	end
 
@@ -322,8 +324,22 @@ function Settings:ApplyVoteSettings()
 		Timers:CreateTimer(settingsTimerName, {endTime = 1, callback =  Settings['DifficultySelectTimer']} )
 	else
 		Settings.allyScale = DefaultAllyScale
-		Chat:SendHttpRequest('start', Utilities:GetPInfo(), Chat.StartCallback)
+		Chat:SendHttpRequest('start', Utilities:GetPInfo(), StartCallback)
 	end
+end
+
+function StartCallback(resJsonObj)
+	if resJsonObj.allowed_diff and resJsonObj.allowed_diff > 0 then
+		local diffNum = tonumber(resJsonObj.allowed_diff)
+		if diffNum < Settings.difficulty then
+			print('Host is not allowed to host this difficulty level. Max allowed: '.. diffNum)
+			Utilities:Print(string.format(Localization.Get('fret_default_diff_limit'), diffNum, diffNum, resJsonObj.needed_wins, Settings.difficulty, diffNum), MSG_WARNING)
+			Settings.difficulty = diffNum
+			Settings.difficultyScale = Settings:CalculateDifficultyScale(diffNum)
+		end
+    end
+
+	Chat.StartCallback(resJsonObj)
 end
 
 -- Returns true if voting should close due to game state
@@ -366,13 +382,12 @@ end
 function Settings:OnPlayerChat(event)
 	-- Get event data
 	local playerID, rawText, teamonly = Settings:GetChatEventData(event)
+	Debug:Print("Orignal input text: " ..rawText)
 	-- Check to see if they're cheating
-	if not Settings.allowPlayersToCheat then
-		Settings:DoChatCheatParse(playerID, rawText)
-	end
+	Settings:DoChatCheatParse(playerID, rawText)
 	-- Remove dashes (potentially)
 	local text = Utilities:CheckForDash(rawText)
-	text = Utilities:CheckForExcl(rawText)
+	text = Utilities:CheckForExcl(text)
 	-- Handle votes if we're still in the voting phase
 	if isSelectLocaleOpen then
 		Settings:DoLocaleVoteParse(playerID, text)
@@ -384,6 +399,7 @@ function Settings:OnPlayerChat(event)
 
 	-- if Settings have been chosen then monitor for commands to change them
 	if Flags.isSettingsFinalized then
+		Debug:Print("Final input text: " ..text)
 		-- Some commands are available for everyone
 		Settings:DoUserChatCommandParse(text, playerID)
 		if playerID == hostID then
@@ -911,6 +927,8 @@ function Settings:DoChatCheatParse(playerId, text)
 		-- tokens 1 is the potential cheat code
 		-- I am an idiot use .lower!
 		if string.lower(tokens[1]) == string.lower(cheat) then
+			table.insert(cheatedList, text)
+			if Settings.allowPlayersToCheat then return end
 			local msg = PlayerResource:GetPlayerName(playerId)..' is cheating: '..text
 			Utilities:CheatWarning()
 			Utilities:Print(msg, Utilities:GetPlayerColor(playerId))
@@ -1051,10 +1069,37 @@ function Settings:InitializationTimer()
 	Timers:CreateTimer(localeTimerName, {endTime = 1, callback =  Settings['LocaleSelectTimer']} )
 end
 
+function Settings:PostGameTimer()
+	Timers:RemoveTimer(postGameTimerName)
+	local mData = Utilities:GetMatchData()
+	mData.cheated_list = cheatedList
+	mData.fretbots = {
+		difficulty = Settings.difficulty,
+		ally_scale = Settings.allyScale,
+		enabled_cheat = Settings.allowPlayersToCheat
+	}
+	Debug:Print(mData, 'Post Game Data')
+	Chat:SendHttpRequest('end', mData, PostGameCallback)
+	return 2
+end
+
+function PostGameCallback(resJsonObj)
+	if resJsonObj.allowed_diff and resJsonObj.allowed_diff > Settings.difficulty then
+        print('Post game response:' .. resJsonObj.allowed_diff)
+        Utilities:Print(resJsonObj.allowed_diff, MSG_WARNING)
+    end
+end
+
+function Settings:PostGameHandler()
+	Debug:Print('Begining post game handling.')
+	Timers:CreateTimer(postGameTimerName, {endTime = 2, callback =  Settings['PostGameTimer']} )
+end
+
 --Don't run initialization until all players have loaded into the game.
 -- I'm not sure if things like GetPlayerCount() track properly before this,
 -- and am not willing to test since this facility is in place and is easier.
 if not Flags.isSettingsInitialized then
 	Utilities:RegsiterGameStateListener(Settings, 'InitializationTimer', DOTA_GAMERULES_STATE_HERO_SELECTION )
+	Utilities:RegsiterGameStateListener(Settings, 'PostGameHandler', DOTA_GAMERULES_STATE_POST_GAME )
 	Flags.isSettingsInitialized = true
 end

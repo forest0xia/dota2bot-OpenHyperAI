@@ -78,7 +78,7 @@ Customize.Fretbots = {
     -- Default ally bots bonus scale comparing to enemy bots, a number between: [0, 1]
     Default_Ally_Scale = 0.5,
 
-    -- Set whether or not allowing the team to vote for difficulty. If false, will directly apply the default differently.
+    -- Set whether or not allowing the team to vote for difficulty. If false, will directly apply the default difficulty.
     Allow_To_Vote = true,
 
     -- Set to false disables all sounds

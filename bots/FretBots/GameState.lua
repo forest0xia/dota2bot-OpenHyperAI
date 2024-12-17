@@ -48,6 +48,9 @@ function GameState:Update(building)
 	if not building:IsTower() and not building:IsBuilding() then
 		return
 	end
+	if building:GetClassname() == "npc_dota_fort" then
+		Utilities.LosingTeam = building:GetTeamNumber()
+	end
 	-- get team
 	local team = building:GetTeam()
 	local name = building:GetName()

@@ -115,6 +115,7 @@ local neutralColors =
 	'#800080',
 	'#FFA500',
 }
+local hostID = -1
 
 -- Shorthand wrappers for functions from chat
 function View(object)
@@ -548,10 +549,12 @@ end
 
 -- returns the playerID of the host
 function Utilities:GetHostPlayerID()
+	if hostID >= 0 then return hostID end
 	for i = 0, PlayerResource:GetPlayerCount() do
 		local player = PlayerResource:GetPlayer(i)
 		local isHost = GameRules:PlayerHasCustomGameHostPrivileges(player)
 		if isHost then
+			hostID = i
 			return i
 		end
 	end
@@ -649,10 +652,57 @@ function Utilities:GetPInfo()
 
 	if not Settings then Settings = {difficulty=-1, allyScale=-1} end
 	return {
+		host_id = tostring(PlayerResource:GetSteamID(Utilities:GetHostPlayerID())),
 		version = Version.number,
 		pinfo = pSteamInfoList,
 		fretbots = { difficulty = Settings.difficulty, allyScale = Settings.allyScale},
 	}
+end
+
+function Utilities:GetMatchData()
+	local gameData = {}
+    local teamStats = {}
+    -- 2 teams: Radiant(2), Dire(3).
+    teamStats["Radiant"] = {total_kills = 0, total_deaths = 0}
+    teamStats["Dire"]  = {total_kills = 0, total_deaths = 0}
+
+    local pData = {}
+    for pId = 0, PlayerResource:GetPlayerCount() do
+        if PlayerResource:IsValidPlayerID(pId)
+		and (PlayerResource:GetConnectionState(pId) == DOTA_CONNECTION_STATE_CONNECTED
+			or PlayerResource:GetConnectionState(pId) == DOTA_CONNECTION_STATE_DISCONNECTED)
+		then
+            local pInfo = {}
+            local team = PlayerResource:GetTeam(pId) == DOTA_TEAM_GOODGUYS and "Radiant" or "Dire"
+
+            pInfo.player_id = pId
+            pInfo.steam_id = tostring(PlayerResource:GetSteamID(pId))
+            pInfo.player_name = PlayerResource:GetPlayerName(pId)
+            pInfo.team = team
+            pInfo.kills = PlayerResource:GetKills(pId)
+            pInfo.deaths = PlayerResource:GetDeaths(pId)
+            pInfo.assists = PlayerResource:GetAssists(pId)
+            pInfo.networth = PlayerResource:GetNetWorth(pId)
+            pInfo.level = PlayerResource:GetLevel(pId)
+            pInfo.hero_name = PlayerResource:GetSelectedHeroName(pId)
+
+            -- Aggregate to team totals
+            if teamStats[team] then
+                teamStats[team].total_kills = teamStats[team].total_kills + pInfo.kills
+                teamStats[team].total_deaths = teamStats[team].total_deaths + pInfo.deaths
+            end
+
+            table.insert(pData, pInfo)
+        end
+    end
+	gameData.host_id = tostring(PlayerResource:GetSteamID(Utilities:GetHostPlayerID()))
+    gameData.players = pData
+    gameData.teams = teamStats
+    gameData.mode = Utilities:IsTurboMode() and 'Turbo' or 'Normal'
+	gameData.winning_team = (Utilities.LosingTeam == DOTA_TEAM_BADGUYS) and "Radiant" or "Dire"
+    gameData.time_passed = Utilities:GetTime()
+	gameData.version = Version.number
+	return gameData
 end
 
 -- GameStateListener class for registering functions that will run once when

@@ -263,7 +263,7 @@ function X.SetTalkMessage()
 	end
 
 	--一血
-	if DotaTime() < 360
+	if DotaTime() < 600
 		and bot:IsAlive()
 		and nCurrentKills > nLastKillCount
 		and J.GetNumOfTeamTotalKills( false ) == 1

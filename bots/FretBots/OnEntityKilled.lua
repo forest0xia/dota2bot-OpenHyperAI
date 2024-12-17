@@ -20,7 +20,7 @@ local isDebug = Debug.IsDebug() and thisDebug;
 local RADIANT			= 2
 local DIRE				= 3
 local KillerAwardMinDifficulty = 5
-local KillerAwardAnnounce = Utilities:ColorString('Balance Killer Awards', "#DAA520")
+local KillerAwardAnnounce = Utilities:ColorString(Localization.Get('fret_killer_awards'), "#DAA520")
 
 local goldTrackingTimer = "GoldTracking"
 local GoldTrackingTable = {}
@@ -48,10 +48,11 @@ function EntityKilled:OnEntityKilled(event)
 	-- Get Event Data
 	local isHero, victim, killer = EntityKilled:GetEntityKilledEventData(event);
 	-- Log Tower/Building kills to track game state
-	if victim == nil or victim.stats == nil then return end
+	if victim == nil then return end
 	if victim:IsTower() or victim:IsBuilding() then
 		GameState:Update(victim)
 	end
+	if victim.stats == nil then return end
 	-- Drop out for non hero kills
 	if not isHero then return end;
 	-- Do Table Update
