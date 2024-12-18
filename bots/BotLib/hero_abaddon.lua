@@ -24,36 +24,76 @@ local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 
 local sRoleItemsBuyList = {}
 
+local sUtility = {"item_lotus_orb", "item_crimson_guard", "item_heavens_halberd"}
+local nUtility = sUtility[RandomInt(1, #sUtility)]
 
 sRoleItemsBuyList['pos_1'] = {
-	"item_sven_outfit",
-	"item_blade_mail",
-	"item_black_king_bar",
-	"item_aghanims_shard",
-	"item_blink",
-	"item_ultimate_scepter",
-	"item_travel_boots",
-	"item_overwhelming_blink",
-	"item_abyssal_blade",
-	"item_ultimate_scepter_2",
-	"item_heart",
-	"item_moon_shard",
-	"item_travel_boots_2",
+    "item_tango",
+    "item_double_branches",
+    "item_orb_of_venom",
+    "item_circlet",
+
+    "item_wraith_band",
+    "item_magic_wand",
+    "item_orb_of_corrosion",
+    "item_phase_boots",
+    "item_echo_sabre",
+    "item_manta",--
+    "item_harpoon",--
+    "item_black_king_bar",--
+    "item_skadi",--
+    "item_aghanims_shard",
+    "item_bloodthorn",--
+    "item_travel_boots_2",--
+    "item_moon_shard",
+    "item_ultimate_scepter_2",
 }
 
-sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
+sRoleItemsBuyList['pos_2'] = {
+    "item_tango",
+    "item_double_branches",
+    "item_orb_of_venom",
+    "item_circlet",
+
+    "item_bottle",
+    "item_magic_wand",
+    "item_wraith_band",
+    "item_orb_of_corrosion",
+    "item_phase_boots",
+    "item_echo_sabre",
+    "item_manta",--
+    "item_assault",--
+    "item_harpoon",--
+    "item_aghanims_shard",
+    "item_basher",
+    "item_heart",--
+    "item_ultimate_scepter",
+    "item_travel_boots",
+    "item_abyssal_blade",--
+    "item_travel_boots_2",--
+    "item_ultimate_scepter_2",
+    "item_moon_shard",
+}
 sRoleItemsBuyList['pos_3'] = {
-	"item_tank_outfit",
-	"item_crimson_guard",--
-	"item_aghanims_shard",
-	"item_heavens_halberd",--
-    "item_shivas_guard",--
-	"item_assault",--
-	"item_travel_boots",
-	"item_ultimate_scepter_2",
-	"item_moon_shard",
-	"item_heart",--
-	"item_travel_boots_2",--
+    "item_tango",
+    "item_double_branches",
+    "item_quelling_blade",
+
+    "item_gloves",
+    "item_magic_wand",
+    "item_orb_of_corrosion",
+    "item_phase_boots",
+    "item_radiance",--
+    "item_crimson_guard",--
+    "item_assault",--
+    nUtility,--
+    "item_ultimate_scepter",
+    "item_travel_boots",
+    "item_heart",--
+    "item_ultimate_scepter_2",
+    "item_travel_boots_2",--
+    "item_aghanims_shard",
+    "item_moon_shard",
 }
 
 sRoleItemsBuyList['pos_4'] = {
@@ -98,6 +138,12 @@ X['sSellList'] = {
 
 	"item_assault",
 	"item_magic_wand",
+
+    "item_heart",
+    "item_orb_of_corrosion",
+
+	"item_assault",
+    "item_bottle",
 
 	"item_assault",
 	"item_ancient_janggo",

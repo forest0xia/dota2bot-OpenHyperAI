@@ -1085,8 +1085,7 @@ end
 
 function PostGameCallback(resJsonObj)
 	if resJsonObj.allowed_diff and resJsonObj.allowed_diff > Settings.difficulty then
-        print('Post game response:' .. resJsonObj.allowed_diff)
-        Utilities:Print(resJsonObj.allowed_diff, MSG_WARNING)
+        Utilities:Print(string.format(Localization.Get('fret_new_diff'), resJsonObj.allowed_diff), MSG_WARNING)
     end
 end
 

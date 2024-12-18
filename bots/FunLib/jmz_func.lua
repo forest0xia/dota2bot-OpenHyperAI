@@ -4445,6 +4445,27 @@ function J.IsCreepBetweenMeAndLocation(hSource, vLoc, nRadius)
 	return false
 end
 
+function J.IsUnitBetweenMeAndLocation(hSource, hTarget, vTargetLoc, nRadius)
+	local vStart = hSource:GetLocation()
+	local vEnd = vTargetLoc
+
+	for _, unit in pairs(GetUnitList(UNIT_LIST_ALL))
+	do
+		if J.IsValid(unit)
+		and GetUnitToUnitDistance(GetBot(), unit) <= 1600
+		and not unit:IsBuilding()
+		and not string.find(unit:GetUnitName(), 'ward')
+		and hSource ~= unit
+		and hTarget ~= unit
+		then
+			local tResult = PointToLineDistance(vStart, vEnd, unit:GetLocation())
+			if tResult ~= nil and tResult.within and tResult.distance <= nRadius then return true end
+		end
+	end
+
+	return false
+end
+
 function J.IsNonSiegeCreepBetweenMeAndLocation(hSource, vLoc, nRadius)
 	local vStart = hSource:GetLocation()
 	local vEnd = vLoc
@@ -4472,6 +4493,41 @@ function J.IsNonSiegeCreepBetweenMeAndLocation(hSource, vLoc, nRadius)
 	end
 
 	return false
+end
+
+function J.IsThereCoreNearby(nRadius)
+	for i = 1, 5
+	do
+		local allyHero = GetTeamMember(i)
+		if allyHero ~= nil
+		and allyHero ~= GetBot()
+		and J.IsCore(allyHero)
+		and J.IsInRange(GetBot(), allyHero, nRadius)
+		then
+			return true
+		end
+	end
+
+    return false
+end
+
+function J.GetClosestCore(bot, nRadius)
+	for i = 1, 5
+	do
+		local member = GetTeamMember(i)
+
+		if  member ~= nil
+		and member:IsAlive()
+		and member ~= bot
+		and J.IsCore(bot)
+		and GetUnitToUnitDistance(bot, member) <= nRadius
+		and not J.IsSuspiciousIllusion(member)
+		then
+			return member
+		end
+	end
+
+	return nil
 end
 
 function J.IsCreepBetweenMeAndTarget(hSource, hTarget, vLoc, nRadius)

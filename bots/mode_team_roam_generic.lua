@@ -63,6 +63,7 @@ local nEffctiveAlliesNearPingedDefendLoc = nil
 local pingTimeDelta = 5
 local goToTargetAlly = nil
 local nearbyAllies, nearbyEnemies
+local ShouldHelpWhenCoreIsTargeted = false
 
 if team == TEAM_RADIANT
 then
@@ -107,12 +108,19 @@ function GetDesire()
 
 	ItemOpsDesire()
 
-	nDesire = ConsiderHarassInLaningPhase()
-	if nDesire > 0
+	targetUnit, ShouldHelpWhenCoreIsTargeted = X.ConsiderHelpWhenCoreIsTargeted()
+	if ShouldHelpWhenCoreIsTargeted
 	then
-		print("doing harass in lane: " .. botName .. ", lane: " .. bot:GetAssignedLane())
-		return nDesire
+		bot:SetTarget(targetUnit)
+		return BOT_ACTION_DESIRE_ABSOLUTE * 0.98
 	end
+
+	-- nDesire = ConsiderHarassInLaningPhase()
+	-- if nDesire > 0
+	-- then
+	-- 	print("doing harass in lane: " .. botName .. ", lane: " .. bot:GetAssignedLane())
+	-- 	return nDesire
+	-- end
 
 	local nAliveAllies = J.GetNumOfAliveHeroes(false)
 	local nAliveEnemies = J.GetNumOfAliveHeroes(true)
@@ -137,32 +145,31 @@ function GetDesire()
 	-- 	end
 	-- end
 	-- 避免过早推2塔或者高地
-	if teamAveLvl < 10
-	and nAliveEnemies >= 3
-	and (#nearbyAllies <= 2
-	and #nearbyEnemies >= 2
-	and #nearbyAllies <= 2 and #nearbyAllies < #nearbyEnemies -- 我们人挺多，对面人也挺多，大战似乎在所难免，别跑了
-	or (nAliveEnemies >= #nearbyAllies and nAliveAllies > 3)) then
-		if J.Utils.IsNearEnemySecondTierTower(bot, 1500) then
-			goToTargetAlly = J.Utils.FindAllyWithAtLeastDistanceAway(bot, 1600)
-			if goToTargetAlly then
-				IsShouldFindTeammates = true
-				ShouldFindTeammatesTime = DotaTime()
-				print("avoid pushing t2 tower for bot: " .. botName)
-				return BOT_ACTION_DESIRE_ABSOLUTE * 0.98
-			end
-		end
-	end
+	-- if teamAveLvl < 10
+	-- and nAliveEnemies >= 3
+	-- and (#nearbyAllies <= 2
+	-- and #nearbyEnemies >= 2
+	-- and #nearbyAllies <= 2 and #nearbyAllies < #nearbyEnemies -- 我们人挺多，对面人也挺多，大战似乎在所难免，别跑了
+	-- or (nAliveEnemies >= #nearbyAllies and nAliveAllies > 3)) then
+	-- 	if J.Utils.IsNearEnemySecondTierTower(bot, 1500) then
+	-- 		goToTargetAlly = J.Utils.FindAllyWithAtLeastDistanceAway(bot, 1600)
+	-- 		if goToTargetAlly then
+	-- 			IsShouldFindTeammates = true
+	-- 			ShouldFindTeammatesTime = DotaTime()
+	-- 			print("avoid pushing t2 tower for bot: " .. botName)
+	-- 			return BOT_ACTION_DESIRE_ABSOLUTE * 0.98
+	-- 		end
+	-- 	end
+	-- end
 
 	-- 如果在上高，对面人活着，其他队友活着却不在附近，赶紧溜去其他地方游走
 	if IsShouldFindTeammates and goToTargetAlly then
 		return BOT_ACTION_DESIRE_ABSOLUTE * 0.98
-	elseif (#nearbyAllies <= 2
-	or (nAliveEnemies >= #nearbyAllies and nAliveAllies > 3))
+	elseif (#nearbyAllies <= 2 or nAliveEnemies > #nearbyAllies)
 	and J.Utils.IsTeamPushingSecondTierOrHighGround(bot)
 	and #J.Utils.GetLastSeenEnemyIdsNearLocation(bot:GetLocation(), 2000) > 1
-	and #nearbyEnemies >= #nearbyAllies
-	and not J.WeAreStronger(bot, 2000) then
+	-- and #nearbyEnemies >= #nearbyAllies
+	and (J.IsPushing(bot) or J.IsFarming( bot ) or J.IsShopping( bot ) or botMode == BOT_MODE_WARD) then
 		goToTargetAlly = J.Utils.FindAllyWithAtLeastDistanceAway(bot, 1600)
 		if goToTargetAlly then
 			IsShouldFindTeammates = true
@@ -1738,6 +1745,37 @@ function X.GetCanTogetherCount(nAllies)
 
 end
 
+function X.ConsiderHelpWhenCoreIsTargeted()
+	local nRadius = 3500
+	local nModeDesire = bot:GetActiveModeDesire()
+	local nClosestCore = J.GetClosestCore(bot, nRadius)
+
+	if  nClosestCore ~= nil
+	and J.GetHP(nClosestCore) > 0.2
+	and (not J.IsCore(bot) or (J.IsCore(bot) and (not J.IsInLaningPhase() or J.IsInRange(bot, nClosestCore, 1600))))
+	and not J.IsGoingOnSomeone(bot)
+	and not (J.IsRetreating(bot) and nModeDesire > 0.8)
+	then
+		local nInRangeAlly = J.GetAlliesNearLoc(nClosestCore:GetLocation(), 1200)
+		local nInRangeEnemy = J.GetEnemiesNearLoc(nClosestCore:GetLocation(), 1600)
+
+		for _, enemyHero in pairs(nInRangeEnemy)
+		do
+			if  J.IsValidHero(enemyHero)
+			and GetUnitToUnitDistance(enemyHero, nClosestCore) <= 1600
+			and (#nInRangeAlly + 1 >= #nInRangeEnemy)
+			then
+				if (enemyHero:GetAttackTarget() == nClosestCore or J.IsChasingTarget(enemyHero, nClosestCore))
+				or nClosestCore:WasRecentlyDamagedByHero(enemyHero, 2.5)
+				then
+					return enemyHero, true
+				end
+			end
+		end
+	end
+
+	return nil, false
+end
 
 function X.IsModeSuitToHitCreep(bot)
 

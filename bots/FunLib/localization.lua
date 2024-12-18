@@ -77,6 +77,7 @@ local Localization = {
         fret_ally_scale_ended = "Ally bots bonus scale selected: ",
         fret_found_netural_item = "Found Neutral Item: ",
         fret_req_error_msg = "Error occurred! Please try again later.",
+        fret_new_diff = "New available difficulty: %d",
         random_responses = {
             "?", 'glhf', 'gg',
             "Nice, my dog could do better",
@@ -199,6 +200,7 @@ local Localization = {
         fret_vote_for_ally = '%s 投票选择了盟友奖励比例：%s。',
         fret_ally_scale_ended = "盟友机器人奖励比例已选择：",
         fret_req_error_msg = "发生错误！请稍后再试。",
+        fret_new_diff = "新的可选难度：%d",
         random_responses = {
             "?", 'glhf', 'gg',
             "不错，我家的狗都能做得更好。",
@@ -312,6 +314,7 @@ local Localization = {
         fret_vote_for_ally = '%s проголосовал за масштаб союзников: %s.',
         fret_ally_scale_ended = "Выбран масштаб бонуса для союзных ботов: ",
         fret_req_error_msg = "Произошла ошибка! Пожалуйста, попробуйте позже.",
+        fret_new_diff = "Новая доступная сложность: %d",
         random_responses = {
             "?", 'glhf', 'gg',
             "Неплохо, моя собака могла бы лучше.",
@@ -426,6 +429,7 @@ local Localization = {
         fret_vote_for_ally = '%s が味方のスケールに投票しました: %s。',
         fret_ally_scale_ended = "味方ボットのボーナススケールが選択されました: ",
         fret_req_error_msg = "エラーが発生しました！後でもう一度お試しください。",
+        fret_new_diff = "新しい利用可能な難易度: %d",
         random_responses = {
             "?", 'glhf', 'gg',
             "いいね、うちの犬の方が上手いよ。",

@@ -47,7 +47,7 @@ sRoleItemsBuyList['pos_4'] = {
 	"item_shivas_guard",--
 	"item_moon_shard",
 	"item_octarine_core",--
-	"item_overwhelming_blink",
+	"item_overwhelming_blink",--
 	"item_ultimate_scepter_2",
 }
 
@@ -70,11 +70,11 @@ sRoleItemsBuyList['pos_5'] = {
 }
 
 sRoleItemsBuyList['pos_1'] = {
-	"item_crystal_maiden_outfit",
+	"item_medusa_outfit",
 	"item_hand_of_midas",
-	"item_force_staff",
 --	"item_glimmer_cape",
     "item_kaya",
+	"item_force_staff",
     "item_ultimate_scepter",
     "item_kaya_and_sange",--
 	"item_hurricane_pike",--
@@ -84,12 +84,13 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_sheepstick",--
 	"item_moon_shard",
 	"item_octarine_core",--
-	"item_ultimate_scepter_2",--
+	"item_overwhelming_blink",
+	"item_ultimate_scepter_2",
 }
 
 sRoleItemsBuyList['pos_2'] = {
-	"item_crystal_maiden_outfit",
-	"item_hand_of_midas",
+	"item_medusa_outfit",
+	-- "item_hand_of_midas",
     "item_kaya",
     "item_ultimate_scepter",
     "item_kaya_and_sange",--
@@ -401,7 +402,7 @@ function X.ConsiderQ()
 			and bot:IsFacingLocation( botTarget:GetLocation(), 45 )
 			and ( botTarget:GetMagicResist() < 0.4 or nMP > 0.9 )
 		then
-			local nShouldHurtCount = nMP > 0.6 and 3 or 4
+			local nShouldHurtCount = nMP > 0.5 and 1 or 2
 			local locationAoE = bot:FindAoELocation( true, false, bot:GetLocation(), nCastRange, 200, 0, 0 )
 			if ( locationAoE.count >= nShouldHurtCount )
 			then

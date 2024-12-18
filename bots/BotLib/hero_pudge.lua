@@ -60,17 +60,16 @@ sRoleItemsBuyList['pos_2'] = {
     "item_magic_wand",
     "item_boots",
     "item_kaya_and_sange",--
-    "item_blink",
-    "item_eternal_shroud",--
     "item_ultimate_scepter",
+    "item_eternal_shroud",--
     "item_travel_boots",
     "item_bloodstone",--
     "item_black_king_bar",--
+    "item_shivas_guard",--
     "item_ultimate_scepter_2",
-    "item_overwhelming_blink",--
+    "item_moon_shard",
     "item_travel_boots_2",--
     "item_aghanims_shard",
-    "item_moon_shard",
 }
 
 sRoleItemsBuyList['pos_3'] = {
@@ -137,7 +136,26 @@ sRoleItemsBuyList['pos_5'] = {
     "item_moon_shard",
 }
 
-sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
+sRoleItemsBuyList['pos_1'] = {
+    "item_tango",
+    "item_double_branches",
+
+    "item_bracer",
+    "item_magic_wand",
+    "item_bracer",
+    "item_boots",
+    "item_kaya_and_sange",--
+    "item_ultimate_scepter",
+    "item_eternal_shroud",--
+    "item_travel_boots",
+    "item_bloodstone",--
+    "item_black_king_bar",--
+    "item_shivas_guard",--
+    "item_ultimate_scepter_2",
+    "item_moon_shard",
+    "item_travel_boots_2",--
+    "item_aghanims_shard",
+}
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 
@@ -209,14 +227,14 @@ function X.SkillsComplement()
     DismemberDesire, DismemberTarget = X.ConsiderDismember()
     if DismemberDesire > 0
     then
-        if Rot:IsTrained()
+        if J.CanCastAbility(Rot)
         and Rot:GetToggleState() == false
         and #nEnemyHeroesNearRot >= 1
         then
             bot:Action_UseAbility(Rot)
         end
 
-        if MeatShield:IsTrained()
+        if J.CanCastAbility(MeatShield)
         and MeatShield:IsFullyCastable()
         then
             bot:Action_UseAbility(MeatShield)
@@ -254,8 +272,7 @@ function X.ConsiderMeatHook()
         then
             if enemyHero:IsChanneling() or J.IsCastingUltimateAbility(enemyHero)
             then
-                if not J.IsHeroBetweenMeAndTarget(bot, enemyHero, enemyHero:GetLocation(), nRadius)
-                and not J.IsCreepBetweenMeAndTarget(bot, enemyHero, enemyHero:GetLocation(), nRadius)
+                if not J.IsUnitBetweenMeAndLocation(bot, enemyHero, enemyHero:GetLocation(), nRadius)
                 then
                     return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation()
                 end
@@ -269,15 +286,9 @@ function X.ConsiderMeatHook()
             and not enemyHero:HasModifier('modifier_templar_assassin_refraction_absorb')
             then
                 local eta = (GetUnitToUnitDistance(bot, enemyHero) / nSpeed) + nCastPoint
-                local targetLoc = enemyHero:GetExtrapolatedLocation(eta)
+                local targetLoc = J.GetCorrectLoc(enemyHero, eta)
 
-                if GetUnitToUnitDistance(bot, enemyHero) < nCastRange * 0.5
-                then
-                    targetLoc = enemyHero:GetLocation()
-                end
-
-                if not J.IsHeroBetweenMeAndTarget(bot, enemyHero, targetLoc, nRadius)
-                and not J.IsCreepBetweenMeAndTarget(bot, enemyHero, targetLoc, nRadius)
+                if not J.IsUnitBetweenMeAndLocation(bot, enemyHero, targetLoc, nRadius)
                 and not J.IsLocationInChrono(targetLoc)
                 and not J.IsLocationInBlackHole(targetLoc)
                 then
@@ -307,15 +318,9 @@ function X.ConsiderMeatHook()
                 and enemyHero:GetUnitName() == 'npc_dota_hero_sniper'
                 then
                     local eta = (GetUnitToUnitDistance(bot, enemyHero) / nSpeed) + nCastPoint
-                    local targetLoc = enemyHero:GetExtrapolatedLocation(eta)
+                    local targetLoc = J.GetCorrectLoc(enemyHero, eta)
 
-                    if GetUnitToUnitDistance(bot, enemyHero) < nCastRange * 0.5
-                    then
-                        targetLoc = enemyHero:GetLocation()
-                    end
-
-                    if not J.IsHeroBetweenMeAndTarget(bot, enemyHero, targetLoc, nRadius)
-                    and not J.IsCreepBetweenMeAndTarget(bot, enemyHero, targetLoc, nRadius)
+                    if not J.IsUnitBetweenMeAndLocation(bot, enemyHero, targetLoc, nRadius)
                     and not J.IsLocationInChrono(targetLoc)
                     and not J.IsLocationInBlackHole(targetLoc)
                     then
@@ -335,18 +340,12 @@ function X.ConsiderMeatHook()
             and #nInRangeAlly >= #nTargetInRangeAlly
             then
                 local eta = (GetUnitToUnitDistance(bot, strongestTarget) / nSpeed) + nCastPoint
-                local targetLoc = strongestTarget:GetExtrapolatedLocation(eta)
+                local targetLoc = J.GetCorrectLoc(strongestTarget, eta)
 
-                if not J.IsHeroBetweenMeAndTarget(bot, strongestTarget, targetLoc, nRadius)
-                and not J.IsCreepBetweenMeAndTarget(bot, strongestTarget, targetLoc, nRadius)
+                if not J.IsUnitBetweenMeAndLocation(bot, strongestTarget, targetLoc, nRadius)
                 and not J.IsLocationInChrono(targetLoc)
                 and not J.IsLocationInBlackHole(targetLoc)
                 then
-                    if GetUnitToUnitDistance(bot, strongestTarget) < nCastRange * 0.5
-                    then
-                        targetLoc = strongestTarget:GetLocation()
-                    end
-
                     return BOT_ACTION_DESIRE_HIGH, targetLoc
                 end
             end
@@ -355,33 +354,34 @@ function X.ConsiderMeatHook()
 
     if J.IsLaning(bot)
 	then
-		-- local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nCastRange, true)
+		local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(nCastRange, true)
 
-		-- for _, creep in pairs(nEnemyLaneCreeps)
-		-- do
-		-- 	if J.IsValid(creep)
-        --     and J.CanBeAttacked(creep)
-		-- 	and J.IsKeyWordUnit('siege', creep)
-		-- 	and creep:GetHealth() <= nDamage
-		-- 	then
-		-- 		local nCreepInRangeHero = creep:GetNearbyHeroes(500, false, BOT_MODE_NONE)
+		for _, creep in pairs(nEnemyLaneCreeps)
+		do
+			if  J.IsValid(creep)
+            and not J.IsRunning(creep)
+            and J.CanBeAttacked(creep)
+			and J.IsKeyWordUnit('siege', creep)
+			and creep:GetHealth() <= nDamage
+			then
+				local nCreepInRangeHero = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
 
-		-- 		if ((nCreepInRangeHero ~= nil and #nCreepInRangeHero >= 1)
-        --             or not J.IsInRange(bot, creep, bot:GetAttackRange() + 25))
-        --         and not J.IsHeroBetweenMeAndTarget(bot, creep, creep:GetLocation(), nRadius)
-        --         and not J.IsNonSiegeCreepBetweenMeAndLocation(bot, creep:GetLocation(), nRadius)
-        --         and (J.IsCore(bot) or not J.IsCore(bot) and not J.IsThereNonSelfCoreNearby(1200))
-		-- 		then
-		-- 			return BOT_ACTION_DESIRE_HIGH, creep:GetLocation()
-		-- 		end
-		-- 	end
-		-- end
+				if  ((J.IsValid(nCreepInRangeHero[1])
+                    and GetUnitToUnitDistance(nCreepInRangeHero[1], creep) < 500)
+                        or not J.IsInRange(bot, creep, bot:GetAttackRange() + 25))
+                and not J.IsUnitBetweenMeAndLocation(bot, creep, creep:GetLocation(), nRadius)
+                and (J.IsCore(bot) or not J.IsCore(bot) and not J.IsThereCoreNearby(1200))
+				then
+					return BOT_ACTION_DESIRE_HIGH, creep:GetLocation()
+				end
+			end
+		end
 
         local nInRangeTower = bot:GetNearbyTowers(700, false)
-        local nInRangeEnemy = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
+        local nInRangeEnemy = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
 
-        if nInRangeTower ~= nil and #nInRangeTower >= 1
-        and nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
+        if J.IsValidBuilding(nInRangeTower[1])
+        and J.IsValidHero(nInRangeEnemy[1])
         and J.IsInRange(bot, nInRangeTower[1], 500)
         then
             local towerTarget = nInRangeTower[1]:GetAttackTarget()
@@ -390,21 +390,15 @@ function X.ConsiderMeatHook()
             then
                 for _, enemyHero in pairs(nInRangeEnemy)
                 do
-                    if J.IsValidHero(enemyHero)
+                    if  J.IsValidHero(enemyHero)
                     and not J.IsSuspiciousIllusion(enemyHero)
                     and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
                     and not enemyHero:HasModifier('modifier_abaddon_aphotic_shield')
                     then
                         local eta = (GetUnitToUnitDistance(bot, enemyHero) / nSpeed) + nCastPoint
-                        local targetLoc = enemyHero:GetExtrapolatedLocation(eta)
+                        local targetLoc = J.GetCorrectLoc(enemyHero, eta)
 
-                        if GetUnitToUnitDistance(bot, enemyHero) < nCastRange * 0.5
-                        then
-                            targetLoc = enemyHero:GetLocation()
-                        end
-
-                        if not J.IsHeroBetweenMeAndTarget(bot, enemyHero, targetLoc, nRadius)
-                        and not J.IsCreepBetweenMeAndTarget(bot, enemyHero, targetLoc, nRadius)
+                        if not J.IsUnitBetweenMeAndLocation(bot, enemyHero, targetLoc, nRadius)
                         then
                             return BOT_ACTION_DESIRE_HIGH, targetLoc
                         end
@@ -414,28 +408,27 @@ function X.ConsiderMeatHook()
         end
 	end
 
-    local nAllyHeroes = J.GetNearbyHeroes(bot,nCastRange, false, BOT_MODE_NONE)
+    local nAllyHeroes = bot:GetNearbyHeroes(nCastRange, false, BOT_MODE_NONE)
     for _, allyHero in pairs(nAllyHeroes)
     do
-        if J.IsValidHero(allyHero)
+        if  J.IsValidHero(allyHero)
         and not allyHero:IsIllusion()
         and allyHero:HasModifier('modifier_enigma_black_hole_pull')
         and allyHero:HasModifier('modifier_faceless_void_chronosphere_freeze')
-        and not J.IsHeroBetweenMeAndTarget(bot, allyHero, allyHero:GetLocation(), nRadius)
-        and not J.IsCreepBetweenMeAndTarget(bot, allyHero, allyHero:GetLocation(), nRadius)
+        and not J.IsUnitBetweenMeAndLocation(bot, allyHero, allyHero:GetLocation(), nRadius)
         then
             return BOT_ACTION_DESIRE_HIGH, allyHero:GetLocation()
         end
 
-        local nAllyInRangeEnemy = J.GetNearbyHeroes(allyHero, nCastRange, true, BOT_MODE_NONE)
+        local nAllyInRangeEnemy = allyHero:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
 
-        if J.IsValidHero(allyHero)
+        if  J.IsValidHero(allyHero)
         and J.IsRetreating(allyHero)
         and allyHero:WasRecentlyDamagedByAnyHero(2.1)
         and not allyHero:IsIllusion()
         and J.GetMP(bot) > 0.31
         then
-            if nAllyInRangeEnemy ~= nil and #nAllyInRangeEnemy >= 1
+            if  nAllyInRangeEnemy ~= nil and #nAllyInRangeEnemy >= 1
             and J.IsValidHero(nAllyInRangeEnemy[1])
             and J.IsInRange(bot, nAllyInRangeEnemy[1], nCastRange * 0.5)
             and J.IsRunning(allyHero)
@@ -448,8 +441,7 @@ function X.ConsiderMeatHook()
             and not nAllyInRangeEnemy[1]:HasModifier('modifier_enigma_black_hole_pull')
             and not nAllyInRangeEnemy[1]:HasModifier('modifier_faceless_void_chronosphere_freeze')
             and not nAllyInRangeEnemy[1]:HasModifier('modifier_necrolyte_reapers_scythe')
-            and not J.IsHeroBetweenMeAndTarget(bot, allyHero, allyHero:GetLocation(), nRadius)
-            and not J.IsCreepBetweenMeAndTarget(bot, allyHero, allyHero:GetLocation(), nRadius)
+            and not J.IsUnitBetweenMeAndLocation(bot, allyHero, allyHero:GetLocation(), nRadius)
             then
                 return BOT_ACTION_DESIRE_HIGH, allyHero:GetLocation()
             end
@@ -458,10 +450,10 @@ function X.ConsiderMeatHook()
 
     if J.IsDoingRoshan(bot)
     then
-        if J.IsRoshan(botTarget)
+        if  J.IsRoshan(botTarget)
         and J.IsInRange(bot, botTarget, 500)
         and J.IsAttacking(bot)
-        and not J.IsHeroBetweenMeAndTarget(bot, botTarget, botTarget:GetLocation(), nRadius)
+        and not J.IsUnitBetweenMeAndLocation(bot, botTarget, botTarget:GetLocation(), nRadius)
         then
             return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
         end
@@ -469,10 +461,10 @@ function X.ConsiderMeatHook()
 
     if J.IsDoingTormentor(bot)
     then
-        if J.IsTormentor(botTarget)
+        if  J.IsTormentor(botTarget)
         and J.IsInRange(bot, botTarget, 400)
         and J.IsAttacking(bot)
-        and not J.IsHeroBetweenMeAndTarget(bot, botTarget, botTarget:GetLocation(), nRadius)
+        and not J.IsUnitBetweenMeAndLocation(bot, botTarget, botTarget:GetLocation(), nRadius)
         then
             return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
         end

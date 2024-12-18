@@ -69,30 +69,27 @@ sRoleItemsBuyList['pos_1'] = {
 
 sRoleItemsBuyList['pos_2'] = {
 	"item_tango",
-	"item_enchanted_mango",
-	"item_enchanted_mango",
-	"item_enchanted_mango",
-	"item_clarity",
+	"item_double_branches",
 	"item_faerie_fire",
-	"item_quelling_blade",
+	"item_enchanted_mango",
+	"item_enchanted_mango",
 
 	"item_bottle",
-	"item_boots",
-	"item_cyclone", -- prevent enemies to teleport
-	"item_invis_sword", -- sf escaping with this
-	"item_kaya", -- fix mana problem & increase magical damage
-	"item_blink", -- chase enemy for last hit
-	"item_yasha",--
-	"item_travel_boots", -- teleport faster
+	"item_magic_wand",
+	"item_power_treads",
+	"item_lifesteal",
+	"item_dragon_lance",
+	"item_lesser_crit",
 	"item_black_king_bar",--
-	"item_silver_edge",--
-	"item_ultimate_scepter",
-	"item_ultimate_scepter_2",
+	"item_orchid",
+	"item_bloodthorn",--
+	"item_greater_crit",--
+	"item_hurricane_pike",--
 	"item_aghanims_shard",
+	"item_satanic",--
 	"item_moon_shard",
-	"item_overwhelming_blink", ---- for more magical damage + health, sf doesn't require others
-	"item_wind_waker",--
 	"item_travel_boots_2",--
+	"item_ultimate_scepter_2",
 }
 
 sRoleItemsBuyList['pos_4'] = {

@@ -551,8 +551,7 @@ function X.ConsiderSparkWraith()
 		end
 	end
 
-	if J.IsFarming(bot)
-	or J.IsPushing(bot)
+	if J.IsPushing(bot)
 	or J.IsDefending(bot)
 	then
 		local nLocationAoE = bot:FindAoELocation(true, false, bot:GetLocation(), 1400, nRadius, 2, 0)
@@ -573,6 +572,33 @@ function X.ConsiderSparkWraith()
 				end
 			else
 				if J.GetMP(bot) > 0.75
+				then
+					return BOT_ACTION_DESIRE_HIGH, nLocationAoE.targetloc
+				end
+			end
+		end
+	end
+
+	if J.IsFarming(bot)
+	then
+		local nLocationAoE = bot:FindAoELocation(true, false, bot:GetLocation(), 1400, nRadius, 2, 0)
+		if nLocationAoE.count >= 1
+		and not bot:HasModifier('modifier_silencer_curse_of_the_silent')
+		then
+			if bot:HasModifier('modifier_arc_warden_tempest_double')
+			then
+				return BOT_ACTION_DESIRE_HIGH, nLocationAoE.targetloc
+			end
+
+			local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(1400, true)
+			if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 1
+			then
+				if J.GetMP(bot) > 0.42
+				then
+					return BOT_ACTION_DESIRE_HIGH, nLocationAoE.targetloc
+				end
+			else
+				if J.GetMP(bot) > 0.55
 				then
 					return BOT_ACTION_DESIRE_HIGH, nLocationAoE.targetloc
 				end

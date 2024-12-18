@@ -129,8 +129,12 @@ function GetDesireBasedOnHp(target)
 		and J.GetHP(bot) < J.GetHP(target) then
 			return BOT_ACTION_DESIRE_NONE
 		end
-		if J.GetModifierTime( target, "modifier_item_blade_mail_reflect" ) > 0.2
-		and bot:GetHealth() - target:GetHealth() < 250 then
+
+		if J.IsValidHero(target) and J.GetModifierTime( target, "modifier_item_blade_mail_reflect" ) > 0.2
+		and J.IsInRange(bot, target, bot:GetAttackRange())
+		and ((#nEnemyHeroes == 1 and bot:GetHealth() - target:GetHealth() < 250)
+			or (#nEnemyHeroes >=2 and bot:GetHealth() - target:GetHealth() < 400))
+		then
 			return BOT_ACTION_DESIRE_NONE
 		end
 	end
@@ -371,7 +375,7 @@ function GetIncomingProjectileDamage(creep)
     local totalDamage = 0
     local projectiles = creep:GetIncomingTrackingProjectiles()
     for _, projectile in pairs(projectiles) do
-		if projectile.is_attack then
+		if projectile.is_attack and projectile.caster then
 			projectile.moveSpeed = projectile.caster:GetAttackSpeed() -- assume a speed
 			projectile.damage = projectile.caster:GetAttackDamage() -- assume a speed
 			local timeToHit = GetUnitToLocationDistance(creep, projectile.location) / projectile.moveSpeed

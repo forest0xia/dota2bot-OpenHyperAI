@@ -106,7 +106,7 @@ function GetDesire()
 
 		if X.IsEnemyPickRune(ClosestRune) then return 0 end
 
-		if botPos == 2 and #bot:GetNearbyLaneCreeps(700, true) >= 2 and J.IsInLaningPhase() then return 0 end
+		-- if botPos == 2 and #bot:GetNearbyLaneCreeps(700, true) >= 2 and J.IsInLaningPhase() then return 0 end
         if ClosestRune == RUNE_BOUNTY_1 or ClosestRune == RUNE_BOUNTY_2 then
             if nRuneStatus == RUNE_STATUS_AVAILABLE then
 				if botPos <= 3 and DotaTime() > 2 * 60 and DotaTime() < 20 * 60 then

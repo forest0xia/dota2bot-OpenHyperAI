@@ -1232,6 +1232,7 @@ function X.ConsiderChaosMeteor()
 
 	if J.IsGoingOnSomeone(bot)
     and J.IsValidTarget(botTarget)
+    and J.IsAttacking(bot)
 	then
         local desire, target = X.ConsiderCmToTarget(botTarget, nDelay, nTravelDistance, nRadius)
         if desire > 0 then
@@ -1273,6 +1274,7 @@ function X.ConsiderChaosMeteor()
         if nEnemyHeroes ~= nil and #nEnemyHeroes <=2 and nEnemyHeroes[1] ~= nil then enemyHero = nEnemyHeroes[1] else return BOT_ACTION_DESIRE_NONE, nil end
 
         if J.IsValidHero(enemyHero)
+        and J.IsAttacking(bot)
         and J.CanCastOnNonMagicImmune(enemyHero)
         and J.IsInRange(bot, enemyHero, nCastRange)
         and not J.IsSuspiciousIllusion(enemyHero)

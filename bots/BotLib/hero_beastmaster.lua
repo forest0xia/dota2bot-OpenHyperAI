@@ -24,17 +24,39 @@ local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 
 local sRoleItemsBuyList = {}
 
-local sCrimsonPipe = RandomInt(1, 2) == 1 and "item_crimson_guard" or "item_pipe"
-
 sRoleItemsBuyList['pos_1'] = {
 	"item_bristleback_outfit",
     "item_ultimate_scepter",
-	"item_heavens_halberd",--
+    "item_echo_sabre",
+	"item_harpoon",--
+	"item_assault",--
+	"item_black_king_bar",--
+    "item_blink",
+	"item_abyssal_blade",--
+	"item_aghanims_shard",
+	"item_travel_boots",
+	"item_overwhelming_blink",--
+	"item_moon_shard",
+    "item_ultimate_scepter_2",
+	"item_travel_boots_2",--
+}
+
+sRoleItemsBuyList['pos_2'] = {
+    "item_double_branches",
+    "item_tango",
+    "item_faerie_fire",
+
+    "item_bottle",
+    "item_magic_wand",
+    "item_power_treads",
+    "item_ultimate_scepter",
+    "item_echo_sabre",
+	"item_harpoon",--
+	"item_black_king_bar",--
+    "item_blink",
 	"item_travel_boots",
 	"item_assault",--
 	"item_abyssal_blade",--
-    "item_blink",
-	"item_black_king_bar",--
 	"item_aghanims_shard",
 	"item_overwhelming_blink",--
 	"item_moon_shard",
@@ -42,17 +64,16 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_travel_boots_2",--
 }
 
-sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
-
 sRoleItemsBuyList['pos_3'] = {
 	"item_tank_outfit",
+    "item_helm_of_the_dominator",
+    "item_helm_of_the_overlord",--
     "item_ultimate_scepter",
-    sCrimsonPipe,--
-	"item_aghanims_shard",
+	"item_blink",
 	"item_heavens_halberd",
+	"item_aghanims_shard",
 	"item_travel_boots",
 	"item_assault",--
-	"item_blink",
 	"item_heart",--
 	"item_overwhelming_blink",--
 	"item_moon_shard",
@@ -66,10 +87,9 @@ sRoleItemsBuyList['pos_4'] = {
 	"item_hand_of_midas",
 	"item_ultimate_scepter",
 	"item_mekansm",
-	"item_glimmer_cape",
-	"item_aghanims_shard",
-	"item_guardian_greaves",
     "item_blink",
+	"item_guardian_greaves",
+	"item_aghanims_shard",
 	"item_lotus_orb",
 	"item_gungir",--
 	"item_sheepstick",
@@ -88,10 +108,10 @@ sRoleItemsBuyList['pos_5'] = {
     "item_pavise",
 	"item_ultimate_scepter",
 	"item_pipe",--
+    "item_blink",
     "item_solar_crest",--
 	"item_lotus_orb",--
 	"item_aghanims_shard",
-    "item_blink",
 	"item_shivas_guard",--
 	"item_mystic_staff",
 	"item_ultimate_scepter_2",
@@ -110,6 +130,8 @@ X['sSellList'] = {
 	"item_abyssal_blade",
 	"item_magic_wand",
 
+    "item_black_king_bar",
+	"item_magic_wand",
 }
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_antimage' }, {} end

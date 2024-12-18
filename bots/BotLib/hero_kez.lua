@@ -178,6 +178,7 @@ local TalonTossDesire, TalonTossTarget
 local ShodoSaiDesire, ShodoSaiLocation
 local ShodoSaiCancelDesire
 local RavensVeilDesire
+local hNearbyTowers
 
 local SwitchDisciplineDesire
 
@@ -190,11 +191,20 @@ function X.SkillsComplement()
 	botTarget = J.GetProperTarget( bot )
 	hEnemyList = J.GetNearbyHeroes( bot, 1600, true, BOT_MODE_NONE )
 	hAllyList = J.GetAlliesNearLoc( bot:GetLocation(), 1600 )
+	hNearbyTowers = bot:GetNearbyTowers(800, true);
 
 	if nKezMode % 2 == 0 then
         bot.kez_mode = 'sai' -- 双叉
     else
         bot.kez_mode = 'katana' -- 长刀
+    end
+
+    if J.IsInLaningPhase()
+    and not J.IsRetreating(bot)
+    and J.IsValidHero(botTarget)
+    and J.GetHP(botTarget) > 0.5
+    and J.GetMP(bot) < 0.6 then
+        return
     end
 
 	if J.CanNotUseAbility(bot)
@@ -599,6 +609,12 @@ function X.ConsiderFalconRush()
         and not botTarget:HasModifier('modifier_necrolyte_reapers_scythe')
         and not botTarget:HasModifier('modifier_troll_warlord_battle_trance')
         then
+            if J.IsInLaningPhase() then
+                if J.GetHP(botTarget) < 0.4 and #hNearbyTowers <= 0 then
+                    return BOT_ACTION_DESIRE_HIGH
+                end
+                return BOT_ACTION_DESIRE_NONE
+            end
             return BOT_ACTION_DESIRE_HIGH
         end
     end

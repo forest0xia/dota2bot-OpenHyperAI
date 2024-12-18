@@ -203,6 +203,14 @@ function X.ConsiderVenomousGale()
         return BOT_ACTION_DESIRE_NONE, 0
     end
 
+    if J.IsInLaningPhase()
+    and J.IsValidTarget(botTarget)
+    and J.GetMP(bot) < 0.5
+    and J.GetHP(botTarget) > 0.4
+    then
+        return BOT_ACTION_DESIRE_NONE, 0
+    end
+
     local nCastRange = J.GetProperCastRange(false, bot, VenomousGale:GetCastRange())
 	local nRadius = VenomousGale:GetSpecialValueInt('radius')
     local nInitDamage = VenomousGale:GetSpecialValueInt('strike_damage')

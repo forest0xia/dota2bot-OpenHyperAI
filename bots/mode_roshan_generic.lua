@@ -64,10 +64,15 @@ function GetDesire()
         end
     end
 
+    local lEnemyHeroesAroundLoc = J.GetLastSeenEnemiesNearLoc(bot:GetLocation(), 1200)
+    if #lEnemyHeroesAroundLoc >= 2 then
+        return BOT_ACTION_DESIRE_NONE
+    end
+
     -- if Roshan is about to get killed, kill it unless there are other absolute actions.
     if J.Utils.IsValidUnit(Roshan) then
         local roshHP = Roshan:GetHealth() / Roshan:GetMaxHealth()
-        if roshHP < 0.3 then
+        if roshHP < 0.5 and #lEnemyHeroesAroundLoc == 0 then
             return RemapValClamped(roshHP, 100, 0, BOT_MODE_DESIRE_MODERATE, BOT_MODE_DESIRE_ABSOLUTE )
         end
     end

@@ -17,9 +17,10 @@ local nTormentorSpawnTime = (J.IsModeTurbo() and 10 or 20) + 5 -- add some buff 
 if bot.tormentor_state == nil then bot.tormentor_state = false end
 if bot.tormentor_kill_time == nil then bot.tormentor_kill_time = 0 end
 
-local NoTormentorAfterThisTime = 35 * 60 -- do not do tormentor again since it's late and doing tormentor only slows down the game more.
+local NoTormentorAfterThisTime = 40 * 60 -- do not do tormentor again since it's late and doing tormentor only slows down the game more.
 local botTarget
 local hAllAllyHeroList
+local MaxAveDistance = 6000
 
 function GetDesire()
 	-- 如果在打高地 就别撤退去干别的
@@ -125,7 +126,7 @@ function TormentorDesire()
     nAveCoreLevel = nAveCoreLevel / 3
     nAveSuppLevel = nAveSuppLevel / 2
     local nAveDistance = nTotalDistance / #hAllAllyHeroList
-    if nAveDistance > 5500 then
+    if nAveDistance > MaxAveDistance then
         return BOT_MODE_DESIRE_NONE
     end
 
