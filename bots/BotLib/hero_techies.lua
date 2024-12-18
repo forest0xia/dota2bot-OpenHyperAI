@@ -744,9 +744,9 @@ function X.ConsiderProximityMines()
     do
         if J.IsValidHero(enemyHero)
         and J.CanCastOnNonMagicImmune(enemyHero)
-        and J.GetManaAfter(nPManaCost) > 0.6
+        and J.GetManaAfter(nPManaCost) > 0.5
         and not J.IsRetreating(bot)
-        and J.GetHP(bot) - J.GetHP(enemyHero) > 0.2
+        and J.GetHP(bot) > J.GetHP(enemyHero)
         and not J.IsSuspiciousIllusion(enemyHero)
         and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
         and not enemyHero:HasModifier('modifier_dazzle_shallow_grave')
@@ -756,10 +756,14 @@ function X.ConsiderProximityMines()
             local nInRangeAlly = J.GetNearbyHeroes(enemyHero, 1200, true, BOT_MODE_NONE)
             local nInRangeEnemy = J.GetNearbyHeroes(enemyHero, 1200, false, BOT_MODE_NONE)
             if nInRangeAlly ~= nil and nInRangeEnemy ~= nil and #nInRangeAlly >= #nInRangeEnemy then
-                if J.IsInRange(bot, enemyHero, nCastRange) then
-                    return BOT_ACTION_DESIRE_HIGH, enemyHero:GetExtrapolatedLocation(0.5)
+                local loc = enemyHero:GetExtrapolatedLocation(0.5)
+                if GetUnitToLocationDistance(bot, loc) < nCastRange + 100 then
+                    return BOT_ACTION_DESIRE_HIGH, loc
                 end
-                return BOT_ACTION_DESIRE_HIGH, J.Utils.GetOffsetLocationTowardsTargetLocation(bot:GetLocation(), enemyHero:GetLocation(), nCastRange)
+                loc = J.Utils.GetOffsetLocationTowardsTargetLocation(bot:GetLocation(), enemyHero:GetLocation(), nCastRange)
+                if GetUnitToLocationDistance(bot, loc) < nCastRange + 100 then
+                    return BOT_ACTION_DESIRE_HIGH, loc
+                end
             end
         end
     end

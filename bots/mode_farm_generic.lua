@@ -201,7 +201,7 @@ function GetDesire()
 	-- 			IsShouldGoFarm = true
 	-- 			ShouldGoFarmTime = DotaTime()
 	-- 		end
-	-- 		hLaneCreepList = nil
+	-- 		hLaneCreepList = {}
 	-- 		if preferedCamp == nil then preferedCamp = J.Site.GetClosestNeutralSpwan(bot, availableCamp) end;
 	-- 		return BOT_MODE_DESIRE_ABSOLUTE * 1.1;
 	-- 	end
@@ -216,7 +216,7 @@ function GetDesire()
 	-- 			IsShouldGoFarm = true
 	-- 			ShouldGoFarmTime = DotaTime()
 	-- 		end
-	-- 		hLaneCreepList = nil
+	-- 		hLaneCreepList = {}
 	-- 		if preferedCamp == nil then preferedCamp = J.Site.GetClosestNeutralSpwan(bot, availableCamp) end;
 	-- 		return BOT_MODE_DESIRE_ABSOLUTE * 1.1;
 	-- 	end
@@ -233,13 +233,13 @@ function GetDesire()
 	-- and not J.WeAreStronger(bot, 2000)
 	-- and (J.IsCore(bot) and bot:GetNetWorth() < 18000)
 	-- and bot:GetActiveModeDesire() <= BOT_ACTION_DESIRE_HIGH
-	and (J.Utils.IsTeamPushingSecondTierOrHighGround(bot))))
-	and #J.Utils.GetLastSeenEnemyIdsNearLocation(bot:GetLocation(), 2000) >= 1 then
+	and J.GetDistanceFromAncient( bot, true ) < 5500))
+	and #J.Utils.GetLastSeenEnemyIdsNearLocation(bot:GetLocation(), 2000) == 0 then
 		if DotaTime() - ShouldGoFarmTime >= checkGoFarmTimeGap then
 			IsShouldGoFarm = true
 			ShouldGoFarmTime = DotaTime()
 		end
-		hLaneCreepList = nil
+		hLaneCreepList = {}
 		if preferedCamp == nil then preferedCamp = J.Site.GetClosestNeutralSpwan(bot, availableCamp) end;
 		if preferedCamp ~= nil then
 			return BOT_ACTION_DESIRE_ABSOLUTE * 0.98
@@ -1160,7 +1160,7 @@ function X.CouldBlade(bot,nLocation)
 				if tResult ~= nil 
 				   and tResult.within 
 				   and tResult.distance <= 96
-				   and J.GetLocationToLocationDistance(treeLoc,nLocation) < dist
+				   and J.GetLocationToLocationDistance(treeLoc,nLocation) < dist / 2
 				then
 					bot:Action_UseAbilityOnTree(blade, t);
 					return true;

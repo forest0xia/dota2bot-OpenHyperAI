@@ -166,10 +166,11 @@ function GetDesire()
 	if IsShouldFindTeammates and goToTargetAlly then
 		return BOT_ACTION_DESIRE_ABSOLUTE * 0.98
 	elseif (#nearbyAllies <= 2 or nAliveEnemies > #nearbyAllies)
-	and J.Utils.IsTeamPushingSecondTierOrHighGround(bot)
-	and #J.Utils.GetLastSeenEnemyIdsNearLocation(bot:GetLocation(), 2000) > 1
+	and J.GetDistanceFromAncient( bot, true ) < 5500
+	and #J.Utils.GetLastSeenEnemyIdsNearLocation(bot:GetLocation(), 2000) == 0
 	-- and #nearbyEnemies >= #nearbyAllies
-	and (J.IsPushing(bot) or J.IsFarming( bot ) or J.IsShopping( bot ) or botMode == BOT_MODE_WARD) then
+	and not J.IsCore(bot)
+	and (J.IsPushing(bot) or J.IsFarming( bot ) or J.IsShopping( bot )) then
 		goToTargetAlly = J.Utils.FindAllyWithAtLeastDistanceAway(bot, 1600)
 		if goToTargetAlly then
 			IsShouldFindTeammates = true

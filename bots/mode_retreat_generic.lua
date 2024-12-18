@@ -143,11 +143,11 @@ function GetDesire()
 			and J.GetHP(targetBot) > 0.2
 			and not (bot:IsStunned() or bot:IsHexed() or J.IsInRange(bot, targetBot, bot:GetAttackRange())) then
 				bot:Action_ClearActions(false)
-				return BOT_ACTION_DESIRE_VERYHIGH
+				return BOT_ACTION_DESIRE_HIGH
 			end
 			if distanceToTower < towers[1]:GetAttackRange() + deltaRange then
 				bot:Action_ClearActions(false)
-				return BOT_ACTION_DESIRE_VERYHIGH
+				return BOT_ACTION_DESIRE_HIGH
 			end
 		end
 	end
@@ -157,7 +157,7 @@ function GetDesire()
 	and GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 5500
 	and bot:GetActiveModeDesire() <= BOT_ACTION_DESIRE_HIGH then
 		bot:Action_ClearActions(false)
-		return BOT_ACTION_DESIRE_VERYHIGH
+		return BOT_ACTION_DESIRE_HIGH
 	end
 
 	-- 掩护队友

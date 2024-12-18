@@ -232,9 +232,8 @@ function Push.GetPushDesire(bot, lane)
     -- General Push
     if pushLane == lane then
         if eAliveCount == 0
-        or J.WeAreStronger(bot, nSearchRange)
         or aAliveCoreCount >= eAliveCoreCount
-        or (aAliveCoreCount >= 1 and aAliveCount >= eAliveCount)
+        or (aAliveCoreCount >= 1 and aAliveCount >= eAliveCount + 2)
         then
             if teamHasAegis
             then
