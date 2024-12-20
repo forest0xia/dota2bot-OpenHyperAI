@@ -177,11 +177,12 @@ function Push.GetPushDesire(bot, lane)
         LanePush = lane
         return BOT_MODE_DESIRE_NONE
     end
-
+ 
     -- 应该攻击建筑物而不是英雄
     if J.Utils.IsNearEnemyHighGroundTower(bot, 1000) then
         if J.IsValidHero(botTarget)
-        and eAliveCount >= 2
+        and (eAliveCount >= 2 or #nInRangeAlly < eAliveCount)
+        and teamAveLvl - enemyTeamAveLvl < 2
         and (J.GetHP(bot) < J.GetHP(botTarget) or not J.CanKillTarget(botTarget, bot:GetAttackDamage() * 3, DAMAGE_TYPE_PHYSICAL))
         and not J.IsInRange(bot, botTarget, bot:GetAttackRange()) then
                 targetBuilding = J.Utils.GetClosestTowerOrBarrackToAttack(bot)
@@ -197,29 +198,29 @@ function Push.GetPushDesire(bot, lane)
     local maxDistanceFromPushFront = 5500
     if nH > 0 then
         -- 前中期推进
-        if teamAveLvl < 12 or distantToPushFront > maxDistanceFromPushFront then
+        if teamAveLvl < 12 or (teamAveLvl < 15 and distantToPushFront > maxDistanceFromPushFront) then
             local nAllies = J.GetAlliesNearLoc(bot:GetLocation(), nSearchRange * 0.8)
             if #nAllies >= nEffctiveEnemyHeroesNearPushLoc + nMissingEnemyHeroes - 2 then
-                if distanceToLaneFront < 2000 then
+                if distanceToLaneFront < 3000 and not bot:WasRecentlyDamagedByTower(1) then
                     local nDistance, cTower = J.Utils.GetDistanceToCloestTower(bot)
-                    if cTower and nDistance < 3000 then
-                        return RemapValClamped(J.GetHP(bot), 0.1, 0.8, BOT_MODE_DESIRE_NONE, BOT_MODE_DESIRE_HIGH)
+                    if cTower and nDistance < 6000 then
+                        return RemapValClamped(J.GetHP(bot), 0.1, 0.8, BOT_MODE_DESIRE_NONE, maxDesire)
                     end
                 end
             else
                 return BOT_MODE_DESIRE_NONE
             end
             return BOT_MODE_DESIRE_LOW
-        elseif J.GetCoresAverageNetworth() < 23000
+        elseif J.GetCoresAverageNetworth() < 22000
         and (teamKillsRatio > 0.6 or teamAveLvl > enemyTeamAveLvl)
-        and (teamAveLvl < 18 or distantToPushFront > maxDistanceFromPushFront)
+        and (teamAveLvl < 18 and distantToPushFront > maxDistanceFromPushFront)
         then
             local nAllies = J.GetAlliesNearLoc(bot:GetLocation(), nSearchRange * 0.8)
-            if #nAllies > nEffctiveEnemyHeroesNearPushLoc + nMissingEnemyHeroes - 2 then
-                if distanceToLaneFront < 2000 then
+            if #nAllies >= nEffctiveEnemyHeroesNearPushLoc + nMissingEnemyHeroes - 2 then
+                if distanceToLaneFront < 3000 and not bot:WasRecentlyDamagedByTower(1) then
                     local nDistance, cTower = J.Utils.GetDistanceToCloestTower(bot)
-                    if cTower and nDistance < 3000 then
-                        return RemapValClamped(J.GetHP(bot), 0.1, 0.8, BOT_MODE_DESIRE_NONE, BOT_MODE_DESIRE_HIGH)
+                    if cTower and nDistance < 6000 then
+                        return RemapValClamped(J.GetHP(bot), 0.1, 0.8, BOT_MODE_DESIRE_NONE, maxDesire)
                     end
                 end
             else

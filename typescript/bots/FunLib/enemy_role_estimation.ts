@@ -70,10 +70,7 @@ function UpdateEnemyHeroData(enemyHeroes: Unit[]): void {
             const playerId = hero.GetPlayerID();
 
             // Calculate total weighted score
-            const totalScore =
-                heroNetWorth * NET_WORTH_WEIGHT +
-                heroOffensivePower * OFFENSIVE_POWER_WEIGHT +
-                heroLevel * LEVEL_WEIGHT;
+            const totalScore = heroNetWorth * NET_WORTH_WEIGHT + heroOffensivePower * OFFENSIVE_POWER_WEIGHT + heroLevel * LEVEL_WEIGHT;
 
             enemyHeroData[playerId] = {
                 hero: hero,
@@ -172,14 +169,10 @@ function NormalizeSores(heroList: EnemyHeroData[]) {
     // Normalize metrics and calculate total score
     for (const data of heroList) {
         const normalizedNetWorth = data.netWorth / maxNetWorth;
-        const normalizedOffensivePower =
-            data.offensivePower / maxOffensivePower;
+        const normalizedOffensivePower = data.offensivePower / maxOffensivePower;
         const normalizedLevel = data.level / maxLevel;
 
-        data.totalScore =
-            normalizedNetWorth * NET_WORTH_WEIGHT +
-            normalizedOffensivePower * OFFENSIVE_POWER_WEIGHT +
-            normalizedLevel * LEVEL_WEIGHT;
+        data.totalScore = normalizedNetWorth * NET_WORTH_WEIGHT + normalizedOffensivePower * OFFENSIVE_POWER_WEIGHT + normalizedLevel * LEVEL_WEIGHT;
     }
 }
 

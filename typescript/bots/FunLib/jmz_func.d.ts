@@ -11,12 +11,7 @@ interface ISkill {
 
     GetAbilityList(bot: Unit): string[];
 
-    GetSkillList(
-        abilities: string[],
-        abilityBuild: number[],
-        talentList: Talent[],
-        talentBuild: number[]
-    ): string[];
+    GetSkillList(abilities: string[], abilityBuild: number[], talentList: Talent[], talentBuild: number[]): string[];
 }
 
 /** @noSelf **/
@@ -40,15 +35,9 @@ declare function GetTeamFountain(): Vector;
 
 declare function GetMostDefendLaneDesire(): LuaMultiReturn<[Lane, number]>;
 
-declare function GetLastSeenEnemiesNearLoc(
-    location: Vector,
-    radius: number
-): Unit[];
+declare function GetLastSeenEnemiesNearLoc(location: Vector, radius: number): Unit[];
 
-declare function AdjustLocationWithOffsetTowardsFountain(
-    vector: Vector,
-    distance: number
-): Vector;
+declare function AdjustLocationWithOffsetTowardsFountain(vector: Vector, distance: number): Vector;
 
 declare function GetNearbyLocationToTp(location: Vector): Vector;
 
@@ -64,27 +53,17 @@ declare function GetTormentorLocation(team: Team): Vector;
 
 declare function GetAlliesNearLoc(location: Vector, radius: number): Unit[];
 
-declare function GetEnemiesAroundAncient(
-    bot: Unit,
-    radius: number | null
-): number;
+declare function GetEnemiesAroundAncient(bot: Unit, radius: number | null): number;
 
 declare function GetProperTarget(bot: Unit): Unit;
 
-declare function IsPingCloseToValidTower(
-    team: Team,
-    ping: Ping
-): LuaMultiReturn<[false, null] | [true, Lane]>;
+declare function IsPingCloseToValidTower(team: Team, ping: Ping): LuaMultiReturn<[false, null] | [true, Lane]>;
 
 declare function GetNumOfAliveHeroes(isEnemy: boolean): number;
 
 declare function IsValid(target: Unit): boolean;
 
-declare function GetHeroesNearLocation(
-    enemy: boolean,
-    location: Vector,
-    radius: number
-): Unit[];
+declare function GetHeroesNearLocation(enemy: boolean, location: Vector, radius: number): Unit[];
 
 declare function CanBeAttacked(unit: Unit): boolean;
 

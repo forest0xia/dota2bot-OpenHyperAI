@@ -81,11 +81,7 @@ export interface Unit {
 
     GetLocation(): Vector;
 
-    GetNearbyHeroes(
-        range: number,
-        includeEnemies: boolean,
-        mode: BotMode
-    ): Unit[];
+    GetNearbyHeroes(range: number, includeEnemies: boolean, mode: BotMode): Unit[];
 
     GetItemInSlot(slot: number): Item | null;
     NumQueuedActions(): number;
@@ -94,10 +90,7 @@ export interface Unit {
 
     Action_UseAbilityOnEntity(ability: Ability, target: Unit): void;
 
-    Action_UseAbilityOnLocation(
-        ability: Ability | Item,
-        location: Location
-    ): void;
+    Action_UseAbilityOnLocation(ability: Ability | Item, location: Location): void;
 
     Action_UseAbility(ability: Ability): void;
     Action_MoveToLocation(location: Vector): void;
@@ -139,11 +132,7 @@ export interface Unit {
     ActionImmediate_Chat(message: string, globalChat: boolean): void;
 
     /** @param pingType Ping type, "!" if false, "X" otherwise, essentially works as ALT key */
-    ActionImmediate_Ping(
-        xCoord: number,
-        yCoord: number,
-        pingType: boolean
-    ): void;
+    ActionImmediate_Ping(xCoord: number, yCoord: number, pingType: boolean): void;
 }
 
 export interface Ability {

@@ -2,7 +2,7 @@
 local ____exports = {}
 ____exports.HeroName = HeroName or ({})
 ____exports.HeroName.Abaddon = "npc_dota_hero_abaddon"
-____exports.HeroName.Underlorg = "npc_dota_hero_abyssal_underlord"
+____exports.HeroName.Underlord = "npc_dota_hero_abyssal_underlord"
 ____exports.HeroName.Alchemist = "npc_dota_hero_alchemist"
 ____exports.HeroName.AncientApparition = "npc_dota_hero_ancient_apparition"
 ____exports.HeroName.Antimage = "npc_dota_hero_antimage"

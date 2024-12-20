@@ -19,6 +19,7 @@ local Customize = require( GetScriptDirectory()..'/Customize/general' )
 local Localization = require( GetScriptDirectory()..'/FunLib/localization' )
 local HeroPositionMap = require( GetScriptDirectory()..'/FunLib/aba_hero_pos_weights' )
 local heroUnitNames = require( GetScriptDirectory()..'/FretBots/HeroNames')
+HeroPositionMap = HeroPositionMap.GetHeroPositions()
 
 local SupportedHeroes = {}
 
@@ -251,8 +252,8 @@ function X.ShufflePickOrder(teamPlayers)
 			tSelectPoolList[i], tSelectPoolList[targetIndex] = tSelectPoolList[targetIndex], tSelectPoolList[i]
 			tLaneAssignList['TEAM_RADIANT'][i], tLaneAssignList['TEAM_RADIANT'][targetIndex] = tLaneAssignList['TEAM_RADIANT'][targetIndex], tLaneAssignList['TEAM_RADIANT'][i]
 			tLaneAssignList['TEAM_DIRE'][i], tLaneAssignList['TEAM_DIRE'][targetIndex] = tLaneAssignList['TEAM_DIRE'][targetIndex], tLaneAssignList['TEAM_DIRE'][i]
-			Role.roleAssignment['TEAM_RADIANT'][i], Role.roleAssignment['TEAM_RADIANT'][targetIndex] = Role.roleAssignment['TEAM_RADIANT'][targetIndex], Role.roleAssignment['TEAM_RADIANT'][i]
-			Role.roleAssignment['TEAM_DIRE'][i], Role.roleAssignment['TEAM_DIRE'][targetIndex] = Role.roleAssignment['TEAM_DIRE'][targetIndex], Role.roleAssignment['TEAM_DIRE'][i]
+			Role.RoleAssignment['TEAM_RADIANT'][i], Role.RoleAssignment['TEAM_RADIANT'][targetIndex] = Role.RoleAssignment['TEAM_RADIANT'][targetIndex], Role.RoleAssignment['TEAM_RADIANT'][i]
+			Role.RoleAssignment['TEAM_DIRE'][i], Role.RoleAssignment['TEAM_DIRE'][targetIndex] = Role.RoleAssignment['TEAM_DIRE'][targetIndex], Role.RoleAssignment['TEAM_DIRE'][i]
 		end
 	end
 end
@@ -384,7 +385,7 @@ function X.GetCurrentTeam(nTeam, bEnemy)
 			if bEnemy then
 				table.insert(nHeroList, {name=hName, pos=Role.GetBestEffortSuitableRole(hName)})
 			else
-				table.insert(nHeroList, {name=hName, pos=Role.roleAssignment[sTeamName][i] })
+				table.insert(nHeroList, {name=hName, pos=Role.RoleAssignment[sTeamName][i] })
 			end
 		end
 	end
@@ -457,7 +458,7 @@ local ShuffledPickOrder = {
 function CorrectPotentialLaneAssignment()
 	if GetTeam() == TEAM_RADIANT and not CorrectRadiantAssignedLanes then
 		for i, id in pairs( GetTeamPlayers(TEAM_RADIANT) ) do
-			local role = Role.roleAssignment['TEAM_RADIANT'][i]
+			local role = Role.RoleAssignment['TEAM_RADIANT'][i]
 			tLaneAssignList.TEAM_RADIANT[i] = tDefaultLaningRadiant[role]
 		end
 		CorrectRadiantAssignedLanes = true
@@ -465,7 +466,7 @@ function CorrectPotentialLaneAssignment()
 		-- lazy assignment, all humen on top of the list, bots on bottom.
 		local index = 1
 		for i, id in pairs( GetTeamPlayers(TEAM_DIRE) ) do
-			local role = Role.roleAssignment['TEAM_DIRE'][i]
+			local role = Role.RoleAssignment['TEAM_DIRE'][i]
 			if not IsPlayerBot( id ) then
 				tLaneAssignList.TEAM_DIRE[index] = tDefaultLaningDire[role]
 				CorrectDirePlayerIndexToLaneIndex[i] = index
@@ -473,7 +474,7 @@ function CorrectPotentialLaneAssignment()
 			end
 		end
 		for i, id in pairs( GetTeamPlayers(TEAM_DIRE) ) do
-			local role = Role.roleAssignment['TEAM_DIRE'][i]
+			local role = Role.RoleAssignment['TEAM_DIRE'][i]
 			if IsPlayerBot( id ) then
 				tLaneAssignList.TEAM_DIRE[index] = tDefaultLaningDire[role]
 				CorrectDirePlayerIndexToLaneIndex[i] = index
@@ -645,19 +646,19 @@ local function handleCommand(inputStr, PlayerID, bTeamOnly)
 				end
 				for index, id in pairs(teamPlayers)
 				do
-					if Role.roleAssignment[sTeamName][index] == role then
+					if Role.RoleAssignment[sTeamName][index] == role then
 						if IsPlayerBot(id) then
 							-- remove so can't re-swap
 							-- table.remove(RemainingPos[team], role)
-							Role.roleAssignment[sTeamName][playerIndex], Role.roleAssignment[sTeamName][index] = role, Role.roleAssignment[sTeamName][playerIndex]
+							Role.RoleAssignment[sTeamName][playerIndex], Role.RoleAssignment[sTeamName][index] = role, Role.RoleAssignment[sTeamName][playerIndex]
 							if GetTeamForPlayer(PlayerID) == TEAM_DIRE then
 								tLaneAssignList[sTeamName][CorrectDirePlayerIndexToLaneIndex[playerIndex]], tLaneAssignList[sTeamName][CorrectDirePlayerIndexToLaneIndex[index]] =
 									tLaneAssignList[sTeamName][CorrectDirePlayerIndexToLaneIndex[index]], tLaneAssignList[sTeamName][CorrectDirePlayerIndexToLaneIndex[playerIndex]]
 							else
 								tLaneAssignList[sTeamName][playerIndex], tLaneAssignList[sTeamName][index] = tLaneAssignList[sTeamName][index], tLaneAssignList[sTeamName][playerIndex]
 							end
-							print('Switch role successfully. Team: '..sTeamName.. '. Player Id: '..PlayerID..', idx: '..playerIndex..', new role: '..Role.roleAssignment[sTeamName][playerIndex])
-							print('Switch role successfully. Team: '..sTeamName.. '. Player Id: '..id..', idx: '..index..', new role: '..Role.roleAssignment[sTeamName][index])
+							print('Switch role successfully. Team: '..sTeamName.. '. Player Id: '..PlayerID..', idx: '..playerIndex..', new role: '..Role.RoleAssignment[sTeamName][playerIndex])
+							print('Switch role successfully. Team: '..sTeamName.. '. Player Id: '..id..', idx: '..index..', new role: '..Role.RoleAssignment[sTeamName][index])
 						else
 							print('Switch role failed, the target role belongs to human player. Ask the player directly to switch role.')
 						end
@@ -687,16 +688,16 @@ local function handleCommand(inputStr, PlayerID, bTeamOnly)
 				end
 				for index, id in pairs(teamPlayers)
 				do
-					if Role.roleAssignment[sTeamName][index] == role then
-						Role.roleAssignment[sTeamName][playerIndex], Role.roleAssignment[sTeamName][index] = role, Role.roleAssignment[sTeamName][playerIndex]
+					if Role.RoleAssignment[sTeamName][index] == role then
+						Role.RoleAssignment[sTeamName][playerIndex], Role.RoleAssignment[sTeamName][index] = role, Role.RoleAssignment[sTeamName][playerIndex]
 						if GetTeamForPlayer(PlayerID) == TEAM_DIRE then
 							tLaneAssignList[sTeamName][CorrectDirePlayerIndexToLaneIndex[playerIndex]], tLaneAssignList[sTeamName][CorrectDirePlayerIndexToLaneIndex[index]] =
 								tLaneAssignList[sTeamName][CorrectDirePlayerIndexToLaneIndex[index]], tLaneAssignList[sTeamName][CorrectDirePlayerIndexToLaneIndex[playerIndex]]
 						else
 							tLaneAssignList[sTeamName][playerIndex], tLaneAssignList[sTeamName][index] = tLaneAssignList[sTeamName][index], tLaneAssignList[sTeamName][playerIndex]
 						end
-						print('Switch role successfully. Team: '..sTeamName.. '. Player Id: '..PlayerID..', idx: '..playerIndex..', new role: '..Role.roleAssignment[sTeamName][playerIndex])
-						print('Switch role successfully. Team: '..sTeamName.. '. Player Id: '..id..', idx: '..index..', new role: '..Role.roleAssignment[sTeamName][index])
+						print('Switch role successfully. Team: '..sTeamName.. '. Player Id: '..PlayerID..', idx: '..playerIndex..', new role: '..Role.RoleAssignment[sTeamName][playerIndex])
+						print('Switch role successfully. Team: '..sTeamName.. '. Player Id: '..id..', idx: '..index..', new role: '..Role.RoleAssignment[sTeamName][index])
 						break;
 					end
 				end
@@ -802,7 +803,7 @@ function UpdateLaneAssignments()
 	local team = GetTeam() == TEAM_RADIANT and 'TEAM_RADIANT' or 'TEAM_DIRE'
 
 	if GetGameMode() == GAMEMODE_MO then
-		Role.roleAssignment[team] = {2, 2, 2, 2, 2}
+		Role.RoleAssignment[team] = {2, 2, 2, 2, 2}
 		return MidOnlyLaneAssignment
 	end
 	if GetGameMode() == GAMEMODE_1V1MID then
@@ -810,7 +811,7 @@ function UpdateLaneAssignments()
 	end
 
 	if GetGameMode() == GAMEMODE_CM then
-		tLaneAssignList[team] = CM.CMLaneAssignment(Role.roleAssignment, userSwitchedRole)
+		tLaneAssignList[team] = CM.CMLaneAssignment(Role.RoleAssignment, userSwitchedRole)
 	end
 
 	if GetGameState() == GAME_STATE_HERO_SELECTION or GetGameState() == GAME_STATE_STRATEGY_TIME or GetGameState() == GAME_STATE_PRE_GAME then
@@ -825,7 +826,7 @@ end
 
 -- Make sure the laning is in sync with the role assignment so bots won't keep switching lanings.
 function AlignLanesBasedOnRoles(team)
-	for idx, nRole in pairs(Role.roleAssignment[team]) do
+	for idx, nRole in pairs(Role.RoleAssignment[team]) do
 		if nRole == 1 or nRole == 5 then
 			if GetTeam() == TEAM_RADIANT then
 				tLaneAssignList[team][idx] = LANE_BOT

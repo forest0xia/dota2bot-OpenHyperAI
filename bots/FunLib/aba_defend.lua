@@ -75,7 +75,7 @@ function Defend.GetDefendDesireHelper(bot, lane)
 	defendLoc = laneFront
 	weAreStronger = J.WeAreStronger(bot, nSearchRange)
 
-	nEnemyUnitsAroundAncient = J.GetEnemiesAroundLoc(ancient:GetLocation(), nSearchRange)
+	nEnemyUnitsAroundAncient = J.GetEnemiesAroundLoc(ancient:GetLocation(), 1500)
 
 	local nDefendAllyHeroes = J.GetAlliesNearLoc(defendLoc, nSearchRange)
 	nEffctiveAllyHeroesNearPingedDefendLoc = #nDefendAllyHeroes + #J.Utils.GetAllyIdsInTpToLocation(defendLoc, nSearchRange)
@@ -84,7 +84,7 @@ function Defend.GetDefendDesireHelper(bot, lane)
 
 	if nEnemyUnitsAroundAncient > 0
 	then
-		nSearchRange = 1800
+		nSearchRange = 1500
 		local ancientHp = J.GetHP(ancient)
 
 		defendLoc = ancient:GetLocation()
@@ -100,7 +100,7 @@ function Defend.GetDefendDesireHelper(bot, lane)
 		and #J.GetNearbyHeroes(bot, math.max(attackRange + 100, 1000), true, BOT_MODE_NONE) <= 0
 		and ((#nInRangeEnemy <= 1 and not (J.IsValidHero(botTarget) and J.GetHP(botTarget) < 0.3)) or not bot:WasRecentlyDamagedByAnyHero(2)) then
 			print("Ancient is in danger for team " .. team)
-			local desire = BOT_ACTION_DESIRE_ABSOLUTE
+			local desire = RemapValClamped(J.GetHP(bot), 0.1, 0.7, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_ABSOLUTE)
 			ConsiderPingedDefend(bot, desire, ancient, 4)
 			return desire
 		end
@@ -178,6 +178,7 @@ function Defend.GetDefendDesireHelper(bot, lane)
 
 	bot.laneToDefend = lane
 	local nUnitsAroundBuilding = J.GetEnemiesAroundLoc(furthestBuilding:GetLocation(), nSearchRange)
+	local lCloseEnemyHeroesAroundLoc = J.GetLastSeenEnemiesNearLoc(furthestBuilding:GetLocation(), 1200)
 	local urgentMultipler = RemapValClamped(nUnitsAroundBuilding * urgentNum, 1, 15, 0, 2)
 
 	if nBuildingfTier >= 3 and nEffctiveAllyHeroesNearPingedDefendLoc <= #lEnemyHeroesAroundLoc then
@@ -186,17 +187,22 @@ function Defend.GetDefendDesireHelper(bot, lane)
 	nDefendDesire = RemapValClamped(J.GetHP(bot), 0.75, 0.2, RemapValClamped(GetDefendLaneDesire(lane) * urgentMultipler, 0, 1, BOT_ACTION_DESIRE_NONE, maxDesire), BOT_ACTION_DESIRE_LOW)
 	ConsiderPingedDefend(bot, nDefendDesire, furthestBuilding, nBuildingfTier)
 
-	if (distanceToLane[lane] and distanceToLane[lane] < 1600 and #nInRangeEnemy > #nInRangeAlly) and not weAreStronger then
+	if (distanceToDefendLoc and distanceToDefendLoc < 1600 and #nInRangeEnemy > #nInRangeAlly) and not weAreStronger then
 		-- 1. if we are not stronger, most likely defend == feed
 		-- 2. we dont want to get stuck in defend mode too much because other modes are also important after bots arrive the location.
 		nDefendDesire = RemapValClamped(nDefendDesire, 0, 1, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_HIGH)
 	end
 
-	if (bot:WasRecentlyDamagedByAnyHero(2) and distanceToLane[lane] > 3000)
-	or (distanceToLane[lane] > 4500 and nBuildingfTier < 3 and not J.CanCastAbility(tpScoll))
-	or (J.IsValidHero(botTarget) and J.GetHP(botTarget) < 0.6 and GetUnitToUnitDistance(bot, botTarget) < 1500)
-	then
+	if J.IsValidHero(botTarget) and J.GetHP(botTarget) < 0.6 and J.GetHP(bot) > J.GetHP(botTarget) and GetUnitToUnitDistance(bot, botTarget) < 1500 then
 		nDefendDesire = nDefendDesire * 0.4
+	end
+
+	if not J.CanCastAbility(tpScoll) and distanceToDefendLoc > 4000
+	then
+		if #lCloseEnemyHeroesAroundLoc == 0 or bot:WasRecentlyDamagedByAnyHero(2) then
+			nDefendDesire = nDefendDesire * 0.5
+		end
+		nDefendDesire = RemapValClamped(distanceToDefendLoc/4000, 0, 2, nDefendDesire, BOT_ACTION_DESIRE_VERYLOW)
 	end
 
 	return nDefendDesire

@@ -512,13 +512,7 @@ const heroes: HeroMatchups = {
             "npc_dota_hero_void_spirit",
             "npc_dota_hero_crystal_maiden",
         ],
-        counter: [
-            "npc_dota_hero_naga_siren",
-            "npc_dota_hero_shadow_demon",
-            "npc_dota_hero_treant",
-            "npc_dota_hero_troll_warlord",
-            "npc_dota_hero_abaddon",
-        ],
+        counter: ["npc_dota_hero_naga_siren", "npc_dota_hero_shadow_demon", "npc_dota_hero_treant", "npc_dota_hero_troll_warlord", "npc_dota_hero_abaddon"],
     },
 
     npc_dota_hero_dazzle: {
@@ -1192,14 +1186,7 @@ const heroes: HeroMatchups = {
             "npc_dota_hero_primal_beast",
             "npc_dota_hero_oracle",
         ],
-        counter: [
-            "npc_dota_hero_night_stalker",
-            "npc_dota_hero_slardar",
-            "npc_dota_hero_undying",
-            "npc_dota_hero_lycan",
-            "npc_dota_hero_sven",
-            "npc_dota_hero_weaver",
-        ],
+        counter: ["npc_dota_hero_night_stalker", "npc_dota_hero_slardar", "npc_dota_hero_undying", "npc_dota_hero_lycan", "npc_dota_hero_sven", "npc_dota_hero_weaver"],
     },
 
     npc_dota_hero_lycan: {
@@ -2867,10 +2854,7 @@ const heroes: HeroMatchups = {
     },
 };
 
-export function GetHeroMatchups(
-    heroName: string,
-    type: "counter" | "synergy"
-): string[] {
+export function GetHeroMatchups(heroName: string, type: "counter" | "synergy"): string[] {
     const matchups = heroes[heroName];
     if (!matchups) {
         return [];

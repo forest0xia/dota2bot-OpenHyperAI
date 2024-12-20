@@ -1,7 +1,7 @@
 /* Adapted from https://steamcommunity.com/workshop/filedetails/discussion/3246316298/4848777260032086340/ */
 export enum HeroName {
     Abaddon = "npc_dota_hero_abaddon",
-    Underlorg = "npc_dota_hero_abyssal_underlord",
+    Underlord = "npc_dota_hero_abyssal_underlord",
     Alchemist = "npc_dota_hero_alchemist",
     AncientApparition = "npc_dota_hero_ancient_apparition",
     Antimage = "npc_dota_hero_antimage",

@@ -1,26 +1,8 @@
 import * as jmz from "bots/FunLib/jmz_func";
-import {
-    BotSetup,
-    BotRole,
-    ItemBuilds,
-    SkillBuilds,
-    TalentBuilds,
-    TalentTreeBuild,
-} from "bots/ts_libs/bots";
-import {
-    BotActionDesire,
-    BotMode,
-    Location,
-    Talent,
-    Unit,
-    UnitType,
-} from "bots/ts_libs/dota";
+import { BotSetup, BotRole, ItemBuilds, SkillBuilds, TalentBuilds, TalentTreeBuild } from "bots/ts_libs/bots";
+import { BotActionDesire, BotMode, Location, Talent, Unit, UnitType } from "bots/ts_libs/dota";
 import { hero_is_healing } from "bots/FunLib/aba_buff";
-import {
-    GetTeamFountainTpPoint,
-    HasAnyEffect,
-    IsValidHero,
-} from "bots/FunLib/utils";
+import { GetTeamFountainTpPoint, HasAnyEffect, IsValidHero } from "bots/FunLib/utils";
 
 const bot = GetBot();
 // @ts-ignore
@@ -58,12 +40,7 @@ const roleTalentBuildList: TalentBuilds = {
 const talentBuildList = jmz.Skill.GetTalentBuild(roleTalentBuildList[role]);
 
 // Aggregate all talents and abilities to a single consective skill build list.
-const fullSkillBuildList = jmz.Skill.GetSkillList(
-    allAbilitiesList,
-    skillBuildList,
-    allTalentsList,
-    talentBuildList
-);
+const fullSkillBuildList = jmz.Skill.GetSkillList(allAbilitiesList, skillBuildList, allTalentsList, talentBuildList);
 
 // Construct for items build.
 const defaultBuild = [
@@ -138,13 +115,7 @@ bot.stateTetheredHero = bot.stateTetheredHero;
 function ShouldUseOvercharge(ally: Unit) {
     const isAttacking = GameTime() - ally.GetLastAttackTime() < 0.33;
     const attackTarget = ally.GetAttackTarget();
-    return (
-        jmz.IsGoingOnSomeone(ally) ||
-        (attackTarget &&
-            attackTarget.GetTeam() === GetOpposingTeam() &&
-            isAttacking) ||
-        ally.GetNearbyCreeps(200, true).length > 2
-    );
+    return jmz.IsGoingOnSomeone(ally) || (attackTarget && attackTarget.GetTeam() === GetOpposingTeam() && isAttacking) || ally.GetNearbyCreeps(200, true).length > 2;
 }
 
 function considerTether(): LuaMultiReturn<[number, Unit | null]> {
@@ -158,8 +129,7 @@ function considerTether(): LuaMultiReturn<[number, Unit | null]> {
     const allies = bot.GetNearbyHeroes(castRange, false, BotMode.None);
 
     for (const ally of allies) {
-        const canTargetAlly =
-            ally != bot && ally.IsAlive() && !ally.IsMagicImmune();
+        const canTargetAlly = ally != bot && ally.IsAlive() && !ally.IsMagicImmune();
         if (!canTargetAlly) {
             continue;
         }
@@ -169,12 +139,7 @@ function considerTether(): LuaMultiReturn<[number, Unit | null]> {
             }
             continue;
         }
-        if (
-            jmz.GetHP(ally) < 0.75 ||
-            jmz.GetMP(bot) > 0.8 ||
-            HasHealingEffect(bot) ||
-            ShouldUseOvercharge(ally)
-        ) {
+        if (jmz.GetHP(ally) < 0.75 || jmz.GetMP(bot) > 0.8 || HasHealingEffect(bot) || ShouldUseOvercharge(ally)) {
             return $multi(BotActionDesire.High, ally);
         }
     }
@@ -186,11 +151,7 @@ function considerOvercharge(): number {
     if (!abilityOvercharge.IsFullyCastable()) {
         return BotActionDesire.None;
     }
-    if (
-        bot.HasModifier("modifier_wisp_tether") &&
-        bot.stateTetheredHero !== null &&
-        ShouldUseOvercharge(bot.stateTetheredHero)
-    ) {
+    if (bot.HasModifier("modifier_wisp_tether") && bot.stateTetheredHero !== null && ShouldUseOvercharge(bot.stateTetheredHero)) {
         return BotActionDesire.High;
     }
     return BotActionDesire.None;
@@ -207,42 +168,23 @@ function considerSpirits(): number {
 }
 
 function considerRelocate(): LuaMultiReturn<[number, Location | null]> {
-    if (
-        bot.HasModifier("modifier_wisp_tether") &&
-        bot.stateTetheredHero !== null &&
-        (jmz.GetHP(bot.stateTetheredHero) <= 0.2 || jmz.GetHP(bot) <= 0.2)
-    ) {
-        const allyNearbyEnemies = bot.stateTetheredHero.GetNearbyHeroes(
-            1200,
-            true,
-            BotMode.None
-        );
+    if (bot.HasModifier("modifier_wisp_tether") && bot.stateTetheredHero !== null && (jmz.GetHP(bot.stateTetheredHero) <= 0.2 || jmz.GetHP(bot) <= 0.2)) {
+        const allyNearbyEnemies = bot.stateTetheredHero.GetNearbyHeroes(1200, true, BotMode.None);
         if (
-            (allyNearbyEnemies.length >= 1 &&
-                jmz.GetHP(bot.stateTetheredHero) <
-                    jmz.GetHP(allyNearbyEnemies[0])) ||
-            (nearbyEnemies.length >= 1 &&
-                jmz.GetHP(bot) < jmz.GetHP(nearbyEnemies[0]))
+            (allyNearbyEnemies.length >= 1 && jmz.GetHP(bot.stateTetheredHero) < jmz.GetHP(allyNearbyEnemies[0])) ||
+            (nearbyEnemies.length >= 1 && jmz.GetHP(bot) < jmz.GetHP(nearbyEnemies[0]))
         ) {
             return $multi(BotActionDesire.High, GetTeamFountainTpPoint());
         }
     }
     if (!bot.HasModifier("modifier_wisp_tether")) {
-        if (
-            nearbyEnemies.length >= 1 &&
-            jmz.GetHP(bot) < jmz.GetHP(nearbyEnemies[0])
-        ) {
+        if (nearbyEnemies.length >= 1 && jmz.GetHP(bot) < jmz.GetHP(nearbyEnemies[0])) {
             return $multi(BotActionDesire.High, GetTeamFountainTpPoint());
         }
     }
 
     for (const ally of GetUnitList(UnitType.AlliedHeroes)) {
-        if (
-            IsValidHero(ally) &&
-            jmz.IsInTeamFight(ally, 1200) &&
-            GetUnitToUnitDistance(bot, ally) > 3000 &&
-            ally.WasRecentlyDamagedByAnyHero(2)
-        ) {
+        if (IsValidHero(ally) && jmz.IsInTeamFight(ally, 1200) && GetUnitToUnitDistance(bot, ally) > 3000 && ally.WasRecentlyDamagedByAnyHero(2)) {
             return $multi(BotActionDesire.High, ally.GetLocation());
         }
     }

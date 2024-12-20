@@ -11,42 +11,18 @@
  * keep putting shared low level funtionalities in this file until it gets too big for maintanence.
  */
 require("bots/ts_libs/utils/json");
-import {
-    Barracks,
-    BotActionType,
-    BotMode,
-    Lane,
-    Ping,
-    Team,
-    Tower,
-    Unit,
-    UnitType,
-    Vector,
-} from "bots/ts_libs/dota";
+import { Barracks, BotActionType, BotMode, Lane, Ping, Team, Tower, Unit, UnitType, Vector } from "bots/ts_libs/dota";
 import { GameState, AvoidanceZone } from "bots/ts_libs/bots";
 import { Request } from "bots/ts_libs/utils/http_utils/http_req";
-import {
-    add,
-    dot,
-    length2D,
-    multiply,
-    sub,
-} from "bots/ts_libs/utils/native-operators";
+import { add, dot, length2D, multiply, sub } from "bots/ts_libs/utils/native-operators";
 
-export const DebugMode = false;
+export const DebugMode = true;
 
 export const ScriptID = 3246316298;
 
 export const RadiantFountainTpPoint = Vector(-7172, -6652, 384);
 export const DireFountainTpPoint = Vector(6982, 6422, 392);
-export const BarrackList: Barracks[] = [
-    Barracks.TopMelee,
-    Barracks.TopRanged,
-    Barracks.MidMelee,
-    Barracks.MidRanged,
-    Barracks.BotMelee,
-    Barracks.BotRanged,
-];
+export const BarrackList: Barracks[] = [Barracks.TopMelee, Barracks.TopRanged, Barracks.MidMelee, Barracks.MidRanged, Barracks.BotMelee, Barracks.BotRanged];
 export const WisdomRunes = {
     [Team.Radiant]: Vector(-8126, -320, 256),
     [Team.Dire]: Vector(8319, 266, 256),
@@ -65,42 +41,15 @@ export const BuggyHeroesDueToValveTooLazy = {
     npc_dota_hero_kez: true,
 };
 
-export const HighGroundTowers = [
-    Tower.Top3,
-    Tower.Mid3,
-    Tower.Bot3,
-    Tower.Base1,
-    Tower.Base2,
-];
+export const HighGroundTowers = [Tower.Top3, Tower.Mid3, Tower.Bot3, Tower.Base1, Tower.Base2];
 
 export const FirstTierTowers = [Tower.Top1, Tower.Mid1, Tower.Bot1];
 
 export const SecondTierTowers = [Tower.Top2, Tower.Mid2, Tower.Bot2];
 
-export const AllTowers = [
-    Tower.Top1,
-    Tower.Mid1,
-    Tower.Bot1,
-    Tower.Top2,
-    Tower.Mid2,
-    Tower.Bot2,
-    Tower.Top3,
-    Tower.Mid3,
-    Tower.Bot3,
-    Tower.Base1,
-    Tower.Base2,
-];
+export const AllTowers = [Tower.Top1, Tower.Mid1, Tower.Bot1, Tower.Top2, Tower.Mid2, Tower.Bot2, Tower.Top3, Tower.Mid3, Tower.Bot3, Tower.Base1, Tower.Base2];
 
-export const NonTier1Towers = [
-    Tower.Top2,
-    Tower.Mid2,
-    Tower.Bot2,
-    Tower.Top3,
-    Tower.Mid3,
-    Tower.Bot3,
-    Tower.Base1,
-    Tower.Base2,
-];
+export const NonTier1Towers = [Tower.Top2, Tower.Mid2, Tower.Bot2, Tower.Top3, Tower.Mid3, Tower.Bot3, Tower.Base1, Tower.Base2];
 
 export const CachedVarsCleanTime = 5;
 
@@ -146,10 +95,7 @@ export function PrintTable(tbl: any | null, indent: number = 0) {
                 print(prefix);
                 PrintTable(value, indent + 1);
             } else {
-                print(
-                    prefix +
-                        "[WARN] Table has deep nested tables in it, stop printing more nested tables."
-                );
+                print(prefix + "[WARN] Table has deep nested tables in it, stop printing more nested tables.");
             }
         } else {
             print(prefix + value);
@@ -162,9 +108,7 @@ export function PrintUnitModifiers(unit: Unit) {
     for (let i = 0; i < modifierCount; i++) {
         const modifierName = unit.GetModifierName(i);
         const stackCount = unit.GetModifierStackCount(i);
-        print(
-            `Unit ${unit.GetUnitName()} has modifier ${modifierName} with stack count ${stackCount}`
-        );
+        print(`Unit ${unit.GetUnitName()} has modifier ${modifierName} with stack count ${stackCount}`);
     }
 }
 
@@ -238,9 +182,7 @@ export function Shuffle<T>(tbl: T[]): T[] {
 
 export function SetFrameProcessTime(bot: Unit): void {
     if (bot.frameProcessTime === null) {
-        bot.frameProcessTime =
-            FrameProcessTime +
-            math.fmod(bot.GetPlayerID() / 1000, FrameProcessTime / 10) * 2;
+        bot.frameProcessTime = FrameProcessTime + math.fmod(bot.GetPlayerID() / 1000, FrameProcessTime / 10) * 2;
     }
 }
 
@@ -255,12 +197,7 @@ export function GetHumanPing(): LuaMultiReturn<[Unit, Ping] | [null, null]> {
     return $multi(null, null);
 }
 
-export function IsPingedByAnyPlayer(
-    bot: Unit,
-    pingTimeGap: number,
-    minDistance: number | null,
-    maxDistance: number | null
-): Ping | null {
+export function IsPingedByAnyPlayer(bot: Unit, pingTimeGap: number, minDistance: number | null, maxDistance: number | null): Ping | null {
     if (!bot.IsAlive()) {
         return null;
     }
@@ -273,11 +210,7 @@ export function IsPingedByAnyPlayer(
 
     for (const [index, _] of teamPlayerIds.entries()) {
         const teamMember = GetTeamMember(index);
-        if (
-            teamMember === null ||
-            teamMember.IsIllusion() ||
-            teamMember === bot
-        ) {
+        if (teamMember === null || teamMember.IsIllusion() || teamMember === bot) {
             continue;
         }
 
@@ -288,12 +221,8 @@ export function IsPingedByAnyPlayer(
     }
 
     for (const ping of pings) {
-        const distanceToBot = GetLocationToLocationDistance(
-            ping.location,
-            bot.GetLocation()
-        );
-        const withinRange =
-            minDistance <= distanceToBot && distanceToBot <= maxDistance;
+        const distanceToBot = GetLocationToLocationDistance(ping.location, bot.GetLocation());
+        const withinRange = minDistance <= distanceToBot && distanceToBot <= maxDistance;
         const withinTimeRange = GameTime() - ping.time < pingTimeGap;
         if (
             withinRange &&
@@ -342,13 +271,7 @@ export function CleanupCachedVars() {
 
 // check if the target is a valid unit. can be hero, creep, or building.
 export function IsValidUnit(target: Unit): boolean {
-    return (
-        target !== null &&
-        !target.IsNull() &&
-        target.CanBeSeen() &&
-        target.IsAlive() &&
-        !target.IsInvulnerable()
-    );
+    return target !== null && !target.IsNull() && target.CanBeSeen() && target.IsAlive() && !target.IsInvulnerable();
 }
 
 // check if the target is a valid hero.
@@ -357,12 +280,7 @@ export function IsValidHero(target: Unit): boolean {
 }
 
 export function IsValidCreep(target: Unit): boolean {
-    return (
-        IsValidUnit(target) &&
-        target.GetHealth() < 5000 &&
-        !target.IsHero() &&
-        (GetBot().GetLevel() > 9 || !target.IsAncientCreep())
-    );
+    return IsValidUnit(target) && target.GetHealth() < 5000 && !target.IsHero() && (GetBot().GetLevel() > 9 || !target.IsAncientCreep());
 }
 
 // check if the target is a valid building.
@@ -384,10 +302,7 @@ export function FindAllyWithName(name: string): Unit | null {
     return null;
 }
 
-export function GetLocationToLocationDistance(
-    fLoc: Vector,
-    sLoc: Vector
-): number {
+export function GetLocationToLocationDistance(fLoc: Vector, sLoc: Vector): number {
     const x1 = fLoc.x;
     const x2 = sLoc.x;
     const y1 = fLoc.y;
@@ -404,10 +319,7 @@ export function Deepcopy<T extends ArrayLike<unknown>>(orig: T): T {
             // @ts-ignore
             copy[Deepcopy(key)] = Deepcopy(value);
         }
-        setmetatable(
-            copy as object,
-            Deepcopy(getmetatable(orig) as any) as object
-        );
+        setmetatable(copy as object, Deepcopy(getmetatable(orig) as any) as object);
     } else {
         // number, string, boolean, etc.
         copy = orig;
@@ -436,11 +348,7 @@ export function MergeLists<T>(a: T[], b: T[]): T[] {
     return a.concat(b);
 }
 
-export function RemoveValueFromTable(
-    table_: unknown[],
-    valueToRemove: any,
-    removeAll: boolean
-) {
+export function RemoveValueFromTable(table_: unknown[], valueToRemove: any, removeAll: boolean) {
     for (const index of $range(table_.length, 1, -1)) {
         if (table_[index - 1] === valueToRemove) {
             // table.remove(table_, index);
@@ -452,10 +360,7 @@ export function RemoveValueFromTable(
     }
 }
 
-export function NumActionTypeInQueue(
-    bot: Unit,
-    searchedActionType: BotActionType
-) {
+export function NumActionTypeInQueue(bot: Unit, searchedActionType: BotActionType) {
     let count: number = 0;
     for (const index of $range(1, bot.NumQueuedActions())) {
         const actionType = bot.GetQueuedActionType(index);
@@ -468,9 +373,7 @@ export function NumActionTypeInQueue(
 
 const humanCountCache: { [key in Team]: [number, number] } = {};
 
-export function NumHumanBotPlayersInTeam(
-    team: Team
-): LuaMultiReturn<[number, number]> {
+export function NumHumanBotPlayersInTeam(team: Team): LuaMultiReturn<[number, number]> {
     if (!(team in humanCountCache)) {
         let humans = 0;
         let bots = 0;
@@ -562,10 +465,7 @@ export function Remove_Modify(table_: any, item: any) {
     }
 }
 
-export function AbilityBehaviorHasFlag(
-    behavior: number,
-    flag: number
-): boolean {
+export function AbilityBehaviorHasFlag(behavior: number, flag: number): boolean {
     // @ts-ignore
     return bit.band(behavior, flag) == flag;
 }
@@ -601,11 +501,7 @@ function EveryManySeconds(second: number, oldFunction: Function) {
 }
 
 export function RecentlyTookDamage(bot: Unit, delta: number): boolean {
-    return (
-        bot.WasRecentlyDamagedByAnyHero(delta) ||
-        bot.WasRecentlyDamagedByTower(delta) ||
-        bot.WasRecentlyDamagedByCreep(delta)
-    );
+    return bot.WasRecentlyDamagedByAnyHero(delta) || bot.WasRecentlyDamagedByTower(delta) || bot.WasRecentlyDamagedByCreep(delta);
 }
 
 export function IsUnitWithName(unit: Unit, name: string): boolean {
@@ -617,11 +513,7 @@ export function IsBear(unit: Unit) {
     return IsUnitWithName(unit, "lone_druid_bear");
 }
 
-export function GetOffsetLocationTowardsTargetLocation(
-    initLoc: Vector,
-    targetLoc: Vector,
-    offsetDist: number
-) {
+export function GetOffsetLocationTowardsTargetLocation(initLoc: Vector, targetLoc: Vector, offsetDist: number) {
     const direrction = sub(targetLoc, initLoc).Normalized();
     return add(initLoc, multiply(direrction, offsetDist));
 }
@@ -640,11 +532,7 @@ export function HasAnyEffect(unit: Unit, ...effects: string[]) {
 
 export function IsModeTurbo(): boolean {
     for (const u of GetUnitList(UnitType.Allies)) {
-        if (
-            u &&
-            u.GetUnitName() === "npc_dota_courier" &&
-            u.GetCurrentMovementSpeed() === 1100
-        ) {
+        if (u && u.GetUnitName() === "npc_dota_courier" && u.GetCurrentMovementSpeed() === 1100) {
             return true;
         }
     }
@@ -666,12 +554,9 @@ export function DetermineEnemyBotRole(bot: Unit): number {
 // TODO: Just trying. Does not work.
 export function QueryCounters(heroId: number) {
     print("heroId=" + heroId);
-    Request.RawGetRequest(
-        `https://api.opendota.com/api/heroes/${heroId}/matchups`,
-        function (res) {
-            PrintTable(res);
-        }
-    );
+    Request.RawGetRequest(`https://api.opendota.com/api/heroes/${heroId}/matchups`, function (res) {
+        PrintTable(res);
+    });
 }
 
 export function GetLoneDruid(bot: Unit): any {
@@ -696,25 +581,16 @@ export function TrimString(str: string): string {
  * @param radius
  * @param duration
  */
-export function addCustomAvoidanceZone(
-    center: Vector,
-    radius: number,
-    duration?: number
-): void {
+export function addCustomAvoidanceZone(center: Vector, radius: number, duration?: number): void {
     const currentTime = DotaTime();
-    const expirationTime =
-        duration !== undefined
-            ? currentTime + duration
-            : Number.POSITIVE_INFINITY;
+    const expirationTime = duration !== undefined ? currentTime + duration : Number.POSITIVE_INFINITY;
 
     avoidanceZones.push({ center, radius, expirationTime });
 }
 
 export function cleanExpiredAvoidanceZones(): void {
     const currentTime = DotaTime();
-    avoidanceZones = avoidanceZones.filter(
-        zone => zone.expirationTime > currentTime
-    );
+    avoidanceZones = avoidanceZones.filter(zone => zone.expirationTime > currentTime);
 }
 
 export function getCustomAvoidanceZones(): Array<{
@@ -734,57 +610,36 @@ export function isPositionInAvoidanceZone(position: Vector): boolean {
     return false;
 }
 
-export function moveToPositionAvoidingZones(
-    bot: Unit,
-    targetPosition: Vector
-): void {
+export function moveToPositionAvoidingZones(bot: Unit, targetPosition: Vector): void {
     if (isPositionInAvoidanceZone(targetPosition)) {
-        const safePosition = findSafePosition(
-            bot.GetLocation(),
-            targetPosition
-        );
+        const safePosition = findSafePosition(bot.GetLocation(), targetPosition);
         bot.Action_MoveToLocation(safePosition);
     } else {
         bot.Action_MoveToLocation(targetPosition);
     }
 }
 
-export function findSafePosition(
-    currentPosition: Vector,
-    targetPosition: Vector
-): Vector {
+export function findSafePosition(currentPosition: Vector, targetPosition: Vector): Vector {
     // Move towards the target but stop before entering the avoidance zone
     const direction = sub(targetPosition, currentPosition).Normalized();
     const safeDistance = getSafeDistance(currentPosition, targetPosition);
     return add(currentPosition, multiply(direction, safeDistance));
 }
 
-export function getSafeDistance(
-    currentPosition: Vector,
-    targetPosition: Vector
-): number {
+export function getSafeDistance(currentPosition: Vector, targetPosition: Vector): number {
     const maxDistance = length2D(sub(targetPosition, currentPosition));
     for (const zone of avoidanceZones) {
-        const projectedPoint = projectPointOntoLine(
-            currentPosition,
-            targetPosition,
-            zone.center
-        );
+        const projectedPoint = projectPointOntoLine(currentPosition, targetPosition, zone.center);
         const distanceToZone = length2D(sub(projectedPoint, zone.center));
         if (distanceToZone <= zone.radius) {
-            const distanceToAvoid =
-                length2D(sub(projectedPoint, currentPosition)) - zone.radius;
+            const distanceToAvoid = length2D(sub(projectedPoint, currentPosition)) - zone.radius;
             return Math.max(0, distanceToAvoid);
         }
     }
     return maxDistance;
 }
 
-export function projectPointOntoLine(
-    startPoint: Vector,
-    endPoint: Vector,
-    point: Vector
-): Vector {
+export function projectPointOntoLine(startPoint: Vector, endPoint: Vector, point: Vector): Vector {
     const lineDir = sub(endPoint, startPoint).Normalized();
     const toPoint = sub(point, startPoint);
     const projectionLength = dot(toPoint, lineDir);
@@ -811,12 +666,7 @@ export function findPathAvoidingZones(
 
 export function IsBuildingAttackedByEnemy(building: Unit): Unit | null {
     for (const hero of GetUnitList(UnitType.EnemyHeroes)) {
-        if (
-            IsValidHero(hero) &&
-            GetUnitToUnitDistance(building, hero) <=
-                hero.GetAttackRange() + 200 &&
-            hero.GetAttackTarget() == building
-        ) {
+        if (IsValidHero(hero) && GetUnitToUnitDistance(building, hero) <= hero.GetAttackRange() + 200 && hero.GetAttackTarget() == building) {
             return building;
         }
     }
@@ -847,30 +697,18 @@ export function IsAnyBarracksOnLaneAlive(bEnemy: boolean, lane: Lane): boolean {
     }
 
     if (lane == Lane.Top) {
-        barracks = [
-            GetBarracks(team, Barracks.TopMelee),
-            GetBarracks(team, Barracks.TopRanged),
-        ];
+        barracks = [GetBarracks(team, Barracks.TopMelee), GetBarracks(team, Barracks.TopRanged)];
     } else if (lane == Lane.Mid) {
-        barracks = [
-            GetBarracks(team, Barracks.MidMelee),
-            GetBarracks(team, Barracks.MidRanged),
-        ];
+        barracks = [GetBarracks(team, Barracks.MidMelee), GetBarracks(team, Barracks.MidRanged)];
     } else if (lane == Lane.Bot) {
-        barracks = [
-            GetBarracks(team, Barracks.BotMelee),
-            GetBarracks(team, Barracks.BotRanged),
-        ];
+        barracks = [GetBarracks(team, Barracks.BotMelee), GetBarracks(team, Barracks.BotRanged)];
     }
     return IsAnyOfTheBuildingsAlive(barracks);
 }
 
 export function IsAnyOfTheBuildingsAlive(buildings: (Unit | null)[]): boolean {
     for (const building of buildings) {
-        if (
-            building != null &&
-            (!building.CanBeSeen() || building.GetHealth() > 0)
-        ) {
+        if (building != null && (!building.CanBeSeen() || building.GetHealth() > 0)) {
             return true;
         }
     }
@@ -887,11 +725,7 @@ export function GetEnemyHeroByPlayerId(id: number): Unit | null {
 }
 
 export function IsTruelyInvisible(unit: Unit): boolean {
-    return (
-        unit.IsInvisible() &&
-        !unit.HasModifier("modifier_item_dustofappearance") &&
-        !RecentlyTookDamage(unit, 1.5)
-    ); // use 1.5s because invisibility may have delayed effect.
+    return unit.IsInvisible() && !unit.HasModifier("modifier_item_dustofappearance") && !RecentlyTookDamage(unit, 1.5); // use 1.5s because invisibility may have delayed effect.
 }
 
 export function HasModifierContainsName(unit: Unit, name: string): boolean {
@@ -911,11 +745,7 @@ export function HasModifierContainsName(unit: Unit, name: string): boolean {
 export function IsNearEnemySecondTierTower(unit: Unit, range: number): boolean {
     for (const towerId of SecondTierTowers) {
         const tower = GetTower(GetOpposingTeam(), towerId);
-        if (
-            tower !== null &&
-            IsValidBuilding(tower) &&
-            GetUnitToUnitDistance(unit, tower) < range
-        ) {
+        if (tower !== null && IsValidBuilding(tower) && GetUnitToUnitDistance(unit, tower) < range) {
             return true;
         }
     }
@@ -927,10 +757,7 @@ export function GetEnemyIdsNearNonTier1Towers(range: number) {
     for (const towerId of NonTier1Towers) {
         const tower = GetTower(GetTeam(), towerId);
         if (tower !== null && IsValidBuilding(tower)) {
-            const eIds = GetLastSeenEnemyIdsNearLocation(
-                tower.GetLocation(),
-                range
-            );
+            const eIds = GetLastSeenEnemyIdsNearLocation(tower.GetLocation(), range);
             result[towerId] = {
                 tower: tower,
                 enemyIds: eIds,
@@ -940,9 +767,7 @@ export function GetEnemyIdsNearNonTier1Towers(range: number) {
     return result;
 }
 
-export function GetNonTier1TowerWithLeastEnemiesAround(
-    range: number
-): Unit | null {
+export function GetNonTier1TowerWithLeastEnemiesAround(range: number): Unit | null {
     const towerEneCounts = GetEnemyIdsNearNonTier1Towers(range);
     let minCount = 999;
     let minCountTower = null;
@@ -987,11 +812,7 @@ export function GetClosestTowerOrBarrackToAttack(unit: Unit): Unit | null {
         if (
             tower !== null &&
             IsValidBuilding(tower) &&
-            !(
-                tower.HasModifier("modifier_fountain_glyph") ||
-                tower.HasModifier("modifier_invulnerable") ||
-                tower.HasModifier("modifier_backdoor_protection_active")
-            )
+            !(tower.HasModifier("modifier_fountain_glyph") || tower.HasModifier("modifier_invulnerable") || tower.HasModifier("modifier_backdoor_protection_active"))
         ) {
             const distance = GetUnitToUnitDistance(unit, tower);
             if (distance < closestDistance) {
@@ -1007,11 +828,7 @@ export function GetClosestTowerOrBarrackToAttack(unit: Unit): Unit | null {
 export function IsNearEnemyHighGroundTower(unit: Unit, range: number): boolean {
     for (const towerId of HighGroundTowers) {
         const tower = GetTower(GetOpposingTeam(), towerId);
-        if (
-            tower !== null &&
-            IsValidBuilding(tower) &&
-            GetUnitToUnitDistance(unit, tower) < range
-        ) {
+        if (tower !== null && IsValidBuilding(tower) && GetUnitToUnitDistance(unit, tower) < range) {
             return true;
         }
     }
@@ -1019,22 +836,14 @@ export function IsNearEnemyHighGroundTower(unit: Unit, range: number): boolean {
 }
 
 export function IsTeamPushingSecondTierOrHighGround(bot: Unit): boolean {
-    const cachedRes = GetCachedVars(
-        "IsTeamPushingSecondTierOrHighGround" + tostring(bot.GetTeam()),
-        0.5
-    );
+    const cachedRes = GetCachedVars("IsTeamPushingSecondTierOrHighGround" + tostring(bot.GetTeam()), 0.5);
     if (cachedRes !== null) {
         return cachedRes;
     }
     const res =
         bot.GetNearbyHeroes(2000, false, BotMode.None).length > 2 &&
-        (IsNearEnemySecondTierTower(bot, 2000) ||
-            IsNearEnemyHighGroundTower(bot, 3000) ||
-            GetUnitToUnitDistance(bot, GetAncient(GetOpposingTeam())) < 3000);
-    SetCachedVars(
-        "IsTeamPushingSecondTierOrHighGround" + tostring(bot.GetTeam()),
-        res
-    );
+        (IsNearEnemySecondTierTower(bot, 2000) || IsNearEnemyHighGroundTower(bot, 3000) || GetUnitToUnitDistance(bot, GetAncient(GetOpposingTeam())) < 3000);
+    SetCachedVars("IsTeamPushingSecondTierOrHighGround" + tostring(bot.GetTeam()), res);
     return res;
 }
 
@@ -1055,10 +864,7 @@ export function GetNumOfAliveHeroes(bEnemy: boolean): number {
 }
 
 export function CountMissingEnemyHeroes(): number {
-    const cachedRes = GetCachedVars(
-        "CountMissingEnemyHeroes" + tostring(GetTeam()),
-        0.5
-    );
+    const cachedRes = GetCachedVars("CountMissingEnemyHeroes" + tostring(GetTeam()), 0.5);
     if (cachedRes !== null) {
         return cachedRes;
     }
@@ -1097,32 +903,21 @@ export function FindAllyWithAtLeastDistanceAway(bot: Unit, nDistance: number) {
     const teamPlayers = GetTeamPlayers(GetTeam());
     for (const [index, _] of teamPlayers.entries()) {
         const teamMember = GetTeamMember(index);
-        if (
-            teamMember !== null &&
-            teamMember.IsAlive() &&
-            GetUnitToUnitDistance(teamMember, bot) >= nDistance
-        ) {
+        if (teamMember !== null && teamMember.IsAlive() && GetUnitToUnitDistance(teamMember, bot) >= nDistance) {
             return teamMember;
         }
     }
     return null;
 }
 
-export function GetLastSeenEnemyIdsNearLocation(
-    vLoc: Vector,
-    nDistance: number
-): number[] {
+export function GetLastSeenEnemyIdsNearLocation(vLoc: Vector, nDistance: number): number[] {
     let enemies = [];
     for (let playerdId of GetTeamPlayers(GetOpposingTeam())) {
         if (IsHeroAlive(playerdId)) {
             const lastSeenInfo = GetHeroLastSeenInfo(playerdId);
             if (lastSeenInfo !== null && lastSeenInfo[0] !== null) {
                 const firstInfo = lastSeenInfo[0];
-                if (
-                    GetLocationToLocationDistance(firstInfo.location, vLoc) <=
-                        nDistance &&
-                    firstInfo.time_since_seen <= 3
-                ) {
+                if (GetLocationToLocationDistance(firstInfo.location, vLoc) <= nDistance && firstInfo.time_since_seen <= 3) {
                     enemies.push(playerdId);
                 }
             }
@@ -1134,17 +929,10 @@ export function GetLastSeenEnemyIdsNearLocation(
     return enemies;
 }
 
-export function GetEnemyIdsInTpToLocation(
-    vLoc: Vector,
-    nDistance: number
-): number[] {
+export function GetEnemyIdsInTpToLocation(vLoc: Vector, nDistance: number): number[] {
     const enemies = [];
     for (let tp of GetIncomingTeleports()) {
-        if (
-            tp !== null &&
-            GetLocationToLocationDistance(vLoc, tp.location) <= nDistance &&
-            !IsTeamPlayer(tp.playerid)
-        ) {
+        if (tp !== null && GetLocationToLocationDistance(vLoc, tp.location) <= nDistance && !IsTeamPlayer(tp.playerid)) {
             enemies.push(tp.playerid);
         }
     }
@@ -1156,10 +944,7 @@ export function ShouldBotsSpreadOut(bot: Unit, minDistance: number): boolean {
         return false;
     }
 
-    const cachedRes = GetCachedVars(
-        "ShouldBotsSpreadOut" + tostring(bot.GetPlayerID()),
-        2
-    );
+    const cachedRes = GetCachedVars("ShouldBotsSpreadOut" + tostring(bot.GetPlayerID()), 2);
     if (cachedRes !== null) {
         return cachedRes;
     }
@@ -1169,28 +954,15 @@ export function ShouldBotsSpreadOut(bot: Unit, minDistance: number): boolean {
             const heroName = hero.GetUnitName();
             if (HasValue(SpecialAOEHeroes, heroName)) {
                 if (hero.GetLevel() >= 8) {
-                    SetCachedVars(
-                        "ShouldBotsSpreadOut" + tostring(bot.GetPlayerID()),
-                        true
-                    );
+                    SetCachedVars("ShouldBotsSpreadOut" + tostring(bot.GetPlayerID()), true);
                     return true;
                 }
             } else {
-                SetCachedVars(
-                    "ShouldBotsSpreadOut" + tostring(bot.GetPlayerID()),
-                    false
-                );
+                SetCachedVars("ShouldBotsSpreadOut" + tostring(bot.GetPlayerID()), false);
             }
             if (heroName === "npc_dota_hero_troll_warlord") {
-                if (
-                    HasItem(hero, "item_bfury") &&
-                    hero.HasModifier("modifier_troll_warlord_battle_trance") &&
-                    hero.GetAttackRange() < 500
-                ) {
-                    SetCachedVars(
-                        "ShouldBotsSpreadOut" + tostring(bot.GetPlayerID()),
-                        true
-                    );
+                if (HasItem(hero, "item_bfury") && hero.HasModifier("modifier_troll_warlord_battle_trance") && hero.GetAttackRange() < 500) {
+                    SetCachedVars("ShouldBotsSpreadOut" + tostring(bot.GetPlayerID()), true);
                     return true; // Troll Warlord with Battle Fury and ultimate active
                 }
             }
@@ -1200,17 +972,10 @@ export function ShouldBotsSpreadOut(bot: Unit, minDistance: number): boolean {
     return false;
 }
 
-export function GetAllyIdsInTpToLocation(
-    vLoc: Vector,
-    nDistance: number
-): number[] {
+export function GetAllyIdsInTpToLocation(vLoc: Vector, nDistance: number): number[] {
     const allies = [];
     for (let tp of GetIncomingTeleports()) {
-        if (
-            tp !== null &&
-            GetLocationToLocationDistance(vLoc, tp.location) <= nDistance &&
-            IsTeamPlayer(tp.playerid)
-        ) {
+        if (tp !== null && GetLocationToLocationDistance(vLoc, tp.location) <= nDistance && IsTeamPlayer(tp.playerid)) {
             allies.push(tp.playerid);
         }
     }
@@ -1226,24 +991,15 @@ export function IsBotPushingTowerInDanger(bot: Unit): boolean {
     const nearbyAllies = bot.GetNearbyHeroes(1600, false, BotMode.None);
     const countAliveEnemies = GetNumOfAliveHeroes(true);
 
-    const nearbyEnemy = GetLastSeenEnemyIdsNearLocation(
-        bot.GetLocation(),
-        2000
-    );
+    const nearbyEnemy = GetLastSeenEnemyIdsNearLocation(bot.GetLocation(), 2000);
 
-    if (
-        enemyTowerNearby &&
-        nearbyAllies.length < countAliveEnemies &&
-        nearbyEnemy.length >= nearbyAllies.length
-    ) {
+    if (enemyTowerNearby && nearbyAllies.length < countAliveEnemies && nearbyEnemy.length >= nearbyAllies.length) {
         return true;
     }
     return false;
 }
 
-export function GetDistanceToCloestTower(
-    bot: Unit
-): LuaMultiReturn<[number, Unit | null]> {
+export function GetDistanceToCloestTower(bot: Unit): LuaMultiReturn<[number, Unit | null]> {
     let cTower = null;
     let cDistance = 99999;
     for (const towerId of AllTowers) {
@@ -1251,11 +1007,7 @@ export function GetDistanceToCloestTower(
         if (
             tower !== null &&
             IsValidBuilding(tower) &&
-            !(
-                tower.HasModifier("modifier_fountain_glyph") ||
-                tower.HasModifier("modifier_invulnerable") ||
-                tower.HasModifier("modifier_backdoor_protection_active")
-            )
+            !(tower.HasModifier("modifier_fountain_glyph") || tower.HasModifier("modifier_invulnerable") || tower.HasModifier("modifier_backdoor_protection_active"))
         ) {
             const tDistance = GetUnitToUnitDistance(bot, tower);
             if (tDistance < cDistance) {
@@ -1267,21 +1019,13 @@ export function GetDistanceToCloestTower(
     return $multi(cDistance, cTower);
 }
 
-export function GetCirclarPointsAroundCenterPoint(
-    vCenter: Vector,
-    nRadius: number,
-    numPoints: number
-): Vector[] {
+export function GetCirclarPointsAroundCenterPoint(vCenter: Vector, nRadius: number, numPoints: number): Vector[] {
     const points: Vector[] = [vCenter];
     const angleStep = 360 / numPoints;
 
     for (let i = 1; i <= numPoints; i++) {
         const angleRad = angleStep * i * (Math.PI / 180); // Convert degrees to radians
-        const point: Vector = Vector(
-            vCenter.x + nRadius * Math.cos(angleRad),
-            vCenter.y + nRadius * Math.sin(angleRad),
-            vCenter.z
-        );
+        const point: Vector = Vector(vCenter.x + nRadius * Math.cos(angleRad), vCenter.y + nRadius * Math.sin(angleRad), vCenter.z);
         points.push(point);
     }
 

@@ -2,7 +2,7 @@
  * The interfaces we defined in this script.
  */
 
-import { Ability, Vector, Talent } from "./dota";
+import { Ability, Vector, Talent } from "bots/ts_libs/dota";
 
 export interface BotSetup {
     sBuyList: string[];

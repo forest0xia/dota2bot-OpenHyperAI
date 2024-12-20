@@ -578,7 +578,7 @@ function ____exports.GetEnemyIdsInTpToLocation(vLoc, nDistance)
     return enemies
 end
 require(GetScriptDirectory().."/ts_libs/utils/json")
-____exports.DebugMode = false
+____exports.DebugMode = true
 ____exports.ScriptID = 3246316298
 ____exports.RadiantFountainTpPoint = Vector(-7172, -6652, 384)
 ____exports.DireFountainTpPoint = Vector(6982, 6422, 392)

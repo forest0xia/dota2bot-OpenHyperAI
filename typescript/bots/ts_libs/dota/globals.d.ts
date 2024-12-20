@@ -42,13 +42,7 @@ declare global {
 
     function GetHeroLastSeenInfo(nPlayerID: number): LastSeenInfo[];
 
-    function DebugDrawCircle(
-        vCenter: Vector,
-        fRadius: number,
-        nRed: number,
-        nGreen: number,
-        nBlue: number
-    ): void;
+    function DebugDrawCircle(vCenter: Vector, fRadius: number, nRed: number, nGreen: number, nBlue: number): void;
 
     function GetSelectedHeroName(nPlayerID: number): string;
 
@@ -61,28 +55,15 @@ declare global {
     function GetHeroKills(playerId: number): number;
     function GetHeroDeaths(playerId: number): number;
     function GetNeutralSpawners(): any;
-    function GetLaneFrontLocation(
-        team: Team,
-        lane: Lane,
-        deltaFromFront: number
-    ): Vector;
+    function GetLaneFrontLocation(team: Team, lane: Lane, deltaFromFront: number): Vector;
     function RandomVector(length: number): Vector;
     function Clamp(value: number, min: number, max: number): number;
-    function RemapValClamped(
-        value: number,
-        fromMin: number,
-        fromMax: number,
-        toMin: number,
-        toMax: number
-    ): number;
+    function RemapValClamped(value: number, fromMin: number, fromMax: number, toMin: number, toMax: number): number;
     function GetDefendLaneDesire(lane: Lane): number;
 
     interface HTTPRequest {
         SetHTTPRequestRawPostBody(contentType: string, body: string): void;
-        SetHTTPRequestGetOrPostParameter(
-            aString: string,
-            bString: string
-        ): boolean;
+        SetHTTPRequestGetOrPostParameter(aString: string, bString: string): boolean;
         Send(callback: (result: any) => void): void;
     }
 
@@ -98,6 +79,22 @@ declare global {
     }
 
     function CreateRemoteHTTPRequest(url: string): HTTPRequest;
+    function IsCMPickedHero(team: Team, heroName: string): boolean;
+    function IsCMBannedHero(heroName: string): boolean;
+    function GetCMPhaseTimeRemaining(): number;
+    function SelectHero(playerId: number, heroName: string): void;
+    function GetHeroPickState(): number;
+    function GetHeroPickState(): number;
+    function PickCaptain(): void;
+    function BansHero(): void;
+    function PicksHero(): void;
+    function CMPickHero(heroName: string): void;
+    function GetCMCaptain(): number;
+    function CMBanHero(heroName: string): void;
+    function SetCMCaptain(playerId: number): void;
+    function IsPlayerInHeroSelectionControl(playerId: number): boolean;
+    function GetGameState(): number;
+    function GetGameMode(): number;
 }
 
 export {};

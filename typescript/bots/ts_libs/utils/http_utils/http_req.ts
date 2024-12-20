@@ -26,17 +26,9 @@ export class Request {
     static UUID: string | null = null; // game state tracking id.
     static BASE_URL: string = "https://OHA.com";
 
-    static HttpPost(
-        postData: RequestData,
-        api: Api,
-        callback?: (res: string) => void
-    ) {
+    static HttpPost(postData: RequestData, api: Api, callback?: (res: string) => void) {
         if (this.UUID !== null) {
-            return Request.RawPostRequest(
-                `${Request.BASE_URL}/${api}`,
-                callback,
-                postData
-            );
+            return Request.RawPostRequest(`${Request.BASE_URL}/${api}`, callback, postData);
         } else {
             return this.GetUUID(callback);
         }
@@ -46,11 +38,7 @@ export class Request {
         return Request.RawPostRequest(`${Request.BASE_URL}/uuid`, callback);
     }
 
-    static RawPostRequest(
-        url: string,
-        callback?: (res: any) => void,
-        postData?: RequestData
-    ) {
+    static RawPostRequest(url: string, callback?: (res: any) => void, postData?: RequestData) {
         const reqData = JSON.encode(postData);
         const req = CreateRemoteHTTPRequest(url);
         req.SetHTTPRequestRawPostBody("application/json", reqData);

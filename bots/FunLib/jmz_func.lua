@@ -3069,10 +3069,12 @@ end
 function J.GetAttackableWeakestUnitFromList( bot, unitList )
     local weakest = nil
     local bestScore = math.huge
+	local attackRange = bot:GetAttackRange()
 
     for _, unit in pairs( unitList ) do
         local hp = unit:GetHealth()
         local offensivePower = 0
+		local distance = GetUnitToUnitDistance(bot, unit)
         if J.IsValidHero(unit) then
             offensivePower = unit:GetRawOffensivePower()
         end
@@ -3088,7 +3090,7 @@ function J.GetAttackableWeakestUnitFromList( bot, unitList )
             -- Can adjust the weight factors for hp and offensive power to tune the behavior
             local hpWeight = 0.7
             local powerWeight = 0.3
-            local score = (hp * hpWeight) - (offensivePower * powerWeight)
+            local score = (hp * hpWeight) - (offensivePower * powerWeight) - math.min(1, attackRange / distance) * 100
 
             -- If the new score is lower, choose this unit as the weakest
             if score < bestScore then
@@ -3103,8 +3105,13 @@ end
 
 function J.CannotBeKilled(bot, botTarget)
 	return J.IsValidHero( botTarget )
-	and ((J.GetModifierTime(botTarget, 'modifier_dazzle_shallow_grave') > 0.6 and J.GetHP(botTarget) < 0.15 and (bot == nil or bot:GetUnitName() ~= "npc_dota_hero_axe"))
-	or J.GetModifierTime(botTarget, 'modifier_oracle_false_promise_timer') > 0.6)
+	and (
+		(J.GetModifierTime(botTarget, 'modifier_dazzle_shallow_grave') > 0.6 and J.GetHP(botTarget) < 0.15 and (bot == nil or bot:GetUnitName() ~= "npc_dota_hero_axe"))
+		or J.GetModifierTime(botTarget, 'modifier_oracle_false_promise_timer') > 0.6
+		or botTarget:HasModifier('modifier_skeleton_king_reincarnation_scepter_active')
+		or botTarget:HasModifier('modifier_item_aeon_disk_buff')
+		or botTarget:HasModifier('modifier_abaddon_borrowed_time')
+	)
 end
 
 function J.CanIgnoreLowHp(bot)
