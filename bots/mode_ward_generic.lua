@@ -354,18 +354,3 @@ function IsEnemyCloserToWardLocation(wardLoc, botDist)
 
 	return false
 end
-
-function GetItem(item_name)
-	for i = 0, 5
-	do
-		local item = bot:GetItemInSlot(i)
-
-		if item ~= nil
-		and item:GetName() == item_name
-		then
-			return item
-		end
-	end
-
-	return nil
-end

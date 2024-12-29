@@ -1237,7 +1237,7 @@ function X.SetRatios()
         -- Power Treads
         if J.HasItem(bot, 'item_power_treads')
         then
-            local hItem = J.GetItem('item_power_treads')
+            local hItem = J.Utils.GetItem('item_power_treads')
             if hItem ~= nil
             then
                 local nState = hItem:GetPowerTreadsStat()

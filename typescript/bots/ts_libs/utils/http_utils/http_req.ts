@@ -24,7 +24,8 @@ export type Api = "uuid" | "gamestate";
 
 export class Request {
     static UUID: string | null = null; // game state tracking id.
-    static BASE_URL: string = "https://OHA.com";
+    static BASE_URL: string = "http://127.0.0.1:5000/";
+    // static BASE_URL: string = "https://chatgpt-with-dota2bot.onrender.com/";
 
     static HttpPost(postData: RequestData, api: Api, callback?: (res: string) => void) {
         if (this.UUID !== null) {

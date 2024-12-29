@@ -413,8 +413,10 @@ Chat['tHeroNameList'] = {
 	['npc_dota_hero_hoodwink'] = {sNormName='小松鼠', sShortName='hoodwink', sCnName='森海飞霞', sEnName='Hoodwink'},
 	['npc_dota_hero_dawnbreaker'] = {sNormName='锤妹', sShortName='dawnbreaker', sCnName='破晓辰星', sEnName='Dawnbreaker'},
 	['npc_dota_hero_marci'] = {sNormName='拳妹', sShortName='marci', sCnName='玛西', sEnName='Marci'},
+	['npc_dota_hero_muerta'] = {sNormName='琼碧', sShortName='muerta', sCnName='琼英碧灵', sEnName='Muerta'},
 	['npc_dota_hero_primal_beast'] = {sNormName='兽', sShortName='beast', sCnName='獸', sEnName='Primal Beast'},
 	['npc_dota_hero_ringmaster'] = {sNormName='百戏大王', sShortName='ringmaster', sCnName='百戏大王', sEnName='Ring Master'},
+	['npc_dota_hero_kez'] = {sNormName='凯', sShortName='kez', sCnName='凯', sEnName='Kez'},
 }
 
 local sChineseItemNameIndexList = {}
@@ -513,16 +515,18 @@ function Chat.GetReplyString( sString, bAllChat )
 			sReplyString = Chat.GetChatTableString( nIndex, bAllChat )
 		else
 			sReplyString = Chat.GetCheaterReplyString( sString )
-			if sReplyString == nil
+			if sReplyString == nil and Customize.Allow_Trash_Talk
 			then
 				sReplyString = Chat.GetRepeatString( sString )
 			end
 		end
 	end
 
-	if sReplyString == nil or RandomInt( 1, 99 ) > 66
-	then
-		sReplyString = Localization.Get('random_responses')[RandomInt( 1, #Localization.Get('random_responses'))]
+	if Customize.Allow_Trash_Talk then
+		if sReplyString == nil or RandomInt( 1, 99 ) > 66
+		then
+			sReplyString = Localization.Get('random_responses')[RandomInt( 1, #Localization.Get('random_responses'))]
+		end
 	end
 
 	return sReplyString

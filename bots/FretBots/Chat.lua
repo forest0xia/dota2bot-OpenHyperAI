@@ -12,7 +12,6 @@ local API_KEY = ''
 
 local recordedMessages = {}
 local maxpromptsLength = 3
-local inGamePlayers = {}
 local countErrorMsg = 0
 local chatUpdateTimerName = "chatUpdate"
 local chatVersionDetermineTime = -45
@@ -76,17 +75,6 @@ function Chat:NotifyUpdate()
 	return 1
 end
 
-local function botNameListInTheGame()
-    inGamePlayers = {}
-    for i, unit in pairs(AllUnits) do
-        if unit.stats then
-            local kda = unit:GetKills()..'/'..unit:GetDeaths()..'/'..unit:GetAssists()
-            table.insert(inGamePlayers, {team = unit.stats.team == 2 and 'Radiant' or 'Dire', name = unit.stats.name,
-                level = unit:GetLevel(), kda = kda, networth = PlayerResource:GetNetWorth(unit.stats.id), is_bot = unit.stats.isBot})
-        end
-    end
-end
-
 local function getFormattedGameTime()
     local gameTime = Utilities:GetTime()
     local minutes = math.floor(gameTime / 60)
@@ -95,10 +83,7 @@ local function getFormattedGameTime()
 end
 
 function ConstructChatBotRequest(inputContent)
-    -- if next(inGamePlayers) == nil then botNameListInTheGame() end -- only load bots once to save cpu.
-    botNameListInTheGame()
-
-    table.insert(recordedMessages, 1, { role = "user", content = 'Players in this game: ' .. json.encode(inGamePlayers)
+    table.insert(recordedMessages, 1, { role = "user", content = 'Players in this game: ' .. json.encode(Utilities:HeroStatsInGame(AllUnits))
     .. ', current game time in seconds: ' .. getFormattedGameTime() .. ', response locale language code: ' .. Localization.GetLocale()})
     table.insert(recordedMessages, { role = "user", content = inputContent })
 

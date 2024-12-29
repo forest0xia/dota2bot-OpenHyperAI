@@ -101,8 +101,12 @@ function X.ConsiderQ()
     if not abilityQ:IsFullyCastable() then return 0 end
     if not Utils.GetLoneDruid(bear).hero:IsAlive() then return 0 end
 
+    if J.GetHP(bear) < 0.9 and bear:DistanceFromFountain() < 450 then return 0 end
+
     -- too far from hero
     if distanceFromHero > 3000
+    and J.GetHP(bear) > 0.25
+    and not J.IsRetreating(bear)
     and not J.Item.HasItem( bear, 'item_ultimate_scepter' ) then
         return BOT_ACTION_DESIRE_HIGH
     end
@@ -110,6 +114,8 @@ function X.ConsiderQ()
     -- hero is being attacked
     if Utils.GetLoneDruid(bear).hero:WasRecentlyDamagedByAnyHero(2)
     and J.GetHP(Utils.GetLoneDruid(bear).hero) < 0.9
+    and J.GetHP(bear) > 0.25
+    and not J.IsRetreating(bear)
     and distanceFromHero > 3000 then
         local nInRangeEnemy = J.GetNearbyHeroes(Utils.GetLoneDruid(bear).hero, 1000, true, BOT_MODE_NONE)
         if #nInRangeEnemy >= 1 then

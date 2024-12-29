@@ -13,7 +13,7 @@ local TormentorLocOffset = RandomVector(200)
 
 local tormentorMessageTime = 0
 local canDoTormentor = false
-local nTormentorSpawnTime = (J.IsModeTurbo() and 10 or 20) + 5 -- add some buff time
+local nTormentorSpawnTime = (J.IsModeTurbo() and 10 or 20) + 3 -- add some buff time
 
 if bot.tormentor_state == nil then bot.tormentor_state = false end
 if bot.tormentor_kill_time == nil then bot.tormentor_kill_time = 0 end
@@ -134,23 +134,28 @@ function TormentorDesire()
     -- Someone go check Tormentor
     if DotaTime() >= nTormentorSpawnTime * 60 and (DotaTime() - bot.tormentor_kill_time) >= (nTormentorSpawnTime / 2) * 60 then
         if not X.IsTormentorAlive() then
-            if not J.IsCore(bot) and GetUnitToUnitDistance(bot, hEnemyAncient) > 4000 then
-                local ally = nil
-                local allyDist = 4000
-                for i, allyHero in pairs(hAllAllyHeroList) do
-                    local member = GetTeamMember(i)
-                    if member ~= nil and member:IsAlive() and member:IsBot() and not J.IsCore(member) then
-                        local memberDist = GetUnitToLocationDistance(member, TormentorLocation)
-                        if memberDist < allyDist then
-                            ally = member
-                            allyDist = memberDist
-                        end
-                    end
-                end
+            -- if not J.IsCore(bot) and GetUnitToUnitDistance(bot, hEnemyAncient) > 4000 then
+            --     local ally = nil
+            --     local allyDist = 4000
+            --     for i, allyHero in pairs(hAllAllyHeroList) do
+            --         local member = GetTeamMember(i)
+            --         if member ~= nil and member:IsAlive() and member:IsBot() and not J.IsCore(member) then
+            --             local memberDist = GetUnitToLocationDistance(member, TormentorLocation)
+            --             if memberDist < allyDist then
+            --                 ally = member
+            --                 allyDist = memberDist
+            --             end
+            --         end
+            --     end
 
-                if ally ~= nil and bot == ally and bot.tormentor_state == false then
-                    return 0.8
-                end
+            --     if ally ~= nil and bot == ally and bot.tormentor_state == false then
+            --         return 0.8
+            --     end
+            -- end
+
+            -- all go check tormentor
+            if bot.tormentor_state == false then
+                return 0.8
             end
         else
             bot.tormentor_state = true

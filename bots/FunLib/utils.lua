@@ -489,7 +489,7 @@ local function __TS__ArrayFilter(self, callbackfn, thisArg)
 end
 -- End of Lua Library inline imports
 local ____exports = {}
-local avoidanceZones
+local avoidanceZones, IsHumanPlayerInTeamCache
 local ____dota = require(GetScriptDirectory().."/ts_libs/dota/index")
 local Barracks = ____dota.Barracks
 local BotMode = ____dota.BotMode
@@ -505,6 +505,24 @@ local dot = ____native_2Doperators.dot
 local length2D = ____native_2Doperators.length2D
 local multiply = ____native_2Doperators.multiply
 local sub = ____native_2Doperators.sub
+local ____heroes = require(GetScriptDirectory().."/ts_libs/dota/heroes")
+local HeroName = ____heroes.HeroName
+function ____exports.SetCachedVars(key, value)
+    if not ____exports.GameStates.cachedVars then
+        ____exports.GameStates.cachedVars = {}
+    end
+    ____exports.GameStates.cachedVars[key] = value
+    ____exports.GameStates.cachedVars[key .. "-Time"] = DotaTime()
+end
+function ____exports.GetCachedVars(key, withinTime)
+    if not ____exports.GameStates.cachedVars or not ____exports.GameStates.cachedVars[key] then
+        return nil
+    end
+    if DotaTime() - ____exports.GameStates.cachedVars[key .. "-Time"] <= withinTime then
+        return ____exports.GameStates.cachedVars[key]
+    end
+    return nil
+end
 function ____exports.GetLocationToLocationDistance(fLoc, sLoc)
     local x1 = fLoc.x
     local x2 = sLoc.x
@@ -549,6 +567,24 @@ function ____exports.IsAnyOfTheBuildingsAlive(buildings)
     end
     return false
 end
+function ____exports.IsHumanPlayerInTeam(team)
+    if IsHumanPlayerInTeamCache[team] ~= nil then
+        return IsHumanPlayerInTeamCache[team]
+    end
+    for ____, playerdId in ipairs(GetTeamPlayers(team)) do
+        if not IsPlayerBot(playerdId) then
+            IsHumanPlayerInTeamCache[team] = true
+            return true
+        end
+    end
+    IsHumanPlayerInTeamCache[team] = false
+    return false
+end
+--- Get the last seen enemy ids near a location.
+-- 
+-- @param vLoc - The location to check.
+-- @param nDistance - The distance to check.
+-- @returns An array of enemy ids.
 function ____exports.GetLastSeenEnemyIdsNearLocation(vLoc, nDistance)
     local enemies = {}
     for ____, playerdId in ipairs(GetTeamPlayers(GetOpposingTeam())) do
@@ -568,6 +604,11 @@ function ____exports.GetLastSeenEnemyIdsNearLocation(vLoc, nDistance)
     )
     return enemies
 end
+--- Get the enemy ids in teleport to a location.
+-- 
+-- @param vLoc - The location to check.
+-- @param nDistance - The distance to check.
+-- @returns An array of enemy ids.
 function ____exports.GetEnemyIdsInTpToLocation(vLoc, nDistance)
     local enemies = {}
     for ____, tp in ipairs(GetIncomingTeleports()) do
@@ -577,8 +618,34 @@ function ____exports.GetEnemyIdsInTpToLocation(vLoc, nDistance)
     end
     return enemies
 end
+--- Get an item from the bot's inventory with a specific total slots count.
+-- 
+-- @param bot - The bot to check.
+-- @param itemName - The name of the item to get.
+-- @param count - The number of slots in inventory to check.
+-- @returns The item if found, null otherwise.
+function ____exports.GetItemFromCountedInventory(bot, itemName, count)
+    local cacheKey = (("GetItemFromCountedInventory" .. tostring(bot:GetPlayerID())) .. itemName) .. tostring(count)
+    local cachedRes = ____exports.GetCachedVars(cacheKey, 2)
+    if cachedRes ~= nil then
+        return cachedRes
+    end
+    do
+        local i = 0
+        while i < count do
+            local item = bot:GetItemInSlot(i)
+            if item and item:GetName() == itemName then
+                ____exports.SetCachedVars(cacheKey, item)
+                return item
+            end
+            i = i + 1
+        end
+    end
+    ____exports.SetCachedVars(cacheKey, nil)
+    return nil
+end
 require(GetScriptDirectory().."/ts_libs/utils/json")
-____exports.DebugMode = true
+____exports.DebugMode = false
 ____exports.ScriptID = 3246316298
 ____exports.RadiantFountainTpPoint = Vector(-7172, -6652, 384)
 ____exports.DireFountainTpPoint = Vector(6982, 6422, 392)
@@ -595,15 +662,15 @@ ____exports.WisdomRunes = {
     [Team.Dire] = Vector(8319, 266, 256)
 }
 ____exports.BuggyHeroesDueToValveTooLazy = {
-    npc_dota_hero_muerta = true,
-    npc_dota_hero_marci = true,
-    npc_dota_hero_lone_druid_bear = true,
-    npc_dota_hero_primal_beast = true,
-    npc_dota_hero_dark_willow = true,
-    npc_dota_hero_elder_titan = true,
-    npc_dota_hero_hoodwink = true,
-    npc_dota_hero_wisp = true,
-    npc_dota_hero_kez = true
+    [HeroName.Muerta] = true,
+    [HeroName.Marci] = true,
+    [HeroName.LoneDruidBear] = true,
+    [HeroName.PrimalBeast] = true,
+    [HeroName.DarkWillow] = true,
+    [HeroName.ElderTitan] = true,
+    [HeroName.Hoodwink] = true,
+    [HeroName.IO] = true,
+    [HeroName.Kez] = true
 }
 ____exports.HighGroundTowers = {
     Tower.Top3,
@@ -639,13 +706,106 @@ ____exports.NonTier1Towers = {
 }
 ____exports.CachedVarsCleanTime = 5
 local SpecialAOEHeroes = {
-    "npc_dota_hero_axe",
-    "npc_dota_hero_enigma",
-    "npc_dota_hero_earthshaker",
-    "npc_dota_hero_invoker",
-    "npc_dota_hero_sand_king",
-    "npc_dota_hero_troll_warlord"
+    HeroName.Axe,
+    HeroName.Enigma,
+    HeroName.Earthshaker,
+    HeroName.Invoker,
+    HeroName.SandKing,
+    HeroName.TrollWarlord
 }
+--- A mapping from hero name to an array of important spell(s)
+-- that have long cooldowns and can drastically change a team fight.
+____exports.ImportantSpells = {
+    npc_dota_hero_alchemist = {"alchemist_chemical_rage"},
+    npc_dota_hero_axe = {"axe_culling_blade"},
+    npc_dota_hero_bristleback = {"bristleback_bristleback"},
+    npc_dota_hero_centaur = {"centaur_stampede"},
+    npc_dota_hero_chaos_knight = {"chaos_knight_phantasm"},
+    npc_dota_hero_dawnbreaker = {"dawnbreaker_solar_guardian"},
+    npc_dota_hero_doom_bringer = {"doom_bringer_doom"},
+    npc_dota_hero_dragon_knight = {"dragon_knight_elder_dragon_form"},
+    npc_dota_hero_earth_spirit = {"earth_spirit_magnetize"},
+    npc_dota_hero_earthshaker = {"earthshaker_echo_slam"},
+    npc_dota_hero_elder_titan = {"elder_titan_earth_splitter"},
+    npc_dota_hero_kunkka = {"kunkka_ghostship"},
+    npc_dota_hero_legion_commander = {"legion_commander_duel"},
+    npc_dota_hero_life_stealer = {"life_stealer_rage"},
+    npc_dota_hero_mars = {"mars_arena_of_blood"},
+    npc_dota_hero_night_stalker = {"night_stalker_darkness"},
+    npc_dota_hero_omniknight = {"omniknight_guardian_angel"},
+    npc_dota_hero_primal_beast = {"primal_beast_pulverize"},
+    npc_dota_hero_sven = {"sven_gods_strength"},
+    npc_dota_hero_tidehunter = {"tidehunter_ravage"},
+    npc_dota_hero_treant = {"treant_overgrowth"},
+    npc_dota_hero_undying = {"undying_tombstone", "undying_flesh_golem"},
+    npc_dota_hero_skeleton_king = {"skeleton_king_reincarnation"},
+    npc_dota_hero_antimage = {"antimage_mana_void"},
+    npc_dota_hero_bloodseeker = {"bloodseeker_rupture"},
+    npc_dota_hero_clinkz = {"clinkz_burning_barrage"},
+    npc_dota_hero_faceless_void = {"faceless_void_chronosphere"},
+    npc_dota_hero_gyrocopter = {"gyrocopter_flak_cannon"},
+    npc_dota_hero_hoodwink = {"hoodwink_sharpshooter"},
+    npc_dota_hero_juggernaut = {"juggernaut_omni_slash"},
+    npc_dota_hero_luna = {"luna_eclipse"},
+    npc_dota_hero_medusa = {"medusa_stone_gaze"},
+    npc_dota_hero_monkey_king = {"monkey_king_wukongs_command"},
+    npc_dota_hero_naga_siren = {"naga_siren_song_of_the_siren"},
+    npc_dota_hero_razor = {"razor_static_link"},
+    npc_dota_hero_nevermore = {"nevermore_requiem"},
+    npc_dota_hero_slark = {"slark_shadow_dance"},
+    npc_dota_hero_spectre = {"spectre_haunt_single", "spectre_haunt"},
+    npc_dota_hero_terrorblade = {"terrorblade_metamorphosis", "terrorblade_sunder"},
+    npc_dota_hero_troll_warlord = {"troll_warlord_battle_trance"},
+    npc_dota_hero_ursa = {"ursa_enrage"},
+    npc_dota_hero_viper = {"viper_viper_strike"},
+    npc_dota_hero_weaver = {"weaver_time_lapse"},
+    npc_dota_hero_ancient_apparition = {"ancient_apparition_ice_blast"},
+    npc_dota_hero_crystal_maiden = {"crystal_maiden_freezing_field"},
+    npc_dota_hero_death_prophet = {"death_prophet_exorcism"},
+    npc_dota_hero_disruptor = {"disruptor_static_storm"},
+    npc_dota_hero_grimstroke = {"grimstroke_dark_portrait", "grimstroke_soul_chain"},
+    npc_dota_hero_jakiro = {"jakiro_macropyre"},
+    npc_dota_hero_lich = {"lich_chain_frost"},
+    npc_dota_hero_lina = {"lina_laguna_blade"},
+    npc_dota_hero_lion = {"lion_finger_of_death"},
+    npc_dota_hero_muerta = {"muerta_pierce_the_veil"},
+    npc_dota_hero_necrolyte = {"necrolyte_ghost_shroud", "necrolyte_reapers_scythe"},
+    npc_dota_hero_oracle = {"oracle_false_promise"},
+    npc_dota_hero_obsidian_destroyer = {"obsidian_destroyer_sanity_eclipse"},
+    npc_dota_hero_puck = {"puck_dream_coil"},
+    npc_dota_hero_pugna = {"pugna_life_drain"},
+    npc_dota_hero_queenofpain = {"queenofpain_sonic_wave"},
+    npc_dota_hero_ringmaster = {"ringmaster_wheel"},
+    npc_dota_hero_shadow_demon = {"shadow_demon_disruption", "shadow_demon_demonic_cleanse", "shadow_demon_demonic_purge"},
+    npc_dota_hero_shadow_shaman = {"shadow_shaman_mass_serpent_ward"},
+    npc_dota_hero_silencer = {"silencer_global_silence"},
+    npc_dota_hero_skywrath_mage = {"skywrath_mage_mystic_flare"},
+    npc_dota_hero_warlock = {"warlock_fatal_bonds", "warlock_golem"},
+    npc_dota_hero_witch_doctor = {"witch_doctor_voodoo_switcheroo", "witch_doctor_death_ward"},
+    npc_dota_hero_zuus = {"zuus_thundergods_wrath"},
+    npc_dota_hero_abaddon = {"abaddon_borrowed_time"},
+    npc_dota_hero_bane = {"bane_fiends_grip"},
+    npc_dota_hero_batrider = {"batrider_flaming_lasso"},
+    npc_dota_hero_beastmaster = {"beastmaster_primal_roar"},
+    npc_dota_hero_brewmaster = {"brewmaster_primal_split"},
+    npc_dota_hero_broodmother = {"broodmother_insatiable_hunger"},
+    npc_dota_hero_chen = {"chen_hand_of_god"},
+    npc_dota_hero_dark_seer = {"dark_seer_wall_of_replica"},
+    npc_dota_hero_dark_willow = {"dark_willow_terrorize"},
+    npc_dota_hero_enigma = {"enigma_black_hole"},
+    npc_dota_hero_lycan = {"lycan_shapeshift"},
+    npc_dota_hero_magnataur = {"magnataur_reverse_polarity"},
+    npc_dota_hero_marci = {"marci_unleash"},
+    npc_dota_hero_pangolier = {"pangolier_gyroshell"},
+    npc_dota_hero_phoenix = {"phoenix_supernova"},
+    npc_dota_hero_sand_king = {"sandking_epicenter"},
+    npc_dota_hero_snapfire = {"snapfire_mortimer_kisses"},
+    npc_dota_hero_vengefulspirit = {"vengefulspirit_nether_swap"},
+    npc_dota_hero_venomancer = {"venomancer_noxious_plague"},
+    npc_dota_hero_windrunner = {"windrunner_focusfire"},
+    npc_dota_hero_winter_wyvern = {"winter_wyvern_cold_embrace", "winter_wyvern_winters_curse"}
+}
+____exports.ImportantItems = {"item_black_king_bar", "item_refresher"}
 avoidanceZones = {}
 ____exports.GameStates = {defendPings = nil, recentDefendTime = -200, cachedVars = nil}
 ____exports.LoneDruid = {}
@@ -739,6 +899,10 @@ function ____exports.GetTeamFountainTpPoint()
     end
     return ____exports.RadiantFountainTpPoint
 end
+--- Shuffle an array.
+-- 
+-- @param tbl - The array to shuffle.
+-- @returns The shuffled array.
 function ____exports.Shuffle(tbl)
     do
         local i = #tbl - 1
@@ -754,10 +918,7 @@ function ____exports.Shuffle(tbl)
 end
 function ____exports.SetFrameProcessTime(bot)
     if bot.frameProcessTime == nil then
-        bot.frameProcessTime = ____exports.FrameProcessTime + math.fmod(
-            bot:GetPlayerID() / 1000,
-            ____exports.FrameProcessTime / 10
-        ) * 2
+        bot.frameProcessTime = ____exports.FrameProcessTime
     end
 end
 function ____exports.GetHumanPing()
@@ -813,22 +974,6 @@ function ____exports.IsPingedByAnyPlayer(bot, pingTimeGap, minDistance, maxDista
             print(("Bot " .. bot:GetUnitName()) .. " noticed the ping")
             return ping
         end
-    end
-    return nil
-end
-function ____exports.SetCachedVars(key, value)
-    if not ____exports.GameStates.cachedVars then
-        ____exports.GameStates.cachedVars = {}
-    end
-    ____exports.GameStates.cachedVars[key] = value
-    ____exports.GameStates.cachedVars[key .. "-Time"] = DotaTime()
-end
-function ____exports.GetCachedVars(key, withinTime)
-    if not ____exports.GameStates.cachedVars or not ____exports.GameStates.cachedVars[key] then
-        return nil
-    end
-    if DotaTime() - ____exports.GameStates.cachedVars[key .. "-Time"] <= withinTime then
-        return ____exports.GameStates.cachedVars[key]
     end
     return nil
 end
@@ -948,6 +1093,17 @@ function ____exports.NumHumanBotPlayersInTeam(team)
         humanCountCache[team] = {humans, bots}
     end
     return humanCountCache[team][1], humanCountCache[team][2]
+end
+function ____exports.GetNearbyAllyAverageHpPercent(bot, radius)
+    local averageHpPercent = 0
+    local teamPlayers = GetTeamPlayers(bot:GetTeam())
+    for ____, playerdId in ipairs(teamPlayers) do
+        local ally = GetTeamMember(playerdId)
+        if ally and ally:IsAlive() and GetUnitToUnitDistance(ally, bot) <= radius then
+            averageHpPercent = averageHpPercent + ally:GetHealth() / ally:GetMaxHealth()
+        end
+    end
+    return averageHpPercent / #teamPlayers
 end
 function ____exports.IsWithoutSpellShield(npcEnemy)
     return not npcEnemy:HasModifier("modifier_item_sphere_target") and not npcEnemy:HasModifier("modifier_antimage_spell_shield") and not npcEnemy:HasModifier("modifier_item_lotus_orb_active")
@@ -1091,6 +1247,11 @@ function ____exports.QueryCounters(heroId)
         end
     )
 end
+function ____exports.InitiStats()
+    Request:GetUUID(function(uuid)
+        print("uuid=" .. uuid)
+    end)
+end
 function ____exports.GetLoneDruid(bot)
     local res = ____exports.LoneDruid[bot:GetPlayerID()]
     if res == nil then
@@ -1206,6 +1367,14 @@ function ____exports.IsAnyBarracksOnLaneAlive(bEnemy, lane)
     end
     return ____exports.IsAnyOfTheBuildingsAlive(barracks)
 end
+IsHumanPlayerInTeamCache = {[Team.Radiant] = nil, [Team.Dire] = nil}
+function ____exports.IsHumanPlayerInAnyTeam()
+    return ____exports.IsHumanPlayerInTeam(Team.Radiant) or ____exports.IsHumanPlayerInTeam(Team.Dire)
+end
+--- Get the enemy hero by player id.
+-- 
+-- @param id - The player id to check.
+-- @returns The enemy hero if found, null otherwise.
 function ____exports.GetEnemyHeroByPlayerId(id)
     for ____, hero in ipairs(GetUnitList(UnitType.EnemyHeroes)) do
         if ____exports.IsValidHero(hero) and hero:GetPlayerID() == id then
@@ -1214,9 +1383,18 @@ function ____exports.GetEnemyHeroByPlayerId(id)
     end
     return nil
 end
+--- Check if the unit is truely invisible.
+-- 
+-- @param unit - The unit to check.
+-- @returns True if the unit is truely invisible, false otherwise.
 function ____exports.IsTruelyInvisible(unit)
     return unit:IsInvisible() and not unit:HasModifier("modifier_item_dustofappearance") and not ____exports.RecentlyTookDamage(unit, 1.5)
 end
+--- Check if the unit has a modifier containing a specific name.
+-- 
+-- @param unit - The unit to check.
+-- @param name - The name to check.
+-- @returns True if the unit has a modifier containing the name, false otherwise.
 function ____exports.HasModifierContainsName(unit, name)
     if not ____exports.IsValidUnit(unit) then
         return false
@@ -1234,6 +1412,11 @@ function ____exports.HasModifierContainsName(unit, name)
     end
     return false
 end
+--- Check if the unit is near an enemy second tier tower.
+-- 
+-- @param unit - The unit to check.
+-- @param range - The range to check.
+-- @returns True if the unit is near an enemy second tier tower, false otherwise.
 function ____exports.IsNearEnemySecondTierTower(unit, range)
     for ____, towerId in ipairs(____exports.SecondTierTowers) do
         local tower = GetTower(
@@ -1246,6 +1429,10 @@ function ____exports.IsNearEnemySecondTierTower(unit, range)
     end
     return false
 end
+--- Get the enemy ids near non-tier 1 towers.
+-- 
+-- @param range - The range to check.
+-- @returns An object with tower ids as keys and their corresponding enemy ids.
 function ____exports.GetEnemyIdsNearNonTier1Towers(range)
     local result = {}
     for ____, towerId in ipairs(____exports.NonTier1Towers) do
@@ -1263,6 +1450,10 @@ function ____exports.GetEnemyIdsNearNonTier1Towers(range)
     end
     return result
 end
+--- Get the non-tier 1 tower with the least enemies around.
+-- 
+-- @param range - The range to check.
+-- @returns The non-tier 1 tower with the least enemies around.
 function ____exports.GetNonTier1TowerWithLeastEnemiesAround(range)
     local towerEneCounts = ____exports.GetEnemyIdsNearNonTier1Towers(range)
     local minCount = 999
@@ -1279,6 +1470,10 @@ function ____exports.GetNonTier1TowerWithLeastEnemiesAround(range)
     end
     return nil
 end
+--- Get the closest tower or barrack to attack.
+-- 
+-- @param unit - The unit to check.
+-- @returns The closest tower or barrack to attack.
 function ____exports.GetClosestTowerOrBarrackToAttack(unit)
     local closestBuilding = nil
     local closestDistance = 2 ^ 1024
@@ -1310,6 +1505,11 @@ function ____exports.GetClosestTowerOrBarrackToAttack(unit)
     end
     return closestBuilding
 end
+--- Check if the unit is near an enemy high ground tower.
+-- 
+-- @param unit - The unit to check.
+-- @param range - The range to check.
+-- @returns True if the unit is near an enemy high ground tower, false otherwise.
 function ____exports.IsNearEnemyHighGroundTower(unit, range)
     for ____, towerId in ipairs(____exports.HighGroundTowers) do
         local tower = GetTower(
@@ -1322,6 +1522,10 @@ function ____exports.IsNearEnemyHighGroundTower(unit, range)
     end
     return false
 end
+--- Check if the team is pushing second tier or high ground.
+-- 
+-- @param bot - The bot to check.
+-- @returns True if the team is pushing second tier or high ground, false otherwise.
 function ____exports.IsTeamPushingSecondTierOrHighGround(bot)
     local cachedRes = ____exports.GetCachedVars(
         "IsTeamPushingSecondTierOrHighGround" .. tostring(bot:GetTeam()),
@@ -1340,6 +1544,10 @@ function ____exports.IsTeamPushingSecondTierOrHighGround(bot)
     )
     return res
 end
+--- Get the number of alive heroes.
+-- 
+-- @param bEnemy - Whether to count enemy heroes.
+-- @returns The number of alive heroes.
 function ____exports.GetNumOfAliveHeroes(bEnemy)
     local count = 0
     local nTeam = GetTeam()
@@ -1353,6 +1561,9 @@ function ____exports.GetNumOfAliveHeroes(bEnemy)
     end
     return count
 end
+--- Count the missing enemy heroes.
+-- 
+-- @returns The number of missing enemy heroes.
 function ____exports.CountMissingEnemyHeroes()
     local cachedRes = ____exports.GetCachedVars(
         "CountMissingEnemyHeroes" .. tostring(GetTeam()),
@@ -1364,7 +1575,7 @@ function ____exports.CountMissingEnemyHeroes()
     local count = 0
     for ____, playerdId in ipairs(GetTeamPlayers(GetOpposingTeam())) do
         do
-            local __continue218
+            local __continue230
             repeat
                 if IsHeroAlive(playerdId) then
                     local lastSeenInfo = GetHeroLastSeenInfo(playerdId)
@@ -1372,14 +1583,14 @@ function ____exports.CountMissingEnemyHeroes()
                         local firstInfo = lastSeenInfo[1]
                         if firstInfo.time_since_seen >= 2.5 then
                             count = count + 1
-                            __continue218 = true
+                            __continue230 = true
                             break
                         end
                     end
                 end
-                __continue218 = true
+                __continue230 = true
             until true
-            if not __continue218 then
+            if not __continue230 then
                 break
             end
         end
@@ -1390,6 +1601,11 @@ function ____exports.CountMissingEnemyHeroes()
     )
     return count
 end
+--- Find an ally with at least a certain distance away from a bot.
+-- 
+-- @param bot - The bot to check.
+-- @param nDistance - The minimum distance to check.
+-- @returns The ally if found, null otherwise.
 function ____exports.FindAllyWithAtLeastDistanceAway(bot, nDistance)
     if bot:GetTeam() ~= GetTeam() then
         print("[ERROR] Wrong usage of the method")
@@ -1406,6 +1622,11 @@ function ____exports.FindAllyWithAtLeastDistanceAway(bot, nDistance)
     end
     return nil
 end
+--- Check if the bots should spread out.
+-- 
+-- @param bot - The bot to check.
+-- @param minDistance - The minimum distance to check.
+-- @returns True if the bots should spread out, false otherwise.
 function ____exports.ShouldBotsSpreadOut(bot, minDistance)
     if #bot:GetNearbyHeroes(minDistance, false, BotMode.None) < 2 then
         return false
@@ -1434,7 +1655,7 @@ function ____exports.ShouldBotsSpreadOut(bot, minDistance)
                     false
                 )
             end
-            if heroName == "npc_dota_hero_troll_warlord" then
+            if heroName == HeroName.TrollWarlord then
                 if ____exports.HasItem(hero, "item_bfury") and hero:HasModifier("modifier_troll_warlord_battle_trance") and hero:GetAttackRange() < 500 then
                     ____exports.SetCachedVars(
                         "ShouldBotsSpreadOut" .. tostring(bot:GetPlayerID()),
@@ -1451,6 +1672,11 @@ function ____exports.ShouldBotsSpreadOut(bot, minDistance)
     )
     return false
 end
+--- Get the ally ids in teleport to a location.
+-- 
+-- @param vLoc - The location to check.
+-- @param nDistance - The distance to check.
+-- @returns An array of ally ids.
 function ____exports.GetAllyIdsInTpToLocation(vLoc, nDistance)
     local allies = {}
     for ____, tp in ipairs(GetIncomingTeleports()) do
@@ -1460,6 +1686,10 @@ function ____exports.GetAllyIdsInTpToLocation(vLoc, nDistance)
     end
     return allies
 end
+--- Check if the bot is pushing a tower in danger.
+-- 
+-- @param bot - The bot to check.
+-- @returns True if the bot is pushing a tower in danger, false otherwise.
 function ____exports.IsBotPushingTowerInDanger(bot)
     local enemyTowerNearby = #bot:GetNearbyTowers(1100, true) >= 1
     if not enemyTowerNearby then
@@ -1476,7 +1706,11 @@ function ____exports.IsBotPushingTowerInDanger(bot)
     end
     return false
 end
-function ____exports.GetDistanceToCloestTower(bot)
+--- Get the distance to the closest enemy tower.
+-- 
+-- @param bot - The bot to check.
+-- @returns The distance to the closest enemy tower.
+function ____exports.GetDistanceToCloestEnemyTower(bot)
     local cTower = nil
     local cDistance = 99999
     for ____, towerId in ipairs(____exports.AllTowers) do
@@ -1494,6 +1728,12 @@ function ____exports.GetDistanceToCloestTower(bot)
     end
     return cDistance, cTower
 end
+--- Get circular points around a center point.
+-- 
+-- @param vCenter - The center point.
+-- @param nRadius - The radius of the circle.
+-- @param numPoints - The number of points to get.
+-- @returns An array of vectors representing the points.
 function ____exports.GetCirclarPointsAroundCenterPoint(vCenter, nRadius, numPoints)
     local points = {vCenter}
     local angleStep = 360 / numPoints
@@ -1511,5 +1751,110 @@ function ____exports.GetCirclarPointsAroundCenterPoint(vCenter, nRadius, numPoin
         end
     end
     return points
+end
+--- Check if the ability is valid.
+-- 
+-- @param ability - The ability to check.
+-- @returns True if the ability is valid, false otherwise.
+function ____exports.IsValidAbility(ability)
+    if ability == nil or ability:IsNull() or ability:GetName() == "" or ability:IsHidden() or not ability:IsTrained() or not ability:IsActivated() then
+        return false
+    end
+    return true
+end
+--- Check if the bot has a critical spell with a cooldown greater than nDuration.
+-- 
+-- @param bot - The bot to check.
+-- @param nDuration - The duration to check against.
+-- @returns True if the bot has a critical spell with a cooldown greater than nDuration, false otherwise.
+function ____exports.HasCriticalSpellWithCooldown(bot, nDuration)
+    local cacheKey = ("HasCriticalSpellWithCooldown" .. tostring(bot:GetPlayerID())) .. tostring(nDuration)
+    local cachedRes = ____exports.GetCachedVars(cacheKey, 2)
+    if cachedRes ~= nil then
+        return cachedRes
+    end
+    local heroName = bot:GetUnitName()
+    if ____exports.ImportantSpells[heroName] ~= nil then
+        local ability = bot:GetAbilityByName(____exports.ImportantSpells[heroName][1])
+        if ____exports.IsValidAbility(ability) and ability:GetCooldownTimeRemaining() > nDuration then
+            ____exports.SetCachedVars(cacheKey, true)
+            return true
+        end
+    end
+    ____exports.SetCachedVars(cacheKey, false)
+    return false
+end
+--- Get an item from the bot's active inventory.
+-- 
+-- @param bot - The bot to check.
+-- @param itemName - The name of the item to get.
+-- @returns The item if found, null otherwise.
+function ____exports.GetItem(bot, itemName)
+    return ____exports.GetItemFromCountedInventory(bot, itemName, 6)
+end
+--- Get an item from the bot's full inventory.
+-- 
+-- @param bot - The bot to check.
+-- @param itemName - The name of the item to get.
+-- @returns The item if found, null otherwise.
+function ____exports.GetItemFromFullInventory(bot, itemName)
+    return ____exports.GetItemFromCountedInventory(bot, itemName, 16)
+end
+--- Check if the team has a member with a critical spell in cooldown when the bot walks & arrives to the location.
+-- 
+-- @param bot - The bot to check.
+-- @param targetLoc - The location to check.
+-- @returns True if the team has a member with a critical spell in cooldown, false otherwise.
+function ____exports.HasTeamMemberWithCriticalSpellInCooldown(targetLoc)
+    local cacheKey = (("HasTeamMemberWithCriticalSpellInCooldown" .. tostring(GetTeam())) .. tostring(targetLoc.x)) .. tostring(targetLoc.y)
+    local cachedRes = ____exports.GetCachedVars(cacheKey, 2)
+    if cachedRes ~= nil then
+        return cachedRes
+    end
+    for ____, ____value in __TS__Iterator(__TS__ArrayEntries(GetTeamPlayers(GetTeam()))) do
+        local index = ____value[1]
+        local _ = ____value[2]
+        local teamMember = GetTeamMember(index)
+        if teamMember ~= nil and teamMember:IsAlive() then
+            local nDuration = GetUnitToLocationDistance(teamMember, targetLoc) / teamMember:GetCurrentMovementSpeed()
+            if ____exports.HasCriticalSpellWithCooldown(teamMember, nDuration) then
+                ____exports.SetCachedVars(cacheKey, true)
+                print((("HasTeamMemberWithCriticalSpellInCooldown: " .. tostring(teamMember:GetUnitName())) .. " ") .. tostring(nDuration))
+                return true
+            end
+        end
+    end
+    ____exports.SetCachedVars(cacheKey, false)
+    return false
+end
+--- Check if the team has a member with a critical item in cooldown when the bot walks & arrives to the location.
+-- 
+-- @param bot - The bot to check.
+-- @param targetLoc - The location to check.
+-- @returns True if the team has a member with a critical item in cooldown, false otherwise.
+function ____exports.HasTeamMemberWithCriticalItemInCooldown(targetLoc)
+    local cacheKey = (("HasTeamMemberWithCriticalItemInCooldown" .. tostring(GetTeam())) .. tostring(targetLoc.x)) .. tostring(targetLoc.y)
+    local cachedRes = ____exports.GetCachedVars(cacheKey, 2)
+    if cachedRes ~= nil then
+        return cachedRes
+    end
+    for ____, ____value in __TS__Iterator(__TS__ArrayEntries(GetTeamPlayers(GetTeam()))) do
+        local index = ____value[1]
+        local _ = ____value[2]
+        local teamMember = GetTeamMember(index)
+        if teamMember ~= nil and teamMember:IsAlive() then
+            local nDuration = GetUnitToLocationDistance(teamMember, targetLoc) / teamMember:GetCurrentMovementSpeed()
+            for ____, itemName in ipairs(____exports.ImportantItems) do
+                local item = ____exports.GetItem(teamMember, itemName)
+                if item and item:GetCooldownTimeRemaining() > nDuration then
+                    ____exports.SetCachedVars(cacheKey, true)
+                    print((((("HasTeamMemberWithCriticalItemInCooldown: " .. tostring(teamMember:GetUnitName())) .. " ") .. tostring(itemName)) .. " ") .. tostring(item:GetCooldownTimeRemaining()))
+                    return true
+                end
+            end
+        end
+    end
+    ____exports.SetCachedVars(cacheKey, false)
+    return false
 end
 return ____exports

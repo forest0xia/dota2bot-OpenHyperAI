@@ -899,7 +899,7 @@ function X.ConsiderTornado()
         and not J.IsLocationInChrono(targetloc)
         and not J.IsLocationInBlackHole(targetloc)
         and toTargetLocDistance <= nCastRange
-        and not toTargetLocDistance <= bot:GetAttackRange()
+        and toTargetLocDistance > bot:GetAttackRange()
         then
             return BOT_ACTION_DESIRE_HIGH, targetloc
 		end

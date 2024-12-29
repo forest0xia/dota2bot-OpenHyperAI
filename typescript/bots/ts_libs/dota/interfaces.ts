@@ -24,6 +24,7 @@ export interface Ping {
 
 export interface Item {
     GetName(): string;
+    GetCooldownTimeRemaining(): number;
 }
 
 export interface Unit {
@@ -146,7 +147,12 @@ export interface Ability {
     GetName(): string;
 
     IsTrained(): boolean;
+
+    IsActivated(): boolean;
+
     GetManaCost(): number;
+
+    GetCooldownTimeRemaining(): number;
 }
 
 export interface Talent {}

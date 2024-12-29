@@ -229,11 +229,14 @@ function GetDesire()
 	-- end
 
 	-- 如果在上高，对面人活着，其他队友活着却不在附近，赶紧溜去其他地方farm
-	if (IsShouldGoFarm or ((#hAllyList <= 2 and #hAllyList < numOfAliveEnemyHeroes)
-	-- and not J.WeAreStronger(bot, 2000)
-	-- and (J.IsCore(bot) and bot:GetNetWorth() < 18000)
-	-- and bot:GetActiveModeDesire() <= BOT_ACTION_DESIRE_HIGH
-	and J.GetDistanceFromAncient( bot, true ) < 5500))
+	if IsShouldGoFarm or ((#hAllyList <= 2 and #hAllyList < numOfAliveEnemyHeroes)
+	-- or (currentTime > 420 and bot:GetActiveModeDesire() < 0.15))
+	-- if (IsShouldGoFarm or ((#hAllyList <= 2 and #hAllyList < numOfAliveEnemyHeroes)
+	-- -- and not J.WeAreStronger(bot, 2000)
+	-- -- and (J.IsCore(bot) and bot:GetNetWorth() < 18000)
+	-- -- and bot:GetActiveModeDesire() <= BOT_ACTION_DESIRE_HIGH
+	and J.GetDistanceFromAncient( bot, true ) < 5500)
+    -- )
 	and #J.Utils.GetLastSeenEnemyIdsNearLocation(bot:GetLocation(), 2000) == 0 then
 		if DotaTime() - ShouldGoFarmTime >= checkGoFarmTimeGap then
 			IsShouldGoFarm = true
@@ -411,24 +414,27 @@ function GetDesire()
 		shouldGoFarmDuringLaning
 		or (
 			(J.IsCore(bot) or (not J.IsCore(bot) and currentTime > 7 * 60 and currentTime < 35 * 60))
-			and (J.GetCoresAverageNetworth() < 15000 or
-				(bot:GetLevel() >= 10 and J.GetHP(bot) > 0.8 and #bot:GetNearbyHeroes(1600,false,BOT_MODE_NONE) <= 1 and #bot:GetNearbyHeroes(1600,true,BOT_MODE_NONE) == 0 and J.GetDistanceFromAncient(bot, false) < 4000))
+			and (J.GetCoresAverageNetworth() < 15000
+				-- or (bot:GetLevel() >= 10 and J.GetHP(bot) > 0.8 and #bot:GetNearbyHeroes(1600,false,BOT_MODE_NONE) <= 1 and #bot:GetNearbyHeroes(1600,true,BOT_MODE_NONE) == 0 and J.GetDistanceFromAncient(bot, false) < 4000)
+			)
 			and (J.Site.IsTimeToFarm(bot) or pushTime > DotaTime() - 8.0)
-			-- and (not J.IsHumanPlayerInTeam() or enemyKills > allyKills + 16)
+			-- and (not J.Utils.IsHumanPlayerInTeam(GetTeam()) or enemyKills > allyKills + 16)
 			-- and ( bot:GetNextItemPurchaseValue() > 0 or not bot:HasModifier("modifier_item_moon_shard_consumed") )
 			and ( currentTime > 7 * 60 or bot:GetLevel() >= 8 or (bot:GetAttackRange() < 220 and bot:GetLevel() >= 6) ))
-			and (not bot.isBear or (bot.isBear and GetUnitToUnitDistance(bot, Utils.GetLoneDruid(bot).hero) < 1100))
+			-- and (not bot.isBear or (bot.isBear and GetUnitToUnitDistance(bot, Utils.GetLoneDruid(bot).hero) < 1100))
 		)
-		or (currentTime > 420 and bot:GetActiveModeDesire() < 0.15)
 	then
-		if J.GetDistanceFromAllyFountain( bot ) - J.GetDistanceFromEnemyFountain(bot) < 1200
+		if J.GetDistanceFromAllyFountain( bot ) - J.GetDistanceFromEnemyFountain(bot) > 2000
+		and (GetUnitToLocationDistance(bot, GetLaneFrontLocation(GetOpposingTeam(), LANE_TOP, 0)) < 800
+			or GetUnitToLocationDistance(bot, GetLaneFrontLocation(GetOpposingTeam(), LANE_MID, 0)) < 800
+			or GetUnitToLocationDistance(bot, GetLaneFrontLocation(GetOpposingTeam(), LANE_BOT, 0)) < 800)
 		then
-			hLaneCreepList = bot:GetNearbyLaneCreeps(1600, true);
-			if #hLaneCreepList == 0
-			   and J.IsInAllyArea( bot )
-			   and X.IsNearLaneFront( bot )
-			then
-				hLaneCreepList = bot:GetNearbyLaneCreeps(1600, false);
+			if #hLaneCreepList > 0 then
+				hLaneCreepList = {}
+			end
+			if preferedCamp == nil then preferedCamp = J.Site.GetClosestNeutralSpwan(bot, availableCamp);end
+			if preferedCamp ~= nil then
+				generalFarmDesire = BOT_MODE_DESIRE_ABSOLUTE
 			end
 		end;
 
@@ -861,6 +867,7 @@ function X.ShouldRun(bot)
 	local enemyAncient = GetAncient(GetOpposingTeam());
 	local enemyAncientDistance = GetUnitToUnitDistance(bot,enemyAncient);
 	local aliveEnemyCount = J.GetNumOfAliveHeroes(true)
+	local aliveAllyCount = J.GetNumOfAliveHeroes(false)
 	local rushEnemyTowerDistance = 250;
 
 	if enemyFountainDistance < 1560
@@ -917,6 +924,7 @@ function X.ShouldRun(bot)
 	if not X.IsThereT3Detroyed()
 	   and aliveEnemyCount >= 3
 	   and #hAllyHeroList < aliveEnemyCount + 2
+	   and #hAllyHeroList < aliveAllyCount - 1
 	   and not J.Role.IsPvNMode()
 	   and ( DotaTime() % 600 > 285 or DotaTime() < 18 * 60 )--处于夜间或小于18分钟
 	then
@@ -946,7 +954,9 @@ function X.ShouldRun(bot)
 	local nEnemyTowers = bot:GetNearbyTowers(1000, true);
 	local nEnemyBrracks = bot:GetNearbyBarracks(800,true);
 
-	if #nEnemyBrracks >= 1 and aliveEnemyCount >= 2
+	if #nEnemyBrracks >= 1
+	and #hAllyHeroList < aliveEnemyCount + 2
+	and #hAllyHeroList < aliveAllyCount - 1
 	then
 		if #nEnemyTowers >= 2
 		   or enemyAncientDistance <= 1314
@@ -992,7 +1002,7 @@ function X.ShouldRun(bot)
 				return 3.9;
 			end
 
-			if nTarget ~= nil and nTarget:IsHero() and aliveEnemyCount > 2
+			if J.IsValidHero(nTarget) and aliveEnemyCount > 2
 			then
 				local assistAlly = false;
 				for _,ally in pairs(hAllyHeroList)
@@ -1050,6 +1060,7 @@ function X.ShouldRun(bot)
 		or not J.CanKillTarget(botTarget, bot:GetAttackDamage() * 5, DAMAGE_TYPE_PHYSICAL)
 	)
 	and #hAllyHeroList <= aliveEnemyCount + 1
+	and #hAllyHeroList < aliveAllyCount - 1
 	then
 		return 3
 	end

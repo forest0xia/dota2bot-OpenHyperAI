@@ -11,12 +11,13 @@
  * keep putting shared low level funtionalities in this file until it gets too big for maintanence.
  */
 require("bots/ts_libs/utils/json");
-import { Barracks, BotActionType, BotMode, Lane, Ping, Team, Tower, Unit, UnitType, Vector } from "bots/ts_libs/dota";
+import { Ability, Barracks, BotActionType, BotMode, Item, Lane, Ping, Team, Tower, Unit, UnitType, Vector } from "bots/ts_libs/dota";
 import { GameState, AvoidanceZone } from "bots/ts_libs/bots";
 import { Request } from "bots/ts_libs/utils/http_utils/http_req";
 import { add, dot, length2D, multiply, sub } from "bots/ts_libs/utils/native-operators";
+import { HeroName } from "bots/ts_libs/dota/heroes";
 
-export const DebugMode = true;
+export const DebugMode = false;
 
 export const ScriptID = 3246316298;
 
@@ -30,15 +31,15 @@ export const WisdomRunes = {
 
 // Bugged heroes, see: https://www.reddit.com/r/DotA2/comments/1ezxpav
 export const BuggyHeroesDueToValveTooLazy = {
-    npc_dota_hero_muerta: true,
-    npc_dota_hero_marci: true,
-    npc_dota_hero_lone_druid_bear: true,
-    npc_dota_hero_primal_beast: true,
-    npc_dota_hero_dark_willow: true,
-    npc_dota_hero_elder_titan: true,
-    npc_dota_hero_hoodwink: true,
-    npc_dota_hero_wisp: true,
-    npc_dota_hero_kez: true,
+    [HeroName.Muerta]: true,
+    [HeroName.Marci]: true,
+    [HeroName.LoneDruidBear]: true,
+    [HeroName.PrimalBeast]: true,
+    [HeroName.DarkWillow]: true,
+    [HeroName.ElderTitan]: true,
+    [HeroName.Hoodwink]: true,
+    [HeroName.IO]: true,
+    [HeroName.Kez]: true,
 };
 
 export const HighGroundTowers = [Tower.Top3, Tower.Mid3, Tower.Bot3, Tower.Base1, Tower.Base2];
@@ -53,14 +54,137 @@ export const NonTier1Towers = [Tower.Top2, Tower.Mid2, Tower.Bot2, Tower.Top3, T
 
 export const CachedVarsCleanTime = 5;
 
-const SpecialAOEHeroes = [
-    "npc_dota_hero_axe",
-    "npc_dota_hero_enigma",
-    "npc_dota_hero_earthshaker",
-    "npc_dota_hero_invoker",
-    "npc_dota_hero_sand_king",
-    "npc_dota_hero_troll_warlord",
-];
+const SpecialAOEHeroes = [HeroName.Axe, HeroName.Enigma, HeroName.Earthshaker, HeroName.Invoker, HeroName.SandKing, HeroName.TrollWarlord];
+
+/**
+ * A mapping from hero name to an array of important spell(s)
+ * that have long cooldowns and can drastically change a team fight.
+ */
+export const ImportantSpells: Record<string, string[]> = {
+    // Strength
+    npc_dota_hero_alchemist: ["alchemist_chemical_rage"],
+    npc_dota_hero_axe: ["axe_culling_blade"],
+    npc_dota_hero_bristleback: ["bristleback_bristleback"],
+    npc_dota_hero_centaur: ["centaur_stampede"],
+    npc_dota_hero_chaos_knight: ["chaos_knight_phantasm"],
+    npc_dota_hero_dawnbreaker: ["dawnbreaker_solar_guardian"],
+    npc_dota_hero_doom_bringer: ["doom_bringer_doom"],
+    npc_dota_hero_dragon_knight: ["dragon_knight_elder_dragon_form"],
+    npc_dota_hero_earth_spirit: ["earth_spirit_magnetize"],
+    npc_dota_hero_earthshaker: ["earthshaker_echo_slam"],
+    npc_dota_hero_elder_titan: ["elder_titan_earth_splitter"],
+    // huskar missing from list – add as needed
+    npc_dota_hero_kunkka: ["kunkka_ghostship"],
+    npc_dota_hero_legion_commander: ["legion_commander_duel"],
+    npc_dota_hero_life_stealer: ["life_stealer_rage"],
+    npc_dota_hero_mars: ["mars_arena_of_blood"],
+    npc_dota_hero_night_stalker: ["night_stalker_darkness"],
+    npc_dota_hero_omniknight: ["omniknight_guardian_angel"],
+    npc_dota_hero_primal_beast: ["primal_beast_pulverize"],
+    // pudge, slardar, spirit_breaker missing
+    npc_dota_hero_sven: ["sven_gods_strength"],
+    npc_dota_hero_tidehunter: ["tidehunter_ravage"],
+    // timbersaw, tiny missing
+    npc_dota_hero_treant: ["treant_overgrowth"],
+    // tusk missing
+    npc_dota_hero_undying: ["undying_tombstone", "undying_flesh_golem"],
+    // Wraith King’s internal name was once skeleton_king. Keep as needed:
+    npc_dota_hero_skeleton_king: ["skeleton_king_reincarnation"],
+
+    // Agility
+    npc_dota_hero_antimage: ["antimage_mana_void"],
+    // arc_warden missing
+    npc_dota_hero_bloodseeker: ["bloodseeker_rupture"],
+    // bounty_hunter missing
+    npc_dota_hero_clinkz: ["clinkz_burning_barrage"],
+    // drow_ranger, ember_spirit missing
+    npc_dota_hero_faceless_void: ["faceless_void_chronosphere"],
+    npc_dota_hero_gyrocopter: ["gyrocopter_flak_cannon"],
+    npc_dota_hero_hoodwink: ["hoodwink_sharpshooter"],
+    npc_dota_hero_juggernaut: ["juggernaut_omni_slash"],
+    // keeling? Possibly a custom or incomplete
+    npc_dota_hero_luna: ["luna_eclipse"],
+    npc_dota_hero_medusa: ["medusa_stone_gaze"],
+    // meepo missing
+    npc_dota_hero_monkey_king: ["monkey_king_wukongs_command"],
+    // morphling missing
+    npc_dota_hero_naga_siren: ["naga_siren_song_of_the_siren"],
+    // phantom_assassin, phantom_lancer missing
+    npc_dota_hero_razor: ["razor_static_link"],
+    // riki missing
+    npc_dota_hero_nevermore: ["nevermore_requiem"],
+    npc_dota_hero_slark: ["slark_shadow_dance"],
+    // sniper missing
+    npc_dota_hero_spectre: ["spectre_haunt_single", "spectre_haunt"],
+    // templar_assassin missing
+    npc_dota_hero_terrorblade: ["terrorblade_metamorphosis", "terrorblade_sunder"],
+    npc_dota_hero_troll_warlord: ["troll_warlord_battle_trance"],
+    npc_dota_hero_ursa: ["ursa_enrage"],
+    npc_dota_hero_viper: ["viper_viper_strike"],
+    npc_dota_hero_weaver: ["weaver_time_lapse"],
+
+    // Intelligence
+    npc_dota_hero_ancient_apparition: ["ancient_apparition_ice_blast"],
+    npc_dota_hero_crystal_maiden: ["crystal_maiden_freezing_field"],
+    npc_dota_hero_death_prophet: ["death_prophet_exorcism"],
+    npc_dota_hero_disruptor: ["disruptor_static_storm"],
+    // enchantress missing
+    npc_dota_hero_grimstroke: ["grimstroke_dark_portrait", "grimstroke_soul_chain"],
+    npc_dota_hero_jakiro: ["jakiro_macropyre"],
+    // keeper_of_the_light, leshrac missing
+    npc_dota_hero_lich: ["lich_chain_frost"],
+    npc_dota_hero_lina: ["lina_laguna_blade"],
+    npc_dota_hero_lion: ["lion_finger_of_death"],
+    npc_dota_hero_muerta: ["muerta_pierce_the_veil"],
+    // furion (nature’s prophet) missing
+    npc_dota_hero_necrolyte: ["necrolyte_ghost_shroud", "necrolyte_reapers_scythe"],
+    npc_dota_hero_oracle: ["oracle_false_promise"],
+    npc_dota_hero_obsidian_destroyer: ["obsidian_destroyer_sanity_eclipse"],
+    npc_dota_hero_puck: ["puck_dream_coil"],
+    npc_dota_hero_pugna: ["pugna_life_drain"],
+    npc_dota_hero_queenofpain: ["queenofpain_sonic_wave"],
+    npc_dota_hero_ringmaster: ["ringmaster_wheel"], // likely custom hero
+    // rubick missing
+    npc_dota_hero_shadow_demon: ["shadow_demon_disruption", "shadow_demon_demonic_cleanse", "shadow_demon_demonic_purge"],
+    npc_dota_hero_shadow_shaman: ["shadow_shaman_mass_serpent_ward"],
+    npc_dota_hero_silencer: ["silencer_global_silence"],
+    npc_dota_hero_skywrath_mage: ["skywrath_mage_mystic_flare"],
+    // storm_spirit, tinker missing
+    npc_dota_hero_warlock: ["warlock_fatal_bonds", "warlock_golem"],
+    npc_dota_hero_witch_doctor: ["witch_doctor_voodoo_switcheroo", "witch_doctor_death_ward"],
+    npc_dota_hero_zuus: ["zuus_thundergods_wrath"],
+
+    // Universal (7.33+ added a new type, but you can keep them sorted however you wish)
+    npc_dota_hero_abaddon: ["abaddon_borrowed_time"],
+    npc_dota_hero_bane: ["bane_fiends_grip"],
+    npc_dota_hero_batrider: ["batrider_flaming_lasso"],
+    npc_dota_hero_beastmaster: ["beastmaster_primal_roar"],
+    npc_dota_hero_brewmaster: ["brewmaster_primal_split"],
+    npc_dota_hero_broodmother: ["broodmother_insatiable_hunger"],
+    npc_dota_hero_chen: ["chen_hand_of_god"],
+    // clockwerk missing
+    npc_dota_hero_dark_seer: ["dark_seer_wall_of_replica"],
+    npc_dota_hero_dark_willow: ["dark_willow_terrorize"],
+    // dazzle missing
+    npc_dota_hero_enigma: ["enigma_black_hole"],
+    // invoker, io, lone_druid missing
+    npc_dota_hero_lycan: ["lycan_shapeshift"],
+    npc_dota_hero_magnataur: ["magnataur_reverse_polarity"],
+    npc_dota_hero_marci: ["marci_unleash"],
+    // mirana, nyx_assassin missing
+    npc_dota_hero_pangolier: ["pangolier_gyroshell"],
+    npc_dota_hero_phoenix: ["phoenix_supernova"],
+    npc_dota_hero_sand_king: ["sandking_epicenter"],
+    npc_dota_hero_snapfire: ["snapfire_mortimer_kisses"],
+    // techies missing
+    npc_dota_hero_vengefulspirit: ["vengefulspirit_nether_swap"],
+    npc_dota_hero_venomancer: ["venomancer_noxious_plague"],
+    // visage, void_spirit missing
+    npc_dota_hero_windrunner: ["windrunner_focusfire"],
+    npc_dota_hero_winter_wyvern: ["winter_wyvern_cold_embrace", "winter_wyvern_winters_curse"],
+};
+
+export const ImportantItems: string[] = ["item_black_king_bar", "item_refresher"];
 
 // Global array to store avoidance zones
 let avoidanceZones: AvoidanceZone[] = [];
@@ -170,6 +294,11 @@ export function GetTeamFountainTpPoint(): Vector {
     return RadiantFountainTpPoint;
 }
 
+/**
+ * Shuffle an array.
+ * @param tbl - The array to shuffle.
+ * @returns The shuffled array.
+ */
 export function Shuffle<T>(tbl: T[]): T[] {
     for (let i = tbl.length - 1; i >= 1; i--) {
         const j = RandomInt(1, i + 1); // Possibly? A bug with +1, couldn't wrap my head around ts/lua indexes
@@ -182,7 +311,7 @@ export function Shuffle<T>(tbl: T[]): T[] {
 
 export function SetFrameProcessTime(bot: Unit): void {
     if (bot.frameProcessTime === null) {
-        bot.frameProcessTime = FrameProcessTime + math.fmod(bot.GetPlayerID() / 1000, FrameProcessTime / 10) * 2;
+        bot.frameProcessTime = FrameProcessTime; // + math.fmod(bot.GetPlayerID() / 1000, FrameProcessTime / 10) * 2;
     }
 }
 
@@ -390,6 +519,19 @@ export function NumHumanBotPlayersInTeam(team: Team): LuaMultiReturn<[number, nu
     return $multi(humanCountCache[team][0], humanCountCache[team][1]);
 }
 
+export function GetNearbyAllyAverageHpPercent(bot: Unit, radius: number): number {
+    let averageHpPercent = 0;
+    const teamPlayers = GetTeamPlayers(bot.GetTeam());
+    for (let playerdId of teamPlayers) {
+        const ally = GetTeamMember(playerdId);
+        if (ally && ally.IsAlive() && GetUnitToUnitDistance(ally, bot) <= radius) {
+            averageHpPercent += ally.GetHealth() / ally.GetMaxHealth();
+        }
+    }
+
+    return averageHpPercent / teamPlayers.length;
+}
+
 export function IsWithoutSpellShield(npcEnemy: Unit): boolean {
     return (
         !npcEnemy.HasModifier("modifier_item_sphere_target") &&
@@ -558,6 +700,11 @@ export function QueryCounters(heroId: number) {
         PrintTable(res);
     });
 }
+export function InitiStats() {
+    Request.GetUUID(function (uuid) {
+        print("uuid=" + uuid);
+    });
+}
 
 export function GetLoneDruid(bot: Unit): any {
     let res = LoneDruid[bot.GetPlayerID()];
@@ -715,6 +862,36 @@ export function IsAnyOfTheBuildingsAlive(buildings: (Unit | null)[]): boolean {
     return false;
 }
 
+// @ts-ignore
+let IsHumanPlayerInTeamCache: { [key: number]: boolean } = {
+    [Team.Radiant]: null,
+    [Team.Dire]: null,
+};
+
+export function IsHumanPlayerInAnyTeam(): boolean {
+    return IsHumanPlayerInTeam(Team.Radiant) || IsHumanPlayerInTeam(Team.Dire);
+}
+
+export function IsHumanPlayerInTeam(team: Team): boolean {
+    if (IsHumanPlayerInTeamCache[team] !== null) {
+        return IsHumanPlayerInTeamCache[team];
+    }
+
+    for (let playerdId of GetTeamPlayers(team)) {
+        if (!IsPlayerBot(playerdId)) {
+            IsHumanPlayerInTeamCache[team] = true;
+            return true;
+        }
+    }
+    IsHumanPlayerInTeamCache[team] = false;
+    return false;
+}
+
+/**
+ * Get the enemy hero by player id.
+ * @param id - The player id to check.
+ * @returns The enemy hero if found, null otherwise.
+ */
 export function GetEnemyHeroByPlayerId(id: number): Unit | null {
     for (const hero of GetUnitList(UnitType.EnemyHeroes)) {
         if (IsValidHero(hero) && hero.GetPlayerID() == id) {
@@ -724,10 +901,21 @@ export function GetEnemyHeroByPlayerId(id: number): Unit | null {
     return null;
 }
 
+/**
+ * Check if the unit is truely invisible.
+ * @param unit - The unit to check.
+ * @returns True if the unit is truely invisible, false otherwise.
+ */
 export function IsTruelyInvisible(unit: Unit): boolean {
     return unit.IsInvisible() && !unit.HasModifier("modifier_item_dustofappearance") && !RecentlyTookDamage(unit, 1.5); // use 1.5s because invisibility may have delayed effect.
 }
 
+/**
+ * Check if the unit has a modifier containing a specific name.
+ * @param unit - The unit to check.
+ * @param name - The name to check.
+ * @returns True if the unit has a modifier containing the name, false otherwise.
+ */
 export function HasModifierContainsName(unit: Unit, name: string): boolean {
     if (!IsValidUnit(unit)) {
         return false;
@@ -742,6 +930,12 @@ export function HasModifierContainsName(unit: Unit, name: string): boolean {
     return false;
 }
 
+/**
+ * Check if the unit is near an enemy second tier tower.
+ * @param unit - The unit to check.
+ * @param range - The range to check.
+ * @returns True if the unit is near an enemy second tier tower, false otherwise.
+ */
 export function IsNearEnemySecondTierTower(unit: Unit, range: number): boolean {
     for (const towerId of SecondTierTowers) {
         const tower = GetTower(GetOpposingTeam(), towerId);
@@ -752,6 +946,11 @@ export function IsNearEnemySecondTierTower(unit: Unit, range: number): boolean {
     return false;
 }
 
+/**
+ * Get the enemy ids near non-tier 1 towers.
+ * @param range - The range to check.
+ * @returns An object with tower ids as keys and their corresponding enemy ids.
+ */
 export function GetEnemyIdsNearNonTier1Towers(range: number) {
     let result = {} as { [key: number]: { tower: Unit; enemyIds: number[] } };
     for (const towerId of NonTier1Towers) {
@@ -767,6 +966,11 @@ export function GetEnemyIdsNearNonTier1Towers(range: number) {
     return result;
 }
 
+/**
+ * Get the non-tier 1 tower with the least enemies around.
+ * @param range - The range to check.
+ * @returns The non-tier 1 tower with the least enemies around.
+ */
 export function GetNonTier1TowerWithLeastEnemiesAround(range: number): Unit | null {
     const towerEneCounts = GetEnemyIdsNearNonTier1Towers(range);
     let minCount = 999;
@@ -785,6 +989,11 @@ export function GetNonTier1TowerWithLeastEnemiesAround(range: number): Unit | nu
     return null;
 }
 
+/**
+ * Get the closest tower or barrack to attack.
+ * @param unit - The unit to check.
+ * @returns The closest tower or barrack to attack.
+ */
 export function GetClosestTowerOrBarrackToAttack(unit: Unit): Unit | null {
     let closestBuilding: Unit | null = null;
     let closestDistance: number = Number.MAX_VALUE;
@@ -825,6 +1034,12 @@ export function GetClosestTowerOrBarrackToAttack(unit: Unit): Unit | null {
     return closestBuilding;
 }
 
+/**
+ * Check if the unit is near an enemy high ground tower.
+ * @param unit - The unit to check.
+ * @param range - The range to check.
+ * @returns True if the unit is near an enemy high ground tower, false otherwise.
+ */
 export function IsNearEnemyHighGroundTower(unit: Unit, range: number): boolean {
     for (const towerId of HighGroundTowers) {
         const tower = GetTower(GetOpposingTeam(), towerId);
@@ -835,6 +1050,11 @@ export function IsNearEnemyHighGroundTower(unit: Unit, range: number): boolean {
     return false;
 }
 
+/**
+ * Check if the team is pushing second tier or high ground.
+ * @param bot - The bot to check.
+ * @returns True if the team is pushing second tier or high ground, false otherwise.
+ */
 export function IsTeamPushingSecondTierOrHighGround(bot: Unit): boolean {
     const cachedRes = GetCachedVars("IsTeamPushingSecondTierOrHighGround" + tostring(bot.GetTeam()), 0.5);
     if (cachedRes !== null) {
@@ -847,6 +1067,11 @@ export function IsTeamPushingSecondTierOrHighGround(bot: Unit): boolean {
     return res;
 }
 
+/**
+ * Get the number of alive heroes.
+ * @param bEnemy - Whether to count enemy heroes.
+ * @returns The number of alive heroes.
+ */
 export function GetNumOfAliveHeroes(bEnemy: boolean): number {
     let count = 0;
     let nTeam = GetTeam();
@@ -863,6 +1088,10 @@ export function GetNumOfAliveHeroes(bEnemy: boolean): number {
     return count;
 }
 
+/**
+ * Count the missing enemy heroes.
+ * @returns The number of missing enemy heroes.
+ */
 export function CountMissingEnemyHeroes(): number {
     const cachedRes = GetCachedVars("CountMissingEnemyHeroes" + tostring(GetTeam()), 0.5);
     if (cachedRes !== null) {
@@ -894,6 +1123,12 @@ export function CountMissingEnemyHeroes(): number {
     return count;
 }
 
+/**
+ * Find an ally with at least a certain distance away from a bot.
+ * @param bot - The bot to check.
+ * @param nDistance - The minimum distance to check.
+ * @returns The ally if found, null otherwise.
+ */
 export function FindAllyWithAtLeastDistanceAway(bot: Unit, nDistance: number) {
     if (bot.GetTeam() !== GetTeam()) {
         print("[ERROR] Wrong usage of the method");
@@ -910,6 +1145,12 @@ export function FindAllyWithAtLeastDistanceAway(bot: Unit, nDistance: number) {
     return null;
 }
 
+/**
+ * Get the last seen enemy ids near a location.
+ * @param vLoc - The location to check.
+ * @param nDistance - The distance to check.
+ * @returns An array of enemy ids.
+ */
 export function GetLastSeenEnemyIdsNearLocation(vLoc: Vector, nDistance: number): number[] {
     let enemies = [];
     for (let playerdId of GetTeamPlayers(GetOpposingTeam())) {
@@ -929,6 +1170,12 @@ export function GetLastSeenEnemyIdsNearLocation(vLoc: Vector, nDistance: number)
     return enemies;
 }
 
+/**
+ * Get the enemy ids in teleport to a location.
+ * @param vLoc - The location to check.
+ * @param nDistance - The distance to check.
+ * @returns An array of enemy ids.
+ */
 export function GetEnemyIdsInTpToLocation(vLoc: Vector, nDistance: number): number[] {
     const enemies = [];
     for (let tp of GetIncomingTeleports()) {
@@ -939,6 +1186,12 @@ export function GetEnemyIdsInTpToLocation(vLoc: Vector, nDistance: number): numb
     return enemies;
 }
 
+/**
+ * Check if the bots should spread out.
+ * @param bot - The bot to check.
+ * @param minDistance - The minimum distance to check.
+ * @returns True if the bots should spread out, false otherwise.
+ */
 export function ShouldBotsSpreadOut(bot: Unit, minDistance: number): boolean {
     if (bot.GetNearbyHeroes(minDistance, false, BotMode.None).length < 2) {
         return false;
@@ -960,7 +1213,7 @@ export function ShouldBotsSpreadOut(bot: Unit, minDistance: number): boolean {
             } else {
                 SetCachedVars("ShouldBotsSpreadOut" + tostring(bot.GetPlayerID()), false);
             }
-            if (heroName === "npc_dota_hero_troll_warlord") {
+            if (heroName === HeroName.TrollWarlord) {
                 if (HasItem(hero, "item_bfury") && hero.HasModifier("modifier_troll_warlord_battle_trance") && hero.GetAttackRange() < 500) {
                     SetCachedVars("ShouldBotsSpreadOut" + tostring(bot.GetPlayerID()), true);
                     return true; // Troll Warlord with Battle Fury and ultimate active
@@ -972,6 +1225,12 @@ export function ShouldBotsSpreadOut(bot: Unit, minDistance: number): boolean {
     return false;
 }
 
+/**
+ * Get the ally ids in teleport to a location.
+ * @param vLoc - The location to check.
+ * @param nDistance - The distance to check.
+ * @returns An array of ally ids.
+ */
 export function GetAllyIdsInTpToLocation(vLoc: Vector, nDistance: number): number[] {
     const allies = [];
     for (let tp of GetIncomingTeleports()) {
@@ -982,6 +1241,11 @@ export function GetAllyIdsInTpToLocation(vLoc: Vector, nDistance: number): numbe
     return allies;
 }
 
+/**
+ * Check if the bot is pushing a tower in danger.
+ * @param bot - The bot to check.
+ * @returns True if the bot is pushing a tower in danger, false otherwise.
+ */
 export function IsBotPushingTowerInDanger(bot: Unit): boolean {
     const enemyTowerNearby = bot.GetNearbyTowers(1100, true).length >= 1; // want to come a bit closer to the tower and be cautious while seducing enemy to defend.
     if (!enemyTowerNearby) {
@@ -999,7 +1263,12 @@ export function IsBotPushingTowerInDanger(bot: Unit): boolean {
     return false;
 }
 
-export function GetDistanceToCloestTower(bot: Unit): LuaMultiReturn<[number, Unit | null]> {
+/**
+ * Get the distance to the closest enemy tower.
+ * @param bot - The bot to check.
+ * @returns The distance to the closest enemy tower.
+ */
+export function GetDistanceToCloestEnemyTower(bot: Unit): LuaMultiReturn<[number, Unit | null]> {
     let cTower = null;
     let cDistance = 99999;
     for (const towerId of AllTowers) {
@@ -1019,6 +1288,13 @@ export function GetDistanceToCloestTower(bot: Unit): LuaMultiReturn<[number, Uni
     return $multi(cDistance, cTower);
 }
 
+/**
+ * Get circular points around a center point.
+ * @param vCenter - The center point.
+ * @param nRadius - The radius of the circle.
+ * @param numPoints - The number of points to get.
+ * @returns An array of vectors representing the points.
+ */
 export function GetCirclarPointsAroundCenterPoint(vCenter: Vector, nRadius: number, numPoints: number): Vector[] {
     const points: Vector[] = [vCenter];
     const angleStep = 360 / numPoints;
@@ -1030,4 +1306,141 @@ export function GetCirclarPointsAroundCenterPoint(vCenter: Vector, nRadius: numb
     }
 
     return points;
+}
+
+/**
+ * Check if the ability is valid.
+ * @param ability - The ability to check.
+ * @returns True if the ability is valid, false otherwise.
+ */
+export function IsValidAbility(ability: Ability): boolean {
+    if (ability === null || ability.IsNull() || ability.GetName() === "" || ability.IsHidden() || !ability.IsTrained() || !ability.IsActivated()) {
+        return false;
+    }
+    return true;
+}
+
+/**
+ * Check if the bot has a critical spell with a cooldown greater than nDuration.
+ * @param bot - The bot to check.
+ * @param nDuration - The duration to check against.
+ * @returns True if the bot has a critical spell with a cooldown greater than nDuration, false otherwise.
+ */
+export function HasCriticalSpellWithCooldown(bot: Unit, nDuration: number): boolean {
+    const cacheKey = "HasCriticalSpellWithCooldown" + tostring(bot.GetPlayerID()) + tostring(nDuration);
+    const cachedRes = GetCachedVars(cacheKey, 2);
+    if (cachedRes !== null) {
+        return cachedRes;
+    }
+    const heroName = bot.GetUnitName();
+    if (heroName in ImportantSpells) {
+        const ability = bot.GetAbilityByName(ImportantSpells[heroName][0]);
+        if (IsValidAbility(ability) && ability.GetCooldownTimeRemaining() > nDuration) {
+            SetCachedVars(cacheKey, true);
+            return true;
+        }
+    }
+    SetCachedVars(cacheKey, false);
+    return false;
+}
+
+/**
+ * Get an item from the bot's active inventory.
+ * @param bot - The bot to check.
+ * @param itemName - The name of the item to get.
+ * @returns The item if found, null otherwise.
+ */
+export function GetItem(bot: Unit, itemName: string): Item | null {
+    return GetItemFromCountedInventory(bot, itemName, 6);
+}
+
+/**
+ * Get an item from the bot's full inventory.
+ * @param bot - The bot to check.
+ * @param itemName - The name of the item to get.
+ * @returns The item if found, null otherwise.
+ */
+export function GetItemFromFullInventory(bot: Unit, itemName: string): Item | null {
+    return GetItemFromCountedInventory(bot, itemName, 16);
+}
+
+/**
+ * Get an item from the bot's inventory with a specific total slots count.
+ * @param bot - The bot to check.
+ * @param itemName - The name of the item to get.
+ * @param count - The number of slots in inventory to check.
+ * @returns The item if found, null otherwise.
+ */
+export function GetItemFromCountedInventory(bot: Unit, itemName: string, count: number): Item | null {
+    const cacheKey = "GetItemFromCountedInventory" + tostring(bot.GetPlayerID()) + itemName + tostring(count);
+    const cachedRes = GetCachedVars(cacheKey, 2);
+    if (cachedRes !== null) {
+        return cachedRes;
+    }
+    for (let i = 0; i < count; i++) {
+        const item = bot.GetItemInSlot(i);
+
+        if (item && item.GetName() === itemName) {
+            SetCachedVars(cacheKey, item);
+            return item;
+        }
+    }
+    SetCachedVars(cacheKey, null);
+    return null;
+}
+
+/**
+ * Check if the team has a member with a critical spell in cooldown when the bot walks & arrives to the location.
+ * @param bot - The bot to check.
+ * @param targetLoc - The location to check.
+ * @returns True if the team has a member with a critical spell in cooldown, false otherwise.
+ */
+export function HasTeamMemberWithCriticalSpellInCooldown(targetLoc: Vector): boolean {
+    const cacheKey = "HasTeamMemberWithCriticalSpellInCooldown" + tostring(GetTeam()) + tostring(targetLoc.x) + tostring(targetLoc.y);
+    const cachedRes = GetCachedVars(cacheKey, 2);
+    if (cachedRes !== null) {
+        return cachedRes;
+    }
+    for (const [index, _] of GetTeamPlayers(GetTeam()).entries()) {
+        const teamMember = GetTeamMember(index);
+        if (teamMember !== null && teamMember.IsAlive()) {
+            const nDuration = GetUnitToLocationDistance(teamMember, targetLoc) / teamMember.GetCurrentMovementSpeed();
+            if (HasCriticalSpellWithCooldown(teamMember, nDuration)) {
+                SetCachedVars(cacheKey, true);
+                // print("HasTeamMemberWithCriticalSpellInCooldown: " + tostring(teamMember.GetUnitName()) + " " + tostring(nDuration));
+                return true;
+            }
+        }
+    }
+    SetCachedVars(cacheKey, false);
+    return false;
+}
+
+/**
+ * Check if the team has a member with a critical item in cooldown when the bot walks & arrives to the location.
+ * @param bot - The bot to check.
+ * @param targetLoc - The location to check.
+ * @returns True if the team has a member with a critical item in cooldown, false otherwise.
+ */
+export function HasTeamMemberWithCriticalItemInCooldown(targetLoc: Vector): boolean {
+    const cacheKey = "HasTeamMemberWithCriticalItemInCooldown" + tostring(GetTeam()) + tostring(targetLoc.x) + tostring(targetLoc.y);
+    const cachedRes = GetCachedVars(cacheKey, 2);
+    if (cachedRes !== null) {
+        return cachedRes;
+    }
+    for (const [index, _] of GetTeamPlayers(GetTeam()).entries()) {
+        const teamMember = GetTeamMember(index);
+        if (teamMember !== null && teamMember.IsAlive()) {
+            const nDuration = GetUnitToLocationDistance(teamMember, targetLoc) / teamMember.GetCurrentMovementSpeed();
+            for (const itemName of ImportantItems) {
+                const item = GetItem(teamMember, itemName);
+                if (item && item.GetCooldownTimeRemaining() > nDuration) {
+                    SetCachedVars(cacheKey, true);
+                    return true;
+                }
+            }
+        }
+    }
+    SetCachedVars(cacheKey, false);
+    return false;
 }

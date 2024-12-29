@@ -518,6 +518,7 @@ function X.ConsiderSplinterBlast()
         local nLocationAoE = bot:FindAoELocation(true, true, bot:GetLocation(), 1600, nRadius, 0, 0)
         local nInRangeEnemy = J.GetEnemiesNearLoc(nLocationAoE.targetloc, nRadius)
         if nInRangeEnemy ~= nil and #nInRangeEnemy >= 2
+        and J.Utils.IsValidUnit(nInRangeEnemy[1])
         and J.IsInRange(bot, nInRangeEnemy[1], nCastRange)
         then
             return BOT_ACTION_DESIRE_HIGH, nInRangeEnemy[1]

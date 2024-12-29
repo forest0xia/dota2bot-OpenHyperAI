@@ -73,6 +73,11 @@ local function AbilityLevelUpComplement()
 		local abilityName = sAbilityLevelUpList[1]
 		local abilityToLevelup = bot:GetAbilityByName( abilityName )
 
+		if abilityName == 'npc_dota_hero_kez'
+		and (abilityToLevelup == nil or abilityToLevelup:IsHidden()) then
+			return
+		end
+
 		-- Kez abilities
 		if botName == 'npc_dota_hero_kez' then
 			if bot.kez_mode == 'sai' then
@@ -124,11 +129,6 @@ local function AbilityLevelUpComplement()
 					end
 				end
 			end
-		end
-
-		if abilityName == 'npc_dota_hero_kez'
-		and (abilityToLevelup == nil or abilityToLevelup:IsHidden()) then
-			return
 		end
 
 		-- fix phoenix_fire_spirits can't upgrade bug.
@@ -262,57 +262,59 @@ function X.SetTalkMessage()
 		end
 	end
 
-	--一血
-	if DotaTime() < 600
-		and bot:IsAlive()
-		and nCurrentKills > nLastKillCount
-		and J.GetNumOfTeamTotalKills( false ) == 1
-		and J.GetNumOfTeamTotalKills( true ) == 0
-		and RandomInt( 1, 9 ) > 4
-	then
-		local sTauntMark = Localization.Get('got_first_blood')[RandomInt( 1, #Localization.Get('got_first_blood') )]
-		bot:ActionImmediate_Chat( sTauntMark, true )
-	end
-
-	--发问号
-	if bot:IsAlive()
-		and nCurrentGold > nLastGold + 300 * nRate
-		and nCurrentKills > nLastKillCount
-	then
-		local sTauntMark = "?"
-		if RandomInt( 1, 9 ) > 7 then sTauntMark = Localization.Get('got_a_kill')[RandomInt( 1, #Localization.Get('got_a_kill') )] end
-		if nCurrentGold > nLastGold + 800 * nRate and RandomInt( 1, 9 ) > 4 then sTauntMark = Localization.Get('got_big_kill')[RandomInt( 1, #Localization.Get('got_big_kill') )] end
-		if nCurrentGold > nLastGold + 1000 * nRate and RandomInt( 1, 9 ) > 3 then sTauntMark = Localization.Get('got_big_kill')[RandomInt( 1, #Localization.Get('got_big_kill_2') )] end
-		if nCurrentGold > nLastGold + 1500 * nRate then sTauntMark = Localization.Get('got_big_kill')[RandomInt( 1, #Localization.Get('got_big_kill_3') )] end
-		if sTauntMark ~= "?" or RandomInt( 1, 9 ) > 4 then bot:ActionImmediate_Chat( sTauntMark, true ) end
-	end
-
-	--发省略号
-	if not bot:IsAlive()
-	then
-		if nContinueKillCount >= 8
-			and nDeathReplyTime == -999
+	if Customize.Allow_Trash_Talk then
+		--一血
+		if DotaTime() < 600
+			and bot:IsAlive()
+			and nCurrentKills > nLastKillCount
+			and J.GetNumOfTeamTotalKills( false ) == 1
+			and J.GetNumOfTeamTotalKills( true ) == 0
+			and RandomInt( 1, 9 ) > 4
 		then
-			nDeathReplyTime = DotaTime()
-			nContinueKillCount = 0
+			local sTauntMark = Localization.Get('got_first_blood')[RandomInt( 1, #Localization.Get('got_first_blood') )]
+			bot:ActionImmediate_Chat( sTauntMark, true )
 		end
 
-		if nDeathReplyTime ~= -999
-			and nDeathReplyTime < DotaTime() - nTalkDelay
+		--发问号
+		if bot:IsAlive()
+			and nCurrentGold > nLastGold + 300 * nRate
+			and nCurrentKills > nLastKillCount
 		then
-			bot:ActionImmediate_Chat( Localization.Get('kill_streak_ended')[RandomInt( 1, #Localization.Get('kill_streak_ended'))], true )
-			nDeathReplyTime = -999
-			nTalkDelay = RandomInt( 36, 49 )/10
+			local sTauntMark = "?"
+			if RandomInt( 1, 9 ) > 7 then sTauntMark = Localization.Get('got_a_kill')[RandomInt( 1, #Localization.Get('got_a_kill') )] end
+			if nCurrentGold > nLastGold + 800 * nRate and RandomInt( 1, 9 ) > 4 then sTauntMark = Localization.Get('got_big_kill')[RandomInt( 1, #Localization.Get('got_big_kill') )] end
+			if nCurrentGold > nLastGold + 1000 * nRate and RandomInt( 1, 9 ) > 3 then sTauntMark = Localization.Get('got_big_kill')[RandomInt( 1, #Localization.Get('got_big_kill_2') )] end
+			if nCurrentGold > nLastGold + 1500 * nRate then sTauntMark = Localization.Get('got_big_kill')[RandomInt( 1, #Localization.Get('got_big_kill_3') )] end
+			if sTauntMark ~= "?" or RandomInt( 1, 9 ) > 4 then bot:ActionImmediate_Chat( sTauntMark, true ) end
 		end
-	end
 
-	--发"jidi, xiayiba"
-	if nCurrentKills == 0
-		and nCurrentDeaths >= nJiDiCount
-		and J.Role.NotSayJiDi()
-	then
-		bot:ActionImmediate_Chat( Localization.Get('say_end')[RandomInt( 1, #Localization.Get('say_end'))], true )
-		J.Role['sayJiDi'] = true
+		--发省略号
+		if not bot:IsAlive()
+		then
+			if nContinueKillCount >= 8
+				and nDeathReplyTime == -999
+			then
+				nDeathReplyTime = DotaTime()
+				nContinueKillCount = 0
+			end
+
+			if nDeathReplyTime ~= -999
+				and nDeathReplyTime < DotaTime() - nTalkDelay
+			then
+				bot:ActionImmediate_Chat( Localization.Get('kill_streak_ended')[RandomInt( 1, #Localization.Get('kill_streak_ended'))], true )
+				nDeathReplyTime = -999
+				nTalkDelay = RandomInt( 36, 49 )/10
+			end
+		end
+
+		--发"jidi, xiayiba"
+		if nCurrentKills == 0
+			and nCurrentDeaths >= nJiDiCount
+			and J.Role.NotSayJiDi()
+		then
+			bot:ActionImmediate_Chat( Localization.Get('say_end')[RandomInt( 1, #Localization.Get('say_end'))], true )
+			J.Role['sayJiDi'] = true
+		end
 	end
 
 	--计算连杀数量
@@ -850,11 +852,11 @@ function X.SetUseItem( hItem, hItemTarget, sCastType )
 	then
 		bot:Action_UseAbility( hItem )
 		return
-	elseif sCastType == 'unit'
+	elseif sCastType == 'unit' and type(hItemTarget) == 'table'
 	then
 		bot:Action_UseAbilityOnEntity( hItem, hItemTarget )
 		return
-	elseif sCastType == 'ground'
+	elseif sCastType == 'ground' or (hItemTarget and type(hItemTarget) ~= 'number' and type(hItemTarget) ~= 'table' and hItemTarget.x ~= nil) -- in case target is a location
 	then
 		bot:Action_UseAbilityOnLocation( hItem, hItemTarget )
 		return
@@ -3763,7 +3765,7 @@ end
 --撒旦
 X.ConsiderItemDesire["item_satanic"] = function( hItem )
 
-	local nCastRange = bot:GetAttackRange() + 150
+	local nCastRange = bot:GetAttackRange() + 250
 	local sCastType = 'none'
 	local hEffectTarget = nil
 	local sCastMotive = nil

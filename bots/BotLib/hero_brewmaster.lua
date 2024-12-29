@@ -50,17 +50,16 @@ sRoleItemsBuyList['pos_2'] = {
     "item_magic_wand",
     "item_double_bracer",
     "item_boots",
-    "item_hand_of_midas",
     "item_radiance",--
+    "item_assault",--
+    "item_ultimate_scepter",
     "item_aghanims_shard",
     "item_travel_boots",
     "item_black_king_bar",--
-    sCrimsonPipeLotus,--
-    "item_octarine_core",--
-    "item_ultimate_scepter_2",
-    "item_refresher",--
-    "item_travel_boots_2",--
+    "item_shivas_guard",--
     "item_moon_shard",
+    "item_travel_boots_2",--
+    "item_ultimate_scepter_2",
 }
 
 sRoleItemsBuyList['pos_3'] = {
@@ -78,9 +77,9 @@ sRoleItemsBuyList['pos_3'] = {
     "item_aghanims_shard",
     "item_travel_boots",
     "item_shivas_guard",--
+    "item_moon_shard",
     "item_travel_boots_2",--
     "item_ultimate_scepter_2",
-    "item_moon_shard",
 }
 
 sRoleItemsBuyList['pos_4'] = {
@@ -117,6 +116,9 @@ X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 X['sSellList'] = {
 	"item_heavens_halberd",
+	"item_quelling_blade",
+
+	"item_assault",
 	"item_quelling_blade",
 
 	"item_abyssal_blade",

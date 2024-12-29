@@ -48,62 +48,41 @@ else
 	nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList[2] )
 end
 
-local sUtility = {"item_heavens_halberd", "item_lotus_orb", "item_pipe"}
-local nUtility = sUtility[RandomInt(1, #sUtility)]
+local sRandomItem_1 = RandomInt( 1, 9 ) > 5 and "item_sphere" or "item_lotus_orb"
+
+local sRandomItem_2 = RandomInt( 1, 9 ) > 6 and "item_monkey_king_bar" or "item_butterfly"
 
 local sRoleItemsBuyList = {}
 
 sRoleItemsBuyList['pos_1'] = {
-	"item_tango",
-	"item_faerie_fire",
-	"item_clarity",
-	"item_double_branches",
-	"item_circlet",
-	"item_slippers",
-
-	"item_wraith_band",
-	"item_magic_wand",
-	"item_power_treads",
-	"item_mage_slayer",--
+	"item_ranged_carry_outfit",
 	"item_dragon_lance",
-    "item_force_staff",
-	"item_hurricane_pike",--
-	"item_orchid",
-	"item_bloodthorn",--
+	"item_yasha",
+	"item_bloodthorn",
 	"item_aghanims_shard",
-	"item_kaya_and_sange",--
+	"item_manta",
 	"item_travel_boots",
-	"item_shivas_guard",--
-	"item_travel_boots_2",--
-	"item_ultimate_scepter_2",
+	sRandomItem_1,
+	"item_hurricane_pike",
+	sRandomItem_2,
 	"item_moon_shard",
+	"item_travel_boots_2",
+
 }
 
 sRoleItemsBuyList['pos_2'] = {
-	"item_tango",
-	"item_faerie_fire",
-	"item_clarity",
-	"item_double_branches",
-	"item_circlet",
-	"item_slippers",
-
-	"item_bottle",
-	"item_magic_wand",
-	"item_wraith_band",
-	"item_power_treads",
-	"item_mage_slayer",--
-	"item_orchid",
-	"item_bloodthorn",--
+	"item_mid_outfit",
 	"item_dragon_lance",
-    "item_force_staff",
-	"item_hurricane_pike",--
+	"item_yasha",
+	"item_bloodthorn",
 	"item_aghanims_shard",
-	"item_kaya_and_sange",--
+	"item_manta",
 	"item_travel_boots",
-	"item_shivas_guard",--
-	"item_travel_boots_2",--
-	"item_ultimate_scepter_2",
+	sRandomItem_1,
+	"item_hurricane_pike",
+	sRandomItem_2,
 	"item_moon_shard",
+	"item_travel_boots_2",
 }
 
 sRoleItemsBuyList['pos_3'] = {
@@ -118,10 +97,11 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_power_treads",
 	"item_mage_slayer",--
 	"item_dragon_lance",
-	nUtility,--
+	sRandomItem_1,--
 	"item_black_king_bar",--
 	"item_aghanims_shard",
 	"item_hurricane_pike",--
+	"item_butterfly",
 	"item_sheepstick",--
 	"item_travel_boots_2",--
 	"item_ultimate_scepter_2",
@@ -138,6 +118,9 @@ X['sSellList'] = {
 
 	"item_black_king_bar",
 	"item_quelling_blade",
+
+	"item_mage_slayer",--
+	"item_butterfly",
 
 }
 

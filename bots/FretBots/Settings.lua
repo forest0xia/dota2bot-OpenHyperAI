@@ -1071,7 +1071,7 @@ end
 
 function Settings:PostGameTimer()
 	Timers:RemoveTimer(postGameTimerName)
-	local mData = Utilities:GetMatchData()
+	local mData = Utilities:GetMatchData(AllUnits)
 	mData.cheated_list = cheatedList
 	mData.fretbots = {
 		difficulty = Settings.difficulty,
@@ -1084,8 +1084,12 @@ function Settings:PostGameTimer()
 end
 
 function PostGameCallback(resJsonObj)
-	if resJsonObj.allowed_diff and resJsonObj.allowed_diff > Settings.difficulty then
-        Utilities:Print(string.format(Localization.Get('fret_new_diff'), resJsonObj.allowed_diff), MSG_WARNING)
+	if resJsonObj.allowed_diff then
+		if resJsonObj.allowed_diff > Settings.difficulty then
+			Utilities:Print(string.format(Localization.Get('fret_new_diff'), resJsonObj.allowed_diff), MSG_WARNING)
+		else
+			-- Utilities:Print(string.format(Localization.Get('fret_no_new_diff'), resJsonObj.allowed_diff), MSG_WARNING)
+		end
     end
 end
 

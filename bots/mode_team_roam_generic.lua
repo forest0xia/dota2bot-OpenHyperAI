@@ -163,13 +163,16 @@ function GetDesire()
 	-- end
 
 	-- 如果在上高，对面人活着，其他队友活着却不在附近，赶紧溜去其他地方游走
-	if IsShouldFindTeammates and goToTargetAlly then
+	if IsShouldFindTeammates and goToTargetAlly and not bot:WasRecentlyDamagedByAnyHero(5) then
 		return BOT_ACTION_DESIRE_ABSOLUTE * 0.98
 	elseif (#nearbyAllies <= 2 or nAliveEnemies > #nearbyAllies)
 	and J.GetDistanceFromAncient( bot, true ) < 5500
+	and not bot:WasRecentlyDamagedByAnyHero(5)
 	and #J.Utils.GetLastSeenEnemyIdsNearLocation(bot:GetLocation(), 2000) == 0
 	-- and #nearbyEnemies >= #nearbyAllies
 	and not J.IsCore(bot)
+	and not J.IsAttacking(bot)
+	and not J.IsDefending(bot)
 	and (J.IsPushing(bot) or J.IsFarming( bot ) or J.IsShopping( bot )) then
 		goToTargetAlly = J.Utils.FindAllyWithAtLeastDistanceAway(bot, 1600)
 		if goToTargetAlly then
@@ -182,7 +185,9 @@ function GetDesire()
 
 	if bot:GetActiveModeDesire() < 0.15 and DotaTime() > 600
 	and #nearbyEnemies == 0
-	and not bot:WasRecentlyDamagedByAnyHero(2)
+	and not bot:WasRecentlyDamagedByAnyHero(5)
+	and not J.IsDefending(bot)
+	and not J.IsAttacking(bot)
 	and not J.IsCore(bot) then
 		goToTargetAlly = J.Utils.FindAllyWithAtLeastDistanceAway(bot, 1600)
 		if goToTargetAlly then
@@ -1753,7 +1758,7 @@ function X.ConsiderHelpWhenCoreIsTargeted()
 
 	if  nClosestCore ~= nil
 	and J.GetHP(nClosestCore) > 0.2
-	and (not J.IsCore(bot) or (J.IsCore(bot) and (not J.IsInLaningPhase() or J.IsInRange(bot, nClosestCore, 1600))))
+	and (not J.IsCore(bot) or bot.isBear or (J.IsCore(bot) and (not J.IsInLaningPhase() or J.IsInRange(bot, nClosestCore, 1600))))
 	and not J.IsGoingOnSomeone(bot)
 	and not (J.IsRetreating(bot) and nModeDesire > 0.8)
 	then
@@ -2396,7 +2401,7 @@ function TrySellOrDropItem()
 		lastCheckBotToDropTime = DotaTime()
 
 		-- 再尝试丢/卖掉
-		if Utils.CountBackpackEmptySpace(bot) <= 1 and bot:GetLevel() > 8 then
+		if bot:GetLevel() > 8 and bot:GetNetWorth() >= 18000 and Utils.CountBackpackEmptySpace(bot) <= 1 then
 			for i = 1, #Item['tEarlyConsumableItem']
 			do
 				local itemName = Item['tEarlyConsumableItem'][i]
@@ -2406,7 +2411,7 @@ function TrySellOrDropItem()
 					local distance = bot:DistanceFromFountain()
 					if distance <= 300 then
 						bot:ActionImmediate_SellItem( bot:GetItemInSlot( itemSlot ))
-					elseif bot:GetNetWorth() >= 15000 and distance >= 3000 then
+					elseif distance >= 3000 then
 						bot:Action_DropItem( bot:GetItemInSlot( itemSlot ), bot:GetLocation() )
 					end
 				end

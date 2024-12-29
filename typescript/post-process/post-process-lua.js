@@ -1,12 +1,12 @@
-const fs = require('fs');
-const path = require('path');
+const fs = require("fs");
+const path = require("path");
 
 // Define the root directory containing the generated Lua files
-const luaRootDirectory = path.join(__dirname, '../bots');
+const luaRootDirectory = path.join(__dirname, "../../bots");
 
 // Function to replace paths in a Lua file
 function replacePathsInFile(filePath) {
-    fs.readFile(filePath, 'utf8', (err, data) => {
+    fs.readFile(filePath, "utf8", (err, data) => {
         if (err) {
             console.error(`Error reading file ${filePath}:`, err);
             return;
@@ -18,23 +18,23 @@ function replacePathsInFile(filePath) {
         const patterns = [
             {
                 regex: /require\("bots\.([^"]+)"\)/g,
-                type: 'require',
-                style: 'dots',
+                type: "require",
+                style: "dots",
             },
             {
                 regex: /require\("bots\/([^"]+)"\)/g,
-                type: 'require',
-                style: 'slashes',
+                type: "require",
+                style: "slashes",
             },
             {
                 regex: /dofile\("bots\.([^"]+)"\)/g,
-                type: 'dofile',
-                style: 'dots',
+                type: "dofile",
+                style: "dots",
             },
             {
                 regex: /dofile\("bots\/([^"]+)"\)/g,
-                type: 'dofile',
-                style: 'slashes',
+                type: "dofile",
+                style: "slashes",
             },
         ];
 
@@ -45,8 +45,8 @@ function replacePathsInFile(filePath) {
         patterns.forEach(({ regex, type, style }) => {
             updatedData = updatedData.replace(regex, (match, p1) => {
                 let newPath;
-                if (style === 'dots') {
-                    newPath = `GetScriptDirectory().."/${p1.replace(/\./g, '/')}"`;
+                if (style === "dots") {
+                    newPath = `GetScriptDirectory().."/${p1.replace(/\./g, "/")}"`;
                 } else {
                     newPath = `GetScriptDirectory().."/${p1}"`;
                 }
@@ -58,7 +58,7 @@ function replacePathsInFile(filePath) {
 
         // Write the updated content back to the file if changes were made
         if (hasChanges) {
-            fs.writeFile(filePath, updatedData, 'utf8', (err) => {
+            fs.writeFile(filePath, updatedData, "utf8", err => {
                 if (err) {
                     console.error(`Error writing file ${filePath}:`, err);
                 } else {
@@ -79,13 +79,13 @@ function processDirectory(directory) {
             return;
         }
 
-        entries.forEach((entry) => {
+        entries.forEach(entry => {
             const entryPath = path.join(directory, entry.name);
 
             if (entry.isDirectory()) {
                 // Recursively process subdirectories
                 processDirectory(entryPath);
-            } else if (entry.isFile() && entry.name.endsWith('.lua')) {
+            } else if (entry.isFile() && entry.name.endsWith(".lua")) {
                 // Process Lua files
                 replacePathsInFile(entryPath);
             }

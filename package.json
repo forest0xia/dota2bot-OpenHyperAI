@@ -12,10 +12,10 @@
         "typescript-to-lua": "^1.26.2"
     },
     "scripts": {
-        "build": "tstl && node ./post-process/post-process-lua.js",
+        "build": "tstl && node ./typescript/post-process/post-process-lua.js",
         "dev": "tstl --watch",
         "prettier": "prettier ./bots ./typescript --write",
-        "update-version": "node ./post-process/update-version.js",
-        "release": "node ./post-process/update-version.js && npm run build && npm run prettier"
+        "update-version": "node ./typescript/post-process/update-version.js",
+        "release": "node ./typescript/post-process/update-version.js && npm run build && npm run prettier"
     }
 }

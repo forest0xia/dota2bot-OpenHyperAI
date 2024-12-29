@@ -304,11 +304,6 @@ ____exports.GetPositionForCM = function(bot)
         if role ~= nil then
             return role
         end
-        print("[WARNING] Cannot determine the role of an enemy bot. Return default pos as 3")
-        print(
-            "Stack Trace:",
-            debug.traceback()
-        )
         return 3
     end
     local lane = bot:GetAssignedLane()
@@ -397,15 +392,9 @@ ____exports.GetPosition = function(bot)
     bot.assignedRole = role
     if GetTeam() ~= bot:GetTeam() then
         role = GetEnemyPosition(bot:GetPlayerID())
-        print((("[WARNING] Trying to get role for enemy. The estimated role is: " .. tostring(role)) .. ", for bot: ") .. unitName)
         if role ~= nil then
             return role
         end
-        print("[WARNING] Cannot determine the role of an enemy bot. Return default pos as 3")
-        print(
-            "Stack Trace:",
-            debug.traceback()
-        )
         return 3
     end
     if role == nil and GetGameState() ~= GameState.PreGame then

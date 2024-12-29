@@ -283,8 +283,8 @@ export const GetPositionForCM = function (bot: Unit) {
         if (role != null) {
             return role;
         }
-        print("[WARNING] Cannot determine the role of an enemy bot. Return default pos as 3");
-        print("Stack Trace:", debug.traceback());
+        // print("[WARNING] Cannot determine the role of an enemy bot. Return default pos as 3");
+        // print("Stack Trace:", debug.traceback());
         return 3;
     }
 
@@ -377,12 +377,12 @@ export const GetPosition = function (bot: Unit) {
     if (GetTeam() !== bot.GetTeam()) {
         // Trying to get role for enemy
         role = GetEnemyPosition(bot.GetPlayerID());
-        print("[WARNING] Trying to get role for enemy. The estimated role is: " + role + ", for bot: " + unitName);
+        // print("[WARNING] Trying to get role for enemy. The estimated role is: " + role + ", for bot: " + unitName);
         if (role != null) {
             return role;
         }
-        print("[WARNING] Cannot determine the role of an enemy bot. Return default pos as 3");
-        print("Stack Trace:", debug.traceback());
+        // print("[WARNING] Cannot determine the role of an enemy bot. Return default pos as 3");
+        // print("Stack Trace:", debug.traceback());
         return 3;
     }
 

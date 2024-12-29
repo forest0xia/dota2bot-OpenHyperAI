@@ -34,7 +34,7 @@ local gankGapTime = 3 * 60 -- don't roam again within this duration after roamin
 local lastStaticLinkDebuffStack = 0
 local AnyUnitAffectedByChainFrost = false
 local ShouldBotsSpreadOut = false
-local nChainFrostBounceDistance = 600
+local nChainFrostBounceDistance = 600 + 150
 local cachedTombstoneZombieSlowState = 0
 local nInRangeEnemy, nInRangeAlly, allyTowers, enemyTowers, trySeduce, shouldTempRetreat, botTarget, shouldGoBackToFountain, nInCloseRangeEnemy, nInCloseRangeAlly
 
@@ -49,7 +49,7 @@ function GetDesire()
 
 	trySeduce = false
 	shouldTempRetreat = false
-	TPScroll = J.GetItem2(bot, 'item_tpscroll')
+	TPScroll = J.Utils.GetItemFromFullInventory(bot, 'item_tpscroll')
 	botTarget = J.GetProperTarget(bot)
 	nInRangeEnemy = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
 	nInRangeAlly = bot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
@@ -196,7 +196,7 @@ function ThinkIndividualRoaming()
 			if J.Item.GetItemCharges(bot, 'item_tpscroll') >= 1
 			and nInRangeEnemy ~= nil and #nInRangeEnemy == 0
 			then
-				if bot:GetUnitName() == 'npc_dota_hero_furion'
+				if botName == 'npc_dota_hero_furion'
 				then
 					local Teleportation = bot:GetAbilityByName('furion_teleportation')
 					if Teleportation:IsTrained()
@@ -664,6 +664,8 @@ function ThinkIndividualRoaming()
 	end
 
 	if botName == 'npc_dota_hero_lone_druid_bear' then
+		if bot:IsChanneling() or bot:IsUsingAbility() then return BOT_MODE_DESIRE_NONE end
+
 		local hero = J.Utils.GetLoneDruid(bot).hero
 		local hasUltimateScepter = J.Item.HasItem(bot, 'item_ultimate_scepter') or bot:HasModifier('modifier_item_ultimate_scepter_consumed')
 		local distanceFromHero = GetUnitToUnitDistance(J.Utils.GetLoneDruid(bot).hero, bot)
@@ -671,6 +673,7 @@ function ThinkIndividualRoaming()
 
 		if J.IsValidHero(hero)
 		and not hasUltimateScepter
+		and J.GetHP(hero) > 0.2
 		then
 			-- has enemy near by.
 			if #nInRangeEnemy >= 1 then
@@ -795,6 +798,14 @@ function ThinkGeneralRoaming()
 		end
 	end
 
+	if bot:GetActiveMode() == BOT_MODE_ITEM
+	and bot:GetActiveModeDesire() > BOT_MODE_DESIRE_VERYHIGH
+	and (botName == 'npc_dota_hero_lone_druid_bear' or bot:HasModifier('modifier_arc_warden_tempest_double') or J.IsMeepoClone(bot))
+	then
+		bot:Action_MoveToLocation(J.GetTeamFountain())
+		return
+	end
+
 	if bot:HasModifier("modifier_item_mask_of_madness_berserk") then
 		local botTarget = J.GetProperTarget(bot)
 		if J.IsValid(botTarget) then
@@ -838,6 +849,10 @@ function ThinkGeneralRoaming()
 	if bot:HasModifier("modifier_razor_static_link_debuff") then
 		MoveAwayFromTarget(GetTargetEnemy("npc_dota_hero_razor"), 1200)
 		return
+	end
+
+	if botName == 'npc_dota_hero_lone_druid' then
+		bot:Action_MoveToLocation(J.GetTeamFountain())
 	end
 
 	if bot:HasModifier("modifier_ursa_fury_swipes_damage_increase") then
@@ -1089,7 +1104,7 @@ end
 
 
 function TinkerWaitInBaseAndHeal()
-	if bot:GetUnitName() == 'npc_dota_hero_tinker'
+	if botName == 'npc_dota_hero_tinker'
 	and bot.healInBase
 	and GetUnitToLocationDistance(bot, J.GetTeamFountain()) < 500
 	then
@@ -1140,7 +1155,7 @@ end
 -- Just for TP. Too much back and forth when "forcing" them try to walk to fountain; <- not reliable and misses farm.
 function ConsiderWaitInBaseToHeal()
 	local ProphetTP = nil
-	if bot:GetUnitName() == 'npc_dota_hero_furion'
+	if botName == 'npc_dota_hero_furion'
 	then
 		ProphetTP = bot:GetAbilityByName('furion_teleportation')
 	end
@@ -1154,9 +1169,9 @@ function ConsiderWaitInBaseToHeal()
 	then
 		if (J.GetHP(bot) < 0.25
 			and bot:GetHealthRegen() < 15
-			and bot:GetUnitName() ~= 'npc_dota_hero_huskar'
-			and bot:GetUnitName() ~= 'npc_dota_hero_slark'
-			and bot:GetUnitName() ~= 'npc_dota_hero_necrolyte'
+			and botName ~= 'npc_dota_hero_huskar'
+			and botName ~= 'npc_dota_hero_slark'
+			and botName ~= 'npc_dota_hero_necrolyte'
 			and not bot:HasModifier('modifier_tango_heal')
 			and not bot:HasModifier('modifier_flask_healing')
 			and not bot:HasModifier('modifier_alchemist_chemical_rage')
@@ -1169,7 +1184,7 @@ function ConsiderWaitInBaseToHeal()
 			and not bot:HasModifier('modifier_item_urn_heal'))
 		or (((J.IsCore(bot) and J.GetMP(bot) < 0.25 and (J.GetHP(bot) < 0.75 and bot:GetHealthRegen() < 10))
 				or ((not J.IsCore(bot) and J.GetMP(bot) < 0.25 and bot:GetHealthRegen() < 10)))
-			and bot:GetUnitName() ~= 'npc_dota_hero_necrolyte'
+			and botName ~= 'npc_dota_hero_necrolyte'
 			and not (J.IsPushing(bot) and #J.GetAlliesNearLoc(bot:GetLocation(), 900) >= 3))
 		then
 			ShouldWaitInBaseToHeal = true
@@ -1186,7 +1201,7 @@ function ConsiderHeroMoveOutsideFountain()
 
 	if (bot:HasModifier('modifier_fountain_aura_buff') -- in fountain with high hp
 		and J.GetHP(bot) > 0.95)
-	and (bot:GetUnitName() == 'npc_dota_hero_huskar' -- is huskar (ignore mana)
+	and (botName == 'npc_dota_hero_huskar' -- is huskar (ignore mana)
 		or (bot:GetActiveMode() == BOT_MODE_ITEM -- is stuck in item mode
 			and J.GetMP(bot) > 0.95))
 	then
@@ -1200,7 +1215,7 @@ function CanBeAffectedByChainFrost()
 	if bot:HasModifier("modifier_black_king_bar_immune") or bot:IsMagicImmune() then
 		return false
 	end
-	local searchRange = nChainFrostBounceDistance + 50
+	local searchRange = nChainFrostBounceDistance
 	if J.HasEnemyIceSpireNearby(bot, searchRange) then return true end
 	if bot:HasModifier('modifier_lich_chainfrost_slow') then
 		local allyCreeps = bot:GetNearbyCreeps(searchRange, false)
@@ -1255,6 +1270,14 @@ function ConsiderGeneralRoamingInConditions()
 		end
 	end
 
+	if botName == 'npc_dota_hero_lone_druid'
+	and not bot:HasModifier("modifier_lone_druid_true_form") then
+		if nInRangeEnemy and J.IsValidHero(nInRangeEnemy[1])
+		and J.IsInRange(bot, nInRangeEnemy[1], math.max(bot:GetAttackRange(), nInRangeEnemy[1]:GetAttackRange()) - 250) then
+			return 0.98
+		end
+	end
+
 	local quillSparyStack = J.GetModifierCount(bot, "modifier_bristleback_quill_spray")
 	if quillSparyStack >= 3 then -- 14s
 		local enemy = GetTargetEnemy("npc_dota_hero_bristleback")
@@ -1280,6 +1303,19 @@ function ConsiderGeneralRoamingInConditions()
 		end
 	end
 
+	if bot:GetActiveMode() == BOT_MODE_ITEM
+	and bot:GetActiveModeDesire() > BOT_MODE_DESIRE_VERYHIGH
+	and (botName == 'npc_dota_hero_lone_druid_bear' or bot:HasModifier('modifier_arc_warden_tempest_double') or J.IsMeepoClone(bot))
+	then
+		for _, droppedItem in pairs(GetDroppedItemList()) do
+            if droppedItem ~= nil
+            and droppedItem.item:GetName() == 'item_aegis'
+            and GetUnitToLocationDistance(bot, droppedItem.location) < 300
+            then
+                return BOT_ACTION_DESIRE_ABSOLUTE
+            end
+        end
+	end
 
 	-- 留一个抵御超级兵 看家
 	-- if J.GetHP(GetAncient(bot:GetTeam())) < 0.99 then
@@ -1297,7 +1333,7 @@ function ConsiderGeneralRoamingInConditions()
 		-- 状态不好 回泉水补给
 		if not bot:WasRecentlyDamagedByAnyHero(1.5)
 		and not J.HasHealingItem(bot)
-		and not bot:GetUnitName() == 'npc_dota_hero_huskar'
+		and not botName == 'npc_dota_hero_huskar'
 		and (
 			(shouldGoBackToFountain and not IsInHealthyState())
 			or (J.GetHP(bot) < 0.22 or (J.GetHP(bot) < 0.3 and J.GetMP(bot) < 0.22))
@@ -1716,6 +1752,8 @@ ConsiderHeroSpecificRoaming['npc_dota_hero_leshrac'] = function ()
 end
 
 ConsiderHeroSpecificRoaming['npc_dota_hero_lone_druid_bear'] = function ()
+	if bot:IsChanneling() or bot:IsUsingAbility() then return BOT_MODE_DESIRE_NONE end
+
 	local hero = J.Utils.GetLoneDruid(bot).hero
 	local hasUltimateScepter = J.Item.HasItem(bot, 'item_ultimate_scepter') or bot:HasModifier('modifier_item_ultimate_scepter_consumed')
     local distanceFromHero = GetUnitToUnitDistance(J.Utils.GetLoneDruid(bot).hero, bot)
@@ -1726,8 +1764,8 @@ ConsiderHeroSpecificRoaming['npc_dota_hero_lone_druid_bear'] = function ()
     and not (bot:IsChanneling() or bot:IsUsingAbility())
 	and not hasUltimateScepter
 	then
-        if distanceFromHero > BearAttackLimitDistance * 0.6 then
-			return BOT_MODE_DESIRE_VERYHIGH
+        if distanceFromHero > BearAttackLimitDistance then
+			return BOT_MODE_DESIRE_ABSOLUTE
         end
     end
 	return BOT_MODE_DESIRE_NONE

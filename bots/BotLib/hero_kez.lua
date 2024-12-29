@@ -54,10 +54,10 @@ sRoleItemsBuyList['pos_2'] = {
     "item_magic_wand",
     "item_wraith_band",
     "item_power_treads",
-	"item_maelstrom",
+    "item_sange_and_yasha",--
+	"item_orchid",
     "item_black_king_bar",--
-	"item_mjollnir",--
-    "item_greater_crit",--
+    "item_bloodthorn",--
     "item_satanic",--
     "item_aghanims_shard",
     "item_monkey_king_bar",--
@@ -376,7 +376,7 @@ function X.ConsiderEchoSlash()
         end
     end
 
-    if (J.IsFarming(bot) or J.IsLaning(bot))
+    if J.IsFarming(bot)
     and not J.IsThereNonSelfCoreNearby(1200)
     and nManaAfter > 0.3
     then
@@ -386,8 +386,31 @@ function X.ConsiderEchoSlash()
         and not J.IsRunning(nCreeps[1])
         then
             local nLocationAoE = bot:FindAoELocation(true, false, nCreeps[1]:GetLocation(), 0, nRadius, 0, 0)
-            if (nLocationAoE.count >= 3 or (nLocationAoE.count >= 2 and nCreeps[1]:IsAncientCreep()))
+            if (nLocationAoE.count >= 2 or (nLocationAoE.count >= 2 and nCreeps[1]:IsAncientCreep()))
             and bot:IsFacingLocation(nLocationAoE.targetloc, 20)
+            then
+                return BOT_ACTION_DESIRE_HIGH
+            end
+        end
+    end
+
+    if J.IsLaning(bot)
+    and not J.IsThereNonSelfCoreNearby(1200)
+    then
+        if hEnemyList[1] ~= nil and J.IsInRange(bot, hEnemyList[1], nDistance - 100)
+        and bot:IsFacingLocation(hEnemyList[1]:GetLocation(), 8)
+        and nManaAfter > 0.5
+        then
+            return BOT_ACTION_DESIRE_HIGH
+        end
+        local nCreeps = bot:GetNearbyCreeps(nDistance, true)
+        if J.IsValid(nCreeps[1])
+        and J.CanBeAttacked(nCreeps[1])
+        and not J.IsRunning(nCreeps[1])
+        then
+            local nLocationAoE = bot:FindAoELocation(true, false, nCreeps[1]:GetLocation(), 0, nRadius, 0, 0)
+            if nLocationAoE.count >= 5
+            and bot:IsFacingLocation(nLocationAoE.targetloc, 15)
             then
                 return BOT_ACTION_DESIRE_HIGH
             end
@@ -465,7 +488,7 @@ end
 function X.ConsiderRaptorDance()
 	if not J.CanCastAbility(RaptorDance) then return BOT_ACTION_DESIRE_NONE end
 
-	local nRadius = RaptorDance:GetSpecialValueInt( "radius" )
+	local nRadius = RaptorDance:GetSpecialValueInt( "radius" ) - 150
 	local nBaseDamage = RaptorDance:GetSpecialValueInt( "base_damage" )
 	local nStrikes = RaptorDance:GetSpecialValueInt( "strikes" )
 	local nMaxHealthDamagePct = RaptorDance:GetSpecialValueInt( "max_health_damage_pct" )
@@ -505,6 +528,7 @@ function X.ConsiderRaptorDance()
 	if J.IsInLaningPhase() and nMP < 0.3 then return BOT_ACTION_DESIRE_NONE end
 
 	if J.IsGoingOnSomeone(bot)
+    and J.GetHP(bot) < 0.6
 	then
 		if J.IsValidTarget(botTarget)
 		and J.IsInRange(bot, botTarget, nRadius)
@@ -522,6 +546,7 @@ function X.ConsiderRaptorDance()
 	end
 
 	if J.IsInTeamFight( bot, 1200 )
+    and J.GetHP(bot) < 0.6
 	then
 		local nAoeLoc = J.GetAoeEnemyHeroLocation( bot, 0, nRadius, 2)
 		if nAoeLoc ~= nil
@@ -624,7 +649,7 @@ function X.ConsiderFalconRush()
     and nManaAfter > 0.4
     then
         local nCreeps = bot:GetNearbyCreeps(nDistance, true)
-        if #nCreeps >= 3
+        if #nCreeps >= 2
         then
             return BOT_ACTION_DESIRE_HIGH
         end
@@ -834,10 +859,14 @@ function X.ConsiderSwitchDiscipline()
     if not J.CanCastAbility(SwitchWeapons) then
         return BOT_ACTION_DESIRE_NONE
     end
+    if bot:GetAbilityPoints() > 0 then
+        return BOT_ACTION_DESIRE_NONE
+    end
 
     if J.IsGoingOnSomeone(bot) then
         if J.IsValidHero(botTarget)
         and J.IsInRange(bot, botTarget, 600)
+        and (J.GetHP(botTarget) < 0.6 or (bot:GetNetWorth() > 18000 and FalconRush:IsFullyCastable()))
 		and bot.kez_mode == 'katana'
         then
             return BOT_ACTION_DESIRE_HIGH
@@ -850,11 +879,11 @@ function X.ConsiderSwitchDiscipline()
         end
     end
 
-    if J.IsLaning(bot) or J.IsPushing(bot) then
-        if bot.kez_mode == 'katana' then
-            return BOT_ACTION_DESIRE_HIGH
-        end
-    end
+    -- if J.IsLaning(bot) or J.IsPushing(bot) then
+    --     if bot.kez_mode == 'katana' then
+    --         return BOT_ACTION_DESIRE_HIGH
+    --     end
+    -- end
 
     if J.IsFarming(bot)
     or J.IsDoingRoshan(bot)

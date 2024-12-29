@@ -56,5 +56,5 @@ function Request.RawGetRequest(self, url, callback)
     return req
 end
 Request.UUID = nil
-Request.BASE_URL = "https://OHA.com"
+Request.BASE_URL = "http://127.0.0.1:5000/"
 return ____exports

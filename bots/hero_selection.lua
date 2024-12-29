@@ -69,7 +69,7 @@ local WeakHeroes = {
 	-- 'npc_dota_hero_phoenix', -- somewhat improved
 	'npc_dota_hero_tinker',
 	'npc_dota_hero_pangolier',
-	'npc_dota_hero_furion',
+	-- 'npc_dota_hero_furion',
 	'npc_dota_hero_tusk',
 	'npc_dota_hero_morphling',
 	'npc_dota_hero_visage',
@@ -78,7 +78,7 @@ local WeakHeroes = {
 	'npc_dota_hero_ember_spirit',
 
 	-- Buggys, meaning they have bugs on Valves side, as of (still) 2024/8/1:
-    'npc_dota_hero_muerta',
+    -- 'npc_dota_hero_muerta',
     'npc_dota_hero_marci',
     'npc_dota_hero_lone_druid',
     'npc_dota_hero_primal_beast',
@@ -120,7 +120,7 @@ function GetPositionedPool(heroPosMap, position)
 		print('Picking for position: '.. tostring(position) .. ", checking role for hero: "..name)
 		if (position == 1 and (Role.IsDisabler(name) or Role.IsNuker(name)))
 		or (position == 2 and (Role.IsDisabler(name) or Role.IsNuker(name) or Role.IsDurable(name)))
-		or (position == 3 and (not Role.IsRanged(name)) and (Role.IsInitiator(name) or Role.IsDisabler(name) or Role.IsDurable(name)))
+		or (position == 3 and (not Role.IsRanged(name) or hero.weight > 50) and (Role.IsInitiator(name) or Role.IsDisabler(name) or Role.IsDurable(name)))
 		or (position == 4 and Role.IsSupport(name) and (Role.IsDisabler(name) or Role.IsHealer(name) or Role.IsDurable(name)))
 		or (position == 5 and Role.IsSupport(name) and Role.IsRanged(name) and (Role.IsDisabler(name) or Role.IsHealer(name) or Role.IsInitiator(name)))
 		then
@@ -488,7 +488,7 @@ end
 function AllPickHeros()
 	local teamPlayers = GetTeamPlayers(GetTeam())
 
-	if not ShuffledPickOrder[sTeamName] and not IsHumanPlayerExist() then
+	if not ShuffledPickOrder[sTeamName] and not Utils.IsHumanPlayerInTeam(GetTeam()) then
 		X.ShufflePickOrder(teamPlayers)
 		ShuffledPickOrder[sTeamName] = true
 	end
@@ -848,14 +848,14 @@ end
 local oboselect = false;
 function OneVsOneLogic()
 	local hero;
-	if IsHumanPlayerExist() then
+	if Utils.IsHumanPlayerInTeam(GetTeam()) then
 		oboselect = true;
 	end
 
 	for _, i in pairs(GetTeamPlayers(GetTeam())) do
 		if not oboselect and IsPlayerBot(i) and IsPlayerInHeroSelectionControl(i) and GetSelectedHeroName(i) == ""
 		then
-			if IsHumanPresentInGame() then
+			if Utils.IsHumanPlayerInAnyTeam() then
 				hero = GetSelectedHumanHero(GetOpposingTeam());
 			else
 				hero = X.GetNotRepeatHero( tSelectPoolList[2] );
@@ -872,23 +872,6 @@ function OneVsOneLogic()
 			return
 		end
 	end
-end
-
---Check if human present in the game
-function IsHumanPresentInGame()
-	for i, id in pairs(GetTeamPlayers(GetTeam())) do
-		if not IsPlayerBot(id)
-		then
-			return true;
-		end
-	end
-	for i, id in pairs(GetTeamPlayers(GetOpposingTeam())) do
-		if not IsPlayerBot(id)
-		then
-			return true;
-		end
-	end
-	return false;
 end
 
 --Get Human Selected Hero

@@ -659,22 +659,16 @@ function Utilities:GetPInfo()
 	}
 end
 
-function Utilities:GetMatchData()
+function Utilities:GetMatchData(heroes)
 	local gameData = {}
-    local teamStats = {}
-    -- 2 teams: Radiant(2), Dire(3).
-    teamStats["Radiant"] = {total_kills = 0, total_deaths = 0}
-    teamStats["Dire"]  = {total_kills = 0, total_deaths = 0}
-
     local pData = {}
     for pId = 0, PlayerResource:GetPlayerCount() do
+        local connectionState = PlayerResource:GetConnectionState(pId)
         if PlayerResource:IsValidPlayerID(pId)
-		and (PlayerResource:GetConnectionState(pId) == DOTA_CONNECTION_STATE_CONNECTED
-			or PlayerResource:GetConnectionState(pId) == DOTA_CONNECTION_STATE_DISCONNECTED)
+		and (connectionState == DOTA_CONNECTION_STATE_CONNECTED or connectionState == DOTA_CONNECTION_STATE_DISCONNECTED)
 		then
             local pInfo = {}
             local team = PlayerResource:GetTeam(pId) == DOTA_TEAM_GOODGUYS and "Radiant" or "Dire"
-
             pInfo.player_id = pId
             pInfo.steam_id = tostring(PlayerResource:GetSteamID(pId))
             pInfo.player_name = PlayerResource:GetPlayerName(pId)
@@ -685,24 +679,30 @@ function Utilities:GetMatchData()
             pInfo.networth = PlayerResource:GetNetWorth(pId)
             pInfo.level = PlayerResource:GetLevel(pId)
             pInfo.hero_name = PlayerResource:GetSelectedHeroName(pId)
-
-            -- Aggregate to team totals
-            if teamStats[team] then
-                teamStats[team].total_kills = teamStats[team].total_kills + pInfo.kills
-                teamStats[team].total_deaths = teamStats[team].total_deaths + pInfo.deaths
-            end
-
             table.insert(pData, pInfo)
         end
     end
 	gameData.host_id = tostring(PlayerResource:GetSteamID(Utilities:GetHostPlayerID()))
     gameData.players = pData
-    gameData.teams = teamStats
+    gameData.teams = Utilities:HeroStatsInGame(heroes)
     gameData.mode = Utilities:IsTurboMode() and 'Turbo' or 'Normal'
 	gameData.winning_team = (Utilities.LosingTeam == DOTA_TEAM_BADGUYS) and "Radiant" or "Dire"
     gameData.time_passed = Utilities:GetTime()
 	gameData.version = Version.number
 	return gameData
+end
+
+function Utilities:HeroStatsInGame(heroes)
+    local resTable = {["Radiant"] = {}, ["Dire"] = {}}
+    for i, unit in pairs(heroes) do
+        if unit.stats then
+            local kda = unit:GetKills()..'/'..unit:GetDeaths()..'/'..unit:GetAssists()
+			local team = unit.stats.team == 2 and 'Radiant' or 'Dire'
+            table.insert(resTable[team], {name = unit.stats.name, level = unit:GetLevel(),
+			kda = kda, networth = PlayerResource:GetNetWorth(unit.stats.id), is_bot = unit.stats.isBot})
+        end
+    end
+    return resTable
 end
 
 -- GameStateListener class for registering functions that will run once when

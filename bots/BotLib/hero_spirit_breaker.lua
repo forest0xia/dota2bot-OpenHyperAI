@@ -37,18 +37,19 @@ sRoleItemsBuyList['pos_3'] = {
     "item_phase_boots",
     "item_magic_wand",
     "item_hand_of_midas",
-    "item_octarine_core",--
+    "item_yasha_and_kaya",--
+	"item_invis_sword",
     "item_black_king_bar",--
-    nUtility,--
-    "item_ultimate_scepter",
-    "item_cyclone",
+    -- nUtility,--
     "item_ultimate_scepter_2",
+    "item_octarine_core",--
+    "item_silver_edge",--
+    "item_aghanims_shard",
+    "item_cyclone",
     "item_wind_waker",--
     "item_travel_boots",
-    "item_yasha_and_kaya",--
-    "item_aghanims_shard",
-    "item_travel_boots_2",--
     "item_moon_shard",
+    "item_travel_boots_2",--
 }
 
 sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']

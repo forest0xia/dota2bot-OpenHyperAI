@@ -17,6 +17,7 @@ function X.ConsiderStolenSpell(ability)
 
     if abilityName == 'brewmaster_cinder_brew'
     then
+        CinderBrew = ability
         CinderBrewDesire, CinderBrewLocation = X.ConsiderCinderBrew()
         if CinderBrewDesire > 0
         then
@@ -27,6 +28,7 @@ function X.ConsiderStolenSpell(ability)
 
     if abilityName == 'brewmaster_thunder_clap'
     then
+        ThunderClap = ability
         ThunderClapDesire = X.ConsiderThunderClap()
         if ThunderClapDesire > 0
         then

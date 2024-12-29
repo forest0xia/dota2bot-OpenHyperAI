@@ -1,6 +1,6 @@
 import { HeroName } from "bots/ts_libs/dota/heroes";
 type HeroPositionMap = {
-    [key in HeroName]: number[];
+    [key: string]: number[];
 };
 
 const HeroPositions: HeroPositionMap = {
@@ -40,7 +40,7 @@ const HeroPositions: HeroPositionMap = {
     [HeroName.Enchantress]: [0, 5, 10, 35, 50],
     [HeroName.Enigma]: [0, 35, 55, 30, 0],
     [HeroName.FacelessVoid]: [60, 0, 25, 5, 0],
-    [HeroName.NaturesProphet]: [25, 25, 50, 40, 0],
+    [HeroName.NaturesProphet]: [45, 25, 50, 40, 0],
     [HeroName.Grimstroke]: [0, 5, 10, 35, 50],
     [HeroName.Gyrocopter]: [60, 5, 25, 20, 10],
     [HeroName.Hoodwink]: [0, 5, 10, 25, 20],
@@ -52,7 +52,7 @@ const HeroPositions: HeroPositionMap = {
     [HeroName.Kunkka]: [35, 85, 35, 5, 0],
     [HeroName.LegionCommander]: [5, 35, 65, 5, 0],
     [HeroName.Leshrac]: [5, 30, 25, 25, 20],
-    [HeroName.Lich]: [0, 35, 10, 30, 40],
+    [HeroName.Lich]: [0, 35, 10, 50, 50],
     [HeroName.Lifestealer]: [30, 5, 30, 0, 0],
     [HeroName.Lina]: [25, 50, 5, 20, 30],
     [HeroName.Lion]: [30, 45, 10, 30, 45],

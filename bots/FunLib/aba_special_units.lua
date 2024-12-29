@@ -198,6 +198,7 @@ function X.GetDesire(bot__)
                 end
 
                 if string.find(unitName, 'lone_druid_bear')
+                or string.find(unitName, 'npc_dota_brewmaster')
                 then
                     if #tAllyHeroes >= 2 and #tAllyHeroes_all > #tEnemyHeroes_all
                     then

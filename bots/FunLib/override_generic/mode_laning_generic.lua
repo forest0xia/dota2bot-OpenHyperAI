@@ -10,7 +10,7 @@ local safeAmountFromFront = 300
 function X.OnStart() end
 function X.OnEnd() end
 
-local nEnemyTowers, nEnemyCreeps, assignedLane, tangoDesire, tangoTarget
+local nEnemyTowers, nEnemyCreeps, assignedLane, tangoDesire, tangoTarget, tangoSlot
 
 function X.GetDesire()
 	if J.IsAttacking( bot ) or J.IsTryingtoUseAbility(bot)
@@ -19,7 +19,11 @@ function X.GetDesire()
 	end
 
 	tangoDesire = 0
-	if J.HasItem(bot, "item_tango")
+	tangoSlot = J.FindItemSlotNotInNonbackpack(bot, "item_tango")
+	if tangoSlot < 0 then
+		tangoSlot = J.FindItemSlotNotInNonbackpack(bot, "item_tango_single")
+	end
+	if tangoSlot >= 0
 	and bot:OriginalGetMaxHealth() - bot:OriginalGetHealth() > 250
 	and J.GetHP(bot) > 0.15
 	and not J.IsAttacking(bot)
@@ -89,7 +93,7 @@ function X.Think()
 	end
 
 	if tangoDesire and tangoDesire > 0 and tangoTarget then
-		local hItem = bot:GetItemInSlot( bot:FindItemSlot('item_tango') )
+		local hItem = bot:GetItemInSlot( tangoSlot )
 		bot:Action_UseAbilityOnTree( hItem, tangoTarget )
 		return
 	end

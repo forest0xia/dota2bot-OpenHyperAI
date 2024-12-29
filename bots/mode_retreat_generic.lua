@@ -123,7 +123,7 @@ function GetDesire()
 		TOWER_BASE_1,
 		TOWER_BASE_2,
 	}
-	local towers = bot:GetNearbyTowers(800, true )
+	local towers = bot:GetNearbyTowers(700, true )
 	if #towers >= 1 then
 		local towerType = -1
 		for i = 1, #nTowers do
@@ -213,9 +213,9 @@ function GetDesire()
 
 	local clampedDesire = RemapValClamped(retreatDesire, 0, possibleMaxDesire, 0, 1)
 
-	if bot.isBear then
-		clampedDesire = clampedDesire * 0.75
-	end
+	-- if bot.isBear then
+	-- 	clampedDesire = clampedDesire * 0.9
+	-- end
 
 	-- print('Retreat mode, bot: '..botName..', clamped desire: ' .. tostring(clampedDesire))
 

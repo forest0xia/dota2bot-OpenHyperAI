@@ -256,7 +256,7 @@ local HeroPositions = {
         0
     },
     [HeroName.NaturesProphet] = {
-        25,
+        45,
         25,
         50,
         40,
@@ -343,8 +343,8 @@ local HeroPositions = {
         0,
         35,
         10,
-        30,
-        40
+        50,
+        50
     },
     [HeroName.Lifestealer] = {
         30,

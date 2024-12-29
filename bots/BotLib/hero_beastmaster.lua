@@ -647,7 +647,6 @@ function X.ConsiderPrimalRoar()
             if J.IsValidTarget(enemyHero)
             and J.CanCastOnMagicImmune(enemyHero)
             and J.CanCastOnTargetAdvanced(enemyHero)
-            and J.GetHP(enemyHero) > 0.5
             and not J.IsSuspiciousIllusion(enemyHero)
             and not J.IsDisabled(enemyHero)
             and not J.IsTaunted(enemyHero)
@@ -663,6 +662,7 @@ function X.ConsiderPrimalRoar()
 
                 if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
                 and #nInRangeAlly >= #nTargetInRangeAlly
+                and ((J.GetHP(enemyHero) < 0.5 and #nInRangeAlly == 1) or (J.GetHP(enemyHero) > 0.5 and #nInRangeAlly > #nTargetInRangeAlly))
                 then
                     return BOT_ACTION_DESIRE_HIGH, enemyHero
                 end

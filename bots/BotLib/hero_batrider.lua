@@ -89,9 +89,47 @@ sRoleItemsBuyList['pos_3'] = {
 
 sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
 
-sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_3']
+sRoleItemsBuyList['pos_4'] = {
+    "item_tango",
+    "item_double_branches",
+    "item_circlet",
+    "item_blood_grenade",
 
-sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_3']
+    "item_boots",
+    "item_magic_wand",
+    "item_tranquil_boots",
+    "item_blink",
+    "item_force_staff",--
+    "item_black_king_bar",--
+    "item_boots_of_bearing",--
+    "item_shivas_guard",--
+    "item_wind_waker",--
+    "item_arcane_blink",--
+    "item_aghanims_shard",
+    "item_ultimate_scepter_2",
+    "item_moon_shard",
+}
+
+sRoleItemsBuyList['pos_5'] = {
+    "item_tango",
+    "item_double_branches",
+    "item_circlet",
+    "item_blood_grenade",
+
+    "item_boots",
+    "item_magic_wand",
+    "item_arcane_boots",
+    "item_blink",
+    "item_force_staff",--
+    "item_black_king_bar",--
+    "item_guardian_greaves",--
+    "item_shivas_guard",--
+    "item_wind_waker",--
+    "item_arcane_blink",--
+    "item_aghanims_shard",
+    "item_ultimate_scepter_2",
+    "item_moon_shard",
+}
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 

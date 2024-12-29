@@ -53,6 +53,7 @@ export enum HeroName {
     Lina = "npc_dota_hero_lina",
     Lion = "npc_dota_hero_lion",
     LoneDruid = "npc_dota_hero_lone_druid",
+    LoneDruidBear = "npc_dota_hero_lone_druid_bear",
     Luna = "npc_dota_hero_luna",
     Lycan = "npc_dota_hero_lycan",
     Magnus = "npc_dota_hero_magnataur",

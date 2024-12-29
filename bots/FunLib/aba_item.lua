@@ -348,7 +348,7 @@ Item['tEarlyConsumableItem'] = {
 	 'item_flask',
 	 'item_infused_raindrop',
 	 'item_magic_stick',
-	--  'item_quelling_blade', -- for bf.
+	 'item_quelling_blade', -- for bf.
 	 'item_branches',
 	 -- 'item_magic_wand',
 	 'item_blood_grenade',

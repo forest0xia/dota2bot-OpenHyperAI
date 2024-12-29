@@ -1220,7 +1220,7 @@ function CanDoCombo2()
     and Laser:IsFullyCastable()
     and HeatSeekingMissile:IsFullyCastable()
     then
-        ShivasGuard = J.GetItem('item_shivas_guard')
+        ShivasGuard = J.Utils.GetItem('item_shivas_guard')
         if ShivasGuard ~= nil and ShivasGuard:IsFullyCastable()
         then
             local nManaCost = Laser:GetManaCost()
@@ -1245,7 +1245,7 @@ function CanDoCombo3()
     and Laser:IsFullyCastable()
     and HeatSeekingMissile:IsFullyCastable()
     then
-        ScytheOfVyse = J.GetItem('item_sheepstick')
+        ScytheOfVyse = J.Utils.GetItem('item_sheepstick')
         if ScytheOfVyse ~= nil and ScytheOfVyse:IsFullyCastable()
         then
             local nManaCost = Laser:GetManaCost()
@@ -1270,7 +1270,7 @@ function CanDoCombo4()
     and Laser:IsFullyCastable()
     and HeatSeekingMissile:IsFullyCastable()
     then
-        EtherealBlade = J.GetItem('item_ethereal_blade')
+        EtherealBlade = J.Utils.GetItem('item_ethereal_blade')
         if EtherealBlade ~= nil and EtherealBlade:IsFullyCastable()
         then
             local nManaCost = Laser:GetManaCost()
@@ -1295,8 +1295,8 @@ function CanDoCombo5()
     and Laser:IsFullyCastable()
     and HeatSeekingMissile:IsFullyCastable()
     then
-        ScytheOfVyse = J.GetItem('item_sheepstick')
-        EtherealBlade = J.GetItem('item_ethereal_blade')
+        ScytheOfVyse = J.Utils.GetItem('item_sheepstick')
+        EtherealBlade = J.Utils.GetItem('item_ethereal_blade')
         if EtherealBlade ~= nil and EtherealBlade:IsFullyCastable()
         and ScytheOfVyse ~= nil and ScytheOfVyse:IsFullyCastable()
         then
@@ -1448,7 +1448,7 @@ function CanClearCreeps2()
     if HasBlink()
     and Laser:IsFullyCastable()
     then
-        ShivasGuard = J.GetItem('item_shivas_guard')
+        ShivasGuard = J.Utils.GetItem('item_shivas_guard')
         local nManaCost = Laser:GetManaCost()
                         + Rearm:GetManaCost()
                         + 75
@@ -1513,7 +1513,7 @@ function X.ConsiderSoulRing()
         return BOT_ACTION_DESIRE_NONE
     end
 
-    SoulRing = J.GetItem('item_soul_ring')
+    SoulRing = J.Utils.GetItem('item_soul_ring')
     if SoulRing ~= nil and SoulRing:IsFullyCastable()
     then
         if J.GetHP(bot) > 0.3
@@ -1533,7 +1533,7 @@ function X.ConsiderShivasGuard()
         return BOT_ACTION_DESIRE_NONE
     end
 
-    ShivasGuard = J.GetItem('item_shivas_guard')
+    ShivasGuard = J.Utils.GetItem('item_shivas_guard')
     if ShivasGuard ~= nil and ShivasGuard:IsFullyCastable()
     then
         if J.IsGoingOnSomeone(bot)
