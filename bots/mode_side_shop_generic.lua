@@ -59,7 +59,12 @@ function TormentorDesire()
 
     botTarget = bot:GetAttackTarget()
     local tAllyInTormentorLocation = J.GetAlliesNearLoc(TormentorLocation, 900)
-    local tInRangeEnemy = J.GetLastSeenEnemiesNearLoc(bot:GetLocation(), 2200)
+    local tInRangeEnemy = J.GetLastSeenEnemiesNearLoc(bot:GetLocation(), 2000)
+
+    if #tInRangeEnemy > 0 then
+        return BOT_MODE_DESIRE_NONE
+    end
+
     local nAliveAlly = J.GetNumOfAliveHeroes(false)
 	TormentorLocOffset = (bot:GetTeam() == TEAM_DIRE and Vector(0, -500, 392) or Vector(0, 500, 392)) + RandomVector(50)
 
@@ -122,7 +127,11 @@ function TormentorDesire()
         end
     end
 
-    local hEnemyAncient = GetAncient(GetOpposingTeam())
+    -- local hEnemyAncient = GetAncient(GetOpposingTeam())
+
+    if #tAliveAllies < 4 then
+        return BOT_MODE_DESIRE_NONE
+    end
 
     nAveCoreLevel = nAveCoreLevel / 3
     nAveSuppLevel = nAveSuppLevel / 2
@@ -155,7 +164,7 @@ function TormentorDesire()
 
             -- all go check tormentor
             if bot.tormentor_state == false then
-                return 0.8
+                return BOT_MODE_DESIRE_VERYHIGH
             end
         else
             bot.tormentor_state = true
@@ -189,7 +198,7 @@ function TormentorDesire()
         or nHumanCountInLoc >= 1 then
             return RemapValClamped(J.GetHP(bot), 0.25, 1, 0.95, 1.2)
         else
-            return 0.8
+            return BOT_MODE_DESIRE_VERYHIGH
         end
     end
 
@@ -251,6 +260,10 @@ function X.IsTormentorAlive()
 end
 
 function X.IsEnoughAllies()
+    local cacheKey = "IsEnoughAllies" .. tostring(GetTeam())
+    local cache = J.Utils.GetCachedVars(cacheKey, 1)
+    if cache ~= nil then return cache end
+
     local nAllyCount = 0
     local nCoreCountInLoc = 0
 
@@ -268,5 +281,7 @@ function X.IsEnoughAllies()
 		end
 	end
 
-	return ((((bot.tormentor_kill_time == 0 and nAllyCount >= 4) or (bot.tormentor_kill_time > 0 and nAllyCount >= 3))) and nCoreCountInLoc >= 2)
+    local result = ((((bot.tormentor_kill_time == 0 and nAllyCount >= 4) or (bot.tormentor_kill_time > 0 and nAllyCount >= 3))) and nCoreCountInLoc >= 2)
+    J.Utils.SetCachedVars(cacheKey, result)
+	return result
 end

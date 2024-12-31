@@ -750,20 +750,6 @@ function TrampleToBase()
 	bot:Action_MoveToLocation(J.GetTeamFountain())
 end
 
-function MoveTeamApartDir(distance)
-	local botLoc = bot:GetLocation()
-	for _, ally in pairs(nInRangeAlly) do -- should also consider Lich's shard unit, neutral creeps etc. tba.
-		if J.IsValid(ally)
-		and ally ~= bot
-		and J.IsInRange(bot, ally, distance)
-		then
-			local dir = botLoc - ally:GetLocation()
-			return dir:Normalized() * distance
-		end
-	end
-	return nil
-end
-
 function ThinkGeneralRoaming()
 	-- Get out of fountain if in item mode
 	if ShouldMoveOutsideFountain
@@ -772,30 +758,13 @@ function ThinkGeneralRoaming()
 		return
 	end
 
-	if ShouldBotsSpreadOut or AnyUnitAffectedByChainFrost then
-		local distance = 450
-		if AnyUnitAffectedByChainFrost then
-			distance = nChainFrostBounceDistance
-		end
+	if AnyUnitAffectedByChainFrost then
+		J.Utils.SmartSpreadOut(bot, nChainFrostBounceDistance, nChainFrostBounceDistance, nInRangeEnemy, false)
+		return
+	end
 
-		local dir = MoveTeamApartDir(distance)
-		if dir then
-			local botLoc = bot:GetLocation()
-			local targetLoc = botLoc + dir
+	if ShouldBotsSpreadOut then
 
-			-- Check if the target location is toward the enemy fountain
-			if J.GetDistanceFromAncient( bot, true ) < 2600 then
-				local enemyFountainDir = J.GetEnemyFountain() - botLoc
-				if (targetLoc - botLoc):Dot(enemyFountainDir:Normalized()) > 0 then
-					-- Redirect movement toward the team's fountain
-					local teamFountainDir = J.GetTeamFountain() - botLoc
-					dir = teamFountainDir:Normalized() * distance
-					targetLoc = botLoc + dir
-				end
-			end
-
-			bot:Action_MoveToLocation(targetLoc + RandomVector(50))
-		end
 	end
 
 	if bot:GetActiveMode() == BOT_MODE_ITEM
@@ -968,7 +937,7 @@ function ActualGankDesire()
 		if (J.GetPosition(bot) == 2 and botLvl >= 6 and J.GetHP(bot) > 0.7 and J.GetMP(bot) > 0.6) -- mid player roaming
 		or (J.GetPosition(bot) > 3 and botLvl >= 3 and J.GetHP(bot) > 0.6 and J.GetMP(bot) > 0.6) -- supports roaming
 		then
-			return CheckLaneToGank()
+			return CheckLaneToGank(J.GetPosition(bot))
 		end
 	end
 	return BOT_MODE_DESIRE_NONE
@@ -1038,7 +1007,11 @@ function IsInHealthyState()
 	return botName ~= 'npc_dota_hero_huskar' and J.GetHP(bot) > 0.7 and J.GetMP(bot) > 0.6
 end
 
-function CheckLaneToGank()
+function CheckLaneToGank(botPosition)
+
+	if #nInRangeEnemy > 0 then
+		return BOT_MODE_DESIRE_NONE
+	end
 
 	if DotaTime() - lastGankDecisionTime <= gankDecisionHoldTime and laneToGank ~= nil then
 		return BOT_ACTION_DESIRE_VERYHIGH
@@ -1073,7 +1046,8 @@ function CheckLaneToGank()
 					end
 				end
 
-				if #enemyCountInLane >= 1 and GetUnitToUnitDistance(bot, tTower) > 3000 then
+				if #enemyCountInLane >= 1 then
+					laneToGank = lane[1]
 					return RemapValClamped(laneFrontToT1Dist, 5000, 600, BOT_ACTION_DESIRE_HIGH, BOT_ACTION_DESIRE_ABSOLUTE * 0.96 )
 				end
 			end

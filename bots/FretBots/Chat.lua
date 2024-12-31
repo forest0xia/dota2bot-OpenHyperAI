@@ -79,12 +79,12 @@ local function getFormattedGameTime()
     local gameTime = Utilities:GetTime()
     local minutes = math.floor(gameTime / 60)
     local seconds = math.floor(gameTime % 60)
-    return string.format("%d minutes, %d seconds", minutes, seconds)
+    return string.format("%dm:%ds", minutes, seconds)
 end
 
 function ConstructChatBotRequest(inputContent)
     table.insert(recordedMessages, 1, { role = "user", content = 'Players in this game: ' .. json.encode(Utilities:HeroStatsInGame(AllUnits))
-    .. ', current game time in seconds: ' .. getFormattedGameTime() .. ', response locale language code: ' .. Localization.GetLocale()})
+    .. ', game time: ' .. getFormattedGameTime() .. ', locale language code: ' .. Localization.GetLocale()})
     table.insert(recordedMessages, { role = "user", content = inputContent })
 
     -- Initialize data table

@@ -120,6 +120,20 @@ function X.GetAttackTarget(hMinionUnit)
         end
     end
 
+    for _, ally in pairs(GetUnitList(UNIT_LIST_ALLIED_HEROES))
+    do
+        if J.IsValidHero(ally)
+        and ally:IsAlive()
+        and not ally:IsIllusion()
+        -- and J.GetHP(ally) > 0.4
+        and ally:HasModifier('modifier_bane_nightmare')
+        and (GetUnitToUnitDistance(hMinionUnit, ally) <= hMinionUnit:GetAttackRange()
+            or (hMinionUnit:GetCurrentMovementSpeed() and hMinionUnit:GetCurrentMovementSpeed() > 250 and GetUnitToUnitDistance(hMinionUnit, ally) < math.min(hMinionUnit:GetAttackRange() * 1.5, 700)))
+        then
+            return ally
+        end
+    end
+
     for _, enemy in pairs(GetUnitList(UNIT_LIST_ENEMIES))
     do
         if J.IsValid(enemy)

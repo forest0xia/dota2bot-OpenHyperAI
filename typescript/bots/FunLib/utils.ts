@@ -14,7 +14,7 @@ require("bots/ts_libs/utils/json");
 import { Ability, Barracks, BotActionType, BotMode, Item, Lane, Ping, Team, Tower, Unit, UnitType, Vector } from "bots/ts_libs/dota";
 import { GameState, AvoidanceZone } from "bots/ts_libs/bots";
 import { Request } from "bots/ts_libs/utils/http_utils/http_req";
-import { add, dot, length2D, multiply, sub } from "bots/ts_libs/utils/native-operators";
+import { add, dot, length2D, length3D, multiply, sub } from "bots/ts_libs/utils/native-operators";
 import { HeroName } from "bots/ts_libs/dota/heroes";
 
 export const DebugMode = false;
@@ -62,126 +62,126 @@ const SpecialAOEHeroes = [HeroName.Axe, HeroName.Enigma, HeroName.Earthshaker, H
  */
 export const ImportantSpells: Record<string, string[]> = {
     // Strength
-    npc_dota_hero_alchemist: ["alchemist_chemical_rage"],
-    npc_dota_hero_axe: ["axe_culling_blade"],
-    npc_dota_hero_bristleback: ["bristleback_bristleback"],
-    npc_dota_hero_centaur: ["centaur_stampede"],
-    npc_dota_hero_chaos_knight: ["chaos_knight_phantasm"],
-    npc_dota_hero_dawnbreaker: ["dawnbreaker_solar_guardian"],
-    npc_dota_hero_doom_bringer: ["doom_bringer_doom"],
-    npc_dota_hero_dragon_knight: ["dragon_knight_elder_dragon_form"],
-    npc_dota_hero_earth_spirit: ["earth_spirit_magnetize"],
-    npc_dota_hero_earthshaker: ["earthshaker_echo_slam"],
-    npc_dota_hero_elder_titan: ["elder_titan_earth_splitter"],
+    [HeroName.Alchemist]: ["alchemist_chemical_rage"],
+    [HeroName.Axe]: ["axe_culling_blade"],
+    [HeroName.Bristleback]: ["bristleback_bristleback"],
+    [HeroName.Centaur]: ["centaur_stampede"],
+    [HeroName.ChaosKnight]: ["chaos_knight_phantasm"],
+    [HeroName.Dawnbreaker]: ["dawnbreaker_solar_guardian"],
+    [HeroName.Doom]: ["doom_bringer_doom"],
+    [HeroName.DragonKnight]: ["dragon_knight_elder_dragon_form"],
+    [HeroName.EarthSpirit]: ["earth_spirit_magnetize"],
+    [HeroName.Earthshaker]: ["earthshaker_echo_slam"],
+    [HeroName.ElderTitan]: ["elder_titan_earth_splitter"],
     // huskar missing from list – add as needed
-    npc_dota_hero_kunkka: ["kunkka_ghostship"],
-    npc_dota_hero_legion_commander: ["legion_commander_duel"],
-    npc_dota_hero_life_stealer: ["life_stealer_rage"],
-    npc_dota_hero_mars: ["mars_arena_of_blood"],
-    npc_dota_hero_night_stalker: ["night_stalker_darkness"],
-    npc_dota_hero_omniknight: ["omniknight_guardian_angel"],
-    npc_dota_hero_primal_beast: ["primal_beast_pulverize"],
+    [HeroName.Kunkka]: ["kunkka_ghostship"],
+    [HeroName.LegionCommander]: ["legion_commander_duel"],
+    [HeroName.Lifestealer]: ["life_stealer_rage"],
+    [HeroName.Mars]: ["mars_arena_of_blood"],
+    [HeroName.NightStalker]: ["night_stalker_darkness"],
+    [HeroName.Omniknight]: ["omniknight_guardian_angel"],
+    [HeroName.PrimalBeast]: ["primal_beast_pulverize"],
     // pudge, slardar, spirit_breaker missing
-    npc_dota_hero_sven: ["sven_gods_strength"],
-    npc_dota_hero_tidehunter: ["tidehunter_ravage"],
+    [HeroName.Sven]: ["sven_gods_strength"],
+    [HeroName.Tidehunter]: ["tidehunter_ravage"],
     // timbersaw, tiny missing
-    npc_dota_hero_treant: ["treant_overgrowth"],
+    [HeroName.TreantProtector]: ["treant_overgrowth"],
     // tusk missing
-    npc_dota_hero_undying: ["undying_tombstone", "undying_flesh_golem"],
+    [HeroName.Undying]: ["undying_tombstone", "undying_flesh_golem"],
     // Wraith King’s internal name was once skeleton_king. Keep as needed:
-    npc_dota_hero_skeleton_king: ["skeleton_king_reincarnation"],
+    [HeroName.WraithKing]: ["skeleton_king_reincarnation"],
 
     // Agility
-    npc_dota_hero_antimage: ["antimage_mana_void"],
+    [HeroName.Antimage]: ["antimage_mana_void"],
     // arc_warden missing
-    npc_dota_hero_bloodseeker: ["bloodseeker_rupture"],
+    [HeroName.Bloodseeker]: ["bloodseeker_rupture"],
     // bounty_hunter missing
-    npc_dota_hero_clinkz: ["clinkz_burning_barrage"],
+    [HeroName.Clinkz]: ["clinkz_burning_barrage"],
     // drow_ranger, ember_spirit missing
-    npc_dota_hero_faceless_void: ["faceless_void_chronosphere"],
-    npc_dota_hero_gyrocopter: ["gyrocopter_flak_cannon"],
-    npc_dota_hero_hoodwink: ["hoodwink_sharpshooter"],
-    npc_dota_hero_juggernaut: ["juggernaut_omni_slash"],
+    [HeroName.FacelessVoid]: ["faceless_void_chronosphere"],
+    [HeroName.Gyrocopter]: ["gyrocopter_flak_cannon"],
+    [HeroName.Hoodwink]: ["hoodwink_sharpshooter"],
+    [HeroName.Juggernaut]: ["juggernaut_omni_slash"],
     // keeling? Possibly a custom or incomplete
-    npc_dota_hero_luna: ["luna_eclipse"],
-    npc_dota_hero_medusa: ["medusa_stone_gaze"],
+    [HeroName.Luna]: ["luna_eclipse"],
+    [HeroName.Medusa]: ["medusa_stone_gaze"],
     // meepo missing
-    npc_dota_hero_monkey_king: ["monkey_king_wukongs_command"],
+    [HeroName.MonkeyKing]: ["monkey_king_wukongs_command"],
     // morphling missing
-    npc_dota_hero_naga_siren: ["naga_siren_song_of_the_siren"],
+    [HeroName.NagaSiren]: ["naga_siren_song_of_the_siren"],
     // phantom_assassin, phantom_lancer missing
-    npc_dota_hero_razor: ["razor_static_link"],
+    [HeroName.Razor]: ["razor_static_link"],
     // riki missing
-    npc_dota_hero_nevermore: ["nevermore_requiem"],
-    npc_dota_hero_slark: ["slark_shadow_dance"],
+    [HeroName.ShadowFiend]: ["nevermore_requiem"],
+    [HeroName.Slark]: ["slark_shadow_dance"],
     // sniper missing
-    npc_dota_hero_spectre: ["spectre_haunt_single", "spectre_haunt"],
+    [HeroName.Spectre]: ["spectre_haunt_single", "spectre_haunt"],
     // templar_assassin missing
-    npc_dota_hero_terrorblade: ["terrorblade_metamorphosis", "terrorblade_sunder"],
-    npc_dota_hero_troll_warlord: ["troll_warlord_battle_trance"],
-    npc_dota_hero_ursa: ["ursa_enrage"],
-    npc_dota_hero_viper: ["viper_viper_strike"],
-    npc_dota_hero_weaver: ["weaver_time_lapse"],
+    [HeroName.Terrorblade]: ["terrorblade_metamorphosis", "terrorblade_sunder"],
+    [HeroName.TrollWarlord]: ["troll_warlord_battle_trance"],
+    [HeroName.Ursa]: ["ursa_enrage"],
+    [HeroName.Viper]: ["viper_viper_strike"],
+    [HeroName.Weaver]: ["weaver_time_lapse"],
 
     // Intelligence
-    npc_dota_hero_ancient_apparition: ["ancient_apparition_ice_blast"],
-    npc_dota_hero_crystal_maiden: ["crystal_maiden_freezing_field"],
-    npc_dota_hero_death_prophet: ["death_prophet_exorcism"],
-    npc_dota_hero_disruptor: ["disruptor_static_storm"],
+    [HeroName.AncientApparition]: ["ancient_apparition_ice_blast"],
+    [HeroName.CrystalMaiden]: ["crystal_maiden_freezing_field"],
+    [HeroName.DeathProphet]: ["death_prophet_exorcism"],
+    [HeroName.Disruptor]: ["disruptor_static_storm"],
     // enchantress missing
-    npc_dota_hero_grimstroke: ["grimstroke_dark_portrait", "grimstroke_soul_chain"],
-    npc_dota_hero_jakiro: ["jakiro_macropyre"],
+    [HeroName.Grimstroke]: ["grimstroke_dark_portrait", "grimstroke_soul_chain"],
+    [HeroName.Jakiro]: ["jakiro_macropyre"],
     // keeper_of_the_light, leshrac missing
-    npc_dota_hero_lich: ["lich_chain_frost"],
-    npc_dota_hero_lina: ["lina_laguna_blade"],
-    npc_dota_hero_lion: ["lion_finger_of_death"],
-    npc_dota_hero_muerta: ["muerta_pierce_the_veil"],
+    [HeroName.Lich]: ["lich_chain_frost"],
+    [HeroName.Lina]: ["lina_laguna_blade"],
+    [HeroName.Lion]: ["lion_finger_of_death"],
+    [HeroName.Muerta]: ["muerta_pierce_the_veil"],
     // furion (nature’s prophet) missing
-    npc_dota_hero_necrolyte: ["necrolyte_ghost_shroud", "necrolyte_reapers_scythe"],
-    npc_dota_hero_oracle: ["oracle_false_promise"],
-    npc_dota_hero_obsidian_destroyer: ["obsidian_destroyer_sanity_eclipse"],
-    npc_dota_hero_puck: ["puck_dream_coil"],
-    npc_dota_hero_pugna: ["pugna_life_drain"],
-    npc_dota_hero_queenofpain: ["queenofpain_sonic_wave"],
-    npc_dota_hero_ringmaster: ["ringmaster_wheel"], // likely custom hero
+    [HeroName.Necrophos]: ["necrolyte_ghost_shroud", "necrolyte_reapers_scythe"],
+    [HeroName.Oracle]: ["oracle_false_promise"],
+    [HeroName.OutworldDestroyer]: ["obsidian_destroyer_sanity_eclipse"],
+    [HeroName.Puck]: ["puck_dream_coil"],
+    [HeroName.Pugna]: ["pugna_life_drain"],
+    [HeroName.QueenOfPain]: ["queenofpain_sonic_wave"],
+    [HeroName.Ringmaster]: ["ringmaster_wheel"], // likely custom hero
     // rubick missing
-    npc_dota_hero_shadow_demon: ["shadow_demon_disruption", "shadow_demon_demonic_cleanse", "shadow_demon_demonic_purge"],
-    npc_dota_hero_shadow_shaman: ["shadow_shaman_mass_serpent_ward"],
-    npc_dota_hero_silencer: ["silencer_global_silence"],
-    npc_dota_hero_skywrath_mage: ["skywrath_mage_mystic_flare"],
+    [HeroName.ShadowDeamon]: ["shadow_demon_disruption", "shadow_demon_demonic_cleanse", "shadow_demon_demonic_purge"],
+    [HeroName.ShadowShaman]: ["shadow_shaman_mass_serpent_ward"],
+    [HeroName.Silencer]: ["silencer_global_silence"],
+    [HeroName.SkywrathMage]: ["skywrath_mage_mystic_flare"],
     // storm_spirit, tinker missing
-    npc_dota_hero_warlock: ["warlock_fatal_bonds", "warlock_golem"],
-    npc_dota_hero_witch_doctor: ["witch_doctor_voodoo_switcheroo", "witch_doctor_death_ward"],
-    npc_dota_hero_zuus: ["zuus_thundergods_wrath"],
+    [HeroName.Warlock]: ["warlock_fatal_bonds", "warlock_golem"],
+    [HeroName.WitchDoctor]: ["witch_doctor_voodoo_switcheroo", "witch_doctor_death_ward"],
+    [HeroName.Zeus]: ["zuus_thundergods_wrath"],
 
     // Universal (7.33+ added a new type, but you can keep them sorted however you wish)
-    npc_dota_hero_abaddon: ["abaddon_borrowed_time"],
-    npc_dota_hero_bane: ["bane_fiends_grip"],
-    npc_dota_hero_batrider: ["batrider_flaming_lasso"],
-    npc_dota_hero_beastmaster: ["beastmaster_primal_roar"],
-    npc_dota_hero_brewmaster: ["brewmaster_primal_split"],
-    npc_dota_hero_broodmother: ["broodmother_insatiable_hunger"],
-    npc_dota_hero_chen: ["chen_hand_of_god"],
+    [HeroName.Abaddon]: ["abaddon_borrowed_time"],
+    [HeroName.Bane]: ["bane_fiends_grip"],
+    [HeroName.Batrider]: ["batrider_flaming_lasso"],
+    [HeroName.Beastmaster]: ["beastmaster_primal_roar"],
+    [HeroName.Brewmaster]: ["brewmaster_primal_split"],
+    [HeroName.Broodmother]: ["broodmother_insatiable_hunger"],
+    [HeroName.Chen]: ["chen_hand_of_god"],
     // clockwerk missing
-    npc_dota_hero_dark_seer: ["dark_seer_wall_of_replica"],
-    npc_dota_hero_dark_willow: ["dark_willow_terrorize"],
+    [HeroName.DarkSeer]: ["dark_seer_wall_of_replica"],
+    [HeroName.DarkWillow]: ["dark_willow_terrorize"],
     // dazzle missing
-    npc_dota_hero_enigma: ["enigma_black_hole"],
+    [HeroName.Enigma]: ["enigma_black_hole"],
     // invoker, io, lone_druid missing
-    npc_dota_hero_lycan: ["lycan_shapeshift"],
-    npc_dota_hero_magnataur: ["magnataur_reverse_polarity"],
-    npc_dota_hero_marci: ["marci_unleash"],
+    [HeroName.Lycan]: ["lycan_shapeshift"],
+    [HeroName.Magnus]: ["magnataur_reverse_polarity"],
+    [HeroName.Marci]: ["marci_unleash"],
     // mirana, nyx_assassin missing
-    npc_dota_hero_pangolier: ["pangolier_gyroshell"],
-    npc_dota_hero_phoenix: ["phoenix_supernova"],
-    npc_dota_hero_sand_king: ["sandking_epicenter"],
-    npc_dota_hero_snapfire: ["snapfire_mortimer_kisses"],
+    [HeroName.Pangolier]: ["pangolier_gyroshell"],
+    [HeroName.Phoenix]: ["phoenix_supernova"],
+    [HeroName.SandKing]: ["sandking_epicenter"],
+    [HeroName.Snapfire]: ["snapfire_mortimer_kisses"],
     // techies missing
-    npc_dota_hero_vengefulspirit: ["vengefulspirit_nether_swap"],
-    npc_dota_hero_venomancer: ["venomancer_noxious_plague"],
+    [HeroName.VengefulSpirit]: ["vengefulspirit_nether_swap"],
+    [HeroName.Venomancer]: ["venomancer_noxious_plague"],
     // visage, void_spirit missing
-    npc_dota_hero_windrunner: ["windrunner_focusfire"],
-    npc_dota_hero_winter_wyvern: ["winter_wyvern_cold_embrace", "winter_wyvern_winters_curse"],
+    [HeroName.Windrunner]: ["windrunner_focusfire"],
+    [HeroName.WinterWyvern]: ["winter_wyvern_cold_embrace", "winter_wyvern_winters_curse"],
 };
 
 export const ImportantItems: string[] = ["item_black_king_bar", "item_refresher"];
@@ -295,6 +295,23 @@ export function GetTeamFountainTpPoint(): Vector {
 }
 
 /**
+ * Get the direction of the team side.
+ * @param team - The team to get the direction for.
+ * @returns The direction of the team side.
+ */
+export function GetTeamSideDirection(team: number): Vector {
+    // Radiant side => roughly bottom-left
+    // Dire side    => roughly top-right
+    if (team === Team.Radiant) {
+        // e.g. direction (-1, -1) normalized
+        return Vector(-1, -1, 0).Normalized();
+    } else {
+        // e.g. direction (1, 1) normalized
+        return Vector(1, 1, 0).Normalized();
+    }
+}
+
+/**
  * Shuffle an array.
  * @param tbl - The array to shuffle.
  * @returns The shuffled array.
@@ -311,7 +328,7 @@ export function Shuffle<T>(tbl: T[]): T[] {
 
 export function SetFrameProcessTime(bot: Unit): void {
     if (bot.frameProcessTime === null) {
-        bot.frameProcessTime = FrameProcessTime; // + math.fmod(bot.GetPlayerID() / 1000, FrameProcessTime / 10) * 2;
+        bot.frameProcessTime = FrameProcessTime + +(math.fmod(bot.GetPlayerID() / 1000, FrameProcessTime / 10) * 2).toFixed(2);
     }
 }
 
@@ -398,30 +415,63 @@ export function CleanupCachedVars() {
     }
 }
 
-// check if the target is a valid unit. can be hero, creep, or building.
+export function GetDistanceFromAncient(bot: Unit, enemy: boolean): number {
+    const ancient = GetAncient(enemy ? GetOpposingTeam() : GetTeam());
+    return GetUnitToUnitDistance(bot, ancient);
+}
+
+/**
+ * Check if the target is a valid unit. can be hero, creep, or building.
+ * @param target - The unit to check.
+ * @returns True if the target is a valid unit, false otherwise.
+ */
 export function IsValidUnit(target: Unit): boolean {
     return target !== null && !target.IsNull() && target.CanBeSeen() && target.IsAlive() && !target.IsInvulnerable();
 }
 
-// check if the target is a valid hero.
+/**
+ * Check if the target is a valid hero.
+ * @param target - The unit to check.
+ * @returns True if the target is a valid hero, false otherwise.
+ */
 export function IsValidHero(target: Unit): boolean {
     return IsValidUnit(target) && target.IsHero();
 }
 
+/**
+ * Check if the target is a valid creep.
+ * @param target - The unit to check.
+ * @returns True if the target is a valid creep, false otherwise.
+ */
 export function IsValidCreep(target: Unit): boolean {
     return IsValidUnit(target) && target.GetHealth() < 5000 && !target.IsHero() && (GetBot().GetLevel() > 9 || !target.IsAncientCreep());
 }
 
-// check if the target is a valid building.
+/**
+ * Check if the target is a valid building.
+ * @param target - The unit to check.
+ * @returns True if the target is a valid building, false otherwise.
+ */
 export function IsValidBuilding(target: Unit): boolean {
     return IsValidUnit(target) && target.IsBuilding();
 }
 
+/**
+ * Check if the bot has the item in its inventory.
+ * @param bot - The bot to check.
+ * @param itemName - The name of the item to check.
+ * @returns True if the bot has the item, false otherwise.
+ */
 export function HasItem(bot: Unit, itemName: string): boolean {
     const slot = bot.FindItemSlot(itemName);
     return slot >= 0 && slot <= 8;
 }
 
+/**
+ * Find an ally with the given name.
+ * @param name - The name of the ally to find.
+ * @returns The ally if found, null otherwise.
+ */
 export function FindAllyWithName(name: string): Unit | null {
     for (const ally of GetUnitList(UnitType.AlliedHeroes)) {
         if (IsValidHero(ally) && string.find(ally.GetUnitName(), name)) {
@@ -431,6 +481,12 @@ export function FindAllyWithName(name: string): Unit | null {
     return null;
 }
 
+/**
+ * Get the distance between two locations.
+ * @param fLoc - The first location.
+ * @param sLoc - The second location.
+ * @returns The distance between the two locations.
+ */
 export function GetLocationToLocationDistance(fLoc: Vector, sLoc: Vector): number {
     const x1 = fLoc.x;
     const x2 = sLoc.x;
@@ -439,6 +495,11 @@ export function GetLocationToLocationDistance(fLoc: Vector, sLoc: Vector): numbe
     return math.sqrt((y2 - y1) * (y2 - y1) + (x2 - x1) * (x2 - x1));
 }
 
+/**
+ * Deep copy an object.
+ * @param orig - The object to copy.
+ * @returns The copied object.
+ */
 export function Deepcopy<T extends ArrayLike<unknown>>(orig: T): T {
     const originalType = type(orig);
     let copy;
@@ -1056,14 +1117,15 @@ export function IsNearEnemyHighGroundTower(unit: Unit, range: number): boolean {
  * @returns True if the team is pushing second tier or high ground, false otherwise.
  */
 export function IsTeamPushingSecondTierOrHighGround(bot: Unit): boolean {
-    const cachedRes = GetCachedVars("IsTeamPushingSecondTierOrHighGround" + tostring(bot.GetTeam()), 0.5);
+    const cacheKey = "IsTeamPushingSecondTierOrHighGround" + bot.GetTeam();
+    const cachedRes = GetCachedVars(cacheKey, 0.5);
     if (cachedRes !== null) {
         return cachedRes;
     }
     const res =
         bot.GetNearbyHeroes(2000, false, BotMode.None).length > 2 &&
         (IsNearEnemySecondTierTower(bot, 2000) || IsNearEnemyHighGroundTower(bot, 3000) || GetUnitToUnitDistance(bot, GetAncient(GetOpposingTeam())) < 3000);
-    SetCachedVars("IsTeamPushingSecondTierOrHighGround" + tostring(bot.GetTeam()), res);
+    SetCachedVars(cacheKey, res);
     return res;
 }
 
@@ -1093,7 +1155,8 @@ export function GetNumOfAliveHeroes(bEnemy: boolean): number {
  * @returns The number of missing enemy heroes.
  */
 export function CountMissingEnemyHeroes(): number {
-    const cachedRes = GetCachedVars("CountMissingEnemyHeroes" + tostring(GetTeam()), 0.5);
+    const cacheKey = "CountMissingEnemyHeroes" + GetTeam();
+    const cachedRes = GetCachedVars(cacheKey, 0.5);
     if (cachedRes !== null) {
         return cachedRes;
     }
@@ -1119,7 +1182,7 @@ export function CountMissingEnemyHeroes(): number {
         }
     }
     // print(`count missing alive hero for enemy: ${count}`);
-    SetCachedVars("CountMissingEnemyHeroes" + tostring(GetTeam()), count);
+    SetCachedVars(cacheKey, count);
     return count;
 }
 
@@ -1197,7 +1260,8 @@ export function ShouldBotsSpreadOut(bot: Unit, minDistance: number): boolean {
         return false;
     }
 
-    const cachedRes = GetCachedVars("ShouldBotsSpreadOut" + tostring(bot.GetPlayerID()), 2);
+    const cacheKey = "ShouldBotsSpreadOut" + bot.GetPlayerID();
+    const cachedRes = GetCachedVars(cacheKey, 2);
     if (cachedRes !== null) {
         return cachedRes;
     }
@@ -1207,22 +1271,171 @@ export function ShouldBotsSpreadOut(bot: Unit, minDistance: number): boolean {
             const heroName = hero.GetUnitName();
             if (HasValue(SpecialAOEHeroes, heroName)) {
                 if (hero.GetLevel() >= 8) {
-                    SetCachedVars("ShouldBotsSpreadOut" + tostring(bot.GetPlayerID()), true);
+                    SetCachedVars(cacheKey, true);
                     return true;
                 }
             } else {
-                SetCachedVars("ShouldBotsSpreadOut" + tostring(bot.GetPlayerID()), false);
+                SetCachedVars(cacheKey, false);
             }
             if (heroName === HeroName.TrollWarlord) {
                 if (HasItem(hero, "item_bfury") && hero.HasModifier("modifier_troll_warlord_battle_trance") && hero.GetAttackRange() < 500) {
-                    SetCachedVars("ShouldBotsSpreadOut" + tostring(bot.GetPlayerID()), true);
+                    SetCachedVars(cacheKey, true);
                     return true; // Troll Warlord with Battle Fury and ultimate active
                 }
             }
         }
     }
-    SetCachedVars("ShouldBotsSpreadOut" + tostring(bot.GetPlayerID()), false);
+    SetCachedVars(cacheKey, false);
     return false;
+}
+
+/**
+ * Get the nearby ally units.
+ * @param bot - The bot to check.
+ * @param allyDistanceThreshold - The distance threshold to check for allies.
+ * @returns An array of ally units.
+ */
+export function GetNearbyAllyUnits(bot: Unit, allyDistanceThreshold: number): Unit[] {
+    const cacheKey = "GetNearbyAllyUnits" + bot.GetPlayerID();
+    const cachedRes = GetCachedVars(cacheKey, 0.1);
+    if (cachedRes !== null) {
+        return cachedRes;
+    }
+    const hNearbyAllies = bot.GetNearbyHeroes(allyDistanceThreshold, false, BotMode.None);
+    const hNearbyLaneCreeps = bot.GetNearbyNeutralCreeps(allyDistanceThreshold, false);
+    const hNearbyUnits = hNearbyAllies.concat(hNearbyLaneCreeps);
+    SetCachedVars(cacheKey, hNearbyUnits);
+    return hNearbyUnits;
+}
+
+/**
+ * Smart spread out the bots.
+ * @param bot - The bot to check.
+ * @param allyDistanceThreshold - The distance threshold to check for allies.
+ * @param minDistance - The minimum distance to check.
+ * @param avoidEnemyUnits - The enemy units to avoid.
+ * @param onlyAvoidEnemyUnits - Whether to only avoid enemy units.
+ */
+export function SmartSpreadOut(bot: Unit, allyDistanceThreshold: number, minDistance: number, avoidEnemyUnits: Unit[] = [], onlyAvoidEnemyUnits: boolean = false) {
+    let hNearbyUnits: Unit[] = [];
+    if (onlyAvoidEnemyUnits) {
+        hNearbyUnits = avoidEnemyUnits;
+    } else {
+        hNearbyUnits = GetNearbyAllyUnits(bot, allyDistanceThreshold).concat(avoidEnemyUnits);
+    }
+
+    // 1) Figure out direction that moves the bot away from nearby allies
+    const dirAwayFromAlly = SpreadBotApartDir(bot, minDistance, hNearbyUnits);
+    if (!dirAwayFromAlly) {
+        // No direction needed, default to move to fountain
+        bot.Action_MoveToLocation(add(GetTeamFountainTpPoint(), RandomVector(50)));
+        return;
+    }
+
+    const botLoc = bot.GetLocation();
+
+    // 2) Get direction from the bot to ally fountain direction
+    // const teamFountainDir = sub(GetTeamFountainTpPoint(), botLoc).Normalized();
+    const teamFountainDir = GetTeamSideDirection(GetTeam());
+
+    // 3) Combine half “away from ally” and half “towards fountain”
+    const combinedDir = add(dirAwayFromAlly, teamFountainDir).Normalized();
+
+    // 4) Multiply by desired spread distance
+    let finalDir = multiply(combinedDir, minDistance);
+
+    // 5) Fail-safe: If finalDir is pointing toward the enemy fountain, override
+    const enemyFountainDir = sub(GetEnemyFountainTpPoint(), botLoc).Normalized();
+
+    // Dot > 0 means finalDir is in the same general direction as enemyFountainDir
+    if (dot(finalDir.Normalized(), enemyFountainDir) > 0) {
+        finalDir = multiply(teamFountainDir, minDistance);
+    }
+
+    let targetLoc = add(botLoc, finalDir);
+
+    // 6) ensure we don't walk toward the enemy fountain
+    if (GetDistanceFromAncient(bot, true) < 2600) {
+        // If final direction is still pointing toward enemy fountain, override it
+        if (dot(sub(targetLoc, botLoc), enemyFountainDir) > 0) {
+            finalDir = multiply(teamFountainDir, minDistance);
+            targetLoc = add(botLoc, finalDir);
+        }
+    }
+
+    // 7) Finally, move the bot to the target location with some random offset
+    bot.Action_MoveToLocation(add(targetLoc, RandomVector(50)));
+}
+
+/**
+ * Spread the bot apart from the allies.
+ * @param bot - The bot to check.
+ * @param minDistance - The distance to check.
+ * @param hNearbyUnits - The units to check.
+ * @returns The direction to spread the bot apart.
+ */
+export function SpreadBotApartDir(bot: Unit, minDistance: number, hNearbyUnits: Unit[]): Vector | null {
+    const botLoc = bot.GetLocation();
+
+    for (const unit of hNearbyUnits) {
+        if (IsValidUnit(unit) && unit !== bot && GetUnitToUnitDistance(bot, unit) <= minDistance) {
+            // dir = botLoc - ally:GetLocation() in Lua
+            const dir = sub(botLoc, unit.GetLocation());
+            // dir:Normalized() * distance in Lua
+            return multiply(dir.Normalized(), minDistance);
+        }
+    }
+
+    return null;
+}
+
+/**
+ * Spread the bot apart from the allies.
+ * @param bot - The bot to check.
+ * @param minDistance - The distance to check.
+ * @param hNearbyUnits - The units to check.
+ * @returns The direction to spread the bot apart.
+ */
+export function SpreadBotApartDir_2(bot: Unit, minDistance: number, hNearbyUnits: Unit[]): Vector | null {
+    const cacheKey = "SpreadBotApartDir" + bot.GetPlayerID();
+    const cachedRes = GetCachedVars(cacheKey, 0.1);
+    if (cachedRes !== null) {
+        return cachedRes;
+    }
+
+    const botLoc = bot.GetLocation();
+
+    // We'll accumulate a combined direction vector here.
+    // Start it at the zero vector.
+    let combinedDir = Vector(0, 0, 0);
+
+    // 1) Check each unit and, if within minDistance, add the direction away from that unit.
+    for (const unit of hNearbyUnits) {
+        if (IsValidUnit(unit) && unit !== bot) {
+            const dist = GetUnitToUnitDistance(bot, unit);
+            if (dist <= minDistance) {
+                // Direction from 'unit' to 'bot'
+                // In Lua: dir = botLoc - unit:GetLocation()
+                const dir = sub(botLoc, unit.GetLocation());
+                // Accumulate it in combinedDir
+                combinedDir = add(combinedDir, dir);
+            }
+        }
+    }
+
+    // 2) Check the length of our summed direction.
+    const dirLength = length3D(combinedDir);
+    if (dirLength < 1e-5) {
+        // Either no units in range or they balanced each other out
+        SetCachedVars(cacheKey, null);
+        return null;
+    }
+
+    // 3) Normalize and multiply to get a final direction of length minDistance.
+    //    i.e., direction * minDistance
+    const finalDir = multiply(combinedDir.Normalized(), minDistance);
+    SetCachedVars(cacheKey, finalDir);
+    return finalDir;
 }
 
 /**
@@ -1327,7 +1540,7 @@ export function IsValidAbility(ability: Ability): boolean {
  * @returns True if the bot has a critical spell with a cooldown greater than nDuration, false otherwise.
  */
 export function HasCriticalSpellWithCooldown(bot: Unit, nDuration: number): boolean {
-    const cacheKey = "HasCriticalSpellWithCooldown" + tostring(bot.GetPlayerID()) + tostring(nDuration);
+    const cacheKey = "HasCriticalSpellWithCooldown" + bot.GetPlayerID() + nDuration;
     const cachedRes = GetCachedVars(cacheKey, 2);
     if (cachedRes !== null) {
         return cachedRes;
@@ -1372,7 +1585,7 @@ export function GetItemFromFullInventory(bot: Unit, itemName: string): Item | nu
  * @returns The item if found, null otherwise.
  */
 export function GetItemFromCountedInventory(bot: Unit, itemName: string, count: number): Item | null {
-    const cacheKey = "GetItemFromCountedInventory" + tostring(bot.GetPlayerID()) + itemName + tostring(count);
+    const cacheKey = "GetItemFromCountedInventory" + bot.GetPlayerID() + itemName + count;
     const cachedRes = GetCachedVars(cacheKey, 2);
     if (cachedRes !== null) {
         return cachedRes;
@@ -1396,7 +1609,7 @@ export function GetItemFromCountedInventory(bot: Unit, itemName: string, count: 
  * @returns True if the team has a member with a critical spell in cooldown, false otherwise.
  */
 export function HasTeamMemberWithCriticalSpellInCooldown(targetLoc: Vector): boolean {
-    const cacheKey = "HasTeamMemberWithCriticalSpellInCooldown" + tostring(GetTeam()) + tostring(targetLoc.x) + tostring(targetLoc.y);
+    const cacheKey = "HasTeamMemberWithCriticalSpellInCooldown" + GetTeam() + Math.round(targetLoc.x) + Math.round(targetLoc.y);
     const cachedRes = GetCachedVars(cacheKey, 2);
     if (cachedRes !== null) {
         return cachedRes;
@@ -1423,7 +1636,7 @@ export function HasTeamMemberWithCriticalSpellInCooldown(targetLoc: Vector): boo
  * @returns True if the team has a member with a critical item in cooldown, false otherwise.
  */
 export function HasTeamMemberWithCriticalItemInCooldown(targetLoc: Vector): boolean {
-    const cacheKey = "HasTeamMemberWithCriticalItemInCooldown" + tostring(GetTeam()) + tostring(targetLoc.x) + tostring(targetLoc.y);
+    const cacheKey = "HasTeamMemberWithCriticalItemInCooldown" + GetTeam() + Math.round(targetLoc.x) + Math.round(targetLoc.y);
     const cachedRes = GetCachedVars(cacheKey, 2);
     if (cachedRes !== null) {
         return cachedRes;

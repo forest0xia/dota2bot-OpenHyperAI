@@ -244,7 +244,7 @@ local HeroPositions = {
     [HeroName.Enigma] = {
         0,
         35,
-        55,
+        65,
         30,
         0
     },
@@ -315,8 +315,8 @@ local HeroPositions = {
         0,
         15,
         10,
-        40,
-        40
+        25,
+        25
     },
     [HeroName.Kunkka] = {
         35,

@@ -25,7 +25,7 @@ local tTalentTreeList = {
 }
 
 local tAllAbilityBuildList = {
-						{1,3,3,2,2,6,2,2,3,3,6,1,1,1,6},
+						{1,3,1,2,1,6,1,2,3,3,6,2,2,3,6},
 }
 
 local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
@@ -416,7 +416,7 @@ function X.ConsiderQ()
 		and not ( J.IsPushing( bot ) or J.IsDefending( bot ) )
 	then
 		local nNeutralCreeps = bot:GetNearbyNeutralCreeps( nCastRange + 200 )
-		if #nNeutralCreeps >= 3 or nMP >= 0.8
+		if #nNeutralCreeps >= 2 or nMP >= 0.5
 		then
 			local targetCreep = nNeutralCreeps[1]
 			if J.IsValid( targetCreep )

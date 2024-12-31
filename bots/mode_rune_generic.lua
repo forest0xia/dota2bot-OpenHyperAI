@@ -169,13 +169,16 @@ function GetDesire()
 end
 
 function ConsiderWisdomRune()
-	if bot:GetLevel() < 30 and not J.IsCore(bot) then
+	if bot:GetLevel() < 30 then
 		timeInMin = X.GetMulTime()
 		X.UpdateWisdom()
 		if DotaTime() >= 7 * 60
 		and not J.IsMeepoClone(bot)
 		and not bot:HasModifier('modifier_arc_warden_tempest_double') then
 			if DotaTime() < wisdomRuneInfo[1] + 3.0 then
+				if GetUnitToLocationDistance(bot, wisdomRuneSpots[wisdomRuneInfo[2]]) < 80 then
+					return 0
+				end
 				if not bot:WasRecentlyDamagedByAnyHero(3.0) then
 					return BOT_MODE_DESIRE_HIGH
 				end

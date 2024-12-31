@@ -18,6 +18,7 @@ local nEffctiveEnemyHeroesNearPushLoc = 0
 
 local pingTimeDelta = 5
 local targetBuilding = nil
+local nInRangeAlly, nInRangeEnemy = {}, {}
 
 function Push.GetPushDesire(bot, lane)
     local botName = bot:GetUnitName()
@@ -29,8 +30,8 @@ function Push.GetPushDesire(bot, lane)
     local nMaxDesire = 0.93
 	local nSearchRange = 2000
     local nModeDesire = bot:GetActiveModeDesire()
-    local nInRangeAlly = J.GetAlliesNearLoc(bot:GetLocation(), nSearchRange)
-    local nInRangeEnemy = J.GetEnemiesNearLoc(bot:GetLocation(), nSearchRange)
+    nInRangeAlly = J.GetAlliesNearLoc(bot:GetLocation(), nSearchRange)
+    nInRangeEnemy = J.GetEnemiesNearLoc(bot:GetLocation(), nSearchRange)
     local laneFront = GetLaneFrontLocation(GetTeam(), lane, 0)
     local distanceToLaneFront = GetUnitToLocationDistance(bot, laneFront)
     local lEnemyHeroesAroundLoc = J.GetLastSeenEnemiesNearLoc(laneFront, nSearchRange)
@@ -227,14 +228,17 @@ function Push.GetPushDesire(bot, lane)
     local distantToPushFront = GetUnitToLocationDistance(bot, pushLaneFront)
     local pushLaneFrontToEnemyAncient = GetUnitToLocationDistance(GetAncient( GetOpposingTeam() ), pushLaneFront)
     local maxDistanceFromPushFront = 5500
+    local bNearbyHeroesMoreThanEnemy = #nInRangeAlly >= #nInRangeEnemy and #nInRangeAlly >= nEffctiveEnemyHeroesNearPushLoc + nMissingEnemyHeroes - 2
     if nH > 0 and pushLaneFrontToEnemyAncient > 4500 then
         -- 前中期推进
         if teamAveLvl < 12 or (teamAveLvl < 15 and distantToPushFront > maxDistanceFromPushFront) then
-            if #nInRangeAlly >= nEffctiveEnemyHeroesNearPushLoc + nMissingEnemyHeroes - 2 then
+            if bNearbyHeroesMoreThanEnemy then
                 if distanceToLaneFront < 3000 and (not bot:WasRecentlyDamagedByAnyHero(2) or not bot:WasRecentlyDamagedByTower(2)) then
                     local nDistance, cTower = J.Utils.GetDistanceToCloestEnemyTower(bot)
                     if cTower and nDistance < 6000 then
-                        return RemapValClamped(J.GetHP(bot), 0.1, 0.8, BOT_MODE_DESIRE_NONE, nMaxDesire)
+                        nPushDesire = RemapValClamped(J.GetHP(bot), 0.1, 0.8, BOT_MODE_DESIRE_NONE, nMaxDesire)
+                        bot.laneToPush = lane
+                        return nPushDesire
                     end
                 end
             else
@@ -245,11 +249,13 @@ function Push.GetPushDesire(bot, lane)
         and (teamKillsRatio > 0.6 or teamAveLvl > enemyTeamAveLvl)
         and (teamAveLvl < 16 and distantToPushFront > maxDistanceFromPushFront)
         then
-            if #nInRangeAlly >= nEffctiveEnemyHeroesNearPushLoc + nMissingEnemyHeroes - 2 then
+            if bNearbyHeroesMoreThanEnemy then
                 if distanceToLaneFront < 3000 and (not bot:WasRecentlyDamagedByAnyHero(2) or not bot:WasRecentlyDamagedByTower(2)) then
                     local nDistance, cTower = J.Utils.GetDistanceToCloestEnemyTower(bot)
                     if cTower and nDistance < 6000 then
-                        return RemapValClamped(J.GetHP(bot), 0.1, 0.8, BOT_MODE_DESIRE_NONE, nMaxDesire)
+                        nPushDesire = RemapValClamped(J.GetHP(bot), 0.1, 0.8, BOT_MODE_DESIRE_NONE, nMaxDesire)
+                        bot.laneToPush = lane
+                        return nPushDesire
                     end
                 end
             else
@@ -259,8 +265,20 @@ function Push.GetPushDesire(bot, lane)
         end
     end
 
+    if distanceToLaneFront < 3000 then
+        -- priority to push the lane with no ally barracks
+        if bNearbyHeroesMoreThanEnemy then
+            if not J.Utils.IsAnyBarracksOnLaneAlive(false, lane) or J.GetDistanceFromAllyFountain(bot) < 2000 then
+                nPushDesire = RemapValClamped(J.GetHP(bot), 0.1, 0.8, BOT_MODE_DESIRE_NONE, nMaxDesire)
+                bot.laneToPush = lane
+                return nPushDesire
+            end
+        end
+    end
+
     -- General Push
-    if Push.WhichLaneToPush(bot) == lane
+    if pushLane == lane
+    or (#nInRangeEnemy > eAliveCoreCount and teamAveLvl > enemyTeamAveLvl and aAliveCount >= eAliveCount)
     then
         if eAliveCount == 0
         or aAliveCoreCount >= eAliveCoreCount
@@ -281,10 +299,6 @@ function Push.GetPushDesire(bot, lane)
             bot.laneToPush = lane
             return Clamp(nPushDesire, 0, nMaxDesire)
         end
-    end
-
-    if J.GetHP(bot) > 0.65 and (#nInRangeAlly >= 2 or nAroundEnemyLaneFrontAlly >= 2 or J.GetDistanceFromAllyFountain(bot) < 2000) then
-        return nPushDesire
     end
 
     return BOT_MODE_DESIRE_NONE
@@ -352,6 +366,13 @@ function Push.PushThink(bot, lane)
     local fDeltaFromFront = (Min(J.GetHP(bot), 0.7) * 1000 - 700) + RemapValClamped(botAttackRange, 300, 700, 0, -600)
     local nEnemyTowers = bot:GetNearbyTowers(1600, true)
     local targetLoc = GetLaneFrontLocation(GetTeam(), lane, fDeltaFromFront)
+    local enemyLaneFront = GetLaneFrontLocation(GetOpposingTeam(), lane, -fDeltaFromFront)
+    if J.Utils.GetLocationToLocationDistance(J.Utils.GetTeamFountainTpPoint(), targetLoc) < 3000
+    and GetUnitToLocationDistance(bot, enemyLaneFront) > bot:GetAttackRange()
+    and #nInRangeAlly >= #nInRangeEnemy
+    then
+        targetLoc = enemyLaneFront
+    end
 
     local nEnemyAncient = GetAncient(GetOpposingTeam())
     if  GetUnitToUnitDistance(bot, nEnemyAncient) < 1600

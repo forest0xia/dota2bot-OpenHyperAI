@@ -179,7 +179,7 @@ function GetDesire()
 			IsShouldFindTeammates = true
 			ShouldFindTeammatesTime = DotaTime()
 			print("avoid pushing HG for bot: " .. botName)
-			return BOT_ACTION_DESIRE_ABSOLUTE * 0.98
+			return BOT_MODE_DESIRE_VERYHIGH + 0.1
 		end
 	end
 
@@ -194,7 +194,7 @@ function GetDesire()
 			IsShouldFindTeammates = true
 			ShouldFindTeammatesTime = DotaTime()
 			print("avoid low desire actions for bot: " .. botName)
-			return BOT_ACTION_DESIRE_ABSOLUTE * 0.98
+			return BOT_MODE_DESIRE_VERYHIGH + 0.1
 		end
 	end
 

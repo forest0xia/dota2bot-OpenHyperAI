@@ -83,6 +83,7 @@ export interface Unit {
     GetLocation(): Vector;
 
     GetNearbyHeroes(range: number, includeEnemies: boolean, mode: BotMode): Unit[];
+    GetNearbyNeutralCreeps(range: number, includeEnemies: boolean): Unit[];
 
     GetItemInSlot(slot: number): Item | null;
     NumQueuedActions(): number;

@@ -283,8 +283,8 @@ function X.SetTalkMessage()
 			local sTauntMark = "?"
 			if RandomInt( 1, 9 ) > 7 then sTauntMark = Localization.Get('got_a_kill')[RandomInt( 1, #Localization.Get('got_a_kill') )] end
 			if nCurrentGold > nLastGold + 800 * nRate and RandomInt( 1, 9 ) > 4 then sTauntMark = Localization.Get('got_big_kill')[RandomInt( 1, #Localization.Get('got_big_kill') )] end
-			if nCurrentGold > nLastGold + 1000 * nRate and RandomInt( 1, 9 ) > 3 then sTauntMark = Localization.Get('got_big_kill')[RandomInt( 1, #Localization.Get('got_big_kill_2') )] end
-			if nCurrentGold > nLastGold + 1500 * nRate then sTauntMark = Localization.Get('got_big_kill')[RandomInt( 1, #Localization.Get('got_big_kill_3') )] end
+			if nCurrentGold > nLastGold + 1000 * nRate and RandomInt( 1, 9 ) > 3 then sTauntMark = Localization.Get('got_big_kill_2')[RandomInt( 1, #Localization.Get('got_big_kill_2') )] end
+			if nCurrentGold > nLastGold + 1500 * nRate then sTauntMark = Localization.Get('got_big_kill_3')[RandomInt( 1, #Localization.Get('got_big_kill_3') )] end
 			if sTauntMark ~= "?" or RandomInt( 1, 9 ) > 4 then bot:ActionImmediate_Chat( sTauntMark, true ) end
 		end
 

@@ -55,11 +55,56 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_overwhelming_blink",--
 	"item_ultimate_scepter_2",
 	"item_moon_shard",
+	"item_travel_boots_2",--
 }
 
-sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
+sRoleItemsBuyList['pos_1'] = {
+	"item_tango",
+	"item_double_branches",
+	"item_quelling_blade",
+	"item_gauntlets",
 
-sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_3']
+	"item_magic_wand",
+	"item_boots",
+	"item_soul_ring",
+	"item_phase_boots",
+	"item_echo_sabre",
+	"item_vladmir",--
+	"item_harpoon",--
+	"item_aghanims_shard",
+	"item_assault",--
+	"item_great_scepter",--
+	"item_ultimate_scepter",
+	"item_overwhelming_blink",--
+	"item_ultimate_scepter_2",
+	"item_moon_shard",
+	"item_satanic",--
+	"item_travel_boots_2",--
+}
+
+sRoleItemsBuyList['pos_2'] = {
+	"item_tango",
+	"item_double_branches",
+	"item_quelling_blade",
+	"item_gauntlets",
+
+	"item_magic_wand",
+	"item_boots",
+	"item_soul_ring",
+	"item_phase_boots",
+	"item_echo_sabre",
+	"item_vladmir",--
+	"item_harpoon",--
+	"item_aghanims_shard",
+	"item_ultimate_scepter",
+	"item_assault",--
+	"item_monkey_king_bar",--
+	"item_overwhelming_blink",--
+	"item_ultimate_scepter_2",
+	"item_moon_shard",
+	"item_satanic",--
+	"item_travel_boots_2",--
+}
 
 sRoleItemsBuyList['pos_4'] = {
     "item_double_tango",
@@ -76,10 +121,10 @@ sRoleItemsBuyList['pos_4'] = {
     "item_lotus_orb",--
 	"item_gungir",--
     "item_wind_waker",--
-    -- "item_ultimate_scepter_2",
     "item_overwhelming_blink",--
     "item_ultimate_scepter_2",
     "item_moon_shard",
+	"item_travel_boots_2",--
 }
 
 sRoleItemsBuyList['pos_5'] = {
@@ -97,10 +142,10 @@ sRoleItemsBuyList['pos_5'] = {
     "item_lotus_orb",--
 	"item_gungir",--
     "item_wind_waker",--
-    -- "item_ultimate_scepter_2",
     "item_overwhelming_blink",--
     "item_ultimate_scepter_2",
     "item_moon_shard",
+	"item_travel_boots_2",--
 }
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
@@ -110,6 +155,8 @@ X['sSellList'] = {
 	"item_black_king_bar",
 	"item_quelling_blade",
 
+	"item_satanic",
+	"item_vladmir",
 }
 
 

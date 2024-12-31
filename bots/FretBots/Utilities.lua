@@ -687,7 +687,7 @@ function Utilities:GetMatchData(heroes)
     gameData.teams = Utilities:HeroStatsInGame(heroes)
     gameData.mode = Utilities:IsTurboMode() and 'Turbo' or 'Normal'
 	gameData.winning_team = (Utilities.LosingTeam == DOTA_TEAM_BADGUYS) and "Radiant" or "Dire"
-    gameData.time_passed = Utilities:GetTime()
+    gameData.time_passed = math.floor(Utilities:GetTime())
 	gameData.version = Version.number
 	return gameData
 end

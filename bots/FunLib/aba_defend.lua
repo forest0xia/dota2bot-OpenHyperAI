@@ -57,6 +57,15 @@ function Defend.GetDefendDesire(bot, lane)
 	if defendDesire > 0.9 then
 		J.Utils.GameStates['recentDefendTime'] = DotaTime()
 	end
+	if defendDesire > BOT_MODE_DESIRE_HIGH then
+		local enemyLaneFront = GetLaneFrontLocation(GetOpposingTeam(), lane, 0)
+		if J.Utils.GetLocationToLocationDistance(J.Utils.GetTeamFountainTpPoint(), defendLoc) < 3000
+		and GetUnitToLocationDistance(bot, enemyLaneFront) > bot:GetAttackRange()
+		and #nInRangeEnemy <= #nInRangeAlly then
+			defendLoc = enemyLaneFront
+			bot:Action_AttackMove(defendLoc)
+		end
+	end
 	return defendDesire
 end
 
@@ -184,7 +193,7 @@ function Defend.GetDefendDesireHelper(bot, lane)
 	bot.laneToDefend = lane
 	local nUnitsAroundBuilding = J.GetEnemiesAroundLoc(furthestBuilding:GetLocation(), nSearchRange)
 	local lCloseEnemyHeroesAroundLoc = J.GetLastSeenEnemiesNearLoc(furthestBuilding:GetLocation(), 1200)
-	local urgentMultipler = RemapValClamped(nUnitsAroundBuilding * urgentNum, 1, 15, 0, 2)
+	local urgentMultipler = RemapValClamped(nUnitsAroundBuilding * urgentNum, 1, 10, 0, 2)
 
 	if nBuildingfTier >= 3 and nEffctiveAllyHeroesNearPingedDefendLoc <= #lEnemyHeroesAroundLoc then
 		maxDesire = 1

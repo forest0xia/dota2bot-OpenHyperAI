@@ -15,4 +15,7 @@ end
 function ____exports.length2D(a)
     return math.sqrt(a.x * a.x + a.y * a.y)
 end
+function ____exports.length3D(vec)
+    return math.sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z)
+end
 return ____exports

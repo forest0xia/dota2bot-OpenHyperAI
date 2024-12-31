@@ -26,3 +26,7 @@ export function dot(a: Vector, b: Vector): number {
 export function length2D(a: Vector): number {
     return Math.sqrt(a.x * a.x + a.y * a.y);
 }
+
+export function length3D(vec: Vector): number {
+    return Math.sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
+}
