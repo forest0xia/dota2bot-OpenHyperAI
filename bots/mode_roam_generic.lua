@@ -105,8 +105,10 @@ function GetDesire()
 	end
 
 	if J.IsValidHero(botTarget)
-	and ((J.GetModifierTime(bot, 'modifier_dazzle_shallow_grave') > 0.5 and J.GetHP(botTarget) < 0.15 and botName ~= "npc_dota_hero_axe")
-	or J.GetModifierTime(bot, 'modifier_oracle_false_promise_timer') > 0.5)
+	and (J.GetModifierTime(botTarget, 'modifier_dazzle_shallow_grave') > 0.5
+		or J.GetModifierTime(botTarget, 'modifier_oracle_false_promise_timer') > 0.5
+		or botTarget:HasModifier('modifier_skeleton_king_reincarnation_scepter_active'))
+	and J.GetHP(botTarget) < 0.2 and botName ~= "npc_dota_hero_axe"
 	then
 		local nAttackTarget = J.GetAttackableWeakestUnit( bot, bot:GetAttackRange() + 400, true, true )
 		bot:SetTarget( nAttackTarget )

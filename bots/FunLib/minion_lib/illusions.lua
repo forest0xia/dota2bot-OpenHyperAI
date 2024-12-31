@@ -20,7 +20,7 @@ function X.Think(ownerBot, hMinionUnit)
             hMinionUnit:Action_AttackUnit(bot.illusionThink.attack_target, true)
             return
         end
-        if bot.illusionThink.move_desire > 0 and bot.illusionThink.move_location then
+        if bot.illusionThink.move_desire > 0 and bot.illusionThink.move_location and GetUnitToLocationDistance(hMinionUnit, bot.illusionThink.move_location) < 2000 then
             hMinionUnit:Action_MoveToLocation(bot.illusionThink.move_location)
             return
         end

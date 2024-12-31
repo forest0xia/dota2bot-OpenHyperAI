@@ -235,7 +235,7 @@ function GetDesire()
 	if nDesire > 0 then
 		-- print("bot to attack special unit: " .. botName .. ', desire: ' .. nDesire)
 		ShouldAttackSpecialUnit = true
-		return nDesire
+		return RemapValClamped(J.GetHP(bot), 0.1, 0.8, BOT_MODE_DESIRE_NONE, nDesire)
 	end
 
 	if J.IsInLaningPhase() then
