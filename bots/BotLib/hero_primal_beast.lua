@@ -59,9 +59,9 @@ sRoleItemsBuyList['pos_2'] = {
     "item_heart",--
     "item_travel_boots",
     "item_overwhelming_blink",--
+    "item_moon_shard",
     "item_travel_boots_2",--
     "item_aghanims_shard",
-    "item_moon_shard",
     "item_ultimate_scepter",
     "item_ultimate_scepter_2",
 }
@@ -83,9 +83,9 @@ sRoleItemsBuyList['pos_3'] = {
     "item_lotus_orb",--
     "item_shivas_guard",--
     "item_travel_boots",
+    "item_moon_shard",
     "item_aghanims_shard",
     "item_travel_boots_2",--
-    "item_moon_shard",
     "item_ultimate_scepter_2",
 }
 
@@ -103,9 +103,9 @@ sRoleItemsBuyList['pos_4'] = {
 	--"item_holy_locket",
 	"item_sheepstick",
 	"item_mystic_staff",
+    "item_moon_shard",
 	"item_ultimate_scepter_2",
 	"item_shivas_guard",
-    "item_moon_shard",
 }
 
 sRoleItemsBuyList['pos_5'] = {

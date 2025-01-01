@@ -13,10 +13,6 @@ function X.OnEnd() end
 local nEnemyTowers, nEnemyCreeps, assignedLane, tangoDesire, tangoTarget, tangoSlot
 
 function X.GetDesire()
-	if J.IsAttacking( bot ) or J.IsTryingtoUseAbility(bot)
-	or (bot:GetActiveMode() ~= BOT_MODE_LANING and bot:GetActiveModeDesire() > BOT_MODE_DESIRE_MODERATE) then
-		return 0.2
-	end
 
 	tangoDesire = 0
 	tangoSlot = J.FindItemSlotNotInNonbackpack(bot, "item_tango")
@@ -31,19 +27,19 @@ function X.GetDesire()
 	and not bot:HasModifier('modifier_tango_heal') then
 		tangoDesire, tangoTarget = ConsiderTango()
 		if tangoDesire > 0 then
-			return BOT_MODE_DESIRE_VERYHIGH
+			return BOT_MODE_DESIRE_ABSOLUTE
 		end
 	end
 
-	assignedLane = GetBotTargetLane()
-	local vLaneFront = GetLaneFrontLocation(GetTeam(), assignedLane, 400)
-	local laneFrontEnemies = J.GetLastSeenEnemiesNearLoc(vLaneFront, 1200)
-	if #laneFrontEnemies >= 2 then
-		local hAllyList = J.GetNearbyHeroes(bot, 800, false, BOT_MODE_NONE )
-		if #laneFrontEnemies > #hAllyList then
-			return 0.22
-		end
-	end
+	-- assignedLane = GetBotTargetLane()
+	-- local vLaneFront = GetLaneFrontLocation(GetTeam(), assignedLane, 400)
+	-- local laneFrontEnemies = J.GetLastSeenEnemiesNearLoc(vLaneFront, 1200)
+	-- if #laneFrontEnemies >= 2 then
+	-- 	local hAllyList = J.GetNearbyHeroes(bot, 800, false, BOT_MODE_NONE )
+	-- 	if #laneFrontEnemies > #hAllyList then
+	-- 		return 0.22
+	-- 	end
+	-- end
 
 	if GetGameMode() == GAMEMODE_1V1MID or GetGameMode() == GAMEMODE_MO then return 1 end
 
@@ -51,7 +47,7 @@ function X.GetDesire()
 	local botLV = bot:GetLevel()
 
 	if GetGameMode() == 23 then currentTime = currentTime * 1.65 end
-	if currentTime <= 10 then return 0.268 end
+	if currentTime <= 10 then return 0.4 end
 	if currentTime <= 9 * 60 and botLV <= 7 then return 0.446 end
 	if currentTime <= 12 * 60 and botLV <= 11 then return 0.369 end
 	if botLV <= 15 and J.GetCoresAverageNetworth() < 12000 then return 0.228 end
@@ -95,37 +91,6 @@ function X.Think()
 	if tangoDesire and tangoDesire > 0 and tangoTarget then
 		local hItem = bot:GetItemInSlot( tangoSlot )
 		bot:Action_UseAbilityOnTree( hItem, tangoTarget )
-		return
-	end
-
-	GetBotTargetLane()
-	local AttackRange = bot:GetAttackRange()
-
-	-- print('Bug laning think, '..botName..', assignedLane='..tostring(assignedLane)..', pos='..J.GetPosition(bot))
-
-	local safeAmountWithAttackRange = -AttackRange - safeAmountFromFront
-	local vLaneFront = GetLaneFrontLocation(GetTeam(), assignedLane, safeAmountWithAttackRange)
-
-	nEnemyTowers = bot:GetNearbyTowers(1000, true )
-	nEnemyCreeps = bot:GetNearbyCreeps(400, true)
-
-	if (#nEnemyTowers >= 1 and J.IsInRange(bot, nEnemyTowers[1], 800))
-	or (#nEnemyCreeps >= 2 and bot:WasRecentlyDamagedByCreep(2) )
-	or bot:WasRecentlyDamagedByTower(2) then
-		if bot:GetLevel() < 5 then
-			vLaneFront = GetLaneFrontLocation(GetTeam(), assignedLane, RemapValClamped(J.GetHP(bot), 0, 1, -1000 + safeAmountWithAttackRange, safeAmountWithAttackRange))
-			bot:Action_MoveToLocation(vLaneFront)
-			return
-		end
-	end
-
-	if J.GetHP(bot) > LowHealthThreshold
-	then
-		bot:Action_MoveToLocation(vLaneFront + RandomVector(240))
-		return
-	else
-		vLaneFront = GetLaneFrontLocation(GetTeam(), assignedLane, RemapValClamped(J.GetHP(bot), 0, 1, -1000 + safeAmountWithAttackRange, safeAmountWithAttackRange))
-		bot:Action_MoveToLocation(vLaneFront)
 		return
 	end
 end

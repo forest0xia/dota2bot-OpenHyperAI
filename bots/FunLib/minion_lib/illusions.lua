@@ -16,7 +16,10 @@ function X.Think(ownerBot, hMinionUnit)
     bot = ownerBot
     bot.illusionThink = bot.illusionThink or {attack_desire = 0, attack_target = nil, move_desire = 0, move_location = nil, time = 0}
     if DotaTime() - bot.illusionThink.time < 0.5 then
-        if bot.illusionThink.attack_desire > 0 and U.IsValidUnit(bot.illusionThink.attack_target) then
+        if bot.illusionThink.attack_desire > 0
+        and U.IsValidUnit(bot.illusionThink.attack_target)
+        and X.IsTargetInShouldAimToAttackRange(hMinionUnit, bot.illusionThink.attack_target, 700)
+        then
             hMinionUnit:Action_AttackUnit(bot.illusionThink.attack_target, true)
             return
         end
@@ -24,7 +27,6 @@ function X.Think(ownerBot, hMinionUnit)
             hMinionUnit:Action_MoveToLocation(bot.illusionThink.move_location)
             return
         end
-        return
     end
 
 	hMinionUnit.attack_desire, hMinionUnit.attack_target = X.ConsiderAttack(hMinionUnit)
@@ -81,6 +83,11 @@ function X.Think(ownerBot, hMinionUnit)
     end
 end
 
+function X.IsTargetInShouldAimToAttackRange(hMinionUnit, target, nMaxRange)
+    return GetUnitToUnitDistance(hMinionUnit, target) <= hMinionUnit:GetAttackRange()
+        or (not U.CantMove(hMinionUnit) and GetUnitToUnitDistance(hMinionUnit, target) < math.min(hMinionUnit:GetAttackRange() * 3, nMaxRange))
+end
+
 function X.ConsiderAttack(hMinionUnit)
 	if U.CantAttack(hMinionUnit)
     then
@@ -90,6 +97,7 @@ function X.ConsiderAttack(hMinionUnit)
 	local target = X.GetAttackTarget(hMinionUnit)
 
 	if target ~= nil and not U.IsNotAllowedToAttack(target)
+    and X.IsTargetInShouldAimToAttackRange(hMinionUnit, target, 2000)
 	then
 		return BOT_ACTION_DESIRE_HIGH, target
 	end
@@ -126,9 +134,9 @@ function X.GetAttackTarget(hMinionUnit)
         and ally:IsAlive()
         and not ally:IsIllusion()
         -- and J.GetHP(ally) > 0.4
-        and ally:HasModifier('modifier_bane_nightmare')
-        and (GetUnitToUnitDistance(hMinionUnit, ally) <= hMinionUnit:GetAttackRange()
-            or (hMinionUnit:GetCurrentMovementSpeed() and hMinionUnit:GetCurrentMovementSpeed() > 250 and GetUnitToUnitDistance(hMinionUnit, ally) < math.min(hMinionUnit:GetAttackRange() * 1.5, 700)))
+        and (ally:HasModifier('modifier_bane_nightmare')
+            or (ally:IsSpeciallyDeniable() and J.CanKillTarget( ally, hMinionUnit:GetAttackDamage(), DAMAGE_TYPE_PHYSICAL )))
+        and X.IsTargetInShouldAimToAttackRange(hMinionUnit, ally, 700)
         then
             return ally
         end
@@ -143,6 +151,7 @@ function X.GetAttackTarget(hMinionUnit)
 
             if specialUnits[enemyName]
             and enemy:GetTeam() ~= hMinionUnit:GetTeam()
+            and X.IsTargetInShouldAimToAttackRange(hMinionUnit, enemy, 700)
             and GetUnitToUnitDistance(hMinionUnit, enemy) <= specialUnits[enemyName] * 1600
             and RandomInt(0, 100) <= specialUnits[enemyName] * 100
             then

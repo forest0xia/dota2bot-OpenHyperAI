@@ -13,7 +13,7 @@ if Utils.BuggyHeroesDueToValveTooLazy[botName] then
 	local_mode_attack_generic = dofile( GetScriptDirectory().."/FunLib/override_generic/mode_attack_generic" )
 end
 
-if local_mode_attack_generic ~= nil then
+if local_mode_attack_generic ~= nil and bot:GetLevel() >= 7 then
 	function GetDesire() return local_mode_attack_generic.GetDesire() end
 	function Think() return local_mode_attack_generic.Think() end
 	function OnStart() return local_mode_attack_generic.OnStart() end

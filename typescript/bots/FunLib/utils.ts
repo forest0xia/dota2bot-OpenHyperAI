@@ -1336,7 +1336,10 @@ export function SmartSpreadOut(bot: Unit, allyDistanceThreshold: number, minDist
 
     // 2) Get direction from the bot to ally fountain direction
     // const teamFountainDir = sub(GetTeamFountainTpPoint(), botLoc).Normalized();
-    const teamFountainDir = GetTeamSideDirection(GetTeam());
+    let teamFountainDir = GetTeamSideDirection(GetTeam());
+    if (avoidEnemyUnits.length == 0) {
+        teamFountainDir = Vector(0, 0, 0);
+    }
 
     // 3) Combine half “away from ally” and half “towards fountain”
     const combinedDir = add(dirAwayFromAlly, teamFountainDir).Normalized();
@@ -1609,7 +1612,7 @@ export function GetItemFromCountedInventory(bot: Unit, itemName: string, count: 
  * @returns True if the team has a member with a critical spell in cooldown, false otherwise.
  */
 export function HasTeamMemberWithCriticalSpellInCooldown(targetLoc: Vector): boolean {
-    const cacheKey = "HasTeamMemberWithCriticalSpellInCooldown" + GetTeam() + Math.round(targetLoc.x) + Math.round(targetLoc.y);
+    const cacheKey = "HasTeamMemberWithCriticalSpellInCooldown" + GetTeam();
     const cachedRes = GetCachedVars(cacheKey, 2);
     if (cachedRes !== null) {
         return cachedRes;
@@ -1636,7 +1639,7 @@ export function HasTeamMemberWithCriticalSpellInCooldown(targetLoc: Vector): boo
  * @returns True if the team has a member with a critical item in cooldown, false otherwise.
  */
 export function HasTeamMemberWithCriticalItemInCooldown(targetLoc: Vector): boolean {
-    const cacheKey = "HasTeamMemberWithCriticalItemInCooldown" + GetTeam() + Math.round(targetLoc.x) + Math.round(targetLoc.y);
+    const cacheKey = "HasTeamMemberWithCriticalItemInCooldown" + GetTeam();
     const cachedRes = GetCachedVars(cacheKey, 2);
     if (cachedRes !== null) {
         return cachedRes;

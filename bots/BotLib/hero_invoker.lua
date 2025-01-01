@@ -49,8 +49,8 @@ sRoleItemsBuyList['pos_2'] = {
     "item_bloodthorn",--5
     -- "item_devastator",--4
     "item_sheepstick",--2
-    "item_ultimate_scepter_2",
     "item_moon_shard",
+    "item_ultimate_scepter_2",
     "item_travel_boots_2",--1
 }
 
@@ -68,16 +68,16 @@ sRoleItemsBuyList['pos_2_qe'] = {
     "item_orchid",
     "item_sphere",--
     "item_black_king_bar",--
+    "item_travel_boots",
     "item_ultimate_scepter",
     "item_bloodthorn",--
 	-- "item_hurricane_pike",--
     "item_sheepstick",--
     "item_aghanims_shard",
     -- "item_octarine_core",--
-    "item_travel_boots",
-    "item_ultimate_scepter_2",
     "item_refresher",--
     "item_moon_shard",
+    "item_ultimate_scepter_2",
     -- "item_wind_waker",--
     "item_travel_boots_2",--
 }

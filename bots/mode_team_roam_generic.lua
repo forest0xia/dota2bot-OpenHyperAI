@@ -163,40 +163,40 @@ function GetDesire()
 	-- end
 
 	-- 如果在上高，对面人活着，其他队友活着却不在附近，赶紧溜去其他地方游走
-	if IsShouldFindTeammates and goToTargetAlly and not bot:WasRecentlyDamagedByAnyHero(5) then
-		return BOT_ACTION_DESIRE_ABSOLUTE * 0.98
-	elseif (#nearbyAllies <= 2 or nAliveEnemies > #nearbyAllies)
-	and J.GetDistanceFromAncient( bot, true ) < 5500
-	and not bot:WasRecentlyDamagedByAnyHero(5)
-	and #J.Utils.GetLastSeenEnemyIdsNearLocation(bot:GetLocation(), 2000) == 0
-	-- and #nearbyEnemies >= #nearbyAllies
-	and not J.IsCore(bot)
-	and not J.IsAttacking(bot)
-	and not J.IsDefending(bot)
-	and (J.IsPushing(bot) or J.IsFarming( bot ) or J.IsShopping( bot )) then
-		goToTargetAlly = J.Utils.FindAllyWithAtLeastDistanceAway(bot, 1600)
-		if goToTargetAlly then
-			IsShouldFindTeammates = true
-			ShouldFindTeammatesTime = DotaTime()
-			print("avoid pushing HG for bot: " .. botName)
-			return BOT_MODE_DESIRE_VERYHIGH + 0.1
-		end
-	end
+	-- if IsShouldFindTeammates and goToTargetAlly and not bot:WasRecentlyDamagedByAnyHero(5) then
+	-- 	return BOT_ACTION_DESIRE_ABSOLUTE * 0.98
+	-- elseif (#nearbyAllies < 2 or nAliveEnemies > #nearbyAllies)
+	-- and J.GetDistanceFromAncient( bot, true ) < 5500
+	-- and not bot:WasRecentlyDamagedByAnyHero(5)
+	-- and #J.Utils.GetLastSeenEnemyIdsNearLocation(bot:GetLocation(), 2000) == 0
+	-- -- and #nearbyEnemies >= #nearbyAllies
+	-- and not J.IsCore(bot)
+	-- and not J.IsAttacking(bot)
+	-- and not J.IsDefending(bot)
+	-- and (J.IsPushing(bot) or J.IsFarming( bot ) or J.IsShopping( bot )) then
+	-- 	goToTargetAlly = J.Utils.FindAllyWithAtLeastDistanceAway(bot, 1600)
+	-- 	if goToTargetAlly then
+	-- 		IsShouldFindTeammates = true
+	-- 		ShouldFindTeammatesTime = DotaTime()
+	-- 		print("avoid pushing HG for bot: " .. botName)
+	-- 		return BOT_MODE_DESIRE_VERYHIGH + 0.1
+	-- 	end
+	-- end
 
-	if bot:GetActiveModeDesire() < 0.15 and DotaTime() > 600
-	and #nearbyEnemies == 0
-	and not bot:WasRecentlyDamagedByAnyHero(5)
-	and not J.IsDefending(bot)
-	and not J.IsAttacking(bot)
-	and not J.IsCore(bot) then
-		goToTargetAlly = J.Utils.FindAllyWithAtLeastDistanceAway(bot, 1600)
-		if goToTargetAlly then
-			IsShouldFindTeammates = true
-			ShouldFindTeammatesTime = DotaTime()
-			print("avoid low desire actions for bot: " .. botName)
-			return BOT_MODE_DESIRE_VERYHIGH + 0.1
-		end
-	end
+	-- if bot:GetActiveModeDesire() < 0.11 and DotaTime() > 600
+	-- and #nearbyEnemies == 0
+	-- and not bot:WasRecentlyDamagedByAnyHero(5)
+	-- and not J.IsDefending(bot)
+	-- and not J.IsAttacking(bot)
+	-- and not J.IsCore(bot) then
+	-- 	goToTargetAlly = J.Utils.FindAllyWithAtLeastDistanceAway(bot, 1600)
+	-- 	if goToTargetAlly then
+	-- 		IsShouldFindTeammates = true
+	-- 		ShouldFindTeammatesTime = DotaTime()
+	-- 		print("avoid low desire actions for bot: " .. botName)
+	-- 		return BOT_MODE_DESIRE_VERYHIGH + 0.1
+	-- 	end
+	-- end
 
 	-- if pingedDefendDesire <= 0 then
 	-- 	pingedDefendDesire = ConsiderPingedDefendDesire()

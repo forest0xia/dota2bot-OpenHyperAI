@@ -28,6 +28,7 @@ function U.CantMove(unit)
             or unit:IsRooted()
             or unit:IsNightmared()
             or unit:IsInvulnerable() and not unit:HasModifier('modifier_fountain_invulnerability')
+			or not unit:GetCurrentMovementSpeed() or unit:GetCurrentMovementSpeed() < 100
             )
 end
 

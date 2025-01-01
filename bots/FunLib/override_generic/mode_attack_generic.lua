@@ -30,10 +30,6 @@ function X.GetDesire()
 	-- 	return bot:GetActiveModeDesire()
 	-- end
 
-	if J.IsInLaningPhase(bot) and bot:GetLevel() < 4 and J.IsValidHero(botTarget) then
-		return RemapValClamped(J.GetHP(botTarget), 0.5, 1, BOT_ACTION_DESIRE_MODERATE, BOT_ACTION_DESIRE_NONE )
-	end
-
     nEnemyHeroes = J.GetNearbyHeroes(bot, 1600, true)
     nAllyHeroes = J.GetNearbyHeroes(bot, 1600, false)
 	nEnemyTowers = bot:GetNearbyTowers(900, true )
@@ -158,15 +154,14 @@ function X.GetDesire()
 end
 
 function GetDesireBasedOnHp(target)
-	-- check if can/already hit by creeps
-	if J.Utils.IsValidUnit(target) then
-		if J.IsInLaningPhase()
-		and bot:WasRecentlyDamagedByCreep(0.3)
-		and #nEnemyCreeps >= 3
-		and J.GetHP(bot) < J.GetHP(target) then
-			return BOT_ACTION_DESIRE_NONE
-		end
+	-- dont use attack mode on creeps in laning phase
+	if J.IsInLaningPhase()
+	and bot:GetTarget()
+	and not bot:GetTarget():IsHero() then
+		return BOT_ACTION_DESIRE_NONE
+	end
 
+	if J.Utils.IsValidUnit(target) then
 		if J.IsValidHero(target) and J.GetModifierTime( target, "modifier_item_blade_mail_reflect" ) > 0.2
 		and J.IsInRange(bot, target, bot:GetAttackRange())
 		and ((#nEnemyHeroes == 1 and bot:GetHealth() - target:GetHealth() < 250)

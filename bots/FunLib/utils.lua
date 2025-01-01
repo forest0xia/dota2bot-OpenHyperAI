@@ -1790,6 +1790,9 @@ function ____exports.SmartSpreadOut(bot, allyDistanceThreshold, minDistance, avo
     end
     local botLoc = bot:GetLocation()
     local teamFountainDir = ____exports.GetTeamSideDirection(GetTeam())
+    if #avoidEnemyUnits == 0 then
+        teamFountainDir = Vector(0, 0, 0)
+    end
     local combinedDir = add(dirAwayFromAlly, teamFountainDir):Normalized()
     local finalDir = multiply(combinedDir, minDistance)
     local enemyFountainDir = sub(
@@ -1989,7 +1992,7 @@ end
 -- @param targetLoc - The location to check.
 -- @returns True if the team has a member with a critical spell in cooldown, false otherwise.
 function ____exports.HasTeamMemberWithCriticalSpellInCooldown(targetLoc)
-    local cacheKey = (("HasTeamMemberWithCriticalSpellInCooldown" .. tostring(GetTeam())) .. tostring(math.floor(targetLoc.x + 0.5))) .. tostring(math.floor(targetLoc.y + 0.5))
+    local cacheKey = "HasTeamMemberWithCriticalSpellInCooldown" .. tostring(GetTeam())
     local cachedRes = ____exports.GetCachedVars(cacheKey, 2)
     if cachedRes ~= nil then
         return cachedRes
@@ -2015,7 +2018,7 @@ end
 -- @param targetLoc - The location to check.
 -- @returns True if the team has a member with a critical item in cooldown, false otherwise.
 function ____exports.HasTeamMemberWithCriticalItemInCooldown(targetLoc)
-    local cacheKey = (("HasTeamMemberWithCriticalItemInCooldown" .. tostring(GetTeam())) .. tostring(math.floor(targetLoc.x + 0.5))) .. tostring(math.floor(targetLoc.y + 0.5))
+    local cacheKey = "HasTeamMemberWithCriticalItemInCooldown" .. tostring(GetTeam())
     local cachedRes = ____exports.GetCachedVars(cacheKey, 2)
     if cachedRes ~= nil then
         return cachedRes

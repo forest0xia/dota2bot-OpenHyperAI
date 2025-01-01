@@ -47,8 +47,8 @@ sRoleItemsBuyList['pos_3'] = {
     "item_aghanims_shard",
     "item_cyclone",
     "item_wind_waker",--
-    "item_travel_boots",
     "item_moon_shard",
+    "item_travel_boots",
     "item_travel_boots_2",--
 }
 

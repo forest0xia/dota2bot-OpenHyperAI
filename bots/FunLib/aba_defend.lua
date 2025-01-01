@@ -26,6 +26,19 @@ function Defend.GetDefendDesire(bot, lane)
 
 	weAreStronger = false
 	defendLoc = GetLaneFrontLocation( bot:GetTeam(), lane, 0 )
+
+	-- 如果己方没有兵线，防御点设为对方兵线
+	if J.Utils.GetLocationToLocationDistance(J.Utils.GetTeamFountainTpPoint(), defendLoc) < 3000 then
+		local enemyLaneFront = GetLaneFrontLocation(GetOpposingTeam(), lane, 0)
+		local hEnemyNearEnemyLaneFront = J.GetLastSeenEnemiesNearLoc(enemyLaneFront, 1600)
+		local hAllyNearEnemyLaneFront = J.GetAlliesNearLoc(enemyLaneFront, 1600)
+		if GetUnitToLocationDistance(bot, enemyLaneFront) > bot:GetAttackRange()
+		and #hEnemyNearEnemyLaneFront <= #hAllyNearEnemyLaneFront + 1 then
+			defendLoc = enemyLaneFront
+			bot:Action_AttackMove(defendLoc)
+		end
+	end
+
 	distanceToLane[lane] = GetUnitToLocationDistance(bot, defendLoc)
 	nInRangeAlly = J.GetNearbyHeroes(bot,1600,false,BOT_MODE_NONE)
 	nInRangeEnemy = J.GetLastSeenEnemiesNearLoc( bot:GetLocation(), 1600)
@@ -57,15 +70,6 @@ function Defend.GetDefendDesire(bot, lane)
 	if defendDesire > 0.9 then
 		J.Utils.GameStates['recentDefendTime'] = DotaTime()
 	end
-	if defendDesire > BOT_MODE_DESIRE_HIGH then
-		local enemyLaneFront = GetLaneFrontLocation(GetOpposingTeam(), lane, 0)
-		if J.Utils.GetLocationToLocationDistance(J.Utils.GetTeamFountainTpPoint(), defendLoc) < 3000
-		and GetUnitToLocationDistance(bot, enemyLaneFront) > bot:GetAttackRange()
-		and #nInRangeEnemy <= #nInRangeAlly then
-			defendLoc = enemyLaneFront
-			bot:Action_AttackMove(defendLoc)
-		end
-	end
 	return defendDesire
 end
 
@@ -81,7 +85,7 @@ function Defend.GetDefendDesireHelper(bot, lane)
 	local ancient = GetAncient(team)
 	local attackRange = bot:GetAttackRange()
 	botTarget = J.GetProperTarget(bot);
-	defendLoc = laneFront
+	-- defendLoc = laneFront
 	weAreStronger = J.WeAreStronger(bot, nSearchRange)
 
 	nEnemyUnitsAroundAncient = J.GetEnemiesAroundLoc(ancient:GetLocation(), 1500)
@@ -91,9 +95,9 @@ function Defend.GetDefendDesireHelper(bot, lane)
 	lEnemyHeroesAroundLoc = J.GetLastSeenEnemiesNearLoc(defendLoc, nSearchRange)
 	aliveAllyHeroes = J.GetNumOfAliveHeroes(false)
 
+	-- 如果基地附近有敌人，则重点防御基地
 	if nEnemyUnitsAroundAncient > 0
 	then
-
 		nSearchRange = 1500
 		local ancientHp = J.GetHP(ancient)
 
@@ -122,6 +126,7 @@ function Defend.GetDefendDesireHelper(bot, lane)
 	local distanceToDefendLoc = GetUnitToLocationDistance(bot, defendLoc)
 	local tpScoll = J.Utils.GetItemFromFullInventory(bot, 'item_tpscroll')
 
+	-- 避免特殊情况还坚持防守
 	if #nInRangeEnemy > 0 and distanceToDefendLoc < 1200
 	or bot:GetLevel() < 3
 	or (bot:GetAssignedLane() ~= lane and ((J.GetPosition(bot) == 1 and currentTime < 8 * 60) or (J.GetPosition(bot) == 2 and currentTime < 6 * 60))) -- reduce carry feeds
@@ -132,6 +137,8 @@ function Defend.GetDefendDesireHelper(bot, lane)
 	end
 
 	local furthestBuilding, urgentNum, nBuildingfTier = Defend.GetFurthestBuildingOnLane(lane)
+
+	-- 如果防御塔快没了，则不防守
 	if J.CanBeAttacked(furthestBuilding) and furthestBuilding ~= GetAncient(team)
 	then
 		if (nBuildingfTier == 1 and J.GetHP(furthestBuilding) <= 0.15)
@@ -141,6 +148,7 @@ function Defend.GetDefendDesireHelper(bot, lane)
 		end
 	end
 
+	-- 非关键性建筑，没tp没蓝，不防守
 	if (currentTime < 6 * 60 and bot:GetNetWorth() < 7000)
 	and J.IsCore(bot)
 	and bot:GetAssignedLane() ~= lane
@@ -154,6 +162,7 @@ function Defend.GetDefendDesireHelper(bot, lane)
 
 	local nDefendDesire = 0
 
+	-- 如果不在当前线上，且等级低，不防守
 	local botLevel = bot:GetLevel()
 	if bot:GetAssignedLane() ~= lane and (J.GetPosition(bot) == 1 and botLevel < 6
 	or J.GetPosition(bot) == 2 and botLevel < 6
@@ -164,7 +173,7 @@ function Defend.GetDefendDesireHelper(bot, lane)
 		return BOT_MODE_DESIRE_NONE
 	end
 
-	-- if pinged by bots or players to defend.
+	-- 如果被ping，则防守
 	local ping = J.Utils.IsPingedByAnyPlayer(bot, pingTimeDelta, nil, nil)
 	if ping ~= nil then
 		local isPinged, pingedLane = J.IsPingCloseToValidTower(team, ping)
@@ -180,9 +189,12 @@ function Defend.GetDefendDesireHelper(bot, lane)
 		end
 	end
 
-	if #lEnemyHeroesAroundLoc == 0 and J.IsAnyAllyDefending(bot, lane) then
+	-- 如果附近没有敌方英雄，同时队友去防守了，则不防守
+	if #lEnemyHeroesAroundLoc == 0 and (J.IsAnyAllyDefending(bot, lane) or J.IsCore(bot)) then
 		return BOT_MODE_DESIRE_NONE
 	end
+
+	-- 如果附近有1个敌方英雄，同时队友去防守了，则不防守
 	if #lEnemyHeroesAroundLoc == 1
 	and (nEffctiveAllyHeroesNearPingedDefendLoc > #lEnemyHeroesAroundLoc
 		or (J.IsAnyAllyDefending(bot, lane) and J.GetAverageLevel(false) >= J.GetAverageLevel(true)))
@@ -193,24 +205,29 @@ function Defend.GetDefendDesireHelper(bot, lane)
 	bot.laneToDefend = lane
 	local nUnitsAroundBuilding = J.GetEnemiesAroundLoc(furthestBuilding:GetLocation(), nSearchRange)
 	local lCloseEnemyHeroesAroundLoc = J.GetLastSeenEnemiesNearLoc(furthestBuilding:GetLocation(), 1200)
-	local urgentMultipler = RemapValClamped(nUnitsAroundBuilding * urgentNum, 1, 10, 0, 2)
+	local urgentMultipler = RemapValClamped(nUnitsAroundBuilding * urgentNum, 1, 15, 0.6, 3)
 
-	if nBuildingfTier >= 3 and nEffctiveAllyHeroesNearPingedDefendLoc <= #lEnemyHeroesAroundLoc then
+	-- 如果建筑物优先级大于等于3，且我方英雄数量不少于敌方英雄数量，则提高欲望
+	if nBuildingfTier >= 3 and nEffctiveAllyHeroesNearPingedDefendLoc >= #lEnemyHeroesAroundLoc then
 		maxDesire = 1
 	end
+	-- 按照血量、建筑物优先级 和初始欲望来重新计算欲望
 	nDefendDesire = RemapValClamped(J.GetHP(bot), 0.75, 0.2, RemapValClamped(GetDefendLaneDesire(lane) * urgentMultipler, 0, 1, BOT_ACTION_DESIRE_NONE, maxDesire), BOT_ACTION_DESIRE_LOW)
 	ConsiderPingedDefend(bot, nDefendDesire, furthestBuilding, nBuildingfTier)
 
+	-- 如果距离防御点小于1600，且敌方英雄数量大于我方英雄数量，且我方不强，则降低欲望
 	if (distanceToDefendLoc and distanceToDefendLoc < 1600 and #nInRangeEnemy > #nInRangeAlly) and not weAreStronger then
 		-- 1. if we are not stronger, most likely defend == feed
 		-- 2. we dont want to get stuck in defend mode too much because other modes are also important after bots arrive the location.
 		nDefendDesire = RemapValClamped(nDefendDesire, 0, 1, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_HIGH)
 	end
 
+	-- 如果敌方英雄血量低于我方英雄血量，且距离小于1500，则降低欲望
 	if J.IsValidHero(botTarget) and J.GetHP(botTarget) < 0.6 and J.GetHP(bot) > J.GetHP(botTarget) and GetUnitToUnitDistance(bot, botTarget) < 1500 then
 		nDefendDesire = nDefendDesire * 0.4
 	end
 
+	-- 如果没tp，且距离大于4000，且目标地点建筑物附近没有敌方英雄，则降低欲望
 	if not J.CanCastAbility(tpScoll) and distanceToDefendLoc > 4000
 	then
 		if #lCloseEnemyHeroesAroundLoc == 0 or bot:WasRecentlyDamagedByAnyHero(2) then

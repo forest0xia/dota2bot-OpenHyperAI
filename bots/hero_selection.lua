@@ -63,7 +63,7 @@ local MaxWeakHeroCount = 1
 local WeakHeroes = {
 	-- Weaks, meaning they are too far from being able to apply their power:
 	'npc_dota_hero_chen',
-	'npc_dota_hero_keeper_of_the_light',
+	-- 'npc_dota_hero_keeper_of_the_light',
 	-- 'npc_dota_hero_winter_wyvern', -- somewhat improved
 	'npc_dota_hero_ancient_apparition',
 	-- 'npc_dota_hero_phoenix', -- somewhat improved
@@ -98,6 +98,7 @@ function GetAllHeroNames(heroPosMap)
     return heroNames
 end
 
+local countDurableHeroes = {}
 -- Function to get a list of heroes suitable for a given position. Sort the list by weight。
 function GetPositionedPool(heroPosMap, position)
     local heroList = {}
@@ -118,14 +119,15 @@ function GetPositionedPool(heroPosMap, position)
     for _, hero in ipairs(heroList) do
 		local name = hero.name
 		print('Picking for position: '.. tostring(position) .. ", checking role for hero: "..name)
-		if (position == 1 and (Role.IsDisabler(name) or Role.IsNuker(name)))
-		or (position == 2 and (Role.IsDisabler(name) or Role.IsNuker(name) or Role.IsDurable(name)))
-		or (position == 3 and (not Role.IsRanged(name) or hero.weight > 50) and (Role.IsInitiator(name) or Role.IsDisabler(name) or Role.IsDurable(name)))
-		or (position == 4 and Role.IsSupport(name) and (Role.IsDisabler(name) or Role.IsHealer(name) or Role.IsDurable(name)))
-		or (position == 5 and Role.IsSupport(name) and Role.IsRanged(name) and (Role.IsDisabler(name) or Role.IsHealer(name) or Role.IsInitiator(name)))
+		if (position == 1 and ShouldPickDurableOrOtherCores(name, position, 6))
+		or (position == 2 and ShouldPickDurableOrOtherCores(name, position, 6))
+		or (position == 3 and (not Role.IsRanged(name) or hero.weight > 50) and ShouldPickDurableOrOtherInitiator(name, position, 6))
+		or (position == 4 and Role.IsSupport(name) and ShouldPickDurableOrOtherSupports(name, position, 4))
+		or (position == 5 and Role.IsSupport(name) and (Role.IsRanged(name) or hero.weight >= 60) and ShouldPickDurableOrOtherSupports(name, position, 4))
 		then
 			print("Selected hero: " ..name .. " as an option for position: ".. tostring(position))
 			table.insert(sortedHeroNames, name)
+			countDurableHeroes[position] = countDurableHeroes[position] + 1
 			-- Only return top k (ROLE_LIST_TOP_K_LIMIT) results.
 			if #sortedHeroNames >= ROLE_LIST_TOP_K_LIMIT then
 				return sortedHeroNames
@@ -138,6 +140,21 @@ function GetPositionedPool(heroPosMap, position)
 	print("For position: " .. position .. ", pool size count: ".. #sortedHeroNames)
 	Utils.PrintTable(sortedHeroNames)
     return sortedHeroNames
+end
+
+function ShouldPickDurableOrOtherCores(name, position, minCount)
+	if countDurableHeroes[position] == nil then countDurableHeroes[position] = 0 end
+	return (countDurableHeroes[position] <= minCount and Role.IsDurable(name)) or (Role.IsDisabler(name) or Role.IsNuker(name))
+end
+
+function ShouldPickDurableOrOtherInitiator(name, position, minCount)
+	if countDurableHeroes[position] == nil then countDurableHeroes[position] = 0 end
+	return (countDurableHeroes[position] <= minCount and Role.IsDurable(name)) or (Role.IsInitiator(name) or (Role.IsDisabler(name) and Role.IsDurable(name)))
+end
+
+function ShouldPickDurableOrOtherSupports(name, position, minCount)
+	if countDurableHeroes[position] == nil then countDurableHeroes[position] = 0 end
+	return (countDurableHeroes[position] <= minCount and Role.IsDurable(name)) or (Role.IsDisabler(name) or Role.IsHealer(name) or Role.IsInitiator(name))
 end
 
 SupportedHeroes = GetAllHeroNames(HeroPositionMap)

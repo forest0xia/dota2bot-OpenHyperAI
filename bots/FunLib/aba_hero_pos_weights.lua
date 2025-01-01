@@ -96,7 +96,7 @@ local HeroPositions = {
     },
     [HeroName.Bristleback] = {
         30,
-        30,
+        40,
         60,
         0,
         0
@@ -237,7 +237,7 @@ local HeroPositions = {
     [HeroName.Enchantress] = {
         0,
         5,
-        10,
+        20,
         35,
         50
     },
@@ -292,7 +292,7 @@ local HeroPositions = {
     },
     [HeroName.Invoker] = {
         30,
-        50,
+        70,
         10,
         30,
         0
@@ -333,18 +333,18 @@ local HeroPositions = {
         0
     },
     [HeroName.Leshrac] = {
-        5,
+        15,
         30,
         25,
         25,
         20
     },
     [HeroName.Lich] = {
-        0,
-        35,
         10,
-        50,
-        50
+        35,
+        20,
+        80,
+        80
     },
     [HeroName.Lifestealer] = {
         30,
@@ -424,7 +424,7 @@ local HeroPositions = {
         0
     },
     [HeroName.Mirana] = {
-        0,
+        10,
         65,
         10,
         65,
@@ -452,10 +452,10 @@ local HeroPositions = {
         5
     },
     [HeroName.NagaSiren] = {
-        70,
-        5,
+        60,
+        25,
         15,
-        0,
+        10,
         0
     },
     [HeroName.Necrophos] = {
@@ -473,15 +473,15 @@ local HeroPositions = {
         0
     },
     [HeroName.NightStalker] = {
-        5,
         25,
-        65,
+        35,
+        55,
         25,
         0
     },
     [HeroName.NyxAssassin] = {
         0,
-        5,
+        35,
         40,
         65,
         20
@@ -501,10 +501,10 @@ local HeroPositions = {
         0
     },
     [HeroName.OgreMagi] = {
-        30,
-        45,
-        30,
-        30,
+        20,
+        55,
+        40,
+        40,
         45
     },
     [HeroName.Omniknight] = {
@@ -529,15 +529,15 @@ local HeroPositions = {
         0
     },
     [HeroName.PhantomAssassin] = {
-        90,
-        5,
+        70,
+        25,
         5,
         0,
         0
     },
     [HeroName.PhantomLancer] = {
-        90,
-        5,
+        50,
+        45,
         5,
         0,
         0
@@ -699,8 +699,8 @@ local HeroPositions = {
     [HeroName.SpiritBreaker] = {
         0,
         5,
-        50,
-        50,
+        20,
+        20,
         15
     },
     [HeroName.StormSpirit] = {
@@ -802,15 +802,15 @@ local HeroPositions = {
         55
     },
     [HeroName.Venomancer] = {
-        25,
+        35,
         55,
         45,
-        25,
-        20
+        35,
+        30
     },
     [HeroName.Viper] = {
         45,
-        55,
+        65,
         45,
         5,
         0
@@ -833,8 +833,8 @@ local HeroPositions = {
         0,
         35,
         0,
-        40,
-        55
+        70,
+        70
     },
     [HeroName.Weaver] = {
         35,

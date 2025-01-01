@@ -183,7 +183,7 @@ function GetDesire()
 
 	availableCamp = J.Role['availableCampTable'];
 
-	local hAllyList = J.GetAlliesNearLoc(bot:GetLocation(), 2200)
+	local hAllyList = J.GetAlliesNearLoc(bot:GetLocation(), 3000)
 	local hEnemyHeroList = J.GetEnemiesNearLoc(bot:GetLocation(), 2000)
 
 	local numOfAliveEnemyHeroes = J.GetNumOfAliveHeroes(true)
@@ -229,25 +229,25 @@ function GetDesire()
 	-- end
 
 	-- 如果在上高，对面人活着，其他队友活着却不在附近，赶紧溜去其他地方farm
-	if IsShouldGoFarm or ((#hAllyList <= 2 and #hAllyList < numOfAliveEnemyHeroes)
-	-- or (currentTime > 420 and bot:GetActiveModeDesire() < 0.15))
-	-- if (IsShouldGoFarm or ((#hAllyList <= 2 and #hAllyList < numOfAliveEnemyHeroes)
-	-- -- and not J.WeAreStronger(bot, 2000)
-	-- -- and (J.IsCore(bot) and bot:GetNetWorth() < 18000)
-	-- -- and bot:GetActiveModeDesire() <= BOT_ACTION_DESIRE_HIGH
-	and J.GetDistanceFromAncient( bot, true ) < 5500)
-    -- )
-	and #J.Utils.GetLastSeenEnemyIdsNearLocation(bot:GetLocation(), 2000) == 0 then
-		if DotaTime() - ShouldGoFarmTime >= checkGoFarmTimeGap then
-			IsShouldGoFarm = true
-			ShouldGoFarmTime = DotaTime()
-		end
-		hLaneCreepList = {}
-		if preferedCamp == nil then preferedCamp = J.Site.GetClosestNeutralSpwan(bot, availableCamp) end;
-		if preferedCamp ~= nil then
-			return BOT_ACTION_DESIRE_ABSOLUTE * 0.98
-		end
-	end
+	-- if IsShouldGoFarm or ((#hAllyList < 2 and #hAllyList < numOfAliveEnemyHeroes - 1)
+	-- -- or (currentTime > 420 and bot:GetActiveModeDesire() < 0.15))
+	-- -- if (IsShouldGoFarm or ((#hAllyList <= 2 and #hAllyList < numOfAliveEnemyHeroes)
+	-- -- -- and not J.WeAreStronger(bot, 2000)
+	-- -- -- and (J.IsCore(bot) and bot:GetNetWorth() < 18000)
+	-- -- -- and bot:GetActiveModeDesire() <= BOT_ACTION_DESIRE_HIGH
+	-- and J.GetDistanceFromAncient( bot, true ) < 5500)
+    -- -- )
+	-- and #J.Utils.GetLastSeenEnemyIdsNearLocation(bot:GetLocation(), 2000) == 0 then
+	-- 	if DotaTime() - ShouldGoFarmTime >= checkGoFarmTimeGap then
+	-- 		IsShouldGoFarm = true
+	-- 		ShouldGoFarmTime = DotaTime()
+	-- 	end
+	-- 	hLaneCreepList = {}
+	-- 	if preferedCamp == nil then preferedCamp = J.Site.GetClosestNeutralSpwan(bot, availableCamp) end;
+	-- 	if preferedCamp ~= nil then
+	-- 		return BOT_ACTION_DESIRE_ABSOLUTE * 0.98
+	-- 	end
+	-- end
 
 	local hNearbyAttackAllyHeroList = J.GetNearbyHeroes(bot,1600, false, BOT_MODE_ATTACK);
 
@@ -850,7 +850,7 @@ local enemyPids = nil;
 function X.ShouldRun(bot)
 	if bot:HasModifier('modifier_medusa_stone_gaze_facing')
 	then
-		return 3.33
+		return 2.5
 	end
 
 	if bot:IsChanneling()
@@ -977,12 +977,13 @@ function X.ShouldRun(bot)
 	if #nEnemyTowers >= 1
 	and enemyAncientDistance < 7000 then -- 推2塔或者高地不要无视防御符文下的防御塔
 		local cloestTower = nEnemyTowers[1]
-		if J.IsValidBuilding(cloestTower) and
-		(cloestTower:HasModifier("modifier_fountain_glyph")
+		if J.IsValidBuilding(cloestTower)
+		and GetUnitToUnitDistance(cloestTower, bot) < 800
+		and (cloestTower:HasModifier("modifier_fountain_glyph")
 		or cloestTower:HasModifier("modifier_invulnerable")
 		or cloestTower:HasModifier("modifier_backdoor_protection_active"))
 		then
-			return 3
+			return 1.2
 		end
 	end
 

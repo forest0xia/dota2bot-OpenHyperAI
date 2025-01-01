@@ -275,9 +275,9 @@ function X.GetDesire(bot__)
                     and not J.IsRetreating(bot)
                     then
                         local tCloseAllyHeroes = J.GetAlliesNearLoc(unit:GetLocation(), 900)
-                        if J.IsInRange(bot, unit, botAttackRange + 100) and #tCloseAllyHeroes >= 2 then return 1.2 end
-                        if J.IsInRange(bot, unit, botAttackRange + 200) and #tCloseAllyHeroes >= 2 then return 1 end
-                        if J.IsInRange(bot, unit, botAttackRange + 300) then return 0.99 end
+                        if J.IsInRange(bot, unit, botAttackRange + 200) and #tCloseAllyHeroes >= 2 then return 1.2 end
+                        if J.IsInRange(bot, unit, botAttackRange + 300) and #tCloseAllyHeroes >= 2 then return 1.1 end
+                        if J.IsInRange(bot, unit, botAttackRange + 400) then return 0.97 end
                         return 0.90
                     end
                 end

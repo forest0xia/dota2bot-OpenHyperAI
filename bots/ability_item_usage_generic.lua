@@ -388,14 +388,28 @@ local function BuybackUsageComplement()
 
 	if not bot:HasBuyback() then return end
 
-	if bot:GetRespawnTime() < 60 then
+
+	local ancient = GetAncient( GetTeam() )
+
+	local nFullRespawnTime = bot:GetRespawnTime()
+	local nRemainingRespawnTime = X.GetRemainingRespawnTime()
+
+	if ancient ~= nil and ancient:GetHealth() < 0.8 then
+		local nEnemyUnitsAroundAncient = J.GetEnemiesAroundLoc(ancient:GetLocation(), 1500)
+		local nAllyUnitsAroundAncient = J.GetAlliesNearLoc(ancient:GetLocation(), 1500)
+		if nEnemyUnitsAroundAncient > 1 and nAllyUnitsAroundAncient == 0 and nRemainingRespawnTime > 20 then
+			J.Role['lastbbtime'] = DotaTime()
+			bot:ActionImmediate_Buyback()
+			return
+		end
+	end
+
+	if nFullRespawnTime < 60 then
 		return
 	end
 
-	local nRespawnTime = X.GetRemainingRespawnTime()
-
 	if bot:GetLevel() > 24
-		and nRespawnTime > 80
+		and nRemainingRespawnTime > 80
 	then
 		local nTeamFightLocation = J.GetTeamFightLocation( bot )
 		if nTeamFightLocation ~= nil
@@ -406,12 +420,10 @@ local function BuybackUsageComplement()
 		end
 	end
 
-	if nRespawnTime < 40
+	if nRemainingRespawnTime < 40
 	then
 		return
 	end
-
-	local ancient = GetAncient( GetTeam() )
 
 	if ancient ~= nil
 	then

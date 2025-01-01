@@ -1,9 +1,8 @@
+local J = require( GetScriptDirectory()..'/FunLib/jmz_func')
 local bot = GetBot()
 local botName = bot:GetUnitName()
 
 if bot == nil or bot:IsInvulnerable() or not bot:IsHero() or not bot:IsAlive() or not string.find(botName, "hero") or bot:IsIllusion() then return end
-
-local J = require( GetScriptDirectory()..'/FunLib/jmz_func')
 
 local cAbility = nil
 local TinkerShouldWaitInBaseToHeal = false
@@ -45,6 +44,7 @@ local laneAndT1s = {
 }
 
 function GetDesire()
+	botName = bot:GetUnitName()
 	if bot:IsInvulnerable() or not bot:IsHero() or not bot:IsAlive() or not string.find(botName, "hero") or bot:IsIllusion() then return BOT_MODE_DESIRE_NONE end
 
 	trySeduce = false
@@ -87,7 +87,13 @@ function GetDesire()
 	if specialRoaming then
 		-- return specialRoaming
 		local specialDesire = specialRoaming()
-		if specialDesire and specialDesire > 0 then return Clamp(specialDesire, 0, 0.99) end
+		if specialDesire and specialDesire > 0 then
+			if specialDesire <= 1 then
+				return Clamp(specialDesire, 0, 0.99)
+			else
+				return specialDesire
+			end
+		end
 	end
 
 	if J.IsRetreating(bot) and not ShouldNotRetreat() then
@@ -269,7 +275,7 @@ function ThinkIndividualRoaming()
 	-- Nyx Assassin
 	if bot.canVendettaKill
 	then
-		if bot.vendettaTarget ~= nil
+		if J.IsValid(bot.vendettaTarget)
 		then
 			if GetUnitToUnitDistance(bot, bot.vendettaTarget) > bot:GetAttackRange() + 200
 			then
@@ -666,45 +672,39 @@ function ThinkIndividualRoaming()
 	end
 
 	if botName == 'npc_dota_hero_lone_druid_bear' then
-		if bot:IsChanneling() or bot:IsUsingAbility() then return BOT_MODE_DESIRE_NONE end
+		if J.IsTryingtoUseAbility(bot) then return BOT_MODE_DESIRE_NONE end
 
 		local hero = J.Utils.GetLoneDruid(bot).hero
-		local hasUltimateScepter = J.Item.HasItem(bot, 'item_ultimate_scepter') or bot:HasModifier('modifier_item_ultimate_scepter_consumed')
+		-- local hasUltimateScepter = J.Item.HasItem(bot, 'item_ultimate_scepter') or bot:HasModifier('modifier_item_ultimate_scepter_consumed')
 		local distanceFromHero = GetUnitToUnitDistance(J.Utils.GetLoneDruid(bot).hero, bot)
-		local target = J.GetProperTarget(bot) or J.GetProperTarget(hero)
+		local target = hero:GetAttackTarget() or J.GetProperTarget(hero) or J.GetProperTarget(bot)
 
-		if J.IsValidHero(hero)
-		and not hasUltimateScepter
-		and J.GetHP(hero) > 0.2
+		if distanceFromHero > BearAttackLimitDistance
 		then
-			-- has enemy near by.
-			if #nInRangeEnemy >= 1 then
-				-- distance to bear beyond attack limit
-				if distanceFromHero > BearAttackLimitDistance then
-					bot:Action_ClearActions(false)
-					bot:Action_MoveToLocation(hero:GetLocation())
-					return
-				end
-				-- distance of target to hero beyond attack limit
-				if J.IsValidTarget(target) then
-					local heroDistanceFromTarget = GetUnitToUnitDistance(hero, target)
-					if heroDistanceFromTarget > BearAttackLimitDistance then
-						bot:Action_ClearActions(false)
-						bot:Action_AttackMove(hero:GetLocation())
-						return
-					end
-				end
+			bot:Action_MoveToLocation(hero:GetLocation())
+			return
+		end
+
+		local avoidDangerous = (#bot:GetNearbyLaneCreeps(400, true) < 3 and #bot:GetNearbyTowers(800, true) == 0) or bot:GetLevel() >= 3
+		if J.Utils.IsValidUnit(target)
+		and distanceFromHero <= BearAttackLimitDistance
+		and GetUnitToUnitDistance(hero, target) < BearAttackLimitDistance + 250
+		and avoidDangerous then
+			if GetUnitToUnitDistance(hero, target) > hero:GetAttackRange() + 200 then
+				bot:Action_MoveToLocation(target:GetLocation())
+				return
 			else
-				if distanceFromHero > 500 then
-					bot:Action_ClearActions(false)
-					bot:Action_AttackMove(hero:GetLocation())
-					return
-				end
-			end
-			if J.IsValidTarget(target) then
 				bot:Action_AttackUnit(target, false)
 				return
 			end
+		end
+
+		target = J.GetAttackableWeakestUnitFromList(hero, hero:GetNearbyHeroes(BearAttackLimitDistance + 250, true, BOT_MODE_NONE))
+		if target ~= nil
+		and avoidDangerous
+		then
+			bot:Action_AttackUnit(target, false)
+			return
 		end
 		return
 	end
@@ -819,6 +819,11 @@ function ThinkGeneralRoaming()
 
 	if bot:HasModifier("modifier_razor_static_link_debuff") then
 		MoveAwayFromTarget(GetTargetEnemy("npc_dota_hero_razor"), 1200)
+		return
+	end
+
+	if bot:HasModifier("modifier_primal_beast_trample") then
+		MoveAwayFromTarget(GetTargetEnemy("npc_dota_hero_primal_beast"), 1200)
 		return
 	end
 
@@ -1263,6 +1268,14 @@ function ConsiderGeneralRoamingInConditions()
 		and GetUnitToUnitDistance(bot, enemy) <= 900
 		and GetUnitToLocationDistance(bot, J.GetTeamFountain()) > 1000 then
 			return RemapValClamped(quillSparyStack / J.GetHP(bot), 10, 50, BOT_ACTION_DESIRE_LOW, BOT_ACTION_DESIRE_ABSOLUTE)
+		end
+	end
+
+	if bot:HasModifier("modifier_primal_beast_trample") then
+		local enemy = GetTargetEnemy("npc_dota_hero_primal_beast")
+		local distanceToEnemy =  GetUnitToUnitDistance(bot, enemy)
+		if enemy ~= nil and J.GetHP(bot) - 0.2 < J.GetHP(enemy) and distanceToEnemy <= 500 and distanceToEnemy > 250 then
+			return BOT_ACTION_DESIRE_ABSOLUTE
 		end
 	end
 
@@ -1728,21 +1741,36 @@ ConsiderHeroSpecificRoaming['npc_dota_hero_leshrac'] = function ()
 end
 
 ConsiderHeroSpecificRoaming['npc_dota_hero_lone_druid_bear'] = function ()
-	if bot:IsChanneling() or bot:IsUsingAbility() then return BOT_MODE_DESIRE_NONE end
+	if J.IsTryingtoUseAbility(bot) then return BOT_MODE_DESIRE_NONE end
 
 	local hero = J.Utils.GetLoneDruid(bot).hero
+	local heroTarget = hero:GetAttackTarget()
 	local hasUltimateScepter = J.Item.HasItem(bot, 'item_ultimate_scepter') or bot:HasModifier('modifier_item_ultimate_scepter_consumed')
     local distanceFromHero = GetUnitToUnitDistance(J.Utils.GetLoneDruid(bot).hero, bot)
 
     if J.IsValidHero(hero)
 	and J.GetHP(bot) >= J.GetHP(hero) - 0.2 -- hp is higher or within 20% lower than hero.
-	and J.GetHP(bot) > 0.3
-    and not (bot:IsChanneling() or bot:IsUsingAbility())
+	and J.GetHP(bot) > 0.25
 	and not hasUltimateScepter
 	then
         if distanceFromHero > BearAttackLimitDistance then
-			return BOT_MODE_DESIRE_ABSOLUTE
+			return BOT_MODE_DESIRE_ABSOLUTE * 1.2
         end
+		local avoidDangerous = (#bot:GetNearbyLaneCreeps(400, true) < 3 and #bot:GetNearbyTowers(800, true) == 0) or bot:GetLevel() >= 3
+		if J.Utils.IsValidUnit(heroTarget)
+		and distanceFromHero <= BearAttackLimitDistance
+		and GetUnitToUnitDistance(hero, heroTarget) < BearAttackLimitDistance + 250
+		and avoidDangerous
+		then
+			return BOT_MODE_DESIRE_ABSOLUTE * 1.2
+		end
+
+		local target = J.GetAttackableWeakestUnitFromList(hero, hero:GetNearbyHeroes(BearAttackLimitDistance + 250, true, BOT_MODE_NONE))
+		if target ~= nil
+		and avoidDangerous
+		then
+			return BOT_MODE_DESIRE_ABSOLUTE * 1.2
+		end
     end
 	return BOT_MODE_DESIRE_NONE
 end
