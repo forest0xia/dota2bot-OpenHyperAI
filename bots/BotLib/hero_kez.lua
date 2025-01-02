@@ -16,7 +16,7 @@ local tTalentTreeList = {
 }
 
 local tAllAbilityBuildList = {
-	{1,3,1,2,1,6,1,3,3,3,6,2,2,2,6},--pos1
+	{1,3,1,2,3,6,3,3,1,1,6,2,2,2,6},--pos1
 }
 
 local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )

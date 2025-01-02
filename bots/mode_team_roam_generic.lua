@@ -800,7 +800,7 @@ function X.SupportFindTarget()
 		and bot:DistanceFromFountain() > 3800
 		and J.GetDistanceFromEnemyFountain(bot) > 5000
 	then
-		local nWillAttackCreeps = X.GetExceptRangeLastHitCreep(true, attackDamage *1.5, 0, nAttackRange +60, bot);
+		local nWillAttackCreeps = X.GetExceptRangeLastHitCreep(true, attackDamage *1.1, 0, nAttackRange +60, bot);
 		if nWillAttackCreeps == nil
 			or denyDamage > 130
 			or not X.IsOthersTarget(nWillAttackCreeps)
@@ -1137,7 +1137,7 @@ function X.CarryFindTarget()
 	
 		if bot:GetLevel() <= 8
 		then
-			local nWillAttackCreeps = X.GetExceptRangeLastHitCreep(true, attackDamage *1.5, 0, nAttackRange +60, bot);
+			local nWillAttackCreeps = X.GetExceptRangeLastHitCreep(true, attackDamage *1, 0, nAttackRange +60, bot);
 			if nWillAttackCreeps == nil 
 				or denyDamage > 130
 				or not X.IsOthersTarget(nWillAttackCreeps)
@@ -1211,7 +1211,7 @@ function X.CarryFindTarget()
 				end
 		    end
 			
-			local nWillAttackCreeps = X.GetExceptRangeLastHitCreep(true, centerAlly:GetAttackDamage() *1.2, 0, 800, centerAlly);
+			local nWillAttackCreeps = X.GetExceptRangeLastHitCreep(true, centerAlly:GetAttackDamage() *1, 0, 800, centerAlly);
 			if nWillAttackCreeps == nil 
 				or not X.IsOthersTarget(nWillAttackCreeps)
 			then				
