@@ -56,6 +56,19 @@ function X.GetDesire()
 
 end
 
+function GetHarassTarget(hEnemyList)
+	for _, enemyHero in pairs(hEnemyList) do
+		if J.IsValidHero(enemyHero)
+		and J.CanBeAttacked(enemyHero)
+		and not J.IsSuspiciousIllusion(enemyHero)
+		then
+			return enemyHero
+		end
+	end
+
+	return nil
+end
+
 function GetBotTargetLane()
 	assignedLane = bot:GetAssignedLane()
 	if GetTeam() == TEAM_RADIANT then
@@ -92,6 +105,20 @@ function X.Think()
 		local hItem = bot:GetItemInSlot( tangoSlot )
 		bot:Action_UseAbilityOnTree( hItem, tangoTarget )
 		return
+	end
+
+	-- harass
+	local curTarget = bot:GetTarget()
+	if not J.Utils.IsValidUnit(curTarget) or curTarget:IsHero() or not J.IsAttacking(bot) then
+		local tEnemyLaneCreeps = bot:GetNearbyLaneCreeps(600, true)
+		local tEnemyHeroes = bot:GetNearbyHeroes(bot:GetAttackRange() + 200, true, BOT_MODE_NONE)
+		if #tEnemyLaneCreeps <= 1 then
+			local harassTarget = GetHarassTarget(tEnemyHeroes)
+			if J.IsValidHero(harassTarget) then
+				bot:Action_AttackUnit(harassTarget, true)
+				return
+			end
+		end
 	end
 end
 

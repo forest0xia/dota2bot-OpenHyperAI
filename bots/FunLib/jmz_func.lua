@@ -3213,6 +3213,7 @@ end
 
 function J.GetAttackableWeakestUnit( bot, nRadius, bHero, bEnemy )
     local unitList = {}
+	if nRadius > 1600 then nRadius = 1600 end
     if bHero then
         unitList = J.GetNearbyHeroes(bot, nRadius, bEnemy, BOT_MODE_NONE )
     else

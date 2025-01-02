@@ -178,6 +178,7 @@ if local_mode_laning_generic or (J.GetPosition(bot) == 1 and J.IsPosxHuman(5)) t
 					bot:Action_MoveToUnit(hitCreep)
 					return
 				else
+					bot:SetTarget(hitCreep)
 					bot:Action_AttackUnit(hitCreep, true)
 					return
 				end
@@ -186,6 +187,7 @@ if local_mode_laning_generic or (J.GetPosition(bot) == 1 and J.IsPosxHuman(5)) t
 
 		local denyCreep = GetBestDenyCreep(nAllyCreeps)
 		if J.IsValid(denyCreep) then
+			bot:SetTarget(denyCreep)
 			bot:Action_AttackUnit(denyCreep, true)
 			return
 		end

@@ -21,7 +21,9 @@ Thanks and kudos to all that contributed to make bot games fun and exciting.
 ## Why it's enjoyable
 0. Support 7.37
 1. Support ALL 126 heroes! You will see bots playing Kez, Ringmaster, Invoker, Techies, Meepo, Lone Druid, Dark Willow, Hoodwink, io, Muerta, Primal Beast, etc. Just note that some of the newly added ones are not very strong and in progress to be further enhanced.
-1. Bots are easily customizable . E.g. you can easily set ban / picks for bots, change their names, etc. Check out the file in [Customize/general.lua](bots/Customize/general.lua), or in local Workshop directory: `<steam folder>\steamapps\workshop\content\570\3246316298\Customize\general.lua`. And you can customize bot's item purcashes, ability upgrades, etc - check out the sample file in [Customize/hero/viper.lua](bots/Customize/hero/viper.lua).
+1. Bots are easily customizable . E.g. you can easily set ban / picks for bots, change their names, etc. 
+   1. Check out the file in [Customize/general.lua](bots/Customize/general.lua), or in local Workshop directory: `<steam folder>\steamapps\workshop\content\570\3246316298\Customize\general.lua`. 
+   1. You can also customize bot's item purcashes, ability upgrades, etc - check out the sample file in [Customize/hero/viper.lua](bots/Customize/hero/viper.lua).
 1. Dynamic difficulty. If you ever feel all existing bot scripts lack excitement. This script boosts bots with huge unfair advantages to make bot games a lot more challenging. You will need to copy the script into your local vscripts folder and then enable the Fretbots mode for this feature. See instructions below.
 1. Support almost ALL game modes: https://steamcommunity.com/workshop/filedetails/discussion/3246316298/4334231305373971730/
 1. Improved code structure & general logic for decision making for ability casting, item usages, defending, roaming as well as farming.

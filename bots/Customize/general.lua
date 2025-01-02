@@ -40,18 +40,13 @@ Customize.Ban = {
 6. Check Appendix to ensure you DO NOT pick more than 1 "weak" heroes in a team for your game experience.
 --]]
 Customize.Radiant_Heros = {
-    'npc_dota_hero_lone_druid',
-    'npc_dota_hero_muerta',
-    'npc_dota_brewmaster'
+    'Random',
+    'Random',
 }
 
 -- Same notes as above for picking heroes but for the Dire side.
 Customize.Dire_Heros = {
-    'npc_dota_hero_troll_warlord',
-    'npc_dota_hero_invoker',
-    'npc_dota_hero_enigma',
-    'npc_dota_hero_sand_king',
-    'npc_dota_hero_lich'
+    'Random',
 }
 
 --[[

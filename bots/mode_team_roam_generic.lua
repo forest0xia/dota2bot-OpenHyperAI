@@ -739,7 +739,7 @@ function X.SupportFindTarget()
 	   and not X.CanBeInVisible(bot)
 	   and X.ShouldNotRetreat(bot)
 	then
-	    nTarget = X.WeakestUnitCanBeAttacked(true, true, nAttackRange + 50, bot)
+		nTarget = J.GetAttackableWeakestUnit( bot,  nAttackRange + 50, true, true ) --X.WeakestUnitCanBeAttacked(true, true, nAttackRange + 50, bot)
 		if nTarget ~= nil
 		then
 		    return nTarget,BOT_MODE_DESIRE_ABSOLUTE * 1.09;
@@ -1051,7 +1051,7 @@ function X.CarryFindTarget()
 	   and not X.CanBeInVisible(bot)
 	   and X.ShouldNotRetreat(bot)
 	then
-	    nTarget = X.WeakestUnitCanBeAttacked(true, true, nAttackRange + 50, bot)
+	    nTarget = J.GetAttackableWeakestUnit( bot,  nAttackRange + 50, true, true ) --X.WeakestUnitCanBeAttacked(true, true, nAttackRange + 50, bot)
 		if nTarget ~= nil
 		then
 		    return nTarget,BOT_MODE_DESIRE_ABSOLUTE * 1.09;
@@ -1494,38 +1494,6 @@ function X.GetEnemyCourier(bot,nRadius)
 	return nil;
 	
 end
-
-
-function X.WeakestUnitCanBeAttacked(bHero, bEnemy, nRadius, bot)
-	local units = {};
-	local weakest = nil;
-	local weakestHP = 6998;
-	local realHP = 0;
-	if nRadius > 1600 then nRadius = 1600 end;
-	if bHero then
-		units = J.GetNearbyHeroes(bot,nRadius, bEnemy, BOT_MODE_NONE);
-	else	
-		units = bot:GetNearbyLaneCreeps(nRadius, bEnemy);
-	end
-	
-	for _,u in pairs(units) 
-	do
-		if X.CanBeAttacked(u)
-		then
-
-			realHP = u:GetHealth() / 1;
-			
-			if realHP < weakestHP
-			then
-				weakest = u;
-				weakestHP = realHP;
-			end			
-		end
-	end
-	
-	return weakest;
-end
-
 
 function X.WeakestUnitExceptRangeCanBeAttacked(bHero, bEnemy, nRange, nRadius, bot)
 	local units = {};

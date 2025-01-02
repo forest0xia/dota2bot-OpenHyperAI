@@ -54,7 +54,9 @@ function Push.GetPushDesire(bot, lane)
 
     -- 如果不在当前线上，且等级低，不推进
     local botLevel = bot:GetLevel()
-    if bot:GetAssignedLane() ~= lane and (J.GetPosition(bot) == 1 and botLevel < 6
+    if bot:GetAssignedLane() ~= lane
+    and distanceToLaneFront > 3000
+    and (J.GetPosition(bot) == 1 and botLevel < 6
     or J.GetPosition(bot) == 2 and botLevel < 6
     or J.GetPosition(bot) == 3 and botLevel < 5
     or J.GetPosition(bot) == 4 and botLevel < 4
