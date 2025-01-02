@@ -1,6 +1,6 @@
 ## We love bot games!
 
-We love bot games! There is currently a Valve side bug, [CRITICAL] in order to play the script you need to create a Lobby and select "Local Host" as Server Location. To enable enhanced challenging mode, follow the steps on Workshop page to correctly install this script. The bots in game should have names with suffix ".OHA" when installed correctly.
+We love bot games! [*CRITICAL*] in order to play the script you need to create a Lobby and select "Local Host" as Server Location. To enable enhanced challenging mode, follow the steps on Workshop page to correctly install this script. The bots in game should have names with suffix ".OHA" when installed correctly.
 
 Bot script in Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=3246316298
 
@@ -53,10 +53,39 @@ Thanks and kudos to all that contributed to make bot games fun and exciting.
    1. For all ally & enemy bots, you should set `Customize.Localization` in [Customize/general.lua](bots/Customize/general.lua).
 1. Batch commands. You can put pick/ban multiple heroes at once by putting the commands in 1 line, for example: `!pick sand king; !pick io; !ban zuus; !ban sniper` .
 
-## If you want to contribute to this script
+## Contribute to this script
 1. Please feel very welcome to contribute to the Github repo any time you like. Just update the logic and create a pull request.
 1. Future development work for this script will be written in typescript as possible: [typescript/README](typescript/README.md).
 1. The typescipt source code is as well work-in-progress, feel free to convert more lua files to ts, and add libs/modules as you feel necessary.
+1. Project structure:
+```
+root: <Steam\steamapps\common\dota 2 beta\game\dota\scripts\vscripts>
+│
+└───bots: contains all lua files for the bot logic. The workshop item of this project only contains content in this folder.
+│   │   hero_selection.lua
+│   │   bot_generic.lua
+│   │   ...
+│   │
+│   └───Funlib: contains the libraries/utils of this project
+│   │   │   utils.lua
+│   │   │   ...
+│   │
+│   └───BotLib: contains the bot item purcahse, ability usage, etc logic for every bots.
+│       │   hero_abaddon.lua
+│       │   ...
+│   
+└───typescript: contains the scripts written in typescript (TS) to maintain this project in a more extendable since TS supports types and can catch errors in compile time.
+│   │
+│   └───bots: contains the TS version of the bot script that will be translated to LUA file into the root/bots folder
+│   │   │   ...
+│   │
+│   └───post-process: contains the scripts to do post-processing for the TS to LUA translation.
+│   │   ...
+│   
+└───game: default setup from Value, including them here for custom mode setup.
+    │   botsinit.lua
+    │   ...
+```
 
 ## What's next
 0. Ultimately, the bots play style is static/fixed with the current AI approach provided by Valve at the moment. We need machine learning AI bots! Just like the AIs we’ve seen from OpenAI Five.
