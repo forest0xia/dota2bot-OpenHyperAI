@@ -301,8 +301,8 @@ local HeroPositions = {
         0,
         35,
         30,
-        30,
-        55
+        60,
+        65
     },
     [HeroName.Juggernaut] = {
         80,
@@ -481,7 +481,7 @@ local HeroPositions = {
     },
     [HeroName.NyxAssassin] = {
         0,
-        35,
+        5,
         40,
         65,
         20

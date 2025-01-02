@@ -373,6 +373,6 @@ end
 		at difficulty 1.5 we'd have -180*-0.5 = 90 seconds resulting in tier 1 at 690 seconds
 --]]
 function NeutralItems:GetTimingDifficultyScaleShift(tier)
-	local timingDifficultyShift = (Settings.neutralItems.timingsDefault[tier] - Settings.neutralItems.timings[tier]) * (1 - Settings.difficultyScale)
+	local timingDifficultyShift = (Settings.neutralItems.timingsDefault[tier] - Settings.neutralItems.timings[tier]) * (1 - math.min(Settings.difficultyScale, 2))
 	return timingDifficultyShift
 end

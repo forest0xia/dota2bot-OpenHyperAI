@@ -162,18 +162,18 @@ function Defend.GetDefendDesireHelper(bot, lane)
 
 	local nDefendDesire = 0
 
-	-- 如果不在当前线上，且等级低，不防守
-	local botLevel = bot:GetLevel()
-	if bot:GetAssignedLane() ~= lane
-	and distanceToDefendLoc > 3000
-	and (J.GetPosition(bot) == 1 and botLevel < 6
-	or J.GetPosition(bot) == 2 and botLevel < 6
-	or J.GetPosition(bot) == 3 and botLevel < 5
-	or J.GetPosition(bot) == 4 and botLevel < 4
-	or J.GetPosition(bot) == 5 and botLevel < 4)
-	then
-		return BOT_MODE_DESIRE_NONE
-	end
+	-- -- 如果不在当前线上，且等级低，不防守
+	-- local botLevel = bot:GetLevel()
+	-- if bot:GetAssignedLane() ~= lane
+	-- and distanceToDefendLoc > 3000
+	-- and (J.GetPosition(bot) == 1 and botLevel < 6
+	-- or J.GetPosition(bot) == 2 and botLevel < 6
+	-- or J.GetPosition(bot) == 3 and botLevel < 5
+	-- or J.GetPosition(bot) == 4 and botLevel < 4
+	-- or J.GetPosition(bot) == 5 and botLevel < 4)
+	-- then
+	-- 	return BOT_MODE_DESIRE_NONE
+	-- end
 
 	-- 如果被ping，则防守
 	local ping = J.Utils.IsPingedByAnyPlayer(bot, pingTimeDelta, nil, nil)
@@ -334,7 +334,7 @@ function Defend.GetFurthestBuildingOnLane(lane)
 		if Defend.IsValidBuildingTarget(FurthestBuilding)
 		then
 			local nHealth = FurthestBuilding:GetHealth() / FurthestBuilding:GetMaxHealth()
-			local mul = RemapValClamped(nHealth, 0.25, 1, 0.5, 1)
+			local mul = RemapValClamped(nHealth, 0.25, 1, 0.5, 3)
 			return FurthestBuilding, mul, 1
 		end
 
@@ -385,7 +385,7 @@ function Defend.GetFurthestBuildingOnLane(lane)
 		if Defend.IsValidBuildingTarget(FurthestBuilding)
 		then
 			local nHealth = FurthestBuilding:GetHealth() / FurthestBuilding:GetMaxHealth()
-			local mul = RemapValClamped(nHealth, 0.25, 1, 0.5, 1)
+			local mul = RemapValClamped(nHealth, 0.25, 1, 0.5, 3)
 			return FurthestBuilding, mul, 1
 		end
 
@@ -436,7 +436,7 @@ function Defend.GetFurthestBuildingOnLane(lane)
 		if Defend.IsValidBuildingTarget(FurthestBuilding)
 		then
 			local nHealth = FurthestBuilding:GetHealth() / FurthestBuilding:GetMaxHealth()
-			local mul = RemapValClamped(nHealth, 0.25, 1, 0.5, 2)
+			local mul = RemapValClamped(nHealth, 0.25, 1, 0.5, 3)
 			return FurthestBuilding, mul, 1
 		end
 
