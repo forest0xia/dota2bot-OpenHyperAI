@@ -61,7 +61,7 @@ Thanks and kudos to all that contributed to make bot games fun and exciting.
 ```
 root: <Steam\steamapps\common\dota 2 beta\game\dota\scripts\vscripts>
 │
-└───bots: contains all lua files for the bot logic. The workshop item of this project *only* contains content in this folder.
+└───bots: contains all lua files for the bot logic. The workshop item *only* contains content in this folder.
 │   │   hero_selection.lua
 │   │   bot_generic.lua
 │   │   ...
@@ -70,11 +70,11 @@ root: <Steam\steamapps\common\dota 2 beta\game\dota\scripts\vscripts>
 │   │   │   utils.lua
 │   │   │   ...
 │   │
-│   └───Customize: contains the files for you to easily customzie the general settings for bot teams in this project
-│   │   │   general.lua
+│   └───Customize: contains the files for you to easily customzie the settings for bots in this project
+│   │   │   general.lua: to customzie the settings for each bot teams
 │   │   │   ...
 │   │   │
-│   │   └───hero: contains the files for you to easily customzie each of the bots in this project
+│   │   └───hero: to easily customzie each of the bots in this project
 │   │       │   viper.lua
 │   │       │   ...
 │   │
@@ -82,9 +82,10 @@ root: <Steam\steamapps\common\dota 2 beta\game\dota\scripts\vscripts>
 │       │   hero_abaddon.lua
 │       │   ...
 │   
-└───typescript: contains the scripts written in typescript (TS) to maintain this project in a more extendable since TS supports types and can catch errors in compile time.
+└───typescript: contains the scripts written in typescript (TS) to maintain this project in a more 
+│   │           extendable way since TS supports types and can catch errors in compile time.
 │   │
-│   └───bots: contains the TS version of the bot script that will be translated to LUA file into the root/bots folder
+│   └───bots: the TS version of the script that will be translated to LUA files into the `root/bots` folder.
 │   │   │   ...
 │   │
 │   └───post-process: contains the scripts to do post-processing for the TS to LUA translation.
