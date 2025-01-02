@@ -16,6 +16,7 @@ require 'bots.FretBots.AwardBonus'
 require 'bots.FretBots.Flags'
 -- Neutral Item Helpers
 require 'bots.FretBots.NeutralItems'
+local StaticNeutralsMatchup = require('bots.FretBots.static_neutrals_matchup')
 
 -- local debug flag
 local thisDebug = false;
@@ -85,6 +86,32 @@ end
 	return true
 end
 
+function BonusTimers:GetBestItems(neediest, tier)
+	local items = StaticNeutralsMatchup[neediest.stats.internalName]
+	local limits = 3
+	if items then
+		local itemsForTier = items['TIER_'..tostring(tier)]
+		local itemList = {}
+		if itemsForTier then
+			local sortedItems = {}
+			for key, _ in pairs(itemsForTier) do
+				table.insert(sortedItems, key)
+			end
+			table.sort(sortedItems, function(a, b) return itemsForTier[a] > itemsForTier[b] end)
+			for _, item in ipairs(sortedItems) do
+				table.insert(itemList, item)
+				if #itemList == limits then
+					return itemList
+				end
+			end
+		end
+		if #itemList > 0 then
+			return itemList
+		end
+	end
+	return NeutralItems:GetTokenTableForTier(tier)
+end
+
 -- Awards neutral items to bots based on Settings
 function BonusTimers:NeutralItemFindTimer()
 	local gameTime = Utilities:GetAbsoluteTime()
@@ -137,31 +164,40 @@ function BonusTimers:NeutralItemFindTimer()
 					----end
 					------ End 7.33 Edits
 					-- Get the table for this tier for this bot
-					local items = NeutralItems:GetTokenTableForTier(tier)
+					-- local items = NeutralItems:GetTokenTableForTier(tier)
+					local items = BonusTimers:GetBestItems(neediest, tier)
+					Debug:Print(items, "GetBestItems for "..neediest.stats.name)
 					-- sanity check
 					if items ~= nil then
 						-- Debug
-						for _, item in ipairs(items) do
-							local desire = NeutralItems:GetBotDesireForItem(neediest, item)
-							Debug:Print(neediest.stats.name..': '..' item: '..item.realName.. ' : '..desire)
-						end
+						-- for _, item in ipairs(items) do
+						-- 	local desire = NeutralItems:GetBotDesireForItem(neediest, item)
+						-- 	Debug:Print(neediest.stats.name..': '..' item: '..item.realName.. ' : '..desire)
+						-- end
+
 						-- Select the best item
 						local bestItem
-						local bestDesire = 0
-						for _, item in ipairs(items) do
-							if bestItem == nil then
-								bestItem = item
-								bestDesire = NeutralItems:GetBotDesireForItem(neediest, item)
-								Debug:Print(neediest.stats.name..': '..item.realName..': '..tostring(bestDesire))
-							else
-								local desire = NeutralItems:GetBotDesireForItem(neediest, item)
-								Debug:Print(neediest.stats.name..': '..item.realName..': '..tostring(desire))
-								if desire > bestDesire then
+						if #items == 3
+						then
+							bestItem = NeutralItems:GetItemForInternalName(items[1])
+						else
+							local bestDesire = 0
+							for _, item in ipairs(items) do
+								if bestItem == nil then
 									bestItem = item
-									bestDesire = desire
+									bestDesire = NeutralItems:GetBotDesireForItem(neediest, item)
+									Debug:Print(neediest.stats.name..': '..item.realName..': '..tostring(bestDesire))
+								else
+									local desire = NeutralItems:GetBotDesireForItem(neediest, item)
+									Debug:Print(neediest.stats.name..': '..item.realName..': '..tostring(desire))
+									if desire > bestDesire then
+										bestItem = item
+										bestDesire = desire
+									end
 								end
 							end
 						end
+						Debug:Print(bestItem, "Best neutral item for "..neediest.stats.name)
 						-- Give it
 						NeutralItems:GiveToUnit(neediest, bestItem)
 						-- perhaps announce the item has been found

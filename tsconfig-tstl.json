@@ -1,0 +1,38 @@
+{
+  "$schema": "https://raw.githubusercontent.com/TypeScriptToLua/TypeScriptToLua/master/tsconfig-schema.json",
+  "tstl": {
+    "luaTarget": "5.1",
+    "noImplicitSelf": true,
+    "tstlVerbose": true,
+    "luaLibImport": "inline",
+    "noResolvePaths": ["bots/FunLib/jmz_func", "../FunLib/jmz_func"],
+  },
+  "compilerOptions": {
+    "baseUrl": "./typescript",
+    "lib": [
+      "ES2020"
+    ],
+    // "plugins": [
+    //   {
+    //     "transform": "./custom-transformer.js",
+    //     "type": "program"
+    //   }
+    // ],
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "target": "ES6",
+    "noImplicitReturns": true,
+    "noImplicitOverride": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "strict": true,
+    "outDir": "./",
+    "rootDir": "./typescript",
+    "types": [
+      "@typescript-to-lua/language-extensions",
+      "lua-types/5.1"
+    ]
+  },
+  "include": [ "typescript" ],
+  "exclude": [ "bots", "node_modules", "game", "./typescript/post-process" ],
+}

@@ -60,3 +60,6 @@ temp_build/
 
 .idea
 node_modules
+
+# typescript output folder
+dist

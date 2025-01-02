@@ -5,17 +5,20 @@
     "author": "",
     "license": "MIT",
     "devDependencies": {
-        "@types/node": "^22.5.4",
+        "@types/node": "^22.10.3",
         "lua-types": "^2.13.1",
         "prettier": "^3.3.3",
         "typescript": "^5.5.4",
         "typescript-to-lua": "^1.26.2"
     },
     "scripts": {
-        "build": "tstl && node ./typescript/post-process/post-process-lua.js",
-        "dev": "tstl --watch",
+        "build:lua": "tstl -p tsconfig-tstl.json && node ./typescript/post-process/post-process-lua.js",
+        "build:node": "tsc -p tsconfig-node.json",
+        "build": "npm run build:lua",
+        "dev": "tstl -p tsconfig-tstl.json --watch",
         "prettier": "prettier ./bots ./typescript --write",
         "update-version": "node ./typescript/post-process/update-version.js",
+        "update-ne": "npm run build:node && node ./dist/post-process/static-neutrals-matchup.js",
         "release": "node ./typescript/post-process/update-version.js && npm run build && npm run prettier"
     }
 }

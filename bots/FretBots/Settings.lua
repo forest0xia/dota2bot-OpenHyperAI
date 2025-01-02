@@ -1024,6 +1024,7 @@ function Settings:SetValue(objectText, value)
 		if tokens[1] == 'difficulty' then
 			Settings.difficulty = value
 			Settings.difficultyScale = Settings:CalculateDifficultyScale(value)
+			NeutralItems:InitializeFindTimings()
 			print('New difficulty: ' .. tostring(Settings.difficulty) .. '. New difficultyScale: ' .. tostring(Settings.difficultyScale))
 		end
 	elseif #tokens == 2 then

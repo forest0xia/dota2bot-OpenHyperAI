@@ -135,6 +135,15 @@ function NeutralItems:GetTableForTier(tier)
 	return items, count
 end
 
+function NeutralItems:GetItemForInternalName(name)
+	for _,item in ipairs(AllNeutrals) do
+		if item.name == name then
+			return item
+		end
+	end
+	return nil
+end
+
 -- Returns a set of items for a given tier (7.33 token style)
 function NeutralItems:GetTokenTableForTier(tier)
 	local tableCount = 5
