@@ -1,7 +1,7 @@
 /**
  * The basic utilities file.
  * Here is a set of simple but critial utilities that should be able to get imported to any other files
- * without causing any circular dependency. The methods here can be shared in any other higher level
+ * without causing any circular dependency - meaning all of methods here can be shared in any other higher level
  * implementation files without worrying about nested or circular dependency can be added to this file.
  *
  * This file should NOT import any dependency libs or files that can cause circular dependency,
@@ -54,7 +54,63 @@ export const NonTier1Towers = [Tower.Top2, Tower.Mid2, Tower.Bot2, Tower.Top3, T
 
 export const CachedVarsCleanTime = 5;
 
-const SpecialAOEHeroes = [HeroName.Axe, HeroName.Enigma, HeroName.Earthshaker, HeroName.Invoker, HeroName.SandKing, HeroName.TrollWarlord];
+/**
+ * Data structure describing "special AOE" threats
+ * and what conditions must be met before we consider them dangerous.
+ */
+interface AOEHeroThreat {
+    // Minimum level the hero must be at to be considered dangerous
+    minLevel: number;
+
+    // Items the hero must have to be considered dangerous (e.g. item_bfury, item_blink, etc.)
+    requiredItems: string[];
+
+    // Modifiers the hero must have active
+    // (e.g. "modifier_troll_warlord_battle_trance")
+    requiredModifiers: string[];
+}
+
+/**
+ * Some specific heroes with hugh potential AOE damages.
+ * Map each "special AOE hero" to its threat conditions.
+ */
+const SpecialAOEHeroesDetails: Record<string, AOEHeroThreat> = {
+    [HeroName.Axe]: {
+        minLevel: 4,
+        requiredItems: [], //["item_blink"],
+        requiredModifiers: [], // e.g. no special modifier needed to be a threat
+    },
+    [HeroName.Enigma]: {
+        minLevel: 6,
+        requiredItems: [], //["item_blink"],
+        // or maybe no item needed if you consider black hole a threat at all times
+        requiredModifiers: [
+            // Some teams prefer checking if Enigma has the black hole ability off cooldown,
+            // but for simplicity, let's assume we just check if he's Enigma + blink?
+        ],
+    },
+    [HeroName.Earthshaker]: {
+        minLevel: 6,
+        requiredItems: ["item_blink"],
+        requiredModifiers: [], // Echo Slam threat
+    },
+    [HeroName.Invoker]: {
+        minLevel: 9, // maybe require some levels for big combo
+        requiredItems: [],
+        requiredModifiers: [],
+    },
+    [HeroName.SandKing]: {
+        minLevel: 6,
+        requiredItems: ["item_blink"],
+        requiredModifiers: [], // Epi center is the threat
+    },
+    [HeroName.TrollWarlord]: {
+        minLevel: 6,
+        requiredItems: ["item_bfury"],
+        requiredModifiers: ["modifier_troll_warlord_battle_trance"],
+    },
+    // more to add ...
+};
 
 /**
  * A mapping from hero name to an array of important spell(s)
@@ -1250,43 +1306,97 @@ export function GetEnemyIdsInTpToLocation(vLoc: Vector, nDistance: number): numb
 }
 
 /**
+ * Check if the given enemy hero meets the "threat conditions" for special AOE.
+ *
+ * @param enemy - The enemy hero unit.
+ * @param threatInfo - The conditions for that hero (level, items, modifiers).
+ * @returns true if the enemy meets the condition, otherwise false.
+ */
+function DoesHeroMeetThreatConditions(enemy: Unit, threatInfo: AOEHeroThreat): boolean {
+    // Check level requirement
+    if (enemy.GetLevel() < threatInfo.minLevel) {
+        return false;
+    }
+
+    // Check items
+    for (const itemName of threatInfo.requiredItems) {
+        // If the hero does not have at least one instance of 'itemName', fail
+        if (!HasItem(enemy, itemName)) {
+            return false;
+        }
+    }
+
+    // Check required modifiers
+    for (const modName of threatInfo.requiredModifiers) {
+        // If the hero does not have 'modName' active, fail
+        if (!enemy.HasModifier(modName)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+/**
+ * Determine if there's at least one dangerous "Special AOE hero" nearby
+ * that meets the threat conditions for big combos.
+ *
+ * @param bot - The bot unit to check around.
+ * @param nRadius - The search radius (e.g. 500 or 2000).
+ * @returns true if we found at least one special AOE threat in range.
+ */
+export function IsAnySpecialAOEThreatNearby(bot: Unit, nRadius: number): boolean {
+    // 1) Grab the list of nearby enemy heroes
+    // const nearbyEnemies = bot.GetNearbyHeroes(radius, true, BotMode.None);
+    // if (!nearbyEnemies || nearbyEnemies.length === 0) {
+    //     return false;
+    // }
+
+    // 2) Iterate each enemy hero
+    for (const enemy of GetUnitList(UnitType.EnemyHeroes)) {
+        const enemyName = enemy.GetUnitName() as HeroName; // cast as HeroName if needed
+
+        // 3) If this hero is in our "special AOE hero" mapping, check conditions
+        if (IsValidHero(enemy) && enemyName in SpecialAOEHeroesDetails) {
+            const threatInfo = SpecialAOEHeroesDetails[enemyName];
+
+            // 4) If the hero meets threat conditions => we should spread out
+            if (bot.GetNearbyHeroes(nRadius, false, BotMode.None).length <= 1 && bot.GetNearbyLaneCreeps(nRadius, false).length <= 2) {
+                return false;
+            }
+            // Don't need to check if enemy is in a nearby range since enemy can have blink
+            if (DoesHeroMeetThreatConditions(enemy, threatInfo)) {
+                // print(`Special potential AOE threat detected for ${bot.GetUnitName()} against ${enemyName}.`);
+                // PrintTable(threatInfo);
+                return true;
+            }
+        }
+    }
+
+    // No threatening special AOE heroes found
+    return false;
+}
+
+/**
  * Check if the bots should spread out.
  * @param bot - The bot to check.
  * @param minDistance - The minimum distance to check.
  * @returns True if the bots should spread out, false otherwise.
  */
 export function ShouldBotsSpreadOut(bot: Unit, minDistance: number): boolean {
-    if (bot.GetNearbyHeroes(minDistance, false, BotMode.None).length < 2) {
-        return false;
-    }
-
     const cacheKey = "ShouldBotsSpreadOut" + bot.GetPlayerID();
-    const cachedRes = GetCachedVars(cacheKey, 2);
+    const cachedRes = GetCachedVars(cacheKey, 0.1);
     if (cachedRes !== null) {
         return cachedRes;
     }
 
-    for (const hero of GetUnitList(UnitType.EnemyHeroes)) {
-        if (IsValidHero(hero)) {
-            const heroName = hero.GetUnitName();
-            if (HasValue(SpecialAOEHeroes, heroName)) {
-                if (hero.GetLevel() >= 8) {
-                    SetCachedVars(cacheKey, true);
-                    return true;
-                }
-            } else {
-                SetCachedVars(cacheKey, false);
-            }
-            if (heroName === HeroName.TrollWarlord) {
-                if (HasItem(hero, "item_bfury") && hero.HasModifier("modifier_troll_warlord_battle_trance") && hero.GetAttackRange() < 500) {
-                    SetCachedVars(cacheKey, true);
-                    return true; // Troll Warlord with Battle Fury and ultimate active
-                }
-            }
-        }
+    let bResult = false;
+    const threatNearby = IsAnySpecialAOEThreatNearby(bot, minDistance);
+    if (threatNearby) {
+        bResult = true;
     }
-    SetCachedVars(cacheKey, false);
-    return false;
+    SetCachedVars(cacheKey, bResult);
+    return bResult;
 }
 
 /**
@@ -1302,7 +1412,7 @@ export function GetNearbyAllyUnits(bot: Unit, allyDistanceThreshold: number): Un
         return cachedRes;
     }
     const hNearbyAllies = bot.GetNearbyHeroes(allyDistanceThreshold, false, BotMode.None);
-    const hNearbyLaneCreeps = bot.GetNearbyNeutralCreeps(allyDistanceThreshold, false);
+    const hNearbyLaneCreeps = bot.GetNearbyLaneCreeps(allyDistanceThreshold, false);
     const hNearbyUnits = hNearbyAllies.concat(hNearbyLaneCreeps);
     SetCachedVars(cacheKey, hNearbyUnits);
     return hNearbyUnits;
@@ -1310,11 +1420,14 @@ export function GetNearbyAllyUnits(bot: Unit, allyDistanceThreshold: number): Un
 
 /**
  * Smart spread out the bots.
- * @param bot - The bot to check.
- * @param allyDistanceThreshold - The distance threshold to check for allies.
- * @param minDistance - The minimum distance to check.
+ * Emphasizes moving away from allies/enemies quickly while still
+ * giving a mild pull toward fountain side if needed.
+ *
+ * @param bot - The bot to move.
+ * @param allyDistanceThreshold - Distance threshold to check for allies.
+ * @param minDistance - The minimum distance to keep from allies.
  * @param avoidEnemyUnits - The enemy units to avoid.
- * @param onlyAvoidEnemyUnits - Whether to only avoid enemy units.
+ * @param onlyAvoidEnemyUnits - If true, only avoid enemy units (ignore allies).
  */
 export function SmartSpreadOut(bot: Unit, allyDistanceThreshold: number, minDistance: number, avoidEnemyUnits: Unit[] = [], onlyAvoidEnemyUnits: boolean = false) {
     let hNearbyUnits: Unit[] = [];
@@ -1324,49 +1437,58 @@ export function SmartSpreadOut(bot: Unit, allyDistanceThreshold: number, minDist
         hNearbyUnits = GetNearbyAllyUnits(bot, allyDistanceThreshold).concat(avoidEnemyUnits);
     }
 
-    // 1) Figure out direction that moves the bot away from nearby allies
+    // 2) Get the direction that moves the bot away from any nearby allies/enemies:
     const dirAwayFromAlly = SpreadBotApartDir(bot, minDistance, hNearbyUnits);
     if (!dirAwayFromAlly) {
-        // No direction needed, default to move to fountain
+        // If there is no particular direction needed, move back to fountain
         bot.Action_MoveToLocation(add(GetTeamFountainTpPoint(), RandomVector(50)));
         return;
     }
 
+    // Current location
     const botLoc = bot.GetLocation();
 
-    // 2) Get direction from the bot to ally fountain direction
-    // const teamFountainDir = sub(GetTeamFountainTpPoint(), botLoc).Normalized();
+    // 3) A mild pull in the direction of our "team side"
+    //    (this helps ensure we don't drift too far forward if no enemies are nearby).
+    //    If you want to completely remove fountain logic, set fountainWeight to 0.
+    const awayFromAllyWeight = 0.7; // Primary emphasis: spread away from allies/enemies
+    const fountainWeight = 0.3; // Mild emphasis toward bot's own side
     let teamFountainDir = GetTeamSideDirection(GetTeam());
-    if (avoidEnemyUnits.length == 0) {
-        teamFountainDir = Vector(0, 0, 0);
+
+    // If absolutely no enemies to avoid, we could reduce the fountain direction:
+    if (avoidEnemyUnits.length === 0) {
+        teamFountainDir = multiply(teamFountainDir, 0.5);
     }
 
-    // 3) Combine half “away from ally” and half “towards fountain”
-    const combinedDir = add(dirAwayFromAlly, teamFountainDir).Normalized();
+    // 4) Combine directions with weights, then normalize
+    const combinedDir = add(multiply(dirAwayFromAlly, awayFromAllyWeight), multiply(teamFountainDir, fountainWeight)).Normalized();
 
-    // 4) Multiply by desired spread distance
+    // 5) Multiply by desired spread distance:
     let finalDir = multiply(combinedDir, minDistance);
 
-    // 5) Fail-safe: If finalDir is pointing toward the enemy fountain, override
+    // 6) Ensure we do NOT move toward the enemy fountain
     const enemyFountainDir = sub(GetEnemyFountainTpPoint(), botLoc).Normalized();
 
-    // Dot > 0 means finalDir is in the same general direction as enemyFountainDir
+    // If finalDir is pointing in the same general direction as the enemy fountain, fix it
     if (dot(finalDir.Normalized(), enemyFountainDir) > 0) {
+        // Override: push away from enemy fountain instead
+        // or at least pull back with the 'team side' direction
         finalDir = multiply(teamFountainDir, minDistance);
     }
 
     let targetLoc = add(botLoc, finalDir);
 
-    // 6) ensure we don't walk toward the enemy fountain
+    // 7) Another fail-safe check: if the bot is already quite close to the enemy base,
+    //    do not proceed further in that direction.
     if (GetDistanceFromAncient(bot, true) < 2600) {
-        // If final direction is still pointing toward enemy fountain, override it
+        // If the chosen target is still forward, override
         if (dot(sub(targetLoc, botLoc), enemyFountainDir) > 0) {
             finalDir = multiply(teamFountainDir, minDistance);
             targetLoc = add(botLoc, finalDir);
         }
     }
 
-    // 7) Finally, move the bot to the target location with some random offset
+    // 8) Move the bot to the new target location with a small random offset
     bot.Action_MoveToLocation(add(targetLoc, RandomVector(50)));
 }
 

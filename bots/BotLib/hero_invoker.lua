@@ -875,10 +875,13 @@ function X.ConsiderGhostWalk()
 end
 
 function X.ConsiderTornado()
-    local deltaTime = 4.5
+    local deltaTime = 4
     if not X.CanAbilityPossiblyBeCasted(Tornado)
         -- 同时也确保不要在刚刚放了陨石或者推波之后马上用吹风
-        or (DotaTime() - AbilityCastedTimes['ChaosMeteor'] <= deltaTime and DotaTime() - AbilityCastedTimes['DeafeningBlast'] <= deltaTime)
+        or (DotaTime() - AbilityCastedTimes['ChaosMeteor'] <= deltaTime
+            or DotaTime() - AbilityCastedTimes['DeafeningBlast'] <= deltaTime
+            or DotaTime() - AbilityCastedTimes['Sunstrike'] <= deltaTime
+            or DotaTime() - AbilityCastedTimes['Cataclysm'] <= deltaTime)
     then
         return BOT_ACTION_DESIRE_NONE, 0
     end
@@ -1401,13 +1404,13 @@ function X.ConsiderCataclysm()
         and not botTarget:HasModifier('modifier_abaddon_borrowed_time')
         and not botTarget:HasModifier('modifier_brewmaster_storm_cyclone')
         and not botTarget:HasModifier('modifier_eul_cyclone')
-        and not enemyHero:HasModifier(modifier_invoker_tornado)
+        and not botTarget:HasModifier(modifier_invoker_tornado)
         and not botTarget:HasModifier('modifier_oracle_false_promise_timer')
         and not botTarget:HasModifier('modifier_templar_assassin_refraction_absorb')
         and not botTarget:HasModifier('modifier_item_aeon_disk_buff')
         and (X.IsUnderLongDurationStun(botTarget)
-            or enemyHero:IsStunned()
-            or enemyHero:IsRooted())
+            or botTarget:IsStunned()
+            or botTarget:IsRooted())
         then
             return BOT_ACTION_DESIRE_HIGH, 0
         end

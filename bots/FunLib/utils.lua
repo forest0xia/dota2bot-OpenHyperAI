@@ -754,13 +754,15 @@ ____exports.NonTier1Towers = {
     Tower.Base2
 }
 ____exports.CachedVarsCleanTime = 5
-local SpecialAOEHeroes = {
-    HeroName.Axe,
-    HeroName.Enigma,
-    HeroName.Earthshaker,
-    HeroName.Invoker,
-    HeroName.SandKing,
-    HeroName.TrollWarlord
+--- Some specific heroes with hugh potential AOE damages.
+-- Map each "special AOE hero" to its threat conditions.
+local SpecialAOEHeroesDetails = {
+    [HeroName.Axe] = {minLevel = 4, requiredItems = {}, requiredModifiers = {}},
+    [HeroName.Enigma] = {minLevel = 6, requiredItems = {}, requiredModifiers = {}},
+    [HeroName.Earthshaker] = {minLevel = 6, requiredItems = {"item_blink"}, requiredModifiers = {}},
+    [HeroName.Invoker] = {minLevel = 9, requiredItems = {}, requiredModifiers = {}},
+    [HeroName.SandKing] = {minLevel = 6, requiredItems = {"item_blink"}, requiredModifiers = {}},
+    [HeroName.TrollWarlord] = {minLevel = 6, requiredItems = {"item_bfury"}, requiredModifiers = {"modifier_troll_warlord_battle_trance"}}
 }
 --- A mapping from hero name to an array of important spell(s)
 -- that have long cooldowns and can drastically change a team fight.
@@ -1704,41 +1706,66 @@ function ____exports.FindAllyWithAtLeastDistanceAway(bot, nDistance)
     end
     return nil
 end
+--- Check if the given enemy hero meets the "threat conditions" for special AOE.
+-- 
+-- @param enemy - The enemy hero unit.
+-- @param threatInfo - The conditions for that hero (level, items, modifiers).
+-- @returns true if the enemy meets the condition, otherwise false.
+local function DoesHeroMeetThreatConditions(enemy, threatInfo)
+    if enemy:GetLevel() < threatInfo.minLevel then
+        return false
+    end
+    for ____, itemName in ipairs(threatInfo.requiredItems) do
+        if not ____exports.HasItem(enemy, itemName) then
+            return false
+        end
+    end
+    for ____, modName in ipairs(threatInfo.requiredModifiers) do
+        if not enemy:HasModifier(modName) then
+            return false
+        end
+    end
+    return true
+end
+--- Determine if there's at least one dangerous "Special AOE hero" nearby
+-- that meets the threat conditions for big combos.
+-- 
+-- @param bot - The bot unit to check around.
+-- @param nRadius - The search radius (e.g. 500 or 2000).
+-- @returns true if we found at least one special AOE threat in range.
+function ____exports.IsAnySpecialAOEThreatNearby(bot, nRadius)
+    for ____, enemy in ipairs(GetUnitList(UnitType.EnemyHeroes)) do
+        local enemyName = enemy:GetUnitName()
+        if ____exports.IsValidHero(enemy) and SpecialAOEHeroesDetails[enemyName] ~= nil then
+            local threatInfo = SpecialAOEHeroesDetails[enemyName]
+            if #bot:GetNearbyHeroes(nRadius, false, BotMode.None) <= 1 and #bot:GetNearbyLaneCreeps(nRadius, false) <= 2 then
+                return false
+            end
+            if DoesHeroMeetThreatConditions(enemy, threatInfo) then
+                return true
+            end
+        end
+    end
+    return false
+end
 --- Check if the bots should spread out.
 -- 
 -- @param bot - The bot to check.
 -- @param minDistance - The minimum distance to check.
 -- @returns True if the bots should spread out, false otherwise.
 function ____exports.ShouldBotsSpreadOut(bot, minDistance)
-    if #bot:GetNearbyHeroes(minDistance, false, BotMode.None) < 2 then
-        return false
-    end
     local cacheKey = "ShouldBotsSpreadOut" .. tostring(bot:GetPlayerID())
-    local cachedRes = ____exports.GetCachedVars(cacheKey, 2)
+    local cachedRes = ____exports.GetCachedVars(cacheKey, 0.1)
     if cachedRes ~= nil then
         return cachedRes
     end
-    for ____, hero in ipairs(GetUnitList(UnitType.EnemyHeroes)) do
-        if ____exports.IsValidHero(hero) then
-            local heroName = hero:GetUnitName()
-            if ____exports.HasValue(SpecialAOEHeroes, heroName) then
-                if hero:GetLevel() >= 8 then
-                    ____exports.SetCachedVars(cacheKey, true)
-                    return true
-                end
-            else
-                ____exports.SetCachedVars(cacheKey, false)
-            end
-            if heroName == HeroName.TrollWarlord then
-                if ____exports.HasItem(hero, "item_bfury") and hero:HasModifier("modifier_troll_warlord_battle_trance") and hero:GetAttackRange() < 500 then
-                    ____exports.SetCachedVars(cacheKey, true)
-                    return true
-                end
-            end
-        end
+    local bResult = false
+    local threatNearby = ____exports.IsAnySpecialAOEThreatNearby(bot, minDistance)
+    if threatNearby then
+        bResult = true
     end
-    ____exports.SetCachedVars(cacheKey, false)
-    return false
+    ____exports.SetCachedVars(cacheKey, bResult)
+    return bResult
 end
 --- Get the nearby ally units.
 -- 
@@ -1752,18 +1779,20 @@ function ____exports.GetNearbyAllyUnits(bot, allyDistanceThreshold)
         return cachedRes
     end
     local hNearbyAllies = bot:GetNearbyHeroes(allyDistanceThreshold, false, BotMode.None)
-    local hNearbyLaneCreeps = bot:GetNearbyNeutralCreeps(allyDistanceThreshold, false)
+    local hNearbyLaneCreeps = bot:GetNearbyLaneCreeps(allyDistanceThreshold, false)
     local hNearbyUnits = __TS__ArrayConcat(hNearbyAllies, hNearbyLaneCreeps)
     ____exports.SetCachedVars(cacheKey, hNearbyUnits)
     return hNearbyUnits
 end
 --- Smart spread out the bots.
+-- Emphasizes moving away from allies/enemies quickly while still
+-- giving a mild pull toward fountain side if needed.
 -- 
--- @param bot - The bot to check.
--- @param allyDistanceThreshold - The distance threshold to check for allies.
--- @param minDistance - The minimum distance to check.
+-- @param bot - The bot to move.
+-- @param allyDistanceThreshold - Distance threshold to check for allies.
+-- @param minDistance - The minimum distance to keep from allies.
 -- @param avoidEnemyUnits - The enemy units to avoid.
--- @param onlyAvoidEnemyUnits - Whether to only avoid enemy units.
+-- @param onlyAvoidEnemyUnits - If true, only avoid enemy units (ignore allies).
 function ____exports.SmartSpreadOut(bot, allyDistanceThreshold, minDistance, avoidEnemyUnits, onlyAvoidEnemyUnits)
     if avoidEnemyUnits == nil then
         avoidEnemyUnits = {}
@@ -1789,11 +1818,16 @@ function ____exports.SmartSpreadOut(bot, allyDistanceThreshold, minDistance, avo
         return
     end
     local botLoc = bot:GetLocation()
+    local awayFromAllyWeight = 0.7
+    local fountainWeight = 0.3
     local teamFountainDir = ____exports.GetTeamSideDirection(GetTeam())
     if #avoidEnemyUnits == 0 then
-        teamFountainDir = Vector(0, 0, 0)
+        teamFountainDir = multiply(teamFountainDir, 0.5)
     end
-    local combinedDir = add(dirAwayFromAlly, teamFountainDir):Normalized()
+    local combinedDir = add(
+        multiply(dirAwayFromAlly, awayFromAllyWeight),
+        multiply(teamFountainDir, fountainWeight)
+    ):Normalized()
     local finalDir = multiply(combinedDir, minDistance)
     local enemyFountainDir = sub(
         ____exports.GetEnemyFountainTpPoint(),

@@ -5852,7 +5852,7 @@ function J.CheckBotIdleState()
 					bot:ActionQueue_AttackMove(frontLoc)
 					print('[ERROR] Relocating the idle bot: '..botName..'. Sending it to the lane# it was originally assigned: '..tostring(bot:GetAssignedLane()))
 				else
-					print('Bot '..botName..' is in idle state for unknown reasons.')
+					print('Bot '..botName..' is in idle state for unknown reasons. N/A.')
 				end
 				return true
 			else

@@ -766,7 +766,8 @@ function ThinkGeneralRoaming()
 	end
 
 	if ShouldBotsSpreadOut then
-
+		J.Utils.SmartSpreadOut(bot, 450, 450, nInRangeEnemy, false)
+		return
 	end
 
 	if bot:GetActiveMode() == BOT_MODE_ITEM
@@ -1306,16 +1307,17 @@ function ConsiderGeneralRoamingInConditions()
         end
 	end
 
-	-- 留一个抵御超级兵 看家
+	-- 留一个bot抵御超级兵 看家
 	-- if J.GetHP(GetAncient(bot:GetTeam())) < 0.99 then
 		
 	-- end
 
-	-- 目前可能会导致bot往敌方队伍里走
-	-- ShouldBotsSpreadOut = J.Utils.ShouldBotsSpreadOut(bot, 450)
-	-- if ShouldBotsSpreadOut then
-	-- 	return 0.91
-	-- end
+	-- 目前可能会导致bot往敌方队伍里走或者浪费时间乱走被团灭
+	local isBotTryingHardToAttack = J.IsAttacking(bot) or (bot:GetActiveMode() == BOT_MODE_ATTACK and bot:GetActiveModeDesire() > 0.7)
+	ShouldBotsSpreadOut = not isBotTryingHardToAttack and J.Utils.ShouldBotsSpreadOut(bot, 450)
+	if ShouldBotsSpreadOut then
+		return 0.91
+	end
 
 	if J.IsInLaningPhase() then
 

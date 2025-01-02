@@ -156,8 +156,9 @@ end
 function GetDesireBasedOnHp(target)
 	-- dont use attack mode on creeps in laning phase
 	if J.IsInLaningPhase()
-	and bot:GetTarget()
-	and not bot:GetTarget():IsHero() then
+	-- and bot:GetTarget()
+	-- and not bot:GetTarget():IsHero()
+	then
 		return BOT_ACTION_DESIRE_NONE
 	end
 
