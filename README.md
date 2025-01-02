@@ -61,7 +61,7 @@ Thanks and kudos to all that contributed to make bot games fun and exciting.
 ```
 root: <Steam\steamapps\common\dota 2 beta\game\dota\scripts\vscripts>
 │
-└───bots: contains all lua files for the bot logic. The workshop item of this project only contains content in this folder.
+└───bots: contains all lua files for the bot logic. The workshop item of this project *only* contains content in this folder.
 │   │   hero_selection.lua
 │   │   bot_generic.lua
 │   │   ...
@@ -69,6 +69,14 @@ root: <Steam\steamapps\common\dota 2 beta\game\dota\scripts\vscripts>
 │   └───Funlib: contains the libraries/utils of this project
 │   │   │   utils.lua
 │   │   │   ...
+│   │
+│   └───Customize: contains the files for you to easily customzie the general settings for bot teams in this project
+│   │   │   general.lua
+│   │   │   ...
+│   │   │
+│   │   └───hero: contains the files for you to easily customzie each of the bots in this project
+│   │       │   viper.lua
+│   │       │   ...
 │   │
 │   └───BotLib: contains the bot item purcahse, ability usage, etc logic for every bots.
 │       │   hero_abaddon.lua
