@@ -7,7 +7,10 @@ This is a place for you to customize the Open Hyper AI bots.
    that means you had made some mistakes/errors while modifying this file. 
 3. In any case this file got messed up and caused the bots to malfunction, you can try to restore the file. Either you have a 
    copy to replace, or resubscribe the script, or download from github.
-4. Note there is a list of known to-be-improved (aka weak) heroes, check out [Appendix - 2] on the bottom of this file.
+4. To avoid these customize files from getting overridden by workshop updates, you can copy 
+   the entire Customize folder to under: <Steam\steamapps\common\dota 2 beta\game\dota\scripts\vscripts\game>
+   and then modify the settings in <Steam\steamapps\common\dota 2 beta\game\dota\scripts\vscripts\game\Customize> directory.
+5. Note there is a list of known to-be-improved (aka weak) heroes, check out [Appendix - 2] on the bottom of this file.
 
 - Workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=3246316298
 - Github: https://github.com/forest0xia/dota2bot-OpenHyperAI
@@ -70,6 +73,11 @@ Customize.Radiant_Names = {
 Customize.Dire_Names = {
     'Random',
 }
+
+-- The desire level that the bots will group up and push the same lane. 
+-- 1 is mild meaning bots will group up only when convenient; 3 is bots will almost always try to push together.
+-- Group pushing may increase the difficulty but can reduce the game experience. 
+Customize.Force_Group_Push_Level = 1
 
 -- The Enhanced Fretbots mode settings:
 -- For more about Fretbots mode: https://steamcommunity.com/workshop/filedetails/discussion/3246316298/4764334012741504141/

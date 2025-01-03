@@ -9,7 +9,9 @@ require 'bots.FretBots.Timers'
 require 'bots.FretBots.Utilities'
 -- HeroSounds
 require('bots.FretBots.HeroSounds')
-local Customize = require('bots.Customize.general')
+local Customize
+if GetScriptDirectory() == 'bots' then Customize = require('bots.FunLib.custom_loader')
+else Customize = require( GetScriptDirectory()..'/FunLib/custom_loader' ) end
 local Localization = require 'bots/FunLib/localization'
 -- HeroSounds
 local Chat = require('bots.FretBots.Chat')

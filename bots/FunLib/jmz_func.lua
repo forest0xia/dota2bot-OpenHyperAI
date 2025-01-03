@@ -35,14 +35,19 @@ J.Role = require( GetScriptDirectory()..'/FunLib/aba_role' )
 J.Skill = require( GetScriptDirectory()..'/FunLib/aba_skill' )
 J.Chat = require( GetScriptDirectory()..'/FunLib/aba_chat' )
 J.Utils = require( GetScriptDirectory()..'/FunLib/utils' )
+J.Customize = require(GetScriptDirectory()..'/FunLib/custom_loader')
 
 
 function J.SetUserHeroInit( nAbilityBuildList, nTalentBuildList, sBuyList, sSellList )
 	-- A place to change the bot setup.
 	local bot = GetBot()
 	local botName = bot:GetUnitName()
-	local sBotDir, tBotSet = GetScriptDirectory() .. "/Customize/hero/" .. string.gsub(botName, "npc_dota_hero_", ""), nil
-	local status, _ = xpcall(function() tBotSet = require( sBotDir ) end, function( err ) print( '[WARN] When loading customzed file: '..err ) end )
+	local sBotDir, tBotSet = "game/Customize/hero/" .. string.gsub(botName, "npc_dota_hero_", ""), nil
+	local status, _ = xpcall(function() tBotSet = require( sBotDir ) end, function( err ) print( '[WARN] When loading customized game file: '..err ) end )
+	if not (status and tBotSet) then
+		sBotDir = GetScriptDirectory() .. "/Customize/hero/" .. string.gsub(botName, "npc_dota_hero_", "")
+		status, _ = xpcall(function() tBotSet = require( sBotDir ) end, function( err ) print( '[WARN] When loading customized file: '..err ) end )
+	end
 	if status and tBotSet and tBotSet.Enable then
 		nAbilityBuildList = tBotSet.AbilityUpgrade
 		nTalentBuildList = J.GetTalentBuildList( tBotSet.Talent )
@@ -154,7 +159,6 @@ function J.HasMovableUndyingModifier(botTarget, nDelay)
     end
     return false
 end
-
 
 --友军生物数量
 function J.GetUnitAllyCountAroundEnemyTarget( target, nRadius )

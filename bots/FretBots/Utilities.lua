@@ -12,8 +12,8 @@ local heroNames = require('bots.FretBots.HeroNames')
 local inspect = require('bots.FretBots.Inspect')
 local Localization = require 'bots/FunLib/localization'
 local Customize
-if GetScriptDirectory() == 'bots' then Customize = require('bots.Customize.general')
-else Customize = require( GetScriptDirectory()..'/Customize/general' ) end
+if GetScriptDirectory() == 'bots' then Customize = require('bots.FunLib.custom_loader')
+else Customize = require( GetScriptDirectory()..'/FunLib/custom_loader' ) end
 
 if Utilities == nil then
 	Utilities =

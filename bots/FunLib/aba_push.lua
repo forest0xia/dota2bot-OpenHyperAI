@@ -248,7 +248,7 @@ function Push.GetPushDesire(bot, lane)
     local pushLaneFrontToEnemyAncient = GetUnitToLocationDistance(GetAncient( GetOpposingTeam() ), pushLaneFront)
     local maxDistanceFromPushFront = 5500
     local bNearbyHeroesMoreThanEnemy = #nInRangeAlly >= #nInRangeEnemy and #nInRangeAlly >= nEffctiveEnemyHeroesNearPushLoc + nMissingEnemyHeroes - 2
-    if nH > 0 and pushLaneFrontToEnemyAncient > 4500 then
+    if nH > 0 and J.Customize.Force_Group_Push_Level < 2 and pushLaneFrontToEnemyAncient > 4500 then
         -- 前中期推进
         if teamAveLvl < 12 or (teamAveLvl < 15 and distantToPushFront > maxDistanceFromPushFront) then
             if bNearbyHeroesMoreThanEnemy then
@@ -260,10 +260,8 @@ function Push.GetPushDesire(bot, lane)
                         return nPushDesire
                     end
                 end
-            else
-                return BOT_MODE_DESIRE_NONE
             end
-            return BOT_MODE_DESIRE_LOW
+            return RemapValClamped(J.GetHP(bot), 0.1, 0.8, BOT_MODE_DESIRE_NONE, BOT_MODE_DESIRE_LOW)
         elseif J.GetCoresAverageNetworth() < 22000
         and (teamKillsRatio > 0.6 or teamAveLvl > enemyTeamAveLvl)
         and (teamAveLvl < 16 and distantToPushFront > maxDistanceFromPushFront)
@@ -277,18 +275,17 @@ function Push.GetPushDesire(bot, lane)
                         return nPushDesire
                     end
                 end
-            else
-                return BOT_MODE_DESIRE_NONE
             end
-            return BOT_MODE_DESIRE_LOW
+            return RemapValClamped(J.GetHP(bot), 0.1, 0.8, BOT_MODE_DESIRE_NONE, BOT_MODE_DESIRE_LOW)
         end
+        return RemapValClamped(J.GetHP(bot), 0.1, 0.8, BOT_MODE_DESIRE_NONE, BOT_MODE_DESIRE_VERYLOW)
     end
 
-    if nH > 0 and J.GetDistanceFromAllyFountain( bot ) < J.GetDistanceFromEnemyFountain(bot) - 1000 then
+    if nH > 0 and J.Customize.Force_Group_Push_Level < 2 and J.GetDistanceFromAllyFountain( bot ) < J.GetDistanceFromEnemyFountain(bot) - 1000 then
         return nPushDesire
     end
 
-    if distanceToLaneFront < 3000 then
+    if J.Customize.Force_Group_Push_Level < 3 and distanceToLaneFront < 3000 then
         -- priority to push the lane with no ally barracks
         if bNearbyHeroesMoreThanEnemy then
             if not J.Utils.IsAnyBarracksOnLaneAlive(false, lane) or J.GetDistanceFromAllyFountain(bot) < 2000 then
@@ -301,7 +298,7 @@ function Push.GetPushDesire(bot, lane)
 
     -- General Push
     if pushLane == lane
-    or (#nInRangeEnemy > eAliveCoreCount and teamAveLvl > enemyTeamAveLvl and aAliveCount >= eAliveCount and distanceToLaneFront < 3000)
+    or (J.Customize.Force_Group_Push_Level < 3 and #nInRangeEnemy > eAliveCoreCount and teamAveLvl > enemyTeamAveLvl and aAliveCount >= eAliveCount and distanceToLaneFront < 3000)
     then
         if eAliveCount == 0
         or aAliveCoreCount >= eAliveCoreCount

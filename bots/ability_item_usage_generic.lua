@@ -9,7 +9,6 @@ local bDebugMode = ( 1 == 10 )
 local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
 local Utils = require( GetScriptDirectory()..'/FunLib/utils' )
 local BotBuild = dofile( GetScriptDirectory().."/BotLib/"..string.gsub( botName, "npc_dota_", "" ) )
-local Customize = require( GetScriptDirectory()..'/Customize/general' )
 local Localization = require( GetScriptDirectory()..'/FunLib/localization' )
 
 if BotBuild == nil then return end
@@ -262,7 +261,7 @@ function X.SetTalkMessage()
 		end
 	end
 
-	if Customize.Allow_Trash_Talk then
+	if J.Customize.Allow_Trash_Talk then
 		--一血
 		if DotaTime() < 600
 			and bot:IsAlive()
@@ -343,7 +342,7 @@ function X.SetReplyHumanTime( tChat )
 	if string.find(sChatString, "!sp") or string.find(sChatString, "!speak") then
 		local action, target = J.Utils.TrimString(sChatString):match("^(%S+)%s+(.*)$")
 		print("Set to speak: ".. target)
-		Customize.Localization = target
+		J.Customize.Localization = target
 		return
 	end
 

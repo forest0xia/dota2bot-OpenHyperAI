@@ -7,7 +7,7 @@
 local Chat = {}
 local sRawLanguage = 'sRawName'
 local Localization = require( GetScriptDirectory()..'/FunLib/localization' )
-local Customize = require( GetScriptDirectory()..'/Customize/general' )
+local Customize = require(GetScriptDirectory()..'/FunLib/custom_loader')
 
 Chat['tItemNameList'] = {
 	{sRawName='item_cyclone', sShortName='itemNull', sCnName='EUL的神圣法杖', sEnName="Eul's Scepter of Divinity"},
