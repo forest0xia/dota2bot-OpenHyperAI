@@ -95,7 +95,7 @@ root: <Steam\steamapps\common\dota 2 beta\game\dota\scripts\vscripts>
 │   │   botsinit.lua
 │   │   ...
 │   │
-│   └───Customize: You can copy & paste the Customize folder from <root/bots/Customize> to avoid
+│   └───Customize: You can copy & paste the Customize folder from <root/bots> to <root/game> to avoid
 │                  the custom settings getting replaced/overridden by workshop upgrades.
 │   ...
 

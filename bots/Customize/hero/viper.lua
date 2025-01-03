@@ -21,7 +21,7 @@ This is a place for you to customize the Open Hyper AI bots.
 local Hero = { }
 
 -- Set it to true to turn on ALL of the custom settings in this file, or set it to false to turn off the settings.
-Hero.Enable = true
+Hero.Enable = false -- CHANGE THIS TO: true
 
 -- The ability upgrade order of the bot. 1 means the first ability, 2 means the second ability, ..., 6 means the ultimate ability.
 -- Be very careful when changing the values, if you misplace 1 ability it can cause the bot failing to upgrade all the other abilities.

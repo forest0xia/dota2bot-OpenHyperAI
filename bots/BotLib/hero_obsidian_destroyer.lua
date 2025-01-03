@@ -255,33 +255,33 @@ function X.ConsiderAstralImprisonment()
             end
         end
 
-        -- local strongestTarget = J.GetStrongestUnit(nCastRange, bot, true, false, nDuration)
-
-        -- if strongestTarget == nil
-        -- then
-        --     strongestTarget = J.GetStrongestUnit(nCastRange, bot, true, true, nDuration)
-        -- end
-
-		-- if J.IsValidTarget(strongestTarget)
-        -- and J.IsInRange(bot, strongestTarget, nCastRange)
-        -- and not J.IsSuspiciousIllusion(strongestTarget)
-        -- and not J.IsDisabled(strongestTarget)
-        -- and not J.IsTaunted(strongestTarget)
-        -- and not strongestTarget:HasModifier('modifier_abaddon_borrowed_time')
-        -- and not strongestTarget:HasModifier('modifier_dazzle_shallow_grave')
-        -- and not strongestTarget:HasModifier('modifier_enigma_black_hole_pull')
-        -- and not strongestTarget:HasModifier('modifier_faceless_void_chronosphere_freeze')
-        -- and not strongestTarget:HasModifier('modifier_necrolyte_reapers_scythe')
-        -- and not strongestTarget:HasModifier('modifier_templar_assassin_refraction_absorb')
-		-- then
-        --     return BOT_ACTION_DESIRE_HIGH, strongestTarget
-		-- end
+        local strongestTarget = J.GetStrongestUnit(nCastRange + 150, bot, true, false, nDuration)
+        if strongestTarget == nil
+        then
+            strongestTarget = J.GetStrongestUnit(nCastRange + 250, bot, true, true, nDuration)
+        end
+        if J.IsValidTarget(strongestTarget) then
+            local nTargetInRangeAlly = J.GetNearbyHeroes(strongestTarget, 800, false, BOT_MODE_NONE)
+            if #nTargetInRangeAlly >= 2 then
+                if J.IsInRange(bot, strongestTarget, nCastRange)
+                and not J.IsSuspiciousIllusion(strongestTarget)
+                and not J.IsDisabled(strongestTarget)
+                and not J.IsTaunted(strongestTarget)
+                and not strongestTarget:HasModifier('modifier_abaddon_borrowed_time')
+                and not strongestTarget:HasModifier('modifier_dazzle_shallow_grave')
+                and not strongestTarget:HasModifier('modifier_enigma_black_hole_pull')
+                and not strongestTarget:HasModifier('modifier_faceless_void_chronosphere_freeze')
+                and not strongestTarget:HasModifier('modifier_necrolyte_reapers_scythe')
+                and not strongestTarget:HasModifier('modifier_templar_assassin_refraction_absorb')
+                then
+                    return BOT_ACTION_DESIRE_HIGH, strongestTarget
+                end
+            end
+        end
 	end
 
     if J.IsGoingOnSomeone(bot)
 	then
-        local nInRangeAlly = J.GetNearbyHeroes(bot,1000, false, BOT_MODE_NONE)
-
 		if J.IsValidTarget(botTarget)
         and J.CanCastOnNonMagicImmune(botTarget)
         and J.IsInRange(bot, botTarget, nCastRange)
@@ -295,11 +295,25 @@ function X.ConsiderAstralImprisonment()
         and not botTarget:HasModifier('modifier_necrolyte_reapers_scythe')
         and not botTarget:HasModifier('modifier_templar_assassin_refraction_absorb')
 		then
+            local nInRangeAlly = J.GetNearbyHeroes(bot, 1000, false, BOT_MODE_NONE)
+            -- 1v1
             local nTargetInRangeAlly = J.GetNearbyHeroes(botTarget, 1000, false, BOT_MODE_NONE)
+            if #nInRangeAlly <= 1 and #nTargetInRangeAlly <= 1 then return BOT_ACTION_DESIRE_HIGH, botTarget end
 
-            if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
-            and #nInRangeAlly >= #nTargetInRangeAlly
-            and #nInRangeAlly <= 1
+            -- has more then 1 enemy and target has high hp
+            if #nTargetInRangeAlly >= 2 and J.GetHP(botTarget) > 0.8 then return BOT_ACTION_DESIRE_HIGH, botTarget end
+
+            local isChasing = J.IsChasingTarget(bot, botTarget)
+            -- more ally v less enemy but target not running
+            if #nInRangeAlly >= 2 and #nTargetInRangeAlly <= 1 and not isChasing then return BOT_ACTION_DESIRE_NONE, nil end
+            if #nInRangeAlly > 2 and #nInRangeAlly > #nTargetInRangeAlly and not isChasing then return BOT_ACTION_DESIRE_NONE, nil end
+
+            -- more ally v less enemy and target running
+            if #nInRangeAlly >= #nTargetInRangeAlly and isChasing then return BOT_ACTION_DESIRE_HIGH, botTarget end
+            local nInLongRangeAlly = J.GetNearbyHeroes(bot, 1600, false, BOT_MODE_NONE)
+            if #nInLongRangeAlly > #nInRangeAlly
+            and #nInLongRangeAlly > #nTargetInRangeAlly
+            and J.IsRunning(botTarget)
             then
                 return BOT_ACTION_DESIRE_HIGH, botTarget
             end

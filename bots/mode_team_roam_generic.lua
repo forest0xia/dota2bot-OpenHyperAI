@@ -710,6 +710,7 @@ function X.SupportFindTarget()
 		    return nTarget,BOT_MODE_DESIRE_ABSOLUTE *1.2;
 		end
 
+		if J.IsPushing( bot ) and not nTarget:IsHero() then return nil,0 end
 		if not nTarget:IsHero()
 		   and GetUnitToUnitDistance(bot,nTarget) < nAttackRange +50
 		then
@@ -825,6 +826,7 @@ function X.SupportFindTarget()
 		end
 	end
 
+	if J.IsPushing( bot ) then return nil,0 end
 	if IsModeSuitHit
 		and bot:GetLevel() <= 7
 		and X.CanAttackTogether(bot)
@@ -1016,6 +1018,8 @@ function X.CarryFindTarget()
 		    return nTarget,BOT_MODE_DESIRE_ABSOLUTE *1.2;
 		end
 
+		if J.IsPushing( bot ) and not nTarget:IsHero() then return nil,0 end
+
 		if not nTarget:IsHero()
 		   and GetUnitToUnitDistance(bot,nTarget) < nAttackRange +50
 		then
@@ -1164,6 +1168,7 @@ function X.CarryFindTarget()
 		end
 	end
 		
+	if J.IsPushing( bot ) then return nil,0 end
 	if IsModeSuitHit 
 		and bot:GetLevel() <= 8
 		and X.CanAttackTogether(bot)

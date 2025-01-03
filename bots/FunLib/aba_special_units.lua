@@ -114,6 +114,12 @@ function X.GetDesire(bot__)
                 or string.find(unitName, 'invoker_forged_spirit')
                 or string.find(unitName, 'venomancer_plague_ward')
                 or string.find(unitName, 'clinkz_skeleton_archer') then
+                    if J.GetHP(bot) > 0.7 and J.IsInRange(bot, unit, botAttackRange) then
+                        if #tEnemyHeroes == 0 then return 0.85 end
+                        if #tAllyHeroes >= #tEnemyHeroes then return 0.4 end
+                    end
+                    if J.GetHP(bot) < 0.7 and J.IsStuck( bot ) then return RemapValClamped(J.GetHP(bot), 0.1, 0.9, 1, 0.3) end
+
                     local tSerpents = X.GetUnitTypeAttackingBot(botLocation, 1600, unitName)
                     local unitsAttackDamage = X.GetTotalAttackDamage(tSerpents, 8.0)
                     botAttackDamage = X.GetUnitAttackDamageWithinTime(bot, 5.0)

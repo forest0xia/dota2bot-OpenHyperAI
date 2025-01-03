@@ -139,7 +139,7 @@ function Push.GetPushDesire(bot, lane)
     local eAliveCoreCount = J.GetAliveCoreCount(true)
     local nPushDesire = GetPushLaneDesire(lane)
     local hEnemyAncient = GetAncient(GetOpposingTeam())
-    local teamHasAegis = J.DoesTeamHaveAegis()
+    -- local teamHasAegis = J.DoesTeamHaveAegis()
     local nMissingEnemyHeroes = J.Utils.CountMissingEnemyHeroes()
     local teamKillsRatio = allyKills / enemyKills
     local distanceToEnemyAncient = GetUnitToUnitDistance(bot, hEnemyAncient)
@@ -175,7 +175,7 @@ function Push.GetPushDesire(bot, lane)
     and teamAveLvl < enemyTeamAveLvl
     and distanceToEnemyAncient < 5500
     then
-        return BOT_MODE_DESIRE_NONE
+        return BOT_MODE_DESIRE_VERYLOW
     end
 
     local botTarget = bot:GetAttackTarget()
@@ -263,7 +263,6 @@ function Push.GetPushDesire(bot, lane)
                     end
                 end
             end
-            return RemapValClamped(J.GetHP(bot), 0.1, 0.8, BOT_MODE_DESIRE_NONE, BOT_MODE_DESIRE_LOW)
         elseif J.GetCoresAverageNetworth() < 22000
         and (teamKillsRatio > 0.6 or teamAveLvl > enemyTeamAveLvl)
         and (teamAveLvl < 16 and distantToPushFront > maxDistanceFromPushFront)
@@ -278,9 +277,8 @@ function Push.GetPushDesire(bot, lane)
                     end
                 end
             end
-            return RemapValClamped(J.GetHP(bot), 0.1, 0.8, BOT_MODE_DESIRE_NONE, BOT_MODE_DESIRE_LOW)
         end
-        return RemapValClamped(J.GetHP(bot), 0.1, 0.8, BOT_MODE_DESIRE_NONE, BOT_MODE_DESIRE_VERYLOW)
+        return RemapValClamped(J.GetHP(bot), 0.1, 0.8, BOT_MODE_DESIRE_NONE, BOT_MODE_DESIRE_LOW)
     end
 
     if nH > 0 and J.Customize.Force_Group_Push_Level < 2 and J.GetDistanceFromAllyFountain( bot ) < J.GetDistanceFromEnemyFountain(bot) - 1000 then
@@ -322,7 +320,7 @@ function Push.GetPushDesire(bot, lane)
             nPushDesire = Clamp(nPushDesire, 0, nMaxDesire)
         end
     else
-        nPushDesire = BOT_MODE_DESIRE_NONE
+        nPushDesire = BOT_MODE_DESIRE_VERYLOW
     end
 
 	-- 如果离进攻点位近，且有敌方英雄，或我方不强，则降低欲望

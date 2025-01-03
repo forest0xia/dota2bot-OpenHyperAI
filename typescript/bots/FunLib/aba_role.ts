@@ -396,7 +396,7 @@ export const GetPosition = function (bot: Unit) {
     }
 
     if (role == null) {
-        print("[ERROR] Failed to determine role for bot " + unitName + ". Set it to pos: 3.");
+        // print("[ERROR] Failed to determine role for bot " + unitName + ". Set it to pos: 3.");
         role = 3;
     }
 

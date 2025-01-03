@@ -5464,22 +5464,26 @@ function J.GetTotalEstimatedDamageToTarget(nUnits, target)
 end
 
 function J.GetAliveCoreCount(nEnemy)
-	local team = GetTeam()
-	local count = 0
-
-	if nEnemy
-	then
-		team = GetOpposingTeam()
-	end
-
-	local cacheKey = 'GetAliveCoreCount'..tostring(team)
+	local cacheKey = 'GetAliveCoreCount'..tostring(GetTeam())
 	local cache = J.Utils.GetCachedVars(cacheKey, 0.5)
 	if cache ~= nil then return cache end
 
-	local heroID = GetTeamPlayers(team)
-	if IsHeroAlive(heroID[1]) then count = count + 1 end
-	if IsHeroAlive(heroID[2]) then count = count + 1 end
-	if IsHeroAlive(heroID[3]) then count = count + 1 end
+	local count = 0
+	if nEnemy then
+		for _, enemyHero in pairs(GetUnitList(UNIT_LIST_ENEMY_HEROES))
+		do
+			if J.IsValidHero(enemyHero) and not J.IsSuspiciousIllusion(enemyHero) and J.IsCore(enemyHero) then
+				count = count + 1
+			end
+		end
+	else
+		for _, allyHero in pairs(GetUnitList(UNIT_LIST_ALLIED_HEROES))
+		do
+			if J.IsValidHero(allyHero) and not allyHero:IsIllusion() and J.IsCore(allyHero) then
+				count = count + 1
+			end
+		end
+	end
 
 	J.Utils.SetCachedVars(cacheKey, count)
 	return count
