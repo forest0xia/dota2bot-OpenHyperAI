@@ -194,7 +194,7 @@ end
 
 --通用数量
 function J.GetNearbyAroundLocationUnitCount( bEnemy, bHero, nRadius, vLoc )
-	local cacheKey = 'GetNearbyAroundLocationUnitCount'..tostring(nRadius) --..'-'..tostring(bEnemy)..'-'..tostring(bHero)..'-'..tostring(math.floor(vLoc.x))..'-'..tostring(math.floor(vLoc.y))
+	local cacheKey = 'GetNearbyAroundLocationUnitCount'..tostring(nRadius) ..'-'..tostring(bEnemy)..'-'..tostring(bHero)..'-'..tostring(J.ToNearest500(vLoc.x))..'-'..tostring(J.ToNearest500(vLoc.y))
 	local cache = J.Utils.GetCachedVars(cacheKey, 0.5)
 	if cache ~= nil then return cache end
 
@@ -452,7 +452,7 @@ end
 
 
 function J.GetRetreatingAlliesNearLoc( vLoc, nRadius )
-	local cacheKey = 'GetRetreatingAlliesNearLoc'..tostring(nRadius) --..tostring(math.floor(vLoc.x))..tostring(math.floor(vLoc.y))
+	local cacheKey = 'GetRetreatingAlliesNearLoc'..tostring(nRadius) ..tostring(J.ToNearest500(vLoc.x))..tostring(J.ToNearest500(vLoc.y))
 	local cache = J.Utils.GetCachedVars(cacheKey, 0.5)
 	if cache ~= nil then return cache end
 
@@ -477,7 +477,7 @@ end
 
 function J.GetAlliesNearLoc( vLoc, nRadius )
 	local allies = {}
-	local cacheKey = 'GetAlliesNearLoc'..tostring(nRadius) --..tostring(math.floor(vLoc.x))..'-'..tostring(math.floor(vLoc.y))
+	local cacheKey = 'GetAlliesNearLoc'..tostring(nRadius) ..tostring(J.ToNearest500(vLoc.x))..'-'..tostring(J.ToNearest500(vLoc.y))
 	local cache = J.Utils.GetCachedVars(cacheKey, 0.5)
 	if cache ~= nil then return cache end
 
@@ -499,7 +499,7 @@ function J.GetAlliesNearLoc( vLoc, nRadius )
 end
 
 function J.GetEnemiesNearLoc(vLoc, nRadius)
-	local cacheKey = 'GetEnemiesNearLoc'..tostring(nRadius) --..tostring(math.floor(vLoc.x))..'-'..tostring(math.floor(vLoc.y))
+	local cacheKey = 'GetEnemiesNearLoc'..tostring(nRadius) ..tostring(J.ToNearest500(vLoc.x))..'-'..tostring(J.ToNearest500(vLoc.y))
 	local cache = J.Utils.GetCachedVars(cacheKey, 0.5)
 	if cache ~= nil then return cache end
 
@@ -522,7 +522,7 @@ function J.GetEnemiesNearLoc(vLoc, nRadius)
 end
 
 function J.GetAnyEnemiesNearLoc(vLoc, nRadius)
-	local cacheKey = 'GetAnyEnemiesNearLoc'..tostring(nRadius) --..tostring(math.floor(vLoc.x))..'-'..tostring(math.floor(vLoc.y))
+	local cacheKey = 'GetAnyEnemiesNearLoc'..tostring(nRadius) ..tostring(J.ToNearest500(vLoc.x))..'-'..tostring(J.ToNearest500(vLoc.y))
 	local cache = J.Utils.GetCachedVars(cacheKey, 0.5)
 	if cache ~= nil then return cache end
 
@@ -542,7 +542,7 @@ function J.GetAnyEnemiesNearLoc(vLoc, nRadius)
 end
 
 function J.GetIllusionsNearLoc(vLoc, nRadius)
-	local cacheKey = 'GetIllusionsNearLoc'..tostring(nRadius) --..tostring(math.floor(vLoc.x))..'-'..tostring(math.floor(vLoc.y))
+	local cacheKey = 'GetIllusionsNearLoc'..tostring(nRadius) ..tostring(J.ToNearest500(vLoc.x))..'-'..tostring(J.ToNearest500(vLoc.y))
 	local cache = J.Utils.GetCachedVars(cacheKey, 0.5)
 	if cache ~= nil then return cache end
 
@@ -2717,6 +2717,14 @@ function J.IsAllysTarget( unit )
 
 end
 
+function J.ToNearest500(num)
+    return math.floor(num / 500 + 0.5) * 500
+end
+
+--RoundToNearestThousand
+function J.ToNearest1000(num)
+    return math.floor(num / 1000 + 0.5) * 1000
+end
 
 function J.IsKeyWordUnit( keyWord, uUnit )
 
@@ -3761,7 +3769,7 @@ end
 
 
 function J.IsEnemyHeroAroundLocation( vLoc, nRadius )
-	local cacheKey = 'IsEnemyHeroAroundLocation'..tostring(math.floor(vLoc.x))..'-'..tostring(math.floor(vLoc.y))..'-'..tostring(nRadius)
+	local cacheKey = 'IsEnemyHeroAroundLocation'..tostring(J.ToNearest500(vLoc.x))..'-'..tostring(J.ToNearest500(vLoc.y))..'-'..tostring(nRadius)
 	local cache = J.Utils.GetCachedVars(cacheKey, 0.5)
 	if cache ~= nil then return cache end
 
@@ -3788,7 +3796,7 @@ function J.IsEnemyHeroAroundLocation( vLoc, nRadius )
 end
 
 function J.GetLastSeenEnemiesNearLoc(vLoc, nRadius)
-	local cacheKey = 'GetLastSeenEnemiesNearLoc'..tostring(nRadius) --..'-'..tostring(math.floor(vLoc.x))..'-'..tostring(math.floor(vLoc.y))
+	local cacheKey = 'GetLastSeenEnemiesNearLoc'..tostring(nRadius) ..'-'..tostring(J.ToNearest500(vLoc.x))..'-'..tostring(J.ToNearest500(vLoc.y))
 	local cache = J.Utils.GetCachedVars(cacheKey, 0.5)
 	if cache ~= nil then return cache end
 
@@ -4230,7 +4238,6 @@ end
 
 function J.WeAreStronger(bot, radius)
 	if radius > 1600 then radius = 1600 end
-
 	local cacheKey = 'WeAreStronger'..tostring(bot:GetPlayerID())..'-'..tostring(radius)
 	local cache = J.Utils.GetCachedVars(cacheKey, 0.5)
 	if cache ~= nil then return cache end
@@ -4240,16 +4247,22 @@ function J.WeAreStronger(bot, radius)
 
     local ourPower = 0;
     local enemyPower = 0;
+	local maxOurPower = 0;
 
     for _, h in pairs(mates) do
-		if J.IsValid(h) and not J.IsSuspiciousIllusion(h) then
+		if J.IsValid(h) and not h:IsIllusion() then
 			ourPower = ourPower + h:GetOffensivePower();
+			maxOurPower = math.max(maxOurPower, h:GetOffensivePower())
 		end
     end
 
     for _, h in pairs(enemies) do
 		if J.IsValid(h) and not J.IsSuspiciousIllusion(h) then
-        	enemyPower = enemyPower + h:GetRawOffensivePower();
+			if J.Utils.IsSpecialOffensiveHero(h:GetUnitName()) then
+				enemyPower = enemyPower + math.min(maxOurPower, h:GetRawOffensivePower());
+			else
+				enemyPower = enemyPower + h:GetRawOffensivePower();
+			end
 		end
     end
 
@@ -5190,7 +5203,7 @@ end
 
 function J.GetEnemiesAroundLoc(vLoc, nRadius)
 	if not nRadius then nRadius = 2000 end
-	local cacheKey = 'GetEnemiesAroundLoc'..tostring(nRadius) --..'-'..tostring(math.floor(vLoc.x))..'-'..tostring(math.floor(vLoc.y))
+	local cacheKey = 'GetEnemiesAroundLoc'..tostring(nRadius) ..'-'..tostring(J.ToNearest500(vLoc.x))..'-'..tostring(J.ToNearest500(vLoc.y))
 	local cache = J.Utils.GetCachedVars(cacheKey, 0.5)
 	if cache ~= nil then return cache end
 

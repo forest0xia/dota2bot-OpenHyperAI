@@ -5,6 +5,10 @@ local Utils = require( GetScriptDirectory()..'/FunLib/utils')
 local orig_GetTeamPlayers = GetTeamPlayers
 local direTeamPlaters = nil
 function GetTeamPlayers(nTeam)
+	local cacheKey = 'GetTeamPlayers'..tostring(nTeam)
+	local cache = Utils.GetCachedVars(cacheKey, 5)
+	if cache ~= nil then return cache end
+
 	local nIDs = orig_GetTeamPlayers(nTeam)
 	if nTeam == TEAM_DIRE then
 		if direTeamPlaters ~= nil then
@@ -50,6 +54,7 @@ function GetTeamPlayers(nTeam)
 		end
 		direTeamPlaters = nIDs
 	end
+	Utils.SetCachedVars(cacheKey, nIDs)
 	return nIDs
 end
 
@@ -195,12 +200,31 @@ end
 
 local originalIsMagicImmune = CDOTA_Bot_Script.IsMagicImmune
 function CDOTA_Bot_Script:IsMagicImmune()
-    if not self:CanBeSeen() then
-		-- print("IsMagicImmune has been called on unit can't be seen")
-		-- print("Stack Trace:", debug.traceback())
-		return true
-	end
-    return originalIsMagicImmune(self)
+	if not self then return false end
+	local cacheKey = 'IsMagicImmune'..self:GetUnitName()
+	local cache = Utils.GetCachedVars(cacheKey, 0.15)
+	if cache ~= nil then return cache end
+
+	if self:CanBeSeen() then
+        if originalIsMagicImmune(self)
+        or self:HasModifier('modifier_magic_immune')
+        or self:HasModifier('modifier_juggernaut_blade_fury')
+        or self:HasModifier('modifier_life_stealer_rage')
+        or self:HasModifier('modifier_black_king_bar_immune')
+        or self:HasModifier('modifier_huskar_life_break_charge')
+        or self:HasModifier('modifier_grimstroke_scepter_buff')
+        or self:HasModifier('modifier_pangolier_rollup')
+        or self:HasModifier('modifier_lion_mana_drain_immunity')
+        or self:HasModifier('modifier_dawnbreaker_fire_wreath_magic_immunity_tooltip')
+        or self:HasModifier('modifier_rattletrap_cog_immune')
+        or self:HasModifier('modifier_legion_commander_press_the_attack_immunity')
+        then
+			Utils.SetCachedVars(cacheKey, true)
+            return true
+        end
+    end
+	Utils.SetCachedVars(cacheKey, false)
+    return false
 end
 
 local originalGetNearbyNeutralCreeps = CDOTA_Bot_Script.GetNearbyNeutralCreeps

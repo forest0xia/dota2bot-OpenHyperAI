@@ -864,6 +864,11 @@ export function getCustomAvoidanceZones(): Array<{
     return avoidanceZones;
 }
 
+const specialOffensiveHeroes = [HeroName.ArcWarden, HeroName.Phoenix, HeroName.Terrorblade];
+export function IsSpecialOffensiveHero(name: string): boolean {
+    return name in specialOffensiveHeroes;
+}
+
 export function isPositionInAvoidanceZone(position: Vector): boolean {
     for (const zone of avoidanceZones) {
         const distance = length2D(sub(position, zone.center));

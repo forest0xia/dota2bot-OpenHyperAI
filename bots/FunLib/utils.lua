@@ -1380,6 +1380,10 @@ end
 function ____exports.getCustomAvoidanceZones()
     return avoidanceZones
 end
+local specialOffensiveHeroes = {HeroName.ArcWarden, HeroName.Phoenix, HeroName.Terrorblade}
+function ____exports.IsSpecialOffensiveHero(name)
+    return specialOffensiveHeroes[name] ~= nil
+end
 function ____exports.isPositionInAvoidanceZone(position)
     for ____, zone in ipairs(avoidanceZones) do
         local distance = length2D(sub(position, zone.center))
@@ -1662,7 +1666,7 @@ function ____exports.CountMissingEnemyHeroes()
     local count = 0
     for ____, playerdId in ipairs(GetTeamPlayers(GetOpposingTeam())) do
         do
-            local __continue234
+            local __continue235
             repeat
                 if IsHeroAlive(playerdId) then
                     local lastSeenInfo = GetHeroLastSeenInfo(playerdId)
@@ -1670,14 +1674,14 @@ function ____exports.CountMissingEnemyHeroes()
                         local firstInfo = lastSeenInfo[1]
                         if firstInfo.time_since_seen >= 2.5 then
                             count = count + 1
-                            __continue234 = true
+                            __continue235 = true
                             break
                         end
                     end
                 end
-                __continue234 = true
+                __continue235 = true
             until true
-            if not __continue234 then
+            if not __continue235 then
                 break
             end
         end

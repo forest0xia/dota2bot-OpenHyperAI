@@ -18,6 +18,7 @@ local nEffctiveEnemyHeroesNearPushLoc = 0
 
 local pingTimeDelta = 5
 local targetBuilding = nil
+local weAreStronger = false
 local nInRangeAlly, nInRangeEnemy = {}, {}
 
 function Push.GetPushDesire(bot, lane)
@@ -142,6 +143,7 @@ function Push.GetPushDesire(bot, lane)
     local nMissingEnemyHeroes = J.Utils.CountMissingEnemyHeroes()
     local teamKillsRatio = allyKills / enemyKills
     local distanceToEnemyAncient = GetUnitToUnitDistance(bot, hEnemyAncient)
+	weAreStronger = J.WeAreStronger(bot, nSearchRange)
 
     local teamAncientLoc = GetAncient(GetTeam()):GetLocation()
     local nEffctiveAllyHeroesNearAncient = #J.GetAlliesNearLoc(teamAncientLoc, 4500) + #J.Utils.GetAllyIdsInTpToLocation(teamAncientLoc, 4500)
@@ -248,7 +250,7 @@ function Push.GetPushDesire(bot, lane)
     local pushLaneFrontToEnemyAncient = GetUnitToLocationDistance(GetAncient( GetOpposingTeam() ), pushLaneFront)
     local maxDistanceFromPushFront = 5500
     local bNearbyHeroesMoreThanEnemy = #nInRangeAlly >= #nInRangeEnemy and #nInRangeAlly >= nEffctiveEnemyHeroesNearPushLoc + nMissingEnemyHeroes - 2
-    if nH > 0 and J.Customize.Force_Group_Push_Level < 2 and pushLaneFrontToEnemyAncient > 4500 then
+    if nH > 0 and J.Customize.Force_Group_Push_Level < 2 and pushLaneFrontToEnemyAncient > 4500 and weAreStronger then
         -- 前中期推进
         if teamAveLvl < 12 or (teamAveLvl < 15 and distantToPushFront > maxDistanceFromPushFront) then
             if bNearbyHeroesMoreThanEnemy then
@@ -285,7 +287,7 @@ function Push.GetPushDesire(bot, lane)
         return nPushDesire
     end
 
-    if J.Customize.Force_Group_Push_Level < 3 and distanceToLaneFront < 3000 then
+    if J.Customize.Force_Group_Push_Level < 3 and distanceToLaneFront < 3000 and weAreStronger then
         -- priority to push the lane with no ally barracks
         if bNearbyHeroesMoreThanEnemy then
             if not J.Utils.IsAnyBarracksOnLaneAlive(false, lane) or J.GetDistanceFromAllyFountain(bot) < 2000 then
@@ -317,11 +319,21 @@ function Push.GetPushDesire(bot, lane)
             end
 
             bot.laneToPush = lane
-            return Clamp(nPushDesire, 0, nMaxDesire)
+            nPushDesire = Clamp(nPushDesire, 0, nMaxDesire)
         end
+    else
+        nPushDesire = BOT_MODE_DESIRE_NONE
     end
 
-    return BOT_MODE_DESIRE_NONE
+	-- 如果离进攻点位近，且有敌方英雄，或我方不强，则降低欲望
+	if ((distanceToLaneFront < 1200 or GetUnitToLocationDistance(bot, vEnemyLaneFrontLocation) < 800) and #nInRangeEnemy >= 1)
+    or not weAreStronger then
+		-- 1. if we are not stronger, most likely defend == feed
+		-- 2. we dont want to get stuck in defend mode too much because other modes are also important after bots arrive the location.
+		nPushDesire = RemapValClamped(nPushDesire, 0, 1, BOT_ACTION_DESIRE_NONE, nPushDesire / 2)
+	end
+
+    return nPushDesire
 end
 
 function IsGroupPushingTime()
