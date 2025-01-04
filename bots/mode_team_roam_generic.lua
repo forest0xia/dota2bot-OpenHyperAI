@@ -100,8 +100,8 @@ function GetDesire()
 	then
 		beInitDone = true
 		bePvNMode = J.Role.IsPvNMode()
-		IsHeroCore = X.IsSpecialCore(bot)
-		IsSupport = X.IsSpecialSupport(bot)
+		IsHeroCore = J.IsCore(bot)
+		IsSupport = not J.IsCore(bot)
 	end
 
 	local nDesire = 0

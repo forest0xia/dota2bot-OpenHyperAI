@@ -22,12 +22,20 @@ set timestamp=%timestamp: =0%
 
 :: 检查文件夹是否已存在
 if exist "%~dp0..\..\..\..\..\common\dota 2 beta\game\dota\scripts\vscripts\bots" (
-    echo 文件夹已存在，正在重命名为 bots_old_%timestamp%...
+    echo bots文件夹已存在，正在重命名为 bots_old_%timestamp%...
     ren "%~dp0..\..\..\..\..\common\dota 2 beta\game\dota\scripts\vscripts\bots" "bots_old_%timestamp%"
 )
 
 echo 正在创建机器人脚本链接...
 mklink /d "%~dp0..\..\..\..\..\common\dota 2 beta\game\dota\scripts\vscripts\bots" "%~dp0.."
+
+if exist "%~dp0..\..\..\..\..\common\dota 2 beta\game\dota\scripts\vscripts\game\Customize" (
+    echo Customize文件夹已存在，正在重命名为 Customize_old_%timestamp%...
+    ren "%~dp0..\..\..\..\..\common\dota 2 beta\game\dota\scripts\vscripts\game\Customize" "Customize_old_%timestamp%"
+)
+echo 正在创建自定义脚本...
+xcopy  "%~dp0..\Customize\" "%~dp0..\..\..\..\..\common\dota 2 beta\game\dota\scripts\vscripts\game\Customize\" /E
+
 if %errorlevel% equ 0 (
     echo ============
     echo ============

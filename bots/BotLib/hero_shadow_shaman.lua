@@ -78,9 +78,9 @@ sRoleItemsBuyList['pos_5'] = {
 sRoleItemsBuyList['pos_1'] = {
 	
 	"item_crystal_maiden_outfit",
-	"item_glimmer_cape",
 	"item_aghanims_shard",
 	"item_ultimate_scepter",
+	"item_glimmer_cape",
 	"item_force_staff",
 	"item_cyclone",
 	"item_sheepstick",

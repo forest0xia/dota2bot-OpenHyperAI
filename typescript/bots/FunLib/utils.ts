@@ -2,13 +2,14 @@
  * The basic utilities file.
  * Here is a set of simple but critial utilities that should be able to get imported to any other files
  * without causing any circular dependency - meaning all of methods here can be shared in any other higher level
- * implementation files without worrying about nested or circular dependency can be added to this file.
+ * implementation files without worrying about nested or circular dependency.
  *
- * This file should NOT import any dependency libs or files that can cause circular dependency,
- * which means all methods used in this file should be raw basic methods from lower level implementations.
+ * This file should NOT import any dependency libs or files that CAN cause circular dependency,
+ * which means all libs imported should be raw/basic/global func, and all methods used in this file should be 
+ * raw basic methods from lower level implementations.
  *
  * We can gradually migrate functions into this file, and the bot script isn't a large project so we can
- * keep putting shared low level funtionalities in this file until it gets too big for maintanence.
+ * keep putting shared low level funtionalities in this file until it gets too big for to maintain.
  */
 require("bots/ts_libs/utils/json");
 import { Ability, Barracks, BotActionType, BotMode, Item, Lane, Ping, Team, Tower, Unit, UnitType, Vector } from "bots/ts_libs/dota";
@@ -210,7 +211,7 @@ export const ImportantSpells: Record<string, string[]> = {
     [HeroName.WitchDoctor]: ["witch_doctor_voodoo_switcheroo", "witch_doctor_death_ward"],
     [HeroName.Zeus]: ["zuus_thundergods_wrath"],
 
-    // Universal (7.33+ added a new type, but you can keep them sorted however you wish)
+    // Universal
     [HeroName.Abaddon]: ["abaddon_borrowed_time"],
     [HeroName.Bane]: ["bane_fiends_grip"],
     [HeroName.Batrider]: ["batrider_flaming_lasso"],

@@ -409,6 +409,7 @@ function X.ConsiderE()
 			if npcAlly:GetMagicResist() > 0.42
 				and J.GetHP( npcAlly ) < 0.8
 				and ( #hEnemyList == 0 or npcAlly:GetHealth() > 999 )
+				and J.GetUniqueModifierCount( bot, "modifier_oracle_purifying_flames" ) < 3
 			then
 				return BOT_ACTION_DESIRE_HIGH, npcAlly, "E-治疗"..J.Chat.GetNormName( npcAlly )
 			end

@@ -93,15 +93,10 @@ function X.GetDesire(bot__)
                 or string.find(unitName, 'land_mine')
                 or string.find(unitName, 'ignis_fatuus')
                 then
-                    if J.IsInRange(bot, unit, botAttackRange + 200) then
-                        return 0.96
-                    end
-                    if #tEnemyHeroes_all == 0 then
-                        return 0.9
-                    end
-                    if #tAllyHeroes >= #tEnemyHeroes then
-                        return 0.65
-                    end
+                    if J.IsInRange(bot, unit, botAttackRange) then return 1 end
+                    if J.IsInRange(bot, unit, botAttackRange + 200) then return RemapValClamped(J.GetHP(bot), 0.1, 0.9, 0, 0.96) end
+                    if #tEnemyHeroes_all == 0 then return 0.9 end
+                    if #tAllyHeroes >= #tEnemyHeroes then return 0.65 end
                 end
 
                 if string.find(unitName, 'siege') then
@@ -146,7 +141,7 @@ function X.GetDesire(bot__)
                             return 0.35
                         else
                             if not X.IsBeingAttackedByHero(bot) then
-                                return 0.50
+                                return 0.60
                             end
                         end
                     else
@@ -259,7 +254,7 @@ function X.GetDesire(bot__)
                     and withinAttackRange
                     and botAttackDamage > totalUnitHP and unitAttackDamage < botHealth
                     then
-                        return 0.29
+                        return RemapValClamped(botHP, 0.25, 0.9, 0.2, 0.5)
                     end
                 end
 

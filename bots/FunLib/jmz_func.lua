@@ -2892,6 +2892,24 @@ function J.GetModifierCount( bot, sModifierName )
 end
 
 
+function J.GetUniqueModifierCount( bot, sModifierName )
+
+	if not bot:HasModifier( sModifierName ) then return 0 end
+
+	local count = 0
+	local npcModifier = bot:NumModifiers()
+	for i = 0, npcModifier
+	do
+		if bot:GetModifierName( i ) == sModifierName
+		then
+			count = count + 1
+		end
+	end
+
+	return count
+
+end
+
 
 
 function J.GetRemainStunTime( bot )
@@ -4259,7 +4277,7 @@ function J.WeAreStronger(bot, radius)
     for _, h in pairs(enemies) do
 		if J.IsValid(h) and not J.IsSuspiciousIllusion(h) then
 			if J.Utils.IsSpecialOffensiveHero(h:GetUnitName()) then
-				enemyPower = enemyPower + math.min(maxOurPower, h:GetRawOffensivePower());
+				enemyPower = enemyPower + math.min(maxOurPower * 1.25, h:GetRawOffensivePower());
 			else
 				enemyPower = enemyPower + h:GetRawOffensivePower();
 			end

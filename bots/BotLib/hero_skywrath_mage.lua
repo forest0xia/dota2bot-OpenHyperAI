@@ -79,7 +79,7 @@ sRoleItemsBuyList['pos_5'] = {
 }
 
 sRoleItemsBuyList['pos_1'] = {
-	"item_medusa_outfit",
+	"item_crystal_maiden_outfit",
 	"item_rod_of_atos",
 --	"item_glimmer_cape",
     "item_kaya",
@@ -89,14 +89,41 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_octarine_core",--
 	"item_gungir",--
 	"item_cyclone",
+	"item_sheepstick",--
 	"item_wind_waker",--
 	"item_moon_shard",
 	"item_ultimate_scepter_2",
-	"item_sheepstick",--
     "item_travel_boots_2",--
 }
 
-sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
+sRoleItemsBuyList['pos_2'] = {
+	"item_tango",
+	"item_double_branches",
+	"item_double_circlet",
+
+	"item_bottle",
+	'item_null_talisman',
+	"item_magic_wand",
+	'item_null_talisman',
+	"item_arcane_boots",
+	"item_rod_of_atos",
+--	"item_glimmer_cape",
+    "item_kaya",
+	"item_ultimate_scepter",
+    "item_kaya_and_sange",--
+	"item_aghanims_shard",
+	"item_dagon_2",
+	"item_octarine_core",--
+	"item_gungir",--
+	-- "item_cyclone",
+	"item_sheepstick",--
+    "item_dagon_5",--
+	-- "item_wind_waker",--
+	"item_moon_shard",
+	"item_ultimate_scepter_2",
+    "item_travel_boots_2",--
+}
+
 
 sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_1']
 
@@ -166,7 +193,7 @@ local castEDesire, castETarget
 local castRDesire, castRLocation
 
 
-local nKeepMana, nMP, nHP, nLV, hEnemyList, hAllyList, botTarget, sMotive
+local nKeepMana, nMP, nHP, nLV, hEnemyList, hAllyList, botTarget, sMotive, nInRangeEnemyHeroList
 
 local aetherRange = 0
 
@@ -181,6 +208,7 @@ function X.SkillsComplement()
 	botTarget = J.GetProperTarget( bot )
 	hEnemyList = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 	hAllyList = J.GetAlliesNearLoc( bot:GetLocation(), 1600 )
+	nInRangeEnemyHeroList = J.GetNearbyHeroes(bot, 1200, true, BOT_MODE_NONE )
 
 
 	local aether = J.IsItemAvailable( "item_aether_lens" )
@@ -250,7 +278,6 @@ function X.ConsiderQ()
 	local nInRangeEnemyHeroList = J.GetNearbyHeroes(bot, math.min(nCastRange + 50, 1600), true, BOT_MODE_NONE )
 	local nAttackDamage = bot:GetAttackDamage()
 
-
 	local hAllyList = J.GetNearbyHeroes(bot, 1300, false, BOT_MODE_NONE )
 
 
@@ -268,27 +295,32 @@ function X.ConsiderQ()
 		end
 	end
 
-
 	--对线期的使用
-	if bot:GetActiveMode() == BOT_MODE_LANING
-		and ( hAllyList[2] == nil or not J.IsHumanPlayer( hAllyList[2] ) )
-		and #hAllyList <= 2
-	then
-		local hLaneCreepList = bot:GetNearbyLaneCreeps( math.min(nCastRange + 50, 1600), true )
-		for _, creep in pairs( hLaneCreepList )
-		do
-			if J.IsValid( creep )
-				and not creep:HasModifier( "modifier_fountain_glyph" )
-				and J.IsKeyWordUnit( "ranged", creep )
-				and not J.IsOtherAllysTarget( creep )
-				and creep:GetHealth() > nDamage * 0.68
-			then
-				local nDelay = nCastPoint + GetUnitToUnitDistance( bot, creep )/500
-				if J.WillKillTarget( creep, nDamage, nDamageType, nDelay * 0.9 )
-					and not J.WillKillTarget( creep, nAttackDamage, DAMAGE_TYPE_PHYSICAL, nDelay )
+	if J.IsLaning( bot ) then
+		if not J.IsThereNonSelfCoreNearby(nCastRange) then
+			local hLaneCreepList = bot:GetNearbyLaneCreeps( math.min(nCastRange + 50, 1600), true )
+			for _, creep in pairs( hLaneCreepList )
+			do
+				if J.IsValid( creep )
+					and not creep:HasModifier( "modifier_fountain_glyph" )
+					and J.IsKeyWordUnit( "ranged", creep )
+					and not J.IsOtherAllysTarget( creep )
+					and creep:GetHealth() > nDamage * 0.68
 				then
-					return BOT_ACTION_DESIRE_HIGH, creep, 'Q对线'
+					local nDelay = nCastPoint + GetUnitToUnitDistance( bot, creep )/500
+					if J.WillKillTarget( creep, nDamage, nDamageType, nDelay * 0.9 )
+						and not J.WillKillTarget( creep, nAttackDamage, DAMAGE_TYPE_PHYSICAL, nDelay )
+					then
+						return BOT_ACTION_DESIRE_HIGH, creep, 'Q对线'
+					end
 				end
+			end
+		end
+		if #nInRangeEnemyHeroList >= 1 and nMP > 0.5 and nSkillLV >= 2 then
+			local npcEnemy = nInRangeEnemyHeroList[1]
+			if J.IsValidHero(npcEnemy)
+			and J.IsInRange(bot, npcEnemy, nCastRange) then
+				return BOT_ACTION_DESIRE_HIGH, npcEnemy, "Q消耗"..npcEnemy:GetUnitName()
 			end
 		end
 	end
@@ -396,6 +428,17 @@ function X.ConsiderW()
 		if J.WillMagicKillTarget( bot, nSkillTarget, nDamage, nCastPoint + nDist/1200 )
 		then
 			return BOT_ACTION_DESIRE_HIGH, 'W击杀'..J.Chat.GetNormName( nSkillTarget )
+		end
+	end
+
+	--对线期的使用
+	if J.IsLaning( bot ) then
+		if #nInRangeEnemyHeroList >= 1 and nMP > 0.5 and (nSkillLV >= 2 or nLV <= 2) then
+			local npcEnemy = nInRangeEnemyHeroList[1]
+			if J.IsValidHero(npcEnemy)
+			and J.IsInRange(bot, npcEnemy, nCastRange) then
+				return BOT_ACTION_DESIRE_HIGH, "W消耗"..npcEnemy:GetUnitName()
+			end
 		end
 	end
 
