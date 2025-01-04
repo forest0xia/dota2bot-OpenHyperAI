@@ -5,7 +5,7 @@
  * implementation files without worrying about nested or circular dependency.
  *
  * This file should NOT import any dependency libs or files that CAN cause circular dependency,
- * which means all libs imported should be raw/basic/global func, and all methods used in this file should be 
+ * which means all libs imported should be raw/basic/global func, and all methods used in this file should be
  * raw basic methods from lower level implementations.
  *
  * We can gradually migrate functions into this file, and the bot script isn't a large project so we can

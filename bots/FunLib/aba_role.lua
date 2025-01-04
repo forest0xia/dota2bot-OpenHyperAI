@@ -409,7 +409,6 @@ ____exports.GetPosition = function(bot)
         )
     end
     if role == nil then
-        print(("[ERROR] Failed to determine role for bot " .. unitName) .. ". Set it to pos: 3.")
         role = 3
     end
     return role

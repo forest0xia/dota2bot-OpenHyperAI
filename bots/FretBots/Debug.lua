@@ -8,16 +8,17 @@ end
 
 local orig_print = print
 function print(...)
-    local args = {...}
-    for i, v in ipairs(args) do
+	if not isDebug then return end
+	local args = {...}
+	for i, v in ipairs(args) do
 		if i == 1 then
 			v = '[Fretbots] '..tostring(v)
 		end
-        args[i] = tostring(v)
-    end
-    local output = table.concat(args, "\t") -- Concatenate with tab as separator
+		args[i] = tostring(v)
+	end
+	local output = table.concat(args, "\t") -- Concatenate with tab as separator
 
-    orig_print(output)
+	orig_print(output)
 end
 
 -- Edit this return to enable / disable debug

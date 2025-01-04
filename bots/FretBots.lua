@@ -1,5 +1,5 @@
 if not GameRules or GameRules:State_Get() < DOTA_GAMERULES_STATE_HERO_SELECTION then
-	print('[Fretbots]: Start a lobby game and try to enable Fretbots after entering the Hero Selection phase.')
+	print('Start a lobby game and try to enable Fretbots after entering the Hero Selection phase.')
 	return
 end
 LinkLuaModifier("modifier_fret_damage_increase", "FretBots/modifiers/modifier_seasonal_party_hat.lua", LUA_MODIFIER_MOTION_NONE)
@@ -7,7 +7,7 @@ if GetScriptDirectory == nil then GetScriptDirectory = function() return "bots" 
 -- Version information
 local Version = require 'bots.FunLib.version'
 -- Print version to console
-print('Starting Fretbot. Version: ' .. Version.number)
+print('Open Hyper AI (OHA). Starting Fretbots mode: ' .. Version.number)
 -- Dependencies
 -- global debug flag
 require 'bots.FretBots.Debug'
@@ -132,10 +132,10 @@ if not Flags.isFretBotsInitialized then
 	local teamNames = require 'bots.FunLib.aba_team_names'
 	if teamNames.maxTeamSize ~= 12 then return end
 	-- Welcome Message
-	Utilities:Print('FretBots enabled! Version: ' .. Version.number, MSG_GOOD, MATCH_READY)
+	Utilities:Print('Welcome to Open Hyper AI (OHA)! FretBots enabled: ' .. Version.number, MSG_GOOD, MATCH_READY)
 	-- Register the listener that will run Initialize() once the game starts
 	Utilities:RegsiterGameStateListener(FretBots, 'Initialize', DOTA_GAMERULES_STATE_PRE_GAME )
 	Flags.isFretBotsInitialized = true
 else
-	print("Fretbots has already been enabled for this game.")
+	print("Fretbots mode has already been enabled for this game.")
 end

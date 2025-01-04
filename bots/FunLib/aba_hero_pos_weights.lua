@@ -68,9 +68,9 @@ local HeroPositions = {
     },
     [HeroName.Beastmaster] = {
         5,
-        45,
+        35,
         65,
-        5,
+        35,
         0
     },
     [HeroName.Bloodseeker] = {
@@ -452,9 +452,9 @@ local HeroPositions = {
         5
     },
     [HeroName.NagaSiren] = {
-        60,
+        45,
         25,
-        15,
+        20,
         10,
         0
     },
