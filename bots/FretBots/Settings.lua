@@ -108,6 +108,7 @@ local chatCommands =
 	'vo',				-- 'voiceover': play a sound from another hero
 	'voc',				-- does the same thing as 'vo c': plays caster voiceovers
 	'enablecheat',      -- enable players to cheat without getting punishment.
+	'disablegpt',       -- disable AIs to repsonse with GPT generated text.
 	'info',             -- basic info of the current difficulty and stats.
 	'speak', 'sp',      -- speak specific language
 
@@ -422,6 +423,8 @@ function Settings:OpenAIResponse(text, playerID, teamonly)
 
 	-- do not handle team only message to avoid spamming.
 	if teamonly == 1 then return end
+	if not Customize.Allow_AI_GPT_Response then return end
+	if not Customize.Allow_Trash_Talk then return end
 
 	if not startsWithExclamation(text) then
 		for _, player in ipairs(AllUnits) do
@@ -457,6 +460,11 @@ function Settings:DoUserChatCommandParse(text, id)
 		else
 			Utilities:Print('Only the host of this game can enable cheat settings', MSG_WARNING)
 		end
+		return true
+	end
+	if command == 'disablegpt' then
+		Customize.Allow_AI_GPT_Response = not Customize.Allow_AI_GPT_Response
+		Utilities:Print('Allow AI GPT chat state: '..tostring(Customize.Allow_AI_GPT_Response), MSG_GOOD)
 		return true
 	end
 	-- Random Asian soundboard

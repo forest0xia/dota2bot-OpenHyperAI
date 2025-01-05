@@ -60,8 +60,11 @@ Customize.Dire_Heros = {
 --]]
 Customize.Allow_Repeated_Heroes = false
 
--- To allow bots do trash talking in different scenarios. 
+-- To allow bots do trash talking in different scenarios: got fb, killing a human, etc. Disable this also disables GPT chat.
 Customize.Allow_Trash_Talk = true
+
+-- To allow bots response with GPT generated text to your chats in global channel. Disable Allow_Trash_Talk can disable this.
+Customize.Allow_AI_GPT_Response = true
 
 -- To set the names for the Radiant bots. Don't need to provide a value for all 5 bots, missing names will have a Random value.
 Customize.Radiant_Names = {

@@ -14,6 +14,7 @@ local Localization = {
             "You can type `!pos X` to swap position with a bot. For example, type: `!pos 2` to go mid lane. Type `!3pos 5` to ask the 3rd bot on the team to play position 5.",
             "You can type `!sp zh` for ally bots to 说中文, or `!sp en` for English, `!sp ru` for русский, `!sp ja` for 日本語. Not 100% translated, just be patient.",
             "For more guides, or if you have any feedback, please check out script's Workshop or Github repo.",
+            "If you like this script and are kind enough want to buy me a coffee, please check Workshop page to Support the script."
         },
         say_play_pos = "I will play position ",
         pos_select_closed = "Position selection closed.",
@@ -31,8 +32,8 @@ local Localization = {
             'wp',
             'feels like we are going to have a good game',
         },
-        got_a_kill = {"?", "you’ll have to do better than that!", "ez", "next time, keep your eyes closer", "enjoy respawn timers now and then.", "i was not even getting warmed up yet",
-            "did someone died? oh wait, no, noob shit.", "maybe next time, you’ll stand a chance… or not.", "thanks for your feed", "don’t feel bad, we all start somewhere… down there."},
+        got_a_kill = {"?", "you’ll have to do better than that!", "ez", "next time, keep your eyes closer on your dumb ass", "enjoy respawn timers now and then.", "i was not even getting warmed up yet",
+            "did someone died? oh wait, no, noob pussi.", "maybe next time, you’ll stand a chance… or not.", "thanks for your feed", "don’t feel bad, we all start somewhere… down there."},
         got_big_kill = {"did you forget to bring your brain today? ez", "I’m on fire! who’s next?", "oh very cute", "farm to feed hum?", "where's your team?", "you should ask for a refund on those skills"},
         got_big_kill_2 = {"that’s what a real rampage looks like!", "well, not too bad buddy, learn and try better", "don't give up, you are almost better than me", "?????"},
         got_big_kill_3 = {"I almost thought you were good. do better next time plz", "good. i can tell that you are not a retarded noob", "????????", "thought you were better than that"},
@@ -129,6 +130,7 @@ local Localization = {
             "你可以输入 `!pos X` 与机器人交换位置。例如，输入：`!pos 2` 来走中路。输入 `!3pos 5` 让队伍中的第3个机器人玩5号位。",
             "你可以输入 `!sp zh` 让盟友机器人说中文，或者输入 `!sp en` 说英语，`!sp ru` 说俄语，`!sp ja` 说日语。并非100%完成翻译，请耐心等待。",
             "如果有任何反馈，请在脚本的创意工坊或 Github 仓库中发表评论",
+            "如果您喜欢这个脚本并愿意请我喝杯咖啡，请查看工坊页面如何支持这个脚本"
         },
         say_play_pos = "我将玩位置 ",
         pos_select_closed = "位置选择已关闭",
@@ -251,6 +253,7 @@ local Localization = {
             "Вы можете ввести `!pos X`, чтобы поменяться позицией с ботом. Например, введите: `!pos 2`, чтобы пойти на центральную линию. Введите `!3pos 5`, чтобы попросить 3-го бота в команде играть на позиции 5.",
             "Вы можете ввести `!sp zh`, чтобы союзные боты говорили на китайском, или `!sp en` для английского, `!sp ru` для русского, `!sp ja` для японского. Перевод не завершён на 100%, проявите терпение.",
             "Если у вас есть отзывы, оставьте комментарий на странице Workshop или в репозитории Github.",
+            "Если вам нравится этот скрипт и вы достаточно добры, чтобы угостить меня кофе, пожалуйста, посетите страницу Workshop, чтобы поддержать этот скрипт."
         },
         say_play_pos = "Я буду играть на позиции ",
         pos_select_closed = "Выбор позиции закрыт.",
@@ -366,6 +369,7 @@ local Localization = {
             "`!pos X` を入力してボットとポジションを交換できます。例えば、`!pos 2` を入力するとミッドレーンに行きます。`!3pos 5` を入力すると、チームの3番目のボットにポジション5をプレイさせます。",
             "`!sp zh` を入力すると味方ボットが中国語を話し、`!sp en` で英語、`!sp ru` でロシア語、`!sp ja` で日本語を話します。翻訳は100％完成していないので、少しお待ちください。",
             "フィードバックがあれば、スクリプトのワークショップや Github レポジトリにコメントを投稿してください。",
+            "このスクリプトが気に入り、コーヒーをおごっていただけるほど親切な場合は、ワークショップページをご覧いただき、スクリプトをサポートしてください。"
         },
         say_play_pos = "私はポジション ",
         pos_select_closed = "ポジション選択は終了しました。",

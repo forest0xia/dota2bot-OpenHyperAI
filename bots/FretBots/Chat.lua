@@ -40,7 +40,7 @@ function Chat:SendHttpRequest(api, inputData, callback)
         if response.StatusCode == 200 then
             local success, resJsonObj = pcall(function() return json.decode(res) end)
             if success and resJsonObj and resJsonObj.error then
-                Chat:HandleFailMessage(tostring(resJsonObj.error.type) .. " : " .. tostring(resJsonObj.error.message) .. " " .. tostring(resJsonObj.error.code), false)
+                Chat:HandleFailMessage(tostring(resJsonObj.message), false)
             else
                 if callback then callback(resJsonObj)
                 else
@@ -83,8 +83,12 @@ local function getFormattedGameTime()
 end
 
 function ConstructChatBotRequest(inputContent)
-    table.insert(recordedMessages, 1, { role = "user", content = 'Players in this game: ' .. json.encode(Utilities:HeroStatsInGame(AllUnits))
-    .. ', game time: ' .. getFormattedGameTime() .. ', locale language code: ' .. Localization.GetLocale()})
+    local contentStruct = {
+        all_heroes_in_game = Utilities:HeroStatsInGame(AllUnits),
+        current_game_time = getFormattedGameTime(),
+        locale_language_code = Localization.GetLocale(),
+    }
+    table.insert(recordedMessages, 1, { role = "user", content = json.encode(contentStruct)})
     table.insert(recordedMessages, { role = "user", content = inputContent })
 
     -- Initialize data table
@@ -120,8 +124,7 @@ end
 
 local function splitHeroNameFromMessage(message)
     local hero_pattern = "(npc_dota_hero_[%w_]+)" 
-    local before_hero, hero_name = message:match("^(.-)(" .. hero_pattern .. ")$")
-    
+    local before_hero, hero_name, _ = message:match("^(.-)(" .. hero_pattern .. ")(.*)$")
     if before_hero and hero_name then
         return before_hero, hero_name
     else
@@ -154,7 +157,6 @@ function Chat:HandleResponseMessage(inputText, message)
     -- print("API Response: " .. message)
     local foundBot = false
     local aiText, heroHame = splitHeroNameFromMessage(message)
-    
     if heroHame then
         for team = 2, 3 do
             for _, bot in ipairs(AllBots[team]) do
@@ -165,7 +167,6 @@ function Chat:HandleResponseMessage(inputText, message)
             end
         end
     end
-
     if not foundBot then
         local aBot = getRandomBot()
         if aBot ~= nil then
@@ -175,7 +176,6 @@ function Chat:HandleResponseMessage(inputText, message)
     if not heroHame then
         return
     end
-    
     table.insert(recordedMessages, { role = "assistant", content = message })
 end
 
