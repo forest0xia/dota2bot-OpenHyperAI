@@ -13,8 +13,7 @@ local Localization = {
             "If you feel bots are weak, try enabling the enhanced Fretbots mode to make the game a lot more challenging. Check Workshop page for details.",
             "You can type `!pos X` to swap position with a bot. For example, type: `!pos 2` to go mid lane. Type `!3pos 5` to ask the 3rd bot on the team to play position 5.",
             "You can type `!sp zh` for ally bots to 说中文, or `!sp en` for English, `!sp ru` for русский, `!sp ja` for 日本語. Not 100% translated, just be patient.",
-            "For more guides, or if you have any feedback, please check out script's Workshop or Github repo.",
-            "If you like this script and are kind enough want to buy me a coffee, please check Workshop page to Support the script."
+            "This is nonprofit project, if you like this script and have any feedback or want to contritute, or give any support or buy me a coffee, please check script's Workshop."
         },
         say_play_pos = "I will play position ",
         pos_select_closed = "Position selection closed.",
@@ -129,8 +128,7 @@ local Localization = {
             "如果你觉得机器人太弱，可以尝试启用增强的 Fretbots 模式，让游戏更加具有挑战性。详情请查看创意工坊页面",
             "你可以输入 `!pos X` 与机器人交换位置。例如，输入：`!pos 2` 来走中路。输入 `!3pos 5` 让队伍中的第3个机器人玩5号位。",
             "你可以输入 `!sp zh` 让盟友机器人说中文，或者输入 `!sp en` 说英语，`!sp ru` 说俄语，`!sp ja` 说日语。并非100%完成翻译，请耐心等待。",
-            "如果有任何反馈，请在脚本的创意工坊或 Github 仓库中发表评论",
-            "如果您喜欢这个脚本并愿意请我喝杯咖啡，请查看工坊页面如何支持这个脚本"
+            "这是一个非营利项目，如果您喜欢这个脚本，有任何反馈或想做贡献，或者给予任何支持或请我喝一杯咖啡，请查看脚本的工坊"
         },
         say_play_pos = "我将玩位置 ",
         pos_select_closed = "位置选择已关闭",
@@ -252,8 +250,7 @@ local Localization = {
             "Если вы считаете, что боты слишком слабые, попробуйте включить режим улучшенных Fretbots, чтобы игра стала более сложной. Подробности смотрите на странице Workshop.",
             "Вы можете ввести `!pos X`, чтобы поменяться позицией с ботом. Например, введите: `!pos 2`, чтобы пойти на центральную линию. Введите `!3pos 5`, чтобы попросить 3-го бота в команде играть на позиции 5.",
             "Вы можете ввести `!sp zh`, чтобы союзные боты говорили на китайском, или `!sp en` для английского, `!sp ru` для русского, `!sp ja` для японского. Перевод не завершён на 100%, проявите терпение.",
-            "Если у вас есть отзывы, оставьте комментарий на странице Workshop или в репозитории Github.",
-            "Если вам нравится этот скрипт и вы достаточно добры, чтобы угостить меня кофе, пожалуйста, посетите страницу Workshop, чтобы поддержать этот скрипт."
+            "Это некоммерческий проект. Если вам нравится этот скрипт и у вас есть отзывы или вы хотите внести вклад, оказать поддержку или угостить меня кофе, пожалуйста, посетите страницу скрипта в Мастерской."
         },
         say_play_pos = "Я буду играть на позиции ",
         pos_select_closed = "Выбор позиции закрыт.",
@@ -368,8 +365,7 @@ local Localization = {
             "もしボットが弱いと感じる場合は、強化された Fretbots モードを有効にして、より挑戦的なゲームをお楽しみください。詳細はワークショップページをご覧ください。",
             "`!pos X` を入力してボットとポジションを交換できます。例えば、`!pos 2` を入力するとミッドレーンに行きます。`!3pos 5` を入力すると、チームの3番目のボットにポジション5をプレイさせます。",
             "`!sp zh` を入力すると味方ボットが中国語を話し、`!sp en` で英語、`!sp ru` でロシア語、`!sp ja` で日本語を話します。翻訳は100％完成していないので、少しお待ちください。",
-            "フィードバックがあれば、スクリプトのワークショップや Github レポジトリにコメントを投稿してください。",
-            "このスクリプトが気に入り、コーヒーをおごっていただけるほど親切な場合は、ワークショップページをご覧いただき、スクリプトをサポートしてください。"
+            "これは非営利プロジェクトです。もしこのスクリプトが気に入ったら、フィードバックや貢献、サポート、または私にコーヒーをおごっていただける場合は、スクリプトのワークショップをご確認ください"
         },
         say_play_pos = "私はポジション ",
         pos_select_closed = "ポジション選択は終了しました。",
