@@ -49,12 +49,14 @@ Thanks and kudos to all that contributed to make bot games fun and exciting.
 1. `!Xpos Y` Swap other players' positions without changing your position. For example you can use `!3pos 5` to tell the 3rd bot on the team to play pos 5.
 1. `!ban XXX` You can type: `!ban XXX` to ban a hero so the bots won't pick that hero. For example: `!ban puck` to prevent any bots from picking puck.
 1. `!sp XX` You can type `!sp en` or `!speak zh` to do localization - make bots talk in English, or other languages like: `!sp zh` for `Chinese`, `!sp ru` for `Russian`, `!sp ja` for `Japanese`, for now. 
-   1. Note, if you use this localization command after the hero selection phase is started, this switch only works for your *ally* bots - enemy bots will use default language, so you better change the setting in [Customize/general.lua](bots/Customize/general.lua) . 
+   1. Note, if you use this localization command after the hero selection phase is started, this switch only works for your *ally* bots
+      1. Enemy bots will use default language, so you better change the setting in [Customize/general.lua](bots/Customize/general.lua) . 
    1. For all ally & enemy bots, you should set `Customize.Localization` in [Customize/general.lua](bots/Customize/general.lua).
 1. Batch commands. You can put pick/ban multiple heroes at once by putting the commands in 1 line, for example: `!pick sand king; !pick io; !ban zuus; !ban sniper` .
 
 ## Contribute to this script
 1. Please feel very welcome to contribute to the Github repo any time you like. Just update the logic and create a pull request.
+1. Note if you just changing the item purcahes, or ability upgrades, etc, these don't really need a pull request because everyone has their own favorites, just chekc out [Customize/hero/viper.lua](bots/Customize/hero/viper.lua)
 1. Future development work for this script will be written in typescript as possible: [typescript/README](typescript/README.md).
 1. The typescipt source code is as well work-in-progress, feel free to convert more lua files to ts, and add libs/modules as you feel necessary.
 1. Project structure:
@@ -127,10 +129,11 @@ root: <Steam\steamapps\common\dota 2 beta\game\dota\scripts\vscripts>
 ## Credits to
 This script is based on Valve's default bot script and many other people's work and their scripts. That being said, this is a partial override not completely take over bot script. It takes the advantages of some other existing bot scripts and aims to be a better off script than the existing ones. We hope the bot's decision making and team strategies are more effective and brings more joy to you.
 
-- Tinkering ABout (by @ryndrb: https://github.com/ryndrb/dota2bot or https://steamcommunity.com/sharedfiles/filedetails/?id=3139791706). This is a script derived from Tinkering ABout. But the code has diverged significantly w.r.t roles, item selection, farming, laning, roaming, push, defend, rosh/runes strategies, as well as the local support with Fretbots. Presumably the future maintenance will keep diverging even more.
+ New Beginner AI (by dota2jmz@163.com). Awesome work to bring Valve default bots to next level.
+- Tinkering ABout (by @ryndrb: https://github.com/ryndrb/dota2bot or https://steamcommunity.com/sharedfiles/filedetails/?id=3139791706).
 - New beginner ai (by dota2jmz@163.com).
-- Ranked Matchmaking AI (by adamqqq)
-- fretbots (by fretmute)
+- Ranked Matchmaking AI (by adamqqq, https://github.com/adamqqqplay/dota2ai)
+- fretbots (by fretmute, https://github.com/fretmute/fretbots)
 - BOT Experiment (by Furiospuppy)
 - ExtremePush (https://github.com/insraq/dota2bots)
 - All other bot script authors/contributors that had made bot scripts interesting.
