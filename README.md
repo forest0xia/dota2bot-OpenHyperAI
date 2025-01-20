@@ -22,8 +22,12 @@ Thanks and kudos to all that contributed to make bot games fun and exciting.
 0. Support 7.37
 1. Support ALL 126 heroes! You will see bots playing Kez, Ringmaster, Invoker, Techies, Meepo, Lone Druid, Dark Willow, Hoodwink, io, Muerta, Primal Beast, etc. Just note that some of the newly added ones are not very strong and in progress to be further enhanced.
 1. Bots are easily customizable . E.g. you can easily set ban / picks for bots, change their names, etc. 
-   1. Check out the file in [Customize/general.lua](bots/Customize/general.lua), or in local Workshop directory: `<steam folder>\steamapps\workshop\content\570\3246316298\Customize\general.lua`. 
+   1. Check out the file in [Customize/general.lua](bots/Customize/general.lua).
    1. You can also customize bot's item purcashes, ability upgrades, etc - check out the sample file in [Customize/hero/viper.lua](bots/Customize/hero/viper.lua).
+   1. Which Customize file you should change?
+      1. Make sure to select Open Hyper AI as the script in custom lobby.
+      1. If you have NOT installed the script via `quick-install-oha.bat`, simply update settings in <Steam\steamapps\workshop\content\570\3246316298\Customize>
+      2. If you have installed the script via `quick-install-oha.bat`, update settings in <Steam\steamapps\common\dota 2 beta\game\dota\scripts\vscripts\game\Customize>
 1. Dynamic difficulty. If you ever feel all existing bot scripts lack excitement. This script boosts bots with huge unfair advantages to make bot games a lot more challenging. You will need to copy the script into your local vscripts folder and then enable the Fretbots mode for this feature. See instructions below.
 1. Support almost ALL game modes: https://steamcommunity.com/workshop/filedetails/discussion/3246316298/4334231305373971730/
 1. Improved code structure & general logic for decision making for ability casting, item usages, defending, roaming as well as farming.
@@ -38,6 +42,10 @@ Thanks and kudos to all that contributed to make bot games fun and exciting.
 ## Bot roles, lanings and positioning
 1. In local lobby, the positions of the bots are the same as the order of the slots: 1, 2, 3, 4, 5 from top to bottom in the lobby.
 1. You can change bot ban/picks, and roles, etc easily and permanently. Check out the file in [Customize/general.lua](bots/Customize/general.lua)
+   - Which Customize file you should change?
+      1. Make sure to select Open Hyper AI as the script in custom lobby.
+      1. If you have NOT installed the script via `quick-install-oha.bat`, simply update settings in <Steam\steamapps\workshop\content\570\3246316298\Customize>
+      2. If you have installed the script via `quick-install-oha.bat`, update settings in <Steam\steamapps\common\dota 2 beta\game\dota\scripts\vscripts\game\Customize>
 1. Pos1 and Pos5 bots go to safe lane. Pos3 and Pos4 bots go offlane. Pos2 bot goes to mid lane.
 
 ## Support multiple in-game commands
