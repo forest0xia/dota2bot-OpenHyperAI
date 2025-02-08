@@ -348,7 +348,7 @@ export let HeroPositions: { [playerId: number]: number | null } = {};
 // returns 1, 2, 3, 4, or 5 as the position of the hero in the team
 export const GetPosition = function (bot: Unit) {
     let role = bot.assignedRole;
-    if (role == null && GetGameMode() === GameMode.Cm) {
+    if (role == null && (GetGameMode() === GameMode.Cm || GetGameMode() === GameMode.ReverseCm)) {
         const [nH, _] = NumHumanBotPlayersInTeam(bot.GetTeam()); // assume it returns [number, number]
         if (nH === 0) {
             role = GetPositionForCM(bot);

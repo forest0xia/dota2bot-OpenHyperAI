@@ -363,7 +363,7 @@ end
 ____exports.HeroPositions = {}
 ____exports.GetPosition = function(bot)
     local role = bot.assignedRole
-    if role == nil and GetGameMode() == GameMode.Cm then
+    if role == nil and (GetGameMode() == GameMode.Cm or GetGameMode() == GameMode.ReverseCm) then
         local nH, _ = NumHumanBotPlayersInTeam(bot:GetTeam())
         if nH == 0 then
             role = ____exports.GetPositionForCM(bot)

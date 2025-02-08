@@ -372,7 +372,7 @@ function X.IsBannedHero( sHero )
 		return true
 	end
 
-	if GetGameMode() == GAMEMODE_CM and IsCMBannedHero(sHero) then
+	if (GetGameMode() == GAMEMODE_CM or GetGameMode() == GAMEMODE_REVERSE_CM)and IsCMBannedHero(sHero) then
 		return true
 	end
 
@@ -605,7 +605,7 @@ local function handleCommand(inputStr, PlayerID, bTeamOnly)
     for _, command in ipairs(commands) do
 		local subKey, subVal = command:match("(!%w+)%s*(.*)")
 
-		if subKey == "!pick" and GetGameMode() ~= GAMEMODE_CM then
+	if subKey == "!pick" and GetGameMode() ~= GAMEMODE_CM and GetGameMode() ~= GAMEMODE_REVERSE_CM then
 			print("Picking hero " .. subVal .. ', is-for-ally: ' .. tostring(bTeamOnly))
 			local hero = GetHumanChatHero(subVal);
 			if hero ~= "" then
@@ -733,7 +733,7 @@ function HandleLocaleSetting(locale)
 end
 
 function Think()
-	if GetGameMode() == GAMEMODE_CM then
+	if GetGameMode() == GAMEMODE_CM or GetGameMode() == GAMEMODE_REVERSE_CM then
 		CM.CaptainModeLogic(SupportedHeroes);
 		CM.AddToList();
 	elseif GetGameMode() == GAMEMODE_1V1MID then
@@ -825,7 +825,7 @@ function UpdateLaneAssignments()
 		return OneVoneLaneAssignment
 	end
 
-	if GetGameMode() == GAMEMODE_CM then
+	if GetGameMode() == GAMEMODE_CM or GetGameMode() == GAMEMODE_REVERSE_CM then
 		tLaneAssignList[team] = CM.CMLaneAssignment(Role.RoleAssignment, userSwitchedRole)
 	end
 
