@@ -17,20 +17,17 @@ local bDeafaultAbilityHero = BotBuild['bDeafaultAbility']
 local bDeafaultItemHero = BotBuild['bDeafaultItem']
 local sAbilityLevelUpList = BotBuild['sSkillList']
 
-local roshanRadiantLoc  = Vector(7625, -7511, 1092)
-local roshanDireLoc     = Vector(-7549, 7562, 1107)
 local RadiantFountain = Vector(-6619, -6336, 384)
 local DireFountain = Vector(6928, 6372, 392)
 
 local function AbilityLevelUpComplement()
-
 	if GetGameState() ~= GAME_STATE_PRE_GAME
 		and GetGameState() ~= GAME_STATE_GAME_IN_PROGRESS
 	then
 		return
 	end
-	
-	if bot:GetLevel() >= 30 
+
+	if bot:GetLevel() >= 30
 		and botName == "npc_dota_hero_bloodseeker"
 	then
 		return
@@ -6300,8 +6297,8 @@ X.ConsiderItemDesire['item_smoke_of_deceit'] = function(item)
 			return BOT_ACTION_DESIRE_HIGH, hEffectTarget, sCastType, sCastMotive
 		end
 		
-		if (timeOfDay == 'day' and GetUnitToLocationDistance(bot, roshanRadiantLoc) < 600)
-		or (timeOfDay == 'night' and GetUnitToLocationDistance(bot, roshanDireLoc) < 600)
+		if (timeOfDay == 'day' and GetUnitToLocationDistance(bot, J.Utils.RadiantRoshanLoc) < 600)
+		or (timeOfDay == 'night' and GetUnitToLocationDistance(bot, J.Utils.DireRoshanLoc) < 600)
 		then
 			if GetRoshanKillTime() > roshDeathTime
 			then
@@ -6314,13 +6311,13 @@ X.ConsiderItemDesire['item_smoke_of_deceit'] = function(item)
 		and nInRangeAlly ~= nil and #nInRangeAlly >= 2
 		then
 			if timeOfDay == 'day'
-			and GetUnitToLocationDistance(bot, roshanRadiantLoc) > 3000
+			and GetUnitToLocationDistance(bot, J.Utils.RadiantRoshanLoc) > 3000
 			then
 				return BOT_ACTION_DESIRE_HIGH, hEffectTarget, sCastType, sCastMotive
 			end
 
 			if timeOfDay == 'night'
-			and GetUnitToLocationDistance(bot, roshanDireLoc) > 3000
+			and GetUnitToLocationDistance(bot, J.Utils.DireRoshanLoc) > 3000
 			then
 				return BOT_ACTION_DESIRE_HIGH, hEffectTarget, sCastType, sCastMotive
 			end
@@ -6852,13 +6849,13 @@ X.ConsiderItemDesire["item_ninja_gear"] = function(hItem)
 	if J.IsDoingRoshan(bot)
     then
         if J.CheckTimeOfDay() == 'day'
-        and GetUnitToLocationDistance(bot, roshanRadiantLoc) > 3200
+        and GetUnitToLocationDistance(bot, J.Utils.RadiantRoshanLoc) > 3200
         then
             return BOT_ACTION_DESIRE_HIGH, bot, 'none', nil
 		end
 
 		if J.CheckTimeOfDay() == 'night'
-        and GetUnitToLocationDistance(bot, roshanDireLoc) > 3200
+        and GetUnitToLocationDistance(bot, J.Utils.DireRoshanLoc) > 3200
         then
             return BOT_ACTION_DESIRE_HIGH, bot, 'none', nil
         end
@@ -7143,15 +7140,15 @@ X.ConsiderItemDesire["item_seer_stone"] = function(hItem)
 	and nInSightEnemy == 0
 	then
 		if J.CheckTimeOfDay() == 'day'
-		and GetUnitToLocationDistance(bot, roshanRadiantLoc) > 1600
+		and GetUnitToLocationDistance(bot, J.Utils.RadiantRoshanLoc) > 1600
 		then
-			return BOT_ACTION_DESIRE_HIGH, roshanRadiantLoc, 'ground', nil
+			return BOT_ACTION_DESIRE_HIGH, J.Utils.RadiantRoshanLoc, 'ground', nil
 		end
 
 		if J.CheckTimeOfDay() == 'night'
-		and GetUnitToLocationDistance(bot, roshanDireLoc) > 1600
+		and GetUnitToLocationDistance(bot, J.Utils.DireRoshanLoc) > 1600
 		then
-			return BOT_ACTION_DESIRE_HIGH, roshanDireLoc, 'ground', nil
+			return BOT_ACTION_DESIRE_HIGH, J.Utils.DireRoshanLoc, 'ground', nil
 		end
 	end
 

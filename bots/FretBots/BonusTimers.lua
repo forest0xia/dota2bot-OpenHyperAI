@@ -99,9 +99,11 @@ function BonusTimers:GetBestItems(neediest, tier)
 			end
 			table.sort(sortedItems, function(a, b) return itemsForTier[a] > itemsForTier[b] end)
 			for _, item in ipairs(sortedItems) do
-				table.insert(itemList, item)
-				if #itemList == limits then
-					return itemList
+				if BonusTimers:GetItemFromName(item) then
+					table.insert(itemList, item)
+					if #itemList == limits then
+						return itemList
+					end
 				end
 			end
 		end
@@ -230,9 +232,10 @@ end
 
 -- converts an ingame name into an item object.
 function BonusTimers:GetItemFromName(name)
-	for _, item in ipairs(masterNeutralTable) do
+	for _, item in ipairs(masterNeutralTable.items) do
 		if item.name == name then return item end
 	end
+	return nil
 end
 
 -- Manages giving items to bots from the stash
@@ -260,13 +263,15 @@ function BonusTimers:NeutralItemDoleTimer()
 						-- if bot had an item . . .
 						if replacedItemName ~= nil then
 							local item = BonusTimers:GetItemFromName(replacedItemName)
-							-- announce, maybe
-							if Settings.neutralItems.announce then
-								--##Temporarily disabled because it's annoying
-								--Utilities:AnnounceNeutral(bot, item, MSG_NEUTRAL_RETURN)
+							if item then
+								-- announce, maybe
+								if Settings.neutralItems.announce then
+									--##Temporarily disabled because it's annoying
+									--Utilities:AnnounceNeutral(bot, item, MSG_NEUTRAL_RETURN)
+								end
+								-- return old item to stash
+								table.insert(NeutralStash[team][item.tier], item)
 							end
-							-- return old item to stash
-							table.insert(NeutralStash[team][item.tier], item)
 						end
 						-- announce item taking, maybe
 						if Settings.neutralItems.announce then

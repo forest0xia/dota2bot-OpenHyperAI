@@ -8,9 +8,6 @@ local killTime = 0.0
 local shouldKillRoshan = false
 local DoingRoshanMessage = DotaTime()
 
-local roshanRadiantLoc  = Vector(7625, -7511, 1092)
-local roshanDireLoc     = Vector(-7549, 7562, 1107)
-
 -- local rTwinGate = nil
 -- local dTwinGate = nil
 -- local rTwinGateLoc = Vector(5888, -7168, 256)
@@ -50,13 +47,13 @@ function GetDesire()
     if nTeamFightLocation ~= nil
     then
         if timeOfDay == 'day'
-        and GetUnitToLocationDistance(bot, roshanRadiantLoc) < 1600
+        and GetUnitToLocationDistance(bot, J.Utils.RadiantRoshanLoc) < 1600
         and GetUnitToLocationDistance(bot, nTeamFightLocation) < 2000
         then
             return BOT_ACTION_DESIRE_NONE
         else
             if timeOfDay == 'night'
-            and GetUnitToLocationDistance(bot, roshanDireLoc) < 1600
+            and GetUnitToLocationDistance(bot, J.Utils.DireRoshanLoc) < 1600
             and GetUnitToLocationDistance(bot, nTeamFightLocation) < 2000
             then
                 return BOT_ACTION_DESIRE_NONE

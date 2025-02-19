@@ -7,10 +7,8 @@ local tAllyHumanList = {}
 
 local RadiantFountain = Vector( -6619, -6336, 384 )
 local DireFountain = Vector( 6928, 6372, 392 )
-local roshanRadiantLoc  = Vector(7625, -7511, 1092)
-local roshanDireLoc = Vector(-7549, 7562, 1107)
-local RadiantTormentorLoc = Vector(-8075, -1148, 1000)
-local DireTormentorLoc = Vector(8132, 1102, 1000)
+local RadiantTormentorLoc = Vector(-7220, 7882, 1000)
+local DireTormentorLoc = Vector(7518, -7703, 1000)
 
 local fKeepManaPercent = 0.39
 
@@ -5351,9 +5349,9 @@ function J.GetCurrentRoshanLocation()
 
 	if timeOfDay == 'day'
 	then
-		return roshanRadiantLoc
+		return J.Utils.RadiantRoshanLoc
 	else
-		return roshanDireLoc
+		return J.Utils.DireRoshanLoc
 	end
 end
 

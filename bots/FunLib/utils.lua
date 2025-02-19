@@ -698,6 +698,8 @@ ____exports.DebugMode = false
 ____exports.ScriptID = 3246316298
 ____exports.RadiantFountainTpPoint = Vector(-7172, -6652, 384)
 ____exports.DireFountainTpPoint = Vector(6982, 6422, 392)
+____exports.RadiantRoshanLoc = Vector(-2984, 2349, 1092)
+____exports.DireRoshanLoc = Vector(2980, -2816, 1107)
 ____exports.BarrackList = {
     Barracks.TopMelee,
     Barracks.TopRanged,

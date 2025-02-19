@@ -9,6 +9,8 @@ require 'bots.FretBots.Utilities'
 -- Flags for tracking status
 require 'bots.FretBots.Flags'
 
+local masterNeutralTable = dofile('bots.FretBots.SettingsNeutralItemTable')
+
 -- local debug flag
 local thisDebug = true;
 local isDebug = Debug.IsDebug() and thisDebug;
@@ -68,12 +70,35 @@ function NeutralItems:GiveToUnit(unit, item)
 	return nil
 end
 
+function NeutralItems:GetRandomEnhancementByTier(tier)
+    local filtered = {}
+    for _, enh in ipairs(masterNeutralTable.enhancements) do
+        if enh.tier == tier then
+            table.insert(filtered, enh)
+        end
+    end
+
+    if #filtered == 0 then
+        return nil  -- No enhancement found for this tier
+    end
+
+    -- Return a random enhancement from the filtered list.
+    return filtered[math.random(#filtered)]
+end
+
 -- Creates a specific item, inserts it into the bot
 function NeutralItems:CreateAndInsert(bot, itemName, tier)
 	if bot:HasRoomForItem(itemName, true, true) then
 		local item = CreateItem(itemName, bot, bot)
 		item:SetPurchaseTime(0)
 		bot:AddItem(item)
+
+		local enhancement = NeutralItems:GetRandomEnhancementByTier(tier)
+		if enhancement then
+			local enha = CreateItem(enhancement.name, bot, bot)
+			enha:SetPurchaseTime(0)
+			bot:AddItem(enha)
+		end
 		bot.stats.neutralTier = tier
 		-- The following has been obviated due to royal jelly rework.
 		-- Special handling if it's royal jelly

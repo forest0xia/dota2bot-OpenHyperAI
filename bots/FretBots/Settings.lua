@@ -66,6 +66,7 @@ Settings.allowPlayersToCheat = allowPlayersToCheat
 
 -- neutral item drop settings
 AllNeutrals = dofile('bots.FretBots.SettingsNeutralItemTable')
+AllNeutrals = AllNeutrals.items
 
 -- cheat command list
 local cheats = dofile('bots.FretBots.CheatList')

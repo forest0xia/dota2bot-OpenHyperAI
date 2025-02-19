@@ -10,7 +10,6 @@ local nWardCastRange = 500
 local ItemWard = nil
 local WardTargetDist = 0
 local WardTargetLocation
-local SmokeOfDeceit = nil
 local WardCastTime = J.IsModeTurbo() and -45 or -90
 local ItemSwapTime = J.IsModeTurbo() and -45 or -90
 local EnemyTeam = nil
@@ -18,22 +17,7 @@ local EnemyTeam = nil
 bot.ward = false
 bot.steal = false
 
-local Route1 = {
-	Vector(-6263, 2265, 0),
-	Vector(-5012, 4765, 0),
-	Vector(-3212, 4865, 0),
-	Vector(-3706, 2950, 0),
-}
-
-local Route2 = {
-	Vector(6041, -1978, 0),
-	Vector(4622, -4873, 0),
-	Vector(3561, -4297, 0),
-	Vector(3957, -2808, 0),
-}
-
 local vNonStuck = Vector(-2610, 538, 0)
-local hasChatted = false
 
 function GetDesire()
 	if bot:IsInvulnerable() or not bot:IsHero() or not bot:IsAlive() or not string.find(botName, "hero") or bot:IsIllusion() then return BOT_MODE_DESIRE_NONE end

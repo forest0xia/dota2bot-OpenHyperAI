@@ -7,6 +7,7 @@ function sleep(ms: number): Promise<void> {
 
 const GAP_BETWEEN_API_CALLS = 300; // add a gap (ms) to work as client side throttling.
 const API_ENDPOINT = "https://api.stratz.com/graphql";
+const ONE_WEEK_AGO_TIMESTAMP = Math.floor((Date.now() - 1 * 24 * 60 * 60 * 1000) / 1000);
 
 const STRATZ_API_KEY = process.env.STRATZ_API_KEY;
 if (!STRATZ_API_KEY) {
@@ -115,7 +116,7 @@ function buildNeutralItemsQuery(heroId: number): string {
     return `
     {
       heroStats {
-        itemNeutral(heroId: ${heroId}, bracketBasicIds: [DIVINE_IMMORTAL]) {
+        itemNeutral(heroId: ${heroId}, week: ${ONE_WEEK_AGO_TIMESTAMP}, bracketBasicIds: [DIVINE_IMMORTAL]) {
           itemId
           equippedMatchCount
           item {
