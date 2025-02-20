@@ -43,7 +43,7 @@ Customize.Ban = {
 6. Check Appendix to ensure you DO NOT pick more than 1 "weak" heroes in a team for your game experience.
 --]]
 Customize.Radiant_Heros = {
-    'npc_dota_hero_faceless_void',
+    'Random',
     'Random',
 }
 
