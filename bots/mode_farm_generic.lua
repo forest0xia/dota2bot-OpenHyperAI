@@ -1311,6 +1311,10 @@ function AnnounceMessages()
 	if GetGameMode() ~= GAMEMODE_1V1MID and GetGameState() == GAME_STATE_PRE_GAME and bot.isBear == nil
 	and (bot.announcedRole == nil or bot.announcedRole ~= J.GetPosition(bot)) then
 		bot.announcedRole = J.GetPosition(bot)
+		if GetTeam() == TEAM_DIRE then
+			-- broken for 7.38 for now.
+			return
+		end
 		bot:ActionImmediate_Chat(Localization.Get('say_play_pos')..J.GetPosition(bot), false)
 	end
 	if GetGameMode() ~= GAMEMODE_1V1MID

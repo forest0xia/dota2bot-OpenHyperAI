@@ -103,7 +103,7 @@ local neutral_items =
 	--{name="item_spell_prism",				tier=4,		ranged=1,		melee=1,		roles={1,2,1,4,5},		realName="Spell Prism"},
 	--{name="item_heavy_blade",				tier=4,		ranged=1,		melee=1,		roles={3,6,1,1,1},		realName="Witchbane"},
 	--{name="item_witless_shako",			tier=4,		ranged=1,		melee=1,		roles={1,1,5,2,2},		realName="Witless Shako"},
-	{name="item_pyrrhic_cloak",		tier=3,		ranged=1,		melee=1,		roles={1,1,1,5,5},		realName="Pyrrhic Cloak"},
+	{name="item_pyrrhic_cloak",		tier=4,		ranged=1,		melee=1,		roles={1,1,1,5,5},		realName="Pyrrhic Cloak"},
 
 	-- tier 5
 	-- {name="item_apex",					tier=5,		ranged=1,		melee=1,		roles={1,1,1,0,0},		realName="Apex"},

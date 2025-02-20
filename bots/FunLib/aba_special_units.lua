@@ -26,6 +26,7 @@ function X.GetDesire(bot__)
     local tEnemyHeroes_all = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
 
 	local botTarget = J.GetProperTarget(bot)
+    local botName = bot:GetUnitName()
 	local isClockwerkInTeam = false
 
 	for i = 1, #GetTeamPlayers( GetTeam() )
@@ -48,43 +49,78 @@ function X.GetDesire(bot__)
             local unitName = unit:GetUnitName()
             local botAttackDamage = X.GetUnitAttackDamageWithinTime(bot, 8.0)
             local unitHP = J.GetHP(unit)
+            local unitLocation = unit:GetLocation()
             local withinAttackRange = GetUnitToUnitDistance(bot, unit) <= botAttackRange
 
             if string.find(unitName, 'rattletrap_cog')
             then
-                local cogsCount1 = J.GetPowerCogsCountInLoc(botLocation, 1000)
-                local cogsCount2 = J.GetPowerCogsCountInLoc(botLocation, 216)
-
-                if #tEnemyHeroes_all >= 1
-                then
-                    local nInRangeEnemy = J.GetEnemiesNearLoc(botLocation, 800)
-
-                    -- Is stuck inside?
-                    if cogsCount1 == 8 and cogsCount2 >= 4 and withinAttackRange
-                    then
-                        if #nInRangeEnemy == 0
-                        or J.IsGoingOnSomeone(bot)
-                        or J.IsRetreating(bot) and #nInRangeEnemy >= 1
-                        or #tAllyHeroes <= #tEnemyHeroes
+                -- Expanded Armature
+                -- seems? facet have a frame hit when inside
+                if string.find(botName, 'rattletrap') and withinAttackRange then
+                    if J.IsGoingOnSomeone(bot) then
+                        if J.IsValidHero(botTarget)
+                        and J.CanCastOnNonMagicImmune(botTarget)
+                        and J.IsInRange(bot, botTarget, 800)
+                        and not J.IsInRange(bot, botTarget, 400)
+                        and not (J.IsInRange(bot, botTarget, 800) and J.IsChasingTarget(bot, botTarget))
                         then
-                            return 0.95
+                            local tResult = PointToLineDistance(botLocation, botTarget:GetLocation(), unitLocation)
+                            if tResult ~= nil and tResult.within and tResult.distance <= 185 then
+                                return 2
+                            end
                         end
                     end
-                end
 
-                if #tEnemyHeroes == 0 and J.IsInRange(bot, unit, botAttackRange + 450)
-                then
-                    if cogsCount1 == 8 and cogsCount2 >= 4
+                    if J.IsRetreating(bot) and J.IsRealInvisible(bot) then
+                        for _, enemyHero in pairs(tEnemyHeroes) do
+                            if J.IsValidHero(enemyHero) and J.IsInRange(bot, enemyHero, 800) and not J.IsInRange(bot, botTarget, 400) and J.IsChasingTarget(enemyHero, bot) then
+                                local tResult = PointToLineDistance(botLocation, botTarget:GetLocation(), unitLocation)
+                                if tResult ~= nil and tResult.within and tResult.distance <= 185 then
+                                    return 2
+                                end
+                            end
+                        end
+                    end
+                else
+                    local cogsCount1 = J.GetPowerCogsCountInLoc(botLocation, 1000)
+                    local cogsCount2 = J.GetPowerCogsCountInLoc(botLocation, 216)
+
+                    if #tEnemyHeroes_all >= 1
                     then
-                        return 0.95
-                    else
-                        if not isClockwerkInTeam
+                        local nInRangeEnemy = J.GetEnemiesNearLoc(botLocation, 800)
+
+                        -- Is stuck inside?
+                        if cogsCount1 == 8 and cogsCount2 >= 4 and withinAttackRange
                         then
-                            return 0.95
+                            if #nInRangeEnemy == 0
+                            or J.IsGoingOnSomeone(bot)
+                            or (J.IsRetreating(bot) and not J.IsRealInvisible(bot) and #nInRangeEnemy >= 1)
+                            or #tAllyHeroes < #tEnemyHeroes
+                            then
+                                return 0.95
+                            else
+                                return 0.55
+                            end
+                        end
+                    end
+
+                    if #tEnemyHeroes == 0 then
+                        if cogsCount1 == 8 and cogsCount2 >= 4 and withinAttackRange then
+                            return 0.90
+                        else
+                            if bot:GetTeam() ~= unit:GetTeam()
+                            and J.IsInRange(bot, unit, botAttackRange + 350)
+                            and not J.IsInLaningPhase()
+                            then
+                                return 0.75
+                            else
+                                return 0.50
+                            end
                         end
                     end
                 end
             end
+
 
             if bot:GetTeam() ~= unit:GetTeam()
             then

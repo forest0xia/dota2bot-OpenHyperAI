@@ -106,7 +106,7 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_phase_boots",
 	"item_maelstrom",
 	"item_black_king_bar",--
-	"item_gungir",--
+	"item_mjollnir",--
 	"item_heavens_halberd",--
 	nUtility,--
 	"item_basher",

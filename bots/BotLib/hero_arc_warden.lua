@@ -68,7 +68,7 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_hand_of_midas",
 	"item_diffusal_blade",
 	"item_maelstrom",
-	"item_gungir",--
+	"item_mjollnir",--
 	"item_travel_boots",
 	"item_manta",--
 	"item_orchid",
@@ -96,7 +96,7 @@ then
 		"item_spirit_vessel",
 		"item_boots",
 		"item_hand_of_midas",
-		"item_gungir",--
+		"item_mjollnir",--
 		"item_travel_boots",
 		"item_blink",
 		"item_octarine_core",--
@@ -121,7 +121,7 @@ else
 		"item_magic_wand",
 		"item_boots",
 		"item_hand_of_midas",
-		"item_gungir",--
+		"item_mjollnir",--
 		"item_travel_boots",
 		"item_orchid",
 		"item_manta",--

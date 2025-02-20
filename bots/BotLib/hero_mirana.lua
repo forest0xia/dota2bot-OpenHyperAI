@@ -40,7 +40,7 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_rod_of_atos",
 	"item_maelstrom",
 	"item_black_king_bar",
-	"item_gungir",
+	"item_mjollnir",
 	"item_travel_boots",
 	"item_orchid",
 	"item_bloodthorn",

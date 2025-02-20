@@ -35,7 +35,7 @@ sRoleItemsBuyList['pos_4'] = {
 	"item_glimmer_cape",--
     "item_maelstrom",
 	"item_guardian_greaves",--
-    "item_gungir",--
+    "item_mjollnir",--
 	"item_shivas_guard",--
 	"item_aghanims_shard",
 	"item_ultimate_scepter",
@@ -71,7 +71,7 @@ sRoleItemsBuyList['pos_3'] = {
     "item_mage_slayer",--
     "item_maelstrom",
     "item_force_staff",
-    "item_gungir",--
+    "item_mjollnir",--
     "item_boots_of_bearing",--
     "item_ultimate_scepter",
     "item_sheepstick",--
@@ -88,7 +88,7 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_rod_of_atos",
 	"item_maelstrom",
 	"item_black_king_bar",
-	"item_gungir",
+	"item_mjollnir",
 	"item_travel_boots",
 	"item_orchid",
 	"item_bloodthorn",
@@ -276,7 +276,7 @@ function X.ConsiderAcornShot()
 	end
 
 	if (J.IsPushing(bot) or J.IsDefending(bot))
-    and (J.HasItem(bot, 'item_maelstrom') or J.HasItem(bot, 'item_gungir') or J.HasItem(bot, 'item_mjollnir'))
+    and (J.HasItem(bot, 'item_maelstrom') or J.HasItem(bot, 'item_mjollnir') or J.HasItem(bot, 'item_mjollnir'))
     and nAbilityLevel >= 3
     and not J.IsThereNonSelfCoreNearby(600)
 	then

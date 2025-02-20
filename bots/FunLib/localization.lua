@@ -12,6 +12,7 @@ local Localization = {
             "You can select the heroes for bots to pick, e.g. 10 same heroes or your dream teams, or change their names. Just customize bots in the Customize/general file.",
             "If you feel bots are weak, try enabling the enhanced Fretbots mode to make the game a lot more challenging. Check Workshop page for details.",
             "You can type `!pos X` to swap position with a bot. For example, type: `!pos 2` to go mid lane. Type `!3pos 5` to ask the 3rd bot on the team to play position 5.",
+            "Note, after the update of 7.38, the `!pos X` command is disabled temporarily for Dire team",
             "You can type `!sp zh` for ally bots to 说中文, or `!sp en` for English, `!sp ru` for русский, `!sp ja` for 日本語. Not 100% translated, just be patient.",
             "This is nonprofit project, if you like this script and have any feedback or want to contritute, or give any support or buy me a coffee, please check script's Workshop."
         },
@@ -127,6 +128,7 @@ local Localization = {
             "你可以自定义机器人要选择的英雄，例如 10 个相同的英雄或别的梦幻队伍，或者更改他们的名字。只需修改 Customize/general 文件",
             "如果你觉得机器人太弱，可以尝试启用增强的 Fretbots 模式，让游戏更加具有挑战性。详情请查看创意工坊页面",
             "你可以输入 `!pos X` 与机器人交换位置。例如，输入：`!pos 2` 来走中路。输入 `!3pos 5` 让队伍中的第3个机器人玩5号位。",
+            "注意：在 7.38 更新后，夜宴队的 !pos X 命令已暂时被禁用",
             "你可以输入 `!sp zh` 让盟友机器人说中文，或者输入 `!sp en` 说英语，`!sp ru` 说俄语，`!sp ja` 说日语。并非100%完成翻译，请耐心等待。",
             "这是一个非营利项目，如果您喜欢这个脚本，有任何反馈或想做贡献，或者给予任何支持或请我喝一杯咖啡，请查看脚本的工坊"
         },
@@ -249,6 +251,7 @@ local Localization = {
             "Вы можете выбрать героев для ботов, например, 10 одинаковых героев или свою команду мечты, или изменить их имена. Просто измените файл Customize/general.",
             "Если вы считаете, что боты слишком слабые, попробуйте включить режим улучшенных Fretbots, чтобы игра стала более сложной. Подробности смотрите на странице Workshop.",
             "Вы можете ввести `!pos X`, чтобы поменяться позицией с ботом. Например, введите: `!pos 2`, чтобы пойти на центральную линию. Введите `!3pos 5`, чтобы попросить 3-го бота в команде играть на позиции 5.",
+            "Обратите внимание: после обновления до версии 7.38 команда !pos X временно отключена для команды Dire.",
             "Вы можете ввести `!sp zh`, чтобы союзные боты говорили на китайском, или `!sp en` для английского, `!sp ru` для русского, `!sp ja` для японского. Перевод не завершён на 100%, проявите терпение.",
             "Это некоммерческий проект. Если вам нравится этот скрипт и у вас есть отзывы или вы хотите внести вклад, оказать поддержку или угостить меня кофе, пожалуйста, посетите страницу скрипта в Мастерской."
         },
@@ -364,6 +367,7 @@ local Localization = {
             "ボットが選ぶヒーローを選択したり（例: 10人の同じヒーローや夢のチーム）、名前を変更したりできます。Customize/general ファイルを編集するだけです。",
             "もしボットが弱いと感じる場合は、強化された Fretbots モードを有効にして、より挑戦的なゲームをお楽しみください。詳細はワークショップページをご覧ください。",
             "`!pos X` を入力してボットとポジションを交換できます。例えば、`!pos 2` を入力するとミッドレーンに行きます。`!3pos 5` を入力すると、チームの3番目のボットにポジション5をプレイさせます。",
+            "注意：7.38 のアップデート後、Dire チーム向けの !pos X コマンドは一時的に無効化されています",
             "`!sp zh` を入力すると味方ボットが中国語を話し、`!sp en` で英語、`!sp ru` でロシア語、`!sp ja` で日本語を話します。翻訳は100％完成していないので、少しお待ちください。",
             "これは非営利プロジェクトです。もしこのスクリプトが気に入ったら、フィードバックや貢献、サポート、または私にコーヒーをおごっていただける場合は、スクリプトのワークショップをご確認ください"
         },

@@ -4,7 +4,8 @@ local Utils = require( GetScriptDirectory()..'/FunLib/utils')
 -- Override this func for the script to use
 local orig_GetTeamPlayers = GetTeamPlayers
 local direTeamPlaters = nil
-function GetTeamPlayers(nTeam)
+function GetTeamPlayers(nTeam, bypass)
+	if bypass then return orig_GetTeamPlayers(nTeam) end
 	local cacheKey = 'GetTeamPlayers'..tostring(nTeam)
 	local cache = Utils.GetCachedVars(cacheKey, 5)
 	if cache ~= nil then return cache end

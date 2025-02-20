@@ -19,7 +19,7 @@ Thanks and kudos to all that contributed to make bot games fun and exciting.
 1. Bots are meant to be for chill games, if you are looking for more competitive bots than the existing ones, please stop complaining and help us build it with constructive effort.
 
 ## Why it's enjoyable
-0. Support 7.37
+0. Support 7.38
 1. Support ALL 126 heroes! You will see bots playing Kez, Ringmaster, Invoker, Techies, Meepo, Lone Druid, Dark Willow, Hoodwink, io, Muerta, Primal Beast, etc. Just note that some of the newly added ones are not very strong and in progress to be further enhanced.
 1. Bots are easily customizable . E.g. you can easily set ban / picks for bots, change their names, etc. 
    1. Check out the file in [Customize/general.lua](bots/Customize/general.lua).
@@ -137,7 +137,7 @@ root: <Steam\steamapps\common\dota 2 beta\game\dota\scripts\vscripts>
 ## Credits to
 This script is based on Valve's default bot script and many other people's work and their scripts. That being said, this is a partial override not completely take over bot script. It takes the advantages of some other existing bot scripts and aims to be a better off script than the existing ones. We hope the bot's decision making and team strategies are more effective and brings more joy to you.
 
- New Beginner AI (by dota2jmz@163.com). Awesome work to bring Valve default bots to next level.
+- New Beginner AI (by dota2jmz@163.com). Awesome work to bring Valve default bots to next level.
 - Tinkering ABout (by @ryndrb: https://github.com/ryndrb/dota2bot or https://steamcommunity.com/sharedfiles/filedetails/?id=3139791706).
 - New beginner ai (by dota2jmz@163.com).
 - Ranked Matchmaking AI (by adamqqq, https://github.com/adamqqqplay/dota2ai)

@@ -21,7 +21,7 @@ Chat['tItemNameList'] = {
 	{sRawName='item_platemail', sShortName='itemNull', sCnName='板甲', sEnName='Platemail'},
 	{sRawName='item_javelin', sShortName='itemNull', sCnName='标枪', sEnName='Javelin'},
 	{sRawName='item_crimson_guard', sShortName='itemNull', sCnName='赤红甲', sEnName='Crimson Guard'},
-	{sRawName='item_orb_of_venom', sShortName='itemNull', sCnName='淬毒之珠', sEnName='Orb of Venom'},
+	{sRawName='item_orb_of_frost', sShortName='itemNull', sCnName='淬毒之珠', sEnName='Orb of Venom'},
 	{sRawName='item_dagon', sShortName='itemNull', sCnName='达贡之神力', sEnName='Dagon'},
 	{sRawName='item_dagon_2', sShortName='itemNull', sCnName='达贡之神力2', sEnName='Dagon Level 2'},
 	{sRawName='item_dagon_3', sShortName='itemNull', sCnName='达贡之神力3', sEnName='Dagon Level 3'},

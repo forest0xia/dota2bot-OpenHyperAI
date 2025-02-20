@@ -52,7 +52,7 @@ sRoleItemsBuyList['pos_1'] = {
     "item_magic_wand",
 
     "item_power_treads",
-    "item_gungir",--
+    "item_mjollnir",--
     "item_black_king_bar",--
     "item_aghanims_shard",
     "item_orchid",
@@ -72,7 +72,7 @@ sRoleItemsBuyList['pos_3'] = {
     "item_magic_wand",
 
     "item_power_treads",
-    "item_gungir",--
+    "item_mjollnir",--
     "item_black_king_bar",--
     "item_aghanims_shard",
     nUtility,--
@@ -95,7 +95,7 @@ sRoleItemsBuyList['pos_2'] = {
     "item_maelstrom",
     "item_orchid",
     "item_black_king_bar",--
-    "item_gungir",--
+    "item_mjollnir",--
     "item_aghanims_shard",
     "item_assault",--
     "item_satanic",--

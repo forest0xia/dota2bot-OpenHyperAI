@@ -89,7 +89,7 @@ sRoleItemsBuyList['pos_4'] = {
 	"item_guardian_greaves",
 	"item_spirit_vessel",
 	"item_lotus_orb",
-	"item_gungir",--
+	"item_mjollnir",--
 	"item_ultimate_scepter",
 	"item_sheepstick",
 	"item_mystic_staff",
@@ -177,12 +177,13 @@ local abilityQ = bot:GetAbilityByName( sAbilityList[1] )
 local abilityW = bot:GetAbilityByName( sAbilityList[2] )
 local abilityAS = bot:GetAbilityByName( sAbilityList[4] )
 local Bristleback = bot:GetAbilityByName( "bristleback_bristleback" )
-
+local Warpath = bot:GetAbilityByName('bristleback_warpath')
 
 local castQDesire, castQTarget
 local castWDesire
 local castASDesire, castASTarget
 local BristlebackDesire, BristlebackLoc
+local WarpathDesire
 
 local nKeepMana, nMP, nHP, nLV, hEnemyList, botTarget
 
@@ -239,7 +240,11 @@ function X.SkillsComplement()
 		return
 	end
 
-
+	WarpathDesire = X.ConsiderWarpath()
+	if WarpathDesire > 0 then
+		bot:Action_UseAbility(Warpath)
+		return
+	end
 end
 
 
@@ -330,6 +335,34 @@ function X.ConsiderQ()
 
 end
 
+function X.ConsiderWarpath()
+	if not J.CanCastAbility(Warpath) then
+		return BOT_ACTION_DESIRE_NONE
+	end
+
+	local nEnemyHeroes = J.GetEnemiesNearLoc(bot:GetLocation(), 800)
+	local nAllyHeroes = J.GetEnemiesNearLoc(bot:GetLocation(), 1200)
+
+	if J.IsInTeamFight(bot, 1200) then
+		if #nEnemyHeroes > #nAllyHeroes or (J.GetHP(bot) < 0.5 and bot:WasRecentlyDamagedByAnyHero(2.0)) then
+			return BOT_ACTION_DESIRE_HIGH
+		end
+	end
+
+	if J.IsRetreating(bot) and not J.IsRealInvisible(bot) then
+		for _, enemyHero in pairs(nEnemyHeroes) do
+			if J.IsValidHero(enemyHero) and J.IsInRange(bot, enemyHero, 500) and J.IsChasingTarget(enemyHero, bot) then
+				if (J.GetTotalEstimatedDamageToTarget(nEnemyHeroes, bot, 8.0) > bot:GetHealth() * 1.15)
+				or (#nEnemyHeroes > #nAllyHeroes and J.GetHP(bot) < 0.4)
+				then
+					return BOT_ACTION_DESIRE_HIGH
+				end
+			end
+		end
+	end
+
+	return BOT_ACTION_DESIRE_NONE
+end
 
 function X.ConsiderW()
 

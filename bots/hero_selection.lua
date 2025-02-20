@@ -501,7 +501,7 @@ function CorrectPotentialLaneAssignment()
 end
 
 function AllPickHeros()
-	local teamPlayers = GetTeamPlayers(GetTeam())
+	local teamPlayers = GetTeamPlayers(GetTeam(), true)
 
 	if not ShuffledPickOrder[sTeamName] and not Utils.IsHumanPlayerInTeam(GetTeam()) then
 		X.ShufflePickOrder(teamPlayers)
@@ -649,6 +649,10 @@ local function handleCommand(inputStr, PlayerID, bTeamOnly)
 				print("Hero name not found or not supported! Please refer to the list of names here: https://steamcommunity.com/workshop/filedetails/discussion/3246316298/4848777260032086340/");
 			end
 		elseif subKey == "!pos" and GetGameState() == GAME_STATE_PRE_GAME then
+			if GetTeam() == TEAM_DIRE then
+				-- broken for 7.38 for now.
+				return
+			end
 			print("Selecting pos " .. subVal)
 			local sTeamName = GetTeamForPlayer(PlayerID) == TEAM_RADIANT and 'TEAM_RADIANT' or 'TEAM_DIRE'
 			local remainingPos = RemainingPos[sTeamName]

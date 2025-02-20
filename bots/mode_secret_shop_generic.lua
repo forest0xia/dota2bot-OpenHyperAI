@@ -102,7 +102,7 @@ function X.HaveItemToSell()
 		 "item_faerie_fire",
 		 "item_tango",  
 		 "item_flask", 
---		 "item_orb_of_venom",
+--		 "item_orb_of_frost",
 		 "item_bracer",
 		 "item_wraith_band",
 		 "item_null_talisman",

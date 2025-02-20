@@ -68,7 +68,7 @@ sRoleItemsBuyList['pos_1'] = {
     "item_maelstrom",
     "item_dragon_lance",
     "item_black_king_bar",--
-    "item_gungir",--
+    "item_mjollnir",--
     "item_greater_crit",--
     "item_ultimate_scepter",
     "item_force_staff",
@@ -94,7 +94,7 @@ sRoleItemsBuyList['pos_2'] = {
     "item_maelstrom",
     "item_dragon_lance",
     "item_black_king_bar",--
-    "item_gungir",--
+    "item_mjollnir",--
     "item_greater_crit",--
     "item_ultimate_scepter",
     "item_sheepstick",--
@@ -119,7 +119,7 @@ sRoleItemsBuyList['pos_3'] = {
     "item_black_king_bar",--
     "item_ultimate_scepter",
     nUtility,--
-    "item_gungir",--
+    "item_mjollnir",--
     "item_sheepstick",--
     "item_travel_boots",
     "item_ultimate_scepter_2",

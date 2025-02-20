@@ -124,7 +124,7 @@ sRoleItemsBuyList['pos_4'] = {
 	"item_tango",
 	"item_double_branches",
 	"item_blood_grenade",
-	"item_orb_of_venom",
+	"item_orb_of_frost",
 	"item_magic_wand",
 
 	"item_boots",
@@ -145,7 +145,7 @@ sRoleItemsBuyList['pos_5'] = {
 	"item_tango",
 	"item_double_branches",
 	"item_blood_grenade",
-	"item_orb_of_venom",
+	"item_orb_of_frost",
 	"item_magic_wand",
 
 	"item_boots",

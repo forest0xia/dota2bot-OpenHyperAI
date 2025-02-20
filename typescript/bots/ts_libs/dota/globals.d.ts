@@ -17,6 +17,7 @@ declare global {
     function IsHeroAlive(nPlayerID: number): boolean;
 
     function GetTeamPlayers(team: Team): number[];
+    function GetTeamPlayers(team: Team, bypass: boolean): number[];
 
     function GetTeamMember(playerNumberOnTeam: number): Unit | null;
 

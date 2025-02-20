@@ -39,7 +39,7 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_glimmer_cape",
 	"item_boots_of_bearing",
 	"item_rod_of_atos",
-	"item_gungir",--
+	"item_mjollnir",--
 	"item_aghanims_shard",
 	"item_veil_of_discord",
 	"item_cyclone",
@@ -94,7 +94,7 @@ sRoleItemsBuyList['pos_2'] = {
     "item_yasha_and_kaya",--
     -- "item_black_king_bar",--
 	"item_bloodthorn",--
-	-- "item_gungir",--
+	-- "item_mjollnir",--
     "item_sphere",--
     "item_aghanims_shard",
     "item_skadi",--

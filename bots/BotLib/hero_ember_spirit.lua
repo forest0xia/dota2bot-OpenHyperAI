@@ -42,7 +42,7 @@ sRoleItemsBuyList['pos_2'] = {
     "item_black_king_bar",--
     "item_shivas_guard",--
     "item_ultimate_scepter",
-    "item_gungir",--
+    "item_mjollnir",--
     "item_travel_boots",
     "item_aghanims_shard",
     "item_ultimate_scepter_2",
@@ -66,7 +66,7 @@ sRoleItemsBuyList['pos_3'] = {
     "item_black_king_bar",--
     "item_shivas_guard",--
     "item_ultimate_scepter",
-    "item_gungir",--
+    "item_mjollnir",--
     "item_travel_boots",
     "item_aghanims_shard",
     "item_ultimate_scepter_2",

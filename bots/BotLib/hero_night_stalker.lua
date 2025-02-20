@@ -64,7 +64,7 @@ sRoleItemsBuyList['pos_4'] = {
 	"item_guardian_greaves",
 	"item_spirit_vessel",
 	"item_lotus_orb",
-	"item_gungir",--
+	"item_mjollnir",--
 	--"item_holy_locket",
 	"item_ultimate_scepter",
 	"item_sheepstick",

@@ -208,6 +208,7 @@ modifier_tidehunter_ravage
 
 local abilityQ = bot:GetAbilityByName( sAbilityList[1] )
 local abilityW = bot:GetAbilityByName( sAbilityList[2] )
+abilityW = bot:GetAbilityByName('tidehunter_kraken_shell')
 local abilityE = bot:GetAbilityByName( sAbilityList[3] )
 local abilityR = bot:GetAbilityByName( sAbilityList[6] )
 local DeadInTheWater = bot:GetAbilityByName( 'tidehunter_dead_in_the_water' )
@@ -293,9 +294,63 @@ function X.SkillsComplement()
 		return
 	end
 
+	castWDesire = X.ConsiderW()
+	if castWDesire > 0 then
+		bot:Action_UseAbility(abilityW)
+		return
+	end
+
 end
 
+function X.ConsiderW()
+	if not J.CanCastAbility(abilityW) then
+		return BOT_ACTION_DESIRE_NONE
+	end
 
+	local nAllyHeroes = bot:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+	local nEnemyHeroes = bot:GetNearbyHeroes(800, true, BOT_MODE_NONE)
+
+	if J.IsRetreating( bot ) and not J.IsRealInvisible(bot) and (J.GetHP(bot) < 0.4 or #nEnemyHeroes > #nAllyHeroes + 2)
+	then
+		for _, npcEnemy in pairs( nEnemyHeroes )
+		do
+			if J.IsValidHero( npcEnemy )
+				and bot:WasRecentlyDamagedByHero( npcEnemy, 5.0 )
+				and J.CanCastOnNonMagicImmune( npcEnemy )
+				and not J.IsDisabled( npcEnemy )
+				and not npcEnemy:IsDisarmed()
+				and J.IsChasingTarget(npcEnemy, bot)
+			then
+
+				return BOT_ACTION_DESIRE_HIGH
+			end
+		end
+	end
+
+	if J.IsDoingRoshan(bot)
+	then
+		if J.IsRoshan( botTarget )
+		and J.IsInRange( botTarget, bot, 600)
+		and J.IsAttacking(bot)
+		and J.GetHP(bot) < 0.25
+		then
+			return BOT_ACTION_DESIRE_HIGH
+		end
+	end
+
+    if J.IsDoingTormentor(bot)
+	then
+		if J.IsTormentor(botTarget)
+        and J.IsInRange( botTarget, bot, 600 )
+        and J.IsAttacking(bot)
+		and J.GetHP(bot) < 0.25
+		then
+			return BOT_ACTION_DESIRE_HIGH
+		end
+	end
+
+	return BOT_ACTION_DESIRE_NONE
+end
 
 function X.ConsiderQ()
 

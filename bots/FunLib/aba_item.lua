@@ -158,7 +158,7 @@ Item['sBasicItems'] = {
 	'item_mithril_hammer',
 	'item_mystic_staff',
 	'item_ogre_axe',
-	'item_orb_of_venom',
+	'item_orb_of_frost',
 	'item_platemail',
 	'item_point_booster',
 	'item_quarterstaff',
@@ -279,7 +279,7 @@ Item['sTopItems'] = {
 	'item_necronomicon_3',
 	'item_null_talisman',
 	'item_nullifier',
-	'item_orb_of_venom',
+	'item_orb_of_frost',
 	'item_phase_boots',
 	'item_pipe',
 	'item_power_treads',
@@ -322,7 +322,7 @@ Item['tEarlyItem'] = {
 	 'item_flask',
 	 'item_infused_raindrop',
 	 -- 'item_magic_stick',
-	 -- 'item_orb_of_venom',
+	 -- 'item_orb_of_frost',
 	 'item_bracer',
 	 'item_wraith_band',
 	 'item_null_talisman',
@@ -780,15 +780,15 @@ Item['item_boots_of_bearing']	= GetItemComponents( 'item_boots_of_bearing' )[1]
 Item['item_wraith_pact']	= GetItemComponents( 'item_wraith_pact' )[1]
 
 ---------- 7.33 NEW ITEMS ---------------
-Item["item_pavise"] 							= { "item_energy_booster", "item_ring_of_protection", "item_fluffy_hat", "item_recipe_pavise" }
-Item["item_phylactery"] 						= { "item_point_booster", "item_diadem", "item_recipe_phylactery" }
-Item["item_harpoon"] 							= { "item_echo_sabre", "item_diadem", "item_recipe_harpoon" }
-Item["item_disperser"] 							= { "item_diffusal_blade", "item_eagle", "item_recipe_disperser" }
+Item["item_pavise"] 							= GetItemComponents( 'item_pavise' )[1]
+Item["item_phylactery"] 						= GetItemComponents( 'item_phylactery' )[1]
+Item["item_harpoon"] 							= GetItemComponents( 'item_harpoon' )[1]
+Item["item_disperser"] 							= GetItemComponents( 'item_disperser' )[1]
 Item["item_blood_grenade"] 						= GetItemComponents( 'item_blood_grenade' )[1]
 
 ---------- 7.35 NEW ITEMS ---------------
 Item["item_angels_demise"] 						= GetItemComponents( 'item_angels_demise' )[1] --绝刃
-Item["item_devastator"] 						= { "item_witch_blade", "item_mystic_staff", "item_recipe_devastator" } --圣斧
+Item["item_devastator"] 						= GetItemComponents( 'item_devastator' )[1] --圣斧
 
 --新自定义物品
 Item['item_new_1']	= GetItemComponents( 'item_new_1' )[1]
