@@ -99,8 +99,9 @@ function BonusTimers:GetBestItems(neediest, tier)
 			end
 			table.sort(sortedItems, function(a, b) return itemsForTier[a] > itemsForTier[b] end)
 			for _, item in ipairs(sortedItems) do
-				if BonusTimers:GetItemFromName(item) then
-					table.insert(itemList, item)
+				local aItem = BonusTimers:GetItemFromName(item)
+				if aItem then
+					table.insert(itemList, aItem)
 					if #itemList == limits then
 						return itemList
 					end
@@ -181,7 +182,7 @@ function BonusTimers:NeutralItemFindTimer()
 						local bestItem
 						if #items == 3
 						then
-							bestItem = NeutralItems:GetItemForInternalName(items[1])
+							bestItem = items[1] -- NeutralItems:GetItemForInternalName(items[1])
 						else
 							local bestDesire = 0
 							for _, item in ipairs(items) do
@@ -199,21 +200,23 @@ function BonusTimers:NeutralItemFindTimer()
 								end
 							end
 						end
-						Debug:Print(bestItem, "Best neutral item for "..neediest.stats.name)
-						-- Give it
-						NeutralItems:GiveToUnit(neediest, bestItem)
-						-- perhaps announce the item has been found
-						if Settings.neutralItems.announce then
-							Utilities:AnnounceNeutral(neediest, bestItem, MSG_NEUTRAL_FIND)
+						if bestItem then
+							Debug:Print(bestItem, "Best neutral item for "..neediest.stats.name)
+							-- Give it
+							NeutralItems:GiveToUnit(neediest, bestItem)
+							-- perhaps announce the item has been found
+							if Settings.neutralItems.announce then
+								Utilities:AnnounceNeutral(neediest, bestItem, MSG_NEUTRAL_FIND)
+							end
+							-- put the item in the stash
+							--table.insert(NeutralStash[tier], item)
+							-- add the item to the list of awarded items
+							-- ##TODO: Query returns to make sure we only put items in the stash
+							-- that we created, rather than items the bot may have picked up
+							-- on its own in game.  This would probably have holes anyway, since
+							-- we can't tell items apart
+							--table.insert(AwardedNeutrals, item)
 						end
-						-- put the item in the stash
-						--table.insert(NeutralStash[tier], item)
-						-- add the item to the list of awarded items
-						-- ##TODO: Query returns to make sure we only put items in the stash
-						-- that we created, rather than items the bot may have picked up
-						-- on its own in game.  This would probably have holes anyway, since
-						-- we can't tell items apart
-						--table.insert(AwardedNeutrals, item)
 					end
 				
 					-- Set time for next find

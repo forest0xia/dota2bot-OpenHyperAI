@@ -95,6 +95,7 @@ local botTarget
 
 function X.SkillsComplement()
     if J.CanNotUseAbility(bot) then return end
+    if not Chronosphere or Chronosphere:IsHidden() then Chronosphere = bot:GetAbilityByName('faceless_void_time_zone') end
 
 	botTarget = J.GetProperTarget(bot)
 
@@ -126,7 +127,7 @@ function X.SkillsComplement()
 		return
 	end
 
-	Chronosphere = bot:GetAbilityByName('faceless_void_chronosphere')
+	-- Chronosphere = bot:GetAbilityByName('faceless_void_chronosphere')
 	if Chronosphere and not Chronosphere:IsNull() and not Chronosphere:IsHidden() then
 		if bot.needRefreshAbilitiesFor737 then
 			Chronosphere = bot:GetAbilityByName('faceless_void_chronosphere')

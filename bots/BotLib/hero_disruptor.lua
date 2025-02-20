@@ -133,6 +133,7 @@ local botTarget
 function X.SkillsComplement()
 	if J.CanNotUseAbility(bot) then return end
 
+    if not KineticField or KineticField:IsHidden() then KineticField = bot:GetAbilityByName('disruptor_kinetic_fence') end
     botTarget = J.GetProperTarget(bot)
 
     KineticStormDesire, KineticStormLocation = X.ConsiderKineticStorm()

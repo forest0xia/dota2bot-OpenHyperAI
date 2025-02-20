@@ -787,7 +787,7 @@ Item["item_disperser"] 							= { "item_diffusal_blade", "item_eagle", "item_rec
 Item["item_blood_grenade"] 						= GetItemComponents( 'item_blood_grenade' )[1]
 
 ---------- 7.35 NEW ITEMS ---------------
-Item["item_angels_demise"] 						= { "item_phylactery", "item_lesser_crit", "item_recipe_angels_demise" } --绝刃
+Item["item_angels_demise"] 						= GetItemComponents( 'item_angels_demise' )[1] --绝刃
 Item["item_devastator"] 						= { "item_witch_blade", "item_mystic_staff", "item_recipe_devastator" } --圣斧
 
 --新自定义物品

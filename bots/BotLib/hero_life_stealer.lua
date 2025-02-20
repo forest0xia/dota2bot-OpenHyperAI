@@ -120,7 +120,7 @@ function X.MinionThink(hMinionUnit)
 
     local Consume = hMinionUnit:GetAbilityByName('life_stealer_consume')
     if Consume and Consume:IsFullyCastable() then
-        if J.GetUnitToLocationDistance(hMinionUnit, J.GetTeamFountain()) < 1500 and J.GetHP(hMinionUnit) > 0.7 then
+        if GetUnitToLocationDistance(hMinionUnit, J.GetTeamFountain()) < 1500 and J.GetHP(hMinionUnit) > 0.7 then
             hMinionUnit:Action_UseAbility(Consume)
             return
         end

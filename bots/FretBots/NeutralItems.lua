@@ -44,6 +44,7 @@ function NeutralItems:CreateOnUnit(unit, item)
 		if currentItem ~= nil then
 			Utilities:Print(unit.stats.name..': Creating: '..item.realName)
 			unit:RemoveItem(currentItem)
+			NeutralItems:RemoveEnhancement(unit)
 		end
 		NeutralItems:CreateAndInsert(unit, item.name, item.tier)
 	end
@@ -63,11 +64,25 @@ function NeutralItems:GiveToUnit(unit, item)
 			replacedItem = currentItem:GetName()
 			Debug:Print(unit.stats.name..': Replacing: '..replacedItem)
 			unit:RemoveItem(currentItem)
+
+			NeutralItems:RemoveEnhancement(unit)
 		end
 		NeutralItems:CreateAndInsert(unit, item.name, item.tier)
 		return replacedItem
 	end
 	return nil
+end
+
+function NeutralItems:RemoveEnhancement(unit)
+	for idx = 1, 20 do
+		local currentItem = unit:GetItemInSlot(idx)
+		if currentItem ~= nil then
+			if string.find(currentItem:GetName(), "item_enhancement") then
+				unit:RemoveItem(currentItem)
+				return
+			end
+		end
+	end
 end
 
 function NeutralItems:GetRandomEnhancementByTier(tier)
@@ -271,9 +286,9 @@ function NeutralItems:GetBotDesireForItem(bot, item)
 	local attackTypeScore = 0
 	-- Bots are never willing to take an item of the wrong attack type
 	if not bot.stats.isMelee then
-		attackTypeScore = item.ranged
+		attackTypeScore = item.ranged or 1
 	elseif bot.stats.isMelee then
-		attackTypeScore = item.melee
+		attackTypeScore = item.melee or 1
 	end
 	if attackTypeScore <= 0 then return 0 end
 	-- Get validity from role

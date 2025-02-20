@@ -149,7 +149,6 @@ modifier_skeleton_king_reincarnation_scepter_active
 --]]
 
 local abilityQ = bot:GetAbilityByName('skeleton_king_hellfire_blast')
--- local abilityW = bot:GetAbilityByName('skeleton_king_bone_guard')
 local abilityW = bot:GetAbilityByName('skeleton_king_spectral_blade')
 local abilityE = bot:GetAbilityByName('skeleton_king_mortal_strike')
 local abilityR = bot:GetAbilityByName('skeleton_king_reincarnation')
@@ -166,7 +165,7 @@ function X.SkillsComplement()
 
 
 	if J.CanNotUseAbility( bot ) or bot:IsInvisible() then return end
-
+    if not abilityW or abilityW:IsHidden() then abilityW = bot:GetAbilityByName('skeleton_king_bone_guard') end
 
 	nKeepMana = 160
 	nLV = bot:GetLevel()
@@ -185,16 +184,16 @@ function X.SkillsComplement()
 		return
 	end
 
-	-- castWDesire = X.ConsiderW()
-	-- if ( castWDesire > 0 )
-	-- then
+	castWDesire = X.ConsiderW()
+	if ( castWDesire > 0 )
+	then
 
-	-- 	J.SetQueuePtToINT( bot, false )
+		J.SetQueuePtToINT( bot, false )
 
-	-- 	bot:ActionQueue_UseAbility( abilityW )
-	-- 	return
+		bot:ActionQueue_UseAbility( abilityW )
+		return
 
-	-- end
+	end
 
 end
 
@@ -419,6 +418,7 @@ function X.ConsiderW()
 	if not abilityW:IsFullyCastable()
 		or not bot:HasModifier( "modifier_skeleton_king_bone_guard" )
 		or X.ShouldSaveMana( abilityW )
+		or abilityW:GetName() ~= "skeleton_king_bone_guard"
 	then return 0 end
 
 	local nStack = 0
