@@ -61,12 +61,6 @@ function X.MinionThink(hMinionUnit)
 			return
 		end
 
-		-- Spell Casting Minions
-		if U.IsMinionWithSkill(hMinionUnit) then
-			MinionWithSkill.Think(bot, hMinionUnit)
-			return
-		end
-
 		-- Brewmaster's PrimalSplit
 		if U.IsPrimalSplit(hMinionUnit) then
 			PrimalSplit.MinionThink(bot, hMinionUnit)
@@ -78,6 +72,10 @@ function X.MinionThink(hMinionUnit)
 			Familiars.Think(bot, hMinionUnit)
 			return
 		end
+
+		-- Spell Casting Minions
+		MinionWithSkill.Think(bot, hMinionUnit)
+		return
 	end
 end
 

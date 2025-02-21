@@ -14,49 +14,45 @@ local thisMinionHP, nAllyHeroes, nEnemyHeroes
 function X.Think(ownerBot, hMinionUnit)
     bot = ownerBot
 
-	if not U.IsValidUnit(hMinionUnit) or J.CanNotUseAbility(hMinionUnit) then return end
-
-	if hMinionUnit.abilities == nil
-	then
-		U.InitiateAbility(hMinionUnit)
-	end
+	if U.CanNotUseAbility(hMinionUnit) then I.Think(bot, hMinionUnit) return end
+	if hMinionUnit.abilities == nil then U.InitiateAbility(hMinionUnit) end
+    if #hMinionUnit.abilities <= 0 then I.Think(bot, hMinionUnit) return end
 
 	for i = 1, #hMinionUnit.abilities
 	do
-		if J.CanCastAbility(hMinionUnit.abilities[i])
+        local ability = hMinionUnit:GetAbilityByName(hMinionUnit.abilities[i]:GetName())
+		if J.CanCastAbility(ability)
 		then
-            if J.CanNotUseAbility(hMinionUnit) then return end
-
             botTarget = J.GetProperTarget(bot)
             thisMinionHP = J.GetHP(hMinionUnit)
             nAllyHeroes = hMinionUnit:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
             nEnemyHeroes = hMinionUnit:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
 
-            -- break linken
-            if J.CheckBitfieldFlag(hMinionUnit.abilities[i]:GetBehavior(), ABILITY_BEHAVIOR_UNIT_TARGET)
-			then
-                hMinionUnit.cast_desire, hMinionUnit.cast_target = X.ConsiderUnitTarget(hMinionUnit, hMinionUnit.abilities[i])
-                if hMinionUnit.cast_desire > 0
-                then
-                    hMinionUnit:Action_UseAbilityOnEntity(hMinionUnit.abilities[i], hMinionUnit.cast_target)
-                    return
-                end
-            end
-
-            hMinionUnit.cast_desire, hMinionUnit.cast_target, hMinionUnit.cast_type = X.ConsiderSpellUsage[hMinionUnit.abilities[i]:GetName()](hMinionUnit, hMinionUnit.abilities[i])
+            local considerFunc = X.ConsiderSpellUsage[ability:GetName()] or X.ConsiderSpellUsage['default']
+            hMinionUnit.cast_desire, hMinionUnit.cast_target, hMinionUnit.cast_type = considerFunc(hMinionUnit, ability)
             if hMinionUnit.cast_desire > 0
             then
                 if hMinionUnit.cast_type == 'unit'
                 then
-                    hMinionUnit:Action_UseAbilityOnEntity(hMinionUnit.abilities[i], hMinionUnit.cast_target)
+                    hMinionUnit:Action_UseAbilityOnEntity(ability, hMinionUnit.cast_target)
                     return
                 elseif hMinionUnit.cast_type == 'point'
                 then
-                    hMinionUnit:Action_UseAbilityOnLocation(hMinionUnit.abilities[i], hMinionUnit.cast_target)
+                    hMinionUnit:Action_UseAbilityOnLocation(ability, hMinionUnit.cast_target)
                     return
                 elseif hMinionUnit.cast_type == 'none'
                 then
-                    hMinionUnit:Action_UseAbility(hMinionUnit.abilities[i])
+                    hMinionUnit:Action_UseAbility(ability)
+                    return
+                end
+            end
+
+            if J.CheckBitfieldFlag(ability:GetBehavior(), ABILITY_BEHAVIOR_UNIT_TARGET)
+			then
+                hMinionUnit.cast_desire, hMinionUnit.cast_target = X.ConsiderUnitTarget(hMinionUnit, ability)
+                if hMinionUnit.cast_desire > 0
+                then
+                    hMinionUnit:Action_UseAbilityOnEntity(ability, hMinionUnit.cast_target)
                     return
                 end
             end
@@ -75,7 +71,7 @@ function X.ConsiderUnitTarget(hMinionUnit, ability)
     for _, enemyHero in pairs(nEnemyHeroes) do
         if  J.IsValidHero(enemyHero)
         and J.IsInRange(hMinionUnit, enemyHero, nCastRange)
-        and (enemyHero:HasModifier('modifier_item_sphere_target') or enemyHero:HasModifier('modifier_mirror_shield_delay'))
+        -- and (enemyHero:HasModifier('modifier_item_sphere_target') or enemyHero:HasModifier('modifier_mirror_shield_delay'))
         then
             return BOT_ACTION_DESIRE_HIGH, enemyHero, 'unit'
         end
@@ -85,6 +81,11 @@ function X.ConsiderUnitTarget(hMinionUnit, ability)
 end
 
 -- Cast Spells
+
+X.ConsiderSpellUsage['default'] = function (hMinionUnit, ability)
+    print("[WARN] No function for the usage of ability: " .. ability:GetName() .. ', for unit owned by: ' .. bot:GetUnitName())
+    return 0, nil, nil
+end
 
 -- Tornado
 X.ConsiderSpellUsage['enraged_wildkin_tornado'] = function (hMinionUnit, ability)

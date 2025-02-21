@@ -32,6 +32,21 @@ function U.CantMove(unit)
             )
 end
 
+function U.CanNotUseAbility( unit )
+	return not U.IsValidUnit(unit)
+			or unit:IsInvulnerable()
+			or unit:IsCastingAbility()
+			or unit:IsUsingAbility()
+			or unit:IsChanneling()
+			or unit:IsSilenced()
+			or unit:IsStunned()
+			or unit:IsHexed()
+			or unit:IsNightmared()
+			or unit:HasModifier( 'modifier_ringmaster_the_box_buff' )
+			or unit:HasModifier( "modifier_doom_bringer_doom" )
+			or unit:HasModifier( 'modifier_item_forcestaff_active' )
+end
+
 
 function U.CantAttack(unit)
 	return U.IsValidUnit(unit)
@@ -204,19 +219,13 @@ function U.InitiateAbility(unit)
     if unit ~= nil and not unit:IsNull()
     then
         unit.abilities = {}
-
-        if unit:GetUnitName() == 'npc_dota_hero_vengefulspirit'
-        then
-            for i = 0, 23
-            do
-                unit.abilities[i+1] = unit:GetAbilityInSlot(i)
-            end
-        else
-            for i = 0, 3
-            do
-                unit.abilities[i+1] = unit:GetAbilityInSlot(i)
-            end
-        end
+		for i = 0, 23
+		do
+			local ability = unit:GetAbilityInSlot(i)
+			if ability and not ability:IsHidden() and not ability:IsPassive() then
+				unit.abilities[i+1] = ability
+			end
+		end
     end
 end
 

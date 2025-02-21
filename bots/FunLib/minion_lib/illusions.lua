@@ -12,9 +12,10 @@ local nLanes = {
 
 function X.Think(ownerBot, hMinionUnit)
     if not U.IsValidUnit(hMinionUnit) then return end
-
     bot = ownerBot
     bot.illusionThink = bot.illusionThink or {attack_desire = 0, attack_target = nil, move_desire = 0, move_location = nil, time = 0}
+    if X.ConsiderRetreat(hMinionUnit, bot.illusionThink.attack_target) then return end
+    if X.ConsiderRetreat(hMinionUnit, hMinionUnit.attack_target) then return end
     if DotaTime() - bot.illusionThink.time < 0.5 then
         if bot.illusionThink.attack_desire > 0
         and U.IsValidUnit(bot.illusionThink.attack_target)
@@ -81,6 +82,18 @@ function X.Think(ownerBot, hMinionUnit)
         bot.illusionThink.time = DotaTime()
         return
     end
+end
+
+function X.ConsiderRetreat(hMinionUnit, hTarget)
+    if ((U.IsValidUnit(hTarget) and J.GetHP(hTarget) > 0.5 and hTarget:IsFacingLocation( hMinionUnit:GetLocation(), 20 ))
+        or J.GetHP(hMinionUnit) < 0.25)
+    and J.GetHP(hMinionUnit) < 0.3
+    and hMinionUnit:GetHealth() < 300
+     then
+        hMinionUnit:Action_MoveToLocation(J.GetTeamFountain())
+        return 1
+    end
+    return nil
 end
 
 function X.IsTargetInShouldAimToAttackRange(hMinionUnit, target, nMaxRange)

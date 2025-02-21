@@ -81,7 +81,7 @@ sRoleItemsBuyList['pos_3'] = {
 }
 
 sRoleItemsBuyList['pos_1'] = {
-	"item_mage_outfit",
+	"item_crystal_maiden_outfit",
 	"item_rod_of_atos",
 	"item_maelstrom",
     "item_aether_lens",
@@ -134,6 +134,9 @@ local EmptySouvenir         = bot:GetAbilityByName('ringmaster_empty_souvenir')
 local FunhouseMirror        = bot:GetAbilityByName('ringmaster_funhouse_mirror')
 local StrongmanTonic        = bot:GetAbilityByName('ringmaster_strongman_tonic')
 local WhoopeeCushion        = bot:GetAbilityByName('ringmaster_whoopee_cushion')
+local CrystalBall           = bot:GetAbilityByName("ringmaster_crystal_ball")
+local WeightedPie           = bot:GetAbilityByName("ringmaster_weighted_pie")
+local Unicycle              = bot:GetAbilityByName("ringmaster_summon_unicycle")
 
 local TameTheBeastsDesire, TameTheBeastsLocation
 local TameTheBeastsCrackDesire
@@ -145,6 +148,9 @@ local WheelOfWonderDesire, WheelOfWonderLocation
 local FunhouseMirrorDesire
 local StrongmanTonicDesire, StrongmanTonicTarget
 local WhoopeeCushionDesire
+local CrystalBallDesire, CrystalBallLocation
+local WeightedPieDesire, WeightedPieTarget
+local UnicycleDesire
 
 local TameTheBeastsCastTime
 
@@ -152,18 +158,6 @@ local botTarget, botLevel
 
 function X.SkillsComplement()
 	if J.CanNotUseAbility(bot) or bot:IsCastingAbility() or bot:IsChanneling() then return end
-
-    TameTheBeasts         = bot:GetAbilityByName('ringmaster_tame_the_beasts')
-    TameTheBeastsCrack    = bot:GetAbilityByName('ringmaster_tame_the_beasts_crack')
-    EscapeAct             = bot:GetAbilityByName('ringmaster_the_box')
-    ImpalementArts        = bot:GetAbilityByName('ringmaster_impalement')
-    Spotlight             = bot:GetAbilityByName('ringmaster_spotlight')
-    WheelOfWonder         = bot:GetAbilityByName('ringmaster_wheel')
-
-    -- Souvernirs
-    FunhouseMirror        = bot:GetAbilityByName('ringmaster_funhouse_mirror')
-    StrongmanTonic        = bot:GetAbilityByName('ringmaster_strongman_tonic')
-    WhoopeeCushion        = bot:GetAbilityByName('ringmaster_whoopee_cushion')
 
     botTarget = J.GetProperTarget(bot)
     botLevel = bot:GetLevel()
@@ -244,6 +238,28 @@ function X.SkillsComplement()
         bot:Action_UseAbility(FunhouseMirror)
         return
     end
+
+    CrystalBallDesire, CrystalBallLocation = X.ConsiderCrystalBall()
+    if CrystalBallDesire > 0
+    then
+        bot:ActionQueue_UseAbilityOnLocation(CrystalBall, CrystalBallLocation)
+        return
+    end
+
+    WeightedPieDesire, WeightedPieTarget = X.ConsiderWeightedPie()
+    if WeightedPieDesire > 0
+    then
+        bot:Action_UseAbilityOnEntity(WeightedPie, WeightedPieTarget)
+        return
+    end
+
+    UnicycleDesire = X.ConsiderUnicycle()
+    if UnicycleDesire > 0
+    then
+        bot:Action_UseAbility(Unicycle)
+        return
+    end
+
 end
 
 function X.ConsiderTameTheBeasts()
@@ -1035,6 +1051,106 @@ function X.ConsiderWhoopeeCushion()
         end
     end
 
+    return BOT_ACTION_DESIRE_NONE
+end
+
+function X.ConsiderCrystalBall()
+    if not J.CanCastAbility(CrystalBall)
+    then
+        return BOT_ACTION_DESIRE_NONE
+    end
+	for i, id in pairs( GetTeamPlayers( GetOpposingTeam() ) )
+	do
+		if IsHeroAlive( id ) then
+			local info = GetHeroLastSeenInfo( id )
+			if info ~= nil then
+				local dInfo = info[1]
+				if dInfo ~= nil
+					and J.GetLocationToLocationDistance( bot:GetLocation(), dInfo.location ) <= 100000
+					and dInfo.time_since_seen > 3
+				then
+					return BOT_ACTION_DESIRE_HIGH, dInfo.location
+				end
+			end
+		end
+	end
+
+    return BOT_ACTION_DESIRE_NONE
+end
+
+function X.ConsiderWeightedPie()
+    if not J.CanCastAbility(WeightedPie)
+    then
+        return BOT_ACTION_DESIRE_NONE
+    end
+
+    local nCastRange = J.GetProperCastRange(false, bot, WeightedPie:GetCastRange())
+    local tEnemyHeroes = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+
+    if J.IsGoingOnSomeone(bot)
+    then
+        if J.IsValidHero(botTarget)
+        and J.IsInRange(bot, botTarget, nCastRange / 3)
+        and J.CanCastOnNonMagicImmune(botTarget)
+        and not botTarget:IsInvulnerable()
+        and not botTarget:HasModifier('modifier_ringmaster_weightedpie_blind')
+        then
+            return BOT_ACTION_DESIRE_HIGH, botTarget
+        end
+    end
+
+    if J.IsRetreating(bot)
+    and not J.IsRealInvisible(bot)
+    then
+        for _, enemy in pairs(tEnemyHeroes)
+        do
+            if J.IsValidHero(enemy)
+            and J.IsInRange(bot, enemy, nCastRange)
+            and J.CanCastOnNonMagicImmune(enemy)
+            and (J.GetHP(bot) < 0.5 or J.IsChasingTarget(enemy, bot))
+            and not enemy:HasModifier('modifier_ringmaster_weightedpie_blind')
+            then
+                return BOT_ACTION_DESIRE_HIGH, enemy
+            end
+        end
+    end
+
+    return BOT_ACTION_DESIRE_NONE
+end
+
+function X.ConsiderUnicycle()
+    if not J.CanCastAbility(Unicycle)
+    then
+        return BOT_ACTION_DESIRE_NONE
+    end
+
+    if J.IsGoingOnSomeone(bot)
+    then
+        if J.IsValidHero(botTarget)
+        and J.IsInRange(bot, botTarget, 2200)
+        and not J.IsInRange(bot, botTarget, 700)
+        and (J.GetHP(bot) > 0.7 or J.IsChasingTarget(bot, botTarget))
+        and J.CanCastOnNonMagicImmune(botTarget)
+        then
+            return BOT_ACTION_DESIRE_HIGH
+        end
+    end
+
+    local tEnemyHeroes = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+    if J.IsRetreating(bot)
+    and not J.IsRealInvisible(bot)
+    then
+        for _, enemy in pairs(tEnemyHeroes)
+        do
+            if J.IsValidHero(enemy)
+            and J.IsInRange(bot, enemy, 600)
+            and J.CanCastOnNonMagicImmune(enemy)
+            and (J.GetHP(bot) < 0.5 or J.IsChasingTarget(enemy, bot))
+            then
+                return BOT_ACTION_DESIRE_HIGH
+            end
+        end
+    end
     return BOT_ACTION_DESIRE_NONE
 end
 

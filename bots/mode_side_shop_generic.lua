@@ -13,7 +13,7 @@ local TormentorLocOffset = RandomVector(200)
 
 local tormentorMessageTime = 0
 local canDoTormentor = false
-local nTormentorSpawnTime = (J.IsModeTurbo() and 10 or 20) + 3 -- add some buff time
+local nTormentorSpawnTime = (J.IsModeTurbo() and 10 or 20)
 
 if bot.tormentor_state == nil then bot.tormentor_state = false end
 if bot.tormentor_kill_time == nil then bot.tormentor_kill_time = 0 end
