@@ -174,7 +174,7 @@ local SparkWraith 	= bot:GetAbilityByName('arc_warden_spark_wraith')
 local TempestDouble = bot:GetAbilityByName('arc_warden_tempest_double')
 
 local FluxDesire, FluxTarget
-local MagneticFieldDesire
+local MagneticFieldDesire, MagneticFieldTarget
 local SparkWraithDesire, SparkWraithLocation
 local TempestDoubleDesire, TempestDoubleLocation
 
@@ -194,11 +194,15 @@ function X.SkillsComplement()
 		return
 	end
 
-	MagneticFieldDesire = X.ConsiderMagneticField()
+	MagneticFieldDesire, MagneticFieldTarget = X.ConsiderMagneticField()
 	if MagneticFieldDesire > 0
 	then
 		J.SetQueuePtToINT(bot, false)
-		bot:ActionQueue_UseAbility(MagneticField)
+		if J.CheckBitfieldFlag(MagneticField:GetBehavior(), ABILITY_BEHAVIOR_POINT) then
+			bot:Action_UseAbilityOnLocation(MagneticField, MagneticFieldTarget)
+		else
+			bot:ActionQueue_UseAbility(MagneticField)
+		end
 		return
 	end
 
@@ -366,7 +370,7 @@ function X.ConsiderMagneticField()
 			and GetUnitToUnitDistance(nInRangeAlly[1], nInRangeAlly[1]:GetAttackTarget()) <= nInRangeAlly[1]:GetAttackRange() + 50
 			and not nInRangeAlly[1]:HasModifier('modifier_arc_warden_magnetic_field')
 			then
-				return BOT_ACTION_DESIRE_HIGH
+				return BOT_ACTION_DESIRE_HIGH, bot:GetLocation()
 			end
 		end
 	end
@@ -393,7 +397,7 @@ function X.ConsiderMagneticField()
 					if nInRangeAlly ~= nil and nInRangeEnemy ~= nil
 					and #nInRangeAlly >= #nInRangeEnemy
 					then
-						return BOT_ACTION_DESIRE_HIGH
+						return BOT_ACTION_DESIRE_HIGH, bot:GetLocation()
 					end
 				end
 			end
@@ -415,7 +419,7 @@ function X.ConsiderMagneticField()
 			or (nEnemyBarracks ~= nil and #nEnemyBarracks >= 1)
 			or (sEnemyTowers ~= nil and #sEnemyTowers >= 1)
 			then
-				return BOT_ACTION_DESIRE_HIGH
+				return BOT_ACTION_DESIRE_HIGH, bot:GetLocation()
 			end
 		end
 	end
@@ -430,14 +434,14 @@ function X.ConsiderMagneticField()
 		then
 			if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 3
 			then
-				return BOT_ACTION_DESIRE_HIGH
+				return BOT_ACTION_DESIRE_HIGH, bot:GetLocation()
 			end
 
 			local nNeutralCreeps = bot:GetNearbyNeutralCreeps(888)
 			if nNeutralCreeps ~= nil
 			and (#nNeutralCreeps >= 3 or (#nNeutralCreeps >= 2 and nNeutralCreeps[1]:IsAncientCreep()))
 			then
-				return BOT_ACTION_DESIRE_HIGH
+				return BOT_ACTION_DESIRE_HIGH, bot:GetLocation()
 			end
 		end
 	end
@@ -449,7 +453,7 @@ function X.ConsiderMagneticField()
 		and J.IsInRange(bot, botTarget, bot:GetAttackRange())
 		and J.IsAttacking(bot)
 		then
-			return BOT_ACTION_DESIRE_HIGH
+			return BOT_ACTION_DESIRE_HIGH, bot:GetLocation()
 		end
 	end
 
@@ -460,7 +464,7 @@ function X.ConsiderMagneticField()
 		and J.IsInRange(bot, botTarget, bot:GetAttackRange())
 		and J.IsAttacking(bot)
 		then
-			return BOT_ACTION_DESIRE_HIGH
+			return BOT_ACTION_DESIRE_HIGH, bot:GetLocation()
 		end
 	end
 

@@ -143,11 +143,13 @@ local abilityW = bot:GetAbilityByName( sAbilityList[2] )
 local abilityR = bot:GetAbilityByName( sAbilityList[6] )
 local CrystalClone = bot:GetAbilityByName( sAbilityList[4] )
 local talent2 = bot:GetAbilityByName( sTalentList[2] )
+local ArcaneAura = bot:GetAbilityByName("crystal_maiden_brilliance_aura")
 
 local castQDesire, castQLoc = 0
 local castWDesire, castWTarget = 0
 local castRDesire = 0
 local CrystalCloneDesire, CrystalCloneLocation
+local ArcaneAuraDesire
 
 local nKeepMana, nMP, nHP, nLV
 
@@ -165,6 +167,15 @@ function X.SkillsComplement()
 	local aether = J.IsItemAvailable( 'item_aether_lens' )
 	if aether ~= nil then aetherRange = 250 end
 --	if talent2:IsTrained() then aetherRange = aetherRange + talent2:GetSpecialValueInt( 'value' ) end
+
+	ArcaneAuraDesire = X.ConsiderArcaneAura()
+	if ( ArcaneAuraDesire > 0 )
+	then
+		J.SetQueuePtToINT( bot, false )
+
+		bot:ActionQueue_UseAbility( ArcaneAura )
+		return
+	end
 
 	CrystalCloneDesire, CrystalCloneLocation = X.ConsiderCrystalClone()
 	if CrystalCloneDesire > 0
@@ -193,7 +204,6 @@ function X.SkillsComplement()
 		return
 	end
 
-
 	castRDesire = X.ConsiderR()
 	if ( castRDesire > 0 )
 	then
@@ -203,6 +213,22 @@ function X.SkillsComplement()
 		return
 	end
 
+end
+
+function X.ConsiderArcaneAura()
+	--进攻
+	if J.IsGoingOnSomeone( bot )
+	then
+		local npcTarget = J.GetProperTarget( bot )
+		if J.IsValidHero( npcTarget )
+			and J.CanCastOnNonMagicImmune( npcTarget )
+			and J.CanCastOnTargetAdvanced( npcTarget )
+			and J.IsInRange( npcTarget, bot, 500 )
+		then
+			return BOT_ACTION_DESIRE_HIGH, npcTarget
+		end
+	end
+	return BOT_ACTION_DESIRE_NONE, 0
 end
 
 function X.ConsiderCombo()

@@ -82,12 +82,12 @@ end
 function X.GetAbilityList( bot )
 	local sAbilityList = { }
 	local totalUpgradeableAbilities = 7
+	local unitName = bot:GetUnitName()
 	for slot = 0, totalUpgradeableAbilities
 	do
 		local ability = bot:GetAbilityInSlot(slot)
 		if ability then
 			local name = ability:GetName()
-			local unitName = bot:GetUnitName()
 			--print(unitName..' has ability name= '..name..', at slot idx= '..slot)
 			if name == generic_hidden then
 				-- if we dont check slots but just dropping generic_hidden, it can cause some others fail to learn abilities correctly, e.g. chen.

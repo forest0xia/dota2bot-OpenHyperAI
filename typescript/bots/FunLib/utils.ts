@@ -298,6 +298,11 @@ export function PrintUnitModifiers(unit: Unit) {
 export function PrintPings(pingTimeGap: number): void {
     const listPings = [];
     const teamPlayers = GetTeamPlayers(GetTeam());
+
+    // for (const [_, zone] of GetAvoidanceZones().entries()) {
+    //     PrintTable(zone);
+    // }
+
     for (const [index, _] of teamPlayers.entries()) {
         const allyHero = GetTeamMember(index);
         if (allyHero === null || allyHero.IsIllusion()) {

@@ -27,6 +27,14 @@ export interface Item {
     GetCooldownTimeRemaining(): number;
 }
 
+export interface AvoidanceZone {
+    location: Vector;
+    ability: Ability;
+    caster: Unit;
+    radius: number;
+    playerid: number;
+}
+
 export interface Unit {
     // Seems to be internal to bot script?
     frameProcessTime: number | null;

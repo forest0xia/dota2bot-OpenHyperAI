@@ -150,7 +150,7 @@ end
 local WildAxes          = bot:GetAbilityByName('beastmaster_wild_axes')
 local CallOfTheWildBoar = bot:GetAbilityByName('beastmaster_call_of_the_wild_boar')
 local CallOfTheWildHawk = bot:GetAbilityByName('beastmaster_call_of_the_wild_hawk')
--- local InnerBeast        = bot:GetAbilityByName('beastmaster_inner_beast')
+local InnerBeast        = bot:GetAbilityByName('beastmaster_inner_beast')
 -- local DrumsOfSlom        = bot:GetAbilityByName('beastmaster_drums_of_slom')
 local PrimalRoar        = bot:GetAbilityByName('beastmaster_primal_roar')
 
@@ -158,13 +158,14 @@ local WildAxesDesire, WildAxesLocation
 local CallOfTheWildBoarDesire
 local CallOfTheWildHawkDesire
 local PrimalRoarDesire, PrimalRoarTarget
-
+local InnerBeastDesire
 local BlackKingBar
 
 local Blink
 local BlinkLocation
 
 local BlinkRoarDesire, BlinkRoarTarget
+local botTarget
 
 if bot.shouldBlink == nil then bot.shouldBlink = false end
 
@@ -174,6 +175,7 @@ function X.SkillsComplement()
         return
     end
 
+    botTarget = J.GetProperTarget(bot)
     BlinkRoarDesire, BlinkRoarTarget = X.ConsiderBlinkRoar()
     if BlinkRoarDesire > 0
     then
@@ -212,12 +214,52 @@ function X.SkillsComplement()
         return
     end
 
+    InnerBeastDesire = X.ConsiderInnerBeast()
+    if InnerBeastDesire > 0
+    then
+        bot:Action_UseAbility(InnerBeast)
+        return
+    end
+
     WildAxesDesire, WildAxesLocation = X.ConsiderWildAxes()
     if WildAxesDesire > 0
     then
         bot:Action_UseAbilityOnLocation(WildAxes, WildAxesLocation)
         return
     end
+end
+
+function X.ConsiderInnerBeast()
+    if not J.CanCastAbility(InnerBeast)
+    then
+        return BOT_ACTION_DESIRE_NONE, 0
+    end
+
+    local nCastRange = 800
+    if J.IsInTeamFight(bot, nCastRange)
+	then
+        return BOT_ACTION_DESIRE_HIGH
+	end
+
+    if J.IsGoingOnSomeone(bot)
+	then
+        local nInRangeAlly = J.GetNearbyHeroes(bot,1000, false, BOT_MODE_NONE)
+
+		if J.IsValidTarget(botTarget)
+        and J.CanCastOnNonMagicImmune(botTarget)
+        and J.IsInRange(bot, botTarget, nCastRange)
+        and not J.IsSuspiciousIllusion(botTarget)
+		then
+            local nTargetInRangeAlly = J.GetNearbyHeroes(botTarget, 1000, false, BOT_MODE_NONE)
+
+            if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
+            and #nInRangeAlly >= #nTargetInRangeAlly
+            then
+                return BOT_ACTION_DESIRE_HIGH
+            end
+		end
+	end
+    return BOT_ACTION_DESIRE_NONE, 0
 end
 
 function X.ConsiderWildAxes()
@@ -231,7 +273,6 @@ function X.ConsiderWildAxes()
     local nMana = bot:GetMana() / bot:GetMaxMana()
     local nRadius = WildAxes:GetSpecialValueInt('radius')
     local nDamage = WildAxes:GetSpecialValueInt('axe_damage')
-    local botTarget = J.GetProperTarget(bot)
 
     local nEnemyHeroes = J.GetNearbyHeroes(bot,nCastRange, true, BOT_MODE_NONE)
     for _, enemyHero in pairs(nEnemyHeroes)
@@ -418,7 +459,6 @@ function X.ConsiderCallOfTheWildBoar()
 	end
 
     local nAttackRange = bot:GetAttackRange()
-    local botTarget = J.GetProperTarget(bot)
 
     if J.IsGoingOnSomeone(bot)
 	then
@@ -503,8 +543,6 @@ function X.ConsiderCallOfTheWildHawk()
     then
 		return BOT_ACTION_DESIRE_NONE
 	end
-
-    local botTarget = J.GetProperTarget(bot)
 
     if J.IsInTeamFight(bot, 1200)
     then

@@ -156,22 +156,19 @@ local abilityQ = bot:GetAbilityByName( sAbilityList[1] )
 local abilityW = bot:GetAbilityByName( sAbilityList[2] )
 local abilityR = bot:GetAbilityByName( sAbilityList[6] )
 local BloodMist = bot:GetAbilityByName( 'bloodseeker_blood_mist' )
+local Thirst = bot:GetAbilityByName("bloodseeker_thirst")
 
 local castQDesire, castQTarget = 0
 local castWDesire, castWLocation = 0
 local castRDesire, castRTarget = 0
-local BloodMistDesire
+local BloodMistDesire, ThirstDesire
+local botTarget
 
 local nKeepMana, nMP, nHP, nLV, hEnemyHeroList
 
-
 function X.SkillsComplement()
 
-
-
 	if J.CanNotUseAbility( bot ) or bot:IsInvisible() then return end
-
-
 
 	nKeepMana = 300
 	nMP = bot:GetMana()/bot:GetMaxMana()
@@ -179,7 +176,7 @@ function X.SkillsComplement()
 	nLV = bot:GetLevel()
 	hEnemyHeroList = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 
-
+	botTarget = J.GetProperTarget(bot)
 	BloodMistDesire = X.ConsiderBloodMist()
 	if (BloodMistDesire > 0)
 	then
@@ -188,6 +185,13 @@ function X.SkillsComplement()
 		return
 	end
 
+	ThirstDesire = X.ConsiderThirst()
+	if ThirstDesire > 0
+	then
+		J.SetQueuePtToINT( bot, false )
+		bot:ActionQueue_UseAbility(Thirst)
+		return
+	end
 
 	castRDesire, castRTarget = X.ConsiderR()
 	if ( castRDesire > 0 )
@@ -224,17 +228,31 @@ function X.SkillsComplement()
 
 end
 
-function X.ConsiderBloodMist()
+function X.ConsiderThirst()
+	if J.IsGoingOnSomeone( bot )
+	then
+		if J.IsValidHero( botTarget )
+			and J.CanCastOnMagicImmune( botTarget )
+			and J.IsInRange( botTarget, bot, 600 )
+		then
+			if not bot:HasModifier( 'modifier_bloodseeker_thirst' )
+			then
+				return BOT_ACTION_DESIRE_HIGH, bot
+			end
+		end
+	end
+	return BOT_ACTION_DESIRE_NONE, 0
+end
 
+function X.ConsiderBloodMist()
 	if not bot:HasScepter()
-	or not BloodMist:IsFullyCastable()
+	or not J.CanCastAbility(BloodMist)
 	then
 		return BOT_MODE_NONE
 	end
 
 	local nRadius = 450
 	local nInRangeEnemyHeroList = J.GetNearbyHeroes(bot,nRadius, true, BOT_MODE_NONE)
-	local botTarget = J.GetProperTarget(bot)
 
 	if BloodMist:GetToggleState() == true
 	then
@@ -272,10 +290,6 @@ function X.ConsiderQ()
 	local nManaCost = abilityQ:GetManaCost()
 	local nDamage = bot:GetAttackDamage()
 
-	local npcTarget = J.GetProperTarget( bot )
-
-
-	
 	--团战时辅助
 	if J.IsInTeamFight( bot, 1200 ) or J.IsPushing( bot ) or J.IsDefending( bot )
 	then
@@ -311,10 +325,9 @@ function X.ConsiderQ()
 
 	if J.IsGoingOnSomeone( bot )
 	then
-		local npcTarget = J.GetProperTarget( bot )
-		if J.IsValidHero( npcTarget )
-			and J.CanCastOnMagicImmune( npcTarget )
-			and J.IsInRange( npcTarget, bot, 600 )
+		if J.IsValidHero( botTarget )
+			and J.CanCastOnMagicImmune( botTarget )
+			and J.IsInRange( botTarget, bot, 600 )
 		then
 			if not bot:HasModifier( 'modifier_bloodseeker_bloodrage' )
 			then
@@ -324,7 +337,7 @@ function X.ConsiderQ()
 	end
 	
 	--打野时加速
-	if J.IsValid( npcTarget ) and npcTarget:GetTeam() == TEAM_NEUTRAL
+	if J.IsValid( botTarget ) and botTarget:GetTeam() == TEAM_NEUTRAL
 		and not bot:HasModifier( 'modifier_bloodseeker_bloodrage' )
 	then
 		local tableNearbyCreeps = bot:GetNearbyCreeps( 1000, true )
@@ -428,12 +441,11 @@ function X.ConsiderW()
 
 	if J.IsGoingOnSomeone( bot )
 	then
-		local npcTarget = J.GetProperTarget( bot )
-		if J.IsValidHero( npcTarget )
-			and J.CanCastOnNonMagicImmune( npcTarget )
-			and J.IsInRange( npcTarget, bot, nCastRange + nRadius )
+		if J.IsValidHero( botTarget )
+			and J.CanCastOnNonMagicImmune( botTarget )
+			and J.IsInRange( botTarget, bot, nCastRange + nRadius )
 		then
-			local nCastLoc = J.GetDelayCastLocation( bot, npcTarget, nCastRange, nRadius, 2.0 )
+			local nCastLoc = J.GetDelayCastLocation( bot, botTarget, nCastRange, nRadius, 2.0 )
 			if nCastLoc ~= nil
 			then
 				return BOT_ACTION_DESIRE_HIGH, nCastLoc
@@ -488,19 +500,18 @@ function X.ConsiderR()
 
 	if J.IsGoingOnSomeone( bot )
 	then
-		local npcTarget = J.GetProperTarget( bot )
-		if J.IsValidHero( npcTarget )
-			and J.CanCastOnNonMagicImmune( npcTarget )
-			and J.CanCastOnTargetAdvanced( npcTarget )
-			and J.IsInRange( npcTarget, bot, nCastRange + 100 )
-			and not npcTarget:HasModifier( 'modifier_bloodseeker_bloodrage' )
-			and not npcTarget:HasModifier('modifier_bloodseeker_rupture')
-			and not J.IsDisabled( npcTarget )
+		if J.IsValidHero( botTarget )
+			and J.CanCastOnNonMagicImmune( botTarget )
+			and J.CanCastOnTargetAdvanced( botTarget )
+			and J.IsInRange( botTarget, bot, nCastRange + 100 )
+			and not botTarget:HasModifier( 'modifier_bloodseeker_bloodrage' )
+			and not botTarget:HasModifier('modifier_bloodseeker_rupture')
+			and not J.IsDisabled( botTarget )
 		then
-			local allies = J.GetNearbyHeroes(npcTarget, 1200, true, BOT_MODE_NONE )
+			local allies = J.GetNearbyHeroes(botTarget, 1200, true, BOT_MODE_NONE )
 			if ( allies ~= nil and #allies >= 2 )
 			then
-				return BOT_ACTION_DESIRE_HIGH, npcTarget
+				return BOT_ACTION_DESIRE_HIGH, botTarget
 			end
 		end
 	end
