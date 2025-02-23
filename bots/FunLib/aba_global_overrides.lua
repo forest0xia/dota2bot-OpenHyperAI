@@ -139,6 +139,25 @@ function CDOTA_Bot_Script:HasModifier(sModifierName)
     return originalHasModifier(self, sModifierName)
 end
 
+local originalGetLocation = CDOTA_Bot_Script.GetLocation
+function CDOTA_Bot_Script:GetLocation()
+    if self == nil or (not self:IsBuilding() and not self:CanBeSeen()) then
+		return nil
+		-- print("GetLocation has been called on unit can't be seen")
+		-- print("Stack Trace:", debug.traceback())
+	end
+    return originalGetLocation(self)
+end
+local originalGetMagicResist = CDOTA_Bot_Script.GetMagicResist
+function CDOTA_Bot_Script:GetMagicResist()
+    if self == nil or not self:CanBeSeen() then
+		return 1
+		-- print("GetMagicResist has been called on unit can't be seen")
+		-- print("Stack Trace:", debug.traceback())
+	end
+    return originalGetMagicResist(self)
+end
+
 local originalIsInvulnerable = CDOTA_Bot_Script.IsInvulnerable
 function CDOTA_Bot_Script:IsInvulnerable()
     if not self:CanBeSeen() then
@@ -367,6 +386,10 @@ end
 
 local original_GetHealth = CDOTA_Bot_Script.GetHealth
 function CDOTA_Bot_Script:GetHealth()
+    if self == nil or not self:CanBeSeen() then
+		return 666
+	end
+
 	local nCurHealth = original_GetHealth(self)
     if self ~= nil and self:GetUnitName() == 'npc_dota_hero_medusa' and nCurHealth > 0
     then

@@ -35,23 +35,27 @@ local botTable = {
 }
 
 function Buff:AddBotsToTable()
-    local playerCount = PlayerResource:GetPlayerCount()
-
-    for playerID = 0, playerCount - 1 do
-        local player = PlayerResource:GetPlayer(playerID)
-        local connectionState = PlayerResource:GetConnectionState(playerID)
-        -- print('Getting player: '..playerID..', connection state: '..tostring(connectionState))
-
-        local hero = player:GetAssignedHero()
-        local team = player:GetTeam()
-
-        if hero ~= nil then
-            if PlayerResource:GetSteamID(hero:GetMainControllingPlayer()) == PlayerResource:GetSteamID(100) then
-                -- print('Instering bot player: '..hero:GetUnitName()..', to team: '..team)
-                table.insert(botTable[team], hero)
+    for nTeam = 0, 3 do
+        local pNum = PlayerResource:GetPlayerCountForTeam(nTeam)
+        for i = 0, pNum do
+            local playerID = PlayerResource:GetNthPlayerIDOnTeam(nTeam, i)
+            local player = PlayerResource:GetPlayer(playerID)
+            -- local connectionState = PlayerResource:GetConnectionState(playerID)
+            -- print('Setting up Buff for player: '..playerID..', connection state: '..tostring(connectionState))
+            if player then
+                local hero = player:GetAssignedHero()
+                local team = player:GetTeam()
+                if hero ~= nil then
+                    if PlayerResource:GetSteamID(hero:GetMainControllingPlayer()) == PlayerResource:GetSteamID(100) then
+                        -- print('Instering bot player: '..hero:GetUnitName()..', to team: '..team)
+                        table.insert(botTable[team], hero)
+                    end
+                else
+                    -- print('[WARN] Failed to add player '.. playerID .. ' to bots list. Spectator?')
+                end
+            else
+                -- print('[WARN] Failed to add player '.. playerID .. ' to bots list. Spectator?')
             end
-        else
-            -- print('[WARN] Failed to add player '.. playerID .. ' to bots list. Spectator?')
         end
     end
 end

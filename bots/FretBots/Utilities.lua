@@ -698,7 +698,7 @@ function Utilities:HeroStatsInGame(heroes)
         if unit.stats then
             local kda = unit:GetKills()..'/'..unit:GetDeaths()..'/'..unit:GetAssists()
 			local team = unit.stats.team == 2 and 'Radiant' or 'Dire'
-            table.insert(resTable[team], {name = unit.stats.name, level = unit:GetLevel(),
+            table.insert(resTable[team], {name = unit.stats.internalName, level = unit:GetLevel(),
 			kda = kda, networth = PlayerResource:GetNetWorth(unit.stats.id), is_bot = unit.stats.isBot})
         end
     end

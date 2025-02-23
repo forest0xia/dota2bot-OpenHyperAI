@@ -14,7 +14,7 @@ local neutral_items =
 	{name="item_occult_bracelet",		tier=1,		ranged=1,		melee=1,		roles={1,1,3,2,2},		realName="Occult Bracelet"},
 	{name="item_unstable_wand",			tier=1,		ranged=1,		melee=1,		roles={1,1,1,1,1},		realName="Pig Pole"},
 	{name="item_mana_draught",			tier=1,		ranged=1,		melee=1,		roles={1,1,1,1,1},		realName="Mana Draught"},
-	{name="item_polliwog_charm",			tier=1,		ranged=1,		melee=1,		roles={1,1,1,1,1},		realName="Polliwog_Charm"},
+	{name="item_polliwog_charm",			tier=1,		ranged=1,		melee=1,		roles={1,1,1,1,1},		realName="Polliwog Charm"},
 	{name="item_rippers_lash",			tier=1,		ranged=1,		melee=1,		roles={1,1,1,1,1},		realName="Ripper's Lash"},
 	-- {name="item_royal_jelly",			tier=1,		ranged=1,		melee=1,		roles={1,1,1,1,1},		realName="Royal Jelly"},
 	-- {name="item_safety_bubble",			tier=1,		ranged=1,		melee=1,		roles={1,1,1,1,1},		realName="Safety Bubble"},

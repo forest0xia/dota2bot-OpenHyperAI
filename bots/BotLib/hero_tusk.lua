@@ -387,7 +387,7 @@ function X.ConsiderDrinkingBuddies()
                         and not allyHero:IsIllusion()
                         and J.IsRetreating(allyHero)
                         and GetUnitToUnitDistance(allyHero, enemyHero) > GetUnitToUnitDistance(bot, enemyHero)
-                        and GetUnitToLocationDistance(enemyHero, ((bot:GetLocation() - allyHero:GetLocation()) / 2)) > 500
+                        and GetUnitToLocationDistance(enemyHero, ((bot:GetLocation() + allyHero:GetLocation()) / 2)) > 500
                         then
                             return BOT_ACTION_DESIRE_HIGH, allyHero
                         end

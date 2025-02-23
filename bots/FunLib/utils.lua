@@ -1632,12 +1632,14 @@ function ____exports.IsTeamPushingSecondTierOrHighGround(bot)
     if cachedRes ~= nil then
         return cachedRes
     end
-    local res = #bot:GetNearbyHeroes(2000, false, BotMode.None) > 2 and (____exports.IsNearEnemySecondTierTower(bot, 2000) or ____exports.IsNearEnemyHighGroundTower(bot, 3000) or GetUnitToUnitDistance(
-        bot,
-        GetAncient(GetOpposingTeam())
-    ) < 3000)
-    ____exports.SetCachedVars(cacheKey, res)
-    return res
+    local ancient = GetAncient(GetOpposingTeam())
+    if ancient ~= nil then
+        local res = #bot:GetNearbyHeroes(2000, false, BotMode.None) > 2 and (____exports.IsNearEnemySecondTierTower(bot, 2000) or ____exports.IsNearEnemyHighGroundTower(bot, 3000) or GetUnitToUnitDistance(bot, ancient) < 3000)
+        ____exports.SetCachedVars(cacheKey, res)
+        return res
+    end
+    ____exports.SetCachedVars(cacheKey, false)
+    return false
 end
 --- Get the number of alive heroes.
 -- 
@@ -1668,7 +1670,7 @@ function ____exports.CountMissingEnemyHeroes()
     local count = 0
     for ____, playerdId in ipairs(GetTeamPlayers(GetOpposingTeam())) do
         do
-            local __continue235
+            local __continue236
             repeat
                 if IsHeroAlive(playerdId) then
                     local lastSeenInfo = GetHeroLastSeenInfo(playerdId)
@@ -1676,14 +1678,14 @@ function ____exports.CountMissingEnemyHeroes()
                         local firstInfo = lastSeenInfo[1]
                         if firstInfo.time_since_seen >= 2.5 then
                             count = count + 1
-                            __continue235 = true
+                            __continue236 = true
                             break
                         end
                     end
                 end
-                __continue235 = true
+                __continue236 = true
             until true
-            if not __continue235 then
+            if not __continue236 then
                 break
             end
         end

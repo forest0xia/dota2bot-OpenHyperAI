@@ -14,20 +14,21 @@ function X.Think(ownerBot, hMinionUnit)
     if not U.IsValidUnit(hMinionUnit) then return end
     bot = ownerBot
     bot.illusionThink = bot.illusionThink or {attack_desire = 0, attack_target = nil, move_desire = 0, move_location = nil, time = 0}
-    if X.ConsiderRetreat(hMinionUnit, bot.illusionThink.attack_target) then return end
-    if X.ConsiderRetreat(hMinionUnit, hMinionUnit.attack_target) then return end
     if DotaTime() - bot.illusionThink.time < 0.5 then
         if bot.illusionThink.attack_desire > 0
         and U.IsValidUnit(bot.illusionThink.attack_target)
         and X.IsTargetInShouldAimToAttackRange(hMinionUnit, bot.illusionThink.attack_target, 700)
         then
+            if X.ConsiderRetreat(hMinionUnit, bot.illusionThink.attack_target) then return end
             hMinionUnit:Action_AttackUnit(bot.illusionThink.attack_target, true)
             return
         end
-        if bot.illusionThink.move_desire > 0 and bot.illusionThink.move_location and GetUnitToLocationDistance(hMinionUnit, bot.illusionThink.move_location) < 2000 then
-            hMinionUnit:Action_MoveToLocation(bot.illusionThink.move_location)
-            return
-        end
+        -- if bot.illusionThink.move_desire > 0 and bot.illusionThink.move_location and GetUnitToLocationDistance(hMinionUnit, bot.illusionThink.move_location) < 2000 then
+        --     hMinionUnit:Action_MoveToLocation(bot.illusionThink.move_location)
+        --     return
+        -- end
+    else
+        bot.illusionThink.time = DotaTime()
     end
 
 	hMinionUnit.attack_desire, hMinionUnit.attack_target = X.ConsiderAttack(hMinionUnit)
@@ -35,23 +36,24 @@ function X.Think(ownerBot, hMinionUnit)
     then
         if U.IsValidUnit(hMinionUnit.attack_target)
         then
-            if not J.CanBeAttacked(hMinionUnit.attack_target)
-            and (not bot:IsAlive()
-                or (bot:IsAlive() and bot:GetAttackTarget() ~= hMinionUnit.attack_target))
-            then
-                local loc = J.Site.GetXUnitsTowardsLocation(GetAncient(GetTeam()), hMinionUnit.attack_target:GetLocation(), 600)
-                hMinionUnit:Action_MoveToLocation(loc)
-                bot.illusionThink.move_desire = BOT_ACTION_DESIRE_HIGH
-                bot.illusionThink.move_location = loc
-                bot.illusionThink.time = DotaTime()
-                return
-            else
+            -- if not J.CanBeAttacked(hMinionUnit.attack_target)
+            -- and (not bot:IsAlive()
+            --     or (bot:IsAlive() and bot:GetAttackTarget() ~= hMinionUnit.attack_target))
+            -- then
+            --     local loc = J.Site.GetXUnitsTowardsLocation(GetAncient(GetTeam()), hMinionUnit.attack_target:GetLocation(), 600)
+            --     hMinionUnit:Action_MoveToLocation(loc)
+            --     bot.illusionThink.move_desire = BOT_ACTION_DESIRE_HIGH
+            --     bot.illusionThink.move_location = loc
+            --     bot.illusionThink.time = DotaTime()
+            --     return
+            -- else
+                if X.ConsiderRetreat(hMinionUnit, hMinionUnit.attack_target) then return end
                 hMinionUnit:Action_AttackUnit(hMinionUnit.attack_target, true)
                 bot.illusionThink.attack_desire = BOT_ACTION_DESIRE_HIGH
                 bot.illusionThink.attack_target = hMinionUnit.attack_target
-                bot.illusionThink.time = DotaTime()
+                -- bot.illusionThink.time = DotaTime()
                 return
-            end
+            -- end
         end
     end
 
@@ -59,9 +61,9 @@ function X.Think(ownerBot, hMinionUnit)
 	if hMinionUnit.move_desire > 0
 	then
 		hMinionUnit:Action_MoveToLocation(hMinionUnit.move_location)
-		bot.illusionThink.move_desire = BOT_ACTION_DESIRE_HIGH
-		bot.illusionThink.move_location = hMinionUnit.move_location
-		bot.illusionThink.time = DotaTime()
+		-- bot.illusionThink.move_desire = BOT_ACTION_DESIRE_HIGH
+		-- bot.illusionThink.move_location = hMinionUnit.move_location
+		-- bot.illusionThink.time = DotaTime()
 		return
 	end
 
@@ -70,21 +72,22 @@ function X.Think(ownerBot, hMinionUnit)
     then
         local vFaceEndLocation = J.GetFaceTowardDistanceLocation(bot, 450)
         hMinionUnit:Action_MoveToLocation(vFaceEndLocation)
-        bot.illusionThink.move_desire = BOT_ACTION_DESIRE_HIGH
-        bot.illusionThink.move_location = vFaceEndLocation
-        bot.illusionThink.time = DotaTime()
+        -- bot.illusionThink.move_desire = BOT_ACTION_DESIRE_HIGH
+        -- bot.illusionThink.move_location = vFaceEndLocation
+        -- bot.illusionThink.time = DotaTime()
         return
     else
         local vLoc = GetLaneFrontLocation(GetTeam(), LANE_MID, 0)
         hMinionUnit:Action_MoveToLocation(vLoc)
-        bot.illusionThink.move_desire = BOT_ACTION_DESIRE_HIGH
-        bot.illusionThink.move_location = vLoc
-        bot.illusionThink.time = DotaTime()
+        -- bot.illusionThink.move_desire = BOT_ACTION_DESIRE_HIGH
+        -- bot.illusionThink.move_location = vLoc
+        -- bot.illusionThink.time = DotaTime()
         return
     end
 end
 
 function X.ConsiderRetreat(hMinionUnit, hTarget)
+    if hMinionUnit:IsIllusion() then return nil end
     if ((U.IsValidUnit(hTarget) and J.GetHP(hTarget) > 0.5 and hTarget:IsFacingLocation( hMinionUnit:GetLocation(), 20 ))
         or J.GetHP(hMinionUnit) < 0.25)
     and J.GetHP(hMinionUnit) < 0.3

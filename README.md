@@ -71,7 +71,7 @@ Thanks and kudos to all that contributed to make bot games fun and exciting.
 ```
 root: <Steam\steamapps\common\dota 2 beta\game\dota\scripts\vscripts>
 │
-└───bots: contains all lua files for the bot logic. The workshop item *only* contains content in this folder.
+└───bots: contains all lua files for the bot logic. This is the folder `3246316298` in Workshop.
 │   │   hero_selection.lua
 │   │   bot_generic.lua
 │   │   ...
@@ -95,7 +95,7 @@ root: <Steam\steamapps\common\dota 2 beta\game\dota\scripts\vscripts>
 └───typescript: contains the scripts written in typescript (TS) to maintain this project in a more 
 │   │           extendable way since TS supports types and can catch errors in compile time.
 │   │
-│   └───bots: the TS version of the script that will be translated to LUA files into the `root/bots` folder.
+│   └───bots: the TS version of the script that's converted to LUA files into the `root/bots` folder.
 │   │   │   ...
 │   │
 │   └───post-process: contains the scripts to do post-processing for the TS to LUA translation.
@@ -112,13 +112,13 @@ root: <Steam\steamapps\common\dota 2 beta\game\dota\scripts\vscripts>
 ```
 
 ## What's next
-0. Ultimately, the bots play style is static/fixed with the current AI approach provided by Valve at the moment. We need machine learning AI bots! Just like the AIs we’ve seen from OpenAI Five.
+0. Ultimately, the bots play style is static/fixed with the current AI approach provided by Valve at the moment. We need ML or LLM enhanced AI bots! Just like the AIs we’ve seen from OpenAI Five.
+1. Improvements to be done: https://github.com/forest0xia/dota2bot-OpenHyperAI/issues?q=is%3Aissue+is%3Aopen+%5BFeature+request%5D
 1. Follow up on https://www.reddit.com/r/DotA2/comments/1ezxpav/a_note_to_valve_official_regarding_bot_scripts/
-1. Maybe traning machine learning AI.
 1. Better decision making on laning, pushing and ganking.
-1. Better spell casting for certain heroes like Invoker, Rubick, etc.
 1. Support all game modes.
-1. More code bug fixes.
+1. Code fixes for new Dota2 patches.
+1. Better spell casting for certain heroes like Invoker, Rubick, Morph, etc.
 1. Figure out how to better support the Bugged-Heroes: Dark Willow, Elder Titan, Hoodwink, io, Lone Druid, Marci, Muerta, Primal Beast. Note that they are buggy due to problems on the Valves side, not script developers.
 
 ## Support the script
@@ -145,6 +145,3 @@ This script is based on Valve's default bot script and many other people's work 
 - BOT Experiment (by Furiospuppy)
 - ExtremePush (https://github.com/insraq/dota2bots)
 - All other bot script authors/contributors that had made bot scripts interesting.
-
-## Things to be updated:
-- See the `Feature request` list : https://github.com/forest0xia/dota2bot-OpenHyperAI/issues?q=is%3Aissue+is%3Aopen+%5BFeature+request%5D

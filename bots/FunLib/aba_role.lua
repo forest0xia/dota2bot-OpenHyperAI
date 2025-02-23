@@ -407,6 +407,7 @@ ____exports.GetPosition = function(bot)
             "Stack Trace:",
             debug.traceback()
         )
+        bot.assignedRole = role
     end
     if role == nil then
         role = 3

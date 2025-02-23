@@ -679,12 +679,14 @@ function X.IsEnemyCreepBetweenEnemyHero( hSource, hTarget, nRadius )
 	local creeps = hSource:GetNearbyLaneCreeps(1600, true)
 	for i,creep in pairs(creeps) 
 	do
-		local tResult = PointToLineDistance(vStart, vEnd, creep:GetLocation())
-		if tResult ~= nil 
-			and tResult.within 
-			and tResult.distance <= nRadius + 20
-		then
-			return true
+		if J.IsValid(creep) then
+			local tResult = PointToLineDistance(vStart, vEnd, creep:GetLocation())
+			if tResult ~= nil 
+				and tResult.within 
+				and tResult.distance <= nRadius + 20
+			then
+				return true
+			end
 		end
 	end
 
@@ -692,12 +694,14 @@ function X.IsEnemyCreepBetweenEnemyHero( hSource, hTarget, nRadius )
 	if creeps then
 		for i,creep in pairs(creeps)
 		do
-			local tResult = PointToLineDistance(vStart, vEnd, creep:GetLocation());
-			if tResult ~= nil
-				and tResult.within
-				and tResult.distance <= nRadius + 20
-			then
-				return true
+			if J.IsValid(creep) then
+				local tResult = PointToLineDistance(vStart, vEnd, creep:GetLocation());
+				if tResult ~= nil
+					and tResult.within
+					and tResult.distance <= nRadius + 20
+				then
+					return true
+				end
 			end
 		end
 	end

@@ -131,6 +131,8 @@ function X.MinionThink(hMinionUnit)
 		Minion.IllusionThink( hMinionUnit )
 	end
 
+	-- print("dazzle minion")
+	-- J.Utils.PrintTable(hMinionUnit)
 end
 
 --[[
@@ -165,6 +167,9 @@ local abilityW = bot:GetAbilityByName( sAbilityList[2] )
 local abilityE = bot:GetAbilityByName( sAbilityList[3] )
 local abilityF = bot:GetAbilityByName( sAbilityList[5] )
 local abilityR = bot:GetAbilityByName( sAbilityList[6] )
+local NothlProjection = bot:GetAbilityByName("dazzle_nothl_projection")
+local NothlProjectionEnd = bot:GetAbilityByName("dazzle_nothl_projection_end")
+
 local talent3 = bot:GetAbilityByName( sTalentList[3] )
 local talent4 = bot:GetAbilityByName( sTalentList[4] )
 local talent6 = bot:GetAbilityByName( sTalentList[6] )
@@ -174,6 +179,7 @@ local castWDesire, castWTarget
 local castEDesire, castETarget
 local castFDesire, castFTarget
 local castRDesire, castRTarget
+local NothlProjectionDesire, NothlProjectionLocation, NothlProjectionEndDesire
 
 
 local nKeepMana, nMP, nHP, nLV, hEnemyList, hAllyList, botTarget, sMotive
@@ -198,7 +204,6 @@ function X.SkillsComplement()
 	local aether = J.IsItemAvailable( "item_aether_lens" )
 	if aether ~= nil then aetherRange = 225 end
 
-
 	castWDesire, castWTarget, sMotive = X.ConsiderW()
 	if ( castWDesire > 0 )
 	then
@@ -210,6 +215,19 @@ function X.SkillsComplement()
 		return
 	end
 
+	-- NothlProjectionDesire, NothlProjectionLocation = X.ConsiderNothlProjection()
+	-- if NothlProjectionDesire > 0 then
+	-- 	J.SetReportMotive( bDebugMode, sMotive )
+	-- 	J.SetQueuePtToINT( bot, true )
+	-- 	bot:ActionQueue_UseAbilityOnLocation( NothlProjection, NothlProjectionLocation )
+	-- 	return
+	-- end
+
+	NothlProjectionEndDesire = X.ConsiderNothlProjectionEnd()
+	if NothlProjectionEndDesire > 0 then
+		bot:ActionQueue_UseAbility( NothlProjectionEnd )
+		return
+	end
 
 	castQDesire, castQTarget, sMotive = X.ConsiderQ()
 	if ( castQDesire > 0 )
@@ -245,17 +263,47 @@ function X.SkillsComplement()
 	-- 	bot:ActionQueue_UseAbility( abilityR )
 	-- 	return
 	-- end
-
 end
 
+function X.ConsiderNothlProjection()
+    if not J.CanCastAbility(NothlProjection)
+    then
+        return BOT_ACTION_DESIRE_NONE, nil
+    end
 
+	local nCastRange = NothlProjection:GetCastRange()
+	--进攻
+	if J.IsGoingOnSomeone( bot )
+	then
+		if J.IsValidHero( botTarget )
+			and J.CanCastOnNonMagicImmune( botTarget )
+			and J.IsInRange( botTarget, bot, nCastRange )
+			and J.CanCastOnTargetAdvanced( botTarget )
+			and J.GetHP(botTarget) < 0.7
+			and J.GetHP(bot) > 0.5
+		then
+			-- J.Utils.PrintAllAbilities(bot)
+			return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation() + RandomVector(100)
+		end
+	end
+	return BOT_ACTION_DESIRE_NONE, nil
+end
 
-
+function X.ConsiderNothlProjectionEnd()
+    if not J.CanCastAbility(NothlProjectionEnd)
+    then
+        return BOT_ACTION_DESIRE_NONE, nil
+    end
+	if J.IsRetreating( bot )
+	and J.GetHP(bot) < 0.5
+	then
+		return BOT_ACTION_DESIRE_HIGH
+	end
+	return BOT_ACTION_DESIRE_NONE, nil
+end
 
 function X.ConsiderR()
-
-	if not abilityR:IsFullyCastable() then return 0 end	
-	
+	if not abilityR:IsFullyCastable() then return 0 end
 	if not abilityQ:IsFullyCastable()
 		and not abilityW:IsFullyCastable()
 		and not abilityE:IsFullyCastable()
@@ -264,17 +312,12 @@ function X.ConsiderR()
 		if #enemyList >= 1
 		then
 			return BOT_ACTION_DESIRE_HIGH, 'none', "R-refresh"
-		end	
+		end
 	end
-
-
 	return BOT_ACTION_DESIRE_NONE
-	
 end
 
-
 function X.ConsiderQ()
-
 
 	if not abilityQ:IsFullyCastable() then return 0 end
 

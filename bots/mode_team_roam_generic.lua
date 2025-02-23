@@ -1514,15 +1514,17 @@ function X.WeakestUnitExceptRangeCanBeAttacked(bHero, bEnemy, nRange, nRadius, b
 	end
 
 	for _,u in pairs(units) do
-		if GetUnitToUnitDistance(bot,u) > nRange
-		   and X.CanBeAttacked(u)
-		--    and not u:HasModifier("modifier_crystal_maiden_frostbite")
-		then
-			realHP = u:GetHealth() / 1;
-			if realHP < weakestHP
+		if J.IsValid(u) then
+			if GetUnitToUnitDistance(bot,u) > nRange
+			   and X.CanBeAttacked(u)
+			--    and not u:HasModifier("modifier_crystal_maiden_frostbite")
 			then
-				weakest = u;
-				weakestHP = realHP;
+				realHP = u:GetHealth() / 1;
+				if realHP < weakestHP
+				then
+					weakest = u;
+					weakestHP = realHP;
+				end
 			end
 		end
 	end

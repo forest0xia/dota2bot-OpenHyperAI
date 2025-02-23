@@ -8,6 +8,7 @@ local isTierTwoDone   = false
 local isTierThreeDone = false
 local isTierFourDone  = false
 local isTierFiveDone  = false
+local DOTA_ITEM_NEUTRAL_SLOT = 16
 
 local Tier1NeutralItems = {
     --[[Trusty Shovel]]         "item_trusty_shovel",
@@ -89,6 +90,76 @@ local Tier5NeutralItems = {
     --[[Magic Lamp]]            "item_panic_button",
 }
 
+local enhancements = {
+    -- Tier 1 enhancements
+    { name = "item_enhancement_mystical", tier = 1, roles = {1, 1, 1, 1, 1}, realName = "Mystical Enhancement" },
+    { name = "item_enhancement_brawny",    tier = 1, roles = {1, 1, 3, 2, 2}, realName = "Brawny Enhancement" },
+    { name = "item_enhancement_alert",     tier = 1, roles = {1, 2, 1, 1, 1}, realName = "Alert Enhancement" },
+    { name = "item_enhancement_tough",     tier = 1, roles = {1, 1, 2, 2, 1}, realName = "Tough Enhancement" },
+    { name = "item_enhancement_quickened", tier = 1, roles = {1, 1, 1, 2, 1}, realName = "Quickened Enhancement" },
+
+    -- Tier 2 enhancements
+    { name = "item_enhancement_mystical", tier = 2, roles = {1, 1, 1, 1, 1}, realName = "Mystical Enhancement" },
+    { name = "item_enhancement_brawny",    tier = 2, roles = {1, 1, 3, 2, 2}, realName = "Brawny Enhancement" },
+    { name = "item_enhancement_alert",     tier = 2, roles = {1, 2, 1, 1, 1}, realName = "Alert Enhancement" },
+    { name = "item_enhancement_tough",     tier = 2, roles = {1, 1, 2, 2, 1}, realName = "Tough Enhancement" },
+    { name = "item_enhancement_quickened", tier = 2, roles = {1, 1, 1, 2, 1}, realName = "Quickened Enhancement" },
+    { name = "item_enhancement_keen_eyed", tier = 2, roles = {1, 1, 1, 1, 2}, realName = "Keen Eyed Enhancement" },
+    { name = "item_enhancement_vast",      tier = 2, roles = {1, 1, 1, 1, 1}, realName = "Vast Enhancement" },
+    { name = "item_enhancement_greedy",    tier = 2, roles = {1, 1, 1, 2, 2}, realName = "Greedy Enhancement" },
+    { name = "item_enhancement_vampiric",  tier = 2, roles = {1, 1, 1, 1, 1}, realName = "Vampiric Enhancement" },
+
+    -- Tier 3 enhancements
+    { name = "item_enhancement_mystical", tier = 3, roles = {1, 1, 1, 1, 1}, realName = "Mystical Enhancement" },
+    { name = "item_enhancement_brawny",    tier = 3, roles = {1, 1, 3, 2, 2}, realName = "Brawny Enhancement" },
+    { name = "item_enhancement_alert",     tier = 3, roles = {1, 2, 1, 1, 1}, realName = "Alert Enhancement" },
+    { name = "item_enhancement_tough",     tier = 3, roles = {1, 1, 2, 2, 1}, realName = "Tough Enhancement" },
+    { name = "item_enhancement_quickened", tier = 3, roles = {1, 1, 1, 2, 1}, realName = "Quickened Enhancement" },
+    { name = "item_enhancement_keen_eyed", tier = 3, roles = {1, 1, 1, 1, 2}, realName = "Keen Eyed Enhancement" },
+    { name = "item_enhancement_vast",      tier = 3, roles = {1, 1, 1, 1, 1}, realName = "Vast Enhancement" },
+    { name = "item_enhancement_greedy",    tier = 3, roles = {1, 1, 1, 2, 2}, realName = "Greedy Enhancement" },
+    { name = "item_enhancement_vampiric",  tier = 3, roles = {1, 1, 1, 1, 1}, realName = "Vampiric Enhancement" },
+
+    -- Tier 4 enhancements
+    { name = "item_enhancement_mystical", tier = 4, roles = {1, 1, 1, 1, 1}, realName = "Mystical Enhancement" },
+    { name = "item_enhancement_brawny",    tier = 4, roles = {1, 1, 3, 2, 2}, realName = "Brawny Enhancement" },
+    { name = "item_enhancement_alert",     tier = 4, roles = {1, 2, 1, 1, 1}, realName = "Alert Enhancement" },
+    { name = "item_enhancement_tough",     tier = 4, roles = {1, 1, 2, 2, 1}, realName = "Tough Enhancement" },
+    { name = "item_enhancement_quickened", tier = 4, roles = {1, 1, 1, 2, 1}, realName = "Quickened Enhancement" },
+    { name = "item_enhancement_vampiric",  tier = 4, roles = {1, 1, 1, 1, 1}, realName = "Vampiric Enhancement" },
+    { name = "item_enhancement_timeless", tier = 4, roles = {1, 1, 1, 1, 1}, realName = "Timeless Enhancement" },
+    { name = "item_enhancement_titanic",  tier = 4, roles = {1, 1, 1, 1, 1}, realName = "Titanic Enhancement" },
+    { name = "item_enhancement_crude",    tier = 4, roles = {1, 1, 1, 1, 1}, realName = "Crude Enhancement" },
+
+    -- Tier 5 enhancements
+    { name = "item_enhancement_timeless", tier = 5, roles = {1, 1, 1, 1, 1}, realName = "Timeless Enhancement" },
+    { name = "item_enhancement_titanic",  tier = 5, roles = {1, 1, 1, 1, 1}, realName = "Titanic Enhancement" },
+    { name = "item_enhancement_crude",    tier = 5, roles = {1, 1, 1, 1, 1}, realName = "Crude Enhancement" },
+    { name = "item_enhancement_feverish", tier = 5, roles = {1, 1, 1, 1, 1}, realName = "Feverish Enhancement" },
+    { name = "item_enhancement_fleetfooted", tier = 5, roles = {1, 1, 1, 1, 1}, realName = "Fleetfooted Enhancement" },
+    { name = "item_enhancement_audacious", tier = 5, roles = {1, 1, 1, 1, 1}, realName = "Audacious Enhancement" },
+    { name = "item_enhancement_evolved",  tier = 5, roles = {1, 1, 1, 1, 1}, realName = "Evolved Enhancement" },
+    { name = "item_enhancement_boundless", tier = 5, roles = {1, 1, 1, 1, 1}, realName = "Boundless Enhancement" },
+    { name = "item_enhancement_wise",     tier = 5, roles = {1, 1, 1, 1, 1}, realName = "Wise Enhancement" },
+}
+
+function NeutralItems:GetRandomEnhanByTier(tier)
+    local filtered = {}
+    for _, enh in ipairs(enhancements) do
+        if enh.tier == tier then
+            table.insert(filtered, enh)
+        end
+    end
+
+    if #filtered == 0 then
+        return nil  -- No enhancement found for this tier
+    end
+
+    -- Return a random enhancement from the filtered list.
+    return filtered[math.random(#filtered)]
+end
+
+
 -- Just give out random for now.
 -- Will work out a decent algorithm later to better assign suitable items.
 function NeutralItems.GiveNeutralItems(TeamRadiant, TeamDire)
@@ -101,11 +172,11 @@ function NeutralItems.GiveNeutralItems(TeamRadiant, TeamDire)
         GameRules:SendCustomMessage('Bots receiving Tier 1 Neutral Items...', 0, 0)
 
         for _, h in pairs(TeamRadiant) do
-            NeutralItems.GiveItem(Tier1NeutralItems[RandomInt(1, #Tier1NeutralItems)], h, isTierOneDone)
+            NeutralItems.GiveItem(Tier1NeutralItems[RandomInt(1, #Tier1NeutralItems)], h, isTierOneDone, 1)
         end
 
         for _, h in pairs(TeamDire) do
-            NeutralItems.GiveItem(Tier1NeutralItems[RandomInt(1, #Tier1NeutralItems)], h, isTierOneDone)
+            NeutralItems.GiveItem(Tier1NeutralItems[RandomInt(1, #Tier1NeutralItems)], h, isTierOneDone, 1)
         end
 
         isTierOneDone = true
@@ -118,11 +189,11 @@ function NeutralItems.GiveNeutralItems(TeamRadiant, TeamDire)
         GameRules:SendCustomMessage('Bots receiving Tier 2 Neutral Items...', 0, 0)
 
         for _, h in pairs(TeamRadiant) do
-            NeutralItems.GiveItem(Tier2NeutralItems[RandomInt(1, #Tier2NeutralItems)], h, isTierOneDone)
+            NeutralItems.GiveItem(Tier2NeutralItems[RandomInt(1, #Tier2NeutralItems)], h, isTierOneDone, 2)
         end
 
         for _, h in pairs(TeamDire) do
-            NeutralItems.GiveItem(Tier2NeutralItems[RandomInt(1, #Tier2NeutralItems)], h, isTierOneDone)
+            NeutralItems.GiveItem(Tier2NeutralItems[RandomInt(1, #Tier2NeutralItems)], h, isTierOneDone, 2)
         end
 
         isTierTwoDone = true
@@ -135,11 +206,11 @@ function NeutralItems.GiveNeutralItems(TeamRadiant, TeamDire)
         GameRules:SendCustomMessage('Bots receiving Tier 3 Neutral Items...', 0, 0)
 
         for _, h in pairs(TeamRadiant) do
-            NeutralItems.GiveItem(Tier3NeutralItems[RandomInt(1, #Tier3NeutralItems)], h, isTierTwoDone)
+            NeutralItems.GiveItem(Tier3NeutralItems[RandomInt(1, #Tier3NeutralItems)], h, isTierTwoDone, 3)
         end
 
         for _, h in pairs(TeamDire) do
-            NeutralItems.GiveItem(Tier3NeutralItems[RandomInt(1, #Tier3NeutralItems)], h, isTierTwoDone)
+            NeutralItems.GiveItem(Tier3NeutralItems[RandomInt(1, #Tier3NeutralItems)], h, isTierTwoDone, 3)
         end
 
         isTierThreeDone = true
@@ -152,11 +223,11 @@ function NeutralItems.GiveNeutralItems(TeamRadiant, TeamDire)
         GameRules:SendCustomMessage('Bots receiving Tier 4 Neutral Items...', 0, 0)
 
         for _, h in pairs(TeamRadiant) do
-            NeutralItems.GiveItem(Tier4NeutralItems[RandomInt(1, #Tier4NeutralItems)], h, isTierThreeDone)
+            NeutralItems.GiveItem(Tier4NeutralItems[RandomInt(1, #Tier4NeutralItems)], h, isTierThreeDone, 4)
         end
 
         for _, h in pairs(TeamDire) do
-            NeutralItems.GiveItem(Tier4NeutralItems[RandomInt(1, #Tier4NeutralItems)], h, isTierThreeDone)
+            NeutralItems.GiveItem(Tier4NeutralItems[RandomInt(1, #Tier4NeutralItems)], h, isTierThreeDone, 4)
         end
 
         isTierFourDone = true
@@ -169,18 +240,19 @@ function NeutralItems.GiveNeutralItems(TeamRadiant, TeamDire)
         GameRules:SendCustomMessage('Bots receiving Tier 5 Neutral Items...', 0, 0)
 
         for _, h in pairs(TeamRadiant) do
-            NeutralItems.GiveItem(Tier5NeutralItems[RandomInt(1, #Tier5NeutralItems)], h, isTierFourDone)
+            NeutralItems.GiveItem(Tier5NeutralItems[RandomInt(1, #Tier5NeutralItems)], h, isTierFourDone, 5)
         end
 
         for _, h in pairs(TeamDire) do
-            NeutralItems.GiveItem(Tier5NeutralItems[RandomInt(1, #Tier5NeutralItems)], h, isTierFourDone)
+            NeutralItems.GiveItem(Tier5NeutralItems[RandomInt(1, #Tier5NeutralItems)], h, isTierFourDone, 5)
         end
 
         isTierFiveDone = true
     end
 end
 
-function NeutralItems.GiveItem(itemName, hero, isTierDone)
+function NeutralItems.GiveItem(itemName, hero, isTierDone, nTier)
+    NeutralItems:RemoveEnhan(hero)
     if hero:HasRoomForItem(itemName, true, true)
     then
         local item = CreateItem(itemName, hero, hero)
@@ -194,7 +266,25 @@ function NeutralItems.GiveItem(itemName, hero, isTierDone)
         else
             hero:AddItem(item)
         end
+        local enhancement = NeutralItems:GetRandomEnhanByTier(nTier)
+        if enhancement then
+            local enha = CreateItem(enhancement.name, hero, hero)
+            enha:SetPurchaseTime(0)
+            hero:AddItem(enha)
+        end
     end
+end
+
+function NeutralItems:RemoveEnhan(unit)
+	for idx = 1, 20 do
+		local currentItem = unit:GetItemInSlot(idx)
+		if currentItem ~= nil then
+			if string.find(currentItem:GetName(), "item_enhancement") then
+				unit:RemoveItem(currentItem)
+				-- return
+			end
+		end
+	end
 end
 
 function NeutralItems.HasNeutralItem(hero)

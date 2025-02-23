@@ -1191,11 +1191,16 @@ export function IsTeamPushingSecondTierOrHighGround(bot: Unit): boolean {
     if (cachedRes !== null) {
         return cachedRes;
     }
-    const res =
-        bot.GetNearbyHeroes(2000, false, BotMode.None).length > 2 &&
-        (IsNearEnemySecondTierTower(bot, 2000) || IsNearEnemyHighGroundTower(bot, 3000) || GetUnitToUnitDistance(bot, GetAncient(GetOpposingTeam())) < 3000);
-    SetCachedVars(cacheKey, res);
-    return res;
+    const ancient = GetAncient(GetOpposingTeam());
+    if (ancient !== null) {
+        const res =
+            bot.GetNearbyHeroes(2000, false, BotMode.None).length > 2 &&
+            (IsNearEnemySecondTierTower(bot, 2000) || IsNearEnemyHighGroundTower(bot, 3000) || GetUnitToUnitDistance(bot, ancient) < 3000);
+        SetCachedVars(cacheKey, res);
+        return res;
+    }
+    SetCachedVars(cacheKey, false);
+    return false;
 }
 
 /**

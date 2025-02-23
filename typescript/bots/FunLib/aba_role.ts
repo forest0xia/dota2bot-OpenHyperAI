@@ -393,6 +393,7 @@ export const GetPosition = function (bot: Unit) {
         role = HeroPositions[playerId] != null ? HeroPositions[playerId] : GetPositionForCM(bot);
         print("[ERROR] Failed to match bot role for bot: " + unitName + ", PlayerID: " + playerId + ", set it to play pos: " + role);
         print("Stack Trace:", debug.traceback());
+        bot.assignedRole = role;
     }
 
     if (role == null) {
