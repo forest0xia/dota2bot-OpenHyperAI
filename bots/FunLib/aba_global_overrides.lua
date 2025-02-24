@@ -78,12 +78,14 @@ function GetUnitToUnitDistance(unit1, unit2)
 	if not unit1 then
 		print("[Error] GetUnitToUnitDistance called with invalid unit 1")
 		print("Stack Trace:", debug.traceback())
+		return 1000
 	end
 	if unit2 == nil or unit2:GetLocation() == nil then
 		if unit1 then
 			print("[Error] GetUnitToUnitDistance called with invalid unit 2, the unit 1 is: " .. unit1:GetUnitName())
 			print("Stack Trace:", debug.traceback())
 		end
+		return 1000
 	end
 	return original_GetUnitToUnitDistance(unit1, unit2)
 end
@@ -163,6 +165,9 @@ function CDOTA_Bot_Script:IsInvulnerable()
     if not self:CanBeSeen() then
 		-- print("IsInvulnerable has been called on unit can't be seen")
 		-- print("Stack Trace:", debug.traceback())
+		return false
+	end
+	if self:HasModifier('modifier_dazzle_nothl_projection_soul_debuff') then
 		return false
 	end
     return originalIsInvulnerable(self)

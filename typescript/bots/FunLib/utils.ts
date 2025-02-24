@@ -297,7 +297,7 @@ export function PrintUnitModifiers(unit: Unit) {
 
 export function PrintPings(pingTimeGap: number): void {
     const listPings = [];
-    const teamPlayers = GetTeamPlayers(GetTeam());
+    const teamPlayers = GetTeamPlayers(GetTeam(), true);
 
     // for (const [_, zone] of GetAvoidanceZones().entries()) {
     //     PrintTable(zone);
@@ -312,19 +312,13 @@ export function PrintPings(pingTimeGap: number): void {
         if (ping.time !== 0 && GameTime() - ping.time < pingTimeGap) {
             listPings.push(ping);
 
-            // // print units and modifiers.
-            // for (const unit of GetUnitList(UnitType.All)) {
-            //     if (
-            //         IsValidHero(unit) &&
-            //         GetLocationToLocationDistance(
-            //             ping.location,
-            //             unit.GetLocation()
-            //         ) < 400
-            //     ) {
-            //         print(unit.GetUnitName());
-            //         PrintUnitModifiers(unit);
-            //     }
-            // }
+            // print units and modifiers.
+            for (const unit of GetUnitList(UnitType.All)) {
+                if (IsValidHero(unit) && GetLocationToLocationDistance(ping.location, unit.GetLocation()) < 400) {
+                    print(unit.GetUnitName());
+                    PrintUnitModifiers(unit);
+                }
+            }
         }
     }
     if (listPings.length > 0) {

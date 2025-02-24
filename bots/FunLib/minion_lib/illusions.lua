@@ -100,6 +100,7 @@ function X.ConsiderRetreat(hMinionUnit, hTarget)
 end
 
 function X.IsTargetInShouldAimToAttackRange(hMinionUnit, target, nMaxRange)
+    if not U.IsValidUnit(hTarget) then return false end
     return GetUnitToUnitDistance(hMinionUnit, target) <= hMinionUnit:GetAttackRange()
         or (not U.CantMove(hMinionUnit) and GetUnitToUnitDistance(hMinionUnit, target) < math.min(hMinionUnit:GetAttackRange() * 3, nMaxRange))
 end

@@ -1,11 +1,3 @@
-----------------------------------------------------------------------------------------------------
---- The Creation Come From: BOT EXPERIMENT Credit:FURIOUSPUPPY
---- BOT EXPERIMENT Author: Arizona Fauzie 2018.11.21
---- Link:http://steamcommunity.com/sharedfiles/filedetails/?id=837040016
---- Refactor: 决明子 Email: dota2jmz@163.com 微博@Dota2_决明子
---- Link:http://steamcommunity.com/sharedfiles/filedetails/?id=1573671599
---- Link:http://steamcommunity.com/sharedfiles/filedetails/?id=1627071163
-----------------------------------------------------------------------------------------------------
 local X = {}
 local bDebugMode = ( 1 == 10 )
 local bot = GetBot()
@@ -16,11 +8,22 @@ local sTalentList = J.Skill.GetTalentList( bot )
 local sAbilityList = J.Skill.GetAbilityList( bot )
 local sRole = J.Item.GetRoleItemsBuyList( bot )
 
+if not J.Utils.GameStates.dazzleNothl then J.Utils.GameStates.dazzleNothl = {[bot:GetPlayerID()] = {body = bot}} end
+if not J.Utils.GameStates.dazzleNothl[bot:GetPlayerID()] then J.Utils.GameStates.dazzleNothl[bot:GetPlayerID()] = {body = bot} end
+
 local tTalentTreeList = {
-						['t25'] = {10, 0},
-						['t20'] = {0, 10},
-						['t15'] = {0, 10},
-						['t10'] = {0, 10},
+						{--pos1,2
+							['t25'] = {0, 10},
+							['t20'] = {10, 0},
+							['t15'] = {10, 0},
+							['t10'] = {0, 10},
+						},
+						{--pos3
+							['t25'] = {10, 0},
+							['t20'] = {0, 10},
+							['t15'] = {0, 10},
+							['t10'] = {0, 10},
+						}
 }
 
 local tAllAbilityBuildList = {
@@ -29,7 +32,9 @@ local tAllAbilityBuildList = {
 
 local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
 
-local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
+local nTalentBuildList = J.Skill.GetTalentBuild(tTalentTreeList[2])
+if sRole == 'pos_1' then nTalentBuildList = J.Skill.GetTalentBuild(tTalentTreeList[1]) end
+if sRole == 'pos_2' then nTalentBuildList = J.Skill.GetTalentBuild(tTalentTreeList[1]) end
 
 local sRoleItemsBuyList = {}
 
@@ -181,7 +186,6 @@ local castFDesire, castFTarget
 local castRDesire, castRTarget
 local NothlProjectionDesire, NothlProjectionLocation, NothlProjectionEndDesire
 
-
 local nKeepMana, nMP, nHP, nLV, hEnemyList, hAllyList, botTarget, sMotive
 local aetherRange = 0
 local talent4Damage = 0
@@ -189,7 +193,9 @@ local talent4Damage = 0
 
 function X.SkillsComplement()
 
-	if J.CanNotUseAbility( bot ) or bot:IsInvisible() then return end
+	local isPhysicalBody = bot:HasModifier('modifier_dazzle_nothl_projection_physical_body_debuff')
+	if isPhysicalBody then J.Utils.GameStates.dazzleNothl[bot:GetPlayerID()].body = bot end
+	if J.CanNotUseAbility( bot ) or bot:IsInvisible() or isPhysicalBody then return end
 
 	nKeepMana = 400
 	aetherRange = 0
@@ -215,13 +221,13 @@ function X.SkillsComplement()
 		return
 	end
 
-	-- NothlProjectionDesire, NothlProjectionLocation = X.ConsiderNothlProjection()
-	-- if NothlProjectionDesire > 0 then
-	-- 	J.SetReportMotive( bDebugMode, sMotive )
-	-- 	J.SetQueuePtToINT( bot, true )
-	-- 	bot:ActionQueue_UseAbilityOnLocation( NothlProjection, NothlProjectionLocation )
-	-- 	return
-	-- end
+	NothlProjectionDesire, NothlProjectionLocation = X.ConsiderNothlProjection()
+	if NothlProjectionDesire > 0 then
+		J.SetReportMotive( bDebugMode, sMotive )
+		J.SetQueuePtToINT( bot, true )
+		bot:ActionQueue_UseAbilityOnLocation( NothlProjection, NothlProjectionLocation )
+		return
+	end
 
 	NothlProjectionEndDesire = X.ConsiderNothlProjectionEnd()
 	if NothlProjectionEndDesire > 0 then
@@ -266,14 +272,19 @@ function X.SkillsComplement()
 end
 
 function X.ConsiderNothlProjection()
-    if not J.CanCastAbility(NothlProjection)
+    if not J.CanCastAbility(NothlProjection) or bot:HasModifier('modifier_dazzle_nothl_projection_soul_debuff')
     then
         return BOT_ACTION_DESIRE_NONE, nil
     end
 
+	local hCloseEnemyList = J.GetNearbyHeroes(bot, 400, true, BOT_MODE_NONE )
+	if #hCloseEnemyList >= 1 then
+        return BOT_ACTION_DESIRE_NONE, nil
+	end
+
 	local nCastRange = NothlProjection:GetCastRange()
 	--进攻
-	if J.IsGoingOnSomeone( bot )
+	if J.IsInTeamFight(bot, 1200)
 	then
 		if J.IsValidHero( botTarget )
 			and J.CanCastOnNonMagicImmune( botTarget )
@@ -294,10 +305,17 @@ function X.ConsiderNothlProjectionEnd()
     then
         return BOT_ACTION_DESIRE_NONE, nil
     end
-	if J.IsRetreating( bot )
-	and J.GetHP(bot) < 0.5
-	then
+	if #hEnemyList <= 0 then
 		return BOT_ACTION_DESIRE_HIGH
+	end
+	local _bot = J.Utils.GameStates.dazzleNothl[bot:GetPlayerID()].body
+	if J.IsValid(bot) then
+		if J.IsRetreating( _bot )
+		and J.GetHP(_bot) < 0.6
+		and #hEnemyList >= 1
+		then
+			return BOT_ACTION_DESIRE_HIGH
+		end
 	end
 	return BOT_ACTION_DESIRE_NONE, nil
 end

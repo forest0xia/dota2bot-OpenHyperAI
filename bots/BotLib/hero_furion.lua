@@ -9,22 +9,22 @@ local sRole = J.Item.GetRoleItemsBuyList( bot )
 
 local tTalentTreeList = {
 						{--pos1
-                            ['t25'] = {0, 10},
+                            ['t25'] = {10, 0},
                             ['t20'] = {0, 10},
-                            ['t15'] = {10, 0},
-                            ['t10'] = {10, 0},
+                            ['t15'] = {0, 10},
+                            ['t10'] = {0, 10},
                         },
                         {--pos3
-                            ['t25'] = {0, 10},
-                            ['t20'] = {10, 0},
-                            ['t15'] = {10, 0},
-                            ['t10'] = {10, 0},
+                            ['t25'] = {10, 0},
+                            ['t20'] = {0, 10},
+                            ['t15'] = {0, 10},
+                            ['t10'] = {0, 10},
                         }
 }
 
 local tAllAbilityBuildList = {
-						{2,1,1,2,1,6,1,2,2,3,6,3,3,3,6},--pos1
-                        {3,2,3,1,3,6,3,2,2,2,6,1,1,1,6},--pos3
+    {3,1,3,2,3,6,3,2,2,2,6,1,1,1,6},--pos1
+    {3,1,3,2,3,6,3,2,2,2,6,1,1,1,6},--pos3
 }
 
 local nAbilityBuildList
@@ -207,15 +207,15 @@ function X.SkillsComplement()
         return
     end
 
-    SproutCallDesire, SproutCallTarget, SproutCallLocation = X.ConsiderSproutCall()
-    if SproutCallDesire > 0
-    then
-        J.SetQueuePtToINT(bot, false)
-        bot:ActionQueue_UseAbilityOnEntity(Sprout, SproutCallTarget)
-        bot:ActionQueue_Delay(0.35 + 0.44)
-        bot:ActionQueue_UseAbilityOnLocation(NaturesCall, SproutCallLocation)
-        return
-    end
+    -- SproutCallDesire, SproutCallTarget, SproutCallLocation = X.ConsiderSproutCall()
+    -- if SproutCallDesire > 0
+    -- then
+    --     J.SetQueuePtToINT(bot, false)
+    --     bot:ActionQueue_UseAbilityOnEntity(Sprout, SproutCallTarget)
+    --     bot:ActionQueue_Delay(0.35 + 0.44)
+    --     bot:ActionQueue_UseAbilityOnLocation(NaturesCall, SproutCallLocation)
+    --     return
+    -- end
 
     TeleportationDesire, TeleportationLocation = X.ConsiderTeleportation()
     if TeleportationDesire > 0
@@ -238,7 +238,7 @@ function X.SkillsComplement()
     if NaturesCallDesire > 0
     then
         J.SetQueuePtToINT(bot, false)
-        bot:ActionQueue_UseAbilityOnLocation(NaturesCall, NaturesCallLocation)
+        bot:ActionQueue_UseAbilityOnTree(NaturesCall, NaturesCallLocation)
         return
     end
 
@@ -479,7 +479,7 @@ function X.ConsiderNaturesCall()
             and not botTarget:HasModifier('modifier_abaddon_borrowed_time')
             and not botTarget:HasModifier('modifier_faceless_void_chronosphere_freeze')
             then
-                return BOT_ACTION_DESIRE_HIGH, GetTreeLocation(nInRangeTrees[1])
+                return BOT_ACTION_DESIRE_HIGH, nInRangeTrees[1]
             end
         end
 
@@ -490,7 +490,7 @@ function X.ConsiderNaturesCall()
             if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 4
             and J.CanBeAttacked(nEnemyLaneCreeps[1])
             then
-                return BOT_ACTION_DESIRE_HIGH, GetTreeLocation(nInRangeTrees[1])
+                return BOT_ACTION_DESIRE_HIGH, nInRangeTrees[1]
             end
         end
 
@@ -505,13 +505,13 @@ function X.ConsiderNaturesCall()
                 and ((#nNeutralCreeps >= 3)
                     or (#nNeutralCreeps >= 2 and nNeutralCreeps[1]:IsAncientCreep()))
                 then
-                    return BOT_ACTION_DESIRE_HIGH, GetTreeLocation(nInRangeTrees[1])
+                    return BOT_ACTION_DESIRE_HIGH, nInRangeTrees[1]
                 end
 
                 if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 3
                 and J.CanBeAttacked(nEnemyLaneCreeps[1])
                 then
-                    return BOT_ACTION_DESIRE_HIGH, GetTreeLocation(nInRangeTrees[1])
+                    return BOT_ACTION_DESIRE_HIGH, nInRangeTrees[1]
                 end
             end
         end
@@ -524,7 +524,7 @@ function X.ConsiderNaturesCall()
                 if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 2
                 and J.CanBeAttacked(nEnemyLaneCreeps[1])
                 then
-                    return BOT_ACTION_DESIRE_HIGH, GetTreeLocation(nInRangeTrees[1])
+                    return BOT_ACTION_DESIRE_HIGH, nInRangeTrees[1]
                 end
             end
         end
@@ -536,7 +536,7 @@ function X.ConsiderNaturesCall()
             and J.IsInRange(bot, botTarget, bot:GetAttackRange())
             and J.IsAttacking(bot)
             then
-                return BOT_ACTION_DESIRE_HIGH, GetTreeLocation(nInRangeTrees[1])
+                return BOT_ACTION_DESIRE_HIGH, nInRangeTrees[1]
             end
         end
 
@@ -546,7 +546,7 @@ function X.ConsiderNaturesCall()
             and J.IsInRange(bot, botTarget, bot:GetAttackRange())
             and J.IsAttacking(bot)
             then
-                return BOT_ACTION_DESIRE_HIGH, GetTreeLocation(nInRangeTrees[1])
+                return BOT_ACTION_DESIRE_HIGH, nInRangeTrees[1]
             end
         end
     end

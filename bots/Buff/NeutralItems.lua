@@ -262,6 +262,7 @@ function NeutralItems.GiveItem(itemName, hero, isTierDone, nTier)
         and isTierDone
         then
             hero:RemoveItem(hero:GetItemInSlot(DOTA_ITEM_NEUTRAL_SLOT))
+            NeutralItems:RemoveEnhan(hero)
             hero:AddItem(item)
         else
             hero:AddItem(item)

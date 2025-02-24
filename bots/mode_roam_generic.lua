@@ -592,7 +592,7 @@ function ThinkIndividualRoaming()
 	-- Marci
 	if bot:HasModifier("modifier_marci_unleash") then
 		local botTarget = J.GetProperTarget(bot)
-		if botTarget and GetUnitToUnitDistance(bot, botTarget) > bot:GetAttackRange() + 200
+		if J.IsValidTarget(botTarget) and GetUnitToUnitDistance(bot, botTarget) > bot:GetAttackRange() + 200
 		then
 			bot:Action_MoveToLocation(botTarget:GetLocation())
 			return
@@ -605,7 +605,7 @@ function ThinkIndividualRoaming()
 	if bot:HasModifier("modifier_muerta_pierce_the_veil_buff")
 	then
 		local botTarget = J.GetProperTarget(bot)
-		if botTarget and GetUnitToUnitDistance(bot, botTarget) > bot:GetAttackRange() + 200
+		if J.IsValidTarget(botTarget) and GetUnitToUnitDistance(bot, botTarget) > bot:GetAttackRange() + 200
 		then
 			bot:Action_MoveToLocation(botTarget:GetLocation())
 			return
@@ -617,7 +617,7 @@ function ThinkIndividualRoaming()
 
 	if bot:HasModifier('modifier_razor_static_link_buff') then
 		local botTarget = J.GetProperTarget(bot)
-		if botTarget then
+		if J.IsValidTarget(botTarget) then
 			local distanceFromHero = GetUnitToUnitDistance(bot, botTarget)
 			if distanceFromHero > bot:GetAttackRange()
 			then
@@ -633,7 +633,7 @@ function ThinkIndividualRoaming()
 	if bot:HasModifier("modifier_faceless_void_chronosphere")
 	then
 		local botTarget = J.GetProperTarget(bot)
-		if botTarget and GetUnitToUnitDistance(bot, botTarget) > bot:GetAttackRange() + 200
+		if J.IsValidTarget(botTarget) and GetUnitToUnitDistance(bot, botTarget) > bot:GetAttackRange() + 200
 		then
 			bot:Action_MoveToLocation(botTarget:GetLocation())
 			return
@@ -647,7 +647,7 @@ function ThinkIndividualRoaming()
 	if bot:HasModifier("modifier_leshrac_pulse_nova")
 	then
 		local botTarget = J.GetProperTarget(bot)
-		if botTarget and GetUnitToUnitDistance(bot, botTarget) > 400
+		if J.IsValidTarget(botTarget) and GetUnitToUnitDistance(bot, botTarget) > 400
 		then
 			bot:Action_MoveToLocation(botTarget:GetLocation())
 			return
@@ -664,7 +664,7 @@ function ThinkIndividualRoaming()
 			return
 		else
 			local botTarget = J.GetProperTarget(bot)
-			if botTarget then
+			if J.IsValidTarget(botTarget) then
 				bot:ActionQueue_AttackUnit(botTarget, false)
 			end
 			return
@@ -714,7 +714,7 @@ function ThinkIndividualRoaming()
 		if Rot:GetToggleState()
 		then
 			local botTarget = J.GetProperTarget(bot)
-			if botTarget and GetUnitToUnitDistance(bot, botTarget) > 400
+			if J.IsValidTarget(botTarget) and GetUnitToUnitDistance(bot, botTarget) > 400
 			then
 				bot:Action_MoveToLocation(botTarget:GetLocation())
 				return
@@ -726,7 +726,7 @@ function ThinkIndividualRoaming()
 	if botName == 'npc_dota_hero_nevermore' then
 		if J.Utils.IsTruelyInvisible(bot) then
 			local botTarget = J.GetProperTarget(bot)
-			if botTarget and GetUnitToUnitDistance(bot, botTarget) > 400
+			if J.IsValidTarget(botTarget) and GetUnitToUnitDistance(bot, botTarget) > 400
 			then
 				bot:Action_MoveToLocation(botTarget:GetLocation())
 				return
@@ -1370,7 +1370,7 @@ function ConsiderGeneralRoamingInConditions()
 
 		if bot:HasModifier("modifier_undying_tombstone_zombie_deathstrike_slow") then
 			cachedTombstoneZombieSlowState = DotaTime()
-			if botTarget and not J.Utils.IsUnitWithName(botTarget, "tombstone") then
+			if J.IsValidTarget(botTarget) and not J.Utils.IsUnitWithName(botTarget, "tombstone") then
 				local enemy = J.FindEnemyUnit("tombstone")
 				if not enemy then
 					enemy = GetTargetEnemy("npc_dota_hero_undying")
@@ -1732,7 +1732,7 @@ ConsiderHeroSpecificRoaming['npc_dota_hero_leshrac'] = function ()
 	if bot:HasModifier("modifier_leshrac_pulse_nova")
 	then
 		local botTarget = J.GetProperTarget(bot)
-		if botTarget ~= nil and J.GetHP(bot) > J.GetHP(botTarget) then
+		if J.IsValidTarget(botTarget) and J.GetHP(bot) > J.GetHP(botTarget) then
 			if GetUnitToUnitDistance(bot, botTarget) > 400
 			then
 				return BOT_MODE_DESIRE_VERYHIGH
@@ -1781,7 +1781,7 @@ ConsiderHeroSpecificRoaming['npc_dota_hero_marci'] = function ()
 	if bot:HasModifier("modifier_marci_unleash")
 	then
 		local botTarget = J.GetProperTarget(bot)
-		if botTarget ~= nil and J.GetHP(bot) > J.GetHP(botTarget) then
+		if J.IsValidTarget(botTarget) and J.GetHP(bot) > J.GetHP(botTarget) then
 			if J.IsInTeamFight(bot, 1500) then
 				return BOT_MODE_DESIRE_VERYHIGH
 			end
@@ -1810,7 +1810,7 @@ ConsiderHeroSpecificRoaming['npc_dota_hero_pudge'] = function ()
 	if Rot ~= nil and Rot:GetToggleState() and J.WeAreStronger(bot, 1200)
 	then
 		local botTarget = J.GetProperTarget(bot)
-		if botTarget ~= nil and J.GetHP(bot) > J.GetHP(botTarget) then
+		if J.IsValidTarget(botTarget) and J.GetHP(bot) > J.GetHP(botTarget) then
 			return BOT_MODE_DESIRE_ABSOLUTE * 0.85
 		end
 	end
@@ -1821,7 +1821,7 @@ ConsiderHeroSpecificRoaming['npc_dota_hero_muerta'] = function ()
 	if bot:HasModifier("modifier_muerta_pierce_the_veil_buff")
 	then
 		local botTarget = J.GetProperTarget(bot)
-		if botTarget ~= nil and J.GetHP(bot) > 0.2 then
+		if J.IsValidTarget(botTarget) and J.GetHP(bot) > 0.2 then
 			if J.IsInTeamFight(bot, 1500) then
 				return BOT_MODE_DESIRE_VERYHIGH
 			end
@@ -1850,7 +1850,7 @@ ConsiderHeroSpecificRoaming['npc_dota_hero_faceless_void'] = function ()
 	if bot:HasModifier("modifier_faceless_void_chronosphere")
 	then
 		local botTarget = J.GetProperTarget(bot)
-		if botTarget ~= nil and J.GetHP(bot) > 0.25
+		if J.IsValidTarget(botTarget) and J.GetHP(bot) > 0.25
 		and J.IsLocationInChrono(botTarget:GetLocation()) then
 			return BOT_MODE_DESIRE_VERYHIGH
 		end

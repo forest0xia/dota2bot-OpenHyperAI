@@ -70,7 +70,7 @@ if bot.farmLocation == nil then bot.farmLocation = bot:GetLocation() end
 function GetDesire()
 	if bot:IsInvulnerable() or not bot:IsHero() or not bot:IsAlive() or not string.find(botName, "hero") or bot:IsIllusion() then return BOT_MODE_DESIRE_NONE end
 
-	Utils.PrintPings(0.15)
+	-- Utils.PrintPings(0.15)
 
 	if DotaTime() - CleanupCachedVarsTime > Utils.CachedVarsCleanTime then
 		Utils.CleanupCachedVars()

@@ -314,14 +314,24 @@ local function TurboModeGeneralPurchase()
 end
 
 function ItemPurchaseThink()
-	if bot.lastItemPurchaseFrameProcessTime == nil then bot.lastItemPurchaseFrameProcessTime = DotaTime() end
-	if DotaTime() - bot.lastItemPurchaseFrameProcessTime < 0.05 then return end
-	bot.lastItemPurchaseFrameProcessTime = DotaTime()
+	currentTime = DotaTime()
+
+	if bot.lastItemPurchaseFrameProcessTime == nil then bot.lastItemPurchaseFrameProcessTime = currentTime end
+	if currentTime - bot.lastItemPurchaseFrameProcessTime < 0.05 then return end
+	bot.lastItemPurchaseFrameProcessTime = currentTime
 
 	if ( GetGameState() ~= GAME_STATE_PRE_GAME and GetGameState() ~= GAME_STATE_GAME_IN_PROGRESS )
 	then return	end
 
-	currentTime = DotaTime()
+	if bot:IsIllusion()
+	or bot:HasModifier( 'modifier_arc_warden_tempest_double' )
+	or (currentTime > 0 and J.IsMeepoClone(bot))
+	or bot:HasModifier('modifier_dazzle_nothl_projection_soul_debuff')
+	then
+		bot.purchaseListInReverseOrder = {}
+		return
+	end
+
 	botLevel = bot:GetLevel()
 	botGold = bot:GetGold()
 	botWorth = bot:GetNetWorth()
@@ -378,13 +388,6 @@ function ItemPurchaseThink()
 				end
 			end
 		end
-	end
-
-	if bot:HasModifier( 'modifier_arc_warden_tempest_double' )
-	or (DotaTime() > 0 and J.IsMeepoClone(bot))
-	then
-		bot.purchaseListInReverseOrder = {}
-		return
 	end
 
 	--更新队伍里是否有辅助的定位
@@ -820,6 +823,7 @@ function ItemPurchaseThink()
 			)
 			or bot.countInvCheck > 3 * 60 -- if can't finish the item for a long time
 		then
+			-- skip it and continue next
 			bot.countInvCheck = 0
 			bot.currBuyingItemInPurchaseList = nil
 			bot.purchaseListInReverseOrder[#bot.purchaseListInReverseOrder] = nil
@@ -827,7 +831,9 @@ function ItemPurchaseThink()
 			bot.lastInvCheck = currentTime
 			if bot.rebuildCount < 3 and botCourierValue == 0 and botStashValue == 0 and botName ~= "npc_dota_hero_lone_druid" then
 				bot.rebuildCount = bot.rebuildCount + 1
-				for key, value in pairs(bot.currBuyingBasicItemRefList) do
+				-- try rebuild it
+				local newList = Item.GetReducedPurchaseList(bot, bot.currBuyingBasicItemRefList)
+				for _, value in pairs(newList) do
 					if not Item.IsItemInHero(value) then
 						table.insert(bot.currBuyingBasicItemList, value)
 					end

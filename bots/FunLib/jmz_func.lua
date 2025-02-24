@@ -95,14 +95,13 @@ function J.IsTryingtoUseAbility(bot)
 end
 
 function J.CanNotUseAction( bot )
-
 	return not bot:IsAlive()
 			or J.HasQueuedAction( bot )
-			or bot:IsInvulnerable()
+			or (bot:IsInvulnerable() and not bot:HasModifier('modifier_fountain_invulnerability') and not bot:HasModifier('modifier_dazzle_nothl_projection_soul_debuff'))
 			or bot:IsCastingAbility()
 			or bot:IsUsingAbility()
 			or bot:IsChanneling()
-			or bot:IsStunned()
+			or (bot:IsStunned() and not bot:HasModifier('modifier_dazzle_nothl_projection_soul_debuff'))
 			or bot:IsNightmared()
 			or bot:HasModifier( 'modifier_ringmaster_the_box_buff' )
 			or bot:HasModifier( 'modifier_item_forcestaff_active' )
@@ -112,15 +111,14 @@ function J.CanNotUseAction( bot )
 end
 
 function J.CanNotUseAbility( bot )
-
 	return not bot:IsAlive()
 			or J.HasQueuedAction( bot )
-			or bot:IsInvulnerable()
+			or (bot:IsInvulnerable() and not bot:HasModifier('modifier_fountain_invulnerability') and not bot:HasModifier('modifier_dazzle_nothl_projection_soul_debuff'))
 			or bot:IsCastingAbility()
 			or bot:IsUsingAbility()
 			or bot:IsChanneling()
 			or bot:IsSilenced()
-			or bot:IsStunned()
+			or (bot:IsStunned() and not bot:HasModifier('modifier_dazzle_nothl_projection_soul_debuff'))
 			or bot:IsHexed()
 			or bot:IsNightmared()
 			or bot:HasModifier( 'modifier_ringmaster_the_box_buff' )
@@ -3259,32 +3257,34 @@ function J.GetAttackableWeakestUnitFromList( bot, unitList )
 	local attackRange = bot:GetAttackRange()
 
     for _, unit in pairs( unitList ) do
-        local hp = unit:GetHealth()
-        local offensivePower = 0
-		local distance = GetUnitToUnitDistance(bot, unit)
-        if J.IsValidHero(unit) then
-            offensivePower = unit:GetRawOffensivePower()
-        end
-        if J.IsValid( unit )
-            and not unit:IsAttackImmune()
-            and not unit:IsInvulnerable()
-            and not J.HasForbiddenModifier( unit )
-            and not J.IsSuspiciousIllusion( unit )
-			--and not J.IsAllyCanKill( unit )
-            and not J.CannotBeKilled(bot, unit)
-        then
-            -- Calculate score: lower score is better
-            -- Can adjust the weight factors for hp and offensive power to tune the behavior
-            local hpWeight = 0.7
-            local powerWeight = 0.3
-            local score = (hp * hpWeight) - (offensivePower * powerWeight) -- - math.min(1, attackRange / distance) * 100
-
-            -- If the new score is lower, choose this unit as the weakest
-            if score < bestScore then
-                bestScore = score
-                weakest = unit
-            end
-        end
+		if J.IsValidTarget(unit) then
+			local hp = unit:GetHealth()
+			local offensivePower = 0
+			local distance = GetUnitToUnitDistance(bot, unit)
+			if J.IsValidHero(unit) then
+				offensivePower = unit:GetRawOffensivePower()
+			end
+			if J.IsValid( unit )
+				and not unit:IsAttackImmune()
+				and not unit:IsInvulnerable()
+				and not J.HasForbiddenModifier( unit )
+				and not J.IsSuspiciousIllusion( unit )
+				--and not J.IsAllyCanKill( unit )
+				and not J.CannotBeKilled(bot, unit)
+			then
+				-- Calculate score: lower score is better
+				-- Can adjust the weight factors for hp and offensive power to tune the behavior
+				local hpWeight = 0.7
+				local powerWeight = 0.3
+				local score = (hp * hpWeight) - (offensivePower * powerWeight) -- - math.min(1, attackRange / distance) * 100
+	
+				-- If the new score is lower, choose this unit as the weakest
+				if score < bestScore then
+					bestScore = score
+					weakest = unit
+				end
+			end
+		end
     end
 
     return weakest

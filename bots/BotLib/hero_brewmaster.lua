@@ -153,7 +153,7 @@ local DrunkenBrawlerDesire, ActionType
 local PrimalCompanionDesire
 local PrimalSplitDesire
 
-if bot.drunkenBrawlerState == nil and DotaTime() < 0 then bot.drunkenBrawlerState = 1 end
+local drunkenBrawlerState = 1
 
 function X.SkillsComplement()
 	if J.CanNotUseAbility(bot) then return end
@@ -181,49 +181,12 @@ function X.SkillsComplement()
         return
     end
 
-    DrunkenBrawlerDesire, ActionType = X.ConsiderDrunkenBrawler()
+    DrunkenBrawlerDesire, State = X.ConsiderDrunkenBrawler()
     if DrunkenBrawlerDesire > 0
-    and DotaTime() > 0
     then
-        if ActionType ~= nil
-        then
-            local curr = bot.drunkenBrawlerState
-            local state = 1
-            local steps = 0
-
-            if ActionType == 'engage'
-            then
-                if bot.drunkenBrawlerState == 4 then return end
-                state = 4
-            elseif ActionType == 'retreat'
-            then
-                if bot.drunkenBrawlerState == 2 then return end
-                state = 2
-            elseif ActionType == 'farming'
-            then
-                if bot.drunkenBrawlerState == 3 then return end
-                state = 3
-            elseif ActionType == 'weak'
-            then
-                if bot.drunkenBrawlerState == 1 then return end
-                state = 1
-            end
-
-            if not curr then
-                return
-            end
-
-            steps = ((state - curr) + 4) % 4
-            if steps > 0
-            then
-                for _ = 1, steps
-                do
-                    bot:ActionQueue_UseAbility(DrunkenBrawler)
-                    bot.drunkenBrawlerState = bot.drunkenBrawlerState + 1
-                    if bot.drunkenBrawlerState > 4 then bot.drunkenBrawlerState = 1 end
-                end
-                return
-            end
+        if drunkenBrawlerState ~= State then
+            bot:Action_UseAbility(DrunkenBrawler)
+            drunkenBrawlerState = (drunkenBrawlerState % 4) + 1
         end
     end
 
@@ -526,32 +489,45 @@ end
 function X.ConsiderDrunkenBrawler()
     if not J.CanCastAbility(DrunkenBrawler)
     then
-        return BOT_ACTION_DESIRE_NONE, nil
+        return BOT_ACTION_DESIRE_NONE, -1
     end
 
-    if J.GetHP(bot) < 0.33
-    then
-        return BOT_ACTION_DESIRE_HIGH, 'weak'
+    local botTarget = J.GetProperTarget(bot)
+    local nEnemyHeroes = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+
+    if J.GetHP(bot) < 0.33 and J.IsValidHero(nEnemyHeroes[1]) and bot:WasRecentlyDamagedByAnyHero(3.0) then
+        return BOT_ACTION_DESIRE_HIGH, 1
     end
 
-    if J.IsGoingOnSomeone(bot)
-    then
-        return BOT_ACTION_DESIRE_HIGH, 'engage'
+    if J.IsGoingOnSomeone(bot) then
+        return BOT_ACTION_DESIRE_HIGH, 4
     end
 
-    if J.IsLaning(bot) or J.IsFarming(bot)
-    then
-        return BOT_ACTION_DESIRE_HIGH, 'farming'
+    if J.IsRetreating(bot) and not J.IsRealInvisible(bot) then
+        return BOT_ACTION_DESIRE_HIGH, 2
     end
 
-    if J.IsRetreating(bot)
-    and (bot:WasRecentlyDamagedByAnyHero(3))
-    and not J.IsRealInvisible(bot)
-    then
-        return BOT_ACTION_DESIRE_HIGH, 'retreat'
+    if J.IsLaning(bot) or J.IsFarming(bot) then
+        return BOT_ACTION_DESIRE_HIGH, 3
     end
 
-    return BOT_ACTION_DESIRE_NONE, nil
+    if J.IsDoingRoshan(bot) then
+        if J.IsRoshan(botTarget) and J.CanBeAttacked(botTarget) and J.IsInRange(bot, botTarget, 600) then
+            return BOT_ACTION_DESIRE_HIGH, 3
+        else
+            return BOT_ACTION_DESIRE_HIGH, 2
+        end
+    end
+
+    if J.IsDoingTormentor(bot) then
+        if J.IsTormentor(botTarget) and J.IsInRange(bot, botTarget, 600) then
+            return BOT_ACTION_DESIRE_HIGH, 3
+        else
+            return BOT_ACTION_DESIRE_HIGH, 2
+        end
+    end
+
+    return BOT_ACTION_DESIRE_NONE, -1
 end
 
 function X.ConsiderPrimalCompanion()

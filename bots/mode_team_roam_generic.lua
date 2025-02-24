@@ -2376,7 +2376,7 @@ function TrySellOrDropItem()
 		lastCheckBotToDropTime = DotaTime()
 
 		-- 再尝试丢/卖掉
-		if bot:GetLevel() > 8 and bot:GetNetWorth() >= 18000 and Utils.CountBackpackEmptySpace(bot) <= 1 then
+		if bot:GetLevel() >= 6 and bot:GetNetWorth() >= 14000 and Utils.CountBackpackEmptySpace(bot) <= 1 then
 			for i = 1, #Item['tEarlyConsumableItem']
 			do
 				local itemName = Item['tEarlyConsumableItem'][i]

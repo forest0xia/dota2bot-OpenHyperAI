@@ -1517,6 +1517,85 @@ function Item.GetRoleItemsBuyList( bot )
 	return 'pos_'..tostring(Role.GetPosition(bot))
 end
 
+function Item.HasTargetItemCompositByItems(bot, items)
+	local purchased = {}
+	for i = 0, 8
+	do
+		local item = bot:GetItemInSlot( i )
+		if item ~= nil
+		then
+			local basicItems = Item.GetBasicItems( {item} )
+			local intersection, built = Item.GetIntersection(items, basicItems)
+			if built then
+				purchased = Item.MergeLists(purchased, intersection)
+			end
+		end
+	end
+	return purchased
+end
+
+function Item.GetReducedPurchaseList(bot, items)
+	local purchasedList = Item.HasTargetItemCompositByItems(bot, items)
+	return Item.RemoveIntersectedItems(items, purchasedList)
+end
+
+-- returns: interection of t1 and t2, and whether t2 is in t1
+function Item.GetIntersection(list1, list2)
+    -- Create a lookup table for quick membership testing in list1
+    local set1 = {}
+    for _, value in ipairs(list1) do
+        set1[value] = true
+    end
+
+    local intersection = {}
+    local containsAll = true
+
+    -- Check each element in list2: add to intersection if in list1,
+    -- and determine if list1 contains every element from list2.
+    for _, value in ipairs(list2) do
+        if set1[value] then
+            table.insert(intersection, value)
+        else
+            containsAll = false
+        end
+    end
+
+    return intersection, containsAll
+end
+
+function Item.MergeLists(list1, list2)
+    local merged = {}
+    -- Append elements from the first list
+    for _, value in ipairs(list1) do
+        table.insert(merged, value)
+    end
+    -- Append elements from the second list
+    for _, value in ipairs(list2) do
+        table.insert(merged, value)
+    end
+    return merged
+end
+
+-- remove l2 from l1
+function Item.RemoveIntersectedItems(list1, list2)
+    -- Build a lookup table for elements in list2
+    local set2 = {}
+    for _, value in ipairs(list2) do
+        set2[value] = true
+    end
+
+    local result = {}
+    -- Add elements from list1 only if they are not in list2
+    for _, value in ipairs(list1) do
+        if not set2[value] then
+            table.insert(result, value)
+        end
+    end
+
+    return result
+end
+
+
 function Item.GetItemWardSolt()
 
 	local bot = GetBot()

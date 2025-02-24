@@ -131,8 +131,8 @@ function X.GetDesire(bot__)
                 then
                     if J.IsInRange(bot, unit, botAttackRange) then return 1 end
                     if J.IsInRange(bot, unit, botAttackRange + 200) then return RemapValClamped(J.GetHP(bot), 0.1, 0.9, 0, 0.96) end
-                    if #tEnemyHeroes_all == 0 then return 0.9 end
-                    if #tAllyHeroes >= #tEnemyHeroes then return 0.65 end
+                    if #tEnemyHeroes_all == 0 then return RemapValClamped(J.GetHP(bot), 0.2, 0.9, 0, 0.9) end
+                    if #tAllyHeroes >= #tEnemyHeroes then return RemapValClamped(J.GetHP(bot), 0.2, 0.9, 0, 0.7) end
                 end
 
                 if string.find(unitName, 'siege') then
@@ -146,10 +146,10 @@ function X.GetDesire(bot__)
                 or string.find(unitName, 'venomancer_plague_ward')
                 or string.find(unitName, 'clinkz_skeleton_archer') then
                     if J.GetHP(bot) > 0.7 and J.IsInRange(bot, unit, botAttackRange) then
-                        if #tEnemyHeroes == 0 then return 0.85 end
+                        if #tEnemyHeroes == 0 then return RemapValClamped(J.GetHP(bot), 0.3, 0.9, 0, 0.75) end
                         if #tAllyHeroes >= #tEnemyHeroes then return 0.4 end
                     end
-                    if J.GetHP(bot) < 0.7 and J.IsStuck( bot ) then return RemapValClamped(J.GetHP(bot), 0.1, 0.9, 1, 0.3) end
+                    if J.GetHP(bot) < 0.7 and J.IsStuck( bot ) then return RemapValClamped(J.GetHP(bot), 0.2, 0.8, 0.7, 0.3) end
 
                     local tSerpents = X.GetUnitTypeAttackingBot(botLocation, 1600, unitName)
                     local unitsAttackDamage = X.GetTotalAttackDamage(tSerpents, 8.0)
@@ -230,7 +230,7 @@ function X.GetDesire(bot__)
                     if #tAllyHeroes >= #tEnemyHeroes or #tEnemyHeroes_all == 0
                     then
                         if withinAttackRange then return 0.7 end
-                        return 0.65
+                        return RemapValClamped(J.GetHP(bot), 0.3, 0.9, 0, 0.65)
                     end
                 end
 
@@ -314,8 +314,8 @@ function X.GetDesire(bot__)
                         local tCloseAllyHeroes = J.GetAlliesNearLoc(unit:GetLocation(), 900)
                         if J.IsInRange(bot, unit, botAttackRange + 200) and #tCloseAllyHeroes >= 2 then return 1.2 end
                         if J.IsInRange(bot, unit, botAttackRange + 300) and #tCloseAllyHeroes >= 2 then return 1.1 end
-                        if J.IsInRange(bot, unit, botAttackRange + 400) then return 0.97 end
-                        return 0.90
+                        if J.IsInRange(bot, unit, botAttackRange + 400) then return RemapValClamped(J.GetHP(bot), 0.2, 0.9, 0.4, 0.97) end
+                        return RemapValClamped(J.GetHP(bot), 0.2, 0.9, 0, 0.9)
                     end
                 end
 
@@ -323,7 +323,7 @@ function X.GetDesire(bot__)
                 then
                     if #tAllyHeroes_all >= #tEnemyHeroes_all and not J.IsRetreating(bot)
                     then
-                        if withinAttackRange then return 0.96 end
+                        if J.IsInRange(bot, unit, botAttackRange + 200) then return RemapValClamped(J.GetHP(bot), 0.25, 0.9, 0.4, 0.96) end
                         return 0.56
                     end
                 end

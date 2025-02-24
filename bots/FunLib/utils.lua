@@ -545,6 +545,13 @@ end
 function ____exports.IsValidUnit(target)
     return target ~= nil and not target:IsNull() and target:CanBeSeen() and target:IsAlive() and not target:IsInvulnerable()
 end
+--- Check if the target is a valid hero.
+-- 
+-- @param target - The unit to check.
+-- @returns True if the target is a valid hero, false otherwise.
+function ____exports.IsValidHero(target)
+    return ____exports.IsValidUnit(target) and target:IsHero()
+end
 --- Get the distance between two locations.
 -- 
 -- @param fLoc - The first location.
@@ -902,7 +909,10 @@ function ____exports.PrintUnitModifiers(unit)
 end
 function ____exports.PrintPings(pingTimeGap)
     local listPings = {}
-    local teamPlayers = GetTeamPlayers(GetTeam())
+    local teamPlayers = GetTeamPlayers(
+        GetTeam(),
+        true
+    )
     for ____, ____value in __TS__Iterator(__TS__ArrayEntries(teamPlayers)) do
         local index = ____value[1]
         local _ = ____value[2]
@@ -917,6 +927,15 @@ function ____exports.PrintPings(pingTimeGap)
                 local ping = allyHero:GetMostRecentPing()
                 if ping.time ~= 0 and GameTime() - ping.time < pingTimeGap then
                     listPings[#listPings + 1] = ping
+                    for ____, unit in ipairs(GetUnitList(UnitType.All)) do
+                        if ____exports.IsValidHero(unit) and ____exports.GetLocationToLocationDistance(
+                            ping.location,
+                            unit:GetLocation()
+                        ) < 400 then
+                            print(unit:GetUnitName())
+                            ____exports.PrintUnitModifiers(unit)
+                        end
+                    end
                 end
                 __continue13 = true
             until true
@@ -1015,20 +1034,20 @@ function ____exports.IsPingedByAnyPlayer(bot, pingTimeGap, minDistance, maxDista
         local index = ____value[1]
         local _ = ____value[2]
         do
-            local __continue39
+            local __continue42
             repeat
                 local teamMember = GetTeamMember(index)
                 if teamMember == nil or teamMember:IsIllusion() or teamMember == bot then
-                    __continue39 = true
+                    __continue42 = true
                     break
                 end
                 local ping = teamMember:GetMostRecentPing()
                 if ping ~= nil then
                     pings[#pings + 1] = ping
                 end
-                __continue39 = true
+                __continue42 = true
             until true
-            if not __continue39 then
+            if not __continue42 then
                 break
             end
         end
@@ -1064,13 +1083,6 @@ end
 function ____exports.GetDistanceFromAncient(bot, enemy)
     local ancient = GetAncient(enemy and GetOpposingTeam() or GetTeam())
     return GetUnitToUnitDistance(bot, ancient)
-end
---- Check if the target is a valid hero.
--- 
--- @param target - The unit to check.
--- @returns True if the target is a valid hero, false otherwise.
-function ____exports.IsValidHero(target)
-    return ____exports.IsValidUnit(target) and target:IsHero()
 end
 --- Check if the target is a valid creep.
 -- 
@@ -1670,7 +1682,7 @@ function ____exports.CountMissingEnemyHeroes()
     local count = 0
     for ____, playerdId in ipairs(GetTeamPlayers(GetOpposingTeam())) do
         do
-            local __continue236
+            local __continue239
             repeat
                 if IsHeroAlive(playerdId) then
                     local lastSeenInfo = GetHeroLastSeenInfo(playerdId)
@@ -1678,14 +1690,14 @@ function ____exports.CountMissingEnemyHeroes()
                         local firstInfo = lastSeenInfo[1]
                         if firstInfo.time_since_seen >= 2.5 then
                             count = count + 1
-                            __continue236 = true
+                            __continue239 = true
                             break
                         end
                     end
                 end
-                __continue236 = true
+                __continue239 = true
             until true
-            if not __continue236 then
+            if not __continue239 then
                 break
             end
         end

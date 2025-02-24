@@ -59,6 +59,7 @@ sRoleItemsBuyList['pos_1'] = {
     "item_skadi",--
     "item_travel_boots",
     "item_abyssal_blade",--
+    "item_satanic",--
     "item_travel_boots_2",--
     "item_ultimate_scepter_2",
     "item_moon_shard",
@@ -82,6 +83,7 @@ sRoleItemsBuyList['pos_2'] = {
     "item_skadi",--
     "item_travel_boots",
     "item_abyssal_blade",--
+    "item_satanic",--
     "item_travel_boots_2",--
     "item_ultimate_scepter_2",
     "item_moon_shard",
@@ -100,6 +102,8 @@ X['sSellList'] = {
 
 	"item_black_king_bar",
 	"item_quelling_blade",
+    "item_satanic",
+    "item_desolator"
 }
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_mid' }, {} end

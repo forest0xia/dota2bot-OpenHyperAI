@@ -160,14 +160,6 @@ local botTarget
 function X.SkillsComplement()
     if J.CanNotUseAbility(bot) then return end
 
-    Illuminate          = bot:GetAbilityByName('keeper_of_the_light_illuminate')
-    IlluminateEnd       = bot:GetAbilityByName('keeper_of_the_light_illuminate_end')
-    BlindingLight       = bot:GetAbilityByName('keeper_of_the_light_blinding_light')
-    ChakraMagic         = bot:GetAbilityByName('keeper_of_the_light_chakra_magic')
-    SolarBind           = bot:GetAbilityByName('keeper_of_the_light_radiant_bind')
-    WillOWisp           = bot:GetAbilityByName('keeper_of_the_light_will_o_wisp')
-    SpiritForm          = bot:GetAbilityByName('keeper_of_the_light_spirit_form')
-
     nAllyHeroes = bot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
     nEnemyHeroes = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
     botTarget = J.GetProperTarget(bot)
@@ -648,33 +640,37 @@ function X.ConsiderRecall()
         return BOT_ACTION_DESIRE_NONE, nil
     end
 
-    for _, allyHero in pairs(GetUnitList(UNIT_LIST_ALLIED_HEROES))
-    do
-        if  J.IsValidHero(allyHero)
-        and not allyHero:IsIllusion()
-        and not allyHero:WasRecentlyDamagedByAnyHero(2.5)
-        then
-            if  J.IsRetreating(allyHero)
-            and J.IsRunning(allyHero)
-            and J.GetHP(allyHero) < 0.5
-            and allyHero:DistanceFromFountain() > 2000
-            and bot:DistanceFromFountain() < 1600
-            then
-                return BOT_ACTION_DESIRE_HIGH, allyHero
+    for _, allyHero in pairs(GetUnitList(UNIT_LIST_ALLIED_HEROES)) do
+        if J.IsValidHero(allyHero) and not allyHero:IsIllusion() and not J.IsMeepoClone(allyHero) then
+            local bEnemyNearby = J.IsEnemyHeroAroundLocation(allyHero:GetLocation(), 1600)
+            local nAllyInRangeEnemy = J.GetEnemiesNearLoc(allyHero:GetLocation(), 1600)
+
+            if not bEnemyNearby then
+                if  J.IsRetreating(allyHero)
+                and J.GetHP(allyHero) < 0.25
+                and #nAllyInRangeEnemy == 0
+                and allyHero:DistanceFromFountain() > 4500
+                and bot:DistanceFromFountain() < 1600
+                then
+                    return BOT_ACTION_DESIRE_HIGH, allyHero
+                end
+
+                if J.IsPushing(bot)
+                and GetUnitToUnitDistance(bot, allyHero) > 4000
+                and not J.IsFarming(allyHero)
+                and not J.IsLaning(allyHero)
+                and not J.IsDoingRoshan(allyHero)
+                and not J.IsDoingTormentor(allyHero)
+                and not J.IsDefending(allyHero)
+                then
+                    local nInRangeAlly = J.GetAlliesNearLoc(bot:GetLocation(), 1600)
+                    if #nInRangeAlly >= 2 then
+                        return BOT_ACTION_DESIRE_HIGH, allyHero
+                    end
+                end
             end
         end
 
-        if J.IsPushing(bot)
-        then
-            local nInRangeAlly = bot:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
-
-            if  nInRangeAlly ~= nil and #nInRangeAlly >= 2
-            and GetUnitToUnitDistance(bot, allyHero) > 3200
-            and not J.IsFarming(allyHero)
-            then
-                return BOT_ACTION_DESIRE_HIGH, allyHero
-            end
-        end
     end
 
     return BOT_ACTION_DESIRE_NONE, nil
