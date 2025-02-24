@@ -1524,7 +1524,7 @@ function Item.HasTargetItemCompositByItems(bot, items)
 		local item = bot:GetItemInSlot( i )
 		if item ~= nil
 		then
-			local basicItems = Item.GetBasicItems( {item} )
+			local basicItems = Item.GetBasicItems( {item:GetName()} )
 			local intersection, built = Item.GetIntersection(items, basicItems)
 			if built then
 				purchased = Item.MergeLists(purchased, intersection)

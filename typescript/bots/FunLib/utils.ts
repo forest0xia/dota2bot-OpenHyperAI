@@ -1794,3 +1794,181 @@ export function HasTeamMemberWithCriticalItemInCooldown(targetLoc: Vector): bool
     SetCachedVars(cacheKey, false);
     return false;
 }
+
+export function HasPossibleWallOfReplicaAround(bot: Unit): boolean {
+    const cacheKey = "HasPossibleWallOfReplicaAround" + bot.GetPlayerID();
+    const cachedRes = GetCachedVars(cacheKey, 2);
+    if (cachedRes !== null) {
+        return cachedRes;
+    }
+    if (bot.HasModifier("modifier_dark_seer_wall_slow")) {
+        SetCachedVars(cacheKey, true);
+        return true;
+    }
+    SetCachedVars(cacheKey, false);
+    return false;
+}
+
+/**
+ * Retrieves positions where the Wall of illusion can be.
+ *
+ * These positions serve as the centers for the potential danger zones.
+ *
+ * @returns {Vector[]} An array of Vector positions marking danger zone centers.
+ */
+export function GetWallIllusionPositions(bot: Unit): Vector[] {
+    const cacheKey = "GetWallIllusionPositions" + GetTeam();
+    const cachedRes = GetCachedVars(cacheKey, 2);
+    if (cachedRes !== null) {
+        return cachedRes;
+    }
+
+    const positions: Vector[] = [];
+    if (HasPossibleWallOfReplicaAround(bot)) {
+        const enemies = bot.GetNearbyHeroes(1600, false, BotMode.None);
+        // Loop over each enemy hero found within the search radius
+        for (const enemy of enemies) {
+            // Check if the enemy has the wall illusion modifier
+            if (enemy.HasModifier("modifier_darkseer_wallofreplica_illusion")) {
+                // Add the enemy's location to the list of danger zone centers
+                positions.push(enemy.GetLocation());
+            }
+        }
+    }
+    SetCachedVars(cacheKey, positions);
+    return positions;
+}
+
+/**
+ * Determines whether a given target location is inside any danger zone.
+ *
+ * Danger zones are defined as circular areas centered on the location,
+ * using the ability's effective radius (e.g., 1000 units) as the zone radius.
+ *
+ * @param {Vector} targetPos - The position to test.
+ * @returns {{ inDanger: boolean, dangerCenter?: Vector }} An object indicating whether
+ *          the target is in danger and, if so, providing the center of the danger zone.
+ */
+export function IsLocationInDangerZone(bot: Unit, targetPos: Vector): { inDanger: boolean; dangerCenter?: Vector } {
+    const radius = 1000 + 500; // Effective radius e.g. for the ability's danger zone + buffer.
+    const dangerZones: Vector[] = GetWallIllusionPositions(bot);
+
+    // Check each danger zone center to see if the target position is within its radius
+    for (const zoneCenter of dangerZones) {
+        // Calculate the distance from the danger zone center to the target position
+        const diff = sub(targetPos, zoneCenter);
+        if (length2D(diff) < radius) {
+            // Target is within the danger zone, return true and the center position
+            return { inDanger: true, dangerCenter: zoneCenter };
+        }
+    }
+    // Target is not in any danger zone
+    return { inDanger: false };
+}
+
+/**
+ * Rotates a 2D vector by a given angle (in radians).
+ *
+ * @param {Vector} v - The vector to rotate.
+ * @param {number} angle - The angle in radians.
+ * @returns {Vector} The rotated vector.
+ */
+export function RotateVector(v: Vector, angle: number): Vector {
+    const cosTheta = Math.cos(angle);
+    const sinTheta = Math.sin(angle);
+    return Vector(
+        v.x * cosTheta - v.y * sinTheta,
+        v.x * sinTheta + v.y * cosTheta,
+        v.z // Retain z value if available.
+    );
+}
+
+/**
+ * Calculates a safe destination based on a target position.
+ *
+ * If the target position falls within a danger zone, this function computes a new
+ * position that lies just outside the danger zone (by moving away from its center),
+ * adding a safety margin. If no target is provided, the bot's current location is used.
+ * Finally, the code checks that the computed location is passable via IsLocationPassable.
+ * If the candidate is blocked, the function rotates the offset vector in increments until
+ * a passable location is found (up to a maximum number of attempts). If no passable location is
+ * found, the bot remains at its current location.
+ *
+ * @param {Unit} bot - The bot unit.
+ * @param {Vector} [targetPos] - (Optional) The original target position.
+ * @returns {Vector} A safe position to move to. If no valid safe destination is found,
+ *                   returns the bot's current location.
+ */
+export function GetSafeDestination(bot: Unit, targetPos?: Vector): Vector {
+    const cacheKey = "GetSafeDestination" + bot.GetPlayerID();
+    const cachedRes = GetCachedVars(cacheKey, 2);
+    if (cachedRes !== null) {
+        return cachedRes;
+    }
+
+    // Use the provided target position; if not available, fall back to the bot's current location.
+    const referencePos: Vector = targetPos || add(bot.GetLocation(), RandomVector(260));
+
+    // Check if the reference position is inside a danger zone.
+    const result = IsLocationInDangerZone(bot, referencePos);
+    if (result.inDanger && result.dangerCenter) {
+        // The effective danger radius (ability radius plus buffer).
+        const abilityRadius = 1000 + 500; // Example: 1000 + 500 units.
+        const margin = 250; // Additional safety margin.
+        // Calculate the offset vector from the danger center toward the reference position.
+        let offsetVec = sub(referencePos, result.dangerCenter);
+
+        // If the reference position coincides with the danger center, pick a random offset.
+        if (length2D(offsetVec) === 0) {
+            offsetVec = RandomVector(100);
+        }
+        // Normalize the offset vector.
+        offsetVec = offsetVec.Normalized();
+
+        // Compute an initial candidate safe position by moving outwards from the danger center.
+        let safePos = add(result.dangerCenter, multiply(offsetVec, abilityRadius + margin));
+
+        // Attempt to find a passable location by rotating the offset vector if necessary.
+        const maxAttempts = 5;
+        let attempt = 0;
+        while (!IsLocationPassable(safePos) && attempt < maxAttempts) {
+            // Rotate the offset vector by 36° (converted to radians).
+            offsetVec = RotateVector(offsetVec, 36 * (Math.PI / 180));
+            safePos = add(result.dangerCenter, multiply(offsetVec, abilityRadius + margin));
+            attempt++;
+        }
+
+        // If no passable safe destination is found, return the bot's current location.
+        if (!IsLocationPassable(safePos)) {
+            SetCachedVars(cacheKey, bot.GetLocation());
+            return bot.GetLocation();
+        }
+        SetCachedVars(cacheKey, safePos);
+        return safePos;
+    }
+    // If the reference position is not in danger, simply return it.
+    SetCachedVars(cacheKey, referencePos);
+    return referencePos;
+}
+
+/**
+ * Checks if the bot's intended destination is within a danger zone and commands the bot to move
+ * to a safe destination if necessary.
+ *
+ * @param {Vector} targetPos - The original target destination.
+ */
+export function MoveBotSafely(bot: Unit, targetPos?: Vector): void {
+    const botPos = bot.GetLocation();
+
+    // Determine a safe destination based on current danger zones
+    const safeDestination = GetSafeDestination(bot, targetPos);
+    // Check if the bot is already within 100 units of the target
+    if (length2D(sub(botPos, safeDestination)) <= 100) {
+        // If close enough, move directly to the target without avoiding danger zones
+        bot.Action_MoveToLocation(safeDestination);
+        return;
+    }
+
+    // Command the bot to move to the safe destination
+    bot.Action_MoveToLocation(safeDestination);
+}

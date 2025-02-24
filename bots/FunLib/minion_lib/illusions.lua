@@ -10,79 +10,39 @@ local nLanes = {
     LANE_BOT,
 }
 
+local nNextMoveTime = 0
+
 function X.Think(ownerBot, hMinionUnit)
     if not U.IsValidUnit(hMinionUnit) then return end
+
     bot = ownerBot
-    bot.illusionThink = bot.illusionThink or {attack_desire = 0, attack_target = nil, move_desire = 0, move_location = nil, time = 0}
-    if DotaTime() - bot.illusionThink.time < 0.5 then
-        if bot.illusionThink.attack_desire > 0
-        and U.IsValidUnit(bot.illusionThink.attack_target)
-        and X.IsTargetInShouldAimToAttackRange(hMinionUnit, bot.illusionThink.attack_target, 700)
-        then
-            if X.ConsiderRetreat(hMinionUnit, bot.illusionThink.attack_target) then return end
-            hMinionUnit:Action_AttackUnit(bot.illusionThink.attack_target, true)
-            return
-        end
-        -- if bot.illusionThink.move_desire > 0 and bot.illusionThink.move_location and GetUnitToLocationDistance(hMinionUnit, bot.illusionThink.move_location) < 2000 then
-        --     hMinionUnit:Action_MoveToLocation(bot.illusionThink.move_location)
-        --     return
-        -- end
-    else
-        bot.illusionThink.time = DotaTime()
-    end
 
 	hMinionUnit.attack_desire, hMinionUnit.attack_target = X.ConsiderAttack(hMinionUnit)
-    if hMinionUnit.attack_desire > 0
-    then
-        if U.IsValidUnit(hMinionUnit.attack_target)
-        then
-            -- if not J.CanBeAttacked(hMinionUnit.attack_target)
-            -- and (not bot:IsAlive()
-            --     or (bot:IsAlive() and bot:GetAttackTarget() ~= hMinionUnit.attack_target))
-            -- then
-            --     local loc = J.Site.GetXUnitsTowardsLocation(GetAncient(GetTeam()), hMinionUnit.attack_target:GetLocation(), 600)
-            --     hMinionUnit:Action_MoveToLocation(loc)
-            --     bot.illusionThink.move_desire = BOT_ACTION_DESIRE_HIGH
-            --     bot.illusionThink.move_location = loc
-            --     bot.illusionThink.time = DotaTime()
-            --     return
-            -- else
-                if X.ConsiderRetreat(hMinionUnit, hMinionUnit.attack_target) then return end
-                hMinionUnit:Action_AttackUnit(hMinionUnit.attack_target, true)
-                bot.illusionThink.attack_desire = BOT_ACTION_DESIRE_HIGH
-                bot.illusionThink.attack_target = hMinionUnit.attack_target
-                -- bot.illusionThink.time = DotaTime()
-                return
-            -- end
+    if X.ConsiderRetreat(hMinionUnit, hMinionUnit.attack_target) then return end
+
+    if hMinionUnit.attack_desire > 0 then
+        if U.IsValidUnit(hMinionUnit.attack_target) then
+            hMinionUnit:Action_AttackUnit(hMinionUnit.attack_target, false)
+            return
         end
     end
 
-    hMinionUnit.move_desire, hMinionUnit.move_location = X.ConsiderMove(hMinionUnit)
-	if hMinionUnit.move_desire > 0
-	then
-		hMinionUnit:Action_MoveToLocation(hMinionUnit.move_location)
-		-- bot.illusionThink.move_desire = BOT_ACTION_DESIRE_HIGH
-		-- bot.illusionThink.move_location = hMinionUnit.move_location
-		-- bot.illusionThink.time = DotaTime()
-		return
-	end
+    if DotaTime() >= nNextMoveTime then
+        hMinionUnit.move_desire, hMinionUnit.move_location = X.ConsiderMove(hMinionUnit)
+        if hMinionUnit.move_desire > 0 then
+            hMinionUnit:Action_MoveToLocation(hMinionUnit.move_location)
+            nNextMoveTime = DotaTime() + 0.2
+            return
+        end
 
-    -- Default
-    if bot:IsAlive()
-    then
-        local vFaceEndLocation = J.GetFaceTowardDistanceLocation(bot, 450)
-        hMinionUnit:Action_MoveToLocation(vFaceEndLocation)
-        -- bot.illusionThink.move_desire = BOT_ACTION_DESIRE_HIGH
-        -- bot.illusionThink.move_location = vFaceEndLocation
-        -- bot.illusionThink.time = DotaTime()
-        return
-    else
-        local vLoc = GetLaneFrontLocation(GetTeam(), LANE_MID, 0)
-        hMinionUnit:Action_MoveToLocation(vLoc)
-        -- bot.illusionThink.move_desire = BOT_ACTION_DESIRE_HIGH
-        -- bot.illusionThink.move_location = vLoc
-        -- bot.illusionThink.time = DotaTime()
-        return
+        -- Default
+        if bot:IsAlive()
+        then
+            hMinionUnit:Action_MoveToLocation(J.GetRandomLocationWithinDist(bot:GetLocation(), 400, 800))
+        else
+            hMinionUnit:Action_MoveToLocation(J.GetClosestTeamLane(hMinionUnit))
+        end
+        nNextMoveTime = DotaTime() + 0.2
     end
 end
 
@@ -111,12 +71,11 @@ function X.ConsiderAttack(hMinionUnit)
         return BOT_ACTION_DESIRE_NONE, nil
     end
 
-	local target = X.GetAttackTarget(hMinionUnit)
+	local hTarget = X.GetAttackTarget(hMinionUnit)
 
-	if target ~= nil and not U.IsNotAllowedToAttack(target)
-    and X.IsTargetInShouldAimToAttackRange(hMinionUnit, target, 2000)
+	if hTarget ~= nil and not U.IsNotAllowedToAttack(hTarget)
 	then
-		return BOT_ACTION_DESIRE_HIGH, target
+		return BOT_ACTION_DESIRE_HIGH, hTarget
 	end
 
 	return BOT_ACTION_DESIRE_NONE, nil
@@ -145,20 +104,6 @@ function X.GetAttackTarget(hMinionUnit)
         end
     end
 
-    for _, ally in pairs(GetUnitList(UNIT_LIST_ALLIED_HEROES))
-    do
-        if J.IsValidHero(ally)
-        and ally:IsAlive()
-        and not ally:IsIllusion()
-        -- and J.GetHP(ally) > 0.4
-        and (ally:HasModifier('modifier_bane_nightmare')
-            or (ally:IsSpeciallyDeniable() and J.CanKillTarget( ally, hMinionUnit:GetAttackDamage(), DAMAGE_TYPE_PHYSICAL )))
-        and X.IsTargetInShouldAimToAttackRange(hMinionUnit, ally, 700)
-        then
-            return ally
-        end
-    end
-
     for _, enemy in pairs(GetUnitList(UNIT_LIST_ENEMIES))
     do
         if J.IsValid(enemy)
@@ -168,7 +113,6 @@ function X.GetAttackTarget(hMinionUnit)
 
             if specialUnits[enemyName]
             and enemy:GetTeam() ~= hMinionUnit:GetTeam()
-            and X.IsTargetInShouldAimToAttackRange(hMinionUnit, enemy, 700)
             and GetUnitToUnitDistance(hMinionUnit, enemy) <= specialUnits[enemyName] * 1600
             and RandomInt(0, 100) <= specialUnits[enemyName] * 100
             then
@@ -179,12 +123,13 @@ function X.GetAttackTarget(hMinionUnit)
 
     if GetUnitToUnitDistance(bot, hMinionUnit) < 1600
     then
-        target = bot:GetAttackTarget()
-    else
-        target = nil
+        local nInRangeEnemy = J.GetEnemiesNearLoc(bot:GetLocation(), 1200)
+        if #nInRangeEnemy > 0 then target = bot:GetAttackTarget() end
     end
 
-	if target == nil or J.IsRetreating(bot)
+	if target == nil
+    or J.IsRetreating(bot)
+    or (U.IsTargetedByHero(bot) and bot:GetAttackTarget() == nil)
 	then
 		target = U.GetWeakestHero(1600, hMinionUnit)
 		if target == nil then target = U.GetWeakestCreep(1600, hMinionUnit) end
@@ -196,7 +141,7 @@ function X.GetAttackTarget(hMinionUnit)
         if not target:IsBuilding()
         and not target:IsTower()
         and target ~= GetAncient(GetOpposingTeam())
-        and X.IsTargetUnderEnemyTower(hMinionUnit, target, 1600)
+        and X.IsTargetUnderEnemyTower(hMinionUnit, target)
         then
             if string.find(hMinionUnitName, 'warlock_golem')
             then
@@ -257,18 +202,19 @@ function X.ConsiderMove(hMinionUnit)
 
         return BOT_ACTION_DESIRE_HIGH, J.GetClosestTeamLane(hMinionUnit)
     else
-        return BOT_ACTION_DESIRE_HIGH, bot:GetLocation() + RandomVector(150)
+        return BOT_ACTION_DESIRE_HIGH, J.GetRandomLocationWithinDist(bot:GetLocation(), 400, 800)
     end
 end
 
-function X.IsTargetUnderEnemyTower(hMinionUnit, unit, nRange)
-    local nEnemyTowers = hMinionUnit:GetNearbyTowers(nRange, true)
-    if nEnemyTowers ~= nil and #nEnemyTowers > 0
-    and J.IsValidBuilding(nEnemyTowers[1])
-    and U.IsValidUnit(unit)
-    and J.IsInRange(unit, nEnemyTowers[1], 880)
-    then
-        return true
+function X.IsTargetUnderEnemyTower(hMinionUnit, unit)
+    local nEnemyTowers = hMinionUnit:GetNearbyTowers(1600, true)
+    if nEnemyTowers then
+        if J.IsValidBuilding(nEnemyTowers[1])
+        and U.IsValidUnit(unit)
+        and J.IsInRange(unit, nEnemyTowers[1], 880)
+        then
+            return true
+        end
     end
 
     return false
@@ -292,5 +238,6 @@ function X.IsMinionInLane(hMinionUnit, lane)
 
     return false
 end
+
 
 return X

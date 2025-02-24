@@ -32,6 +32,7 @@ local gankTimeAfterArrival = 0.55 * 60 -- stay to roam after arriving the locati
 local gankGapTime = 3 * 60 -- don't roam again within this duration after roaming once.
 local lastStaticLinkDebuffStack = 0
 local AnyUnitAffectedByChainFrost = false
+local HasPossibleWallOfReplicaAround = false
 local ShouldBotsSpreadOut = false
 local nChainFrostBounceDistance = 600 + 150
 local cachedTombstoneZombieSlowState = 0
@@ -765,6 +766,11 @@ function ThinkGeneralRoaming()
 		return
 	end
 
+	if HasPossibleWallOfReplicaAround then
+		J.Utils.MoveBotSafely(bot)
+		return
+	end
+
 	if ShouldBotsSpreadOut then
 		J.Utils.SmartSpreadOut(bot, 450, 450, nInRangeEnemy, false)
 		return
@@ -1181,13 +1187,29 @@ function ConsiderHeroMoveOutsideFountain()
 	if DotaTime() < 0 then return false end
 	if bot:DistanceFromFountain() > MoveOutsideFountainDistance then return false end
 
-	if (bot:HasModifier('modifier_fountain_aura_buff') -- in fountain with high hp
+	if ((bot:HasModifier('modifier_fountain_aura_buff') -- in fountain with high hp
 		and J.GetHP(bot) > 0.95)
 	and (botName == 'npc_dota_hero_huskar' -- is huskar (ignore mana)
 		or (bot:GetActiveMode() == BOT_MODE_ITEM -- is stuck in item mode
-			and J.GetMP(bot) > 0.95))
+			and J.GetMP(bot) > 0.95)))
 	then
 		return true
+	end
+	if bot:GetActiveMode() == BOT_MODE_ITEM then
+		for _, droppedItem in pairs(GetDroppedItemList()) do
+            if droppedItem ~= nil
+            and GetUnitToLocationDistance(bot, droppedItem.location) < 1200
+            then
+				local iName = droppedItem.item:GetName()
+				if not (iName == 'item_aegis'
+				or iName == 'item_rapier'
+				or iName == 'item_cheese'
+				or iName == 'item_gem')
+				then
+					return true
+				end
+            end
+        end
 	end
 
 	return false
@@ -1284,7 +1306,9 @@ function ConsiderGeneralRoamingInConditions()
 	if AnyUnitAffectedByChainFrost then
 		local hasLowHpEnemy = false
 		for _, enemy in pairs(nInCloseRangeEnemy) do
-			if J.Utils.IsValidHero(enemy) and J.GetHP(enemy) < 0.2 then
+			if J.Utils.IsValidHero(enemy)
+			and not J.IsSuspiciousIllusion(enemy)
+			and J.GetHP(enemy) < 0.2 then
 				hasLowHpEnemy = true
 			end
 		end
@@ -1292,6 +1316,21 @@ function ConsiderGeneralRoamingInConditions()
 			return 0.98
 		end
 	end
+
+	-- HasPossibleWallOfReplicaAround = J.Utils.HasPossibleWallOfReplicaAround(bot)
+	-- if HasPossibleWallOfReplicaAround then
+	-- 	local hasLowHpEnemy = false
+	-- 	for _, enemy in pairs(nInCloseRangeEnemy) do
+	-- 		if J.Utils.IsValidHero(enemy)
+	-- 		and not J.IsSuspiciousIllusion(enemy)
+	-- 		and J.GetHP(enemy) < 0.2 then
+	-- 			hasLowHpEnemy = true
+	-- 		end
+	-- 	end
+	-- 	if not hasLowHpEnemy then
+	-- 		return BOT_ACTION_DESIRE_ABSOLUTE
+	-- 	end
+	-- end
 
 	if bot:GetActiveMode() == BOT_MODE_ITEM
 	and bot:GetActiveModeDesire() > BOT_MODE_DESIRE_VERYHIGH

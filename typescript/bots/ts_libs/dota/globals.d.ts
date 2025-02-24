@@ -27,6 +27,8 @@ declare global {
 
     function GameTime(): number;
 
+    function IsLocationPassable(loc: Vector): boolean;
+
     function IsPlayerBot(playerId: number): boolean;
 
     function RandomInt(a: number, b: number): number;
