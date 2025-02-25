@@ -4656,26 +4656,25 @@ X.ConsiderItemDesire["item_tpscroll"] = function( hItem )
 		or not J.IsGoingOnSomeone(bot)
 		or not J.IsDefending(bot))
 	then
-		local loc = J.GetTormentorLocation(team)
-
-		hEffectTarget = J.GetNearbyLocationToTp(loc)
-		sCastMotive = 'tormentor'
-
-		if J.GetLocationToLocationDistance(bot:GetLocation(), hEffectTarget) > 4400
-		then
-			if botName == 'npc_dota_hero_furion'
+		local torLoc = J.GetTormentorLocation(team)
+		if GetUnitToLocationDistance(bot, torLoc) > 3000 then
+			hEffectTarget = J.GetNearbyLocationToTp(torLoc)
+			sCastMotive = 'tormentor'
+			if J.GetLocationToLocationDistance(bot:GetLocation(), hEffectTarget) > 4400
 			then
-				local Teleportation = bot:GetAbilityByName('furion_teleportation')
-				if Teleportation:IsTrained()
-				and Teleportation:IsFullyCastable()
+				if botName == 'npc_dota_hero_furion'
 				then
-					bot.useProphetTP = true
-					bot.ProphetTPLocation = hEffectTarget
-					return BOT_ACTION_DESIRE_NONE
+					local Teleportation = bot:GetAbilityByName('furion_teleportation')
+					if Teleportation:IsTrained()
+					and Teleportation:IsFullyCastable()
+					then
+						bot.useProphetTP = true
+						bot.ProphetTPLocation = hEffectTarget
+						return BOT_ACTION_DESIRE_NONE
+					end
 				end
+				return BOT_ACTION_DESIRE_HIGH, hEffectTarget, sCastType, sCastMotive
 			end
-
-			return BOT_ACTION_DESIRE_HIGH, hEffectTarget, sCastType, sCastMotive
 		end
 	end
 
@@ -7345,13 +7344,15 @@ X.ConsiderItemDesire["item_gale_guard"] = function( hItem )
 
     if J.IsFarming(bot) then
         local nEnemyCreeps = bot:GetNearbyCreeps(1600, true)
-        if  J.IsValid(nCreeps[1])
-        and J.CanBeAttacked(nCreeps[1])
-        and J.GetHP(bot) < 0.25
-        and J.IsAttacking(bot)
-        then
-            return BOT_ACTION_DESIRE_HIGH, bot, 'none', nil
-        end
+		if nEnemyCreeps then
+			if  J.IsValid(nEnemyCreeps[1])
+			and J.CanBeAttacked(nEnemyCreeps[1])
+			and J.GetHP(bot) < 0.25
+			and J.IsAttacking(bot)
+			then
+				return BOT_ACTION_DESIRE_HIGH, bot, 'none', nil
+			end
+		end
     end
 
     if J.IsDoingRoshan(bot) then

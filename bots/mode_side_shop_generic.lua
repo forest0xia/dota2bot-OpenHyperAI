@@ -66,7 +66,7 @@ function TormentorDesire()
     end
 
     local nAliveAlly = J.GetNumOfAliveHeroes(false)
-	TormentorLocOffset = (bot:GetTeam() == TEAM_DIRE and Vector(0, -500, 392) or Vector(0, 500, 392)) + RandomVector(50)
+	TormentorLocOffset = (bot:GetTeam() == TEAM_DIRE and Vector(-200, 200, 392) or Vector(0, -450, 392)) + RandomVector(50)
 
     local nHumanCountInLoc = 0
     local nCoreCountInLoc = 0
