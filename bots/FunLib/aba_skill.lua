@@ -151,34 +151,28 @@ end
 
 
 function X.GetSkillList( sAbilityList, nAbilityBuildList, sTalentList, nTalentBuildList )
+	local botName = GetBot():GetUnitName()
+	-- build it to not hard code here anymore as it's annoying patch changes
+	local sSkillList = {}
+	-- Default dynamic mapping for heroes with standard progressions
+	local talent_idx = 1
+	local ability_idx = 1
+	-- Calculate total slots based on available abilities and talents.
+	local totalSlots = #nAbilityBuildList + #nTalentBuildList
+	for i = 1, totalSlots do
+		-- Insert a talent when it's a talent slot or when all abilities have been used.
+		if (i >= 10 and (i % 5 == 0 or ability_idx > #nAbilityBuildList)) then
+			sSkillList[i] = sTalentList[nTalentBuildList[talent_idx]]
+			talent_idx = talent_idx + 1
+		else
+			if ability_idx <= #nAbilityBuildList then
+				sSkillList[i] = sAbilityList[nAbilityBuildList[ability_idx]]
+				ability_idx = ability_idx + 1
+			end
+		end
+	end
 
-	local sSkillList = {
-						[1] = sAbilityList[nAbilityBuildList[1]],
-						[2] = sAbilityList[nAbilityBuildList[2]],
-						[3] = sAbilityList[nAbilityBuildList[3]],
-						[4] = sAbilityList[nAbilityBuildList[4]],
-						[5] = sAbilityList[nAbilityBuildList[5]],
-						[6] = sAbilityList[nAbilityBuildList[6]],
-						[7] = sAbilityList[nAbilityBuildList[7]],
-						[8] = sAbilityList[nAbilityBuildList[8]],
-						[9] = sAbilityList[nAbilityBuildList[9]],
-						[10] = sTalentList[nTalentBuildList[1]],
-						[11] = sAbilityList[nAbilityBuildList[10]],
-						[12] = sAbilityList[nAbilityBuildList[11]],
-						[13] = sAbilityList[nAbilityBuildList[12]],
-						[14] = sAbilityList[nAbilityBuildList[13]],
-						[15] = sTalentList[nTalentBuildList[2]],
-						[16] = sAbilityList[nAbilityBuildList[14]],
-						[17] = sAbilityList[nAbilityBuildList[15]],
-						[18] = sTalentList[nTalentBuildList[3]],
-						[19] = sTalentList[nTalentBuildList[4]],
-						[20] = sTalentList[nTalentBuildList[5]],
-						[21] = sTalentList[nTalentBuildList[6]],
-						[22] = sTalentList[nTalentBuildList[7]],
-						[23] = sTalentList[nTalentBuildList[8]],
-					}
-
-	if GetBot():GetUnitName() == 'npc_dota_hero_meepo'
+	if botName == 'npc_dota_hero_meepo'
 	then
 		sSkillList = {
 						[1] = sAbilityList[nAbilityBuildList[1]],
@@ -213,8 +207,7 @@ function X.GetSkillList( sAbilityList, nAbilityBuildList, sTalentList, nTalentBu
 						[30] = sTalentList[nTalentBuildList[8]],
 		}
 	end
-
-	if GetBot():GetUnitName() == 'npc_dota_hero_invoker'
+	if botName == 'npc_dota_hero_invoker'
 	then
 		sSkillList = {
 						[1] = sAbilityList[nAbilityBuildList[1]],
@@ -248,9 +241,10 @@ function X.GetSkillList( sAbilityList, nAbilityBuildList, sTalentList, nTalentBu
 						[29] = sTalentList[nTalentBuildList[8]],
 					}
 	end
-					
-	return sSkillList
 
+	print("Aba list for: "..botName)
+    Utils.PrintTable(sSkillList)
+	return sSkillList
 end
 
 

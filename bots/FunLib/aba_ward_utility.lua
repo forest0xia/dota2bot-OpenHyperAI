@@ -6,25 +6,33 @@ local nVisionRadius = 1600
 
 -- Radiant Warding Spots
 -- Game Start
-local RADIANT_GAME_START_1 = Vector(-490, 302, 128) -- dire mid lane top left
-local RADIANT_GAME_START_1_2 = Vector(801, -401, 128) -- dire mid lane bot right
-local RADIANT_GAME_START_2 = Vector(-4000, 4000, 128) -- dire top river enterance besides the first left jungle.
+local RADIANT_GAME_START_MID_1 = Vector(-247, -1091, 128)
+local RADIANT_GAME_START_MID_2 = Vector(-1939, 223, 128)
+local RADIANT_GAME_START_MID_3 = Vector(193, -1240, 128)
+local RADIANT_GAME_START_2 = Vector(1570, -4625, 256)
 
 -- Laning Phase
-local RADIANT_LANE_PHASE_1 = Vector(2306, -3001, 128)
-local RADIANT_LANE_PHASE_2 = Vector(-3048, 1779, 128)
-local RADIANT_LANE_PHASE_3 = Vector(-3556, 6446, 128)
+local RADIANT_LANE_PHASE_1 = Vector(-3971, 1595, 256)
+local RADIANT_LANE_PHASE_2 = Vector(-7804, 3814, 128)
+local RADIANT_LANE_PHASE_3 = Vector(-1937, 214, 128)
+local RADIANT_LANE_PHASE_4 = Vector(-135, 1380, 128)
+local RADIANT_LANE_PHASE_5 = Vector(3106, -4055, 256)
+local RADIANT_LANE_PHASE_6 = Vector(7939, -5568, 128)
 
 -- Dire Warding Spots
 -- Game Start
-local DIRE_GAME_START_1 = Vector(-301, -1201, 128) -- radiant mid lane bot right
-local DIRE_GAME_START_1_2 = Vector(-1351, -361, 128) -- radiant mid lane top left
-local DIRE_GAME_START_2 = Vector(2026, -3003, 128) -- radiant bot river to jungle enterance
+local DIRE_GAME_START_MID_1 = Vector(-489, 300, 128)
+local DIRE_GAME_START_MID_2 = Vector(1384, -498, 128)
+local DIRE_GAME_START_MID_3 = Vector(-1121, 1443, 128)
+local DIRE_GAME_START_2 = Vector(-1751, 3570, 256)
 
 -- Laning Phase
-local DIRE_LANE_PHASE_1 = Vector(-5183, 3780, 128) -- radian ward near t1 on the left side of the river top left enterance.
-local DIRE_LANE_PHASE_2 = Vector(-773, 1135, 0) 
-local DIRE_LANE_PHASE_3 = Vector(3851, -4636, 353)
+local DIRE_LANE_PHASE_1 = Vector(-4275, 3520, 128)
+local DIRE_LANE_PHASE_2 = Vector(-7047, 5091, 128)
+local DIRE_LANE_PHASE_3 = Vector(-1542, 2036, 256)
+local DIRE_LANE_PHASE_4 = Vector(1386, -506, 128)
+local DIRE_LANE_PHASE_5 = Vector(4196, -4765, 128)
+local DIRE_LANE_PHASE_6 = Vector(8390, -4272, 128)
 
 local nTowerList = {
 	TOWER_TOP_1,
@@ -43,97 +51,104 @@ local nTowerList = {
 -- #############################################################
 local WardSpotAliveTeamTowerRadiant = {
 	[TOWER_TOP_1] = {
-						Vector(-3290, 5302, 128),
-						Vector(-5217, 2463, 128),
+						Vector(-5922, 5928, 128),
+						Vector(-6834, 3247, 128),
+						Vector(-3654, 3793, 128),
 					},
 	[TOWER_MID_1] = {
-						Vector(-3048, 1779, 128),
-						Vector( 449, -1953, 128),
+						Vector(2452, -2576, 0),
+						Vector(-108, -13, 128),
+						Vector(-2406, 2231, 0),
 					},
 	[TOWER_BOT_1] = {
-						Vector(2306, -3001, 128),
-						Vector(3897, -4626, 535),
+						Vector(5467, -4894, 128),
+						Vector(5875, -7195, 256),
+						Vector(3109, -4063, 256),
 					},
 
 	[TOWER_TOP_2] = {
-						Vector(-4575, 469, 256),
-						Vector(-7581, 335, 256),
+						Vector(-7931, 1819, 536),
+						Vector(-3973, 1598, 256),
+						Vector(-4342, -1032, 536),
 					},
 	[TOWER_MID_2] = {
-						Vector(-3615, -1757, 256),
-						Vector( -410, -2488, 256),
+						Vector(-1285, -4335, 403),
+						Vector(-4344, -1024, 536),
+						Vector(-860, -2106, 128),
 					},
 	[TOWER_BOT_2] = {
-						Vector(2551, -7177, 407),
-						Vector(1297, -5594, 256),
+						Vector(2551, -7068, 128),
+						Vector(1576, -4627, 256),
+						Vector(-210, -8172, 134),
 					},
 
 	[TOWER_TOP_3] = {
-						Vector(-6558, -3055, 256),
-						Vector(-5111, -1788, 256),
+						Vector(-6553, -3060, 256),
+						Vector(-7507, -958, 256),
+						Vector(-4841, -2106, 256),
 					},
 	[TOWER_MID_3] = {
-						Vector(-4346, -3911, 256),
-						Vector(-4346, -3911, 256),
+						Vector(-4344, -3908, 256),
+						Vector(-1290, -4338, 403),
+						Vector(-4339, -1026, 536),
 					},
 	[TOWER_BOT_3] = {
-						Vector( -993, -5074, 256),
-						Vector(-3623, -6089, 256),
+						Vector(-1797, -5896, 128),
+						Vector(-3619, -6092, 256),
+						Vector(-1691, -7687, 134),
 					},
 }
 
 local InvadeWardSpotDeadEnemyTowerDire = {
 	[TOWER_TOP_1] = {
-						Vector(-4737, 7936, 128),
-						Vector(-1545, 6902, 399),
-						Vector(-2563, 7593, 128),
-						Vector(-1930, 4128, 256),
-						Vector( -767, 3599, 527),
-						Vector( -844, 4673, 256),
+						Vector(-5870, 8023, 256),
+						Vector(-1611, 7652, 124),
+						Vector(-2238, 4264, 256),
+						Vector(1026, 3572, 400),
 					},
 	[TOWER_MID_1] = {
-						Vector(1038, 3309, 399),
-						Vector( 836, 1950, 128),
-						Vector(2054, -777, 527),
-						Vector(3440, -704, 256),
+						Vector(1031, 3569, 400),
+						Vector(829, 1583, 128),
+						Vector(4610, 764, 528),
+						Vector(3443, -700, 256),
 					},
 	[TOWER_BOT_1] = {
-						Vector(4646, -1805, 128),
-						Vector(7622, -2553, 256),
-						Vector(7677, -1581, 527),
-						Vector(5093,  -238, 256),
+						Vector(4644, -1800, 128),
+						Vector(7682, -2583, 256),
+						Vector(7695, -1577, 528),
+						Vector(5095, -242, 256),
 					},
 
 	[TOWER_TOP_2] = {
-						Vector( 462, 4408, 128),
-						Vector(  50, 8668, 512),
-						Vector(3069, 6554, 256),
-						Vector(2334, 4270, 128),
+						Vector(1030, 3568, 400),
+						Vector(-1616, 7654, 124),
+						Vector(3168, 6605, 256),
+						Vector(2339, 4270, 128),
 					},
 	[TOWER_MID_2] = {
-						Vector(4610,  759, 527),
-						Vector(3400,  986, 256),
-						Vector(1048, 3313, 399),
-						Vector(4590, 2915, 256),
+						Vector(4607, 770, 528),
+						Vector(3403, 983, 256),
+						Vector(1028, 3571, 400),
+						Vector(4550, 2872, 256),
+						Vector(3383, 4062, 256),
 					},
 	[TOWER_BOT_2] = {
-						Vector(8130,  700, 256),
-						Vector(4610,  759, 527),
-						Vector(7143, 2210, 256),
-						Vector(5521, 2649, 256),
+						Vector(8125, 704, 256),
+						Vector(4610, 764, 528),
+						Vector(5497, 2661, 256),
 					},
 
 	[TOWER_TOP_3] = {
-						Vector(3107, 2986, 256),
-						Vector(4441, 5559, 256),
+						Vector(2331, 4272, 128),
+						Vector(4446, 5554, 256),
 					},
 	[TOWER_MID_3] = {
-						Vector(4474, 3877, 256),
-						Vector(5747, 5298, 256),
+						Vector(4470, 3880, 256),
+						Vector(5749, 5296, 256),
 					},
 	[TOWER_BOT_3] = {
-						Vector(6003, 3884, 256),
-						Vector(5124, 2755, 256),
+						Vector(5998, 3888, 256),
+						Vector(5127, 2752, 256),
 					},
 }
 
@@ -142,104 +157,107 @@ local InvadeWardSpotDeadEnemyTowerDire = {
 -- #############################################################
 local WardSpotAliveTeamTowerDire = {
 	[TOWER_TOP_1] = {
-						Vector(-2845, 3282, 256),
-						Vector(-5163, 2560, 128),
+						Vector(-8032, 6462, 256),
+						Vector(-3874, 5246, 128),
+						Vector(-4529, 2137, 128),
 					},
 	[TOWER_MID_1] = {
-						Vector(-1454, 728, 0),
-						Vector(2740, -1604, 256),
+						Vector(-1119, 1438, 128),
+						Vector(2816, -1451, 256),
+						Vector(-1634, 3504, 256),
 					},
 	[TOWER_BOT_1] = {
-						Vector(3537, -3396, 128),
-						Vector(3809,  -986, 256),
+						Vector(4328, -3322, 128),
+						Vector(4883, -1857, 128),
+						Vector(7697, -1581, 528),
 					},
 
 	[TOWER_TOP_2] = {
-						Vector(-1964, 4150, 256),
-						Vector(-1538, 6897, 399),
+						Vector(-1638, 3507, 256),
+						Vector(-1611, 7647, 124),
+						Vector(-4167, 6423, 128),
 					},
 	[TOWER_MID_2] = {
-						Vector(3116, -274, 256),
-						Vector(1052, 3306, 399),
+						Vector(3114, -272, 256),
+						Vector(1032, 3569, 400),
+						Vector(-1641, 3508, 256),
 					},
 	[TOWER_BOT_2] = {
-						Vector(7661, -1543, 527),
-						Vector(5041,  -369, 256),
-						Vector(4616,   756, 527),
+						Vector(7702, -1582, 528),
+						Vector(4608, 769, 528),
+						Vector(2822, -1457, 256),
 					},
 
 	[TOWER_TOP_3] = {
-						Vector(3122, 5724, 256),
-						Vector(2165, 4029, 128),
+						Vector(3119, 5729, 256),
+						Vector(1029, 3567, 400),
+						Vector(941, 5142, 128),
+						Vector(1269, 7236, 134),
 					},
 	[TOWER_MID_3] = {
-						Vector(4007, 3492, 256),
-						Vector(3351, 1759, 128),
+						Vector(4010, 3487, 256),
+						Vector(4607, 770, 528),
+						Vector(1732, 2450, 128),
 					},
 	[TOWER_BOT_3] = {
-						Vector(6350, 2653, 256),
-						Vector(4670,  781, 527),
+						Vector(6346, 2655, 256),
+						Vector(4611, 764, 528),
+						Vector(8034, 761, 256),
 					},
 }
 
 local InvadeWardSpotDeadEnemyTowerRadiant = {
 	[TOWER_TOP_1] = {
-						Vector(-4120, 1499, 535),
-						Vector(-7900, 1786, 535),
-						Vector(-7561,  372, 256),
-						Vector(-4576,  451, 256),
+						Vector(-3856, 495, 256),
+						Vector(-7904, 1791, 535),
+						Vector(-7559, 370, 256),
 					},
 	[TOWER_MID_1] = {
-						Vector(-4320, -1028, 535),
-						Vector(-3408,  -339, 256),
-						Vector(-1305, -2479, 256),
-						Vector(-1451, -3310, 256),
-						Vector(-1451, -3310, 256),
-						Vector(-2582, -3851, 256),
-						Vector( -284, -3538, 256),
+						Vector(-4342, -1024, 536),
+						Vector(-3404, -344, 256),
+						Vector(-813, -2435, 128),
+						Vector(-1287, -4357, 403),
 					},
 	[TOWER_BOT_1] = {
-						Vector(3851, -4636, 353),
-						Vector(4708, -7817, 128),
-						Vector(2586, -7189, 407),
-						Vector(1263, -5657, 256),
-						Vector( 771, -4630, 535),
-						Vector(1110, -7836, 128),
+						Vector(3806, -4584, 128),
+						Vector(3937, -7217, 128),
+						Vector(2558, -7080, 128),
+						Vector(1743, -5084, 256),
+						Vector(2033, -8356, 250),
 					},
 
 	[TOWER_TOP_2] = {
-						Vector(-5285, -1585, 256),
-						Vector(-8143, -1519, 256),
-						Vector(-7373, -2822, 256),
-						Vector(-5685, -3139, 256),
+						Vector(-5282, -1584, 256),
+						Vector(-7489, -1117, 256),
+						Vector(-5680, -3137, 256),
 					},
 	[TOWER_MID_2] = {
-						Vector(-1587, -3742, 256),
-						Vector(-4334, -1054, 535),
-						Vector(-3269, -1425, 256),
-						Vector(-3791, -4518, 256),
-						Vector(-5167, -3419, 256),
-						Vector(-4907, -2860, 128),
-						Vector(-3088, -4273, 128),
+						Vector(-1290, -4332, 403),
+						Vector(-4340, -1031, 536),
+						Vector(-3271, -1423, 256),
+						Vector(-3788, -4521, 256),
+						Vector(-5172, -3414, 256),
+						Vector(-4903, -2862, 128),
+						Vector(-3086, -4270, 128),
 					},
 	[TOWER_BOT_2] = {
-						Vector(-1060, -5068, 256),
-						Vector(-1314, -7927, 128),
-						Vector(-3323, -7154, 256),
-						Vector(-3609, -5320, 256),
-						Vector(-2755, -5275, 128),
+						Vector(-1289, -4338, 403),
+						Vector(-1890, -7873, 134),
+						Vector(-3526, -6962, 256),
+						Vector(-3611, -5316, 256),
+						Vector(-2750, -5278, 128),
 					},
 
 	[TOWER_TOP_3] = {
-						Vector(-6401, -4286, 256),
+						Vector(-6401, -4283, 256),
 					},
 	[TOWER_MID_3] = {
-						Vector(-4912, -4403, 256),
-						Vector(-4912, -4403, 256),
-						Vector(-6170,  5643, 256),
+						Vector(-4915, -4405, 256),
+						Vector(-4908, -4402, 256),
+						Vector(-6172, 5639, 256),
 					},
 	[TOWER_BOT_3] = {
-						Vector(-4853, -5937, 256),
+						Vector(-4850, -5935, 256),
 					},
 }
 
@@ -248,12 +266,18 @@ function X.GetLaningPhaseWardSpots()
 		RADIANT_LANE_PHASE_1,
 		RADIANT_LANE_PHASE_2,
 		RADIANT_LANE_PHASE_3,
+		RADIANT_LANE_PHASE_4,
+		RADIANT_LANE_PHASE_5,
+		RADIANT_LANE_PHASE_6,
 	}
 
 	local WardSpotDire = {
 		DIRE_LANE_PHASE_1,
 		DIRE_LANE_PHASE_2,
 		DIRE_LANE_PHASE_3,
+		DIRE_LANE_PHASE_4,
+		DIRE_LANE_PHASE_5,
+		DIRE_LANE_PHASE_6,
 	}
 
 	if GetTeam() == TEAM_RADIANT
@@ -264,50 +288,41 @@ function X.GetLaningPhaseWardSpots()
 	end
 end
 
-local radianStartWard1 = nil
-local direStartWard1 = nil
-function X.GetGameStartWardSpots(bot)
-	if bot:HasModifier("modifier_smoke_of_deceit") then
-		if radianStartWard1 == nil and (RandomInt(1, 9) >= 5) then
-			radianStartWard1 = RADIANT_GAME_START_1_2
-		else
-			radianStartWard1 = RADIANT_GAME_START_1
-		end
-	else
-		if radianStartWard1 == nil and (RandomInt(1, 9) >= 5) then
-			radianStartWard1 = DIRE_GAME_START_1_2
-		else
-			radianStartWard1 = DIRE_GAME_START_1
-		end
-	end
+local startSpots = { [TEAM_RADIANT]=nil,[TEAM_DIRE]=nil }
+function X.GetGameStartWardSpots()
+	if startSpots[GetTeam()] then return startSpots[GetTeam()] end
+
+	local hMidWardSpots = {
+		RADIANT_GAME_START_MID_1,
+		RADIANT_GAME_START_MID_2,
+		RADIANT_GAME_START_MID_3,
+	}
+
+	local vWardMidSpot = hMidWardSpots[RandomInt(1, #hMidWardSpots)]
 
 	local WardSpotRadiant = {
-		radianStartWard1,
+		vWardMidSpot,
 		RADIANT_GAME_START_2,
 	}
 
-	if bot:HasModifier("modifier_smoke_of_deceit") then
-		if direStartWard1 == nil and (RandomInt(1, 9) >= 5) then
-			direStartWard1 = DIRE_GAME_START_1_2
-		else
-			direStartWard1 = DIRE_GAME_START_1
-		end
-	else
-		if direStartWard1 == nil and (RandomInt(1, 9) >= 5) then
-			direStartWard1 = RADIANT_GAME_START_1_2
-		else
-			direStartWard1 = RADIANT_GAME_START_1
-		end
-	end
+	hMidWardSpots = {
+		DIRE_GAME_START_MID_1,
+		DIRE_GAME_START_MID_2,
+		DIRE_GAME_START_MID_3,
+	}
+	vWardMidSpot = hMidWardSpots[RandomInt(1, #hMidWardSpots)]
+
 	local WardSpotDire = {
-		direStartWard1,
+		vWardMidSpot,
 		DIRE_GAME_START_2,
 	}
 
 	if GetTeam() == TEAM_RADIANT
     then
+		startSpots[TEAM_RADIANT] = WardSpotRadiant
 		return WardSpotRadiant
 	else
+		startSpots[TEAM_DIRE] = WardSpotDire
 		return WardSpotDire
 	end
 end
@@ -463,7 +478,7 @@ function X.GetAvailableSpot(bot)
 
 	if DotaTime() < 0
 	then
-		for _, spot in pairs(X.GetGameStartWardSpots(bot))
+		for _, spot in pairs(X.GetGameStartWardSpots())
 		do
 			if not X.IsOtherWardClose(spot)
 			then
@@ -513,7 +528,7 @@ function X.IsOtherWardClose(wardLoc)
 	for _, ward in pairs(nWardList)
     do
 		if X.IsWard(ward)
-        and GetUnitToLocationDistance(ward, wardLoc) <= nVisionRadius
+        and GetUnitToLocationDistance(ward, wardLoc) <= nVisionRadius * 1.5
         then
 			return true
 		end

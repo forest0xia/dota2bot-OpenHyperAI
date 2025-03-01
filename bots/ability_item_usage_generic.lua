@@ -67,6 +67,7 @@ local function AbilityLevelUpComplement()
 	if #sAbilityLevelUpList >= 1
 	and bot:GetAbilityPoints() > 0
 	then
+		if J.IsTryingtoUseAbility(bot) then return end
 		local abilityName = sAbilityLevelUpList[1]
 		local abilityToLevelup = bot:GetAbilityByName( abilityName )
 
