@@ -242,8 +242,8 @@ function X.GetSkillList( sAbilityList, nAbilityBuildList, sTalentList, nTalentBu
 					}
 	end
 
-	print("Aba list for: "..botName)
-    Utils.PrintTable(sSkillList)
+	-- print("Aba list for: "..botName)
+    -- Utils.PrintTable(sSkillList)
 	return sSkillList
 end
 

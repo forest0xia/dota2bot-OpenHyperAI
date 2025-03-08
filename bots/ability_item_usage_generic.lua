@@ -64,6 +64,8 @@ local function AbilityLevelUpComplement()
 		if not bot.needRefreshAbilitiesFor737 then bot.needRefreshAbilitiesFor737 = nil end
 	end
 
+	local botLevel = bot:GetLevel()
+
 	if #sAbilityLevelUpList >= 1
 	and bot:GetAbilityPoints() > 0
 	then
@@ -143,7 +145,7 @@ local function AbilityLevelUpComplement()
 
 		if abilityToLevelup ~= nil
 			and not abilityToLevelup:IsHidden()
-		    and bot:GetLevel() >= abilityToLevelup:GetHeroLevelRequiredToUpgrade()
+		    and botLevel >= abilityToLevelup:GetHeroLevelRequiredToUpgrade()
 			and abilityToLevelup:CanAbilityBeUpgraded()
 			and abilityToLevelup:GetLevel() < abilityToLevelup:GetMaxLevel()
 		then
@@ -157,18 +159,25 @@ local function AbilityLevelUpComplement()
 			if nextAbility then
 				bot:ActionImmediate_LevelAbility(nextAbility)
 			end
-		else
+		elseif not abilityToLevelup:IsHidden() and botLevel >= abilityToLevelup:GetHeroLevelRequiredToUpgrade() then
 			-- still try it
 			print("[WARN] Level up ability "..abilityName.." for "..botName.." may fail because it was called on ability that's not available or can't get upgraded anymore.")
 			bot:ActionImmediate_LevelAbility(abilityName)
 			table.remove( sAbilityLevelUpList, 1 )
 			-- bot:ActionImmediate_LevelAbility('special_bonus_attributes')
+		else
+			print("[WARN] Skipped to level up ability "..abilityName.." for "..botName.." for this time because it may fail.")
+			if botLevel > 25 then
+				print("[WARN] Ignore ability "..abilityName.." for "..botName.." because it may always fail.")
+				table.remove( sAbilityLevelUpList, 1 )
+			end
 		end
-		return
 	end
 
+	if botLevel > 25 and botLevel < 30 and bot:GetAbilityPoints() >= 1 and #sAbilityLevelUpList <= 3 then
+		sAbilityLevelUpList = J.Skill.GetTalentList( bot )
+	end
 end
-
 
 function X.GetNumEnemyNearby( building )
 

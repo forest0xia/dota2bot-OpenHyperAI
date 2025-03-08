@@ -28,16 +28,16 @@ Thanks and kudos to all that contributed to make bot games fun and exciting.
       1. Make sure to select Open Hyper AI as the script in custom lobby.
       1. If you have NOT installed the script via `quick-install-oha.bat`, simply update settings in <Steam\steamapps\workshop\content\570\3246316298\Customize>
       2. If you have installed the script via `quick-install-oha.bat`, update settings in <Steam\steamapps\common\dota 2 beta\game\dota\scripts\vscripts\game\Customize>
-1. Dynamic difficulty. If you ever feel all existing bot scripts lack excitement. This script boosts bots with huge unfair advantages to make bot games a lot more challenging. You will need to copy the script into your local vscripts folder and then enable the Fretbots mode for this feature. See instructions below.
+1. Dynamic difficulty. If you ever feel all existing bot scripts lack excitement. This script boosts bots with huge unfair advantages to make bot games a lot more challenging. You will need to enable the Fretbots mode for this feature. See instructions on section [How to install this script](#how-to-install-this-script) below.
 1. Support almost ALL game modes: https://steamcommunity.com/workshop/filedetails/discussion/3246316298/4334231305373971730/
 1. Improved code structure & general logic for decision making for ability casting, item usages, defending, roaming as well as farming.
 1. Enhanced AI Chatbot. You can chat with bots in the game as if they were real and optimistic players. Integrated with ChatGPT. [Note: you need to enable Fretbot mode for this, check out How to Install section below.]
 1. All supported heroes in this script can play any position roles. Heroes will go to any lane they are assigned. The laning or pos of the bot heroes will seem random in the game, but it's deterministic - check the Bot roles section below.
 1. Fixed tons of bugs. Bugs that can cause bots to stay idle or cancel it's own channeling spells or stuck on weird states.
 
-## How to install this script?
-1. There is currently a bug on Valve side that new bot scripts can only work in Custom Lobby with "Local Host" as the Server Location.
-2. This script can boost bots with huge unfair advantage that make the game much harder. You must manually install this script, please follow the instruction here: https://steamcommunity.com/workshop/filedetails/discussion/3246316298/4764334012741504141/
+## How to install this script
+1. This bot script can only work when you create `Custom Lobby`, and select `Local Host` as the `Server Location`, this is because there is an issue on Valve side that most of custom scripts can only work in `Local Host`.
+2. This script has enhanced Fretbots mode that can boost bots with HUGE unfair advantage which makes the game much harder. You MUST `manually install` this script, please follow the instruction here to enable Fretbots mode: https://steamcommunity.com/workshop/filedetails/discussion/3246316298/4764334012741504141/, note this can also resolve other issues like enabling bots to use Neutral items.
 
 ## Bot roles, lanings and positioning
 1. In local lobby, the positions of the bots are the same as the order of the slots: 1, 2, 3, 4, 5 from top to bottom in the lobby.
