@@ -175,7 +175,7 @@ local function AbilityLevelUpComplement()
 	end
 
 	if botLevel > 25 and botLevel < 30 and bot:GetAbilityPoints() >= 1 and #sAbilityLevelUpList <= 3 then
-		sAbilityLevelUpList = J.Skill.GetTalentList( bot )
+		sAbilityLevelUpList = J.Utils.CombineTablesUnique(J.Skill.GetTalentList( bot ), J.Skill.GetAbilityList( bot ))
 	end
 end
 

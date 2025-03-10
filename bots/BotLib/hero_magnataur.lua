@@ -15,10 +15,13 @@ local tTalentTreeList = {
 }
 
 local tAllAbilityBuildList = {
-						{1,3,2,2,2,6,2,3,3,3,1,6,1,1,6},--pos3
+    ["pos_2"]= {1,3,1,2,1,6,1,2,1,2,6,2,3,3,3,6},
+    ["pos_3"]= {1,3,1,2,1,6,1,2,1,2,6,2,3,3,3,6},
+    ["pos_4"]= {1,3,1,2,1,6,1,2,1,3,3,6,3,2,6,2},
+    ["pos_5"]= {1,3,1,2,1,6,1,2,1,3,3,6,3,2,6,2},
 }
 
-local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
+local nAbilityBuildList = tAllAbilityBuildList[sRole] or {1,3,2,2,2,6,2,3,3,3,1,6,1,1,6,1}
 
 local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 
@@ -53,7 +56,28 @@ sRoleItemsBuyList['pos_3'] = {
 
 sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
 
-sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_3']
+sRoleItemsBuyList['pos_2'] = {
+    "item_quelling_blade",
+    "item_double_branches",
+    "item_tango",
+    "item_circlet",
+    "item_bottle",
+    "item_wraith_band",
+    "item_magic_wand",
+    "item_power_treads",
+    "item_blink",
+    "item_echo_sabre",
+    "item_black_king_bar",--
+    "item_harpoon",--
+    "item_greater_crit",--
+    "item_sheepstick",--
+    "item_aghanims_shard",
+    "item_travel_boots",
+    "item_moon_shard",
+    "item_arcane_blink",--
+    "item_travel_boots_2",--
+    "item_ultimate_scepter_2",
+}
 
 sRoleItemsBuyList['pos_4'] = {
 	'item_priest_outfit',

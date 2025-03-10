@@ -79,7 +79,7 @@ function Defend.GetDefendDesireHelper(bot, lane)
 		return BOT_MODE_DESIRE_NONE
 	end
 
-	local nSearchRange = 2200
+	local nSearchRange = 2500
 	local team = bot:GetTeam()
 	local laneFront = GetLaneFrontLocation(team, lane, 0)
 	local ancient = GetAncient(team)
@@ -98,7 +98,7 @@ function Defend.GetDefendDesireHelper(bot, lane)
 	-- 如果基地附近有敌人，则重点防御基地
 	if nEnemyUnitsAroundAncient > 0
 	then
-		nSearchRange = 1500
+		nSearchRange = 1800
 		local ancientHp = J.GetHP(ancient)
 
 		defendLoc = ancient:GetLocation()
@@ -264,15 +264,16 @@ end
 
 function Defend.DefendThink(bot, lane)
     if J.CanNotUseAction(bot) then return end
+	local nSearchRange = 1800
 
 	local attackRange = bot:GetAttackRange()
 	if not defendLoc then
 		defendLoc = GetLaneFrontLocation(GetTeam(), lane, 0)
 	end
-	local nAttackSearchRange = attackRange < 900 and 900 or math.min(attackRange, 1600)
+	local nAttackSearchRange = attackRange < 900 and 900 or math.min(attackRange, nSearchRange)
 
 	local nEnemyHeroes = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
-	local nEnemyHeroes_real = J.GetEnemiesNearLoc(defendLoc, 1600)
+	local nEnemyHeroes_real = J.GetEnemiesNearLoc(defendLoc, nSearchRange)
 
 	if nEnemyUnitsAroundAncient > 0 then
 		local ancient = GetAncient(GetTeam())
@@ -318,9 +319,9 @@ function Defend.DefendThink(bot, lane)
 		end
 	end
 
-	if (weAreStronger or #nInRangeAlly >= #nEnemyHeroes_real) and distanceToLane[lane] and  distanceToLane[lane] < 1600 then
+	if (weAreStronger or #nInRangeAlly >= #nEnemyHeroes_real) and distanceToLane[lane] and  distanceToLane[lane] < nSearchRange then
 		bot:Action_AttackMove(defendLoc + J.RandomForwardVector(300))
-	elseif distanceToLane[lane] and distanceToLane[lane] > 1600 then
+	elseif distanceToLane[lane] and distanceToLane[lane] > nSearchRange then
 		bot:Action_MoveToLocation(defendLoc + J.RandomForwardVector(300))
 	end
 end

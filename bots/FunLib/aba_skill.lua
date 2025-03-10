@@ -66,7 +66,7 @@ X['sStunProjectileAbilityIndex'] = {
 function X.GetTalentList( bot )
 
 	local sTalentList = {}
-	for i = 0, 23
+	for i = 0, 25
 	do
 		local hAbility = bot:GetAbilityInSlot( i )
 		if hAbility ~= nil and hAbility:IsTalent()
@@ -81,7 +81,7 @@ end
 
 function X.GetAbilityList( bot )
 	local sAbilityList = { }
-	local totalUpgradeableAbilities = 7
+	local totalUpgradeableAbilities = 10
 	local unitName = bot:GetUnitName()
 	for slot = 0, totalUpgradeableAbilities
 	do
