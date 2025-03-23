@@ -86,9 +86,10 @@ X['bDeafaultItem'] = false
 
 function X.MinionThink(hMinionUnit)
 
-	if Minion.IsValidUnit(hMinionUnit) 
+	if Minion.IsValidUnit(hMinionUnit)
 	then
-		Minion.IllusionThink(hMinionUnit)	
+		if hMinionUnit:IsIllusion() then hMinionUnit.isIllusion = true end
+		Minion.IllusionThink(hMinionUnit)
 	end
 
 end

@@ -1175,6 +1175,9 @@ end
 
 --BKB
 X.ConsiderItemDesire["item_black_king_bar"] = function( hItem )
+	if bot:HasModifier('modifier_dazzle_nothl_projection_soul_debuff') then
+		return BOT_ACTION_DESIRE_NONE
+	end
 
 	local nCastRange = 1300
 	local sCastType = 'none'
@@ -7654,7 +7657,7 @@ function ItemUsageThink()
 	if bot.lastItemFrameProcessTime == nil then bot.lastItemFrameProcessTime = DotaTime() end
 	if DotaTime() - bot.lastItemFrameProcessTime < bot.frameProcessTime then return end
 	bot.lastItemFrameProcessTime = DotaTime()
-	ItemUsageComplement()
+	if not J.IsNoItemIllution(bot) then ItemUsageComplement() end
 end
 
 function AbilityUsageThink()
@@ -7662,50 +7665,35 @@ function AbilityUsageThink()
 	if bot.lastAbilityFrameProcessTime == nil then bot.lastAbilityFrameProcessTime = DotaTime() end
 	if DotaTime() - bot.lastAbilityFrameProcessTime < bot.frameProcessTime and bot.isBear == nil then return end
 	bot.lastAbilityFrameProcessTime = DotaTime()
-	if ShouldUseAbility() then BotBuild.SkillsComplement() end
+	if not J.IsNoAbilityIllution(bot) then BotBuild.SkillsComplement() end
 end
 
 function BuybackUsageThink()
 	if bot.lastBuybackFrameProcessTime == nil then bot.lastBuybackFrameProcessTime = DotaTime() end
 	if DotaTime() - bot.lastBuybackFrameProcessTime < bot.frameProcessTime then return end
 	bot.lastBuybackFrameProcessTime = DotaTime()
-	BuybackUsageComplement()
-	UseGlyph()
+	if not bot:IsIllusion() then BuybackUsageComplement() end
+	if not bot:IsIllusion() then UseGlyph() end
 end
 
 function CourierUsageThink()
 	if bot.lastCourierFrameProcessTime == nil then bot.lastCourierFrameProcessTime = DotaTime() end
 	if DotaTime() - bot.lastCourierFrameProcessTime < bot.frameProcessTime then return end
 	bot.lastCourierFrameProcessTime = DotaTime()
-	CourierUsageComplement()
+	if not bot:IsIllusion() then CourierUsageComplement() end
 end
 
 function AbilityLevelUpThink()
 	if bot.lastLevelUpFrameProcessTime == nil then bot.lastLevelUpFrameProcessTime = DotaTime() end
 	if DotaTime() - bot.lastLevelUpFrameProcessTime < bot.frameProcessTime then return end
 	bot.lastLevelUpFrameProcessTime = DotaTime()
-	AbilityLevelUpComplement()
+	if not bot:IsIllusion() then AbilityLevelUpComplement() end
 end
 
 function X.SetAbilityItemList(heroAbility, items, abilityLvlup)
 	bDeafaultAbilityHero = heroAbility
 	bDeafaultItemHero = items
 	sAbilityLevelUpList = abilityLvlup
-end
-
-function ShouldUseAbility()
-	return true
-
-	-- local isTargetHero = J.IsValidHero(botTarget)
-	-- if J.IsInLaningPhase(bot)
-	-- and (botName ~= 'npc_dota_hero_huskar' and botName ~= 'npc_dota_hero_lion' and botName ~= 'npc_dota_hero_obsidian_destroyer')
-	-- and (
-	-- 	(not isTargetHero or bot:GetMana() < 150 or J.GetMP(bot) < 0.2)
-	-- 	or (isTargetHero and J.GetHP(botTarget) > 0.5 and (bot:GetMana() < 150 or J.GetMP(bot) < 0.2))
-	-- ) then
-	-- 	return false
-	-- end
-	-- return true
 end
 
 X.AbilityLevelUpThink = AbilityLevelUpThink

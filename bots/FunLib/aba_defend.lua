@@ -18,6 +18,7 @@ local currentTime = DotaTime()
 local maxDesire = 0.98
 
 function Defend.GetDefendDesire(bot, lane)
+	if bot:IsIllusion() then return end
 	if bot.laneToDefend == nil then bot.laneToDefend = lane end
 	if bot.DefendLaneDesire == nil then bot.DefendLaneDesire = {0, 0, 0} end
 
@@ -117,7 +118,7 @@ function Defend.GetDefendDesireHelper(bot, lane)
 		and #J.GetNearbyHeroes(bot, math.max(attackRange + 100, 1000), true, BOT_MODE_NONE) <= 0
 		and ((#nInRangeEnemy <= 1 and not (J.IsValidHero(botTarget) and J.GetHP(botTarget) < 0.3)) or not bot:WasRecentlyDamagedByAnyHero(2)) then
 			print("Ancient is in danger for team " .. team)
-			local desire = RemapValClamped(J.GetHP(bot), 0.1, 0.5, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_ABSOLUTE)
+			local desire = RemapValClamped(J.GetHP(bot), 0.25, 0.5, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_ABSOLUTE)
 			ConsiderPingedDefend(bot, desire, ancient, 4)
 			return desire
 		end
@@ -278,7 +279,7 @@ function Defend.DefendThink(bot, lane)
 	if nEnemyUnitsAroundAncient > 0 then
 		local ancient = GetAncient(GetTeam())
 		if GetUnitToLocationDistance(ancient, defendLoc) < 100 then
-			if GetUnitToUnitDistance(bot, ancient) > 2500 then
+			if GetUnitToUnitDistance(bot, ancient) > 3000 then
 				bot:Action_MoveToLocation(defendLoc + J.RandomForwardVector(300))
 				return
 			end
@@ -319,9 +320,9 @@ function Defend.DefendThink(bot, lane)
 		end
 	end
 
-	if (weAreStronger or #nInRangeAlly >= #nEnemyHeroes_real) and distanceToLane[lane] and  distanceToLane[lane] < nSearchRange then
+	if (weAreStronger or #nInRangeAlly >= #nEnemyHeroes_real) and distanceToLane[lane] and distanceToLane[lane] < nSearchRange then
 		bot:Action_AttackMove(defendLoc + J.RandomForwardVector(300))
-	elseif distanceToLane[lane] and distanceToLane[lane] > nSearchRange then
+	elseif distanceToLane[lane] and distanceToLane[lane] > nSearchRange * 1.7 then
 		bot:Action_MoveToLocation(defendLoc + J.RandomForwardVector(300))
 	end
 end

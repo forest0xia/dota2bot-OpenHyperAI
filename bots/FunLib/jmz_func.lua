@@ -732,6 +732,40 @@ function J.CanUseRefresherOrb( bot )
 end
 
 
+function J.IsNoItemIllution(bot)
+	local cacheKey = 'IsNoItemIllution'
+	local cache = J.Utils.GetCachedVars(cacheKey, 0.5)
+	if cache ~= nil then return cache end
+
+	if (bot:IsIllusion() or J.IsMeepoClone(bot))
+	and not bot:HasModifier("modifier_arc_warden_tempest_double")
+	and not bot:GetUnitName() == 'npc_dota_hero_vengefulspirit'
+	then
+		J.Utils.SetCachedVars(cacheKey, true)
+		return true
+	end
+	J.Utils.SetCachedVars(cacheKey, false)
+	return false
+end
+
+function J.IsNoAbilityIllution(bot)
+	local cacheKey = 'IsNoAbilityIllution'
+	local cache = J.Utils.GetCachedVars(cacheKey, 0.5)
+	if cache ~= nil then return cache end
+
+	if bot:IsIllusion()
+	and not bot:HasModifier("modifier_arc_warden_tempest_double")
+	and not bot:GetUnitName() == 'npc_dota_hero_vengefulspirit'
+	and not J.IsMeepoClone(bot)
+	then
+		J.Utils.SetCachedVars(cacheKey, true)
+		return true
+	end
+	J.Utils.SetCachedVars(cacheKey, false)
+	return false
+end
+
+
 function J.IsSuspiciousIllusion( npcTarget )
 	if npcTarget == nil or npcTarget:IsNull() then return false end
 	if npcTarget.is_suspicious_illusion ~= nil then
@@ -3317,6 +3351,9 @@ function J.CanBeAttacked( unit )
 			and not unit:HasModifier("modifier_fountain_glyph")
 			and not unit:HasModifier("modifier_omninight_guardian_angel")
 			and not unit:HasModifier("modifier_winter_wyvern_cold_embrace")
+			and not unit:HasModifier("modifier_dark_willow_shadow_realm_buff")
+			and not unit:HasModifier("modifier_ringmaster_the_box_buff")
+			and not unit:HasModifier("modifier_dazzle_nothl_projection_soul_debuff")
 			and (unit:GetTeam() == GetTeam() 
 					or not unit:HasModifier("modifier_crystal_maiden_frostbite") )
 			and (unit:GetTeam() ~= GetTeam() 
@@ -4696,9 +4733,9 @@ function J.IsUnitBetweenMeAndLocation(hSource, hTarget, vTargetLoc, nRadius)
 		and hSource ~= unit
 		and hTarget ~= unit
 		then
+			local nRadius__ = nRadius + unit:GetBoundingRadius()
 			local tResult = PointToLineDistance(vStart, vEnd, unit:GetLocation())
-			if tResult ~= nil and tResult.within and tResult.distance <= nRadius then return true end
-		end
+			if tResult ~= nil and tResult.within and tResult.distance <= nRadius__ then return true end end
 	end
 
 	return false

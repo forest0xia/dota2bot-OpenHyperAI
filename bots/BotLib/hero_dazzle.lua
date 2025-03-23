@@ -282,7 +282,36 @@ function X.ConsiderNothlProjection()
         return BOT_ACTION_DESIRE_NONE, nil
 	end
 
+	if J.IsGoingOnSomeone(bot) then
+		if J.IsValidHero(botTarget)
+		and J.IsInRange(bot, botTarget, 600)
+		and J.CanCastOnNonMagicImmune(botTarget)
+		and J.CanBeAttacked(botTarget)
+		and J.GetHP(botTarget) < 0.7
+		and not J.IsChasingTarget(bot, botTarget)
+		and not J.CannotBeKilled(bot, botTarget)
+		then
+			local nAllyHeroes = J.GetAlliesNearLoc(botTarget:GetLocation(), 1200)
+			local nEnemyHeroes = J.GetEnemiesNearLoc(botTarget:GetLocation(), 1200)
+			local nEnemyTowers = bot:GetNearbyTowers(900, true)
+			if #nAllyHeroes >= #nEnemyHeroes
+			and not (#nAllyHeroes >= #nEnemyHeroes + 2)
+			and #nEnemyTowers == 0
+			then
+				if #nEnemyHeroes <= 1 then
+					local nDamage = bot:GetEstimatedDamageToTarget(true, botTarget, 5.0, DAMAGE_TYPE_ALL)
+					if (botTarget:GetActualIncomingDamage(nDamage, DAMAGE_TYPE_ALL) / bot:GetHealth()) >= 0.4 then
+						return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
+					end
+				else
+					return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
+				end
+			end
+		end
+	end
+
 	local nCastRange = NothlProjection:GetCastRange()
+
 	--进攻
 	if J.IsInTeamFight(bot, 1200)
 	then

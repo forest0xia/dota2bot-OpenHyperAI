@@ -17,6 +17,12 @@ function X.Think(ownerBot, hMinionUnit)
 
     bot = ownerBot
 
+    if hMinionUnit.isIllusion then
+        if X.ConfuseEnemyWithIllusions(ownerBot, hMinionUnit) > 0 then
+            return
+        end
+    end
+
 	hMinionUnit.attack_desire, hMinionUnit.attack_target = X.ConsiderAttack(hMinionUnit)
     if X.ConsiderRetreat(hMinionUnit, hMinionUnit.attack_target) then return end
 
@@ -44,6 +50,20 @@ function X.Think(ownerBot, hMinionUnit)
         end
         nNextMoveTime = DotaTime() + 0.2
     end
+end
+
+-- 镜像迷惑对手
+function X.ConfuseEnemyWithIllusions(bot, hMinionUnit)
+    if J.GetHP(bot) < 0.4 and J.IsRetreating(bot) and not J.WeAreStronger(bot, 1200) then
+        local retreatDirection = bot:GetFacing()
+        local oppositeDirection = (retreatDirection + 180) % 360
+        local confuseDistance = 800 -- distance illusions will move
+        local confuseLocation = hMinionUnit:GetLocation() +
+            Vector(confuseDistance * math.cos(math.rad(oppositeDirection)), confuseDistance * math.sin(math.rad(oppositeDirection))) + RandomVector(50)
+        hMinionUnit:Action_MoveToLocation(confuseLocation)
+        return 1
+    end
+    return 0
 end
 
 function X.ConsiderRetreat(hMinionUnit, hTarget)

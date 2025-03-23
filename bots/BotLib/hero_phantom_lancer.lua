@@ -89,6 +89,7 @@ function X.MinionThink(hMinionUnit)
 
 	if Minion.IsValidUnit( hMinionUnit )
 	then
+		if hMinionUnit:IsIllusion() then hMinionUnit.isIllusion = true end
 		if hMinionUnit:HasModifier( 'modifier_phantom_lancer_phantom_edge_boost' ) then return end
 
 		Minion.IllusionThink( hMinionUnit )

@@ -29,6 +29,10 @@ end
 -- MINION THINK
 function X.MinionThink(hMinionUnit)
 	if not hMinionUnit or hMinionUnit:IsNull() or not hMinionUnit:IsAlive() then return end
+	if hMinionUnit.lastItemFrameProcessTime == nil then hMinionUnit.lastItemFrameProcessTime = 0 end
+	if DotaTime() - hMinionUnit.lastItemFrameProcessTime < 0.5 then return end
+	hMinionUnit.lastItemFrameProcessTime = DotaTime()
+
 	if bot == nil then bot = GetBot() end
 
 	if U.IsValidUnit(hMinionUnit)

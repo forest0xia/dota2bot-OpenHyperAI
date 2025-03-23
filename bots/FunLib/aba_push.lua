@@ -22,6 +22,7 @@ local weAreStronger = false
 local nInRangeAlly, nInRangeEnemy = {}, {}
 
 function Push.GetPushDesire(bot, lane)
+	if bot:IsIllusion() then return end
     local botName = bot:GetUnitName()
 	if bot:IsInvulnerable() or not bot:IsHero() or not bot:IsAlive() or not string.find(botName, "hero") or bot:IsIllusion() then return BOT_MODE_DESIRE_NONE end
 
