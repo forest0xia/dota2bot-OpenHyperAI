@@ -5,7 +5,7 @@ const enemyHeroData: { [playerId: number]: EnemyHeroData } = {};
 
 let cachedPositions: EnemyHeroPosition = {};
 let updateEnemyHeroRolesTime = 0;
-let updateEnemyRolesTimeGap = 3;
+let updateEnemyRolesTimeGap = 5;
 
 const ItemOffensiveness: { [itemName: string]: number } = {
     item_desolator: 60,

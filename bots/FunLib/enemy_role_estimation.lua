@@ -137,7 +137,7 @@ end
 local enemyHeroData = {}
 local cachedPositions = {}
 local updateEnemyHeroRolesTime = 0
-local updateEnemyRolesTimeGap = 3
+local updateEnemyRolesTimeGap = 5
 ItemOffensiveness = {
     item_desolator = 60,
     item_desolator_2 = 80,
