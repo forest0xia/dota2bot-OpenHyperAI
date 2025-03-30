@@ -4642,8 +4642,8 @@ X.ConsiderItemDesire["item_tpscroll"] = function( hItem )
 		local tpLocDist = GetUnitToLocationDistance(bot, targetLoc)
 		local roshanLocDist = GetUnitToLocationDistance(bot, roshanLoc)
 
-		if tpLocDist > 5000
-		and roshanLocDist > 5000
+		if tpLocDist > 8000
+		and roshanLocDist > 8000
 		and roshanLocDist > tpLocDist
 		then
 			if botName == 'npc_dota_hero_furion'
@@ -4670,7 +4670,7 @@ X.ConsiderItemDesire["item_tpscroll"] = function( hItem )
 		or not J.IsDefending(bot))
 	then
 		local torLoc = J.GetTormentorLocation(team)
-		if GetUnitToLocationDistance(bot, torLoc) > 3000 then
+		if GetUnitToLocationDistance(bot, torLoc) > 8000 then
 			hEffectTarget = J.GetNearbyLocationToTp(torLoc)
 			sCastMotive = 'tormentor'
 			if J.GetLocationToLocationDistance(bot:GetLocation(), hEffectTarget) > 4400

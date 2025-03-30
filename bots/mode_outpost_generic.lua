@@ -12,6 +12,10 @@ local ClosestOutpostDist = 10000
 local IsEnemyTier2Down = false
 
 function GetDesire()
+
+	-- disable for now
+	if true then return BOT_ACTION_DESIRE_NONE end
+
 	if not IsEnemyTier2Down
 	then
 		if GetTower(GetOpposingTeam(), TOWER_TOP_2) == nil

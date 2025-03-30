@@ -422,6 +422,7 @@ function X.ConsiderPlagueWard()
 
     local nAllyHeroes = bot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
     local nEnemyHeroes = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+    local nStacks = J.GetModifierCount(bot, 'modifier_venomancer_ward_counter')
 
 	if J.IsGoingOnSomeone(bot) then
 		if J.IsValidTarget(botTarget)
@@ -430,7 +431,7 @@ function X.ConsiderPlagueWard()
         and not J.IsSuspiciousIllusion(botTarget)
         and not botTarget:HasModifier('modifier_necrolyte_reapers_scythe')
 		then
-            if not bot:HasModifier('modifier_venomancer_ward_counter') then
+            if nStacks < 8 then
                 return BOT_ACTION_DESIRE_HIGH, bot, true
             else
                 local nEnemyTower = botTarget:GetNearbyTowers(700, false)
@@ -452,7 +453,7 @@ function X.ConsiderPlagueWard()
                 if (J.GetHP(bot) < 0.75 and bot:WasRecentlyDamagedByAnyHero(3.0))
                 or (#nAllyHeroes < #nEnemyHeroes)
                 then
-                    if J.IsInRange(bot, enemyHero, 550) and not bot:HasModifier('modifier_venomancer_ward_counter') then
+                    if J.IsInRange(bot, enemyHero, 550) and nStacks < 6 then
                         return BOT_ACTION_DESIRE_HIGH, bot, true
                     else
                         return BOT_ACTION_DESIRE_HIGH, (bot:GetLocation() + enemyHero:GetLocation()) / 2, false
@@ -466,37 +467,37 @@ function X.ConsiderPlagueWard()
         if J.IsValidHero(allyHero)
         and allyHero ~= bot
         and J.IsInRange(bot, allyHero, nCastRange)
-        and not allyHero:HasModifier('modifier_venomancer_ward_counter')
         and not allyHero:IsIllusion()
         then
+            local allyStack = J.GetModifierCount(allyHero, 'modifier_venomancer_ward_counter')
             if J.IsPushing(allyHero) or J.IsFarming(allyHero) then
-                return BOT_ACTION_DESIRE_HIGH, allyHero, true
+                if #nAllyHeroes <= 2 or ( #nAllyHeroes > 2 and allyHero:GetAttackRange() < 450) then
+                    if allyStack < 6 then
+                        return BOT_ACTION_DESIRE_HIGH, allyHero, true
+                    end
+                end
             end
-        end
 
-        if J.IsValidHero(allyHero)
-        and allyHero ~= bot
-        and J.IsInRange(bot, allyHero, nCastRange)
-        and not allyHero:HasModifier('modifier_venomancer_ward_counter')
-        and J.IsRetreating(allyHero)
-        and allyHero:WasRecentlyDamagedByAnyHero(3.0)
-        and not allyHero:IsIllusion()
-        then
-            local nAllyInRangeEnemy = allyHero:GetNearbyHeroes(600, true, BOT_MODE_NONE)
-            for _, enemyHero in pairs(nAllyInRangeEnemy) do
-                if J.IsValidHero(enemyHero)
-                and J.CanBeAttacked(enemyHero)
-                and J.IsChasingTarget(enemyHero, allyHero)
-                and not J.IsSuspiciousIllusion(enemyHero)
-                then
-                    return BOT_ACTION_DESIRE_HIGH, allyHero, true
+            if J.IsRetreating(allyHero)
+            and allyHero:WasRecentlyDamagedByAnyHero(3.0) then
+                local nAllyInRangeEnemy = allyHero:GetNearbyHeroes(600, true, BOT_MODE_NONE)
+                for _, enemyHero in pairs(nAllyInRangeEnemy) do
+                    if J.IsValidHero(enemyHero)
+                    and J.CanBeAttacked(enemyHero)
+                    and J.IsChasingTarget(enemyHero, allyHero)
+                    and not J.IsSuspiciousIllusion(enemyHero)
+                    then
+                        if allyStack < 6 then
+                            return BOT_ACTION_DESIRE_HIGH, allyHero, true
+                        end
+                    end
                 end
             end
         end
     end
 
     if J.IsPushing(bot) or J.IsDefending(bot) then
-        if not bot:HasModifier('modifier_venomancer_ward_counter') then
+        if nStacks < 6 then
             local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(600, true)
             if J.CanBeAttacked(nEnemyLaneCreeps[1])
             and not J.IsRunning(nEnemyLaneCreeps[1])
@@ -515,7 +516,7 @@ function X.ConsiderPlagueWard()
         end
 	end
 
-    if not bot:HasModifier('modifier_venomancer_ward_counter') then
+    if nStacks < 6 then
         if J.IsDoingRoshan(bot)
         then
             if J.IsRoshan(botTarget)
