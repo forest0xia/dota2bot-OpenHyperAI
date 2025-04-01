@@ -21,7 +21,7 @@ if bot.tormentor_kill_time == nil then bot.tormentor_kill_time = 0 end
 local NoTormentorAfterThisTime = 40 * 60 -- do not do tormentor again since it's late and doing tormentor only slows down the game more.
 local botTarget
 local hAllAllyHeroList
-local MaxAveDistanceForTormentor = 6000
+local MaxAveDistanceForTormentor = 8000
 
 function GetDesire()
 	-- 如果在打高地 就别撤退去干别的
