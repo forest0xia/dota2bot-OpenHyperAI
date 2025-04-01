@@ -136,7 +136,7 @@ local castEDesire
 local castRDesire
 
 local nKeepMana, nMP, nHP, nLV, hEnemyHeroList
-
+local botTarget
 
 function X.SkillsComplement()
 
@@ -147,6 +147,7 @@ function X.SkillsComplement()
 
 	if J.CanNotUseAbility( bot ) or bot:IsInvisible() then return end
 
+	botTarget = J.GetProperTarget( bot )
 	nKeepMana = 400
 	nLV = bot:GetLevel()
 	nMP = bot:GetMana()/bot:GetMaxMana()
@@ -330,17 +331,16 @@ function X.ConsiderQ()
 	--打架时先手
 	if J.IsGoingOnSomeone( bot )
 	then
-		local npcTarget = J.GetProperTarget( bot )
-		if J.IsValidHero( npcTarget )
-			and J.CanCastOnNonMagicImmune( npcTarget )
-			and J.CanCastOnTargetAdvanced( npcTarget )
-			and J.IsInRange( npcTarget, bot, nCastRange + 60 )
-			and not J.IsDisabled( npcTarget )
-			and not npcTarget:IsDisarmed()
+		if J.IsValidHero( botTarget )
+			and J.CanCastOnNonMagicImmune( botTarget )
+			and J.CanCastOnTargetAdvanced( botTarget )
+			and J.IsInRange( botTarget, bot, nCastRange + 60 )
+			and not J.IsDisabled( botTarget )
+			and not botTarget:IsDisarmed()
 		then
-			if nSkillLV >= 3 or nMP > 0.88 or J.GetHP( npcTarget ) < 0.38 or nHP < 0.25
+			if nSkillLV >= 3 or nMP > 0.88 or J.GetHP( botTarget ) < 0.38 or nHP < 0.25
 			then
-				return BOT_ACTION_DESIRE_HIGH, npcTarget
+				return BOT_ACTION_DESIRE_HIGH, botTarget
 			end
 		end
 	end
@@ -414,13 +414,21 @@ function X.ConsiderQ()
 	if bot:GetActiveMode() == BOT_MODE_ROSHAN
 		and bot:GetMana() >= 600
 	then
-		local npcTarget = bot:GetAttackTarget()
-		if J.IsRoshan( npcTarget )
-			and not J.IsDisabled( npcTarget )
-			and not npcTarget:IsDisarmed()
-			and J.IsInRange( npcTarget, bot, nCastRange )
+		if J.IsRoshan( botTarget )
+			and not J.IsDisabled( botTarget )
+			and not botTarget:IsDisarmed()
+			and J.IsInRange( botTarget, bot, nCastRange )
 		then
-			return BOT_ACTION_DESIRE_HIGH, npcTarget
+			return BOT_ACTION_DESIRE_HIGH, botTarget
+		end
+	end
+
+	if J.IsDoingTormentor(bot) then
+		if J.IsTormentor(botTarget)
+        and J.IsInRange(bot, botTarget, nCastRange)
+        and J.IsAttacking(bot)
+		then
+			return BOT_ACTION_DESIRE_HIGH, botTarget, ''
 		end
 	end
 
@@ -508,13 +516,11 @@ function X.ConsiderE()
 		return BOT_ACTION_DESIRE_HIGH
 	end
 
-
 	if J.IsGoingOnSomeone( bot )
 	then
-		local npcTarget = J.GetProperTarget( bot )
-		if J.IsValidHero( npcTarget )
-			and J.IsInRange( npcTarget, bot, 600 )
-			and bot:IsFacingLocation( npcTarget:GetLocation(), 15 )
+		if J.IsValidHero( botTarget )
+			and J.IsInRange( botTarget, bot, 600 )
+			and bot:IsFacingLocation( botTarget:GetLocation(), 15 )
 		then
 			return BOT_ACTION_DESIRE_HIGH
 		end
@@ -546,11 +552,10 @@ function X.ConsiderR()
 	--打架时先手
 	if J.IsGoingOnSomeone( bot )
 	then
-		local npcTarget = J.GetProperTarget( bot )
-		if J.IsValidHero( npcTarget )
-			and ( J.GetHP( npcTarget ) > 0.25 or #nEnemysHerosInBonus >= 2 )
-			and ( J.IsInRange( npcTarget, bot, 700 )
-				or J.IsInRange( npcTarget, bot, npcTarget:GetAttackRange() + 80 ) )
+		if J.IsValidHero( botTarget )
+			and ( J.GetHP( botTarget ) > 0.25 or #nEnemysHerosInBonus >= 2 )
+			and ( J.IsInRange( botTarget, bot, 700 )
+				or J.IsInRange( botTarget, bot, botTarget:GetAttackRange() + 80 ) )
 		then
 			return BOT_ACTION_DESIRE_HIGH
 		end
@@ -566,6 +571,25 @@ function X.ConsiderR()
 		return BOT_ACTION_DESIRE_HIGH
 	end
 
+	if bot:GetActiveMode() == BOT_MODE_ROSHAN
+	then
+		if J.IsRoshan( botTarget )
+			and J.IsInRange( botTarget, bot, 400 )
+		then
+			return BOT_ACTION_DESIRE_HIGH
+		end
+	end
+
+	if J.IsDoingTormentor(bot) then
+		if J.IsTormentor(botTarget)
+        and J.IsInRange(bot, botTarget, 400)
+        and J.IsAttacking(bot)
+		then
+			return BOT_ACTION_DESIRE_HIGH
+		end
+	end
+	
+
 	return 0
 end
 
@@ -576,8 +600,7 @@ function X.SvenConsiderTarget()
 	if not J.IsRunning( bot )
 	then return end
 
-	local npcTarget = bot:GetAttackTarget()
-	if not J.IsValidHero( npcTarget ) then return end
+	if not J.IsValidHero( botTarget ) then return end
 
 	local nAttackRange = bot:GetAttackRange() + 50
 	local nEnemyHeroInRange = J.GetNearbyHeroes(bot, nAttackRange, true, BOT_MODE_NONE )
@@ -586,7 +609,7 @@ function X.SvenConsiderTarget()
 
 	if J.IsValidHero( nInAttackRangeWeakestEnemyHero )
 		and J.CanBeAttacked( nInAttackRangeWeakestEnemyHero )
-		and ( GetUnitToUnitDistance( npcTarget, bot ) >  350 or J.HasForbiddenModifier( npcTarget ) )
+		and ( GetUnitToUnitDistance( botTarget, bot ) >  350 or J.HasForbiddenModifier( botTarget ) )
 	then
 		--更改目标为
 		bot:SetTarget( nInAttackRangeWeakestEnemyHero )

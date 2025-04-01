@@ -181,13 +181,14 @@ local castRDesire
 local castASDesire, castASTarget
 
 local nKeepMana, nMP, nHP, nLV, hEnemyHeroList
-
+local npcTarget
 
 function X.SkillsComplement()
 
 
 	if J.CanNotUseAbility( bot ) or bot:IsInvisible() then return end
 
+	npcTarget = J.GetProperTarget( bot )
 
 	nKeepMana = 400
 	nMP = bot:GetMana()/bot:GetMaxMana()
@@ -268,7 +269,6 @@ function X.ConsiderQ()
 
 	if J.IsFarming( bot ) and bot:GetMana() > 150
 	then
-		local npcTarget = J.GetProperTarget( bot )
 		if J.IsValid( npcTarget )
 			and npcTarget:GetTeam() == TEAM_NEUTRAL
 			and npcTarget:GetMagicResist() < 0.4
@@ -294,15 +294,6 @@ function X.ConsiderQ()
 			and J.IsInRange( bot, tableNearbyEnemyHeroes[1], nCastRange - 100 )
 		then
 			return BOT_ACTION_DESIRE_HIGH, tableNearbyEnemyHeroes[1]:GetLocation()
-		end
-	end
-
-	if ( bot:GetActiveMode() == BOT_MODE_ROSHAN )
-	then
-		local npcTarget = bot:GetAttackTarget()
-		if ( J.IsRoshan( npcTarget ) and J.IsInRange( npcTarget, bot, nCastRange ) )
-		then
-			return BOT_ACTION_DESIRE_HIGH, npcTarget:GetLocation()
 		end
 	end
 
@@ -365,7 +356,6 @@ function X.ConsiderQ()
 
 	if J.IsGoingOnSomeone( bot )
 	then
-		local npcTarget = J.GetProperTarget( bot )
 		if J.IsValidHero( npcTarget )
 			and J.CanCastOnNonMagicImmune( npcTarget )
 			and J.IsInRange( npcTarget, bot, nCastRange - 100 )
@@ -388,6 +378,26 @@ function X.ConsiderQ()
 			then
 				return BOT_ACTION_DESIRE_HIGH, locationAoE.targetloc
 			end
+		end
+	end
+
+	if J.IsDoingRoshan(bot)
+	then
+		local npcTarget = bot:GetAttackTarget()
+		if ( J.IsRoshan( npcTarget ) and J.IsInRange( npcTarget, bot, nCastRange ) )
+        and J.IsAttacking(bot)
+		then
+			return BOT_ACTION_DESIRE_HIGH, npcTarget:GetLocation()
+		end
+	end
+
+    if J.IsDoingTormentor(bot)
+	then
+		local npcTarget = bot:GetAttackTarget()
+		if ( J.IsTormentor( npcTarget ) and J.IsInRange( npcTarget, bot, nCastRange ) )
+        and J.IsAttacking(bot)
+		then
+			return BOT_ACTION_DESIRE_HIGH, npcTarget:GetLocation()
 		end
 	end
 
@@ -491,7 +501,6 @@ function X.ConsiderW()
 
 	if J.IsGoingOnSomeone( bot )
 	then
-		local npcTarget = J.GetProperTarget( bot )
 		if J.IsValidHero( npcTarget )
 			and J.CanCastOnNonMagicImmune( npcTarget )
 			and J.CanCastOnTargetAdvanced( npcTarget )
@@ -529,7 +538,6 @@ function X.ConsiderR()
 
 	if J.IsGoingOnSomeone( bot )
 	then
-		local npcTarget = J.GetProperTarget( bot )
 		if J.IsValidHero( npcTarget )
 			and J.IsInRange( npcTarget, bot, 800 )
 		then
@@ -580,12 +588,11 @@ function X.ConsiderAS()
 
 	if J.IsGoingOnSomeone( bot )
 	then
-		local targetHero = J.GetProperTarget( bot )
-		if J.IsValidHero( targetHero )
-			and J.IsInRange( bot, targetHero, nCastRange )
-			and J.CanCastOnNonMagicImmune( targetHero )
+		if J.IsValidHero( npcTarget )
+			and J.IsInRange( bot, npcTarget, nCastRange )
+			and J.CanCastOnNonMagicImmune( npcTarget )
 		then
-			return BOT_ACTION_DESIRE_HIGH, targetHero:GetLocation()
+			return BOT_ACTION_DESIRE_HIGH, npcTarget:GetLocation()
 		end
 	end
 

@@ -447,6 +447,15 @@ function X.ConsiderQ()
 		end
 	end
 
+	if J.IsDoingTormentor(bot)
+	then
+		if J.IsTormentor(botTarget)
+		and J.IsInRange(bot, botTarget, nCastRange)
+		and J.IsAttacking(bot)
+		then
+			return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation(), ''
+		end
+	end
 
 	--常规
 	if ( #hEnemyList > 0 or bot:WasRecentlyDamagedByAnyHero( 3.0 ) )

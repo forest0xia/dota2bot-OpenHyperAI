@@ -619,14 +619,24 @@ function X.ConsiderW()
 
 
 	--肉山
-	if J.IsDoingRoshan( bot )
+	if J.IsDoingRoshan(bot)
 	then
-		if J.IsRoshan( botTarget )
-			and J.IsInRange( bot, botTarget, nCastRange - 200 )
+		if J.IsRoshan(botTarget)
+		and not J.IsDisabled(botTarget)
+        and J.IsInRange(bot, botTarget, nCastRange)
+        and J.IsAttacking(bot)
 		then
-			hCastTarget = botTarget
-			sCastMotive = 'W-肉上'
-			return BOT_ACTION_DESIRE_HIGH, hCastTarget, sCastMotive
+			return BOT_ACTION_DESIRE_HIGH, botTarget
+		end
+	end
+
+    if J.IsDoingTormentor(bot)
+	then
+		if  J.IsTormentor(botTarget)
+        and J.IsInRange(bot, botTarget, nCastRange)
+        and J.IsAttacking(bot)
+		then
+			return BOT_ACTION_DESIRE_HIGH, botTarget
 		end
 	end
 

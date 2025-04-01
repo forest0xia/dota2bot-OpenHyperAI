@@ -527,6 +527,14 @@ function X.ConsiderQ()
 		end
 	end
 
+	if J.IsDoingTormentor(bot) then
+		if J.IsTormentor(botTarget)
+        and J.IsInRange( botTarget, bot, 800 )
+        and J.IsAttacking(bot)
+		then
+			return BOT_ACTION_DESIRE_HIGH, botTarget, ''
+		end
+	end
 
 	--通用消耗敌人或受到伤害时保护自己
 	if ( #hEnemyList > 0 or bot:WasRecentlyDamagedByAnyHero( 3.0 ) )
@@ -758,15 +766,6 @@ function X.ConsiderE()
 		end
 	end
 
-	if bot:GetActiveMode() == BOT_MODE_ROSHAN and bestTarget ~= nil
-	then
-		if J.IsRoshan( botTarget )
-			and J.IsInRange( botTarget, bot, 1000 )
-		then
-			return BOT_ACTION_DESIRE_HIGH, bestTarget, 'E打肉'..J.Chat.GetNormName( bestTarget )
-		end
-	end
-
 	--打架
 	if J.IsGoingOnSomeone( bot )
 		and J.IsValidHero( botTarget )
@@ -888,6 +887,24 @@ function X.ConsiderE()
 
 	end
 
+	if bot:GetActiveMode() == BOT_MODE_ROSHAN and bestTarget ~= nil
+	then
+		if J.IsRoshan( botTarget )
+			and J.IsInRange( botTarget, bot, 1000 )
+			and J.IsAttacking(bot)
+		then
+			return BOT_ACTION_DESIRE_HIGH, bestTarget, 'E打肉'..J.Chat.GetNormName( bestTarget )
+		end
+	end
+
+	if J.IsDoingTormentor(bot) and bestTarget ~= nil then
+		if J.IsTormentor(botTarget)
+        and J.IsInRange( botTarget, bot, 800 )
+        and J.IsAttacking(bot)
+		then
+			return BOT_ACTION_DESIRE_HIGH, bestTarget, ''
+		end
+	end
 
 	return BOT_ACTION_DESIRE_NONE
 

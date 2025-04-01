@@ -467,6 +467,17 @@ function X.ConsiderQ()
 		end
 	end
 
+	if J.IsDoingTormentor(bot)
+	then
+		if J.IsTormentor(botTarget)
+		and J.IsInRange(bot, botTarget, 800)
+		and J.IsAttacking(bot)
+		then
+			return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation(), ''
+		end
+	end
+
+
 
 
 	--通用消耗敌人或受到伤害时保护自己
@@ -690,6 +701,15 @@ function X.ConsiderW()
 		end
 	end
 
+	if J.IsDoingTormentor(bot)
+	then
+		if J.IsTormentor(botTarget)
+		and J.IsInRange(bot, botTarget, 800)
+		and J.IsAttacking(bot)
+		then
+			return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation(), ''
+		end
+	end
 
 	return BOT_ACTION_DESIRE_NONE
 

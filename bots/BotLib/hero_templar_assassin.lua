@@ -229,7 +229,7 @@ local ListRuneLoc = {}
 local ListCampLoc = {}
 
 local nKeepMana, nMP, nHP, nLV, hEnemyHeroList
-
+local botTarget
 
 function X.SkillsComplement()
 
@@ -237,6 +237,7 @@ function X.SkillsComplement()
 
 	if J.CanNotUseAbility( bot ) or bot:HasModifier( 'modifier_templar_assassin_meld' ) then return end
 
+	botTarget = J.GetProperTarget(bot)
 	nKeepMana = 300
 	nLV = bot:GetLevel()
 	nMP = bot:GetMana()/bot:GetMaxMana()
@@ -396,10 +397,9 @@ function X.ConsiderQ()
 
 	if J.IsGoingOnSomeone( bot ) and nSkillLV >= 2
 	then
-		local npcTarget = J.GetProperTarget( bot )
-		if J.IsValidHero( npcTarget )
-			and J.CanBeAttacked( npcTarget )
-			and J.IsInRange( npcTarget, bot, 2000 )
+		if J.IsValidHero( botTarget )
+			and J.CanBeAttacked( botTarget )
+			and J.IsInRange( botTarget, bot, 2000 )
 		then
 			return BOT_ACTION_DESIRE_HIGH
 		end
@@ -412,6 +412,16 @@ function X.ConsiderQ()
 		if ( J.IsRoshan( npcTarget ) and J.GetHP( npcTarget ) > 0.3 and J.IsInRange( npcTarget, bot, nRange ) )
 		then
 			return BOT_ACTION_DESIRE_LOW
+		end
+	end
+
+	if J.IsDoingTormentor(bot)
+	then
+		if J.IsTormentor(botTarget)
+        and J.IsInRange( botTarget, bot, 800 )
+        and J.IsAttacking(bot)
+		then
+			return BOT_ACTION_DESIRE_HIGH
 		end
 	end
 
@@ -485,6 +495,15 @@ function X.ConsiderW()
 		end
 	end
 
+	if J.IsDoingTormentor(bot)
+	then
+		if J.IsTormentor(botTarget)
+        and J.IsInRange( botTarget, bot, nCastRange )
+        and J.IsAttacking(bot)
+		then
+			return BOT_ACTION_DESIRE_HIGH
+		end
+	end
 
 	if J.IsGoingOnSomeone( bot )
 	then
@@ -744,10 +763,9 @@ function X.ConsiderR()
 
 	if bot:GetActiveMode() == BOT_MODE_ROSHAN and roshanLoc == nil
 	then
-		local npcTarget = J.GetProperTarget( bot )
-		if J.IsRoshan( npcTarget )
+		if J.IsRoshan( botTarget )
 		then
-			roshanLoc = npcTarget:GetLocation()
+			roshanLoc = botTarget:GetLocation()
 		end
 	end
 

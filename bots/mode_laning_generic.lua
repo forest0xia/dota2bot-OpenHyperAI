@@ -32,7 +32,7 @@ function GetDesire()
 	nEnemyCreeps = bot:GetNearbyLaneCreeps(800, true)
 	nInRangeEnemy = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
 	nFurthestEnemyAttackRange = GetFurthestEnemyAttackRange(nInRangeEnemy)
-	if local_mode_laning_generic and botAssignedLane == nil then
+	if local_mode_laning_generic then
 		botAssignedLane = local_mode_laning_generic.GetBotTargetLane()
 	else
 		botAssignedLane = bot:GetAssignedLane()

@@ -460,6 +460,15 @@ function X.ConsiderQ()
 		end
 	end
 
+	if J.IsDoingTormentor(bot)
+	then
+		if J.IsTormentor(botTarget)
+        and J.IsInRange( botTarget, bot, nCastRange )
+        and J.IsAttacking(bot)
+		then
+			return BOT_ACTION_DESIRE_HIGH
+		end
+	end
 
 	--通用消耗敌人或受到伤害时保护自己
 	if ( #nEnemysHerosInView > 0 or bot:WasRecentlyDamagedByAnyHero( 3.0 ) )
@@ -675,6 +684,16 @@ function X.ConsiderW()
 			and J.IsInRange( npcTarget, bot, nCastRange )
 		then
 			return BOT_ACTION_DESIRE_HIGH, npcTarget
+		end
+	end
+
+	if J.IsDoingTormentor(bot)
+	then
+		if J.IsTormentor(botTarget)
+        and J.IsInRange( botTarget, bot, nCastRange )
+        and J.IsAttacking(bot)
+		then
+			return BOT_ACTION_DESIRE_HIGH
 		end
 	end
 

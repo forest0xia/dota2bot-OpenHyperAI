@@ -514,16 +514,24 @@ function X.ConsiderQ()
 	end
 
 
-	--肉山
-	if bot:GetActiveMode() == BOT_MODE_ROSHAN
-		and bot:GetMana() >= 400
+	if J.IsDoingRoshan(bot)
 	then
 		if J.IsRoshan( botTarget )
-			and J.IsInRange( botTarget, bot, nCastRange - 200 )
+        and J.CanBeAttacked(botTarget)
+        and J.IsInRange( botTarget, bot, nCastRange )
+        and J.IsAttacking(bot)
 		then
-			hCastTarget = botTarget
-			sCastMotive = 'Q-肉山'
-			return BOT_ACTION_DESIRE_HIGH, hCastTarget, sCastMotive
+			return BOT_ACTION_DESIRE_HIGH, botTarget
+		end
+	end
+
+    if J.IsDoingTormentor(bot)
+	then
+		if J.IsTormentor( botTarget )
+        and J.IsInRange( botTarget, bot, nCastRange )
+        and J.IsAttacking(bot)
+		then
+			return BOT_ACTION_DESIRE_HIGH, botTarget
 		end
 	end
 

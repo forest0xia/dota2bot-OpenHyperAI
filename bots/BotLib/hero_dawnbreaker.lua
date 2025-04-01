@@ -307,6 +307,16 @@ function X.ConsiderStarBreaker()
         end
     end
 
+    if J.IsDoingTormentor(bot)
+    then
+        if J.IsTormentor(botTarget)
+        and J.IsInRange(bot, botTarget, nRadius)
+        and J.IsAttacking(bot)
+        then
+            return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
+        end
+    end
+
     return BOT_ACTION_DESIRE_NONE, 0
 end
 

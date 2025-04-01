@@ -384,6 +384,15 @@ function X.ConsiderQ()
 	    end
 	end
 
+    if J.IsDoingTormentor(bot)
+	then
+		if J.IsTormentor(botTarget)
+        and J.IsInRange( botTarget, bot, nCastRange )
+        and J.IsAttacking(bot)
+		then
+			return BOT_ACTION_DESIRE_HIGH
+		end
+	end
 
 
 	return BOT_ACTION_DESIRE_NONE
@@ -491,6 +500,15 @@ function X.ConsiderW()
 		end
 	end
 
+    if J.IsDoingTormentor(bot)
+	then
+		if J.IsTormentor(botTarget)
+        and J.IsInRange( botTarget, bot, nCastRange )
+        and J.IsAttacking(bot)
+		then
+			return BOT_ACTION_DESIRE_HIGH
+		end
+	end
 
 	return BOT_ACTION_DESIRE_NONE
 

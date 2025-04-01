@@ -151,6 +151,7 @@ local castASDesire, castASTarget
 local nKeepMana, nMP, nHP, nLV, hEnemyHeroList
 local lastAbilityQTime = 0
 local lastAbilityQLocation = Vector( 0, 0 )
+local botTarget
 
 function X.SkillsComplement()
 
@@ -159,6 +160,8 @@ function X.SkillsComplement()
 	J.ConsiderForMkbDisassembleMask( bot )
 
 	if J.CanNotUseAbility( bot ) or bot:IsInvisible() then return end
+
+	botTarget = J.GetProperTarget(bot)
 
 	nKeepMana = 280
 	nMP = bot:GetMana()/bot:GetMaxMana()
@@ -223,11 +226,10 @@ function X.ConsiderTarget()
 	if nAttackRange > 1600 then nAttackRange = 1600 end
 	local nInAttackRangeWeakestEnemyHero = J.GetAttackableWeakestUnit( bot, nAttackRange, true, true )
 
-	local npcTarget = J.GetProperTarget( bot )
 	local nTargetUint = nil
 
-	if J.IsValidHero( npcTarget )
-		and GetUnitToUnitDistance( npcTarget, bot ) >  nAttackRange
+	if J.IsValidHero( botTarget )
+		and GetUnitToUnitDistance( botTarget, bot ) >  nAttackRange
 		and J.IsValidHero( nInAttackRangeWeakestEnemyHero )
 	then
 		nTargetUint = nInAttackRangeWeakestEnemyHero
@@ -262,8 +264,6 @@ function X.ConsiderQ()
 	end
 	local nCanHurtHeroLocationAoE = bot:FindAoELocation( true, true, botLocation, nCastRange, nRadius-30, 0.8, 0 )
 
-	local npcTarget = J.GetProperTarget( bot )
-
 	--对多个敌方英雄使用
 	if #nEnemysHeroesInSkillRange >= 2
 		and ( nCanHurtHeroLocationAoE.cout ~= nil and nCanHurtHeroLocationAoE.cout >= 2 )
@@ -275,22 +275,22 @@ function X.ConsiderQ()
 	end
 
 	--对当前目标英雄使用
-	if J.IsValidHero( npcTarget )
-		and not npcTarget:HasModifier( "modifier_sniper_shrapnel_slow" )
-		and J.CanCastOnNonMagicImmune( npcTarget )
-		and J.IsInRange( npcTarget, bot, nCastRange + 300 )
+	if J.IsValidHero( botTarget )
+		and not botTarget:HasModifier( "modifier_sniper_shrapnel_slow" )
+		and J.CanCastOnNonMagicImmune( botTarget )
+		and J.IsInRange( botTarget, bot, nCastRange + 300 )
 		and ( nSkillLV >= 3 or bot:GetMana() >= nKeepMana )
-		and not X.IsAbiltyQCastedHere( npcTarget:GetLocation(), nRadius )
+		and not X.IsAbiltyQCastedHere( botTarget:GetLocation(), nRadius )
 	then
 
-		if npcTarget:IsFacingLocation( J.GetEnemyFountain(), 30 )
-			and J.GetHP( npcTarget ) < 0.4
-			and J.IsRunning( npcTarget )
+		if botTarget:IsFacingLocation( J.GetEnemyFountain(), 30 )
+			and J.GetHP( botTarget ) < 0.4
+			and J.IsRunning( botTarget )
 		then
 			--追击减速当前目标
 			for i=0, 800, 200
 			do
-				local nCastLocation = J.GetLocationTowardDistanceLocation( npcTarget, J.GetEnemyFountain(), nRadius + 800 - i )
+				local nCastLocation = J.GetLocationTowardDistanceLocation( botTarget, J.GetEnemyFountain(), nRadius + 800 - i )
 				if GetUnitToLocationDistance( bot, nCastLocation ) <= nCastRange + 200
 				then
 					return BOT_ACTION_DESIRE_HIGH, nCastLocation
@@ -299,26 +299,26 @@ function X.ConsiderQ()
 		end
 
 		--对当前目标使用技能
-		local npcTargetLocInFuture = J.GetCorrectLoc( npcTarget, nCastPoint + 1.8 )
-		if J.GetLocationToLocationDistance( npcTarget:GetLocation(), npcTargetLocInFuture ) > 300
-			and npcTarget:GetMovementDirectionStability() > 0.4
+		local npcTargetLocInFuture = J.GetCorrectLoc( botTarget, nCastPoint + 1.8 )
+		if J.GetLocationToLocationDistance( botTarget:GetLocation(), npcTargetLocInFuture ) > 300
+			and botTarget:GetMovementDirectionStability() > 0.4
 		then
 			return BOT_ACTION_DESIRE_HIGH, npcTargetLocInFuture
 		end
 
 		--近处预测将到近处来的目标
-		local castDistance = GetUnitToUnitDistance( bot, npcTarget )
-		if npcTarget:IsFacingLocation( botLocation, 30 ) and J.IsMoving( npcTarget )
+		local castDistance = GetUnitToUnitDistance( bot, botTarget )
+		if botTarget:IsFacingLocation( botLocation, 30 ) and J.IsMoving( botTarget )
 		then
 			if castDistance > 400
 			then
 				castDistance = castDistance - 200
 			end
-			return BOT_ACTION_DESIRE_HIGH, J.GetUnitTowardDistanceLocation( bot, npcTarget, castDistance )
+			return BOT_ACTION_DESIRE_HIGH, J.GetUnitTowardDistanceLocation( bot, botTarget, castDistance )
 		end
 
 		--远处预测将到远处去的目标
-		if bot:IsFacingLocation( npcTarget:GetLocation(), 30 )
+		if bot:IsFacingLocation( botTarget:GetLocation(), 30 )
 		then
 			if castDistance <= nCastRange - 200
 			then
@@ -326,11 +326,11 @@ function X.ConsiderQ()
 			else
 				castDistance = nCastRange + 300
 			end
-			return BOT_ACTION_DESIRE_HIGH, J.GetUnitTowardDistanceLocation( bot, npcTarget, castDistance )
+			return BOT_ACTION_DESIRE_HIGH, J.GetUnitTowardDistanceLocation( bot, botTarget, castDistance )
 		end
 
 		--目标位置无规律
-		return BOT_ACTION_DESIRE_HIGH, J.GetLocationTowardDistanceLocation( npcTarget, J.GetEnemyFountain(), nRadius/2 )
+		return BOT_ACTION_DESIRE_HIGH, J.GetLocationTowardDistanceLocation( botTarget, J.GetEnemyFountain(), nRadius/2 )
 
 	end
 
@@ -383,8 +383,8 @@ function X.ConsiderQ()
 	then
 		local nNeutralCreeps = bot:GetNearbyNeutralCreeps( 800 )
 		if #nNeutralCreeps >= 4
-			and J.IsValid( npcTarget )
-			and not J.CanKillTarget( npcTarget, bot:GetAttackDamage() * 3.88 , DAMAGE_TYPE_PHYSICAL )
+			and J.IsValid( botTarget )
+			and not J.CanKillTarget( botTarget, bot:GetAttackDamage() * 3.88 , DAMAGE_TYPE_PHYSICAL )
 		then
 			local nAoE = bot:FindAoELocation( true, false, botLocation, nCastRange, nRadius, 0.8, 0 )
 			if nAoE.count >= 5
@@ -408,6 +408,17 @@ function X.ConsiderQ()
 			then
 				return BOT_ACTION_DESIRE_HIGH, nAttackTarget:GetLocation()
 			end
+		end
+	end
+
+	if J.IsDoingTormentor(bot)
+	then
+		if J.IsTormentor(botTarget)
+        and J.IsInRange( botTarget, bot, nRadius )
+        and J.IsAttacking(bot)
+		and not botTarget:HasModifier( "modifier_sniper_shrapnel_slow" )
+		then
+			return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
 		end
 	end
 
@@ -462,10 +473,9 @@ function X.ConsiderR()
 	local nEnemysHerosInAttackRange = J.GetNearbyHeroes(bot, math.min(nAttackRange + 50, 1600), true, BOT_MODE_NONE )
 
 	local nTempTarget = nEnemysHerosInAttackRange[1]
-	local nAttackTarget = J.GetProperTarget( bot )
-	if J.IsValidHero( nAttackTarget )
-		and J.IsInRange( bot, nAttackTarget, nAttackRange + 50 )
-	then nTempTarget = nAttackTarget end
+	if J.IsValidHero( botTarget )
+		and J.IsInRange( bot, botTarget, nAttackRange + 50 )
+	then nTempTarget = botTarget end
 
 	local nWeakestEnemyHeroInCastRange = X.GetWeakestUnitInRangeExRadius( nEnemysHerosCanSeen, nCastRange, nAttackRange -300, bot )
 	local nChannelingEnemyHeroInCastRange = X.GetChannelingUnitInRange( nEnemysHerosCanSeen, nCastRange, bot )
@@ -646,12 +656,11 @@ function X.ConsiderAS()
 
 	if J.IsGoingOnSomeone( bot )
 	then
-		local targetHero = J.GetProperTarget( bot )
-		if J.IsValidHero( targetHero )
-			and J.IsInRange( bot, targetHero, nCastRange )
-			and J.CanCastOnNonMagicImmune( targetHero )
+		if J.IsValidHero( botTarget )
+			and J.IsInRange( bot, botTarget, nCastRange )
+			and J.CanCastOnNonMagicImmune( botTarget )
 		then
-			return BOT_ACTION_DESIRE_HIGH, targetHero:GetLocation()
+			return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
 		end
 	end
 

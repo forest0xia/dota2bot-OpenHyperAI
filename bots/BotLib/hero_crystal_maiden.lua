@@ -150,6 +150,7 @@ local castWDesire, castWTarget = 0
 local castRDesire = 0
 local CrystalCloneDesire, CrystalCloneLocation
 local ArcaneAuraDesire
+local botTarget
 
 local nKeepMana, nMP, nHP, nLV
 
@@ -159,6 +160,7 @@ function X.SkillsComplement()
 
 	if J.CanNotUseAbility( bot ) or bot:IsInvisible() then return end
 
+	botTarget = bot:GetAttackTarget()
 	nKeepMana = 220
 	aetherRange = 0
 	nMP = bot:GetMana()/bot:GetMaxMana()
@@ -514,10 +516,9 @@ function X.ConsiderQ()
 	if bot:GetActiveMode() == BOT_MODE_ROSHAN
 		and bot:GetMana() >= 400
 	then
-		local npcTarget = bot:GetAttackTarget()
-		if J.IsRoshan( npcTarget )
+		if J.IsRoshan( botTarget )
 		then
-			return BOT_ACTION_DESIRE_HIGH, npcTarget:GetLocation()
+			return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
 		end
 	end
 
@@ -561,6 +562,26 @@ function X.ConsiderQ()
 			return BOT_ACTION_DESIRE_HIGH, nCanHurtCreepsLocationAoE.targetloc
 		end
 
+	end
+
+	if J.IsDoingRoshan(bot)
+	then
+		if J.IsRoshan(botTarget)
+        and J.IsInRange(bot, botTarget, nCastRange)
+        and J.IsAttacking(bot)
+		then
+			return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
+		end
+	end
+
+	if J.IsDoingTormentor(bot)
+	then
+		if J.IsTormentor( botTarget )
+        and J.IsInRange(bot, botTarget, nCastRange)
+        and J.IsAttacking(bot)
+		then
+			return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
+		end
 	end
 
 	return BOT_ACTION_DESIRE_NONE, 0
@@ -815,13 +836,12 @@ function X.ConsiderW()
 	if bot:GetActiveMode() == BOT_MODE_ROSHAN
 		and bot:GetMana() >= 400
 	then
-		local npcTarget = bot:GetAttackTarget()
-		if J.IsRoshan( npcTarget )
-			and not J.IsDisabled( npcTarget )
-			and not npcTarget:IsDisarmed()
-			and J.IsInRange( npcTarget, bot, nCastRange )
+		if J.IsRoshan( botTarget )
+			and not J.IsDisabled( botTarget )
+			and not botTarget:IsDisarmed()
+			and J.IsInRange( botTarget, bot, nCastRange )
 		then
-			return BOT_ACTION_DESIRE_HIGH, npcTarget
+			return BOT_ACTION_DESIRE_HIGH, botTarget
 		end
 	end
 

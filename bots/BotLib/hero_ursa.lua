@@ -307,6 +307,15 @@ function X.ConsiderOverpower()
 		end
 	end
 
+    if J.IsDoingTormentor(bot) then
+		if J.IsTormentor(botTarget)
+        and J.IsInRange(botTarget, bot, 600)
+        and bAttacking
+		then
+			return BOT_ACTION_DESIRE_HIGH
+		end
+	end
+
 	return BOT_ACTION_DESIRE_NONE
 end
 
@@ -377,6 +386,14 @@ function X.ConsiderEnrage()
 		if J.IsRoshan(botTarget)
 		then
 			return BOT_ACTION_DESIRE_MODERATE
+		end
+	end
+
+	if J.IsDoingTormentor(bot) then
+		if J.IsTormentor(botTarget)
+		and botHP < 0.3
+		then
+			return BOT_ACTION_DESIRE_HIGH
 		end
 	end
 

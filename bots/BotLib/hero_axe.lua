@@ -272,22 +272,28 @@ function X.ConsiderQ()
 			return BOT_ACTION_DESIRE_HIGH, sCastMotive
 		end
 	end
-	
-	
-	--打肉时吸引火力
-	if bot:GetActiveMode() == BOT_MODE_ROSHAN
+
+	if J.IsDoingRoshan(bot)
 	then
-		if J.IsRoshan( botTarget )
-			and not J.IsDisabled( botTarget )
-			and not botTarget:IsDisarmed()
-			and J.IsInRange( botTarget, bot, nRadius )
+		if  J.IsRoshan(botTarget)
+        and not J.IsDisabled(botTarget)
+        and not botTarget:IsDisarmed()
+        and J.IsInRange(bot, botTarget, nRadius)
+        and J.IsAttacking(bot)
 		then
-			hCastTarget = botTarget
-			sCastMotive = 'Q-肉山'
-			return BOT_ACTION_DESIRE_HIGH, sCastMotive
+			return BOT_ACTION_DESIRE_HIGH
 		end
 	end
-	
+
+    if J.IsDoingTormentor(bot)
+	then
+		if  J.IsTormentor(botTarget)
+        and J.IsInRange(bot, botTarget, nRadius)
+        and J.IsAttacking(bot)
+		then
+			return BOT_ACTION_DESIRE_HIGH
+		end
+	end
 
 	return BOT_ACTION_DESIRE_NONE
 
@@ -439,22 +445,31 @@ function X.ConsiderW()
 			return BOT_ACTION_DESIRE_HIGH, hCastTarget, sCastMotive
 	    end
 	end
-	
-	
-	--打肉 
-	if bot:GetActiveMode() == BOT_MODE_ROSHAN
+
+
+	if J.IsDoingRoshan(bot)
 	then
-		if J.IsRoshan( botTarget )
-			and not J.IsDisabled( botTarget )
-			and J.IsInRange( botTarget, bot, nCastRange )
-			and not botTarget:HasModifier( 'modifier_axe_battle_hunger_self' )
+		if  J.IsRoshan(botTarget)
+        and not J.IsDisabled(botTarget)
+        and J.IsInRange(bot, botTarget, nCastRange)
+        and J.IsAttacking(bot)
+        and not botTarget:HasModifier('modifier_axe_battle_hunger_self')
 		then
-			hCastTarget = botTarget
-			sCastMotive = 'W-肉山'
-			return BOT_ACTION_DESIRE_HIGH, hCastTarget, sCastMotive
+			return BOT_ACTION_DESIRE_HIGH, botTarget
 		end
 	end
 
+    if J.IsDoingTormentor(bot)
+	then
+		if  J.IsTormentor(botTarget)
+        and not J.IsDisabled(botTarget)
+        and J.IsInRange(bot, botTarget, nCastRange)
+        and J.IsAttacking(bot)
+        and not botTarget:HasModifier('modifier_axe_battle_hunger_self')
+		then
+			return BOT_ACTION_DESIRE_HIGH, botTarget
+		end
+	end
 
 
 	return BOT_ACTION_DESIRE_NONE

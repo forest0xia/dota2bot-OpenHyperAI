@@ -384,11 +384,23 @@ function X.ConsiderQ()
 	if J.IsDoingRoshan( bot )
 	then
 		if J.IsRoshan( botTarget )
-			and J.IsInRange( bot, botTarget, nRadius - 200 )
+			and J.IsInRange( bot, botTarget, nRadius)
 			and J.GetHP( botTarget ) > 0.3
-			and bot:GetMana() > 400
+            and J.GetHP(bot) > 0.45
+            and J.IsAttacking(bot)
 		then
-			return BOT_ACTION_DESIRE_HIGH, "Q肉山:"
+			return BOT_ACTION_DESIRE_HIGH
+		end
+	end
+
+    if J.IsDoingTormentor( bot )
+	then
+		if J.IsTormentor( botTarget )
+			and J.IsInRange( bot, botTarget, nRadius)
+            and J.GetHP(bot) > 0.45
+            and J.IsAttacking(bot)
+		then
+			return BOT_ACTION_DESIRE_HIGH
 		end
 	end
 

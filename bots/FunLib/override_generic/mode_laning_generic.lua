@@ -31,7 +31,7 @@ function X.GetDesire()
 		end
 	end
 
-	-- assignedLane = GetBotTargetLane()
+	if not assignedLane then assignedLane = GetBotTargetLane() end
 	-- local vLaneFront = GetLaneFrontLocation(GetTeam(), assignedLane, 400)
 	-- local laneFrontEnemies = J.GetLastSeenEnemiesNearLoc(vLaneFront, 1200)
 	-- if #laneFrontEnemies >= 2 then
@@ -70,7 +70,9 @@ function GetHarassTarget(hEnemyList)
 end
 
 function GetBotTargetLane()
-	assignedLane = bot:GetAssignedLane()
+	-- assignedLane = bot:GetAssignedLane()
+	if assignedLane then return assignedLane end
+
 	if GetTeam() == TEAM_RADIANT then
 		if J.GetPosition(bot) == 2 then
 			assignedLane = LANE_MID
@@ -97,9 +99,6 @@ end
 
 function X.Think()
     if not bot:IsAlive() or J.CanNotUseAction(bot) or bot:IsUsingAbility() or bot:IsChanneling() or bot:IsDisarmed() then return BOT_ACTION_DESIRE_NONE end
-	if not assignedLane then
-		assignedLane = GetBotTargetLane()
-	end
 
 	if tangoDesire and tangoDesire > 0 and tangoTarget then
 		local hItem = bot:GetItemInSlot( tangoSlot )

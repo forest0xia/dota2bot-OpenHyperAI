@@ -499,13 +499,13 @@ function X.ConsiderLittleFriends()
 
     if J.IsGoingOnSomeone(bot, 1200)
     then
-        if J.IsValidTarget(botTarget)
+        if J.IsValidTarget(npcTarget)
         and nInRangeAlly ~= nil and nInRangeEnemy
         and #nInRangeAlly >= #nInRangeEnemy
         and #nTargetInRangeEnemy >= 1
-        and not J.IsSuspiciousIllusion(botTarget)
-        and not botTarget:HasModifier('modifier_abaddon_borrowed_time')
-        and not botTarget:HasModifier('modifier_faceless_void_chronosphere')
+        and not J.IsSuspiciousIllusion(npcTarget)
+        and not npcTarget:HasModifier('modifier_abaddon_borrowed_time')
+        and not npcTarget:HasModifier('modifier_faceless_void_chronosphere')
         then
             local botTarget = J.GetStrongestUnit(nCastRange, bot, true, false, nDuration)
             local nTargetInRangeEnemy = J.GetNearbyHeroes(botTarget, nRadius, true, BOT_MODE_NONE)

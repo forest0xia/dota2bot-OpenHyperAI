@@ -400,7 +400,7 @@ X.ConsiderSpellUsage['big_thunder_lizard_slam'] = function (hMinionUnit, ability
             local nAllyInRangeEnemy = allyHero:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
             if  J.IsValidHero(nAllyInRangeEnemy[1])
             and J.CanCastOnNonMagicImmune(nAllyInRangeEnemy[1])
-            and J.IsInRange(hMinionUnit, nAllyInRangeEnemy[1], nCastRange)
+            and J.IsInRange(hMinionUnit, nAllyInRangeEnemy[1], nRadius)
             and J.IsChasingTarget(nAllyInRangeEnemy[1], allyHero)
             and not J.IsDisabled(nAllyInRangeEnemy[1])
             then

@@ -477,6 +477,16 @@ function X.ConsiderQ()
 		end
 	end
 
+	if J.IsDoingTormentor(bot)
+	then
+		if J.IsTormentor(botTarget)
+        and J.IsInRange( botTarget, bot, nCastRange )
+        and J.IsAttacking(bot)
+		then
+			return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
+		end
+	end
+
 
 	--推塔
 	if J.IsAllowedToSpam( bot, 120 )

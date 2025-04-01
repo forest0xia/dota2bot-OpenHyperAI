@@ -168,7 +168,7 @@ local abilityArmlet = nil
 local castQDesire, castQTarget = 0
 local castWDesire, castWTarget = 0
 local castRDesire = 0
-
+local botTarget
 
 local nKeepMana, nMP, nHP, nLV, hEnemyHeroList
 
@@ -177,6 +177,7 @@ function X.SkillsComplement()
 
 	if J.CanNotUseAbility( bot ) or bot:IsInvisible() then return end
 
+	botTarget = J.GetProperTarget( bot )
 	nKeepMana = 240
 	nMP = bot:GetMana()/bot:GetMaxMana()
 	nHP = bot:GetHealth()/bot:GetMaxHealth()
@@ -298,15 +299,14 @@ function X.ConsiderQ()
 	--常规
 	if J.IsGoingOnSomeone( bot )
 	then
-		local target = J.GetProperTarget( bot )
-		if J.IsValidHero( target )
-			and J.CanCastOnNonMagicImmune( target )
-			and J.CanCastOnTargetAdvanced( target )
-			and J.IsInRange( target, bot, nCastRange )
-			and not J.IsDisabled( target )
-			and not target:IsDisarmed()
+		if J.IsValidHero( botTarget )
+			and J.CanCastOnNonMagicImmune( botTarget )
+			and J.CanCastOnTargetAdvanced( botTarget )
+			and J.IsInRange( botTarget, bot, nCastRange )
+			and not J.IsDisabled( botTarget )
+			and not botTarget:IsDisarmed()
 		then
-			return BOT_ACTION_DESIRE_HIGH, target
+			return BOT_ACTION_DESIRE_HIGH, botTarget
 		end
 	end
 
@@ -360,15 +360,14 @@ function X.ConsiderW()
 
 	if J.IsGoingOnSomeone( bot )
 	then
-		local target = J.GetProperTarget( bot )
-		if J.IsValidHero( target )
-			and J.IsInRange( target, bot, nCastRange + 50 )
-			and ( not J.IsInRange( bot, target, 200 ) or not target:HasModifier( 'modifier_chaos_knight_reality_rift' ) )
-			and J.CanCastOnNonMagicImmune( target )
-			and J.CanCastOnTargetAdvanced( target )
-			and not J.IsDisabled( target )
+		if J.IsValidHero( botTarget )
+			and J.IsInRange( botTarget, bot, nCastRange + 50 )
+			and ( not J.IsInRange( bot, botTarget, 200 ) or not botTarget:HasModifier( 'modifier_chaos_knight_reality_rift' ) )
+			and J.CanCastOnNonMagicImmune( botTarget )
+			and J.CanCastOnTargetAdvanced( botTarget )
+			and not J.IsDisabled( botTarget )
 		then
-			return BOT_ACTION_DESIRE_HIGH, target
+			return BOT_ACTION_DESIRE_HIGH, botTarget
 		end
 	end
 
@@ -410,15 +409,28 @@ function X.ConsiderW()
 		end
 	end
 
-	if bot:GetActiveMode() == BOT_MODE_ROSHAN
-		and bot:GetMana() > 400
-	then
-		local target =  bot:GetAttackTarget()
-		if target ~= nil
-			and not J.IsDisabled( target )
-			and not target:IsDisarmed()
+	if J.IsDoingRoshan(bot) then
+		if J.IsRoshan(botTarget)
+		and J.IsInRange(bot, botTarget, 800)
+		and J.CanBeAttacked(botTarget)
+		and J.GetHP(botTarget) > 0.5
+		and J.IsAttacking(bot)
+		and (J.IsEarlyGame() or J.IsMidGame())
+		and J.GetManaAfter(Phantasm:GetManaCost()) > 0.35
 		then
-			return BOT_ACTION_DESIRE_LOW, target
+			return BOT_ACTION_DESIRE_HIGH
+		end
+	end
+
+	if J.IsDoingTormentor(bot) then
+		if J.IsTormentor(botTarget)
+		and J.IsInRange(bot, botTarget, 800)
+		and J.CanBeAttacked(botTarget)
+		and J.GetHP(botTarget) > 0.5
+		and J.IsAttacking(bot)
+		and (J.IsEarlyGame() or J.IsMidGame())
+		then
+			return BOT_ACTION_DESIRE_HIGH
 		end
 	end
 
@@ -446,7 +458,6 @@ function X.ConsiderR()
 
 	if J.IsGoingOnSomeone( bot )
 	then
-		local botTarget = J.GetProperTarget( bot )
 		if J.IsValidHero( botTarget )
 			and J.IsInRange( bot, botTarget, nCastRange )
 			and J.CanCastOnMagicImmune( botTarget )

@@ -199,12 +199,13 @@ local castRDesire, castRTarget
 local castASDesire, castASTarget
 
 local nKeepMana, nMP, nHP, nLV, hEnemyHeroList
+local botTarget
 
 function X.SkillsComplement()
 
 
 	if J.CanNotUseAbility( bot ) then return end
-
+	botTarget = J.GetProperTarget( bot )
 
 	nKeepMana = 400
 	nLV = bot:GetLevel()
@@ -437,11 +438,9 @@ function X.ConsiderQ()
 
 	if J.IsGoingOnSomeone( bot )
 	then
-		local npcTarget = J.GetProperTarget( bot )
-
-		if J.IsValidHero( npcTarget )
-			and J.IsInRange( npcTarget, bot, nRadius )
-			and J.CanCastOnNonMagicImmune( npcTarget )
+		if J.IsValidHero( botTarget )
+			and J.IsInRange( botTarget, bot, nRadius )
+			and J.CanCastOnNonMagicImmune( botTarget )
 		then
 			return BOT_ACTION_DESIRE_MODERATE
 		end
@@ -449,16 +448,36 @@ function X.ConsiderQ()
 
 	if J.IsFarming( bot )
 	then
-		local npcTarget = J.GetProperTarget( bot )
-		if J.IsValid( npcTarget )
-			and npcTarget:GetTeam() == TEAM_NEUTRAL
-			and J.IsInRange( bot, npcTarget, 500 )
+		if J.IsValid( botTarget )
+			and botTarget:GetTeam() == TEAM_NEUTRAL
+			and J.IsInRange( bot, botTarget, 500 )
 		then
 			local locationAoE = bot:FindAoELocation( true, false, bot:GetLocation(), nCastRange, nRadius, 0, 0 )
-			if locationAoE.count >= 2 or npcTarget:GetHealth() > nDamage
+			if locationAoE.count >= 2 or botTarget:GetHealth() > nDamage
 			then
 				return BOT_ACTION_DESIRE_HIGH, locationAoE.targetloc
 			end
+		end
+	end
+
+	if J.IsDoingRoshan(bot)
+	then
+		if J.IsRoshan( botTarget )
+		and J.IsInRange( botTarget, bot, nRadius )
+		and J.CanBeAttacked(botTarget)
+		and J.IsAttacking(bot)
+		then
+			return BOT_ACTION_DESIRE_HIGH
+		end
+	end
+
+    if J.IsDoingTormentor(bot)
+	then
+		if J.IsTormentor(botTarget)
+        and J.IsInRange( botTarget, bot, nRadius )
+        and J.IsAttacking(bot)
+		then
+			return BOT_ACTION_DESIRE_HIGH
 		end
 	end
 
@@ -478,21 +497,20 @@ function X.ConsiderR()
 
 	if J.IsGoingOnSomeone( bot )
 	then
-		local npcTarget = J.GetProperTarget( bot )
-		if J.IsValidHero( npcTarget )
-			and J.CanCastOnNonMagicImmune( npcTarget )
-			and J.CanCastOnTargetAdvanced( npcTarget )
-			and not J.IsHaveAegis( npcTarget )
-			and not npcTarget:HasModifier( "modifier_arc_warden_tempest_double" )
-			and npcTarget:GetUnitName() ~= "npc_dota_hero_abaddon"
-			and J.IsInRange( npcTarget, bot, nCastRange + 200 )
+		if J.IsValidHero( botTarget )
+			and J.CanCastOnNonMagicImmune( botTarget )
+			and J.CanCastOnTargetAdvanced( botTarget )
+			and not J.IsHaveAegis( botTarget )
+			and not botTarget:HasModifier( "modifier_arc_warden_tempest_double" )
+			and botTarget:GetUnitName() ~= "npc_dota_hero_abaddon"
+			and J.IsInRange( botTarget, bot, nCastRange + 200 )
 		then
-			local EstDamage = X.GetEstDamage( bot, npcTarget, nDamagePerHealth )
+			local EstDamage = X.GetEstDamage( bot, botTarget, nDamagePerHealth )
 
-			if J.CanKillTarget( npcTarget, EstDamage, DAMAGE_TYPE_MAGICAL )
-				or ( npcTarget:IsChanneling() and npcTarget:HasModifier( "modifier_teleporting" ) )
+			if J.CanKillTarget( botTarget, EstDamage, DAMAGE_TYPE_MAGICAL )
+				or ( botTarget:IsChanneling() and botTarget:HasModifier( "modifier_teleporting" ) )
 			then
-				return BOT_ACTION_DESIRE_HIGH, npcTarget
+				return BOT_ACTION_DESIRE_HIGH, botTarget
 			end
 		end
 	end
@@ -654,13 +672,12 @@ function X.ConsiderAS()
 
 	if J.IsGoingOnSomeone( bot )
 	then
-		local targetHero = J.GetProperTarget( bot )
-		if J.IsValidHero( targetHero )
-			and J.IsInRange( bot, targetHero, nCastRange )
-			and J.CanCastOnNonMagicImmune( targetHero )
-			and J.CanCastOnTargetAdvanced( targetHero )
+		if J.IsValidHero( botTarget )
+			and J.IsInRange( bot, botTarget, nCastRange )
+			and J.CanCastOnNonMagicImmune( botTarget )
+			and J.CanCastOnTargetAdvanced( botTarget )
 		then
-			return BOT_ACTION_DESIRE_HIGH, targetHero
+			return BOT_ACTION_DESIRE_HIGH, botTarget
 		end
 	end
 

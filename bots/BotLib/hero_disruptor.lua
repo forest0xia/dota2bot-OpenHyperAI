@@ -338,6 +338,15 @@ function X.ConsiderThunderStrike()
             return BOT_ACTION_DESIRE_HIGH, botTarget
         end
     end
+    if J.IsDoingTormentor(bot)
+    then
+        if  J.IsTormentor(botTarget)
+        and J.IsInRange(bot, botTarget, nCastRange)
+        and J.IsAttacking(bot)
+        then
+            return BOT_ACTION_DESIRE_HIGH, botTarget
+        end
+    end
 
     local nNeutralCreeps = bot:GetNearbyNeutralCreeps(nCastRange)
     for _, creep in pairs(nNeutralCreeps)

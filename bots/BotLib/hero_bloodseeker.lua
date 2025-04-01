@@ -351,11 +351,23 @@ function X.ConsiderQ()
 	end
 
 
-	--打肉时加速
-	if ( bot:GetActiveMode() == BOT_MODE_ROSHAN )
+	if J.IsDoingRoshan(bot)
 	then
-		if not bot:HasModifier( 'modifier_bloodseeker_bloodrage' )
-			and bot:GetAttackTarget() ~= nil
+		if J.IsRoshan(botTarget)
+        and J.IsInRange(bot, botTarget, bot:GetAttackRange())
+        and J.IsAttacking(bot)
+        and not bot:HasModifier('modifier_bloodseeker_bloodrage')
+		then
+			return BOT_ACTION_DESIRE_HIGH, bot
+		end
+	end
+
+    if J.IsDoingTormentor(bot)
+	then
+		if J.IsTormentor(botTarget)
+        and J.IsInRange(bot, botTarget, bot:GetAttackRange())
+        and J.IsAttacking(bot)
+        and not bot:HasModifier('modifier_bloodseeker_bloodrage')
 		then
 			return BOT_ACTION_DESIRE_HIGH, bot
 		end
@@ -450,6 +462,26 @@ function X.ConsiderW()
 			then
 				return BOT_ACTION_DESIRE_HIGH, nCastLoc
 			end
+		end
+	end
+
+    if J.IsDoingRoshan(bot)
+	then
+		if J.IsRoshan(botTarget)
+        and J.IsInRange(bot, botTarget, nCastRange)
+        and J.IsAttacking(bot)
+		then
+			return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
+		end
+	end
+
+    if J.IsDoingTormentor(bot)
+	then
+		if J.IsTormentor(botTarget)
+        and J.IsInRange(bot, botTarget, nCastRange)
+        and J.IsAttacking(bot)
+		then
+			return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
 		end
 	end
 

@@ -185,7 +185,7 @@ local castASDesire, castASTarget
 local BristlebackDesire, BristlebackLoc
 local WarpathDesire
 
-local nKeepMana, nMP, nHP, nLV, hEnemyList, botTarget
+local nKeepMana, nMP, nHP, nLV, hEnemyList, npcTarget
 
 
 function X.SkillsComplement()
@@ -198,7 +198,7 @@ function X.SkillsComplement()
 	nMP = bot:GetMana()/bot:GetMaxMana()
 	nHP = bot:GetHealth()/bot:GetMaxHealth()
 	nLV = bot:GetLevel()
-	botTarget = J.GetProperTarget( bot )
+	npcTarget = J.GetProperTarget( bot )
 	hEnemyList = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 
 
@@ -331,6 +331,30 @@ function X.ConsiderQ()
 
 	end
 
+
+    if J.IsDoingRoshan(bot)
+	then
+		if J.IsRoshan( npcTarget )
+        and not J.IsDisabled(npcTarget)
+        and J.CanCastOnMagicImmune( npcTarget )
+        and J.IsInRange( npcTarget, bot, nCastRange )
+        and J.IsAttacking(bot)
+		then
+			return BOT_ACTION_DESIRE_HIGH, npcTarget
+		end
+	end
+
+    if J.IsDoingTormentor(bot)
+	then
+		if J.IsTormentor( npcTarget )
+        and J.CanCastOnMagicImmune( npcTarget )
+        and J.IsInRange( npcTarget, bot, nCastRange )
+        and J.IsAttacking(bot)
+		then
+			return BOT_ACTION_DESIRE_HIGH, npcTarget
+		end
+	end
+
 	return BOT_ACTION_DESIRE_NONE, 0
 
 end
@@ -449,14 +473,28 @@ function X.ConsiderW()
 		end
 	end
 
-	if ( bot:GetActiveMode() == BOT_MODE_ROSHAN )
+
+	if J.IsDoingRoshan(bot)
 	then
-		local npcTarget = bot:GetAttackTarget()
-		if ( J.IsRoshan( npcTarget ) and J.CanCastOnMagicImmune( npcTarget ) and J.IsInRange( bot, npcTarget, nRadius ) )
+		if J.IsRoshan( npcTarget )
+        and J.CanCastOnMagicImmune( npcTarget )
+        and J.IsInRange( bot, npcTarget, nRadius )
+        and J.IsAttacking(bot)
 		then
-			return BOT_ACTION_DESIRE_MODERATE
+			return BOT_ACTION_DESIRE_HIGH
 		end
 	end
+
+    if J.IsDoingTormentor(bot)
+	then
+		if J.IsTormentor( npcTarget )
+        and J.IsInRange( bot, npcTarget, nRadius )
+        and J.IsAttacking(bot)
+		then
+			return BOT_ACTION_DESIRE_HIGH
+		end
+	end
+
 
 	if nMP > 0.95
 		and nLV >= 6

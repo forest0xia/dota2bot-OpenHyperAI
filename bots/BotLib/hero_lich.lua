@@ -568,6 +568,16 @@ function X.ConsiderQ()
 		end
 	end
 
+	if J.IsDoingTormentor(bot)
+	then
+		if J.IsTormentor(botTarget)
+		and J.IsInRange(bot, botTarget, nRealRange)
+		and J.IsAttacking(bot)
+		then
+			return BOT_ACTION_DESIRE_HIGH, botTarget
+		end
+	end
+
 	--通用受到伤害时保护自己
 	if bot:WasRecentlyDamagedByAnyHero( 3.0 )
 		and bot:GetActiveMode() ~= BOT_MODE_RETREAT
@@ -722,6 +732,18 @@ function X.ConsiderW()
 		end
 	end
 
+	if J.IsDoingTormentor(bot)
+	then
+		if J.IsTormentor(botTarget)
+		and J.IsInRange(bot, botTarget, 800)
+		and J.IsAttacking(bot)
+		then
+			local hWeakestAlly = J.GetAttackableWeakestUnit(bot, nCastRange, true, false)
+			if hWeakestAlly ~= nil then
+				return BOT_ACTION_DESIRE_HIGH, hWeakestAlly, ''
+			end
+		end
+	end
 
 	--对每个友军
 	for _, npcAlly in pairs( nInRangeAllyList )
