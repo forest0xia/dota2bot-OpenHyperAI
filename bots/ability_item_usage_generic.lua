@@ -7571,10 +7571,12 @@ function X.IsTargetedByEnemy( building )
 	local heroList = GetUnitList( UNIT_LIST_ENEMY_HEROES )
 	for _, hero in pairs( heroList )
 	do
-		if ( GetUnitToUnitDistance( building, hero ) <= hero:GetAttackRange() + 200
-			and hero:GetAttackTarget() == building )
-		then
-			return true
+		if J.IsValidHero(hero) then
+			if ( GetUnitToUnitDistance( building, hero ) <= hero:GetAttackRange() + 200
+				and hero:GetAttackTarget() == building )
+			then
+				return true
+			end
 		end
 	end
 

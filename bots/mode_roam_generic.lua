@@ -21,15 +21,15 @@ local TetherBreakDistance = 1000
 local ConsiderHeroSpecificRoaming = {}
 
 local laneToGank = nil
-local lastGankDecisionTime = DotaTime()
+local lastGankDecisionTime = 0
 local gankDecisionHoldTime = 1.25 * 60 -- cant change dicision within this time
-local TwinGates = { }
+local TwinGates = J.Utils.GameStates.twinGates
 local targetGate
 local gateWarp = bot:GetAbilityByName("twin_gate_portal_warp")
-local enableGateUsage = false -- to be fixed
+local enableGateUsage = false -- twin_gate_portal_warp to be fixed
 local arriveGankLocTime = 0
 local gankTimeAfterArrival = 0.55 * 60 -- stay to roam after arriving the location
-local gankGapTime = 3 * 60 -- don't roam again within this duration after roaming once.
+local gankGapTime = 2 * 60 -- don't roam again within this duration after roaming once.
 local lastStaticLinkDebuffStack = 0
 local AnyUnitAffectedByChainFrost = false
 local HasPossibleWallOfReplicaAround = false
@@ -52,7 +52,7 @@ function GetDesire()
 	shouldTempRetreat = false
 	TPScroll = J.Utils.GetItemFromFullInventory(bot, 'item_tpscroll')
 	botTarget = J.GetProperTarget(bot)
-	nInRangeEnemy = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+	nInRangeEnemy = bot:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
 	nInRangeAlly = bot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
 	nInCloseRangeEnemy = bot:GetNearbyHeroes(1000, true, BOT_MODE_NONE)
 	nInCloseRangeAlly = bot:GetNearbyHeroes(1000, false, BOT_MODE_NONE)
@@ -187,7 +187,7 @@ end
 function Think()
     if J.CanNotUseAction(bot) then return end
 
-	nInRangeEnemy = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+	nInRangeEnemy = bot:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
 
 	ThinkIndividualRoaming() -- unit special abilities
 	ThinkGeneralRoaming() -- general items or conditions.
@@ -201,7 +201,7 @@ function ThinkIndividualRoaming()
 	then
 		if GetUnitToLocationDistance(bot, J.GetTeamFountain()) > 150
 		then
-			nInRangeEnemy = J.GetEnemiesNearLoc(bot:GetLocation(), 1600)
+			nInRangeEnemy = J.GetEnemiesNearLoc(bot:GetLocation(), 1400)
 			if J.Item.GetItemCharges(bot, 'item_tpscroll') >= 1
 			and nInRangeEnemy ~= nil and #nInRangeEnemy == 0
 			then
@@ -945,11 +945,11 @@ function ActualGankDesire()
 	SetupTwinGates()
 
 	if J.IsInLaningPhase()
-	and bot:WasRecentlyDamagedByAnyHero(2)
+	and not bot:WasRecentlyDamagedByAnyHero(2)
 	and (botTarget == nil or #nInRangeEnemy <= 0 or nInRangeEnemy[1] ~= botTarget) then
 		local botLvl = bot:GetLevel()
-		if (J.GetPosition(bot) == 2 and botLvl >= 6 and J.GetHP(bot) > 0.7 and J.GetMP(bot) > 0.6) -- mid player roaming
-		or (J.GetPosition(bot) > 3 and botLvl >= 3 and J.GetHP(bot) > 0.6 and J.GetMP(bot) > 0.6) -- supports roaming
+		if (J.GetPosition(bot) == 2 and botLvl >= 6 and J.GetHP(bot) > 0.7 and J.GetMP(bot) > 0.5) -- mid player roaming
+		or (J.GetPosition(bot) > 3 and botLvl >= 3 and J.GetHP(bot) > 0.6 and J.GetMP(bot) > 0.5) -- supports roaming
 		then
 			return CheckLaneToGank(J.GetPosition(bot))
 		end
@@ -961,9 +961,11 @@ function SetupTwinGates()
 	if #TwinGates == 0 then
 		for _, unit in pairs(GetUnitList(UNIT_LIST_ALL))
 		do
-			if unit:GetUnitName() == 'npc_dota_unit_twin_gate'
+			local name = unit:GetUnitName()
+			if name == 'npc_dota_unit_twin_gate'
 			then
 				table.insert(TwinGates, unit)
+				print("Twin gate: " .. name .. ". " .. tostring(unit:GetLocation()))
 			end
 			if #TwinGates >= 2 then
 				break
@@ -981,13 +983,13 @@ function ThinkActualGankingInLanes()
 			and targetGate ~= nil
 			and enableGateUsage
 			then
+				print('Trying to use gate '..botName)
 				local distanceToGate = GetUnitToUnitDistance(bot, targetGate)
 				if distanceToGate > 350 then
 					bot:Action_MoveToLocation(targetGate:GetLocation())
 					return
 				elseif gateWarp:IsFullyCastable()
 				then
-					print('Trying to use gate '..botName)
 					bot:Action_UseAbilityOnEntity(gateWarp, targetGate)
 					return
 				end
@@ -1023,7 +1025,7 @@ end
 
 function CheckLaneToGank(botPosition)
 
-	if #nInRangeEnemy > 0 then
+	if #J.GetEnemiesNearLoc(bot:GetLocation(), 800) > 0 then
 		return BOT_MODE_DESIRE_NONE
 	end
 
@@ -1031,7 +1033,7 @@ function CheckLaneToGank(botPosition)
 		return BOT_ACTION_DESIRE_VERYHIGH
 	end
 
-	if DotaTime() - lastGankDecisionTime < gankGapTime then
+	if DotaTime() - lastGankDecisionTime < gankGapTime and lastGankDecisionTime ~= 0 then
 		return BOT_MODE_DESIRE_NONE
 	end
 
@@ -1056,11 +1058,11 @@ function CheckLaneToGank(botPosition)
 					if enemyCountInLane >= #nInRangeAlly
 					then
 						laneToGank = lane[1]
-						return RemapValClamped(GetUnitToUnitDistance(bot, targetGate), 5000, 600, BOT_ACTION_DESIRE_HIGH, BOT_ACTION_DESIRE_ABSOLUTE * 0.96 )
+						return RemapValClamped(GetUnitToUnitDistance(bot, targetGate), 5000, 600, BOT_ACTION_DESIRE_HIGH, BOT_ACTION_DESIRE_ABSOLUTE )
 					end
 				end
 
-				if #enemyCountInLane >= 1 then
+				if enemyCountInLane >= 1 then
 					laneToGank = lane[1]
 					return RemapValClamped(laneFrontToT1Dist, 5000, 600, BOT_ACTION_DESIRE_HIGH, BOT_ACTION_DESIRE_ABSOLUTE * 0.96 )
 				end
@@ -1073,7 +1075,7 @@ function CheckLaneToGank(botPosition)
 end
 
 function HasSufficientMana(nMana)
-	return bot:GetMana() > nMana and not botName == 'npc_dota_hero_huskar'
+	return bot:GetMana() > nMana and botName ~= 'npc_dota_hero_huskar'
 end
 
 function GetGateNearLane(laneLoc)

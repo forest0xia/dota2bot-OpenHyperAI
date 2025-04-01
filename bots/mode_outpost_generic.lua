@@ -10,11 +10,9 @@ local ClosestOutpost = nil
 local ClosestOutpostDist = 10000
 
 local IsEnemyTier2Down = false
+local hAbilityCapture = bot:GetAbilityByName('ability_capture')
 
 function GetDesire()
-
-	-- disable for now
-	if true then return BOT_ACTION_DESIRE_NONE end
 
 	if not IsEnemyTier2Down
 	then
@@ -102,7 +100,11 @@ function Think()
 			bot:Action_MoveToLocation(ClosestOutpost:GetLocation())
 			return
 		else
-			bot:Action_AttackUnit(ClosestOutpost, false)
+			if hAbilityCapture then
+				bot:Action_UseAbilityOnEntity(hAbilityCapture, ClosestOutpost)
+			else
+				bot:Action_AttackUnit(ClosestOutpost, false)
+			end
 			return
 		end
 	end

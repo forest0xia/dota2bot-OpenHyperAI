@@ -13,7 +13,7 @@ local TormentorLocOffset = RandomVector(200)
 
 local tormentorMessageTime = 0
 local canDoTormentor = false
-local nTormentorSpawnTime = (J.IsModeTurbo() and 10 or 20)
+local nTormentorSpawnTime = (J.IsModeTurbo() and 8 or 15)
 
 if bot.tormentor_state == nil then bot.tormentor_state = false end
 if bot.tormentor_kill_time == nil then bot.tormentor_kill_time = 0 end
@@ -21,7 +21,7 @@ if bot.tormentor_kill_time == nil then bot.tormentor_kill_time = 0 end
 local NoTormentorAfterThisTime = 40 * 60 -- do not do tormentor again since it's late and doing tormentor only slows down the game more.
 local botTarget
 local hAllAllyHeroList
-local MaxAveDistanceForTormentor = 8000
+local MaxAveDistanceForTormentor = 6000
 
 function GetDesire()
 	-- 如果在打高地 就别撤退去干别的
@@ -67,6 +67,8 @@ function TormentorDesire()
 
     local nAliveAlly = J.GetNumOfAliveHeroes(false)
 	TormentorLocOffset = (bot:GetTeam() == TEAM_DIRE and Vector(-200, 200, 392) or Vector(0, -450, 392)) + RandomVector(50)
+
+    local nTormentorSpawnInterval = J.IsModeTurbo() and 5 or 10
 
     local nHumanCountInLoc = 0
     local nCoreCountInLoc = 0
@@ -127,6 +129,11 @@ function TormentorDesire()
         end
     end
 
+    if #tAllyInTormentorLocation <= 1 and nHumanCountInLoc == 0
+            and DotaTime() > (J.IsModeTurbo() and (20 * 60) or (40 * 60)) then
+        return BOT_MODE_DESIRE_NONE
+    end
+
     -- local hEnemyAncient = GetAncient(GetOpposingTeam())
 
     if #tAliveAllies < 4 then
@@ -141,7 +148,7 @@ function TormentorDesire()
     end
 
     -- Someone go check Tormentor
-    if DotaTime() >= nTormentorSpawnTime * 60 and (DotaTime() - bot.tormentor_kill_time) >= (nTormentorSpawnTime / 2) * 60 then
+    if DotaTime() >= nTormentorSpawnTime * 60 and (DotaTime() - bot.tormentor_kill_time) >= nTormentorSpawnInterval * 60 then
         if not X.IsTormentorAlive() then
             -- if not J.IsCore(bot) and GetUnitToUnitDistance(bot, hEnemyAncient) > 4000 then
             --     local ally = nil
@@ -175,8 +182,9 @@ function TormentorDesire()
 
     if bot.tormentor_state == true
     and nAveCoreLevel >= 13
-    and nAveSuppLevel >= 10
+    and nAveSuppLevel >= 11
     and (  (bot.tormentor_kill_time == 0 and nAliveAlly >= 5)
+        or (bot.tormentor_kill_time == 0 and nAliveAlly >= 4 and nCoreCountInLoc >= 3 and nSuppCountInLoc >= 1)
         or (bot.tormentor_kill_time > 0 and nAliveAlly >= 3 and J.GetAliveAllyCoreCount() >= 2)
         or (nAttackingTormentorCount >= 2)
     ) then
@@ -189,14 +197,14 @@ function TormentorDesire()
         end
 
         if X.IsEnoughAllies() then
-            return RemapValClamped(J.GetHP(bot), 0.25, 1, 0.95, 1.2)
+            return RemapValClamped(J.GetHP(bot), 0.25, 1, 0.98, 1.2)
         end
 
         if #tAllyInTormentorLocation >= 2
         or nCoreCountInLoc >= 1
         or nSuppCountInLoc >= 2
         or nHumanCountInLoc >= 1 then
-            return RemapValClamped(J.GetHP(bot), 0.25, 1, 0.95, 1.2)
+            return RemapValClamped(J.GetHP(bot), 0.25, 1, 0.98, 1.2)
         else
             return BOT_MODE_DESIRE_VERYHIGH
         end
@@ -281,7 +289,11 @@ function X.IsEnoughAllies()
 		end
 	end
 
-    local result = ((((bot.tormentor_kill_time == 0 and nAllyCount >= 4) or (bot.tormentor_kill_time > 0 and nAllyCount >= 3))) and nCoreCountInLoc >= 2)
+    local result = ((bot.tormentor_kill_time == 0 and nAllyCount >= 5)
+        or (bot.tormentor_kill_time == 0 and nAllyCount >= 4 and nCoreCountInLoc >= 3 and nSuppCountInLoc >= 1)
+        or (bot.tormentor_kill_time > 0 and nAllyCount >= 3))
+        and nCoreCountInLoc >= 2
+
     J.Utils.SetCachedVars(cacheKey, result)
 	return result
 end

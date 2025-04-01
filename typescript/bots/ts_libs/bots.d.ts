@@ -2,7 +2,7 @@
  * The interfaces we defined in this script.
  */
 
-import { Ability, Vector, Talent } from "bots/ts_libs/dota";
+import { Ability, Vector, Talent, Unit } from "bots/ts_libs/dota";
 
 export interface BotSetup {
     sBuyList: string[];
@@ -34,6 +34,7 @@ export interface GameState {
     } | null;
     recentDefendTime: number;
     cachedVars: any;
+    twinGates: Unit[];
 }
 
 export interface AvoidanceZone {

@@ -253,6 +253,7 @@ export const GameStates: GameState = {
     defendPings: null,
     recentDefendTime: -200,
     cachedVars: null,
+    twinGates: [],
 };
 export const LoneDruid = {} as { [key: number]: any };
 export const FrameProcessTime = 0.05;
