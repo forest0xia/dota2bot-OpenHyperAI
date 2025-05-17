@@ -317,9 +317,9 @@ end
 
 -- Leave from the area that's affected by some spells like ults of Lich, Jakiro, etc.
 function HasModifierThatNeedToAvoidEffects()
-	local cacheKey = 'HasModifierThatNeedToAvoidEffects'..tostring(bot:GetPlayerID())
-	local cache = J.Utils.GetCachedVars(cacheKey, 3)
-	if cache ~= nil then return cache end
+	-- local cacheKey = 'HasModifierThatNeedToAvoidEffects'..tostring(bot:GetPlayerID())
+	-- local cache = J.Utils.GetCachedVars(cacheKey, 3)
+	-- if cache ~= nil then return cache end
 
 	local res = bot:HasModifier('modifier_jakiro_macropyre_burn') -- 可能无视魔免的技能
 	or bot:HasModifier('modifier_dark_seer_wall_slow')
@@ -328,7 +328,7 @@ function HasModifierThatNeedToAvoidEffects()
 		or bot:HasModifier('modifier_sand_king_epicenter_slow'))
 		and (not bot:HasModifier("modifier_black_king_bar_immune") or not bot:HasModifier("modifier_magic_immune") or not bot:HasModifier("modifier_omniknight_repel"))
 	)
-	J.Utils.SetCachedVars(cacheKey, res)
+	-- J.Utils.SetCachedVars(cacheKey, res)
 	return res
 end
 

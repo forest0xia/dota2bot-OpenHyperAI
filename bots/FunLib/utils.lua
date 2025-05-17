@@ -522,22 +522,6 @@ local multiply = ____native_2Doperators.multiply
 local sub = ____native_2Doperators.sub
 local ____heroes = require(GetScriptDirectory().."/ts_libs/dota/heroes")
 local HeroName = ____heroes.HeroName
-function ____exports.SetCachedVars(key, value)
-    if not ____exports.GameStates.cachedVars then
-        ____exports.GameStates.cachedVars = {}
-    end
-    ____exports.GameStates.cachedVars[key] = value
-    ____exports.GameStates.cachedVars[key .. "-Time"] = DotaTime()
-end
-function ____exports.GetCachedVars(key, withinTime)
-    if not ____exports.GameStates.cachedVars or not ____exports.GameStates.cachedVars[key] then
-        return nil
-    end
-    if DotaTime() - ____exports.GameStates.cachedVars[key .. "-Time"] <= withinTime then
-        return ____exports.GameStates.cachedVars[key]
-    end
-    return nil
-end
 --- Check if the target is a valid unit. can be hero, creep, or building.
 -- 
 -- @param target - The unit to check.
@@ -681,23 +665,16 @@ end
 -- @param count - The number of slots in inventory to check.
 -- @returns The item if found, null otherwise.
 function ____exports.GetItemFromCountedInventory(bot, itemName, count)
-    local cacheKey = (("GetItemFromCountedInventory" .. tostring(bot:GetPlayerID())) .. itemName) .. tostring(count)
-    local cachedRes = ____exports.GetCachedVars(cacheKey, 2)
-    if cachedRes ~= nil then
-        return cachedRes
-    end
     do
         local i = 0
         while i < count do
             local item = bot:GetItemInSlot(i)
             if item and item:GetName() == itemName then
-                ____exports.SetCachedVars(cacheKey, item)
                 return item
             end
             i = i + 1
         end
     end
-    ____exports.SetCachedVars(cacheKey, nil)
     return nil
 end
 require(GetScriptDirectory().."/ts_libs/utils/json")
@@ -1063,6 +1040,22 @@ function ____exports.IsPingedByAnyPlayer(bot, pingTimeGap, minDistance, maxDista
             print(("Bot " .. bot:GetUnitName()) .. " noticed the ping")
             return ping
         end
+    end
+    return nil
+end
+function ____exports.SetCachedVars(key, value)
+    if not ____exports.GameStates.cachedVars then
+        ____exports.GameStates.cachedVars = {}
+    end
+    ____exports.GameStates.cachedVars[key] = value
+    ____exports.GameStates.cachedVars[key .. "-Time"] = DotaTime()
+end
+function ____exports.GetCachedVars(key, withinTime)
+    if not ____exports.GameStates.cachedVars or not ____exports.GameStates.cachedVars[key] then
+        return nil
+    end
+    if DotaTime() - ____exports.GameStates.cachedVars[key .. "-Time"] <= withinTime then
+        return ____exports.GameStates.cachedVars[key]
     end
     return nil
 end
@@ -1639,18 +1632,11 @@ end
 -- @param bot - The bot to check.
 -- @returns True if the team is pushing second tier or high ground, false otherwise.
 function ____exports.IsTeamPushingSecondTierOrHighGround(bot)
-    local cacheKey = "IsTeamPushingSecondTierOrHighGround" .. tostring(bot:GetTeam())
-    local cachedRes = ____exports.GetCachedVars(cacheKey, 0.5)
-    if cachedRes ~= nil then
-        return cachedRes
-    end
     local ancient = GetAncient(GetOpposingTeam())
     if ancient ~= nil then
         local res = #bot:GetNearbyHeroes(2000, false, BotMode.None) > 2 and (____exports.IsNearEnemySecondTierTower(bot, 2000) or ____exports.IsNearEnemyHighGroundTower(bot, 3000) or GetUnitToUnitDistance(bot, ancient) < 3000)
-        ____exports.SetCachedVars(cacheKey, res)
         return res
     end
-    ____exports.SetCachedVars(cacheKey, false)
     return false
 end
 --- Get the number of alive heroes.
@@ -1674,15 +1660,10 @@ end
 -- 
 -- @returns The number of missing enemy heroes.
 function ____exports.CountMissingEnemyHeroes()
-    local cacheKey = "CountMissingEnemyHeroes" .. tostring(GetTeam())
-    local cachedRes = ____exports.GetCachedVars(cacheKey, 0.5)
-    if cachedRes ~= nil then
-        return cachedRes
-    end
     local count = 0
     for ____, playerdId in ipairs(GetTeamPlayers(GetOpposingTeam())) do
         do
-            local __continue239
+            local __continue237
             repeat
                 if IsHeroAlive(playerdId) then
                     local lastSeenInfo = GetHeroLastSeenInfo(playerdId)
@@ -1690,19 +1671,18 @@ function ____exports.CountMissingEnemyHeroes()
                         local firstInfo = lastSeenInfo[1]
                         if firstInfo.time_since_seen >= 2.5 then
                             count = count + 1
-                            __continue239 = true
+                            __continue237 = true
                             break
                         end
                     end
                 end
-                __continue239 = true
+                __continue237 = true
             until true
-            if not __continue239 then
+            if not __continue237 then
                 break
             end
         end
     end
-    ____exports.SetCachedVars(cacheKey, count)
     return count
 end
 --- Find an ally with at least a certain distance away from a bot.
@@ -1774,17 +1754,11 @@ end
 -- @param minDistance - The minimum distance to check.
 -- @returns True if the bots should spread out, false otherwise.
 function ____exports.ShouldBotsSpreadOut(bot, minDistance)
-    local cacheKey = "ShouldBotsSpreadOut" .. tostring(bot:GetPlayerID())
-    local cachedRes = ____exports.GetCachedVars(cacheKey, 0.1)
-    if cachedRes ~= nil then
-        return cachedRes
-    end
     local bResult = false
     local threatNearby = ____exports.IsAnySpecialAOEThreatNearby(bot, minDistance)
     if threatNearby then
         bResult = true
     end
-    ____exports.SetCachedVars(cacheKey, bResult)
     return bResult
 end
 --- Get the nearby ally units.
@@ -1793,15 +1767,9 @@ end
 -- @param allyDistanceThreshold - The distance threshold to check for allies.
 -- @returns An array of ally units.
 function ____exports.GetNearbyAllyUnits(bot, allyDistanceThreshold)
-    local cacheKey = "GetNearbyAllyUnits" .. tostring(bot:GetPlayerID())
-    local cachedRes = ____exports.GetCachedVars(cacheKey, 0.1)
-    if cachedRes ~= nil then
-        return cachedRes
-    end
     local hNearbyAllies = bot:GetNearbyHeroes(allyDistanceThreshold, false, BotMode.None)
     local hNearbyLaneCreeps = bot:GetNearbyLaneCreeps(allyDistanceThreshold, false)
     local hNearbyUnits = __TS__ArrayConcat(hNearbyAllies, hNearbyLaneCreeps)
-    ____exports.SetCachedVars(cacheKey, hNearbyUnits)
     return hNearbyUnits
 end
 --- Smart spread out the bots.
@@ -1881,11 +1849,6 @@ end
 -- @param hNearbyUnits - The units to check.
 -- @returns The direction to spread the bot apart.
 function ____exports.SpreadBotApartDir_2(bot, minDistance, hNearbyUnits)
-    local cacheKey = "SpreadBotApartDir" .. tostring(bot:GetPlayerID())
-    local cachedRes = ____exports.GetCachedVars(cacheKey, 0.1)
-    if cachedRes ~= nil then
-        return cachedRes
-    end
     local botLoc = bot:GetLocation()
     local combinedDir = Vector(0, 0, 0)
     for ____, unit in ipairs(hNearbyUnits) do
@@ -1902,14 +1865,12 @@ function ____exports.SpreadBotApartDir_2(bot, minDistance, hNearbyUnits)
     end
     local dirLength = length3D(combinedDir)
     if dirLength < 0.00001 then
-        ____exports.SetCachedVars(cacheKey, nil)
         return nil
     end
     local finalDir = multiply(
         combinedDir:Normalized(),
         minDistance
     )
-    ____exports.SetCachedVars(cacheKey, finalDir)
     return finalDir
 end
 --- Get the ally ids in teleport to a location.
@@ -2008,20 +1969,13 @@ end
 -- @param nDuration - The duration to check against.
 -- @returns True if the bot has a critical spell with a cooldown greater than nDuration, false otherwise.
 function ____exports.HasCriticalSpellWithCooldown(bot, nDuration)
-    local cacheKey = ("HasCriticalSpellWithCooldown" .. tostring(bot:GetPlayerID())) .. tostring(nDuration)
-    local cachedRes = ____exports.GetCachedVars(cacheKey, 2)
-    if cachedRes ~= nil then
-        return cachedRes
-    end
     local heroName = bot:GetUnitName()
     if ____exports.ImportantSpells[heroName] ~= nil then
         local ability = bot:GetAbilityByName(____exports.ImportantSpells[heroName][1])
         if ____exports.IsValidAbility(ability) and ability:GetCooldownTimeRemaining() > nDuration then
-            ____exports.SetCachedVars(cacheKey, true)
             return true
         end
     end
-    ____exports.SetCachedVars(cacheKey, false)
     return false
 end
 --- Get an item from the bot's active inventory.
@@ -2046,11 +2000,6 @@ end
 -- @param targetLoc - The location to check.
 -- @returns True if the team has a member with a critical spell in cooldown, false otherwise.
 function ____exports.HasTeamMemberWithCriticalSpellInCooldown(targetLoc)
-    local cacheKey = "HasTeamMemberWithCriticalSpellInCooldown" .. tostring(GetTeam())
-    local cachedRes = ____exports.GetCachedVars(cacheKey, 2)
-    if cachedRes ~= nil then
-        return cachedRes
-    end
     for ____, ____value in __TS__Iterator(__TS__ArrayEntries(GetTeamPlayers(GetTeam()))) do
         local index = ____value[1]
         local _ = ____value[2]
@@ -2058,12 +2007,10 @@ function ____exports.HasTeamMemberWithCriticalSpellInCooldown(targetLoc)
         if teamMember ~= nil and teamMember:IsAlive() then
             local nDuration = GetUnitToLocationDistance(teamMember, targetLoc) / teamMember:GetCurrentMovementSpeed()
             if ____exports.HasCriticalSpellWithCooldown(teamMember, nDuration) then
-                ____exports.SetCachedVars(cacheKey, true)
                 return true
             end
         end
     end
-    ____exports.SetCachedVars(cacheKey, false)
     return false
 end
 --- Check if the team has a member with a critical item in cooldown when the bot walks & arrives to the location.
@@ -2072,11 +2019,6 @@ end
 -- @param targetLoc - The location to check.
 -- @returns True if the team has a member with a critical item in cooldown, false otherwise.
 function ____exports.HasTeamMemberWithCriticalItemInCooldown(targetLoc)
-    local cacheKey = "HasTeamMemberWithCriticalItemInCooldown" .. tostring(GetTeam())
-    local cachedRes = ____exports.GetCachedVars(cacheKey, 2)
-    if cachedRes ~= nil then
-        return cachedRes
-    end
     for ____, ____value in __TS__Iterator(__TS__ArrayEntries(GetTeamPlayers(GetTeam()))) do
         local index = ____value[1]
         local _ = ____value[2]
@@ -2086,26 +2028,17 @@ function ____exports.HasTeamMemberWithCriticalItemInCooldown(targetLoc)
             for ____, itemName in ipairs(____exports.ImportantItems) do
                 local item = ____exports.GetItem(teamMember, itemName)
                 if item and item:GetCooldownTimeRemaining() > nDuration then
-                    ____exports.SetCachedVars(cacheKey, true)
                     return true
                 end
             end
         end
     end
-    ____exports.SetCachedVars(cacheKey, false)
     return false
 end
 function ____exports.HasPossibleWallOfReplicaAround(bot)
-    local cacheKey = "HasPossibleWallOfReplicaAround" .. tostring(bot:GetPlayerID())
-    local cachedRes = ____exports.GetCachedVars(cacheKey, 2)
-    if cachedRes ~= nil then
-        return cachedRes
-    end
     if bot:HasModifier("modifier_dark_seer_wall_slow") then
-        ____exports.SetCachedVars(cacheKey, true)
         return true
     end
-    ____exports.SetCachedVars(cacheKey, false)
     return false
 end
 --- Retrieves positions where the Wall of illusion can be.
@@ -2114,11 +2047,6 @@ end
 -- 
 -- @returns An array of Vector positions marking danger zone centers.
 function ____exports.GetWallIllusionPositions(bot)
-    local cacheKey = "GetWallIllusionPositions" .. tostring(GetTeam())
-    local cachedRes = ____exports.GetCachedVars(cacheKey, 2)
-    if cachedRes ~= nil then
-        return cachedRes
-    end
     local positions = {}
     if ____exports.HasPossibleWallOfReplicaAround(bot) then
         local enemies = bot:GetNearbyHeroes(1600, false, BotMode.None)
@@ -2128,7 +2056,6 @@ function ____exports.GetWallIllusionPositions(bot)
             end
         end
     end
-    ____exports.SetCachedVars(cacheKey, positions)
     return positions
 end
 --- Determines whether a given target location is inside any danger zone.
@@ -2175,11 +2102,6 @@ end
 -- @returns A safe position to move to. If no valid safe destination is found,
 -- returns the bot's current location.
 function ____exports.GetSafeDestination(bot, targetPos)
-    local cacheKey = "GetSafeDestination" .. tostring(bot:GetPlayerID())
-    local cachedRes = ____exports.GetCachedVars(cacheKey, 2)
-    if cachedRes ~= nil then
-        return cachedRes
-    end
     local referencePos = targetPos or add(
         bot:GetLocation(),
         RandomVector(260)
@@ -2208,16 +2130,10 @@ function ____exports.GetSafeDestination(bot, targetPos)
             attempt = attempt + 1
         end
         if not IsLocationPassable(safePos) then
-            ____exports.SetCachedVars(
-                cacheKey,
-                bot:GetLocation()
-            )
             return bot:GetLocation()
         end
-        ____exports.SetCachedVars(cacheKey, safePos)
         return safePos
     end
-    ____exports.SetCachedVars(cacheKey, referencePos)
     return referencePos
 end
 --- Checks if the bot's intended destination is within a danger zone and commands the bot to move

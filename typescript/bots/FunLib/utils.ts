@@ -1181,20 +1181,20 @@ export function IsNearEnemyHighGroundTower(unit: Unit, range: number): boolean {
  * @returns True if the team is pushing second tier or high ground, false otherwise.
  */
 export function IsTeamPushingSecondTierOrHighGround(bot: Unit): boolean {
-    const cacheKey = "IsTeamPushingSecondTierOrHighGround" + bot.GetTeam();
-    const cachedRes = GetCachedVars(cacheKey, 0.5);
-    if (cachedRes !== null) {
-        return cachedRes;
-    }
+    // const cacheKey = "IsTeamPushingSecondTierOrHighGround" + bot.GetTeam();
+    // const cachedRes = GetCachedVars(cacheKey, 0.5);
+    // if (cachedRes !== null) {
+    //     return cachedRes;
+    // }
     const ancient = GetAncient(GetOpposingTeam());
     if (ancient !== null) {
         const res =
             bot.GetNearbyHeroes(2000, false, BotMode.None).length > 2 &&
             (IsNearEnemySecondTierTower(bot, 2000) || IsNearEnemyHighGroundTower(bot, 3000) || GetUnitToUnitDistance(bot, ancient) < 3000);
-        SetCachedVars(cacheKey, res);
+        // SetCachedVars(cacheKey, res);
         return res;
     }
-    SetCachedVars(cacheKey, false);
+    // SetCachedVars(cacheKey, false);
     return false;
 }
 
@@ -1224,11 +1224,11 @@ export function GetNumOfAliveHeroes(bEnemy: boolean): number {
  * @returns The number of missing enemy heroes.
  */
 export function CountMissingEnemyHeroes(): number {
-    const cacheKey = "CountMissingEnemyHeroes" + GetTeam();
-    const cachedRes = GetCachedVars(cacheKey, 0.5);
-    if (cachedRes !== null) {
-        return cachedRes;
-    }
+    // const cacheKey = "CountMissingEnemyHeroes" + GetTeam();
+    // const cachedRes = GetCachedVars(cacheKey, 0.5);
+    // if (cachedRes !== null) {
+    //     return cachedRes;
+    // }
 
     let count = 0;
     for (let playerdId of GetTeamPlayers(GetOpposingTeam())) {
@@ -1251,7 +1251,7 @@ export function CountMissingEnemyHeroes(): number {
         }
     }
     // print(`count missing alive hero for enemy: ${count}`);
-    SetCachedVars(cacheKey, count);
+    // SetCachedVars(cacheKey, count);
     return count;
 }
 
@@ -1397,18 +1397,18 @@ export function IsAnySpecialAOEThreatNearby(bot: Unit, nRadius: number): boolean
  * @returns True if the bots should spread out, false otherwise.
  */
 export function ShouldBotsSpreadOut(bot: Unit, minDistance: number): boolean {
-    const cacheKey = "ShouldBotsSpreadOut" + bot.GetPlayerID();
-    const cachedRes = GetCachedVars(cacheKey, 0.1);
-    if (cachedRes !== null) {
-        return cachedRes;
-    }
+    // const cacheKey = "ShouldBotsSpreadOut" + bot.GetPlayerID();
+    // const cachedRes = GetCachedVars(cacheKey, 0.1);
+    // if (cachedRes !== null) {
+    //     return cachedRes;
+    // }
 
     let bResult = false;
     const threatNearby = IsAnySpecialAOEThreatNearby(bot, minDistance);
     if (threatNearby) {
         bResult = true;
     }
-    SetCachedVars(cacheKey, bResult);
+    // SetCachedVars(cacheKey, bResult);
     return bResult;
 }
 
@@ -1419,15 +1419,15 @@ export function ShouldBotsSpreadOut(bot: Unit, minDistance: number): boolean {
  * @returns An array of ally units.
  */
 export function GetNearbyAllyUnits(bot: Unit, allyDistanceThreshold: number): Unit[] {
-    const cacheKey = "GetNearbyAllyUnits" + bot.GetPlayerID();
-    const cachedRes = GetCachedVars(cacheKey, 0.1);
-    if (cachedRes !== null) {
-        return cachedRes;
-    }
+    // const cacheKey = "GetNearbyAllyUnits" + bot.GetPlayerID();
+    // const cachedRes = GetCachedVars(cacheKey, 0.1);
+    // if (cachedRes !== null) {
+    //     return cachedRes;
+    // }
     const hNearbyAllies = bot.GetNearbyHeroes(allyDistanceThreshold, false, BotMode.None);
     const hNearbyLaneCreeps = bot.GetNearbyLaneCreeps(allyDistanceThreshold, false);
     const hNearbyUnits = hNearbyAllies.concat(hNearbyLaneCreeps);
-    SetCachedVars(cacheKey, hNearbyUnits);
+    // SetCachedVars(cacheKey, hNearbyUnits);
     return hNearbyUnits;
 }
 
@@ -1535,11 +1535,11 @@ export function SpreadBotApartDir(bot: Unit, minDistance: number, hNearbyUnits: 
  * @returns The direction to spread the bot apart.
  */
 export function SpreadBotApartDir_2(bot: Unit, minDistance: number, hNearbyUnits: Unit[]): Vector | null {
-    const cacheKey = "SpreadBotApartDir" + bot.GetPlayerID();
-    const cachedRes = GetCachedVars(cacheKey, 0.1);
-    if (cachedRes !== null) {
-        return cachedRes;
-    }
+    // const cacheKey = "SpreadBotApartDir" + bot.GetPlayerID();
+    // const cachedRes = GetCachedVars(cacheKey, 0.1);
+    // if (cachedRes !== null) {
+    //     return cachedRes;
+    // }
 
     const botLoc = bot.GetLocation();
 
@@ -1565,14 +1565,14 @@ export function SpreadBotApartDir_2(bot: Unit, minDistance: number, hNearbyUnits
     const dirLength = length3D(combinedDir);
     if (dirLength < 1e-5) {
         // Either no units in range or they balanced each other out
-        SetCachedVars(cacheKey, null);
+        // SetCachedVars(cacheKey, null);
         return null;
     }
 
     // 3) Normalize and multiply to get a final direction of length minDistance.
     //    i.e., direction * minDistance
     const finalDir = multiply(combinedDir.Normalized(), minDistance);
-    SetCachedVars(cacheKey, finalDir);
+    // SetCachedVars(cacheKey, finalDir);
     return finalDir;
 }
 
@@ -1678,20 +1678,20 @@ export function IsValidAbility(ability: Ability): boolean {
  * @returns True if the bot has a critical spell with a cooldown greater than nDuration, false otherwise.
  */
 export function HasCriticalSpellWithCooldown(bot: Unit, nDuration: number): boolean {
-    const cacheKey = "HasCriticalSpellWithCooldown" + bot.GetPlayerID() + nDuration;
-    const cachedRes = GetCachedVars(cacheKey, 2);
-    if (cachedRes !== null) {
-        return cachedRes;
-    }
+    // const cacheKey = "HasCriticalSpellWithCooldown" + bot.GetPlayerID() + nDuration;
+    // const cachedRes = GetCachedVars(cacheKey, 2);
+    // if (cachedRes !== null) {
+    //     return cachedRes;
+    // }
     const heroName = bot.GetUnitName();
     if (heroName in ImportantSpells) {
         const ability = bot.GetAbilityByName(ImportantSpells[heroName][0]);
         if (IsValidAbility(ability) && ability.GetCooldownTimeRemaining() > nDuration) {
-            SetCachedVars(cacheKey, true);
+            // SetCachedVars(cacheKey, true);
             return true;
         }
     }
-    SetCachedVars(cacheKey, false);
+    // SetCachedVars(cacheKey, false);
     return false;
 }
 
@@ -1723,20 +1723,20 @@ export function GetItemFromFullInventory(bot: Unit, itemName: string): Item | nu
  * @returns The item if found, null otherwise.
  */
 export function GetItemFromCountedInventory(bot: Unit, itemName: string, count: number): Item | null {
-    const cacheKey = "GetItemFromCountedInventory" + bot.GetPlayerID() + itemName + count;
-    const cachedRes = GetCachedVars(cacheKey, 2);
-    if (cachedRes !== null) {
-        return cachedRes;
-    }
+    // const cacheKey = "GetItemFromCountedInventory" + bot.GetPlayerID() + itemName + count;
+    // const cachedRes = GetCachedVars(cacheKey, 2);
+    // if (cachedRes !== null) {
+    //     return cachedRes;
+    // }
     for (let i = 0; i < count; i++) {
         const item = bot.GetItemInSlot(i);
 
         if (item && item.GetName() === itemName) {
-            SetCachedVars(cacheKey, item);
+            // SetCachedVars(cacheKey, item);
             return item;
         }
     }
-    SetCachedVars(cacheKey, null);
+    // SetCachedVars(cacheKey, null);
     return null;
 }
 
@@ -1747,23 +1747,23 @@ export function GetItemFromCountedInventory(bot: Unit, itemName: string, count: 
  * @returns True if the team has a member with a critical spell in cooldown, false otherwise.
  */
 export function HasTeamMemberWithCriticalSpellInCooldown(targetLoc: Vector): boolean {
-    const cacheKey = "HasTeamMemberWithCriticalSpellInCooldown" + GetTeam();
-    const cachedRes = GetCachedVars(cacheKey, 2);
-    if (cachedRes !== null) {
-        return cachedRes;
-    }
+    // const cacheKey = "HasTeamMemberWithCriticalSpellInCooldown" + GetTeam();
+    // const cachedRes = GetCachedVars(cacheKey, 2);
+    // if (cachedRes !== null) {
+    //     return cachedRes;
+    // }
     for (const [index, _] of GetTeamPlayers(GetTeam()).entries()) {
         const teamMember = GetTeamMember(index);
         if (teamMember !== null && teamMember.IsAlive()) {
             const nDuration = GetUnitToLocationDistance(teamMember, targetLoc) / teamMember.GetCurrentMovementSpeed();
             if (HasCriticalSpellWithCooldown(teamMember, nDuration)) {
-                SetCachedVars(cacheKey, true);
+                // SetCachedVars(cacheKey, true);
                 // print("HasTeamMemberWithCriticalSpellInCooldown: " + tostring(teamMember.GetUnitName()) + " " + tostring(nDuration));
                 return true;
             }
         }
     }
-    SetCachedVars(cacheKey, false);
+    // SetCachedVars(cacheKey, false);
     return false;
 }
 
@@ -1774,11 +1774,11 @@ export function HasTeamMemberWithCriticalSpellInCooldown(targetLoc: Vector): boo
  * @returns True if the team has a member with a critical item in cooldown, false otherwise.
  */
 export function HasTeamMemberWithCriticalItemInCooldown(targetLoc: Vector): boolean {
-    const cacheKey = "HasTeamMemberWithCriticalItemInCooldown" + GetTeam();
-    const cachedRes = GetCachedVars(cacheKey, 2);
-    if (cachedRes !== null) {
-        return cachedRes;
-    }
+    // const cacheKey = "HasTeamMemberWithCriticalItemInCooldown" + GetTeam();
+    // const cachedRes = GetCachedVars(cacheKey, 2);
+    // if (cachedRes !== null) {
+    //     return cachedRes;
+    // }
     for (const [index, _] of GetTeamPlayers(GetTeam()).entries()) {
         const teamMember = GetTeamMember(index);
         if (teamMember !== null && teamMember.IsAlive()) {
@@ -1786,27 +1786,27 @@ export function HasTeamMemberWithCriticalItemInCooldown(targetLoc: Vector): bool
             for (const itemName of ImportantItems) {
                 const item = GetItem(teamMember, itemName);
                 if (item && item.GetCooldownTimeRemaining() > nDuration) {
-                    SetCachedVars(cacheKey, true);
+                    // SetCachedVars(cacheKey, true);
                     return true;
                 }
             }
         }
     }
-    SetCachedVars(cacheKey, false);
+    // SetCachedVars(cacheKey, false);
     return false;
 }
 
 export function HasPossibleWallOfReplicaAround(bot: Unit): boolean {
-    const cacheKey = "HasPossibleWallOfReplicaAround" + bot.GetPlayerID();
-    const cachedRes = GetCachedVars(cacheKey, 2);
-    if (cachedRes !== null) {
-        return cachedRes;
-    }
+    // const cacheKey = "HasPossibleWallOfReplicaAround" + bot.GetPlayerID();
+    // const cachedRes = GetCachedVars(cacheKey, 2);
+    // if (cachedRes !== null) {
+    //     return cachedRes;
+    // }
     if (bot.HasModifier("modifier_dark_seer_wall_slow")) {
-        SetCachedVars(cacheKey, true);
+        // SetCachedVars(cacheKey, true);
         return true;
     }
-    SetCachedVars(cacheKey, false);
+    // SetCachedVars(cacheKey, false);
     return false;
 }
 
@@ -1818,11 +1818,11 @@ export function HasPossibleWallOfReplicaAround(bot: Unit): boolean {
  * @returns {Vector[]} An array of Vector positions marking danger zone centers.
  */
 export function GetWallIllusionPositions(bot: Unit): Vector[] {
-    const cacheKey = "GetWallIllusionPositions" + GetTeam();
-    const cachedRes = GetCachedVars(cacheKey, 2);
-    if (cachedRes !== null) {
-        return cachedRes;
-    }
+    // const cacheKey = "GetWallIllusionPositions" + GetTeam();
+    // const cachedRes = GetCachedVars(cacheKey, 2);
+    // if (cachedRes !== null) {
+    //     return cachedRes;
+    // }
 
     const positions: Vector[] = [];
     if (HasPossibleWallOfReplicaAround(bot)) {
@@ -1836,7 +1836,7 @@ export function GetWallIllusionPositions(bot: Unit): Vector[] {
             }
         }
     }
-    SetCachedVars(cacheKey, positions);
+    // SetCachedVars(cacheKey, positions);
     return positions;
 }
 
@@ -1901,11 +1901,11 @@ export function RotateVector(v: Vector, angle: number): Vector {
  *                   returns the bot's current location.
  */
 export function GetSafeDestination(bot: Unit, targetPos?: Vector): Vector {
-    const cacheKey = "GetSafeDestination" + bot.GetPlayerID();
-    const cachedRes = GetCachedVars(cacheKey, 2);
-    if (cachedRes !== null) {
-        return cachedRes;
-    }
+    // const cacheKey = "GetSafeDestination" + bot.GetPlayerID();
+    // const cachedRes = GetCachedVars(cacheKey, 2);
+    // if (cachedRes !== null) {
+    //     return cachedRes;
+    // }
 
     // Use the provided target position; if not available, fall back to the bot's current location.
     const referencePos: Vector = targetPos || add(bot.GetLocation(), RandomVector(260));
@@ -1941,14 +1941,14 @@ export function GetSafeDestination(bot: Unit, targetPos?: Vector): Vector {
 
         // If no passable safe destination is found, return the bot's current location.
         if (!IsLocationPassable(safePos)) {
-            SetCachedVars(cacheKey, bot.GetLocation());
+            // SetCachedVars(cacheKey, bot.GetLocation());
             return bot.GetLocation();
         }
-        SetCachedVars(cacheKey, safePos);
+        // SetCachedVars(cacheKey, safePos);
         return safePos;
     }
     // If the reference position is not in danger, simply return it.
-    SetCachedVars(cacheKey, referencePos);
+    // SetCachedVars(cacheKey, referencePos);
     return referencePos;
 }
 

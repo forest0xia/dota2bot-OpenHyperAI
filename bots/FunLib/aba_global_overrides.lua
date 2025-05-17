@@ -6,9 +6,9 @@ local orig_GetTeamPlayers = GetTeamPlayers
 local direTeamPlaters = nil
 function GetTeamPlayers(nTeam, bypass)
 	if bypass then return orig_GetTeamPlayers(nTeam) end
-	local cacheKey = 'GetTeamPlayers'..tostring(nTeam)
-	local cache = Utils.GetCachedVars(cacheKey, 5)
-	if cache ~= nil then return cache end
+	-- local cacheKey = 'GetTeamPlayers'..tostring(nTeam)
+	-- local cache = Utils.GetCachedVars(cacheKey, 5)
+	-- if cache ~= nil then return cache end
 
 	local nIDs = orig_GetTeamPlayers(nTeam)
 	if nTeam == TEAM_DIRE then
@@ -55,7 +55,7 @@ function GetTeamPlayers(nTeam, bypass)
 		end
 		direTeamPlaters = nIDs
 	end
-	Utils.SetCachedVars(cacheKey, nIDs)
+	-- Utils.SetCachedVars(cacheKey, nIDs)
 	return nIDs
 end
 
@@ -226,9 +226,9 @@ end
 local originalIsMagicImmune = CDOTA_Bot_Script.IsMagicImmune
 function CDOTA_Bot_Script:IsMagicImmune()
 	if not self then return false end
-	local cacheKey = 'IsMagicImmune'..self:GetUnitName()
-	local cache = Utils.GetCachedVars(cacheKey, 0.15)
-	if cache ~= nil then return cache end
+	-- local cacheKey = 'IsMagicImmune'..self:GetUnitName()
+	-- local cache = Utils.GetCachedVars(cacheKey, 0.15)
+	-- if cache ~= nil then return cache end
 
 	if self:CanBeSeen() then
         if originalIsMagicImmune(self)
@@ -244,11 +244,11 @@ function CDOTA_Bot_Script:IsMagicImmune()
         or self:HasModifier('modifier_rattletrap_cog_immune')
         or self:HasModifier('modifier_legion_commander_press_the_attack_immunity')
         then
-			Utils.SetCachedVars(cacheKey, true)
+			-- Utils.SetCachedVars(cacheKey, true)
             return true
         end
     end
-	Utils.SetCachedVars(cacheKey, false)
+	-- Utils.SetCachedVars(cacheKey, false)
     return false
 end
 
