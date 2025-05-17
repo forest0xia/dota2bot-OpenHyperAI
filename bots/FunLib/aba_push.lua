@@ -399,6 +399,7 @@ function Push.PushThink(bot, lane)
     local botAttackRange = bot:GetAttackRange()
     local fDeltaFromFront = (Min(J.GetHP(bot), 0.7) * 1000 - 700) + RemapValClamped(botAttackRange, 300, 700, 0, -600)
     local nEnemyTowers = bot:GetNearbyTowers(1600, true)
+    local nAllyCreeps = bot:GetNearbyLaneCreeps(1200, false)
     local targetLoc = GetLaneFrontLocation(GetTeam(), lane, fDeltaFromFront)
     if J.Utils.GetLocationToLocationDistance(J.Utils.GetTeamFountainTpPoint(), targetLoc) < 3000 then
         local enemyLaneFront = GetLaneFrontLocation(GetOpposingTeam(), lane, -fDeltaFromFront)
@@ -409,12 +410,49 @@ function Push.PushThink(bot, lane)
         end
     end
 
+    if J.IsValidBuilding(nEnemyTowers[1]) and (nEnemyTowers[1]:GetAttackTarget() == bot or (nEnemyTowers[1]:GetAttackTarget() ~= bot and bot:WasRecentlyDamagedByTower(#nAllyCreeps <= 2 and 4.0 or 2.0))) then
+        local nDamage = nEnemyTowers[1]:GetAttackDamage() * nEnemyTowers[1]:GetAttackSpeed() * 5.0 - bot:GetHealthRegen() * 5.0
+        if (bot:GetActualIncomingDamage(nDamage, DAMAGE_TYPE_PHYSICAL) / bot:GetHealth() > 0.15)
+        or #nAllyCreeps > 2
+        then
+            local vLocation = GetLaneFrontLocation(GetTeam(), lane, -1200)
+            bot:Action_MoveToLocation(vLocation)
+            return
+        end
+    end
+
     local nEnemyAncient = GetAncient(GetOpposingTeam())
     if  GetUnitToUnitDistance(bot, nEnemyAncient) < 1600
     and J.CanBeAttacked(nEnemyAncient)
     then
         bot:Action_AttackUnit(nEnemyAncient, true)
         return
+    end
+
+    local nRange = math.min(700 + botAttackRange, 1600)
+    local nCreeps = bot:GetNearbyLaneCreeps(nRange, true)
+    if (J.IsCore(bot) and bot:GetLevel() >= 15) or bot:GetLevel() >= 18 then
+        nCreeps = bot:GetNearbyCreeps(nRange, true)
+    end
+    nCreeps = Push.GetSpecialUnitsNearby(bot, nCreeps, nRange)
+
+    local vTeamFountain = J.GetTeamFountain()
+    local bTowerNearby = false
+    if J.IsValidBuilding(nEnemyTowers[1]) then
+        bTowerNearby = true
+    end
+
+    for _, creep in pairs(nCreeps) do
+        if J.IsValid(creep)
+        and J.CanBeAttacked(creep)
+        and (not bTowerNearby
+            or (bTowerNearby and GetUnitToLocationDistance(creep, vTeamFountain) < GetUnitToLocationDistance(nEnemyTowers[1], vTeamFountain)))
+        and not J.IsTormentor(creep)
+        and not J.IsRoshan(creep)
+        then
+            bot:Action_AttackUnit(creep, true)
+            return
+        end
     end
 
     if targetBuilding then
@@ -429,14 +467,6 @@ function Push.PushThink(bot, lane)
     and (nEnemyHeroes[1]:GetAttackTarget() == bot or J.IsChasingTarget(nEnemyHeroes[1], bot))
     then
         bot:Action_AttackUnit(nEnemyHeroes[1], true)
-        return
-    end
-
-    local nCreeps = bot:GetNearbyLaneCreeps(math.min(700 + botAttackRange, 1600), true)
-    if  nCreeps ~= nil and #nCreeps > 0
-    and J.CanBeAttacked(nCreeps[1])
-    then
-        bot:Action_AttackUnit(nCreeps[1], true)
         return
     end
 
@@ -475,6 +505,183 @@ function Push.CanBeAttacked(building)
     end
 
     return false
+end
+
+function TryClearingOtherLaneHighGround(bot, vLocation)
+    local unitList = GetUnitList(UNIT_LIST_ENEMY_BUILDINGS)
+    local function IsValid(building)
+        return  J.IsValidBuilding(building)
+            and J.CanBeAttacked(building)
+            and not building:HasModifier('modifier_backdoor_protection')
+            and not building:HasModifier('modifier_backdoor_protection_in_base')
+            and not building:HasModifier('modifier_backdoor_protection_active')
+    end
+
+    local hBarrackTarget = nil
+    local hBarrackTargetDistance = math.huge
+    for _, barrack in pairs(unitList) do
+        if IsValid(barrack)
+        and (  barrack == GetBarracks(GetOpposingTeam(), BARRACKS_TOP_MELEE)
+            or barrack == GetBarracks(GetOpposingTeam(), BARRACKS_TOP_RANGED)
+            or barrack == GetBarracks(GetOpposingTeam(), BARRACKS_MID_MELEE)
+            or barrack == GetBarracks(GetOpposingTeam(), BARRACKS_MID_RANGED)
+            or barrack == GetBarracks(GetOpposingTeam(), BARRACKS_BOT_MELEE)
+            or barrack == GetBarracks(GetOpposingTeam(), BARRACKS_BOT_RANGED))
+        then
+            local barrackDistance = GetUnitToLocationDistance(barrack, vLocation)
+            if barrackDistance < hBarrackTargetDistance then
+                hBarrackTarget = barrack
+                hBarrackTargetDistance = barrackDistance
+            end
+        end
+    end
+    if hBarrackTarget then
+        return hBarrackTarget
+    end
+
+    local hTowerTarget = nil
+    local hTowerTargetDistance = math.huge
+    for _, tower in pairs(unitList) do
+        if IsValid(tower) and (tower == GetTower(GetOpposingTeam(), TOWER_TOP_3) or tower == GetTower(GetOpposingTeam(), TOWER_MID_3) or tower == GetTower(GetOpposingTeam(), TOWER_BOT_3)) then
+            local towerDistance = GetUnitToLocationDistance(tower, vLocation)
+            if towerDistance < hTowerTargetDistance then
+                hTowerTarget = tower
+                hTowerTargetDistance = towerDistance
+            end
+        end
+    end
+    if hTowerTarget then
+        return hTowerTarget
+    end
+end
+
+function Push.IsEnemyTP(nID)
+    for _, id in pairs(GetTeamPlayers(GetOpposingTeam())) do
+        if id == nID then
+            return true
+        end
+    end
+
+    return false
+end
+
+function Push.GetSpecialUnitsNearby(bot, hUnitList, nRadius)
+    local hCreepList = hUnitList
+    for _, unit in pairs(GetUnitList(UNIT_LIST_ENEMIES)) do
+        if unit ~= nil and unit:CanBeSeen() and J.IsInRange(bot, unit, nRadius) then
+            local sUnitName = unit:GetUnitName()
+            if string.find(sUnitName, 'invoker_forge_spirit')
+            or string.find(sUnitName, 'lycan_wolf')
+            or string.find(sUnitName, 'eidolon')
+            or string.find(sUnitName, 'beastmaster_boar')
+            or string.find(sUnitName, 'beastmaster_greater_boar')
+            or string.find(sUnitName, 'furion_treant')
+            or string.find(sUnitName, 'broodmother_spiderling')
+            or string.find(sUnitName, 'skeleton_warrior')
+            or string.find(sUnitName, 'warlock_golem')
+            or unit:HasModifier('modifier_dominated')
+            or unit:HasModifier('modifier_chen_holy_persuasion')
+            then
+                table.insert(hCreepList, unit)
+            end
+        end
+    end
+
+    return hCreepList
+end
+
+function Push.IsHealthyInsideFountain(hUnit)
+    return hUnit:HasModifier('modifier_fountain_aura_buff')
+        and J.GetHP(hUnit) > 0.90
+        and J.GetMP(hUnit) > 0.85
+end
+
+function Push.IsBuildingGlyphedBackdoor()
+    local unitList = GetUnitList(UNIT_LIST_ENEMY_BUILDINGS)
+    for _, building in pairs(unitList) do
+        if J.IsValidBuilding(building)
+        and (building:HasModifier('modifier_fountain_glyph')
+            or building:HasModifier('modifier_backdoor_protection')
+            or building:HasModifier('modifier_backdoor_protection_in_base')
+            or building:HasModifier('modifier_backdoor_protection_active')
+        )
+        then
+            return true
+        end
+    end
+
+    return false
+end
+
+function Push.GetAllyHeroesAttackingUnit(hUnit)
+    local hUnitList = {}
+    for _, allyHero in pairs(GetUnitList(UNIT_LIST_ALLIED_HEROES)) do
+        if J.IsValidHero(allyHero)
+        and not J.IsSuspiciousIllusion(allyHero)
+        and not J.IsMeepoClone(allyHero)
+        and (allyHero:GetAttackTarget() == hUnit)
+        then
+            table.insert(hUnitList, allyHero)
+        end
+    end
+
+    return hUnitList
+end
+
+function Push.GetAllyCreepsAttackingUnit(hUnit)
+    local hUnitList = {}
+    for _, creep in pairs(GetUnitList(UNIT_LIST_ALLIED_CREEPS)) do
+        if J.IsValid(creep)
+        and (creep:GetAttackTarget() == hUnit)
+        then
+            table.insert(hUnitList, creep)
+        end
+    end
+
+    return hUnitList
+end
+
+function Push.GetLaneBuildingTier(nLane)
+    if nLane == LANE_TOP then
+        if GetTower(GetOpposingTeam(), TOWER_TOP_1) ~= nil then
+            return 1
+        elseif GetTower(GetOpposingTeam(), TOWER_TOP_2) ~= nil then
+            return 2
+        elseif GetTower(GetOpposingTeam(), TOWER_TOP_3) ~= nil
+            or GetBarracks(GetOpposingTeam(), BARRACKS_TOP_MELEE) ~= nil
+            or GetBarracks(GetOpposingTeam(), BARRACKS_TOP_RANGED) ~= nil
+        then
+            return 3
+        else
+            return 4
+        end
+    elseif nLane == LANE_MID then
+        if GetTower(GetOpposingTeam(), TOWER_MID_1) ~= nil then
+            return 1
+        elseif GetTower(GetOpposingTeam(), TOWER_MID_2) ~= nil then
+            return 2
+        elseif GetTower(GetOpposingTeam(), TOWER_MID_3) ~= nil
+            or GetBarracks(GetOpposingTeam(), BARRACKS_MID_MELEE) ~= nil
+            or GetBarracks(GetOpposingTeam(), BARRACKS_MID_RANGED) ~= nil
+        then
+            return 3
+        else
+            return 4
+        end
+    elseif nLane == LANE_BOT then
+        if GetTower(GetOpposingTeam(), TOWER_BOT_1) ~= nil then
+            return 1
+        elseif GetTower(GetOpposingTeam(), TOWER_BOT_2) ~= nil then
+            return 2
+        elseif GetTower(GetOpposingTeam(), TOWER_BOT_3) ~= nil
+            or GetBarracks(GetOpposingTeam(), BARRACKS_BOT_MELEE) ~= nil
+            or GetBarracks(GetOpposingTeam(), BARRACKS_BOT_RANGED) ~= nil
+        then
+            return 3
+        else
+            return 4
+        end
+    end
 end
 
 --[[

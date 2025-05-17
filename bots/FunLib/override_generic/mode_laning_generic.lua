@@ -52,7 +52,7 @@ function X.GetDesire()
 	if currentTime <= 12 * 60 and botLV <= 11 then return 0.369 end
 	if botLV <= 15 and J.GetCoresAverageNetworth() < 12000 then return 0.228 end
 
-	return BOT_MODE_DESIRE_NONE
+	return BOT_MODE_DESIRE_VERYLOW
 
 end
 

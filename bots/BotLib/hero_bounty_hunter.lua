@@ -67,7 +67,7 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_angels_demise",--
 	"item_assault",--
 	"item_travel_boots",
-	"item_wind_waker",--
+	"item_monkey_king_bar",--
 	"item_ultimate_scepter_2",
 	"item_travel_boots_2",--
 	"item_moon_shard",
@@ -90,10 +90,10 @@ sRoleItemsBuyList['pos_2'] = {
 	"item_angels_demise",--
 	"item_assault",--
 	"item_travel_boots",
-	"item_wind_waker",--
+	"item_moon_shard",
+	"item_monkey_king_bar",--
 	"item_ultimate_scepter_2",
 	"item_travel_boots_2",--
-	"item_moon_shard",
 	"item_aghanims_shard",
 }
 
@@ -113,7 +113,7 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_angels_demise",--
 	"item_assault",--
 	"item_travel_boots",
-	"item_wind_waker",--
+	"item_monkey_king_bar",--
 	"item_ultimate_scepter_2",
 	"item_travel_boots_2",--
 	"item_moon_shard",
@@ -135,10 +135,10 @@ sRoleItemsBuyList['pos_4'] = {
 	"item_heavens_halberd",--
 	"item_sheepstick",--
 	"item_lotus_orb",--
+	"item_moon_shard",
 	"item_assault",--
 	"item_aghanims_shard",
 	"item_ultimate_scepter_2",
-	"item_moon_shard",
 }
 
 sRoleItemsBuyList['pos_5'] = {
@@ -157,10 +157,10 @@ sRoleItemsBuyList['pos_5'] = {
 	-- "item_force_staff",--
 	"item_heavens_halberd",--
 	"item_sheepstick",--
+	"item_moon_shard",
 	"item_lotus_orb",--
 	"item_aghanims_shard",
 	"item_ultimate_scepter_2",
-	"item_moon_shard",
 }
 
 

@@ -3881,7 +3881,7 @@ function J.GetNumOfAliveHeroes( bEnemy )
 	if bEnemy then nTeam = GetOpposingTeam() end
 
 	local cacheKey = 'GetNumOfAliveHeroes'..tostring(nTeam)
-	local cache = J.Utils.GetCachedVars(cacheKey, 0.5)
+	local cache = J.Utils.GetCachedVars(cacheKey, 1)
 	if cache ~= nil then return cache end
 
 	for i, id in pairs( GetTeamPlayers( nTeam ) )

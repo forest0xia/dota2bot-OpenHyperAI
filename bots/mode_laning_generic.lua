@@ -108,7 +108,7 @@ function GetDesire()
 	if botLV <= 15 and J.GetCoresAverageNetworth() < 12000 then return 0.228 end
 
 	J.Utils.GameStates.passiveLaningTime = true
-	return BOT_MODE_DESIRE_NONE
+	return BOT_MODE_DESIRE_VERYLOW
 
 end
 
