@@ -381,7 +381,7 @@ function X.ConsiderTeleportation()
         end
     end
 
-    for i = 1, 5
+    for i = 1, #GetTeamPlayers( GetTeam() )
     do
         local allyHero = GetTeamMember(i)
 

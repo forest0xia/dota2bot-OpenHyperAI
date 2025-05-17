@@ -458,7 +458,7 @@ function ThinkIndividualRoaming()
 						return
 					end
 
-					for i = 1, 5 do
+					for i = 1, #GetTeamPlayers( GetTeam() ) do
 						local member = GetTeamMember(i)
 						if J.IsValidHero(member)
 						and J.IsInRange(bot, member, 1600)

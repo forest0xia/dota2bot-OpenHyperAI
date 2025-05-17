@@ -10,7 +10,7 @@ function X.HealingWardThink(minion)
 	local targetLocation = nil
 	local weakestHero = nil
 	local weakestHP = 0.99
-	for i = 1, 5
+	for i = 1, #GetTeamPlayers( GetTeam() )
 	do
 		local allyHero = GetTeamMember( i )
 		if allyHero ~= nil

@@ -7,8 +7,8 @@ local tAllyHumanList = {}
 
 local RadiantFountain = Vector( -6619, -6336, 384 )
 local DireFountain = Vector( 6928, 6372, 392 )
-local RadiantTormentorLoc = Vector(-7220, 7882, 1000)
-local DireTormentorLoc = Vector(7518, -7703, 1000)
+local RadiantTormentorLoc = Vector(7499, -7847, 256)
+local DireTormentorLoc = Vector(-7229, 7933, 256)
 
 local fKeepManaPercent = 0.39
 
@@ -403,13 +403,13 @@ function J.IsOtherAllyCanKillTarget( bot, target )
 	-- if cache ~= nil then return cache end
 
 	if not J.IsValid(target) then
-		J.Utils.SetCachedVars(cacheKey, false)
+		-- J.Utils.SetCachedVars(cacheKey, false)
 		return false
 	end
 
 	if target:GetHealth() / target:GetMaxHealth() > 0.38
 	then
-		J.Utils.SetCachedVars(cacheKey, false)
+		-- J.Utils.SetCachedVars(cacheKey, false)
 		return false
 	end
 
@@ -532,7 +532,7 @@ function J.GetAnyEnemiesNearLoc(vLoc, nRadius)
 		end
 	end
 
-	J.Utils.SetCachedVars(cacheKey, enemies)
+	-- J.Utils.SetCachedVars(cacheKey, enemies)
 
 	return enemies
 end
@@ -1241,7 +1241,7 @@ function J.GetClosestTeamLane(unit)
 end
 
 function J.GetFirstBotInTeam()
-	for i = 1, 5
+	for i = 1, #GetTeamPlayers( GetTeam() )
 	do
 		local ally = GetTeamMember(i)
 		if ally ~= nil
@@ -3836,7 +3836,7 @@ function J.IsEnemyHeroAroundLocation( vLoc, nRadius )
 					and J.GetLocationToLocationDistance( vLoc, dInfo.location ) <= nRadius
 					and dInfo.time_since_seen < 2.0
 				then
-					J.Utils.SetCachedVars(cacheKey, true)
+					-- J.Utils.SetCachedVars(cacheKey, true)
 					return true
 				end
 			end
@@ -4771,7 +4771,7 @@ function J.IsNonSiegeCreepBetweenMeAndLocation(hSource, vLoc, nRadius)
 end
 
 function J.IsThereCoreNearby(nRadius)
-	for i = 1, 5
+	for i = 1, #GetTeamPlayers( GetTeam() )
 	do
 		local allyHero = GetTeamMember(i)
 		if allyHero ~= nil
@@ -4787,7 +4787,7 @@ function J.IsThereCoreNearby(nRadius)
 end
 
 function J.GetClosestCore(bot, nRadius)
-	for i = 1, 5
+	for i = 1, #GetTeamPlayers( GetTeam() )
 	do
 		local member = GetTeamMember(i)
 
@@ -5382,9 +5382,7 @@ function J.IsHumanInLoc(vLoc, nRadius)
 end
 
 function J.GetCurrentRoshanLocation()
-	local timeOfDay = J.CheckTimeOfDay()
-
-	if timeOfDay == 'day'
+	if J.CheckTimeOfDay() == 'day'
 	then
 		return J.Utils.RadiantRoshanLoc
 	else
@@ -5393,11 +5391,11 @@ function J.GetCurrentRoshanLocation()
 end
 
 function J.GetTormentorLocation(team)
-	if team == TEAM_RADIANT
+	if J.CheckTimeOfDay() == 'day'
 	then
-		return RadiantTormentorLoc
-	else
 		return DireTormentorLoc
+	else
+		return RadiantTormentorLoc
 	end
 end
 

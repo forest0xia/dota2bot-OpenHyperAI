@@ -164,7 +164,7 @@ function TormentorDesire()
     if #tAllyInTormentorLocation <= 1 and nHumanCountInLoc == 0
     and GetUnitToLocationDistance(bot, TormentorLocation) > 1600
     and (GetUnitToUnitDistance(bot, hEnemyAncient) < 4000
-        and #J.GetEnemiesAroundAncient(bot, 4000) > 0
+        and J.GetEnemiesAroundAncient(bot, 4000) > 0
         or (J.IsDoingRoshan(bot) and bot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH)
     ) then
         return BOT_MODE_DESIRE_NONE
@@ -185,10 +185,10 @@ function TormentorDesire()
 
     nAveCoreLevel = nAveCoreLevel / 3
     nAveSuppLevel = nAveSuppLevel / 2
-    local nAveDistance = nTotalDistance / #hAllAllyHeroList
-    if nAveDistance > MaxAveDistanceForTormentor then
-        return BOT_MODE_DESIRE_NONE
-    end
+    -- local nAveDistance = nTotalDistance / #hAllAllyHeroList
+    -- if nAveDistance > MaxAveDistanceForTormentor then
+    --     return BOT_MODE_DESIRE_NONE
+    -- end
 
     local bGoodRightClickDamage = X.IsGoodRighClickDamage()
 
@@ -202,7 +202,7 @@ function TormentorDesire()
             then
                 local ally = nil
                 local allyDist = 100000
-                for i = 1, 5 do
+                for i = 1, #GetTeamPlayers( GetTeam() ) do
                     local member = GetTeamMember(i)
                     if J.IsValidHero(member) and member:IsBot() and not J.IsCore(member) then
                         local memberDist = GetUnitToLocationDistance(member, TormentorLocation)
@@ -355,7 +355,7 @@ end
 
 function X.IsTormentorAlive()
     if IsLocationVisible(TormentorLocation) then
-        for i = 1, 5 do
+        for i = 1, #GetTeamPlayers( GetTeam() ) do
             local member = GetTeamMember(i)
             if member ~= nil and member:IsAlive() then
                 if GetUnitToLocationDistance(member, TormentorLocation) <= 350 then
@@ -379,7 +379,7 @@ function X.IsEnoughAllies(vLocation, nRadius)
     local nAllyCount = 0
     local nCoreCountInLoc2 = 0
     local nSuppCountInLoc2 = 0
-	for i = 1, 5 do
+	for i = 1, #GetTeamPlayers( GetTeam() ) do
 		local member = GetTeamMember(i)
 		if member ~= nil and member:IsAlive() then
             if GetUnitToLocationDistance(member, vLocation) <= nRadius then
@@ -421,7 +421,7 @@ end
 
 function X.IsTeamHealthy()
 	local nHealthyAlly = 0
-	for i = 1, 5 do
+	for i = 1, #GetTeamPlayers( GetTeam() ) do
 		local member = GetTeamMember(i)
 		if J.IsValid(member) and (J.GetHP(member) > 0.5 or not member:IsBot()) then
 			nHealthyAlly = nHealthyAlly + 1
@@ -437,12 +437,11 @@ local fThresholdChatTime = 0
 function X.IsGoodRighClickDamage()
     if bot.tormentor_kill_time > 0 then return true end
 
-    for i = 1, 5 do
+    for i = 1, #GetTeamPlayers( GetTeam() ) do
 		local member = GetTeamMember(i)
 		if member ~= nil
         and member:CanBeSeen()
         and J.IsCore(member)
-        and not J.DoesUnitHaveTemporaryBuff(member)
         then
             local memberPosition = J.GetPosition(member)
             local attackDamage = member:GetAttackDamage() * member:GetAttackSpeed()
@@ -466,7 +465,6 @@ function X.IsGoodRighClickDamage()
     for _, damage in pairs(tTeamDamage) do totalAttackDamage = totalAttackDamage + damage end
 
     if not J.IsDoingTormentor(bot) and J.GetFirstBotInTeam() == bot and bot.tormentor_state == true and DotaTime() - fThresholdChatTime < 30 and totalAttackDamage >= 400.0 then
-        bot:ActionImmediate_Chat("Tormentor threshold met..", false)
         fThresholdChatTime = DotaTime()
     end
 
