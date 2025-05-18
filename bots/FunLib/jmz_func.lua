@@ -3154,53 +3154,43 @@ function J.IsT3TowerDown(team, lane)
 	return GetTower(team, t3[lane]) == nil
 end
 
-local tower_list = {
-	[TOWER_TOP_1] = {lane = LANE_TOP, isTower = true},
-	[TOWER_MID_1] = {lane = LANE_MID, isTower = true},
-	[TOWER_BOT_1] = {lane = LANE_BOT, isTower = true},
-	[TOWER_TOP_2] = {lane = LANE_TOP, isTower = true},
-	[TOWER_MID_2] = {lane = LANE_MID, isTower = true},
-	[TOWER_BOT_2] = {lane = LANE_BOT, isTower = true},
-	[TOWER_TOP_3] = {lane = LANE_TOP, isTower = true},
-	[TOWER_MID_3] = {lane = LANE_MID, isTower = true},
-	[TOWER_BOT_3] = {lane = LANE_BOT, isTower = true},
-	[TOWER_BASE_1] = {lane = LANE_MID, isTower = true},
-	[TOWER_BASE_2] = {lane = LANE_MID, isTower = true},
-	[BARRACKS_TOP_MELEE] = {lane = LANE_TOP, isTower = false},
-	[BARRACKS_TOP_RANGED] = {lane = LANE_TOP, isTower = false},
-	[BARRACKS_MID_MELEE] = {lane = LANE_MID, isTower = false},
-	[BARRACKS_MID_RANGED] = {lane = LANE_MID, isTower = false},
-	[BARRACKS_BOT_MELEE] = {lane = LANE_BOT, isTower = false},
-	[BARRACKS_BOT_RANGED] = {lane = LANE_BOT, isTower = false},
-	['ancient'] = {lane = LANE_MID, isTower = false},
-}
-function J.IsPingCloseToValidTower(team, ping)
-	for k, v in pairs(tower_list)
-	do
-		local building = nil
-		if k == 'ancient'
-		then
-			building = GetAncient(team)
-		elseif v.isTower
-		then
-			building = GetTower(team, k)
-		else
-			building = GetBarracks(team, k)
+function J.IsPingCloseToValidTower(nTeam, ping, nRadius, fInterval)
+	if ping and ping.location then
+		local unitList = UNIT_LIST_ALLIED_BUILDINGS
+		if nTeam == GetOpposingTeam() then
+			unitList = UNIT_LIST_ENEMY_BUILDINGS
 		end
-
-		if building ~= nil
-		and building:CanBeSeen()
-		and not building:IsInvulnerable()
-		and not building:HasModifier('modifier_backdoor_protection')
-		and not building:HasModifier('modifier_backdoor_protection_in_base')
-		and not building:HasModifier('modifier_backdoor_protection_active')
-		and J.GetDistance(building:GetLocation(), ping.location) <= 800
-		then
-			return true, v.lane
+		for _, unit in pairs(GetUnitList(unitList)) do
+			if unit ~= nil
+			and unit:IsAlive()
+			and unit:CanBeSeen()
+			and not unit:IsInvulnerable()
+			and not unit:HasModifier('modifier_backdoor_protection')
+			and not unit:HasModifier('modifier_backdoor_protection_in_base')
+			and not unit:HasModifier('modifier_backdoor_protection_active')
+			and not string.find(unit:GetUnitName(), 'fillers')
+			then
+				local sUnitName = unit:GetUnitName()
+				if J.GetDistance(unit:GetLocation(), ping.location) <= nRadius and GameTime() < ping.time + fInterval then
+					local nLane = LANE_MID
+					if string.find(sUnitName, '_fort') then
+						nLane = LANE_MID
+					elseif string.find(sUnitName, '_top') then
+						nLane = LANE_TOP
+					elseif string.find(sUnitName, '_mid') then
+						nLane = LANE_MID
+					elseif string.find(sUnitName, '_bot') then
+						nLane = LANE_BOT
+					end
+					return true, nLane
+				end
+			end
 		end
 	end
-	return false, nil
+
+	return false, -1
 end
+
 
 function J.IsRoshanCloseToChangingSides()
     return DotaTime() % 300 >= 300 - 30
@@ -5321,6 +5311,57 @@ function J.GetEnemiesAroundLoc(vLoc, nRadius)
 	return nUnitCount
 end
 
+local hAllyTeamList = {}
+local hEnemyTeamList = {}
+function J.GetInventoryNetworth()
+	local allyInventoryNet = 0
+	local enemyInventoryNet = 0
+	if math.floor(DotaTime()) % 2 == 0 then
+		for i = 1, #GetTeamPlayers( GetTeam() ) do
+			local ally = GetTeamMember(i)
+			if ally then
+				local itemsCost = 0
+				for j = 0, 8 do
+					local item = ally:GetItemInSlot(j)
+					if item then
+						itemsCost = itemsCost + GetItemCost(item:GetName())
+					end
+				end
+				local id = ally:GetPlayerID()
+				if hAllyTeamList[id] == nil then hAllyTeamList[id] = 0 end
+				if hAllyTeamList[id] < itemsCost then
+					hAllyTeamList[id] = itemsCost
+				end
+			end
+		end
+		for _, enemy in pairs(GetUnitList(UNIT_LIST_ENEMY_HEROES)) do
+			if J.IsValidHero(enemy)
+			and not J.IsSuspiciousIllusion(enemy)
+			and not enemy:HasModifier('modifier_arc_warden_tempest_double')
+			and not string.find(enemy:GetUnitName(), 'lone_druid_bear')
+			and not J.IsMeepoClone(enemy)
+			then
+				local id = enemy:GetPlayerID()
+				local itemsCost = 0
+				for i = 0, 8 do
+					local item = enemy:GetItemInSlot(i)
+					if item then
+						itemsCost = itemsCost + GetItemCost(item:GetName())
+					end
+				end
+				if hEnemyTeamList[id] == nil then hEnemyTeamList[id] = 0 end
+				if hEnemyTeamList[id] < itemsCost then
+					hEnemyTeamList[id] = itemsCost
+				end
+			end
+		end
+	end
+	for _, networth in pairs(hAllyTeamList) do allyInventoryNet = allyInventoryNet + networth end
+	for _, networth in pairs(hEnemyTeamList) do enemyInventoryNet = enemyInventoryNet + networth end
+
+	return allyInventoryNet, enemyInventoryNet
+end
+
 function J.FindEnemyUnit(name)
 	for _, unit in pairs(GetUnitList(UNIT_LIST_ENEMIES))
 	do
@@ -5396,6 +5437,15 @@ function J.GetTormentorLocation(team)
 		return DireTormentorLoc
 	else
 		return RadiantTormentorLoc
+	end
+end
+
+function J.GetTormentorWaitingLocation(team)
+	local timeOfday = J.CheckTimeOfDay()
+	if timeOfday == 'day' then
+		return Vector(-7041, 6796, 256)
+	else
+		return Vector(6792, -6815, 256)
 	end
 end
 

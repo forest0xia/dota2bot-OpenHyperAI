@@ -252,6 +252,12 @@ function CDOTA_Bot_Script:IsMagicImmune()
     return false
 end
 
+local o_RandomFloat = RandomFloat
+local epsilon = 0.00000001
+function RandomFloat(fMin, fMax)
+	return fMin + math.random() * (fMax - fMin + epsilon)
+end
+
 local originalGetNearbyNeutralCreeps = CDOTA_Bot_Script.GetNearbyNeutralCreeps
 function CDOTA_Bot_Script:GetNearbyNeutralCreeps( nRadius)
     return originalGetNearbyNeutralCreeps(self, math.min(nRadius, 1600))

@@ -22,14 +22,14 @@ local ConsiderHeroSpecificRoaming = {}
 
 local laneToGank = nil
 local lastGankDecisionTime = 0
-local gankDecisionHoldTime = 1.25 * 60 -- cant change dicision within this time
+local gankDecisionHoldTime = 1.5 * 60 -- cant change dicision within this time
 local TwinGates = J.Utils.GameStates.twinGates
 local targetGate
 local gateWarp = bot:GetAbilityByName("twin_gate_portal_warp")
 local enableGateUsage = false -- twin_gate_portal_warp to be fixed
 local arriveGankLocTime = 0
 local gankTimeAfterArrival = 0.55 * 60 -- stay to roam after arriving the location
-local gankGapTime = 2 * 60 -- don't roam again within this duration after roaming once.
+local gankGapTime = 4 * 60 -- don't roam again within this duration after roaming once.
 local lastStaticLinkDebuffStack = 0
 local AnyUnitAffectedByChainFrost = false
 local HasPossibleWallOfReplicaAround = false
@@ -949,7 +949,7 @@ function ActualGankDesire()
 	and (botTarget == nil or #nInRangeEnemy <= 0 or nInRangeEnemy[1] ~= botTarget) then
 		local botLvl = bot:GetLevel()
 		if (J.GetPosition(bot) == 2 and botLvl >= 6 and J.GetHP(bot) > 0.7 and J.GetMP(bot) > 0.5) -- mid player roaming
-		or (J.GetPosition(bot) > 3 and botLvl >= 3 and J.GetHP(bot) > 0.6 and J.GetMP(bot) > 0.5) -- supports roaming
+		or (J.GetPosition(bot) > 3 and botLvl > 3 and J.GetHP(bot) > 0.6 and J.GetMP(bot) > 0.5) -- supports roaming
 		then
 			return CheckLaneToGank(J.GetPosition(bot))
 		end
@@ -1033,7 +1033,7 @@ function CheckLaneToGank(botPosition)
 		return BOT_ACTION_DESIRE_VERYHIGH
 	end
 
-	if DotaTime() - lastGankDecisionTime < gankGapTime and lastGankDecisionTime ~= 0 then
+	if J.IsInLaningPhase() and (DotaTime() - lastGankDecisionTime < gankGapTime and lastGankDecisionTime ~= 0) then
 		return BOT_MODE_DESIRE_NONE
 	end
 
@@ -1494,11 +1494,11 @@ function ConsiderGeneralRoamingInConditions()
 		end
 	end
 
-	local actualGankingDesire = ActualGankDesire()
-	if actualGankingDesire > 0 then
-		lastGankDecisionTime = DotaTime()
-		return actualGankingDesire
-	end
+	-- local actualGankingDesire = ActualGankDesire()
+	-- if actualGankingDesire > 0 then
+	-- 	lastGankDecisionTime = DotaTime()
+	-- 	return actualGankingDesire
+	-- end
 	return BOT_ACTION_DESIRE_NONE
 end
 

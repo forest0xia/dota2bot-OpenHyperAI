@@ -74,7 +74,7 @@ local WeakHeroes = {
 	'npc_dota_hero_morphling',
 	'npc_dota_hero_visage',
 	'npc_dota_hero_void_spirit',
-	'npc_dota_hero_pudge',
+	-- 'npc_dota_hero_pudge',
 	'npc_dota_hero_ember_spirit',
 
 	-- Buggys, meaning they have bugs on Valves side, as of (still) 2024/8/1:
@@ -83,7 +83,7 @@ local WeakHeroes = {
     'npc_dota_hero_lone_druid',
     'npc_dota_hero_primal_beast',
     'npc_dota_hero_dark_willow',
-    'npc_dota_hero_elder_titan',
+    -- 'npc_dota_hero_elder_titan',
     'npc_dota_hero_hoodwink',
     'npc_dota_hero_wisp',
 	-- 'npc_dota_hero_kez', -- somewhat improved
@@ -649,10 +649,10 @@ local function handleCommand(inputStr, PlayerID, bTeamOnly)
 				print("Hero name not found or not supported! Please refer to the list of names here: https://steamcommunity.com/workshop/filedetails/discussion/3246316298/4848777260032086340/");
 			end
 		elseif subKey == "!pos" and GetGameState() == GAME_STATE_PRE_GAME then
-			if GetTeam() == TEAM_DIRE then
-				-- broken for 7.38 for now.
-				return
-			end
+			-- if GetTeam() == TEAM_DIRE then
+			-- 	-- broken for 7.38 for now.
+			-- 	return
+			-- end
 			print("Selecting pos " .. subVal)
 			local sTeamName = GetTeamForPlayer(PlayerID) == TEAM_RADIANT and 'TEAM_RADIANT' or 'TEAM_DIRE'
 			local remainingPos = RemainingPos[sTeamName]

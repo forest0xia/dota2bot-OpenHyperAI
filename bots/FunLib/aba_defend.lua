@@ -179,7 +179,7 @@ function Defend.GetDefendDesireHelper(bot, lane)
 	-- 如果被ping，则防守
 	local ping = J.Utils.IsPingedByAnyPlayer(bot, pingTimeDelta, nil, nil)
 	if ping ~= nil then
-		local isPinged, pingedLane = J.IsPingCloseToValidTower(team, ping)
+		local isPinged, pingedLane = J.IsPingCloseToValidTower(GetTeam(), ping, 700, 5.0)
 		if isPinged and lane == pingedLane
 		and (#lEnemyHeroesAroundLoc >= 3 or nEffctiveAllyHeroesNearPingedDefendLoc <= #lEnemyHeroesAroundLoc)
 		then

@@ -3,6 +3,7 @@ type HeroPositionMap = {
     [key: string]: number[];
 };
 
+// Hero names: https://steamcommunity.com/workshop/filedetails/discussion/3246316298/4848777260032086340/
 const HeroPositions: HeroPositionMap = {
     [HeroName.Abaddon]: [25, 5, 30, 20, 50],
     [HeroName.Underlord]: [5, 20, 80, 5, 0],
@@ -30,7 +31,7 @@ const HeroPositions: HeroPositionMap = {
     [HeroName.Dazzle]: [0, 45, 10, 30, 55],
     [HeroName.DeathProphet]: [5, 60, 40, 5, 0],
     [HeroName.Disruptor]: [0, 5, 10, 30, 55],
-    [HeroName.Doom]: [5, 15, 85, 5, 0],
+    [HeroName.Doom]: [15, 25, 85, 5, 0],
     [HeroName.DragonKnight]: [55, 70, 35, 10, 0],
     [HeroName.DrowRanger]: [70, 35, 5, 0, 0],
     [HeroName.EarthSpirit]: [0, 5, 30, 70, 15],
@@ -40,7 +41,7 @@ const HeroPositions: HeroPositionMap = {
     [HeroName.Enchantress]: [0, 5, 20, 35, 50],
     [HeroName.Enigma]: [0, 35, 65, 30, 0],
     [HeroName.FacelessVoid]: [60, 0, 25, 5, 0],
-    [HeroName.NaturesProphet]: [45, 25, 50, 40, 0],
+    [HeroName.NaturesProphet]: [75, 25, 80, 60, 0],
     [HeroName.Grimstroke]: [0, 5, 10, 35, 50],
     [HeroName.Gyrocopter]: [60, 5, 25, 20, 10],
     [HeroName.Hoodwink]: [0, 5, 10, 25, 20],
@@ -54,7 +55,7 @@ const HeroPositions: HeroPositionMap = {
     [HeroName.Leshrac]: [15, 30, 25, 25, 20],
     [HeroName.Lich]: [10, 35, 20, 80, 80],
     [HeroName.Lifestealer]: [30, 5, 30, 0, 0],
-    [HeroName.Lina]: [25, 50, 5, 20, 30],
+    [HeroName.Lina]: [75, 70, 5, 66, 30],
     [HeroName.Lion]: [30, 45, 10, 30, 45],
     [HeroName.LoneDruid]: [20, 25, 15, 0, 0],
     [HeroName.Luna]: [70, 5, 15, 0, 0],
@@ -70,7 +71,7 @@ const HeroPositions: HeroPositionMap = {
     [HeroName.Muerta]: [35, 5, 5, 15, 5],
     [HeroName.NagaSiren]: [45, 25, 20, 10, 0],
     [HeroName.Necrophos]: [5, 60, 30, 5, 0],
-    [HeroName.ShadowFiend]: [15, 80, 5, 0, 0],
+    [HeroName.ShadowFiend]: [45, 80, 5, 0, 0],
     [HeroName.NightStalker]: [25, 35, 55, 25, 0],
     [HeroName.NyxAssassin]: [0, 5, 40, 65, 20],
     [HeroName.Ringmaster]: [5, 20, 5, 50, 20],
@@ -92,8 +93,8 @@ const HeroPositions: HeroPositionMap = {
     [HeroName.Riki]: [55, 10, 20, 15, 10],
     [HeroName.Rubick]: [0, 35, 20, 40, 45],
     [HeroName.SandKing]: [5, 35, 65, 25, 0],
-    [HeroName.ShadowDeamon]: [0, 5, 10, 30, 55],
-    [HeroName.ShadowShaman]: [0, 10, 0, 45, 55],
+    [HeroName.ShadowDeamon]: [0, 15, 10, 30, 55],
+    [HeroName.ShadowShaman]: [0, 20, 20, 45, 55],
     [HeroName.Timbersaw]: [5, 25, 65, 5, 0],
     [HeroName.Silencer]: [10, 55, 10, 30, 35],
     [HeroName.WraithKing]: [50, 5, 45, 0, 0],

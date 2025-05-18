@@ -49,20 +49,19 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_tango",
 	"item_double_branches",
 	"item_faerie_fire",
-	"item_enchanted_mango",
-	"item_enchanted_mango",
-
-	"item_phase_boots", -- faster than power threads
+	
 	"item_magic_wand",
-	"item_null_talisman",
+	"item_power_treads",
+	"item_lifesteal",
 	"item_dragon_lance",
+	"item_lesser_crit",
 	"item_black_king_bar",--
-	"item_monkey_king_bar",-- physical + magical (for agility heroes and pa, wr)
-	"item_silver_edge",-- sf can use this to escape + it breaks passives of the enemies (good against pa, bb, am)
-	"item_aghanims_shard",
+	"item_butterfly",--
 	"item_greater_crit",--
-	"item_moon_shard",
+	"item_hurricane_pike",--
+	"item_aghanims_shard",
 	"item_satanic",--
+	"item_moon_shard",
 	"item_travel_boots_2",--
 	"item_ultimate_scepter_2",
 }

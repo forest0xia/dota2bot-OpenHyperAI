@@ -186,8 +186,8 @@ local HeroPositions = {
         55
     },
     [HeroName.Doom] = {
-        5,
         15,
+        25,
         85,
         5,
         0
@@ -256,10 +256,10 @@ local HeroPositions = {
         0
     },
     [HeroName.NaturesProphet] = {
-        45,
+        75,
         25,
-        50,
-        40,
+        80,
+        60,
         0
     },
     [HeroName.Grimstroke] = {
@@ -354,10 +354,10 @@ local HeroPositions = {
         0
     },
     [HeroName.Lina] = {
-        25,
-        50,
+        75,
+        70,
         5,
-        20,
+        66,
         30
     },
     [HeroName.Lion] = {
@@ -466,7 +466,7 @@ local HeroPositions = {
         0
     },
     [HeroName.ShadowFiend] = {
-        15,
+        45,
         80,
         5,
         0,
@@ -621,15 +621,15 @@ local HeroPositions = {
     },
     [HeroName.ShadowDeamon] = {
         0,
-        5,
+        15,
         10,
         30,
         55
     },
     [HeroName.ShadowShaman] = {
         0,
-        10,
-        0,
+        20,
+        20,
         45,
         55
     },

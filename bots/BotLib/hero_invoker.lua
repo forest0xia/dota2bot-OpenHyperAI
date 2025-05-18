@@ -802,7 +802,7 @@ function X.ConsiderColdSnap()
         and not J.IsSuspiciousIllusion(enemyHero)
         and bot:GetMana() - ColdSnap:GetManaCost() >= saveManaInLaning
         and ((J.GetManaAfter(ColdSnap:GetManaCost()) > 0.4 and J.IsAttacking(bot))
-            or (J.GetMP(bot) > 0.5 and J.IsAttacking(botTarget)) -- 妨碍补刀
+            or (J.GetMP(bot) > 0.5 and J.IsAttacking(enemyHero)) -- 妨碍补刀
         )
 		then
             return BOT_ACTION_DESIRE_HIGH, enemyHero, "对线消耗:"..J.Chat.GetNormName( enemyHero )
