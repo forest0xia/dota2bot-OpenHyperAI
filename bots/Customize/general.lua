@@ -66,7 +66,8 @@ Customize.Allow_Trash_Talk = true
 -- To allow bots response with GPT generated text to your chats in global channel. Disable Allow_Trash_Talk can disable this.
 Customize.Allow_AI_GPT_Response = true
 
--- Set the level of bots' trash talks. 1 = no trash talks from ally bots. 2 = ally bots also trash talk to you. Disable Allow_Trash_Talk can disable this.
+-- Set the level of bots' trash talks. Disable Allow_Trash_Talk can disable this.
+-- 1 => no trash talks from ally bots, no taunt from enemy after it gets a kill. 2 => ally bots also trash talk to you, allow taunt from enemy after it gets a kill.
 Customize.Trash_Talk_Level = 1
 
 -- To set the names for the Radiant bots. Don't need to provide a value for all 5 bots, missing names will have a Random value.

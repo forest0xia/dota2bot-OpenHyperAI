@@ -422,7 +422,7 @@ function X.ConsiderPlagueWard()
 
     local nAllyHeroes = bot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
     local nEnemyHeroes = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
-    local nStacks = J.GetModifierCount(bot, 'modifier_venomancer_ward_counter')
+    local nStacks = 20 -- J.GetModifierCount(bot, 'modifier_venomancer_ward_counter') -- 7.39 facet changed
 
 	if J.IsGoingOnSomeone(bot) then
 		if J.IsValidTarget(botTarget)
