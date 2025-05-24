@@ -1,4 +1,4 @@
-/* Adapted from https://steamcommunity.com/workshop/filedetails/discussion/3246316298/4848777260032086340/ */
+/* Adapted from https://github.com/forest0xia/dota2bot-OpenHyperAI/discussions/71 */
 export enum HeroName {
     Abaddon = "npc_dota_hero_abaddon",
     Underlord = "npc_dota_hero_abyssal_underlord",

@@ -3,7 +3,7 @@ type HeroPositionMap = {
     [key: string]: number[];
 };
 
-// Hero names: https://steamcommunity.com/workshop/filedetails/discussion/3246316298/4848777260032086340/
+// Hero names: https://github.com/forest0xia/dota2bot-OpenHyperAI/discussions/71
 const HeroPositions: HeroPositionMap = {
     [HeroName.Abaddon]: [25, 5, 30, 20, 50],
     [HeroName.Underlord]: [5, 20, 80, 5, 0],

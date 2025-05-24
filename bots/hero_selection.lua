@@ -632,7 +632,7 @@ local function handleCommand(inputStr, PlayerID, bTeamOnly)
 				end
 				userSwitchedRole = true
 			else
-				print("Hero name not found or not supported! Please refer to the list of names here: https://steamcommunity.com/workshop/filedetails/discussion/3246316298/4848777260032086340/");
+				print("Hero name not found or not supported! Please refer to the list of names here: https://github.com/forest0xia/dota2bot-OpenHyperAI/discussions/71");
 			end
 		elseif subKey == "!ban" and GetGameState() == GAME_STATE_HERO_SELECTION then
 			print("Banning hero " .. subVal)
@@ -646,7 +646,7 @@ local function handleCommand(inputStr, PlayerID, bTeamOnly)
 				print("Banned hero " .. hero.. '. Banned list:')
 				Utils.PrintTable(sBanList)
 			else
-				print("Hero name not found or not supported! Please refer to the list of names here: https://steamcommunity.com/workshop/filedetails/discussion/3246316298/4848777260032086340/");
+				print("Hero name not found or not supported! Please refer to the list of names here: https://github.com/forest0xia/dota2bot-OpenHyperAI/discussions/71");
 			end
 		elseif subKey == "!pos" and GetGameState() == GAME_STATE_PRE_GAME then
 			-- if GetTeam() == TEAM_DIRE then

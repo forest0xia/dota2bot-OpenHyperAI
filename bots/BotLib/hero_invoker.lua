@@ -1373,7 +1373,9 @@ function X.CheckTempModifiers(modifierNames, botTarget, nDelay)
     return BOT_ACTION_DESIRE_NONE
 end
 
-function X.ConsiderCataclysm()
+-- 7.39 facet changed
+function X.ConsiderCataclysm() return BOT_ACTION_DESIRE_NONE, 0 end
+function X.ConsiderCataclysm_()
     if not X.CanAbilityPossiblyBeCasted(Cataclysm) then
         return BOT_ACTION_DESIRE_NONE, 0
     end

@@ -29,14 +29,14 @@ Customize.Enable = true
 Customize.Localization = "en"
 
 -- To ban some heroes for bots - Set the heroes you DO NOT want the bots to pick. Use hero internal names.
--- Hero name ref: https://steamcommunity.com/workshop/filedetails/discussion/3246316298/4848777260032086340/
+-- Hero name ref: https://github.com/forest0xia/dota2bot-OpenHyperAI/discussions/71
 Customize.Ban = {
     'example_npc_dota_hero_internal_name_to_ban',
 }
 
 --[[
 1. To pick heroes for the Radiant bots. You have to use hero's internal name.
-2. Hero internal name ref: https://steamcommunity.com/workshop/filedetails/discussion/3246316298/4848777260032086340/
+2. Hero internal name ref: https://github.com/forest0xia/dota2bot-OpenHyperAI/discussions/71
 3. Don't need to provide a value for all 5 bots, any empty/missing value will fallback to a Random value.
 4. The position is ranked by the order of the names you put in the below list, pos 1 - 5, from top to down.
 5. There are sample team picks in Appendix section below. 
@@ -87,7 +87,7 @@ Customize.Dire_Names = {
 Customize.Force_Group_Push_Level = 1
 
 -- The Enhanced Fretbots mode settings:
--- For more about Fretbots mode: https://steamcommunity.com/workshop/filedetails/discussion/3246316298/4764334012741504141/
+-- For more about Fretbots mode: https://github.com/forest0xia/dota2bot-OpenHyperAI/discussions/68
 -- Note: these settings below will override the pre-defind settings in Fretbots folder.
 Customize.Fretbots = {
     -- Default difficulty, a number between: [0, 10]

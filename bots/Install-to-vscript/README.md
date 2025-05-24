@@ -23,4 +23,4 @@
 
 By doing this, any new updates to the script content will automatically available as your Local dev script. Alternatively, you can choose to create a symbolic link yourself, check out Appendix below.
 
-If you need more detailed guides. Check: https://steamcommunity.com/workshop/filedetails/discussion/3246316298/4764334012741504141/
+If you need more detailed guides. Check: https://github.com/forest0xia/dota2bot-OpenHyperAI/discussions

@@ -4,13 +4,6 @@ We love bot games! [*CRITICAL*] in order to play the script you need to create a
 
 Bot script in Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=3246316298
 
-#### Script introduction in other languages:
-1. [中文介绍](https://steamcommunity.com/workshop/filedetails/discussion/3246316298/4764334012740794651/)
-1. [Введение на русском](https://steamcommunity.com/workshop/filedetails/discussion/3246316298/4764334012740807463/)
-1. [Introducción en español](https://steamcommunity.com/workshop/filedetails/discussion/3246316298/4764334012740863589/)
-1. [Introdução em português](https://steamcommunity.com/workshop/filedetails/discussion/3246316298/4764334012740872368/)
-1. If you still have language problems, copy the content and paste to https://chatgpt.com/ or other tools to translate words to your language.
-
 Thanks and kudos to all that contributed to make bot games fun and exciting.
 
 #### The goal of this script is to: 
@@ -29,7 +22,7 @@ Thanks and kudos to all that contributed to make bot games fun and exciting.
       1. If you have NOT installed the script via `quick-install-oha.bat`, simply update settings in <Steam\steamapps\workshop\content\570\3246316298\Customize>
       2. If you have installed the script via `quick-install-oha.bat`, update settings in <Steam\steamapps\common\dota 2 beta\game\dota\scripts\vscripts\game\Customize>
 1. Dynamic difficulty. If you ever feel all existing bot scripts lack excitement. This script boosts bots with huge unfair advantages to make bot games a lot more challenging. You will need to enable the Fretbots mode for this feature. See instructions on section [How to install this script](#how-to-install-this-script) below.
-1. Support almost ALL game modes: https://steamcommunity.com/workshop/filedetails/discussion/3246316298/4334231305373971730/
+1. Support almost ALL game modes: https://github.com/forest0xia/dota2bot-OpenHyperAI/discussions/72
 1. Improved code structure & general logic for decision making for ability casting, item usages, defending, roaming as well as farming.
 1. Enhanced AI Chatbot. You can chat with bots in the game as if they were real and optimistic players. Integrated with ChatGPT. [Note: you need to enable Fretbot mode for this, check out How to Install section below.]
 1. All supported heroes in this script can play any position roles. Heroes will go to any lane they are assigned. The laning or pos of the bot heroes will seem random in the game, but it's deterministic - check the Bot roles section below.
@@ -37,7 +30,7 @@ Thanks and kudos to all that contributed to make bot games fun and exciting.
 
 ## How to install this script
 1. This bot script can only work when you create `Custom Lobby`, and select `Local Host` as the `Server Location`, this is because there is an issue on Valve side that most of custom scripts can only work in `Local Host`.
-2. This script has enhanced Fretbots mode that can boost bots with HUGE unfair advantage which makes the game much harder. You MUST `manually install` this script, please follow the instruction here to enable Fretbots mode: https://steamcommunity.com/workshop/filedetails/discussion/3246316298/4764334012741504141/, note this can also resolve other issues like enabling bots to use Neutral items.
+2. This script has enhanced Fretbots mode that can boost bots with HUGE unfair advantage which makes the game much harder. You MUST `manually install` this script, please follow the instruction here to enable Fretbots mode: https://github.com/forest0xia/dota2bot-OpenHyperAI/discussions/68, note this can also resolve other issues like enabling bots to use Neutral items.
 
 ## Bot roles, lanings and positioning
 1. In local lobby, the positions of the bots are the same as the order of the slots: 1, 2, 3, 4, 5 from top to bottom in the lobby.
@@ -53,7 +46,7 @@ Thanks and kudos to all that contributed to make bot games fun and exciting.
 1. `!pick XXX` During hero selection phase, you can type: `!pick XXX` to pick a hero. For example: `!pick puck` to pick puck as ally.
    1. You can type: `/all !pick XXX` to pick hero for enemy. For example: `/all !pick puck` to pick puck as enemy.
    1. For complex hero names or names that may apply to multiple heroes, please use the full internal code name. For example: `!pick npc_dota_hero_keeper_of_the_light` .
-   1. You can find a list of hero's internal code names in here: https://steamcommunity.com/workshop/filedetails/discussion/3246316298/4848777260032086340/
+   1. You can find a list of hero's internal code names in here: https://github.com/forest0xia/dota2bot-OpenHyperAI/discussions/71
 1. `!Xpos Y` Swap other players' positions without changing your position. For example you can use `!3pos 5` to tell the 3rd bot on the team to play pos 5.
 1. `!ban XXX` You can type: `!ban XXX` to ban a hero so the bots won't pick that hero. For example: `!ban puck` to prevent any bots from picking puck.
 1. `!sp XX` You can type `!sp en` or `!speak zh` to do localization - make bots talk in English, or other languages like: `!sp zh` for `Chinese`, `!sp ru` for `Russian`, `!sp ja` for `Japanese`, for now. 
@@ -123,7 +116,7 @@ root: <Steam\steamapps\common\dota 2 beta\game\dota\scripts\vscripts>
 
 ## Support the script
 1. Please feel very welcome to contribute to the Github repo.
-2. If you'd like to buy me a coffee: https://steamcommunity.com/workshop/filedetails/discussion/3246316298/6553383644012991605/
+2. If you'd like to buy me a coffee: https://github.com/forest0xia/dota2bot-OpenHyperAI/discussions/74
 
 ## Useful resources:
 - Posts shared by Ranked Matchmaking AI author: https://www.adamqqq.com/ai/dota2-ai-devlopment-tutorial.html
