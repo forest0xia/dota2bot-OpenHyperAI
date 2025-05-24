@@ -416,7 +416,7 @@ function X.ConsiderW()
 		and J.GetHP(botTarget) > 0.5
 		and J.IsAttacking(bot)
 		and (J.IsEarlyGame() or J.IsMidGame())
-		and J.GetManaAfter(Phantasm:GetManaCost()) > 0.35
+		and J.GetManaAfter(abilityR:GetManaCost()) > 0.35
 		then
 			return BOT_ACTION_DESIRE_HIGH
 		end

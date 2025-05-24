@@ -19,7 +19,7 @@ Thanks and kudos to all that contributed to make bot games fun and exciting.
 1. Bots are meant to be for chill games, if you are looking for more competitive bots than the existing ones, please stop complaining and help us build it with constructive effort.
 
 ## Why it's enjoyable
-0. Support 7.38
+0. Support 7.39
 1. Support ALL 126 heroes! You will see bots playing Kez, Ringmaster, Invoker, Techies, Meepo, Lone Druid, Dark Willow, Hoodwink, io, Muerta, Primal Beast, etc. Just note that some of the newly added ones are not very strong and in progress to be further enhanced.
 1. Bots are easily customizable . E.g. you can easily set ban / picks for bots, change their names, etc. 
    1. Check out the file in [Customize/general.lua](bots/Customize/general.lua).
