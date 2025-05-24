@@ -2,7 +2,7 @@ if not GameRules or GameRules:State_Get() < DOTA_GAMERULES_STATE_HERO_SELECTION 
 	print('Start a lobby game and try to enable Fretbots after entering the Hero Selection phase.')
 	return
 end
-LinkLuaModifier("modifier_fret_damage_increase", "FretBots/modifiers/modifier_seasonal_party_hat.lua", LUA_MODIFIER_MOTION_NONE)
+-- LinkLuaModifier("modifier_fret_damage_increase", "FretBots/modifiers/modifier_seasonal_party_hat.lua", LUA_MODIFIER_MOTION_NONE)
 if GetScriptDirectory == nil then GetScriptDirectory = function() return "bots" end end
 -- Version information
 local Version = require 'bots.FunLib.version'
@@ -46,6 +46,7 @@ end
 local playersLoadedTimerName = 'playersLoadedTimerName'
 local isAllPlayersSpawned = false
 local isDataTablesInitialized = false
+local isFretbotsBeingInitialized = false
 local playerSpawnCount = 0
 local playerLoadFailSafeDelta = 3
 
@@ -55,13 +56,17 @@ local playerLoadFailSafeDelta = 3
 -- timer method to monitor for all players being loaded, which will in turn
 -- initialize the data tables
 function FretBots:Initialize()
-	Debug:Print('Initializing FretBots')
-	-- Randomize!
-	FretBots:SetRandomSeed()
-	-- Register the listener that will check for all players spawning and then init datatables
-	ListenToGameEvent('dota_on_hero_finish_spawn', Dynamic_Wrap(FretBots, 'OnPlayerSpawned'), FretBots)
-	Timers:CreateTimer(playersLoadedTimerName, {endTime = 1, callback = FretBots['PlayersLoadedTimer']} )
-
+	if not isFretbotsBeingInitialized then
+		Debug:Print('Initializing FretBots')
+		-- Randomize!
+		FretBots:SetRandomSeed()
+		-- Register the listener that will check for all players spawning and then init datatables
+		ListenToGameEvent('dota_on_hero_finish_spawn', Dynamic_Wrap(FretBots, 'OnPlayerSpawned'), FretBots)
+		Timers:CreateTimer(playersLoadedTimerName, {endTime = 1, callback = FretBots['PlayersLoadedTimer']} )
+		isFretbotsBeingInitialized = true
+	else
+		Debug:Print('FretBots is being initialized')
+	end
 end
 
 -- Runs until all players are loaded in and then initializes the DataTables

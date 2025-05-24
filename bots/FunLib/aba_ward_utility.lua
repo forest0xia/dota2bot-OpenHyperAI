@@ -6,10 +6,10 @@ local nVisionRadius = 1600
 
 -- Radiant Warding Spots
 -- Game Start
-local RADIANT_GAME_START_MID_1 = Vector(-247, -1091, 128)
-local RADIANT_GAME_START_MID_2 = Vector(-1939, 223, 128)
-local RADIANT_GAME_START_MID_3 = Vector(193, -1240, 128)
-local RADIANT_GAME_START_2 = Vector(1570, -4625, 256)
+local RADIANT_GAME_START_MID_1 = Vector(-247, -1089, 128)
+local RADIANT_GAME_START_MID_2 = Vector(-1936, 219, 128)
+local RADIANT_GAME_START_MID_3 = Vector(192, -1245, 128)
+local RADIANT_GAME_START_2 = Vector(1573, -4622, 256)
 
 -- Laning Phase
 local RADIANT_LANE_PHASE_1 = Vector(-3971, 1595, 256)

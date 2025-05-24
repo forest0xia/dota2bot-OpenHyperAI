@@ -229,6 +229,11 @@ function X.SkillsComplement()
 end
 
 function X.ConsiderThirst()
+	if not J.CanCastAbility(Thirst)
+	then
+		return BOT_MODE_NONE
+	end
+
 	if J.IsGoingOnSomeone( bot )
 	then
 		if J.IsValidHero( botTarget )

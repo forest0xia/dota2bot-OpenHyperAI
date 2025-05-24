@@ -15,13 +15,13 @@ local tTalentTreeList = {
 }
 
 local tAllAbilityBuildList = {
-    ["pos_2"]= {1,3,1,2,1,6,1,2,1,2,6,2,3,3,3,6},
-    ["pos_3"]= {1,3,1,2,1,6,1,2,1,2,6,2,3,3,3,6},
-    ["pos_4"]= {1,3,1,2,1,6,1,2,1,3,3,6,3,2,6,2},
-    ["pos_5"]= {1,3,1,2,1,6,1,2,1,3,3,6,3,2,6,2},
+    ["pos_2"]= {1,3,1,2,1,6,1,2,2,6,2,3,3,3,6},
+    ["pos_3"]= {1,3,1,2,1,6,1,2,2,6,2,3,3,3,6},
+    ["pos_4"]= {1,3,1,2,1,6,1,2,3,3,6,3,2,6,2},
+    ["pos_5"]= {1,3,1,2,1,6,1,2,3,3,6,3,2,6,2},
 }
 
-local nAbilityBuildList = tAllAbilityBuildList[sRole] or {1,3,2,2,2,6,2,3,3,3,1,6,1,1,6,1}
+local nAbilityBuildList = tAllAbilityBuildList[sRole] or {1,3,2,2,2,6,2,3,3,3,1,6,1,1,6}
 
 local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 

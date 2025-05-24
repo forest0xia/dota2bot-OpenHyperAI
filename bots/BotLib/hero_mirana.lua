@@ -506,7 +506,7 @@ function X.ConsiderW()
         and J.IsInRange( botTarget, bot, nCastRange )
         and J.IsAttacking(bot)
 		then
-			return BOT_ACTION_DESIRE_HIGH
+			return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
 		end
 	end
 

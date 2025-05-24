@@ -220,6 +220,7 @@ end
 function X.ConsiderArcaneAura()
 	--进攻
 	if J.IsGoingOnSomeone( bot )
+	and J.CanCastAbility(ArcaneAura)
 	then
 		local npcTarget = J.GetProperTarget( bot )
 		if J.IsValidHero( npcTarget )

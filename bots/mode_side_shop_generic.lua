@@ -13,7 +13,7 @@ local vWaitingLocation = J.GetTormentorWaitingLocation(GetTeam())
 
 local tormentorMessageTime = 0
 local canDoTormentor = false
-local nTormentorSpawnTime = J.IsModeTurbo() and 7.5 or 15
+local nTormentorSpawnTime = J.IsModeTurbo() and 10 or 20
 local nTormentorSpawnInterval = J.IsModeTurbo() and 5 or 10
 local nRestForSeconds = 5
 

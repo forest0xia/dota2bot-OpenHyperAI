@@ -17,7 +17,7 @@ local isDebug = Debug.IsDebug() and thisDebug
 -- other local vars
 local botRoleDeterminationTimerName = 'botRoleDeterminationTimerName'
 -- Time at which to stop the BotRoleDetermination timer and declare rols
-local BotRoleDeterminationTime = 10
+local BotRoleDeterminationTime = 20
 -- Bots found to be in each lane
 local laneCounts =
 {
@@ -113,7 +113,7 @@ function RoleDetermination:DetermineRoles()
 	
 	for team = 2, 3 do
 	if #AllBots[team] < 5 then
-		Debug:Print('The bots have human players on their team. Dynamic role assignment disabled.')
+		Debug:Print('The bots have human players on their team [team: '.. tostring(team) ..', bot count: '..tostring(#AllBots[team])..']. Dynamic role assignment disabled.')
 		return
 	end
 	for _, bot in ipairs(AllBots[team]) do

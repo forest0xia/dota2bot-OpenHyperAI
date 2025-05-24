@@ -344,7 +344,7 @@ function GetDesire()
 	-- and J.Site.IsTimeToFarm(bot)
 	and (DotaTime() > 8 * 60 or botLevel >= 8 or ( bot:GetAttackRange() < 220 and botLevel >= 6 ))
 	then
-		if J.GetDistanceFromEnemyFountain(bot) > 4000 
+		if J.GetDistanceFromEnemyFountain(bot) > 6000 
 		then
 			hLaneCreepList = bot:GetNearbyLaneCreeps(1600, true);
 			-- if #hLaneCreepList == 0	

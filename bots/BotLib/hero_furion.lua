@@ -238,7 +238,8 @@ function X.SkillsComplement()
     if NaturesCallDesire > 0
     then
         J.SetQueuePtToINT(bot, false)
-        bot:ActionQueue_UseAbilityOnTree(NaturesCall, NaturesCallLocation)
+        -- bot:ActionQueue_UseAbilityOnTree(NaturesCall, NaturesCallLocation)
+        bot:ActionQueue_UseAbilityOnLocation(NaturesCall, GetTreeLocation(NaturesCallLocation))
         return
     end
 

@@ -153,9 +153,7 @@ function Push.GetPushDesire(bot, lane)
     and not string.find(botTarget:GetUnitName(), 'tower1')
     and not string.find(botTarget:GetUnitName(), 'tower2')
     then
-        if botTarget:HasModifier('modifier_backdoor_protection')
-        or botTarget:HasModifier('modifier_backdoor_protection_in_base')
-        or botTarget:HasModifier('modifier_backdoor_protection_active')
+        if Push.HasBackdoorProtect(botTarget)
         then
             return BOT_MODE_DESIRE_EXTRA_LOW
         end
@@ -165,9 +163,7 @@ function Push.GetPushDesire(bot, lane)
     and J.CanBeAttacked(hEnemyAncient)
     and not bot:WasRecentlyDamagedByAnyHero(1)
     and J.GetHP(bot) > 0.5
-    and not (hEnemyAncient:HasModifier('modifier_backdoor_protection')
-        or hEnemyAncient:HasModifier('modifier_backdoor_protection_in_base')
-        or hEnemyAncient:HasModifier('modifier_backdoor_protection_active'))
+    and not Push.HasBackdoorProtect(hEnemyAncient)
     then
         bot:SetTarget(hEnemyAncient)
         bot:Action_AttackUnit(hEnemyAncient, true)
@@ -246,6 +242,7 @@ function Push.GetPushDesire(bot, lane)
 end
 
 function Push.WhichLaneToPush(bot, lane)
+    -- the smaller the higher desire
     local topLaneScore = 0
     local midLaneScore = 0
     local botLaneScore = 0
@@ -317,17 +314,20 @@ function Push.WhichLaneToPush(bot, lane)
     botLaneScore = botLaneScore * (0.05 * count3 + 1)
 
     -- tower scores; should more likely consider taking out outer tower first, ^ unless overwhelmingly closer (case above)
-    local topLaneTier = Push.GetLaneBuildingTier(lane)
-    local midLaneTier = Push.GetLaneBuildingTier(lane)
-    local botLaneTier = Push.GetLaneBuildingTier(lane)
+    local topLaneTier = Push.GetLaneBuildingTier(LANE_TOP)
+    local midLaneTier = Push.GetLaneBuildingTier(LANE_MID)
+    local botLaneTier = Push.GetLaneBuildingTier(LANE_BOT)
 
     -- slight, not too strong; start mid first
     if midLaneTier < topLaneTier and midLaneTier < botLaneTier then
         midLaneScore = midLaneScore * 0.5
+        if not J.Utils.IsAnyBarracksOnLaneAlive(false, LANE_MID) then midLaneScore = midLaneScore * 0.5 end
     elseif topLaneTier < midLaneTier and topLaneTier < botLaneTier then
         topLaneScore = topLaneScore * 0.5
+        if not J.Utils.IsAnyBarracksOnLaneAlive(false, LANE_TOP) then topLaneScore = topLaneScore * 0.5 end
     elseif botLaneTier < topLaneTier and botLaneTier < midLaneTier then
         botLaneScore = botLaneScore * 0.5
+        if not J.Utils.IsAnyBarracksOnLaneAlive(false, LANE_BOT) then botLaneScore = botLaneScore * 0.5 end
     end
 
     if  topLaneScore < midLaneScore
@@ -389,9 +389,22 @@ function Push.PushThink(bot, lane)
         end
     end
 
+    if GetUnitToUnitDistance(bot, hEnemyAncient) <= 3200
+    and (   GetTower(GetOpposingTeam(), TOWER_TOP_2) == nil
+        and GetTower(GetOpposingTeam(), TOWER_MID_2) == nil
+        and GetTower(GetOpposingTeam(), TOWER_BOT_2) == nil)
+    then
+        local hBuildingTarget = TryClearingOtherLaneHighGround(bot, targetLoc)
+        if hBuildingTarget then
+            bot:Action_AttackUnit(hBuildingTarget, true)
+            return
+        end
+    end
+
     nInRangeAlly = J.GetAlliesNearLoc(hEnemyAncient:GetLocation(), 1600)
     if GetUnitToUnitDistance(bot, hEnemyAncient) < 1600
     and J.CanBeAttacked(hEnemyAncient)
+    and not Push.HasBackdoorProtect(hEnemyAncient)
     and (#Push.GetAllyHeroesAttackingUnit(hEnemyAncient) >= 3
         or #Push.GetAllyCreepsAttackingUnit(hEnemyAncient) >= 4
         or hEnemyAncient:GetHealthRegen() < 20
@@ -424,18 +437,6 @@ function Push.PushThink(bot, lane)
         and not J.IsRoshan(creep)
         then
             bot:Action_AttackUnit(creep, true)
-            return
-        end
-    end
-
-    if GetUnitToUnitDistance(bot, hEnemyAncient) <= 3200
-    and (   GetTower(GetOpposingTeam(), TOWER_TOP_2) == nil
-        and GetTower(GetOpposingTeam(), TOWER_MID_2) == nil
-        and GetTower(GetOpposingTeam(), TOWER_BOT_2) == nil)
-    then
-        local hBuildingTarget = TryClearingOtherLaneHighGround(bot, targetLoc)
-        if hBuildingTarget then
-            bot:Action_AttackUnit(hBuildingTarget, true)
             return
         end
     end
@@ -500,7 +501,7 @@ function Push.PushThink(bot, lane)
         return
     else
         if DotaTime() >= fNextMovementTime then
-            bot:Action_MoveToLocation(J.GetRandomLocationWithinDist(targetLoc, 0, 400))
+            bot:Action_AttackMove(J.GetRandomLocationWithinDist(targetLoc, 0, 400))
             fNextMovementTime = DotaTime() + RandomFloat(0.05, 0.3)
             return
         end
@@ -510,11 +511,9 @@ end
 function TryClearingOtherLaneHighGround(bot, vLocation)
     local unitList = GetUnitList(UNIT_LIST_ENEMY_BUILDINGS)
     local function IsValid(building)
-        return  J.IsValidBuilding(building)
+        return J.IsValidBuilding(building)
             and J.CanBeAttacked(building)
-            and not building:HasModifier('modifier_backdoor_protection')
-            and not building:HasModifier('modifier_backdoor_protection_in_base')
-            and not building:HasModifier('modifier_backdoor_protection_active')
+            and not (Push.HasBackdoorProtect(building))
     end
 
     local hBarrackTarget = nil
@@ -623,11 +622,7 @@ function Push.IsBuildingGlyphedBackdoor()
     local unitList = GetUnitList(UNIT_LIST_ENEMY_BUILDINGS)
     for _, building in pairs(unitList) do
         if J.IsValidBuilding(building)
-        and (building:HasModifier('modifier_fountain_glyph')
-            or building:HasModifier('modifier_backdoor_protection')
-            or building:HasModifier('modifier_backdoor_protection_in_base')
-            or building:HasModifier('modifier_backdoor_protection_active')
-        )
+        and Push.HasBackdoorProtect(building)
         then
             return true
         end
@@ -714,6 +709,13 @@ function Push.ShouldWaitForImportantItemsSpells(vLocation)
         if J.Utils.HasTeamMemberWithCriticalSpellInCooldown(vLocation) then return true end
     end
     return false
+end
+
+function Push.HasBackdoorProtect(target)
+    return target:HasModifier('modifier_fountain_glyph')
+        or target:HasModifier('modifier_backdoor_protection')
+        or target:HasModifier('modifier_backdoor_protection_in_base')
+        or target:HasModifier('modifier_backdoor_protection_active')
 end
 
 return Push

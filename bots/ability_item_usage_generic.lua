@@ -5,7 +5,7 @@ if bot == nil or bot:IsInvulnerable() or not bot:IsHero() or not string.find(bot
 if not bot.frameProcessTime then bot.frameProcessTime = 0.1 end
 
 local team = GetTeam()
-local bDebugMode = ( 1 == 10 )
+local bDebugMode = ( 10 == 10 )
 
 local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
 local Utils = require( GetScriptDirectory()..'/FunLib/utils' )
@@ -454,8 +454,7 @@ local nCourierReturnTime = -90
 local nCourierDeliverTime = -90
 local function CourierUsageComplement()
 
-	if GetGameMode() == 23
-		or DotaTime() < -56
+	if DotaTime() < -56
 		or bot:HasModifier( "modifier_arc_warden_tempest_double" )
 		or nCourierReturnTime + 5.0 > DotaTime()
 	then
@@ -469,7 +468,7 @@ local function CourierUsageComplement()
 	end
 
 	--------* * * * * * * ----------------* * * * * * * ----------------* * * * * * * --------
-	local bDebugCourier = ( 1 == 10 )
+	local bDebugCourier = ( 10 == 10 )
 	local npcCourier = bot.theCourier
 	nCourierState = GetCourierState( npcCourier )
 	local courierHP = npcCourier:GetHealth() / npcCourier:GetMaxHealth()
@@ -493,7 +492,7 @@ local function CourierUsageComplement()
 			bot:ActionImmediate_Courier( npcCourier, COURIER_ACTION_RETURN_STASH_ITEMS )
 
 			local abilityBurst = npcCourier:GetAbilityByName( 'courier_burst' )
-			if botLV >= 10 and abilityBurst:IsFullyCastable()
+			if abilityBurst and abilityBurst:IsFullyCastable()
 			then
 				bot:ActionImmediate_Courier( npcCourier, COURIER_ACTION_BURST )
 			end
@@ -553,7 +552,7 @@ local function CourierUsageComplement()
 					then
 						nCourierDeliverTime = currentTime
 						local abilityBurst = npcCourier:GetAbilityByName( 'courier_burst' )
-						if botLV >= 10 and abilityBurst:IsFullyCastable()
+						if abilityBurst and abilityBurst:IsFullyCastable()
 						then
 							J.SetReportMotive( bDebugCourier, "信使加速配送" )
 							bot:ActionImmediate_Courier( npcCourier, COURIER_ACTION_BURST )

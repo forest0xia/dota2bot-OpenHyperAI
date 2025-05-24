@@ -507,22 +507,20 @@ end
 
 function Chat.GetReplyString( sString, bAllChat )
 	local sReplyString = nil
-
-	if Customize.Localization == 'zh' then
-		local nIndex = Chat.GetChatStringTableIndex( sString )
-		if nIndex ~= - 1
-		then
-			sReplyString = Chat.GetChatTableString( nIndex, bAllChat )
-		else
-			sReplyString = Chat.GetCheaterReplyString( sString )
-			if sReplyString == nil and Customize.Allow_Trash_Talk
+	if Chat.AllowTrashTalk(bAllChat) then
+		if Customize.Localization == 'zh' then
+			local nIndex = Chat.GetChatStringTableIndex( sString )
+			if nIndex ~= - 1
 			then
-				sReplyString = Chat.GetRepeatString( sString )
+				sReplyString = Chat.GetChatTableString( nIndex, bAllChat )
+			else
+				sReplyString = Chat.GetCheaterReplyString( sString )
+				if sReplyString == nil
+				then
+					sReplyString = Chat.GetRepeatString( sString )
+				end
 			end
 		end
-	end
-
-	if Customize.Allow_Trash_Talk then
 		if sReplyString == nil or RandomInt( 1, 99 ) > 66
 		then
 			sReplyString = Localization.Get('random_responses')[RandomInt( 1, #Localization.Get('random_responses'))]
@@ -533,6 +531,11 @@ function Chat.GetReplyString( sString, bAllChat )
 
 end
 
+function Chat.AllowTrashTalk(bAllChat)
+	return Customize.Allow_Trash_Talk and
+		((not bAllChat and (Customize.Trash_Talk_Level == nil or Customize.Trash_Talk_Level >= 2))
+		or (bAllChat and (Customize.Trash_Talk_Level == nil or Customize.Trash_Talk_Level >= 1)))
+end
 
 function Chat.GetCheaterReplyString( sString )
 

@@ -934,6 +934,7 @@ end
 -- Checks to see if a player is entering cheat commands
 function Settings:DoChatCheatParse(playerId, text)
 	local tokens = Utilities:Tokenize(text)
+	if tokens[1] == nil then return end
 	for _, cheat in pairs(cheats) do
 		-- tokens 1 is the potential cheat code
 		-- I am an idiot use .lower!
