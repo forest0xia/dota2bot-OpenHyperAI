@@ -455,6 +455,45 @@ function CDOTA_Bot_Script:GetMaxMana()
     return originalGetMaxMana(self)
 end
 
+local originalGetRawOffensivePower = CDOTA_Bot_Script.GetRawOffensivePower
+function CDOTA_Bot_Script:GetRawOffensivePower()
+    if not self:CanBeSeen() then return 200 end
+    if self:GetUnitName() == 'npc_dota_hero_phoenix' then
+        --Skill 1 & skill 2 dmg calculate
+        local base = math.min(bot:GetLevel(),9) * 20.0 + self:GetNetWorth() * 0.1
+        if self:GetLevel()>12 then
+            --skill 3 dmg calculate
+            base = base + math.min(DotaTime(), 3600) * 0.3
+        else
+            -- 21 base dmg + str dmg, 3 hits. Use laser after lv 12.
+            base = base + (self:GetAttributeValue(ATTRIBUTE_STRENGTH) + 26) * 3
+        end
+        --ult dmg calculate
+        if self:GetLevel() > 17 then
+            base = base + 120 * 5
+        elseif self:GetLevel() > 11 then
+            base = base + 90 * 5
+        elseif self:GetLevel() > 5 then
+            base = base + 60 * 5
+        end
+    	return math.floor(base)
+    end
+    return originalGetRawOffensivePower(self)
+end
+
+local originalGetOffensivePower = CDOTA_Bot_Script.GetOffensivePower
+function CDOTA_Bot_Script:GetOffensivePower()
+    if not self:CanBeSeen() then return 200 end
+    if self:GetUnitName() == 'npc_dota_hero_phoenix' then
+        return self:GetRawOffensivePower() / 3 * 4
+    else
+        return originalGetOffensivePower(self)
+    end
+    --For our side it's fine, but I don't know how to calculate the cooldown time for enemy Phoenix...
+	--Haven't tested whether GetAbilityByName('XXX'):GetLevel() works on enemy heroes.
+	--If it does, we probably need to rewrite GetRawOffensivePower as well.
+end
+
 local X = {
 	orig_GetTeamPlayers = orig_GetTeamPlayers,
 	GetTeamPlayers = GetTeamPlayers

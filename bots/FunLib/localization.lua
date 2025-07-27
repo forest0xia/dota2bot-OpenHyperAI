@@ -17,6 +17,7 @@ local Localization = {
             "This is nonprofit project, if you like this script and have any feedback or want to contritute, or give any support or buy me a coffee, please check script's Workshop."
         },
         say_play_pos = "I will play position ",
+        say_play_pos_2 = "",
         pos_select_closed = "Position selection closed.",
         say_will_lose = "We estimate that the probability of winning is less than 1%, so we are resigned to losing! Well played! ",
         say_will_lose_2 = "We estimate the probability of winning to be below 1%. Well played!",
@@ -132,38 +133,39 @@ local Localization = {
             "你可以输入 `!sp zh` 让盟友机器人说中文，或者输入 `!sp en` 说英语，`!sp ru` 说俄语，`!sp ja` 说日语。并非100%完成翻译，请耐心等待。",
             "这是一个非营利项目，如果您喜欢这个脚本，有任何反馈或想做贡献，或者给予任何支持或请我喝一杯咖啡，请查看脚本的工坊"
         },
-        say_play_pos = "我将玩位置 ",
+        say_play_pos = "我准备打 ",
+        say_play_pos_2 = " 号位",
         pos_select_closed = "位置选择已关闭",
         say_will_lose = "我们估计胜率不到 1%，所以我们无奈认输！打得不错！",
         say_will_lose_2 = "我们估计胜率低于 1%。打得不错！",
         say_will_win = "我们估计赢得团战的概率超过 90%",
         say_will_win_2 = "我们估计胜率高于 90%",
-        can_try_tormentor = "我们尝试挑战 痛苦魔方 吗？",
+        can_try_tormentor = "我们去挑战痛苦魔方吧？",
         say_come_def = "请来防守",
-        got_a_kill = {"享受复活计时吧，你会一直看自己倒数的", "？", "你得表现得更好一点！", "ez", "下次小心点吧", "还没开始热身呢"},
-        got_big_kill = {"今天忘了带上你的技术了吗？太ez了！", "也许下次你会有机会……但这次没了",
-            "我起来了！下一个是谁？", "别难过，每个人都有个开始……比如你现在", "你肯定很喜欢复活计时，不然你怎么又开始倒计时了"},
-        got_big_kill_2 = {"这才是真正的杀戮dota！", "更像是练习赛", "朋友，这么菜也能玩dota吗", "别难过，每个人都有个开始……"},
-        got_big_kill_3 = {"ez。努力点吧", "太ez了！能不能让我玩得开心点，菜鸡？", "？？？？？", "还以为你比这强一点", "哟，玩的可以", "有人死了吗？哦，等等，不，菜狗死了"},
-        kill_streak_ended = {"...", "打得不错", "辣鸡队伍"},
-        say_end = {"gg. 结束", "好游戏，打得不错", "辣鸡队伍。ez"},
+        got_a_kill = {"ez", "ez", "ez", "ez", "ez", "ez", "ez", "ez", "ez", "ez", ">技不如人，甘拜下风", "收徒", "人机局，ez", "朋友，这么菜也能玩刀塔的吗？", "读秒去吧你", "21世纪了还能找到黑白显示器啊，羡慕", "？", "不给力啊，哥们儿", "下次注意嗷", "我还没出力，你怎么就倒了？",
+            "多玩会再走啊，这么急着回泉水？", "哥们你这打游戏呢还是梦游呢？", "开送了是吧？", "满分快递，好评", "菜", "菜就多练", "队友呢？队友呢队友呢？队友呢队友呢队友呢？"},
+        got_big_kill = {"ez", "收徒", ">技不如人，甘拜下风", "就这？就这就这就这？", "不给力啊，哥们儿", "这次出门忘带手了？", "开送了是吧？", "满分快递，好评", "菜", "菜就多练", "队友呢？队友呢队友呢？队友呢队友呢队友呢？",
+            "哥起来啦！", "别难过啊，谁还不是从你这种菜鸡过来的哈哈哈哈哈哈", "你数数真有天赋，这不又开始数了"},
+        got_big_kill_2 = {"ez", "收徒", ">技不如人，甘拜下风", "就这？就这就这就这？", "感谢我方6号位送出的一个人头", "这个节奏就对了嘛", "人机局，ez", "朋友，这么菜也能玩刀塔的吗？", "读秒去吧你", "好耶！", "天才！", "？？？"},
+        got_big_kill_3 = {"ez", "收徒", ">技不如人，甘拜下风", "就这？就这就这就这？", "感谢我方6号位送出的一个人头", "行，上头欢乐送", "？？？？？", "还以为你比我家狗强一点呢", "哟，玩得可以", "你看，菜死了吧"},
+        kill_streak_ended = {"...", "打得不错", "我队友呢？？？？"},
+        say_end = {"gg，结束了", ">技不如人，甘拜下风", "辣鸡队伍。ez"},
         no_more_talking = {
-            "我已无话可说了。",
-            "我要专心打游戏了，下次再说吧。",
-            "不和你闹了，我要开始认真玩了。",
-            "我的心好累，不说了。",
+            "不想说话",
+            "我专心打游戏了，不聊了。",
+            "不和你闹了，我要开始认真了。",
+            "心累，不说了。",
             "好了好了，别逗我玩了。",
-            "玩竞技游戏的时候就不能严肃点嘛。",
-            "打游戏呢，先不和你聊了。",
+            "玩竞技游戏的时候就不能严肃点吗？不聊了。",
+            "打游戏呢，先不聊了。",
             "我不想再分心聊天了。",
         },
         got_first_blood = {
-            '一血！我总是第一',
-            '轻松拿下一血。比赛才刚刚开始 你们已经开始输啦',
-            '感谢送人头',
-            '干得漂亮',
-            '很棒棒哦',
-            '感觉这将会是一场不错的比赛',
+            '一血！卧龙出世！',
+            '轻松一血。游戏已经结束咧！',
+            '送得好啊',
+            '>干得漂亮！',
+            '>技不如人，甘拜下风',
         },
         fretbots_wel_msgs = {
             {"#C0392B", "GLHF！原生机器人脚本缺乏乐趣。这段脚本通过不公平的优势提升机器人，使机器人游戏更具挑战性："},
@@ -205,44 +207,41 @@ local Localization = {
         fret_new_diff = "新的可选难度：%d",
         random_responses = {
             "?", 'glhf', 'gg',
-            "不错，我家的狗都能做得更好。",
-            "专注于游戏可能会提高你的胜率。",
-            "我见过小兵都比你补得好。",
-            "你知道你是在跟机器人玩吧？",
-            "这是你的最佳表现吗？我裤子里的兄弟都比这强。",
-            "别担心，6号位",
-            "冷静点，这不是你的错……哦等等",
+            "我家的狗都比你强点。",
+            "专心点打游戏，别光顾着送人头，胜率说不定还能高点。",
+            "小兵补得比你好。",
+            "你知道你是在打人机吧？",
+            "就这？就这就这就这？",
+            "我方6号位你认真演嗷",
+            "这不怪你……也没准就怪你",
             "天才操作。",
             "真是个天才。",
-            "和你玩 Dota 真有趣。",
-            "嘴炮是免费的，这大概是你唯一能负担得起的东西。",
-            "下次试试玩个靠打字取胜的游戏？",
+            "和你玩刀塔真有趣。",
+            "嘴炮不要钱，估计你也就玩得起嘴炮了。",
+            "要不你下次试试玩个打字游戏？没准就抠赢了",
             "刚才是不是听到狗叫了？",
-            "你这种玩家让敌人觉得游戏很好玩。",
-            "你是不是在关着脑子玩？",
-            "游戏意识？从来没听说过吧？",
-            "你的决策比野怪还随机。",
-            "敌方队伍感谢你的表演。",
-            "再来一次",
-            "你知道退出按钮在哪吗？",
-            "哦，你在线！可惜你的脑子离线了。",
-            "有人能买个脑子给这个天才吗？",
-            "手放在鼠标上好吗？",
-            "你的鼠标坏了还是脑子坏了？",
+            "哥们你脑子是进去了吗？判了几年？",
+            "知道啥叫大局观吗？",
+            "你这决策比野怪还随机。",
+            "感谢您的小丑表演。",
+            "你是在找怎么20投吗？不好意思这边没这玩意",
+            "你在线，可惜你的脑子离线了。",
+            "有谁能买个脑子给这位天才吗？",
+            "您能把手放在鼠标上吗？",
+            "你是鼠标坏了还是脑子坏了？",
             "继续这么玩吧。",
-            "友情提示：你正在浪费时间跟不在乎你说啥的机器人聊天。",
+            "友情提示：您正在浪费时间跟不在乎您说啥的机器人聊天。",
             "你知道自己在干什么吗？",
-            "恭喜，你会打字！",
-            "你的团队合作就像一群机器人。",
-            "我们的团队合作就像一群机器人。",
-            "快叫个教练吧，这里有个迷路的灵魂。",
+            "恭喜，您会打字！",
+            "你的团队合作像人机一样。",
+            "我们的团队合作像人机一样。",
+            "快叫个教练吧，太迷了。",
             "你的英雄很强，但你的操作完全相反。",
-            "去送吧，每分钟都给敌人免费金钱！",
-            "求你退了吧，没有你会更容易赢。",
-            "你是故意想让我们输吗？你做到了。",
-            "用你可怜的小手指敲键盘能赢吗？",
+            "你就接着送吧",
+            "你要不退了吧，没有你没准就赢了。",
+            "光靠键盘能赢吗？",
             "请闭嘴，为了大家好。",
-            "你证明了这个游戏的匹配没有标准，又一个机器人级别的玩家。"
+            "怎么又一个人机选手？这游戏的匹配是真离谱。"
         },
     },
     ru = {
@@ -256,6 +255,7 @@ local Localization = {
             "Это некоммерческий проект. Если вам нравится этот скрипт и у вас есть отзывы или вы хотите внести вклад, оказать поддержку или угостить меня кофе, пожалуйста, посетите страницу скрипта в Мастерской."
         },
         say_play_pos = "Я буду играть на позиции ",
+        say_play_pos_2 = "",
         pos_select_closed = "Выбор позиции закрыт.",
         say_will_lose = "Мы оцениваем вероятность победы менее 1%, поэтому мы смирились с поражением! Хорошая игра!",
         say_will_lose_2 = "Мы оцениваем вероятность победы ниже 1%. Хорошая игра!",
@@ -371,7 +371,8 @@ local Localization = {
             "`!sp zh` を入力すると味方ボットが中国語を話し、`!sp en` で英語、`!sp ru` でロシア語、`!sp ja` で日本語を話します。翻訳は100％完成していないので、少しお待ちください。",
             "これは非営利プロジェクトです。もしこのスクリプトが気に入ったら、フィードバックや貢献、サポート、または私にコーヒーをおごっていただける場合は、スクリプトのワークショップをご確認ください"
         },
-        say_play_pos = "私はポジション ",
+        say_play_pos = "ポジション ",
+        say_play_pos_2 = " で参ります",
         pos_select_closed = "ポジション選択は終了しました。",
         say_will_lose = "勝率が1％未満と推定されます。敗北を受け入れます！ナイスプレイ！",
         say_will_lose_2 = "勝率が1％未満と推定されます。ナイスプレイ！",
@@ -485,6 +486,19 @@ else
     Customize.Localization = LanguageCode
 end
 
+if not _G.RandomSeed then
+    --copy from FredBots
+    local timeString = GetSystemTime()
+    timeString = string.gsub(timeString,':','')
+    local serverTime = Time()
+    serverTime = serverTime - math.floor(serverTime)
+    local seed = tonumber(timeString) + serverTime
+    seed = math.floor(seed * 100000)
+    math.randomseed(seed)
+    math.random()
+    _G.RandomSeed = math.random(1,1000000)
+end
+
 function X.Supported(key)
     return Localization[key] ~= nil
 end
@@ -493,10 +507,14 @@ function X.GetLocale()
     return Customize.Localization or LanguageCode
 end
 
-function X.Get(key)
-    local localeSet = Localization[X.GetLocale()] or Localization['en']
-    local res = localeSet[key] or Localization['en'][key]
-    return res
+function X.Get(key, locale)
+    if not locale then locale = X.GetLocale() end
+    local localeSet = Localization[locale] or Localization['en']
+    --If localeSet is a table, select a random entry based on RandomSeed
+    if type(localeSet) == 'table' then
+        localeSet = localeSet[RandomSeed % (#localeSet) + 1]
+    end
+    return (localeSet[key] or X.Get(key, 'en'))
 end
 
 return X
