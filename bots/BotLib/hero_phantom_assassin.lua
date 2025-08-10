@@ -24,7 +24,7 @@ local tTalentTreeList = {
 }
 
 local tAllAbilityBuildList = {
-						{1,2,1,3,1,6,2,2,2,1,6,3,3,3,6},--pos1
+	{1,2,1,5,1,6,2,2,2,1,6,5,5,5,6},--pos1
 }
 
 local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
@@ -119,6 +119,7 @@ local abilityQ = bot:GetAbilityByName( sAbilityList[1] )
 local abilityW = bot:GetAbilityByName( sAbilityList[2] )
 local abilityE = bot:GetAbilityByName( sAbilityList[3] )
 local abilityAS = bot:GetAbilityByName( sAbilityList[4] )
+local Immaterial = bot:GetAbilityByName('phantom_assassin_immaterial')
 
 
 local castQDesire, castQTarget

@@ -521,7 +521,7 @@ function Chat.GetReplyString( sString, bAllChat )
 				end
 			end
 		end
-		if sReplyString == nil or RandomInt( 1, 99 ) > 66
+		if sReplyString == nil or RandomInt( 1, 100 ) > 90
 		then
 			sReplyString = Localization.Get('random_responses')[RandomInt( 1, #Localization.Get('random_responses'))]
 		end
