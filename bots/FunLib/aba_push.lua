@@ -13,6 +13,14 @@ local hEnemyAncient
 local BOT_MODE_DESIRE_EXTRA_LOW = 0.02
 
 function Push.GetPushDesire(bot, lane)
+    local cacheKey = 'GetPushDesire'..tostring(bot:GetPlayerID())
+    local cachedVar = J.Utils.GetCachedVars(cacheKey, 0.6)
+    if cachedVar ~= nil then return cachedVar end
+    local res = Push.GetPushDesireHelp(bot, lane)
+    J.Utils.SetCachedVars(cacheKey, res)
+    return res
+end
+function Push.GetPushDesireHelp(bot, lane)
     if bot.laneToPush == nil then bot.laneToPush = lane end
 
     local nMaxDesire = 0.82
@@ -354,6 +362,7 @@ end
 local fNextMovementTime = 0
 function Push.PushThink(bot, lane)
     if J.CanNotUseAction(bot) then return end
+    if J.Utils.IsBotThinkingMeaningfulAction(bot) then return end
 
     local botAttackRange = bot:GetAttackRange()
     local fDeltaFromFront = (Min(J.GetHP(bot), 0.7) * 1000 - 700) + RemapValClamped(botAttackRange, 300, 700, 0, -600)

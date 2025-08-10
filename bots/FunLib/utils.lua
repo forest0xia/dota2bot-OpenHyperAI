@@ -501,16 +501,38 @@ local function __TS__ArrayFilter(self, callbackfn, thisArg)
     end
     return result
 end
+
+local function __TS__ArrayIncludes(self, searchElement, fromIndex)
+    if fromIndex == nil then
+        fromIndex = 0
+    end
+    local len = #self
+    local k = fromIndex
+    if fromIndex < 0 then
+        k = len + fromIndex
+    end
+    if k < 0 then
+        k = 0
+    end
+    for i = k + 1, len do
+        if self[i] == searchElement then
+            return true
+        end
+    end
+    return false
+end
 -- End of Lua Library inline imports
 local ____exports = {}
 local avoidanceZones, IsHumanPlayerInTeamCache
 local ____dota = require(GetScriptDirectory().."/ts_libs/dota/index")
 local Barracks = ____dota.Barracks
+local BotActionType = ____dota.BotActionType
 local BotMode = ____dota.BotMode
 local Lane = ____dota.Lane
 local Team = ____dota.Team
 local Tower = ____dota.Tower
 local UnitType = ____dota.UnitType
+local BotScriptEnums = ____dota.BotScriptEnums
 local ____http_req = require(GetScriptDirectory().."/ts_libs/utils/http_utils/http_req")
 local Request = ____http_req.Request
 local ____native_2Doperators = require(GetScriptDirectory().."/ts_libs/utils/native-operators")
@@ -846,7 +868,7 @@ ____exports.ImportantItems = {"item_black_king_bar", "item_refresher"}
 avoidanceZones = {}
 ____exports.GameStates = {defendPings = nil, recentDefendTime = -200, cachedVars = nil, twinGates = {}}
 ____exports.LoneDruid = {}
-____exports.FrameProcessTime = 0.05
+____exports.FrameProcessTime = 0.06
 ____exports.EstimatedEnemyRoles = {npc_dota_hero_any = {lane = Lane.Mid, role = 2}}
 function ____exports.PrintTable(tbl, indent)
     if indent == nil then
@@ -982,7 +1004,7 @@ function ____exports.SetFrameProcessTime(bot)
             math.fmod(
                 bot:GetPlayerID() / 1000,
                 ____exports.FrameProcessTime / 10
-            ) * 2,
+            ) * 3,
             2
         )
     end
@@ -2148,5 +2170,61 @@ function ____exports.MoveBotSafely(bot, targetPos)
         return
     end
     bot:Action_MoveToLocation(safeDestination)
+end
+local meaningfulActivities = {
+    ACTIVITY_RUN,
+    ACTIVITY_ATTACK,
+    ACTIVITY_ATTACK2,
+    ACTIVITY_ATTACK_EVENT,
+    ACTIVITY_CAST_ABILITY_1,
+    ACTIVITY_CAST_ABILITY_2,
+    ACTIVITY_CAST_ABILITY_3,
+    ACTIVITY_CAST_ABILITY_4,
+    ACTIVITY_CAST_ABILITY_5,
+    ACTIVITY_CAST_ABILITY_6,
+    ACTIVITY_CHANNEL_ABILITY_1,
+    ACTIVITY_CHANNEL_ABILITY_2,
+    ACTIVITY_CHANNEL_ABILITY_3,
+    ACTIVITY_CHANNEL_ABILITY_4,
+    ACTIVITY_CHANNEL_ABILITY_5,
+    ACTIVITY_CHANNEL_ABILITY_6
+}
+--- Checks if the bot is currently thinking meaningful actions that would make
+-- re-computing the Think() method unnecessary.
+-- 
+-- @param bot - The bot unit to check
+-- @returns True if the bot is doing something meaningful, false otherwise
+function ____exports.IsBotThinkingMeaningfulAction(bot)
+    local cacheKey = "IsBotThinkingMeaningfulAction" .. tostring(bot:GetPlayerID())
+    local cachedRes = ____exports.GetCachedVars(cacheKey, 0.2)
+    if not cachedRes then
+        return false
+    end
+    do
+        local ____try, ____hasReturned, ____returnValue = pcall(function()
+            if __TS__ArrayIncludes(
+                meaningfulActivities,
+                bot:GetAnimActivity()
+            ) then
+                ____exports.SetCachedVars(cacheKey, true)
+                return true, true
+            end
+        end)
+        if ____try and ____hasReturned then
+            return ____returnValue
+        end
+    end
+    local numQueuedActions = bot:NumQueuedActions()
+    if numQueuedActions > 0 then
+        for index = 1, numQueuedActions do
+            local actionType = bot:GetQueuedActionType(index)
+            if actionType ~= BotActionType.None then
+                ____exports.SetCachedVars(cacheKey, true)
+                return true
+            end
+        end
+    end
+    ____exports.SetCachedVars(cacheKey, false)
+    return false
 end
 return ____exports

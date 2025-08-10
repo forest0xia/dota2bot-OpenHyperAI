@@ -73,6 +73,14 @@ else
 end
 
 function GetDesire()
+	local cacheKey = 'GetTeamRoamDesire'..tostring(bot:GetPlayerID())
+	local cachedVar = J.Utils.GetCachedVars(cacheKey, 0.6)
+	if cachedVar ~= nil then return cachedVar end
+	local res = GetDesireHelper()
+	J.Utils.SetCachedVars(cacheKey, res)
+	return res
+end
+function GetDesireHelper()
 	if bot:IsInvulnerable() or not bot:IsHero() or not bot:IsAlive() or not string.find(botName, "hero") or bot:IsIllusion() then return BOT_MODE_DESIRE_NONE end
 	Utils.SetFrameProcessTime(bot)
 	EnemyRoles.UpdateEnemyHeroPositions()
@@ -476,6 +484,7 @@ end
 function Think()
 
 	if J.CanNotUseAction(bot) then return end
+	if J.Utils.IsBotThinkingMeaningfulAction(bot) then return end
 
 	ItemOpsThink()
 

@@ -13,6 +13,14 @@ local DIRE_SECRET_SHOP = GetShopLocation(GetTeam(), SHOP_SECRET2 )
 local hasItemToSell = false;
 
 function GetDesire()
+	local cacheKey = 'GetSecretShopDesire'..tostring(bot:GetPlayerID())
+	local cachedVar = J.Utils.GetCachedVars(cacheKey, 0.6)
+	if cachedVar ~= nil then return cachedVar end
+	local res = GetDesireHelper()
+	J.Utils.SetCachedVars(cacheKey, res)
+	return res
+end
+function GetDesireHelper()
 
 	-- 如果在打高地 就别撤退去干别的
 	if J.Utils.IsTeamPushingSecondTierOrHighGround(bot) then
@@ -80,6 +88,7 @@ function Think()
 	then 
 		return
 	end
+	if J.Utils.IsBotThinkingMeaningfulAction(bot) then return end
 	
 	if bot:DistanceFromSecretShop() == 0
 	then

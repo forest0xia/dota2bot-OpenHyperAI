@@ -33,6 +33,14 @@ local Bottle = nil
 local lastMin = 0
 
 function GetDesire()
+	local cacheKey = 'GetRuneDesire'..tostring(bot:GetPlayerID())
+	local cachedVar = J.Utils.GetCachedVars(cacheKey, 0.6)
+	if cachedVar ~= nil then return cachedVar end
+	local res = GetDesireHelper()
+	J.Utils.SetCachedVars(cacheKey, res)
+	return res
+end
+function GetDesireHelper()
 	if not bot:IsHero() or not bot:IsAlive() or not string.find(botName, "hero") or bot:IsIllusion() or bot.isBear then return BOT_MODE_DESIRE_NONE end
     if DotaTime() > 2 * 60 and DotaTime() < 6 * 60 and GetUnitToLocationDistance(bot, GetRuneSpawnLocation(RUNE_POWERUP_2)) < 150
 	then
@@ -228,6 +236,7 @@ function Think()
         bot:Action_MoveToLocation(bot:GetLocation() + RandomVector(500))
         return
     end
+	if J.Utils.IsBotThinkingMeaningfulAction(bot) then return end
 
     if J.CanNotUseAction(bot)
 	or bot:GetCurrentActionType() == BOT_ACTION_TYPE_PICK_UP_RUNE

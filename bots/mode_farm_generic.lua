@@ -61,6 +61,14 @@ local buggedFarmAttackHeroes = {
 if bot.farmLocation == nil then bot.farmLocation = bot:GetLocation() end
 
 function GetDesire()
+	local cacheKey = 'GetFarmDesire'..tostring(bot:GetPlayerID())
+	local cachedVar = J.Utils.GetCachedVars(cacheKey, 0.5)
+	if cachedVar ~= nil then return cachedVar end
+	local res = GetDesireHelper()
+	J.Utils.SetCachedVars(cacheKey, res)
+	return res
+end
+function GetDesireHelper()
 	-- Utils.PrintPings(0.15)
 
 	if DotaTime() - CleanupCachedVarsTime > Utils.CachedVarsCleanTime then
@@ -446,10 +454,8 @@ function OnEnd()
 	bot:SetTarget(nil);
 end
 
-
 function Think()
-	if J.CanNotUseAction(bot)
-	then return end
+	if J.CanNotUseAction(bot) then return end
 
 	local botAttackRange = bot:GetAttackRange();
 	if runMode then

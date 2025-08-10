@@ -98,6 +98,8 @@ export interface Unit {
 
     GetQueuedActionType(index: number): BotActionType;
 
+    GetAnimActivity(): number;
+
     Action_UseAbilityOnEntity(ability: Ability, target: Unit): void;
 
     Action_UseAbilityOnLocation(ability: Ability | Item, location: Location): void;

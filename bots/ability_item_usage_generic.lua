@@ -7673,7 +7673,7 @@ end
 
 function BuybackUsageThink()
 	if bot.lastBuybackFrameProcessTime == nil then bot.lastBuybackFrameProcessTime = DotaTime() end
-	if DotaTime() - bot.lastBuybackFrameProcessTime < bot.frameProcessTime then return end
+	if DotaTime() - bot.lastBuybackFrameProcessTime < 2 then return end
 	bot.lastBuybackFrameProcessTime = DotaTime()
 	if not bot:IsIllusion() then BuybackUsageComplement() end
 	if not bot:IsIllusion() then UseGlyph() end
@@ -7681,14 +7681,14 @@ end
 
 function CourierUsageThink()
 	if bot.lastCourierFrameProcessTime == nil then bot.lastCourierFrameProcessTime = DotaTime() end
-	if DotaTime() - bot.lastCourierFrameProcessTime < bot.frameProcessTime then return end
+	if DotaTime() - bot.lastCourierFrameProcessTime < 0.5 then return end
 	bot.lastCourierFrameProcessTime = DotaTime()
 	if not bot:IsIllusion() then CourierUsageComplement() end
 end
 
 function AbilityLevelUpThink()
 	if bot.lastLevelUpFrameProcessTime == nil then bot.lastLevelUpFrameProcessTime = DotaTime() end
-	if DotaTime() - bot.lastLevelUpFrameProcessTime < bot.frameProcessTime then return end
+	if DotaTime() - bot.lastLevelUpFrameProcessTime < 1 then return end
 	bot.lastLevelUpFrameProcessTime = DotaTime()
 	if not bot:IsIllusion() then AbilityLevelUpComplement() end
 end

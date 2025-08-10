@@ -54,7 +54,7 @@ const HeroPositions: HeroPositionMap = {
     [HeroName.LegionCommander]: [5, 35, 65, 5, 0],
     [HeroName.Leshrac]: [15, 30, 25, 25, 20],
     [HeroName.Lich]: [10, 35, 20, 80, 80],
-    [HeroName.Lifestealer]: [30, 5, 30, 0, 0],
+    [HeroName.Lifestealer]: [20, 0, 20, 0, 0],
     [HeroName.Lina]: [75, 70, 5, 66, 30],
     [HeroName.Lion]: [30, 45, 10, 30, 45],
     [HeroName.LoneDruid]: [20, 25, 15, 0, 0],

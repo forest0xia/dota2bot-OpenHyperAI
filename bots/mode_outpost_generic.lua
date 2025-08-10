@@ -92,6 +92,7 @@ end
 
 function Think()
 	if J.CanNotUseAction(bot) then return end
+	if J.Utils.IsBotThinkingMeaningfulAction(bot) then return end
 
 	if ClosestOutpost ~= nil
 	then

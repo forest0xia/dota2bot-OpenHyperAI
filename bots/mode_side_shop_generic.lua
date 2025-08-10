@@ -30,6 +30,14 @@ local fStillAlive = 0
 local bTormentorAlive = false
 
 function GetDesire()
+	local cacheKey = 'GetSideShopDesire'..tostring(bot:GetPlayerID())
+	local cachedVar = J.Utils.GetCachedVars(cacheKey, 0.6)
+	if cachedVar ~= nil then return cachedVar end
+	local res = GetDesireHelper()
+	J.Utils.SetCachedVars(cacheKey, res)
+	return res
+end
+function GetDesireHelper()
 	if J.GetEnemiesAroundAncient(bot, 3200) > 0 then
 		return BOT_MODE_DESIRE_NONE
 	end
@@ -291,6 +299,7 @@ end
 
 function Think()
     if J.CanNotUseAction(bot) then return end
+	if J.Utils.IsBotThinkingMeaningfulAction(bot) then return end
 
 	if TormentorThink() >= 1 then return end
 end

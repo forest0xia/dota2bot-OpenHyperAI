@@ -317,7 +317,7 @@ function ItemPurchaseThink()
 	currentTime = DotaTime()
 
 	if bot.lastItemPurchaseFrameProcessTime == nil then bot.lastItemPurchaseFrameProcessTime = currentTime end
-	if currentTime - bot.lastItemPurchaseFrameProcessTime < 0.05 then return end
+	if currentTime - bot.lastItemPurchaseFrameProcessTime < 1 then return end
 	bot.lastItemPurchaseFrameProcessTime = currentTime
 
 	if ( GetGameState() ~= GAME_STATE_PRE_GAME and GetGameState() ~= GAME_STATE_GAME_IN_PROGRESS )

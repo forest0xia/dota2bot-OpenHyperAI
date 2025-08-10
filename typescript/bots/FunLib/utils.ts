@@ -12,7 +12,7 @@
  * keep putting shared low level funtionalities in this file until it gets too big for to maintain.
  */
 require("bots/ts_libs/utils/json");
-import { Ability, Barracks, BotActionType, BotMode, Item, Lane, Ping, Team, Tower, Unit, UnitType, Vector } from "bots/ts_libs/dota";
+import { Ability, Barracks, BotActionType, BotMode, Item, Lane, Ping, Team, Tower, Unit, UnitType, Vector, BotScriptEnums } from "bots/ts_libs/dota";
 import { GameState, AvoidanceZone } from "bots/ts_libs/bots";
 import { Request } from "bots/ts_libs/utils/http_utils/http_req";
 import { add, dot, length2D, length3D, multiply, sub } from "bots/ts_libs/utils/native-operators";
@@ -147,7 +147,7 @@ export const ImportantSpells: Record<string, string[]> = {
     [HeroName.TreantProtector]: ["treant_overgrowth"],
     // tusk missing
     [HeroName.Undying]: ["undying_tombstone", "undying_flesh_golem"],
-    // Wraith King’s internal name was once skeleton_king. Keep as needed:
+    // Wraith King's internal name was once skeleton_king. Keep as needed:
     [HeroName.WraithKing]: ["skeleton_king_reincarnation"],
 
     // Agility
@@ -195,7 +195,7 @@ export const ImportantSpells: Record<string, string[]> = {
     [HeroName.Lina]: ["lina_laguna_blade"],
     [HeroName.Lion]: ["lion_finger_of_death"],
     [HeroName.Muerta]: ["muerta_pierce_the_veil"],
-    // furion (nature’s prophet) missing
+    // furion (nature's prophet) missing
     [HeroName.Necrophos]: ["necrolyte_ghost_shroud", "necrolyte_reapers_scythe"],
     [HeroName.Oracle]: ["oracle_false_promise"],
     [HeroName.OutworldDestroyer]: ["obsidian_destroyer_sanity_eclipse"],
@@ -256,7 +256,7 @@ export const GameStates: GameState = {
     twinGates: [],
 };
 export const LoneDruid = {} as { [key: number]: any };
-export const FrameProcessTime = 0.05;
+export const FrameProcessTime = 0.06;
 
 export const EstimatedEnemyRoles = {
     // sample role entry
@@ -387,7 +387,7 @@ export function Shuffle<T>(tbl: T[]): T[] {
 
 export function SetFrameProcessTime(bot: Unit): void {
     if (bot.frameProcessTime === null) {
-        bot.frameProcessTime = FrameProcessTime + +(math.fmod(bot.GetPlayerID() / 1000, FrameProcessTime / 10) * 2).toFixed(2);
+        bot.frameProcessTime = FrameProcessTime + +(math.fmod(bot.GetPlayerID() / 1000, FrameProcessTime / 10) * 3).toFixed(2);
     }
 }
 
@@ -1972,4 +1972,88 @@ export function MoveBotSafely(bot: Unit, targetPos?: Vector): void {
 
     // Command the bot to move to the safe destination
     bot.Action_MoveToLocation(safeDestination);
+}
+
+// Check for meaningful animation activities
+const meaningfulActivities = [
+    BotScriptEnums.ACTIVITY_RUN, // Bot is running/moving
+    BotScriptEnums.ACTIVITY_ATTACK, // Bot is attacking
+    BotScriptEnums.ACTIVITY_ATTACK2, // Bot is performing secondary attack
+    BotScriptEnums.ACTIVITY_ATTACK_EVENT, // Bot is in attack event
+    BotScriptEnums.ACTIVITY_CAST_ABILITY_1, // Bot is casting ability 1
+    BotScriptEnums.ACTIVITY_CAST_ABILITY_2, // Bot is casting ability 2
+    BotScriptEnums.ACTIVITY_CAST_ABILITY_3, // Bot is casting ability 3
+    BotScriptEnums.ACTIVITY_CAST_ABILITY_4, // Bot is casting ability 4
+    BotScriptEnums.ACTIVITY_CAST_ABILITY_5, // Bot is casting ability 5
+    BotScriptEnums.ACTIVITY_CAST_ABILITY_6, // Bot is casting ability 6
+    BotScriptEnums.ACTIVITY_CHANNEL_ABILITY_1, // Bot is channeling ability 1
+    BotScriptEnums.ACTIVITY_CHANNEL_ABILITY_2, // Bot is channeling ability 2
+    BotScriptEnums.ACTIVITY_CHANNEL_ABILITY_3, // Bot is channeling ability 3
+    BotScriptEnums.ACTIVITY_CHANNEL_ABILITY_4, // Bot is channeling ability 4
+    BotScriptEnums.ACTIVITY_CHANNEL_ABILITY_5, // Bot is channeling ability 5
+    BotScriptEnums.ACTIVITY_CHANNEL_ABILITY_6, // Bot is channeling ability 6
+];
+
+/**
+ * Checks if the bot is currently thinking meaningful actions that would make
+ * re-computing the Think() method unnecessary.
+ * @param {Unit} bot - The bot unit to check
+ * @returns {boolean} True if the bot is doing something meaningful, false otherwise
+ */
+export function IsBotThinkingMeaningfulAction(bot: Unit): boolean {
+    return false; // TODO: remove this when we have a better way to check if the bot is thinking meaningful actions
+    const cacheKey = "IsBotThinkingMeaningfulAction" + bot.GetPlayerID();
+    const cachedRes = GetCachedVars(cacheKey, 0.2);
+    if (!cachedRes) {
+        // if no cached result, return false to re-compute for actions
+        return false;
+    }
+
+    // Check bot's current animation activity for meaningful actions
+    try {
+        if (meaningfulActivities.includes(bot.GetAnimActivity())) {
+            SetCachedVars(cacheKey, true);
+            return true;
+        }
+    } catch (error) {
+        // If GetAnimActivity() fails, continue with other checks
+        // This provides graceful fallback for cases where the method might not be available
+    }
+
+    // Check if bot has any active orders in the action queue
+    const numQueuedActions = bot.NumQueuedActions();
+    if (numQueuedActions > 0) {
+        // Check for meaningful action types
+        for (const index of $range(1, numQueuedActions)) {
+            const actionType = bot.GetQueuedActionType(index);
+            // Check if the action type indicates meaningful activity
+            if (actionType !== BotActionType.None) {
+                SetCachedVars(cacheKey, true);
+                return true;
+            }
+        }
+    }
+
+    // Check if bot was recently attacking
+    // const lastAttackTime = bot.GetLastAttackTime();
+    // if (lastAttackTime > 0 && GameTime() - lastAttackTime < 0.3) {
+    //     SetCachedVars(cacheKey, true);
+    //     return true;
+    // }
+
+    // Check if bot has a current target
+    // const currentTarget = bot.GetTarget();
+    // if (currentTarget && IsValidUnit(currentTarget)) {
+    //     SetCachedVars(cacheKey, true);
+    //     return true;
+    // }
+
+    // if (bot.WasRecentlyDamagedByAnyHero(0.3)) {
+    //     SetCachedVars(cacheKey, true);
+    //     return true;
+    // }
+
+    // If none of the above conditions are met, the bot is not doing anything meaningful
+    SetCachedVars(cacheKey, false);
+    return false;
 }

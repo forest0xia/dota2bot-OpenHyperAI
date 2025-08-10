@@ -18,6 +18,14 @@ local currentTime = DotaTime()
 local maxDesire = 0.98
 
 function Defend.GetDefendDesire(bot, lane)
+    local cacheKey = 'GetDefendDesire'..tostring(bot:GetPlayerID())
+    local cachedVar = J.Utils.GetCachedVars(cacheKey, 0.6)
+    if cachedVar ~= nil then return cachedVar end
+    local res = Defend.GetDefendDesireHelp(bot, lane)
+    J.Utils.SetCachedVars(cacheKey, res)
+    return res
+end
+function Defend.GetDefendDesireHelp(bot, lane)
 	if bot:IsIllusion() then return end
 	if bot.laneToDefend == nil then bot.laneToDefend = lane end
 	if bot.DefendLaneDesire == nil then bot.DefendLaneDesire = {0, 0, 0} end
@@ -265,6 +273,7 @@ end
 
 function Defend.DefendThink(bot, lane)
     if J.CanNotUseAction(bot) then return end
+	if J.Utils.IsBotThinkingMeaningfulAction(bot) then return end
 	local nSearchRange = 1800
 
 	local attackRange = bot:GetAttackRange()
