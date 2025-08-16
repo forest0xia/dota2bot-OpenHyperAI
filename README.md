@@ -79,8 +79,49 @@ Thanks and kudos to everyone who contributed to making bot games fun and excitin
 * Contributions welcome on [GitHub](https://github.com/forest0xia/dota2bot-OpenHyperAI).
 * Custom item/skill builds don’t need PRs – just tweak locally.
 * Future development is in **TypeScript** for better maintainability.
-* [Project structure overview](#) (bots, Funlib, Customize, BotLib, typescript, game).
-
+* Project structure (bots, Funlib, Customize, BotLib, typescript, game)：
+```
+root: <Steam\steamapps\common\dota 2 beta\game\dota\scripts\vscripts>
+│
+└───bots: contains all lua files for the bot logic. This is the folder `3246316298` in Workshop.
+│   │   hero_selection.lua
+│   │   bot_generic.lua
+│   │   ...
+│   │
+│   └───Funlib: contains the libraries/utils of this project
+│   │   │   utils.lua
+│   │   │   ...
+│   │
+│   └───Customize: contains the files for you to easily customzie the settings for bots in this project
+│   │   │   general.lua: to customzie the settings for each bot teams
+│   │   │   ...
+│   │   │
+│   │   └───hero: to easily customzie each of the bots in this project
+│   │       │   viper.lua
+│   │       │   ...
+│   │
+│   └───BotLib: contains the bot item purcahse, ability usage, etc logic for every bots.
+│       │   hero_abaddon.lua
+│       │   ...
+│   
+└───typescript: contains the scripts written in typescript (TS) to maintain this project in a more 
+│   │           extendable way since TS supports types and can catch errors in compile time.
+│   │
+│   └───bots: the TS version of the script that's converted to LUA files into the `root/bots` folder.
+│   │   │   ...
+│   │
+│   └───post-process: contains the scripts to do post-processing for the TS to LUA translation.
+│   │   ...
+│   
+└───game: default setup from Value, including them here for custom mode setup.
+│   │   botsinit.lua
+│   │   ...
+│   │
+│   └───Customize: You can copy & paste the Customize folder from <root/bots> to <root/game> to avoid
+│                  the custom settings getting replaced/overridden by workshop upgrades.
+│   ...
+---
+```
 ---
 
 ## What’s Next
