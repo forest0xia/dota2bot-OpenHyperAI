@@ -13,6 +13,14 @@ local IsEnemyTier2Down = false
 local hAbilityCapture = bot:GetAbilityByName('ability_capture')
 
 function GetDesire()
+	local cacheKey = 'GetOutpostDesire'..tostring(bot:GetPlayerID())
+	local cachedVar = J.Utils.GetCachedVars(cacheKey, 1)
+	if cachedVar ~= nil then return cachedVar end
+	local res = GetDesireHelper()
+	J.Utils.SetCachedVars(cacheKey, res)
+	return res
+end
+function GetDesireHelper()
 
 	if not IsEnemyTier2Down
 	then

@@ -123,109 +123,11 @@ function GetDesireHelper()
 		return BOT_ACTION_DESIRE_ABSOLUTE * 0.98
 	end
 
-	-- nDesire = ConsiderHarassInLaningPhase()
-	-- if nDesire > 0
-	-- then
-	-- 	print("doing harass in lane: " .. botName .. ", lane: " .. bot:GetAssignedLane())
-	-- 	return nDesire
-	-- end
-
 	local nAliveAllies = J.GetNumOfAliveHeroes(false)
 	local nAliveEnemies = J.GetNumOfAliveHeroes(true)
 	local teamAveLvl = J.GetAverageLevel( false )
 	nearbyAllies = J.GetAlliesNearLoc(bot:GetLocation(), 2200)
 	nearbyEnemies = J.GetEnemiesNearLoc(bot:GetLocation(), 2000)
-
-	-- if J.Utils.IsBotPushingTowerInDanger(bot)
-	-- and #nearbyAllies <= 2 and #nearbyAllies < #nearbyEnemies -- 我们人挺多，对面人也挺多，大战似乎在所难免，别跑了
-	-- and (botMode == BOT_MODE_PUSH_TOWER_BOT
-	-- 	or botMode == BOT_MODE_PUSH_TOWER_MID
-	-- 	or botMode == BOT_MODE_PUSH_TOWER_TOP
-	-- 	or bot:WasRecentlyDamagedByTower(3)
-	-- 	or J.Utils.IsValidBuilding(botTarget))
-	-- then
-	-- 	goToTargetAlly = J.Utils.FindAllyWithAtLeastDistanceAway(bot, 1600)
-	-- 	if goToTargetAlly then
-	-- 		IsShouldFindTeammates = true
-	-- 		ShouldFindTeammatesTime = DotaTime()
-	-- 		print("avoid pushing tower for bot: " .. botName)
-	-- 		return BOT_ACTION_DESIRE_ABSOLUTE * 0.85
-	-- 	end
-	-- end
-	-- 避免过早推2塔或者高地
-	-- if teamAveLvl < 10
-	-- and nAliveEnemies >= 3
-	-- and (#nearbyAllies <= 2
-	-- and #nearbyEnemies >= 2
-	-- and #nearbyAllies <= 2 and #nearbyAllies < #nearbyEnemies -- 我们人挺多，对面人也挺多，大战似乎在所难免，别跑了
-	-- or (nAliveEnemies >= #nearbyAllies and nAliveAllies > 3)) then
-	-- 	if J.Utils.IsNearEnemySecondTierTower(bot, 1500) then
-	-- 		goToTargetAlly = J.Utils.FindAllyWithAtLeastDistanceAway(bot, 1600)
-	-- 		if goToTargetAlly then
-	-- 			IsShouldFindTeammates = true
-	-- 			ShouldFindTeammatesTime = DotaTime()
-	-- 			print("avoid pushing t2 tower for bot: " .. botName)
-	-- 			return BOT_ACTION_DESIRE_ABSOLUTE * 0.98
-	-- 		end
-	-- 	end
-	-- end
-
-	-- 如果在上高，对面人活着，其他队友活着却不在附近，赶紧溜去其他地方游走
-	-- if IsShouldFindTeammates and goToTargetAlly and not bot:WasRecentlyDamagedByAnyHero(5) then
-	-- 	return BOT_ACTION_DESIRE_ABSOLUTE * 0.98
-	-- elseif (#nearbyAllies < 2 or nAliveEnemies > #nearbyAllies)
-	-- and J.GetDistanceFromAncient( bot, true ) < 5500
-	-- and not bot:WasRecentlyDamagedByAnyHero(5)
-	-- and #J.Utils.GetLastSeenEnemyIdsNearLocation(bot:GetLocation(), 2000) == 0
-	-- -- and #nearbyEnemies >= #nearbyAllies
-	-- and not J.IsCore(bot)
-	-- and not J.IsAttacking(bot)
-	-- and not J.IsDefending(bot)
-	-- and (J.IsPushing(bot) or J.IsFarming( bot ) or J.IsShopping( bot )) then
-	-- 	goToTargetAlly = J.Utils.FindAllyWithAtLeastDistanceAway(bot, 1600)
-	-- 	if goToTargetAlly then
-	-- 		IsShouldFindTeammates = true
-	-- 		ShouldFindTeammatesTime = DotaTime()
-	-- 		print("avoid pushing HG for bot: " .. botName)
-	-- 		return BOT_MODE_DESIRE_VERYHIGH + 0.1
-	-- 	end
-	-- end
-
-	-- if bot:GetActiveModeDesire() < 0.11 and DotaTime() > 600
-	-- and #nearbyEnemies == 0
-	-- and not bot:WasRecentlyDamagedByAnyHero(5)
-	-- and not J.IsDefending(bot)
-	-- and not J.IsAttacking(bot)
-	-- and not J.IsCore(bot) then
-	-- 	goToTargetAlly = J.Utils.FindAllyWithAtLeastDistanceAway(bot, 1600)
-	-- 	if goToTargetAlly then
-	-- 		IsShouldFindTeammates = true
-	-- 		ShouldFindTeammatesTime = DotaTime()
-	-- 		print("avoid low desire actions for bot: " .. botName)
-	-- 		return BOT_MODE_DESIRE_VERYHIGH + 0.1
-	-- 	end
-	-- end
-
-	-- if pingedDefendDesire <= 0 then
-	-- 	pingedDefendDesire = ConsiderPingedDefendDesire()
-	-- end
-	-- if pingedDefendDesire > 0 and pingedDefendLocation then
-	-- 	if J.GetHP(GetAncient(team)) <= 0.9 then
-	-- 		return RemapValClamped(J.GetHP(bot), 0, 0.7, BOT_MODE_DESIRE_NONE, pingedDefendDesire)
-	-- 	end
-	-- 	local nDefendAllies = J.GetAlliesNearLoc(pingedDefendLocation, 2000);
-	-- 	nEffctiveAlliesNearPingedDefendLoc = #nDefendAllies + #J.Utils.GetAllyIdsInTpToLocation(pingedDefendLocation, 1000)
-	-- 	local nEnemyUnitsAroundLoc = J.GetAroundTargetLocEnemyUnitCount(pingedDefendLocation, 2000)
-	-- 	local lEnemyHeroesAroundLoc = J.GetLastSeenEnemiesNearLoc(pingedDefendLocation, 2000)
-	-- 	local aliveAllies = J.GetNumOfAliveHeroes(false)
-	-- 	if nEnemyUnitsAroundLoc >= 1 -- 再确认一次附近还有敌人
-	-- 	and ((nEffctiveAlliesNearPingedDefendLoc < aliveAllies and nEffctiveAlliesNearPingedDefendLoc <= #lEnemyHeroesAroundLoc + 1 )
-	-- 		or (#lEnemyHeroesAroundLoc >= 3 and nEffctiveAlliesNearPingedDefendLoc < aliveAllies))
-	-- 	then
-	-- 		print("got pinged to defend for bot: " .. botName)
-	-- 		return pingedDefendDesire
-	-- 	end
-	-- end
 
 	targetUnit, ShouldHelpAlly = ConsiderHelpAlly()
 	if ShouldHelpAlly
@@ -474,7 +376,6 @@ function OnStart() end
 function OnEnd()
 	towerTime = 0
 	towerCreepMode = false
-	bot:SetTarget(nil)
 	harassTarget = nil
 	PickedItem = nil
 	pingedDefendDesire = 0

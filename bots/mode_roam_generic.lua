@@ -105,10 +105,6 @@ function GetDesireHelper()
 		end
 	end
 
-	if J.IsRetreating(bot) and not ShouldNotRetreat() then
-		return BOT_ACTION_DESIRE_NONE
-	end
-
 	-- general items or conditions.
 	local generalRoaming = ConsiderGeneralRoamingInConditions()
 	if generalRoaming then
@@ -130,66 +126,6 @@ function GetDesireHelper()
 	end
 
 	return BOT_MODE_DESIRE_NONE
-end
-
-function ShouldNotRetreat()
-	if bot:HasModifier("modifier_item_satanic_unholy")
-	   or bot:HasModifier("modifier_skeleton_king_reincarnation_scepter_active")
-	   or J.GetModifierTime(bot, "modifier_abaddon_borrowed_time") > 1
-	   or ( bot:GetCurrentMovementSpeed() < 240 and not bot:HasModifier("modifier_arc_warden_spark_wraith_purge") )
-	then
-		return true;
-	end
-	local nAttackAlly = J.GetNearbyHeroes(bot,1000,false,BOT_MODE_ATTACK);
-	if ( bot:HasModifier("modifier_item_mask_of_madness_berserk")
-			or J.CanIgnoreLowHp(bot) )
-		and ( #nAttackAlly >= 1 or J.GetHP(bot) > 0.6 )
-		and (bot:WasRecentlyDamagedByAnyHero(1) or bot:WasRecentlyDamagedByTower(1))
-	then
-		return true;
-	end
-
-	local nAllies = J.GetAllyList(bot,800);
-    if #nAllies <= 1
-	then
-	    return false;
-	end
-
-	if ( botName == "npc_dota_hero_medusa"
-	     or bot:FindItemSlot("item_abyssal_blade") >= 0 )
-		 or bot:HasModifier('modifier_muerta_pierce_the_veil_buff')
-		 and (bot:WasRecentlyDamagedByAnyHero(1) or J.GetHP(bot) > 0.2 or bot:WasRecentlyDamagedByTower(1))
-		and #nAllies >= 3 and #nAttackAlly >= 1
-	then
-		return true;
-	end
-
-	if botName == "npc_dota_hero_skeleton_king"
-		and bot:GetLevel() >= 6 and #nAttackAlly >= 1
-	then
-		local abilityR = bot:GetAbilityByName( "skeleton_king_reincarnation" );
-		if abilityR:GetCooldownTimeRemaining() <= 1.0 and bot:GetMana() >= 160
-		then
-			return true;
-		end
-	end
-
-	for _,ally in pairs(nAllies)
-	do
-		if J.IsValid(ally)
-		then
-			if J.GetHP(bot) >= 0.3 and ( J.GetHP(ally) > 0.88 and ally:GetLevel() >= 12 and ally:GetActiveMode() ~= BOT_MODE_RETREAT)
-			    or ( ally:HasModifier("modifier_black_king_bar_immune") or ally:IsMagicImmune() )
-				or ( ally:HasModifier("modifier_item_mask_of_madness_berserk") and ally:GetAttackTarget() ~= nil )
-				or ally:HasModifier("modifier_abaddon_borrowed_time")
-				or ally:HasModifier("modifier_item_satanic_unholy")
-				or J.CanIgnoreLowHp(ally)
-			then
-				return true;
-			end
-		end
-	end
-	return false;
 end
 
 function Think()
@@ -265,13 +201,13 @@ function ThinkIndividualRoaming()
 	if bot:HasModifier('modifier_spirit_breaker_charge_of_darkness')
 	then
 		bot:Action_ClearActions(false)
-		if bot.chargeRetreat
-		and nInRangeEnemy ~= nil and #nInRangeEnemy == 0
-		then
-			bot:Action_MoveToLocation(bot:GetLocation() + RandomVector(150))
-			bot.chargeRetreat = false
+		if bot.chargeRetreat and #nInRangeEnemy == 0 then
+			if IsLocationPassable(bot:GetLocation()) then
+				bot.chargeRetreat = false
+				bot:Action_MoveToLocation(bot:GetLocation() + RandomVector(150))
+				return
+			end
 		end
-
 		return
 	end
 
@@ -537,11 +473,17 @@ function ThinkIndividualRoaming()
 		for _, ally in pairs(tInRangeAlly)
 		do
 			if J.IsValidHero(ally)
+			and bot ~= ally
 			and J.GetHP(ally) < 0.5
 			and ally:WasRecentlyDamagedByAnyHero(3.5)
 			and not ally:IsIllusion()
+			and bot:IsFacingLocation(ally:GetLocation(), 60)
 			then
 				if not J.IsRunning(ally)
+				or ally:IsStunned()
+				or ally:IsRooted()
+				or ally:IsHexed()
+				or ally:HasModifier('modifier_bane_fiends_grip')
 				or ally:HasModifier('modifier_faceless_void_chronosphere_freeze')
 				or ally:HasModifier('modifier_enigma_black_hole_pull') then
 					bot.sun_ray_target = ally

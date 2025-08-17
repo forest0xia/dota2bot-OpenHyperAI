@@ -14,7 +14,7 @@ local hasItemToSell = false;
 
 function GetDesire()
 	local cacheKey = 'GetSecretShopDesire'..tostring(bot:GetPlayerID())
-	local cachedVar = J.Utils.GetCachedVars(cacheKey, 0.6)
+	local cachedVar = J.Utils.GetCachedVars(cacheKey, 1)
 	if cachedVar ~= nil then return cachedVar end
 	local res = GetDesireHelper()
 	J.Utils.SetCachedVars(cacheKey, res)

@@ -1,304 +1,158 @@
+if GetBot():IsInvulnerable() or not GetBot():IsHero() or not string.find(GetBot():GetUnitName(), "hero") or  GetBot():IsIllusion() then
+	return
+end
+
+local X = {}
+
 local bot = GetBot()
-local botName = bot:GetUnitName()
-if bot == nil or bot:IsInvulnerable() or not bot:IsHero() or not bot:IsAlive() or not string.find(bot:GetUnitName(), "hero") or bot:IsIllusion() then return end
-
 local J = require(GetScriptDirectory()..'/FunLib/jmz_func')
-local Ward = require(GetScriptDirectory() ..'/FunLib/aba_ward_utility')
+local W = require(GetScriptDirectory() ..'/FunLib/aba_ward_utility')
 
-local AvailableSpots = {}
-local nWardCastRange = 500
-local ItemWard = nil
-local WardTargetDist = 0
-local WardTargetLocation
-local WardCastTime = J.IsModeTurbo() and -45 or -90
-local ItemSwapTime = J.IsModeTurbo() and -45 or -90
-local EnemyTeam = nil
+local nObserverWardCastRange = 500
+local nSentryWardCastRange = 500
 
-bot.ward = false
-bot.steal = false
+local ObserverWard = nil
+local SentryWard = nil
 
-local vNonStuck = Vector(-2610, 538, 0)
+local hTargetSpot = nil
+local fLastWardPlantTime = -math.huge
 
 function GetDesire()
 	local cacheKey = 'GetWardDesire'..tostring(bot:GetPlayerID())
-	local cachedVar = J.Utils.GetCachedVars(cacheKey, 0.6)
+	local cachedVar = J.Utils.GetCachedVars(cacheKey, 1)
 	if cachedVar ~= nil then return cachedVar end
 	local res = GetDesireHelper()
 	J.Utils.SetCachedVars(cacheKey, res)
 	return res
 end
 function GetDesireHelper()
-	if bot:IsInvulnerable() or not bot:IsHero() or not bot:IsAlive() or not string.find(botName, "hero") or bot:IsIllusion() then return BOT_MODE_DESIRE_NONE end
+    if not X.IsSuitableToWard() then
+        return BOT_MODE_DESIRE_NONE
+    end
 
-	if bot:IsChanneling()
-	or bot:GetCurrentActionType() == BOT_ACTION_TYPE_IDLE
-	or not IsSuitableToWard()
-	then
-		return BOT_MODE_DESIRE_NONE
-	end
+	local nInRangeAlly = J.GetAlliesNearLoc(bot:GetLocation(), 1200)
+	local nInRangeEnemy = J.GetEnemiesNearLoc(bot:GetLocation(), 1200)
 
-	ItemWard = Ward.GetItemWard(bot)
+    for i = 0, 5 do
+        local hItem = bot:GetItemInSlot(i)
+        if hItem then
+            local sItemName = hItem:GetName()
+            if sItemName == 'item_ward_observer' or sItemName == 'item_ward_dispenser' then
+                ObserverWard = hItem
+				break
+            end
+        end
+    end
 
-	if bot.WardTable == nil then bot.WardTable = {} end
-
-	if DotaTime() - J.Utils.GameStates.recentDefendTime < 2 then
-		return BOT_MODE_DESIRE_NONE
-	end
-
-	-- local botMode = bot:GetActiveMode()
-	-- if DotaTime() > 10 and (J.IsPushing(bot) or J.IsDefending(bot) or J.IsDoingRoshan(bot) or J.IsDoingTormentor(bot)
-	-- or botMode == BOT_MODE_RUNE or botMode == BOT_MODE_SECRET_SHOP or botMode == BOT_MODE_ROAM)
-	-- and bot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH then
-	-- 	return BOT_MODE_DESIRE_NONE
-	-- end
-
-	if ItemWard ~= nil
-	and ItemWard:GetCooldownTimeRemaining() == 0
-	then
-
-		Pinged, WardTargetLocation = Ward.IsPingedByHumanPlayer(bot)
-
-		if Pinged and GetUnitToLocationDistance(bot, WardTargetLocation) > 1200 then
-			if J.Utils.IsTeamPushingSecondTierOrHighGround(bot) then
-				return BOT_MODE_DESIRE_NONE;
+    -- Observer
+    if J.CanCastAbility(ObserverWard) then
+        local hAvailabeObserverWardSpots = W.GetAvailabeObserverWardSpots(bot)
+        hTargetSpot = W.GetClosestObserverWardSpot(bot, hAvailabeObserverWardSpots)
+		if hTargetSpot and (not X.IsEnemyCloserToWardLocation(hTargetSpot.location) or J.IsRealInvisible(bot)) then
+			if DotaTime() < 0 and DotaTime() > (J.IsModeTurbo() and -45 or -60) then
+				return BOT_MODE_DESIRE_ABSOLUTE
 			end
 
-			if J.GetEnemiesAroundAncient(bot, 3200) > 0 then
-				return BOT_MODE_DESIRE_NONE
+			if DotaTime() > fLastWardPlantTime + 1.0 then
+				if GetUnitToLocationDistance(bot, hTargetSpot.location) <= 3200 then
+					return BOT_MODE_DESIRE_VERYHIGH
+				end
 			end
 		end
+    end
 
-		if Pinged
-		and WardTargetLocation ~= nil
-		and not Ward.IsOtherWardClose(WardTargetLocation)
-		then
-			bot.ward = true
-			return RemapValClamped(GetUnitToLocationDistance(bot, WardTargetLocation), 1200, 0, BOT_MODE_DESIRE_MODERATE, BOT_MODE_DESIRE_HIGH)
-		end
+	for i = 0, 5 do
+        local hItem = bot:GetItemInSlot(i)
+        if hItem then
+            local sItemName = hItem:GetName()
+            if sItemName == 'item_ward_sentry' or sItemName == 'item_ward_dispenser' then
+                SentryWard = hItem
+				break
+            end
+        end
+    end
 
-		AvailableSpots = Ward.GetAvailableSpot(bot)
-		WardTargetLocation, WardTargetDist = Ward.GetClosestSpot(bot, AvailableSpots)
-
-		if WardTargetLocation and GetUnitToLocationDistance(bot, WardTargetLocation) > 1200 then
-			if J.Utils.IsTeamPushingSecondTierOrHighGround(bot) then
-				return BOT_MODE_DESIRE_NONE;
+    -- Sentry
+    if J.CanCastAbility(SentryWard) then
+        local hPossibleSentryWardSpots = W.GetPossibleSentryWardSpots(bot)
+        hTargetSpot = W.GetClosestSentryWardSpot(bot, hPossibleSentryWardSpots)
+		if hTargetSpot and (not X.IsEnemyCloserToWardLocation(hTargetSpot.location) or J.IsRealInvisible(bot)) then
+			if DotaTime() > fLastWardPlantTime + 1.0 then
+				if GetUnitToLocationDistance(bot, hTargetSpot.location) <= 3200 then
+					return BOT_MODE_DESIRE_VERYHIGH
+				end
 			end
-
-			if J.GetEnemiesAroundAncient(bot, 3200) > 0 then
-				return BOT_MODE_DESIRE_NONE
-			end
 		end
-
-		if WardTargetLocation ~= nil
-		and DotaTime() > (J.IsModeTurbo() and -45 or -60)
-		and DotaTime() < 0
-		and not IsEnemyCloserToWardLocation(WardTargetLocation, WardTargetDist)
-		then
-			bot.ward = true
-			return BOT_MODE_DESIRE_HIGH
-		end
-
-		if WardTargetLocation ~= nil
-		and DotaTime() > WardCastTime + 1.0
-		and not IsEnemyCloserToWardLocation(WardTargetLocation, WardTargetDist)
-		then
-			bot.ward = true
-			return RemapValClamped(WardTargetDist, 3500, 200, BOT_MODE_DESIRE_NONE, BOT_MODE_DESIRE_HIGH)
-		end
-	else
-		bot.lastPlayerChat = nil
-	end
+    end
 
 	return BOT_MODE_DESIRE_NONE
 end
 
-function OnStart()
-	if ItemWard ~= nil
-	then
-		local wardSlot = bot:FindItemSlot(ItemWard:GetName())
-
-		if bot:GetItemSlotType(wardSlot) == ITEM_SLOT_TYPE_BACKPACK
-		then
-			local leastCostItem = FindLeastItemSlot()
-
-			if leastCostItem ~= -1
-			then
-				ItemSwapTime = DotaTime()
-				bot:ActionImmediate_SwapItems(wardSlot, leastCostItem)
-				return
-			end
-		end
-	end
-end
-
-function OnEnd()
-	AvailableSpots = {}
-	bot.ward = false
-	bot.steal = false
-	ItemWard = nil
-
-	if ItemWard ~= nil
-	then
-		local wardSlot = bot:FindItemSlot(ItemWard:GetName())
-
-		if wardSlot >= 0
-		and wardSlot <= 5
-		then
-			local mostCostItem = FindMostItemSlot()
-
-			if mostCostItem ~= -1
-			then
-				bot:ActionImmediate_SwapItems(wardSlot, mostCostItem)
-				return
-			end
-		end
-	end
-end
-
 function Think()
-	-- if GetGameState() ~= GAME_STATE_PRE_GAME
-	-- and GetGameState()~= GAME_STATE_GAME_IN_PROGRESS
-	-- then
-	-- 	return
-	-- end
-	if J.Utils.IsBotThinkingMeaningfulAction(bot) then return end
+	if J.CanNotUseAction(bot) then return end
 
-	if bot.ward
-	then
-		if (WardTargetDist <= nWardCastRange)
-		or Pinged
-		then
-			if DotaTime() > ItemSwapTime + 7.0
-			and ItemWard ~= nil and not ItemWard:IsNull()
-			then
-				-- ^gives object [none]?
-				local wardName = ItemWard:GetName()
-				table.insert(bot.WardTable, {
-					type= string.find(wardName, 'observer') and 'observer' or 'sentry',
-					timePlanted= DotaTime(),
-					loc= WardTargetLocation,
-					duration= string.find(wardName, 'observer') and 360 or 420,
-				})
-
-				bot:Action_UseAbilityOnLocation(ItemWard, WardTargetLocation)
-				WardCastTime = DotaTime()
-				return
-			else
-				if WardTargetLocation.x == Vector(-2948, 769, 0)
-				then
-					bot:Action_MoveToLocation(vNonStuck + RandomVector(300))
-					return
+	if hTargetSpot then
+		if ObserverWard and J.CanCastAbility(ObserverWard) then
+			if GetUnitToLocationDistance(bot, hTargetSpot.location) <= nObserverWardCastRange then
+				if ObserverWard:GetName() == 'item_ward_observer' then
+					bot:Action_UseAbilityOnLocation(ObserverWard, hTargetSpot.location)
 				else
-					bot:Action_MoveToLocation(WardTargetLocation + RandomVector(300))
-					return
+					if ObserverWard:GetToggleState() == false then
+						bot:Action_UseAbilityOnEntity(ObserverWard, bot)
+						return
+					else
+						bot:Action_UseAbilityOnLocation(ObserverWard, hTargetSpot.location)
+					end
 				end
-			end
-		else
-			if WardTargetLocation == Vector(-2948, 769, 0)
-			then
-				bot:Action_MoveToLocation(vNonStuck)
+
+				hTargetSpot.plant_time_obs = DotaTime()
 				return
 			else
-				bot:Action_MoveToLocation(WardTargetLocation)
+				bot:Action_MoveToLocation(hTargetSpot.location)
+				return
+			end
+		end
+
+		if SentryWard and J.CanCastAbility(SentryWard) then
+			if GetUnitToLocationDistance(bot, hTargetSpot.location) <= nSentryWardCastRange then
+				local fLength = 0
+				if W.IsOtherWardClose(hTargetSpot.location, 'npc_dota_observer_wards', 300, true, false) then
+					fLength = 30
+				end
+
+				if SentryWard:GetName() == 'item_ward_sentry' then
+					bot:Action_UseAbilityOnLocation(SentryWard, hTargetSpot.location + RandomVector(fLength))
+				else
+					if SentryWard:GetToggleState() == true then
+						bot:Action_UseAbilityOnEntity(SentryWard, bot)
+						return
+					else
+						bot:Action_UseAbilityOnLocation(SentryWard, hTargetSpot.location + RandomVector(fLength))
+					end
+				end
+
+				hTargetSpot.plant_time_sentry = DotaTime()
+				return
+			else
+				bot:Action_MoveToLocation(hTargetSpot.location)
 				return
 			end
 		end
 	end
 end
 
-function CountStealingUnit()
-	local count = 0
-
-	for i, id in pairs(GetTeamPlayers(GetTeam()))
-	do
-		local member = GetTeamMember(i)
-
-		if IsPlayerBot(id)
-		and member ~= nil
-		and member.steal
-		then
-			count = count + 1
-		end
-	end
-
-	return count
-end
-
-function CountStealUnitNearLoc(loc, nRadius)
-	local count = 0
-
-	for i, id in pairs(GetTeamPlayers(GetTeam()))
-	do
-		local member = GetTeamMember(i)
-
-		if member ~= nil
-		and member.steal
-		and GetUnitToLocationDistance(member, loc) <= nRadius
-		then
-			count = count + 1
-		end
-	end
-
-	return count
-end
-
-function FindLeastItemSlot()
-	local minCost = 100000
-	local idx = -1
-
-	for i = 0,5
-	do
-		if bot:GetItemInSlot(i) ~= nil
-		and bot:GetItemInSlot(i):GetName() ~= 'item_aegis'
-		then
-			local item = bot:GetItemInSlot(i):GetName()
-
-			if GetItemCost(item) < minCost
-			then
-				minCost = GetItemCost(item)
-				idx = i
-			end
-		end
-	end
-
-	return idx
-end
-
-function FindMostItemSlot()
-	local maxCost = 0
-	local idx = -1
-
-	for i = 6, 8
-	do
-		if bot:GetItemInSlot(i) ~= nil
-		then
-			local item = bot:GetItemInSlot(i):GetName()
-
-			if GetItemCost(item) > maxCost
-			then
-				maxCost = GetItemCost(item)
-				idx = i
-			end
-		end
-	end
-
-	return idx
-end
-
-function IsSuitableToWard()
+function X.IsSuitableToWard()
 	local nEnemyHeroes = bot:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
 
-	local nMode = bot:GetActiveMode()
+	local botActiveMode = bot:GetActiveMode()
+    local botActiveModeDesire = bot:GetActiveModeDesire()
 
-	if (nMode == BOT_MODE_RETREAT
-		and bot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH)
-	or nMode == BOT_MODE_ATTACK
-	or (nMode == BOT_MODE_RUNE and DotaTime() > 0)
-	or nMode == BOT_MODE_DEFEND_ALLY
-	or nMode == BOT_MODE_DEFEND_TOWER_TOP
-	or nMode == BOT_MODE_DEFEND_TOWER_MID
-	or nMode == BOT_MODE_DEFEND_TOWER_BOT
-	or (nEnemyHeroes ~= nil and #nEnemyHeroes >= 1 and IsIBecameTheTarget(nEnemyHeroes))
+	if (J.IsRetreating(bot) and botActiveModeDesire > 0.75)
+	or (botActiveMode == BOT_MODE_RUNE and DotaTime() > 0)
+	or (botActiveMode == BOT_MODE_DEFEND_ALLY)
+	or (nEnemyHeroes ~= nil and #nEnemyHeroes >= 1 and X.IsIBecameTheTarget(nEnemyHeroes))
+    or J.IsDefending(bot)
+	or J.IsGoingOnSomeone(bot)
 	or bot:WasRecentlyDamagedByAnyHero(5.0)
 	then
 		return false
@@ -307,13 +161,11 @@ function IsSuitableToWard()
 	return true
 end
 
-function IsIBecameTheTarget(units)
-	for _, u in pairs(units)
-	do
-		if u ~= nil
-		and u:IsAlive()
-		and u:CanBeSeen()
-		and u:GetAttackTarget() == bot
+function X.IsIBecameTheTarget(unitList)
+	for _, unit in pairs(unitList) do
+		if J.IsValid(unit)
+        and not J.IsSuspiciousIllusion(unit)
+		and unit:GetAttackTarget() == bot
 		then
 			return true
 		end
@@ -322,25 +174,22 @@ function IsIBecameTheTarget(units)
 	return false
 end
 
-function IsEnemyCloserToWardLocation(wardLoc, botDist)
-	if EnemyTeam == nil
-	then
-		EnemyTeam = GetTeamPlayers(GetOpposingTeam())
-	end
-
-	for _, id in pairs(EnemyTeam)
-	do
-		local info = GetHeroLastSeenInfo(id)
-
-		if info ~= nil
-		then
-			local dInfo = info[1]
-
-			if dInfo ~= nil
-			and dInfo.time_since_seen < 3.0
-			and J.GetDistance(dInfo.location, wardLoc) <  botDist
-			then
-				return true
+function X.IsEnemyCloserToWardLocation(vLocation)
+	for _, id in pairs(GetTeamPlayers(GetOpposingTeam())) do
+		if IsHeroAlive(id) then
+			local info = GetHeroLastSeenInfo(id)
+			if info ~= nil then
+				local dInfo = info[1]
+				if  dInfo ~= nil
+				and dInfo.time_since_seen < 3.0
+				and J.GetDistance(dInfo.location, vLocation) < GetUnitToLocationDistance(bot, vLocation)
+				then
+					local nAllyHeroes = J.GetAlliesNearLoc(vLocation, 1200)
+					local nEnemyHeroes = J.GetEnemiesNearLoc(vLocation, 1200)
+					if #nEnemyHeroes > #nAllyHeroes then
+						return true
+					end
+				end
 			end
 		end
 	end

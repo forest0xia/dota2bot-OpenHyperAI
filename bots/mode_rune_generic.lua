@@ -1,8 +1,7 @@
-local bot = GetBot()
-local botName = bot:GetUnitName();
-if bot == nil or not bot:IsHero() or not bot:IsAlive() or not string.find(botName, "hero") or bot:IsIllusion() then return end
 local X = {}
 local J = require(GetScriptDirectory()..'/FunLib/jmz_func')
+
+local bot = GetBot()
 
 local MAX_DIST = 1600
 local minute = 0
@@ -21,61 +20,78 @@ local nRuneList = {
 	RUNE_POWERUP_2,
 }
 
-local radiantWRLocation = Vector(-7956, 395, 256)
-local direWRLocation = Vector(8197, -979, 256)
+local radiantWRLocation = Vector(-7988.583008, 423.058716, 256.000000)
+local direWRLocation = Vector(8244.062500, -1026.568848, 256.000000)
 local wisdomRuneSpots = {
 	[1] = radiantWRLocation,
 	[2] = direWRLocation,
 }
-local wisdomRuneInfo = {0, 0, false} -- time, loc spot index, did pick
+local wisdomRuneInfo = {0, 0, false} -- time, loc, did
 local timeInMin = 0
-local Bottle = nil
-local lastMin = 0
 
 function GetDesire()
 	local cacheKey = 'GetRuneDesire'..tostring(bot:GetPlayerID())
-	local cachedVar = J.Utils.GetCachedVars(cacheKey, 0.6)
+	local cachedVar = J.Utils.GetCachedVars(cacheKey, 1)
 	if cachedVar ~= nil then return cachedVar end
 	local res = GetDesireHelper()
 	J.Utils.SetCachedVars(cacheKey, res)
 	return res
 end
 function GetDesireHelper()
-	if not bot:IsHero() or not bot:IsAlive() or not string.find(botName, "hero") or bot:IsIllusion() or bot.isBear then return BOT_MODE_DESIRE_NONE end
-    if DotaTime() > 2 * 60 and DotaTime() < 6 * 60 and GetUnitToLocationDistance(bot, GetRuneSpawnLocation(RUNE_POWERUP_2)) < 150
+    if not bot:IsAlive()
+	or (DotaTime() > 2 * 60 and DotaTime() < 6 * 60 and GetUnitToLocationDistance(bot, GetRuneSpawnLocation(RUNE_POWERUP_2)) < 80)
 	then
         return 0
     end
 
-	-- 如果在打高地 就别撤退去干别的
-	if J.Utils.IsTeamPushingSecondTierOrHighGround(bot) then
-		return BOT_MODE_DESIRE_NONE
-	end
-
-	if J.GetEnemiesAroundAncient(bot, 3200) > 0 then
-		return BOT_MODE_DESIRE_NONE
-	end
-
-	if DotaTime() - J.Utils.GameStates.recentDefendTime < 2 then
-		return BOT_MODE_DESIRE_NONE
-	end
-
     botActiveMode = bot:GetActiveMode()
 	bBottle = J.HasItem(bot, 'item_bottle')
-
-	-- if DotaTime() > 10 and (J.IsPushing(bot) or J.IsDefending(bot) or J.IsDoingRoshan(bot) or J.IsDoingTormentor(bot)
-	-- or botActiveMode == BOT_MODE_SECRET_SHOP or botActiveMode == BOT_MODE_WARD or botActiveMode == BOT_MODE_ROAM)
-	-- and bot:GetActiveModeDesire() >= BOT_MODE_DESIRE_MODERATE then
-	-- 	return BOT_MODE_DESIRE_NONE
-	-- end
 
     if bot:IsInvulnerable() and J.GetHP(bot) > 0.95 and bot:DistanceFromFountain() < 100 then
         return BOT_MODE_DESIRE_ABSOLUTE
     end
 
-	local wrDesire = ConsiderWisdomRune()
-	if wrDesire > 0.1 then
-		return wrDesire
+	-- Wisdom Rune
+	if bot:GetLevel() < 30 then
+		timeInMin = X.GetMulTime()
+		X.UpdateWisdom()
+		if DotaTime() >= 7 * 60
+		and not J.IsMeepoClone(bot)
+		and not bot:HasModifier('modifier_arc_warden_tempest_double') then
+			if DotaTime() < wisdomRuneInfo[1] + 3.5 then
+				if not bot:WasRecentlyDamagedByAnyHero(3.0) then --back
+					return BOT_MODE_DESIRE_ABSOLUTE
+				end
+				-- if GetUnitToLocationDistance(bot, wisdomRuneSpots[wisdomRuneInfo[2]]) < 80 then
+				-- 	return 0
+				-- end
+			else
+				wisdomRuneInfo[1] = 0
+				wisdomRuneInfo[3] = false
+			end
+
+
+			local tEnemyTowers = bot:GetNearbyTowers(700, true)
+			local tEnemyHeroes = J.GetEnemiesNearLoc(bot:GetLocation(), 1200)
+			if (#tEnemyTowers > 0 and bot:WasRecentlyDamagedByTower(1.0) and J.GetHP(bot) < 0.3)
+			or (#tEnemyHeroes > 0 and not J.IsRealInvisible(bot))
+			then
+				return 0
+			end
+
+			local runeSpot = X.GetWisdomRuneSpot()
+
+			if runeSpot ~= nil
+			and bot.wisdom ~= nil
+			and bot.wisdom[timeInMin][runeSpot] == false
+			and bot == X.GetWisdomAlly(wisdomRuneSpots[runeSpot]) then
+				wisdomRuneInfo[2] = runeSpot
+				wisdomRuneInfo[3] = true
+				return X.GetWisdomDesire(wisdomRuneSpots[runeSpot])
+			end
+		end
+	else
+		wisdomRuneInfo[3] = false
 	end
 
 	if (bot:HasModifier("modifier_arc_warden_tempest_double"))
@@ -87,15 +103,17 @@ function GetDesireHelper()
     minute = math.floor(DotaTime() / 60)
     second = DotaTime() % 60
 
-    if not X.IsSuitableToPickRune() then
+	ClosestRune, ClosestDistance = X.GetBotClosestRune()
+
+    if not X.IsSuitableToPickRune(ClosestRune) then
         return BOT_MODE_DESIRE_NONE
     end
 
-    if DotaTime() < 0 and not bot:WasRecentlyDamagedByAnyHero(5.0)
+    if DotaTime() < 0 and not bot:WasRecentlyDamagedByAnyHero(10.0)
     then
-        local nEnemyHeroes = J.GetLastSeenEnemiesNearLoc(bot:GetLocation(), 2000)
+        local nEnemyHeroes = J.GetEnemiesNearLoc(bot:GetLocation(), 1600)
         if #nEnemyHeroes <= 1 then
-            return RemapValClamped(J.GetHP(bot), 0.2, 0.8, BOT_MODE_DESIRE_NONE, BOT_MODE_DESIRE_MODERATE)
+            return BOT_MODE_DESIRE_MODERATE
         end
     end
 
@@ -105,44 +123,52 @@ function GetDesireHelper()
         MAX_DIST = 1600
     end
 
-    ClosestRune, ClosestDistance = X.GetBotClosestRune()
-
 	if ClosestRune ~= -1 and ClosestDistance < 6000 then
 		local botPos = J.GetPosition(bot)
 		local nRuneType = GetRuneType(ClosestRune)
-        nRuneStatus = GetRuneStatus(ClosestRune)
 
-		if X.IsEnemyPickRune(ClosestRune) then return 0 end
-
-		-- if botPos == 2 and #bot:GetNearbyLaneCreeps(700, true) >= 2 and J.IsInLaningPhase() then return 0 end
         if ClosestRune == RUNE_BOUNTY_1 or ClosestRune == RUNE_BOUNTY_2 then
-            if nRuneStatus == RUNE_STATUS_AVAILABLE then
-				if botPos <= 3 and DotaTime() > 2 * 60 and DotaTime() < 20 * 60 then
-					return X.GetScaledDesire(BOT_MODE_DESIRE_VERYLOW, ClosestDistance, 3500)
+			nRuneStatus = GetRuneStatus(ClosestRune)
+
+            if nRuneStatus == RUNE_STATUS_AVAILABLE
+			and (X.IsTeamMustSaveRune(ClosestRune) or DotaTime() > 585)
+			then
+				if ((botPos == 1 or botPos == 3) and J.IsInLaningPhase() and ClosestDistance > 2000)
+				or X.IsEnemyPickRune(ClosestRune)
+				then
+					return BOT_MODE_DESIRE_NONE
 				end
 
                 return X.GetScaledDesire(BOT_MODE_DESIRE_HIGH, ClosestDistance, 3500)
             elseif nRuneStatus == RUNE_STATUS_UNKNOWN
-                and DotaTime() > 2 * 60 + 50
-                and ((minute % 3 == 0) or (minute % 3 == 2 and second > 45))
+				and ClosestDistance <= MAX_DIST * 1.5
+                and DotaTime() > 3 * 60 + 50
+                and ((minute % 4 == 0) or (minute % 4 == 3 and second > 45))
             then
-				if botPos <= 3 and DotaTime() > 2 * 60 and DotaTime() < 20 * 60 then
-					return X.GetScaledDesire(BOT_MODE_DESIRE_VERYLOW, ClosestDistance, MAX_DIST)
+				if J.IsCore(bot) and J.IsInLaningPhase() and ClosestDistance > 2000 then
+					return BOT_MODE_DESIRE_NONE
 				end
 
-                return X.GetScaledDesire(BOT_MODE_DESIRE_HIGH, ClosestDistance, MAX_DIST)
+                return X.GetScaledDesire(BOT_MODE_DESIRE_MODERATE, ClosestDistance, MAX_DIST)
             elseif nRuneStatus == RUNE_STATUS_MISSING
-                and DotaTime() > 2 * 60
-                and (minute % 3 == 2 and second > 52)
+				and ClosestDistance <= MAX_DIST * 1.5
+                and DotaTime() > 3 * 60
+                and (minute % 4 == 3 and second > 52)
             then
-				if botPos <= 3 and DotaTime() > 2 * 60 and DotaTime() < 20 * 60 then
-					return X.GetScaledDesire(BOT_MODE_DESIRE_VERYLOW, ClosestDistance, MAX_DIST)
+				if J.IsCore(bot) and J.IsInLaningPhase() and ClosestDistance > 2000 then
+					return BOT_MODE_DESIRE_NONE
 				end
 
                 return X.GetScaledDesire(BOT_MODE_DESIRE_MODERATE, ClosestDistance, MAX_DIST * 2)
             end
         else
+			nRuneStatus = GetRuneStatus(ClosestRune)
+
             if nRuneStatus == RUNE_STATUS_AVAILABLE then
+				if X.IsEnemyPickRune(ClosestRune) then
+					return BOT_MODE_DESIRE_NONE
+				end
+
 				if nRuneType == RUNE_WATER and (bBottle or (J.GetHP(bot) < 0.6) or J.GetMP(bot) < 0.5) then
 					return X.GetScaledDesire(BOT_MODE_DESIRE_HIGH, ClosestDistance, 3200)
 				else
@@ -159,11 +185,7 @@ function GetDesireHelper()
             elseif nRuneStatus == RUNE_STATUS_UNKNOWN
                 and DotaTime() > 113
             then
-				if J.IsCore(bot) and DotaTime() > 5 * 60 then
-					return X.GetScaledDesire(BOT_MODE_DESIRE_MODERATE, ClosestDistance, MAX_DIST * 2.5)
-				else
-					return X.GetScaledDesire(BOT_MODE_DESIRE_MODERATE, ClosestDistance, MAX_DIST)
-				end
+				return X.GetScaledDesire(BOT_MODE_DESIRE_MODERATE, ClosestDistance, MAX_DIST)
             elseif nRuneStatus == RUNE_STATUS_MISSING
                 and DotaTime() > 60
                 and (minute % 2 == 1 and second > 53)
@@ -176,48 +198,7 @@ function GetDesireHelper()
     return 0
 end
 
-function ConsiderWisdomRune()
-	if bot:GetLevel() < 30 then
-		timeInMin = X.GetMulTime()
-		X.UpdateWisdom()
-		if DotaTime() >= 7 * 60
-		and not J.IsMeepoClone(bot)
-		and not bot:HasModifier('modifier_arc_warden_tempest_double') then
-			if DotaTime() < wisdomRuneInfo[1] + 3.5 then
-				if GetUnitToLocationDistance(bot, wisdomRuneSpots[wisdomRuneInfo[2]]) < 50 then
-					return 0
-				end
-				if not bot:WasRecentlyDamagedByAnyHero(3.0) then
-					return BOT_MODE_DESIRE_HIGH
-				end
-			else
-				wisdomRuneInfo[1] = 0
-				wisdomRuneInfo[3] = false
-			end
-
-			local tEnemyTowers = bot:GetNearbyTowers(700, true)
-			local tEnemyHeroes = J.GetEnemiesNearLoc(bot:GetLocation(), 1200)
-			if (#tEnemyTowers > 0 and bot:WasRecentlyDamagedByTower(1.0) and J.GetHP(bot) < 0.3)
-			or #tEnemyHeroes > 0 then
-				return 0
-			end
-
-			local runeSpot = X.GetWisdomRuneSpot()
-			if runeSpot ~= nil
-			and bot.wisdom ~= nil
-			and bot.wisdom[timeInMin][runeSpot] == false
-			and bot == X.GetWisdomAlly(wisdomRuneSpots[runeSpot]) then
-				wisdomRuneInfo[2] = runeSpot
-				wisdomRuneInfo[3] = true
-				return X.GetWisdomDesire(wisdomRuneSpots[runeSpot])
-			end
-		end
-	else
-		wisdomRuneInfo[3] = false
-	end
-	return 0
-end
-
+local Bottle = nil
 function OnStart()
 	local bottle_slot = bot:FindItemSlot('item_bottle')
 	if bot:GetItemSlotType(bottle_slot) == ITEM_SLOT_TYPE_MAIN then
@@ -236,7 +217,6 @@ function Think()
         bot:Action_MoveToLocation(bot:GetLocation() + RandomVector(500))
         return
     end
-	if J.Utils.IsBotThinkingMeaningfulAction(bot) then return end
 
     if J.CanNotUseAction(bot)
 	or bot:GetCurrentActionType() == BOT_ACTION_TYPE_PICK_UP_RUNE
@@ -245,11 +225,31 @@ function Think()
         return
     end
 
+	-- Wisdom Rune
 	if wisdomRuneInfo[3] then
-		return PickWisdomRune()
+		local vWisdomSpot = wisdomRuneSpots[wisdomRuneInfo[2]]
+		local nInRangeEnemy = J.GetEnemiesNearLoc(vWisdomSpot, 1600)
+		if J.IsValidHero(nInRangeEnemy[1]) and (not nInRangeEnemy[1]:IsBot() or (GetUnitToLocationDistance(nInRangeEnemy[1], vWisdomSpot) < GetUnitToLocationDistance(bot, vWisdomSpot)))
+		then
+			bot.wisdom[timeInMin][wisdomRuneInfo[2]] = true
+		end
+
+		if GetUnitToLocationDistance(bot, vWisdomSpot) < 75 then
+			if bot.wisdom[timeInMin][wisdomRuneInfo[2]] == false then
+				wisdomRuneInfo[1] = DotaTime()
+			end
+			bot.wisdom[timeInMin][wisdomRuneInfo[2]] = true
+		end
+
+		bot:Action_MoveDirectly(vWisdomSpot)
+		return
 	end
 
     if DotaTime() < 0 then
+		if J.IsModeTurbo() and DotaTime() < -50 then
+			return
+		end
+
         if DotaTime() < -25 then
             local vGoOutLocation = X.GetGoOutLocation()
 
@@ -284,7 +284,7 @@ function Think()
 		end
     end
 
-    local botAttackRange = bot:GetAttackRange() + 550
+    local botAttackRange = bot:GetAttackRange() + 150
     if botAttackRange > 1400 then botAttackRange = 1400 end
     local nEnemyHeroes = J.GetEnemiesNearLoc(bot:GetLocation(), botAttackRange)
 	nRuneStatus = GetRuneStatus(ClosestRune)
@@ -332,32 +332,18 @@ function Think()
 	end
  end
 
-function PickWisdomRune()
-	local distance = GetUnitToLocationDistance(bot, wisdomRuneSpots[wisdomRuneInfo[2]])
-	if distance < 75
-	or (distance < 1800 and bot:WasRecentlyDamagedByAnyHero(2) and (wisdomRuneInfo[2] + 1) ~= GetTeam()) -- if encountered an enemy on the way, assume enemy had noticed and would go pick it.
-	then
-		if bot.wisdom[timeInMin][wisdomRuneInfo[2]] == false then
-			wisdomRuneInfo[1] = DotaTime()
-		end
-		bot.wisdom[timeInMin][wisdomRuneInfo[2]] = true
-	end
-
-	bot:Action_MoveDirectly(wisdomRuneSpots[wisdomRuneInfo[2]] + RandomVector(15))
-	return 1
-end
-
-function X.IsSuitableToPickRune()
-	if X.IsNearRune(bot) then return true end
+function X.IsSuitableToPickRune(nRuneLoc)
+    if X.IsNearRune(bot) then return true end
 
 	local nEnemyHeroes = J.GetEnemiesNearLoc(bot:GetLocation(), 1200)
 
 	if (J.IsRetreating(bot) and bot:GetActiveModeDesire() > BOT_MODE_DESIRE_HIGH)
-	or (#nEnemyHeroes >= 1 and X.IsIBecameTheTarget(nEnemyHeroes))
-	or (bot:WasRecentlyDamagedByAnyHero(4.0) and J.IsRetreating(bot))
-	or (GetUnitToUnitDistance(bot, GetAncient(GetTeam())) < 2500 and DotaTime() > 0)
-	or GetUnitToUnitDistance(bot, GetAncient(GetOpposingTeam())) < 4000
-	or bot:HasModifier('modifier_item_shadow_amulet_fade')
+    or (#nEnemyHeroes >= 1 and X.IsIBecameTheTarget(nEnemyHeroes))
+	or (nRuneLoc ~= nil and J.IsEnemyHeroAroundLocation(GetRuneSpawnLocation(nRuneLoc), 1200))
+    or (bot:WasRecentlyDamagedByAnyHero(3.0) and J.IsRetreating(bot))
+    or (GetUnitToUnitDistance(bot, GetAncient(GetTeam())) < 2500 and DotaTime() > 0)
+    or GetUnitToUnitDistance(bot, GetAncient(GetOpposingTeam())) < 4000
+    or bot:HasModifier('modifier_item_shadow_amulet_fade')
 	then
 		return false
 	end
@@ -451,7 +437,7 @@ function X.IsTheClosestOne(vLocation, nRuneLoc)
 		return true
 	end
 
-    for i = 1, #GetTeamPlayers( GetTeam() ) do
+    for i = 1, 5 do
         local member = GetTeamMember(i)
         if member ~= nil and member:IsAlive() then
 			local dist = GetUnitToLocationDistance(member, vLocation)
@@ -469,7 +455,7 @@ function X.IsTherePosition(nPos, nRuneLoc, nRadius)
 	if not X.IsPowerRune(nRuneLoc) and DotaTime() > 6 * 60 then return false end
 	local rLoc = GetRuneSpawnLocation(nRuneLoc)
 
-	for i = 1, #GetTeamPlayers( GetTeam() ) do
+	for i = 1, 5 do
         local member = GetTeamMember(i)
         if member ~= nil and member:IsAlive() and bot ~= member
 		and J.GetPosition(member) == nPos then
@@ -486,14 +472,14 @@ end
 local pingTimeDelta = 15
 function X.IsPingedByHumanPlayer(vLocation, nRadius)
     local thisBotDistFromLocation = GetUnitToLocationDistance(bot, vLocation)
-    for i = 1, #GetTeamPlayers( GetTeam() ) do
+    for i = 1, 5 do
         local member = GetTeamMember(i)
         if member ~= nil and member:IsAlive() and not member:IsBot() then
             local ping = member:GetMostRecentPing()
             if ping ~= nil then
                 if not ping.normal_ping
                 and J.GetDistance(ping.location, vLocation) <= 600
-                and DotaTime() - ping.time < pingTimeDelta
+                and GameTime() - ping.time < pingTimeDelta
                 and thisBotDistFromLocation < nRadius
                 and botActiveMode == BOT_MODE_RUNE
                 then
@@ -540,44 +526,18 @@ function X.IsEnemyPickRune(nRune)
 
 	for _, enemy in pairs(nEnemyHeroes) do
         if J.IsValidHero(enemy)
-        and (enemy:IsFacingLocation(vRuneLocation, 30) or GetUnitToLocationDistance(enemy, vRuneLocation) < 600)
+        and (enemy:IsFacingLocation(vRuneLocation, 30) or enemy:IsFacingLocation(bot:GetLocation(), 30) or GetUnitToLocationDistance(enemy, vRuneLocation) < 600)
         and (GetUnitToLocationDistance(enemy, vRuneLocation) < GetUnitToLocationDistance(bot, vRuneLocation) + 300)
-		and (bot:WasRecentlyDamagedByAnyHero(6) and GetUnitToUnitDistance(bot, enemy) < enemy:GetAttackRange() + 300) -- 别被无脑a
         then
             return true
         end
-	end
-
-	if #nEnemyHeroes >= 2 then
-		return true
 	end
 
 	return false
 end
 
 function X.GetScaledDesire(nBase, nCurrDist, nMaxDist)
-    local desire = Clamp(nBase + RemapValClamped(nCurrDist, 600, nMaxDist, 1 - nBase, 0), 0, 0.65)
-	if J.IsInLaningPhase() and (J.GetPosition(bot) == 1 or J.GetPosition(bot) == 3) then
-		desire = desire * 0.2
-	elseif not J.IsInLaningPhase() and J.IsCore(bot) then
-		desire = desire * 0.3
-	elseif bot:GetNetWorth() > 15000 then
-		desire = desire * 0.6
-	elseif GetUnitToLocationDistance(bot, J.GetEnemyFountain()) < 4300 then
-		desire = desire * 0.2
-	end
-	if J.GetPosition(bot) == 2 and DotaTime() > 1 and DotaTime() < 420 and nCurrDist > 3000 then
-		desire = desire * 0.2
-	end
-
-	if nCurrDist > 3300 and not J.IsInLaningPhase() then
-		desire = desire * 0.2
-	end
-	if DotaTime() > 1800 and nCurrDist > 3000 and J.Utils.CountMissingEnemyHeroes() >= 3 then
-		desire = desire * 0.2
-	end
-
-	return RemapValClamped(J.GetHP(bot), 0.3, 0.8, desire * 0.3, desire)
+    return Clamp(nBase + RemapValClamped(nCurrDist, nMaxDist, 0, 0, 1 - nBase), 0, 0.95)
 end
 
 function X.GetGoOutLocation()
@@ -632,9 +592,25 @@ function X.CouldBlink(vLocation)
 	return false
 end
 
+function X.IsTeamMustSaveRune(nRune)
+	if GetTeam() == TEAM_DIRE then
+		return nRune == RUNE_BOUNTY_1
+			or nRune == RUNE_POWERUP_2
+			or (DotaTime() > 1 * 60 + 45 and nRune == RUNE_POWERUP_1)
+			or (DotaTime() > 10 * 60 + 45 and nRune == RUNE_BOUNTY_2)
+	else
+		return nRune == RUNE_BOUNTY_2
+			or nRune == RUNE_POWERUP_1
+			or (DotaTime() > 1 * 60 + 45 and nRune == RUNE_POWERUP_2)
+			or (DotaTime() > 10 * 60 + 45 and nRune == RUNE_BOUNTY_1)
+	end
+end
+
+-- Wisdom Rune
 function X.UpdateWisdom()
+	-- todo: see if a human has been at a spot within time, so don't go there and waste time
 	if timeInMin >= 7 and timeInMin % 7 == 0 then
-		for i = 1, #GetTeamPlayers( GetTeam() ) do
+		for i = 1, 5 do
 			local member = GetTeamMember(i)
 			-- init
 			if member ~= nil and member == bot then
@@ -663,6 +639,7 @@ function X.UpdateWisdom()
 	end
 end
 
+local lastMin = 0
 function X.GetMulTime()
 	local currTime = math.floor(DotaTime() / 60)
 	if currTime > lastMin and currTime % 7 == 0 then
@@ -674,7 +651,7 @@ end
 function X.GetWisdomAlly(vLoc)
 	local target = nil
 	local score = math.huge
-	for i = 1, #GetTeamPlayers( GetTeam() ) do
+	for i = 1, 5 do
 		local member = GetTeamMember(i)
 		if member ~= nil and member:IsAlive() and not J.IsDoingTormentor(member) then
 			local dist = GetUnitToLocationDistance(member, vLoc)
@@ -697,17 +674,14 @@ function X.GetWisdomDesire(vWisdomLoc)
 	local nDesire = 0
 	local botLevel = bot:GetLevel()
 	local distFromLoc = GetUnitToLocationDistance(bot, vWisdomLoc)
-	if J.Utils.CountMissingEnemyHeroes() >= 3 then
-		distFromLoc = distFromLoc * 2
-	end
 	if botLevel < 12 then
-		nDesire = RemapValClamped(distFromLoc, 4000, 300, BOT_ACTION_DESIRE_HIGH, BOT_ACTION_DESIRE_VERYHIGH )
+		nDesire = RemapValClamped(distFromLoc, 6400, 3200, 0.75, 0.95)
 	elseif botLevel < 18 then
-		nDesire = RemapValClamped(distFromLoc, 4000, 300, BOT_ACTION_DESIRE_LOW , BOT_ACTION_DESIRE_HIGH )
+		nDesire = RemapValClamped(distFromLoc, 6400, 3200, 0.5, 0.95)
 	elseif botLevel < 25 then
-		nDesire = RemapValClamped(distFromLoc, 4000, 300, BOT_ACTION_DESIRE_NONE, BOT_ACTION_DESIRE_HIGH )
+		nDesire = RemapValClamped(distFromLoc, 5800, 1600, 0.25, 0.95)
 	elseif botLevel < 30 then
-		nDesire = RemapValClamped(distFromLoc, 4000, 300, BOT_ACTION_DESIRE_NONE , BOT_ACTION_DESIRE_MODERATE )
+		nDesire = RemapValClamped(distFromLoc, 5800, 1600, 0.1, 0.95)
 	end
 
 	return nDesire
@@ -720,7 +694,7 @@ function X.GetWisdomRuneSpot()
 		if dist1 < dist2 then
 			return 1
 		else
-			local tier_1_tower = GetTower(GetOpposingTeam(), TOWER_BOT_1)
+			local tier_1_tower = GetTower(GetOpposingTeam(), TOWER_BOT_1) -- don't feed
 			if tier_1_tower == nil then
 				return 2
 			end
@@ -733,7 +707,7 @@ function X.GetWisdomRuneSpot()
 		if dist1 > dist2 then
 			return 2
 		else
-			local tier_1_tower = GetTower(GetOpposingTeam(), TOWER_TOP_1)
+			local tier_1_tower = GetTower(GetOpposingTeam(), TOWER_TOP_1) -- don't feed
 			if tier_1_tower == nil then
 				return 1
 			end
