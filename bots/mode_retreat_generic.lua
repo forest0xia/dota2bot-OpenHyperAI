@@ -88,6 +88,13 @@ function GetDesire()
 		end
 	end
 
+    if J.GetHP(bot) < 0.2 and bot:GetHealth() < #nEnemyHeroes >= 2 and bot:WasRecentlyDamagedByAnyHero(1) then
+        return RemapValClamped(J.GetHP(bot), 0.5, 0.1, BOT_MODE_DESIRE_NONE, BOT_MODE_DESIRE_VERYHIGH)
+    end
+    if X.LowChanceToRun() then
+        return BOT_MODE_DESIRE_NONE
+    end
+
     -- Not part of actual retreat
     if (botName == 'npc_dota_hero_lone_druid' and DotaTime() > 25 and DotaTime() < fRetreatFromRoshanTime + 6.5) then
         return 3.33
@@ -335,6 +342,16 @@ function GetDesire()
     nDesire = nDesire + X.RetreatWhenTowerTargetedDesire()
 
     return Min(nDesire, 1.0)
+end
+
+function X.LowChanceToRun()
+	local nEnemysHeroes = J.GetNearbyHeroes(bot, 900, true, BOT_MODE_NONE )
+    if #nEnemysHeroes >= 3 and #nEnemysHeroes >= #nAllyHeroes and botHP < 0.6
+    and bot:WasRecentlyDamagedByAnyHero(1) and bot:GetCurrentMovementSpeed() < 330 then
+        return true
+    end
+
+    return false
 end
 
 function X.GetUnitDesire(nRadius)

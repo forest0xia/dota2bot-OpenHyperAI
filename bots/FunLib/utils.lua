@@ -2195,36 +2195,6 @@ local meaningfulActivities = {
 -- @param bot - The bot unit to check
 -- @returns True if the bot is doing something meaningful, false otherwise
 function ____exports.IsBotThinkingMeaningfulAction(bot)
-    local cacheKey = "IsBotThinkingMeaningfulAction" .. tostring(bot:GetPlayerID())
-    local cachedRes = ____exports.GetCachedVars(cacheKey, 0.2)
-    if not cachedRes then
-        return false
-    end
-    do
-        local ____try, ____hasReturned, ____returnValue = pcall(function()
-            if __TS__ArrayIncludes(
-                meaningfulActivities,
-                bot:GetAnimActivity()
-            ) then
-                ____exports.SetCachedVars(cacheKey, true)
-                return true, true
-            end
-        end)
-        if ____try and ____hasReturned then
-            return ____returnValue
-        end
-    end
-    local numQueuedActions = bot:NumQueuedActions()
-    if numQueuedActions > 0 then
-        for index = 1, numQueuedActions do
-            local actionType = bot:GetQueuedActionType(index)
-            if actionType ~= BotActionType.None then
-                ____exports.SetCachedVars(cacheKey, true)
-                return true
-            end
-        end
-    end
-    ____exports.SetCachedVars(cacheKey, false)
     return false
 end
 return ____exports

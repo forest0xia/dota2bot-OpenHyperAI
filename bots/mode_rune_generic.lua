@@ -47,6 +47,11 @@ function GetDesireHelper()
     botActiveMode = bot:GetActiveMode()
 	bBottle = J.HasItem(bot, 'item_bottle')
 
+	-- 如果在打高地 就别撤退去干别的
+	if J.Utils.IsTeamPushingSecondTierOrHighGround(bot) then
+		return BOT_MODE_DESIRE_NONE
+	end
+
     if bot:IsInvulnerable() and J.GetHP(bot) > 0.95 and bot:DistanceFromFountain() < 100 then
         return BOT_MODE_DESIRE_ABSOLUTE
     end

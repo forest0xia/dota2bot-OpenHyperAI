@@ -347,9 +347,9 @@ local HeroPositions = {
         80
     },
     [HeroName.Lifestealer] = {
-        30,
-        5,
-        30,
+        20,
+        0,
+        20,
         0,
         0
     },

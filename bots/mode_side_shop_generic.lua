@@ -144,7 +144,7 @@ function GetDesireHelper()
     if #tAllyInTormentorLocation <= 1 and nHumanCountInLoc == 0
     and GetUnitToLocationDistance(bot, TormentorLocation) > 1600
     and (GetUnitToUnitDistance(bot, hEnemyAncient) < 4000
-        and J.GetEnemiesAroundAncient(4000) > 0
+        and J.GetEnemiesAroundAncient(bot, 4000) > 0
         or (J.IsDoingRoshan(bot) and bot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH)
     ) then
         return BOT_MODE_DESIRE_NONE

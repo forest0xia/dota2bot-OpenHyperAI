@@ -8,37 +8,65 @@ Dota2Teams.maxTeamSize = 12 -- e.g. for 12 v 12
 
 -- List should have a least 4 teams for better performance.
 local defaultTeams = {
-    {name = "Liquid", players = {"miCKe", "Nisha", "zai", "Boxi", "Insania"}},
-    {name = "GaiminGladiators", players = {"dyrachyo", "Quinn", "Ace", "tOfu", "Seleri"}},
-    {name = "TundraEsports", players = {"Skiter", "Nine", "33", "Sneyking", "Aui_2000"}},
-    {name = "EvilGeniuses", players = {"Pakazs", "Chris Luck", "Wisper", "Matthew", "Panda"}},
-    {name = "PSG_LGD", players = {"shiro", "NothingToSay", "niu 牛", "planet", "y`"}},
-    {name = "ShopifyRebellion", players = {"Arteezy", "Abed", "SaberLight", "Cr1t-", "Fly"}},
-    {name = "TalonEsports", players = {"23savage", "Mikoto", "Jabz", "Q", "Oli"}},
-    {name = "beastcoast", players = {"K1", "Chris Luck", "Wisper", "Stinger", "Scofield"}},
-    {name = "Spirit", players = {"Yatoro雨", "Larl", "Collapse", "Mira", "Miposhka"}},
-    {name = "TSM", players = {"Timado", "Bryle", "Kasane", "Ari", "Whitemon"}},
-    {name = "BetBoom", players = {"Nightfall", "gpk", "Pure", "Save-", "TORONTOTOKYO"}},
-    {name = "Execration", players = {"Palos", "Bob", "Tino", "Shanks", "Carlo"}},
-    {name = "QuestEsports", players = {"TA2000", "No!ob", "Tobi", "OmaR", "kaori"}},
-    {name = "nouns", players = {"Gunnar", "Costabile", "Moo", "ZFreek", "Husky"}},
-    {name = "BleedEsports", players = {"JaCkky", "Kordan", "iceiceice", "DJ", "DuBu"}},
-    {name = "Aster", players = {"Monet", "Xxs", "Ori", "BoBoKa", "LaNm"}},
-    {name = "InvictusGaming", players = {"flyfly", "Emo", "JT-", "Kaka 卡卡", "Oli"}},
-    {name = "AzureRay", players = {"Eurus", "Somnus丶M", "Yang", "Fy", "xNova"}},
-    {name = "Blacklist", players = {"Raven", "Karl", "Kuku", "TIMS", "Eyyou"}},
-    {name = "VirtusPro", players = {"RAMZES666", "kiyotaka", "MieRo", "Antares", "Solo"}},
-    {name = "9Pandas", players = {"RAMZES666", "kiyotaka", "MieRo", "Antares", "Solo"}}, -- Updated team from 2024
-    {name = "TeamSMG", players = {"MidOne", "Moon", "Masaros", "Ahfu", "Raging Potato"}}, -- Team from SEA region, rising in 2024
-    {name = "KeydStars", players = {"4dr", "Tavo", "hFn", "KJ", "mini"}}, -- Brazilian team prominent in 2024
-    {name = "ThunderAwaken", players = {"Panda", "DarkMago", "Sacred", "Matthew", "Pakazs"}}, -- Updated for 2024 with roster changes
-    {name = "Additionals", players = {
-        "Azazel", "Lucifer", "Belial", "Lilith", "Diablo", "Mephisto", "Asmodeus", "Beelzebub", "Samael", "Abaddon", "Mammon", "Astaroth",
-        "Leviathan", "Moloch", "Belphegor", "Apollyon", "Gorgoth", "Zaganthar", "Nyxoloth", "Malphas", "Inferno", "Darkfire", "Shadowblade",
-        "Nightmare", "Hellspawn", "Bloodlust", "Doombringer", "Soulreaper", "Deathbringer", "Lightbringer", "Celestial", "Heavenly", "Seraphim",
-        "Radiant", "Divinity", "Archangel", "Gloriosa", "Holystone", "Etherealis", "Heavenfire"
+    {name = "LQD", players = {"miCKe", "Nisha", "zai", "Boxi", "Insania"}},          -- Liquid
+    {name = "GG", players = {"dyrachyo", "Quinn", "Ace", "tOfu", "Seleri"}},         -- Gaimin Gladiators
+    {name = "TUND", players = {"Skiter", "Nine", "33", "Sneyking", "Aui_2000"}},     -- Tundra Esports
+    {name = "EG", players = {"Pakazs", "Chris Luck", "Wisper", "Matthew", "Panda"}}, -- Evil Geniuses
+    {name = "LGD", players = {"shiro", "NTS", "niu", "planet", "y`"}},               -- PSG.LGD
+    {name = "SR", players = {"Arteezy", "Abed", "SaberL", "Cr1t-", "Fly"}},          -- Shopify Rebellion
+    {name = "TLN", players = {"23savage", "Mikoto", "Jabz", "Q", "Oli"}},            -- Talon Esports
+    {name = "BC", players = {"K1", "C.Luck", "Wisper", "Stinger", "Scofield"}},      -- beastcoast
+    {name = "TS", players = {"Yatoro", "Larl", "Collapse", "Mira", "Miposhka"}},     -- Team Spirit
+    {name = "TSM", players = {"Timado", "Bryle", "Kasane", "Ari", "Whitemon"}},      -- TSM
+    {name = "BB", players = {"Nightfall", "gpk", "Pure", "Save-", "TTT"}},           -- BetBoom
+    {name = "EXE", players = {"Palos", "Bob", "Tino", "Shanks", "Carlo"}},           -- Execration
+    {name = "QUEST", players = {"TA2000", "No!ob", "Tobi", "OmaR", "kaori"}},        -- Quest Esports
+    {name = "NOUNS", players = {"Gunnar", "Costabile", "Moo", "ZFreek", "Husky"}},   -- nouns
+    {name = "BLEED", players = {"JaCkky", "Kordan", "ice3", "DJ", "DuBu"}},          -- Bleed Esports
+    {name = "AST", players = {"Monet", "Xxs", "Ori", "BoBoKa", "LaNm"}},             -- Aster
+    {name = "IG", players = {"flyfly", "Emo", "JT-", "Kaka", "Oli"}},                -- Invictus Gaming
+    {name = "AR", players = {"Eurus", "Somnus", "Yang", "Fy", "xNova"}},             -- Azure Ray
+    {name = "BLK", players = {"Raven", "Karl", "Kuku", "TIMS", "Eyyou"}},            -- Blacklist
+    {name = "VP", players = {"RAMZES", "kiyotaka", "MieRo", "Antares", "Solo"}},     -- Virtus Pro
+    {name = "9P", players = {"RAMZES", "kiyotaka", "MieRo", "Antares", "Solo"}},     -- 9Pandas
+    {name = "SMG", players = {"MidOne", "Moon", "Masaros", "Ahfu", "RPotato"}},      -- Team SMG
+    {name = "KEYD", players = {"4dr", "Tavo", "hFn", "KJ", "mini"}},                 -- Keyd Stars
+    {name = "TA", players = {"Panda", "DarkM", "Sacred", "Matthew", "Pakazs"}},      -- Thunder Awaken
+    {name = "ADD", players = {
+        "Azazel", "Lucifer", "Belial", "Lilith", "Diablo", "Mephisto", "Samael", "Abaddon", "Mammon", "Astaroth", "Moloch", "Apollyon", "Zagan", "Nyx", "Malphas",
+        "Inferno", "Darkfire", "Shadow", "Nightmare", "Doom", "Soul", "Death", "Light", "Seraph", "Radiant", "Divine", "Angel"
     }}
 }
+
+-- 古代神话故事主题 Teams
+local ancientChineseStoryTeams = {
+    -- 四象 Four Symbols
+    {name = "四象", players = {"青龙", "白虎", "朱雀", "玄武", "腾蛇"}},
+    -- 八仙 Eight Immortals
+    {name = "八仙", players = {"铁拐李", "吕洞宾", "汉钟离", "张果老", "何仙姑"}},
+    -- 封神演义 Investiture of the Gods
+    {name = "封神", players = {"姜子牙", "哪吒", "杨戬", "雷震子", "托塔天王"}},
+    -- 道教神话 Daoist Deities
+    {name = "道教", players = {"太上", "真武", "东华", "太乙", "王母"}},
+    -- 三十六天罡 Heavenly Stars (sample)
+    {name = "天罡", players = {"天勇", "天雄", "天猛", "天伤", "天英"}},
+    -- 七十二地煞 Earthly Stars (sample)
+    {name = "地煞", players = {"地勇", "地煞", "地俊", "地雄", "地恶"}},
+    -- 山海经 Mythical figures
+    {name = "山海经", players = {"夸父", "共工", "精卫", "女娲", "伏羲"}},
+    -- 上古异兽 Mythic Beasts
+    {name = "神兽", players = {"饕餮", "烛龙", "穷奇", "梼杌", "狻猊"}},
+    -- 风雷雨电 Weather Deities
+    {name = "天象", players = {"雷公", "电母", "风伯", "雨师", "云华"}},
+    -- 异世 Extra Pool (20 mythic characters)
+    {name = "上古", players = {
+        "蚩尤", "黄帝", "炎帝", "盘古", "女娲", "伏羲", "神农", "祝融", "共工", "刑天",
+        "夸父", "后羿", "嫦娥", "西王母", "东皇太一", "玄冥", "羲和", "强良", "句芒", "应龙"
+    }}
+}
+
+-- 使用古代神话故事主题 Teams
+defaultTeams = ancientChineseStoryTeams
 
 local function generateTeam(overrides)
     local playerList = { }
@@ -47,7 +75,7 @@ local function generateTeam(overrides)
     repeat
         randomNum = RandomInt(1, #defaultTeams)
     -- ensure a team can only pick from certain team names.
-    until randomNum % 2 == GetTeam() - 2 and defaultTeams[randomNum].name ~= 'Additionals'
+    until randomNum % 2 == GetTeam() - 2 and (defaultTeams[randomNum].name ~= 'ADD' or defaultTeams[randomNum].name ~= '上古')
     -- print('randomNum='..tostring(randomNum)..', team name='..tostring(defaultTeams[randomNum].name)..', for team='..tostring(GetTeam()))
     playerList = Utils.MergeLists(defaultTeams[randomNum].players, defaultTeams[#defaultTeams].players)
     if overrides and #overrides > 0 then

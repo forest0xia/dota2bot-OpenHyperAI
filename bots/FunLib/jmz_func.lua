@@ -5571,6 +5571,7 @@ function J.NumHumanBotPlayersInTeam()
 end
 
 function J.GetEnemiesAroundAncient(bot, nRadius)
+	if bot == nil then bot = GetBot() end
 	return J.GetEnemiesAroundLoc(GetAncient(bot:GetTeam()):GetLocation(), nRadius)
 end
 function J.DoesUnitHaveTemporaryBuff(hUnit)
