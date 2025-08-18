@@ -5,6 +5,7 @@
     "author": "",
     "license": "MIT",
     "devDependencies": {
+        "@types/cheerio": "^0.22.35",
         "@types/node": "^22.10.3",
         "lua-types": "^2.13.1",
         "prettier": "^3.3.3",
@@ -19,6 +20,12 @@
         "prettier": "prettier ./bots ./typescript --write",
         "update-version": "node ./typescript/post-process/update-version.js",
         "update-ne": "npm run build:node && node ./dist/post-process/static-neutrals-matchup.js",
+        "neutrals": "npm run build:node && node ./dist/post-process/neutrals.js",
+        "matchups": "npm run build:node && node ./dist/post-process/matchups.js",
         "release": "node ./typescript/post-process/update-version.js && npm run build && npm run prettier"
+    },
+    "dependencies": {
+        "cheerio": "^1.1.0",
+        "puppeteer": "^24.16.2"
     }
 }

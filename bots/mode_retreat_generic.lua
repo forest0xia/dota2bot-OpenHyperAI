@@ -88,7 +88,7 @@ function GetDesire()
 		end
 	end
 
-    if J.GetHP(bot) < 0.2 and bot:GetHealth() < #nEnemyHeroes >= 2 and bot:WasRecentlyDamagedByAnyHero(1) then
+    if J.GetHP(bot) < 0.2 and #nEnemyHeroes >= 2 and bot:WasRecentlyDamagedByAnyHero(1) then
         return RemapValClamped(J.GetHP(bot), 0.5, 0.1, BOT_MODE_DESIRE_NONE, BOT_MODE_DESIRE_VERYHIGH)
     end
     if X.LowChanceToRun() then

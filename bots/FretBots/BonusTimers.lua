@@ -16,7 +16,7 @@ require 'bots.FretBots.AwardBonus'
 require 'bots.FretBots.Flags'
 -- Neutral Item Helpers
 require 'bots.FretBots.NeutralItems'
-local StaticNeutralsMatchup = require('bots.FretBots.static_neutrals_matchup')
+local StaticNeutralsMatchup = require('bots.FretBots.neutrals_data')
 
 -- local debug flag
 local thisDebug = false;
@@ -87,30 +87,15 @@ end
 end
 
 function BonusTimers:GetBestItems(neediest, tier)
-	local items = StaticNeutralsMatchup[neediest.stats.internalName]
-	local limits = 3
-	if items then
-		local itemsForTier = items['TIER_'..tostring(tier)]
-		local itemList = {}
-		if itemsForTier then
-			local sortedItems = {}
-			for key, _ in pairs(itemsForTier) do
-				table.insert(sortedItems, key)
-			end
-			table.sort(sortedItems, function(a, b) return itemsForTier[a] > itemsForTier[b] end)
-			for _, item in ipairs(sortedItems) do
-				local aItem = BonusTimers:GetItemFromName(item)
-				if aItem then
-					table.insert(itemList, aItem)
-					if #itemList == limits then
-						return itemList
-					end
-				end
-			end
-		end
-		if #itemList > 0 then
-			return itemList
-		end
+    local sItemName = nil
+    local heroData = StaticNeutralsMatchup[neediest.stats.internalName]['neutral']
+    if heroData and heroData[nTier] then
+        sItemName = NeutralItems.SelectItem(heroData[nTier])
+    else
+        sItemName = hNeutralItemsList[nTier][RandomInt(1, #hNeutralItemsList[nTier])]
+    end
+	if sItemName then
+		return {sItemName}
 	end
 	return NeutralItems:GetTokenTableForTier(tier)
 end
@@ -287,7 +272,7 @@ function BonusTimers:NeutralItemFindTimer___()
 
 						-- Select the best item
 						local bestItem
-						if #items == 3
+						if #items == 1
 						then
 							bestItem = items[1] -- NeutralItems:GetItemForInternalName(items[1])
 						else

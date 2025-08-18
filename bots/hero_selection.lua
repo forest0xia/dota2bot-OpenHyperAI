@@ -9,6 +9,7 @@ local sSelectList = {}
 local tSelectPoolList = {}
 local tLaneAssignList = {}
 local bLineupReserve = false
+local matchups = require( GetScriptDirectory()..'/FretBots/matchups_data' )
 
 local MU = require( GetScriptDirectory()..'/FunLib/aba_matchups' )
 local Role = require( GetScriptDirectory()..'/FunLib/aba_role' )
@@ -408,63 +409,6 @@ function X.GetCurrentTeam(nTeam, bEnemy)
 	return nHeroList
 end
 
-function X.GetBestHeroFromPool(i, nTeamList)
-	local sBestHero = ''
-	local nHeroes = {}
-
-	for j = 1, #nTeamList
-	do
-		local hName = nTeamList[j].name
-		for _, sName in pairs(tSelectPoolList[i])
-		do
-			if (MU.IsSynergy(hName, sName) or MU.IsSynergy(sName, hName))
-			and not X.IsRepeatHero(sName)
-			then
-				if nHeroes[sName] == nil then nHeroes[sName] = {} end
-				if nHeroes[sName]['count'] == nil then nHeroes[sName]['count'] = 1 end
-				nHeroes[sName]['count'] = nHeroes[sName]['count'] + 1
-			end
-		end
-	end
-
-	local c = -1
-	for k1, v1 in pairs(nHeroes)
-	do
-		for k2, v2 in pairs(nHeroes[k1])
-		do
-			if not X.IsRepeatHero(k1)
-			then
-				if v2 > 0 and c > 0 and v2 == c
-				and RandomInt(1, 2) == 1
-				then
-					sBestHero = k1
-				end
-
-				if v2 > c
-				then
-					c = v2
-					sBestHero = k1
-				end
-			end
-		end
-	end
-
-	return sBestHero
-end
-
-function X.GetCurrEnmCores(nEnmTeam)
-	local nCurrCores = {}
-	for i = 1, #nEnmTeam
-	do
-		if nEnmTeam[i].pos >= 1 and nEnmTeam[i].pos <= 2
-		then
-			table.insert(nCurrCores, nEnmTeam[i].name)
-		end
-	end
-
-	return nCurrCores
-end
-
 local ShuffledPickOrder = {
 	TEAM_RADIANT = false,
 	TEAM_DIRE = false,
@@ -500,6 +444,30 @@ function CorrectPotentialLaneAssignment()
 	end
 end
 
+-- Return a flat list of enemy hero unit names (e.g., "npc_dota_hero_axe")
+local function GetEnemyHeroNames()
+    local enemies = {}
+    for _, id in pairs(GetTeamPlayers(GetOpposingTeam())) do
+        local h = GetSelectedHeroName(id)
+        if h ~= nil and h ~= '' then table.insert(enemies, h) end
+    end
+    return enemies
+end
+
+-- Count weak heroes currently picked across both teams (used to penalize picking more)
+local function CountWeakHeroesSelectedNow()
+    local count = 0
+    local function addIfWeak(team)
+        for _, id in pairs(GetTeamPlayers(team)) do
+            local h = GetSelectedHeroName(id)
+            if h and h ~= '' and Utils.HasValue(WeakHeroes, h) then count = count + 1 end
+        end
+    end
+    addIfWeak(GetTeam())
+    addIfWeak(GetOpposingTeam())
+    return count
+end
+
 function AllPickHeros()
 	local teamPlayers = GetTeamPlayers(GetTeam(), true)
 
@@ -517,40 +485,55 @@ function AllPickHeros()
 		then
 			sSelectHero = sSelectList[i]
 
-			-- Give a chance to pick counter/synergy heroes
-			if not X.IsInCustomizedPicks(sSelectHero) and RandomInt(1, 5) >= 3 then
-				local nCurrEnmCores = X.GetCurrEnmCores(nEnmTeam)
-				local selectCounter = nil
-
-				-- Pick a random core in the current enemy comp to counter
-				local nHeroToCounter = nCurrEnmCores[RandomInt(1, #nCurrEnmCores)]
-
-				for j = 1, #tSelectPoolList[i], 1
-				do
-					local idx = RandomInt(1, #tSelectPoolList[i])
-					local heroName = tSelectPoolList[i][idx]
-					if not X.IsRepeatHero(heroName)
-					and MU.IsCounter(heroName, nHeroToCounter) -- so it's not 'samey'; since bots don't really put pressure like a human would
-					then
-						print('Team '..GetTeam()..'. Counter pick. ', 'Selected: '..heroName, ' to counter: '..nHeroToCounter)
-						selectCounter = heroName
-						break
+			-- Give a chance to pick using matchup data
+			if not X.IsInCustomizedPicks(sSelectHero) and RandomInt(1, 5) >= 1 then
+				local enemyNames = GetEnemyHeroNames()
+				local topHeroes = {}
+				local weakPicked = CountWeakHeroesSelectedNow()
+		
+				for _, cand in ipairs(tSelectPoolList[i]) do
+					if not X.IsRepeatHero(cand) and not X.IsBannedHero(cand) then
+						local score = 0
+		
+						-- Sum counter values vs current enemy comp.
+						-- matchups[cand][enemy] is the "advantage" of enemy vs cand from Dotabuff counters.
+						-- We NEGATE it so lower enemy advantage => higher (better) score.
+						if matchups[cand] then
+							for _, e in ipairs(enemyNames) do
+								local adv = matchups[cand][e]
+								if adv ~= nil then
+									score = score + (-1 * adv)
+								end
+							end
+						end
+		
+						-- Penalize weak heroes if we already have some selected (softly)
+						if Utils.HasValue(WeakHeroes, cand) then
+							local penalty = 1 - math.min(weakPicked / 4, 1) -- 0~1
+							score = score * penalty
+						end
+		
+						table.insert(topHeroes, { name = cand, score = score })
 					end
 				end
-
-				if CountCounterPicks < 2
-				and selectCounter ~= nil then
-					sSelectHero = selectCounter
-					CountCounterPicks = CountCounterPicks + 1
+		
+				-- Sort best->worst and keep the top 3, then add a bit of "fuzz" randomness
+				table.sort(topHeroes, function(a, b) return a.score > b.score end)
+				while #topHeroes > 3 do table.remove(topHeroes) end
+		
+				if #topHeroes >= 1 then
+					local roll = RandomInt(0, 100) / 100.0
+					if     roll <= 0.50 then sSelectHero = topHeroes[1].name
+					elseif roll <= 0.75 and topHeroes[2] then sSelectHero = topHeroes[2].name
+					elseif topHeroes[3] then sSelectHero = topHeroes[3].name
+					else sSelectHero = topHeroes[1].name end
 				else
-					local synergy = X.GetBestHeroFromPool(i, nOwnTeam)
-					if synergy ~= '' and synergy ~= nil then
-						print('Team '..GetTeam()..'. Synergy pick. ', 'Selected: '..synergy)
-						sSelectHero = synergy
-					end
+					-- Fallback if pool gets filtered out by bans/repeats
+					sSelectHero = X.GetNotRepeatHero( tSelectPoolList[i] )
 				end
 			else
-				-- print('Team '..GetTeam()..'. Skip picking counter/synergy heroes. For more chance to see any heroes')
+				-- Keep your “see any heroes” variety path
+				-- (no-op; sSelectHero stays as preselected from sSelectList)
 			end
 
 			if X.IsRepeatHero(sSelectHero) then sSelectHero = X.GetNotRepeatHero( tSelectPoolList[i] ) end

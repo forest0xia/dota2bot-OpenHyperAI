@@ -1,7 +1,9 @@
 local X = {}
 
+local botTeam = bot:GetTeam()
 local bot = GetBot()
 local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
+local Localization = require( GetScriptDirectory()..'/FunLib/localization' )
 
 local Tormentor = nil
 local TormentorLocation = 0
@@ -318,7 +320,7 @@ function Think()
 
                     if J.GetFirstBotInTeam() == bot and canDoTormentor and (DotaTime() > tormentorMessageTime + 15) then
                         tormentorMessageTime = DotaTime()
-                        bot:ActionImmediate_Chat("Let's try Tormentor?", false)
+                        bot:ActionImmediate_Chat(Localization.Get('can_try_tormentor'), false)
                         bot:ActionImmediate_Ping(c:GetLocation().x, c:GetLocation().y, true)
                         return
                     end
@@ -369,7 +371,7 @@ function X.IsEnoughAllies(vLocation, nRadius)
 	end
 
 	return ((bot.tormentor_kill_time == 0 and nAllyCount >= 5)
-         or (bot.tormentor_kill_time == 0 and nAllyCount >= 4 and nCoreCountInLoc2 >= 3 and nSuppCountInLoc2 >= 1)
+         or (bot.tormentor_kill_time == 0 and nAllyCount >= 4 and nCoreCountInLoc2 >= 2 and nSuppCountInLoc2 >= 1)
          or (bot.tormentor_kill_time > 0 and nAllyCount >= 3))
     and nCoreCountInLoc2 >= 2
 end

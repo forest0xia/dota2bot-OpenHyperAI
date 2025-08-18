@@ -89,6 +89,9 @@ function GetDesireHelper()
 	pingedDefendDesire = 0
 	local botMode = bot:GetActiveMode()
 
+	bot.laneToPush = J.GetMostPushLaneDesire()
+	bot.laneToDefend = J.GetMostDefendLaneDesire()
+
 	if IsShouldFindTeammates then
 		if DotaTime() - ShouldFindTeammatesTime > ShouldFindTeammatesTimeGap or not goToTargetAlly then
 			IsShouldFindTeammates = false
@@ -165,9 +168,19 @@ function GetDesireHelper()
 		return BOT_ACTION_DESIRE_VERYHIGH + 0.1
 	end
 
-	if (J.IsPushing(bot) or J.IsDefending(bot) or J.IsDoingRoshan(bot) or J.IsDoingTormentor(bot) or J.IsFarming(bot)
-		or botMode == BOT_MODE_RUNE or botMode == BOT_MODE_SECRET_SHOP or botMode == BOT_MODE_WARD or botMode == BOT_MODE_ROAM)
-	and bot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH
+	if not J.IsFarming(bot)
+	and not J.IsPushing(bot)
+	and not J.IsDefending(bot)
+	and not J.IsDoingRoshan(bot)
+	and not J.IsDoingTormentor(bot)
+	and bot:GetActiveMode() ~= BOT_MODE_RUNE
+	and bot:GetActiveMode() ~= BOT_MODE_SECRET_SHOP
+	and bot:GetActiveMode() ~= BOT_MODE_OUTPOST
+	and bot:GetActiveMode() ~= BOT_MODE_WARD
+	and bot:GetActiveMode() ~= BOT_MODE_ATTACK
+	and bot:GetActiveMode() ~= BOT_MODE_DEFEND_ALLY
+	and bot:GetActiveMode() ~= BOT_MODE_ROAM
+	and bot:GetActiveMode() ~= BOT_MODE_ATTACK
 	then
 		return BOT_ACTION_DESIRE_NONE
 	elseif #nearbyAllies >= #nearbyEnemies then
@@ -517,6 +530,8 @@ function PingedDefendThink()
 end
 
 function ConsiderHelpAlly()
+	if J.GetHP(bot) < 0.3 then return nil, false end
+
 	local nRadius = 3500
 	local nModeDesire = bot:GetActiveModeDesire()
 	local nClosestAlly = J.GetClosestAlly(bot, nRadius)
