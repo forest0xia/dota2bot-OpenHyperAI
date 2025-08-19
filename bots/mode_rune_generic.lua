@@ -380,6 +380,10 @@ function X.IsIBecameTheTarget(hUnitList)
 	return false
 end
 
+local function IsBountyRune(r)
+    return r == RUNE_BOUNTY_1 or r == RUNE_BOUNTY_2
+end
+
 function X.IsUnitAroundLocation(vLoc, nRadius)
     for _, id in pairs(GetTeamPlayers(GetOpposingTeam())) do
 		if IsHeroAlive(id) then
@@ -400,20 +404,21 @@ function X.GetBotClosestRune()
 	local cRune = -1
 
 	for _, rune in pairs(nRuneList) do
-		local rLoc = GetRuneSpawnLocation(rune)
-
-        if X.IsTheClosestOne(rLoc, rune)
-        and not X.IsPingedByHumanPlayer(rLoc, 1200)
-		and not X.IsMissing(rune)
-		and not X.IsTherePosition(1, rune, 1600)
-		and not X.IsTherePosition(2, rune, 1600)
-        then
-            local dist = GetUnitToLocationDistance(bot, rLoc)
-            if dist < cDist then
-                cDist = dist
-                cRune = rune
-            end
-        end
+		if not (J.IsCore(bot) and DotaTime() > 170 and IsBountyRune(rune)) then
+			local rLoc = GetRuneSpawnLocation(rune)
+			if X.IsTheClosestOne(rLoc, rune)
+			and not X.IsPingedByHumanPlayer(rLoc, 1200)
+			and not X.IsMissing(rune)
+			and not X.IsTherePosition(1, rune, 1600)
+			and not X.IsTherePosition(2, rune, 1600)
+			then
+				local dist = GetUnitToLocationDistance(bot, rLoc)
+				if dist < cDist then
+					cDist = dist
+					cRune = rune
+				end
+			end
+		end
 	end
 
 	return cRune, cDist
@@ -442,7 +447,7 @@ function X.IsTheClosestOne(vLocation, nRuneLoc)
 		return true
 	end
 
-    for i = 1, 5 do
+    for i = 1, #GetTeamPlayers( GetTeam() ) do
         local member = GetTeamMember(i)
         if member ~= nil and member:IsAlive() then
 			local dist = GetUnitToLocationDistance(member, vLocation)
@@ -460,7 +465,7 @@ function X.IsTherePosition(nPos, nRuneLoc, nRadius)
 	if not X.IsPowerRune(nRuneLoc) and DotaTime() > 6 * 60 then return false end
 	local rLoc = GetRuneSpawnLocation(nRuneLoc)
 
-	for i = 1, 5 do
+	for i = 1, #GetTeamPlayers( GetTeam() ) do
         local member = GetTeamMember(i)
         if member ~= nil and member:IsAlive() and bot ~= member
 		and J.GetPosition(member) == nPos then
@@ -477,7 +482,7 @@ end
 local pingTimeDelta = 15
 function X.IsPingedByHumanPlayer(vLocation, nRadius)
     local thisBotDistFromLocation = GetUnitToLocationDistance(bot, vLocation)
-    for i = 1, 5 do
+    for i = 1, #GetTeamPlayers( GetTeam() ) do
         local member = GetTeamMember(i)
         if member ~= nil and member:IsAlive() and not member:IsBot() then
             local ping = member:GetMostRecentPing()
@@ -615,7 +620,7 @@ end
 function X.UpdateWisdom()
 	-- todo: see if a human has been at a spot within time, so don't go there and waste time
 	if timeInMin >= 7 and timeInMin % 7 == 0 then
-		for i = 1, 5 do
+		for i = 1, #GetTeamPlayers( GetTeam() ) do
 			local member = GetTeamMember(i)
 			-- init
 			if member ~= nil and member == bot then
@@ -656,7 +661,7 @@ end
 function X.GetWisdomAlly(vLoc)
 	local target = nil
 	local score = math.huge
-	for i = 1, 5 do
+	for i = 1, #GetTeamPlayers( GetTeam() ) do
 		local member = GetTeamMember(i)
 		if member ~= nil and member:IsAlive() and not J.IsDoingTormentor(member) then
 			local dist = GetUnitToLocationDistance(member, vLoc)

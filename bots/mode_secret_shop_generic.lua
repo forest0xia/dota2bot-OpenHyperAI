@@ -89,7 +89,10 @@ function Think()
 		return
 	end
 	if J.Utils.IsBotThinkingMeaningfulAction(bot) then return end
-	
+
+	if preferedShop == nil then
+		preferedShop = X.GetPreferedSecretShop();
+	end
 	if bot:DistanceFromSecretShop() == 0
 	then
 		bot:Action_MoveToLocation(preferedShop + RandomVector(200))
@@ -135,14 +138,12 @@ function X.GetPreferedSecretShop()
 		else
 			return RAD_SECRET_SHOP;
 		end
-	elseif GetTeam() == TEAM_DIRE then
-		if GetUnitToLocationDistance(bot, RAD_SECRET_SHOP) <= 3800 then
-			return RAD_SECRET_SHOP;
-		else
-			return DIRE_SECRET_SHOP;
-		end
 	end
-	return nil;
+	if GetUnitToLocationDistance(bot, RAD_SECRET_SHOP) <= 3800 then
+		return RAD_SECRET_SHOP;
+	else
+		return DIRE_SECRET_SHOP;
+	end
 end
 
 function X.IsSuitableToBuy()

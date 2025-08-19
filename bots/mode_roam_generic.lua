@@ -712,6 +712,13 @@ function ThinkGeneralRoaming()
 		return
 	end
 
+	if shouldGoBackToFountain then
+		if bot:HasModifier('modifier_fountain_aura_buff')
+		   or (J.GetHP(bot) > 0.8 and J.GetMP(bot) > 0.7) then
+			shouldGoBackToFountain = false
+		end
+	end
+
 	if AnyUnitAffectedByChainFrost then
 		J.Utils.SmartSpreadOut(bot, nChainFrostBounceDistance, nChainFrostBounceDistance, nInRangeEnemy, false)
 		return
@@ -786,7 +793,9 @@ function ThinkGeneralRoaming()
 	end
 
 	if botName == 'npc_dota_hero_lone_druid' then
-		bot:Action_MoveToLocation(J.GetTeamFountain())
+		if J.GetHP(bot) < 0.65 or J.GetMP(bot) < 0.35 then
+			bot:Action_MoveToLocation(J.GetTeamFountain()); return
+		end
 	end
 
 	if bot:HasModifier("modifier_ursa_fury_swipes_damage_increase") then
@@ -1231,7 +1240,7 @@ function ConsiderGeneralRoamingInConditions()
 	and not bot:HasModifier("modifier_lone_druid_true_form") then
 		if nInRangeEnemy and J.IsValidHero(nInRangeEnemy[1])
 		and J.IsInRange(bot, nInRangeEnemy[1], math.max(bot:GetAttackRange(), nInRangeEnemy[1]:GetAttackRange()) - 250) then
-			return 0.98
+			return 0.6
 		end
 	end
 
@@ -1266,8 +1275,12 @@ function ConsiderGeneralRoamingInConditions()
 			end
 		end
 		if not hasLowHpEnemy then
-			return 0.98
+			local crowd = #nInCloseRangeAlly
+			local hp = J.GetHP(bot)
+			return Clamp(0.35 + 0.35 * (crowd >= 2 and 1 or 0) + 0.3 * (hp < 0.6 and 1 or 0), 0.35, 0.85)
+			-- return RemapValClamped(hp, 0, 0.6, BOT_ACTION_DESIRE_NONE, 0.98)
 		end
+		AnyUnitAffectedByChainFrost = false
 	end
 
 	-- HasPossibleWallOfReplicaAround = J.Utils.HasPossibleWallOfReplicaAround(bot)

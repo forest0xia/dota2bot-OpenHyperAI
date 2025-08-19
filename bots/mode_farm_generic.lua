@@ -155,7 +155,7 @@ function GetDesireHelper()
     end
 
     local nAllyHeroes_attacking = {}
-	for i = 1, 5 do
+	for i = 1, #GetTeamPlayers( GetTeam() ) do
 		local member = GetTeamMember(i)
 		if bot ~= member and J.IsValidHero(member) and J.IsInRange(bot, member, 1600) then
             local hTarget = member:GetAttackTarget()
@@ -175,7 +175,7 @@ function GetDesireHelper()
     end
 
 	-- Retreating allies
-    for i = 1, 5 do
+    for i = 1, #GetTeamPlayers( GetTeam() ) do
 		local member = GetTeamMember(i)
 		if bot ~= member and J.IsValidHero(member) and J.IsInRange(bot, member, 2000) and J.IsRetreating(member) then
             local nInRangeEnemy = J.GetEnemiesNearLoc(member:GetLocation(), 1200)

@@ -119,7 +119,7 @@ function GetPositionedPool(heroPosMap, position)
     local sortedHeroNames = {}
     for _, hero in ipairs(heroList) do
 		local name = hero.name
-		print('Picking for position: '.. tostring(position) .. ", checking role for hero: "..name)
+		print('[Pool setup] Picking for position: '.. tostring(position) .. ", checking role for hero: "..name)
 		if countDurableHeroes[position] == nil then countDurableHeroes[position] = 0 end
 		if (position == 1 and ShouldPickDurableOrOtherCores(name, position, 6))
 		or (position == 2 and ShouldPickDurableOrOtherCores(name, position, 6))
@@ -127,7 +127,7 @@ function GetPositionedPool(heroPosMap, position)
 		or (position == 4 and Role.IsSupport(name) and ShouldPickDurableOrOtherSupports(name, position, 4))
 		or (position == 5 and Role.IsSupport(name) and (Role.IsRanged(name) or hero.weight >= 60) and (Role.IsDisabler(name) or Role.IsHealer(name) or Role.IsInitiator(name)))
 		then
-			print("Selected hero: " ..name .. " as an option for position: ".. tostring(position))
+			print("[Pool setup] Selected hero: " ..name .. " as an option for position: ".. tostring(position))
 			table.insert(sortedHeroNames, name)
 			countDurableHeroes[position] = countDurableHeroes[position] + 1
 			-- Only return top k (ROLE_LIST_TOP_K_LIMIT) results.
@@ -139,7 +139,7 @@ function GetPositionedPool(heroPosMap, position)
 	if #sortedHeroNames < 6 then -- in case all selections is unavailable or have been picked.
 		sortedHeroNames = Utils.CombineTablesUnique(sortedHeroNames, GetPositionedPool(heroPosMap, position))
 	end
-	print("For position: " .. position .. ", pool size count: ".. #sortedHeroNames)
+	print("[Pool setup] For position: " .. position .. ", pool size count: ".. #sortedHeroNames)
 	Utils.PrintTable(sortedHeroNames)
     return sortedHeroNames
 end

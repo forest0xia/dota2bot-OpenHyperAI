@@ -14,21 +14,9 @@ local nEnemyTowers, nEnemyCreeps, assignedLane, tangoDesire, tangoTarget, tangoS
 
 function X.GetDesire()
 
-	tangoDesire = 0
-	tangoSlot = J.FindItemSlotNotInNonbackpack(bot, "item_tango")
-	if tangoSlot < 0 then
-		tangoSlot = J.FindItemSlotNotInNonbackpack(bot, "item_tango_single")
-	end
-	if tangoSlot >= 0
-	and bot:OriginalGetMaxHealth() - bot:OriginalGetHealth() > 250
-	and J.GetHP(bot) > 0.15
-	and not J.IsAttacking(bot)
-	and not bot:WasRecentlyDamagedByAnyHero(2)
-	and not bot:HasModifier('modifier_tango_heal') then
-		tangoDesire, tangoTarget = ConsiderTango()
-		if tangoDesire > 0 then
-			return BOT_MODE_DESIRE_ABSOLUTE
-		end
+	tangoDesire, tangoTarget = ConsiderTango()
+	if tangoDesire > 0 then
+		return BOT_MODE_DESIRE_ABSOLUTE
 	end
 
 	if not assignedLane then assignedLane = GetBotTargetLane() end
@@ -122,24 +110,34 @@ function X.Think()
 end
 
 function ConsiderTango()
-	local trees = bot:GetNearbyTrees( 800 )
-	local targetTree = trees[1]
-	local nearEnemyList = J.GetNearbyHeroes(bot, 1000, true, BOT_MODE_NONE )
-	local nearestEnemy = nearEnemyList[1]
-	local nearTowerList = bot:GetNearbyTowers( 1400, true )
-	local nearestTower = nearTowerList[1]
-
-	--常规吃树
-	if targetTree ~= nil
-	then
-		local targetTreeLoc = GetTreeLocation( targetTree )
-		if IsLocationVisible( targetTreeLoc )
-			and IsLocationPassable( targetTreeLoc )
-			and ( #nearEnemyList == 0 or not J.IsInRange( bot, nearestEnemy, 800 ) )
-			and ( #nearEnemyList == 0 or GetUnitToLocationDistance( bot, targetTreeLoc ) * 1.6 < GetUnitToUnitDistance( bot, nearestEnemy ) )
-			and ( #nearTowerList == 0 or GetUnitToLocationDistance( nearestTower, targetTreeLoc ) > 920 )
+	tangoDesire = 0
+	tangoSlot = J.FindItemSlotNotInNonbackpack(bot, "item_tango")
+	if tangoSlot < 0 then
+		tangoSlot = J.FindItemSlotNotInNonbackpack(bot, "item_tango_single")
+	end
+	if tangoSlot >= 0
+	and bot:OriginalGetMaxHealth() - bot:OriginalGetHealth() > 250
+	and J.GetHP(bot) > 0.15
+	and not J.IsAttacking(bot)
+	and not bot:WasRecentlyDamagedByAnyHero(2)
+	and not bot:HasModifier('modifier_tango_heal') then
+		local trees = bot:GetNearbyTrees( 800 )
+		local targetTree = trees[1]
+		local nearEnemyList = J.GetNearbyHeroes(bot, 1000, true, BOT_MODE_NONE )
+		local nearestEnemy = nearEnemyList[1]
+		local nearTowerList = bot:GetNearbyTowers( 1400, true )
+		local nearestTower = nearTowerList[1]
+		if targetTree ~= nil
 		then
-			return BOT_ACTION_DESIRE_HIGH, targetTree
+			local targetTreeLoc = GetTreeLocation( targetTree )
+			if IsLocationVisible( targetTreeLoc )
+				and IsLocationPassable( targetTreeLoc )
+				-- and ( #nearEnemyList == 0 or not J.IsInRange( bot, nearestEnemy, 800 ) )
+				and ( #nearEnemyList == 0 or GetUnitToLocationDistance( bot, targetTreeLoc ) * 1.6 < GetUnitToUnitDistance( bot, nearestEnemy ) )
+				and ( #nearTowerList == 0 or GetUnitToLocationDistance( nearestTower, targetTreeLoc ) > 920 )
+			then
+				return BOT_ACTION_DESIRE_HIGH, targetTree
+			end
 		end
 	end
 	return BOT_ACTION_DESIRE_NONE

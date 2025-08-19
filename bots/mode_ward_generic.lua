@@ -30,9 +30,6 @@ function GetDesireHelper()
         return BOT_MODE_DESIRE_NONE
     end
 
-	local nInRangeAlly = J.GetAlliesNearLoc(bot:GetLocation(), 1200)
-	local nInRangeEnemy = J.GetEnemiesNearLoc(bot:GetLocation(), 1200)
-
     for i = 0, 5 do
         local hItem = bot:GetItemInSlot(i)
         if hItem then

@@ -1473,6 +1473,22 @@ function J.GetItem(itemName)
 	return nil
 end
 
+function J.GetItem2(bot, sItemName)
+	for i = 0, 16
+	do
+		local item = bot:GetItemInSlot(i)
+		if item ~= nil
+		then
+			if string.find(item:GetName(), sItemName)
+			then
+				return item
+			end
+		end
+	end
+
+	return nil
+end
+
 function J.IsRetreating( bot )
 
 	local mode = bot:GetActiveMode()

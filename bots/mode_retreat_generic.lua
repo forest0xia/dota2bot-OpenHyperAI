@@ -27,10 +27,10 @@ function GetDesire()
     or (botActiveMode == BOT_MODE_EVASIVE_MANEUVERS)
     or (bot:GetUnitName() == 'npc_dota_hero_lone_druid' and bot:HasModifier('modifier_fountain_aura_buff') and DotaTime() < 0)
     or bot:HasModifier('modifier_item_satanic_unholy')
-    or J.GetModifierTime(bot, "modifier_abaddon_borrowed_time") > 1.5
-    or J.GetModifierTime(bot, "modifier_muerta_pierce_the_veil_buff") > 1.5
-    or J.GetModifierTime(bot, 'modifier_dazzle_shallow_grave') > 1.5
-    or J.GetModifierTime(bot, 'modifier_oracle_false_promise_timer') > 1.5
+    or J.GetModifierTime(bot, "modifier_abaddon_borrowed_time") > 2
+    or J.GetModifierTime(bot, "modifier_muerta_pierce_the_veil_buff") > 2
+    or J.GetModifierTime(bot, 'modifier_dazzle_shallow_grave') > 3
+    or J.GetModifierTime(bot, 'modifier_oracle_false_promise_timer') > 3
     then
         return BOT_MODE_DESIRE_NONE
     end
@@ -164,8 +164,8 @@ function GetDesire()
         end
     end
 
-    if --[[(botHP <= 0.3) or]] ((botHP <= 0.6 or botMP < 0.4 ) and bot:DistanceFromFountain() <= 4000 and not bTeamFight) then
-        return RemapValClamped(J.GetHP(bot), 0.9, 0.5, BOT_MODE_DESIRE_MODERATE, BOT_MODE_DESIRE_VERYHIGH)
+    if --[[(botHP <= 0.3) or]] (( botMP < 0.4 ) and bot:DistanceFromFountain() <= 4000 and not bTeamFight) then
+        return RemapValClamped(J.GetHP(bot), 0.9, 0.2, BOT_MODE_DESIRE_MODERATE, BOT_MODE_DESIRE_VERYHIGH)
     end
 
     if bot:HasModifier('modifier_fountain_aura_buff') then
@@ -341,7 +341,7 @@ function GetDesire()
     -- nDesire = nDesire + X.GetUnitDesire(1200)
     nDesire = nDesire + X.RetreatWhenTowerTargetedDesire()
 
-    return Min(nDesire, 1.0)
+    return RemapValClamped(J.GetHP(bot), 1, 0.3, BOT_MODE_DESIRE_NONE, Min(nDesire, 1.0))
 end
 
 function X.LowChanceToRun()
