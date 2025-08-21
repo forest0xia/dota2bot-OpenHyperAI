@@ -1243,7 +1243,7 @@ function AnnounceMessages()
 		-- 	-- broken for 7.38 for now.
 		-- 	return
 		-- end
-		bot:ActionImmediate_Chat(Localization.Get('say_play_pos')..J.GetPosition(bot), false)
+		bot:ActionImmediate_Chat(Localization.Get('say_play_pos')..J.GetPosition(bot)..Localization.Get('say_play_pos_2'), false)
 	end
 	if GetGameMode() ~= GAMEMODE_1V1MID
 	and not isChangePosMessageDone
