@@ -53,11 +53,11 @@ local runMode = false;
 if bot.farmLocation == nil then bot.farmLocation = bot:GetLocation() end
 
 function GetDesire()
-	local cacheKey = 'GetFarmDesire'..tostring(bot:GetPlayerID())
-	local cachedVar = J.Utils.GetCachedVars(cacheKey, 0.6)
-	if cachedVar ~= nil then return cachedVar end
+	-- local cacheKey = 'GetFarmDesire'..tostring(bot:GetPlayerID())
+	-- local cachedVar = J.Utils.GetCachedVars(cacheKey, 0.2)
+	-- if DotaTime() > 30 and cachedVar ~= nil then return cachedVar end
 	local res = GetDesireHelper()
-	J.Utils.SetCachedVars(cacheKey, res)
+	-- J.Utils.SetCachedVars(cacheKey, res)
 	return res
 end
 
@@ -367,12 +367,12 @@ function GetDesireHelper()
 		if J.GetDistanceFromEnemyFountain(bot) > 4000 
 		then
 			hLaneCreepList = bot:GetNearbyLaneCreeps(1600, true);
-			-- if #hLaneCreepList == 0	
-			--    and J.IsInAllyArea( bot )
-			--    and X.IsNearLaneFront( bot )
-			-- then
-			-- 	hLaneCreepList = bot:GetNearbyLaneCreeps(1600, false);
-			-- end
+			if #hLaneCreepList == 0	
+			   and J.IsInAllyArea( bot )
+			   and X.IsNearLaneFront( bot )
+			then
+				hLaneCreepList = bot:GetNearbyLaneCreeps(1600, false);
+			end
 		end;		
 		
 		if #hLaneCreepList > 0 
@@ -390,10 +390,9 @@ function GetDesireHelper()
 					then 
 						teamTime = DotaTime();
 						return BOT_MODE_DESIRE_VERYLOW;
-				-- elseif farmState == 1
-				--     then 
-				-- 		bot.farmLocation = preferedCamp.cattr.location
-				-- 	    return BOT_MODE_DESIRE_ABSOLUTE
+				elseif farmState == 1
+					then 
+						return BOT_MODE_DESIRE_ABSOLUTE *0.89;
 				else
 					local farmDistance = GetUnitToLocationDistance(bot,preferedCamp.cattr.location);
 					bot.farmLocation = preferedCamp.cattr.location
@@ -418,12 +417,12 @@ function OnStart()
 end
 
 function OnEnd()
-	-- preferedCamp = nil;
-	-- farmState = 0;
-	-- hLaneCreepList  = {};
+	preferedCamp = nil;
+	farmState = 0;
+	hLaneCreepList  = {};
 	runMode = false;
 	runTime = 0;
-	-- bot:SetTarget(nil);
+	bot:SetTarget(nil);
 end
 
 function Think()
@@ -524,6 +523,29 @@ function Think()
 					end
 				end
 			end
+		end
+	end
+
+	bot._farm_repick_at = bot._farm_repick_at or 0
+	if GameTime() >= (bot._farm_repick_at or 0) then
+		bot._farm_repick_at = GameTime() + 1.0
+
+		local old = preferedCamp
+		if old then
+			local oldDist = old and GetUnitToLocationDistance(bot, old.cattr.location) or 9e9
+	
+			local avail = J.Role['availableCampTable']
+			local nearest = J.Site.GetClosestNeutralSpwan(bot, avail)
+	
+			if nearest then
+				local newDist = GetUnitToLocationDistance(bot, nearest.cattr.location)
+				-- switch if we save >800 units or ETA improves a lot
+				if newDist + 200 < oldDist then
+					preferedCamp = nearest
+				end
+			end
+		else
+			preferedCamp = J.Site.GetClosestNeutralSpwan(bot, availableCamp);
 		end
 	end
 	

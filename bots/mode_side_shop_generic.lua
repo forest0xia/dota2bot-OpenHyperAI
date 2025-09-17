@@ -23,7 +23,7 @@ local bHumanInTeam = false
 function GetDesire()
 	local cacheKey = 'GetSideShopDesire'..tostring(bot:GetPlayerID())
 	local cachedVar = J.Utils.GetCachedVars(cacheKey, 0.6 * (1 + Customize.ThinkLess))
-	if cachedVar ~= nil then return cachedVar end
+	if DotaTime() > 30 and cachedVar ~= nil then return cachedVar end
 	local res = GetDesireHelper()
 	J.Utils.SetCachedVars(cacheKey, res)
 	return res

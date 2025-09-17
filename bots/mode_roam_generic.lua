@@ -51,7 +51,7 @@ local laneAndT1s = {
 function GetDesire()
 	local cacheKey = 'GetRoamDesire'..tostring(bot:GetPlayerID())
 	local cachedVar = J.Utils.GetCachedVars(cacheKey, 0.5 * (1 + Customize.ThinkLess))
-	if cachedVar ~= nil then return cachedVar end
+	if DotaTime() > 30 and cachedVar ~= nil then return cachedVar end
 	local res = GetDesireHelper()
 	J.Utils.SetCachedVars(cacheKey, res)
 	return res
@@ -88,7 +88,7 @@ function GetDesireHelper()
 		return BOT_ACTION_DESIRE_ABSOLUTE
 	end
 
-	if DotaTime() > 0 and DotaTime() - ShouldMoveOutsideFountainCheckTime < 2 then
+	if bot:HasModifier('modifier_fountain_aura_buff') and DotaTime() > 0 and DotaTime() - ShouldMoveOutsideFountainCheckTime < 2 then
 		return Clamp(bot:GetActiveModeDesire() + 0.2, 0, 1.1)
 	else
 		ShouldMoveOutsideFountain = false
@@ -1036,7 +1036,7 @@ function CheckLaneToGank(botPosition)
 				local nInRangeAlly = J.GetAlliesNearLoc(laneFront, 1200)
 
 				if enableGateUsage
-				and laneFrontToT1Dist < 2000
+				and laneFrontToT1Dist < 800
 				then
 					targetGate = GetGateNearLane(laneFront)
 					if enemyCountInLane >= #nInRangeAlly
@@ -1135,7 +1135,7 @@ function ConsiderUseTango()
 	end
 	if tangoSlot >= 0
 	and bot:OriginalGetMaxHealth() - bot:OriginalGetHealth() > 250
-	and J.GetHP(bot) > 0.15
+	and J.GetHP(bot) < 0.6
 	and not J.IsAttacking(bot)
 	and not bot:WasRecentlyDamagedByAnyHero(2) then
 		local trees = bot:GetNearbyTrees( 800 )

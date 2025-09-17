@@ -14,17 +14,17 @@ local heroList = {
         ['npc_dota_hero_shadow_demon'] = 2.68,
         ['npc_dota_hero_meepo'] = 2.6,
         ['npc_dota_hero_ancient_apparition'] = 2.57,
-        ['npc_dota_hero_lone_druid'] = 2.42,
+        
         ['npc_dota_hero_tinker'] = 2.31,
         ['npc_dota_hero_slark'] = 2.24,
-        ['npc_dota_hero_tusk'] = 2.23,
+        
         ['npc_dota_hero_chen'] = 2.23,
         ['npc_dota_hero_earthshaker'] = 2.04,
-        ['npc_dota_hero_pangolier'] = 2.02,
+        
         ['npc_dota_hero_sven'] = 2.02,
         ['npc_dota_hero_marci'] = 1.78,
         ['npc_dota_hero_terrorblade'] = 1.77,
-        ['npc_dota_hero_brewmaster'] = 1.75,
+        
         ['npc_dota_hero_kunkka'] = 1.75,
         ['npc_dota_hero_keeper_of_the_light'] = 1.74,
         ['npc_dota_hero_weaver'] = 1.66,
@@ -34,13 +34,13 @@ local heroList = {
         ['npc_dota_hero_grimstroke'] = 1.49,
         ['npc_dota_hero_razor'] = 1.49,
         ['npc_dota_hero_primal_beast'] = 1.46,
-        ['npc_dota_hero_rubick'] = 1.44,
+        
         ['npc_dota_hero_lycan'] = 1.41,
         ['npc_dota_hero_abyssal_underlord'] = 1.41,
         ['npc_dota_hero_furion'] = 1.4,
         ['npc_dota_hero_tiny'] = 1.38,
         ['npc_dota_hero_nevermore'] = 1.37,
-        ['npc_dota_hero_wisp'] = 1.31,
+        
         ['npc_dota_hero_medusa'] = 1.3,
         ['npc_dota_hero_pugna'] = 1.29,
         ['npc_dota_hero_magnataur'] = 1.26,
@@ -75,7 +75,7 @@ local heroList = {
         ['npc_dota_hero_crystal_maiden'] = 0.28,
         ['npc_dota_hero_sniper'] = 0.28,
         ['npc_dota_hero_dragon_knight'] = 0.23,
-        ['npc_dota_hero_visage'] = 0.22,
+        
         ['npc_dota_hero_disruptor'] = 0.22,
         ['npc_dota_hero_phantom_assassin'] = 0.13,
         ['npc_dota_hero_leshrac'] = 0.04,
@@ -117,7 +117,7 @@ local heroList = {
         ['npc_dota_hero_clinkz'] = -1.09,
         ['npc_dota_hero_phoenix'] = -1.14,
         ['npc_dota_hero_queenofpain'] = -1.23,
-        ['npc_dota_hero_puck'] = -1.24,
+        
         ['npc_dota_hero_legion_commander'] = -1.37,
         ['npc_dota_hero_earth_spirit'] = -1.56,
         ['npc_dota_hero_dazzle'] = -1.57,
@@ -131,7 +131,7 @@ local heroList = {
         ['npc_dota_hero_spectre'] = -4.57,
     },
     ['npc_dota_hero_abyssal_underlord'] = {
-        ['npc_dota_hero_rubick'] = 6.28,
+        
         ['npc_dota_hero_juggernaut'] = 3.29,
         ['npc_dota_hero_ursa'] = 2.73,
         ['npc_dota_hero_elder_titan'] = 2.66,
@@ -161,7 +161,7 @@ local heroList = {
         ['npc_dota_hero_magnataur'] = 0.82,
         ['npc_dota_hero_batrider'] = 0.82,
         ['npc_dota_hero_keeper_of_the_light'] = 0.79,
-        ['npc_dota_hero_pangolier'] = 0.75,
+        
         ['npc_dota_hero_enigma'] = 0.73,
         ['npc_dota_hero_viper'] = 0.72,
         ['npc_dota_hero_invoker'] = 0.62,
@@ -171,7 +171,7 @@ local heroList = {
         ['npc_dota_hero_venomancer'] = 0.5,
         ['npc_dota_hero_slark'] = 0.5,
         ['npc_dota_hero_phantom_assassin'] = 0.47,
-        ['npc_dota_hero_brewmaster'] = 0.44,
+        
         ['npc_dota_hero_earth_spirit'] = 0.43,
         ['npc_dota_hero_lina'] = 0.41,
         ['npc_dota_hero_leshrac'] = 0.41,
@@ -226,7 +226,7 @@ local heroList = {
         ['npc_dota_hero_vengefulspirit'] = -0.97,
         ['npc_dota_hero_necrolyte'] = -1.02,
         ['npc_dota_hero_beastmaster'] = -1.04,
-        ['npc_dota_hero_puck'] = -1.05,
+        
         ['npc_dota_hero_lycan'] = -1.18,
         ['npc_dota_hero_shadow_demon'] = -1.18,
         ['npc_dota_hero_zuus'] = -1.25,
@@ -238,7 +238,7 @@ local heroList = {
         ['npc_dota_hero_rattletrap'] = -1.37,
         ['npc_dota_hero_troll_warlord'] = -1.37,
         ['npc_dota_hero_dragon_knight'] = -1.88,
-        ['npc_dota_hero_tusk'] = -1.89,
+        
         ['npc_dota_hero_tiny'] = -2.11,
         ['npc_dota_hero_medusa'] = -2.15,
         ['npc_dota_hero_centaur'] = -2.2,
@@ -247,15 +247,15 @@ local heroList = {
         ['npc_dota_hero_primal_beast'] = -2.42,
         ['npc_dota_hero_spectre'] = -2.44,
         ['npc_dota_hero_chaos_knight'] = -2.64,
-        ['npc_dota_hero_visage'] = -2.89,
-        ['npc_dota_hero_wisp'] = -3.07,
+        
+        
         ['npc_dota_hero_riki'] = -3.37,
         ['npc_dota_hero_spirit_breaker'] = -3.78,
         ['npc_dota_hero_naga_siren'] = -3.84,
         ['npc_dota_hero_meepo'] = -4.11,
         ['npc_dota_hero_phantom_lancer'] = -4.19,
         ['npc_dota_hero_skeleton_king'] = -4.24,
-        ['npc_dota_hero_lone_druid'] = -5.05,
+        
     },
     ['npc_dota_hero_alchemist'] = {
         ['npc_dota_hero_doom_bringer'] = 1.95,
@@ -290,7 +290,7 @@ local heroList = {
         ['npc_dota_hero_techies'] = 0.6,
         ['npc_dota_hero_luna'] = 0.53,
         ['npc_dota_hero_crystal_maiden'] = 0.52,
-        ['npc_dota_hero_tusk'] = 0.49,
+        
         ['npc_dota_hero_arc_warden'] = 0.47,
         ['npc_dota_hero_spirit_breaker'] = 0.45,
         ['npc_dota_hero_sniper'] = 0.44,
@@ -302,7 +302,7 @@ local heroList = {
         ['npc_dota_hero_night_stalker'] = 0.33,
         ['npc_dota_hero_skywrath_mage'] = 0.32,
         ['npc_dota_hero_drow_ranger'] = 0.32,
-        ['npc_dota_hero_wisp'] = 0.31,
+        
         ['npc_dota_hero_dazzle'] = 0.31,
         ['npc_dota_hero_bane'] = 0.31,
         ['npc_dota_hero_omniknight'] = 0.31,
@@ -326,7 +326,7 @@ local heroList = {
         ['npc_dota_hero_rattletrap'] = -0.02,
         ['npc_dota_hero_nevermore'] = -0.02,
         ['npc_dota_hero_snapfire'] = -0.03,
-        ['npc_dota_hero_pangolier'] = -0.06,
+        
         ['npc_dota_hero_zuus'] = -0.07,
         ['npc_dota_hero_chen'] = -0.11,
         ['npc_dota_hero_troll_warlord'] = -0.13,
@@ -339,17 +339,17 @@ local heroList = {
         ['npc_dota_hero_warlock'] = -0.27,
         ['npc_dota_hero_earth_spirit'] = -0.29,
         ['npc_dota_hero_treant'] = -0.3,
-        ['npc_dota_hero_visage'] = -0.37,
+        
         ['npc_dota_hero_vengefulspirit'] = -0.38,
         ['npc_dota_hero_windrunner'] = -0.41,
         ['npc_dota_hero_ursa'] = -0.41,
         ['npc_dota_hero_magnataur'] = -0.41,
         ['npc_dota_hero_riki'] = -0.42,
         ['npc_dota_hero_faceless_void'] = -0.44,
-        ['npc_dota_hero_brewmaster'] = -0.46,
+        
         ['npc_dota_hero_abaddon'] = -0.47,
         ['npc_dota_hero_dragon_knight'] = -0.48,
-        ['npc_dota_hero_rubick'] = -0.53,
+        
         ['npc_dota_hero_chaos_knight'] = -0.54,
         ['npc_dota_hero_abyssal_underlord'] = -0.55,
         ['npc_dota_hero_ringmaster'] = -0.58,
@@ -372,10 +372,10 @@ local heroList = {
         ['npc_dota_hero_undying'] = -0.97,
         ['npc_dota_hero_sven'] = -0.99,
         ['npc_dota_hero_tiny'] = -1.02,
-        ['npc_dota_hero_lone_druid'] = -1.1,
+        
         ['npc_dota_hero_phantom_lancer'] = -1.32,
         ['npc_dota_hero_kunkka'] = -1.36,
-        ['npc_dota_hero_puck'] = -1.38,
+        
         ['npc_dota_hero_lycan'] = -1.49,
         ['npc_dota_hero_centaur'] = -1.8,
         ['npc_dota_hero_meepo'] = -1.82,
@@ -385,11 +385,11 @@ local heroList = {
         ['npc_dota_hero_skeleton_king'] = -3.22,
     },
     ['npc_dota_hero_ancient_apparition'] = {
-        ['npc_dota_hero_brewmaster'] = 2.72,
+        
         ['npc_dota_hero_storm_spirit'] = 2.65,
         ['npc_dota_hero_lycan'] = 2.61,
         ['npc_dota_hero_antimage'] = 2.6,
-        ['npc_dota_hero_puck'] = 2.54,
+        
         ['npc_dota_hero_phantom_lancer'] = 2.53,
         ['npc_dota_hero_void_spirit'] = 2.2,
         ['npc_dota_hero_weaver'] = 2.2,
@@ -410,11 +410,11 @@ local heroList = {
         ['npc_dota_hero_tinker'] = 1.19,
         ['npc_dota_hero_bane'] = 1.18,
         ['npc_dota_hero_clinkz'] = 1.14,
-        ['npc_dota_hero_pangolier'] = 1.09,
+        
         ['npc_dota_hero_slardar'] = 1.08,
         ['npc_dota_hero_hoodwink'] = 1.05,
         ['npc_dota_hero_spirit_breaker'] = 1.01,
-        ['npc_dota_hero_visage'] = 0.95,
+        
         ['npc_dota_hero_chaos_knight'] = 0.95,
         ['npc_dota_hero_zuus'] = 0.94,
         ['npc_dota_hero_skeleton_king'] = 0.94,
@@ -429,7 +429,7 @@ local heroList = {
         ['npc_dota_hero_riki'] = 0.77,
         ['npc_dota_hero_phantom_assassin'] = 0.73,
         ['npc_dota_hero_doom_bringer'] = 0.72,
-        ['npc_dota_hero_tusk'] = 0.64,
+        
         ['npc_dota_hero_enigma'] = 0.62,
         ['npc_dota_hero_faceless_void'] = 0.55,
         ['npc_dota_hero_sniper'] = 0.53,
@@ -453,10 +453,10 @@ local heroList = {
         ['npc_dota_hero_enchantress'] = 0.18,
         ['npc_dota_hero_centaur'] = 0.15,
         ['npc_dota_hero_legion_commander'] = 0.11,
-        ['npc_dota_hero_rubick'] = 0.08,
+        
         ['npc_dota_hero_sven'] = 0.07,
         ['npc_dota_hero_viper'] = 0.07,
-        ['npc_dota_hero_lone_druid'] = 0.02,
+        
         ['npc_dota_hero_crystal_maiden'] = -0.04,
         ['npc_dota_hero_earthshaker'] = -0.04,
         ['npc_dota_hero_pudge'] = -0.07,
@@ -507,7 +507,7 @@ local heroList = {
         ['npc_dota_hero_winter_wyvern'] = -2.11,
         ['npc_dota_hero_omniknight'] = -2.39,
         ['npc_dota_hero_abaddon'] = -2.57,
-        ['npc_dota_hero_wisp'] = -2.7,
+        
         ['npc_dota_hero_necrolyte'] = -5.05,
         ['npc_dota_hero_huskar'] = -6.45,
     },
@@ -515,7 +515,7 @@ local heroList = {
         ['npc_dota_hero_meepo'] = 6.8,
         ['npc_dota_hero_huskar'] = 6.27,
         ['npc_dota_hero_axe'] = 4.75,
-        ['npc_dota_hero_lone_druid'] = 4.74,
+        
         ['npc_dota_hero_phantom_assassin'] = 4.42,
         ['npc_dota_hero_troll_warlord'] = 3.67,
         ['npc_dota_hero_slardar'] = 3.61,
@@ -531,10 +531,10 @@ local heroList = {
         ['npc_dota_hero_bloodseeker'] = 2.23,
         ['npc_dota_hero_sven'] = 2.01,
         ['npc_dota_hero_beastmaster'] = 2,
-        ['npc_dota_hero_wisp'] = 1.93,
+        
         ['npc_dota_hero_ursa'] = 1.91,
         ['npc_dota_hero_riki'] = 1.9,
-        ['npc_dota_hero_puck'] = 1.87,
+        
         ['npc_dota_hero_disruptor'] = 1.71,
         ['npc_dota_hero_magnataur'] = 1.64,
         ['npc_dota_hero_broodmother'] = 1.63,
@@ -542,7 +542,7 @@ local heroList = {
         ['npc_dota_hero_jakiro'] = 1.53,
         ['npc_dota_hero_tiny'] = 1.51,
         ['npc_dota_hero_mirana'] = 1.5,
-        ['npc_dota_hero_pangolier'] = 1.47,
+        
         ['npc_dota_hero_phoenix'] = 1.44,
         ['npc_dota_hero_nyx_assassin'] = 1.43,
         ['npc_dota_hero_night_stalker'] = 1.43,
@@ -557,7 +557,7 @@ local heroList = {
         ['npc_dota_hero_crystal_maiden'] = 0.99,
         ['npc_dota_hero_spirit_breaker'] = 0.96,
         ['npc_dota_hero_batrider'] = 0.83,
-        ['npc_dota_hero_tusk'] = 0.73,
+        
         ['npc_dota_hero_slark'] = 0.72,
         ['npc_dota_hero_centaur'] = 0.7,
         ['npc_dota_hero_techies'] = 0.68,
@@ -576,17 +576,17 @@ local heroList = {
         ['npc_dota_hero_leshrac'] = -0.02,
         ['npc_dota_hero_naga_siren'] = -0.03,
         ['npc_dota_hero_dazzle'] = -0.07,
-        ['npc_dota_hero_rubick'] = -0.12,
+        
         ['npc_dota_hero_earth_spirit'] = -0.18,
         ['npc_dota_hero_ember_spirit'] = -0.22,
-        ['npc_dota_hero_visage'] = -0.29,
+        
         ['npc_dota_hero_grimstroke'] = -0.34,
         ['npc_dota_hero_weaver'] = -0.35,
         ['npc_dota_hero_faceless_void'] = -0.37,
         ['npc_dota_hero_gyrocopter'] = -0.39,
         ['npc_dota_hero_clinkz'] = -0.45,
         ['npc_dota_hero_dawnbreaker'] = -0.5,
-        ['npc_dota_hero_brewmaster'] = -0.52,
+        
         ['npc_dota_hero_spectre'] = -0.56,
         ['npc_dota_hero_invoker'] = -0.56,
         ['npc_dota_hero_chen'] = -0.59,
@@ -647,10 +647,10 @@ local heroList = {
         ['npc_dota_hero_chen'] = 2.89,
         ['npc_dota_hero_marci'] = 2.79,
         ['npc_dota_hero_naga_siren'] = 2.55,
-        ['npc_dota_hero_pangolier'] = 2.44,
+        
         ['npc_dota_hero_abaddon'] = 2.28,
         ['npc_dota_hero_sand_king'] = 2.26,
-        ['npc_dota_hero_wisp'] = 2.19,
+        
         ['npc_dota_hero_kez'] = 2.18,
         ['npc_dota_hero_bristleback'] = 2.1,
         ['npc_dota_hero_axe'] = 2,
@@ -659,7 +659,7 @@ local heroList = {
         ['npc_dota_hero_chaos_knight'] = 1.66,
         ['npc_dota_hero_tidehunter'] = 1.66,
         ['npc_dota_hero_centaur'] = 1.64,
-        ['npc_dota_hero_lone_druid'] = 1.62,
+        
         ['npc_dota_hero_dark_seer'] = 1.58,
         ['npc_dota_hero_phantom_assassin'] = 1.53,
         ['npc_dota_hero_jakiro'] = 1.47,
@@ -687,19 +687,19 @@ local heroList = {
         ['npc_dota_hero_antimage'] = 0.68,
         ['npc_dota_hero_abyssal_underlord'] = 0.67,
         ['npc_dota_hero_mars'] = 0.66,
-        ['npc_dota_hero_brewmaster'] = 0.64,
+        
         ['npc_dota_hero_crystal_maiden'] = 0.62,
         ['npc_dota_hero_spectre'] = 0.58,
         ['npc_dota_hero_dazzle'] = 0.55,
         ['npc_dota_hero_spirit_breaker'] = 0.5,
         ['npc_dota_hero_skeleton_king'] = 0.5,
         ['npc_dota_hero_pudge'] = 0.5,
-        ['npc_dota_hero_tusk'] = 0.48,
+        
         ['npc_dota_hero_pugna'] = 0.44,
         ['npc_dota_hero_luna'] = 0.43,
         ['npc_dota_hero_morphling'] = 0.43,
         ['npc_dota_hero_techies'] = 0.42,
-        ['npc_dota_hero_rubick'] = 0.36,
+        
         ['npc_dota_hero_gyrocopter'] = 0.33,
         ['npc_dota_hero_lina'] = 0.23,
         ['npc_dota_hero_undying'] = 0.23,
@@ -716,7 +716,7 @@ local heroList = {
         ['npc_dota_hero_riki'] = -0.1,
         ['npc_dota_hero_keeper_of_the_light'] = -0.12,
         ['npc_dota_hero_invoker'] = -0.14,
-        ['npc_dota_hero_visage'] = -0.16,
+        
         ['npc_dota_hero_shredder'] = -0.25,
         ['npc_dota_hero_zuus'] = -0.29,
         ['npc_dota_hero_bloodseeker'] = -0.34,
@@ -745,7 +745,7 @@ local heroList = {
         ['npc_dota_hero_ogre_magi'] = -1.2,
         ['npc_dota_hero_razor'] = -1.21,
         ['npc_dota_hero_dragon_knight'] = -1.23,
-        ['npc_dota_hero_puck'] = -1.27,
+        
         ['npc_dota_hero_grimstroke'] = -1.35,
         ['npc_dota_hero_slardar'] = -1.37,
         ['npc_dota_hero_lion'] = -1.39,
@@ -823,10 +823,10 @@ local heroList = {
         ['npc_dota_hero_bloodseeker'] = 0.67,
         ['npc_dota_hero_nevermore'] = 0.62,
         ['npc_dota_hero_abyssal_underlord'] = 0.62,
-        ['npc_dota_hero_tusk'] = 0.56,
-        ['npc_dota_hero_brewmaster'] = 0.54,
+        
+        
         ['npc_dota_hero_bane'] = 0.51,
-        ['npc_dota_hero_wisp'] = 0.49,
+        
         ['npc_dota_hero_dawnbreaker'] = 0.47,
         ['npc_dota_hero_omniknight'] = 0.38,
         ['npc_dota_hero_bounty_hunter'] = 0.31,
@@ -834,10 +834,10 @@ local heroList = {
         ['npc_dota_hero_undying'] = 0.26,
         ['npc_dota_hero_templar_assassin'] = 0.24,
         ['npc_dota_hero_invoker'] = 0.23,
-        ['npc_dota_hero_pangolier'] = 0.23,
+        
         ['npc_dota_hero_vengefulspirit'] = 0.21,
         ['npc_dota_hero_alchemist'] = 0.18,
-        ['npc_dota_hero_lone_druid'] = 0.11,
+        
         ['npc_dota_hero_disruptor'] = 0.11,
         ['npc_dota_hero_enchantress'] = 0.09,
         ['npc_dota_hero_slardar'] = -0.03,
@@ -855,7 +855,7 @@ local heroList = {
         ['npc_dota_hero_oracle'] = -0.51,
         ['npc_dota_hero_riki'] = -0.55,
         ['npc_dota_hero_faceless_void'] = -0.56,
-        ['npc_dota_hero_puck'] = -0.56,
+        
         ['npc_dota_hero_mirana'] = -0.57,
         ['npc_dota_hero_enigma'] = -0.63,
         ['npc_dota_hero_nyx_assassin'] = -0.7,
@@ -864,7 +864,7 @@ local heroList = {
         ['npc_dota_hero_hoodwink'] = -0.75,
         ['npc_dota_hero_shadow_shaman'] = -0.78,
         ['npc_dota_hero_marci'] = -0.8,
-        ['npc_dota_hero_rubick'] = -0.81,
+        
         ['npc_dota_hero_muerta'] = -0.84,
         ['npc_dota_hero_legion_commander'] = -0.85,
         ['npc_dota_hero_dazzle'] = -0.89,
@@ -883,7 +883,7 @@ local heroList = {
         ['npc_dota_hero_windrunner'] = -1.53,
         ['npc_dota_hero_bristleback'] = -1.68,
         ['npc_dota_hero_morphling'] = -2.03,
-        ['npc_dota_hero_visage'] = -2.04,
+        
         ['npc_dota_hero_naga_siren'] = -2.37,
         ['npc_dota_hero_phantom_assassin'] = -2.89,
         ['npc_dota_hero_broodmother'] = -3.1,
@@ -902,7 +902,7 @@ local heroList = {
         ['npc_dota_hero_slark'] = 2.12,
         ['npc_dota_hero_spectre'] = 2.08,
         ['npc_dota_hero_phantom_lancer'] = 1.98,
-        ['npc_dota_hero_lone_druid'] = 1.9,
+        
         ['npc_dota_hero_lycan'] = 1.73,
         ['npc_dota_hero_tidehunter'] = 1.67,
         ['npc_dota_hero_beastmaster'] = 1.61,
@@ -918,7 +918,7 @@ local heroList = {
         ['npc_dota_hero_warlock'] = 0.92,
         ['npc_dota_hero_treant'] = 0.89,
         ['npc_dota_hero_clinkz'] = 0.88,
-        ['npc_dota_hero_visage'] = 0.87,
+        
         ['npc_dota_hero_shadow_shaman'] = 0.79,
         ['npc_dota_hero_death_prophet'] = 0.77,
         ['npc_dota_hero_drow_ranger'] = 0.74,
@@ -937,7 +937,7 @@ local heroList = {
         ['npc_dota_hero_batrider'] = 0.35,
         ['npc_dota_hero_oracle'] = 0.34,
         ['npc_dota_hero_abyssal_underlord'] = 0.32,
-        ['npc_dota_hero_wisp'] = 0.31,
+        
         ['npc_dota_hero_witch_doctor'] = 0.3,
         ['npc_dota_hero_huskar'] = 0.28,
         ['npc_dota_hero_dazzle'] = 0.26,
@@ -950,7 +950,7 @@ local heroList = {
         ['npc_dota_hero_leshrac'] = 0.12,
         ['npc_dota_hero_earthshaker'] = 0.12,
         ['npc_dota_hero_dawnbreaker'] = 0.11,
-        ['npc_dota_hero_tusk'] = 0.11,
+        
         ['npc_dota_hero_keeper_of_the_light'] = 0.08,
         ['npc_dota_hero_antimage'] = 0.07,
         ['npc_dota_hero_bloodseeker'] = 0.05,
@@ -974,7 +974,7 @@ local heroList = {
         ['npc_dota_hero_gyrocopter'] = -0.3,
         ['npc_dota_hero_kunkka'] = -0.31,
         ['npc_dota_hero_nevermore'] = -0.31,
-        ['npc_dota_hero_brewmaster'] = -0.32,
+        
         ['npc_dota_hero_invoker'] = -0.39,
         ['npc_dota_hero_broodmother'] = -0.43,
         ['npc_dota_hero_lion'] = -0.43,
@@ -995,12 +995,12 @@ local heroList = {
         ['npc_dota_hero_legion_commander'] = -0.71,
         ['npc_dota_hero_faceless_void'] = -0.76,
         ['npc_dota_hero_hoodwink'] = -0.77,
-        ['npc_dota_hero_rubick'] = -0.78,
+        
         ['npc_dota_hero_void_spirit'] = -0.78,
         ['npc_dota_hero_weaver'] = -0.8,
         ['npc_dota_hero_phoenix'] = -0.82,
         ['npc_dota_hero_mars'] = -0.88,
-        ['npc_dota_hero_pangolier'] = -0.9,
+        
         ['npc_dota_hero_jakiro'] = -0.95,
         ['npc_dota_hero_techies'] = -0.97,
         ['npc_dota_hero_shredder'] = -0.97,
@@ -1015,7 +1015,7 @@ local heroList = {
         ['npc_dota_hero_phantom_assassin'] = -1.59,
         ['npc_dota_hero_life_stealer'] = -1.72,
         ['npc_dota_hero_kez'] = -1.82,
-        ['npc_dota_hero_puck'] = -1.97,
+        
         ['npc_dota_hero_ember_spirit'] = -2.29,
         ['npc_dota_hero_morphling'] = -2.81,
     },
@@ -1028,7 +1028,7 @@ local heroList = {
         ['npc_dota_hero_venomancer'] = 1.62,
         ['npc_dota_hero_abaddon'] = 1.53,
         ['npc_dota_hero_huskar'] = 1.52,
-        ['npc_dota_hero_puck'] = 1.49,
+        
         ['npc_dota_hero_faceless_void'] = 1.45,
         ['npc_dota_hero_vengefulspirit'] = 1.41,
         ['npc_dota_hero_crystal_maiden'] = 1.37,
@@ -1052,7 +1052,7 @@ local heroList = {
         ['npc_dota_hero_shadow_demon'] = 0.59,
         ['npc_dota_hero_pugna'] = 0.58,
         ['npc_dota_hero_leshrac'] = 0.48,
-        ['npc_dota_hero_brewmaster'] = 0.46,
+        
         ['npc_dota_hero_phoenix'] = 0.44,
         ['npc_dota_hero_gyrocopter'] = 0.44,
         ['npc_dota_hero_luna'] = 0.4,
@@ -1066,7 +1066,7 @@ local heroList = {
         ['npc_dota_hero_clinkz'] = 0.3,
         ['npc_dota_hero_spectre'] = 0.25,
         ['npc_dota_hero_ogre_magi'] = 0.25,
-        ['npc_dota_hero_visage'] = 0.2,
+        
         ['npc_dota_hero_spirit_breaker'] = 0.19,
         ['npc_dota_hero_obsidian_destroyer'] = 0.1,
         ['npc_dota_hero_sand_king'] = 0.07,
@@ -1115,26 +1115,26 @@ local heroList = {
         ['npc_dota_hero_tiny'] = -0.71,
         ['npc_dota_hero_bounty_hunter'] = -0.81,
         ['npc_dota_hero_death_prophet'] = -0.82,
-        ['npc_dota_hero_wisp'] = -0.83,
+        
         ['npc_dota_hero_nevermore'] = -0.84,
-        ['npc_dota_hero_tusk'] = -0.86,
+        
         ['npc_dota_hero_alchemist'] = -0.87,
         ['npc_dota_hero_keeper_of_the_light'] = -0.87,
         ['npc_dota_hero_phantom_assassin'] = -0.89,
         ['npc_dota_hero_primal_beast'] = -0.9,
         ['npc_dota_hero_tinker'] = -0.94,
         ['npc_dota_hero_ancient_apparition'] = -0.95,
-        ['npc_dota_hero_pangolier'] = -0.97,
+        
         ['npc_dota_hero_omniknight'] = -1,
         ['npc_dota_hero_kunkka'] = -1.01,
         ['npc_dota_hero_ringmaster'] = -1.04,
-        ['npc_dota_hero_rubick'] = -1.14,
+        
         ['npc_dota_hero_sven'] = -1.18,
         ['npc_dota_hero_rattletrap'] = -1.25,
         ['npc_dota_hero_night_stalker'] = -1.26,
         ['npc_dota_hero_axe'] = -1.48,
         ['npc_dota_hero_furion'] = -1.62,
-        ['npc_dota_hero_lone_druid'] = -1.64,
+        
         ['npc_dota_hero_marci'] = -1.64,
         ['npc_dota_hero_meepo'] = -1.67,
         ['npc_dota_hero_lycan'] = -1.68,
@@ -1164,17 +1164,17 @@ local heroList = {
         ['npc_dota_hero_sven'] = 1.56,
         ['npc_dota_hero_keeper_of_the_light'] = 1.55,
         ['npc_dota_hero_phoenix'] = 1.47,
-        ['npc_dota_hero_brewmaster'] = 1.45,
+        
         ['npc_dota_hero_dazzle'] = 1.43,
         ['npc_dota_hero_lina'] = 1.37,
         ['npc_dota_hero_enchantress'] = 1.33,
-        ['npc_dota_hero_rubick'] = 1.33,
+        
         ['npc_dota_hero_undying'] = 1.28,
         ['npc_dota_hero_troll_warlord'] = 1.21,
         ['npc_dota_hero_ember_spirit'] = 1.18,
         ['npc_dota_hero_sniper'] = 1.17,
         ['npc_dota_hero_abyssal_underlord'] = 1.07,
-        ['npc_dota_hero_pangolier'] = 1,
+        
         ['npc_dota_hero_viper'] = 0.99,
         ['npc_dota_hero_alchemist'] = 0.98,
         ['npc_dota_hero_winter_wyvern'] = 0.97,
@@ -1196,7 +1196,7 @@ local heroList = {
         ['npc_dota_hero_windrunner'] = 0.41,
         ['npc_dota_hero_hoodwink'] = 0.38,
         ['npc_dota_hero_lich'] = 0.38,
-        ['npc_dota_hero_tusk'] = 0.31,
+        
         ['npc_dota_hero_death_prophet'] = 0.29,
         ['npc_dota_hero_mirana'] = 0.25,
         ['npc_dota_hero_naga_siren'] = 0.22,
@@ -1214,7 +1214,7 @@ local heroList = {
         ['npc_dota_hero_chaos_knight'] = -0.08,
         ['npc_dota_hero_bloodseeker'] = -0.09,
         ['npc_dota_hero_magnataur'] = -0.11,
-        ['npc_dota_hero_wisp'] = -0.11,
+        
         ['npc_dota_hero_ringmaster'] = -0.12,
         ['npc_dota_hero_omniknight'] = -0.12,
         ['npc_dota_hero_legion_commander'] = -0.13,
@@ -1249,14 +1249,14 @@ local heroList = {
         ['npc_dota_hero_shredder'] = -1,
         ['npc_dota_hero_vengefulspirit'] = -1,
         ['npc_dota_hero_skywrath_mage'] = -1.04,
-        ['npc_dota_hero_lone_druid'] = -1.04,
-        ['npc_dota_hero_puck'] = -1.07,
+        
+        
         ['npc_dota_hero_storm_spirit'] = -1.08,
         ['npc_dota_hero_morphling'] = -1.21,
         ['npc_dota_hero_arc_warden'] = -1.27,
         ['npc_dota_hero_life_stealer'] = -1.37,
         ['npc_dota_hero_zuus'] = -1.4,
-        ['npc_dota_hero_visage'] = -1.46,
+        
         ['npc_dota_hero_void_spirit'] = -1.52,
         ['npc_dota_hero_riki'] = -1.53,
         ['npc_dota_hero_lion'] = -1.56,
@@ -1292,11 +1292,11 @@ local heroList = {
         ['npc_dota_hero_ember_spirit'] = 1.78,
         ['npc_dota_hero_keeper_of_the_light'] = 1.75,
         ['npc_dota_hero_ancient_apparition'] = 1.72,
-        ['npc_dota_hero_wisp'] = 1.57,
+        
         ['npc_dota_hero_skywrath_mage'] = 1.52,
         ['npc_dota_hero_tinker'] = 1.5,
         ['npc_dota_hero_doom_bringer'] = 1.48,
-        ['npc_dota_hero_brewmaster'] = 1.29,
+        
         ['npc_dota_hero_faceless_void'] = 1.12,
         ['npc_dota_hero_sven'] = 0.84,
         ['npc_dota_hero_techies'] = 0.84,
@@ -1317,13 +1317,13 @@ local heroList = {
         ['npc_dota_hero_necrolyte'] = 0.43,
         ['npc_dota_hero_morphling'] = 0.41,
         ['npc_dota_hero_luna'] = 0.41,
-        ['npc_dota_hero_visage'] = 0.38,
+        
         ['npc_dota_hero_arc_warden'] = 0.37,
         ['npc_dota_hero_warlock'] = 0.37,
         ['npc_dota_hero_winter_wyvern'] = 0.36,
         ['npc_dota_hero_ursa'] = 0.35,
         ['npc_dota_hero_lina'] = 0.31,
-        ['npc_dota_hero_tusk'] = 0.3,
+        
         ['npc_dota_hero_dragon_knight'] = 0.3,
         ['npc_dota_hero_zuus'] = 0.27,
         ['npc_dota_hero_omniknight'] = 0.21,
@@ -1335,7 +1335,7 @@ local heroList = {
         ['npc_dota_hero_kez'] = 0.14,
         ['npc_dota_hero_treant'] = 0.14,
         ['npc_dota_hero_rattletrap'] = 0.11,
-        ['npc_dota_hero_puck'] = 0.1,
+        
         ['npc_dota_hero_venomancer'] = 0.09,
         ['npc_dota_hero_obsidian_destroyer'] = 0.07,
         ['npc_dota_hero_enigma'] = 0.04,
@@ -1354,7 +1354,7 @@ local heroList = {
         ['npc_dota_hero_broodmother'] = -0.23,
         ['npc_dota_hero_shadow_shaman'] = -0.26,
         ['npc_dota_hero_hoodwink'] = -0.31,
-        ['npc_dota_hero_rubick'] = -0.33,
+        
         ['npc_dota_hero_invoker'] = -0.41,
         ['npc_dota_hero_mirana'] = -0.42,
         ['npc_dota_hero_gyrocopter'] = -0.42,
@@ -1382,7 +1382,7 @@ local heroList = {
         ['npc_dota_hero_void_spirit'] = -1.21,
         ['npc_dota_hero_meepo'] = -1.21,
         ['npc_dota_hero_mars'] = -1.25,
-        ['npc_dota_hero_lone_druid'] = -1.46,
+        
         ['npc_dota_hero_windrunner'] = -1.48,
         ['npc_dota_hero_phantom_lancer'] = -1.5,
         ['npc_dota_hero_drow_ranger'] = -1.51,
@@ -1398,7 +1398,7 @@ local heroList = {
         ['npc_dota_hero_phoenix'] = -2.64,
         ['npc_dota_hero_antimage'] = -2.7,
         ['npc_dota_hero_slark'] = -2.84,
-        ['npc_dota_hero_pangolier'] = -3.4,
+        
     },
     ['npc_dota_hero_bounty_hunter'] = {
         ['npc_dota_hero_naga_siren'] = 3.12,
@@ -1443,18 +1443,18 @@ local heroList = {
         ['npc_dota_hero_skywrath_mage'] = 0.34,
         ['npc_dota_hero_zuus'] = 0.29,
         ['npc_dota_hero_faceless_void'] = 0.24,
-        ['npc_dota_hero_tusk'] = 0.23,
+        
         ['npc_dota_hero_leshrac'] = 0.21,
         ['npc_dota_hero_doom_bringer'] = 0.19,
         ['npc_dota_hero_obsidian_destroyer'] = 0.17,
         ['npc_dota_hero_dark_seer'] = 0.17,
         ['npc_dota_hero_jakiro'] = 0.16,
-        ['npc_dota_hero_brewmaster'] = 0.13,
+        
         ['npc_dota_hero_phoenix'] = 0.13,
         ['npc_dota_hero_rattletrap'] = 0.13,
         ['npc_dota_hero_queenofpain'] = 0.12,
         ['npc_dota_hero_pudge'] = 0.11,
-        ['npc_dota_hero_lone_druid'] = 0.03,
+        
         ['npc_dota_hero_grimstroke'] = 0,
         ['npc_dota_hero_furion'] = -0.01,
         ['npc_dota_hero_keeper_of_the_light'] = -0.07,
@@ -1473,11 +1473,11 @@ local heroList = {
         ['npc_dota_hero_bloodseeker'] = -0.24,
         ['npc_dota_hero_enchantress'] = -0.25,
         ['npc_dota_hero_life_stealer'] = -0.28,
-        ['npc_dota_hero_rubick'] = -0.28,
+        
         ['npc_dota_hero_vengefulspirit'] = -0.28,
         ['npc_dota_hero_abyssal_underlord'] = -0.29,
         ['npc_dota_hero_silencer'] = -0.31,
-        ['npc_dota_hero_wisp'] = -0.34,
+        
         ['npc_dota_hero_ancient_apparition'] = -0.38,
         ['npc_dota_hero_void_spirit'] = -0.4,
         ['npc_dota_hero_disruptor'] = -0.46,
@@ -1485,7 +1485,7 @@ local heroList = {
         ['npc_dota_hero_witch_doctor'] = -0.49,
         ['npc_dota_hero_hoodwink'] = -0.49,
         ['npc_dota_hero_monkey_king'] = -0.5,
-        ['npc_dota_hero_puck'] = -0.51,
+        
         ['npc_dota_hero_earth_spirit'] = -0.52,
         ['npc_dota_hero_omniknight'] = -0.54,
         ['npc_dota_hero_morphling'] = -0.57,
@@ -1498,7 +1498,7 @@ local heroList = {
         ['npc_dota_hero_windrunner'] = -0.78,
         ['npc_dota_hero_dazzle'] = -0.8,
         ['npc_dota_hero_spectre'] = -0.81,
-        ['npc_dota_hero_visage'] = -0.81,
+        
         ['npc_dota_hero_nevermore'] = -0.83,
         ['npc_dota_hero_dragon_knight'] = -0.87,
         ['npc_dota_hero_gyrocopter'] = -0.89,
@@ -1507,7 +1507,7 @@ local heroList = {
         ['npc_dota_hero_pugna'] = -0.94,
         ['npc_dota_hero_templar_assassin'] = -0.95,
         ['npc_dota_hero_shredder'] = -0.96,
-        ['npc_dota_hero_pangolier'] = -1.01,
+        
         ['npc_dota_hero_skeleton_king'] = -1.07,
         ['npc_dota_hero_riki'] = -1.08,
         ['npc_dota_hero_mirana'] = -1.08,
@@ -1539,7 +1539,7 @@ local heroList = {
         ['npc_dota_hero_clinkz'] = 1.61,
         ['npc_dota_hero_leshrac'] = 1.57,
         ['npc_dota_hero_oracle'] = 1.5,
-        ['npc_dota_hero_puck'] = 1.41,
+        
         ['npc_dota_hero_legion_commander'] = 1.38,
         ['npc_dota_hero_morphling'] = 1.36,
         ['npc_dota_hero_kez'] = 1.35,
@@ -1548,9 +1548,9 @@ local heroList = {
         ['npc_dota_hero_life_stealer'] = 1.22,
         ['npc_dota_hero_faceless_void'] = 1.18,
         ['npc_dota_hero_sand_king'] = 1.17,
-        ['npc_dota_hero_pangolier'] = 1.15,
+        
         ['npc_dota_hero_storm_spirit'] = 1.12,
-        ['npc_dota_hero_wisp'] = 1.11,
+        
         ['npc_dota_hero_earthshaker'] = 1.11,
         ['npc_dota_hero_gyrocopter'] = 0.94,
         ['npc_dota_hero_doom_bringer'] = 0.92,
@@ -1567,7 +1567,7 @@ local heroList = {
         ['npc_dota_hero_furion'] = 0.73,
         ['npc_dota_hero_huskar'] = 0.61,
         ['npc_dota_hero_alchemist'] = 0.61,
-        ['npc_dota_hero_tusk'] = 0.6,
+        
         ['npc_dota_hero_warlock'] = 0.52,
         ['npc_dota_hero_crystal_maiden'] = 0.51,
         ['npc_dota_hero_windrunner'] = 0.5,
@@ -1619,7 +1619,7 @@ local heroList = {
         ['npc_dota_hero_witch_doctor'] = -0.54,
         ['npc_dota_hero_centaur'] = -0.55,
         ['npc_dota_hero_ember_spirit'] = -0.59,
-        ['npc_dota_hero_rubick'] = -0.61,
+        
         ['npc_dota_hero_arc_warden'] = -0.61,
         ['npc_dota_hero_sniper'] = -0.7,
         ['npc_dota_hero_drow_ranger'] = -0.77,
@@ -1628,7 +1628,7 @@ local heroList = {
         ['npc_dota_hero_ringmaster'] = -0.86,
         ['npc_dota_hero_chaos_knight'] = -0.87,
         ['npc_dota_hero_razor'] = -0.95,
-        ['npc_dota_hero_visage'] = -0.95,
+        
         ['npc_dota_hero_treant'] = -0.96,
         ['npc_dota_hero_kunkka'] = -0.98,
         ['npc_dota_hero_monkey_king'] = -1.04,
@@ -1647,7 +1647,7 @@ local heroList = {
         ['npc_dota_hero_venomancer'] = -1.58,
         ['npc_dota_hero_vengefulspirit'] = -1.58,
         ['npc_dota_hero_skeleton_king'] = -1.75,
-        ['npc_dota_hero_lone_druid'] = -1.77,
+        
         ['npc_dota_hero_ursa'] = -2.12,
         ['npc_dota_hero_elder_titan'] = -2.18,
         ['npc_dota_hero_ancient_apparition'] = -2.64,
@@ -1687,8 +1687,8 @@ local heroList = {
         ['npc_dota_hero_slardar'] = 0.62,
         ['npc_dota_hero_rattletrap'] = 0.58,
         ['npc_dota_hero_dazzle'] = 0.51,
-        ['npc_dota_hero_puck'] = 0.5,
-        ['npc_dota_hero_tusk'] = 0.45,
+        
+        
         ['npc_dota_hero_magnataur'] = 0.45,
         ['npc_dota_hero_furion'] = 0.4,
         ['npc_dota_hero_monkey_king'] = 0.38,
@@ -1698,7 +1698,7 @@ local heroList = {
         ['npc_dota_hero_vengefulspirit'] = 0.24,
         ['npc_dota_hero_phantom_lancer'] = 0.23,
         ['npc_dota_hero_nyx_assassin'] = 0.22,
-        ['npc_dota_hero_pangolier'] = 0.18,
+        
         ['npc_dota_hero_abaddon'] = 0.18,
         ['npc_dota_hero_marci'] = 0.08,
         ['npc_dota_hero_bane'] = 0,
@@ -1724,11 +1724,11 @@ local heroList = {
         ['npc_dota_hero_kez'] = -0.62,
         ['npc_dota_hero_dark_seer'] = -0.65,
         ['npc_dota_hero_treant'] = -0.67,
-        ['npc_dota_hero_rubick'] = -0.68,
+        
         ['npc_dota_hero_muerta'] = -0.74,
         ['npc_dota_hero_crystal_maiden'] = -0.81,
         ['npc_dota_hero_faceless_void'] = -0.82,
-        ['npc_dota_hero_wisp'] = -0.85,
+        
         ['npc_dota_hero_snapfire'] = -0.93,
         ['npc_dota_hero_oracle'] = -1.04,
         ['npc_dota_hero_obsidian_destroyer'] = -1.08,
@@ -1758,7 +1758,7 @@ local heroList = {
         ['npc_dota_hero_huskar'] = -1.83,
         ['npc_dota_hero_skeleton_king'] = -1.91,
         ['npc_dota_hero_sand_king'] = -1.93,
-        ['npc_dota_hero_brewmaster'] = -1.93,
+        
         ['npc_dota_hero_bloodseeker'] = -1.95,
         ['npc_dota_hero_leshrac'] = -2.02,
         ['npc_dota_hero_elder_titan'] = -2.05,
@@ -1776,8 +1776,8 @@ local heroList = {
         ['npc_dota_hero_meepo'] = -2.9,
         ['npc_dota_hero_clinkz'] = -2.95,
         ['npc_dota_hero_centaur'] = -2.98,
-        ['npc_dota_hero_lone_druid'] = -3.04,
-        ['npc_dota_hero_visage'] = -3.25,
+        
+        
         ['npc_dota_hero_enigma'] = -3.37,
         ['npc_dota_hero_riki'] = -3.59,
     },
@@ -1820,7 +1820,7 @@ local heroList = {
         ['npc_dota_hero_sven'] = 1.04,
         ['npc_dota_hero_enchantress'] = 1.03,
         ['npc_dota_hero_legion_commander'] = 1.01,
-        ['npc_dota_hero_pangolier'] = 1,
+        
         ['npc_dota_hero_enigma'] = 0.92,
         ['npc_dota_hero_shadow_demon'] = 0.91,
         ['npc_dota_hero_chen'] = 0.9,
@@ -1832,7 +1832,7 @@ local heroList = {
         ['npc_dota_hero_phoenix'] = 0.66,
         ['npc_dota_hero_chaos_knight'] = 0.63,
         ['npc_dota_hero_alchemist'] = 0.61,
-        ['npc_dota_hero_tusk'] = 0.6,
+        
         ['npc_dota_hero_treant'] = 0.55,
         ['npc_dota_hero_keeper_of_the_light'] = 0.52,
         ['npc_dota_hero_warlock'] = 0.49,
@@ -1844,7 +1844,7 @@ local heroList = {
         ['npc_dota_hero_gyrocopter'] = 0.1,
         ['npc_dota_hero_windrunner'] = 0.03,
         ['npc_dota_hero_abyssal_underlord'] = 0.02,
-        ['npc_dota_hero_visage'] = 0,
+        
         ['npc_dota_hero_queenofpain'] = -0.01,
         ['npc_dota_hero_centaur'] = -0.03,
         ['npc_dota_hero_slark'] = -0.08,
@@ -1862,9 +1862,9 @@ local heroList = {
         ['npc_dota_hero_dawnbreaker'] = -0.56,
         ['npc_dota_hero_viper'] = -0.57,
         ['npc_dota_hero_ringmaster'] = -0.64,
-        ['npc_dota_hero_wisp'] = -0.67,
+        
         ['npc_dota_hero_shredder'] = -0.69,
-        ['npc_dota_hero_rubick'] = -0.8,
+        
         ['npc_dota_hero_riki'] = -0.92,
         ['npc_dota_hero_luna'] = -1.03,
         ['npc_dota_hero_vengefulspirit'] = -1.1,
@@ -1873,7 +1873,7 @@ local heroList = {
         ['npc_dota_hero_venomancer'] = -1.24,
         ['npc_dota_hero_spectre'] = -1.25,
         ['npc_dota_hero_earth_spirit'] = -1.26,
-        ['npc_dota_hero_brewmaster'] = -1.28,
+        
         ['npc_dota_hero_abaddon'] = -1.31,
         ['npc_dota_hero_pudge'] = -1.41,
         ['npc_dota_hero_skywrath_mage'] = -1.43,
@@ -1890,7 +1890,7 @@ local heroList = {
         ['npc_dota_hero_faceless_void'] = -1.8,
         ['npc_dota_hero_morphling'] = -1.9,
         ['npc_dota_hero_antimage'] = -1.9,
-        ['npc_dota_hero_lone_druid'] = -2.12,
+        
         ['npc_dota_hero_juggernaut'] = -2.2,
         ['npc_dota_hero_zuus'] = -2.27,
         ['npc_dota_hero_witch_doctor'] = -2.38,
@@ -1905,7 +1905,7 @@ local heroList = {
         ['npc_dota_hero_ember_spirit'] = -3.84,
         ['npc_dota_hero_obsidian_destroyer'] = -3.84,
         ['npc_dota_hero_night_stalker'] = -3.96,
-        ['npc_dota_hero_puck'] = -4.03,
+        
         ['npc_dota_hero_arc_warden'] = -5.73,
     },
     ['npc_dota_hero_centaur'] = {
@@ -1921,11 +1921,11 @@ local heroList = {
         ['npc_dota_hero_juggernaut'] = 1.97,
         ['npc_dota_hero_dazzle'] = 1.81,
         ['npc_dota_hero_alchemist'] = 1.8,
-        ['npc_dota_hero_lone_druid'] = 1.74,
+        
         ['npc_dota_hero_chen'] = 1.67,
         ['npc_dota_hero_warlock'] = 1.63,
         ['npc_dota_hero_shredder'] = 1.57,
-        ['npc_dota_hero_pangolier'] = 1.56,
+        
         ['npc_dota_hero_meepo'] = 1.49,
         ['npc_dota_hero_tinker'] = 1.36,
         ['npc_dota_hero_monkey_king'] = 1.26,
@@ -1934,7 +1934,7 @@ local heroList = {
         ['npc_dota_hero_bounty_hunter'] = 1.24,
         ['npc_dota_hero_templar_assassin'] = 1.23,
         ['npc_dota_hero_elder_titan'] = 1.22,
-        ['npc_dota_hero_wisp'] = 1.19,
+        
         ['npc_dota_hero_death_prophet'] = 1.15,
         ['npc_dota_hero_doom_bringer'] = 1.08,
         ['npc_dota_hero_tidehunter'] = 1.04,
@@ -1947,7 +1947,7 @@ local heroList = {
         ['npc_dota_hero_weaver'] = 0.75,
         ['npc_dota_hero_invoker'] = 0.74,
         ['npc_dota_hero_omniknight'] = 0.69,
-        ['npc_dota_hero_brewmaster'] = 0.66,
+        
         ['npc_dota_hero_obsidian_destroyer'] = 0.65,
         ['npc_dota_hero_slardar'] = 0.65,
         ['npc_dota_hero_keeper_of_the_light'] = 0.65,
@@ -1979,12 +1979,12 @@ local heroList = {
         ['npc_dota_hero_vengefulspirit'] = 0.09,
         ['npc_dota_hero_broodmother'] = 0.05,
         ['npc_dota_hero_void_spirit'] = 0,
-        ['npc_dota_hero_tusk'] = -0.03,
+        
         ['npc_dota_hero_slark'] = -0.06,
         ['npc_dota_hero_grimstroke'] = -0.09,
         ['npc_dota_hero_bane'] = -0.12,
         ['npc_dota_hero_ancient_apparition'] = -0.13,
-        ['npc_dota_hero_visage'] = -0.15,
+        
         ['npc_dota_hero_phoenix'] = -0.15,
         ['npc_dota_hero_silencer'] = -0.2,
         ['npc_dota_hero_enchantress'] = -0.21,
@@ -1995,13 +1995,13 @@ local heroList = {
         ['npc_dota_hero_marci'] = -0.33,
         ['npc_dota_hero_pudge'] = -0.37,
         ['npc_dota_hero_spirit_breaker'] = -0.39,
-        ['npc_dota_hero_rubick'] = -0.4,
+        
         ['npc_dota_hero_jakiro'] = -0.4,
         ['npc_dota_hero_nyx_assassin'] = -0.44,
         ['npc_dota_hero_pugna'] = -0.48,
         ['npc_dota_hero_clinkz'] = -0.51,
         ['npc_dota_hero_legion_commander'] = -0.53,
-        ['npc_dota_hero_puck'] = -0.53,
+        
         ['npc_dota_hero_gyrocopter'] = -0.53,
         ['npc_dota_hero_winter_wyvern'] = -0.58,
         ['npc_dota_hero_primal_beast'] = -0.62,
@@ -2056,7 +2056,7 @@ local heroList = {
         ['npc_dota_hero_crystal_maiden'] = 1.89,
         ['npc_dota_hero_dawnbreaker'] = 1.87,
         ['npc_dota_hero_terrorblade'] = 1.83,
-        ['npc_dota_hero_pangolier'] = 1.68,
+        
         ['npc_dota_hero_necrolyte'] = 1.64,
         ['npc_dota_hero_lina'] = 1.54,
         ['npc_dota_hero_meepo'] = 1.43,
@@ -2073,20 +2073,20 @@ local heroList = {
         ['npc_dota_hero_treant'] = 0.99,
         ['npc_dota_hero_gyrocopter'] = 0.91,
         ['npc_dota_hero_dragon_knight'] = 0.91,
-        ['npc_dota_hero_brewmaster'] = 0.87,
+        
         ['npc_dota_hero_monkey_king'] = 0.85,
         ['npc_dota_hero_magnataur'] = 0.84,
         ['npc_dota_hero_hoodwink'] = 0.82,
         ['npc_dota_hero_troll_warlord'] = 0.8,
         ['npc_dota_hero_dazzle'] = 0.76,
         ['npc_dota_hero_snapfire'] = 0.62,
-        ['npc_dota_hero_puck'] = 0.61,
+        
         ['npc_dota_hero_phantom_assassin'] = 0.61,
         ['npc_dota_hero_alchemist'] = 0.55,
         ['npc_dota_hero_venomancer'] = 0.51,
         ['npc_dota_hero_luna'] = 0.51,
         ['npc_dota_hero_primal_beast'] = 0.48,
-        ['npc_dota_hero_rubick'] = 0.48,
+        
         ['npc_dota_hero_muerta'] = 0.41,
         ['npc_dota_hero_sven'] = 0.37,
         ['npc_dota_hero_bristleback'] = 0.34,
@@ -2098,8 +2098,8 @@ local heroList = {
         ['npc_dota_hero_beastmaster'] = 0.11,
         ['npc_dota_hero_nevermore'] = 0.08,
         ['npc_dota_hero_elder_titan'] = 0.06,
-        ['npc_dota_hero_tusk'] = 0.03,
-        ['npc_dota_hero_wisp'] = -0.06,
+        
+        
         ['npc_dota_hero_disruptor'] = -0.08,
         ['npc_dota_hero_lion'] = -0.09,
         ['npc_dota_hero_dark_willow'] = -0.09,
@@ -2115,7 +2115,7 @@ local heroList = {
         ['npc_dota_hero_morphling'] = -0.39,
         ['npc_dota_hero_weaver'] = -0.43,
         ['npc_dota_hero_grimstroke'] = -0.45,
-        ['npc_dota_hero_lone_druid'] = -0.51,
+        
         ['npc_dota_hero_spectre'] = -0.52,
         ['npc_dota_hero_void_spirit'] = -0.62,
         ['npc_dota_hero_broodmother'] = -0.64,
@@ -2135,7 +2135,7 @@ local heroList = {
         ['npc_dota_hero_life_stealer'] = -1.36,
         ['npc_dota_hero_pudge'] = -1.38,
         ['npc_dota_hero_furion'] = -1.42,
-        ['npc_dota_hero_visage'] = -1.48,
+        
         ['npc_dota_hero_death_prophet'] = -1.48,
         ['npc_dota_hero_lycan'] = -1.64,
         ['npc_dota_hero_arc_warden'] = -1.64,
@@ -2181,7 +2181,7 @@ local heroList = {
         ['npc_dota_hero_slardar'] = 1.63,
         ['npc_dota_hero_antimage'] = 1.55,
         ['npc_dota_hero_techies'] = 1.52,
-        ['npc_dota_hero_wisp'] = 1.4,
+        
         ['npc_dota_hero_nevermore'] = 1.37,
         ['npc_dota_hero_magnataur'] = 1.34,
         ['npc_dota_hero_windrunner'] = 1.32,
@@ -2221,8 +2221,8 @@ local heroList = {
         ['npc_dota_hero_abyssal_underlord'] = 0.28,
         ['npc_dota_hero_death_prophet'] = 0.26,
         ['npc_dota_hero_dawnbreaker'] = 0.21,
-        ['npc_dota_hero_rubick'] = 0.19,
-        ['npc_dota_hero_lone_druid'] = 0.11,
+        
+        
         ['npc_dota_hero_clinkz'] = 0.1,
         ['npc_dota_hero_troll_warlord'] = 0.07,
         ['npc_dota_hero_luna'] = 0.02,
@@ -2247,7 +2247,7 @@ local heroList = {
         ['npc_dota_hero_vengefulspirit'] = -0.75,
         ['npc_dota_hero_bounty_hunter'] = -0.76,
         ['npc_dota_hero_tiny'] = -0.82,
-        ['npc_dota_hero_tusk'] = -0.84,
+        
         ['npc_dota_hero_mars'] = -0.84,
         ['npc_dota_hero_dragon_knight'] = -0.85,
         ['npc_dota_hero_shadow_demon'] = -0.94,
@@ -2258,10 +2258,10 @@ local heroList = {
         ['npc_dota_hero_ember_spirit'] = -1.15,
         ['npc_dota_hero_oracle'] = -1.25,
         ['npc_dota_hero_muerta'] = -1.28,
-        ['npc_dota_hero_pangolier'] = -1.34,
+        
         ['npc_dota_hero_centaur'] = -1.35,
         ['npc_dota_hero_huskar'] = -1.39,
-        ['npc_dota_hero_puck'] = -1.46,
+        
         ['npc_dota_hero_abaddon'] = -1.54,
         ['npc_dota_hero_rattletrap'] = -1.57,
         ['npc_dota_hero_spectre'] = -1.62,
@@ -2272,7 +2272,7 @@ local heroList = {
         ['npc_dota_hero_void_spirit'] = -1.83,
         ['npc_dota_hero_leshrac'] = -1.87,
         ['npc_dota_hero_treant'] = -1.96,
-        ['npc_dota_hero_visage'] = -1.96,
+        
         ['npc_dota_hero_templar_assassin'] = -1.98,
         ['npc_dota_hero_grimstroke'] = -2.01,
         ['npc_dota_hero_medusa'] = -2.06,
@@ -2285,7 +2285,7 @@ local heroList = {
         ['npc_dota_hero_tidehunter'] = -3.01,
         ['npc_dota_hero_bloodseeker'] = -3.75,
         ['npc_dota_hero_bane'] = -4.65,
-        ['npc_dota_hero_brewmaster'] = -5.71,
+        
         ['npc_dota_hero_beastmaster'] = -6,
         ['npc_dota_hero_elder_titan'] = -7.91,
     },
@@ -2315,7 +2315,7 @@ local heroList = {
         ['npc_dota_hero_abaddon'] = 1.3,
         ['npc_dota_hero_mars'] = 1.15,
         ['npc_dota_hero_techies'] = 1.13,
-        ['npc_dota_hero_wisp'] = 1.11,
+        
         ['npc_dota_hero_mirana'] = 0.93,
         ['npc_dota_hero_dazzle'] = 0.88,
         ['npc_dota_hero_earth_spirit'] = 0.85,
@@ -2331,7 +2331,7 @@ local heroList = {
         ['npc_dota_hero_centaur'] = 0.53,
         ['npc_dota_hero_lycan'] = 0.5,
         ['npc_dota_hero_kez'] = 0.48,
-        ['npc_dota_hero_tusk'] = 0.46,
+        
         ['npc_dota_hero_antimage'] = 0.44,
         ['npc_dota_hero_shadow_shaman'] = 0.43,
         ['npc_dota_hero_nyx_assassin'] = 0.41,
@@ -2346,7 +2346,7 @@ local heroList = {
         ['npc_dota_hero_marci'] = 0.05,
         ['npc_dota_hero_storm_spirit'] = 0.05,
         ['npc_dota_hero_hoodwink'] = 0.01,
-        ['npc_dota_hero_lone_druid'] = 0.01,
+        
         ['npc_dota_hero_lion'] = -0.03,
         ['npc_dota_hero_shadow_demon'] = -0.04,
         ['npc_dota_hero_tiny'] = -0.07,
@@ -2360,7 +2360,7 @@ local heroList = {
         ['npc_dota_hero_snapfire'] = -0.32,
         ['npc_dota_hero_oracle'] = -0.35,
         ['npc_dota_hero_pugna'] = -0.35,
-        ['npc_dota_hero_puck'] = -0.36,
+        
         ['npc_dota_hero_troll_warlord'] = -0.39,
         ['npc_dota_hero_zuus'] = -0.42,
         ['npc_dota_hero_nevermore'] = -0.44,
@@ -2370,7 +2370,7 @@ local heroList = {
         ['npc_dota_hero_queenofpain'] = -0.6,
         ['npc_dota_hero_muerta'] = -0.61,
         ['npc_dota_hero_venomancer'] = -0.64,
-        ['npc_dota_hero_visage'] = -0.67,
+        
         ['npc_dota_hero_warlock'] = -0.68,
         ['npc_dota_hero_shredder'] = -0.7,
         ['npc_dota_hero_witch_doctor'] = -0.71,
@@ -2398,9 +2398,9 @@ local heroList = {
         ['npc_dota_hero_necrolyte'] = -1.4,
         ['npc_dota_hero_keeper_of_the_light'] = -1.41,
         ['npc_dota_hero_viper'] = -1.42,
-        ['npc_dota_hero_pangolier'] = -1.43,
-        ['npc_dota_hero_rubick'] = -1.44,
-        ['npc_dota_hero_brewmaster'] = -1.49,
+        
+        
+        
         ['npc_dota_hero_enigma'] = -1.71,
         ['npc_dota_hero_death_prophet'] = -1.75,
         ['npc_dota_hero_undying'] = -1.8,
@@ -2417,7 +2417,7 @@ local heroList = {
         ['npc_dota_hero_elder_titan'] = -3.71,
     },
     ['npc_dota_hero_crystal_maiden'] = {
-        ['npc_dota_hero_rubick'] = 2.36,
+        
         ['npc_dota_hero_pudge'] = 1.76,
         ['npc_dota_hero_dawnbreaker'] = 1.69,
         ['npc_dota_hero_juggernaut'] = 1.56,
@@ -2425,9 +2425,9 @@ local heroList = {
         ['npc_dota_hero_drow_ranger'] = 1.25,
         ['npc_dota_hero_pugna'] = 1.15,
         ['npc_dota_hero_witch_doctor'] = 1.08,
-        ['npc_dota_hero_puck'] = 0.98,
+        
         ['npc_dota_hero_death_prophet'] = 0.97,
-        ['npc_dota_hero_pangolier'] = 0.95,
+        
         ['npc_dota_hero_monkey_king'] = 0.93,
         ['npc_dota_hero_phoenix'] = 0.89,
         ['npc_dota_hero_bristleback'] = 0.83,
@@ -2485,7 +2485,7 @@ local heroList = {
         ['npc_dota_hero_warlock'] = -0.29,
         ['npc_dota_hero_windrunner'] = -0.3,
         ['npc_dota_hero_shredder'] = -0.32,
-        ['npc_dota_hero_brewmaster'] = -0.34,
+        
         ['npc_dota_hero_abyssal_underlord'] = -0.37,
         ['npc_dota_hero_doom_bringer'] = -0.39,
         ['npc_dota_hero_sven'] = -0.44,
@@ -2502,7 +2502,7 @@ local heroList = {
         ['npc_dota_hero_weaver'] = -0.54,
         ['npc_dota_hero_elder_titan'] = -0.54,
         ['npc_dota_hero_centaur'] = -0.57,
-        ['npc_dota_hero_tusk'] = -0.59,
+        
         ['npc_dota_hero_obsidian_destroyer'] = -0.6,
         ['npc_dota_hero_night_stalker'] = -0.6,
         ['npc_dota_hero_dazzle'] = -0.62,
@@ -2524,7 +2524,7 @@ local heroList = {
         ['npc_dota_hero_razor'] = -1.01,
         ['npc_dota_hero_dragon_knight'] = -1.08,
         ['npc_dota_hero_spirit_breaker'] = -1.1,
-        ['npc_dota_hero_visage'] = -1.13,
+        
         ['npc_dota_hero_storm_spirit'] = -1.23,
         ['npc_dota_hero_templar_assassin'] = -1.24,
         ['npc_dota_hero_chen'] = -1.25,
@@ -2533,11 +2533,11 @@ local heroList = {
         ['npc_dota_hero_bounty_hunter'] = -1.46,
         ['npc_dota_hero_naga_siren'] = -1.47,
         ['npc_dota_hero_troll_warlord'] = -1.57,
-        ['npc_dota_hero_wisp'] = -1.62,
+        
         ['npc_dota_hero_chaos_knight'] = -1.73,
         ['npc_dota_hero_enchantress'] = -1.92,
         ['npc_dota_hero_skeleton_king'] = -1.93,
-        ['npc_dota_hero_lone_druid'] = -2.14,
+        
         ['npc_dota_hero_lycan'] = -2.32,
         ['npc_dota_hero_meepo'] = -3.47,
         ['npc_dota_hero_broodmother'] = -3.49,
@@ -2563,12 +2563,12 @@ local heroList = {
         ['npc_dota_hero_invoker'] = 1.47,
         ['npc_dota_hero_monkey_king'] = 1.31,
         ['npc_dota_hero_disruptor'] = 1.22,
-        ['npc_dota_hero_puck'] = 1.2,
+        
         ['npc_dota_hero_hoodwink'] = 1.19,
         ['npc_dota_hero_furion'] = 1.16,
         ['npc_dota_hero_juggernaut'] = 1.14,
         ['npc_dota_hero_clinkz'] = 1.1,
-        ['npc_dota_hero_rubick'] = 1.05,
+        
         ['npc_dota_hero_bloodseeker'] = 1.03,
         ['npc_dota_hero_mirana'] = 1,
         ['npc_dota_hero_snapfire'] = 1,
@@ -2610,7 +2610,7 @@ local heroList = {
         ['npc_dota_hero_kunkka'] = -0.05,
         ['npc_dota_hero_storm_spirit'] = -0.06,
         ['npc_dota_hero_void_spirit'] = -0.08,
-        ['npc_dota_hero_pangolier'] = -0.08,
+        
         ['npc_dota_hero_troll_warlord'] = -0.16,
         ['npc_dota_hero_bounty_hunter'] = -0.2,
         ['npc_dota_hero_death_prophet'] = -0.23,
@@ -2621,7 +2621,7 @@ local heroList = {
         ['npc_dota_hero_alchemist'] = -0.34,
         ['npc_dota_hero_keeper_of_the_light'] = -0.41,
         ['npc_dota_hero_morphling'] = -0.46,
-        ['npc_dota_hero_wisp'] = -0.46,
+        
         ['npc_dota_hero_spirit_breaker'] = -0.49,
         ['npc_dota_hero_silencer'] = -0.54,
         ['npc_dota_hero_abyssal_underlord'] = -0.56,
@@ -2646,17 +2646,17 @@ local heroList = {
         ['npc_dota_hero_night_stalker'] = -1.02,
         ['npc_dota_hero_lycan'] = -1.04,
         ['npc_dota_hero_razor'] = -1.04,
-        ['npc_dota_hero_lone_druid'] = -1.07,
+        
         ['npc_dota_hero_bane'] = -1.07,
-        ['npc_dota_hero_tusk'] = -1.08,
+        
         ['npc_dota_hero_vengefulspirit'] = -1.17,
         ['npc_dota_hero_muerta'] = -1.25,
         ['npc_dota_hero_arc_warden'] = -1.59,
         ['npc_dota_hero_necrolyte'] = -1.69,
-        ['npc_dota_hero_visage'] = -1.7,
+        
         ['npc_dota_hero_templar_assassin'] = -1.71,
         ['npc_dota_hero_shadow_shaman'] = -1.73,
-        ['npc_dota_hero_brewmaster'] = -1.96,
+        
         ['npc_dota_hero_luna'] = -2.05,
         ['npc_dota_hero_venomancer'] = -2.12,
         ['npc_dota_hero_drow_ranger'] = -2.22,
@@ -2677,7 +2677,7 @@ local heroList = {
         ['npc_dota_hero_phantom_lancer'] = 1.74,
         ['npc_dota_hero_techies'] = 1.53,
         ['npc_dota_hero_legion_commander'] = 1.51,
-        ['npc_dota_hero_puck'] = 1.48,
+        
         ['npc_dota_hero_shadow_demon'] = 1.01,
         ['npc_dota_hero_leshrac'] = 0.95,
         ['npc_dota_hero_queenofpain'] = 0.93,
@@ -2704,7 +2704,7 @@ local heroList = {
         ['npc_dota_hero_life_stealer'] = 0.39,
         ['npc_dota_hero_phantom_assassin'] = 0.38,
         ['npc_dota_hero_ancient_apparition'] = 0.38,
-        ['npc_dota_hero_brewmaster'] = 0.34,
+        
         ['npc_dota_hero_lina'] = 0.3,
         ['npc_dota_hero_morphling'] = 0.3,
         ['npc_dota_hero_faceless_void'] = 0.29,
@@ -2733,7 +2733,7 @@ local heroList = {
         ['npc_dota_hero_shredder'] = -0.12,
         ['npc_dota_hero_necrolyte'] = -0.13,
         ['npc_dota_hero_sniper'] = -0.15,
-        ['npc_dota_hero_pangolier'] = -0.16,
+        
         ['npc_dota_hero_kunkka'] = -0.17,
         ['npc_dota_hero_enchantress'] = -0.19,
         ['npc_dota_hero_luna'] = -0.2,
@@ -2763,7 +2763,7 @@ local heroList = {
         ['npc_dota_hero_bane'] = -0.53,
         ['npc_dota_hero_ogre_magi'] = -0.54,
         ['npc_dota_hero_magnataur'] = -0.56,
-        ['npc_dota_hero_rubick'] = -0.56,
+        
         ['npc_dota_hero_monkey_king'] = -0.56,
         ['npc_dota_hero_obsidian_destroyer'] = -0.59,
         ['npc_dota_hero_slark'] = -0.59,
@@ -2790,10 +2790,10 @@ local heroList = {
         ['npc_dota_hero_dawnbreaker'] = -1.43,
         ['npc_dota_hero_spirit_breaker'] = -1.52,
         ['npc_dota_hero_razor'] = -1.54,
-        ['npc_dota_hero_tusk'] = -1.71,
-        ['npc_dota_hero_visage'] = -1.86,
-        ['npc_dota_hero_lone_druid'] = -1.87,
-        ['npc_dota_hero_wisp'] = -1.91,
+        
+        
+        
+        
         ['npc_dota_hero_marci'] = -1.94,
         ['npc_dota_hero_weaver'] = -2.06,
     },
@@ -2827,7 +2827,7 @@ local heroList = {
         ['npc_dota_hero_mirana'] = 1.01,
         ['npc_dota_hero_lich'] = 0.99,
         ['npc_dota_hero_clinkz'] = 0.98,
-        ['npc_dota_hero_pangolier'] = 0.95,
+        
         ['npc_dota_hero_troll_warlord'] = 0.95,
         ['npc_dota_hero_dragon_knight'] = 0.88,
         ['npc_dota_hero_kez'] = 0.87,
@@ -2845,19 +2845,19 @@ local heroList = {
         ['npc_dota_hero_ringmaster'] = 0.63,
         ['npc_dota_hero_broodmother'] = 0.58,
         ['npc_dota_hero_viper'] = 0.57,
-        ['npc_dota_hero_rubick'] = 0.53,
+        
         ['npc_dota_hero_abyssal_underlord'] = 0.51,
         ['npc_dota_hero_ogre_magi'] = 0.46,
         ['npc_dota_hero_night_stalker'] = 0.45,
         ['npc_dota_hero_bloodseeker'] = 0.44,
         ['npc_dota_hero_antimage'] = 0.43,
-        ['npc_dota_hero_wisp'] = 0.39,
+        
         ['npc_dota_hero_nevermore'] = 0.37,
-        ['npc_dota_hero_visage'] = 0.35,
+        
         ['npc_dota_hero_ember_spirit'] = 0.33,
         ['npc_dota_hero_chen'] = 0.33,
-        ['npc_dota_hero_lone_druid'] = 0.32,
-        ['npc_dota_hero_puck'] = 0.31,
+        
+        
         ['npc_dota_hero_life_stealer'] = 0.31,
         ['npc_dota_hero_omniknight'] = 0.3,
         ['npc_dota_hero_queenofpain'] = 0.27,
@@ -2897,7 +2897,7 @@ local heroList = {
         ['npc_dota_hero_medusa'] = -0.58,
         ['npc_dota_hero_tiny'] = -0.6,
         ['npc_dota_hero_phantom_lancer'] = -0.61,
-        ['npc_dota_hero_brewmaster'] = -0.64,
+        
         ['npc_dota_hero_warlock'] = -0.64,
         ['npc_dota_hero_enigma'] = -0.68,
         ['npc_dota_hero_leshrac'] = -0.71,
@@ -2907,7 +2907,7 @@ local heroList = {
         ['npc_dota_hero_marci'] = -0.98,
         ['npc_dota_hero_arc_warden'] = -0.99,
         ['npc_dota_hero_spirit_breaker'] = -1.13,
-        ['npc_dota_hero_tusk'] = -1.14,
+        
         ['npc_dota_hero_treant'] = -1.35,
         ['npc_dota_hero_furion'] = -1.36,
         ['npc_dota_hero_shadow_demon'] = -1.37,
@@ -2944,7 +2944,7 @@ local heroList = {
         ['npc_dota_hero_phantom_assassin'] = 0.85,
         ['npc_dota_hero_troll_warlord'] = 0.8,
         ['npc_dota_hero_bounty_hunter'] = 0.8,
-        ['npc_dota_hero_pangolier'] = 0.74,
+        
         ['npc_dota_hero_doom_bringer'] = 0.73,
         ['npc_dota_hero_kez'] = 0.72,
         ['npc_dota_hero_crystal_maiden'] = 0.68,
@@ -2953,7 +2953,7 @@ local heroList = {
         ['npc_dota_hero_drow_ranger'] = 0.65,
         ['npc_dota_hero_treant'] = 0.65,
         ['npc_dota_hero_hoodwink'] = 0.63,
-        ['npc_dota_hero_tusk'] = 0.6,
+        
         ['npc_dota_hero_mirana'] = 0.59,
         ['npc_dota_hero_abyssal_underlord'] = 0.59,
         ['npc_dota_hero_shredder'] = 0.58,
@@ -2976,7 +2976,7 @@ local heroList = {
         ['npc_dota_hero_snapfire'] = 0.16,
         ['npc_dota_hero_omniknight'] = 0.14,
         ['npc_dota_hero_antimage'] = 0.13,
-        ['npc_dota_hero_brewmaster'] = 0.08,
+        
         ['npc_dota_hero_spirit_breaker'] = 0.07,
         ['npc_dota_hero_lycan'] = 0.07,
         ['npc_dota_hero_dragon_knight'] = 0.06,
@@ -2987,7 +2987,7 @@ local heroList = {
         ['npc_dota_hero_jakiro'] = -0.01,
         ['npc_dota_hero_keeper_of_the_light'] = -0.03,
         ['npc_dota_hero_muerta'] = -0.03,
-        ['npc_dota_hero_puck'] = -0.03,
+        
         ['npc_dota_hero_tinker'] = -0.1,
         ['npc_dota_hero_techies'] = -0.15,
         ['npc_dota_hero_earthshaker'] = -0.17,
@@ -3007,8 +3007,8 @@ local heroList = {
         ['npc_dota_hero_chen'] = -0.31,
         ['npc_dota_hero_alchemist'] = -0.32,
         ['npc_dota_hero_vengefulspirit'] = -0.37,
-        ['npc_dota_hero_visage'] = -0.38,
-        ['npc_dota_hero_wisp'] = -0.4,
+        
+        
         ['npc_dota_hero_kunkka'] = -0.41,
         ['npc_dota_hero_terrorblade'] = -0.46,
         ['npc_dota_hero_enigma'] = -0.46,
@@ -3023,7 +3023,7 @@ local heroList = {
         ['npc_dota_hero_magnataur'] = -0.64,
         ['npc_dota_hero_tiny'] = -0.64,
         ['npc_dota_hero_invoker'] = -0.64,
-        ['npc_dota_hero_lone_druid'] = -0.65,
+        
         ['npc_dota_hero_chaos_knight'] = -0.76,
         ['npc_dota_hero_rattletrap'] = -0.78,
         ['npc_dota_hero_skywrath_mage'] = -0.86,
@@ -3040,7 +3040,7 @@ local heroList = {
         ['npc_dota_hero_beastmaster'] = -1.25,
         ['npc_dota_hero_oracle'] = -1.27,
         ['npc_dota_hero_spectre'] = -1.28,
-        ['npc_dota_hero_rubick'] = -1.46,
+        
         ['npc_dota_hero_leshrac'] = -1.56,
         ['npc_dota_hero_ember_spirit'] = -1.56,
         ['npc_dota_hero_legion_commander'] = -1.56,
@@ -3063,7 +3063,7 @@ local heroList = {
         ['npc_dota_hero_drow_ranger'] = 1.25,
         ['npc_dota_hero_oracle'] = 1.16,
         ['npc_dota_hero_bloodseeker'] = 1.12,
-        ['npc_dota_hero_pangolier'] = 1.09,
+        
         ['npc_dota_hero_venomancer'] = 1.07,
         ['npc_dota_hero_huskar'] = 1.05,
         ['npc_dota_hero_dragon_knight'] = 0.98,
@@ -3071,7 +3071,7 @@ local heroList = {
         ['npc_dota_hero_tinker'] = 0.97,
         ['npc_dota_hero_templar_assassin'] = 0.95,
         ['npc_dota_hero_kez'] = 0.93,
-        ['npc_dota_hero_lone_druid'] = 0.91,
+        
         ['npc_dota_hero_nevermore'] = 0.87,
         ['npc_dota_hero_beastmaster'] = 0.84,
         ['npc_dota_hero_razor'] = 0.82,
@@ -3112,7 +3112,7 @@ local heroList = {
         ['npc_dota_hero_medusa'] = 0.23,
         ['npc_dota_hero_ancient_apparition'] = 0.21,
         ['npc_dota_hero_snapfire'] = 0.17,
-        ['npc_dota_hero_tusk'] = 0.17,
+        
         ['npc_dota_hero_techies'] = 0.16,
         ['npc_dota_hero_weaver'] = 0.13,
         ['npc_dota_hero_axe'] = 0.12,
@@ -3139,7 +3139,7 @@ local heroList = {
         ['npc_dota_hero_lion'] = -0.28,
         ['npc_dota_hero_mars'] = -0.33,
         ['npc_dota_hero_phoenix'] = -0.4,
-        ['npc_dota_hero_rubick'] = -0.42,
+        
         ['npc_dota_hero_tidehunter'] = -0.43,
         ['npc_dota_hero_slardar'] = -0.44,
         ['npc_dota_hero_silencer'] = -0.5,
@@ -3150,9 +3150,9 @@ local heroList = {
         ['npc_dota_hero_dawnbreaker'] = -0.63,
         ['npc_dota_hero_pudge'] = -0.64,
         ['npc_dota_hero_broodmother'] = -0.64,
-        ['npc_dota_hero_brewmaster'] = -0.66,
+        
         ['npc_dota_hero_juggernaut'] = -0.69,
-        ['npc_dota_hero_puck'] = -0.7,
+        
         ['npc_dota_hero_bristleback'] = -0.73,
         ['npc_dota_hero_grimstroke'] = -0.75,
         ['npc_dota_hero_rattletrap'] = -0.75,
@@ -3161,10 +3161,10 @@ local heroList = {
         ['npc_dota_hero_night_stalker'] = -0.78,
         ['npc_dota_hero_void_spirit'] = -0.79,
         ['npc_dota_hero_marci'] = -0.81,
-        ['npc_dota_hero_visage'] = -0.83,
+        
         ['npc_dota_hero_nyx_assassin'] = -0.86,
         ['npc_dota_hero_spirit_breaker'] = -0.87,
-        ['npc_dota_hero_wisp'] = -1.02,
+        
         ['npc_dota_hero_sand_king'] = -1.08,
         ['npc_dota_hero_leshrac'] = -1.11,
         ['npc_dota_hero_magnataur'] = -1.16,
@@ -3215,7 +3215,7 @@ local heroList = {
         ['npc_dota_hero_silencer'] = 0.62,
         ['npc_dota_hero_hoodwink'] = 0.62,
         ['npc_dota_hero_spirit_breaker'] = 0.6,
-        ['npc_dota_hero_lone_druid'] = 0.59,
+        
         ['npc_dota_hero_templar_assassin'] = 0.57,
         ['npc_dota_hero_gyrocopter'] = 0.55,
         ['npc_dota_hero_lina'] = 0.55,
@@ -3240,22 +3240,22 @@ local heroList = {
         ['npc_dota_hero_skeleton_king'] = 0.05,
         ['npc_dota_hero_morphling'] = 0.04,
         ['npc_dota_hero_naga_siren'] = 0.04,
-        ['npc_dota_hero_pangolier'] = 0.03,
+        
         ['npc_dota_hero_witch_doctor'] = -0.03,
-        ['npc_dota_hero_rubick'] = -0.08,
+        
         ['npc_dota_hero_chen'] = -0.1,
         ['npc_dota_hero_ember_spirit'] = -0.16,
         ['npc_dota_hero_dazzle'] = -0.16,
         ['npc_dota_hero_spectre'] = -0.2,
         ['npc_dota_hero_riki'] = -0.22,
         ['npc_dota_hero_viper'] = -0.22,
-        ['npc_dota_hero_brewmaster'] = -0.23,
+        
         ['npc_dota_hero_rattletrap'] = -0.26,
         ['npc_dota_hero_beastmaster'] = -0.29,
         ['npc_dota_hero_zuus'] = -0.3,
         ['npc_dota_hero_enigma'] = -0.31,
         ['npc_dota_hero_jakiro'] = -0.39,
-        ['npc_dota_hero_visage'] = -0.45,
+        
         ['npc_dota_hero_kunkka'] = -0.45,
         ['npc_dota_hero_skywrath_mage'] = -0.47,
         ['npc_dota_hero_doom_bringer'] = -0.51,
@@ -3266,11 +3266,11 @@ local heroList = {
         ['npc_dota_hero_sand_king'] = -0.66,
         ['npc_dota_hero_pugna'] = -0.69,
         ['npc_dota_hero_pudge'] = -0.7,
-        ['npc_dota_hero_tusk'] = -0.71,
+        
         ['npc_dota_hero_mars'] = -0.72,
         ['npc_dota_hero_bane'] = -0.77,
         ['npc_dota_hero_void_spirit'] = -0.77,
-        ['npc_dota_hero_wisp'] = -0.81,
+        
         ['npc_dota_hero_leshrac'] = -0.81,
         ['npc_dota_hero_abyssal_underlord'] = -0.85,
         ['npc_dota_hero_faceless_void'] = -0.86,
@@ -3281,7 +3281,7 @@ local heroList = {
         ['npc_dota_hero_huskar'] = -1.05,
         ['npc_dota_hero_axe'] = -1.07,
         ['npc_dota_hero_centaur'] = -1.1,
-        ['npc_dota_hero_puck'] = -1.14,
+        
         ['npc_dota_hero_treant'] = -1.14,
         ['npc_dota_hero_primal_beast'] = -1.18,
         ['npc_dota_hero_kez'] = -1.22,
@@ -3314,11 +3314,11 @@ local heroList = {
         ['npc_dota_hero_skeleton_king'] = 1.48,
         ['npc_dota_hero_invoker'] = 1.45,
         ['npc_dota_hero_broodmother'] = 1.38,
-        ['npc_dota_hero_lone_druid'] = 1.35,
+        
         ['npc_dota_hero_marci'] = 1.3,
         ['npc_dota_hero_enigma'] = 1.29,
         ['npc_dota_hero_antimage'] = 1.17,
-        ['npc_dota_hero_rubick'] = 1.16,
+        
         ['npc_dota_hero_venomancer'] = 1.15,
         ['npc_dota_hero_lina'] = 1.14,
         ['npc_dota_hero_spectre'] = 1.08,
@@ -3337,11 +3337,11 @@ local heroList = {
         ['npc_dota_hero_skywrath_mage'] = 0.56,
         ['npc_dota_hero_windrunner'] = 0.55,
         ['npc_dota_hero_silencer'] = 0.53,
-        ['npc_dota_hero_visage'] = 0.49,
+        
         ['npc_dota_hero_death_prophet'] = 0.45,
         ['npc_dota_hero_dark_willow'] = 0.45,
         ['npc_dota_hero_undying'] = 0.42,
-        ['npc_dota_hero_puck'] = 0.35,
+        
         ['npc_dota_hero_beastmaster'] = 0.34,
         ['npc_dota_hero_leshrac'] = 0.31,
         ['npc_dota_hero_storm_spirit'] = 0.25,
@@ -3355,7 +3355,7 @@ local heroList = {
         ['npc_dota_hero_jakiro'] = 0.16,
         ['npc_dota_hero_magnataur'] = 0.16,
         ['npc_dota_hero_sniper'] = 0.13,
-        ['npc_dota_hero_tusk'] = 0.11,
+        
         ['npc_dota_hero_ogre_magi'] = 0.11,
         ['npc_dota_hero_templar_assassin'] = 0.1,
         ['npc_dota_hero_razor'] = 0.1,
@@ -3403,8 +3403,8 @@ local heroList = {
         ['npc_dota_hero_pugna'] = -0.84,
         ['npc_dota_hero_nyx_assassin'] = -0.87,
         ['npc_dota_hero_centaur'] = -0.97,
-        ['npc_dota_hero_pangolier'] = -0.99,
-        ['npc_dota_hero_brewmaster'] = -1.02,
+        
+        
         ['npc_dota_hero_faceless_void'] = -1.07,
         ['npc_dota_hero_juggernaut'] = -1.08,
         ['npc_dota_hero_ringmaster'] = -1.08,
@@ -3421,7 +3421,7 @@ local heroList = {
         ['npc_dota_hero_chen'] = -1.53,
         ['npc_dota_hero_axe'] = -1.63,
         ['npc_dota_hero_life_stealer'] = -1.75,
-        ['npc_dota_hero_wisp'] = -1.83,
+        
         ['npc_dota_hero_troll_warlord'] = -1.86,
         ['npc_dota_hero_alchemist'] = -1.9,
         ['npc_dota_hero_dark_seer'] = -2.03,
@@ -3468,7 +3468,7 @@ local heroList = {
         ['npc_dota_hero_life_stealer'] = 0.62,
         ['npc_dota_hero_mars'] = 0.62,
         ['npc_dota_hero_jakiro'] = 0.58,
-        ['npc_dota_hero_brewmaster'] = 0.55,
+        
         ['npc_dota_hero_undying'] = 0.55,
         ['npc_dota_hero_lina'] = 0.52,
         ['npc_dota_hero_sniper'] = 0.5,
@@ -3480,15 +3480,15 @@ local heroList = {
         ['npc_dota_hero_earth_spirit'] = 0.35,
         ['npc_dota_hero_invoker'] = 0.34,
         ['npc_dota_hero_kunkka'] = 0.23,
-        ['npc_dota_hero_visage'] = 0.19,
+        
         ['npc_dota_hero_faceless_void'] = 0.19,
-        ['npc_dota_hero_rubick'] = 0.14,
-        ['npc_dota_hero_tusk'] = 0.11,
+        
+        
         ['npc_dota_hero_gyrocopter'] = 0.1,
         ['npc_dota_hero_techies'] = 0.09,
         ['npc_dota_hero_spectre'] = 0.03,
         ['npc_dota_hero_hoodwink'] = 0.03,
-        ['npc_dota_hero_lone_druid'] = 0.02,
+        
         ['npc_dota_hero_warlock'] = 0.02,
         ['npc_dota_hero_winter_wyvern'] = 0.01,
         ['npc_dota_hero_tidehunter'] = -0.01,
@@ -3522,7 +3522,7 @@ local heroList = {
         ['npc_dota_hero_vengefulspirit'] = -0.44,
         ['npc_dota_hero_centaur'] = -0.45,
         ['npc_dota_hero_naga_siren'] = -0.47,
-        ['npc_dota_hero_pangolier'] = -0.47,
+        
         ['npc_dota_hero_meepo'] = -0.5,
         ['npc_dota_hero_weaver'] = -0.59,
         ['npc_dota_hero_grimstroke'] = -0.65,
@@ -3546,7 +3546,7 @@ local heroList = {
         ['npc_dota_hero_nyx_assassin'] = -1.28,
         ['npc_dota_hero_phantom_lancer'] = -1.28,
         ['npc_dota_hero_drow_ranger'] = -1.3,
-        ['npc_dota_hero_wisp'] = -1.33,
+        
         ['npc_dota_hero_nevermore'] = -1.38,
         ['npc_dota_hero_skeleton_king'] = -1.39,
         ['npc_dota_hero_ember_spirit'] = -1.41,
@@ -3556,7 +3556,7 @@ local heroList = {
         ['npc_dota_hero_void_spirit'] = -1.83,
         ['npc_dota_hero_axe'] = -1.87,
         ['npc_dota_hero_legion_commander'] = -2.15,
-        ['npc_dota_hero_puck'] = -2.34,
+        
         ['npc_dota_hero_sven'] = -2.45,
     },
     ['npc_dota_hero_drow_ranger'] = {
@@ -3590,7 +3590,7 @@ local heroList = {
         ['npc_dota_hero_furion'] = 0.99,
         ['npc_dota_hero_arc_warden'] = 0.94,
         ['npc_dota_hero_sven'] = 0.92,
-        ['npc_dota_hero_brewmaster'] = 0.87,
+        
         ['npc_dota_hero_winter_wyvern'] = 0.81,
         ['npc_dota_hero_snapfire'] = 0.8,
         ['npc_dota_hero_sand_king'] = 0.78,
@@ -3599,7 +3599,7 @@ local heroList = {
         ['npc_dota_hero_shadow_demon'] = 0.69,
         ['npc_dota_hero_kunkka'] = 0.68,
         ['npc_dota_hero_spirit_breaker'] = 0.68,
-        ['npc_dota_hero_lone_druid'] = 0.66,
+        
         ['npc_dota_hero_void_spirit'] = 0.63,
         ['npc_dota_hero_shredder'] = 0.62,
         ['npc_dota_hero_axe'] = 0.59,
@@ -3620,14 +3620,14 @@ local heroList = {
         ['npc_dota_hero_nyx_assassin'] = 0.36,
         ['npc_dota_hero_broodmother'] = 0.35,
         ['npc_dota_hero_skywrath_mage'] = 0.34,
-        ['npc_dota_hero_puck'] = 0.3,
+        
         ['npc_dota_hero_treant'] = 0.21,
         ['npc_dota_hero_bounty_hunter'] = 0.19,
         ['npc_dota_hero_hoodwink'] = 0.13,
         ['npc_dota_hero_gyrocopter'] = 0.11,
         ['npc_dota_hero_abyssal_underlord'] = 0.04,
-        ['npc_dota_hero_tusk'] = 0.03,
-        ['npc_dota_hero_visage'] = 0.01,
+        
+        
         ['npc_dota_hero_ember_spirit'] = -0.09,
         ['npc_dota_hero_enigma'] = -0.1,
         ['npc_dota_hero_luna'] = -0.21,
@@ -3646,7 +3646,7 @@ local heroList = {
         ['npc_dota_hero_grimstroke'] = -0.45,
         ['npc_dota_hero_dazzle'] = -0.54,
         ['npc_dota_hero_ursa'] = -0.54,
-        ['npc_dota_hero_wisp'] = -0.54,
+        
         ['npc_dota_hero_bane'] = -0.54,
         ['npc_dota_hero_juggernaut'] = -0.58,
         ['npc_dota_hero_jakiro'] = -0.6,
@@ -3655,7 +3655,7 @@ local heroList = {
         ['npc_dota_hero_lich'] = -0.79,
         ['npc_dota_hero_ancient_apparition'] = -0.85,
         ['npc_dota_hero_legion_commander'] = -0.88,
-        ['npc_dota_hero_rubick'] = -0.91,
+        
         ['npc_dota_hero_slark'] = -0.92,
         ['npc_dota_hero_terrorblade'] = -0.92,
         ['npc_dota_hero_huskar'] = -0.96,
@@ -3678,7 +3678,7 @@ local heroList = {
         ['npc_dota_hero_kez'] = -1.44,
         ['npc_dota_hero_clinkz'] = -1.45,
         ['npc_dota_hero_death_prophet'] = -1.6,
-        ['npc_dota_hero_pangolier'] = -1.61,
+        
         ['npc_dota_hero_riki'] = -1.73,
         ['npc_dota_hero_meepo'] = -1.85,
         ['npc_dota_hero_weaver'] = -1.91,
@@ -3692,7 +3692,7 @@ local heroList = {
         ['npc_dota_hero_troll_warlord'] = 2.55,
         ['npc_dota_hero_juggernaut'] = 2.4,
         ['npc_dota_hero_meepo'] = 2.4,
-        ['npc_dota_hero_lone_druid'] = 2.3,
+        
         ['npc_dota_hero_kez'] = 2.11,
         ['npc_dota_hero_enigma'] = 2.08,
         ['npc_dota_hero_tidehunter'] = 2.06,
@@ -3705,7 +3705,7 @@ local heroList = {
         ['npc_dota_hero_sven'] = 1.42,
         ['npc_dota_hero_death_prophet'] = 1.36,
         ['npc_dota_hero_witch_doctor'] = 1.27,
-        ['npc_dota_hero_wisp'] = 1.27,
+        
         ['npc_dota_hero_broodmother'] = 1.24,
         ['npc_dota_hero_shadow_shaman'] = 1.21,
         ['npc_dota_hero_monkey_king'] = 1.15,
@@ -3726,7 +3726,7 @@ local heroList = {
         ['npc_dota_hero_batrider'] = 0.61,
         ['npc_dota_hero_lion'] = 0.61,
         ['npc_dota_hero_bounty_hunter'] = 0.6,
-        ['npc_dota_hero_pangolier'] = 0.57,
+        
         ['npc_dota_hero_bane'] = 0.54,
         ['npc_dota_hero_lycan'] = 0.54,
         ['npc_dota_hero_tinker'] = 0.52,
@@ -3749,14 +3749,14 @@ local heroList = {
         ['npc_dota_hero_riki'] = 0.16,
         ['npc_dota_hero_phoenix'] = 0.09,
         ['npc_dota_hero_undying'] = 0.07,
-        ['npc_dota_hero_tusk'] = 0.05,
+        
         ['npc_dota_hero_centaur'] = 0,
         ['npc_dota_hero_tiny'] = -0.05,
         ['npc_dota_hero_ember_spirit'] = -0.06,
         ['npc_dota_hero_rattletrap'] = -0.06,
         ['npc_dota_hero_dark_seer'] = -0.07,
         ['npc_dota_hero_storm_spirit'] = -0.07,
-        ['npc_dota_hero_brewmaster'] = -0.09,
+        
         ['npc_dota_hero_shredder'] = -0.09,
         ['npc_dota_hero_zuus'] = -0.09,
         ['npc_dota_hero_weaver'] = -0.17,
@@ -3786,7 +3786,7 @@ local heroList = {
         ['npc_dota_hero_chen'] = -0.7,
         ['npc_dota_hero_disruptor'] = -0.71,
         ['npc_dota_hero_ancient_apparition'] = -0.74,
-        ['npc_dota_hero_visage'] = -0.76,
+        
         ['npc_dota_hero_medusa'] = -0.78,
         ['npc_dota_hero_windrunner'] = -0.82,
         ['npc_dota_hero_clinkz'] = -0.83,
@@ -3796,7 +3796,7 @@ local heroList = {
         ['npc_dota_hero_pudge'] = -0.89,
         ['npc_dota_hero_winter_wyvern'] = -0.9,
         ['npc_dota_hero_queenofpain'] = -0.93,
-        ['npc_dota_hero_puck'] = -0.94,
+        
         ['npc_dota_hero_arc_warden'] = -0.95,
         ['npc_dota_hero_enchantress'] = -0.98,
         ['npc_dota_hero_mirana'] = -1.05,
@@ -3809,7 +3809,7 @@ local heroList = {
         ['npc_dota_hero_furion'] = -1.44,
         ['npc_dota_hero_phantom_assassin'] = -1.46,
         ['npc_dota_hero_mars'] = -1.93,
-        ['npc_dota_hero_rubick'] = -1.97,
+        
         ['npc_dota_hero_drow_ranger'] = -2.78,
         ['npc_dota_hero_sniper'] = -2.9,
     },
@@ -3883,19 +3883,19 @@ local heroList = {
         ['npc_dota_hero_riki'] = -0.03,
         ['npc_dota_hero_keeper_of_the_light'] = -0.04,
         ['npc_dota_hero_faceless_void'] = -0.05,
-        ['npc_dota_hero_pangolier'] = -0.09,
+        
         ['npc_dota_hero_queenofpain'] = -0.1,
         ['npc_dota_hero_bane'] = -0.11,
         ['npc_dota_hero_dawnbreaker'] = -0.15,
         ['npc_dota_hero_shadow_shaman'] = -0.19,
         ['npc_dota_hero_ancient_apparition'] = -0.23,
-        ['npc_dota_hero_tusk'] = -0.24,
+        
         ['npc_dota_hero_earth_spirit'] = -0.24,
         ['npc_dota_hero_kunkka'] = -0.25,
         ['npc_dota_hero_skeleton_king'] = -0.26,
-        ['npc_dota_hero_puck'] = -0.28,
+        
         ['npc_dota_hero_vengefulspirit'] = -0.33,
-        ['npc_dota_hero_rubick'] = -0.35,
+        
         ['npc_dota_hero_obsidian_destroyer'] = -0.39,
         ['npc_dota_hero_abyssal_underlord'] = -0.41,
         ['npc_dota_hero_nyx_assassin'] = -0.44,
@@ -3910,7 +3910,7 @@ local heroList = {
         ['npc_dota_hero_pudge'] = -0.69,
         ['npc_dota_hero_ringmaster'] = -0.7,
         ['npc_dota_hero_enigma'] = -0.78,
-        ['npc_dota_hero_brewmaster'] = -0.84,
+        
         ['npc_dota_hero_void_spirit'] = -0.88,
         ['npc_dota_hero_arc_warden'] = -0.92,
         ['npc_dota_hero_undying'] = -0.98,
@@ -3923,16 +3923,16 @@ local heroList = {
         ['npc_dota_hero_tinker'] = -1.31,
         ['npc_dota_hero_medusa'] = -1.37,
         ['npc_dota_hero_beastmaster'] = -1.4,
-        ['npc_dota_hero_wisp'] = -1.41,
+        
         ['npc_dota_hero_terrorblade'] = -1.42,
         ['npc_dota_hero_morphling'] = -1.5,
         ['npc_dota_hero_warlock'] = -1.5,
         ['npc_dota_hero_chaos_knight'] = -1.71,
-        ['npc_dota_hero_visage'] = -2.07,
+        
         ['npc_dota_hero_lycan'] = -2.1,
         ['npc_dota_hero_abaddon'] = -2.39,
         ['npc_dota_hero_dark_seer'] = -2.43,
-        ['npc_dota_hero_lone_druid'] = -2.5,
+        
         ['npc_dota_hero_slark'] = -2.55,
         ['npc_dota_hero_naga_siren'] = -2.56,
         ['npc_dota_hero_antimage'] = -2.58,
@@ -3950,11 +3950,11 @@ local heroList = {
         ['npc_dota_hero_dark_seer'] = 2.65,
         ['npc_dota_hero_enchantress'] = 2.62,
         ['npc_dota_hero_sven'] = 2.62,
-        ['npc_dota_hero_visage'] = 2.41,
+        
         ['npc_dota_hero_skeleton_king'] = 2.26,
         ['npc_dota_hero_windrunner'] = 2.23,
         ['npc_dota_hero_hoodwink'] = 2.2,
-        ['npc_dota_hero_brewmaster'] = 2.17,
+        
         ['npc_dota_hero_bristleback'] = 2.04,
         ['npc_dota_hero_batrider'] = 1.88,
         ['npc_dota_hero_shadow_demon'] = 1.87,
@@ -3971,7 +3971,7 @@ local heroList = {
         ['npc_dota_hero_keeper_of_the_light'] = 1.2,
         ['npc_dota_hero_techies'] = 1.11,
         ['npc_dota_hero_sniper'] = 1.06,
-        ['npc_dota_hero_puck'] = 1.01,
+        
         ['npc_dota_hero_zuus'] = 0.92,
         ['npc_dota_hero_lina'] = 0.91,
         ['npc_dota_hero_treant'] = 0.9,
@@ -4041,22 +4041,22 @@ local heroList = {
         ['npc_dota_hero_death_prophet'] = -1.12,
         ['npc_dota_hero_vengefulspirit'] = -1.14,
         ['npc_dota_hero_kez'] = -1.17,
-        ['npc_dota_hero_tusk'] = -1.19,
+        
         ['npc_dota_hero_mars'] = -1.2,
         ['npc_dota_hero_centaur'] = -1.27,
         ['npc_dota_hero_phantom_lancer'] = -1.27,
         ['npc_dota_hero_tinker'] = -1.32,
-        ['npc_dota_hero_wisp'] = -1.35,
+        
         ['npc_dota_hero_magnataur'] = -1.5,
         ['npc_dota_hero_razor'] = -1.52,
         ['npc_dota_hero_pudge'] = -1.52,
         ['npc_dota_hero_ringmaster'] = -1.58,
-        ['npc_dota_hero_pangolier'] = -1.67,
+        
         ['npc_dota_hero_antimage'] = -1.7,
         ['npc_dota_hero_morphling'] = -1.79,
         ['npc_dota_hero_earth_spirit'] = -1.88,
         ['npc_dota_hero_void_spirit'] = -2,
-        ['npc_dota_hero_rubick'] = -2.19,
+        
         ['npc_dota_hero_dawnbreaker'] = -2.2,
         ['npc_dota_hero_beastmaster'] = -2.22,
         ['npc_dota_hero_undying'] = -2.27,
@@ -4064,7 +4064,7 @@ local heroList = {
         ['npc_dota_hero_tidehunter'] = -3.28,
         ['npc_dota_hero_slark'] = -3.48,
         ['npc_dota_hero_abaddon'] = -3.84,
-        ['npc_dota_hero_lone_druid'] = -3.87,
+        
         ['npc_dota_hero_meepo'] = -11.17,
     },
     ['npc_dota_hero_ember_spirit'] = {
@@ -4073,7 +4073,7 @@ local heroList = {
         ['npc_dota_hero_monkey_king'] = 4.34,
         ['npc_dota_hero_meepo'] = 4.24,
         ['npc_dota_hero_broodmother'] = 3.65,
-        ['npc_dota_hero_lone_druid'] = 3.51,
+        
         ['npc_dota_hero_tinker'] = 3.32,
         ['npc_dota_hero_troll_warlord'] = 2.91,
         ['npc_dota_hero_oracle'] = 2.53,
@@ -4110,7 +4110,7 @@ local heroList = {
         ['npc_dota_hero_doom_bringer'] = 0.7,
         ['npc_dota_hero_naga_siren'] = 0.68,
         ['npc_dota_hero_slardar'] = 0.57,
-        ['npc_dota_hero_brewmaster'] = 0.54,
+        
         ['npc_dota_hero_weaver'] = 0.54,
         ['npc_dota_hero_ursa'] = 0.53,
         ['npc_dota_hero_silencer'] = 0.51,
@@ -4140,8 +4140,8 @@ local heroList = {
         ['npc_dota_hero_earthshaker'] = 0,
         ['npc_dota_hero_phoenix'] = -0.04,
         ['npc_dota_hero_faceless_void'] = -0.05,
-        ['npc_dota_hero_wisp'] = -0.06,
-        ['npc_dota_hero_puck'] = -0.12,
+        
+        
         ['npc_dota_hero_shredder'] = -0.14,
         ['npc_dota_hero_winter_wyvern'] = -0.16,
         ['npc_dota_hero_lion'] = -0.2,
@@ -4158,7 +4158,7 @@ local heroList = {
         ['npc_dota_hero_skeleton_king'] = -0.62,
         ['npc_dota_hero_undying'] = -0.64,
         ['npc_dota_hero_batrider'] = -0.68,
-        ['npc_dota_hero_pangolier'] = -0.74,
+        
         ['npc_dota_hero_ancient_apparition'] = -0.75,
         ['npc_dota_hero_lina'] = -0.85,
         ['npc_dota_hero_lich'] = -0.85,
@@ -4166,13 +4166,13 @@ local heroList = {
         ['npc_dota_hero_warlock'] = -0.96,
         ['npc_dota_hero_primal_beast'] = -1.04,
         ['npc_dota_hero_spirit_breaker'] = -1.07,
-        ['npc_dota_hero_visage'] = -1.09,
+        
         ['npc_dota_hero_beastmaster'] = -1.1,
         ['npc_dota_hero_chaos_knight'] = -1.13,
         ['npc_dota_hero_marci'] = -1.21,
         ['npc_dota_hero_shadow_demon'] = -1.24,
         ['npc_dota_hero_axe'] = -1.36,
-        ['npc_dota_hero_tusk'] = -1.37,
+        
         ['npc_dota_hero_leshrac'] = -1.45,
         ['npc_dota_hero_bristleback'] = -1.67,
         ['npc_dota_hero_nyx_assassin'] = -1.69,
@@ -4180,7 +4180,7 @@ local heroList = {
         ['npc_dota_hero_bloodseeker'] = -1.8,
         ['npc_dota_hero_dark_seer'] = -1.83,
         ['npc_dota_hero_razor'] = -1.84,
-        ['npc_dota_hero_rubick'] = -1.84,
+        
         ['npc_dota_hero_sand_king'] = -1.86,
         ['npc_dota_hero_void_spirit'] = -2,
         ['npc_dota_hero_storm_spirit'] = -2,
@@ -4204,7 +4204,7 @@ local heroList = {
         ['npc_dota_hero_ogre_magi'] = 1.66,
         ['npc_dota_hero_sand_king'] = 1.58,
         ['npc_dota_hero_slark'] = 1.47,
-        ['npc_dota_hero_wisp'] = 1.33,
+        
         ['npc_dota_hero_medusa'] = 1.31,
         ['npc_dota_hero_morphling'] = 1.23,
         ['npc_dota_hero_primal_beast'] = 1.18,
@@ -4214,7 +4214,7 @@ local heroList = {
         ['npc_dota_hero_chen'] = 1.05,
         ['npc_dota_hero_phantom_lancer'] = 0.99,
         ['npc_dota_hero_earth_spirit'] = 0.98,
-        ['npc_dota_hero_pangolier'] = 0.93,
+        
         ['npc_dota_hero_nyx_assassin'] = 0.9,
         ['npc_dota_hero_riki'] = 0.85,
         ['npc_dota_hero_axe'] = 0.75,
@@ -4234,13 +4234,13 @@ local heroList = {
         ['npc_dota_hero_legion_commander'] = 0.34,
         ['npc_dota_hero_lich'] = 0.31,
         ['npc_dota_hero_doom_bringer'] = 0.28,
-        ['npc_dota_hero_tusk'] = 0.24,
+        
         ['npc_dota_hero_queenofpain'] = 0.23,
         ['npc_dota_hero_dark_willow'] = 0.22,
         ['npc_dota_hero_weaver'] = 0.12,
         ['npc_dota_hero_tinker'] = 0.11,
         ['npc_dota_hero_ancient_apparition'] = 0.1,
-        ['npc_dota_hero_puck'] = 0.07,
+        
         ['npc_dota_hero_nevermore'] = 0.05,
         ['npc_dota_hero_rattletrap'] = 0.05,
         ['npc_dota_hero_dawnbreaker'] = 0.04,
@@ -4254,7 +4254,7 @@ local heroList = {
         ['npc_dota_hero_jakiro'] = -0.18,
         ['npc_dota_hero_juggernaut'] = -0.2,
         ['npc_dota_hero_viper'] = -0.21,
-        ['npc_dota_hero_lone_druid'] = -0.23,
+        
         ['npc_dota_hero_drow_ranger'] = -0.23,
         ['npc_dota_hero_phoenix'] = -0.26,
         ['npc_dota_hero_grimstroke'] = -0.29,
@@ -4275,7 +4275,7 @@ local heroList = {
         ['npc_dota_hero_gyrocopter'] = -0.56,
         ['npc_dota_hero_slardar'] = -0.58,
         ['npc_dota_hero_skeleton_king'] = -0.61,
-        ['npc_dota_hero_rubick'] = -0.62,
+        
         ['npc_dota_hero_omniknight'] = -0.64,
         ['npc_dota_hero_death_prophet'] = -0.65,
         ['npc_dota_hero_bane'] = -0.67,
@@ -4286,10 +4286,10 @@ local heroList = {
         ['npc_dota_hero_abaddon'] = -0.76,
         ['npc_dota_hero_zuus'] = -0.79,
         ['npc_dota_hero_night_stalker'] = -0.85,
-        ['npc_dota_hero_brewmaster'] = -0.86,
+        
         ['npc_dota_hero_dragon_knight'] = -0.86,
         ['npc_dota_hero_tidehunter'] = -0.9,
-        ['npc_dota_hero_visage'] = -0.94,
+        
         ['npc_dota_hero_invoker'] = -0.98,
         ['npc_dota_hero_obsidian_destroyer'] = -0.98,
         ['npc_dota_hero_winter_wyvern'] = -1.01,
@@ -4322,7 +4322,7 @@ local heroList = {
         ['npc_dota_hero_faceless_void'] = -2.63,
     },
     ['npc_dota_hero_enigma'] = {
-        ['npc_dota_hero_rubick'] = 4.58,
+        
         ['npc_dota_hero_medusa'] = 3.88,
         ['npc_dota_hero_bristleback'] = 3.54,
         ['npc_dota_hero_warlock'] = 3.43,
@@ -4342,7 +4342,7 @@ local heroList = {
         ['npc_dota_hero_jakiro'] = 1.11,
         ['npc_dota_hero_phantom_assassin'] = 1,
         ['npc_dota_hero_earthshaker'] = 0.88,
-        ['npc_dota_hero_brewmaster'] = 0.82,
+        
         ['npc_dota_hero_dawnbreaker'] = 0.79,
         ['npc_dota_hero_furion'] = 0.75,
         ['npc_dota_hero_legion_commander'] = 0.66,
@@ -4381,7 +4381,7 @@ local heroList = {
         ['npc_dota_hero_tidehunter'] = -0.27,
         ['npc_dota_hero_viper'] = -0.27,
         ['npc_dota_hero_muerta'] = -0.3,
-        ['npc_dota_hero_pangolier'] = -0.32,
+        
         ['npc_dota_hero_morphling'] = -0.39,
         ['npc_dota_hero_weaver'] = -0.4,
         ['npc_dota_hero_beastmaster'] = -0.42,
@@ -4394,19 +4394,19 @@ local heroList = {
         ['npc_dota_hero_chen'] = -0.5,
         ['npc_dota_hero_ancient_apparition'] = -0.5,
         ['npc_dota_hero_shadow_shaman'] = -0.52,
-        ['npc_dota_hero_visage'] = -0.54,
+        
         ['npc_dota_hero_shredder'] = -0.55,
         ['npc_dota_hero_lich'] = -0.58,
         ['npc_dota_hero_luna'] = -0.6,
-        ['npc_dota_hero_puck'] = -0.6,
+        
         ['npc_dota_hero_mirana'] = -0.62,
         ['npc_dota_hero_dark_seer'] = -0.64,
         ['npc_dota_hero_lycan'] = -0.65,
         ['npc_dota_hero_void_spirit'] = -0.68,
         ['npc_dota_hero_techies'] = -0.71,
-        ['npc_dota_hero_tusk'] = -0.73,
+        
         ['npc_dota_hero_abyssal_underlord'] = -0.73,
-        ['npc_dota_hero_lone_druid'] = -0.73,
+        
         ['npc_dota_hero_centaur'] = -0.78,
         ['npc_dota_hero_primal_beast'] = -0.82,
         ['npc_dota_hero_rattletrap'] = -0.84,
@@ -4414,7 +4414,7 @@ local heroList = {
         ['npc_dota_hero_pudge'] = -0.87,
         ['npc_dota_hero_ember_spirit'] = -0.88,
         ['npc_dota_hero_broodmother'] = -0.92,
-        ['npc_dota_hero_wisp'] = -0.96,
+        
         ['npc_dota_hero_dark_willow'] = -0.98,
         ['npc_dota_hero_spirit_breaker'] = -0.99,
         ['npc_dota_hero_huskar'] = -1.06,
@@ -4450,7 +4450,7 @@ local heroList = {
     },
     ['npc_dota_hero_faceless_void'] = {
         ['npc_dota_hero_meepo'] = 2.77,
-        ['npc_dota_hero_lone_druid'] = 2.5,
+        
         ['npc_dota_hero_enchantress'] = 2.47,
         ['npc_dota_hero_chaos_knight'] = 2.46,
         ['npc_dota_hero_legion_commander'] = 2.06,
@@ -4493,7 +4493,7 @@ local heroList = {
         ['npc_dota_hero_alchemist'] = 0.4,
         ['npc_dota_hero_monkey_king'] = 0.35,
         ['npc_dota_hero_earthshaker'] = 0.35,
-        ['npc_dota_hero_rubick'] = 0.33,
+        
         ['npc_dota_hero_dazzle'] = 0.3,
         ['npc_dota_hero_elder_titan'] = 0.27,
         ['npc_dota_hero_crystal_maiden'] = 0.26,
@@ -4510,10 +4510,10 @@ local heroList = {
         ['npc_dota_hero_dragon_knight'] = -0.13,
         ['npc_dota_hero_ringmaster'] = -0.14,
         ['npc_dota_hero_sniper'] = -0.15,
-        ['npc_dota_hero_visage'] = -0.15,
+        
         ['npc_dota_hero_furion'] = -0.16,
         ['npc_dota_hero_storm_spirit'] = -0.16,
-        ['npc_dota_hero_pangolier'] = -0.17,
+        
         ['npc_dota_hero_mirana'] = -0.18,
         ['npc_dota_hero_enigma'] = -0.2,
         ['npc_dota_hero_spirit_breaker'] = -0.24,
@@ -4525,20 +4525,20 @@ local heroList = {
         ['npc_dota_hero_medusa'] = -0.38,
         ['npc_dota_hero_leshrac'] = -0.38,
         ['npc_dota_hero_abyssal_underlord'] = -0.4,
-        ['npc_dota_hero_puck'] = -0.45,
+        
         ['npc_dota_hero_ancient_apparition'] = -0.46,
         ['npc_dota_hero_necrolyte'] = -0.48,
         ['npc_dota_hero_marci'] = -0.5,
         ['npc_dota_hero_techies'] = -0.51,
         ['npc_dota_hero_winter_wyvern'] = -0.54,
         ['npc_dota_hero_warlock'] = -0.55,
-        ['npc_dota_hero_tusk'] = -0.57,
+        
         ['npc_dota_hero_kez'] = -0.62,
         ['npc_dota_hero_gyrocopter'] = -0.64,
         ['npc_dota_hero_terrorblade'] = -0.65,
         ['npc_dota_hero_chen'] = -0.67,
         ['npc_dota_hero_venomancer'] = -0.77,
-        ['npc_dota_hero_wisp'] = -0.79,
+        
         ['npc_dota_hero_sven'] = -0.8,
         ['npc_dota_hero_earth_spirit'] = -0.82,
         ['npc_dota_hero_clinkz'] = -0.83,
@@ -4552,7 +4552,7 @@ local heroList = {
         ['npc_dota_hero_shadow_demon'] = -1.16,
         ['npc_dota_hero_batrider'] = -1.21,
         ['npc_dota_hero_bloodseeker'] = -1.21,
-        ['npc_dota_hero_brewmaster'] = -1.22,
+        
         ['npc_dota_hero_snapfire'] = -1.33,
         ['npc_dota_hero_invoker'] = -1.34,
         ['npc_dota_hero_razor'] = -1.35,
@@ -4599,7 +4599,7 @@ local heroList = {
         ['npc_dota_hero_mars'] = 0.86,
         ['npc_dota_hero_monkey_king'] = 0.83,
         ['npc_dota_hero_snapfire'] = 0.82,
-        ['npc_dota_hero_wisp'] = 0.81,
+        
         ['npc_dota_hero_nevermore'] = 0.74,
         ['npc_dota_hero_tinker'] = 0.72,
         ['npc_dota_hero_crystal_maiden'] = 0.69,
@@ -4614,20 +4614,20 @@ local heroList = {
         ['npc_dota_hero_dazzle'] = 0.44,
         ['npc_dota_hero_shredder'] = 0.44,
         ['npc_dota_hero_slark'] = 0.31,
-        ['npc_dota_hero_tusk'] = 0.3,
+        
         ['npc_dota_hero_ursa'] = 0.24,
         ['npc_dota_hero_lina'] = 0.23,
-        ['npc_dota_hero_visage'] = 0.18,
+        
         ['npc_dota_hero_faceless_void'] = 0.17,
         ['npc_dota_hero_legion_commander'] = 0.12,
         ['npc_dota_hero_sand_king'] = 0.09,
         ['npc_dota_hero_rattletrap'] = 0.03,
-        ['npc_dota_hero_pangolier'] = 0.03,
+        
         ['npc_dota_hero_naga_siren'] = 0.02,
         ['npc_dota_hero_zuus'] = 0,
         ['npc_dota_hero_beastmaster'] = -0.01,
         ['npc_dota_hero_marci'] = -0.02,
-        ['npc_dota_hero_lone_druid'] = -0.02,
+        
         ['npc_dota_hero_night_stalker'] = -0.03,
         ['npc_dota_hero_lycan'] = -0.05,
         ['npc_dota_hero_void_spirit'] = -0.06,
@@ -4635,7 +4635,7 @@ local heroList = {
         ['npc_dota_hero_shadow_demon'] = -0.08,
         ['npc_dota_hero_clinkz'] = -0.15,
         ['npc_dota_hero_bounty_hunter'] = -0.15,
-        ['npc_dota_hero_rubick'] = -0.19,
+        
         ['npc_dota_hero_abyssal_underlord'] = -0.2,
         ['npc_dota_hero_chen'] = -0.2,
         ['npc_dota_hero_bane'] = -0.23,
@@ -4670,7 +4670,7 @@ local heroList = {
         ['npc_dota_hero_centaur'] = -0.8,
         ['npc_dota_hero_grimstroke'] = -0.81,
         ['npc_dota_hero_weaver'] = -0.81,
-        ['npc_dota_hero_brewmaster'] = -0.82,
+        
         ['npc_dota_hero_windrunner'] = -0.83,
         ['npc_dota_hero_jakiro'] = -0.85,
         ['npc_dota_hero_enigma'] = -0.9,
@@ -4688,7 +4688,7 @@ local heroList = {
         ['npc_dota_hero_warlock'] = -1.42,
         ['npc_dota_hero_dark_seer'] = -1.43,
         ['npc_dota_hero_venomancer'] = -1.43,
-        ['npc_dota_hero_puck'] = -1.46,
+        
         ['npc_dota_hero_doom_bringer'] = -1.49,
         ['npc_dota_hero_omniknight'] = -1.55,
         ['npc_dota_hero_razor'] = -1.58,
@@ -4706,7 +4706,7 @@ local heroList = {
         ['npc_dota_hero_chen'] = 2.12,
         ['npc_dota_hero_lycan'] = 2.06,
         ['npc_dota_hero_shadow_demon'] = 1.84,
-        ['npc_dota_hero_visage'] = 1.78,
+        
         ['npc_dota_hero_razor'] = 1.77,
         ['npc_dota_hero_gyrocopter'] = 1.75,
         ['npc_dota_hero_spectre'] = 1.65,
@@ -4716,7 +4716,7 @@ local heroList = {
         ['npc_dota_hero_warlock'] = 1.1,
         ['npc_dota_hero_luna'] = 1.1,
         ['npc_dota_hero_ringmaster'] = 1.03,
-        ['npc_dota_hero_lone_druid'] = 0.99,
+        
         ['npc_dota_hero_silencer'] = 0.97,
         ['npc_dota_hero_skeleton_king'] = 0.96,
         ['npc_dota_hero_medusa'] = 0.95,
@@ -4762,12 +4762,12 @@ local heroList = {
         ['npc_dota_hero_slardar'] = 0.26,
         ['npc_dota_hero_sand_king'] = 0.24,
         ['npc_dota_hero_lich'] = 0.23,
-        ['npc_dota_hero_wisp'] = 0.22,
+        
         ['npc_dota_hero_hoodwink'] = 0.21,
         ['npc_dota_hero_centaur'] = 0.16,
         ['npc_dota_hero_leshrac'] = 0.15,
         ['npc_dota_hero_witch_doctor'] = 0.14,
-        ['npc_dota_hero_brewmaster'] = 0.12,
+        
         ['npc_dota_hero_doom_bringer'] = 0.11,
         ['npc_dota_hero_muerta'] = 0.09,
         ['npc_dota_hero_venomancer'] = 0.06,
@@ -4789,12 +4789,12 @@ local heroList = {
         ['npc_dota_hero_axe'] = -0.23,
         ['npc_dota_hero_dark_seer'] = -0.23,
         ['npc_dota_hero_dazzle'] = -0.3,
-        ['npc_dota_hero_tusk'] = -0.3,
+        
         ['npc_dota_hero_kez'] = -0.32,
-        ['npc_dota_hero_rubick'] = -0.34,
+        
         ['npc_dota_hero_phantom_lancer'] = -0.37,
         ['npc_dota_hero_juggernaut'] = -0.37,
-        ['npc_dota_hero_puck'] = -0.39,
+        
         ['npc_dota_hero_troll_warlord'] = -0.41,
         ['npc_dota_hero_tiny'] = -0.41,
         ['npc_dota_hero_ursa'] = -0.42,
@@ -4824,7 +4824,7 @@ local heroList = {
         ['npc_dota_hero_broodmother'] = -1.83,
         ['npc_dota_hero_tidehunter'] = -1.85,
         ['npc_dota_hero_primal_beast'] = -1.98,
-        ['npc_dota_hero_pangolier'] = -2.19,
+        
         ['npc_dota_hero_necrolyte'] = -2.58,
         ['npc_dota_hero_shredder'] = -2.75,
         ['npc_dota_hero_slark'] = -3.89,
@@ -4907,13 +4907,13 @@ local heroList = {
         ['npc_dota_hero_rattletrap'] = -0.29,
         ['npc_dota_hero_terrorblade'] = -0.31,
         ['npc_dota_hero_tidehunter'] = -0.32,
-        ['npc_dota_hero_rubick'] = -0.33,
+        
         ['npc_dota_hero_sand_king'] = -0.37,
         ['npc_dota_hero_arc_warden'] = -0.38,
-        ['npc_dota_hero_tusk'] = -0.42,
+        
         ['npc_dota_hero_vengefulspirit'] = -0.42,
         ['npc_dota_hero_invoker'] = -0.43,
-        ['npc_dota_hero_puck'] = -0.45,
+        
         ['npc_dota_hero_omniknight'] = -0.46,
         ['npc_dota_hero_jakiro'] = -0.48,
         ['npc_dota_hero_crystal_maiden'] = -0.48,
@@ -4924,27 +4924,27 @@ local heroList = {
         ['npc_dota_hero_marci'] = -0.63,
         ['npc_dota_hero_shredder'] = -0.67,
         ['npc_dota_hero_disruptor'] = -0.7,
-        ['npc_dota_hero_wisp'] = -0.71,
+        
         ['npc_dota_hero_troll_warlord'] = -0.73,
         ['npc_dota_hero_warlock'] = -0.77,
         ['npc_dota_hero_axe'] = -0.8,
         ['npc_dota_hero_weaver'] = -0.83,
-        ['npc_dota_hero_visage'] = -0.84,
+        
         ['npc_dota_hero_necrolyte'] = -0.84,
         ['npc_dota_hero_magnataur'] = -0.86,
         ['npc_dota_hero_void_spirit'] = -0.9,
         ['npc_dota_hero_chaos_knight'] = -0.92,
         ['npc_dota_hero_lycan'] = -0.92,
         ['npc_dota_hero_phantom_lancer'] = -0.94,
-        ['npc_dota_hero_brewmaster'] = -0.95,
+        
         ['npc_dota_hero_leshrac'] = -0.96,
         ['npc_dota_hero_slardar'] = -1.01,
         ['npc_dota_hero_slark'] = -1.02,
         ['npc_dota_hero_dazzle'] = -1.03,
         ['npc_dota_hero_night_stalker'] = -1.03,
-        ['npc_dota_hero_pangolier'] = -1.19,
+        
         ['npc_dota_hero_lion'] = -1.19,
-        ['npc_dota_hero_lone_druid'] = -1.26,
+        
         ['npc_dota_hero_tiny'] = -1.38,
         ['npc_dota_hero_earthshaker'] = -1.38,
         ['npc_dota_hero_shadow_shaman'] = -1.39,
@@ -4970,7 +4970,7 @@ local heroList = {
         ['npc_dota_hero_tiny'] = 0.91,
         ['npc_dota_hero_rattletrap'] = 0.84,
         ['npc_dota_hero_zuus'] = 0.77,
-        ['npc_dota_hero_puck'] = 0.75,
+        
         ['npc_dota_hero_omniknight'] = 0.73,
         ['npc_dota_hero_earth_spirit'] = 0.69,
         ['npc_dota_hero_kez'] = 0.62,
@@ -5012,7 +5012,7 @@ local heroList = {
         ['npc_dota_hero_crystal_maiden'] = -0.02,
         ['npc_dota_hero_razor'] = -0.06,
         ['npc_dota_hero_weaver'] = -0.06,
-        ['npc_dota_hero_pangolier'] = -0.07,
+        
         ['npc_dota_hero_lich'] = -0.12,
         ['npc_dota_hero_jakiro'] = -0.16,
         ['npc_dota_hero_keeper_of_the_light'] = -0.19,
@@ -5029,11 +5029,11 @@ local heroList = {
         ['npc_dota_hero_undying'] = -0.34,
         ['npc_dota_hero_slark'] = -0.34,
         ['npc_dota_hero_alchemist'] = -0.34,
-        ['npc_dota_hero_brewmaster'] = -0.35,
+        
         ['npc_dota_hero_medusa'] = -0.35,
         ['npc_dota_hero_beastmaster'] = -0.37,
         ['npc_dota_hero_necrolyte'] = -0.37,
-        ['npc_dota_hero_tusk'] = -0.38,
+        
         ['npc_dota_hero_venomancer'] = -0.38,
         ['npc_dota_hero_lion'] = -0.38,
         ['npc_dota_hero_pudge'] = -0.39,
@@ -5057,7 +5057,7 @@ local heroList = {
         ['npc_dota_hero_death_prophet'] = -0.69,
         ['npc_dota_hero_enchantress'] = -0.78,
         ['npc_dota_hero_tidehunter'] = -0.78,
-        ['npc_dota_hero_wisp'] = -0.79,
+        
         ['npc_dota_hero_faceless_void'] = -0.8,
         ['npc_dota_hero_witch_doctor'] = -0.82,
         ['npc_dota_hero_dark_willow'] = -0.87,
@@ -5066,13 +5066,13 @@ local heroList = {
         ['npc_dota_hero_ursa'] = -0.95,
         ['npc_dota_hero_leshrac'] = -0.95,
         ['npc_dota_hero_ancient_apparition'] = -1,
-        ['npc_dota_hero_visage'] = -1.02,
+        
         ['npc_dota_hero_lycan'] = -1.04,
         ['npc_dota_hero_earthshaker'] = -1.08,
         ['npc_dota_hero_templar_assassin'] = -1.23,
-        ['npc_dota_hero_rubick'] = -1.23,
+        
         ['npc_dota_hero_furion'] = -1.28,
-        ['npc_dota_hero_lone_druid'] = -1.29,
+        
         ['npc_dota_hero_monkey_king'] = -1.32,
         ['npc_dota_hero_nevermore'] = -1.35,
         ['npc_dota_hero_dark_seer'] = -1.36,
@@ -5119,9 +5119,9 @@ local heroList = {
         ['npc_dota_hero_death_prophet'] = 1.01,
         ['npc_dota_hero_enigma'] = 0.99,
         ['npc_dota_hero_lion'] = 0.89,
-        ['npc_dota_hero_tusk'] = 0.89,
+        
         ['npc_dota_hero_nevermore'] = 0.8,
-        ['npc_dota_hero_visage'] = 0.73,
+        
         ['npc_dota_hero_abaddon'] = 0.69,
         ['npc_dota_hero_marci'] = 0.68,
         ['npc_dota_hero_undying'] = 0.68,
@@ -5145,7 +5145,7 @@ local heroList = {
         ['npc_dota_hero_dazzle'] = 0.19,
         ['npc_dota_hero_beastmaster'] = 0.11,
         ['npc_dota_hero_dark_willow'] = 0.1,
-        ['npc_dota_hero_wisp'] = 0.06,
+        
         ['npc_dota_hero_bane'] = -0.3,
         ['npc_dota_hero_grimstroke'] = -0.41,
         ['npc_dota_hero_warlock'] = -0.44,
@@ -5154,7 +5154,7 @@ local heroList = {
         ['npc_dota_hero_skywrath_mage'] = -0.56,
         ['npc_dota_hero_venomancer'] = -0.56,
         ['npc_dota_hero_invoker'] = -0.56,
-        ['npc_dota_hero_brewmaster'] = -0.6,
+        
         ['npc_dota_hero_gyrocopter'] = -0.61,
         ['npc_dota_hero_slark'] = -0.61,
         ['npc_dota_hero_elder_titan'] = -0.67,
@@ -5170,7 +5170,7 @@ local heroList = {
         ['npc_dota_hero_tinker'] = -1.11,
         ['npc_dota_hero_omniknight'] = -1.12,
         ['npc_dota_hero_lycan'] = -1.15,
-        ['npc_dota_hero_rubick'] = -1.21,
+        
         ['npc_dota_hero_treant'] = -1.24,
         ['npc_dota_hero_centaur'] = -1.24,
         ['npc_dota_hero_alchemist'] = -1.25,
@@ -5194,10 +5194,10 @@ local heroList = {
         ['npc_dota_hero_abyssal_underlord'] = -1.95,
         ['npc_dota_hero_zuus'] = -1.96,
         ['npc_dota_hero_earthshaker'] = -1.96,
-        ['npc_dota_hero_lone_druid'] = -2.49,
+        
         ['npc_dota_hero_earth_spirit'] = -2.51,
         ['npc_dota_hero_tiny'] = -2.54,
-        ['npc_dota_hero_puck'] = -2.63,
+        
         ['npc_dota_hero_tidehunter'] = -2.68,
         ['npc_dota_hero_pugna'] = -3.01,
         ['npc_dota_hero_phoenix'] = -3.02,
@@ -5206,15 +5206,15 @@ local heroList = {
         ['npc_dota_hero_rattletrap'] = -3.7,
         ['npc_dota_hero_night_stalker'] = -3.78,
         ['npc_dota_hero_void_spirit'] = -3.91,
-        ['npc_dota_hero_pangolier'] = -4.15,
+        
         ['npc_dota_hero_ember_spirit'] = -5.76,
         ['npc_dota_hero_antimage'] = -6.66,
     },
     ['npc_dota_hero_invoker'] = {
-        ['npc_dota_hero_puck'] = 2.62,
+        
         ['npc_dota_hero_broodmother'] = 2.41,
         ['npc_dota_hero_phantom_lancer'] = 2.08,
-        ['npc_dota_hero_tusk'] = 1.68,
+        
         ['npc_dota_hero_templar_assassin'] = 1.55,
         ['npc_dota_hero_hoodwink'] = 1.54,
         ['npc_dota_hero_void_spirit'] = 1.5,
@@ -5224,7 +5224,7 @@ local heroList = {
         ['npc_dota_hero_bristleback'] = 1.33,
         ['npc_dota_hero_chen'] = 1.28,
         ['npc_dota_hero_sand_king'] = 1.21,
-        ['npc_dota_hero_pangolier'] = 1.21,
+        
         ['npc_dota_hero_batrider'] = 1.2,
         ['npc_dota_hero_riki'] = 1.16,
         ['npc_dota_hero_slardar'] = 1.06,
@@ -5237,7 +5237,7 @@ local heroList = {
         ['npc_dota_hero_keeper_of_the_light'] = 0.88,
         ['npc_dota_hero_snapfire'] = 0.87,
         ['npc_dota_hero_beastmaster'] = 0.84,
-        ['npc_dota_hero_wisp'] = 0.82,
+        
         ['npc_dota_hero_omniknight'] = 0.77,
         ['npc_dota_hero_kez'] = 0.76,
         ['npc_dota_hero_naga_siren'] = 0.73,
@@ -5252,13 +5252,13 @@ local heroList = {
         ['npc_dota_hero_marci'] = 0.43,
         ['npc_dota_hero_antimage'] = 0.43,
         ['npc_dota_hero_earth_spirit'] = 0.43,
-        ['npc_dota_hero_visage'] = 0.4,
+        
         ['npc_dota_hero_furion'] = 0.39,
         ['npc_dota_hero_ember_spirit'] = 0.38,
         ['npc_dota_hero_mars'] = 0.25,
         ['npc_dota_hero_bane'] = 0.23,
         ['npc_dota_hero_techies'] = 0.22,
-        ['npc_dota_hero_brewmaster'] = 0.21,
+        
         ['npc_dota_hero_pugna'] = 0.2,
         ['npc_dota_hero_zuus'] = 0.19,
         ['npc_dota_hero_ursa'] = 0.18,
@@ -5273,14 +5273,14 @@ local heroList = {
         ['npc_dota_hero_juggernaut'] = 0.03,
         ['npc_dota_hero_enigma'] = 0,
         ['npc_dota_hero_lina'] = 0,
-        ['npc_dota_hero_lone_druid'] = -0.01,
+        
         ['npc_dota_hero_earthshaker'] = -0.01,
         ['npc_dota_hero_obsidian_destroyer'] = -0.02,
         ['npc_dota_hero_phoenix'] = -0.04,
         ['npc_dota_hero_crystal_maiden'] = -0.05,
         ['npc_dota_hero_bloodseeker'] = -0.1,
         ['npc_dota_hero_terrorblade'] = -0.11,
-        ['npc_dota_hero_rubick'] = -0.12,
+        
         ['npc_dota_hero_vengefulspirit'] = -0.14,
         ['npc_dota_hero_necrolyte'] = -0.15,
         ['npc_dota_hero_shredder'] = -0.15,
@@ -5338,7 +5338,7 @@ local heroList = {
         ['npc_dota_hero_medusa'] = -3.19,
     },
     ['npc_dota_hero_jakiro'] = {
-        ['npc_dota_hero_rubick'] = 3.89,
+        
         ['npc_dota_hero_faceless_void'] = 1.18,
         ['npc_dota_hero_juggernaut'] = 1.15,
         ['npc_dota_hero_windrunner'] = 1.14,
@@ -5351,7 +5351,7 @@ local heroList = {
         ['npc_dota_hero_legion_commander'] = 0.89,
         ['npc_dota_hero_weaver'] = 0.89,
         ['npc_dota_hero_bane'] = 0.88,
-        ['npc_dota_hero_pangolier'] = 0.84,
+        
         ['npc_dota_hero_slark'] = 0.81,
         ['npc_dota_hero_batrider'] = 0.78,
         ['npc_dota_hero_mirana'] = 0.75,
@@ -5389,7 +5389,7 @@ local heroList = {
         ['npc_dota_hero_tiny'] = 0.19,
         ['npc_dota_hero_templar_assassin'] = 0.19,
         ['npc_dota_hero_bristleback'] = 0.15,
-        ['npc_dota_hero_puck'] = 0.14,
+        
         ['npc_dota_hero_disruptor'] = 0.1,
         ['npc_dota_hero_razor'] = 0.1,
         ['npc_dota_hero_skywrath_mage'] = 0.1,
@@ -5411,11 +5411,11 @@ local heroList = {
         ['npc_dota_hero_bounty_hunter'] = -0.18,
         ['npc_dota_hero_lion'] = -0.19,
         ['npc_dota_hero_elder_titan'] = -0.2,
-        ['npc_dota_hero_tusk'] = -0.21,
+        
         ['npc_dota_hero_monkey_king'] = -0.22,
         ['npc_dota_hero_shadow_demon'] = -0.23,
         ['npc_dota_hero_void_spirit'] = -0.25,
-        ['npc_dota_hero_brewmaster'] = -0.29,
+        
         ['npc_dota_hero_night_stalker'] = -0.31,
         ['npc_dota_hero_dark_willow'] = -0.33,
         ['npc_dota_hero_treant'] = -0.34,
@@ -5438,7 +5438,7 @@ local heroList = {
         ['npc_dota_hero_sand_king'] = -0.8,
         ['npc_dota_hero_lycan'] = -0.81,
         ['npc_dota_hero_primal_beast'] = -0.83,
-        ['npc_dota_hero_wisp'] = -0.86,
+        
         ['npc_dota_hero_lich'] = -0.92,
         ['npc_dota_hero_phantom_assassin'] = -0.93,
         ['npc_dota_hero_enigma'] = -0.96,
@@ -5451,7 +5451,7 @@ local heroList = {
         ['npc_dota_hero_phantom_lancer'] = -1.3,
         ['npc_dota_hero_beastmaster'] = -1.36,
         ['npc_dota_hero_arc_warden'] = -1.4,
-        ['npc_dota_hero_visage'] = -1.43,
+        
         ['npc_dota_hero_antimage'] = -1.52,
         ['npc_dota_hero_spectre'] = -1.52,
         ['npc_dota_hero_spirit_breaker'] = -1.58,
@@ -5461,11 +5461,11 @@ local heroList = {
         ['npc_dota_hero_skeleton_king'] = -1.98,
         ['npc_dota_hero_broodmother'] = -2.01,
         ['npc_dota_hero_naga_siren'] = -2.11,
-        ['npc_dota_hero_lone_druid'] = -2.61,
+        
         ['npc_dota_hero_meepo'] = -4.16,
     },
     ['npc_dota_hero_juggernaut'] = {
-        ['npc_dota_hero_visage'] = 2.97,
+        
         ['npc_dota_hero_riki'] = 2.92,
         ['npc_dota_hero_morphling'] = 2.79,
         ['npc_dota_hero_chen'] = 2.76,
@@ -5473,7 +5473,7 @@ local heroList = {
         ['npc_dota_hero_void_spirit'] = 2.46,
         ['npc_dota_hero_death_prophet'] = 2.33,
         ['npc_dota_hero_antimage'] = 2.32,
-        ['npc_dota_hero_lone_druid'] = 2.21,
+        
         ['npc_dota_hero_clinkz'] = 2.17,
         ['npc_dota_hero_broodmother'] = 2.1,
         ['npc_dota_hero_muerta'] = 2.09,
@@ -5487,9 +5487,9 @@ local heroList = {
         ['npc_dota_hero_lion'] = 1.69,
         ['npc_dota_hero_spirit_breaker'] = 1.65,
         ['npc_dota_hero_windrunner'] = 1.58,
-        ['npc_dota_hero_wisp'] = 1.56,
+        
         ['npc_dota_hero_faceless_void'] = 1.55,
-        ['npc_dota_hero_puck'] = 1.39,
+        
         ['npc_dota_hero_storm_spirit'] = 1.31,
         ['npc_dota_hero_slark'] = 1.28,
         ['npc_dota_hero_pugna'] = 1.28,
@@ -5498,7 +5498,7 @@ local heroList = {
         ['npc_dota_hero_lycan'] = 1.13,
         ['npc_dota_hero_beastmaster'] = 1.12,
         ['npc_dota_hero_enigma'] = 1.09,
-        ['npc_dota_hero_tusk'] = 1.07,
+        
         ['npc_dota_hero_troll_warlord'] = 1.06,
         ['npc_dota_hero_legion_commander'] = 0.96,
         ['npc_dota_hero_razor'] = 0.94,
@@ -5532,15 +5532,15 @@ local heroList = {
         ['npc_dota_hero_abaddon'] = 0.29,
         ['npc_dota_hero_monkey_king'] = 0.28,
         ['npc_dota_hero_shredder'] = 0.22,
-        ['npc_dota_hero_pangolier'] = 0.18,
+        
         ['npc_dota_hero_arc_warden'] = 0.17,
         ['npc_dota_hero_pudge'] = 0.17,
-        ['npc_dota_hero_brewmaster'] = 0.14,
+        
         ['npc_dota_hero_warlock'] = 0.03,
         ['npc_dota_hero_earthshaker'] = 0.02,
         ['npc_dota_hero_omniknight'] = 0.01,
         ['npc_dota_hero_skeleton_king'] = 0,
-        ['npc_dota_hero_rubick'] = -0.01,
+        
         ['npc_dota_hero_terrorblade'] = -0.01,
         ['npc_dota_hero_keeper_of_the_light'] = -0.06,
         ['npc_dota_hero_invoker'] = -0.08,
@@ -5624,8 +5624,8 @@ local heroList = {
         ['npc_dota_hero_meepo'] = 0.63,
         ['npc_dota_hero_mirana'] = 0.63,
         ['npc_dota_hero_sniper'] = 0.61,
-        ['npc_dota_hero_tusk'] = 0.56,
-        ['npc_dota_hero_pangolier'] = 0.53,
+        
+        
         ['npc_dota_hero_void_spirit'] = 0.52,
         ['npc_dota_hero_tidehunter'] = 0.42,
         ['npc_dota_hero_furion'] = 0.42,
@@ -5649,7 +5649,7 @@ local heroList = {
         ['npc_dota_hero_dark_willow'] = 0.01,
         ['npc_dota_hero_riki'] = 0.01,
         ['npc_dota_hero_ancient_apparition'] = 0,
-        ['npc_dota_hero_brewmaster'] = 0,
+        
         ['npc_dota_hero_snapfire'] = -0.02,
         ['npc_dota_hero_mars'] = -0.08,
         ['npc_dota_hero_bane'] = -0.08,
@@ -5663,7 +5663,7 @@ local heroList = {
         ['npc_dota_hero_alchemist'] = -0.25,
         ['npc_dota_hero_disruptor'] = -0.26,
         ['npc_dota_hero_grimstroke'] = -0.27,
-        ['npc_dota_hero_wisp'] = -0.28,
+        
         ['npc_dota_hero_razor'] = -0.31,
         ['npc_dota_hero_witch_doctor'] = -0.31,
         ['npc_dota_hero_gyrocopter'] = -0.32,
@@ -5674,20 +5674,20 @@ local heroList = {
         ['npc_dota_hero_primal_beast'] = -0.42,
         ['npc_dota_hero_shadow_demon'] = -0.44,
         ['npc_dota_hero_sand_king'] = -0.49,
-        ['npc_dota_hero_visage'] = -0.49,
+        
         ['npc_dota_hero_broodmother'] = -0.51,
         ['npc_dota_hero_centaur'] = -0.52,
         ['npc_dota_hero_axe'] = -0.53,
         ['npc_dota_hero_dragon_knight'] = -0.56,
         ['npc_dota_hero_treant'] = -0.57,
-        ['npc_dota_hero_puck'] = -0.6,
+        
         ['npc_dota_hero_lich'] = -0.66,
         ['npc_dota_hero_omniknight'] = -0.69,
         ['npc_dota_hero_troll_warlord'] = -0.7,
         ['npc_dota_hero_invoker'] = -0.74,
         ['npc_dota_hero_tiny'] = -0.74,
         ['npc_dota_hero_abyssal_underlord'] = -0.76,
-        ['npc_dota_hero_lone_druid'] = -0.77,
+        
         ['npc_dota_hero_undying'] = -0.79,
         ['npc_dota_hero_night_stalker'] = -0.87,
         ['npc_dota_hero_zuus'] = -0.89,
@@ -5706,7 +5706,7 @@ local heroList = {
         ['npc_dota_hero_monkey_king'] = -1.13,
         ['npc_dota_hero_warlock'] = -1.2,
         ['npc_dota_hero_elder_titan'] = -1.23,
-        ['npc_dota_hero_rubick'] = -1.35,
+        
         ['npc_dota_hero_abaddon'] = -1.41,
         ['npc_dota_hero_dawnbreaker'] = -1.43,
         ['npc_dota_hero_beastmaster'] = -1.58,
@@ -5749,7 +5749,7 @@ local heroList = {
         ['npc_dota_hero_bristleback'] = 0.74,
         ['npc_dota_hero_luna'] = 0.67,
         ['npc_dota_hero_faceless_void'] = 0.63,
-        ['npc_dota_hero_pangolier'] = 0.59,
+        
         ['npc_dota_hero_witch_doctor'] = 0.55,
         ['npc_dota_hero_nevermore'] = 0.5,
         ['npc_dota_hero_razor'] = 0.46,
@@ -5758,7 +5758,7 @@ local heroList = {
         ['npc_dota_hero_primal_beast'] = 0.43,
         ['npc_dota_hero_obsidian_destroyer'] = 0.39,
         ['npc_dota_hero_ogre_magi'] = 0.38,
-        ['npc_dota_hero_tusk'] = 0.38,
+        
         ['npc_dota_hero_techies'] = 0.35,
         ['npc_dota_hero_grimstroke'] = 0.3,
         ['npc_dota_hero_skeleton_king'] = 0.28,
@@ -5795,7 +5795,7 @@ local heroList = {
         ['npc_dota_hero_shadow_demon'] = -0.55,
         ['npc_dota_hero_invoker'] = -0.58,
         ['npc_dota_hero_snapfire'] = -0.58,
-        ['npc_dota_hero_wisp'] = -0.61,
+        
         ['npc_dota_hero_warlock'] = -0.62,
         ['npc_dota_hero_earthshaker'] = -0.66,
         ['npc_dota_hero_hoodwink'] = -0.67,
@@ -5810,9 +5810,9 @@ local heroList = {
         ['npc_dota_hero_dawnbreaker'] = -0.76,
         ['npc_dota_hero_undying'] = -0.82,
         ['npc_dota_hero_disruptor'] = -0.87,
-        ['npc_dota_hero_puck'] = -0.88,
+        
         ['npc_dota_hero_chen'] = -0.89,
-        ['npc_dota_hero_visage'] = -0.9,
+        
         ['npc_dota_hero_void_spirit'] = -0.99,
         ['npc_dota_hero_phoenix'] = -1,
         ['npc_dota_hero_storm_spirit'] = -1.02,
@@ -5820,13 +5820,13 @@ local heroList = {
         ['npc_dota_hero_enchantress'] = -1.07,
         ['npc_dota_hero_treant'] = -1.09,
         ['npc_dota_hero_sand_king'] = -1.11,
-        ['npc_dota_hero_lone_druid'] = -1.14,
+        
         ['npc_dota_hero_nyx_assassin'] = -1.18,
         ['npc_dota_hero_ember_spirit'] = -1.24,
-        ['npc_dota_hero_rubick'] = -1.29,
+        
         ['npc_dota_hero_viper'] = -1.29,
         ['npc_dota_hero_alchemist'] = -1.35,
-        ['npc_dota_hero_brewmaster'] = -1.36,
+        
         ['npc_dota_hero_chaos_knight'] = -1.39,
         ['npc_dota_hero_shredder'] = -1.4,
         ['npc_dota_hero_furion'] = -1.48,
@@ -5858,16 +5858,16 @@ local heroList = {
         ['npc_dota_hero_bounty_hunter'] = 1.4,
         ['npc_dota_hero_necrolyte'] = 1.38,
         ['npc_dota_hero_alchemist'] = 1.38,
-        ['npc_dota_hero_rubick'] = 1.31,
+        
         ['npc_dota_hero_ancient_apparition'] = 1.29,
         ['npc_dota_hero_weaver'] = 1.25,
         ['npc_dota_hero_winter_wyvern'] = 1.23,
         ['npc_dota_hero_bristleback'] = 1.22,
         ['npc_dota_hero_batrider'] = 1.17,
-        ['npc_dota_hero_pangolier'] = 1.12,
+        
         ['npc_dota_hero_tinker'] = 0.99,
         ['npc_dota_hero_phoenix'] = 0.98,
-        ['npc_dota_hero_brewmaster'] = 0.95,
+        
         ['npc_dota_hero_slardar'] = 0.92,
         ['npc_dota_hero_ogre_magi'] = 0.91,
         ['npc_dota_hero_monkey_king'] = 0.75,
@@ -5886,7 +5886,7 @@ local heroList = {
         ['npc_dota_hero_death_prophet'] = 0.45,
         ['npc_dota_hero_razor'] = 0.44,
         ['npc_dota_hero_dazzle'] = 0.42,
-        ['npc_dota_hero_puck'] = 0.41,
+        
         ['npc_dota_hero_enchantress'] = 0.38,
         ['npc_dota_hero_void_spirit'] = 0.35,
         ['npc_dota_hero_treant'] = 0.34,
@@ -5910,7 +5910,7 @@ local heroList = {
         ['npc_dota_hero_primal_beast'] = -0.06,
         ['npc_dota_hero_snapfire'] = -0.11,
         ['npc_dota_hero_hoodwink'] = -0.15,
-        ['npc_dota_hero_tusk'] = -0.15,
+        
         ['npc_dota_hero_sniper'] = -0.16,
         ['npc_dota_hero_silencer'] = -0.17,
         ['npc_dota_hero_zuus'] = -0.17,
@@ -5951,7 +5951,7 @@ local heroList = {
         ['npc_dota_hero_sand_king'] = -0.96,
         ['npc_dota_hero_nyx_assassin'] = -0.96,
         ['npc_dota_hero_ringmaster'] = -0.96,
-        ['npc_dota_hero_visage'] = -0.99,
+        
         ['npc_dota_hero_lycan'] = -1.05,
         ['npc_dota_hero_dawnbreaker'] = -1.06,
         ['npc_dota_hero_phantom_lancer'] = -1.21,
@@ -5962,21 +5962,21 @@ local heroList = {
         ['npc_dota_hero_abaddon'] = -1.63,
         ['npc_dota_hero_marci'] = -1.63,
         ['npc_dota_hero_arc_warden'] = -1.72,
-        ['npc_dota_hero_wisp'] = -1.8,
+        
         ['npc_dota_hero_beastmaster'] = -1.83,
         ['npc_dota_hero_legion_commander'] = -1.85,
         ['npc_dota_hero_enigma'] = -1.9,
         ['npc_dota_hero_luna'] = -2.04,
         ['npc_dota_hero_medusa'] = -2.45,
         ['npc_dota_hero_chaos_knight'] = -2.49,
-        ['npc_dota_hero_lone_druid'] = -2.65,
+        
         ['npc_dota_hero_meepo'] = -3.55,
     },
     ['npc_dota_hero_legion_commander'] = {
         ['npc_dota_hero_winter_wyvern'] = 3.59,
         ['npc_dota_hero_dawnbreaker'] = 3.02,
         ['npc_dota_hero_monkey_king'] = 2.9,
-        ['npc_dota_hero_tusk'] = 2.72,
+        
         ['npc_dota_hero_chaos_knight'] = 2.72,
         ['npc_dota_hero_omniknight'] = 2.54,
         ['npc_dota_hero_templar_assassin'] = 2.41,
@@ -5993,7 +5993,7 @@ local heroList = {
         ['npc_dota_hero_pudge'] = 1.76,
         ['npc_dota_hero_dazzle'] = 1.74,
         ['npc_dota_hero_primal_beast'] = 1.66,
-        ['npc_dota_hero_lone_druid'] = 1.63,
+        
         ['npc_dota_hero_vengefulspirit'] = 1.61,
         ['npc_dota_hero_treant'] = 1.48,
         ['npc_dota_hero_nevermore'] = 1.45,
@@ -6004,7 +6004,7 @@ local heroList = {
         ['npc_dota_hero_obsidian_destroyer'] = 1.27,
         ['npc_dota_hero_troll_warlord'] = 1.24,
         ['npc_dota_hero_chen'] = 1.2,
-        ['npc_dota_hero_pangolier'] = 1.18,
+        
         ['npc_dota_hero_pugna'] = 1.15,
         ['npc_dota_hero_riki'] = 1.09,
         ['npc_dota_hero_bane'] = 1.08,
@@ -6025,10 +6025,10 @@ local heroList = {
         ['npc_dota_hero_centaur'] = 0.63,
         ['npc_dota_hero_phantom_assassin'] = 0.63,
         ['npc_dota_hero_luna'] = 0.61,
-        ['npc_dota_hero_wisp'] = 0.59,
+        
         ['npc_dota_hero_batrider'] = 0.59,
         ['npc_dota_hero_shadow_shaman'] = 0.49,
-        ['npc_dota_hero_visage'] = 0.48,
+        
         ['npc_dota_hero_enchantress'] = 0.4,
         ['npc_dota_hero_hoodwink'] = 0.39,
         ['npc_dota_hero_morphling'] = 0.35,
@@ -6061,7 +6061,7 @@ local heroList = {
         ['npc_dota_hero_warlock'] = -0.34,
         ['npc_dota_hero_kez'] = -0.43,
         ['npc_dota_hero_muerta'] = -0.44,
-        ['npc_dota_hero_brewmaster'] = -0.5,
+        
         ['npc_dota_hero_keeper_of_the_light'] = -0.51,
         ['npc_dota_hero_abyssal_underlord'] = -0.53,
         ['npc_dota_hero_broodmother'] = -0.57,
@@ -6074,11 +6074,11 @@ local heroList = {
         ['npc_dota_hero_huskar'] = -0.81,
         ['npc_dota_hero_dark_willow'] = -0.83,
         ['npc_dota_hero_slark'] = -0.85,
-        ['npc_dota_hero_rubick'] = -0.9,
+        
         ['npc_dota_hero_undying'] = -0.91,
         ['npc_dota_hero_ogre_magi'] = -0.91,
         ['npc_dota_hero_clinkz'] = -0.92,
-        ['npc_dota_hero_puck'] = -0.94,
+        
         ['npc_dota_hero_juggernaut'] = -0.95,
         ['npc_dota_hero_terrorblade'] = -0.98,
         ['npc_dota_hero_viper'] = -0.99,
@@ -6149,13 +6149,13 @@ local heroList = {
         ['npc_dota_hero_void_spirit'] = 0.33,
         ['npc_dota_hero_centaur'] = 0.32,
         ['npc_dota_hero_legion_commander'] = 0.29,
-        ['npc_dota_hero_puck'] = 0.29,
+        
         ['npc_dota_hero_nevermore'] = 0.28,
         ['npc_dota_hero_faceless_void'] = 0.27,
         ['npc_dota_hero_abaddon'] = 0.25,
         ['npc_dota_hero_kunkka'] = 0.25,
         ['npc_dota_hero_pudge'] = 0.24,
-        ['npc_dota_hero_visage'] = 0.2,
+        
         ['npc_dota_hero_elder_titan'] = 0.19,
         ['npc_dota_hero_phoenix'] = 0.16,
         ['npc_dota_hero_lion'] = 0.16,
@@ -6186,9 +6186,9 @@ local heroList = {
         ['npc_dota_hero_muerta'] = -0.47,
         ['npc_dota_hero_shadow_shaman'] = -0.48,
         ['npc_dota_hero_crystal_maiden'] = -0.49,
-        ['npc_dota_hero_wisp'] = -0.55,
-        ['npc_dota_hero_rubick'] = -0.64,
-        ['npc_dota_hero_lone_druid'] = -0.71,
+        
+        
+        
         ['npc_dota_hero_earth_spirit'] = -0.71,
         ['npc_dota_hero_huskar'] = -0.71,
         ['npc_dota_hero_beastmaster'] = -0.71,
@@ -6196,11 +6196,11 @@ local heroList = {
         ['npc_dota_hero_terrorblade'] = -0.73,
         ['npc_dota_hero_alchemist'] = -0.73,
         ['npc_dota_hero_storm_spirit'] = -0.75,
-        ['npc_dota_hero_pangolier'] = -0.76,
+        
         ['npc_dota_hero_lich'] = -0.76,
         ['npc_dota_hero_spectre'] = -0.79,
         ['npc_dota_hero_omniknight'] = -0.79,
-        ['npc_dota_hero_tusk'] = -0.88,
+        
         ['npc_dota_hero_warlock'] = -0.93,
         ['npc_dota_hero_kez'] = -0.94,
         ['npc_dota_hero_arc_warden'] = -0.94,
@@ -6212,7 +6212,7 @@ local heroList = {
         ['npc_dota_hero_treant'] = -1.33,
         ['npc_dota_hero_chaos_knight'] = -1.35,
         ['npc_dota_hero_shredder'] = -1.4,
-        ['npc_dota_hero_brewmaster'] = -1.51,
+        
         ['npc_dota_hero_sand_king'] = -1.6,
         ['npc_dota_hero_tidehunter'] = -1.72,
         ['npc_dota_hero_monkey_king'] = -1.74,
@@ -6228,12 +6228,12 @@ local heroList = {
     },
     ['npc_dota_hero_lich'] = {
         ['npc_dota_hero_pugna'] = 2.11,
-        ['npc_dota_hero_pangolier'] = 2.06,
+        
         ['npc_dota_hero_shadow_demon'] = 1.97,
         ['npc_dota_hero_weaver'] = 1.95,
         ['npc_dota_hero_chen'] = 1.87,
         ['npc_dota_hero_bristleback'] = 1.75,
-        ['npc_dota_hero_brewmaster'] = 1.7,
+        
         ['npc_dota_hero_oracle'] = 1.58,
         ['npc_dota_hero_death_prophet'] = 1.36,
         ['npc_dota_hero_shredder'] = 1.34,
@@ -6256,7 +6256,7 @@ local heroList = {
         ['npc_dota_hero_zuus'] = 0.98,
         ['npc_dota_hero_enigma'] = 0.97,
         ['npc_dota_hero_bloodseeker'] = 0.97,
-        ['npc_dota_hero_puck'] = 0.96,
+        
         ['npc_dota_hero_phantom_lancer'] = 0.96,
         ['npc_dota_hero_dark_seer'] = 0.95,
         ['npc_dota_hero_winter_wyvern'] = 0.94,
@@ -6275,10 +6275,10 @@ local heroList = {
         ['npc_dota_hero_faceless_void'] = 0.74,
         ['npc_dota_hero_ancient_apparition'] = 0.69,
         ['npc_dota_hero_shadow_shaman'] = 0.66,
-        ['npc_dota_hero_visage'] = 0.66,
+        
         ['npc_dota_hero_snapfire'] = 0.63,
         ['npc_dota_hero_viper'] = 0.63,
-        ['npc_dota_hero_rubick'] = 0.62,
+        
         ['npc_dota_hero_gyrocopter'] = 0.6,
         ['npc_dota_hero_hoodwink'] = 0.57,
         ['npc_dota_hero_omniknight'] = 0.54,
@@ -6336,9 +6336,9 @@ local heroList = {
         ['npc_dota_hero_abaddon'] = -0.43,
         ['npc_dota_hero_nevermore'] = -0.44,
         ['npc_dota_hero_medusa'] = -0.49,
-        ['npc_dota_hero_tusk'] = -0.55,
+        
         ['npc_dota_hero_marci'] = -0.57,
-        ['npc_dota_hero_wisp'] = -0.68,
+        
         ['npc_dota_hero_dawnbreaker'] = -0.76,
         ['npc_dota_hero_arc_warden'] = -0.77,
         ['npc_dota_hero_legion_commander'] = -0.81,
@@ -6351,7 +6351,7 @@ local heroList = {
         ['npc_dota_hero_spirit_breaker'] = -1.23,
         ['npc_dota_hero_chaos_knight'] = -1.47,
         ['npc_dota_hero_vengefulspirit'] = -1.5,
-        ['npc_dota_hero_lone_druid'] = -1.56,
+        
     },
     ['npc_dota_hero_life_stealer'] = {
         ['npc_dota_hero_broodmother'] = 3.61,
@@ -6364,19 +6364,19 @@ local heroList = {
         ['npc_dota_hero_chen'] = 2.72,
         ['npc_dota_hero_death_prophet'] = 2.63,
         ['npc_dota_hero_morphling'] = 2.41,
-        ['npc_dota_hero_tusk'] = 2.27,
+        
         ['npc_dota_hero_troll_warlord'] = 2.09,
-        ['npc_dota_hero_visage'] = 2.05,
+        
         ['npc_dota_hero_doom_bringer'] = 2.01,
         ['npc_dota_hero_naga_siren'] = 1.86,
         ['npc_dota_hero_kez'] = 1.83,
         ['npc_dota_hero_bane'] = 1.82,
         ['npc_dota_hero_dazzle'] = 1.74,
-        ['npc_dota_hero_wisp'] = 1.74,
+        
         ['npc_dota_hero_faceless_void'] = 1.72,
         ['npc_dota_hero_beastmaster'] = 1.68,
         ['npc_dota_hero_juggernaut'] = 1.62,
-        ['npc_dota_hero_lone_druid'] = 1.61,
+        
         ['npc_dota_hero_grimstroke'] = 1.61,
         ['npc_dota_hero_weaver'] = 1.5,
         ['npc_dota_hero_viper'] = 1.48,
@@ -6385,7 +6385,7 @@ local heroList = {
         ['npc_dota_hero_enchantress'] = 1.44,
         ['npc_dota_hero_chaos_knight'] = 1.42,
         ['npc_dota_hero_medusa'] = 1.41,
-        ['npc_dota_hero_pangolier'] = 1.4,
+        
         ['npc_dota_hero_omniknight'] = 1.33,
         ['npc_dota_hero_antimage'] = 1.32,
         ['npc_dota_hero_spirit_breaker'] = 1.3,
@@ -6415,7 +6415,7 @@ local heroList = {
         ['npc_dota_hero_shadow_shaman'] = 0.46,
         ['npc_dota_hero_lich'] = 0.39,
         ['npc_dota_hero_lina'] = 0.38,
-        ['npc_dota_hero_puck'] = 0.35,
+        
         ['npc_dota_hero_lycan'] = 0.34,
         ['npc_dota_hero_bounty_hunter'] = 0.33,
         ['npc_dota_hero_hoodwink'] = 0.3,
@@ -6454,9 +6454,9 @@ local heroList = {
         ['npc_dota_hero_primal_beast'] = -0.64,
         ['npc_dota_hero_tidehunter'] = -0.67,
         ['npc_dota_hero_jakiro'] = -0.75,
-        ['npc_dota_hero_brewmaster'] = -0.81,
+        
         ['npc_dota_hero_earthshaker'] = -0.9,
-        ['npc_dota_hero_rubick'] = -0.95,
+        
         ['npc_dota_hero_shredder'] = -0.97,
         ['npc_dota_hero_pudge'] = -1.01,
         ['npc_dota_hero_rattletrap'] = -1.19,
@@ -6502,9 +6502,9 @@ local heroList = {
         ['npc_dota_hero_kunkka'] = 0.75,
         ['npc_dota_hero_sniper'] = 0.73,
         ['npc_dota_hero_bane'] = 0.73,
-        ['npc_dota_hero_pangolier'] = 0.72,
+        
         ['npc_dota_hero_silencer'] = 0.66,
-        ['npc_dota_hero_rubick'] = 0.62,
+        
         ['npc_dota_hero_tidehunter'] = 0.6,
         ['npc_dota_hero_winter_wyvern'] = 0.57,
         ['npc_dota_hero_kez'] = 0.56,
@@ -6521,12 +6521,12 @@ local heroList = {
         ['npc_dota_hero_chen'] = 0.24,
         ['npc_dota_hero_ringmaster'] = 0.21,
         ['npc_dota_hero_night_stalker'] = 0.21,
-        ['npc_dota_hero_puck'] = 0.19,
+        
         ['npc_dota_hero_slark'] = 0.18,
         ['npc_dota_hero_ogre_magi'] = 0.17,
         ['npc_dota_hero_obsidian_destroyer'] = 0.17,
         ['npc_dota_hero_void_spirit'] = 0.15,
-        ['npc_dota_hero_tusk'] = 0.13,
+        
         ['npc_dota_hero_legion_commander'] = 0.09,
         ['npc_dota_hero_hoodwink'] = 0.09,
         ['npc_dota_hero_mirana'] = 0.09,
@@ -6551,7 +6551,7 @@ local heroList = {
         ['npc_dota_hero_witch_doctor'] = -0.41,
         ['npc_dota_hero_rattletrap'] = -0.41,
         ['npc_dota_hero_lion'] = -0.44,
-        ['npc_dota_hero_visage'] = -0.49,
+        
         ['npc_dota_hero_techies'] = -0.49,
         ['npc_dota_hero_omniknight'] = -0.53,
         ['npc_dota_hero_arc_warden'] = -0.55,
@@ -6589,14 +6589,14 @@ local heroList = {
         ['npc_dota_hero_beastmaster'] = -1.11,
         ['npc_dota_hero_elder_titan'] = -1.16,
         ['npc_dota_hero_warlock'] = -1.17,
-        ['npc_dota_hero_wisp'] = -1.18,
+        
         ['npc_dota_hero_dark_seer'] = -1.18,
-        ['npc_dota_hero_brewmaster'] = -1.23,
+        
         ['npc_dota_hero_nevermore'] = -1.31,
         ['npc_dota_hero_abaddon'] = -1.49,
         ['npc_dota_hero_alchemist'] = -1.53,
         ['npc_dota_hero_chaos_knight'] = -1.59,
-        ['npc_dota_hero_lone_druid'] = -1.65,
+        
         ['npc_dota_hero_terrorblade'] = -2.1,
         ['npc_dota_hero_dawnbreaker'] = -2.14,
         ['npc_dota_hero_broodmother'] = -2.4,
@@ -6609,7 +6609,7 @@ local heroList = {
     },
     ['npc_dota_hero_lion'] = {
         ['npc_dota_hero_beastmaster'] = 1.93,
-        ['npc_dota_hero_rubick'] = 1.72,
+        
         ['npc_dota_hero_razor'] = 1.48,
         ['npc_dota_hero_gyrocopter'] = 1.33,
         ['npc_dota_hero_batrider'] = 1.16,
@@ -6619,16 +6619,16 @@ local heroList = {
         ['npc_dota_hero_chen'] = 1.04,
         ['npc_dota_hero_hoodwink'] = 0.99,
         ['npc_dota_hero_mars'] = 0.98,
-        ['npc_dota_hero_pangolier'] = 0.97,
+        
         ['npc_dota_hero_dazzle'] = 0.91,
         ['npc_dota_hero_monkey_king'] = 0.88,
         ['npc_dota_hero_furion'] = 0.8,
         ['npc_dota_hero_snapfire'] = 0.78,
         ['npc_dota_hero_arc_warden'] = 0.76,
         ['npc_dota_hero_drow_ranger'] = 0.75,
-        ['npc_dota_hero_lone_druid'] = 0.74,
-        ['npc_dota_hero_visage'] = 0.74,
-        ['npc_dota_hero_tusk'] = 0.73,
+        
+        
+        
         ['npc_dota_hero_viper'] = 0.73,
         ['npc_dota_hero_dragon_knight'] = 0.73,
         ['npc_dota_hero_kunkka'] = 0.68,
@@ -6648,7 +6648,7 @@ local heroList = {
         ['npc_dota_hero_mirana'] = 0.43,
         ['npc_dota_hero_phantom_lancer'] = 0.42,
         ['npc_dota_hero_ember_spirit'] = 0.4,
-        ['npc_dota_hero_brewmaster'] = 0.39,
+        
         ['npc_dota_hero_lycan'] = 0.37,
         ['npc_dota_hero_obsidian_destroyer'] = 0.34,
         ['npc_dota_hero_windrunner'] = 0.33,
@@ -6664,7 +6664,7 @@ local heroList = {
         ['npc_dota_hero_centaur'] = 0.1,
         ['npc_dota_hero_enigma'] = 0.09,
         ['npc_dota_hero_techies'] = 0.07,
-        ['npc_dota_hero_wisp'] = 0.07,
+        
         ['npc_dota_hero_pudge'] = 0.05,
         ['npc_dota_hero_ringmaster'] = 0.03,
         ['npc_dota_hero_vengefulspirit'] = 0.02,
@@ -6718,7 +6718,7 @@ local heroList = {
         ['npc_dota_hero_phoenix'] = -0.83,
         ['npc_dota_hero_weaver'] = -0.91,
         ['npc_dota_hero_bounty_hunter'] = -0.93,
-        ['npc_dota_hero_puck'] = -0.93,
+        
         ['npc_dota_hero_ancient_apparition'] = -1.01,
         ['npc_dota_hero_witch_doctor'] = -1.02,
         ['npc_dota_hero_meepo'] = -1.11,
@@ -6761,9 +6761,9 @@ local heroList = {
         ['npc_dota_hero_broodmother'] = 2.14,
         ['npc_dota_hero_lich'] = 2.11,
         ['npc_dota_hero_nevermore'] = 2.07,
-        ['npc_dota_hero_pangolier'] = 2.06,
+        
         ['npc_dota_hero_dark_willow'] = 1.87,
-        ['npc_dota_hero_brewmaster'] = 1.77,
+        
         ['npc_dota_hero_marci'] = 1.75,
         ['npc_dota_hero_batrider'] = 1.65,
         ['npc_dota_hero_shredder'] = 1.64,
@@ -6784,7 +6784,7 @@ local heroList = {
         ['npc_dota_hero_omniknight'] = 0.95,
         ['npc_dota_hero_weaver'] = 0.93,
         ['npc_dota_hero_snapfire'] = 0.89,
-        ['npc_dota_hero_tusk'] = 0.79,
+        
         ['npc_dota_hero_keeper_of_the_light'] = 0.76,
         ['npc_dota_hero_enigma'] = 0.73,
         ['npc_dota_hero_leshrac'] = 0.71,
@@ -6810,13 +6810,13 @@ local heroList = {
         ['npc_dota_hero_magnataur'] = -0.21,
         ['npc_dota_hero_dawnbreaker'] = -0.29,
         ['npc_dota_hero_ursa'] = -0.31,
-        ['npc_dota_hero_visage'] = -0.34,
+        
         ['npc_dota_hero_furion'] = -0.37,
         ['npc_dota_hero_primal_beast'] = -0.39,
         ['npc_dota_hero_invoker'] = -0.39,
-        ['npc_dota_hero_rubick'] = -0.43,
+        
         ['npc_dota_hero_spirit_breaker'] = -0.58,
-        ['npc_dota_hero_wisp'] = -0.62,
+        
         ['npc_dota_hero_death_prophet'] = -0.62,
         ['npc_dota_hero_zuus'] = -0.72,
         ['npc_dota_hero_drow_ranger'] = -0.79,
@@ -6854,7 +6854,7 @@ local heroList = {
         ['npc_dota_hero_silencer'] = -3.07,
         ['npc_dota_hero_spectre'] = -3.52,
         ['npc_dota_hero_void_spirit'] = -3.55,
-        ['npc_dota_hero_puck'] = -3.64,
+        
         ['npc_dota_hero_night_stalker'] = -3.7,
         ['npc_dota_hero_ember_spirit'] = -3.72,
         ['npc_dota_hero_storm_spirit'] = -3.72,
@@ -6874,7 +6874,7 @@ local heroList = {
         ['npc_dota_hero_witch_doctor'] = 1.35,
         ['npc_dota_hero_venomancer'] = 1.25,
         ['npc_dota_hero_spectre'] = 1.23,
-        ['npc_dota_hero_rubick'] = 1.22,
+        
         ['npc_dota_hero_keeper_of_the_light'] = 1.18,
         ['npc_dota_hero_lich'] = 1.17,
         ['npc_dota_hero_terrorblade'] = 1.03,
@@ -6932,8 +6932,8 @@ local heroList = {
         ['npc_dota_hero_hoodwink'] = -0.19,
         ['npc_dota_hero_crystal_maiden'] = -0.21,
         ['npc_dota_hero_tidehunter'] = -0.26,
-        ['npc_dota_hero_pangolier'] = -0.29,
-        ['npc_dota_hero_brewmaster'] = -0.3,
+        
+        
         ['npc_dota_hero_legion_commander'] = -0.37,
         ['npc_dota_hero_earth_spirit'] = -0.4,
         ['npc_dota_hero_enchantress'] = -0.4,
@@ -6963,7 +6963,7 @@ local heroList = {
         ['npc_dota_hero_nevermore'] = -0.8,
         ['npc_dota_hero_obsidian_destroyer'] = -0.82,
         ['npc_dota_hero_furion'] = -0.82,
-        ['npc_dota_hero_visage'] = -0.87,
+        
         ['npc_dota_hero_omniknight'] = -0.9,
         ['npc_dota_hero_leshrac'] = -0.93,
         ['npc_dota_hero_shadow_shaman'] = -0.95,
@@ -6972,19 +6972,19 @@ local heroList = {
         ['npc_dota_hero_lycan'] = -1,
         ['npc_dota_hero_riki'] = -1.01,
         ['npc_dota_hero_grimstroke'] = -1.02,
-        ['npc_dota_hero_tusk'] = -1.17,
+        
         ['npc_dota_hero_huskar'] = -1.31,
-        ['npc_dota_hero_puck'] = -1.33,
+        
         ['npc_dota_hero_dazzle'] = -1.35,
         ['npc_dota_hero_vengefulspirit'] = -1.36,
         ['npc_dota_hero_antimage'] = -1.38,
-        ['npc_dota_hero_wisp'] = -1.38,
+        
         ['npc_dota_hero_naga_siren'] = -1.39,
         ['npc_dota_hero_weaver'] = -1.63,
         ['npc_dota_hero_morphling'] = -1.79,
         ['npc_dota_hero_mirana'] = -2.15,
         ['npc_dota_hero_night_stalker'] = -2.15,
-        ['npc_dota_hero_lone_druid'] = -2.61,
+        
         ['npc_dota_hero_undying'] = -2.79,
         ['npc_dota_hero_slardar'] = -2.92,
     },
@@ -7006,7 +7006,7 @@ local heroList = {
         ['npc_dota_hero_enchantress'] = 2.14,
         ['npc_dota_hero_terrorblade'] = 1.97,
         ['npc_dota_hero_tidehunter'] = 1.96,
-        ['npc_dota_hero_tusk'] = 1.95,
+        
         ['npc_dota_hero_bloodseeker'] = 1.95,
         ['npc_dota_hero_monkey_king'] = 1.92,
         ['npc_dota_hero_winter_wyvern'] = 1.87,
@@ -7017,7 +7017,7 @@ local heroList = {
         ['npc_dota_hero_alchemist'] = 1.61,
         ['npc_dota_hero_phoenix'] = 1.6,
         ['npc_dota_hero_bounty_hunter'] = 1.48,
-        ['npc_dota_hero_pangolier'] = 1.43,
+        
         ['npc_dota_hero_weaver'] = 1.28,
         ['npc_dota_hero_marci'] = 1.27,
         ['npc_dota_hero_dragon_knight'] = 1.27,
@@ -7043,13 +7043,13 @@ local heroList = {
         ['npc_dota_hero_magnataur'] = 0.6,
         ['npc_dota_hero_mirana'] = 0.55,
         ['npc_dota_hero_techies'] = 0.49,
-        ['npc_dota_hero_wisp'] = 0.42,
+        
         ['npc_dota_hero_ember_spirit'] = 0.39,
         ['npc_dota_hero_storm_spirit'] = 0.35,
         ['npc_dota_hero_ogre_magi'] = 0.28,
         ['npc_dota_hero_morphling'] = 0.22,
         ['npc_dota_hero_ursa'] = 0.11,
-        ['npc_dota_hero_lone_druid'] = -0.01,
+        
         ['npc_dota_hero_treant'] = -0.02,
         ['npc_dota_hero_dazzle'] = -0.07,
         ['npc_dota_hero_life_stealer'] = -0.1,
@@ -7060,7 +7060,7 @@ local heroList = {
         ['npc_dota_hero_nyx_assassin'] = -0.18,
         ['npc_dota_hero_doom_bringer'] = -0.19,
         ['npc_dota_hero_queenofpain'] = -0.22,
-        ['npc_dota_hero_rubick'] = -0.24,
+        
         ['npc_dota_hero_shredder'] = -0.25,
         ['npc_dota_hero_medusa'] = -0.27,
         ['npc_dota_hero_nevermore'] = -0.3,
@@ -7087,8 +7087,8 @@ local heroList = {
         ['npc_dota_hero_faceless_void'] = -1.22,
         ['npc_dota_hero_warlock'] = -1.3,
         ['npc_dota_hero_shadow_demon'] = -1.3,
-        ['npc_dota_hero_puck'] = -1.36,
-        ['npc_dota_hero_visage'] = -1.41,
+        
+        
         ['npc_dota_hero_venomancer'] = -1.53,
         ['npc_dota_hero_skeleton_king'] = -1.62,
         ['npc_dota_hero_razor'] = -1.64,
@@ -7101,7 +7101,7 @@ local heroList = {
         ['npc_dota_hero_ringmaster'] = -2,
         ['npc_dota_hero_pudge'] = -2.04,
         ['npc_dota_hero_grimstroke'] = -2.13,
-        ['npc_dota_hero_brewmaster'] = -2.13,
+        
         ['npc_dota_hero_oracle'] = -2.24,
         ['npc_dota_hero_drow_ranger'] = -2.26,
         ['npc_dota_hero_viper'] = -2.28,
@@ -7119,9 +7119,9 @@ local heroList = {
         ['npc_dota_hero_enigma'] = 1.94,
         ['npc_dota_hero_ember_spirit'] = 1.94,
         ['npc_dota_hero_faceless_void'] = 1.93,
-        ['npc_dota_hero_puck'] = 1.86,
+        
         ['npc_dota_hero_huskar'] = 1.76,
-        ['npc_dota_hero_rubick'] = 1.36,
+        
         ['npc_dota_hero_earthshaker'] = 1.32,
         ['npc_dota_hero_troll_warlord'] = 1.29,
         ['npc_dota_hero_weaver'] = 1.21,
@@ -7156,7 +7156,7 @@ local heroList = {
         ['npc_dota_hero_morphling'] = 0.3,
         ['npc_dota_hero_hoodwink'] = 0.29,
         ['npc_dota_hero_leshrac'] = 0.27,
-        ['npc_dota_hero_brewmaster'] = 0.18,
+        
         ['npc_dota_hero_silencer'] = 0.18,
         ['npc_dota_hero_primal_beast'] = 0.16,
         ['npc_dota_hero_necrolyte'] = 0.15,
@@ -7173,20 +7173,20 @@ local heroList = {
         ['npc_dota_hero_night_stalker'] = 0.02,
         ['npc_dota_hero_dragon_knight'] = 0.02,
         ['npc_dota_hero_lina'] = 0,
-        ['npc_dota_hero_lone_druid'] = 0,
+        
         ['npc_dota_hero_riki'] = 0,
         ['npc_dota_hero_spirit_breaker'] = 0,
         ['npc_dota_hero_snapfire'] = -0.02,
         ['npc_dota_hero_monkey_king'] = -0.04,
         ['npc_dota_hero_shadow_shaman'] = -0.08,
         ['npc_dota_hero_kunkka'] = -0.1,
-        ['npc_dota_hero_pangolier'] = -0.11,
+        
         ['npc_dota_hero_life_stealer'] = -0.14,
         ['npc_dota_hero_slardar'] = -0.15,
         ['npc_dota_hero_witch_doctor'] = -0.17,
         ['npc_dota_hero_luna'] = -0.18,
         ['npc_dota_hero_terrorblade'] = -0.19,
-        ['npc_dota_hero_tusk'] = -0.2,
+        
         ['npc_dota_hero_jakiro'] = -0.2,
         ['npc_dota_hero_death_prophet'] = -0.21,
         ['npc_dota_hero_earth_spirit'] = -0.22,
@@ -7202,7 +7202,7 @@ local heroList = {
         ['npc_dota_hero_bristleback'] = -0.44,
         ['npc_dota_hero_axe'] = -0.45,
         ['npc_dota_hero_keeper_of_the_light'] = -0.51,
-        ['npc_dota_hero_visage'] = -0.54,
+        
         ['npc_dota_hero_lycan'] = -0.61,
         ['npc_dota_hero_oracle'] = -0.61,
         ['npc_dota_hero_skywrath_mage'] = -0.62,
@@ -7235,7 +7235,7 @@ local heroList = {
         ['npc_dota_hero_phantom_assassin'] = -1.37,
         ['npc_dota_hero_arc_warden'] = -1.37,
         ['npc_dota_hero_abaddon'] = -1.45,
-        ['npc_dota_hero_wisp'] = -1.57,
+        
         ['npc_dota_hero_broodmother'] = -1.58,
         ['npc_dota_hero_antimage'] = -1.64,
         ['npc_dota_hero_phantom_lancer'] = -1.95,
@@ -7257,7 +7257,7 @@ local heroList = {
         ['npc_dota_hero_windrunner'] = 1.48,
         ['npc_dota_hero_jakiro'] = 1.45,
         ['npc_dota_hero_ancient_apparition'] = 1.38,
-        ['npc_dota_hero_pangolier'] = 1.33,
+        
         ['npc_dota_hero_earthshaker'] = 1.27,
         ['npc_dota_hero_sven'] = 1.27,
         ['npc_dota_hero_weaver'] = 1.22,
@@ -7307,14 +7307,14 @@ local heroList = {
         ['npc_dota_hero_hoodwink'] = -0.05,
         ['npc_dota_hero_grimstroke'] = -0.06,
         ['npc_dota_hero_furion'] = -0.07,
-        ['npc_dota_hero_tusk'] = -0.08,
+        
         ['npc_dota_hero_clinkz'] = -0.08,
         ['npc_dota_hero_bristleback'] = -0.08,
         ['npc_dota_hero_riki'] = -0.09,
         ['npc_dota_hero_rattletrap'] = -0.1,
         ['npc_dota_hero_ringmaster'] = -0.13,
         ['npc_dota_hero_chaos_knight'] = -0.14,
-        ['npc_dota_hero_puck'] = -0.18,
+        
         ['npc_dota_hero_death_prophet'] = -0.21,
         ['npc_dota_hero_razor'] = -0.22,
         ['npc_dota_hero_zuus'] = -0.22,
@@ -7327,14 +7327,14 @@ local heroList = {
         ['npc_dota_hero_warlock'] = -0.44,
         ['npc_dota_hero_bane'] = -0.46,
         ['npc_dota_hero_bloodseeker'] = -0.5,
-        ['npc_dota_hero_rubick'] = -0.51,
+        
         ['npc_dota_hero_storm_spirit'] = -0.51,
         ['npc_dota_hero_phantom_lancer'] = -0.51,
         ['npc_dota_hero_lina'] = -0.63,
         ['npc_dota_hero_bounty_hunter'] = -0.68,
         ['npc_dota_hero_huskar'] = -0.68,
         ['npc_dota_hero_necrolyte'] = -0.71,
-        ['npc_dota_hero_brewmaster'] = -0.8,
+        
         ['npc_dota_hero_vengefulspirit'] = -0.8,
         ['npc_dota_hero_life_stealer'] = -0.86,
         ['npc_dota_hero_viper'] = -0.9,
@@ -7354,15 +7354,15 @@ local heroList = {
         ['npc_dota_hero_abaddon'] = -1.62,
         ['npc_dota_hero_meepo'] = -1.63,
         ['npc_dota_hero_void_spirit'] = -1.73,
-        ['npc_dota_hero_lone_druid'] = -1.77,
+        
         ['npc_dota_hero_shadow_demon'] = -1.79,
         ['npc_dota_hero_phoenix'] = -1.84,
         ['npc_dota_hero_earth_spirit'] = -1.92,
-        ['npc_dota_hero_wisp'] = -1.95,
+        
         ['npc_dota_hero_spectre'] = -2.08,
         ['npc_dota_hero_chen'] = -2.31,
         ['npc_dota_hero_pudge'] = -2.32,
-        ['npc_dota_hero_visage'] = -2.48,
+        
         ['npc_dota_hero_night_stalker'] = -2.62,
         ['npc_dota_hero_arc_warden'] = -2.77,
         ['npc_dota_hero_antimage'] = -3.03,
@@ -7377,10 +7377,10 @@ local heroList = {
         ['npc_dota_hero_void_spirit'] = 2.11,
         ['npc_dota_hero_queenofpain'] = 2.09,
         ['npc_dota_hero_storm_spirit'] = 1.92,
-        ['npc_dota_hero_lone_druid'] = 1.88,
+        
         ['npc_dota_hero_huskar'] = 1.84,
         ['npc_dota_hero_kez'] = 1.83,
-        ['npc_dota_hero_puck'] = 1.83,
+        
         ['npc_dota_hero_earth_spirit'] = 1.8,
         ['npc_dota_hero_ember_spirit'] = 1.75,
         ['npc_dota_hero_meepo'] = 1.66,
@@ -7395,7 +7395,7 @@ local heroList = {
         ['npc_dota_hero_elder_titan'] = 0.97,
         ['npc_dota_hero_sand_king'] = 0.94,
         ['npc_dota_hero_alchemist'] = 0.93,
-        ['npc_dota_hero_pangolier'] = 0.88,
+        
         ['npc_dota_hero_omniknight'] = 0.87,
         ['npc_dota_hero_juggernaut'] = 0.87,
         ['npc_dota_hero_phoenix'] = 0.86,
@@ -7430,14 +7430,14 @@ local heroList = {
         ['npc_dota_hero_shadow_demon'] = 0.17,
         ['npc_dota_hero_snapfire'] = 0.14,
         ['npc_dota_hero_rattletrap'] = 0.13,
-        ['npc_dota_hero_tusk'] = 0.11,
+        
         ['npc_dota_hero_leshrac'] = 0.1,
         ['npc_dota_hero_muerta'] = 0.1,
         ['npc_dota_hero_keeper_of_the_light'] = 0.09,
         ['npc_dota_hero_earthshaker'] = 0.09,
         ['npc_dota_hero_night_stalker'] = 0.04,
         ['npc_dota_hero_primal_beast'] = 0.01,
-        ['npc_dota_hero_visage'] = -0.04,
+        
         ['npc_dota_hero_naga_siren'] = -0.05,
         ['npc_dota_hero_tidehunter'] = -0.07,
         ['npc_dota_hero_weaver'] = -0.08,
@@ -7455,7 +7455,7 @@ local heroList = {
         ['npc_dota_hero_winter_wyvern'] = -0.3,
         ['npc_dota_hero_dark_seer'] = -0.35,
         ['npc_dota_hero_crystal_maiden'] = -0.38,
-        ['npc_dota_hero_brewmaster'] = -0.44,
+        
         ['npc_dota_hero_grimstroke'] = -0.45,
         ['npc_dota_hero_dragon_knight'] = -0.59,
         ['npc_dota_hero_shadow_shaman'] = -0.59,
@@ -7464,7 +7464,7 @@ local heroList = {
         ['npc_dota_hero_treant'] = -0.61,
         ['npc_dota_hero_bristleback'] = -0.64,
         ['npc_dota_hero_shredder'] = -0.64,
-        ['npc_dota_hero_rubick'] = -0.66,
+        
         ['npc_dota_hero_pudge'] = -0.67,
         ['npc_dota_hero_troll_warlord'] = -0.67,
         ['npc_dota_hero_oracle'] = -0.68,
@@ -7486,7 +7486,7 @@ local heroList = {
         ['npc_dota_hero_techies'] = -1.02,
         ['npc_dota_hero_hoodwink'] = -1.08,
         ['npc_dota_hero_clinkz'] = -1.19,
-        ['npc_dota_hero_wisp'] = -1.35,
+        
         ['npc_dota_hero_legion_commander'] = -1.54,
         ['npc_dota_hero_windrunner'] = -1.57,
         ['npc_dota_hero_enchantress'] = -1.72,
@@ -7503,7 +7503,7 @@ local heroList = {
         ['npc_dota_hero_centaur'] = 3.67,
         ['npc_dota_hero_monkey_king'] = 3.6,
         ['npc_dota_hero_sniper'] = 3.44,
-        ['npc_dota_hero_pangolier'] = 3.32,
+        
         ['npc_dota_hero_shadow_demon'] = 3.14,
         ['npc_dota_hero_invoker'] = 3.07,
         ['npc_dota_hero_alchemist'] = 3,
@@ -7518,10 +7518,10 @@ local heroList = {
         ['npc_dota_hero_windrunner'] = 1.78,
         ['npc_dota_hero_rattletrap'] = 1.55,
         ['npc_dota_hero_sand_king'] = 1.52,
-        ['npc_dota_hero_lone_druid'] = 1.47,
+        
         ['npc_dota_hero_snapfire'] = 1.46,
         ['npc_dota_hero_riki'] = 1.45,
-        ['npc_dota_hero_rubick'] = 1.37,
+        
         ['npc_dota_hero_treant'] = 1.3,
         ['npc_dota_hero_tiny'] = 1.19,
         ['npc_dota_hero_axe'] = 1.18,
@@ -7552,12 +7552,12 @@ local heroList = {
         ['npc_dota_hero_mirana'] = 0.32,
         ['npc_dota_hero_bounty_hunter'] = 0.3,
         ['npc_dota_hero_sven'] = 0.3,
-        ['npc_dota_hero_tusk'] = 0.28,
+        
         ['npc_dota_hero_furion'] = 0.27,
         ['npc_dota_hero_bane'] = 0.27,
         ['npc_dota_hero_primal_beast'] = 0.13,
-        ['npc_dota_hero_wisp'] = 0.11,
-        ['npc_dota_hero_brewmaster'] = 0.11,
+        
+        
         ['npc_dota_hero_tinker'] = 0.1,
         ['npc_dota_hero_phantom_lancer'] = 0.06,
         ['npc_dota_hero_morphling'] = -0.01,
@@ -7571,7 +7571,7 @@ local heroList = {
         ['npc_dota_hero_venomancer'] = -0.3,
         ['npc_dota_hero_huskar'] = -0.34,
         ['npc_dota_hero_ringmaster'] = -0.4,
-        ['npc_dota_hero_puck'] = -0.43,
+        
         ['npc_dota_hero_phoenix'] = -0.46,
         ['npc_dota_hero_elder_titan'] = -0.52,
         ['npc_dota_hero_skeleton_king'] = -0.54,
@@ -7613,7 +7613,7 @@ local heroList = {
         ['npc_dota_hero_leshrac'] = -2.27,
         ['npc_dota_hero_luna'] = -2.47,
         ['npc_dota_hero_skywrath_mage'] = -2.8,
-        ['npc_dota_hero_visage'] = -2.9,
+        
         ['npc_dota_hero_chaos_knight'] = -2.96,
         ['npc_dota_hero_enigma'] = -3.46,
         ['npc_dota_hero_witch_doctor'] = -3.52,
@@ -7652,7 +7652,7 @@ local heroList = {
         ['npc_dota_hero_dazzle'] = 2,
         ['npc_dota_hero_dawnbreaker'] = 1.87,
         ['npc_dota_hero_alchemist'] = 1.87,
-        ['npc_dota_hero_lone_druid'] = 1.86,
+        
         ['npc_dota_hero_snapfire'] = 1.83,
         ['npc_dota_hero_treant'] = 1.81,
         ['npc_dota_hero_disruptor'] = 1.72,
@@ -7667,7 +7667,7 @@ local heroList = {
         ['npc_dota_hero_bloodseeker'] = 1.31,
         ['npc_dota_hero_lich'] = 1.31,
         ['npc_dota_hero_omniknight'] = 1.3,
-        ['npc_dota_hero_wisp'] = 1.29,
+        
         ['npc_dota_hero_hoodwink'] = 1.24,
         ['npc_dota_hero_dark_willow'] = 1.22,
         ['npc_dota_hero_lion'] = 0.97,
@@ -7675,7 +7675,7 @@ local heroList = {
         ['npc_dota_hero_ancient_apparition'] = 0.92,
         ['npc_dota_hero_tiny'] = 0.78,
         ['npc_dota_hero_venomancer'] = 0.74,
-        ['npc_dota_hero_pangolier'] = 0.74,
+        
         ['npc_dota_hero_magnataur'] = 0.54,
         ['npc_dota_hero_windrunner'] = 0.53,
         ['npc_dota_hero_tidehunter'] = 0.5,
@@ -7685,13 +7685,13 @@ local heroList = {
         ['npc_dota_hero_axe'] = 0.42,
         ['npc_dota_hero_primal_beast'] = 0.32,
         ['npc_dota_hero_slardar'] = 0.3,
-        ['npc_dota_hero_tusk'] = 0.23,
+        
         ['npc_dota_hero_razor'] = 0.2,
-        ['npc_dota_hero_brewmaster'] = 0.11,
+        
         ['npc_dota_hero_gyrocopter'] = 0.11,
         ['npc_dota_hero_beastmaster'] = 0.08,
         ['npc_dota_hero_pugna'] = 0.06,
-        ['npc_dota_hero_visage'] = -0.03,
+        
         ['npc_dota_hero_obsidian_destroyer'] = -0.08,
         ['npc_dota_hero_tinker'] = -0.1,
         ['npc_dota_hero_riki'] = -0.22,
@@ -7702,7 +7702,7 @@ local heroList = {
         ['npc_dota_hero_phantom_assassin'] = -0.49,
         ['npc_dota_hero_silencer'] = -0.56,
         ['npc_dota_hero_grimstroke'] = -0.63,
-        ['npc_dota_hero_rubick'] = -0.66,
+        
         ['npc_dota_hero_keeper_of_the_light'] = -0.67,
         ['npc_dota_hero_dark_seer'] = -0.76,
         ['npc_dota_hero_life_stealer'] = -0.99,
@@ -7711,7 +7711,7 @@ local heroList = {
         ['npc_dota_hero_chen'] = -1.17,
         ['npc_dota_hero_weaver'] = -1.21,
         ['npc_dota_hero_juggernaut'] = -1.22,
-        ['npc_dota_hero_puck'] = -1.44,
+        
         ['npc_dota_hero_chaos_knight'] = -1.5,
         ['npc_dota_hero_centaur'] = -1.54,
         ['npc_dota_hero_mirana'] = -1.55,
@@ -7757,12 +7757,12 @@ local heroList = {
         ['npc_dota_hero_nyx_assassin'] = 1.85,
         ['npc_dota_hero_mars'] = 1.76,
         ['npc_dota_hero_centaur'] = 1.7,
-        ['npc_dota_hero_puck'] = 1.45,
+        
         ['npc_dota_hero_meepo'] = 1.36,
         ['npc_dota_hero_axe'] = 1.34,
         ['npc_dota_hero_spectre'] = 1.22,
         ['npc_dota_hero_abyssal_underlord'] = 1.18,
-        ['npc_dota_hero_lone_druid'] = 1.18,
+        
         ['npc_dota_hero_shadow_demon'] = 1.17,
         ['npc_dota_hero_omniknight'] = 1.13,
         ['npc_dota_hero_bounty_hunter'] = 1.12,
@@ -7782,15 +7782,15 @@ local heroList = {
         ['npc_dota_hero_techies'] = 0.55,
         ['npc_dota_hero_zuus'] = 0.51,
         ['npc_dota_hero_abaddon'] = 0.51,
-        ['npc_dota_hero_rubick'] = 0.5,
-        ['npc_dota_hero_visage'] = 0.49,
+        
+        
         ['npc_dota_hero_bane'] = 0.48,
         ['npc_dota_hero_broodmother'] = 0.42,
         ['npc_dota_hero_chen'] = 0.41,
         ['npc_dota_hero_dark_willow'] = 0.41,
         ['npc_dota_hero_primal_beast'] = 0.39,
         ['npc_dota_hero_hoodwink'] = 0.38,
-        ['npc_dota_hero_tusk'] = 0.38,
+        
         ['npc_dota_hero_bloodseeker'] = 0.37,
         ['npc_dota_hero_ogre_magi'] = 0.37,
         ['npc_dota_hero_tiny'] = 0.36,
@@ -7843,11 +7843,11 @@ local heroList = {
         ['npc_dota_hero_keeper_of_the_light'] = -0.59,
         ['npc_dota_hero_grimstroke'] = -0.59,
         ['npc_dota_hero_jakiro'] = -0.61,
-        ['npc_dota_hero_wisp'] = -0.62,
+        
         ['npc_dota_hero_shadow_shaman'] = -0.66,
-        ['npc_dota_hero_pangolier'] = -0.69,
+        
         ['npc_dota_hero_slardar'] = -0.7,
-        ['npc_dota_hero_brewmaster'] = -0.75,
+        
         ['npc_dota_hero_tinker'] = -0.75,
         ['npc_dota_hero_magnataur'] = -0.75,
         ['npc_dota_hero_sniper'] = -0.77,
@@ -7883,8 +7883,8 @@ local heroList = {
         ['npc_dota_hero_axe'] = 2.74,
         ['npc_dota_hero_lina'] = 2.73,
         ['npc_dota_hero_bane'] = 2.56,
-        ['npc_dota_hero_rubick'] = 2.35,
-        ['npc_dota_hero_lone_druid'] = 2.14,
+        
+        
         ['npc_dota_hero_meepo'] = 2.1,
         ['npc_dota_hero_lion'] = 2.02,
         ['npc_dota_hero_shredder'] = 1.92,
@@ -7904,7 +7904,7 @@ local heroList = {
         ['npc_dota_hero_slark'] = 1.09,
         ['npc_dota_hero_shadow_shaman'] = 1.08,
         ['npc_dota_hero_naga_siren'] = 1,
-        ['npc_dota_hero_visage'] = 0.98,
+        
         ['npc_dota_hero_hoodwink'] = 0.94,
         ['npc_dota_hero_nevermore'] = 0.92,
         ['npc_dota_hero_obsidian_destroyer'] = 0.92,
@@ -7915,7 +7915,7 @@ local heroList = {
         ['npc_dota_hero_dragon_knight'] = 0.74,
         ['npc_dota_hero_zuus'] = 0.73,
         ['npc_dota_hero_grimstroke'] = 0.72,
-        ['npc_dota_hero_wisp'] = 0.71,
+        
         ['npc_dota_hero_centaur'] = 0.62,
         ['npc_dota_hero_riki'] = 0.61,
         ['npc_dota_hero_mirana'] = 0.57,
@@ -7934,12 +7934,12 @@ local heroList = {
         ['npc_dota_hero_void_spirit'] = 0.27,
         ['npc_dota_hero_necrolyte'] = 0.24,
         ['npc_dota_hero_dark_seer'] = 0.24,
-        ['npc_dota_hero_puck'] = 0.24,
+        
         ['npc_dota_hero_legion_commander'] = 0.13,
         ['npc_dota_hero_tidehunter'] = 0.12,
         ['npc_dota_hero_oracle'] = 0.09,
         ['npc_dota_hero_snapfire'] = 0.09,
-        ['npc_dota_hero_tusk'] = 0.08,
+        
         ['npc_dota_hero_ringmaster'] = 0.08,
         ['npc_dota_hero_medusa'] = 0.07,
         ['npc_dota_hero_leshrac'] = 0.06,
@@ -7980,13 +7980,13 @@ local heroList = {
         ['npc_dota_hero_undying'] = -1.14,
         ['npc_dota_hero_enchantress'] = -1.16,
         ['npc_dota_hero_witch_doctor'] = -1.19,
-        ['npc_dota_hero_brewmaster'] = -1.33,
+        
         ['npc_dota_hero_huskar'] = -1.35,
         ['npc_dota_hero_phantom_assassin'] = -1.4,
         ['npc_dota_hero_skeleton_king'] = -1.58,
         ['npc_dota_hero_abyssal_underlord'] = -1.59,
         ['npc_dota_hero_rattletrap'] = -1.6,
-        ['npc_dota_hero_pangolier'] = -1.6,
+        
         ['npc_dota_hero_templar_assassin'] = -1.68,
         ['npc_dota_hero_bristleback'] = -1.76,
         ['npc_dota_hero_venomancer'] = -1.77,
@@ -8018,7 +8018,7 @@ local heroList = {
         ['npc_dota_hero_nyx_assassin'] = 1.44,
         ['npc_dota_hero_chen'] = 1.38,
         ['npc_dota_hero_kunkka'] = 1.34,
-        ['npc_dota_hero_rubick'] = 1.3,
+        
         ['npc_dota_hero_zuus'] = 1.25,
         ['npc_dota_hero_legion_commander'] = 1.24,
         ['npc_dota_hero_bane'] = 1.2,
@@ -8050,7 +8050,7 @@ local heroList = {
         ['npc_dota_hero_techies'] = 0.39,
         ['npc_dota_hero_beastmaster'] = 0.39,
         ['npc_dota_hero_batrider'] = 0.38,
-        ['npc_dota_hero_visage'] = 0.36,
+        
         ['npc_dota_hero_lich'] = 0.33,
         ['npc_dota_hero_alchemist'] = 0.3,
         ['npc_dota_hero_enigma'] = 0.29,
@@ -8074,7 +8074,7 @@ local heroList = {
         ['npc_dota_hero_jakiro'] = -0.05,
         ['npc_dota_hero_magnataur'] = -0.07,
         ['npc_dota_hero_grimstroke'] = -0.09,
-        ['npc_dota_hero_brewmaster'] = -0.1,
+        
         ['npc_dota_hero_mars'] = -0.1,
         ['npc_dota_hero_earthshaker'] = -0.17,
         ['npc_dota_hero_windrunner'] = -0.18,
@@ -8088,16 +8088,16 @@ local heroList = {
         ['npc_dota_hero_shadow_shaman'] = -0.33,
         ['npc_dota_hero_ursa'] = -0.33,
         ['npc_dota_hero_terrorblade'] = -0.37,
-        ['npc_dota_hero_pangolier'] = -0.4,
+        
         ['npc_dota_hero_chaos_knight'] = -0.4,
         ['npc_dota_hero_warlock'] = -0.47,
         ['npc_dota_hero_dragon_knight'] = -0.56,
         ['npc_dota_hero_morphling'] = -0.58,
         ['npc_dota_hero_phantom_assassin'] = -0.59,
         ['npc_dota_hero_abaddon'] = -0.61,
-        ['npc_dota_hero_lone_druid'] = -0.73,
+        
         ['npc_dota_hero_death_prophet'] = -0.81,
-        ['npc_dota_hero_wisp'] = -0.83,
+        
         ['npc_dota_hero_winter_wyvern'] = -0.84,
         ['npc_dota_hero_void_spirit'] = -0.86,
         ['npc_dota_hero_undying'] = -0.88,
@@ -8111,7 +8111,7 @@ local heroList = {
         ['npc_dota_hero_riki'] = -1.19,
         ['npc_dota_hero_dawnbreaker'] = -1.27,
         ['npc_dota_hero_ember_spirit'] = -1.29,
-        ['npc_dota_hero_tusk'] = -1.4,
+        
         ['npc_dota_hero_razor'] = -1.42,
         ['npc_dota_hero_witch_doctor'] = -1.52,
         ['npc_dota_hero_elder_titan'] = -1.54,
@@ -8120,7 +8120,7 @@ local heroList = {
         ['npc_dota_hero_meepo'] = -1.61,
         ['npc_dota_hero_kez'] = -1.62,
         ['npc_dota_hero_juggernaut'] = -1.71,
-        ['npc_dota_hero_puck'] = -1.96,
+        
         ['npc_dota_hero_phoenix'] = -1.98,
         ['npc_dota_hero_slark'] = -2.01,
         ['npc_dota_hero_slardar'] = -2.08,
@@ -8156,7 +8156,7 @@ local heroList = {
         ['npc_dota_hero_snapfire'] = 0.89,
         ['npc_dota_hero_storm_spirit'] = 0.88,
         ['npc_dota_hero_lich'] = 0.78,
-        ['npc_dota_hero_brewmaster'] = 0.72,
+        
         ['npc_dota_hero_mirana'] = 0.71,
         ['npc_dota_hero_weaver'] = 0.7,
         ['npc_dota_hero_ringmaster'] = 0.66,
@@ -8205,8 +8205,8 @@ local heroList = {
         ['npc_dota_hero_disruptor'] = -0.42,
         ['npc_dota_hero_drow_ranger'] = -0.48,
         ['npc_dota_hero_axe'] = -0.48,
-        ['npc_dota_hero_visage'] = -0.51,
-        ['npc_dota_hero_rubick'] = -0.53,
+        
+        
         ['npc_dota_hero_morphling'] = -0.55,
         ['npc_dota_hero_grimstroke'] = -0.59,
         ['npc_dota_hero_riki'] = -0.63,
@@ -8226,14 +8226,14 @@ local heroList = {
         ['npc_dota_hero_chaos_knight'] = -0.99,
         ['npc_dota_hero_bloodseeker'] = -1.03,
         ['npc_dota_hero_chen'] = -1.06,
-        ['npc_dota_hero_tusk'] = -1.11,
+        
         ['npc_dota_hero_undying'] = -1.13,
         ['npc_dota_hero_sven'] = -1.14,
         ['npc_dota_hero_warlock'] = -1.2,
         ['npc_dota_hero_alchemist'] = -1.29,
         ['npc_dota_hero_earth_spirit'] = -1.29,
         ['npc_dota_hero_centaur'] = -1.34,
-        ['npc_dota_hero_puck'] = -1.35,
+        
         ['npc_dota_hero_life_stealer'] = -1.36,
         ['npc_dota_hero_pudge'] = -1.38,
         ['npc_dota_hero_dazzle'] = -1.39,
@@ -8248,14 +8248,14 @@ local heroList = {
         ['npc_dota_hero_lycan'] = -2.06,
         ['npc_dota_hero_legion_commander'] = -2.24,
         ['npc_dota_hero_antimage'] = -2.25,
-        ['npc_dota_hero_wisp'] = -2.26,
+        
         ['npc_dota_hero_broodmother'] = -2.43,
         ['npc_dota_hero_abaddon'] = -2.71,
         ['npc_dota_hero_void_spirit'] = -2.73,
         ['npc_dota_hero_medusa'] = -3.55,
-        ['npc_dota_hero_pangolier'] = -4.03,
+        
         ['npc_dota_hero_meepo'] = -4.21,
-        ['npc_dota_hero_lone_druid'] = -4.3,
+        
         ['npc_dota_hero_ember_spirit'] = -4.31,
     },
     ['npc_dota_hero_naga_siren'] = {
@@ -8284,7 +8284,7 @@ local heroList = {
         ['npc_dota_hero_pudge'] = 1.53,
         ['npc_dota_hero_juggernaut'] = 1.53,
         ['npc_dota_hero_magnataur'] = 1.4,
-        ['npc_dota_hero_rubick'] = 1.28,
+        
         ['npc_dota_hero_lion'] = 1.22,
         ['npc_dota_hero_lich'] = 1.18,
         ['npc_dota_hero_ringmaster'] = 1.09,
@@ -8303,15 +8303,15 @@ local heroList = {
         ['npc_dota_hero_nevermore'] = 0.5,
         ['npc_dota_hero_antimage'] = 0.5,
         ['npc_dota_hero_tinker'] = 0.43,
-        ['npc_dota_hero_puck'] = 0.21,
+        
         ['npc_dota_hero_abaddon'] = 0.19,
         ['npc_dota_hero_pugna'] = 0.13,
         ['npc_dota_hero_phantom_assassin'] = 0.12,
         ['npc_dota_hero_mars'] = 0.1,
         ['npc_dota_hero_doom_bringer'] = 0.06,
         ['npc_dota_hero_furion'] = 0.05,
-        ['npc_dota_hero_wisp'] = 0.03,
-        ['npc_dota_hero_pangolier'] = 0.03,
+        
+        
         ['npc_dota_hero_death_prophet'] = 0.01,
         ['npc_dota_hero_marci'] = -0.07,
         ['npc_dota_hero_batrider'] = -0.07,
@@ -8338,7 +8338,7 @@ local heroList = {
         ['npc_dota_hero_oracle'] = -0.83,
         ['npc_dota_hero_razor'] = -0.85,
         ['npc_dota_hero_spectre'] = -0.88,
-        ['npc_dota_hero_tusk'] = -0.92,
+        
         ['npc_dota_hero_storm_spirit'] = -0.93,
         ['npc_dota_hero_mirana'] = -0.95,
         ['npc_dota_hero_ancient_apparition'] = -0.96,
@@ -8357,7 +8357,7 @@ local heroList = {
         ['npc_dota_hero_keeper_of_the_light'] = -1.98,
         ['npc_dota_hero_faceless_void'] = -2.01,
         ['npc_dota_hero_dark_willow'] = -2.01,
-        ['npc_dota_hero_brewmaster'] = -2.05,
+        
         ['npc_dota_hero_silencer'] = -2.14,
         ['npc_dota_hero_chen'] = -2.18,
         ['npc_dota_hero_bloodseeker'] = -2.27,
@@ -8366,7 +8366,7 @@ local heroList = {
         ['npc_dota_hero_ursa'] = -2.46,
         ['npc_dota_hero_arc_warden'] = -2.53,
         ['npc_dota_hero_phantom_lancer'] = -2.59,
-        ['npc_dota_hero_lone_druid'] = -2.6,
+        
         ['npc_dota_hero_ogre_magi'] = -2.64,
         ['npc_dota_hero_slardar'] = -2.66,
         ['npc_dota_hero_skeleton_king'] = -2.88,
@@ -8375,7 +8375,7 @@ local heroList = {
         ['npc_dota_hero_riki'] = -3.14,
         ['npc_dota_hero_huskar'] = -3.17,
         ['npc_dota_hero_terrorblade'] = -3.27,
-        ['npc_dota_hero_visage'] = -3.44,
+        
         ['npc_dota_hero_bane'] = -3.61,
         ['npc_dota_hero_chaos_knight'] = -3.82,
         ['npc_dota_hero_viper'] = -3.98,
@@ -8399,7 +8399,7 @@ local heroList = {
         ['npc_dota_hero_arc_warden'] = 2.44,
         ['npc_dota_hero_drow_ranger'] = 2.4,
         ['npc_dota_hero_silencer'] = 2.4,
-        ['npc_dota_hero_visage'] = 2.35,
+        
         ['npc_dota_hero_keeper_of_the_light'] = 2.3,
         ['npc_dota_hero_viper'] = 2.19,
         ['npc_dota_hero_pudge'] = 2.16,
@@ -8425,17 +8425,17 @@ local heroList = {
         ['npc_dota_hero_marci'] = 0.94,
         ['npc_dota_hero_venomancer'] = 0.85,
         ['npc_dota_hero_faceless_void'] = 0.77,
-        ['npc_dota_hero_puck'] = 0.73,
+        
         ['npc_dota_hero_queenofpain'] = 0.7,
         ['npc_dota_hero_sand_king'] = 0.69,
         ['npc_dota_hero_hoodwink'] = 0.64,
-        ['npc_dota_hero_wisp'] = 0.64,
-        ['npc_dota_hero_brewmaster'] = 0.57,
+        
+        
         ['npc_dota_hero_elder_titan'] = 0.52,
         ['npc_dota_hero_dawnbreaker'] = 0.49,
         ['npc_dota_hero_monkey_king'] = 0.45,
         ['npc_dota_hero_lion'] = 0.43,
-        ['npc_dota_hero_pangolier'] = 0.39,
+        
         ['npc_dota_hero_mars'] = 0.39,
         ['npc_dota_hero_dark_willow'] = 0.39,
         ['npc_dota_hero_terrorblade'] = 0.37,
@@ -8449,7 +8449,7 @@ local heroList = {
         ['npc_dota_hero_chen'] = 0.13,
         ['npc_dota_hero_primal_beast'] = 0.13,
         ['npc_dota_hero_witch_doctor'] = 0.1,
-        ['npc_dota_hero_rubick'] = 0.07,
+        
         ['npc_dota_hero_luna'] = 0.02,
         ['npc_dota_hero_ember_spirit'] = 0.01,
         ['npc_dota_hero_phoenix'] = 0.01,
@@ -8465,7 +8465,7 @@ local heroList = {
         ['npc_dota_hero_alchemist'] = -0.23,
         ['npc_dota_hero_techies'] = -0.25,
         ['npc_dota_hero_tinker'] = -0.26,
-        ['npc_dota_hero_lone_druid'] = -0.29,
+        
         ['npc_dota_hero_bounty_hunter'] = -0.29,
         ['npc_dota_hero_undying'] = -0.31,
         ['npc_dota_hero_juggernaut'] = -0.35,
@@ -8481,7 +8481,7 @@ local heroList = {
         ['npc_dota_hero_abaddon'] = -0.64,
         ['npc_dota_hero_bane'] = -0.72,
         ['npc_dota_hero_kez'] = -0.73,
-        ['npc_dota_hero_tusk'] = -0.78,
+        
         ['npc_dota_hero_enigma'] = -0.78,
         ['npc_dota_hero_zuus'] = -0.85,
         ['npc_dota_hero_ursa'] = -0.9,
@@ -8535,7 +8535,7 @@ local heroList = {
         ['npc_dota_hero_techies'] = 0.94,
         ['npc_dota_hero_ogre_magi'] = 0.9,
         ['npc_dota_hero_troll_warlord'] = 0.88,
-        ['npc_dota_hero_brewmaster'] = 0.75,
+        
         ['npc_dota_hero_templar_assassin'] = 0.73,
         ['npc_dota_hero_kunkka'] = 0.71,
         ['npc_dota_hero_viper'] = 0.7,
@@ -8548,7 +8548,7 @@ local heroList = {
         ['npc_dota_hero_monkey_king'] = 0.58,
         ['npc_dota_hero_phoenix'] = 0.57,
         ['npc_dota_hero_snapfire'] = 0.48,
-        ['npc_dota_hero_visage'] = 0.47,
+        
         ['npc_dota_hero_ringmaster'] = 0.39,
         ['npc_dota_hero_vengefulspirit'] = 0.38,
         ['npc_dota_hero_dark_seer'] = 0.34,
@@ -8564,10 +8564,10 @@ local heroList = {
         ['npc_dota_hero_jakiro'] = 0.17,
         ['npc_dota_hero_bristleback'] = 0.16,
         ['npc_dota_hero_enchantress'] = 0.13,
-        ['npc_dota_hero_rubick'] = 0.12,
+        
         ['npc_dota_hero_rattletrap'] = 0.09,
         ['npc_dota_hero_muerta'] = 0.09,
-        ['npc_dota_hero_tusk'] = 0.06,
+        
         ['npc_dota_hero_arc_warden'] = 0.04,
         ['npc_dota_hero_mirana'] = 0.03,
         ['npc_dota_hero_earthshaker'] = 0,
@@ -8618,21 +8618,21 @@ local heroList = {
         ['npc_dota_hero_dazzle'] = -0.82,
         ['npc_dota_hero_night_stalker'] = -0.83,
         ['npc_dota_hero_death_prophet'] = -0.88,
-        ['npc_dota_hero_pangolier'] = -0.92,
+        
         ['npc_dota_hero_disruptor'] = -0.92,
         ['npc_dota_hero_tinker'] = -0.95,
         ['npc_dota_hero_storm_spirit'] = -1.04,
-        ['npc_dota_hero_puck'] = -1.07,
+        
         ['npc_dota_hero_tidehunter'] = -1.08,
         ['npc_dota_hero_omniknight'] = -1.12,
         ['npc_dota_hero_slark'] = -1.3,
-        ['npc_dota_hero_wisp'] = -1.3,
+        
         ['npc_dota_hero_legion_commander'] = -1.39,
         ['npc_dota_hero_void_spirit'] = -1.5,
         ['npc_dota_hero_abaddon'] = -1.72,
         ['npc_dota_hero_broodmother'] = -1.84,
         ['npc_dota_hero_warlock'] = -1.98,
-        ['npc_dota_hero_lone_druid'] = -2.02,
+        
         ['npc_dota_hero_ember_spirit'] = -2.08,
         ['npc_dota_hero_necrolyte'] = -2.09,
         ['npc_dota_hero_oracle'] = -2.41,
@@ -8645,7 +8645,7 @@ local heroList = {
         ['npc_dota_hero_broodmother'] = 3.84,
         ['npc_dota_hero_terrorblade'] = 3.84,
         ['npc_dota_hero_huskar'] = 3.78,
-        ['npc_dota_hero_lone_druid'] = 3.58,
+        
         ['npc_dota_hero_lycan'] = 3.35,
         ['npc_dota_hero_arc_warden'] = 3.23,
         ['npc_dota_hero_meepo'] = 3.08,
@@ -8658,7 +8658,7 @@ local heroList = {
         ['npc_dota_hero_skeleton_king'] = 2.06,
         ['npc_dota_hero_chen'] = 2.03,
         ['npc_dota_hero_viper'] = 2.02,
-        ['npc_dota_hero_wisp'] = 1.96,
+        
         ['npc_dota_hero_ogre_magi'] = 1.92,
         ['npc_dota_hero_phoenix'] = 1.91,
         ['npc_dota_hero_venomancer'] = 1.83,
@@ -8668,12 +8668,12 @@ local heroList = {
         ['npc_dota_hero_razor'] = 1.5,
         ['npc_dota_hero_enigma'] = 1.47,
         ['npc_dota_hero_phantom_lancer'] = 1.43,
-        ['npc_dota_hero_visage'] = 1.43,
+        
         ['npc_dota_hero_dark_willow'] = 1.4,
         ['npc_dota_hero_phantom_assassin'] = 1.33,
         ['npc_dota_hero_bristleback'] = 1.29,
         ['npc_dota_hero_treant'] = 1.26,
-        ['npc_dota_hero_brewmaster'] = 1.23,
+        
         ['npc_dota_hero_sven'] = 1.2,
         ['npc_dota_hero_techies'] = 1.19,
         ['npc_dota_hero_tiny'] = 1.16,
@@ -8700,7 +8700,7 @@ local heroList = {
         ['npc_dota_hero_elder_titan'] = 0.48,
         ['npc_dota_hero_omniknight'] = 0.45,
         ['npc_dota_hero_rattletrap'] = 0.43,
-        ['npc_dota_hero_tusk'] = 0.32,
+        
         ['npc_dota_hero_medusa'] = 0.3,
         ['npc_dota_hero_tinker'] = 0.28,
         ['npc_dota_hero_invoker'] = 0.22,
@@ -8739,10 +8739,10 @@ local heroList = {
         ['npc_dota_hero_centaur'] = -0.61,
         ['npc_dota_hero_grimstroke'] = -0.61,
         ['npc_dota_hero_ringmaster'] = -0.7,
-        ['npc_dota_hero_pangolier'] = -0.91,
+        
         ['npc_dota_hero_riki'] = -0.93,
         ['npc_dota_hero_obsidian_destroyer'] = -0.94,
-        ['npc_dota_hero_rubick'] = -0.95,
+        
         ['npc_dota_hero_oracle'] = -1,
         ['npc_dota_hero_axe'] = -1.01,
         ['npc_dota_hero_ursa'] = -1.16,
@@ -8764,7 +8764,7 @@ local heroList = {
         ['npc_dota_hero_void_spirit'] = -2.56,
         ['npc_dota_hero_juggernaut'] = -2.73,
         ['npc_dota_hero_slark'] = -2.85,
-        ['npc_dota_hero_puck'] = -4.68,
+        
     },
     ['npc_dota_hero_nyx_assassin'] = {
         ['npc_dota_hero_life_stealer'] = 2.29,
@@ -8772,7 +8772,7 @@ local heroList = {
         ['npc_dota_hero_huskar'] = 1.91,
         ['npc_dota_hero_chaos_knight'] = 1.88,
         ['npc_dota_hero_slardar'] = 1.83,
-        ['npc_dota_hero_visage'] = 1.76,
+        
         ['npc_dota_hero_ember_spirit'] = 1.71,
         ['npc_dota_hero_night_stalker'] = 1.68,
         ['npc_dota_hero_ursa'] = 1.63,
@@ -8785,8 +8785,8 @@ local heroList = {
         ['npc_dota_hero_kez'] = 1.28,
         ['npc_dota_hero_dragon_knight'] = 1.28,
         ['npc_dota_hero_juggernaut'] = 1.26,
-        ['npc_dota_hero_wisp'] = 1.18,
-        ['npc_dota_hero_lone_druid'] = 1.12,
+        
+        
         ['npc_dota_hero_broodmother'] = 1.08,
         ['npc_dota_hero_doom_bringer'] = 1.04,
         ['npc_dota_hero_meepo'] = 1.04,
@@ -8798,8 +8798,8 @@ local heroList = {
         ['npc_dota_hero_ogre_magi'] = 0.93,
         ['npc_dota_hero_skeleton_king'] = 0.93,
         ['npc_dota_hero_skywrath_mage'] = 0.91,
-        ['npc_dota_hero_tusk'] = 0.9,
-        ['npc_dota_hero_pangolier'] = 0.87,
+        
+        
         ['npc_dota_hero_disruptor'] = 0.85,
         ['npc_dota_hero_arc_warden'] = 0.84,
         ['npc_dota_hero_zuus'] = 0.79,
@@ -8823,7 +8823,7 @@ local heroList = {
         ['npc_dota_hero_centaur'] = 0.43,
         ['npc_dota_hero_pudge'] = 0.42,
         ['npc_dota_hero_void_spirit'] = 0.39,
-        ['npc_dota_hero_brewmaster'] = 0.31,
+        
         ['npc_dota_hero_earthshaker'] = 0.31,
         ['npc_dota_hero_dark_willow'] = 0.28,
         ['npc_dota_hero_lycan'] = 0.27,
@@ -8831,7 +8831,7 @@ local heroList = {
         ['npc_dota_hero_tidehunter'] = 0.25,
         ['npc_dota_hero_bane'] = 0.23,
         ['npc_dota_hero_enigma'] = 0.22,
-        ['npc_dota_hero_rubick'] = 0.2,
+        
         ['npc_dota_hero_bounty_hunter'] = 0.18,
         ['npc_dota_hero_techies'] = 0.17,
         ['npc_dota_hero_venomancer'] = 0.15,
@@ -8889,7 +8889,7 @@ local heroList = {
         ['npc_dota_hero_dawnbreaker'] = -1.95,
         ['npc_dota_hero_sniper'] = -2.36,
         ['npc_dota_hero_weaver'] = -2.42,
-        ['npc_dota_hero_puck'] = -2.44,
+        
         ['npc_dota_hero_morphling'] = -3.01,
         ['npc_dota_hero_obsidian_destroyer'] = -3.09,
     },
@@ -8899,24 +8899,24 @@ local heroList = {
         ['npc_dota_hero_templar_assassin'] = 3.42,
         ['npc_dota_hero_phantom_lancer'] = 3.34,
         ['npc_dota_hero_nyx_assassin'] = 3.12,
-        ['npc_dota_hero_visage'] = 2.51,
+        
         ['npc_dota_hero_chaos_knight'] = 2.51,
         ['npc_dota_hero_skeleton_king'] = 2.37,
-        ['npc_dota_hero_rubick'] = 2.31,
+        
         ['npc_dota_hero_medusa'] = 1.87,
-        ['npc_dota_hero_pangolier'] = 1.86,
+        
         ['npc_dota_hero_lycan'] = 1.85,
         ['npc_dota_hero_antimage'] = 1.76,
         ['npc_dota_hero_enigma'] = 1.74,
-        ['npc_dota_hero_puck'] = 1.72,
+        
         ['npc_dota_hero_beastmaster'] = 1.72,
         ['npc_dota_hero_huskar'] = 1.71,
         ['npc_dota_hero_silencer'] = 1.63,
         ['npc_dota_hero_naga_siren'] = 1.62,
         ['npc_dota_hero_storm_spirit'] = 1.52,
         ['npc_dota_hero_shadow_shaman'] = 1.48,
-        ['npc_dota_hero_brewmaster'] = 1.42,
-        ['npc_dota_hero_lone_druid'] = 1.33,
+        
+        
         ['npc_dota_hero_marci'] = 1.31,
         ['npc_dota_hero_keeper_of_the_light'] = 1.16,
         ['npc_dota_hero_enchantress'] = 1.08,
@@ -8930,7 +8930,7 @@ local heroList = {
         ['npc_dota_hero_undying'] = 0.91,
         ['npc_dota_hero_furion'] = 0.89,
         ['npc_dota_hero_phantom_assassin'] = 0.89,
-        ['npc_dota_hero_tusk'] = 0.85,
+        
         ['npc_dota_hero_luna'] = 0.81,
         ['npc_dota_hero_zuus'] = 0.65,
         ['npc_dota_hero_shadow_demon'] = 0.62,
@@ -8962,7 +8962,7 @@ local heroList = {
         ['npc_dota_hero_mars'] = 0.13,
         ['npc_dota_hero_witch_doctor'] = 0.13,
         ['npc_dota_hero_meepo'] = 0.11,
-        ['npc_dota_hero_wisp'] = 0.07,
+        
         ['npc_dota_hero_spirit_breaker'] = 0.06,
         ['npc_dota_hero_void_spirit'] = 0.06,
         ['npc_dota_hero_treant'] = 0.01,
@@ -9050,16 +9050,16 @@ local heroList = {
         ['npc_dota_hero_oracle'] = 0.76,
         ['npc_dota_hero_dark_willow'] = 0.74,
         ['npc_dota_hero_viper'] = 0.73,
-        ['npc_dota_hero_lone_druid'] = 0.73,
+        
         ['npc_dota_hero_pudge'] = 0.64,
         ['npc_dota_hero_doom_bringer'] = 0.63,
-        ['npc_dota_hero_brewmaster'] = 0.62,
+        
         ['npc_dota_hero_marci'] = 0.59,
         ['npc_dota_hero_abaddon'] = 0.57,
         ['npc_dota_hero_chen'] = 0.57,
         ['npc_dota_hero_winter_wyvern'] = 0.54,
-        ['npc_dota_hero_tusk'] = 0.53,
-        ['npc_dota_hero_puck'] = 0.46,
+        
+        
         ['npc_dota_hero_treant'] = 0.45,
         ['npc_dota_hero_mars'] = 0.4,
         ['npc_dota_hero_sand_king'] = 0.39,
@@ -9077,10 +9077,10 @@ local heroList = {
         ['npc_dota_hero_lich'] = 0.11,
         ['npc_dota_hero_jakiro'] = 0.11,
         ['npc_dota_hero_lion'] = 0.1,
-        ['npc_dota_hero_rubick'] = 0.1,
+        
         ['npc_dota_hero_elder_titan'] = 0.09,
         ['npc_dota_hero_queenofpain'] = 0.08,
-        ['npc_dota_hero_visage'] = 0.07,
+        
         ['npc_dota_hero_mirana'] = 0.06,
         ['npc_dota_hero_snapfire'] = 0.05,
         ['npc_dota_hero_ancient_apparition'] = 0.05,
@@ -9099,10 +9099,10 @@ local heroList = {
         ['npc_dota_hero_vengefulspirit'] = -0.2,
         ['npc_dota_hero_spectre'] = -0.2,
         ['npc_dota_hero_disruptor'] = -0.2,
-        ['npc_dota_hero_wisp'] = -0.21,
+        
         ['npc_dota_hero_death_prophet'] = -0.24,
         ['npc_dota_hero_earthshaker'] = -0.26,
-        ['npc_dota_hero_pangolier'] = -0.27,
+        
         ['npc_dota_hero_bounty_hunter'] = -0.28,
         ['npc_dota_hero_muerta'] = -0.29,
         ['npc_dota_hero_tiny'] = -0.32,
@@ -9206,11 +9206,11 @@ local heroList = {
         ['npc_dota_hero_primal_beast'] = 0.18,
         ['npc_dota_hero_phoenix'] = 0.15,
         ['npc_dota_hero_chen'] = 0.14,
-        ['npc_dota_hero_wisp'] = 0.1,
+        
         ['npc_dota_hero_beastmaster'] = 0.09,
         ['npc_dota_hero_clinkz'] = 0.09,
         ['npc_dota_hero_dragon_knight'] = 0.06,
-        ['npc_dota_hero_rubick'] = -0.01,
+        
         ['npc_dota_hero_snapfire'] = -0.01,
         ['npc_dota_hero_grimstroke'] = -0.06,
         ['npc_dota_hero_sniper'] = -0.07,
@@ -9238,21 +9238,21 @@ local heroList = {
         ['npc_dota_hero_centaur'] = -0.68,
         ['npc_dota_hero_phantom_assassin'] = -0.71,
         ['npc_dota_hero_troll_warlord'] = -0.73,
-        ['npc_dota_hero_visage'] = -0.73,
+        
         ['npc_dota_hero_shadow_shaman'] = -0.75,
         ['npc_dota_hero_disruptor'] = -0.78,
-        ['npc_dota_hero_puck'] = -0.78,
-        ['npc_dota_hero_brewmaster'] = -0.78,
+        
+        
         ['npc_dota_hero_ursa'] = -0.86,
         ['npc_dota_hero_lion'] = -0.89,
-        ['npc_dota_hero_lone_druid'] = -0.95,
+        
         ['npc_dota_hero_naga_siren'] = -0.96,
-        ['npc_dota_hero_pangolier'] = -0.99,
+        
         ['npc_dota_hero_skeleton_king'] = -1,
         ['npc_dota_hero_mars'] = -1.04,
         ['npc_dota_hero_hoodwink'] = -1.05,
         ['npc_dota_hero_spirit_breaker'] = -1.14,
-        ['npc_dota_hero_tusk'] = -1.17,
+        
         ['npc_dota_hero_lycan'] = -1.2,
         ['npc_dota_hero_invoker'] = -1.21,
         ['npc_dota_hero_arc_warden'] = -1.24,
@@ -9277,9 +9277,9 @@ local heroList = {
     ['npc_dota_hero_oracle'] = {
         ['npc_dota_hero_marci'] = 3.36,
         ['npc_dota_hero_antimage'] = 3.03,
-        ['npc_dota_hero_wisp'] = 2.93,
+        
         ['npc_dota_hero_shadow_demon'] = 2.89,
-        ['npc_dota_hero_lone_druid'] = 2.84,
+        
         ['npc_dota_hero_razor'] = 2.69,
         ['npc_dota_hero_undying'] = 2.63,
         ['npc_dota_hero_obsidian_destroyer'] = 2.54,
@@ -9290,8 +9290,8 @@ local heroList = {
         ['npc_dota_hero_lycan'] = 2.25,
         ['npc_dota_hero_death_prophet'] = 2.23,
         ['npc_dota_hero_riki'] = 2.02,
-        ['npc_dota_hero_tusk'] = 1.88,
-        ['npc_dota_hero_pangolier'] = 1.83,
+        
+        
         ['npc_dota_hero_enchantress'] = 1.75,
         ['npc_dota_hero_omniknight'] = 1.68,
         ['npc_dota_hero_broodmother'] = 1.66,
@@ -9308,7 +9308,7 @@ local heroList = {
         ['npc_dota_hero_vengefulspirit'] = 1.22,
         ['npc_dota_hero_huskar'] = 1.22,
         ['npc_dota_hero_dazzle'] = 1.2,
-        ['npc_dota_hero_visage'] = 1.11,
+        
         ['npc_dota_hero_night_stalker'] = 1.01,
         ['npc_dota_hero_naga_siren'] = 0.96,
         ['npc_dota_hero_pudge'] = 0.94,
@@ -9370,7 +9370,7 @@ local heroList = {
         ['npc_dota_hero_venomancer'] = -0.67,
         ['npc_dota_hero_life_stealer'] = -0.7,
         ['npc_dota_hero_faceless_void'] = -0.71,
-        ['npc_dota_hero_puck'] = -0.71,
+        
         ['npc_dota_hero_earth_spirit'] = -0.74,
         ['npc_dota_hero_warlock'] = -0.83,
         ['npc_dota_hero_abaddon'] = -0.89,
@@ -9378,14 +9378,14 @@ local heroList = {
         ['npc_dota_hero_jakiro'] = -0.98,
         ['npc_dota_hero_ringmaster'] = -0.99,
         ['npc_dota_hero_techies'] = -1.02,
-        ['npc_dota_hero_rubick'] = -1.05,
+        
         ['npc_dota_hero_abyssal_underlord'] = -1.05,
         ['npc_dota_hero_bounty_hunter'] = -1.08,
         ['npc_dota_hero_ogre_magi'] = -1.1,
         ['npc_dota_hero_void_spirit'] = -1.11,
         ['npc_dota_hero_spirit_breaker'] = -1.21,
         ['npc_dota_hero_disruptor'] = -1.25,
-        ['npc_dota_hero_brewmaster'] = -1.33,
+        
         ['npc_dota_hero_zuus'] = -1.36,
         ['npc_dota_hero_sand_king'] = -1.37,
         ['npc_dota_hero_phoenix'] = -1.45,
@@ -9409,7 +9409,7 @@ local heroList = {
         ['npc_dota_hero_drow_ranger'] = 2.25,
         ['npc_dota_hero_weaver'] = 2.17,
         ['npc_dota_hero_terrorblade'] = 2.08,
-        ['npc_dota_hero_puck'] = 2.04,
+        
         ['npc_dota_hero_morphling'] = 1.8,
         ['npc_dota_hero_winter_wyvern'] = 1.78,
         ['npc_dota_hero_storm_spirit'] = 1.59,
@@ -9464,7 +9464,7 @@ local heroList = {
         ['npc_dota_hero_hoodwink'] = 0.08,
         ['npc_dota_hero_furion'] = 0.07,
         ['npc_dota_hero_dark_seer'] = 0.06,
-        ['npc_dota_hero_tusk'] = 0.03,
+        
         ['npc_dota_hero_snapfire'] = 0.01,
         ['npc_dota_hero_phoenix'] = 0,
         ['npc_dota_hero_death_prophet'] = -0.01,
@@ -9479,7 +9479,7 @@ local heroList = {
         ['npc_dota_hero_sniper'] = -0.37,
         ['npc_dota_hero_jakiro'] = -0.47,
         ['npc_dota_hero_keeper_of_the_light'] = -0.53,
-        ['npc_dota_hero_wisp'] = -0.54,
+        
         ['npc_dota_hero_earth_spirit'] = -0.56,
         ['npc_dota_hero_kez'] = -0.59,
         ['npc_dota_hero_sand_king'] = -0.61,
@@ -9496,7 +9496,7 @@ local heroList = {
         ['npc_dota_hero_viper'] = -0.83,
         ['npc_dota_hero_mars'] = -0.85,
         ['npc_dota_hero_spectre'] = -0.85,
-        ['npc_dota_hero_rubick'] = -0.91,
+        
         ['npc_dota_hero_enchantress'] = -0.93,
         ['npc_dota_hero_undying'] = -0.93,
         ['npc_dota_hero_invoker'] = -0.93,
@@ -9506,7 +9506,7 @@ local heroList = {
         ['npc_dota_hero_life_stealer'] = -1.06,
         ['npc_dota_hero_kunkka'] = -1.07,
         ['npc_dota_hero_witch_doctor'] = -1.12,
-        ['npc_dota_hero_brewmaster'] = -1.17,
+        
         ['npc_dota_hero_antimage'] = -1.21,
         ['npc_dota_hero_ringmaster'] = -1.22,
         ['npc_dota_hero_shadow_demon'] = -1.24,
@@ -9523,8 +9523,8 @@ local heroList = {
         ['npc_dota_hero_oracle'] = -1.77,
         ['npc_dota_hero_pudge'] = -1.83,
         ['npc_dota_hero_tidehunter'] = -1.87,
-        ['npc_dota_hero_lone_druid'] = -2.08,
-        ['npc_dota_hero_visage'] = -2.34,
+        
+        
         ['npc_dota_hero_arc_warden'] = -2.43,
         ['npc_dota_hero_medusa'] = -3.01,
     },
@@ -9545,13 +9545,13 @@ local heroList = {
         ['npc_dota_hero_tidehunter'] = 3.34,
         ['npc_dota_hero_antimage'] = 3.24,
         ['npc_dota_hero_beastmaster'] = 3.11,
-        ['npc_dota_hero_puck'] = 2.94,
+        
         ['npc_dota_hero_naga_siren'] = 2.53,
         ['npc_dota_hero_ember_spirit'] = 2.44,
         ['npc_dota_hero_techies'] = 2.23,
         ['npc_dota_hero_magnataur'] = 2.11,
         ['npc_dota_hero_centaur'] = 2.01,
-        ['npc_dota_hero_rubick'] = 1.93,
+        
         ['npc_dota_hero_legion_commander'] = 1.91,
         ['npc_dota_hero_tiny'] = 1.78,
         ['npc_dota_hero_razor'] = 1.63,
@@ -9591,17 +9591,17 @@ local heroList = {
         ['npc_dota_hero_disruptor'] = 0.04,
         ['npc_dota_hero_mirana'] = 0.04,
         ['npc_dota_hero_queenofpain'] = -0.02,
-        ['npc_dota_hero_wisp'] = -0.02,
+        
         ['npc_dota_hero_juggernaut'] = -0.04,
         ['npc_dota_hero_windrunner'] = -0.05,
         ['npc_dota_hero_ringmaster'] = -0.06,
         ['npc_dota_hero_lion'] = -0.14,
         ['npc_dota_hero_bristleback'] = -0.22,
-        ['npc_dota_hero_brewmaster'] = -0.33,
-        ['npc_dota_hero_pangolier'] = -0.5,
+        
+        
         ['npc_dota_hero_slark'] = -0.51,
         ['npc_dota_hero_lich'] = -0.53,
-        ['npc_dota_hero_tusk'] = -0.56,
+        
         ['npc_dota_hero_skywrath_mage'] = -0.58,
         ['npc_dota_hero_spirit_breaker'] = -0.59,
         ['npc_dota_hero_pugna'] = -0.6,
@@ -9618,7 +9618,7 @@ local heroList = {
         ['npc_dota_hero_spectre'] = -1.2,
         ['npc_dota_hero_hoodwink'] = -1.29,
         ['npc_dota_hero_night_stalker'] = -1.39,
-        ['npc_dota_hero_lone_druid'] = -1.6,
+        
         ['npc_dota_hero_nevermore'] = -1.6,
         ['npc_dota_hero_oracle'] = -1.64,
         ['npc_dota_hero_dark_willow'] = -1.76,
@@ -9643,7 +9643,7 @@ local heroList = {
         ['npc_dota_hero_obsidian_destroyer'] = -3.34,
         ['npc_dota_hero_shadow_shaman'] = -3.56,
         ['npc_dota_hero_drow_ranger'] = -3.56,
-        ['npc_dota_hero_visage'] = -3.74,
+        
         ['npc_dota_hero_ursa'] = -4.05,
         ['npc_dota_hero_chaos_knight'] = -4.14,
         ['npc_dota_hero_arc_warden'] = -4.14,
@@ -9661,7 +9661,7 @@ local heroList = {
         ['npc_dota_hero_tiny'] = 1.99,
         ['npc_dota_hero_pudge'] = 1.85,
         ['npc_dota_hero_templar_assassin'] = 1.63,
-        ['npc_dota_hero_pangolier'] = 1.52,
+        
         ['npc_dota_hero_batrider'] = 1.5,
         ['npc_dota_hero_dawnbreaker'] = 1.49,
         ['npc_dota_hero_doom_bringer'] = 1.49,
@@ -9671,13 +9671,13 @@ local heroList = {
         ['npc_dota_hero_queenofpain'] = 1.38,
         ['npc_dota_hero_shredder'] = 1.37,
         ['npc_dota_hero_morphling'] = 1.33,
-        ['npc_dota_hero_tusk'] = 1.33,
+        
         ['npc_dota_hero_death_prophet'] = 1.27,
         ['npc_dota_hero_magnataur'] = 1.25,
         ['npc_dota_hero_earth_spirit'] = 1.2,
         ['npc_dota_hero_bane'] = 1.18,
         ['npc_dota_hero_ogre_magi'] = 1.1,
-        ['npc_dota_hero_puck'] = 1.03,
+        
         ['npc_dota_hero_techies'] = 0.95,
         ['npc_dota_hero_storm_spirit'] = 0.93,
         ['npc_dota_hero_razor'] = 0.89,
@@ -9707,7 +9707,7 @@ local heroList = {
         ['npc_dota_hero_monkey_king'] = 0.13,
         ['npc_dota_hero_dragon_knight'] = 0.13,
         ['npc_dota_hero_sand_king'] = 0.13,
-        ['npc_dota_hero_brewmaster'] = 0.1,
+        
         ['npc_dota_hero_rattletrap'] = 0.1,
         ['npc_dota_hero_zuus'] = 0.1,
         ['npc_dota_hero_kunkka'] = 0.09,
@@ -9737,7 +9737,7 @@ local heroList = {
         ['npc_dota_hero_mars'] = -0.61,
         ['npc_dota_hero_slardar'] = -0.62,
         ['npc_dota_hero_phantom_lancer'] = -0.67,
-        ['npc_dota_hero_wisp'] = -0.68,
+        
         ['npc_dota_hero_abyssal_underlord'] = -0.69,
         ['npc_dota_hero_dark_seer'] = -0.69,
         ['npc_dota_hero_juggernaut'] = -0.7,
@@ -9751,7 +9751,7 @@ local heroList = {
         ['npc_dota_hero_earthshaker'] = -0.85,
         ['npc_dota_hero_abaddon'] = -0.94,
         ['npc_dota_hero_riki'] = -0.98,
-        ['npc_dota_hero_rubick'] = -0.99,
+        
         ['npc_dota_hero_enigma'] = -1,
         ['npc_dota_hero_oracle'] = -1.01,
         ['npc_dota_hero_ancient_apparition'] = -1.08,
@@ -9773,12 +9773,12 @@ local heroList = {
         ['npc_dota_hero_warlock'] = -1.66,
         ['npc_dota_hero_ringmaster'] = -1.68,
         ['npc_dota_hero_clinkz'] = -2.11,
-        ['npc_dota_hero_visage'] = -2.28,
+        
         ['npc_dota_hero_huskar'] = -2.79,
         ['npc_dota_hero_lycan'] = -2.89,
         ['npc_dota_hero_broodmother'] = -2.96,
         ['npc_dota_hero_elder_titan'] = -3.12,
-        ['npc_dota_hero_lone_druid'] = -3.19,
+        
         ['npc_dota_hero_enchantress'] = -3.65,
         ['npc_dota_hero_antimage'] = -4.21,
     },
@@ -9801,11 +9801,11 @@ local heroList = {
         ['npc_dota_hero_tinker'] = 1.43,
         ['npc_dota_hero_oracle'] = 1.41,
         ['npc_dota_hero_abaddon'] = 1.36,
-        ['npc_dota_hero_puck'] = 1.31,
+        
         ['npc_dota_hero_jakiro'] = 1.29,
         ['npc_dota_hero_tidehunter'] = 1.23,
         ['npc_dota_hero_drow_ranger'] = 1.16,
-        ['npc_dota_hero_wisp'] = 1.15,
+        
         ['npc_dota_hero_slark'] = 1.06,
         ['npc_dota_hero_silencer'] = 1.05,
         ['npc_dota_hero_kez'] = 1.01,
@@ -9822,7 +9822,7 @@ local heroList = {
         ['npc_dota_hero_alchemist'] = 0.71,
         ['npc_dota_hero_nyx_assassin'] = 0.66,
         ['npc_dota_hero_ogre_magi'] = 0.66,
-        ['npc_dota_hero_visage'] = 0.61,
+        
         ['npc_dota_hero_medusa'] = 0.6,
         ['npc_dota_hero_bristleback'] = 0.54,
         ['npc_dota_hero_riki'] = 0.44,
@@ -9838,7 +9838,7 @@ local heroList = {
         ['npc_dota_hero_necrolyte'] = 0.15,
         ['npc_dota_hero_windrunner'] = 0.14,
         ['npc_dota_hero_shadow_shaman'] = 0.12,
-        ['npc_dota_hero_pangolier'] = 0.11,
+        
         ['npc_dota_hero_hoodwink'] = 0.07,
         ['npc_dota_hero_ursa'] = 0.03,
         ['npc_dota_hero_ember_spirit'] = 0.02,
@@ -9847,7 +9847,7 @@ local heroList = {
         ['npc_dota_hero_earth_spirit'] = -0.05,
         ['npc_dota_hero_ringmaster'] = -0.06,
         ['npc_dota_hero_elder_titan'] = -0.06,
-        ['npc_dota_hero_brewmaster'] = -0.06,
+        
         ['npc_dota_hero_faceless_void'] = -0.08,
         ['npc_dota_hero_spirit_breaker'] = -0.1,
         ['npc_dota_hero_bounty_hunter'] = -0.13,
@@ -9886,9 +9886,9 @@ local heroList = {
         ['npc_dota_hero_razor'] = -1.11,
         ['npc_dota_hero_phantom_lancer'] = -1.21,
         ['npc_dota_hero_tiny'] = -1.24,
-        ['npc_dota_hero_rubick'] = -1.35,
+        
         ['npc_dota_hero_beastmaster'] = -1.37,
-        ['npc_dota_hero_tusk'] = -1.43,
+        
         ['npc_dota_hero_dragon_knight'] = -1.51,
         ['npc_dota_hero_winter_wyvern'] = -1.52,
         ['npc_dota_hero_terrorblade'] = -1.52,
@@ -9904,7 +9904,7 @@ local heroList = {
         ['npc_dota_hero_night_stalker'] = -1.92,
         ['npc_dota_hero_monkey_king'] = -2.07,
         ['npc_dota_hero_treant'] = -2.64,
-        ['npc_dota_hero_lone_druid'] = -2.74,
+        
         ['npc_dota_hero_skeleton_king'] = -3.04,
         ['npc_dota_hero_chaos_knight'] = -3.18,
         ['npc_dota_hero_templar_assassin'] = -3.56,
@@ -9950,7 +9950,7 @@ local heroList = {
         ['npc_dota_hero_night_stalker'] = 0.63,
         ['npc_dota_hero_venomancer'] = 0.61,
         ['npc_dota_hero_tiny'] = 0.61,
-        ['npc_dota_hero_visage'] = 0.54,
+        
         ['npc_dota_hero_nyx_assassin'] = 0.53,
         ['npc_dota_hero_invoker'] = 0.52,
         ['npc_dota_hero_slardar'] = 0.46,
@@ -9958,9 +9958,9 @@ local heroList = {
         ['npc_dota_hero_viper'] = 0.43,
         ['npc_dota_hero_keeper_of_the_light'] = 0.41,
         ['npc_dota_hero_skeleton_king'] = 0.38,
-        ['npc_dota_hero_puck'] = 0.37,
+        
         ['npc_dota_hero_oracle'] = 0.37,
-        ['npc_dota_hero_lone_druid'] = 0.35,
+        
         ['npc_dota_hero_morphling'] = 0.32,
         ['npc_dota_hero_dragon_knight'] = 0.3,
         ['npc_dota_hero_leshrac'] = 0.27,
@@ -9992,7 +9992,7 @@ local heroList = {
         ['npc_dota_hero_dark_seer'] = -0.44,
         ['npc_dota_hero_kez'] = -0.44,
         ['npc_dota_hero_beastmaster'] = -0.45,
-        ['npc_dota_hero_brewmaster'] = -0.47,
+        
         ['npc_dota_hero_snapfire'] = -0.48,
         ['npc_dota_hero_tidehunter'] = -0.51,
         ['npc_dota_hero_warlock'] = -0.54,
@@ -10004,9 +10004,9 @@ local heroList = {
         ['npc_dota_hero_bounty_hunter'] = -0.66,
         ['npc_dota_hero_marci'] = -0.66,
         ['npc_dota_hero_luna'] = -0.69,
-        ['npc_dota_hero_tusk'] = -0.69,
-        ['npc_dota_hero_rubick'] = -0.78,
-        ['npc_dota_hero_wisp'] = -0.82,
+        
+        
+        
         ['npc_dota_hero_naga_siren'] = -0.85,
         ['npc_dota_hero_dazzle'] = -0.89,
         ['npc_dota_hero_legion_commander'] = -0.93,
@@ -10016,7 +10016,7 @@ local heroList = {
         ['npc_dota_hero_nevermore'] = -1.05,
         ['npc_dota_hero_abaddon'] = -1.06,
         ['npc_dota_hero_slark'] = -1.12,
-        ['npc_dota_hero_pangolier'] = -1.14,
+        
         ['npc_dota_hero_terrorblade'] = -1.18,
         ['npc_dota_hero_enchantress'] = -1.18,
         ['npc_dota_hero_tinker'] = -1.21,
@@ -10040,7 +10040,7 @@ local heroList = {
         ['npc_dota_hero_night_stalker'] = 4.57,
         ['npc_dota_hero_riki'] = 3.81,
         ['npc_dota_hero_broodmother'] = 3.72,
-        ['npc_dota_hero_lone_druid'] = 3.31,
+        
         ['npc_dota_hero_huskar'] = 2.59,
         ['npc_dota_hero_spectre'] = 2.57,
         ['npc_dota_hero_nyx_assassin'] = 2.44,
@@ -10049,7 +10049,7 @@ local heroList = {
         ['npc_dota_hero_muerta'] = 1.93,
         ['npc_dota_hero_bane'] = 1.83,
         ['npc_dota_hero_void_spirit'] = 1.77,
-        ['npc_dota_hero_wisp'] = 1.72,
+        
         ['npc_dota_hero_chen'] = 1.72,
         ['npc_dota_hero_silencer'] = 1.6,
         ['npc_dota_hero_sven'] = 1.48,
@@ -10075,7 +10075,7 @@ local heroList = {
         ['npc_dota_hero_axe'] = 1.07,
         ['npc_dota_hero_undying'] = 1.03,
         ['npc_dota_hero_abyssal_underlord'] = 0.95,
-        ['npc_dota_hero_rubick'] = 0.93,
+        
         ['npc_dota_hero_kez'] = 0.91,
         ['npc_dota_hero_earth_spirit'] = 0.9,
         ['npc_dota_hero_zuus'] = 0.87,
@@ -10120,14 +10120,14 @@ local heroList = {
         ['npc_dota_hero_viper'] = -0.31,
         ['npc_dota_hero_leshrac'] = -0.32,
         ['npc_dota_hero_dawnbreaker'] = -0.34,
-        ['npc_dota_hero_visage'] = -0.34,
+        
         ['npc_dota_hero_sand_king'] = -0.38,
         ['npc_dota_hero_kunkka'] = -0.4,
         ['npc_dota_hero_bristleback'] = -0.51,
         ['npc_dota_hero_winter_wyvern'] = -0.54,
         ['npc_dota_hero_necrolyte'] = -0.59,
         ['npc_dota_hero_chaos_knight'] = -0.62,
-        ['npc_dota_hero_tusk'] = -0.66,
+        
         ['npc_dota_hero_lich'] = -0.71,
         ['npc_dota_hero_rattletrap'] = -0.73,
         ['npc_dota_hero_hoodwink'] = -0.76,
@@ -10144,14 +10144,14 @@ local heroList = {
         ['npc_dota_hero_phantom_assassin'] = -1.21,
         ['npc_dota_hero_terrorblade'] = -1.22,
         ['npc_dota_hero_dark_seer'] = -1.24,
-        ['npc_dota_hero_brewmaster'] = -1.3,
+        
         ['npc_dota_hero_phoenix'] = -1.31,
         ['npc_dota_hero_shredder'] = -1.36,
         ['npc_dota_hero_mirana'] = -1.39,
         ['npc_dota_hero_dark_willow'] = -1.44,
         ['npc_dota_hero_witch_doctor'] = -1.56,
         ['npc_dota_hero_obsidian_destroyer'] = -1.74,
-        ['npc_dota_hero_pangolier'] = -1.74,
+        
         ['npc_dota_hero_mars'] = -1.79,
         ['npc_dota_hero_antimage'] = -1.91,
         ['npc_dota_hero_magnataur'] = -1.96,
@@ -10164,7 +10164,7 @@ local heroList = {
         ['npc_dota_hero_invoker'] = -3.03,
     },
     ['npc_dota_hero_pudge'] = {
-        ['npc_dota_hero_pangolier'] = 2.53,
+        
         ['npc_dota_hero_monkey_king'] = 2.44,
         ['npc_dota_hero_ursa'] = 2.39,
         ['npc_dota_hero_marci'] = 2.36,
@@ -10173,7 +10173,7 @@ local heroList = {
         ['npc_dota_hero_batrider'] = 2.17,
         ['npc_dota_hero_shredder'] = 2.11,
         ['npc_dota_hero_terrorblade'] = 2.08,
-        ['npc_dota_hero_tusk'] = 2.02,
+        
         ['npc_dota_hero_lycan'] = 1.89,
         ['npc_dota_hero_weaver'] = 1.88,
         ['npc_dota_hero_doom_bringer'] = 1.73,
@@ -10185,7 +10185,7 @@ local heroList = {
         ['npc_dota_hero_kez'] = 1.3,
         ['npc_dota_hero_hoodwink'] = 1.25,
         ['npc_dota_hero_chaos_knight'] = 1.25,
-        ['npc_dota_hero_puck'] = 1.22,
+        
         ['npc_dota_hero_tiny'] = 1.18,
         ['npc_dota_hero_storm_spirit'] = 1.17,
         ['npc_dota_hero_earth_spirit'] = 1.16,
@@ -10196,7 +10196,7 @@ local heroList = {
         ['npc_dota_hero_kunkka'] = 1.08,
         ['npc_dota_hero_death_prophet'] = 1.05,
         ['npc_dota_hero_broodmother'] = 1.03,
-        ['npc_dota_hero_lone_druid'] = 1.03,
+        
         ['npc_dota_hero_antimage'] = 1,
         ['npc_dota_hero_ember_spirit'] = 0.95,
         ['npc_dota_hero_void_spirit'] = 0.94,
@@ -10214,7 +10214,7 @@ local heroList = {
         ['npc_dota_hero_night_stalker'] = 0.71,
         ['npc_dota_hero_keeper_of_the_light'] = 0.66,
         ['npc_dota_hero_skywrath_mage'] = 0.62,
-        ['npc_dota_hero_wisp'] = 0.59,
+        
         ['npc_dota_hero_windrunner'] = 0.54,
         ['npc_dota_hero_disruptor'] = 0.52,
         ['npc_dota_hero_templar_assassin'] = 0.52,
@@ -10226,10 +10226,10 @@ local heroList = {
         ['npc_dota_hero_life_stealer'] = 0.35,
         ['npc_dota_hero_nevermore'] = 0.31,
         ['npc_dota_hero_troll_warlord'] = 0.3,
-        ['npc_dota_hero_brewmaster'] = 0.24,
+        
         ['npc_dota_hero_alchemist'] = 0.24,
         ['npc_dota_hero_meepo'] = 0.22,
-        ['npc_dota_hero_visage'] = 0.21,
+        
         ['npc_dota_hero_gyrocopter'] = 0.2,
         ['npc_dota_hero_dark_seer'] = 0.15,
         ['npc_dota_hero_lina'] = 0.15,
@@ -10255,7 +10255,7 @@ local heroList = {
         ['npc_dota_hero_luna'] = -0.22,
         ['npc_dota_hero_medusa'] = -0.27,
         ['npc_dota_hero_warlock'] = -0.29,
-        ['npc_dota_hero_rubick'] = -0.31,
+        
         ['npc_dota_hero_ancient_apparition'] = -0.31,
         ['npc_dota_hero_razor'] = -0.33,
         ['npc_dota_hero_juggernaut'] = -0.34,
@@ -10305,14 +10305,14 @@ local heroList = {
         ['npc_dota_hero_drow_ranger'] = 1.37,
         ['npc_dota_hero_faceless_void'] = 1.34,
         ['npc_dota_hero_marci'] = 1.32,
-        ['npc_dota_hero_visage'] = 1.29,
+        
         ['npc_dota_hero_earthshaker'] = 1.24,
-        ['npc_dota_hero_wisp'] = 1.24,
+        
         ['npc_dota_hero_silencer'] = 1.22,
         ['npc_dota_hero_enigma'] = 1.13,
         ['npc_dota_hero_sven'] = 1.13,
         ['npc_dota_hero_magnataur'] = 1.07,
-        ['npc_dota_hero_lone_druid'] = 1.01,
+        
         ['npc_dota_hero_bounty_hunter'] = 1.01,
         ['npc_dota_hero_nevermore'] = 0.95,
         ['npc_dota_hero_ogre_magi'] = 0.9,
@@ -10337,7 +10337,7 @@ local heroList = {
         ['npc_dota_hero_weaver'] = 0.33,
         ['npc_dota_hero_mirana'] = 0.32,
         ['npc_dota_hero_furion'] = 0.32,
-        ['npc_dota_hero_pangolier'] = 0.29,
+        
         ['npc_dota_hero_hoodwink'] = 0.25,
         ['npc_dota_hero_luna'] = 0.24,
         ['npc_dota_hero_dragon_knight'] = 0.23,
@@ -10379,16 +10379,16 @@ local heroList = {
         ['npc_dota_hero_dazzle'] = -0.55,
         ['npc_dota_hero_monkey_king'] = -0.56,
         ['npc_dota_hero_zuus'] = -0.56,
-        ['npc_dota_hero_rubick'] = -0.61,
+        
         ['npc_dota_hero_dawnbreaker'] = -0.62,
         ['npc_dota_hero_dark_willow'] = -0.63,
         ['npc_dota_hero_legion_commander'] = -0.71,
-        ['npc_dota_hero_brewmaster'] = -0.72,
+        
         ['npc_dota_hero_beastmaster'] = -0.77,
         ['npc_dota_hero_venomancer'] = -0.83,
         ['npc_dota_hero_treant'] = -0.83,
         ['npc_dota_hero_oracle'] = -0.84,
-        ['npc_dota_hero_tusk'] = -0.86,
+        
         ['npc_dota_hero_mars'] = -0.86,
         ['npc_dota_hero_templar_assassin'] = -0.89,
         ['npc_dota_hero_ringmaster'] = -0.93,
@@ -10402,7 +10402,7 @@ local heroList = {
         ['npc_dota_hero_sand_king'] = -1.22,
         ['npc_dota_hero_abyssal_underlord'] = -1.23,
         ['npc_dota_hero_undying'] = -1.3,
-        ['npc_dota_hero_puck'] = -1.43,
+        
         ['npc_dota_hero_omniknight'] = -1.48,
         ['npc_dota_hero_disruptor'] = -1.65,
         ['npc_dota_hero_shadow_demon'] = -1.72,
@@ -10421,7 +10421,7 @@ local heroList = {
         ['npc_dota_hero_ember_spirit'] = 3.69,
         ['npc_dota_hero_medusa'] = 3.11,
         ['npc_dota_hero_huskar'] = 2.99,
-        ['npc_dota_hero_puck'] = 2.35,
+        
         ['npc_dota_hero_meepo'] = 2.34,
         ['npc_dota_hero_antimage'] = 1.86,
         ['npc_dota_hero_pugna'] = 1.81,
@@ -10429,7 +10429,7 @@ local heroList = {
         ['npc_dota_hero_legion_commander'] = 1.7,
         ['npc_dota_hero_templar_assassin'] = 1.6,
         ['npc_dota_hero_riki'] = 1.57,
-        ['npc_dota_hero_lone_druid'] = 1.53,
+        
         ['npc_dota_hero_oracle'] = 1.29,
         ['npc_dota_hero_void_spirit'] = 1.21,
         ['npc_dota_hero_morphling'] = 1.18,
@@ -10450,7 +10450,7 @@ local heroList = {
         ['npc_dota_hero_furion'] = 0.58,
         ['npc_dota_hero_grimstroke'] = 0.57,
         ['npc_dota_hero_tinker'] = 0.54,
-        ['npc_dota_hero_wisp'] = 0.54,
+        
         ['npc_dota_hero_sven'] = 0.51,
         ['npc_dota_hero_weaver'] = 0.5,
         ['npc_dota_hero_ursa'] = 0.47,
@@ -10466,14 +10466,14 @@ local heroList = {
         ['npc_dota_hero_dazzle'] = 0.21,
         ['npc_dota_hero_phantom_lancer'] = 0.16,
         ['npc_dota_hero_dragon_knight'] = 0.16,
-        ['npc_dota_hero_tusk'] = 0.15,
+        
         ['npc_dota_hero_tidehunter'] = 0.13,
         ['npc_dota_hero_troll_warlord'] = 0.11,
         ['npc_dota_hero_storm_spirit'] = 0.1,
         ['npc_dota_hero_earthshaker'] = 0.1,
-        ['npc_dota_hero_visage'] = 0.09,
+        
         ['npc_dota_hero_snapfire'] = 0.08,
-        ['npc_dota_hero_pangolier'] = 0.07,
+        
         ['npc_dota_hero_slardar'] = 0.07,
         ['npc_dota_hero_terrorblade'] = 0.04,
         ['npc_dota_hero_techies'] = 0,
@@ -10488,7 +10488,7 @@ local heroList = {
         ['npc_dota_hero_broodmother'] = -0.11,
         ['npc_dota_hero_vengefulspirit'] = -0.15,
         ['npc_dota_hero_abyssal_underlord'] = -0.17,
-        ['npc_dota_hero_rubick'] = -0.17,
+        
         ['npc_dota_hero_bounty_hunter'] = -0.18,
         ['npc_dota_hero_bristleback'] = -0.21,
         ['npc_dota_hero_treant'] = -0.22,
@@ -10509,7 +10509,7 @@ local heroList = {
         ['npc_dota_hero_keeper_of_the_light'] = -0.52,
         ['npc_dota_hero_shadow_demon'] = -0.54,
         ['npc_dota_hero_death_prophet'] = -0.58,
-        ['npc_dota_hero_brewmaster'] = -0.59,
+        
         ['npc_dota_hero_juggernaut'] = -0.61,
         ['npc_dota_hero_jakiro'] = -0.61,
         ['npc_dota_hero_pudge'] = -0.64,
@@ -10558,7 +10558,7 @@ local heroList = {
         ['npc_dota_hero_queenofpain'] = 1.89,
         ['npc_dota_hero_juggernaut'] = 1.86,
         ['npc_dota_hero_undying'] = 1.78,
-        ['npc_dota_hero_lone_druid'] = 1.73,
+        
         ['npc_dota_hero_omniknight'] = 1.71,
         ['npc_dota_hero_batrider'] = 1.65,
         ['npc_dota_hero_morphling'] = 1.56,
@@ -10566,17 +10566,17 @@ local heroList = {
         ['npc_dota_hero_broodmother'] = 1.53,
         ['npc_dota_hero_abyssal_underlord'] = 1.38,
         ['npc_dota_hero_faceless_void'] = 1.38,
-        ['npc_dota_hero_brewmaster'] = 1.37,
+        
         ['npc_dota_hero_void_spirit'] = 1.26,
         ['npc_dota_hero_life_stealer'] = 1.24,
         ['npc_dota_hero_naga_siren'] = 1.23,
         ['npc_dota_hero_snapfire'] = 1.21,
-        ['npc_dota_hero_visage'] = 1.19,
+        
         ['npc_dota_hero_keeper_of_the_light'] = 1.16,
         ['npc_dota_hero_witch_doctor'] = 0.99,
         ['npc_dota_hero_jakiro'] = 0.97,
         ['npc_dota_hero_shadow_demon'] = 0.91,
-        ['npc_dota_hero_wisp'] = 0.9,
+        
         ['npc_dota_hero_enigma'] = 0.9,
         ['npc_dota_hero_warlock'] = 0.83,
         ['npc_dota_hero_kunkka'] = 0.78,
@@ -10587,7 +10587,7 @@ local heroList = {
         ['npc_dota_hero_tinker'] = 0.73,
         ['npc_dota_hero_dark_seer'] = 0.72,
         ['npc_dota_hero_ancient_apparition'] = 0.71,
-        ['npc_dota_hero_puck'] = 0.71,
+        
         ['npc_dota_hero_monkey_king'] = 0.69,
         ['npc_dota_hero_lycan'] = 0.56,
         ['npc_dota_hero_lich'] = 0.56,
@@ -10596,7 +10596,7 @@ local heroList = {
         ['npc_dota_hero_phoenix'] = 0.49,
         ['npc_dota_hero_necrolyte'] = 0.47,
         ['npc_dota_hero_templar_assassin'] = 0.45,
-        ['npc_dota_hero_tusk'] = 0.44,
+        
         ['npc_dota_hero_invoker'] = 0.43,
         ['npc_dota_hero_ogre_magi'] = 0.38,
         ['npc_dota_hero_ringmaster'] = 0.37,
@@ -10622,7 +10622,7 @@ local heroList = {
         ['npc_dota_hero_alchemist'] = 0.04,
         ['npc_dota_hero_zuus'] = -0.06,
         ['npc_dota_hero_dragon_knight'] = -0.06,
-        ['npc_dota_hero_pangolier'] = -0.07,
+        
         ['npc_dota_hero_shadow_shaman'] = -0.09,
         ['npc_dota_hero_bloodseeker'] = -0.11,
         ['npc_dota_hero_bounty_hunter'] = -0.13,
@@ -10657,7 +10657,7 @@ local heroList = {
         ['npc_dota_hero_bristleback'] = -0.67,
         ['npc_dota_hero_nyx_assassin'] = -0.74,
         ['npc_dota_hero_spectre'] = -0.83,
-        ['npc_dota_hero_rubick'] = -0.86,
+        
         ['npc_dota_hero_hoodwink'] = -0.92,
         ['npc_dota_hero_tidehunter'] = -1.1,
         ['npc_dota_hero_primal_beast'] = -1.45,
@@ -10704,10 +10704,10 @@ local heroList = {
         ['npc_dota_hero_void_spirit'] = 0.99,
         ['npc_dota_hero_naga_siren'] = 0.98,
         ['npc_dota_hero_dark_seer'] = 0.97,
-        ['npc_dota_hero_brewmaster'] = 0.97,
+        
         ['npc_dota_hero_centaur'] = 0.94,
         ['npc_dota_hero_magnataur'] = 0.88,
-        ['npc_dota_hero_puck'] = 0.81,
+        
         ['npc_dota_hero_chaos_knight'] = 0.8,
         ['npc_dota_hero_necrolyte'] = 0.78,
         ['npc_dota_hero_luna'] = 0.76,
@@ -10729,7 +10729,7 @@ local heroList = {
         ['npc_dota_hero_mars'] = 0.22,
         ['npc_dota_hero_legion_commander'] = 0.22,
         ['npc_dota_hero_batrider'] = 0.21,
-        ['npc_dota_hero_tusk'] = 0.16,
+        
         ['npc_dota_hero_treant'] = 0.16,
         ['npc_dota_hero_vengefulspirit'] = 0.1,
         ['npc_dota_hero_obsidian_destroyer'] = 0.09,
@@ -10754,7 +10754,7 @@ local heroList = {
         ['npc_dota_hero_zuus'] = -0.33,
         ['npc_dota_hero_monkey_king'] = -0.38,
         ['npc_dota_hero_kez'] = -0.4,
-        ['npc_dota_hero_pangolier'] = -0.41,
+        
         ['npc_dota_hero_kunkka'] = -0.42,
         ['npc_dota_hero_bounty_hunter'] = -0.45,
         ['npc_dota_hero_medusa'] = -0.46,
@@ -10771,7 +10771,7 @@ local heroList = {
         ['npc_dota_hero_windrunner'] = -0.91,
         ['npc_dota_hero_slardar'] = -0.95,
         ['npc_dota_hero_silencer'] = -1.03,
-        ['npc_dota_hero_wisp'] = -1.03,
+        
         ['npc_dota_hero_winter_wyvern'] = -1.07,
         ['npc_dota_hero_skywrath_mage'] = -1.15,
         ['npc_dota_hero_axe'] = -1.17,
@@ -10788,11 +10788,11 @@ local heroList = {
         ['npc_dota_hero_death_prophet'] = -1.65,
         ['npc_dota_hero_grimstroke'] = -1.71,
         ['npc_dota_hero_dazzle'] = -1.75,
-        ['npc_dota_hero_rubick'] = -1.83,
+        
         ['npc_dota_hero_lion'] = -2.04,
         ['npc_dota_hero_ursa'] = -2.11,
-        ['npc_dota_hero_visage'] = -2.26,
-        ['npc_dota_hero_lone_druid'] = -2.35,
+        
+        
         ['npc_dota_hero_oracle'] = -2.68,
         ['npc_dota_hero_life_stealer'] = -3.25,
         ['npc_dota_hero_tidehunter'] = -3.48,
@@ -10861,7 +10861,7 @@ local heroList = {
         ['npc_dota_hero_shadow_shaman'] = 0.22,
         ['npc_dota_hero_meepo'] = 0.19,
         ['npc_dota_hero_crystal_maiden'] = 0.15,
-        ['npc_dota_hero_wisp'] = 0.11,
+        
         ['npc_dota_hero_marci'] = 0.1,
         ['npc_dota_hero_keeper_of_the_light'] = 0.1,
         ['npc_dota_hero_grimstroke'] = 0.09,
@@ -10878,21 +10878,21 @@ local heroList = {
         ['npc_dota_hero_earthshaker'] = -0.09,
         ['npc_dota_hero_earth_spirit'] = -0.12,
         ['npc_dota_hero_dawnbreaker'] = -0.17,
-        ['npc_dota_hero_lone_druid'] = -0.22,
+        
         ['npc_dota_hero_omniknight'] = -0.26,
         ['npc_dota_hero_obsidian_destroyer'] = -0.26,
-        ['npc_dota_hero_rubick'] = -0.33,
+        
         ['npc_dota_hero_phantom_lancer'] = -0.33,
-        ['npc_dota_hero_brewmaster'] = -0.36,
+        
         ['npc_dota_hero_bane'] = -0.38,
         ['npc_dota_hero_abaddon'] = -0.39,
-        ['npc_dota_hero_tusk'] = -0.4,
+        
         ['npc_dota_hero_phoenix'] = -0.44,
         ['npc_dota_hero_huskar'] = -0.44,
         ['npc_dota_hero_hoodwink'] = -0.57,
         ['npc_dota_hero_skywrath_mage'] = -0.68,
         ['npc_dota_hero_morphling'] = -0.68,
-        ['npc_dota_hero_pangolier'] = -0.69,
+        
         ['npc_dota_hero_ancient_apparition'] = -0.72,
         ['npc_dota_hero_enchantress'] = -0.74,
         ['npc_dota_hero_lina'] = -0.75,
@@ -10917,13 +10917,13 @@ local heroList = {
         ['npc_dota_hero_witch_doctor'] = -2.17,
         ['npc_dota_hero_clinkz'] = -2.28,
         ['npc_dota_hero_weaver'] = -2.3,
-        ['npc_dota_hero_visage'] = -2.53,
+        
         ['npc_dota_hero_slark'] = -2.67,
         ['npc_dota_hero_shadow_demon'] = -2.76,
         ['npc_dota_hero_ursa'] = -2.82,
         ['npc_dota_hero_juggernaut'] = -3.06,
         ['npc_dota_hero_storm_spirit'] = -3.17,
-        ['npc_dota_hero_puck'] = -3.91,
+        
     },
     ['npc_dota_hero_ringmaster'] = {
         ['npc_dota_hero_kez'] = 2.56,
@@ -10936,7 +10936,7 @@ local heroList = {
         ['npc_dota_hero_windrunner'] = 1.61,
         ['npc_dota_hero_elder_titan'] = 1.44,
         ['npc_dota_hero_chen'] = 1.32,
-        ['npc_dota_hero_pangolier'] = 1.3,
+        
         ['npc_dota_hero_omniknight'] = 1.24,
         ['npc_dota_hero_batrider'] = 1.21,
         ['npc_dota_hero_death_prophet'] = 1.21,
@@ -10949,12 +10949,12 @@ local heroList = {
         ['npc_dota_hero_shadow_demon'] = 0.97,
         ['npc_dota_hero_kunkka'] = 0.96,
         ['npc_dota_hero_bounty_hunter'] = 0.95,
-        ['npc_dota_hero_puck'] = 0.93,
+        
         ['npc_dota_hero_pugna'] = 0.92,
         ['npc_dota_hero_queenofpain'] = 0.92,
         ['npc_dota_hero_oracle'] = 0.89,
         ['npc_dota_hero_shredder'] = 0.89,
-        ['npc_dota_hero_brewmaster'] = 0.85,
+        
         ['npc_dota_hero_antimage'] = 0.82,
         ['npc_dota_hero_earthshaker'] = 0.77,
         ['npc_dota_hero_night_stalker'] = 0.71,
@@ -10970,7 +10970,7 @@ local heroList = {
         ['npc_dota_hero_medusa'] = 0.53,
         ['npc_dota_hero_warlock'] = 0.51,
         ['npc_dota_hero_weaver'] = 0.5,
-        ['npc_dota_hero_wisp'] = 0.48,
+        
         ['npc_dota_hero_nyx_assassin'] = 0.45,
         ['npc_dota_hero_enigma'] = 0.41,
         ['npc_dota_hero_abaddon'] = 0.39,
@@ -11022,7 +11022,7 @@ local heroList = {
         ['npc_dota_hero_tiny'] = -0.36,
         ['npc_dota_hero_enchantress'] = -0.37,
         ['npc_dota_hero_lina'] = -0.37,
-        ['npc_dota_hero_rubick'] = -0.4,
+        
         ['npc_dota_hero_spectre'] = -0.4,
         ['npc_dota_hero_witch_doctor'] = -0.41,
         ['npc_dota_hero_luna'] = -0.46,
@@ -11032,12 +11032,12 @@ local heroList = {
         ['npc_dota_hero_drow_ranger'] = -0.55,
         ['npc_dota_hero_tidehunter'] = -0.6,
         ['npc_dota_hero_dawnbreaker'] = -0.62,
-        ['npc_dota_hero_tusk'] = -0.64,
+        
         ['npc_dota_hero_primal_beast'] = -0.65,
         ['npc_dota_hero_spirit_breaker'] = -0.73,
         ['npc_dota_hero_monkey_king'] = -0.78,
         ['npc_dota_hero_naga_siren'] = -0.87,
-        ['npc_dota_hero_visage'] = -0.93,
+        
         ['npc_dota_hero_axe'] = -0.94,
         ['npc_dota_hero_grimstroke'] = -0.99,
         ['npc_dota_hero_lich'] = -1.01,
@@ -11050,10 +11050,10 @@ local heroList = {
         ['npc_dota_hero_slark'] = -2,
         ['npc_dota_hero_meepo'] = -2.15,
         ['npc_dota_hero_mirana'] = -2.27,
-        ['npc_dota_hero_lone_druid'] = -2.46,
+        
     },
     ['npc_dota_hero_rubick'] = {
-        ['npc_dota_hero_tusk'] = 1.66,
+        
         ['npc_dota_hero_templar_assassin'] = 1.64,
         ['npc_dota_hero_batrider'] = 1.55,
         ['npc_dota_hero_ember_spirit'] = 1.46,
@@ -11066,7 +11066,7 @@ local heroList = {
         ['npc_dota_hero_keeper_of_the_light'] = 1.15,
         ['npc_dota_hero_dazzle'] = 1.05,
         ['npc_dota_hero_phantom_assassin'] = 1.03,
-        ['npc_dota_hero_pangolier'] = 0.95,
+        
         ['npc_dota_hero_huskar'] = 0.93,
         ['npc_dota_hero_legion_commander'] = 0.84,
         ['npc_dota_hero_axe'] = 0.82,
@@ -11084,7 +11084,7 @@ local heroList = {
         ['npc_dota_hero_snapfire'] = 0.49,
         ['npc_dota_hero_enchantress'] = 0.48,
         ['npc_dota_hero_chen'] = 0.42,
-        ['npc_dota_hero_visage'] = 0.41,
+        
         ['npc_dota_hero_life_stealer'] = 0.36,
         ['npc_dota_hero_pugna'] = 0.33,
         ['npc_dota_hero_bane'] = 0.32,
@@ -11093,7 +11093,7 @@ local heroList = {
         ['npc_dota_hero_skywrath_mage'] = 0.31,
         ['npc_dota_hero_marci'] = 0.3,
         ['npc_dota_hero_slardar'] = 0.28,
-        ['npc_dota_hero_brewmaster'] = 0.27,
+        
         ['npc_dota_hero_night_stalker'] = 0.23,
         ['npc_dota_hero_gyrocopter'] = 0.23,
         ['npc_dota_hero_furion'] = 0.19,
@@ -11105,7 +11105,7 @@ local heroList = {
         ['npc_dota_hero_oracle'] = 0.11,
         ['npc_dota_hero_alchemist'] = 0.1,
         ['npc_dota_hero_tinker'] = 0.1,
-        ['npc_dota_hero_wisp'] = 0.07,
+        
         ['npc_dota_hero_queenofpain'] = 0.07,
         ['npc_dota_hero_grimstroke'] = 0.07,
         ['npc_dota_hero_sniper'] = 0.05,
@@ -11127,7 +11127,7 @@ local heroList = {
         ['npc_dota_hero_spirit_breaker'] = -0.18,
         ['npc_dota_hero_nevermore'] = -0.18,
         ['npc_dota_hero_treant'] = -0.19,
-        ['npc_dota_hero_lone_druid'] = -0.22,
+        
         ['npc_dota_hero_winter_wyvern'] = -0.23,
         ['npc_dota_hero_faceless_void'] = -0.24,
         ['npc_dota_hero_viper'] = -0.24,
@@ -11156,7 +11156,7 @@ local heroList = {
         ['npc_dota_hero_shadow_shaman'] = -0.98,
         ['npc_dota_hero_naga_siren'] = -0.99,
         ['npc_dota_hero_witch_doctor'] = -1.01,
-        ['npc_dota_hero_puck'] = -1.02,
+        
         ['npc_dota_hero_dawnbreaker'] = -1.03,
         ['npc_dota_hero_lich'] = -1.05,
         ['npc_dota_hero_vengefulspirit'] = -1.08,
@@ -11216,7 +11216,7 @@ local heroList = {
         ['npc_dota_hero_dawnbreaker'] = 0.83,
         ['npc_dota_hero_morphling'] = 0.79,
         ['npc_dota_hero_tinker'] = 0.78,
-        ['npc_dota_hero_pangolier'] = 0.75,
+        
         ['npc_dota_hero_snapfire'] = 0.71,
         ['npc_dota_hero_troll_warlord'] = 0.71,
         ['npc_dota_hero_doom_bringer'] = 0.68,
@@ -11231,7 +11231,7 @@ local heroList = {
         ['npc_dota_hero_windrunner'] = 0.49,
         ['npc_dota_hero_nevermore'] = 0.42,
         ['npc_dota_hero_gyrocopter'] = 0.4,
-        ['npc_dota_hero_puck'] = 0.37,
+        
         ['npc_dota_hero_omniknight'] = 0.35,
         ['npc_dota_hero_sven'] = 0.34,
         ['npc_dota_hero_legion_commander'] = 0.3,
@@ -11261,7 +11261,7 @@ local heroList = {
         ['npc_dota_hero_obsidian_destroyer'] = -0.51,
         ['npc_dota_hero_luna'] = -0.57,
         ['npc_dota_hero_earthshaker'] = -0.57,
-        ['npc_dota_hero_rubick'] = -0.57,
+        
         ['npc_dota_hero_dark_willow'] = -0.58,
         ['npc_dota_hero_necrolyte'] = -0.59,
         ['npc_dota_hero_razor'] = -0.63,
@@ -11272,12 +11272,12 @@ local heroList = {
         ['npc_dota_hero_mirana'] = -0.79,
         ['npc_dota_hero_primal_beast'] = -0.8,
         ['npc_dota_hero_drow_ranger'] = -0.82,
-        ['npc_dota_hero_wisp'] = -0.84,
+        
         ['npc_dota_hero_chen'] = -0.85,
         ['npc_dota_hero_bane'] = -0.95,
         ['npc_dota_hero_mars'] = -0.95,
         ['npc_dota_hero_slark'] = -1.01,
-        ['npc_dota_hero_brewmaster'] = -1.03,
+        
         ['npc_dota_hero_spirit_breaker'] = -1.14,
         ['npc_dota_hero_riki'] = -1.21,
         ['npc_dota_hero_axe'] = -1.22,
@@ -11291,9 +11291,9 @@ local heroList = {
         ['npc_dota_hero_warlock'] = -1.68,
         ['npc_dota_hero_enigma'] = -1.76,
         ['npc_dota_hero_templar_assassin'] = -1.77,
-        ['npc_dota_hero_visage'] = -1.88,
+        
         ['npc_dota_hero_dragon_knight'] = -1.93,
-        ['npc_dota_hero_tusk'] = -2.02,
+        
         ['npc_dota_hero_arc_warden'] = -2.19,
         ['npc_dota_hero_shadow_demon'] = -2.23,
         ['npc_dota_hero_broodmother'] = -2.31,
@@ -11301,7 +11301,7 @@ local heroList = {
         ['npc_dota_hero_terrorblade'] = -2.67,
         ['npc_dota_hero_meepo'] = -2.68,
         ['npc_dota_hero_winter_wyvern'] = -2.8,
-        ['npc_dota_hero_lone_druid'] = -4.39,
+        
         ['npc_dota_hero_chaos_knight'] = -4.72,
         ['npc_dota_hero_naga_siren'] = -5.39,
         ['npc_dota_hero_phantom_lancer'] = -6.75,
@@ -11316,7 +11316,7 @@ local heroList = {
         ['npc_dota_hero_marci'] = 1.85,
         ['npc_dota_hero_undying'] = 1.84,
         ['npc_dota_hero_pugna'] = 1.75,
-        ['npc_dota_hero_wisp'] = 1.7,
+        
         ['npc_dota_hero_bounty_hunter'] = 1.64,
         ['npc_dota_hero_weaver'] = 1.62,
         ['npc_dota_hero_dawnbreaker'] = 1.61,
@@ -11324,16 +11324,16 @@ local heroList = {
         ['npc_dota_hero_naga_siren'] = 1.53,
         ['npc_dota_hero_phantom_assassin'] = 1.53,
         ['npc_dota_hero_earthshaker'] = 1.42,
-        ['npc_dota_hero_lone_druid'] = 1.4,
+        
         ['npc_dota_hero_earth_spirit'] = 1.29,
         ['npc_dota_hero_enigma'] = 1.29,
         ['npc_dota_hero_lycan'] = 1.28,
         ['npc_dota_hero_ember_spirit'] = 1.28,
-        ['npc_dota_hero_pangolier'] = 1.24,
+        
         ['npc_dota_hero_abyssal_underlord'] = 1.23,
         ['npc_dota_hero_warlock'] = 1.2,
         ['npc_dota_hero_faceless_void'] = 1.15,
-        ['npc_dota_hero_puck'] = 1.12,
+        
         ['npc_dota_hero_chen'] = 1.03,
         ['npc_dota_hero_tidehunter'] = 1.02,
         ['npc_dota_hero_storm_spirit'] = 0.88,
@@ -11351,7 +11351,7 @@ local heroList = {
         ['npc_dota_hero_lina'] = 0.63,
         ['npc_dota_hero_dark_seer'] = 0.6,
         ['npc_dota_hero_tinker'] = 0.59,
-        ['npc_dota_hero_tusk'] = 0.53,
+        
         ['npc_dota_hero_kez'] = 0.53,
         ['npc_dota_hero_spirit_breaker'] = 0.52,
         ['npc_dota_hero_jakiro'] = 0.46,
@@ -11362,7 +11362,7 @@ local heroList = {
         ['npc_dota_hero_zuus'] = 0.38,
         ['npc_dota_hero_winter_wyvern'] = 0.37,
         ['npc_dota_hero_doom_bringer'] = 0.27,
-        ['npc_dota_hero_brewmaster'] = 0.24,
+        
         ['npc_dota_hero_night_stalker'] = 0.19,
         ['npc_dota_hero_monkey_king'] = 0.16,
         ['npc_dota_hero_shadow_shaman'] = 0.11,
@@ -11409,13 +11409,13 @@ local heroList = {
         ['npc_dota_hero_beastmaster'] = -0.88,
         ['npc_dota_hero_broodmother'] = -0.92,
         ['npc_dota_hero_ringmaster'] = -0.95,
-        ['npc_dota_hero_rubick'] = -1.02,
+        
         ['npc_dota_hero_dark_willow'] = -1.03,
         ['npc_dota_hero_templar_assassin'] = -1.1,
         ['npc_dota_hero_invoker'] = -1.11,
         ['npc_dota_hero_bristleback'] = -1.15,
         ['npc_dota_hero_mirana'] = -1.22,
-        ['npc_dota_hero_visage'] = -1.23,
+        
         ['npc_dota_hero_nevermore'] = -1.29,
         ['npc_dota_hero_luna'] = -1.39,
         ['npc_dota_hero_lich'] = -1.47,
@@ -11438,7 +11438,7 @@ local heroList = {
         ['npc_dota_hero_meepo'] = 2.53,
         ['npc_dota_hero_terrorblade'] = 2.35,
         ['npc_dota_hero_naga_siren'] = 2.13,
-        ['npc_dota_hero_lone_druid'] = 2.1,
+        
         ['npc_dota_hero_gyrocopter'] = 1.78,
         ['npc_dota_hero_dark_seer'] = 1.71,
         ['npc_dota_hero_beastmaster'] = 1.6,
@@ -11469,11 +11469,11 @@ local heroList = {
         ['npc_dota_hero_muerta'] = 0.86,
         ['npc_dota_hero_winter_wyvern'] = 0.85,
         ['npc_dota_hero_enigma'] = 0.83,
-        ['npc_dota_hero_rubick'] = 0.82,
+        
         ['npc_dota_hero_axe'] = 0.8,
         ['npc_dota_hero_tiny'] = 0.75,
         ['npc_dota_hero_leshrac'] = 0.75,
-        ['npc_dota_hero_tusk'] = 0.74,
+        
         ['npc_dota_hero_chen'] = 0.73,
         ['npc_dota_hero_techies'] = 0.71,
         ['npc_dota_hero_vengefulspirit'] = 0.69,
@@ -11482,7 +11482,7 @@ local heroList = {
         ['npc_dota_hero_enchantress'] = 0.68,
         ['npc_dota_hero_kunkka'] = 0.67,
         ['npc_dota_hero_dragon_knight'] = 0.6,
-        ['npc_dota_hero_visage'] = 0.6,
+        
         ['npc_dota_hero_doom_bringer'] = 0.59,
         ['npc_dota_hero_windrunner'] = 0.56,
         ['npc_dota_hero_ringmaster'] = 0.55,
@@ -11490,7 +11490,7 @@ local heroList = {
         ['npc_dota_hero_furion'] = 0.54,
         ['npc_dota_hero_undying'] = 0.51,
         ['npc_dota_hero_jakiro'] = 0.5,
-        ['npc_dota_hero_wisp'] = 0.48,
+        
         ['npc_dota_hero_pugna'] = 0.46,
         ['npc_dota_hero_dazzle'] = 0.46,
         ['npc_dota_hero_grimstroke'] = 0.44,
@@ -11499,9 +11499,9 @@ local heroList = {
         ['npc_dota_hero_venomancer'] = 0.35,
         ['npc_dota_hero_spirit_breaker'] = 0.31,
         ['npc_dota_hero_magnataur'] = 0.28,
-        ['npc_dota_hero_pangolier'] = 0.27,
+        
         ['npc_dota_hero_marci'] = 0.27,
-        ['npc_dota_hero_brewmaster'] = 0.25,
+        
         ['npc_dota_hero_bloodseeker'] = 0.22,
         ['npc_dota_hero_dark_willow'] = 0.22,
         ['npc_dota_hero_death_prophet'] = 0.2,
@@ -11544,7 +11544,7 @@ local heroList = {
         ['npc_dota_hero_morphling'] = -0.65,
         ['npc_dota_hero_lich'] = -0.7,
         ['npc_dota_hero_juggernaut'] = -0.76,
-        ['npc_dota_hero_puck'] = -0.77,
+        
         ['npc_dota_hero_night_stalker'] = -0.78,
         ['npc_dota_hero_queenofpain'] = -0.88,
         ['npc_dota_hero_tinker'] = -0.9,
@@ -11580,7 +11580,7 @@ local heroList = {
         ['npc_dota_hero_witch_doctor'] = 1.71,
         ['npc_dota_hero_storm_spirit'] = 1.52,
         ['npc_dota_hero_kez'] = 1.4,
-        ['npc_dota_hero_puck'] = 1.39,
+        
         ['npc_dota_hero_leshrac'] = 1.3,
         ['npc_dota_hero_magnataur'] = 1.24,
         ['npc_dota_hero_lion'] = 1.23,
@@ -11612,7 +11612,7 @@ local heroList = {
         ['npc_dota_hero_enigma'] = 0.49,
         ['npc_dota_hero_ancient_apparition'] = 0.44,
         ['npc_dota_hero_crystal_maiden'] = 0.42,
-        ['npc_dota_hero_wisp'] = 0.41,
+        
         ['npc_dota_hero_zuus'] = 0.41,
         ['npc_dota_hero_enchantress'] = 0.36,
         ['npc_dota_hero_abaddon'] = 0.29,
@@ -11624,7 +11624,7 @@ local heroList = {
         ['npc_dota_hero_juggernaut'] = 0.17,
         ['npc_dota_hero_jakiro'] = 0.15,
         ['npc_dota_hero_arc_warden'] = 0.14,
-        ['npc_dota_hero_visage'] = 0.14,
+        
         ['npc_dota_hero_ember_spirit'] = 0.14,
         ['npc_dota_hero_earthshaker'] = 0.12,
         ['npc_dota_hero_dark_willow'] = 0.11,
@@ -11634,9 +11634,9 @@ local heroList = {
         ['npc_dota_hero_oracle'] = -0.05,
         ['npc_dota_hero_vengefulspirit'] = -0.08,
         ['npc_dota_hero_sven'] = -0.13,
-        ['npc_dota_hero_rubick'] = -0.16,
-        ['npc_dota_hero_brewmaster'] = -0.16,
-        ['npc_dota_hero_pangolier'] = -0.17,
+        
+        
+        
         ['npc_dota_hero_rattletrap'] = -0.18,
         ['npc_dota_hero_phoenix'] = -0.23,
         ['npc_dota_hero_legion_commander'] = -0.27,
@@ -11665,12 +11665,12 @@ local heroList = {
         ['npc_dota_hero_alchemist'] = -1.52,
         ['npc_dota_hero_phantom_assassin'] = -1.55,
         ['npc_dota_hero_centaur'] = -1.57,
-        ['npc_dota_hero_lone_druid'] = -1.68,
+        
         ['npc_dota_hero_undying'] = -1.7,
         ['npc_dota_hero_terrorblade'] = -1.7,
         ['npc_dota_hero_kunkka'] = -1.83,
         ['npc_dota_hero_shadow_demon'] = -1.88,
-        ['npc_dota_hero_tusk'] = -1.9,
+        
         ['npc_dota_hero_hoodwink'] = -1.91,
         ['npc_dota_hero_pudge'] = -1.95,
         ['npc_dota_hero_morphling'] = -1.96,
@@ -11691,7 +11691,7 @@ local heroList = {
         ['npc_dota_hero_lycan'] = 3.54,
         ['npc_dota_hero_phantom_lancer'] = 3.19,
         ['npc_dota_hero_broodmother'] = 3.02,
-        ['npc_dota_hero_lone_druid'] = 2.9,
+        
         ['npc_dota_hero_tidehunter'] = 2.85,
         ['npc_dota_hero_morphling'] = 2.51,
         ['npc_dota_hero_naga_siren'] = 2.49,
@@ -11709,7 +11709,7 @@ local heroList = {
         ['npc_dota_hero_sniper'] = 1.54,
         ['npc_dota_hero_legion_commander'] = 1.48,
         ['npc_dota_hero_spectre'] = 1.43,
-        ['npc_dota_hero_brewmaster'] = 1.33,
+        
         ['npc_dota_hero_spirit_breaker'] = 1.32,
         ['npc_dota_hero_venomancer'] = 1.27,
         ['npc_dota_hero_razor'] = 1.12,
@@ -11720,7 +11720,7 @@ local heroList = {
         ['npc_dota_hero_batrider'] = 0.99,
         ['npc_dota_hero_techies'] = 0.98,
         ['npc_dota_hero_alchemist'] = 0.95,
-        ['npc_dota_hero_tusk'] = 0.92,
+        
         ['npc_dota_hero_antimage'] = 0.92,
         ['npc_dota_hero_chaos_knight'] = 0.88,
         ['npc_dota_hero_beastmaster'] = 0.87,
@@ -11728,7 +11728,7 @@ local heroList = {
         ['npc_dota_hero_dragon_knight'] = 0.8,
         ['npc_dota_hero_keeper_of_the_light'] = 0.79,
         ['npc_dota_hero_shadow_demon'] = 0.74,
-        ['npc_dota_hero_wisp'] = 0.74,
+        
         ['npc_dota_hero_viper'] = 0.71,
         ['npc_dota_hero_templar_assassin'] = 0.65,
         ['npc_dota_hero_meepo'] = 0.64,
@@ -11754,7 +11754,7 @@ local heroList = {
         ['npc_dota_hero_gyrocopter'] = 0.24,
         ['npc_dota_hero_void_spirit'] = 0.21,
         ['npc_dota_hero_abyssal_underlord'] = 0.18,
-        ['npc_dota_hero_rubick'] = 0.15,
+        
         ['npc_dota_hero_doom_bringer'] = 0.14,
         ['npc_dota_hero_sven'] = 0.11,
         ['npc_dota_hero_ringmaster'] = 0.02,
@@ -11769,7 +11769,7 @@ local heroList = {
         ['npc_dota_hero_ember_spirit'] = -0.17,
         ['npc_dota_hero_warlock'] = -0.19,
         ['npc_dota_hero_death_prophet'] = -0.19,
-        ['npc_dota_hero_visage'] = -0.2,
+        
         ['npc_dota_hero_bloodseeker'] = -0.21,
         ['npc_dota_hero_life_stealer'] = -0.28,
         ['npc_dota_hero_leshrac'] = -0.3,
@@ -11783,7 +11783,7 @@ local heroList = {
         ['npc_dota_hero_nyx_assassin'] = -0.43,
         ['npc_dota_hero_skywrath_mage'] = -0.44,
         ['npc_dota_hero_crystal_maiden'] = -0.46,
-        ['npc_dota_hero_pangolier'] = -0.51,
+        
         ['npc_dota_hero_undying'] = -0.53,
         ['npc_dota_hero_grimstroke'] = -0.59,
         ['npc_dota_hero_earth_spirit'] = -0.6,
@@ -11800,7 +11800,7 @@ local heroList = {
         ['npc_dota_hero_primal_beast'] = -0.96,
         ['npc_dota_hero_omniknight'] = -1.17,
         ['npc_dota_hero_lich'] = -1.32,
-        ['npc_dota_hero_puck'] = -1.37,
+        
         ['npc_dota_hero_enigma'] = -1.42,
         ['npc_dota_hero_obsidian_destroyer'] = -1.48,
         ['npc_dota_hero_witch_doctor'] = -1.48,
@@ -11818,7 +11818,7 @@ local heroList = {
         ['npc_dota_hero_phantom_lancer'] = 5.07,
         ['npc_dota_hero_necrolyte'] = 4.77,
         ['npc_dota_hero_abyssal_underlord'] = 4.32,
-        ['npc_dota_hero_lone_druid'] = 4.23,
+        
         ['npc_dota_hero_naga_siren'] = 3.61,
         ['npc_dota_hero_chen'] = 3.39,
         ['npc_dota_hero_alchemist'] = 3.38,
@@ -11833,15 +11833,15 @@ local heroList = {
         ['npc_dota_hero_slark'] = 2.69,
         ['npc_dota_hero_keeper_of_the_light'] = 2.62,
         ['npc_dota_hero_dazzle'] = 2.54,
-        ['npc_dota_hero_pangolier'] = 2.5,
+        
         ['npc_dota_hero_beastmaster'] = 2.43,
         ['npc_dota_hero_shredder'] = 2.42,
-        ['npc_dota_hero_brewmaster'] = 2.36,
+        
         ['npc_dota_hero_terrorblade'] = 2.22,
         ['npc_dota_hero_monkey_king'] = 2.2,
         ['npc_dota_hero_life_stealer'] = 2.2,
         ['npc_dota_hero_bristleback'] = 2.18,
-        ['npc_dota_hero_wisp'] = 2.14,
+        
         ['npc_dota_hero_lycan'] = 2.1,
         ['npc_dota_hero_crystal_maiden'] = 2.02,
         ['npc_dota_hero_venomancer'] = 2,
@@ -11851,15 +11851,15 @@ local heroList = {
         ['npc_dota_hero_dawnbreaker'] = 1.86,
         ['npc_dota_hero_tinker'] = 1.8,
         ['npc_dota_hero_abaddon'] = 1.72,
-        ['npc_dota_hero_tusk'] = 1.61,
+        
         ['npc_dota_hero_dragon_knight'] = 1.6,
-        ['npc_dota_hero_rubick'] = 1.57,
+        
         ['npc_dota_hero_sand_king'] = 1.56,
         ['npc_dota_hero_omniknight'] = 1.44,
         ['npc_dota_hero_winter_wyvern'] = 1.44,
         ['npc_dota_hero_enchantress'] = 1.37,
         ['npc_dota_hero_bounty_hunter'] = 1.36,
-        ['npc_dota_hero_visage'] = 1.33,
+        
         ['npc_dota_hero_invoker'] = 1.25,
         ['npc_dota_hero_chaos_knight'] = 1.24,
         ['npc_dota_hero_ember_spirit'] = 1.16,
@@ -11923,7 +11923,7 @@ local heroList = {
         ['npc_dota_hero_huskar'] = -0.86,
         ['npc_dota_hero_phantom_assassin'] = -0.87,
         ['npc_dota_hero_muerta'] = -0.89,
-        ['npc_dota_hero_puck'] = -0.92,
+        
         ['npc_dota_hero_axe'] = -0.95,
         ['npc_dota_hero_spirit_breaker'] = -0.95,
         ['npc_dota_hero_witch_doctor'] = -0.98,
@@ -11945,7 +11945,7 @@ local heroList = {
         ['npc_dota_hero_lycan'] = 3.7,
         ['npc_dota_hero_medusa'] = 2.89,
         ['npc_dota_hero_templar_assassin'] = 2.07,
-        ['npc_dota_hero_lone_druid'] = 2.06,
+        
         ['npc_dota_hero_skeleton_king'] = 1.91,
         ['npc_dota_hero_abaddon'] = 1.71,
         ['npc_dota_hero_chaos_knight'] = 1.71,
@@ -11958,7 +11958,7 @@ local heroList = {
         ['npc_dota_hero_broodmother'] = 1.31,
         ['npc_dota_hero_sven'] = 1.3,
         ['npc_dota_hero_night_stalker'] = 1.27,
-        ['npc_dota_hero_tusk'] = 1.21,
+        
         ['npc_dota_hero_antimage'] = 1.21,
         ['npc_dota_hero_bristleback'] = 1.17,
         ['npc_dota_hero_beastmaster'] = 1.14,
@@ -11967,11 +11967,11 @@ local heroList = {
         ['npc_dota_hero_vengefulspirit'] = 0.96,
         ['npc_dota_hero_spirit_breaker'] = 0.92,
         ['npc_dota_hero_slardar'] = 0.87,
-        ['npc_dota_hero_pangolier'] = 0.86,
+        
         ['npc_dota_hero_shadow_shaman'] = 0.86,
         ['npc_dota_hero_dazzle'] = 0.86,
         ['npc_dota_hero_mars'] = 0.8,
-        ['npc_dota_hero_wisp'] = 0.71,
+        
         ['npc_dota_hero_bane'] = 0.7,
         ['npc_dota_hero_centaur'] = 0.7,
         ['npc_dota_hero_warlock'] = 0.69,
@@ -11995,7 +11995,7 @@ local heroList = {
         ['npc_dota_hero_omniknight'] = 0.36,
         ['npc_dota_hero_mirana'] = 0.29,
         ['npc_dota_hero_clinkz'] = 0.27,
-        ['npc_dota_hero_visage'] = 0.23,
+        
         ['npc_dota_hero_grimstroke'] = 0.23,
         ['npc_dota_hero_snapfire'] = 0.22,
         ['npc_dota_hero_enchantress'] = 0.21,
@@ -12016,7 +12016,7 @@ local heroList = {
         ['npc_dota_hero_jakiro'] = -0.12,
         ['npc_dota_hero_undying'] = -0.12,
         ['npc_dota_hero_lina'] = -0.16,
-        ['npc_dota_hero_brewmaster'] = -0.16,
+        
         ['npc_dota_hero_venomancer'] = -0.17,
         ['npc_dota_hero_enigma'] = -0.18,
         ['npc_dota_hero_invoker'] = -0.24,
@@ -12027,7 +12027,7 @@ local heroList = {
         ['npc_dota_hero_treant'] = -0.34,
         ['npc_dota_hero_gyrocopter'] = -0.34,
         ['npc_dota_hero_bounty_hunter'] = -0.34,
-        ['npc_dota_hero_puck'] = -0.34,
+        
         ['npc_dota_hero_winter_wyvern'] = -0.35,
         ['npc_dota_hero_techies'] = -0.36,
         ['npc_dota_hero_monkey_king'] = -0.4,
@@ -12045,7 +12045,7 @@ local heroList = {
         ['npc_dota_hero_earth_spirit'] = -0.68,
         ['npc_dota_hero_slark'] = -0.69,
         ['npc_dota_hero_leshrac'] = -0.7,
-        ['npc_dota_hero_rubick'] = -0.7,
+        
         ['npc_dota_hero_tinker'] = -0.74,
         ['npc_dota_hero_primal_beast'] = -0.76,
         ['npc_dota_hero_keeper_of_the_light'] = -0.87,
@@ -12107,14 +12107,14 @@ local heroList = {
         ['npc_dota_hero_hoodwink'] = 0.58,
         ['npc_dota_hero_silencer'] = 0.52,
         ['npc_dota_hero_crystal_maiden'] = 0.5,
-        ['npc_dota_hero_tusk'] = 0.5,
+        
         ['npc_dota_hero_phantom_assassin'] = 0.48,
         ['npc_dota_hero_disruptor'] = 0.44,
         ['npc_dota_hero_axe'] = 0.42,
         ['npc_dota_hero_lich'] = 0.41,
         ['npc_dota_hero_lion'] = 0.4,
         ['npc_dota_hero_treant'] = 0.4,
-        ['npc_dota_hero_visage'] = 0.39,
+        
         ['npc_dota_hero_shadow_demon'] = 0.38,
         ['npc_dota_hero_viper'] = 0.38,
         ['npc_dota_hero_abaddon'] = 0.36,
@@ -12130,14 +12130,14 @@ local heroList = {
         ['npc_dota_hero_witch_doctor'] = 0.08,
         ['npc_dota_hero_abyssal_underlord'] = 0,
         ['npc_dota_hero_obsidian_destroyer'] = -0.01,
-        ['npc_dota_hero_puck'] = -0.05,
+        
         ['npc_dota_hero_winter_wyvern'] = -0.08,
         ['npc_dota_hero_queenofpain'] = -0.12,
         ['npc_dota_hero_spirit_breaker'] = -0.16,
         ['npc_dota_hero_tiny'] = -0.17,
         ['npc_dota_hero_skeleton_king'] = -0.19,
-        ['npc_dota_hero_brewmaster'] = -0.21,
-        ['npc_dota_hero_lone_druid'] = -0.22,
+        
+        
         ['npc_dota_hero_grimstroke'] = -0.22,
         ['npc_dota_hero_mars'] = -0.29,
         ['npc_dota_hero_primal_beast'] = -0.32,
@@ -12154,9 +12154,9 @@ local heroList = {
         ['npc_dota_hero_alchemist'] = -0.64,
         ['npc_dota_hero_centaur'] = -0.65,
         ['npc_dota_hero_leshrac'] = -0.66,
-        ['npc_dota_hero_rubick'] = -0.68,
+        
         ['npc_dota_hero_bristleback'] = -0.68,
-        ['npc_dota_hero_pangolier'] = -0.72,
+        
         ['npc_dota_hero_furion'] = -0.72,
         ['npc_dota_hero_dawnbreaker'] = -0.73,
         ['npc_dota_hero_snapfire'] = -0.76,
@@ -12176,7 +12176,7 @@ local heroList = {
         ['npc_dota_hero_death_prophet'] = -1.17,
         ['npc_dota_hero_chen'] = -1.19,
         ['npc_dota_hero_bane'] = -1.23,
-        ['npc_dota_hero_wisp'] = -1.27,
+        
         ['npc_dota_hero_omniknight'] = -1.29,
         ['npc_dota_hero_faceless_void'] = -1.36,
         ['npc_dota_hero_invoker'] = -1.36,
@@ -12210,7 +12210,7 @@ local heroList = {
         ['npc_dota_hero_bloodseeker'] = 2.21,
         ['npc_dota_hero_shredder'] = 2.13,
         ['npc_dota_hero_necrolyte'] = 2.1,
-        ['npc_dota_hero_puck'] = 2.03,
+        
         ['npc_dota_hero_muerta'] = 1.99,
         ['npc_dota_hero_invoker'] = 1.96,
         ['npc_dota_hero_omniknight'] = 1.93,
@@ -12222,7 +12222,7 @@ local heroList = {
         ['npc_dota_hero_naga_siren'] = 1.71,
         ['npc_dota_hero_tiny'] = 1.68,
         ['npc_dota_hero_doom_bringer'] = 1.57,
-        ['npc_dota_hero_tusk'] = 1.48,
+        
         ['npc_dota_hero_crystal_maiden'] = 1.41,
         ['npc_dota_hero_magnataur'] = 1.36,
         ['npc_dota_hero_nevermore'] = 1.33,
@@ -12250,7 +12250,7 @@ local heroList = {
         ['npc_dota_hero_zuus'] = 0.21,
         ['npc_dota_hero_spirit_breaker'] = 0.2,
         ['npc_dota_hero_pudge'] = 0.15,
-        ['npc_dota_hero_visage'] = 0.15,
+        
         ['npc_dota_hero_queenofpain'] = 0.09,
         ['npc_dota_hero_spectre'] = 0.08,
         ['npc_dota_hero_nyx_assassin'] = 0.03,
@@ -12260,20 +12260,20 @@ local heroList = {
         ['npc_dota_hero_centaur'] = -0.05,
         ['npc_dota_hero_vengefulspirit'] = -0.06,
         ['npc_dota_hero_marci'] = -0.07,
-        ['npc_dota_hero_pangolier'] = -0.09,
+        
         ['npc_dota_hero_sven'] = -0.12,
         ['npc_dota_hero_oracle'] = -0.13,
         ['npc_dota_hero_lina'] = -0.2,
-        ['npc_dota_hero_lone_druid'] = -0.28,
+        
         ['npc_dota_hero_furion'] = -0.32,
         ['npc_dota_hero_ursa'] = -0.47,
-        ['npc_dota_hero_wisp'] = -0.51,
+        
         ['npc_dota_hero_abyssal_underlord'] = -0.54,
         ['npc_dota_hero_batrider'] = -0.6,
         ['npc_dota_hero_razor'] = -0.61,
         ['npc_dota_hero_phantom_assassin'] = -0.62,
         ['npc_dota_hero_dark_seer'] = -0.65,
-        ['npc_dota_hero_rubick'] = -0.7,
+        
         ['npc_dota_hero_kez'] = -0.71,
         ['npc_dota_hero_void_spirit'] = -0.71,
         ['npc_dota_hero_clinkz'] = -0.72,
@@ -12303,7 +12303,7 @@ local heroList = {
         ['npc_dota_hero_treant'] = -1.5,
         ['npc_dota_hero_warlock'] = -1.52,
         ['npc_dota_hero_templar_assassin'] = -1.56,
-        ['npc_dota_hero_brewmaster'] = -1.6,
+        
         ['npc_dota_hero_storm_spirit'] = -1.69,
         ['npc_dota_hero_sniper'] = -1.75,
         ['npc_dota_hero_venomancer'] = -1.75,
@@ -12359,13 +12359,13 @@ local heroList = {
         ['npc_dota_hero_lina'] = 0.28,
         ['npc_dota_hero_queenofpain'] = 0.27,
         ['npc_dota_hero_batrider'] = 0.26,
-        ['npc_dota_hero_puck'] = 0.24,
+        
         ['npc_dota_hero_doom_bringer'] = 0.22,
         ['npc_dota_hero_enigma'] = 0.22,
         ['npc_dota_hero_razor'] = 0.21,
         ['npc_dota_hero_zuus'] = 0.2,
         ['npc_dota_hero_broodmother'] = 0.19,
-        ['npc_dota_hero_brewmaster'] = 0.19,
+        
         ['npc_dota_hero_legion_commander'] = 0.19,
         ['npc_dota_hero_magnataur'] = 0.16,
         ['npc_dota_hero_silencer'] = 0.15,
@@ -12378,7 +12378,7 @@ local heroList = {
         ['npc_dota_hero_shadow_demon'] = 0.05,
         ['npc_dota_hero_lich'] = 0.01,
         ['npc_dota_hero_keeper_of_the_light'] = 0,
-        ['npc_dota_hero_pangolier'] = 0,
+        
         ['npc_dota_hero_pudge'] = -0.01,
         ['npc_dota_hero_hoodwink'] = -0.03,
         ['npc_dota_hero_morphling'] = -0.05,
@@ -12399,7 +12399,7 @@ local heroList = {
         ['npc_dota_hero_treant'] = -0.2,
         ['npc_dota_hero_nevermore'] = -0.2,
         ['npc_dota_hero_spectre'] = -0.22,
-        ['npc_dota_hero_tusk'] = -0.26,
+        
         ['npc_dota_hero_earthshaker'] = -0.26,
         ['npc_dota_hero_witch_doctor'] = -0.3,
         ['npc_dota_hero_grimstroke'] = -0.3,
@@ -12407,10 +12407,10 @@ local heroList = {
         ['npc_dota_hero_techies'] = -0.33,
         ['npc_dota_hero_tiny'] = -0.37,
         ['npc_dota_hero_luna'] = -0.38,
-        ['npc_dota_hero_wisp'] = -0.42,
+        
         ['npc_dota_hero_riki'] = -0.42,
         ['npc_dota_hero_shadow_shaman'] = -0.43,
-        ['npc_dota_hero_rubick'] = -0.44,
+        
         ['npc_dota_hero_tinker'] = -0.47,
         ['npc_dota_hero_phantom_lancer'] = -0.47,
         ['npc_dota_hero_ember_spirit'] = -0.49,
@@ -12425,7 +12425,7 @@ local heroList = {
         ['npc_dota_hero_dark_willow'] = -0.63,
         ['npc_dota_hero_invoker'] = -0.63,
         ['npc_dota_hero_sand_king'] = -0.65,
-        ['npc_dota_hero_visage'] = -0.66,
+        
         ['npc_dota_hero_ancient_apparition'] = -0.68,
         ['npc_dota_hero_furion'] = -0.83,
         ['npc_dota_hero_necrolyte'] = -0.84,
@@ -12433,7 +12433,7 @@ local heroList = {
         ['npc_dota_hero_slark'] = -0.88,
         ['npc_dota_hero_pugna'] = -0.89,
         ['npc_dota_hero_dawnbreaker'] = -0.94,
-        ['npc_dota_hero_lone_druid'] = -0.98,
+        
         ['npc_dota_hero_monkey_king'] = -0.98,
         ['npc_dota_hero_winter_wyvern'] = -1.04,
         ['npc_dota_hero_arc_warden'] = -1.07,
@@ -12480,12 +12480,12 @@ local heroList = {
         ['npc_dota_hero_mirana'] = 0.79,
         ['npc_dota_hero_queenofpain'] = 0.72,
         ['npc_dota_hero_techies'] = 0.71,
-        ['npc_dota_hero_pangolier'] = 0.7,
+        
         ['npc_dota_hero_furion'] = 0.58,
         ['npc_dota_hero_ursa'] = 0.57,
-        ['npc_dota_hero_brewmaster'] = 0.52,
+        
         ['npc_dota_hero_tiny'] = 0.5,
-        ['npc_dota_hero_tusk'] = 0.48,
+        
         ['npc_dota_hero_naga_siren'] = 0.45,
         ['npc_dota_hero_faceless_void'] = 0.42,
         ['npc_dota_hero_doom_bringer'] = 0.42,
@@ -12497,7 +12497,7 @@ local heroList = {
         ['npc_dota_hero_kez'] = 0.09,
         ['npc_dota_hero_shadow_demon'] = 0.05,
         ['npc_dota_hero_kunkka'] = 0.03,
-        ['npc_dota_hero_rubick'] = 0,
+        
         ['npc_dota_hero_ogre_magi'] = -0.03,
         ['npc_dota_hero_bane'] = -0.08,
         ['npc_dota_hero_treant'] = -0.11,
@@ -12515,7 +12515,7 @@ local heroList = {
         ['npc_dota_hero_ringmaster'] = -0.42,
         ['npc_dota_hero_dark_seer'] = -0.47,
         ['npc_dota_hero_legion_commander'] = -0.48,
-        ['npc_dota_hero_wisp'] = -0.52,
+        
         ['npc_dota_hero_monkey_king'] = -0.53,
         ['npc_dota_hero_dazzle'] = -0.53,
         ['npc_dota_hero_dragon_knight'] = -0.56,
@@ -12550,15 +12550,15 @@ local heroList = {
         ['npc_dota_hero_grimstroke'] = -1.1,
         ['npc_dota_hero_sand_king'] = -1.11,
         ['npc_dota_hero_abaddon'] = -1.15,
-        ['npc_dota_hero_puck'] = -1.15,
+        
         ['npc_dota_hero_leshrac'] = -1.23,
         ['npc_dota_hero_templar_assassin'] = -1.23,
         ['npc_dota_hero_night_stalker'] = -1.28,
         ['npc_dota_hero_elder_titan'] = -1.29,
         ['npc_dota_hero_shadow_shaman'] = -1.29,
         ['npc_dota_hero_pugna'] = -1.3,
-        ['npc_dota_hero_lone_druid'] = -1.31,
-        ['npc_dota_hero_visage'] = -1.39,
+        
+        
         ['npc_dota_hero_nevermore'] = -1.4,
         ['npc_dota_hero_death_prophet'] = -1.45,
         ['npc_dota_hero_witch_doctor'] = -1.5,
@@ -12581,10 +12581,10 @@ local heroList = {
         ['npc_dota_hero_meepo'] = 4.27,
         ['npc_dota_hero_beastmaster'] = 3.92,
         ['npc_dota_hero_undying'] = 3.31,
-        ['npc_dota_hero_lone_druid'] = 3.3,
+        
         ['npc_dota_hero_tidehunter'] = 2.96,
         ['npc_dota_hero_ember_spirit'] = 2.88,
-        ['npc_dota_hero_wisp'] = 2.79,
+        
         ['npc_dota_hero_lycan'] = 2.51,
         ['npc_dota_hero_kez'] = 2.43,
         ['npc_dota_hero_abyssal_underlord'] = 2.37,
@@ -12606,17 +12606,17 @@ local heroList = {
         ['npc_dota_hero_phantom_lancer'] = 1.39,
         ['npc_dota_hero_earth_spirit'] = 1.39,
         ['npc_dota_hero_keeper_of_the_light'] = 1.39,
-        ['npc_dota_hero_brewmaster'] = 1.35,
+        
         ['npc_dota_hero_dazzle'] = 1.34,
         ['npc_dota_hero_naga_siren'] = 1.27,
         ['npc_dota_hero_broodmother'] = 1.25,
-        ['npc_dota_hero_pangolier'] = 1.25,
+        
         ['npc_dota_hero_pudge'] = 1.18,
         ['npc_dota_hero_centaur'] = 1.14,
         ['npc_dota_hero_venomancer'] = 1.07,
         ['npc_dota_hero_primal_beast'] = 1.01,
         ['npc_dota_hero_crystal_maiden'] = 0.97,
-        ['npc_dota_hero_visage'] = 0.93,
+        
         ['npc_dota_hero_lina'] = 0.92,
         ['npc_dota_hero_terrorblade'] = 0.9,
         ['npc_dota_hero_leshrac'] = 0.88,
@@ -12652,7 +12652,7 @@ local heroList = {
         ['npc_dota_hero_queenofpain'] = 0.38,
         ['npc_dota_hero_nevermore'] = 0.33,
         ['npc_dota_hero_elder_titan'] = 0.32,
-        ['npc_dota_hero_tusk'] = 0.28,
+        
         ['npc_dota_hero_pugna'] = 0.19,
         ['npc_dota_hero_razor'] = 0.15,
         ['npc_dota_hero_ogre_magi'] = 0.13,
@@ -12666,7 +12666,7 @@ local heroList = {
         ['npc_dota_hero_slark'] = -0.1,
         ['npc_dota_hero_sand_king'] = -0.18,
         ['npc_dota_hero_lich'] = -0.19,
-        ['npc_dota_hero_rubick'] = -0.21,
+        
         ['npc_dota_hero_obsidian_destroyer'] = -0.23,
         ['npc_dota_hero_storm_spirit'] = -0.3,
         ['npc_dota_hero_dark_willow'] = -0.3,
@@ -12698,7 +12698,7 @@ local heroList = {
         ['npc_dota_hero_drow_ranger'] = -2.28,
         ['npc_dota_hero_riki'] = -2.34,
         ['npc_dota_hero_axe'] = -2.35,
-        ['npc_dota_hero_puck'] = -2.36,
+        
         ['npc_dota_hero_furion'] = -2.9,
         ['npc_dota_hero_clinkz'] = -3.01,
         ['npc_dota_hero_sniper'] = -3.34,
@@ -12713,7 +12713,7 @@ local heroList = {
         ['npc_dota_hero_jakiro'] = 1.61,
         ['npc_dota_hero_dark_willow'] = 1.54,
         ['npc_dota_hero_venomancer'] = 1.46,
-        ['npc_dota_hero_tusk'] = 1.38,
+        
         ['npc_dota_hero_lich'] = 1.29,
         ['npc_dota_hero_enchantress'] = 1.24,
         ['npc_dota_hero_shredder'] = 1.23,
@@ -12742,7 +12742,7 @@ local heroList = {
         ['npc_dota_hero_techies'] = 0.66,
         ['npc_dota_hero_pudge'] = 0.64,
         ['npc_dota_hero_ogre_magi'] = 0.53,
-        ['npc_dota_hero_lone_druid'] = 0.49,
+        
         ['npc_dota_hero_terrorblade'] = 0.48,
         ['npc_dota_hero_queenofpain'] = 0.47,
         ['npc_dota_hero_kunkka'] = 0.47,
@@ -12762,8 +12762,8 @@ local heroList = {
         ['npc_dota_hero_undying'] = 0.17,
         ['npc_dota_hero_monkey_king'] = 0.17,
         ['npc_dota_hero_troll_warlord'] = 0.15,
-        ['npc_dota_hero_wisp'] = 0.13,
-        ['npc_dota_hero_visage'] = 0.12,
+        
+        
         ['npc_dota_hero_phoenix'] = 0.11,
         ['npc_dota_hero_muerta'] = 0.06,
         ['npc_dota_hero_abaddon'] = 0.06,
@@ -12774,8 +12774,8 @@ local heroList = {
         ['npc_dota_hero_zuus'] = 0.01,
         ['npc_dota_hero_dazzle'] = -0.01,
         ['npc_dota_hero_medusa'] = -0.03,
-        ['npc_dota_hero_puck'] = -0.06,
-        ['npc_dota_hero_rubick'] = -0.06,
+        
+        
         ['npc_dota_hero_gyrocopter'] = -0.07,
         ['npc_dota_hero_weaver'] = -0.1,
         ['npc_dota_hero_grimstroke'] = -0.11,
@@ -12785,7 +12785,7 @@ local heroList = {
         ['npc_dota_hero_slark'] = -0.2,
         ['npc_dota_hero_earthshaker'] = -0.22,
         ['npc_dota_hero_shadow_shaman'] = -0.23,
-        ['npc_dota_hero_brewmaster'] = -0.25,
+        
         ['npc_dota_hero_nyx_assassin'] = -0.27,
         ['npc_dota_hero_shadow_demon'] = -0.27,
         ['npc_dota_hero_snapfire'] = -0.29,
@@ -12799,7 +12799,7 @@ local heroList = {
         ['npc_dota_hero_mirana'] = -0.41,
         ['npc_dota_hero_arc_warden'] = -0.46,
         ['npc_dota_hero_earth_spirit'] = -0.5,
-        ['npc_dota_hero_pangolier'] = -0.58,
+        
         ['npc_dota_hero_phantom_assassin'] = -0.64,
         ['npc_dota_hero_furion'] = -0.67,
         ['npc_dota_hero_luna'] = -0.67,
@@ -12833,11 +12833,11 @@ local heroList = {
     ['npc_dota_hero_storm_spirit'] = {
         ['npc_dota_hero_meepo'] = 4.4,
         ['npc_dota_hero_antimage'] = 4.22,
-        ['npc_dota_hero_lone_druid'] = 3.41,
+        
         ['npc_dota_hero_pugna'] = 3.13,
         ['npc_dota_hero_riki'] = 3.08,
         ['npc_dota_hero_oracle'] = 2.38,
-        ['npc_dota_hero_puck'] = 2.32,
+        
         ['npc_dota_hero_troll_warlord'] = 2.08,
         ['npc_dota_hero_ember_spirit'] = 1.97,
         ['npc_dota_hero_silencer'] = 1.96,
@@ -12857,7 +12857,7 @@ local heroList = {
         ['npc_dota_hero_death_prophet'] = 1.3,
         ['npc_dota_hero_bane'] = 1.27,
         ['npc_dota_hero_dazzle'] = 1.18,
-        ['npc_dota_hero_wisp'] = 1.17,
+        
         ['npc_dota_hero_beastmaster'] = 1.16,
         ['npc_dota_hero_nevermore'] = 1.11,
         ['npc_dota_hero_kez'] = 1.07,
@@ -12891,9 +12891,9 @@ local heroList = {
         ['npc_dota_hero_winter_wyvern'] = 0.1,
         ['npc_dota_hero_earth_spirit'] = 0.1,
         ['npc_dota_hero_dragon_knight'] = 0.05,
-        ['npc_dota_hero_visage'] = -0.02,
+        
         ['npc_dota_hero_dark_seer'] = -0.03,
-        ['npc_dota_hero_tusk'] = -0.04,
+        
         ['npc_dota_hero_chen'] = -0.05,
         ['npc_dota_hero_queenofpain'] = -0.09,
         ['npc_dota_hero_magnataur'] = -0.1,
@@ -12928,18 +12928,18 @@ local heroList = {
         ['npc_dota_hero_phantom_lancer'] = -0.81,
         ['npc_dota_hero_phoenix'] = -0.81,
         ['npc_dota_hero_primal_beast'] = -0.86,
-        ['npc_dota_hero_rubick'] = -0.87,
+        
         ['npc_dota_hero_monkey_king'] = -0.88,
         ['npc_dota_hero_batrider'] = -0.9,
         ['npc_dota_hero_warlock'] = -0.97,
         ['npc_dota_hero_viper'] = -0.99,
-        ['npc_dota_hero_brewmaster'] = -1.01,
+        
         ['npc_dota_hero_pudge'] = -1.09,
         ['npc_dota_hero_juggernaut'] = -1.13,
         ['npc_dota_hero_phantom_assassin'] = -1.15,
         ['npc_dota_hero_lina'] = -1.16,
         ['npc_dota_hero_life_stealer'] = -1.24,
-        ['npc_dota_hero_pangolier'] = -1.32,
+        
         ['npc_dota_hero_bounty_hunter'] = -1.35,
         ['npc_dota_hero_shredder'] = -1.49,
         ['npc_dota_hero_elder_titan'] = -1.52,
@@ -12994,7 +12994,7 @@ local heroList = {
         ['npc_dota_hero_crystal_maiden'] = 0.59,
         ['npc_dota_hero_terrorblade'] = 0.54,
         ['npc_dota_hero_hoodwink'] = 0.5,
-        ['npc_dota_hero_rubick'] = 0.48,
+        
         ['npc_dota_hero_undying'] = 0.45,
         ['npc_dota_hero_nevermore'] = 0.43,
         ['npc_dota_hero_dark_willow'] = 0.41,
@@ -13014,7 +13014,7 @@ local heroList = {
         ['npc_dota_hero_juggernaut'] = 0.07,
         ['npc_dota_hero_doom_bringer'] = 0.03,
         ['npc_dota_hero_lich'] = -0.01,
-        ['npc_dota_hero_tusk'] = -0.04,
+        
         ['npc_dota_hero_invoker'] = -0.06,
         ['npc_dota_hero_obsidian_destroyer'] = -0.1,
         ['npc_dota_hero_medusa'] = -0.1,
@@ -13035,8 +13035,8 @@ local heroList = {
         ['npc_dota_hero_grimstroke'] = -0.55,
         ['npc_dota_hero_omniknight'] = -0.57,
         ['npc_dota_hero_storm_spirit'] = -0.65,
-        ['npc_dota_hero_lone_druid'] = -0.66,
-        ['npc_dota_hero_pangolier'] = -0.67,
+        
+        
         ['npc_dota_hero_mars'] = -0.67,
         ['npc_dota_hero_shadow_demon'] = -0.7,
         ['npc_dota_hero_zuus'] = -0.71,
@@ -13046,7 +13046,7 @@ local heroList = {
         ['npc_dota_hero_ember_spirit'] = -0.83,
         ['npc_dota_hero_bloodseeker'] = -0.84,
         ['npc_dota_hero_riki'] = -0.94,
-        ['npc_dota_hero_visage'] = -0.98,
+        
         ['npc_dota_hero_centaur'] = -0.98,
         ['npc_dota_hero_magnataur'] = -1.06,
         ['npc_dota_hero_broodmother'] = -1.08,
@@ -13067,12 +13067,12 @@ local heroList = {
         ['npc_dota_hero_tiny'] = -1.42,
         ['npc_dota_hero_spectre'] = -1.43,
         ['npc_dota_hero_arc_warden'] = -1.44,
-        ['npc_dota_hero_wisp'] = -1.48,
-        ['npc_dota_hero_puck'] = -1.51,
+        
+        
         ['npc_dota_hero_beastmaster'] = -1.51,
         ['npc_dota_hero_chen'] = -1.53,
         ['npc_dota_hero_leshrac'] = -1.74,
-        ['npc_dota_hero_brewmaster'] = -1.83,
+        
         ['npc_dota_hero_warlock'] = -1.86,
         ['npc_dota_hero_abaddon'] = -1.87,
         ['npc_dota_hero_antimage'] = -2.01,
@@ -13107,14 +13107,14 @@ local heroList = {
         ['npc_dota_hero_warlock'] = 0.63,
         ['npc_dota_hero_abyssal_underlord'] = 0.59,
         ['npc_dota_hero_lina'] = 0.58,
-        ['npc_dota_hero_rubick'] = 0.57,
+        
         ['npc_dota_hero_necrolyte'] = 0.56,
         ['npc_dota_hero_enigma'] = 0.53,
         ['npc_dota_hero_faceless_void'] = 0.51,
         ['npc_dota_hero_void_spirit'] = 0.46,
         ['npc_dota_hero_zuus'] = 0.44,
         ['npc_dota_hero_tinker'] = 0.43,
-        ['npc_dota_hero_visage'] = 0.39,
+        
         ['npc_dota_hero_lich'] = 0.37,
         ['npc_dota_hero_skywrath_mage'] = 0.36,
         ['npc_dota_hero_primal_beast'] = 0.34,
@@ -13132,14 +13132,14 @@ local heroList = {
         ['npc_dota_hero_keeper_of_the_light'] = 0.13,
         ['npc_dota_hero_shadow_demon'] = 0.12,
         ['npc_dota_hero_undying'] = 0.11,
-        ['npc_dota_hero_brewmaster'] = 0.09,
+        
         ['npc_dota_hero_dawnbreaker'] = 0.09,
         ['npc_dota_hero_obsidian_destroyer'] = 0.09,
-        ['npc_dota_hero_pangolier'] = 0.06,
+        
         ['npc_dota_hero_invoker'] = 0.02,
         ['npc_dota_hero_dragon_knight'] = -0.04,
         ['npc_dota_hero_crystal_maiden'] = -0.09,
-        ['npc_dota_hero_puck'] = -0.09,
+        
         ['npc_dota_hero_kunkka'] = -0.14,
         ['npc_dota_hero_doom_bringer'] = -0.16,
         ['npc_dota_hero_nyx_assassin'] = -0.17,
@@ -13151,7 +13151,7 @@ local heroList = {
         ['npc_dota_hero_ancient_apparition'] = -0.27,
         ['npc_dota_hero_huskar'] = -0.27,
         ['npc_dota_hero_ursa'] = -0.3,
-        ['npc_dota_hero_tusk'] = -0.33,
+        
         ['npc_dota_hero_kez'] = -0.34,
         ['npc_dota_hero_omniknight'] = -0.36,
         ['npc_dota_hero_gyrocopter'] = -0.38,
@@ -13192,7 +13192,7 @@ local heroList = {
         ['npc_dota_hero_night_stalker'] = -1.24,
         ['npc_dota_hero_windrunner'] = -1.27,
         ['npc_dota_hero_elder_titan'] = -1.28,
-        ['npc_dota_hero_wisp'] = -1.28,
+        
         ['npc_dota_hero_chaos_knight'] = -1.31,
         ['npc_dota_hero_troll_warlord'] = -1.37,
         ['npc_dota_hero_weaver'] = -1.44,
@@ -13206,7 +13206,7 @@ local heroList = {
         ['npc_dota_hero_marci'] = -1.97,
         ['npc_dota_hero_naga_siren'] = -2.08,
         ['npc_dota_hero_phantom_lancer'] = -2.19,
-        ['npc_dota_hero_lone_druid'] = -2.38,
+        
         ['npc_dota_hero_monkey_king'] = -2.4,
         ['npc_dota_hero_slark'] = -2.96,
         ['npc_dota_hero_meepo'] = -3.14,
@@ -13220,7 +13220,7 @@ local heroList = {
         ['npc_dota_hero_naga_siren'] = 3.19,
         ['npc_dota_hero_sand_king'] = 2.83,
         ['npc_dota_hero_tinker'] = 2.52,
-        ['npc_dota_hero_brewmaster'] = 2.5,
+        
         ['npc_dota_hero_lina'] = 2.4,
         ['npc_dota_hero_legion_commander'] = 2.04,
         ['npc_dota_hero_earthshaker'] = 2.02,
@@ -13232,7 +13232,7 @@ local heroList = {
         ['npc_dota_hero_witch_doctor'] = 1.56,
         ['npc_dota_hero_slark'] = 1.45,
         ['npc_dota_hero_drow_ranger'] = 1.44,
-        ['npc_dota_hero_puck'] = 1.37,
+        
         ['npc_dota_hero_snapfire'] = 1.18,
         ['npc_dota_hero_primal_beast'] = 1.16,
         ['npc_dota_hero_skywrath_mage'] = 1.11,
@@ -13253,7 +13253,7 @@ local heroList = {
         ['npc_dota_hero_enchantress'] = 0.47,
         ['npc_dota_hero_windrunner'] = 0.45,
         ['npc_dota_hero_zuus'] = 0.42,
-        ['npc_dota_hero_rubick'] = 0.39,
+        
         ['npc_dota_hero_tidehunter'] = 0.39,
         ['npc_dota_hero_pugna'] = 0.38,
         ['npc_dota_hero_muerta'] = 0.37,
@@ -13304,12 +13304,12 @@ local heroList = {
         ['npc_dota_hero_ursa'] = -1.02,
         ['npc_dota_hero_dragon_knight'] = -1.02,
         ['npc_dota_hero_batrider'] = -1.06,
-        ['npc_dota_hero_lone_druid'] = -1.1,
-        ['npc_dota_hero_wisp'] = -1.1,
+        
+        
         ['npc_dota_hero_venomancer'] = -1.14,
         ['npc_dota_hero_furion'] = -1.21,
         ['npc_dota_hero_silencer'] = -1.25,
-        ['npc_dota_hero_tusk'] = -1.27,
+        
         ['npc_dota_hero_meepo'] = -1.42,
         ['npc_dota_hero_void_spirit'] = -1.43,
         ['npc_dota_hero_skeleton_king'] = -1.45,
@@ -13320,7 +13320,7 @@ local heroList = {
         ['npc_dota_hero_morphling'] = -1.5,
         ['npc_dota_hero_bane'] = -1.56,
         ['npc_dota_hero_huskar'] = -1.71,
-        ['npc_dota_hero_visage'] = -1.78,
+        
         ['npc_dota_hero_chaos_knight'] = -1.82,
         ['npc_dota_hero_rattletrap'] = -1.82,
         ['npc_dota_hero_razor'] = -1.82,
@@ -13328,7 +13328,7 @@ local heroList = {
         ['npc_dota_hero_vengefulspirit'] = -1.98,
         ['npc_dota_hero_lycan'] = -1.98,
         ['npc_dota_hero_clinkz'] = -2.04,
-        ['npc_dota_hero_pangolier'] = -2.05,
+        
         ['npc_dota_hero_medusa'] = -2.24,
         ['npc_dota_hero_antimage'] = -2.4,
         ['npc_dota_hero_death_prophet'] = -2.57,
@@ -13374,7 +13374,7 @@ local heroList = {
         ['npc_dota_hero_faceless_void'] = 1.15,
         ['npc_dota_hero_winter_wyvern'] = 1.15,
         ['npc_dota_hero_ogre_magi'] = 1.13,
-        ['npc_dota_hero_brewmaster'] = 1.11,
+        
         ['npc_dota_hero_medusa'] = 1.1,
         ['npc_dota_hero_shadow_demon'] = 1.03,
         ['npc_dota_hero_broodmother'] = 1.01,
@@ -13382,14 +13382,14 @@ local heroList = {
         ['npc_dota_hero_leshrac'] = 0.95,
         ['npc_dota_hero_slardar'] = 0.94,
         ['npc_dota_hero_lycan'] = 0.85,
-        ['npc_dota_hero_visage'] = 0.85,
+        
         ['npc_dota_hero_vengefulspirit'] = 0.85,
         ['npc_dota_hero_luna'] = 0.84,
         ['npc_dota_hero_pugna'] = 0.84,
         ['npc_dota_hero_monkey_king'] = 0.83,
         ['npc_dota_hero_drow_ranger'] = 0.77,
         ['npc_dota_hero_mars'] = 0.73,
-        ['npc_dota_hero_lone_druid'] = 0.62,
+        
         ['npc_dota_hero_axe'] = 0.59,
         ['npc_dota_hero_gyrocopter'] = 0.58,
         ['npc_dota_hero_earth_spirit'] = 0.53,
@@ -13397,7 +13397,7 @@ local heroList = {
         ['npc_dota_hero_bane'] = 0.44,
         ['npc_dota_hero_pudge'] = 0.42,
         ['npc_dota_hero_necrolyte'] = 0.41,
-        ['npc_dota_hero_wisp'] = 0.34,
+        
         ['npc_dota_hero_tidehunter'] = 0.17,
         ['npc_dota_hero_enigma'] = 0.17,
         ['npc_dota_hero_tinker'] = 0.11,
@@ -13424,11 +13424,11 @@ local heroList = {
         ['npc_dota_hero_death_prophet'] = -0.6,
         ['npc_dota_hero_void_spirit'] = -0.6,
         ['npc_dota_hero_grimstroke'] = -0.62,
-        ['npc_dota_hero_tusk'] = -0.63,
+        
         ['npc_dota_hero_snapfire'] = -0.64,
         ['npc_dota_hero_warlock'] = -0.64,
         ['npc_dota_hero_ringmaster'] = -0.64,
-        ['npc_dota_hero_pangolier'] = -0.65,
+        
         ['npc_dota_hero_lion'] = -0.68,
         ['npc_dota_hero_life_stealer'] = -0.68,
         ['npc_dota_hero_witch_doctor'] = -0.7,
@@ -13438,7 +13438,7 @@ local heroList = {
         ['npc_dota_hero_disruptor'] = -0.93,
         ['npc_dota_hero_kez'] = -0.95,
         ['npc_dota_hero_omniknight'] = -0.98,
-        ['npc_dota_hero_puck'] = -1.09,
+        
         ['npc_dota_hero_magnataur'] = -1.16,
         ['npc_dota_hero_muerta'] = -1.17,
         ['npc_dota_hero_tiny'] = -1.18,
@@ -13453,7 +13453,7 @@ local heroList = {
         ['npc_dota_hero_phantom_assassin'] = -1.61,
         ['npc_dota_hero_ancient_apparition'] = -1.63,
         ['npc_dota_hero_ursa'] = -1.66,
-        ['npc_dota_hero_rubick'] = -1.81,
+        
         ['npc_dota_hero_shredder'] = -1.86,
         ['npc_dota_hero_legion_commander'] = -1.91,
         ['npc_dota_hero_earthshaker'] = -1.92,
@@ -13483,7 +13483,7 @@ local heroList = {
         ['npc_dota_hero_snapfire'] = 2.09,
         ['npc_dota_hero_monkey_king'] = 2.03,
         ['npc_dota_hero_tinker'] = 2.02,
-        ['npc_dota_hero_pangolier'] = 2,
+        
         ['npc_dota_hero_shredder'] = 1.99,
         ['npc_dota_hero_grimstroke'] = 1.86,
         ['npc_dota_hero_weaver'] = 1.71,
@@ -13496,10 +13496,10 @@ local heroList = {
         ['npc_dota_hero_bristleback'] = 1.33,
         ['npc_dota_hero_kunkka'] = 1.27,
         ['npc_dota_hero_abyssal_underlord'] = 1.27,
-        ['npc_dota_hero_tusk'] = 1.23,
+        
         ['npc_dota_hero_clinkz'] = 1.11,
         ['npc_dota_hero_rattletrap'] = 1.09,
-        ['npc_dota_hero_wisp'] = 1.08,
+        
         ['npc_dota_hero_nevermore'] = 1.01,
         ['npc_dota_hero_enchantress'] = 1,
         ['npc_dota_hero_doom_bringer'] = 0.97,
@@ -13521,7 +13521,7 @@ local heroList = {
         ['npc_dota_hero_disruptor'] = 0.43,
         ['npc_dota_hero_gyrocopter'] = 0.38,
         ['npc_dota_hero_dark_willow'] = 0.37,
-        ['npc_dota_hero_rubick'] = 0.35,
+        
         ['npc_dota_hero_night_stalker'] = 0.33,
         ['npc_dota_hero_zuus'] = 0.32,
         ['npc_dota_hero_enigma'] = 0.32,
@@ -13540,20 +13540,20 @@ local heroList = {
         ['npc_dota_hero_queenofpain'] = -0.27,
         ['npc_dota_hero_riki'] = -0.42,
         ['npc_dota_hero_meepo'] = -0.47,
-        ['npc_dota_hero_lone_druid'] = -0.5,
+        
         ['npc_dota_hero_drow_ranger'] = -0.5,
         ['npc_dota_hero_treant'] = -0.51,
         ['npc_dota_hero_abaddon'] = -0.51,
         ['npc_dota_hero_oracle'] = -0.57,
-        ['npc_dota_hero_brewmaster'] = -0.59,
+        
         ['npc_dota_hero_crystal_maiden'] = -0.59,
         ['npc_dota_hero_shadow_shaman'] = -0.59,
         ['npc_dota_hero_pudge'] = -0.64,
-        ['npc_dota_hero_visage'] = -0.64,
+        
         ['npc_dota_hero_axe'] = -0.77,
         ['npc_dota_hero_techies'] = -0.81,
         ['npc_dota_hero_lina'] = -0.83,
-        ['npc_dota_hero_puck'] = -0.85,
+        
         ['npc_dota_hero_shadow_demon'] = -0.86,
         ['npc_dota_hero_marci'] = -0.91,
         ['npc_dota_hero_winter_wyvern'] = -0.97,
@@ -13604,9 +13604,9 @@ local heroList = {
         ['npc_dota_hero_nyx_assassin'] = 1.7,
         ['npc_dota_hero_invoker'] = 1.54,
         ['npc_dota_hero_earthshaker'] = 1.51,
-        ['npc_dota_hero_visage'] = 1.45,
+        
         ['npc_dota_hero_shadow_shaman'] = 1.42,
-        ['npc_dota_hero_wisp'] = 1.25,
+        
         ['npc_dota_hero_primal_beast'] = 1.23,
         ['npc_dota_hero_sven'] = 1.23,
         ['npc_dota_hero_elder_titan'] = 1.22,
@@ -13640,7 +13640,7 @@ local heroList = {
         ['npc_dota_hero_beastmaster'] = 0.42,
         ['npc_dota_hero_broodmother'] = 0.37,
         ['npc_dota_hero_sniper'] = 0.33,
-        ['npc_dota_hero_tusk'] = 0.22,
+        
         ['npc_dota_hero_windrunner'] = 0.21,
         ['npc_dota_hero_keeper_of_the_light'] = 0.2,
         ['npc_dota_hero_luna'] = 0.17,
@@ -13650,14 +13650,14 @@ local heroList = {
         ['npc_dota_hero_monkey_king'] = 0.02,
         ['npc_dota_hero_gyrocopter'] = 0.01,
         ['npc_dota_hero_ogre_magi'] = 0,
-        ['npc_dota_hero_brewmaster'] = 0,
+        
         ['npc_dota_hero_crystal_maiden'] = -0.04,
         ['npc_dota_hero_enchantress'] = -0.07,
         ['npc_dota_hero_tiny'] = -0.15,
         ['npc_dota_hero_templar_assassin'] = -0.15,
         ['npc_dota_hero_hoodwink'] = -0.19,
         ['npc_dota_hero_silencer'] = -0.21,
-        ['npc_dota_hero_pangolier'] = -0.22,
+        
         ['npc_dota_hero_ursa'] = -0.23,
         ['npc_dota_hero_spirit_breaker'] = -0.23,
         ['npc_dota_hero_night_stalker'] = -0.24,
@@ -13667,7 +13667,7 @@ local heroList = {
         ['npc_dota_hero_dark_seer'] = -0.37,
         ['npc_dota_hero_slark'] = -0.38,
         ['npc_dota_hero_storm_spirit'] = -0.38,
-        ['npc_dota_hero_rubick'] = -0.45,
+        
         ['npc_dota_hero_earth_spirit'] = -0.5,
         ['npc_dota_hero_techies'] = -0.52,
         ['npc_dota_hero_weaver'] = -0.54,
@@ -13695,11 +13695,11 @@ local heroList = {
         ['npc_dota_hero_furion'] = -0.99,
         ['npc_dota_hero_treant'] = -1.01,
         ['npc_dota_hero_obsidian_destroyer'] = -1.04,
-        ['npc_dota_hero_lone_druid'] = -1.1,
+        
         ['npc_dota_hero_shredder'] = -1.1,
         ['npc_dota_hero_ancient_apparition'] = -1.11,
         ['npc_dota_hero_troll_warlord'] = -1.13,
-        ['npc_dota_hero_puck'] = -1.16,
+        
         ['npc_dota_hero_bristleback'] = -1.23,
         ['npc_dota_hero_axe'] = -1.24,
         ['npc_dota_hero_centaur'] = -1.35,
@@ -13768,9 +13768,9 @@ local heroList = {
         ['npc_dota_hero_ringmaster'] = 0.31,
         ['npc_dota_hero_mars'] = 0.25,
         ['npc_dota_hero_dark_willow'] = 0.22,
-        ['npc_dota_hero_brewmaster'] = 0.16,
+        
         ['npc_dota_hero_slardar'] = 0.13,
-        ['npc_dota_hero_rubick'] = 0.1,
+        
         ['npc_dota_hero_lich'] = 0.09,
         ['npc_dota_hero_tinker'] = 0.07,
         ['npc_dota_hero_dragon_knight'] = 0.06,
@@ -13781,7 +13781,7 @@ local heroList = {
         ['npc_dota_hero_jakiro'] = 0.01,
         ['npc_dota_hero_zuus'] = -0.02,
         ['npc_dota_hero_winter_wyvern'] = -0.03,
-        ['npc_dota_hero_tusk'] = -0.03,
+        
         ['npc_dota_hero_earth_spirit'] = -0.04,
         ['npc_dota_hero_crystal_maiden'] = -0.07,
         ['npc_dota_hero_clinkz'] = -0.07,
@@ -13789,7 +13789,7 @@ local heroList = {
         ['npc_dota_hero_beastmaster'] = -0.09,
         ['npc_dota_hero_silencer'] = -0.12,
         ['npc_dota_hero_bane'] = -0.14,
-        ['npc_dota_hero_pangolier'] = -0.15,
+        
         ['npc_dota_hero_elder_titan'] = -0.21,
         ['npc_dota_hero_muerta'] = -0.22,
         ['npc_dota_hero_pugna'] = -0.25,
@@ -13811,9 +13811,9 @@ local heroList = {
         ['npc_dota_hero_spectre'] = -0.54,
         ['npc_dota_hero_primal_beast'] = -0.58,
         ['npc_dota_hero_pudge'] = -0.59,
-        ['npc_dota_hero_wisp'] = -0.65,
+        
         ['npc_dota_hero_tidehunter'] = -0.7,
-        ['npc_dota_hero_lone_druid'] = -0.76,
+        
         ['npc_dota_hero_lion'] = -0.8,
         ['npc_dota_hero_morphling'] = -0.81,
         ['npc_dota_hero_storm_spirit'] = -0.85,
@@ -13824,7 +13824,7 @@ local heroList = {
         ['npc_dota_hero_meepo'] = -0.97,
         ['npc_dota_hero_arc_warden'] = -0.99,
         ['npc_dota_hero_windrunner'] = -0.99,
-        ['npc_dota_hero_visage'] = -1.06,
+        
         ['npc_dota_hero_chaos_knight'] = -1.08,
         ['npc_dota_hero_nevermore'] = -1.1,
         ['npc_dota_hero_medusa'] = -1.14,
@@ -13842,7 +13842,7 @@ local heroList = {
         ['npc_dota_hero_phantom_assassin'] = -2.04,
         ['npc_dota_hero_naga_siren'] = -2.2,
         ['npc_dota_hero_spirit_breaker'] = -2.21,
-        ['npc_dota_hero_puck'] = -2.24,
+        
         ['npc_dota_hero_riki'] = -2.38,
         ['npc_dota_hero_broodmother'] = -2.76,
     },
@@ -13864,7 +13864,7 @@ local heroList = {
         ['npc_dota_hero_kez'] = 1.07,
         ['npc_dota_hero_tinker'] = 1.02,
         ['npc_dota_hero_undying'] = 0.96,
-        ['npc_dota_hero_brewmaster'] = 0.95,
+        
         ['npc_dota_hero_dark_seer'] = 0.91,
         ['npc_dota_hero_lich'] = 0.85,
         ['npc_dota_hero_earth_spirit'] = 0.85,
@@ -13921,21 +13921,21 @@ local heroList = {
         ['npc_dota_hero_bloodseeker'] = -0.09,
         ['npc_dota_hero_arc_warden'] = -0.11,
         ['npc_dota_hero_drow_ranger'] = -0.11,
-        ['npc_dota_hero_rubick'] = -0.13,
+        
         ['npc_dota_hero_winter_wyvern'] = -0.13,
         ['npc_dota_hero_razor'] = -0.14,
         ['npc_dota_hero_clinkz'] = -0.27,
         ['npc_dota_hero_ogre_magi'] = -0.27,
         ['npc_dota_hero_kunkka'] = -0.34,
         ['npc_dota_hero_nevermore'] = -0.36,
-        ['npc_dota_hero_wisp'] = -0.39,
+        
         ['npc_dota_hero_slardar'] = -0.4,
         ['npc_dota_hero_bounty_hunter'] = -0.42,
         ['npc_dota_hero_luna'] = -0.44,
         ['npc_dota_hero_earthshaker'] = -0.45,
         ['npc_dota_hero_omniknight'] = -0.46,
         ['npc_dota_hero_monkey_king'] = -0.5,
-        ['npc_dota_hero_puck'] = -0.51,
+        
         ['npc_dota_hero_phantom_assassin'] = -0.52,
         ['npc_dota_hero_windrunner'] = -0.52,
         ['npc_dota_hero_lion'] = -0.54,
@@ -13961,9 +13961,9 @@ local heroList = {
         ['npc_dota_hero_medusa'] = -1.17,
         ['npc_dota_hero_legion_commander'] = -1.18,
         ['npc_dota_hero_night_stalker'] = -1.23,
-        ['npc_dota_hero_tusk'] = -1.3,
-        ['npc_dota_hero_visage'] = -1.34,
-        ['npc_dota_hero_pangolier'] = -1.36,
+        
+        
+        
         ['npc_dota_hero_ember_spirit'] = -1.36,
         ['npc_dota_hero_skeleton_king'] = -1.43,
         ['npc_dota_hero_dragon_knight'] = -1.56,
@@ -13971,7 +13971,7 @@ local heroList = {
         ['npc_dota_hero_mirana'] = -2.17,
         ['npc_dota_hero_furion'] = -2.22,
         ['npc_dota_hero_templar_assassin'] = -2.38,
-        ['npc_dota_hero_lone_druid'] = -2.5,
+        
     },
     ['npc_dota_hero_troll_warlord'] = {
         ['npc_dota_hero_axe'] = 5.19,
@@ -13994,7 +13994,7 @@ local heroList = {
         ['npc_dota_hero_bristleback'] = 1.55,
         ['npc_dota_hero_medusa'] = 1.52,
         ['npc_dota_hero_tidehunter'] = 1.49,
-        ['npc_dota_hero_brewmaster'] = 1.39,
+        
         ['npc_dota_hero_abyssal_underlord'] = 1.38,
         ['npc_dota_hero_techies'] = 1.27,
         ['npc_dota_hero_invoker'] = 1.27,
@@ -14021,7 +14021,7 @@ local heroList = {
         ['npc_dota_hero_lich'] = 0.53,
         ['npc_dota_hero_skywrath_mage'] = 0.52,
         ['npc_dota_hero_oracle'] = 0.47,
-        ['npc_dota_hero_rubick'] = 0.44,
+        
         ['npc_dota_hero_grimstroke'] = 0.4,
         ['npc_dota_hero_clinkz'] = 0.4,
         ['npc_dota_hero_witch_doctor'] = 0.34,
@@ -14044,17 +14044,17 @@ local heroList = {
         ['npc_dota_hero_dragon_knight'] = 0.02,
         ['npc_dota_hero_weaver'] = -0.05,
         ['npc_dota_hero_treant'] = -0.08,
-        ['npc_dota_hero_tusk'] = -0.12,
+        
         ['npc_dota_hero_spirit_breaker'] = -0.15,
         ['npc_dota_hero_queenofpain'] = -0.22,
         ['npc_dota_hero_vengefulspirit'] = -0.24,
         ['npc_dota_hero_death_prophet'] = -0.24,
-        ['npc_dota_hero_visage'] = -0.27,
+        
         ['npc_dota_hero_pudge'] = -0.31,
         ['npc_dota_hero_enigma'] = -0.31,
-        ['npc_dota_hero_puck'] = -0.34,
+        
         ['npc_dota_hero_riki'] = -0.4,
-        ['npc_dota_hero_pangolier'] = -0.46,
+        
         ['npc_dota_hero_snapfire'] = -0.46,
         ['npc_dota_hero_nyx_assassin'] = -0.49,
         ['npc_dota_hero_monkey_king'] = -0.5,
@@ -14076,7 +14076,7 @@ local heroList = {
         ['npc_dota_hero_beastmaster'] = -1.2,
         ['npc_dota_hero_nevermore'] = -1.21,
         ['npc_dota_hero_bounty_hunter'] = -1.29,
-        ['npc_dota_hero_lone_druid'] = -1.43,
+        
         ['npc_dota_hero_broodmother'] = -1.52,
         ['npc_dota_hero_magnataur'] = -1.52,
         ['npc_dota_hero_phantom_assassin'] = -1.57,
@@ -14092,7 +14092,7 @@ local heroList = {
         ['npc_dota_hero_night_stalker'] = -2.82,
         ['npc_dota_hero_ursa'] = -2.82,
         ['npc_dota_hero_ember_spirit'] = -3.02,
-        ['npc_dota_hero_wisp'] = -3.23,
+        
         ['npc_dota_hero_lycan'] = -3.37,
         ['npc_dota_hero_sven'] = -3.48,
         ['npc_dota_hero_marci'] = -3.7,
@@ -14127,7 +14127,7 @@ local heroList = {
         ['npc_dota_hero_pugna'] = 0.83,
         ['npc_dota_hero_leshrac'] = 0.78,
         ['npc_dota_hero_earthshaker'] = 0.78,
-        ['npc_dota_hero_puck'] = 0.77,
+        
         ['npc_dota_hero_ringmaster'] = 0.69,
         ['npc_dota_hero_death_prophet'] = 0.65,
         ['npc_dota_hero_primal_beast'] = 0.65,
@@ -14167,7 +14167,7 @@ local heroList = {
         ['npc_dota_hero_medusa'] = -0.01,
         ['npc_dota_hero_shadow_shaman'] = -0.02,
         ['npc_dota_hero_morphling'] = -0.03,
-        ['npc_dota_hero_pangolier'] = -0.03,
+        
         ['npc_dota_hero_chaos_knight'] = -0.05,
         ['npc_dota_hero_mars'] = -0.07,
         ['npc_dota_hero_sniper'] = -0.08,
@@ -14194,7 +14194,7 @@ local heroList = {
         ['npc_dota_hero_ancient_apparition'] = -0.42,
         ['npc_dota_hero_slardar'] = -0.45,
         ['npc_dota_hero_alchemist'] = -0.45,
-        ['npc_dota_hero_wisp'] = -0.45,
+        
         ['npc_dota_hero_antimage'] = -0.47,
         ['npc_dota_hero_ursa'] = -0.48,
         ['npc_dota_hero_clinkz'] = -0.49,
@@ -14205,14 +14205,14 @@ local heroList = {
         ['npc_dota_hero_arc_warden'] = -0.57,
         ['npc_dota_hero_keeper_of_the_light'] = -0.58,
         ['npc_dota_hero_shadow_demon'] = -0.58,
-        ['npc_dota_hero_visage'] = -0.6,
+        
         ['npc_dota_hero_broodmother'] = -0.7,
-        ['npc_dota_hero_brewmaster'] = -0.7,
+        
         ['npc_dota_hero_nyx_assassin'] = -0.78,
         ['npc_dota_hero_obsidian_destroyer'] = -0.79,
         ['npc_dota_hero_huskar'] = -0.87,
         ['npc_dota_hero_skeleton_king'] = -0.92,
-        ['npc_dota_hero_lone_druid'] = -0.93,
+        
         ['npc_dota_hero_phantom_assassin'] = -1.12,
         ['npc_dota_hero_spirit_breaker'] = -1.13,
         ['npc_dota_hero_skywrath_mage'] = -1.14,
@@ -14220,7 +14220,7 @@ local heroList = {
         ['npc_dota_hero_pudge'] = -1.28,
         ['npc_dota_hero_slark'] = -1.34,
         ['npc_dota_hero_invoker'] = -1.5,
-        ['npc_dota_hero_rubick'] = -1.71,
+        
         ['npc_dota_hero_oracle'] = -1.93,
         ['npc_dota_hero_lycan'] = -1.98,
         ['npc_dota_hero_abaddon'] = -2.02,
@@ -14242,13 +14242,13 @@ local heroList = {
         ['npc_dota_hero_ancient_apparition'] = 1.63,
         ['npc_dota_hero_naga_siren'] = 1.62,
         ['npc_dota_hero_antimage'] = 1.57,
-        ['npc_dota_hero_rubick'] = 1.41,
+        
         ['npc_dota_hero_pugna'] = 1.38,
         ['npc_dota_hero_weaver'] = 1.29,
         ['npc_dota_hero_marci'] = 1.22,
         ['npc_dota_hero_enchantress'] = 1.22,
         ['npc_dota_hero_faceless_void'] = 1.19,
-        ['npc_dota_hero_pangolier'] = 1.18,
+        
         ['npc_dota_hero_monkey_king'] = 1.18,
         ['npc_dota_hero_morphling'] = 1.17,
         ['npc_dota_hero_troll_warlord'] = 1.14,
@@ -14303,7 +14303,7 @@ local heroList = {
         ['npc_dota_hero_vengefulspirit'] = -0.02,
         ['npc_dota_hero_invoker'] = -0.03,
         ['npc_dota_hero_techies'] = -0.05,
-        ['npc_dota_hero_brewmaster'] = -0.07,
+        
         ['npc_dota_hero_doom_bringer'] = -0.13,
         ['npc_dota_hero_arc_warden'] = -0.14,
         ['npc_dota_hero_queenofpain'] = -0.16,
@@ -14313,10 +14313,10 @@ local heroList = {
         ['npc_dota_hero_enigma'] = -0.21,
         ['npc_dota_hero_spirit_breaker'] = -0.22,
         ['npc_dota_hero_axe'] = -0.23,
-        ['npc_dota_hero_lone_druid'] = -0.27,
+        
         ['npc_dota_hero_sven'] = -0.27,
         ['npc_dota_hero_bane'] = -0.28,
-        ['npc_dota_hero_wisp'] = -0.37,
+        
         ['npc_dota_hero_drow_ranger'] = -0.49,
         ['npc_dota_hero_shadow_shaman'] = -0.51,
         ['npc_dota_hero_huskar'] = -0.56,
@@ -14327,18 +14327,18 @@ local heroList = {
         ['npc_dota_hero_treant'] = -0.78,
         ['npc_dota_hero_night_stalker'] = -0.78,
         ['npc_dota_hero_crystal_maiden'] = -0.81,
-        ['npc_dota_hero_tusk'] = -0.85,
+        
         ['npc_dota_hero_zuus'] = -0.86,
         ['npc_dota_hero_mars'] = -0.88,
         ['npc_dota_hero_obsidian_destroyer'] = -0.89,
         ['npc_dota_hero_ringmaster'] = -0.9,
         ['npc_dota_hero_beastmaster'] = -0.92,
-        ['npc_dota_hero_puck'] = -0.99,
+        
         ['npc_dota_hero_primal_beast'] = -1.16,
         ['npc_dota_hero_lich'] = -1.21,
         ['npc_dota_hero_pudge'] = -1.41,
         ['npc_dota_hero_shadow_demon'] = -1.53,
-        ['npc_dota_hero_visage'] = -1.59,
+        
         ['npc_dota_hero_ursa'] = -1.6,
         ['npc_dota_hero_tidehunter'] = -1.6,
         ['npc_dota_hero_winter_wyvern'] = -1.72,
@@ -14369,7 +14369,7 @@ local heroList = {
         ['npc_dota_hero_chaos_knight'] = 2.02,
         ['npc_dota_hero_razor'] = 2.02,
         ['npc_dota_hero_venomancer'] = 2.02,
-        ['npc_dota_hero_brewmaster'] = 2,
+        
         ['npc_dota_hero_windrunner'] = 1.98,
         ['npc_dota_hero_slardar'] = 1.71,
         ['npc_dota_hero_templar_assassin'] = 1.7,
@@ -14391,9 +14391,9 @@ local heroList = {
         ['npc_dota_hero_batrider'] = 0.8,
         ['npc_dota_hero_omniknight'] = 0.73,
         ['npc_dota_hero_vengefulspirit'] = 0.7,
-        ['npc_dota_hero_visage'] = 0.7,
+        
         ['npc_dota_hero_beastmaster'] = 0.66,
-        ['npc_dota_hero_tusk'] = 0.63,
+        
         ['npc_dota_hero_dark_willow'] = 0.61,
         ['npc_dota_hero_drow_ranger'] = 0.6,
         ['npc_dota_hero_lion'] = 0.53,
@@ -14412,7 +14412,7 @@ local heroList = {
         ['npc_dota_hero_crystal_maiden'] = 0.23,
         ['npc_dota_hero_tinker'] = 0.22,
         ['npc_dota_hero_bounty_hunter'] = 0.21,
-        ['npc_dota_hero_lone_druid'] = 0.19,
+        
         ['npc_dota_hero_storm_spirit'] = 0.12,
         ['npc_dota_hero_dragon_knight'] = 0.12,
         ['npc_dota_hero_shadow_demon'] = 0.12,
@@ -14422,14 +14422,14 @@ local heroList = {
         ['npc_dota_hero_spirit_breaker'] = 0.02,
         ['npc_dota_hero_skywrath_mage'] = 0.02,
         ['npc_dota_hero_monkey_king'] = 0,
-        ['npc_dota_hero_pangolier'] = -0.03,
+        
         ['npc_dota_hero_luna'] = -0.05,
         ['npc_dota_hero_lich'] = -0.06,
         ['npc_dota_hero_earthshaker'] = -0.06,
         ['npc_dota_hero_phoenix'] = -0.08,
         ['npc_dota_hero_obsidian_destroyer'] = -0.08,
         ['npc_dota_hero_lycan'] = -0.09,
-        ['npc_dota_hero_wisp'] = -0.09,
+        
         ['npc_dota_hero_treant'] = -0.11,
         ['npc_dota_hero_keeper_of_the_light'] = -0.18,
         ['npc_dota_hero_invoker'] = -0.27,
@@ -14438,7 +14438,7 @@ local heroList = {
         ['npc_dota_hero_huskar'] = -0.33,
         ['npc_dota_hero_chen'] = -0.42,
         ['npc_dota_hero_rattletrap'] = -0.42,
-        ['npc_dota_hero_puck'] = -0.43,
+        
         ['npc_dota_hero_bloodseeker'] = -0.46,
         ['npc_dota_hero_ember_spirit'] = -0.47,
         ['npc_dota_hero_pugna'] = -0.47,
@@ -14470,7 +14470,7 @@ local heroList = {
         ['npc_dota_hero_elder_titan'] = -1.39,
         ['npc_dota_hero_ancient_apparition'] = -1.45,
         ['npc_dota_hero_nyx_assassin'] = -1.63,
-        ['npc_dota_hero_rubick'] = -1.82,
+        
         ['npc_dota_hero_dawnbreaker'] = -1.82,
         ['npc_dota_hero_juggernaut'] = -1.87,
         ['npc_dota_hero_antimage'] = -1.96,
@@ -14486,7 +14486,7 @@ local heroList = {
         ['npc_dota_hero_naga_siren'] = 2.22,
         ['npc_dota_hero_terrorblade'] = 2.17,
         ['npc_dota_hero_chaos_knight'] = 2.08,
-        ['npc_dota_hero_brewmaster'] = 1.76,
+        
         ['npc_dota_hero_lich'] = 1.64,
         ['npc_dota_hero_sand_king'] = 1.62,
         ['npc_dota_hero_meepo'] = 1.59,
@@ -14499,7 +14499,7 @@ local heroList = {
         ['npc_dota_hero_beastmaster'] = 1.29,
         ['npc_dota_hero_enchantress'] = 1.27,
         ['npc_dota_hero_muerta'] = 1.24,
-        ['npc_dota_hero_lone_druid'] = 1.21,
+        
         ['npc_dota_hero_dark_seer'] = 1.2,
         ['npc_dota_hero_elder_titan'] = 1.18,
         ['npc_dota_hero_broodmother'] = 1.15,
@@ -14512,20 +14512,20 @@ local heroList = {
         ['npc_dota_hero_primal_beast'] = 0.88,
         ['npc_dota_hero_arc_warden'] = 0.87,
         ['npc_dota_hero_crystal_maiden'] = 0.83,
-        ['npc_dota_hero_puck'] = 0.81,
+        
         ['npc_dota_hero_lycan'] = 0.8,
         ['npc_dota_hero_phoenix'] = 0.79,
         ['npc_dota_hero_spectre'] = 0.78,
-        ['npc_dota_hero_tusk'] = 0.78,
+        
         ['npc_dota_hero_omniknight'] = 0.75,
         ['npc_dota_hero_ember_spirit'] = 0.67,
-        ['npc_dota_hero_visage'] = 0.66,
+        
         ['npc_dota_hero_medusa'] = 0.62,
         ['npc_dota_hero_storm_spirit'] = 0.61,
         ['npc_dota_hero_ringmaster'] = 0.61,
         ['npc_dota_hero_jakiro'] = 0.61,
         ['npc_dota_hero_gyrocopter'] = 0.59,
-        ['npc_dota_hero_rubick'] = 0.56,
+        
         ['npc_dota_hero_bloodseeker'] = 0.54,
         ['npc_dota_hero_kunkka'] = 0.53,
         ['npc_dota_hero_earth_spirit'] = 0.51,
@@ -14563,7 +14563,7 @@ local heroList = {
         ['npc_dota_hero_earthshaker'] = 0.04,
         ['npc_dota_hero_pugna'] = 0.03,
         ['npc_dota_hero_undying'] = 0.02,
-        ['npc_dota_hero_pangolier'] = -0.01,
+        
         ['npc_dota_hero_skeleton_king'] = -0.01,
         ['npc_dota_hero_razor'] = -0.03,
         ['npc_dota_hero_slark'] = -0.04,
@@ -14573,7 +14573,7 @@ local heroList = {
         ['npc_dota_hero_hoodwink'] = -0.13,
         ['npc_dota_hero_void_spirit'] = -0.13,
         ['npc_dota_hero_windrunner'] = -0.17,
-        ['npc_dota_hero_wisp'] = -0.17,
+        
         ['npc_dota_hero_phantom_assassin'] = -0.2,
         ['npc_dota_hero_grimstroke'] = -0.22,
         ['npc_dota_hero_life_stealer'] = -0.24,
@@ -14620,7 +14620,7 @@ local heroList = {
         ['npc_dota_hero_sniper'] = 1.68,
         ['npc_dota_hero_weaver'] = 1.56,
         ['npc_dota_hero_enigma'] = 1.53,
-        ['npc_dota_hero_brewmaster'] = 1.53,
+        
         ['npc_dota_hero_juggernaut'] = 1.47,
         ['npc_dota_hero_lycan'] = 1.46,
         ['npc_dota_hero_arc_warden'] = 1.44,
@@ -14656,10 +14656,10 @@ local heroList = {
         ['npc_dota_hero_hoodwink'] = 0.4,
         ['npc_dota_hero_ancient_apparition'] = 0.35,
         ['npc_dota_hero_medusa'] = 0.31,
-        ['npc_dota_hero_rubick'] = 0.28,
+        
         ['npc_dota_hero_abaddon'] = 0.23,
         ['npc_dota_hero_skywrath_mage'] = 0.17,
-        ['npc_dota_hero_puck'] = 0.16,
+        
         ['npc_dota_hero_invoker'] = 0.12,
         ['npc_dota_hero_bane'] = 0.08,
         ['npc_dota_hero_keeper_of_the_light'] = 0.06,
@@ -14673,7 +14673,7 @@ local heroList = {
         ['npc_dota_hero_shadow_shaman'] = -0.16,
         ['npc_dota_hero_life_stealer'] = -0.16,
         ['npc_dota_hero_nyx_assassin'] = -0.16,
-        ['npc_dota_hero_pangolier'] = -0.17,
+        
         ['npc_dota_hero_bloodseeker'] = -0.18,
         ['npc_dota_hero_ember_spirit'] = -0.18,
         ['npc_dota_hero_chen'] = -0.23,
@@ -14684,8 +14684,8 @@ local heroList = {
         ['npc_dota_hero_drow_ranger'] = -0.37,
         ['npc_dota_hero_treant'] = -0.4,
         ['npc_dota_hero_primal_beast'] = -0.42,
-        ['npc_dota_hero_visage'] = -0.43,
-        ['npc_dota_hero_tusk'] = -0.44,
+        
+        
         ['npc_dota_hero_dazzle'] = -0.46,
         ['npc_dota_hero_obsidian_destroyer'] = -0.46,
         ['npc_dota_hero_chaos_knight'] = -0.49,
@@ -14703,7 +14703,7 @@ local heroList = {
         ['npc_dota_hero_necrolyte'] = -0.77,
         ['npc_dota_hero_earthshaker'] = -0.85,
         ['npc_dota_hero_dawnbreaker'] = -0.86,
-        ['npc_dota_hero_wisp'] = -0.91,
+        
         ['npc_dota_hero_doom_bringer'] = -0.91,
         ['npc_dota_hero_tidehunter'] = -0.94,
         ['npc_dota_hero_winter_wyvern'] = -0.94,
@@ -14732,7 +14732,7 @@ local heroList = {
         ['npc_dota_hero_rattletrap'] = -1.96,
         ['npc_dota_hero_ursa'] = -2.03,
         ['npc_dota_hero_kunkka'] = -2.29,
-        ['npc_dota_hero_lone_druid'] = -2.59,
+        
         ['npc_dota_hero_axe'] = -2.78,
     },
     ['npc_dota_hero_viper'] = {
@@ -14743,7 +14743,7 @@ local heroList = {
         ['npc_dota_hero_dark_seer'] = 3.22,
         ['npc_dota_hero_morphling'] = 3.02,
         ['npc_dota_hero_tinker'] = 2.62,
-        ['npc_dota_hero_brewmaster'] = 2.57,
+        
         ['npc_dota_hero_arc_warden'] = 2.51,
         ['npc_dota_hero_windrunner'] = 2.45,
         ['npc_dota_hero_medusa'] = 2.31,
@@ -14762,7 +14762,7 @@ local heroList = {
         ['npc_dota_hero_riki'] = 1.18,
         ['npc_dota_hero_storm_spirit'] = 1,
         ['npc_dota_hero_mars'] = 0.91,
-        ['npc_dota_hero_pangolier'] = 0.9,
+        
         ['npc_dota_hero_chen'] = 0.9,
         ['npc_dota_hero_marci'] = 0.89,
         ['npc_dota_hero_shadow_shaman'] = 0.86,
@@ -14779,7 +14779,7 @@ local heroList = {
         ['npc_dota_hero_troll_warlord'] = 0.4,
         ['npc_dota_hero_muerta'] = 0.34,
         ['npc_dota_hero_magnataur'] = 0.32,
-        ['npc_dota_hero_puck'] = 0.31,
+        
         ['npc_dota_hero_meepo'] = 0.31,
         ['npc_dota_hero_sand_king'] = 0.29,
         ['npc_dota_hero_enchantress'] = 0.27,
@@ -14789,10 +14789,10 @@ local heroList = {
         ['npc_dota_hero_snapfire'] = 0.22,
         ['npc_dota_hero_death_prophet'] = 0.22,
         ['npc_dota_hero_bane'] = 0.18,
-        ['npc_dota_hero_rubick'] = 0.09,
+        
         ['npc_dota_hero_obsidian_destroyer'] = 0.05,
         ['npc_dota_hero_grimstroke'] = 0.05,
-        ['npc_dota_hero_tusk'] = 0.04,
+        
         ['npc_dota_hero_dark_willow'] = 0.04,
         ['npc_dota_hero_jakiro'] = 0.03,
         ['npc_dota_hero_skywrath_mage'] = 0.02,
@@ -14823,7 +14823,7 @@ local heroList = {
         ['npc_dota_hero_dawnbreaker'] = -0.58,
         ['npc_dota_hero_omniknight'] = -0.6,
         ['npc_dota_hero_faceless_void'] = -0.6,
-        ['npc_dota_hero_visage'] = -0.65,
+        
         ['npc_dota_hero_abaddon'] = -0.71,
         ['npc_dota_hero_abyssal_underlord'] = -0.75,
         ['npc_dota_hero_nevermore'] = -0.75,
@@ -14841,7 +14841,7 @@ local heroList = {
         ['npc_dota_hero_axe'] = -1.09,
         ['npc_dota_hero_sven'] = -1.09,
         ['npc_dota_hero_treant'] = -1.1,
-        ['npc_dota_hero_wisp'] = -1.26,
+        
         ['npc_dota_hero_disruptor'] = -1.3,
         ['npc_dota_hero_winter_wyvern'] = -1.38,
         ['npc_dota_hero_monkey_king'] = -1.38,
@@ -14857,7 +14857,7 @@ local heroList = {
         ['npc_dota_hero_batrider'] = -2.04,
         ['npc_dota_hero_necrolyte'] = -2.11,
         ['npc_dota_hero_tiny'] = -2.2,
-        ['npc_dota_hero_lone_druid'] = -2.43,
+        
         ['npc_dota_hero_dragon_knight'] = -3.68,
         ['npc_dota_hero_bristleback'] = -4.75,
         ['npc_dota_hero_huskar'] = -6.66,
@@ -14872,7 +14872,7 @@ local heroList = {
         ['npc_dota_hero_axe'] = 2.59,
         ['npc_dota_hero_riki'] = 2.58,
         ['npc_dota_hero_marci'] = 2.45,
-        ['npc_dota_hero_pangolier'] = 2.31,
+        
         ['npc_dota_hero_razor'] = 2.3,
         ['npc_dota_hero_phantom_assassin'] = 2.11,
         ['npc_dota_hero_windrunner'] = 2.06,
@@ -14890,11 +14890,11 @@ local heroList = {
         ['npc_dota_hero_jakiro'] = 1.39,
         ['npc_dota_hero_treant'] = 1.32,
         ['npc_dota_hero_shadow_demon'] = 1.2,
-        ['npc_dota_hero_wisp'] = 1.13,
+        
         ['npc_dota_hero_crystal_maiden'] = 1.08,
         ['npc_dota_hero_ember_spirit'] = 1.01,
         ['npc_dota_hero_sniper'] = 1,
-        ['npc_dota_hero_brewmaster'] = 0.97,
+        
         ['npc_dota_hero_kunkka'] = 0.94,
         ['npc_dota_hero_sven'] = 0.92,
         ['npc_dota_hero_enchantress'] = 0.91,
@@ -14915,9 +14915,9 @@ local heroList = {
         ['npc_dota_hero_snapfire'] = 0.53,
         ['npc_dota_hero_enigma'] = 0.51,
         ['npc_dota_hero_keeper_of_the_light'] = 0.47,
-        ['npc_dota_hero_tusk'] = 0.43,
+        
         ['npc_dota_hero_death_prophet'] = 0.42,
-        ['npc_dota_hero_lone_druid'] = 0.35,
+        
         ['npc_dota_hero_venomancer'] = 0.34,
         ['npc_dota_hero_alchemist'] = 0.32,
         ['npc_dota_hero_void_spirit'] = 0.29,
@@ -14925,7 +14925,7 @@ local heroList = {
         ['npc_dota_hero_magnataur'] = 0.28,
         ['npc_dota_hero_dazzle'] = 0.26,
         ['npc_dota_hero_troll_warlord'] = 0.25,
-        ['npc_dota_hero_puck'] = 0.18,
+        
         ['npc_dota_hero_antimage'] = 0.16,
         ['npc_dota_hero_centaur'] = 0.15,
         ['npc_dota_hero_arc_warden'] = 0.15,
@@ -14975,7 +14975,7 @@ local heroList = {
         ['npc_dota_hero_oracle'] = -1.12,
         ['npc_dota_hero_rattletrap'] = -1.23,
         ['npc_dota_hero_morphling'] = -1.35,
-        ['npc_dota_hero_rubick'] = -1.36,
+        
         ['npc_dota_hero_pugna'] = -1.39,
         ['npc_dota_hero_night_stalker'] = -1.48,
         ['npc_dota_hero_tinker'] = -1.59,
@@ -14992,7 +14992,7 @@ local heroList = {
     ['npc_dota_hero_void_spirit'] = {
         ['npc_dota_hero_meepo'] = 5.02,
         ['npc_dota_hero_huskar'] = 3.93,
-        ['npc_dota_hero_lone_druid'] = 3.49,
+        
         ['npc_dota_hero_lycan'] = 2.76,
         ['npc_dota_hero_troll_warlord'] = 2.73,
         ['npc_dota_hero_night_stalker'] = 2.64,
@@ -15000,7 +15000,7 @@ local heroList = {
         ['npc_dota_hero_broodmother'] = 2.41,
         ['npc_dota_hero_abyssal_underlord'] = 2.35,
         ['npc_dota_hero_sven'] = 2.33,
-        ['npc_dota_hero_wisp'] = 2.15,
+        
         ['npc_dota_hero_chen'] = 2.01,
         ['npc_dota_hero_riki'] = 1.98,
         ['npc_dota_hero_ember_spirit'] = 1.98,
@@ -15035,7 +15035,7 @@ local heroList = {
         ['npc_dota_hero_shadow_shaman'] = 0.83,
         ['npc_dota_hero_tiny'] = 0.81,
         ['npc_dota_hero_bane'] = 0.8,
-        ['npc_dota_hero_pangolier'] = 0.79,
+        
         ['npc_dota_hero_disruptor'] = 0.79,
         ['npc_dota_hero_skeleton_king'] = 0.78,
         ['npc_dota_hero_death_prophet'] = 0.78,
@@ -15058,8 +15058,8 @@ local heroList = {
         ['npc_dota_hero_crystal_maiden'] = 0.37,
         ['npc_dota_hero_warlock'] = 0.35,
         ['npc_dota_hero_vengefulspirit'] = 0.21,
-        ['npc_dota_hero_brewmaster'] = 0.2,
-        ['npc_dota_hero_tusk'] = 0.16,
+        
+        
         ['npc_dota_hero_jakiro'] = 0.11,
         ['npc_dota_hero_spirit_breaker'] = 0.11,
         ['npc_dota_hero_dark_seer'] = 0.09,
@@ -15068,14 +15068,14 @@ local heroList = {
         ['npc_dota_hero_obsidian_destroyer'] = -0.05,
         ['npc_dota_hero_venomancer'] = -0.1,
         ['npc_dota_hero_windrunner'] = -0.11,
-        ['npc_dota_hero_rubick'] = -0.12,
+        
         ['npc_dota_hero_silencer'] = -0.14,
         ['npc_dota_hero_undying'] = -0.16,
         ['npc_dota_hero_ringmaster'] = -0.17,
         ['npc_dota_hero_dark_willow'] = -0.2,
         ['npc_dota_hero_lich'] = -0.23,
         ['npc_dota_hero_faceless_void'] = -0.25,
-        ['npc_dota_hero_visage'] = -0.29,
+        
         ['npc_dota_hero_furion'] = -0.31,
         ['npc_dota_hero_leshrac'] = -0.32,
         ['npc_dota_hero_viper'] = -0.34,
@@ -15110,7 +15110,7 @@ local heroList = {
         ['npc_dota_hero_queenofpain'] = -1.62,
         ['npc_dota_hero_sniper'] = -1.77,
         ['npc_dota_hero_zuus'] = -1.86,
-        ['npc_dota_hero_puck'] = -2,
+        
         ['npc_dota_hero_ancient_apparition'] = -2.28,
         ['npc_dota_hero_invoker'] = -2.32,
         ['npc_dota_hero_mars'] = -2.33,
@@ -15123,7 +15123,7 @@ local heroList = {
         ['npc_dota_hero_sven'] = 1.97,
         ['npc_dota_hero_morphling'] = 1.85,
         ['npc_dota_hero_nevermore'] = 1.83,
-        ['npc_dota_hero_pangolier'] = 1.83,
+        
         ['npc_dota_hero_phoenix'] = 1.78,
         ['npc_dota_hero_sand_king'] = 1.7,
         ['npc_dota_hero_jakiro'] = 1.52,
@@ -15158,7 +15158,7 @@ local heroList = {
         ['npc_dota_hero_clinkz'] = 0.75,
         ['npc_dota_hero_magnataur'] = 0.74,
         ['npc_dota_hero_windrunner'] = 0.74,
-        ['npc_dota_hero_tusk'] = 0.72,
+        
         ['npc_dota_hero_muerta'] = 0.71,
         ['npc_dota_hero_earth_spirit'] = 0.71,
         ['npc_dota_hero_invoker'] = 0.7,
@@ -15179,9 +15179,9 @@ local heroList = {
         ['npc_dota_hero_razor'] = 0.33,
         ['npc_dota_hero_enchantress'] = 0.31,
         ['npc_dota_hero_abaddon'] = 0.29,
-        ['npc_dota_hero_wisp'] = 0.27,
+        
         ['npc_dota_hero_venomancer'] = 0.25,
-        ['npc_dota_hero_puck'] = 0.23,
+        
         ['npc_dota_hero_crystal_maiden'] = 0.2,
         ['npc_dota_hero_silencer'] = 0.17,
         ['npc_dota_hero_undying'] = 0.17,
@@ -15190,7 +15190,7 @@ local heroList = {
         ['npc_dota_hero_disruptor'] = 0.12,
         ['npc_dota_hero_hoodwink'] = 0.06,
         ['npc_dota_hero_death_prophet'] = 0.03,
-        ['npc_dota_hero_rubick'] = -0.04,
+        
         ['npc_dota_hero_dragon_knight'] = -0.04,
         ['npc_dota_hero_mars'] = -0.11,
         ['npc_dota_hero_juggernaut'] = -0.11,
@@ -15199,7 +15199,7 @@ local heroList = {
         ['npc_dota_hero_pugna'] = -0.15,
         ['npc_dota_hero_dazzle'] = -0.17,
         ['npc_dota_hero_obsidian_destroyer'] = -0.19,
-        ['npc_dota_hero_brewmaster'] = -0.19,
+        
         ['npc_dota_hero_void_spirit'] = -0.25,
         ['npc_dota_hero_tiny'] = -0.26,
         ['npc_dota_hero_pudge'] = -0.3,
@@ -15228,7 +15228,7 @@ local heroList = {
         ['npc_dota_hero_shadow_shaman'] = -1.26,
         ['npc_dota_hero_beastmaster'] = -1.51,
         ['npc_dota_hero_centaur'] = -1.55,
-        ['npc_dota_hero_visage'] = -1.56,
+        
         ['npc_dota_hero_luna'] = -1.71,
         ['npc_dota_hero_ogre_magi'] = -1.85,
         ['npc_dota_hero_spectre'] = -1.87,
@@ -15237,7 +15237,7 @@ local heroList = {
         ['npc_dota_hero_meepo'] = -2.77,
         ['npc_dota_hero_naga_siren'] = -2.96,
         ['npc_dota_hero_enigma'] = -3.07,
-        ['npc_dota_hero_lone_druid'] = -3.08,
+        
         ['npc_dota_hero_terrorblade'] = -3.18,
         ['npc_dota_hero_skeleton_king'] = -3.27,
         ['npc_dota_hero_chaos_knight'] = -3.75,
@@ -15245,13 +15245,13 @@ local heroList = {
     },
     ['npc_dota_hero_weaver'] = {
         ['npc_dota_hero_faceless_void'] = 3.9,
-        ['npc_dota_hero_rubick'] = 2.54,
+        
         ['npc_dota_hero_morphling'] = 2.46,
         ['npc_dota_hero_phantom_lancer'] = 2.44,
         ['npc_dota_hero_naga_siren'] = 2.39,
         ['npc_dota_hero_nyx_assassin'] = 2.37,
         ['npc_dota_hero_riki'] = 2.17,
-        ['npc_dota_hero_puck'] = 2.17,
+        
         ['npc_dota_hero_drow_ranger'] = 2.08,
         ['npc_dota_hero_dark_willow'] = 2.01,
         ['npc_dota_hero_axe'] = 1.86,
@@ -15311,7 +15311,7 @@ local heroList = {
         ['npc_dota_hero_disruptor'] = -0.16,
         ['npc_dota_hero_alchemist'] = -0.2,
         ['npc_dota_hero_pugna'] = -0.29,
-        ['npc_dota_hero_tusk'] = -0.31,
+        
         ['npc_dota_hero_witch_doctor'] = -0.36,
         ['npc_dota_hero_windrunner'] = -0.41,
         ['npc_dota_hero_beastmaster'] = -0.48,
@@ -15321,7 +15321,7 @@ local heroList = {
         ['npc_dota_hero_queenofpain'] = -0.52,
         ['npc_dota_hero_doom_bringer'] = -0.59,
         ['npc_dota_hero_snapfire'] = -0.6,
-        ['npc_dota_hero_wisp'] = -0.6,
+        
         ['npc_dota_hero_monkey_king'] = -0.65,
         ['npc_dota_hero_tiny'] = -0.69,
         ['npc_dota_hero_treant'] = -0.69,
@@ -15333,8 +15333,8 @@ local heroList = {
         ['npc_dota_hero_jakiro'] = -0.9,
         ['npc_dota_hero_phoenix'] = -0.92,
         ['npc_dota_hero_omniknight'] = -0.93,
-        ['npc_dota_hero_visage'] = -0.96,
-        ['npc_dota_hero_lone_druid'] = -0.97,
+        
+        
         ['npc_dota_hero_lina'] = -1.02,
         ['npc_dota_hero_phantom_assassin'] = -1.06,
         ['npc_dota_hero_marci'] = -1.15,
@@ -15358,7 +15358,7 @@ local heroList = {
         ['npc_dota_hero_tidehunter'] = -1.71,
         ['npc_dota_hero_juggernaut'] = -1.78,
         ['npc_dota_hero_lich'] = -1.83,
-        ['npc_dota_hero_pangolier'] = -1.88,
+        
         ['npc_dota_hero_shredder'] = -1.91,
         ['npc_dota_hero_pudge'] = -1.95,
         ['npc_dota_hero_winter_wyvern'] = -1.96,
@@ -15366,7 +15366,7 @@ local heroList = {
         ['npc_dota_hero_ursa'] = -2.17,
         ['npc_dota_hero_ancient_apparition'] = -2.2,
         ['npc_dota_hero_dark_seer'] = -2.28,
-        ['npc_dota_hero_brewmaster'] = -2.35,
+        
         ['npc_dota_hero_warlock'] = -2.54,
         ['npc_dota_hero_razor'] = -2.6,
     },
@@ -15383,7 +15383,7 @@ local heroList = {
         ['npc_dota_hero_bloodseeker'] = 1.09,
         ['npc_dota_hero_queenofpain'] = 1.04,
         ['npc_dota_hero_bane'] = 1.03,
-        ['npc_dota_hero_puck'] = 1.03,
+        
         ['npc_dota_hero_ogre_magi'] = 0.99,
         ['npc_dota_hero_tiny'] = 0.96,
         ['npc_dota_hero_spirit_breaker'] = 0.9,
@@ -15408,17 +15408,17 @@ local heroList = {
         ['npc_dota_hero_enigma'] = 0.23,
         ['npc_dota_hero_naga_siren'] = 0.21,
         ['npc_dota_hero_primal_beast'] = 0.21,
-        ['npc_dota_hero_rubick'] = 0.2,
+        
         ['npc_dota_hero_lion'] = 0.2,
         ['npc_dota_hero_legion_commander'] = 0.19,
-        ['npc_dota_hero_pangolier'] = 0.12,
+        
         ['npc_dota_hero_tidehunter'] = 0.1,
         ['npc_dota_hero_kunkka'] = 0.1,
         ['npc_dota_hero_muerta'] = 0.1,
         ['npc_dota_hero_dragon_knight'] = 0.08,
         ['npc_dota_hero_vengefulspirit'] = 0.07,
         ['npc_dota_hero_templar_assassin'] = 0.04,
-        ['npc_dota_hero_tusk'] = 0,
+        
         ['npc_dota_hero_phantom_lancer'] = -0.04,
         ['npc_dota_hero_obsidian_destroyer'] = -0.08,
         ['npc_dota_hero_antimage'] = -0.14,
@@ -15453,7 +15453,7 @@ local heroList = {
         ['npc_dota_hero_disruptor'] = -0.6,
         ['npc_dota_hero_winter_wyvern'] = -0.61,
         ['npc_dota_hero_sand_king'] = -0.63,
-        ['npc_dota_hero_brewmaster'] = -0.65,
+        
         ['npc_dota_hero_sven'] = -0.66,
         ['npc_dota_hero_sniper'] = -0.67,
         ['npc_dota_hero_grimstroke'] = -0.7,
@@ -15483,7 +15483,7 @@ local heroList = {
         ['npc_dota_hero_lina'] = -1.41,
         ['npc_dota_hero_marci'] = -1.49,
         ['npc_dota_hero_ancient_apparition'] = -1.57,
-        ['npc_dota_hero_wisp'] = -1.6,
+        
         ['npc_dota_hero_monkey_king'] = -1.65,
         ['npc_dota_hero_ringmaster'] = -1.67,
         ['npc_dota_hero_venomancer'] = -1.73,
@@ -15491,11 +15491,11 @@ local heroList = {
         ['npc_dota_hero_medusa'] = -1.84,
         ['npc_dota_hero_troll_warlord'] = -1.9,
         ['npc_dota_hero_ursa'] = -1.99,
-        ['npc_dota_hero_visage'] = -2.29,
+        
         ['npc_dota_hero_elder_titan'] = -2.37,
         ['npc_dota_hero_viper'] = -2.44,
         ['npc_dota_hero_huskar'] = -2.95,
-        ['npc_dota_hero_lone_druid'] = -3.9,
+        
     },
     ['npc_dota_hero_winter_wyvern'] = {
         ['npc_dota_hero_shredder'] = 3.41,
@@ -15540,7 +15540,7 @@ local heroList = {
         ['npc_dota_hero_warlock'] = 0.51,
         ['npc_dota_hero_abyssal_underlord'] = 0.5,
         ['npc_dota_hero_pudge'] = 0.48,
-        ['npc_dota_hero_puck'] = 0.46,
+        
         ['npc_dota_hero_nyx_assassin'] = 0.43,
         ['npc_dota_hero_abaddon'] = 0.43,
         ['npc_dota_hero_faceless_void'] = 0.42,
@@ -15563,7 +15563,7 @@ local heroList = {
         ['npc_dota_hero_riki'] = -0.04,
         ['npc_dota_hero_furion'] = -0.06,
         ['npc_dota_hero_nevermore'] = -0.06,
-        ['npc_dota_hero_brewmaster'] = -0.06,
+        
         ['npc_dota_hero_invoker'] = -0.13,
         ['npc_dota_hero_bane'] = -0.13,
         ['npc_dota_hero_dragon_knight'] = -0.13,
@@ -15578,7 +15578,7 @@ local heroList = {
         ['npc_dota_hero_shadow_demon'] = -0.33,
         ['npc_dota_hero_bloodseeker'] = -0.35,
         ['npc_dota_hero_elder_titan'] = -0.39,
-        ['npc_dota_hero_rubick'] = -0.43,
+        
         ['npc_dota_hero_life_stealer'] = -0.44,
         ['npc_dota_hero_bristleback'] = -0.45,
         ['npc_dota_hero_omniknight'] = -0.58,
@@ -15598,7 +15598,7 @@ local heroList = {
         ['npc_dota_hero_arc_warden'] = -0.93,
         ['npc_dota_hero_drow_ranger'] = -0.98,
         ['npc_dota_hero_void_spirit'] = -1,
-        ['npc_dota_hero_wisp'] = -1.05,
+        
         ['npc_dota_hero_ursa'] = -1.05,
         ['npc_dota_hero_skeleton_king'] = -1.14,
         ['npc_dota_hero_kez'] = -1.2,
@@ -15607,10 +15607,10 @@ local heroList = {
         ['npc_dota_hero_templar_assassin'] = -1.27,
         ['npc_dota_hero_sven'] = -1.3,
         ['npc_dota_hero_magnataur'] = -1.37,
-        ['npc_dota_hero_tusk'] = -1.38,
+        
         ['npc_dota_hero_enigma'] = -1.52,
         ['npc_dota_hero_vengefulspirit'] = -1.59,
-        ['npc_dota_hero_pangolier'] = -1.69,
+        
         ['npc_dota_hero_lycan'] = -1.79,
         ['npc_dota_hero_troll_warlord'] = -2.07,
         ['npc_dota_hero_medusa'] = -2.11,
@@ -15618,9 +15618,9 @@ local heroList = {
         ['npc_dota_hero_chaos_knight'] = -2.26,
         ['npc_dota_hero_broodmother'] = -2.45,
         ['npc_dota_hero_marci'] = -2.61,
-        ['npc_dota_hero_visage'] = -3.02,
+        
         ['npc_dota_hero_terrorblade'] = -3.31,
-        ['npc_dota_hero_lone_druid'] = -3.89,
+        
         ['npc_dota_hero_legion_commander'] = -3.93,
         ['npc_dota_hero_meepo'] = -6.94,
     },
@@ -15666,12 +15666,12 @@ local heroList = {
         ['npc_dota_hero_gyrocopter'] = 0.68,
         ['npc_dota_hero_broodmother'] = 0.66,
         ['npc_dota_hero_drow_ranger'] = 0.64,
-        ['npc_dota_hero_lone_druid'] = 0.61,
+        
         ['npc_dota_hero_weaver'] = 0.59,
         ['npc_dota_hero_hoodwink'] = 0.59,
         ['npc_dota_hero_mirana'] = 0.58,
         ['npc_dota_hero_kez'] = 0.56,
-        ['npc_dota_hero_pangolier'] = 0.56,
+        
         ['npc_dota_hero_leshrac'] = 0.55,
         ['npc_dota_hero_tiny'] = 0.53,
         ['npc_dota_hero_slark'] = 0.5,
@@ -15680,7 +15680,7 @@ local heroList = {
         ['npc_dota_hero_dark_seer'] = 0.46,
         ['npc_dota_hero_treant'] = 0.39,
         ['npc_dota_hero_dazzle'] = 0.38,
-        ['npc_dota_hero_tusk'] = 0.38,
+        
         ['npc_dota_hero_snapfire'] = 0.38,
         ['npc_dota_hero_bounty_hunter'] = 0.36,
         ['npc_dota_hero_ogre_magi'] = 0.36,
@@ -15713,18 +15713,18 @@ local heroList = {
         ['npc_dota_hero_necrolyte'] = -0.47,
         ['npc_dota_hero_shredder'] = -0.51,
         ['npc_dota_hero_ringmaster'] = -0.52,
-        ['npc_dota_hero_rubick'] = -0.55,
+        
         ['npc_dota_hero_pudge'] = -0.59,
         ['npc_dota_hero_silencer'] = -0.62,
         ['npc_dota_hero_queenofpain'] = -0.67,
         ['npc_dota_hero_skywrath_mage'] = -0.75,
         ['npc_dota_hero_rattletrap'] = -0.87,
         ['npc_dota_hero_morphling'] = -0.92,
-        ['npc_dota_hero_brewmaster'] = -1.05,
+        
         ['npc_dota_hero_tidehunter'] = -1.09,
         ['npc_dota_hero_clinkz'] = -1.12,
         ['npc_dota_hero_abaddon'] = -1.12,
-        ['npc_dota_hero_visage'] = -1.13,
+        
         ['npc_dota_hero_chen'] = -1.14,
         ['npc_dota_hero_furion'] = -1.17,
         ['npc_dota_hero_phoenix'] = -1.17,
@@ -15743,7 +15743,7 @@ local heroList = {
         ['npc_dota_hero_shadow_demon'] = -1.69,
         ['npc_dota_hero_life_stealer'] = -1.7,
         ['npc_dota_hero_skeleton_king'] = -1.79,
-        ['npc_dota_hero_puck'] = -1.87,
+        
         ['npc_dota_hero_night_stalker'] = -1.97,
         ['npc_dota_hero_antimage'] = -2.15,
         ['npc_dota_hero_void_spirit'] = -2.15,
@@ -15758,9 +15758,9 @@ local heroList = {
         ['npc_dota_hero_broodmother'] = 2.27,
         ['npc_dota_hero_riki'] = 2.18,
         ['npc_dota_hero_muerta'] = 2.02,
-        ['npc_dota_hero_pangolier'] = 1.87,
+        
         ['npc_dota_hero_chen'] = 1.86,
-        ['npc_dota_hero_puck'] = 1.8,
+        
         ['npc_dota_hero_morphling'] = 1.6,
         ['npc_dota_hero_hoodwink'] = 1.5,
         ['npc_dota_hero_phantom_assassin'] = 1.43,
@@ -15778,14 +15778,14 @@ local heroList = {
         ['npc_dota_hero_mirana'] = 1.14,
         ['npc_dota_hero_keeper_of_the_light'] = 1.12,
         ['npc_dota_hero_mars'] = 1.11,
-        ['npc_dota_hero_brewmaster'] = 1.07,
+        
         ['npc_dota_hero_ursa'] = 1.07,
-        ['npc_dota_hero_rubick'] = 1.03,
+        
         ['npc_dota_hero_furion'] = 0.95,
         ['npc_dota_hero_skywrath_mage'] = 0.88,
         ['npc_dota_hero_clinkz'] = 0.86,
         ['npc_dota_hero_invoker'] = 0.85,
-        ['npc_dota_hero_visage'] = 0.85,
+        
         ['npc_dota_hero_shadow_demon'] = 0.82,
         ['npc_dota_hero_lycan'] = 0.8,
         ['npc_dota_hero_lion'] = 0.77,
@@ -15793,7 +15793,7 @@ local heroList = {
         ['npc_dota_hero_ringmaster'] = 0.76,
         ['npc_dota_hero_skeleton_king'] = 0.75,
         ['npc_dota_hero_phoenix'] = 0.74,
-        ['npc_dota_hero_tusk'] = 0.74,
+        
         ['npc_dota_hero_pugna'] = 0.72,
         ['npc_dota_hero_earthshaker'] = 0.72,
         ['npc_dota_hero_elder_titan'] = 0.71,
@@ -15844,7 +15844,7 @@ local heroList = {
         ['npc_dota_hero_phantom_lancer'] = -0.29,
         ['npc_dota_hero_pudge'] = -0.33,
         ['npc_dota_hero_tinker'] = -0.33,
-        ['npc_dota_hero_wisp'] = -0.38,
+        
         ['npc_dota_hero_vengefulspirit'] = -0.4,
         ['npc_dota_hero_lich'] = -0.4,
         ['npc_dota_hero_earth_spirit'] = -0.49,
@@ -15858,7 +15858,7 @@ local heroList = {
         ['npc_dota_hero_huskar'] = -0.66,
         ['npc_dota_hero_juggernaut'] = -0.77,
         ['npc_dota_hero_crystal_maiden'] = -0.77,
-        ['npc_dota_hero_lone_druid'] = -0.79,
+        
         ['npc_dota_hero_rattletrap'] = -0.83,
         ['npc_dota_hero_primal_beast'] = -0.87,
         ['npc_dota_hero_luna'] = -0.91,
@@ -15892,9 +15892,9 @@ local heroList = {
         ['npc_dota_hero_void_spirit'] = 1.56,
         ['npc_dota_hero_life_stealer'] = 1.52,
         ['npc_dota_hero_spectre'] = 1.49,
-        ['npc_dota_hero_wisp'] = 1.47,
-        ['npc_dota_hero_brewmaster'] = 1.46,
-        ['npc_dota_hero_visage'] = 1.45,
+        
+        
+        
         ['npc_dota_hero_skywrath_mage'] = 1.36,
         ['npc_dota_hero_faceless_void'] = 1.33,
         ['npc_dota_hero_bristleback'] = 1.23,
@@ -15912,13 +15912,13 @@ local heroList = {
         ['npc_dota_hero_centaur'] = 0.87,
         ['npc_dota_hero_sven'] = 0.87,
         ['npc_dota_hero_necrolyte'] = 0.79,
-        ['npc_dota_hero_pangolier'] = 0.74,
+        
         ['npc_dota_hero_undying'] = 0.72,
         ['npc_dota_hero_skeleton_king'] = 0.71,
         ['npc_dota_hero_pugna'] = 0.71,
-        ['npc_dota_hero_tusk'] = 0.7,
+        
         ['npc_dota_hero_doom_bringer'] = 0.62,
-        ['npc_dota_hero_lone_druid'] = 0.59,
+        
         ['npc_dota_hero_bane'] = 0.53,
         ['npc_dota_hero_dark_seer'] = 0.52,
         ['npc_dota_hero_juggernaut'] = 0.48,
@@ -15936,7 +15936,7 @@ local heroList = {
         ['npc_dota_hero_dragon_knight'] = 0.3,
         ['npc_dota_hero_kunkka'] = 0.29,
         ['npc_dota_hero_earth_spirit'] = 0.28,
-        ['npc_dota_hero_rubick'] = 0.28,
+        
         ['npc_dota_hero_tiny'] = 0.27,
         ['npc_dota_hero_arc_warden'] = 0.25,
         ['npc_dota_hero_lina'] = 0.23,
@@ -15984,7 +15984,7 @@ local heroList = {
         ['npc_dota_hero_weaver'] = -0.46,
         ['npc_dota_hero_morphling'] = -0.5,
         ['npc_dota_hero_crystal_maiden'] = -0.67,
-        ['npc_dota_hero_puck'] = -0.69,
+        
         ['npc_dota_hero_obsidian_destroyer'] = -0.7,
         ['npc_dota_hero_leshrac'] = -0.7,
         ['npc_dota_hero_nyx_assassin'] = -0.76,

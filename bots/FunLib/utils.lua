@@ -1056,34 +1056,13 @@ function ____exports.IsPingedByAnyPlayer(bot, pingTimeGap, minDistance, maxDista
     return nil
 end
 function ____exports.SetCachedVars(key, value)
-    if not ____exports.GameStates.cachedVars then
-        ____exports.GameStates.cachedVars = {}
-    end
-    ____exports.GameStates.cachedVars[key] = value
-    ____exports.GameStates.cachedVars[key .. "-Time"] = DotaTime()
+    return
 end
 function ____exports.GetCachedVars(key, withinTime)
-    if not ____exports.GameStates.cachedVars or not ____exports.GameStates.cachedVars[key] then
-        return nil
-    end
-    if DotaTime() - ____exports.GameStates.cachedVars[key .. "-Time"] <= withinTime then
-        return ____exports.GameStates.cachedVars[key]
-    end
     return nil
 end
 function ____exports.CleanupCachedVars()
-    if not ____exports.GameStates.cachedVars then
-        return
-    end
-    for key in pairs(____exports.GameStates.cachedVars) do
-        if __TS__StringEndsWith(key, "-Time") then
-            local originalKey = string.sub(key, 1, -6)
-            if DotaTime() - ____exports.GameStates.cachedVars[key] > ____exports.CachedVarsCleanTime then
-                __TS__Delete(____exports.GameStates.cachedVars, originalKey)
-                __TS__Delete(____exports.GameStates.cachedVars, key)
-            end
-        end
-    end
+    return
 end
 function ____exports.CountEnemyHeroesNear(loc, r)
     local n = 0
@@ -1706,7 +1685,7 @@ function ____exports.IsTeamPushingSecondTierOrHighGround(bot)
         for ____, playerdId in ipairs(GetTeamPlayers(bot:GetTeam())) do
             if IsHeroAlive(playerdId) then
                 local teamMember = GetTeamMember(playerdId)
-                if teamMember ~= nil and #teamMember:GetNearbyHeroes(2000, false, BotMode.None) > 2 and (____exports.IsNearEnemySecondTierTower(teamMember, 2000) or ____exports.IsNearEnemyHighGroundTower(teamMember, 3000) or GetUnitToUnitDistance(teamMember, enemyAncient) < 3000) then
+                if teamMember ~= nil and #teamMember:GetNearbyHeroes(2000, false, BotMode.None) >= 2 and (____exports.IsNearEnemySecondTierTower(teamMember, 2000) or ____exports.IsNearEnemyHighGroundTower(teamMember, 3000) or GetUnitToUnitDistance(teamMember, enemyAncient) < 3000) then
                     ____exports.SetCachedVars(cacheKey, true)
                     return true
                 end

@@ -2385,6 +2385,65 @@ X.ConsiderItemDesire["item_glimmer_cape"] = function( hItem )
 
 end
 
+
+X.ConsiderItemDesire["item_mekansm"] = function( hItem )
+	local nCastRange = 1200
+	local sCastType = 'none'
+	local hEffectTarget = nil
+	local sCastMotive = nil
+
+
+	local hAllyList = J.GetAllyList( bot, nCastRange )
+	for _, npcAlly in pairs( hAllyList ) 
+	do
+		if npcAlly ~= nil and npcAlly:IsAlive()
+			and J.GetHP( npcAlly ) < 0.45
+			and #hNearbyEnemyHeroList > 0
+		then
+			hEffectTarget = npcAlly
+			sCastMotive = '治疗队友'..J.Chat.GetNormName( hEffectTarget )
+			return BOT_ACTION_DESIRE_HIGH, hEffectTarget, sCastType, sCastMotive
+		end
+	end
+
+	local needHPCount = 0
+	for _, npcAlly in pairs( hAllyList )
+	do
+		if npcAlly ~= nil
+			and npcAlly:GetMaxHealth()- npcAlly:GetHealth() > 400
+		then
+			needHPCount = needHPCount + 1
+
+			if needHPCount >= 2 and npcAlly:GetHealth() / npcAlly:GetMaxHealth() < 0.55
+			then
+				hEffectTarget = npcAlly
+				sCastMotive = '治疗二队友:'..J.Chat.GetNormName( hEffectTarget )
+				return BOT_ACTION_DESIRE_HIGH, hEffectTarget, sCastType, sCastMotive
+			end
+
+			if needHPCount >= 3
+			then
+				hEffectTarget = npcAlly
+				sCastMotive = '治疗多个队友:'..J.Chat.GetNormName( hEffectTarget )
+				return BOT_ACTION_DESIRE_HIGH, hEffectTarget, sCastType, sCastMotive
+			end
+		end
+	end
+
+	if bot:GetHealth() / bot:GetMaxHealth() < 0.5
+		or bot:IsSilenced()
+		or bot:IsRooted()
+		or bot:HasModifier( "modifier_item_urn_damage" )
+		or bot:HasModifier( "modifier_item_spirit_vessel_damage" )
+	then
+		hEffectTarget = bot
+		sCastMotive = '治疗自己:'..J.Chat.GetNormName( hEffectTarget )
+		return BOT_ACTION_DESIRE_HIGH, hEffectTarget, sCastType, sCastMotive
+	end
+
+	return BOT_ACTION_DESIRE_NONE
+end
+
 --大鞋
 X.ConsiderItemDesire["item_guardian_greaves"] = function( hItem )
 
@@ -7717,7 +7776,7 @@ end
 function ItemUsageThink()
 	if bot:IsInvulnerable() or not bot:IsHero() or not bot:IsAlive() or not string.find(botName, "hero") or bot:IsIllusion() then return end
 	if bot.lastItemFrameProcessTime == nil then bot.lastItemFrameProcessTime = DotaTime() end
-	if DotaTime() - bot.lastItemFrameProcessTime < (bot.frameProcessTime * (1 + Customize.ThinkLess)) then return end
+	if DotaTime() > 30 and (DotaTime() - bot.lastItemFrameProcessTime < (bot.frameProcessTime * (1 + Customize.ThinkLess))) then return end
 	bot.lastItemFrameProcessTime = DotaTime()
 	if not J.IsNoItemIllution(bot) then ItemUsageComplement() end
 end
@@ -7725,14 +7784,14 @@ end
 function AbilityUsageThink()
 	if bot:IsInvulnerable() or not bot:IsHero() or not bot:IsAlive() or not string.find(botName, "hero") or bot:IsIllusion() then return end
 	if bot.lastAbilityFrameProcessTime == nil then bot.lastAbilityFrameProcessTime = DotaTime() end
-	if (DotaTime() - bot.lastAbilityFrameProcessTime < (bot.frameProcessTime * (1 + Customize.ThinkLess))) and bot.isBear == nil then return end
+	if DotaTime() > 30 and (DotaTime() - bot.lastAbilityFrameProcessTime < (bot.frameProcessTime * (1 + Customize.ThinkLess))) and bot.isBear == nil then return end
 	bot.lastAbilityFrameProcessTime = DotaTime()
 	if not J.IsNoAbilityIllution(bot) then BotBuild.SkillsComplement() end
 end
 
 function BuybackUsageThink()
 	if bot.lastBuybackFrameProcessTime == nil then bot.lastBuybackFrameProcessTime = DotaTime() end
-	if DotaTime() - bot.lastBuybackFrameProcessTime < 2 then return end
+	if DotaTime() > 30 and (DotaTime() - bot.lastBuybackFrameProcessTime < 2) then return end
 	bot.lastBuybackFrameProcessTime = DotaTime()
 	if not bot:IsIllusion() then BuybackUsageComplement() end
 	if not bot:IsIllusion() then UseGlyph() end
@@ -7740,14 +7799,14 @@ end
 
 function CourierUsageThink()
 	if bot.lastCourierFrameProcessTime == nil then bot.lastCourierFrameProcessTime = DotaTime() end
-	if DotaTime() - bot.lastCourierFrameProcessTime < 0.5 then return end
+	if DotaTime() > 30 and (DotaTime() - bot.lastCourierFrameProcessTime < 0.5) then return end
 	bot.lastCourierFrameProcessTime = DotaTime()
 	if not bot:IsIllusion() then CourierUsageComplement() end
 end
 
 function AbilityLevelUpThink()
 	if bot.lastLevelUpFrameProcessTime == nil then bot.lastLevelUpFrameProcessTime = DotaTime() end
-	if DotaTime() - bot.lastLevelUpFrameProcessTime < 1 then return end
+	if DotaTime() > 30 and (DotaTime() - bot.lastLevelUpFrameProcessTime < 1) then return end
 	bot.lastLevelUpFrameProcessTime = DotaTime()
 	if not bot:IsIllusion() then AbilityLevelUpComplement() end
 end

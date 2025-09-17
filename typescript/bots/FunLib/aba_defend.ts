@@ -205,7 +205,7 @@ export function GetFurthestBuildingOnLaneHelper(lane: Lane): [Unit | any, number
 
     if (lane === Lane.Top) {
         b = GetTower(team, Tower.Top1);
-        if (IsValidBuildingTarget(b)) return [b, hpMul(b, 0.25, 1, 1.0, 3), 1];
+        if (IsValidBuildingTarget(b)) return [b, hpMul(b, 0.25, 1, 0.5, 1), 1];
         b = GetTower(team, Tower.Top2);
         if (IsValidBuildingTarget(b)) return [b, hpMul(b, 0.25, 1, 1.0, 2), 2];
         b = GetTower(team, Tower.Top3);
@@ -222,7 +222,7 @@ export function GetFurthestBuildingOnLaneHelper(lane: Lane): [Unit | any, number
         if (IsValidBuildingTarget(b)) return [b, 3.0, 4];
     } else if (lane === Lane.Mid) {
         b = GetTower(team, Tower.Mid1);
-        if (IsValidBuildingTarget(b)) return [b, hpMul(b, 0.25, 1, 1.0, 3), 1];
+        if (IsValidBuildingTarget(b)) return [b, hpMul(b, 0.25, 1, 0.5, 1), 1];
         b = GetTower(team, Tower.Mid2);
         if (IsValidBuildingTarget(b)) return [b, hpMul(b, 0.25, 1, 1.0, 2), 2];
         b = GetTower(team, Tower.Mid3);
@@ -239,7 +239,7 @@ export function GetFurthestBuildingOnLaneHelper(lane: Lane): [Unit | any, number
         if (IsValidBuildingTarget(b)) return [b, 3.0, 4];
     } else {
         b = GetTower(team, Tower.Bot1);
-        if (IsValidBuildingTarget(b)) return [b, hpMul(b, 0.25, 1, 1.0, 3), 1];
+        if (IsValidBuildingTarget(b)) return [b, hpMul(b, 0.25, 1, 0.5, 1), 1];
         b = GetTower(team, Tower.Bot2);
         if (IsValidBuildingTarget(b)) return [b, hpMul(b, 0.25, 1, 1.0, 2), 2];
         b = GetTower(team, Tower.Bot3);

@@ -50,6 +50,10 @@ export function GetPushDesire(bot: Unit, lane: Lane): BotModeDesire {
         return BotModeDesire.None;
     }
 
+    if (bot.GetLevel() < 3) {
+        return BotModeDesire.None;
+    }
+
     // 1) very small cache by bot+lane for stability
     const cacheKey = `PushDesire:${bot.GetPlayerID()}:${lane ?? -1}`;
     const cachedVar = jmz.Utils.GetCachedVars(cacheKey, 0.6);
@@ -466,9 +470,10 @@ export function PushThink(bot: Unit, lane: Lane): void {
     // 2) Build a lane-front offset depending on our HP and attack range
     const botAttackRange = bot.GetAttackRange();
     let fDeltaFromFront =
-        Math.min(jmz.GetHP(bot), 0.7) * 1000 -
-        700 + // healthier → stand a bit closer
-        RemapValClamped(botAttackRange, 300, 700, 0, -600); // longer range → stand further back
+        Math.min(jmz.GetHP(bot), 0.7) * 800 -
+        500 + // healthier → stand a bit closer
+        RemapValClamped(botAttackRange, 300, 700, 0, -300); // longer range → stand further back
+    fDeltaFromFront = Math.max(Math.min(fDeltaFromFront, 250), -600);
 
     // 3) Basic tower & creep context to make hit-tower decisions safer
     const nEnemyTowers = bot.GetNearbyTowers(1200, true);
@@ -484,7 +489,7 @@ export function PushThink(bot: Unit, lane: Lane): void {
                 if (r > longestRange) longestRange = r;
             }
         }
-        fDeltaFromFront = -1000 - longestRange;
+        fDeltaFromFront = Math.max(-450, -120 - 0.35 * longestRange);
     }
 
     // 5) Compute our approach waypoint for this lane
@@ -497,7 +502,8 @@ export function PushThink(bot: Unit, lane: Lane): void {
     ) {
         const nDamage = nEnemyTowers[0].GetAttackDamage() * nEnemyTowers[0].GetAttackSpeed() * 5.0 - bot.GetHealthRegen() * 5.0;
         if (bot.GetActualIncomingDamage(nDamage, DamageType.Physical) / bot.GetHealth() > 0.15 || nAllyCreeps.length > 2) {
-            bot.Action_MoveToLocation(GetLaneFrontLocation(GetTeam(), lane, -1200));
+            const retreat = Math.min(fDeltaFromFront - 200, -600);
+            bot.Action_MoveToLocation(GetLaneFrontLocation(GetTeam(), lane, retreat));
             return;
         }
     }

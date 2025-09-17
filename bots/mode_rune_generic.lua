@@ -33,7 +33,7 @@ local timeInMin = 0
 function GetDesire()
 	local cacheKey = 'GetRuneDesire'..tostring(bot:GetPlayerID())
 	local cachedVar = J.Utils.GetCachedVars(cacheKey, 0.5 * (1 + Customize.ThinkLess))
-	if cachedVar ~= nil then return cachedVar end
+	if DotaTime() > 30 and cachedVar ~= nil then return cachedVar end
 	local res = GetDesireHelper()
 	J.Utils.SetCachedVars(cacheKey, res)
 	return res
@@ -45,8 +45,8 @@ function GetDesireHelper()
         return BOT_MODE_DESIRE_NONE
     end
 
-    local nInRangeEnemy = J.GetLastSeenEnemiesNearLoc(bot:GetLocation(), 1200)
-    if #nInRangeEnemy > 0 and not J.IsInLaningPhase() then
+    local nInRangeEnemy = J.GetLastSeenEnemiesNearLoc(bot:GetLocation(), 1000)
+    if #nInRangeEnemy > 0 and (not J.IsInLaningPhase() or DotaTime() < 30) then
         return BOT_MODE_DESIRE_NONE
     end
 
@@ -124,8 +124,8 @@ function GetDesireHelper()
 
 	ClosestRune, ClosestDistance = X.GetBotClosestRune()
 
-	if ClosestRune ~= -1 and ClosestDistance < 1600 then
-		local nInRangeAlly = bot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
+	if ClosestRune ~= -1 and ClosestDistance < 1200 then
+		local nInRangeAlly = bot:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
 		if #nInRangeAlly > 0 then
 			for _, ally in pairs(nInRangeAlly) do
 				if not ally:IsBot() then
@@ -145,6 +145,12 @@ function GetDesireHelper()
         if #nEnemyHeroes <= 1 then
             return BOT_MODE_DESIRE_MODERATE
         end
+    end
+
+	if J.IsLateGame() and X.IsUnitAroundLocation(GetAncient(GetTeam()):GetLocation(), 2800) then
+        MAX_DIST = 900
+    else
+        MAX_DIST = 1600
     end
 
 	if ClosestRune ~= -1 and ClosestDistance < 6000 then
@@ -425,21 +431,20 @@ function X.GetBotClosestRune()
 	local cRune = -1
 
 	for _, rune in pairs(nRuneList) do
-		if not (J.IsCore(bot) and DotaTime() > 170 and IsBountyRune(rune)) then
-			local rLoc = GetRuneSpawnLocation(rune)
-			if X.IsTheClosestOne(rLoc, rune)
-			and not X.IsPingedByHumanPlayer(rLoc, 1200)
-			and not X.IsMissing(rune)
-			and not X.IsTherePosition(1, rune, 1600)
-			and not X.IsTherePosition(2, rune, 1600)
-			then
-				local dist = GetUnitToLocationDistance(bot, rLoc)
-				if dist < cDist then
-					cDist = dist
-					cRune = rune
-				end
-			end
-		end
+		local rLoc = GetRuneSpawnLocation(rune)
+
+        if X.IsTheClosestOne(rLoc, rune)
+        and not X.IsPingedByHumanPlayer(rLoc, 1200)
+		and not X.IsMissing(rune)
+		and not X.IsTherePosition(1, rune, 1600)
+		and not X.IsTherePosition(2, rune, 1600)
+        then
+            local dist = GetUnitToLocationDistance(bot, rLoc)
+            if dist < cDist then
+                cDist = dist
+                cRune = rune
+            end
+        end
 	end
 
 	return cRune, cDist
@@ -567,8 +572,8 @@ function X.IsEnemyPickRune(nRune)
 	return false
 end
 
-local maxDesire = 0.85
 function X.GetScaledDesire(nBase, nCurrDist, nMaxDist)
+	local maxDesire = 0.85
 	if nCurrDist > 900 and (J.IsLateGame() or J.GetDistanceFromEnemyFountain( bot ) < 6500) then
 		maxDesire = 0.45
 	end

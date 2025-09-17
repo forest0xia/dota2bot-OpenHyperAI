@@ -87,6 +87,9 @@ function ____exports.GetPushDesireHelper(bot, lane)
             i = i + 1
         end
     end
+    if bot:GetLevel() < 3 then
+        return BotModeDesire.None
+    end
     local nH = jmz.Utils.NumHumanBotPlayersInTeam(GetOpposingTeam())
     if nH > 0 and currentTime <= StartToPushTime then
         return BOT_MODE_DESIRE_EXTRA_LOW
@@ -619,11 +622,15 @@ function ____exports.PushThink(bot, lane)
     local fDeltaFromFront = math.min(
         jmz.GetHP(bot),
         0.7
-    ) * 1000 - 700 + RemapValClamped(
+    ) * 800 - 500 + RemapValClamped(
         botAttackRange,
         300,
         700,
         0,
+        -300
+    )
+    fDeltaFromFront = math.max(
+        math.min(fDeltaFromFront, 250),
         -600
     )
     local nEnemyTowers = bot:GetNearbyTowers(1200, true)
@@ -638,7 +645,7 @@ function ____exports.PushThink(bot, lane)
                 end
             end
         end
-        fDeltaFromFront = -1000 - longestRange
+        fDeltaFromFront = math.max(-450, -120 - 0.35 * longestRange)
     end
     local targetLoc = GetLaneFrontLocation(
         GetTeam(),
@@ -648,10 +655,11 @@ function ____exports.PushThink(bot, lane)
     if jmz.IsValidBuilding(nEnemyTowers[1]) and (nEnemyTowers[1]:GetAttackTarget() == bot or nEnemyTowers[1]:GetAttackTarget() ~= bot and bot:WasRecentlyDamagedByTower(#nAllyCreeps <= 2 and 4 or 2)) then
         local nDamage = nEnemyTowers[1]:GetAttackDamage() * nEnemyTowers[1]:GetAttackSpeed() * 5 - bot:GetHealthRegen() * 5
         if bot:GetActualIncomingDamage(nDamage, DamageType.Physical) / bot:GetHealth() > 0.15 or #nAllyCreeps > 2 then
+            local retreat = math.min(fDeltaFromFront - 200, -600)
             bot:Action_MoveToLocation(GetLaneFrontLocation(
                 GetTeam(),
                 lane,
-                -1200
+                retreat
             ))
             return
         end

@@ -44,6 +44,8 @@ local lastCheckBotToDropTime = 0
 
 local IsAvoidingAbilityZone = false
 
+local hTargetCreep = nil
+
 -- Target stickiness + desire clamp
 local TARGET_LOCK_SEC = 1.2
 local targetLockUntil = -90
@@ -69,8 +71,8 @@ end
 
 function GetDesire()
     local cacheKey = 'GetTeamRoamDesire'..tostring(bot:GetPlayerID())
-    local cachedVar = J.Utils.GetCachedVars(cacheKey, 0.6 * (1 + Customize.ThinkLess))
-    if cachedVar ~= nil then return cachedVar end
+    local cachedVar = J.Utils.GetCachedVars(cacheKey, 0.2 * (1 + Customize.ThinkLess))
+    if DotaTime() > 30 and cachedVar ~= nil then return cachedVar end
 
     local res = GetDesireHelper()
     res = CapForLanePush(res)
@@ -122,6 +124,11 @@ function GetDesireHelper()
         targetUnit = target
         return RemapValClamped(J.GetHP(bot), 0, 0.6, BOT_MODE_DESIRE_NONE, 0.98)
     end
+
+	hTargetCreep = X.GetLastHitCreep()
+	if J.IsValid(hTargetCreep) and J.CanBeAttacked(hTargetCreep) then
+		return 1.5
+	end
 
     if not bot:IsAlive() or bot:GetCurrentActionType() == BOT_ACTION_TYPE_DELAY then
         return BOT_MODE_DESIRE_NONE
@@ -193,6 +200,39 @@ function GetDesireHelper()
     return 0.0
 end
 
+function X.GetLastHitCreep()
+	if J.IsRetreating(bot)
+	or (not J.IsCore(bot) and J.IsThereCoreNearby(800))
+	or J.IsInTeamFight(bot, 1200)
+	then
+		return nil
+	end
+
+	local nEnemyTowers = bot:GetNearbyTowers(1000, true)
+	local nEnemyCreeps = bot:GetNearbyCreeps(1200, true)
+	for _, creep in pairs(nEnemyCreeps) do
+		if J.IsValid(creep)
+		and J.CanBeAttacked(creep)
+		and J.IsInRange(bot, creep, bot:GetAttackRange() + 300)
+		and not J.IsRoshan(creep)
+		and not J.IsTormentor(creep)
+		then
+			local nDelay = J.GetAttackProDelayTime(bot, creep)
+			if J.WillKillTarget(creep, bot:GetAttackDamage()-1, DAMAGE_TYPE_PHYSICAL, nDelay)
+			and (#nEnemyTowers == 0 or (J.IsValidBuilding(nEnemyTowers[1]) and not J.IsInRange(creep, nEnemyTowers[1], 750)))
+			then
+				local nInRangeAlly = J.GetAlliesNearLoc(creep:GetLocation(), 1000)
+				local nInRangeEnemy = J.GetEnemiesNearLoc(creep:GetLocation(), 1000)
+				if #nInRangeAlly >= #nInRangeEnemy then
+					return creep
+				end
+			end
+		end
+	end
+
+	return nil
+end
+
 -- ==============================
 -- Avoid zones
 -- ==============================
@@ -258,6 +298,11 @@ function Think()
     -- if J.Utils.IsBotThinkingMeaningfulAction(bot, Customize.ThinkLess, "team_roam") then return end
 
     ItemOpsThink()
+
+	if J.IsValid(hTargetCreep) then
+		bot:Action_AttackUnit(hTargetCreep, true)
+		return
+	end
 
 	-- Leash & validity guard to prevent pacing back and forth
 	if targetUnit ~= nil then

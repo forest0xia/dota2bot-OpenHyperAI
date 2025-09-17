@@ -436,6 +436,9 @@ export function IsPingedByAnyPlayer(bot: Unit, pingTimeGap: number, minDistance:
 }
 
 export function SetCachedVars(key: string, value: any) {
+    // Not helpful for now. Disable it.
+    return;
+
     if (!GameStates.cachedVars) {
         GameStates.cachedVars = {};
     }
@@ -444,6 +447,9 @@ export function SetCachedVars(key: string, value: any) {
 }
 
 export function GetCachedVars(key: string, withinTime: number) {
+    // Not helpful for now. Disable it.
+    return null;
+
     if (!GameStates.cachedVars || !GameStates.cachedVars[key]) {
         return null;
     }
@@ -454,6 +460,9 @@ export function GetCachedVars(key: string, withinTime: number) {
 }
 
 export function CleanupCachedVars() {
+    // Not helpful for now. Disable it.
+    return;
+
     if (!GameStates.cachedVars) {
         return;
     }
@@ -1235,7 +1244,7 @@ export function IsTeamPushingSecondTierOrHighGround(bot: Unit): boolean {
                 const teamMember = GetTeamMember(playerdId);
                 if (
                     teamMember !== null &&
-                    teamMember.GetNearbyHeroes(2000, false, BotMode.None).length > 2 &&
+                    teamMember.GetNearbyHeroes(2000, false, BotMode.None).length >= 2 &&
                     (IsNearEnemySecondTierTower(teamMember, 2000) ||
                         IsNearEnemyHighGroundTower(teamMember, 3000) ||
                         GetUnitToUnitDistance(teamMember, enemyAncient) < 3000)

@@ -192,8 +192,8 @@ function ____exports.GetFurthestBuildingOnLaneHelper(lane)
                     b,
                     0.25,
                     1,
-                    1,
-                    3
+                    0.5,
+                    1
                 ),
                 1
             }
@@ -255,8 +255,8 @@ function ____exports.GetFurthestBuildingOnLaneHelper(lane)
                     b,
                     0.25,
                     1,
-                    1,
-                    3
+                    0.5,
+                    1
                 ),
                 1
             }
@@ -318,8 +318,8 @@ function ____exports.GetFurthestBuildingOnLaneHelper(lane)
                     b,
                     0.25,
                     1,
-                    1,
-                    3
+                    0.5,
+                    1
                 ),
                 1
             }
