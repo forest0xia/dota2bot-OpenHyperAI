@@ -87,9 +87,6 @@ function ____exports.GetPushDesireHelper(bot, lane)
             i = i + 1
         end
     end
-    if bot:GetLevel() < 3 then
-        return BotModeDesire.None
-    end
     local nH = jmz.Utils.NumHumanBotPlayersInTeam(GetOpposingTeam())
     if nH > 0 and currentTime <= StartToPushTime then
         return BOT_MODE_DESIRE_EXTRA_LOW
@@ -519,6 +516,9 @@ function ____exports.GetPushDesire(bot, lane)
         bot:GetUnitName(),
         "hero"
     ) or bot:IsIllusion() then
+        return BotModeDesire.None
+    end
+    if bot:GetLevel() < 3 then
         return BotModeDesire.None
     end
     local cacheKey = (("PushDesire:" .. tostring(bot:GetPlayerID())) .. ":") .. tostring(lane or -1)

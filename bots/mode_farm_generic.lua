@@ -52,12 +52,12 @@ local runMode = false;
 
 if bot.farmLocation == nil then bot.farmLocation = bot:GetLocation() end
 
-function GetDesire()
-	-- local cacheKey = 'GetFarmDesire'..tostring(bot:GetPlayerID())
-	-- local cachedVar = J.Utils.GetCachedVars(cacheKey, 0.2)
-	-- if DotaTime() > 30 and cachedVar ~= nil then return cachedVar end
+function GetDesie()
+	local cacheKey = 'GetFarmDesire'..tostring(bot:GetPlayerID())
+	local cachedVar = J.Utils.GetCachedVars(cacheKey, 0.4)
+	if DotaTime() > 30 and cachedVar ~= nil then return cachedVar end
 	local res = GetDesireHelper()
-	-- J.Utils.SetCachedVars(cacheKey, res)
+	J.Utils.SetCachedVars(cacheKey, res)
 	return res
 end
 
@@ -68,9 +68,6 @@ function GetDesireHelper()
 		Utils.CleanupCachedVars()
 		CleanupCachedVarsTime = DotaTime()
 	end
-
-	PickOneAnnouncer()
-	AnnounceMessages()
 
     J.Utils['GameStates'] = J.Utils['GameStates'] or {}
     J.Utils['GameStates']['defendPings'] = J.Utils['GameStates']['defendPings'] or { pingedTime = GameTime() }
@@ -539,8 +536,8 @@ function Think()
 	
 			if nearest then
 				local newDist = GetUnitToLocationDistance(bot, nearest.cattr.location)
-				-- switch if we save >800 units or ETA improves a lot
-				if newDist + 200 < oldDist then
+				-- switch if we save >800 units or ETA improves a lot and danger isn’t worse
+				if newDist + 200 < oldDist and not J.Site.IsCampDangerous(bot, nearest) then
 					preferedCamp = nearest
 				end
 			end

@@ -479,7 +479,64 @@ function X.RetreatWhenTowerTargetedDesire()
     return 0
 end
 
+local enemyPids = nil;
 function X.ShouldRun()
+    if bot:HasModifier('modifier_medusa_stone_gaze_facing') 
+	then
+		AttackTarget=bot:GetAttackTarget()
+		if AttackTarget~=nil and AttackTarget:GetUnitName() == "npc_dota_hero_medusa"  
+		and J.IsOtherAllyCanKillTarget( bot, AttackTarget )
+		then
+			
+		else  
+			return 3.33
+		end
+	end
+    
+		
+	if bot:IsChanneling() 
+    or not bot:IsAlive()
+    then
+        return 0
+    end	   
+    
+    local botLevel    = bot:GetLevel();
+    local botMode     = bot:GetActiveMode();
+    local botTarget   = J.GetProperTarget(bot);
+    local hEnemyHeroList = J.GetEnemyList(bot,1600);
+    local hAllyHeroList  = J.GetAllyList(bot,1600);
+    local enemyFountainDistance = J.GetDistanceFromEnemyFountain(bot);
+    local enemyAncient = GetAncient(GetOpposingTeam());
+    local enemyAncientDistance = GetUnitToUnitDistance(bot,enemyAncient);
+    local aliveEnemyCount = J.GetNumOfAliveHeroes(true)
+    local rushEnemyTowerDistance = 250;
+
+    if enemyFountainDistance < 1000
+    then
+        return 2;
+    end
+
+    if bot:DistanceFromFountain() < 200
+		and botMode ~= BOT_MODE_RETREAT
+		and ( J.GetHP(bot) + J.GetMP(bot) < 1.7 )
+	then
+		return 3;
+	end
+
+    if botLevel < 6
+		and DotaTime() > 30
+		and DotaTime() < 8 * 60
+		and enemyFountainDistance < 8111
+	then
+		if botTarget ~= nil and botTarget:IsHero()
+		   and J.GetHP(botTarget) > 0.35
+		   and (  not J.IsInRange(bot,botTarget,bot:GetAttackRange() + 150) 
+				  or not J.CanKillTarget(botTarget, bot:GetAttackDamage() * 2.33, DAMAGE_TYPE_PHYSICAL) )
+		then
+			return 2.88;
+		end
+	end
+
     for _, enemyHero in pairs(nEnemyHeroes) do
         if J.IsValidHero(enemyHero)
             and not J.IsSuspiciousIllusion(enemyHero)
@@ -496,6 +553,145 @@ function X.ShouldRun()
             end
         end
     end
+
+    local nEnemyTowers = bot:GetNearbyTowers(898, true);
+	local nEnemyBrracks = bot:GetNearbyBarracks(800,true);
+	
+	if #nEnemyBrracks >= 1 and aliveEnemyCount >= 2 and #hEnemyHeroList >= #hAllyHeroList
+	then
+		if #nEnemyTowers >= 2
+		   or enemyAncientDistance <= 1314
+		   or enemyFountainDistance <= 2828
+		then
+			return 2;
+		end
+	end
+    if nEnemyTowers[1] ~= nil and botLevel < 16
+	then
+		if nEnemyTowers[1]:HasModifier("modifier_invulnerable") and aliveEnemyCount > 1
+		then
+			return 2.5;
+		end
+		
+		if  enemyAncientDistance > 2100
+			and enemyAncientDistance < GetUnitToUnitDistance(nEnemyTowers[1],enemyAncient) - rushEnemyTowerDistance
+		then
+			local nTarget = J.GetProperTarget(bot);
+			if nTarget == nil
+			then
+				return 3.9;
+			end
+			
+			if J.IsValidHero(nTarget) and aliveEnemyCount > 2
+			then
+				
+				local assistAlly = false;
+				
+				for _,ally in pairs(hAllyHeroList)
+				do
+					if GetUnitToUnitDistance(ally,nTarget) <= ally:GetAttackRange() + 100
+						and (ally:GetAttackTarget() == nTarget or ally:GetTarget() == nTarget)
+					then
+						assistAlly = true;
+						break;
+					end
+				end
+				
+				if not assistAlly 
+				then
+					return 2.5;
+				end
+				
+			end
+		end
+    end
+        
+	-- 前期谨慎冲塔
+	if botLevel <= 10 and DotaTime() > 0
+    and (#hEnemyHeroList > 0 or bot:GetHealth() < 700)
+    then
+        local nLongEnemyTowers = bot:GetNearbyTowers(1200, true);
+        if bot:GetAssignedLane() == LANE_MID
+        then
+            nLongEnemyTowers = bot:GetNearbyTowers(1100, true);
+            nEnemyTowers     = bot:GetNearbyTowers(980, true);
+        end
+        if ( botLevel <= 2 or DotaTime() < 2 * 60 )
+            and nLongEnemyTowers[1] ~= nil
+        then
+            return 2;
+        end
+        if ( botLevel <= 4 or DotaTime() < 3 * 60 )
+            and nEnemyTowers[1] ~= nil
+        then
+            return 2;
+        end
+        if botLevel <= 9
+            and nEnemyTowers[1] ~= nil
+            and nEnemyTowers[1]:CanBeSeen()
+            and nEnemyTowers[1]:GetAttackTarget() == bot
+            and #hAllyHeroList <= 1
+        then
+            return 2;
+        end
+    end
+
+    if #hAllyHeroList <= 1 
+    and botMode ~= BOT_MODE_TEAM_ROAM
+    and botMode ~= BOT_MODE_LANING
+    and botMode ~= BOT_MODE_RETREAT
+    and ( botLevel <= 1 or botLevel > 5 ) 
+    and bot:DistanceFromFountain() > 1400
+    then
+        if enemyPids == nil then
+            enemyPids = GetTeamPlayers(GetOpposingTeam())
+        end	
+        local enemyCount = 0
+        for i = 1, #enemyPids do
+            local info = GetHeroLastSeenInfo(enemyPids[i])
+            if info ~= nil then
+                local dInfo = info[1]; 
+                if dInfo ~= nil and dInfo.time_since_seen < 2.0  
+                    and GetUnitToLocationDistance(bot,dInfo.location) < 1000 
+                then
+                    enemyCount = enemyCount +1;
+                end
+            end	
+        end
+        if (enemyCount >= 4 or #hEnemyHeroList >= 4) 
+            and botMode ~= BOT_MODE_ATTACK
+            and botMode ~= BOT_MODE_TEAM_ROAM
+            and bot:GetCurrentMovementSpeed() > 300
+        then
+            local nNearByHeroes = bot:GetNearbyHeroes(700,true,BOT_MODE_NONE);
+            if #nNearByHeroes < 2
+            then
+                return 4;
+            end
+        end	
+        if  botLevel >= 9 and botLevel <= 17  
+            and (enemyCount >= 3 or #hEnemyHeroList >= 3) 
+            and botMode ~= BOT_MODE_LANING
+            and bot:GetCurrentMovementSpeed() > 300
+        then
+            local nNearByHeroes = bot:GetNearbyHeroes(700,true,BOT_MODE_NONE);
+            if #nNearByHeroes < 2
+            then
+                return 3;
+            end
+        end
+        local nEnemy = bot:GetNearbyHeroes(800,true,BOT_MODE_NONE);
+        for _,enemy in pairs(nEnemy) do
+            if J.IsValid(enemy)
+                and enemy:GetUnitName() == "npc_dota_hero_necrolyte"
+                and enemy:GetMana() >= 200
+                and J.GetHP(bot) < 0.45
+                and enemy:IsFacingLocation(bot:GetLocation(),20)
+            then
+                return 3;
+            end
+        end
+	end
 
     if J.Utils.HasModifierContainsName(bot, "warlock_golem") then
         local nUnits = GetUnitList(UNIT_LIST_ENEMIES)
