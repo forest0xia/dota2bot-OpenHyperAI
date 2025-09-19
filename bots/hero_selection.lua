@@ -125,6 +125,7 @@ local WeakHeroes = {
 	'npc_dota_hero_ember_spirit',
 	'npc_dota_hero_rubick',
 	'npc_dota_hero_brewmaster',
+	'npc_dota_hero_puck',
 
 	-- Buggys (as of 2024/8/1):
     'npc_dota_hero_marci',
@@ -874,7 +875,7 @@ local function InitPickScheduleOnce()
 	end
 
 	-- Tweak these three to taste:
-	local base  = GameTime() + 4          -- when the *first* bot may pick
+	local base  = GameTime() + 3          -- when the *first* bot may pick
 	local step  = GetTeam() * 3           -- spacing between slots
 	local jitter_min, jitter_max = 1, 3   -- small variability per slot
 

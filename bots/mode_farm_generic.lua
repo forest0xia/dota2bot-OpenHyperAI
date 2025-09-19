@@ -422,7 +422,7 @@ function OnEnd()
 	bot:SetTarget(nil);
 end
 
-function Think()
+function Thnk()
 	if J.CanNotUseAction(bot) then return end
 	if J.Utils.IsBotThinkingMeaningfulAction(bot, Customize.ThinkLess, "farm") then return end
 	if runMode

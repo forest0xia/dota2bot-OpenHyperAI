@@ -500,9 +500,7 @@ function X.ShouldRun()
         return 0
     end	   
     
-    local botLevel    = bot:GetLevel();
     local botMode     = bot:GetActiveMode();
-    local botTarget   = J.GetProperTarget(bot);
     local hEnemyHeroList = J.GetEnemyList(bot,1600);
     local hAllyHeroList  = J.GetAllyList(bot,1600);
     local enemyFountainDistance = J.GetDistanceFromEnemyFountain(bot);
@@ -608,7 +606,7 @@ function X.ShouldRun()
         
 	-- 前期谨慎冲塔
 	if botLevel <= 10 and DotaTime() > 0
-    and (#hEnemyHeroList > 0 or bot:GetHealth() < 700)
+    and (#hEnemyHeroList > 0 or bot:GetHealth() < 800)
     then
         local nLongEnemyTowers = bot:GetNearbyTowers(1200, true);
         if bot:GetAssignedLane() == LANE_MID
@@ -616,12 +614,7 @@ function X.ShouldRun()
             nLongEnemyTowers = bot:GetNearbyTowers(1100, true);
             nEnemyTowers     = bot:GetNearbyTowers(980, true);
         end
-        if ( botLevel <= 2 or DotaTime() < 2 * 60 )
-            and nLongEnemyTowers[1] ~= nil
-        then
-            return 2;
-        end
-        if ( botLevel <= 4 or DotaTime() < 3 * 60 )
+        if ( botLevel <= 5 or DotaTime() < 5 * 60 )
             and nEnemyTowers[1] ~= nil
         then
             return 2;
