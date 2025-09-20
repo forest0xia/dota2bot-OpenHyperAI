@@ -1,7 +1,8 @@
 import * as jmz from "bots/FunLib/jmz_func";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 import Customize = require("bots/Customize/general");
-import { Barracks, BotMode, BotModeDesire, DamageType, Lane, Tower, Unit, UnitType, Vector } from "bots/ts_libs/dota";
+import { Barracks, BotMode, BotModeDesire, DamageType, Lane, Team, Tower, Unit, UnitType, Vector } from "bots/ts_libs/dota";
+import { IsValidUnit } from "./utils";
 
 Customize.ThinkLess = Customize.Enable ? Customize.ThinkLess : 1;
 
@@ -15,6 +16,186 @@ const BOT_MODE_DESIRE_EXTRA_LOW = 0.02;
 
 /** Module-scoped state (cache-ish). Keep small and intentional. */
 let hEnemyAncient: Unit | null = null;
+
+/** Performance cache - avoid redundant calculations between GetPushDesire (300ms) and Think (every frame) */
+type CachedGameState = {
+    lastUpdate: number;
+    currentTime: number;
+    gameMode: number;
+    team: Team;
+    enemyTeam: Team;
+    ourAncient: Unit | null;
+    enemyAncient: Unit | null;
+    aliveAllyCount: number;
+    aliveEnemyCount: number;
+    aliveAllyCoreCount: number;
+    aliveEnemyCoreCount: number;
+    teamNetworth: number;
+    enemyNetworth: number;
+    averageLevel: number;
+    hasAegis: boolean;
+    isEarlyGame: boolean;
+    isMidGame: boolean;
+    isLateGame: boolean;
+    isLaningPhase: boolean;
+};
+
+type CachedLocationState = {
+    lastUpdate: number;
+    laneFronts: Record<Lane, Vector>;
+    teamFountain: Vector;
+    enemyFountain: Vector;
+    roshanLocation: Vector;
+    tormentorLocation: Vector;
+    tormentorWaitingLocation: Vector;
+};
+
+type CachedUnitState = {
+    lastUpdate: number;
+    enemyBuildings: Unit[];
+    alliedHeroes: Unit[];
+    enemyHeroes: Unit[];
+    alliedCreeps: Unit[];
+    enemyCreeps: Unit[];
+};
+
+type CachedBotState = {
+    lastUpdate: number;
+    botId: number;
+    attackRange: number;
+    location: Vector;
+    hp: number;
+    mp: number;
+    nearbyTowers: Unit[];
+    nearbyLaneCreeps: Unit[];
+    nearbyCreeps: Unit[];
+    attackTarget: Unit | null;
+    distanceToAncient: number;
+    distanceToTargetLoc: number;
+};
+
+const PUSH_CACHE_TTL = 0.35; // 100ms cache TTL
+const BOT_CACHE_TTL = 0.1; // 100ms cache TTL for bot-specific data
+let gameStateCache: CachedGameState | null = null;
+let locationStateCache: CachedLocationState | null = null;
+let unitStateCache: CachedUnitState | null = null;
+let botStateCache: Record<number, CachedBotState> = {};
+
+/** Update game state cache if needed */
+function updateGameStateCache(): CachedGameState {
+    const now = DotaTime();
+    if (gameStateCache && now - gameStateCache.lastUpdate < PUSH_CACHE_TTL) {
+        return gameStateCache;
+    }
+
+    const team = GetTeam();
+    const enemyTeam = GetOpposingTeam();
+    const currentTime = DotaTime();
+    const gameMode = GetGameMode();
+
+    // Adjust time for turbo mode
+    const adjustedTime = gameMode === 23 ? currentTime * 2 : currentTime;
+
+    gameStateCache = {
+        lastUpdate: now,
+        currentTime: adjustedTime,
+        gameMode,
+        team,
+        enemyTeam,
+        ourAncient: GetAncient(team),
+        enemyAncient: GetAncient(enemyTeam),
+        aliveAllyCount: jmz.GetNumOfAliveHeroes(false),
+        aliveEnemyCount: jmz.GetNumOfAliveHeroes(true),
+        aliveAllyCoreCount: jmz.GetAliveCoreCount(false),
+        aliveEnemyCoreCount: jmz.GetAliveCoreCount(true),
+        teamNetworth: jmz.GetInventoryNetworth()[0],
+        enemyNetworth: jmz.GetInventoryNetworth()[1],
+        averageLevel: jmz.GetAverageLevel(team),
+        hasAegis: jmz.DoesTeamHaveAegis(),
+        isEarlyGame: jmz.IsEarlyGame(),
+        isMidGame: jmz.IsMidGame(),
+        isLateGame: jmz.IsLateGame(),
+        isLaningPhase: jmz.IsInLaningPhase(),
+    };
+
+    return gameStateCache;
+}
+
+/** Update location state cache if needed */
+function updateLocationStateCache(): CachedLocationState {
+    const now = DotaTime();
+    if (locationStateCache && now - locationStateCache.lastUpdate < PUSH_CACHE_TTL) {
+        return locationStateCache;
+    }
+
+    const team = GetTeam();
+    locationStateCache = {
+        lastUpdate: now,
+        laneFronts: {
+            [Lane.Top]: GetLaneFrontLocation(team, Lane.Top, 0),
+            [Lane.Mid]: GetLaneFrontLocation(team, Lane.Mid, 0),
+            [Lane.Bot]: GetLaneFrontLocation(team, Lane.Bot, 0),
+        },
+        teamFountain: jmz.GetTeamFountain(),
+        enemyFountain: jmz.GetTeamFountain(), // Note: GetEnemyFountain doesn't exist, using GetTeamFountain as fallback
+        roshanLocation: jmz.GetCurrentRoshanLocation(),
+        tormentorLocation: jmz.GetTormentorLocation(team),
+        tormentorWaitingLocation: jmz.GetTormentorWaitingLocation(team),
+    };
+
+    return locationStateCache;
+}
+
+/** Update unit state cache if needed */
+function updateUnitStateCache(): CachedUnitState {
+    const now = DotaTime();
+    if (unitStateCache && now - unitStateCache.lastUpdate < PUSH_CACHE_TTL) {
+        return unitStateCache;
+    }
+
+    unitStateCache = {
+        lastUpdate: now,
+        enemyBuildings: GetUnitList(UnitType.EnemyBuildings),
+        alliedHeroes: GetUnitList(UnitType.AlliedHeroes),
+        enemyHeroes: GetUnitList(UnitType.Enemies).filter(u => jmz.IsValidHero(u)),
+        alliedCreeps: GetUnitList(UnitType.AlliedCreeps),
+        enemyCreeps: GetUnitList(UnitType.Enemies).filter(u => u.IsCreep() || u.IsAncientCreep()),
+    };
+
+    return unitStateCache;
+}
+
+/** Update bot state cache if needed */
+function updateBotStateCache(bot: Unit, targetLoc?: Vector): CachedBotState {
+    const now = DotaTime();
+    const botId = bot.GetPlayerID();
+    const cached = botStateCache[botId];
+
+    if (cached && now - cached.lastUpdate < BOT_CACHE_TTL) {
+        return cached;
+    }
+
+    const location = bot.GetLocation();
+    const attackRange = bot.GetAttackRange();
+    const gameState = updateGameStateCache();
+
+    botStateCache[botId] = {
+        lastUpdate: now,
+        botId,
+        attackRange,
+        location,
+        hp: jmz.GetHP(bot),
+        mp: jmz.GetMP(bot),
+        nearbyTowers: bot.GetNearbyTowers(1200, true),
+        nearbyLaneCreeps: bot.GetNearbyLaneCreeps(1200, false),
+        nearbyCreeps: bot.GetNearbyCreeps(1600, true),
+        attackTarget: bot.GetAttackTarget(),
+        distanceToAncient: gameState.enemyAncient ? GetUnitToUnitDistance(bot, gameState.enemyAncient) : Number.POSITIVE_INFINITY,
+        distanceToTargetLoc: targetLoc ? GetUnitToLocationDistance(bot, targetLoc) : 0,
+    };
+
+    return botStateCache[botId];
+}
 
 /**
  * === Objective selection stability (anti-thrash) ===
@@ -76,23 +257,28 @@ export function GetPushDesireHelper(bot: Unit, lane: Lane): BotModeDesire {
     // Keep the intent: avoid pushing too early or when other team jobs override.
     if ((bot as any).laneToPush == null) (bot as any).laneToPush = lane;
 
+    // Update caches
+    const gameState = updateGameStateCache();
+    const locationState = updateLocationStateCache();
+    // const unitState = updateUnitStateCache(); // Not used in this function
+
     let nMaxDesire = 0.82;
     const nSearchRange = 2000;
     const botActiveMode = bot.GetActiveMode();
     const nModeDesire = bot.GetActiveModeDesire();
     const bMyLane = bot.GetAssignedLane() === lane;
-    const isMidOrEarlyGame = jmz.IsEarlyGame() || jmz.IsMidGame();
+    const isMidOrEarlyGame = gameState.isEarlyGame || gameState.isMidGame;
 
-    hEnemyAncient = GetAncient(GetOpposingTeam());
+    hEnemyAncient = gameState.enemyAncient;
 
     // Current, LOCAL threat picture around the bot (not reused across Think)
     const alliesHere = jmz.GetAlliesNearLoc(bot.GetLocation(), 1600);
     const enemiesHere = jmz.GetEnemiesNearLoc(bot.GetLocation(), 1600);
 
     // --- Strong base-defense gate for push ---
-    const team = GetTeam();
-    const ourAncient = GetAncient(team);
-    const enemiesAtAncient = jmz.Utils.CountEnemyHeroesNear(ourAncient.GetLocation(), BASE_ANC_RADIUS);
+    const team = gameState.team;
+    const ourAncient = gameState.ourAncient;
+    const enemiesAtAncient = jmz.Utils.CountEnemyHeroesNear(ourAncient!.GetLocation(), BASE_ANC_RADIUS);
     // If Ancient under direct pressure → strongly deprioritize pushes
     if (enemiesAtAncient >= 1) return BotModeDesire.ExtraLow;
 
@@ -106,10 +292,7 @@ export function GetPushDesireHelper(bot: Unit, lane: Lane): BotModeDesire {
     }
 
     // Do not push too early (Turbo is faster-time environment)
-    let currentTime = DotaTime();
-    if (GetGameMode() === 23) {
-        currentTime = currentTime * 2;
-    }
+    const currentTime = gameState.currentTime;
 
     // Ignore push if someone just pinged "defend" recently
     (jmz.Utils as any)["GameStates"] = (jmz.Utils as any)["GameStates"] || {};
@@ -120,10 +303,10 @@ export function GetPushDesireHelper(bot: Unit, lane: Lane): BotModeDesire {
 
     // Early laning rules & neutral objectives that override pushing
     if (
-        (!bMyLane && jmz.IsCore(bot) && jmz.IsInLaningPhase()) ||
-        (jmz.IsDoingRoshan(bot) && jmz.GetAlliesNearLoc(jmz.GetCurrentRoshanLocation(), 2800).length >= 3) ||
+        (!bMyLane && jmz.IsCore(bot) && gameState.isLaningPhase) ||
+        (jmz.IsDoingRoshan(bot) && jmz.GetAlliesNearLoc(locationState.roshanLocation, 2800).length >= 3) ||
         (isMidOrEarlyGame &&
-            (jmz.GetAlliesNearLoc(jmz.GetTormentorLocation(team), 1600).length >= 3 || jmz.GetAlliesNearLoc(jmz.GetTormentorWaitingLocation(team), 2500).length >= 3))
+            (jmz.GetAlliesNearLoc(locationState.tormentorLocation, 1600).length >= 3 || jmz.GetAlliesNearLoc(locationState.tormentorWaitingLocation, 2500).length >= 3))
     ) {
         return BOT_MODE_DESIRE_EXTRA_LOW as BotModeDesire;
     }
@@ -163,20 +346,20 @@ export function GetPushDesireHelper(bot: Unit, lane: Lane): BotModeDesire {
         }
     }
 
-    // Team state snapshot (used for several gates below)
-    const aAliveCount = jmz.GetNumOfAliveHeroes(false);
-    const eAliveCount = jmz.GetNumOfAliveHeroes(true);
-    const aAliveCoreCount = jmz.GetAliveCoreCount(false);
-    const eAliveCoreCount = jmz.GetAliveCoreCount(true);
+    // Team state snapshot (used for several gates below) - using cached values
+    const aAliveCount = gameState.aliveAllyCount;
+    const eAliveCount = gameState.aliveEnemyCount;
+    const aAliveCoreCount = gameState.aliveAllyCoreCount;
+    const eAliveCoreCount = gameState.aliveEnemyCoreCount;
 
-    const hAncient = GetAncient(team);
+    const hAncient = gameState.ourAncient;
     let nPushDesire = GetPushLaneDesire(lane);
     //   const allyKills = jmz.GetNumOfTeamTotalKills(false) + 1;
     //   const enemyKills = jmz.GetNumOfTeamTotalKills(true) + 1;
     //   const teamKillsRatio = allyKills / enemyKills; // (not used later but retained)
 
     // If enemies are at our ancient and we have few allies nearby → cap desire
-    const teamAncientLoc = hAncient.GetLocation();
+    const teamAncientLoc = hAncient!.GetLocation();
     const nEffAlliesNearAncient = jmz.GetAlliesNearLoc(teamAncientLoc, 4500).length + jmz.Utils.GetAllyIdsInTpToLocation(teamAncientLoc, 4500).length;
     const nEnemiesAroundAncient = jmz.GetEnemiesAroundLoc(teamAncientLoc, 4500);
     if (nEnemiesAroundAncient > 0 && nEffAlliesNearAncient < 1) {
@@ -189,7 +372,7 @@ export function GetPushDesireHelper(bot: Unit, lane: Lane): BotModeDesire {
     }
 
     // If critical items/spells are cooling down near the push location → be cautious
-    const vEnemyLaneFrontLocation = GetLaneFrontLocation(GetOpposingTeam(), lane, 0);
+    const vEnemyLaneFrontLocation = GetLaneFrontLocation(gameState.enemyTeam, lane, 0);
     const waitForSpells = ShouldWaitForImportantItemsSpells(vEnemyLaneFrontLocation);
     if (waitForSpells && eAliveCount >= aAliveCount && eAliveCoreCount >= aAliveCoreCount) {
         nMaxDesire = Math.min(nMaxDesire, 0.5);
@@ -226,13 +409,12 @@ export function GetPushDesireHelper(bot: Unit, lane: Lane): BotModeDesire {
         const allowNumbers = eAliveCount === 0 || aAliveCoreCount >= eAliveCoreCount || (aAliveCoreCount >= 1 && aAliveCount >= eAliveCount + 2);
 
         if (allowNumbers) {
-            if (jmz.DoesTeamHaveAegis()) {
+            if (gameState.hasAegis) {
                 nPushDesire = nPushDesire + 0.3;
             }
 
-            if (aAliveCount >= eAliveCount && jmz.GetAverageLevel(team) >= 12) {
-                const [teamNetworth, enemyNetworth] = jmz.GetInventoryNetworth();
-                nPushDesire = nPushDesire + RemapValClamped(teamNetworth - enemyNetworth, 5000, 15000, 0.0, 1.0);
+            if (aAliveCount >= eAliveCount && gameState.averageLevel >= 12) {
+                nPushDesire = nPushDesire + RemapValClamped(gameState.teamNetworth - gameState.enemyNetworth, 5000, 15000, 0.0, 1.0);
             }
 
             return RemapValClamped(nPushDesire * jmz.GetHP(bot), 0, 1, 0, nMaxDesire) as BotModeDesire;
@@ -255,11 +437,11 @@ function presence_adjust(score: number, loc: Vector): number {
 }
 
 function UnitIsValidObjective(u: Unit | null): u is Unit {
-    return !!u && jmz.IsValidBuilding(u) && jmz.CanBeAttacked(u) && !HasBackdoorProtect(u) && !UnitIsFiller(u);
+    return !!u && jmz.IsValidBuilding(u) && jmz.CanBeAttacked(u);
 }
 
 function UnitIsBarracks(u: Unit): boolean {
-    const n = u ? u.GetUnitName() : "";
+    const n = u != null ? u.GetUnitName() : "";
     return n.includes("rax");
 }
 function UnitIsMeleeBarracks(u: Unit): boolean {
@@ -276,10 +458,10 @@ function UnitIsT4(u: Unit): boolean {
         u === GetTower(GetOpposingTeam(), Tower.Base1) || u === GetTower(GetOpposingTeam(), Tower.Base2) || GetUnitToUnitDistance(u, GetAncient(GetOpposingTeam())) < 500
     );
 }
-function UnitIsFiller(u: Unit): boolean {
-    // Fillers/other inner-base buildings, exclude barracks/towers
-    return jmz.IsValidBuilding(u) && !UnitIsBarracks(u) && !UnitIsT3(u) && !UnitIsT4(u);
-}
+// function UnitIsFiller(u: Unit): boolean {
+//     // Fillers/other inner-base buildings, exclude barracks/towers
+//     return jmz.IsValidBuilding(u) && !UnitIsBarracks(u) && !UnitIsT3(u) && !UnitIsT4(u);
+// }
 
 /**
  * Compute a score for an objective; lower is better.
@@ -315,17 +497,22 @@ function SelectOrStickHGTarget(bot: Unit, lane: Lane, targetLoc?: Vector | null)
     const state = ObjectiveState[pid][lane] as LaneState;
     const now = GameTime();
     const current = state.target || null;
-    const currentScore = current ? ObjectiveScore(bot, current, targetLoc) : Number.POSITIVE_INFINITY;
 
     // Respect stickiness if current is valid
-    if (current && UnitIsValidObjective(current) && now < (state.lockUntil ?? 0)) {
+    if (current && now < (state.lockUntil ?? 0)) {
         return current;
     }
+    // if (current && UnitIsValidObjective(current) && now < (state.lockUntil ?? 0)) {
+    //     return current;
+    // }
+
+    const currentScore = current ? ObjectiveScore(bot, current, targetLoc) : Number.POSITIVE_INFINITY;
 
     // Scan candidates
+    const unitState = updateUnitStateCache();
     let best: Unit | null = null;
     let bestScore = Number.POSITIVE_INFINITY;
-    for (const b of GetUnitList(UnitType.EnemyBuildings)) {
+    for (const b of unitState.enemyBuildings) {
         const sc = ObjectiveScore(bot, b, targetLoc);
         if (sc < bestScore) {
             best = b;
@@ -360,18 +547,22 @@ function SelectOrStickHGTarget(bot: Unit, lane: Lane, targetLoc?: Vector | null)
 export function WhichLaneToPush(_bot: Unit, _lane: Lane): Lane {
     //   print("WhichLaneToPush for: ", bot.GetUnitName(), lane);
 
+    // Update location cache
+    const locationState = updateLocationStateCache();
+    const gameState = updateGameStateCache();
+
     // Score smaller = better
     let topLaneScore = 0;
     let midLaneScore = 0;
     let botLaneScore = 0;
 
-    const vTop = GetLaneFrontLocation(GetTeam(), Lane.Top, 0);
-    const vMid = GetLaneFrontLocation(GetTeam(), Lane.Mid, 0);
-    const vBot = GetLaneFrontLocation(GetTeam(), Lane.Bot, 0);
+    const vTop = locationState.laneFronts[Lane.Top];
+    const vMid = locationState.laneFronts[Lane.Mid];
+    const vBot = locationState.laneFronts[Lane.Bot];
 
-    // Prefer lanes closer to humans/cores; de-prioritize supports’ solo pushes
-    for (let i = 1; i <= GetTeamPlayers(GetTeam()).length; i++) {
-        const member = GetTeamMember(i);
+    // Prefer lanes closer to humans/cores; de-prioritize supports' solo pushes
+    const teamMembers = GetUnitList(UnitType.AlliedHeroes);
+    for (const member of teamMembers) {
         if (jmz.IsValidHero(member)) {
             let topDist = GetUnitToLocationDistance(member, vTop);
             let midDist = GetUnitToLocationDistance(member, vMid);
@@ -398,7 +589,7 @@ export function WhichLaneToPush(_bot: Unit, _lane: Lane): Lane {
         countMid = 0,
         countBot = 0;
 
-    for (const id of GetTeamPlayers(GetOpposingTeam())) {
+    for (const id of GetTeamPlayers(gameState.enemyTeam)) {
         if (IsHeroAlive(id)) {
             const info = GetHeroLastSeenInfo(id);
             if (info && info !== null) {
@@ -463,17 +654,23 @@ export function PushThink(bot: Unit, lane: Lane): void {
     if (jmz.CanNotUseAction(bot)) return;
     if (jmz.Utils.IsBotThinkingMeaningfulAction(bot, Customize.ThinkLess, "push")) return;
 
+    // Update caches
+    const gameState = updateGameStateCache();
+    const locationState = updateLocationStateCache();
+
     // 1) Always compute a fresh local threat picture FROM THE BOT
-    const alliesHere = jmz.GetAlliesNearLoc(bot.GetLocation(), 1600);
-    const enemiesHere = jmz.GetEnemiesNearLoc(bot.GetLocation(), 1600);
+    const botLocation = bot.GetLocation();
+    const alliesHere = jmz.GetAlliesNearLoc(botLocation, 1600);
+    const enemiesHere = jmz.GetEnemiesNearLoc(botLocation, 1600);
 
     // 2) Build a lane-front offset depending on our HP and attack range
     const botAttackRange = bot.GetAttackRange();
+    const botHp = jmz.GetHP(bot);
     let fDeltaFromFront =
-        Math.min(jmz.GetHP(bot), 0.7) * 800 -
+        Math.min(botHp, 0.7) * 800 -
         500 + // healthier → stand a bit closer
         RemapValClamped(botAttackRange, 300, 700, 0, -300); // longer range → stand further back
-    fDeltaFromFront = Math.max(Math.min(fDeltaFromFront, 250), -600);
+    fDeltaFromFront = Math.max(Math.min(fDeltaFromFront, 250), -200); // Reduced minimum retreat from -600 to -200
 
     // 3) Basic tower & creep context to make hit-tower decisions safer
     const nEnemyTowers = bot.GetNearbyTowers(1200, true);
@@ -489,11 +686,19 @@ export function PushThink(bot: Unit, lane: Lane): void {
                 if (r > longestRange) longestRange = r;
             }
         }
-        fDeltaFromFront = Math.max(-450, -120 - 0.35 * longestRange);
+        // Only retreat if significantly outnumbered (2+ enemies vs 1 ally) or very low HP
+        if (enemiesHere.length >= alliesHere.length + 1 || botHp < 0.3) {
+            fDeltaFromFront = Math.max(-300, -120 - 0.35 * longestRange);
+        } else {
+            fDeltaFromFront = Math.max(-100, -50 - 0.2 * longestRange); // Less aggressive retreat
+        }
     }
 
     // 5) Compute our approach waypoint for this lane
-    const targetLoc = GetLaneFrontLocation(GetTeam(), lane, fDeltaFromFront);
+    const targetLoc = GetLaneFrontLocation(gameState.team, lane, fDeltaFromFront);
+
+    // Update bot cache with target location for distance calculations
+    const botState = updateBotStateCache(bot, targetLoc);
 
     // 6) If the nearest enemy tower is shooting (or just shot) us → kite back
     if (
@@ -502,18 +707,18 @@ export function PushThink(bot: Unit, lane: Lane): void {
     ) {
         const nDamage = nEnemyTowers[0].GetAttackDamage() * nEnemyTowers[0].GetAttackSpeed() * 5.0 - bot.GetHealthRegen() * 5.0;
         if (bot.GetActualIncomingDamage(nDamage, DamageType.Physical) / bot.GetHealth() > 0.15 || nAllyCreeps.length > 2) {
-            const retreat = Math.min(fDeltaFromFront - 200, -600);
-            bot.Action_MoveToLocation(GetLaneFrontLocation(GetTeam(), lane, retreat));
+            const retreat = Math.min(fDeltaFromFront - 200, -300);
+            bot.Action_MoveToLocation(GetLaneFrontLocation(gameState.team, lane, retreat));
             return;
         }
     }
 
-    // 7) Ancient-endgame logic: if we’re in range and it’s hittable, do it
-    hEnemyAncient = hEnemyAncient || GetAncient(GetOpposingTeam());
+    // 7) Ancient-endgame logic: if we're in range and it's hittable, do it
+    hEnemyAncient = gameState.enemyAncient;
     const alliesNearAncient = hEnemyAncient && jmz.GetAlliesNearLoc(hEnemyAncient.GetLocation(), 1600);
     if (
         hEnemyAncient &&
-        GetUnitToUnitDistance(bot, hEnemyAncient) < 1000 &&
+        botState.distanceToAncient < 1000 &&
         jmz.CanBeAttacked(hEnemyAncient) &&
         !HasBackdoorProtect(hEnemyAncient) &&
         (GetAllyHeroesAttackingUnit(hEnemyAncient).length >= 3 ||
@@ -527,31 +732,30 @@ export function PushThink(bot: Unit, lane: Lane): void {
 
     // 8) Find attackable creeps to thin out while we approach (prefer those not under tower)
     let nRange = Math.min(700 + botAttackRange, 1600);
-    if (hEnemyAncient && GetUnitToUnitDistance(bot, hEnemyAncient) < 2600) {
-        // bump the search radius when we’re near high ground / base
+    if (hEnemyAncient && botState.distanceToAncient < 2600) {
+        // bump the search radius when we're near high ground / base
         nRange = 1600;
     }
 
-    let nCreeps = bot.GetNearbyLaneCreeps(nRange, true);
-    if (GetUnitToLocationDistance(bot, targetLoc) <= 1200) {
+    let nCreeps = botState.nearbyCreeps;
+    if (botState.distanceToTargetLoc <= 1200) {
         // if we're *already* near the approach point, include all creeps
-        nCreeps = bot.GetNearbyCreeps(nRange, true);
+        nCreeps = botState.nearbyCreeps;
     }
     nCreeps = GetSpecialUnitsNearby(bot, nCreeps, nRange);
 
-    const vTeamFountain = jmz.GetTeamFountain();
+    const vTeamFountain = locationState.teamFountain;
     const bTowerNearby = jmz.IsValidBuilding(nEnemyTowers[0]); // only consider creeps "in front" of tower
+    const towerDistanceToFountain = bTowerNearby ? GetUnitToLocationDistance(nEnemyTowers[0], vTeamFountain) : 0;
+
     for (const creep of nCreeps) {
-        if (
-            jmz.IsValid(creep) &&
-            jmz.CanBeAttacked(creep) &&
-            (!bTowerNearby || (bTowerNearby && GetUnitToLocationDistance(creep, vTeamFountain) < GetUnitToLocationDistance(nEnemyTowers[0], vTeamFountain))) &&
-            !jmz.IsTormentor(creep) &&
-            !jmz.IsRoshan(creep)
-        ) {
-            bot.Action_AttackUnit(creep, true);
-            return;
-        }
+        if (!jmz.IsValid(creep) || !jmz.CanBeAttacked(creep)) continue;
+        if (jmz.IsTormentor(creep) || jmz.IsRoshan(creep)) continue;
+
+        if (bTowerNearby && GetUnitToLocationDistance(creep, vTeamFountain) >= towerDistanceToFountain) continue;
+
+        bot.Action_AttackUnit(creep, true);
+        return;
     }
 
     // 9) High-ground building priorities: barracks → towers → fillers
@@ -567,7 +771,7 @@ export function PushThink(bot: Unit, lane: Lane): void {
     }
 
     // 10) Movement fallback: path to approach point, then do small attack-move jitter to hold space
-    if (GetUnitToLocationDistance(bot, targetLoc) > 500) {
+    if (botState.distanceToTargetLoc > 500) {
         bot.Action_MoveToLocation(targetLoc);
         return;
     } else {
@@ -585,7 +789,9 @@ export function PushThink(bot: Unit, lane: Lane): void {
 export function TryClearingOtherLaneHighGround(_bot: Unit, vLocation: Vector): Unit | null {
     //   print("TryClearingOtherLaneHighGround for: ", bot.GetUnitName(), vLocation);
 
-    const unitList = GetUnitList(UnitType.EnemyBuildings);
+    const gameState = updateGameStateCache();
+    const unitState = updateUnitStateCache();
+    const unitList = unitState.enemyBuildings;
 
     function IsValid(building: Unit | null): building is Unit {
         return jmz.IsValidBuilding(building) && jmz.CanBeAttacked(building!) && !HasBackdoorProtect(building!);
@@ -597,12 +803,12 @@ export function TryClearingOtherLaneHighGround(_bot: Unit, vLocation: Vector): U
     for (const barrack of unitList) {
         if (
             IsValid(barrack) &&
-            (barrack === GetBarracks(GetOpposingTeam(), Barracks.TopMelee) ||
-                barrack === GetBarracks(GetOpposingTeam(), Barracks.TopRanged) ||
-                barrack === GetBarracks(GetOpposingTeam(), Barracks.MidMelee) ||
-                barrack === GetBarracks(GetOpposingTeam(), Barracks.MidRanged) ||
-                barrack === GetBarracks(GetOpposingTeam(), Barracks.BotMelee) ||
-                barrack === GetBarracks(GetOpposingTeam(), Barracks.BotRanged))
+            (barrack === GetBarracks(gameState.enemyTeam, Barracks.TopMelee) ||
+                barrack === GetBarracks(gameState.enemyTeam, Barracks.TopRanged) ||
+                barrack === GetBarracks(gameState.enemyTeam, Barracks.MidMelee) ||
+                barrack === GetBarracks(gameState.enemyTeam, Barracks.MidRanged) ||
+                barrack === GetBarracks(gameState.enemyTeam, Barracks.BotMelee) ||
+                barrack === GetBarracks(gameState.enemyTeam, Barracks.BotRanged))
         ) {
             const d = GetUnitToLocationDistance(barrack, vLocation);
             if (d < best) {
@@ -619,7 +825,9 @@ export function TryClearingOtherLaneHighGround(_bot: Unit, vLocation: Vector): U
     for (const tower of unitList) {
         if (
             IsValid(tower) &&
-            (tower === GetTower(GetOpposingTeam(), Tower.Top3) || tower === GetTower(GetOpposingTeam(), Tower.Mid3) || tower === GetTower(GetOpposingTeam(), Tower.Bot3))
+            (tower === GetTower(gameState.enemyTeam, Tower.Top3) ||
+                tower === GetTower(gameState.enemyTeam, Tower.Mid3) ||
+                tower === GetTower(gameState.enemyTeam, Tower.Bot3))
         ) {
             const d = GetUnitToLocationDistance(tower, vLocation);
             if (d < best) {
@@ -642,16 +850,18 @@ export function CanBeAttacked(building: Unit | null): boolean {
 }
 
 export function IsEnemyTP(nID: number): boolean {
-    for (const id of GetTeamPlayers(GetOpposingTeam())) {
+    const gameState = updateGameStateCache();
+    for (const id of GetTeamPlayers(gameState.enemyTeam)) {
         if (id === nID) return true;
     }
     return false;
 }
 
-/** Estimate if staying in a tower’s zone is too dangerous over fDuration seconds */
+/** Estimate if staying in a tower's zone is too dangerous over fDuration seconds */
 export function IsInDangerWithinTower(hUnit: Unit, fThreshold: number, fDuration: number): boolean {
+    const unitState = updateUnitStateCache();
     let totalDamage = 0;
-    for (const enemy of GetUnitList(UnitType.Enemies)) {
+    for (const enemy of unitState.enemyHeroes) {
         if (jmz.IsValid(enemy) && jmz.IsInRange(hUnit, enemy, 1600) && (enemy.GetAttackTarget() === hUnit || jmz.IsChasingTarget(enemy, hUnit))) {
             totalDamage += hUnit.GetActualIncomingDamage(enemy.GetAttackDamage() * enemy.GetAttackSpeed() * fDuration, DamageType.Physical);
         }
@@ -661,10 +871,11 @@ export function IsInDangerWithinTower(hUnit: Unit, fThreshold: number, fDuration
 
 /** Include micro-summons & dominated units into "nearby creeps" for push thinning */
 export function GetSpecialUnitsNearby(bot: Unit, hUnitList: Unit[], nRadius: number): Unit[] {
+    const unitState = updateUnitStateCache();
     const hCreepList: Unit[] = [...hUnitList];
 
-    for (const unit of GetUnitList(UnitType.Enemies)) {
-        if (unit && unit.CanBeSeen() && jmz.IsInRange(bot, unit, nRadius)) {
+    for (const unit of unitState.enemyHeroes) {
+        if (IsValidUnit(unit) && jmz.IsInRange(bot, unit, nRadius)) {
             const s = unit.GetUnitName();
             if (
                 s.includes("invoker_forge_spirit") ||
@@ -692,8 +903,9 @@ export function IsHealthyInsideFountain(hUnit: Unit): boolean {
 }
 
 export function GetAllyHeroesAttackingUnit(hUnit: Unit): Unit[] {
+    const unitState = updateUnitStateCache();
     const out: Unit[] = [];
-    for (const ally of GetUnitList(UnitType.AlliedHeroes)) {
+    for (const ally of unitState.alliedHeroes) {
         if (jmz.IsValidHero(ally) && !jmz.IsSuspiciousIllusion(ally) && !jmz.IsMeepoClone(ally) && ally.GetAttackTarget() === hUnit) {
             out.push(ally);
         }
@@ -702,8 +914,9 @@ export function GetAllyHeroesAttackingUnit(hUnit: Unit): Unit[] {
 }
 
 export function GetAllyCreepsAttackingUnit(hUnit: Unit): Unit[] {
+    const unitState = updateUnitStateCache();
     const out: Unit[] = [];
-    for (const creep of GetUnitList(UnitType.AlliedCreeps)) {
+    for (const creep of unitState.alliedCreeps) {
         if (jmz.IsValid(creep) && creep.GetAttackTarget() === hUnit) {
             out.push(creep);
         }
@@ -713,34 +926,25 @@ export function GetAllyCreepsAttackingUnit(hUnit: Unit): Unit[] {
 
 /** Returns 1..4 for the highest structure on that lane that is still alive on the enemy team */
 export function GetLaneBuildingTier(nLane: Lane): number {
+    const gameState = updateGameStateCache();
+    const enemyTeam = gameState.enemyTeam;
+
     if (nLane === Lane.Top) {
-        if (GetTower(GetOpposingTeam(), Tower.Top1) !== null) return 1;
-        else if (GetTower(GetOpposingTeam(), Tower.Top2) !== null) return 2;
-        else if (
-            GetTower(GetOpposingTeam(), Tower.Top3) !== null ||
-            GetBarracks(GetOpposingTeam(), Barracks.TopMelee) !== null ||
-            GetBarracks(GetOpposingTeam(), Barracks.TopRanged) !== null
-        )
+        if (GetTower(enemyTeam, Tower.Top1) !== null) return 1;
+        else if (GetTower(enemyTeam, Tower.Top2) !== null) return 2;
+        else if (GetTower(enemyTeam, Tower.Top3) !== null || GetBarracks(enemyTeam, Barracks.TopMelee) !== null || GetBarracks(enemyTeam, Barracks.TopRanged) !== null)
             return 3;
         else return 4;
     } else if (nLane === Lane.Mid) {
-        if (GetTower(GetOpposingTeam(), Tower.Mid1) !== null) return 1;
-        else if (GetTower(GetOpposingTeam(), Tower.Mid2) !== null) return 2;
-        else if (
-            GetTower(GetOpposingTeam(), Tower.Mid3) !== null ||
-            GetBarracks(GetOpposingTeam(), Barracks.MidMelee) !== null ||
-            GetBarracks(GetOpposingTeam(), Barracks.MidRanged) !== null
-        )
+        if (GetTower(enemyTeam, Tower.Mid1) !== null) return 1;
+        else if (GetTower(enemyTeam, Tower.Mid2) !== null) return 2;
+        else if (GetTower(enemyTeam, Tower.Mid3) !== null || GetBarracks(enemyTeam, Barracks.MidMelee) !== null || GetBarracks(enemyTeam, Barracks.MidRanged) !== null)
             return 3;
         else return 4;
     } else if (nLane === Lane.Bot) {
-        if (GetTower(GetOpposingTeam(), Tower.Bot1) !== null) return 1;
-        else if (GetTower(GetOpposingTeam(), Tower.Bot2) !== null) return 2;
-        else if (
-            GetTower(GetOpposingTeam(), Tower.Bot3) !== null ||
-            GetBarracks(GetOpposingTeam(), Barracks.BotMelee) !== null ||
-            GetBarracks(GetOpposingTeam(), Barracks.BotRanged) !== null
-        )
+        if (GetTower(enemyTeam, Tower.Bot1) !== null) return 1;
+        else if (GetTower(enemyTeam, Tower.Bot2) !== null) return 2;
+        else if (GetTower(enemyTeam, Tower.Bot3) !== null || GetBarracks(enemyTeam, Barracks.BotMelee) !== null || GetBarracks(enemyTeam, Barracks.BotRanged) !== null)
             return 3;
         else return 4;
     }
@@ -748,7 +952,8 @@ export function GetLaneBuildingTier(nLane: Lane): number {
 }
 
 export function ShouldWaitForImportantItemsSpells(vLocation: Vector): boolean {
-    if (jmz.IsMidGame() || jmz.IsLateGame()) {
+    const gameState = updateGameStateCache();
+    if (gameState.isMidGame || gameState.isLateGame) {
         if (jmz.Utils.HasTeamMemberWithCriticalItemInCooldown(vLocation)) return true;
         if (jmz.Utils.HasTeamMemberWithCriticalSpellInCooldown(vLocation)) return true;
     }
@@ -773,10 +978,13 @@ export function HasBackdoorProtect(target: Unit): boolean {
  * is currently backdoored/glyphed.
  */
 export function IsAnyTargetBackdooredAt(_bot: Unit, lane: Lane): boolean {
-    const lf = GetLaneFrontLocation(GetTeam(), lane, 0);
+    const locationState = updateLocationStateCache();
+    const unitState = updateUnitStateCache();
+
+    const lf = locationState.laneFronts[lane];
     let nearest: Unit | null = null;
     let best = Number.POSITIVE_INFINITY;
-    for (const b of GetUnitList(UnitType.EnemyBuildings)) {
+    for (const b of unitState.enemyBuildings) {
         if (jmz.IsValidBuilding(b)) {
             const d = GetUnitToLocationDistance(b, lf);
             if (d < best) {
@@ -796,12 +1004,15 @@ export function IsAnyTargetBackdooredAt(_bot: Unit, lane: Lane): boolean {
  * Radius is the max distance from the bot; tie-breaker favors closer to targetLoc.
  */
 export function FindBestHGTarget(bot: Unit, radius: number, targetLoc?: Vector | null): Unit | null {
+    const gameState = updateGameStateCache();
+    const unitState = updateUnitStateCache();
+
     const isBarracks = (u: Unit) => u.GetUnitName().includes("rax");
     const isMeleeBarracks = (u: Unit) => u.GetUnitName().includes("melee");
     const isRangedBarracks = (u: Unit) => u.GetUnitName().includes("ranged");
     const isT3Tower = (u: Unit) =>
-        u === GetTower(GetOpposingTeam(), Tower.Top3) || u === GetTower(GetOpposingTeam(), Tower.Mid3) || u === GetTower(GetOpposingTeam(), Tower.Bot3);
-    const isT4Tower = (u: Unit) => u === GetTower(GetOpposingTeam(), Tower.Base1) || u === GetTower(GetOpposingTeam(), Tower.Base2);
+        u === GetTower(gameState.enemyTeam, Tower.Top3) || u === GetTower(gameState.enemyTeam, Tower.Mid3) || u === GetTower(gameState.enemyTeam, Tower.Bot3);
+    const isT4Tower = (u: Unit) => u === GetTower(gameState.enemyTeam, Tower.Base1) || u === GetTower(gameState.enemyTeam, Tower.Base2);
 
     let bestMelee: Unit | null = null,
         bestMeleeD = Number.POSITIVE_INFINITY;
@@ -814,7 +1025,7 @@ export function FindBestHGTarget(bot: Unit, radius: number, targetLoc?: Vector |
     let bestOther: Unit | null = null,
         bestOtherD = Number.POSITIVE_INFINITY;
 
-    for (const b of GetUnitList(UnitType.EnemyBuildings)) {
+    for (const b of unitState.enemyBuildings) {
         if (jmz.IsValidBuilding(b) && jmz.CanBeAttacked(b) && !HasBackdoorProtect(b)) {
             const dBot = GetUnitToUnitDistance(bot, b);
             if (dBot <= radius) {

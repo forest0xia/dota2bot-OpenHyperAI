@@ -700,7 +700,7 @@ export function GetNearbyAllyAverageHpPercent(bot: Unit, radius: number): number
             cnt++;
         }
     }
-    return cnt ? sum / cnt : 0;
+    return cnt != null ? sum / cnt : 0;
 }
 
 export function IsWithoutSpellShield(npcEnemy: Unit): boolean {

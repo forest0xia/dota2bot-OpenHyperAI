@@ -1255,7 +1255,7 @@ function ____exports.GetNearbyAllyAverageHpPercent(bot, radius)
             cnt = cnt + 1
         end
     end
-    return cnt and sum / cnt or 0
+    return cnt ~= nil and sum / cnt or 0
 end
 function ____exports.IsWithoutSpellShield(npcEnemy)
     return not npcEnemy:HasModifier("modifier_item_sphere_target") and not npcEnemy:HasModifier("modifier_antimage_spell_shield") and not npcEnemy:HasModifier("modifier_item_lotus_orb_active")

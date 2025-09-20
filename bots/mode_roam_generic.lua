@@ -1251,6 +1251,10 @@ function CanBeAffectedByChainFrost()
 end
 
 function ConsiderGeneralRoamingInConditions()
+	if J.GetHP(bot) < 0.35 then
+		return BOT_ACTION_DESIRE_NONE
+	end
+
 	-- if not botTarget then
 	-- 	botTarget = J.GetAttackableWeakestUnit( bot, 1500, true, true )
 	-- 	bot:SetTarget( botTarget )

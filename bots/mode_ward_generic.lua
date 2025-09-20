@@ -26,7 +26,7 @@ function GetDesire()
 	-- if DotaTime() > 30 and cachedVar ~= nil then return cachedVar end
 	local res = GetDesireHelper()
 	-- J.Utils.SetCachedVars(cacheKey, res)
-	return res
+	return RemapValClamped(J.GetHP(bot) * res, 0, 1, BOT_MODE_DESIRE_NONE, res)
 end
 function GetDesireHelper()
     if not X.IsSuitableToWard() then
