@@ -1056,9 +1056,19 @@ function ____exports.IsPingedByAnyPlayer(bot, pingTimeGap, minDistance, maxDista
     return nil
 end
 function ____exports.SetCachedVars(key, value)
-    return
+    if not ____exports.GameStates.cachedVars then
+        ____exports.GameStates.cachedVars = {}
+    end
+    ____exports.GameStates.cachedVars[key] = value
+    ____exports.GameStates.cachedVars[key .. "-Time"] = DotaTime()
 end
 function ____exports.GetCachedVars(key, withinTime)
+    if not ____exports.GameStates.cachedVars or not ____exports.GameStates.cachedVars[key] then
+        return nil
+    end
+    if DotaTime() - ____exports.GameStates.cachedVars[key .. "-Time"] <= withinTime then
+        return ____exports.GameStates.cachedVars[key]
+    end
     return nil
 end
 function ____exports.CleanupCachedVars()

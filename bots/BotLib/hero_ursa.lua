@@ -353,6 +353,10 @@ function X.ConsiderEnrage()
 
 	if J.IsRetreating(bot)
 	then
+		if J.GetHP(bot) < 0.3 and bot:WasRecentlyDamagedByAnyHero(1) then
+			return BOT_ACTION_DESIRE_HIGH
+		end
+
 		local nInRangeAlly = J.GetNearbyHeroes(bot,800, false, BOT_MODE_NONE)
 		local nInRangeEnemy = J.GetNearbyHeroes(bot,600, true, BOT_MODE_NONE)
 

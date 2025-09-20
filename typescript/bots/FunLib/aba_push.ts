@@ -55,16 +55,16 @@ export function GetPushDesire(bot: Unit, lane: Lane): BotModeDesire {
     }
 
     // 1) very small cache by bot+lane for stability
-    const cacheKey = `PushDesire:${bot.GetPlayerID()}:${lane ?? -1}`;
-    const cachedVar = jmz.Utils.GetCachedVars(cacheKey, 0.6);
-    if (cachedVar != null) {
-        (bot as any).pushDesire = cachedVar;
-        return cachedVar;
-    }
+    // const cacheKey = `PushDesire:${bot.GetPlayerID()}:${lane ?? -1}`;
+    // const cachedVar = jmz.Utils.GetCachedVars(cacheKey, 0.6);
+    // if (cachedVar != null) {
+    //     (bot as any).pushDesire = cachedVar;
+    //     return cachedVar;
+    // }
 
     // 2) compute and publish
     const res = GetPushDesireHelper(bot, lane);
-    jmz.Utils.SetCachedVars(cacheKey, res);
+    // jmz.Utils.SetCachedVars(cacheKey, res);
     (bot as any).pushDesire = res;
     return res;
 }

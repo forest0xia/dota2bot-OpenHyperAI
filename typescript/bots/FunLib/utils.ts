@@ -437,7 +437,7 @@ export function IsPingedByAnyPlayer(bot: Unit, pingTimeGap: number, minDistance:
 
 export function SetCachedVars(key: string, value: any) {
     // Not helpful for now. Disable it.
-    return;
+    // return;
 
     if (!GameStates.cachedVars) {
         GameStates.cachedVars = {};
@@ -448,7 +448,7 @@ export function SetCachedVars(key: string, value: any) {
 
 export function GetCachedVars(key: string, withinTime: number) {
     // Not helpful for now. Disable it.
-    return null;
+    // return null;
 
     if (!GameStates.cachedVars || !GameStates.cachedVars[key]) {
         return null;

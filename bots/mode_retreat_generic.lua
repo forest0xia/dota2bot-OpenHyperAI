@@ -42,9 +42,9 @@ local function scanDroppedForAegis(radius)
 end
 
 local function buildContext()
-	local cacheKey = 'buildContext'..tostring(bot:GetPlayerID())
-	local cachedVar = J.Utils.GetCachedVars(cacheKey, 0.35 * (1 + Customize.ThinkLess))
-	if cachedVar ~= nil then return cachedVar end
+	-- local cacheKey = 'buildContext'..tostring(bot:GetPlayerID())
+	-- local cachedVar = J.Utils.GetCachedVars(cacheKey, 0.35 * (1 + Customize.ThinkLess))
+	-- if cachedVar ~= nil then return cachedVar end
 
     -- reset
     C.allyHeroes, C.enemyHeroes = {}, {}
@@ -111,18 +111,18 @@ local function buildContext()
     -- cache aegis proximity (used twice originally)
     C.aegisNearby1200 = scanDroppedForAegis(1200)
 
-	J.Utils.SetCachedVars(cacheKey, C)
+	-- J.Utils.SetCachedVars(cacheKey, C)
 	return C
 end
 
 -- === existing functions, now reusing context ===
 
 function GetDesire()
-    local cacheKey = 'GetRetreatDesire'..tostring(bot:GetPlayerID())
-    local cachedVar = J.Utils.GetCachedVars(cacheKey, 0.35 * (1 + Customize.ThinkLess))
-    if DotaTime() > 30 and cachedVar ~= nil then return cachedVar end
+    -- local cacheKey = 'GetRetreatDesire'..tostring(bot:GetPlayerID())
+    -- local cachedVar = J.Utils.GetCachedVars(cacheKey, 0.35 * (1 + Customize.ThinkLess))
+    -- if DotaTime() > 30 and cachedVar ~= nil then return cachedVar end
     local res = GetDesireHelper()
-    J.Utils.SetCachedVars(cacheKey, res)
+    -- J.Utils.SetCachedVars(cacheKey, res)
     return res
 end
 
@@ -175,6 +175,14 @@ function GetDesireHelper()
         local abilityR = bot:GetAbilityByName("skeleton_king_reincarnation")
         if abilityR:GetCooldownTimeRemaining() <= 1.0 and bot:GetMana() >= 160 then
             return BOT_MODE_DESIRE_NONE
+        end
+    end
+
+    if DotaTime() < 0 and botHP < 1 then
+        for _, enemy in pairs(nEnemyHeroes) do
+            if J.IsValidHero(enemy) and not enemy:IsBot() then
+                return RemapValClamped(botHP, 1, 0.1, BOT_MODE_DESIRE_HIGH, BOT_MODE_DESIRE_ABSOLUTE)
+            end
         end
     end
 

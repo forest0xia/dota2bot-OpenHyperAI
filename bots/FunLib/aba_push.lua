@@ -521,14 +521,7 @@ function ____exports.GetPushDesire(bot, lane)
     if bot:GetLevel() < 3 then
         return BotModeDesire.None
     end
-    local cacheKey = (("PushDesire:" .. tostring(bot:GetPlayerID())) .. ":") .. tostring(lane or -1)
-    local cachedVar = jmz.Utils.GetCachedVars(cacheKey, 0.6)
-    if cachedVar ~= nil then
-        bot.pushDesire = cachedVar
-        return cachedVar
-    end
     local res = ____exports.GetPushDesireHelper(bot, lane)
-    jmz.Utils.SetCachedVars(cacheKey, res)
     bot.pushDesire = res
     return res
 end

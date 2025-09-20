@@ -467,11 +467,6 @@ function ____exports.ShouldDefend(bot, hBuilding, nRadius)
     if not IsValidBuildingTarget(hBuilding) then
         return false
     end
-    local cacheKey = (((("ShouldDefend:" .. tostring(bot:GetPlayerID())) .. ":") .. tostring(hBuilding:GetLocation() or -1)) .. ":") .. tostring(nRadius)
-    local cachedVar = jmz.Utils.GetCachedVars(cacheKey, 0.6)
-    if cachedVar ~= nil then
-        return cachedVar
-    end
     local enemyHeroNearby = 0
     for ____, id in ipairs(GetTeamPlayers(GetOpposingTeam())) do
         if IsHeroAlive(id) then
@@ -560,7 +555,6 @@ function ____exports.ShouldDefend(bot, hBuilding, nRadius)
             return false
         end
     end
-    jmz.Utils.SetCachedVars(cacheKey, result)
     return result
 end
 function ConsiderPingedDefend(bot, lane, desire, building, tier, nEffAllies, nEnemies)
@@ -921,18 +915,7 @@ function ____exports.GetDefendDesire(bot, lane)
     ) or bot:IsIllusion() then
         return BotModeDesire.None
     end
-    local baseThreatNow = IsBaseThreatActive()
-    local enemiesOnHGNow = jmz.Utils.CountEnemyHeroesOnHighGround(nTeam)
-    local threatenedLaneNow = (baseThreatNow or enemiesOnHGNow >= 1) and GetThreatenedLane() or lane
-    local cacheTTL = (baseThreatNow or enemiesOnHGNow >= 1) and 0.2 or 0.6
-    local cacheKey = (((("DefendDesire:" .. tostring(bot:GetPlayerID())) .. ":") .. tostring(lane or -1)) .. ":") .. tostring(threatenedLaneNow)
-    local cachedVar = jmz.Utils.GetCachedVars(cacheKey, cacheTTL)
-    if cachedVar ~= nil then
-        bot.defendDesire = cachedVar
-        return cachedVar
-    end
     local res = ____exports.GetDefendDesireHelper(bot, lane)
-    jmz.Utils.SetCachedVars(cacheKey, res)
     bot.defendDesire = res
     return res
 end

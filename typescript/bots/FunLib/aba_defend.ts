@@ -300,11 +300,11 @@ function GetHighGroundEdgeWaitPoint(team: Team, lane: Lane): Vector {
 // Role-aware defend decision (cached)
 export function ShouldDefend(bot: Unit, hBuilding: Unit | null, nRadius: number): boolean {
     if (!IsValidBuildingTarget(hBuilding)) return false;
-    const cacheKey = `ShouldDefend:${bot.GetPlayerID()}:${hBuilding.GetLocation() ?? -1}:${nRadius}`;
-    const cachedVar = jmz.Utils.GetCachedVars(cacheKey, 0.6);
-    if (cachedVar != null) {
-        return cachedVar;
-    }
+    // const cacheKey = `ShouldDefend:${bot.GetPlayerID()}:${hBuilding.GetLocation() ?? -1}:${nRadius}`;
+    // const cachedVar = jmz.Utils.GetCachedVars(cacheKey, 0.6);
+    // if (cachedVar != null) {
+    //     return cachedVar;
+    // }
 
     // Count enemies near building (recent seen heroes + weighted creeps)
     let enemyHeroNearby = 0;
@@ -403,7 +403,7 @@ export function ShouldDefend(bot: Unit, hBuilding: Unit | null, nRadius: number)
         }
     }
 
-    jmz.Utils.SetCachedVars(cacheKey, result);
+    // jmz.Utils.SetCachedVars(cacheKey, result);
     return result;
 }
 
@@ -442,22 +442,22 @@ export function GetDefendDesire(bot: Unit, lane: Lane): BotModeDesire {
     }
 
     // (pre) compute dynamic TTL and include threatened lane in key when base/HG pressure is present
-    const baseThreatNow = IsBaseThreatActive();
-    const enemiesOnHGNow = jmz.Utils.CountEnemyHeroesOnHighGround(nTeam);
-    const threatenedLaneNow = baseThreatNow || enemiesOnHGNow >= 1 ? GetThreatenedLane() : lane;
+    // const baseThreatNow = IsBaseThreatActive();
+    // const enemiesOnHGNow = jmz.Utils.CountEnemyHeroesOnHighGround(nTeam);
+    // const threatenedLaneNow = baseThreatNow || enemiesOnHGNow >= 1 ? GetThreatenedLane() : lane;
 
-    const cacheTTL = baseThreatNow || enemiesOnHGNow >= 1 ? 0.2 : 0.6;
-    const cacheKey = `DefendDesire:${bot.GetPlayerID()}:${lane ?? -1}:${threatenedLaneNow}`;
+    // const cacheTTL = baseThreatNow || enemiesOnHGNow >= 1 ? 0.2 : 0.6;
+    // const cacheKey = `DefendDesire:${bot.GetPlayerID()}:${lane ?? -1}:${threatenedLaneNow}`;
 
-    const cachedVar = jmz.Utils.GetCachedVars(cacheKey, cacheTTL);
-    if (cachedVar != null) {
-        (bot as any).defendDesire = cachedVar;
-        return cachedVar;
-    }
+    // const cachedVar = jmz.Utils.GetCachedVars(cacheKey, cacheTTL);
+    // if (cachedVar != null) {
+    //     (bot as any).defendDesire = cachedVar;
+    //     return cachedVar;
+    // }
 
     // 2) compute and publish
     const res = GetDefendDesireHelper(bot, lane);
-    jmz.Utils.SetCachedVars(cacheKey, res);
+    // jmz.Utils.SetCachedVars(cacheKey, res);
     (bot as any).defendDesire = res;
     return res;
 }

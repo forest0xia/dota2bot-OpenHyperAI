@@ -70,14 +70,14 @@ local function CapForLanePush(desire)
 end
 
 function GetDesire()
-    local cacheKey = 'GetTeamRoamDesire'..tostring(bot:GetPlayerID())
-    local cachedVar = J.Utils.GetCachedVars(cacheKey, 0.2 * (1 + Customize.ThinkLess))
-    if DotaTime() > 30 and cachedVar ~= nil then return cachedVar end
+    -- local cacheKey = 'GetTeamRoamDesire'..tostring(bot:GetPlayerID())
+    -- local cachedVar = J.Utils.GetCachedVars(cacheKey, 0.2 * (1 + Customize.ThinkLess))
+    -- if DotaTime() > 30 and cachedVar ~= nil then return cachedVar end
 
     local res = GetDesireHelper()
     res = CapForLanePush(res)
 
-    J.Utils.SetCachedVars(cacheKey, res)
+    -- J.Utils.SetCachedVars(cacheKey, res)
     return res
 end
 function GetDesireHelper()
