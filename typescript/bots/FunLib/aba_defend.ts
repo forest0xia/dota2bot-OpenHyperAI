@@ -92,7 +92,8 @@ type CachedDefendUnitState = {
     teamMembers: Unit[];
 };
 
-const DEFEND_CACHE_TTL = 0.35; // 100ms cache TTL
+const DEFEND_CACHE_TTL = 0.5; // 500ms cache TTL - increased for better performance
+const DEFEND_THINK_INTERVAL = 1 / 30; // Limit Think methods to 30 FPS max
 let defendGameStateCache: CachedDefendGameState | null = null;
 let defendLocationStateCache: CachedDefendLocationState | null = null;
 let defendUnitStateCache: CachedDefendUnitState | null = null;
@@ -856,12 +857,57 @@ export function GetDefendDesireHelper(bot: Unit, lane: Lane): BotModeDesire {
     return nDefendDesire as BotModeDesire;
 }
 
+let lastDefendThinkTime = 0;
+let lastDefendAction: { type: string; target?: Unit | Vector; time: number } | null = null;
+
 export function DefendThink(bot: Unit, lane: Lane) {
+    // Frame rate limiting for performance
+    const now = DotaTime();
+    if (now - lastDefendThinkTime < DEFEND_THINK_INTERVAL) {
+        // Continue last action to prevent idle bots
+        if (lastDefendAction && now - lastDefendAction.time < 2.0) {
+            switch (lastDefendAction.type) {
+                case "attack":
+                    if (lastDefendAction.target && typeof lastDefendAction.target === "object" && "GetLocation" in lastDefendAction.target) {
+                        bot.Action_AttackUnit(lastDefendAction.target as Unit, true);
+                    }
+                    break;
+                case "move":
+                    if (lastDefendAction.target && typeof lastDefendAction.target === "object" && "x" in lastDefendAction.target) {
+                        bot.Action_MoveToLocation(lastDefendAction.target as Vector);
+                    }
+                    break;
+                case "attackMove":
+                    if (lastDefendAction.target && typeof lastDefendAction.target === "object" && "x" in lastDefendAction.target) {
+                        bot.Action_AttackMove(lastDefendAction.target as Vector);
+                    }
+                    break;
+            }
+        }
+        return;
+    }
+    lastDefendThinkTime = now;
+
     if (jmz.CanNotUseAction(bot)) return;
     if (jmz.Utils.IsBotThinkingMeaningfulAction(bot, Customize.ThinkLess, "defend")) return;
 
-    // a small don’t-walk-through-fire guard
-    const pathEnemies = jmz.GetLastSeenEnemiesNearLoc(bot.GetLocation(), 1600);
+    // a small don't-walk-through-fire guard - use cached enemies when possible
+    const botLocation = bot.GetLocation();
+    const pathCacheKey = `pathEnemies_${bot.GetPlayerID()}_${Math.floor(now * 2)}`; // 500ms cache
+    let pathEnemies: Unit[];
+    if (!(bot as any)[pathCacheKey]) {
+        pathEnemies = jmz.GetLastSeenEnemiesNearLoc(botLocation, 1600);
+        (bot as any)[pathCacheKey] = pathEnemies;
+        // Clean old cache entries
+        Object.keys(bot).forEach(key => {
+            if (key.startsWith("pathEnemies_") && key !== pathCacheKey) {
+                delete (bot as any)[key];
+            }
+        });
+    } else {
+        pathEnemies = (bot as any)[pathCacheKey];
+    }
+
     if (bot.WasRecentlyDamagedByAnyHero(5) && pathEnemies.length > nInRangeEnemy.length) {
         // step back toward fountain a bit, then re-eval next tick
         const safe = jmz.AdjustLocationWithOffsetTowardsFountain(bot.GetLocation(), 700);
@@ -876,18 +922,40 @@ export function DefendThink(bot: Unit, lane: Lane) {
 
         const toAnc = GetUnitToUnitDistance(bot, ancient);
         if (toAnc > BASE_LEASH_OUTBOUND) {
-            bot.Action_MoveToLocation(add(anchor, jmz.RandomForwardVector(250)));
+            const moveLoc = add(anchor, jmz.RandomForwardVector(250));
+            lastDefendAction = { type: "move", target: moveLoc, time: now };
+            bot.Action_MoveToLocation(moveLoc);
             return;
         }
 
         const nSearchRange = 1400;
-        const enemiesNear = jmz.GetEnemiesNearLoc(ancient.GetLocation(), nSearchRange);
+        const ancientLoc = ancient.GetLocation();
+        // Use a simpler cache approach for Lua compatibility
+        const enemiesCacheKey = `ancientEnemies_${Math.floor(now * 5)}`;
+        let enemiesNear: Unit[];
+        if (!(jmz.Utils as any)[enemiesCacheKey]) {
+            enemiesNear = jmz.GetEnemiesNearLoc(ancientLoc, nSearchRange);
+            (jmz.Utils as any)[enemiesCacheKey] = enemiesNear;
+            // Clean old cache entries
+            const utils = jmz.Utils as any;
+            Object.keys(utils).forEach(key => {
+                if (typeof key === "string" && key.startsWith("ancientEnemies_") && key !== enemiesCacheKey) {
+                    delete utils[key];
+                }
+            });
+        } else {
+            enemiesNear = (jmz.Utils as any)[enemiesCacheKey];
+        }
+
         if (jmz.IsValidHero(enemiesNear[0]) && jmz.IsInRange(bot, enemiesNear[0], nSearchRange)) {
+            lastDefendAction = { type: "attack", target: enemiesNear[0], time: now };
             bot.Action_AttackUnit(enemiesNear[0], true);
             return;
         }
 
-        bot.Action_AttackMove(add(anchor, jmz.RandomForwardVector(300)));
+        const attackMoveLoc = add(anchor, jmz.RandomForwardVector(300));
+        lastDefendAction = { type: "attackMove", target: attackMoveLoc, time: now };
+        bot.Action_AttackMove(attackMoveLoc);
         return;
     }
 
@@ -910,11 +978,15 @@ export function DefendThink(bot: Unit, lane: Lane) {
 
         // Default: hold just inside HG. Only step out if we have clear numbers.
         if (enemyAtHG === 0 && nearEdgeEnemies.length > 0 && nearEdgeAllies.length >= nearEdgeEnemies.length + 1) {
-            bot.Action_AttackMove(add(edgeInside, jmz.RandomForwardVector(120)));
+            const attackMoveLoc = add(edgeInside, jmz.RandomForwardVector(120));
+            lastDefendAction = { type: "attackMove", target: attackMoveLoc, time: now };
+            bot.Action_AttackMove(attackMoveLoc);
         } else {
             // tuck slightly deeper if contested or alone
             const deeper = jmz.AdjustLocationWithOffsetTowardsFountain(edgeInside, 200);
-            bot.Action_AttackMove(add(deeper, jmz.RandomForwardVector(120)));
+            const attackMoveLoc = add(deeper, jmz.RandomForwardVector(120));
+            lastDefendAction = { type: "attackMove", target: attackMoveLoc, time: now };
+            bot.Action_AttackMove(attackMoveLoc);
         }
         return;
     }
@@ -922,12 +994,14 @@ export function DefendThink(bot: Unit, lane: Lane) {
     // Prefer nearest valid enemy hero within range (cheap local queries first)
     const enemiesAtHub = jmz.GetEnemiesNearLoc(hub, SEARCH_RANGE_DEFAULT);
     if (jmz.IsValidHero(enemiesAtHub[0]) && jmz.IsInRange(bot, enemiesAtHub[0], nSearchRange)) {
+        lastDefendAction = { type: "attack", target: enemiesAtHub[0], time: now };
         bot.Action_AttackUnit(enemiesAtHub[0], true);
         return;
     }
 
     const nEnemyHeroes = bot.GetNearbyHeroes(SEARCH_RANGE_DEFAULT, true, BotMode.None);
     if (jmz.IsValidHero(nEnemyHeroes[0]) && jmz.IsInRange(bot, nEnemyHeroes[0], nSearchRange)) {
+        lastDefendAction = { type: "attack", target: nEnemyHeroes[0], time: now };
         bot.Action_AttackUnit(nEnemyHeroes[0], true);
         return;
     }
@@ -948,6 +1022,7 @@ export function DefendThink(bot: Unit, lane: Lane) {
             }
         }
         if (best) {
+            lastDefendAction = { type: "attack", target: best, time: now };
             bot.Action_AttackUnit(best, true);
             return;
         }
@@ -955,17 +1030,25 @@ export function DefendThink(bot: Unit, lane: Lane) {
 
     // Move with small jitter; prefer assertive move if ShouldDefend says we're the responder
     if (bld && ShouldDefend(bot, bld, 1600)) {
-        bot.Action_AttackMove(add(hub, jmz.RandomForwardVector(300)));
+        const attackMoveLoc = add(hub, jmz.RandomForwardVector(300));
+        lastDefendAction = { type: "attackMove", target: attackMoveLoc, time: now };
+        bot.Action_AttackMove(attackMoveLoc);
         return;
     }
 
     const dist = distanceToLane[lane] || GetUnitToLocationDistance(bot, hub);
     if ((weAreStronger || nInRangeAlly.length >= nInRangeEnemy.length) && dist < SEARCH_RANGE_DEFAULT) {
-        bot.Action_AttackMove(add(hub, jmz.RandomForwardVector(300)));
+        const attackMoveLoc = add(hub, jmz.RandomForwardVector(300));
+        lastDefendAction = { type: "attackMove", target: attackMoveLoc, time: now };
+        bot.Action_AttackMove(attackMoveLoc);
     } else if (dist > SEARCH_RANGE_DEFAULT * 1.7) {
-        bot.Action_MoveToLocation(add(hub, jmz.RandomForwardVector(300)));
+        const moveLoc = add(hub, jmz.RandomForwardVector(300));
+        lastDefendAction = { type: "move", target: moveLoc, time: now };
+        bot.Action_MoveToLocation(moveLoc);
     } else {
-        bot.Action_MoveToLocation(add(hub, jmz.RandomForwardVector(1000)));
+        const moveLoc = add(hub, jmz.RandomForwardVector(1000));
+        lastDefendAction = { type: "move", target: moveLoc, time: now };
+        bot.Action_MoveToLocation(moveLoc);
     }
 }
 

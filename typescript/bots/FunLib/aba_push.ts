@@ -3,6 +3,7 @@ import * as jmz from "bots/FunLib/jmz_func";
 import Customize = require("bots/Customize/general");
 import { Barracks, BotMode, BotModeDesire, DamageType, Lane, Team, Tower, Unit, UnitType, Vector } from "bots/ts_libs/dota";
 import { IsValidUnit } from "./utils";
+import { getGlobalGameState, getGlobalLocationState, getCachedAlliesNearLoc, getCachedEnemiesNearLoc, autoCleanupCache, getCachedData } from "./global_cache";
 
 Customize.ThinkLess = Customize.Enable ? Customize.ThinkLess : 1;
 
@@ -74,8 +75,9 @@ type CachedBotState = {
     distanceToTargetLoc: number;
 };
 
-const PUSH_CACHE_TTL = 0.35; // 100ms cache TTL
-const BOT_CACHE_TTL = 0.1; // 100ms cache TTL for bot-specific data
+const PUSH_CACHE_TTL = 0.5; // 500ms cache TTL - increased for better performance
+const BOT_CACHE_TTL = 0.2; // 200ms cache TTL for bot-specific data - increased for better performance
+const THINK_INTERVAL = 1 / 30; // Limit Think methods to 30 FPS max
 let gameStateCache: CachedGameState | null = null;
 let locationStateCache: CachedLocationState | null = null;
 let unitStateCache: CachedUnitState | null = null;
@@ -257,9 +259,10 @@ export function GetPushDesireHelper(bot: Unit, lane: Lane): BotModeDesire {
     // Keep the intent: avoid pushing too early or when other team jobs override.
     if ((bot as any).laneToPush == null) (bot as any).laneToPush = lane;
 
-    // Update caches
-    const gameState = updateGameStateCache();
-    const locationState = updateLocationStateCache();
+    // Update global caches
+    autoCleanupCache();
+    const gameState = getGlobalGameState();
+    const locationState = getGlobalLocationState();
     // const unitState = updateUnitStateCache(); // Not used in this function
 
     let nMaxDesire = 0.82;
@@ -272,8 +275,8 @@ export function GetPushDesireHelper(bot: Unit, lane: Lane): BotModeDesire {
     hEnemyAncient = gameState.enemyAncient;
 
     // Current, LOCAL threat picture around the bot (not reused across Think)
-    const alliesHere = jmz.GetAlliesNearLoc(bot.GetLocation(), 1600);
-    const enemiesHere = jmz.GetEnemiesNearLoc(bot.GetLocation(), 1600);
+    const alliesHere = getCachedAlliesNearLoc(bot.GetLocation(), 1600);
+    const enemiesHere = getCachedEnemiesNearLoc(bot.GetLocation(), 1600);
 
     // --- Strong base-defense gate for push ---
     const team = gameState.team;
@@ -648,33 +651,66 @@ export function WhichLaneToPush(_bot: Unit, _lane: Lane): Lane {
  * Think loop
  * ---------------------------------------------------------------------------*/
 let fNextMovementTime = 0;
+let lastThinkTime = 0;
+let lastAction: { type: string; target?: Unit | Vector; time: number } | null = null;
 
 export function PushThink(bot: Unit, lane: Lane): void {
-    // 0) baseline action gates
+    // 0) Frame rate limiting for performance
+    const now = DotaTime();
+    if (now - lastThinkTime < THINK_INTERVAL) {
+        // Continue last action to prevent idle bots
+        if (lastAction && now - lastAction.time < 2.0) {
+            switch (lastAction.type) {
+                case "attack":
+                    if (lastAction.target && typeof lastAction.target === "object" && "GetLocation" in lastAction.target) {
+                        bot.Action_AttackUnit(lastAction.target as Unit, true);
+                    }
+                    break;
+                case "move":
+                    if (lastAction.target && typeof lastAction.target === "object" && "x" in lastAction.target) {
+                        bot.Action_MoveToLocation(lastAction.target as Vector);
+                    }
+                    break;
+                case "attackMove":
+                    if (lastAction.target && typeof lastAction.target === "object" && "x" in lastAction.target) {
+                        bot.Action_AttackMove(lastAction.target as Vector);
+                    }
+                    break;
+            }
+        }
+        return;
+    }
+    lastThinkTime = now;
+
+    // 1) baseline action gates
     if (jmz.CanNotUseAction(bot)) return;
     if (jmz.Utils.IsBotThinkingMeaningfulAction(bot, Customize.ThinkLess, "push")) return;
 
-    // Update caches
-    const gameState = updateGameStateCache();
-    const locationState = updateLocationStateCache();
+    // Update global caches
+    autoCleanupCache();
+    const gameState = getGlobalGameState();
+    const locationState = getGlobalLocationState();
 
-    // 1) Always compute a fresh local threat picture FROM THE BOT
-    const botLocation = bot.GetLocation();
-    const alliesHere = jmz.GetAlliesNearLoc(botLocation, 1600);
-    const enemiesHere = jmz.GetEnemiesNearLoc(botLocation, 1600);
+    // 2) Use cached bot state instead of fresh calculations
+    const botState = updateBotStateCache(bot);
+    const botLocation = botState.location;
 
-    // 2) Build a lane-front offset depending on our HP and attack range
-    const botAttackRange = bot.GetAttackRange();
-    const botHp = jmz.GetHP(bot);
+    // Use global cached threat picture
+    const alliesHere = getCachedAlliesNearLoc(botLocation, 1600);
+    const enemiesHere = getCachedEnemiesNearLoc(botLocation, 1600);
+
+    // 3) Build a lane-front offset depending on our HP and attack range
+    const botAttackRange = botState.attackRange;
+    const botHp = botState.hp;
     let fDeltaFromFront =
         Math.min(botHp, 0.7) * 800 -
         500 + // healthier → stand a bit closer
         RemapValClamped(botAttackRange, 300, 700, 0, -300); // longer range → stand further back
     fDeltaFromFront = Math.max(Math.min(fDeltaFromFront, 250), -200); // Reduced minimum retreat from -600 to -200
 
-    // 3) Basic tower & creep context to make hit-tower decisions safer
-    const nEnemyTowers = bot.GetNearbyTowers(1200, true);
-    const nAllyCreeps = bot.GetNearbyLaneCreeps(1200, false);
+    // 4) Use cached tower & creep context
+    const nEnemyTowers = botState.nearbyTowers;
+    const nAllyCreeps = botState.nearbyLaneCreeps;
 
     // 4) If outnumbered locally OR our intended target near lane-front is backdoored,
     //    then pull the lane-front delta back substantially to avoid feeding.
@@ -697,8 +733,10 @@ export function PushThink(bot: Unit, lane: Lane): void {
     // 5) Compute our approach waypoint for this lane
     const targetLoc = GetLaneFrontLocation(gameState.team, lane, fDeltaFromFront);
 
-    // Update bot cache with target location for distance calculations
-    const botState = updateBotStateCache(bot, targetLoc);
+    // Update bot cache with target location for distance calculations (only if needed)
+    if (!botState.distanceToTargetLoc || Math.abs(botState.distanceToTargetLoc - GetUnitToLocationDistance(bot, targetLoc)) > 50) {
+        updateBotStateCache(bot, targetLoc);
+    }
 
     // 6) If the nearest enemy tower is shooting (or just shot) us → kite back
     if (
@@ -708,7 +746,9 @@ export function PushThink(bot: Unit, lane: Lane): void {
         const nDamage = nEnemyTowers[0].GetAttackDamage() * nEnemyTowers[0].GetAttackSpeed() * 5.0 - bot.GetHealthRegen() * 5.0;
         if (bot.GetActualIncomingDamage(nDamage, DamageType.Physical) / bot.GetHealth() > 0.15 || nAllyCreeps.length > 2) {
             const retreat = Math.min(fDeltaFromFront - 200, -300);
-            bot.Action_MoveToLocation(GetLaneFrontLocation(gameState.team, lane, retreat));
+            const retreatLoc = GetLaneFrontLocation(gameState.team, lane, retreat);
+            lastAction = { type: "move", target: retreatLoc, time: now };
+            bot.Action_MoveToLocation(retreatLoc);
             return;
         }
     }
@@ -726,6 +766,7 @@ export function PushThink(bot: Unit, lane: Lane): void {
             hEnemyAncient.GetHealthRegen() < 20 ||
             (alliesNearAncient?.length ?? 0) >= 4)
     ) {
+        lastAction = { type: "attack", target: hEnemyAncient, time: now };
         bot.Action_AttackUnit(hEnemyAncient, true);
         return;
     }
@@ -737,12 +778,10 @@ export function PushThink(bot: Unit, lane: Lane): void {
         nRange = 1600;
     }
 
+    // Use cached creeps with global cache
     let nCreeps = botState.nearbyCreeps;
-    if (botState.distanceToTargetLoc <= 1200) {
-        // if we're *already* near the approach point, include all creeps
-        nCreeps = botState.nearbyCreeps;
-    }
-    nCreeps = GetSpecialUnitsNearby(bot, nCreeps, nRange);
+    const creepCacheKey = `specialCreeps_${bot.GetPlayerID()}_${Math.floor(now * 5)}`;
+    nCreeps = getCachedData(creepCacheKey, 0.2, () => GetSpecialUnitsNearby(bot, nCreeps, nRange));
 
     const vTeamFountain = locationState.teamFountain;
     const bTowerNearby = jmz.IsValidBuilding(nEnemyTowers[0]); // only consider creeps "in front" of tower
@@ -754,6 +793,7 @@ export function PushThink(bot: Unit, lane: Lane): void {
 
         if (bTowerNearby && GetUnitToLocationDistance(creep, vTeamFountain) >= towerDistanceToFountain) continue;
 
+        lastAction = { type: "attack", target: creep, time: now };
         bot.Action_AttackUnit(creep, true);
         return;
     }
@@ -763,8 +803,10 @@ export function PushThink(bot: Unit, lane: Lane): void {
     const hgTarget = SelectOrStickHGTarget(bot, lane, targetLoc);
     if (hgTarget) {
         if (jmz.IsInRange(bot, hgTarget, botAttackRange + 150)) {
+            lastAction = { type: "attack", target: hgTarget, time: now };
             bot.Action_AttackUnit(hgTarget, true);
         } else {
+            lastAction = { type: "move", target: hgTarget.GetLocation(), time: now };
             bot.Action_MoveToLocation(hgTarget.GetLocation());
         }
         return;
@@ -772,11 +814,14 @@ export function PushThink(bot: Unit, lane: Lane): void {
 
     // 10) Movement fallback: path to approach point, then do small attack-move jitter to hold space
     if (botState.distanceToTargetLoc > 500) {
+        lastAction = { type: "move", target: targetLoc, time: now };
         bot.Action_MoveToLocation(targetLoc);
         return;
     } else {
         if (DotaTime() >= fNextMovementTime) {
-            bot.Action_AttackMove(jmz.GetRandomLocationWithinDist(targetLoc, 0, 400));
+            const attackMoveLoc = jmz.GetRandomLocationWithinDist(targetLoc, 0, 400);
+            lastAction = { type: "attackMove", target: attackMoveLoc, time: now };
+            bot.Action_AttackMove(attackMoveLoc);
             fNextMovementTime = DotaTime() + RandomFloat(0.05, 0.3);
             return;
         }

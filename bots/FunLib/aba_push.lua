@@ -35,6 +35,13 @@ local Tower = ____dota.Tower
 local UnitType = ____dota.UnitType
 local ____utils = require(GetScriptDirectory().."/FunLib/utils")
 local IsValidUnit = ____utils.IsValidUnit
+local ____global_cache = require(GetScriptDirectory().."/FunLib/global_cache")
+local getGlobalGameState = ____global_cache.getGlobalGameState
+local getGlobalLocationState = ____global_cache.getGlobalLocationState
+local getCachedAlliesNearLoc = ____global_cache.getCachedAlliesNearLoc
+local getCachedEnemiesNearLoc = ____global_cache.getCachedEnemiesNearLoc
+local autoCleanupCache = ____global_cache.autoCleanupCache
+local getCachedData = ____global_cache.getCachedData
 function updateGameStateCache()
     local now = DotaTime()
     if gameStateCache and now - gameStateCache.lastUpdate < PUSH_CACHE_TTL then
@@ -117,8 +124,9 @@ function ____exports.GetPushDesireHelper(bot, lane)
     if bot.laneToPush == nil then
         bot.laneToPush = lane
     end
-    local gameState = updateGameStateCache()
-    local locationState = updateLocationStateCache()
+    autoCleanupCache()
+    local gameState = getGlobalGameState()
+    local locationState = getGlobalLocationState()
     local nMaxDesire = 0.82
     local nSearchRange = 2000
     local botActiveMode = bot:GetActiveMode()
@@ -126,11 +134,11 @@ function ____exports.GetPushDesireHelper(bot, lane)
     local bMyLane = bot:GetAssignedLane() == lane
     local isMidOrEarlyGame = gameState.isEarlyGame or gameState.isMidGame
     hEnemyAncient = gameState.enemyAncient
-    local alliesHere = jmz.GetAlliesNearLoc(
+    local alliesHere = getCachedAlliesNearLoc(
         bot:GetLocation(),
         1600
     )
-    local enemiesHere = jmz.GetEnemiesNearLoc(
+    local enemiesHere = getCachedEnemiesNearLoc(
         bot:GetLocation(),
         1600
     )
@@ -492,8 +500,9 @@ pingTimeDelta = 5
 StartToPushTime = 16 * 60
 BOT_MODE_DESIRE_EXTRA_LOW = 0.02
 hEnemyAncient = nil
-PUSH_CACHE_TTL = 0.35
-local BOT_CACHE_TTL = 0.1
+PUSH_CACHE_TTL = 0.5
+local BOT_CACHE_TTL = 0.2
+local THINK_INTERVAL = 1 / 30
 gameStateCache = nil
 locationStateCache = nil
 unitStateCache = nil
@@ -650,20 +659,55 @@ local function SelectOrStickHGTarget(bot, lane, targetLoc)
     return nil
 end
 local fNextMovementTime = 0
+local lastThinkTime = 0
+local lastAction = nil
 function ____exports.PushThink(bot, lane)
+    local now = DotaTime()
+    if now - lastThinkTime < THINK_INTERVAL then
+        if lastAction and now - lastAction.time < 2 then
+            repeat
+                local ____switch92 = lastAction.type
+                local ____cond92 = ____switch92 == "attack"
+                if ____cond92 then
+                    if lastAction.target and type(lastAction.target) == "table" and lastAction.target.GetLocation ~= nil then
+                        bot:Action_AttackUnit(lastAction.target, true)
+                    end
+                    break
+                end
+                ____cond92 = ____cond92 or ____switch92 == "move"
+                if ____cond92 then
+                    if lastAction.target and type(lastAction.target) == "table" and lastAction.target.x ~= nil then
+                        bot:Action_MoveToLocation(lastAction.target)
+                    end
+                    break
+                end
+                ____cond92 = ____cond92 or ____switch92 == "attackMove"
+                if ____cond92 then
+                    if lastAction.target and type(lastAction.target) == "table" and lastAction.target.x ~= nil then
+                        bot:Action_AttackMove(lastAction.target)
+                    end
+                    break
+                end
+            until true
+        end
+        return
+    end
+    lastThinkTime = now
     if jmz.CanNotUseAction(bot) then
         return
     end
     if jmz.Utils.IsBotThinkingMeaningfulAction(bot, Customize.ThinkLess, "push") then
         return
     end
-    local gameState = updateGameStateCache()
-    local locationState = updateLocationStateCache()
-    local botLocation = bot:GetLocation()
-    local alliesHere = jmz.GetAlliesNearLoc(botLocation, 1600)
-    local enemiesHere = jmz.GetEnemiesNearLoc(botLocation, 1600)
-    local botAttackRange = bot:GetAttackRange()
-    local botHp = jmz.GetHP(bot)
+    autoCleanupCache()
+    local gameState = getGlobalGameState()
+    local locationState = getGlobalLocationState()
+    local botState = updateBotStateCache(bot)
+    local botLocation = botState.location
+    local alliesHere = getCachedAlliesNearLoc(botLocation, 1600)
+    local enemiesHere = getCachedEnemiesNearLoc(botLocation, 1600)
+    local botAttackRange = botState.attackRange
+    local botHp = botState.hp
     local fDeltaFromFront = math.min(botHp, 0.7) * 800 - 500 + RemapValClamped(
         botAttackRange,
         300,
@@ -675,8 +719,8 @@ function ____exports.PushThink(bot, lane)
         math.min(fDeltaFromFront, 250),
         -200
     )
-    local nEnemyTowers = bot:GetNearbyTowers(1200, true)
-    local nAllyCreeps = bot:GetNearbyLaneCreeps(1200, false)
+    local nEnemyTowers = botState.nearbyTowers
+    local nAllyCreeps = botState.nearbyLaneCreeps
     if #alliesHere < #enemiesHere or ____exports.IsAnyTargetBackdooredAt(bot, lane) then
         local longestRange = 0
         for ____, enemyHero in ipairs(enemiesHere) do
@@ -687,20 +731,23 @@ function ____exports.PushThink(bot, lane)
                 end
             end
         end
-        -- Only retreat if significantly outnumbered (2+ enemies vs 1 ally) or very low HP
         if #enemiesHere >= #alliesHere + 1 or botHp < 0.3 then
-            fDeltaFromFront = math.max(-300, -120 - 0.35 * longestRange) 
+            fDeltaFromFront = math.max(-300, -120 - 0.35 * longestRange)
         else
-            fDeltaFromFront = math.max(-100, -50 - 0.2 * longestRange) -- Less aggressive retreat
+            fDeltaFromFront = math.max(-100, -50 - 0.2 * longestRange)
         end
     end
     local targetLoc = GetLaneFrontLocation(gameState.team, lane, fDeltaFromFront)
-    local botState = updateBotStateCache(bot, targetLoc)
+    if not botState.distanceToTargetLoc or math.abs(botState.distanceToTargetLoc - GetUnitToLocationDistance(bot, targetLoc)) > 50 then
+        updateBotStateCache(bot, targetLoc)
+    end
     if jmz.IsValidBuilding(nEnemyTowers[1]) and (nEnemyTowers[1]:GetAttackTarget() == bot or nEnemyTowers[1]:GetAttackTarget() ~= bot and bot:WasRecentlyDamagedByTower(#nAllyCreeps <= 2 and 4 or 2)) then
         local nDamage = nEnemyTowers[1]:GetAttackDamage() * nEnemyTowers[1]:GetAttackSpeed() * 5 - bot:GetHealthRegen() * 5
         if bot:GetActualIncomingDamage(nDamage, DamageType.Physical) / bot:GetHealth() > 0.15 or #nAllyCreeps > 2 then
             local retreat = math.min(fDeltaFromFront - 200, -300)
-            bot:Action_MoveToLocation(GetLaneFrontLocation(gameState.team, lane, retreat))
+            local retreatLoc = GetLaneFrontLocation(gameState.team, lane, retreat)
+            lastAction = {type = "move", target = retreatLoc, time = now}
+            bot:Action_MoveToLocation(retreatLoc)
             return
         end
     end
@@ -710,6 +757,7 @@ function ____exports.PushThink(bot, lane)
         1600
     )
     if hEnemyAncient and botState.distanceToAncient < 1000 and jmz.CanBeAttacked(hEnemyAncient) and not ____exports.HasBackdoorProtect(hEnemyAncient) and (#____exports.GetAllyHeroesAttackingUnit(hEnemyAncient) >= 3 or #____exports.GetAllyCreepsAttackingUnit(hEnemyAncient) >= 4 or hEnemyAncient:GetHealthRegen() < 20 or (alliesNearAncient and #alliesNearAncient or 0) >= 4) then
+        lastAction = {type = "attack", target = hEnemyAncient, time = now}
         bot:Action_AttackUnit(hEnemyAncient, true)
         return
     end
@@ -718,33 +766,36 @@ function ____exports.PushThink(bot, lane)
         nRange = 1600
     end
     local nCreeps = botState.nearbyCreeps
-    if botState.distanceToTargetLoc <= 1200 then
-        nCreeps = botState.nearbyCreeps
-    end
-    nCreeps = ____exports.GetSpecialUnitsNearby(bot, nCreeps, nRange)
+    local creepCacheKey = (("specialCreeps_" .. tostring(bot:GetPlayerID())) .. "_") .. tostring(math.floor(now * 5))
+    nCreeps = getCachedData(
+        creepCacheKey,
+        0.2,
+        function() return ____exports.GetSpecialUnitsNearby(bot, nCreeps, nRange) end
+    )
     local vTeamFountain = locationState.teamFountain
     local bTowerNearby = jmz.IsValidBuilding(nEnemyTowers[1])
     local towerDistanceToFountain = bTowerNearby and GetUnitToLocationDistance(nEnemyTowers[1], vTeamFountain) or 0
     for ____, creep in ipairs(nCreeps) do
         do
-            local __continue102
+            local __continue111
             repeat
                 if not jmz.IsValid(creep) or not jmz.CanBeAttacked(creep) then
-                    __continue102 = true
+                    __continue111 = true
                     break
                 end
                 if jmz.IsTormentor(creep) or jmz.IsRoshan(creep) then
-                    __continue102 = true
+                    __continue111 = true
                     break
                 end
                 if bTowerNearby and GetUnitToLocationDistance(creep, vTeamFountain) >= towerDistanceToFountain then
-                    __continue102 = true
+                    __continue111 = true
                     break
                 end
+                lastAction = {type = "attack", target = creep, time = now}
                 bot:Action_AttackUnit(creep, true)
                 return
             until true
-            if not __continue102 then
+            if not __continue111 then
                 break
             end
         end
@@ -752,18 +803,27 @@ function ____exports.PushThink(bot, lane)
     local hgTarget = SelectOrStickHGTarget(bot, lane, targetLoc)
     if hgTarget then
         if jmz.IsInRange(bot, hgTarget, botAttackRange + 150) then
+            lastAction = {type = "attack", target = hgTarget, time = now}
             bot:Action_AttackUnit(hgTarget, true)
         else
+            lastAction = {
+                type = "move",
+                target = hgTarget:GetLocation(),
+                time = now
+            }
             bot:Action_MoveToLocation(hgTarget:GetLocation())
         end
         return
     end
     if botState.distanceToTargetLoc > 500 then
+        lastAction = {type = "move", target = targetLoc, time = now}
         bot:Action_MoveToLocation(targetLoc)
         return
     else
         if DotaTime() >= fNextMovementTime then
-            bot:Action_AttackMove(jmz.GetRandomLocationWithinDist(targetLoc, 0, 400))
+            local attackMoveLoc = jmz.GetRandomLocationWithinDist(targetLoc, 0, 400)
+            lastAction = {type = "attackMove", target = attackMoveLoc, time = now}
+            bot:Action_AttackMove(attackMoveLoc)
             fNextMovementTime = DotaTime() + RandomFloat(0.05, 0.3)
             return
         end

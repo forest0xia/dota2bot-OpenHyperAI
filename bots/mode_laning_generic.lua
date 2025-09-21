@@ -173,17 +173,45 @@ function GetBestDenyCreep(hCreepList)
 end
 
 if local_mode_laning_generic or (J.GetPosition(bot) == 1 and J.IsPosxHuman(5)) then
+	-- Frame rate limiting for performance
+	local lastLaningThinkTime = 0
+	local LANING_THINK_INTERVAL = 1/30 -- Limit to 30 FPS max
+	local lastLaningAction = nil -- {type, target, time}
+	
+	-- Helper function to record actions
+	local function recordLaningAction(actionType, target)
+		lastLaningAction = {type = actionType, target = target, time = DotaTime()}
+	end
+	
 	function Think()
+		-- Frame rate limiting
+		local now = DotaTime()
+		if now - lastLaningThinkTime < LANING_THINK_INTERVAL then 
+			-- Continue last action to prevent idle bots
+			if lastLaningAction and now - lastLaningAction.time < 2.0 then
+				if lastLaningAction.type == "attack" and lastLaningAction.target then
+					bot:Action_AttackUnit(lastLaningAction.target, true)
+				elseif lastLaningAction.type == "move" and lastLaningAction.target then
+					bot:Action_MoveToLocation(lastLaningAction.target)
+				elseif lastLaningAction.type == "attackMove" and lastLaningAction.target then
+					bot:Action_AttackMove(lastLaningAction.target)
+				end
+			end
+			return 
+		end
+		lastLaningThinkTime = now
 		local hitCreep, moveToCreep = GetBestLastHitCreep(nEnemyCreeps)
 		if J.IsValid(hitCreep) then
 			if J.GetPosition(bot) <= 2 or not J.IsThereNonSelfCoreNearby(700)
 			then
 				if GetUnitToUnitDistance(bot, hitCreep) > botAttackRange
 				or (moveToCreep and GetUnitToUnitDistance(bot, hitCreep) > botAttackRange * 0.8) then
+					recordLaningAction("move", hitCreep)
 					bot:Action_MoveToUnit(hitCreep)
 					return
 				else
 					bot:SetTarget(hitCreep)
+					recordLaningAction("attack", hitCreep)
 					bot:Action_AttackUnit(hitCreep, true)
 					return
 				end

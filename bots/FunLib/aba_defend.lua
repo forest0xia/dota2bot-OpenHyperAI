@@ -30,6 +30,175 @@ local function __TS__ArraySome(self, callbackfn, thisArg)
     end
     return false
 end
+
+local function __TS__StringStartsWith(self, searchString, position)
+    if position == nil or position < 0 then
+        position = 0
+    end
+    return string.sub(self, position + 1, #searchString + position) == searchString
+end
+
+local function __TS__New(target, ...)
+    local instance = setmetatable({}, target.prototype)
+    instance:____constructor(...)
+    return instance
+end
+
+local function __TS__Class(self)
+    local c = {prototype = {}}
+    c.prototype.__index = c.prototype
+    c.prototype.constructor = c
+    return c
+end
+
+local function __TS__ClassExtends(target, base)
+    target.____super = base
+    local staticMetatable = setmetatable({__index = base}, base)
+    setmetatable(target, staticMetatable)
+    local baseMetatable = getmetatable(base)
+    if baseMetatable then
+        if type(baseMetatable.__index) == "function" then
+            staticMetatable.__index = baseMetatable.__index
+        end
+        if type(baseMetatable.__newindex) == "function" then
+            staticMetatable.__newindex = baseMetatable.__newindex
+        end
+    end
+    setmetatable(target.prototype, base.prototype)
+    if type(base.prototype.__index) == "function" then
+        target.prototype.__index = base.prototype.__index
+    end
+    if type(base.prototype.__newindex) == "function" then
+        target.prototype.__newindex = base.prototype.__newindex
+    end
+    if type(base.prototype.__tostring) == "function" then
+        target.prototype.__tostring = base.prototype.__tostring
+    end
+end
+
+local Error, RangeError, ReferenceError, SyntaxError, TypeError, URIError
+do
+    local function getErrorStack(self, constructor)
+        if debug == nil then
+            return nil
+        end
+        local level = 1
+        while true do
+            local info = debug.getinfo(level, "f")
+            level = level + 1
+            if not info then
+                level = 1
+                break
+            elseif info.func == constructor then
+                break
+            end
+        end
+        if __TS__StringIncludes(_VERSION, "Lua 5.0") then
+            return debug.traceback(("[Level " .. tostring(level)) .. "]")
+        else
+            return debug.traceback(nil, level)
+        end
+    end
+    local function wrapErrorToString(self, getDescription)
+        return function(self)
+            local description = getDescription(self)
+            local caller = debug.getinfo(3, "f")
+            local isClassicLua = __TS__StringIncludes(_VERSION, "Lua 5.0") or _VERSION == "Lua 5.1"
+            if isClassicLua or caller and caller.func ~= error then
+                return description
+            else
+                return (description .. "\n") .. tostring(self.stack)
+            end
+        end
+    end
+    local function initErrorClass(self, Type, name)
+        Type.name = name
+        return setmetatable(
+            Type,
+            {__call = function(____, _self, message) return __TS__New(Type, message) end}
+        )
+    end
+    local ____initErrorClass_1 = initErrorClass
+    local ____class_0 = __TS__Class()
+    ____class_0.name = ""
+    function ____class_0.prototype.____constructor(self, message)
+        if message == nil then
+            message = ""
+        end
+        self.message = message
+        self.name = "Error"
+        self.stack = getErrorStack(nil, self.constructor.new)
+        local metatable = getmetatable(self)
+        if metatable and not metatable.__errorToStringPatched then
+            metatable.__errorToStringPatched = true
+            metatable.__tostring = wrapErrorToString(nil, metatable.__tostring)
+        end
+    end
+    function ____class_0.prototype.__tostring(self)
+        return self.message ~= "" and (self.name .. ": ") .. self.message or self.name
+    end
+    Error = ____initErrorClass_1(nil, ____class_0, "Error")
+    local function createErrorClass(self, name)
+        local ____initErrorClass_3 = initErrorClass
+        local ____class_2 = __TS__Class()
+        ____class_2.name = ____class_2.name
+        __TS__ClassExtends(____class_2, Error)
+        function ____class_2.prototype.____constructor(self, ...)
+            ____class_2.____super.prototype.____constructor(self, ...)
+            self.name = name
+        end
+        return ____initErrorClass_3(nil, ____class_2, name)
+    end
+    RangeError = createErrorClass(nil, "RangeError")
+    ReferenceError = createErrorClass(nil, "ReferenceError")
+    SyntaxError = createErrorClass(nil, "SyntaxError")
+    TypeError = createErrorClass(nil, "TypeError")
+    URIError = createErrorClass(nil, "URIError")
+end
+
+local function __TS__ObjectGetOwnPropertyDescriptors(object)
+    local metatable = getmetatable(object)
+    if not metatable then
+        return {}
+    end
+    return rawget(metatable, "_descriptors") or ({})
+end
+
+local function __TS__Delete(target, key)
+    local descriptors = __TS__ObjectGetOwnPropertyDescriptors(target)
+    local descriptor = descriptors[key]
+    if descriptor then
+        if not descriptor.configurable then
+            error(
+                __TS__New(
+                    TypeError,
+                    ((("Cannot delete property " .. tostring(key)) .. " of ") .. tostring(target)) .. "."
+                ),
+                0
+            )
+        end
+        descriptors[key] = nil
+        return true
+    end
+    target[key] = nil
+    return true
+end
+
+local function __TS__ObjectKeys(obj)
+    local result = {}
+    local len = 0
+    for key in pairs(obj) do
+        len = len + 1
+        result[len] = key
+    end
+    return result
+end
+
+local function __TS__ArrayForEach(self, callbackFn, thisArg)
+    for i = 1, #self do
+        callbackFn(thisArg, self[i], i - 1, self)
+    end
+end
 -- End of Lua Library inline imports
 local ____exports = {}
 local updateDefendGameStateCache, updateDefendLocationStateCache, updateDefendUnitStateCache, _q, _keyLoc, _recentHeroCountNear, IsValidBuildingTarget, IsBaseThreatActive, WeightedEnemiesAroundLocation, GetThreatenedLane, GetClosestAllyPos, IsThereNoTeammateTravelBootsDefender, GetHighGroundEdgeWaitPoint, ConsiderPingedDefend, okLoc, Localization, PING_DELTA, MAX_DESIRE_CAP, BASE_THREAT_RADIUS, BASE_THREAT_HOLD, CACHE_ENEMY_AROUND_LOC_HZ, CACHE_LASTSEEN_WINDOW, nTeam, defendLoc, weAreStronger, nInRangeAlly, nInRangeEnemy, _threatLaneSticky, distanceToLane, baseThreatUntil, fTraveBootsDefendTime, _cacheEnemyAroundLoc, DEFEND_CACHE_TTL, defendGameStateCache, defendLocationStateCache, defendUnitStateCache
@@ -1002,7 +1171,8 @@ distanceToLane = {[Lane.Top] = 0, [Lane.Mid] = 0, [Lane.Bot] = 0}
 baseThreatUntil = -1
 fTraveBootsDefendTime = 0
 _cacheEnemyAroundLoc = {}
-DEFEND_CACHE_TTL = 0.35
+DEFEND_CACHE_TTL = 0.5
+local DEFEND_THINK_INTERVAL = 1 / 30
 defendGameStateCache = nil
 defendLocationStateCache = nil
 defendUnitStateCache = nil
@@ -1017,17 +1187,63 @@ function ____exports.GetDefendDesire(bot, lane)
     bot.defendDesire = res
     return res
 end
+local lastDefendThinkTime = 0
+local lastDefendAction = nil
 function ____exports.DefendThink(bot, lane)
+    local now = DotaTime()
+    if now - lastDefendThinkTime < DEFEND_THINK_INTERVAL then
+        if lastDefendAction and now - lastDefendAction.time < 2 then
+            repeat
+                local ____switch172 = lastDefendAction.type
+                local ____cond172 = ____switch172 == "attack"
+                if ____cond172 then
+                    if lastDefendAction.target and type(lastDefendAction.target) == "table" and lastDefendAction.target.GetLocation ~= nil then
+                        bot:Action_AttackUnit(lastDefendAction.target, true)
+                    end
+                    break
+                end
+                ____cond172 = ____cond172 or ____switch172 == "move"
+                if ____cond172 then
+                    if lastDefendAction.target and type(lastDefendAction.target) == "table" and lastDefendAction.target.x ~= nil then
+                        bot:Action_MoveToLocation(lastDefendAction.target)
+                    end
+                    break
+                end
+                ____cond172 = ____cond172 or ____switch172 == "attackMove"
+                if ____cond172 then
+                    if lastDefendAction.target and type(lastDefendAction.target) == "table" and lastDefendAction.target.x ~= nil then
+                        bot:Action_AttackMove(lastDefendAction.target)
+                    end
+                    break
+                end
+            until true
+        end
+        return
+    end
+    lastDefendThinkTime = now
     if jmz.CanNotUseAction(bot) then
         return
     end
     if jmz.Utils.IsBotThinkingMeaningfulAction(bot, Customize.ThinkLess, "defend") then
         return
     end
-    local pathEnemies = jmz.GetLastSeenEnemiesNearLoc(
-        bot:GetLocation(),
-        1600
-    )
+    local botLocation = bot:GetLocation()
+    local pathCacheKey = (("pathEnemies_" .. tostring(bot:GetPlayerID())) .. "_") .. tostring(math.floor(now * 2))
+    local pathEnemies
+    if not bot[pathCacheKey] then
+        pathEnemies = jmz.GetLastSeenEnemiesNearLoc(botLocation, 1600)
+        bot[pathCacheKey] = pathEnemies
+        __TS__ArrayForEach(
+            __TS__ObjectKeys(bot),
+            function(____, key)
+                if __TS__StringStartsWith(key, "pathEnemies_") and key ~= pathCacheKey then
+                    __TS__Delete(bot, key)
+                end
+            end
+        )
+    else
+        pathEnemies = bot[pathCacheKey]
+    end
     if bot:WasRecentlyDamagedByAnyHero(5) and #pathEnemies > #nInRangeEnemy then
         local safe = jmz.AdjustLocationWithOffsetTowardsFountain(
             bot:GetLocation(),
@@ -1047,25 +1263,44 @@ function ____exports.DefendThink(bot, lane)
         )
         local toAnc = GetUnitToUnitDistance(bot, ancient)
         if toAnc > BASE_LEASH_OUTBOUND then
-            bot:Action_MoveToLocation(add(
+            local moveLoc = add(
                 anchor,
                 jmz.RandomForwardVector(250)
-            ))
+            )
+            lastDefendAction = {type = "move", target = moveLoc, time = now}
+            bot:Action_MoveToLocation(moveLoc)
             return
         end
         local nSearchRange = 1400
-        local enemiesNear = jmz.GetEnemiesNearLoc(
-            ancient:GetLocation(),
-            nSearchRange
-        )
+        local ancientLoc = ancient:GetLocation()
+        local enemiesCacheKey = "ancientEnemies_" .. tostring(math.floor(now * 5))
+        local enemiesNear
+        if not jmz.Utils[enemiesCacheKey] then
+            enemiesNear = jmz.GetEnemiesNearLoc(ancientLoc, nSearchRange)
+            jmz.Utils[enemiesCacheKey] = enemiesNear
+            local utils = jmz.Utils
+            __TS__ArrayForEach(
+                __TS__ObjectKeys(utils),
+                function(____, key)
+                    if type(key) == "string" and __TS__StringStartsWith(key, "ancientEnemies_") and key ~= enemiesCacheKey then
+                        __TS__Delete(utils, key)
+                    end
+                end
+            )
+        else
+            enemiesNear = jmz.Utils[enemiesCacheKey]
+        end
         if jmz.IsValidHero(enemiesNear[1]) and jmz.IsInRange(bot, enemiesNear[1], nSearchRange) then
+            lastDefendAction = {type = "attack", target = enemiesNear[1], time = now}
             bot:Action_AttackUnit(enemiesNear[1], true)
             return
         end
-        bot:Action_AttackMove(add(
+        local attackMoveLoc = add(
             anchor,
             jmz.RandomForwardVector(300)
-        ))
+        )
+        lastDefendAction = {type = "attackMove", target = attackMoveLoc, time = now}
+        bot:Action_AttackMove(attackMoveLoc)
         return
     end
     local attackRange = bot:GetAttackRange()
@@ -1087,26 +1322,32 @@ function ____exports.DefendThink(bot, lane)
         local nearEdgeEnemies = jmz.GetLastSeenEnemiesNearLoc(edgeInside, 1200)
         local nearEdgeAllies = jmz.GetAlliesNearLoc(edgeInside, 1400)
         if enemyAtHG == 0 and #nearEdgeEnemies > 0 and #nearEdgeAllies >= #nearEdgeEnemies + 1 then
-            bot:Action_AttackMove(add(
+            local attackMoveLoc = add(
                 edgeInside,
                 jmz.RandomForwardVector(120)
-            ))
+            )
+            lastDefendAction = {type = "attackMove", target = attackMoveLoc, time = now}
+            bot:Action_AttackMove(attackMoveLoc)
         else
             local deeper = jmz.AdjustLocationWithOffsetTowardsFountain(edgeInside, 200)
-            bot:Action_AttackMove(add(
+            local attackMoveLoc = add(
                 deeper,
                 jmz.RandomForwardVector(120)
-            ))
+            )
+            lastDefendAction = {type = "attackMove", target = attackMoveLoc, time = now}
+            bot:Action_AttackMove(attackMoveLoc)
         end
         return
     end
     local enemiesAtHub = jmz.GetEnemiesNearLoc(hub, SEARCH_RANGE_DEFAULT)
     if jmz.IsValidHero(enemiesAtHub[1]) and jmz.IsInRange(bot, enemiesAtHub[1], nSearchRange) then
+        lastDefendAction = {type = "attack", target = enemiesAtHub[1], time = now}
         bot:Action_AttackUnit(enemiesAtHub[1], true)
         return
     end
     local nEnemyHeroes = bot:GetNearbyHeroes(SEARCH_RANGE_DEFAULT, true, BotMode.None)
     if jmz.IsValidHero(nEnemyHeroes[1]) and jmz.IsInRange(bot, nEnemyHeroes[1], nSearchRange) then
+        lastDefendAction = {type = "attack", target = nEnemyHeroes[1], time = now}
         bot:Action_AttackUnit(nEnemyHeroes[1], true)
         return
     end
@@ -1129,33 +1370,42 @@ function ____exports.DefendThink(bot, lane)
             end
         end
         if best then
+            lastDefendAction = {type = "attack", target = best, time = now}
             bot:Action_AttackUnit(best, true)
             return
         end
     end
     if bld and ____exports.ShouldDefend(bot, bld, 1600) then
-        bot:Action_AttackMove(add(
+        local attackMoveLoc = add(
             hub,
             jmz.RandomForwardVector(300)
-        ))
+        )
+        lastDefendAction = {type = "attackMove", target = attackMoveLoc, time = now}
+        bot:Action_AttackMove(attackMoveLoc)
         return
     end
     local dist = distanceToLane[lane] or GetUnitToLocationDistance(bot, hub)
     if (weAreStronger or #nInRangeAlly >= #nInRangeEnemy) and dist < SEARCH_RANGE_DEFAULT then
-        bot:Action_AttackMove(add(
+        local attackMoveLoc = add(
             hub,
             jmz.RandomForwardVector(300)
-        ))
+        )
+        lastDefendAction = {type = "attackMove", target = attackMoveLoc, time = now}
+        bot:Action_AttackMove(attackMoveLoc)
     elseif dist > SEARCH_RANGE_DEFAULT * 1.7 then
-        bot:Action_MoveToLocation(add(
+        local moveLoc = add(
             hub,
             jmz.RandomForwardVector(300)
-        ))
+        )
+        lastDefendAction = {type = "move", target = moveLoc, time = now}
+        bot:Action_MoveToLocation(moveLoc)
     else
-        bot:Action_MoveToLocation(add(
+        local moveLoc = add(
             hub,
             jmz.RandomForwardVector(1000)
-        ))
+        )
+        lastDefendAction = {type = "move", target = moveLoc, time = now}
+        bot:Action_MoveToLocation(moveLoc)
     end
 end
 function ____exports.OnEnd()
