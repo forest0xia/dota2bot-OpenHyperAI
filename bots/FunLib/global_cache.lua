@@ -188,6 +188,7 @@ local ____exports = {}
 local ____dota = require(GetScriptDirectory().."/ts_libs/dota/index")
 local Lane = ____dota.Lane
 local UnitType = ____dota.UnitType
+local jmz = require(GetScriptDirectory().."/FunLib/jmz_func")
 local globalCache = {}
 local GLOBAL_CACHE_TTL = 0.5
 local globalGameStateCache = nil
@@ -199,12 +200,12 @@ function ____exports.getGlobalGameState()
     if globalGameStateCache and now - globalGameStateCache.lastUpdate < GLOBAL_CACHE_TTL then
         return globalGameStateCache
     end
-    local jmz = require(GetScriptDirectory().."/FunLib/jmz_func")
     local team = GetTeam()
     local enemyTeam = GetOpposingTeam()
     local currentTime = DotaTime()
     local gameMode = GetGameMode()
     local adjustedTime = gameMode == 23 and currentTime * 2 or currentTime
+    local teamNetworth, enemyNetworth = jmz.GetInventoryNetworth()
     globalGameStateCache = {
         lastUpdate = now,
         currentTime = adjustedTime,
@@ -217,9 +218,9 @@ function ____exports.getGlobalGameState()
         aliveEnemyCount = jmz.GetNumOfAliveHeroes(true),
         aliveAllyCoreCount = jmz.GetAliveCoreCount(false),
         aliveEnemyCoreCount = jmz.GetAliveCoreCount(true),
-        teamNetworth = jmz.GetInventoryNetworth()[0],
-        enemyNetworth = jmz.GetInventoryNetworth()[1],
-        averageLevel = jmz.GetAverageLevel(team),
+        teamNetworth = teamNetworth,
+        enemyNetworth = enemyNetworth,
+        averageLevel = jmz.GetAverageLevel(false),
         hasAegis = jmz.DoesTeamHaveAegis(),
         isEarlyGame = jmz.IsEarlyGame(),
         isMidGame = jmz.IsMidGame(),

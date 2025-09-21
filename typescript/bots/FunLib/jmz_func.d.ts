@@ -91,7 +91,7 @@ declare function IsDefending(bot: Unit): boolean;
 declare function GetHumanPing(): LuaMultiReturn<[any, any]>;
 declare function GetEnemiesAroundLoc(location: Vector, radius: number): number;
 declare function DoesTeamHaveAegis(): boolean;
-declare function GetAverageLevel(team: Team): number;
+declare function GetAverageLevel(bEnemy: boolean): number;
 declare function GetInventoryNetworth(): LuaMultiReturn<[any, any]>;
 declare function IsValidBuilding(unit: any): boolean;
 declare function IsValidHero(unit: any): boolean;

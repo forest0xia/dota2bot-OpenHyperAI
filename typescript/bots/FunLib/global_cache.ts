@@ -60,6 +60,9 @@ let globalGameStateCache: GlobalGameState | null = null;
 let globalUnitStateCache: GlobalUnitState | null = null;
 let globalLocationStateCache: GlobalLocationState | null = null;
 
+// Import jmz here to avoid circular dependencies
+import * as jmz from "bots/FunLib/jmz_func";
+
 /**
  * Get or update global game state cache
  */
@@ -69,9 +72,6 @@ export function getGlobalGameState(): GlobalGameState {
         return globalGameStateCache;
     }
 
-    // Import jmz here to avoid circular dependencies
-    const jmz = require("bots/FunLib/jmz_func");
-
     const team = GetTeam();
     const enemyTeam = GetOpposingTeam();
     const currentTime = DotaTime();
@@ -80,6 +80,7 @@ export function getGlobalGameState(): GlobalGameState {
     // Adjust time for turbo mode
     const adjustedTime = gameMode === 23 ? currentTime * 2 : currentTime;
 
+    const [teamNetworth, enemyNetworth] = jmz.GetInventoryNetworth();
     globalGameStateCache = {
         lastUpdate: now,
         currentTime: adjustedTime,
@@ -92,9 +93,9 @@ export function getGlobalGameState(): GlobalGameState {
         aliveEnemyCount: jmz.GetNumOfAliveHeroes(true),
         aliveAllyCoreCount: jmz.GetAliveCoreCount(false),
         aliveEnemyCoreCount: jmz.GetAliveCoreCount(true),
-        teamNetworth: jmz.GetInventoryNetworth()[0],
-        enemyNetworth: jmz.GetInventoryNetworth()[1],
-        averageLevel: jmz.GetAverageLevel(team),
+        teamNetworth: teamNetworth,
+        enemyNetworth: enemyNetworth,
+        averageLevel: jmz.GetAverageLevel(false),
         hasAegis: jmz.DoesTeamHaveAegis(),
         isEarlyGame: jmz.IsEarlyGame(),
         isMidGame: jmz.IsMidGame(),

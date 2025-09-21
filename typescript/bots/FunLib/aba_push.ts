@@ -112,7 +112,7 @@ function updateGameStateCache(): CachedGameState {
         aliveEnemyCoreCount: jmz.GetAliveCoreCount(true),
         teamNetworth: jmz.GetInventoryNetworth()[0],
         enemyNetworth: jmz.GetInventoryNetworth()[1],
-        averageLevel: jmz.GetAverageLevel(team),
+        averageLevel: jmz.GetAverageLevel(false),
         hasAegis: jmz.DoesTeamHaveAegis(),
         isEarlyGame: jmz.IsEarlyGame(),
         isMidGame: jmz.IsMidGame(),
@@ -356,7 +356,8 @@ export function GetPushDesireHelper(bot: Unit, lane: Lane): BotModeDesire {
     const eAliveCoreCount = gameState.aliveEnemyCoreCount;
 
     const hAncient = gameState.ourAncient;
-    let nPushDesire = GetPushLaneDesire(lane);
+    // Base push desire calculation - missing function implementation
+    let nPushDesire = 0.5; // Default base desire
     //   const allyKills = jmz.GetNumOfTeamTotalKills(false) + 1;
     //   const enemyKills = jmz.GetNumOfTeamTotalKills(true) + 1;
     //   const teamKillsRatio = allyKills / enemyKills; // (not used later but retained)
@@ -369,9 +370,21 @@ export function GetPushDesireHelper(bot: Unit, lane: Lane): BotModeDesire {
         nMaxDesire = 0.65;
     }
 
+    // Enhanced local threat assessment - consider team advantages
+    const networthAdvantage = gameState.teamNetworth - gameState.enemyNetworth;
+    const enemyAverageLevel = jmz.GetAverageLevel(true);
+    const levelAdvantage = gameState.averageLevel - enemyAverageLevel;
+    const hasSignificantAdvantage = networthAdvantage > 15000 || levelAdvantage > 2;
+
     // If outnumbered in *local* area, desire is very low (avoid feed)
+    // But be more lenient when team has significant advantages
     if (alliesHere.length < enemiesHere.length && aAliveCount < eAliveCount) {
-        return BotModeDesire.VeryLow;
+        if (hasSignificantAdvantage && alliesHere.length >= enemiesHere.length - 1) {
+            // Allow pushing when team has big advantage even if slightly outnumbered locally
+            nMaxDesire = Math.min(nMaxDesire, 0.6); // Reduce but don't eliminate
+        } else {
+            return BotModeDesire.VeryLow;
+        }
     }
 
     // If critical items/spells are cooling down near the push location → be cautious
@@ -407,17 +420,43 @@ export function GetPushDesireHelper(bot: Unit, lane: Lane): BotModeDesire {
     const pushLane = WhichLaneToPush(bot, lane);
     const isCurrentLanePushLane = pushLane === lane;
 
-    // non-cores join the chosen lane; cores prefer chosen lane late, but can push earlier.
+    // Enhanced group push logic - more aggressive when team has advantages
     if ((!jmz.IsCore(bot) && isCurrentLanePushLane) || (jmz.IsCore(bot) && ((jmz.IsLateGame() && isCurrentLanePushLane) || isMidOrEarlyGame))) {
-        const allowNumbers = eAliveCount === 0 || aAliveCoreCount >= eAliveCoreCount || (aAliveCoreCount >= 1 && aAliveCount >= eAliveCount + 2);
+        // More flexible conditions for allowing pushes when team has advantages
+
+        // Allow pushes more easily when we have significant advantages
+        const allowNumbers =
+            eAliveCount === 0 ||
+            aAliveCoreCount >= eAliveCoreCount ||
+            (aAliveCoreCount >= 1 && aAliveCount >= eAliveCount + 2) ||
+            // New: Allow pushes with networth advantage even if slightly outnumbered
+            (networthAdvantage > 8000 && aAliveCount >= eAliveCount - 1) ||
+            // New: Allow pushes with level advantage
+            (levelAdvantage > 2 && aAliveCount >= eAliveCount - 1);
 
         if (allowNumbers) {
+            // Aegis bonus
             if (gameState.hasAegis) {
                 nPushDesire = nPushDesire + 0.3;
             }
 
-            if (aAliveCount >= eAliveCount && gameState.averageLevel >= 12) {
-                nPushDesire = nPushDesire + RemapValClamped(gameState.teamNetworth - gameState.enemyNetworth, 5000, 15000, 0.0, 1.0);
+            // Enhanced networth advantage calculation - more aggressive scaling
+            if (aAliveCount >= eAliveCount - 1) {
+                // Allow even when slightly outnumbered
+                const networthBonus = RemapValClamped(networthAdvantage, 3000, 20000, 0.0, 1.5);
+                nPushDesire = nPushDesire + networthBonus;
+            }
+
+            // New: Level advantage bonus
+            if (levelAdvantage > 0) {
+                const levelBonus = RemapValClamped(levelAdvantage, 0, 8, 0.0, 0.8);
+                nPushDesire = nPushDesire + levelBonus;
+            }
+
+            // New: Group size advantage bonus
+            if (aAliveCount > eAliveCount) {
+                const groupBonus = RemapValClamped(aAliveCount - eAliveCount, 1, 3, 0.1, 0.4);
+                nPushDesire = nPushDesire + groupBonus;
             }
 
             return RemapValClamped(nPushDesire * jmz.GetHP(bot), 0, 1, 0, nMaxDesire) as BotModeDesire;
@@ -712,8 +751,7 @@ export function PushThink(bot: Unit, lane: Lane): void {
     const nEnemyTowers = botState.nearbyTowers;
     const nAllyCreeps = botState.nearbyLaneCreeps;
 
-    // 4) If outnumbered locally OR our intended target near lane-front is backdoored,
-    //    then pull the lane-front delta back substantially to avoid feeding.
+    // 4) Enhanced retreat logic - less conservative when team has advantages
     if (alliesHere.length < enemiesHere.length || IsAnyTargetBackdooredAt(bot, lane)) {
         let longestRange = 0;
         for (const enemyHero of enemiesHere) {
@@ -722,11 +760,29 @@ export function PushThink(bot: Unit, lane: Lane): void {
                 if (r > longestRange) longestRange = r;
             }
         }
-        // Only retreat if significantly outnumbered (2+ enemies vs 1 ally) or very low HP
+
+        // Consider team advantages when deciding retreat distance
+        const gameState = getGlobalGameState();
+        const networthAdvantage = gameState.teamNetworth - gameState.enemyNetworth;
+        const enemyAverageLevel = jmz.GetAverageLevel(true);
+        const levelAdvantage = gameState.averageLevel - enemyAverageLevel;
+        const hasTeamAdvantage = networthAdvantage > 5000 || levelAdvantage > 1;
+
+        // More aggressive positioning when team has advantages
         if (enemiesHere.length >= alliesHere.length + 1 || botHp < 0.3) {
-            fDeltaFromFront = Math.max(-300, -120 - 0.35 * longestRange);
+            if (hasTeamAdvantage && botHp > 0.4) {
+                // Less retreat when team has advantage and bot is healthy
+                fDeltaFromFront = Math.max(-200, -80 - 0.25 * longestRange);
+            } else {
+                fDeltaFromFront = Math.max(-300, -120 - 0.35 * longestRange);
+            }
         } else {
-            fDeltaFromFront = Math.max(-100, -50 - 0.2 * longestRange); // Less aggressive retreat
+            if (hasTeamAdvantage && botHp > 0.5) {
+                // Stay closer when team has advantage
+                fDeltaFromFront = Math.max(-50, -20 - 0.1 * longestRange);
+            } else {
+                fDeltaFromFront = Math.max(-100, -50 - 0.2 * longestRange);
+            }
         }
     }
 

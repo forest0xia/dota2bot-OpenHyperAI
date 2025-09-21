@@ -69,7 +69,7 @@ function updateGameStateCache()
             2,
             jmz.GetInventoryNetworth()
         ),
-        averageLevel = jmz.GetAverageLevel(team),
+        averageLevel = jmz.GetAverageLevel(false),
         hasAegis = jmz.DoesTeamHaveAegis(),
         isEarlyGame = jmz.IsEarlyGame(),
         isMidGame = jmz.IsMidGame(),
@@ -206,15 +206,23 @@ function ____exports.GetPushDesireHelper(bot, lane)
     local aAliveCoreCount = gameState.aliveAllyCoreCount
     local eAliveCoreCount = gameState.aliveEnemyCoreCount
     local hAncient = gameState.ourAncient
-    local nPushDesire = GetPushLaneDesire(lane)
+    local nPushDesire = 0.5
     local teamAncientLoc = hAncient:GetLocation()
     local nEffAlliesNearAncient = #jmz.GetAlliesNearLoc(teamAncientLoc, 4500) + #jmz.Utils.GetAllyIdsInTpToLocation(teamAncientLoc, 4500)
     local nEnemiesAroundAncient = jmz.GetEnemiesAroundLoc(teamAncientLoc, 4500)
     if nEnemiesAroundAncient > 0 and nEffAlliesNearAncient < 1 then
         nMaxDesire = 0.65
     end
+    local networthAdvantage = gameState.teamNetworth - gameState.enemyNetworth
+    local enemyAverageLevel = jmz.GetAverageLevel(true)
+    local levelAdvantage = gameState.averageLevel - enemyAverageLevel
+    local hasSignificantAdvantage = networthAdvantage > 15000 or levelAdvantage > 2
     if #alliesHere < #enemiesHere and aAliveCount < eAliveCount then
-        return BotModeDesire.VeryLow
+        if hasSignificantAdvantage and #alliesHere >= #enemiesHere - 1 then
+            nMaxDesire = math.min(nMaxDesire, 0.6)
+        else
+            return BotModeDesire.VeryLow
+        end
     end
     local vEnemyLaneFrontLocation = GetLaneFrontLocation(gameState.enemyTeam, lane, 0)
     local waitForSpells = ____exports.ShouldWaitForImportantItemsSpells(vEnemyLaneFrontLocation)
@@ -247,19 +255,40 @@ function ____exports.GetPushDesireHelper(bot, lane)
     local pushLane = ____exports.WhichLaneToPush(bot, lane)
     local isCurrentLanePushLane = pushLane == lane
     if not jmz.IsCore(bot) and isCurrentLanePushLane or jmz.IsCore(bot) and (jmz.IsLateGame() and isCurrentLanePushLane or isMidOrEarlyGame) then
-        local allowNumbers = eAliveCount == 0 or aAliveCoreCount >= eAliveCoreCount or aAliveCoreCount >= 1 and aAliveCount >= eAliveCount + 2
+        local allowNumbers = eAliveCount == 0 or aAliveCoreCount >= eAliveCoreCount or aAliveCoreCount >= 1 and aAliveCount >= eAliveCount + 2 or networthAdvantage > 8000 and aAliveCount >= eAliveCount - 1 or levelAdvantage > 2 and aAliveCount >= eAliveCount - 1
         if allowNumbers then
             if gameState.hasAegis then
                 nPushDesire = nPushDesire + 0.3
             end
-            if aAliveCount >= eAliveCount and gameState.averageLevel >= 12 then
-                nPushDesire = nPushDesire + RemapValClamped(
-                    gameState.teamNetworth - gameState.enemyNetworth,
-                    5000,
-                    15000,
+            if aAliveCount >= eAliveCount - 1 then
+                local networthBonus = RemapValClamped(
+                    networthAdvantage,
+                    3000,
+                    20000,
                     0,
-                    1
+                    1.5
                 )
+                nPushDesire = nPushDesire + networthBonus
+            end
+            if levelAdvantage > 0 then
+                local levelBonus = RemapValClamped(
+                    levelAdvantage,
+                    0,
+                    8,
+                    0,
+                    0.8
+                )
+                nPushDesire = nPushDesire + levelBonus
+            end
+            if aAliveCount > eAliveCount then
+                local groupBonus = RemapValClamped(
+                    aAliveCount - eAliveCount,
+                    1,
+                    3,
+                    0.1,
+                    0.4
+                )
+                nPushDesire = nPushDesire + groupBonus
             end
             return RemapValClamped(
                 nPushDesire * jmz.GetHP(bot),
@@ -666,23 +695,23 @@ function ____exports.PushThink(bot, lane)
     if now - lastThinkTime < THINK_INTERVAL then
         if lastAction and now - lastAction.time < 2 then
             repeat
-                local ____switch92 = lastAction.type
-                local ____cond92 = ____switch92 == "attack"
-                if ____cond92 then
+                local ____switch96 = lastAction.type
+                local ____cond96 = ____switch96 == "attack"
+                if ____cond96 then
                     if lastAction.target and type(lastAction.target) == "table" and lastAction.target.GetLocation ~= nil then
                         bot:Action_AttackUnit(lastAction.target, true)
                     end
                     break
                 end
-                ____cond92 = ____cond92 or ____switch92 == "move"
-                if ____cond92 then
+                ____cond96 = ____cond96 or ____switch96 == "move"
+                if ____cond96 then
                     if lastAction.target and type(lastAction.target) == "table" and lastAction.target.x ~= nil then
                         bot:Action_MoveToLocation(lastAction.target)
                     end
                     break
                 end
-                ____cond92 = ____cond92 or ____switch92 == "attackMove"
-                if ____cond92 then
+                ____cond96 = ____cond96 or ____switch96 == "attackMove"
+                if ____cond96 then
                     if lastAction.target and type(lastAction.target) == "table" and lastAction.target.x ~= nil then
                         bot:Action_AttackMove(lastAction.target)
                     end
@@ -731,10 +760,23 @@ function ____exports.PushThink(bot, lane)
                 end
             end
         end
+        local gameState = getGlobalGameState()
+        local networthAdvantage = gameState.teamNetworth - gameState.enemyNetworth
+        local enemyAverageLevel = jmz.GetAverageLevel(true)
+        local levelAdvantage = gameState.averageLevel - enemyAverageLevel
+        local hasTeamAdvantage = networthAdvantage > 5000 or levelAdvantage > 1
         if #enemiesHere >= #alliesHere + 1 or botHp < 0.3 then
-            fDeltaFromFront = math.max(-300, -120 - 0.35 * longestRange)
+            if hasTeamAdvantage and botHp > 0.4 then
+                fDeltaFromFront = math.max(-200, -80 - 0.25 * longestRange)
+            else
+                fDeltaFromFront = math.max(-300, -120 - 0.35 * longestRange)
+            end
         else
-            fDeltaFromFront = math.max(-100, -50 - 0.2 * longestRange)
+            if hasTeamAdvantage and botHp > 0.5 then
+                fDeltaFromFront = math.max(-50, -20 - 0.1 * longestRange)
+            else
+                fDeltaFromFront = math.max(-100, -50 - 0.2 * longestRange)
+            end
         end
     end
     local targetLoc = GetLaneFrontLocation(gameState.team, lane, fDeltaFromFront)
@@ -777,25 +819,25 @@ function ____exports.PushThink(bot, lane)
     local towerDistanceToFountain = bTowerNearby and GetUnitToLocationDistance(nEnemyTowers[1], vTeamFountain) or 0
     for ____, creep in ipairs(nCreeps) do
         do
-            local __continue111
+            local __continue119
             repeat
                 if not jmz.IsValid(creep) or not jmz.CanBeAttacked(creep) then
-                    __continue111 = true
+                    __continue119 = true
                     break
                 end
                 if jmz.IsTormentor(creep) or jmz.IsRoshan(creep) then
-                    __continue111 = true
+                    __continue119 = true
                     break
                 end
                 if bTowerNearby and GetUnitToLocationDistance(creep, vTeamFountain) >= towerDistanceToFountain then
-                    __continue111 = true
+                    __continue119 = true
                     break
                 end
                 lastAction = {type = "attack", target = creep, time = now}
                 bot:Action_AttackUnit(creep, true)
                 return
             until true
-            if not __continue111 then
+            if not __continue119 then
                 break
             end
         end
