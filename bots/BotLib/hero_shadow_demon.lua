@@ -84,7 +84,6 @@ sRoleItemsBuyList['pos_3'] = {
     "item_moon_shard",
     "item_octarine_core",--
     "item_ultimate_scepter_2",
-    "item_ethereal_blade",--
 }
 
 sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']

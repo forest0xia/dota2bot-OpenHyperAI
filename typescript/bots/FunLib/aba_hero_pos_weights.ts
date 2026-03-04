@@ -131,6 +131,7 @@ const HeroPositions: HeroPositionMap = {
     [HeroName.WitchDoctor]: [0, 5, 10, 35, 55],
     [HeroName.Zeus]: [25, 60, 15, 40, 20],
     [HeroName.Kez]: [40, 45, 5, 0, 0],
+    [HeroName.Largo]: [0, 5, 0, 40, 40],
 };
 
 export function GetHeroPositions(): HeroPositionMap {

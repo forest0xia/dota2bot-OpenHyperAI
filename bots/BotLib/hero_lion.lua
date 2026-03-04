@@ -106,7 +106,6 @@ sRoleItemsBuyList['pos_2'] = {
     "item_aether_lens",
     "item_black_king_bar",--
     "item_shivas_guard",--
-	"item_ethereal_blade",--
     "item_aghanims_shard",
 	"item_octarine_core",--
     -- "item_sheepstick",--

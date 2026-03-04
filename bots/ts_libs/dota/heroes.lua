@@ -128,4 +128,5 @@ ____exports.HeroName.IO = "npc_dota_hero_wisp"
 ____exports.HeroName.WitchDoctor = "npc_dota_hero_witch_doctor"
 ____exports.HeroName.Zeus = "npc_dota_hero_zuus"
 ____exports.HeroName.Kez = "npc_dota_hero_kez"
+____exports.HeroName.Largo = "npc_dota_hero_largo"
 return ____exports

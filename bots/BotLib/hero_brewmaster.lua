@@ -146,12 +146,15 @@ local CinderBrew        = bot:GetAbilityByName('brewmaster_cinder_brew')
 local DrunkenBrawler    = bot:GetAbilityByName('brewmaster_drunken_brawler')
 local PrimalCompanion   = bot:GetAbilityByName('brewmaster_primal_companion')
 local PrimalSplit       = bot:GetAbilityByName('brewmaster_primal_split')
+local LiquidCourage     = bot:GetAbilityByName('brewmaster_liquid_courage')
 
 local ThunderClapDesire
 local CinderBrewDesire, CinderBrewLocation
 local DrunkenBrawlerDesire, ActionType
 local PrimalCompanionDesire
 local PrimalSplitDesire
+local LiquidCourageDesire, LiquidCourageTarget
+
 
 local drunkenBrawlerState = 1
 
@@ -186,8 +189,15 @@ function X.SkillsComplement()
     then
         if drunkenBrawlerState ~= State then
             bot:Action_UseAbility(DrunkenBrawler)
-            drunkenBrawlerState = (drunkenBrawlerState % 4) + 1
+            drunkenBrawlerState = (drunkenBrawlerState % 3) + 1
         end
+    end
+    
+    LiquidCourageDesire, LiquidCourageTarget = X.ConsiderLiquidCourage()
+    if LiquidCourageDesire > 0 then
+        J.SetQueuePtToINT(bot, false)
+        bot:ActionQueue_UseAbilityOnLocation(LiquidCourage, LiquidCourageTarget)
+        return
     end
 
     PrimalCompanionDesire = X.ConsiderPrimalCompanion()
@@ -500,7 +510,7 @@ function X.ConsiderDrunkenBrawler()
     end
 
     if J.IsGoingOnSomeone(bot) then
-        return BOT_ACTION_DESIRE_HIGH, 4
+        return BOT_ACTION_DESIRE_HIGH, 3
     end
 
     if J.IsRetreating(bot) and not J.IsRealInvisible(bot) then
@@ -528,6 +538,34 @@ function X.ConsiderDrunkenBrawler()
     end
 
     return BOT_ACTION_DESIRE_NONE, -1
+end
+
+function X.ConsiderLiquidCourage()
+    if not J.CanCastAbility(LiquidCourage) then
+        return BOT_ACTION_DESIRE_NONE, nil
+    end
+
+    local nCastRange = LiquidCourage:GetCastRange()
+
+    for _, allyHero in pairs(nAllyHeroes) do
+        if  J.IsValidHero(allyHero)
+        and J.IsInRange(bot, allyHero, nCastRange)
+        and not allyHero:IsIllusion()
+        and not allyHero:IsChanneling()
+        and not allyHero:HasModifier('modifier_necrolyte_reapers_scythe')
+        and not J.IsAttacking(allyHero)
+        and J.IsRunning(allyHero)
+        and allyHero:WasRecentlyDamagedByAnyHero(2.0)
+        then
+            if (J.IsGoingOnSomeone(allyHero))
+            or (J.IsRetreating(allyHero) and J.GetHP(allyHero) < 0.75)
+            then
+                return BOT_ACTION_DESIRE_HIGH, allyHero
+            end
+        end
+    end
+
+    return BOT_ACTION_DESIRE_NONE, nil
 end
 
 function X.ConsiderPrimalCompanion()

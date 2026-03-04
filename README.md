@@ -22,8 +22,8 @@ Thanks and kudos to everyone who contributed to making bot games fun and excitin
 
 ## Why It’s Enjoyable
 
-* ✅ Supports Dota 2 **Patch 7.39**.
-* ✅ Supports **all 126 heroes** (Kez, Ringmaster, Invoker, Techies, Meepo, Lone Druid, Muerta, Primal Beast, etc.). Some new heroes are still being tuned.
+* ✅ Supports Dota 2 **Patch 7.40**.
+* ✅ Supports **all 127 heroes** (Kez, Ringmaster, Invoker, Techies, Meepo, Lone Druid, Muerta, Primal Beast, etc.). Some new heroes are still being tuned.
 * ✅ **Customizable bots**: ban/picks, names, item builds, skill upgrades, etc.
 
   * [Customize/general.lua](bots/Customize/general.lua) – general settings.

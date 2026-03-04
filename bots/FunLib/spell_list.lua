@@ -787,7 +787,7 @@ X['spells'] = {
         ['spectre_spectral_dagger'] = {weight = 0.6},
         ['spectre_desolate'] = {weight = 1},
         ['spectre_dispersion'] = {weight = 1},
-        ['spectre_haunt_single'] = {weight = 1},
+        ['spectre_shadow_step'] = {weight = 1},
         ['spectre_haunt'] = {weight = 1},
         ['spectre_reality'] = {weight = 1},
     },
@@ -798,6 +798,16 @@ X['spells'] = {
         ['spirit_breaker_greater_bash'] = {weight = 1},
         ['spirit_breaker_planar_pocket'] = {weight = 0.7},
         ['spirit_breaker_nether_strike'] = {weight = 0.6},
+    },
+    
+    ['npc_dota_hero_largo'] = {
+        ['largo_catchy_lick'] = {weight = 0.3},
+        ['largo_frogstomp'] = {weight = 0.4},
+        ['largo_croak_of_genius'] = {weight = 0.4},
+        ['largo_amphibian_rhapsody'] = {weight = 1},
+        ['largo_song_fight_song'] = {weight = 1},
+        ['largo_song_double_time'] = {weight = 1},
+        ['largo_song_good_vibrations'] = {weight = 1},
     },
 
     ['npc_dota_hero_storm_spirit'] = {

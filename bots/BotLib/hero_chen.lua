@@ -58,7 +58,6 @@ sRoleItemsBuyList['pos_1'] = {
     "item_ultimate_scepter_2",
     "item_shivas_guard",
     "item_travel_boots_2",--
-    "item_ethereal_blade",--
     "item_wind_waker",--
     "item_moon_shard",
 }

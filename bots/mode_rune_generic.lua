@@ -21,8 +21,8 @@ local nRuneList = {
 	RUNE_POWERUP_2,
 }
 
-local radiantWRLocation = Vector(-7988.583008, 423.058716, 256.000000)
-local direWRLocation = Vector(8244.062500, -1026.568848, 256.000000)
+local radiantWRLocation = Vector(-7948.152344, 768.207825, 256.000000)
+local direWRLocation = Vector(8029.234375, -1125.811768, 256.000000)
 local wisdomRuneSpots = {
 	[1] = radiantWRLocation,
 	[2] = direWRLocation,

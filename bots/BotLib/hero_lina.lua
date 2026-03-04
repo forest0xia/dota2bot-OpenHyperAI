@@ -106,7 +106,6 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_aghanims_shard",
 	"item_ultimate_scepter",
 	"item_black_king_bar",--
-	"item_ethereal_blade",--
 	"item_octarine_core",--
 	"item_sheepstick",--
 	"item_ultimate_scepter_2",

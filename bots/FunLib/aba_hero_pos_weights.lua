@@ -884,6 +884,13 @@ local HeroPositions = {
         5,
         0,
         0
+    },
+    [HeroName.Largo] = {
+        0,
+        5,
+        0,
+        40,
+        40
     }
 }
 function ____exports.GetHeroPositions()

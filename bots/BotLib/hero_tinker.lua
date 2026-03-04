@@ -37,7 +37,6 @@ sRoleItemsBuyList['pos_2'] = {
 	"item_kaya_and_sange",--
 	"item_angels_demise",--
     "item_shivas_guard",--
-    "item_ethereal_blade",--
 	"item_ultimate_scepter",
     "item_ultimate_scepter_2",
     "item_moon_shard",
@@ -58,7 +57,6 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_kaya_and_sange",--
 	"item_angels_demise",--
     "item_shivas_guard",--
-    "item_ethereal_blade",--
 	"item_ultimate_scepter",
     "item_ultimate_scepter_2",
     "item_moon_shard",

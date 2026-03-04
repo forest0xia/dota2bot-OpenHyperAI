@@ -174,7 +174,7 @@ export const ImportantSpells: Record<string, string[]> = {
     [HeroName.ShadowFiend]: ["nevermore_requiem"],
     [HeroName.Slark]: ["slark_shadow_dance"],
     // sniper missing
-    [HeroName.Spectre]: ["spectre_haunt_single", "spectre_haunt"],
+    [HeroName.Spectre]: ["spectre_shadow_step", "spectre_haunt"],
     // templar_assassin missing
     [HeroName.Terrorblade]: ["terrorblade_metamorphosis", "terrorblade_sunder"],
     [HeroName.TrollWarlord]: ["troll_warlord_battle_trance"],

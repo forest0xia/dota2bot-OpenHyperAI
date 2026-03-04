@@ -7,18 +7,18 @@ local neutral_items =
 	-- roles{} arrays are the desire weights for roles {1,2,3,4,5}
 	-- {name="item_arcane_ring",			tier=1,		ranged=1,		melee=1,		roles={1,1,1,2,2},		realName="Arcane Ring"},
 	-- {name="item_broom_handle",			tier=1,		ranged=0,		melee=3,		roles={2,2,1,0,0},		realName="Broom Handle"},
-	-- {name="item_duelist_gloves",		tier=1,		ranged=0,		melee=1,		roles={1,1,1,1,1},		realName="Duelist Gloves"},
+	{name="item_duelist_gloves",		tier=1,		ranged=0,		melee=1,		roles={1,1,1,1,1},		realName="Duelist Gloves"},
 	-- {name="item_faded_broach",			tier=1,		ranged=1,		melee=1,		roles={5,5,5,5,5},		realName="Faded Broach"},
 	-- {name="item_mysterious_hat",		tier=1,		ranged=1,		melee=1,		roles={1,4,1,1,1},		realName="Fairy's Trinket"},
 	-- {name="item_lance_of_pursuit",		tier=1,		ranged=1,		melee=2,		roles={2,2,1,1,1},		realName="Lance of Pursuit"},
 	{name="item_occult_bracelet",		tier=1,		ranged=1,		melee=1,		roles={1,1,3,2,2},		realName="Occult Bracelet"},
 	-- {name="item_unstable_wand",			tier=1,		ranged=1,		melee=1,		roles={1,1,1,1,1},		realName="Pig Pole"},
 	{name="item_polliwog_charm",			tier=1,		ranged=1,		melee=1,		roles={1,1,1,1,1},		realName="Polliwog Charm"},
-	{name="item_rippers_lash",			tier=1,		ranged=1,		melee=1,		roles={1,1,1,1,1},		realName="Ripper's Lash"},
+	-- {name="item_rippers_lash",			tier=1,		ranged=1,		melee=1,		roles={1,1,1,1,1},		realName="Ripper's Lash"},
 	-- {name="item_royal_jelly",			tier=1,		ranged=1,		melee=1,		roles={1,1,1,1,1},		realName="Royal Jelly"},
 	-- {name="item_safety_bubble",			tier=1,		ranged=1,		melee=1,		roles={1,1,1,1,1},		realName="Safety Bubble"},
 	-- {name="item_seeds_of_serenity",		tier=1,		ranged=1,		melee=1,		roles={0,0,0,1,1},		realName="Seeds of Serenity"},
-	{name="item_spark_of_courage",		tier=1,		ranged=1,		melee=1,		roles={1,1,1,1,1},		realName="Spark of Courage"},
+	-- {name="item_spark_of_courage",		tier=1,		ranged=1,		melee=1,		roles={1,1,1,1,1},		realName="Spark of Courage"},
 	{name="item_chipped_vest",			tier=1,		ranged=0,		melee=1,		roles={2,2,4,2,2},		realName="Chipped Vest"},
 	-- {name="item_keen_optic",				tier=1,		ranged=1,		melee=1,		roles={1,1,1,2,2},		realName="Keen Optic"},
 	-- {name="item_ironwood_tree",			tier=1,		ranged=1,		melee=1,		roles={2,2,2,1,1},		realName="Ironwood Tree"},
@@ -27,9 +27,11 @@ local neutral_items =
 	-- {name="item_possessed_mask",			tier=1,		ranged=1,		melee=1,		roles={3,3,2,1,1},		realName="Possessed Mask"},
 	-- {name="item_trusty_shovel",			tier=1,		ranged=1,		melee=1,		roles={0,0,0,0,0},		realName="Trusty Shovel"},
 	-- {name="item_orb_of_destruction",	tier=1,		ranged=1,		melee=1,		roles={4,1,1,0,0},		realName="Orb of Destruction"},
-	{name="item_sisters_shroud",			tier=1,		ranged=1,		melee=1,		roles={1,1,1,5,5},		realName="Sister's Shroud"},
+	-- {name="item_sisters_shroud",			tier=1,		ranged=1,		melee=1,		roles={1,1,1,5,5},		realName="Sister's Shroud"},
 	{name="item_dormant_curio",			tier=1,		ranged=1,		melee=1,		roles={1,1,1,1,1},		realName="Dormant Curio"},
 	{name="item_kobold_cup",			tier=1,		ranged=1,		melee=1,		roles={1,1,1,3,3},		realName="Kobold Cup"},
+	{name="item_ash_legion_shield",		tier=1,		ranged=0,		melee=1,		roles={1,1,2,3,3},		realName="Legion Shield"},
+	{name="item_weighted_dice",			tier=1,		ranged=1,		melee=1,		roles={3,3,1,1,1},		realName="Weighted dice"},
 	
 
 	-- tier 2
@@ -45,7 +47,7 @@ local neutral_items =
 	-- {name="item_vambrace",				tier=2,		ranged=1,		melee=1,		roles={1,1,1,1,1},		realName="Vambrace"},
 	-- {name="item_iron_talon",			tier=2,		ranged=1,		melee=1,		roles={1,1,1,0,0},		realName="Iron Talon"},
 	-- {name="item_vampire_fangs",			tier=2,		ranged=1,		melee=1,		roles={2,2,2,0,0},		realName="Vampire Fangs"},
-	{name="item_misericorde",				tier=2,		ranged=1,		melee=1,		roles={4,2,1,0,0},		realName="Brigand's Blade"},
+	-- {name="item_misericorde",				tier=2,		ranged=1,		melee=1,		roles={4,2,1,0,0},		realName="Brigand's Blade"},
 	--{name="item_clumsy_net",				tier=2,		ranged=1,		melee=1,		roles={1,1,2,3,3},		realName="Clumsy Net"},
 	--{name="item_dagger_of_ristul",		tier=2,		ranged=1,		melee=1,		roles={2,2,1,1,1},		realName="Dagger of Ristul"},
 	{name="item_essence_ring",			tier=2,		ranged=1,		melee=1,		roles={3,3,3,2,2},		realName="Essence Ring"},
@@ -58,12 +60,12 @@ local neutral_items =
 	{name="item_pogo_stick",				tier=2,		ranged=1,		melee=1,		roles={3,3,3,3,3},		realName="Tumbler's Toy"},
 	{name="item_mana_draught",			tier=2,		ranged=1,		melee=1,		roles={1,1,1,3,3},		realName="Mana Draught"},
 	{name="item_poor_mans_shield",		tier=2,		ranged=1,		melee=3,		roles={2,2,3,1,1},		realName="Poor Man's Shield"},
+	{name="item_defiant_shell",			tier=2,		ranged=1,		melee=2,		roles={2,2,6,2,2},		realName="Defiant Shell"},
 
 	-- tier 3
 	-- {name="item_cloak_of_flames",		tier=3,		ranged=1,		melee=2,		roles={2,2,6,2,2},		realName="Cloak of Flames"},
 	-- {name="item_craggy_coat",			tier=3,		ranged=1,		melee=1,		roles={0,0,4,1,1},		realName="Craggy Coat"},
 	-- {name="item_dandelion_amulet",		tier=3,		ranged=1,		melee=2,		roles={2,2,6,2,2},		realName="Dandelion Amulet"},
-	-- {name="item_defiant_shell",			tier=3,		ranged=1,		melee=2,		roles={2,2,6,2,2},		realName="Defiant Shell"},
 	-- {name="item_doubloon",				tier=3,		ranged=0,		melee=0,		roles={0,0,0,0,0},		realName="Doubloon"},
 	-- {name="item_elven_tunic",			tier=3,		ranged=1,		melee=1,		roles={5,5,5,2,2},		realName="Elven Tunic"},
 	-- {name="item_enchanted_quiver",		tier=3,		ranged=4,		melee=0,		roles={1,1,1,1,1},		realName="Enchanted Quiver"},
@@ -78,11 +80,12 @@ local neutral_items =
 	--{name="item_quickening_charm",		tier=3,		ranged=1,		melee=1,		roles={1,1,1,4,4},		realName="Quickening Charm"},
 	--{name="item_titan_sliver",			tier=3,		ranged=1,		melee=1,		roles={1,1,4,1,1},		realName="Titan Sliver"},
 	{name="item_serrated_shiv",			tier=3,		ranged=1,		melee=1,		roles={1,1,4,1,1},		realName="Serrated Shiv"},
-	{name="item_gale_guard",			tier=3,		ranged=1,		melee=1,		roles={1,1,4,1,1},		realName="Gale Guard"},
+	-- {name="item_gale_guard",			tier=3,		ranged=1,		melee=1,		roles={1,1,4,1,1},		realName="Gale Guard"},
 	{name="item_gunpowder_gauntlets",			tier=3,		ranged=1,		melee=1,		roles={1,1,4,1,1},		realName="Gunpowder Gauntlets"},
 	{name="item_whisper_of_the_dread",	tier=3,		ranged=1,		melee=1,		roles={1,2,1,4,4},		realName="Whisper of the Dread"},
 	-- {name="item_ninja_gear",			tier=3,		ranged=1,		melee=1,		roles={2,1,1,0,0},		realName="Ninja Gear"},
 	{name="item_jidi_pollen_bag",	tier=3,		ranged=1,		melee=1,		roles={1,1,1,1,1},		realName="Jidi Pollen Bag"},
+	{name="item_unrelenting_eye",	tier=3,		ranged=1,		melee=1,		roles={2,2,2,2,2},		realName="Unrelenting Eye"},
 	
 
 	-- tier 4
@@ -94,7 +97,7 @@ local neutral_items =
 	-- {name="item_ogre_seal_totem",		tier=4,		ranged=1,		melee=1,		roles={1,1,3,1,1},		realName="Ogre Seal Totem"},
 	-- {name="item_mind_breaker",			tier=4,		ranged=1,		melee=1,		roles={4,1,1,0,0},		realName="Mind Breaker"},
 	{name="item_crippling_crossbow",		tier=4,		ranged=1,		melee=1,		roles={1,1,3,1,1},		realName="Crippling Crossbow"},
-	{name="item_magnifying_monocle",		tier=4,		ranged=1,		melee=1,		roles={2,2,1,3,3},		realName="Magnifying Monocle"},
+	-- {name="item_magnifying_monocle",		tier=4,		ranged=1,		melee=1,		roles={2,2,1,3,3},		realName="Magnifying Monocle"},
 	-- {name="item_ceremonial_robe",		tier=4,		ranged=1,		melee=1,		roles={1,1,1,5,5},		realName="Ceremonial Robe"},
 	-- {name="item_rattlecage",			tier=4,		ranged=1,		melee=1,		roles={0,0,6,1,1},		realName="Rattlecage"},
 	-- {name="item_stormcrafter",			tier=4,		ranged=1,		melee=1,		roles={1,1,3,3,3},		realName="Stormcrafter"},
@@ -109,10 +112,13 @@ local neutral_items =
 	--{name="item_spell_prism",				tier=4,		ranged=1,		melee=1,		roles={1,2,1,4,5},		realName="Spell Prism"},
 	--{name="item_heavy_blade",				tier=4,		ranged=1,		melee=1,		roles={3,6,1,1,1},		realName="Witchbane"},
 	--{name="item_witless_shako",			tier=4,		ranged=1,		melee=1,		roles={1,1,5,2,2},		realName="Witless Shako"},
-	{name="item_pyrrhic_cloak",		tier=4,		ranged=1,		melee=1,		roles={1,1,4,4,4},		realName="Pyrrhic Cloak"},
+	-- {name="item_pyrrhic_cloak",		tier=4,		ranged=1,		melee=1,		roles={1,1,4,4,4},		realName="Pyrrhic Cloak"},
 	{name="item_dezun_bloodrite",		tier=4,		ranged=1,		melee=1,		roles={1,2,3,4,4},		realName="Dezun Bloodrite"},
 	{name="item_giant_maul",		tier=4,		ranged=1,		melee=1,		roles={5,5,1,0,0},		realName="Giant's Maul"},
-	{name="item_outworld_staff",		tier=4,		ranged=1,		melee=1,		roles={1,1,1,1,1},		realName="Outworld Staff"},
+	-- {name="item_outworld_staff",		tier=4,		ranged=1,		melee=1,		roles={1,1,1,1,1},		realName="Outworld Staff"},
+	{name="item_flayers_bota",		tier=4,		ranged=1,		melee=1,		roles={5,5,1,0,0},		realName="Flayer's Bota"},
+	{name="item_idol_of_screeauk",		tier=4,		ranged=1,		melee=1,		roles={2,2,3,4,4},		realName="Idol of Scree'Auk"},
+	{name="item_metamorphic_mandible",		tier=4,		ranged=1,		melee=1,		roles={1,1,1,3,3},		realName="Metamorphic Mandible"},
 
 	-- tier 5
 	-- {name="item_apex",					tier=5,		ranged=1,		melee=1,		roles={1,1,1,0,0},		realName="Apex"},
@@ -135,8 +141,9 @@ local neutral_items =
 	{name="item_minotaur_horn",			tier=5,		ranged=1,		melee=1,		roles={1,1,1,1,1},		realName="Minotaur Horn"},
 	{name="item_spider_legs",				tier=5,		ranged=1,		melee=1,		roles={2,2,2,2,2},		realName="Spider Legs"},
 	{name="item_unrelenting_eye",				tier=5,		ranged=1,		melee=1,		roles={2,2,2,2,2},		realName="Unrelenting Eye"},
-	{name="item_helm_of_the_undying",				tier=5,		ranged=1,		melee=1,		roles={5,5,5,5,5},		realName="Helm of the Undying"},
+	-- {name="item_helm_of_the_undying",				tier=5,		ranged=1,		melee=1,		roles={5,5,5,5,5},		realName="Helm of the Undying"},
 	{name="item_divine_regalia",				tier=5,		ranged=1,		melee=1,		roles={4,4,1,1,1},		realName="Divine Regalia"},
+	{name="item_riftshadow_prism",				tier=5,		ranged=1,		melee=2,		roles={4,4,1,1,1},		realName="Riftshadow Prism"},
 }
 
 local enhancements = {

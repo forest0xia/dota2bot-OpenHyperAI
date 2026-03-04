@@ -100,7 +100,6 @@ sRoleItemsBuyList['pos_4'] = {
 --	"item_wraith_pact",
 	"item_ultimate_scepter",
 	"item_shivas_guard",--
-	"item_ethereal_blade",--
 	"item_moon_shard",
 	"item_ultimate_scepter_2",
 	"item_sheepstick",--
@@ -117,7 +116,6 @@ sRoleItemsBuyList['pos_5'] = {
 	"item_cyclone",
 --	"item_wraith_pact",
 	"item_shivas_guard",
-	"item_ethereal_blade",--
 	"item_sheepstick",--
 	'item_wind_waker',
 	"item_moon_shard",

@@ -163,12 +163,14 @@ local abilityR = bot:GetAbilityByName( sAbilityList[6] )
 local abilityAS = bot:GetAbilityByName( sAbilityList[4] )
 local talent2 = bot:GetAbilityByName( sTalentList[2] )
 local talent6 = bot:GetAbilityByName( sTalentList[6] )
+local SaltwaterShiv = bot:GetAbilityByName('slark_saltwater_shiv')
 
 local castQDesire, castQTarget
 local castWDesire, castWTarget
 local castEDesire, castETarget
 local castRDesire, castRTarget
 local castASDesire, castASTarget
+local SaltwaterShivDesire, SaltwaterShivTarget
 
 local nKeepMana, nMP, nHP, nLV, hEnemyList, hAllyList, botTarget, sMotive
 local aetherRange = 0
@@ -211,6 +213,12 @@ function X.SkillsComplement()
 		return
 	end
 
+	SaltwaterShivDesire, SaltwaterShivTarget = X.ConsiderSaltwaterShiv()
+	if SaltwaterShivDesire > 0 then
+		bot:Action_UseAbilityOnEntity(SaltwaterShiv, SaltwaterShivTarget)
+		return
+	end
+
 	castASDesire, castASTarget, sMotive = X.ConsiderAS()
 	if castASDesire > 0
 	then
@@ -235,6 +243,23 @@ function X.SkillsComplement()
 
 end
 
+function X.ConsiderSaltwaterShiv()
+	if not J.CanCastAbility(SaltwaterShiv) then
+		return BOT_ACTION_DESIRE_NONE, nil
+	end
+
+	if J.IsGoingOnSomeone(bot) then
+		if  J.IsValidHero(botTarget)
+		and J.CanBeAttacked(botTarget)
+		and J.IsInRange(bot, botTarget, bot:GetAttackRange() + 200)
+		and not J.IsSuspiciousIllusion(botTarget)
+		then
+			return BOT_ACTION_DESIRE_HIGH, botTarget
+		end
+	end
+
+	return BOT_ACTION_DESIRE_NONE, nil
+end
 
 function X.ConsiderQ()
 

@@ -90,7 +90,6 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_travel_boots",
 	"item_orchid",
 	"item_bloodthorn",--
-    "item_ethereal_blade",--
 	"item_ultimate_scepter",
 	"item_moon_shard",
     "item_sheepstick",--

@@ -5197,7 +5197,7 @@ X.ConsiderItemDesire["item_tpscroll"] = function( hItem )
 
 		if botName == 'npc_dota_hero_spectre'
 		then
-			local ShadowStep = bot:GetAbilityByName('spectre_haunt_single')
+			local ShadowStep = bot:GetAbilityByName('spectre_shadow_step')
 			local Haunt = bot:GetAbilityByName('spectre_haunt')
 
 			if (ShadowStep:IsFullyCastable())
@@ -5633,6 +5633,183 @@ X.ConsiderItemDesire["item_essence_ring"] = function( hItem )
 
 end
 
+X.ConsiderItemDesire["item_ash_legion_shield"] = function( hItem )
+	local nRadius = hItem:GetSpecialValueInt('block_radius')
+	local unitList = GetUnitList(UNIT_LIST_ALLIES)
+
+	local countControlledCreep = 0
+	local countControlledHero = 0
+
+	for _, unit in pairs(unitList) do
+		if J.IsValid(unit) and J.IsInRange(bot, unit, nRadius) then
+			local sUnitName = unit:GetUnitName()
+
+			if unit:IsHero() and (unit:IsIllusion() or string.find(sUnitName, 'bear')) then
+				countControlledHero = countControlledHero + 1
+			end
+
+			if string.find(sUnitName, 'golem') then
+				return BOT_ACTION_DESIRE_HIGH, bot, 'none', nil
+			end
+
+			if string.find(sUnitName, 'spiderlings')
+			or string.find(sUnitName, 'forge_spirit')
+			or string.find(sUnitName, 'golem')
+			or string.find(sUnitName, 'boar')
+			or string.find(sUnitName, 'furion_treant')
+			or string.find(sUnitName, 'familiars')
+			or unit:IsDominated()
+			or unit:HasModifier('modifier_chen_holy_persuasion')
+			then
+				countControlledCreep = countControlledCreep + 1
+			end
+		end
+	end
+
+	if J.IsGoingOnSomeone(bot) then
+		if bot:WasRecentlyDamagedByAnyHero(2.0) and (countControlledCreep >= 2 or countControlledHero >= 2) then
+			return BOT_ACTION_DESIRE_HIGH, bot, 'none', nil
+		end
+	end
+
+	return BOT_ACTION_DESIRE_NONE
+end
+
+X.ConsiderItemDesire["item_flayers_bota"] = function( hItem )
+
+	if J.IsGoingOnSomeone(bot) then
+		if  J.IsValidHero(botTarget)
+		and J.CanBeAttacked(botTarget)
+		and not J.IsSuspiciousIllusion(botTarget)
+		and bAttacking
+		then
+			return BOT_ACTION_DESIRE_HIGH, nil, ITEM_TARGET_TYPE_NONE
+		end
+	end
+
+	if J.IsDoingRoshan(bot) then
+		if J.IsRoshan(botTarget)
+		and J.CanBeAttacked(botTarget)
+		and J.IsInRange(bot, botTarget, botAttackRange + 150)
+		and #nEnemyHeroes == 0
+		and bAttacking
+		then
+			return BOT_ACTION_DESIRE_HIGH, nil, ITEM_TARGET_TYPE_NONE
+		end
+	end
+
+	if J.IsDoingTormentor(bot) then
+		if J.IsTormentor(botTarget)
+		and J.IsInRange(bot, botTarget, botAttackRange + 150)
+		and #nEnemyHeroes == 0
+		and bAttacking
+		then
+			return BOT_ACTION_DESIRE_HIGH, nil, ITEM_TARGET_TYPE_NONE
+		end
+	end
+
+	return BOT_ACTION_DESIRE_NONE
+end
+
+X.ConsiderItemDesire["item_idol_of_screeauk"] = function( hItem )
+
+	if J.IsGoingOnSomeone(bot) then
+		if bot:WasRecentlyDamagedByAnyHero(2.0) and J.IsRunning(bot) then
+			return BOT_ACTION_DESIRE_HIGH, nil, ITEM_TARGET_TYPE_NONE
+		end
+	end
+
+	return BOT_ACTION_DESIRE_NONE
+end
+
+X.ConsiderItemDesire["item_jidi_pollen_bag"] = function( hItem )
+
+	local nRadius = hItem:GetSpecialValueInt('debuff_radius')
+
+	local nInRangeEnemy = J.GetEnemiesNearLoc(botLocation, nRadius)
+
+	if J.IsInTeamFight(bot, 1200) then
+        if #nInRangeEnemy >= 2 then
+            local count = 0
+            for _, enemyHero in pairs(nInRangeEnemy) do
+                if J.IsValidHero(enemyHero)
+                and J.CanBeAttacked(enemyHero)
+                and J.CanCastOnNonMagicImmune(enemyHero)
+				and not enemyHero:HasModifier('modifier_doom_bringer_doom_aura_enemy')
+				and not enemyHero:HasModifier('modifier_necrolyte_reapers_scythe')
+				and not enemyHero:HasModifier('modifier_ice_blast')
+				and not enemyHero:HasModifier('modifier_item_spirit_vessel_damage')
+                then
+                    count = count + 1
+                end
+            end
+
+            if count >= 2 then
+                return BOT_ACTION_DESIRE_HIGH, nil, ITEM_TARGET_TYPE_NONE
+            end
+        end
+    end
+
+    if J.IsGoingOnSomeone(bot) then
+        if  J.IsValidHero(botTarget)
+        and J.CanBeAttacked(botTarget)
+        and J.IsInRange(bot, botTarget, nRadius)
+        and J.CanCastOnNonMagicImmune(botTarget)
+        and not botTarget:HasModifier('modifier_doom_bringer_doom_aura_enemy')
+		and not botTarget:HasModifier('modifier_necrolyte_reapers_scythe')
+		and not botTarget:HasModifier('modifier_ice_blast')
+		and not botTarget:HasModifier('modifier_item_spirit_vessel_damage')
+        then
+			return BOT_ACTION_DESIRE_HIGH, nil, ITEM_TARGET_TYPE_NONE
+        end
+	end
+
+	return BOT_ACTION_DESIRE_NONE
+end
+
+X.ConsiderItemDesire["item_metamorphic_mandible"] = function( hItem )
+
+	local nDuration = hItem:GetSpecialValueInt('duration')
+
+	if J.IsGoingOnSomeone(bot) then
+		if bot:WasRecentlyDamagedByAnyHero(2.0) then
+			local enemyDamage = 0
+			for _, enemyHero in pairs(nEnemyHeroes) do
+				if  J.IsValidHero(enemyHero)
+				and not J.IsSuspiciousIllusion(enemyHero)
+				and not enemyHero:HasModifier('modifier_necrolyte_reapers_scythe')
+				and not enemyHero:IsChanneling()
+				then
+					if enemyHero:GetAttackTarget() == bot
+					or J.IsChasingTarget(enemyHero, bot)
+					or enemyHero:IsFacingLocation(bot:GetLocation(), 15)
+					or bot:WasRecentlyDamagedByHero(enemyHero, 3.0)
+					then
+						enemyDamage = enemyDamage + (enemyHero:GetAttackDamage() * enemyHero:GetAttackSpeed() * nDuration)
+					end
+				end
+			end
+
+			if bot:GetActualIncomingDamage(enemyDamage * 1.5, DAMAGE_TYPE_PHYSICAL) < bot:GetHealth() then
+				return BOT_ACTION_DESIRE_HIGH, bot, 'none', nil
+			end
+		end
+	end
+
+	return BOT_ACTION_DESIRE_NONE
+end
+
+X.ConsiderItemDesire["item_riftshadow_prism"] = function( hItem )
+	local fHealthCostPct = hItem:GetSpecialValueInt('health_cost')
+
+	if J.IsGoingOnSomeone(bot) then
+		if bot:WasRecentlyDamagedByAnyHero(2.0) and J.GetHealthAfter(bot:GetHealth() * fHealthCostPct) > 0.2 then
+			return BOT_ACTION_DESIRE_HIGH, bot, 'none', nil
+		end
+	end
+
+	return BOT_ACTION_DESIRE_NONE
+end
 
 --网虫腿
 X.ConsiderItemDesire["item_spider_legs"] = function( hItem )

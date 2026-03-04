@@ -127,6 +127,7 @@ local NamesWithLocale = {
 		npc_dota_hero_zuus						= 'Zeus',
 		npc_dota_hero_ringmaster				= 'RingMaster',
 		npc_dota_hero_kez						= 'Kez',
+		npc_dota_hero_largo						= 'Largo',
 	},
 	zh = {
         npc_dota_hero_abaddon = '亚巴顿',
@@ -256,6 +257,7 @@ local NamesWithLocale = {
         npc_dota_hero_zuus = '宙斯',
         npc_dota_hero_ringmaster = '百戏大王',
         npc_dota_hero_kez = '凯',
+		npc_dota_hero_largo = '朗戈',
 	},
 	ru = {
 		npc_dota_hero_abaddon = 'Абаддон',
@@ -385,6 +387,7 @@ local NamesWithLocale = {
 		npc_dota_hero_zuus = 'Зевс',
         npc_dota_hero_ringmaster = 'Кольцмейстер',
         npc_dota_hero_kez = 'Кез',
+		npc_dota_hero_largo = 'Large',
 	},
 	ja = {
         npc_dota_hero_abaddon = 'アバドン',
@@ -514,6 +517,7 @@ local NamesWithLocale = {
         npc_dota_hero_zuus = 'ゼウス',
         npc_dota_hero_ringmaster = 'リングマスター',
         npc_dota_hero_kez = 'ケズ',
+		npc_dota_hero_largo = 'Large',
     }
 }
 

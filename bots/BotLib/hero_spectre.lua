@@ -79,7 +79,7 @@ end
 local SpectralDagger    = bot:GetAbilityByName('spectre_spectral_dagger')
 -- local Desolate          = bot:GetAbilityByName('spectre_desolate')
 local Dispersion        = bot:GetAbilityByName('spectre_dispersion')
-local ShadowStep        = bot:GetAbilityByName('spectre_haunt_single')
+local ShadowStep        = bot:GetAbilityByName('spectre_shadow_step')
 local Haunt             = bot:GetAbilityByName('spectre_haunt')
 local Reality           = bot:GetAbilityByName('spectre_reality')
 
