@@ -673,7 +673,7 @@ Item['item_nullifier']	= GetItemComponents( 'item_nullifier' )[1]
 
 Item['item_oblivion_staff']	= GetItemComponents( 'item_oblivion_staff' )[1]
 
-Item['item_octarine_core']	= {"item_soul_booster", "item_tiara_of_selemene"}
+Item['item_octarine_core']	= GetItemComponents( 'item_octarine_core' )[1]
 
 Item['item_orchid']	= GetItemComponents( 'item_orchid' )[1]
 
