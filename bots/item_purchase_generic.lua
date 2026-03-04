@@ -279,16 +279,21 @@ local function GeneralPurchase()
 		--当信使购买神秘商店物品后
 		if bot.SecretShop
 			and courier ~= nil
-			and GetCourierState( courier ) == COURIER_STATE_IDLE
 			and courier:DistanceFromSecretShop() == 0
 		then
-			if courier:ActionImmediate_PurchaseItem( bot.currBuyingBasicItem ) == PURCHASE_ITEM_SUCCESS
-			then
+			local res = courier:ActionImmediate_PurchaseItem(bot.currBuyingBasicItem)
+			if res == PURCHASE_ITEM_SUCCESS then
+				ClearCurrBuyingBasicItemList()
+				bot.SecretShop = false
+				return
+			elseif GetItemStockCount(bot.currBuyingBasicItem) < 1 then
+				-- out of stock → don’t block the queue
 				ClearCurrBuyingBasicItemList()
 				bot.SecretShop = false
 				return
 			end
 		end
+
 
 		--决定是否在神秘购物
 		if bot.bPurchaseFromSecret

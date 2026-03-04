@@ -217,7 +217,7 @@ function ____exports.GetPushDesireHelper(bot, lane)
     local enemyAverageLevel = jmz.GetAverageLevel(true)
     local levelAdvantage = gameState.averageLevel - enemyAverageLevel
     local hasSignificantAdvantage = networthAdvantage > 15000 or levelAdvantage > 2
-    if #alliesHere < #enemiesHere and aAliveCount < eAliveCount then
+    if #alliesHere < #enemiesHere and #alliesHere <= eAliveCount - 1 and aAliveCount < eAliveCount then
         if hasSignificantAdvantage and #alliesHere >= #enemiesHere - 1 then
             nMaxDesire = math.min(nMaxDesire, 0.6)
         else

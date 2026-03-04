@@ -574,11 +574,11 @@ end
 
 function X.GetScaledDesire(nBase, nCurrDist, nMaxDist)
 	local maxDesire = 0.85
-	if nCurrDist > 900 and (J.IsLateGame() or J.GetDistanceFromEnemyFountain( bot ) < 6500) then
-		maxDesire = 0.45
+	if nCurrDist > 2000 and (J.IsLateGame() or J.GetDistanceFromEnemyFountain( bot ) < 5500) then
+		maxDesire = 0.55
 	end
 	local hp = J.GetHP(bot)
-	local resDesire = Clamp(nBase * RemapValClamped(nCurrDist, 0, nMaxDist, 1, 0.1), 0, maxDesire)
+	local resDesire = Clamp(nBase * RemapValClamped(nCurrDist, 0, nMaxDist, 1, 0.5), 0, maxDesire)
 	if hp < 0.6 then
 		resDesire = RemapValClamped(hp, 0, 0.8, 0, resDesire)
 	end

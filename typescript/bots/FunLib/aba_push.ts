@@ -378,7 +378,7 @@ export function GetPushDesireHelper(bot: Unit, lane: Lane): BotModeDesire {
 
     // If outnumbered in *local* area, desire is very low (avoid feed)
     // But be more lenient when team has significant advantages
-    if (alliesHere.length < enemiesHere.length && aAliveCount < eAliveCount) {
+    if (alliesHere.length < enemiesHere.length && alliesHere.length <= eAliveCount - 1 && aAliveCount < eAliveCount) {
         if (hasSignificantAdvantage && alliesHere.length >= enemiesHere.length - 1) {
             // Allow pushing when team has big advantage even if slightly outnumbered locally
             nMaxDesire = Math.min(nMaxDesire, 0.6); // Reduce but don't eliminate
