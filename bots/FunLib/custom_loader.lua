@@ -1,7 +1,7 @@
 local Customize = nil
 function LoadCustomize()
 	if Customize then return Customize end
-	local sDir, tSet = "game/Customize/general", nil
+	local sDir, tSet = "bots/Customize/general", nil
 	local status, _ = xpcall(function() tSet = require( sDir ) end, function( err ) print( '[WARN] When loading customized file: '..err ) end )
 	if status and tSet then
 		Customize = tSet
