@@ -64,7 +64,8 @@ sRoleItemsBuyList['pos_2'] = {
 	"item_arcane_boots",
 	"item_shivas_guard",--
 	"item_cyclone",
-	"item_eternal_shroud",--
+	"item_crellas_crozier",--
+	"item_bloodstone",--
 	"item_black_king_bar",--
 	"item_aghanims_shard",
 	"item_kaya_and_sange",--
@@ -105,7 +106,7 @@ sRoleItemsBuyList['pos_4'] = {
 	"item_guardian_greaves",--
 	"item_shivas_guard",--
 	"item_cyclone",
-	"item_eternal_shroud",--
+	"item_bloodstone",--
 	"item_black_king_bar",--
 	"item_aghanims_shard",
 	"item_heavens_halberd", --
@@ -128,7 +129,7 @@ sRoleItemsBuyList['pos_5'] = {
 	"item_pipe",--
 	"item_shivas_guard",--
 	"item_cyclone",
-	"item_eternal_shroud",--
+	"item_bloodstone",--
 	"item_black_king_bar",--
 	"item_aghanims_shard",
     "item_wind_waker",

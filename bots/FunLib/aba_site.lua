@@ -1167,9 +1167,6 @@ ____exports.ConsiderIsTimeToFarm.npc_dota_hero_centaur = function()
     if not HasItem(bot, "item_blink") and botNetWorth < 8000 then
         return true
     end
-    if not HasItem(bot, "item_hood_of_defiance") and botNetWorth < 10000 then
-        return true
-    end
     if not HasItem(bot, "item_pipe") and botNetWorth < 14000 then
         return true
     end

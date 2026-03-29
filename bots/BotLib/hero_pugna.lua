@@ -94,6 +94,7 @@ sRoleItemsBuyList['pos_1'] = {
     "item_octarine_core",--
     "item_dagon_5",--
     "item_kaya_and_sange",--
+    "item_crellas_crozier",--
     "item_ultimate_scepter_2",
     "item_shivas_guard",
     "item_moon_shard",
@@ -117,6 +118,7 @@ sRoleItemsBuyList['pos_2'] = {
     "item_ultimate_scepter",
     "item_octarine_core",--
     "item_dagon_5",--
+    "item_crellas_crozier",--
     "item_kaya_and_sange",--
     "item_ultimate_scepter_2",
     "item_shivas_guard",
@@ -136,8 +138,9 @@ sRoleItemsBuyList['pos_3'] = {
     "item_phase_boots",
     "item_lotus_orb",--
     "item_veil_of_discord",
+    "item_crellas_crozier",--
 	"item_gungir",--
-    "item_eternal_shroud",--
+    "item_bloodstone",--
     "item_ultimate_scepter",
     "item_shivas_guard",--
 	"item_sheepstick",

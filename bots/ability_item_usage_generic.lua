@@ -2300,6 +2300,38 @@ X.ConsiderItemDesire["item_ghost"] = function( hItem )
 
 end
 
+
+--克雷拉斯权杖 (Crellas's Crozier - self-cast ghost form)
+X.ConsiderItemDesire["item_crellas_crozier"] = function( hItem )
+
+	local nCastRange = 800
+	local sCastType = 'none'
+	local hEffectTarget = nil
+	local sCastMotive = nil
+
+	if bot:GetAttackTarget() == nil
+		or bot:GetHealth() < 500
+	then
+		for _, npcEnemy in pairs( hNearbyEnemyHeroList )
+		do
+			if J.IsValidHero( npcEnemy )
+				and J.CanCastOnMagicImmune( npcEnemy )
+				and J.IsInRange( bot, npcEnemy, npcEnemy:GetAttackRange() + 100 )
+				and npcEnemy:GetAttackTarget() == bot
+				and bot:WasRecentlyDamagedByHero( npcEnemy, 2.0 )
+				and npcEnemy:GetAttackDamage() > bot:GetAttackDamage()
+			then
+				hEffectTarget = npcEnemy
+				sCastMotive = "撤退"..J.Chat.GetNormName( hEffectTarget )
+				return BOT_ACTION_DESIRE_HIGH, hEffectTarget, sCastType, sCastMotive
+			end
+		end
+	end
+
+	return BOT_ACTION_DESIRE_NONE
+
+end
+
 --微光
 X.ConsiderItemDesire["item_glimmer_cape"] = function( hItem )
 
@@ -4235,6 +4267,77 @@ end
 X.ConsiderItemDesire["item_spirit_vessel"] = function( hItem )
 
 	return X.ConsiderItemDesire["item_urn_of_shadows"]( hItem )
+
+end
+
+
+--精华蒸馏器
+X.ConsiderItemDesire["item_essence_distiller"] = function( hItem )
+
+	if hItem:GetCurrentCharges() == 0 then return BOT_ACTION_DESIRE_NONE end
+
+	local nCastRange = 950 + aetherRange
+	local sCastType = 'unit'
+	local hEffectTarget = nil
+	local sCastMotive = nil
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
+
+
+	if J.IsGoingOnSomeone( bot )
+	then
+		if J.IsValidHero( botTarget ) and
+			((J.CanCastOnNonMagicImmune( botTarget )
+				and J.IsInRange( bot, botTarget, nCastRange )
+				and not botTarget:HasModifier( "modifier_item_urn_damage" )
+				and not botTarget:HasModifier( "modifier_item_spirit_vessel_damage" )
+				and not botTarget:HasModifier( "modifier_item_essence_distiller_damage" )
+				and not botTarget:HasModifier( "modifier_arc_warden_tempest_double" )
+				and ( J.GetHP( botTarget ) < 0.95 or J.IsInRange( bot, botTarget, 700 ) ))
+			or botTarget:HasModifier( "modifier_invoker_cold_snap_freeze" )
+		) then
+			hEffectTarget = botTarget
+			sCastMotive = "进攻:"..J.Chat.GetNormName( hEffectTarget )
+			return BOT_ACTION_DESIRE_HIGH, hEffectTarget, sCastType, sCastMotive
+		end
+	end
+
+	if bot:GetActiveMode() ~= BOT_MODE_ROSHAN
+	then
+		local hAllyList = J.GetNearbyHeroes(bot, nCastRange + 80, false, BOT_MODE_NONE )
+		local hNeedHealAlly = nil
+		local nNeedHealAllyHealth = 99999
+		for _, npcAlly in pairs( hAllyList )
+		do
+			if J.IsValid( npcAlly )
+				and not npcAlly:IsIllusion()
+				and npcAlly:DistanceFromFountain() > 800
+				and J.CanCastOnNonMagicImmune( npcAlly )
+				and not npcAlly:WasRecentlyDamagedByAnyHero( 3.1 )
+				and not npcAlly:HasModifier( "modifier_item_spirit_vessel_heal" )
+				and not npcAlly:HasModifier( "modifier_item_urn_heal" )
+				and not npcAlly:HasModifier( "modifier_item_essence_distiller_heal" )
+				and not npcAlly:HasModifier( "modifier_fountain_aura" )
+				and not npcAlly:HasModifier( "modifier_arc_warden_tempest_double" )
+				and npcAlly:OriginalGetMaxHealth() - npcAlly:OriginalGetHealth() > 450
+				and #hNearbyEnemyHeroList == 0
+			then
+				if( npcAlly:OriginalGetHealth() < nNeedHealAllyHealth )
+				then
+					hNeedHealAlly = npcAlly
+					nNeedHealAllyHealth = npcAlly:OriginalGetHealth()
+				end
+			end
+		end
+
+		if( hNeedHealAlly ~= nil )
+		then
+			hEffectTarget = hNeedHealAlly
+			sCastMotive = '治疗:'..J.Chat.GetNormName( hEffectTarget )
+			return BOT_ACTION_DESIRE_HIGH, hEffectTarget, sCastType, sCastMotive
+		end
+	end
+
+	return BOT_ACTION_DESIRE_NONE
 
 end
 

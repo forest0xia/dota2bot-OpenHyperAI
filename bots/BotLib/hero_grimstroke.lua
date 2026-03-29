@@ -55,7 +55,7 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_rod_of_atos",
 	"item_gungir",--
 	"item_cyclone",
-	"item_eternal_shroud",--
+	"item_bloodstone",--
 	"item_black_king_bar",--
 	"item_aghanims_shard",
 	'item_heavens_halberd',--

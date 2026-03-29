@@ -41,7 +41,7 @@ sRoleItemsBuyList['pos_2'] = {
     "item_arcane_boots",
 	"item_blink",
     "item_kaya_and_sange",--
-    "item_eternal_shroud",--
+    "item_pipe",--
 	"item_shivas_guard",--
     "item_aghanims_shard",
 	"item_cyclone",
@@ -66,7 +66,7 @@ sRoleItemsBuyList['pos_3'] = {
     "item_arcane_boots",
 	"item_veil_of_discord",
 	"item_blink",
-    "item_eternal_shroud",--
+    "item_pipe",--
     "item_kaya_and_sange",--
 	"item_shivas_guard",--
     nUtility,--

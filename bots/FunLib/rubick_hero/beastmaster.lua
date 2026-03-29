@@ -53,7 +53,7 @@ function X.ConsiderStolenSpell(ability)
         end
     end
 
-    if abilityName == 'beastmaster_call_of_the_wild_boar'
+    if abilityName == 'beastmaster_call_of_the_wild_razorback'
     then
         CallOfTheWildBoar = ability
         CallOfTheWildBoarDesire = X.ConsiderCallOfTheWildBoar()
@@ -64,7 +64,7 @@ function X.ConsiderStolenSpell(ability)
         end
     end
 
-    if abilityName == 'beastmaster_call_of_the_wild_hawk'
+    if abilityName == 'beastmaster_call_of_the_wild_raptor'
     then
         CallOfTheWildHawk = ability
         CallOfTheWildHawkDesire = X.ConsiderCallOfTheWildHawk()

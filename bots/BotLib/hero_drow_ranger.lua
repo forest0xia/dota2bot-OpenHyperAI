@@ -51,6 +51,7 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_hurricane_pike",--
 	RandomItem,--
 	"item_butterfly",--
+	"item_hydras_breath",--
 	"item_aghanims_shard",
 	"item_greater_crit",--
 	"item_moon_shard",

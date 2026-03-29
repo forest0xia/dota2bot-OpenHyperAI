@@ -69,6 +69,7 @@ sRoleItemsBuyList['pos_2'] = {
 	"item_travel_boots",
 	"item_ultimate_scepter",
 	"item_shivas_guard",--
+	"item_crellas_crozier",--
 	"item_octarine_core",--
 	"item_moon_shard",
 	"item_travel_boots_2",--
@@ -82,6 +83,7 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_veil_of_discord",
 	sHalberdPipe,--
 	"item_glimmer_cape",--
+	"item_crellas_crozier",--
 	"item_shivas_guard",--
 	"item_kaya_and_sange",--
 	"item_aghanims_shard",

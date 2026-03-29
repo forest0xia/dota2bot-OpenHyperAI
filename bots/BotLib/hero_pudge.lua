@@ -61,7 +61,7 @@ sRoleItemsBuyList['pos_2'] = {
     "item_boots",
     "item_kaya_and_sange",--
     "item_ultimate_scepter",
-    "item_eternal_shroud",--
+    "item_pipe",--
     "item_travel_boots",
     "item_bloodstone",--
     "item_black_king_bar",--
@@ -83,7 +83,7 @@ sRoleItemsBuyList['pos_3'] = {
     "item_boots",
     "item_phase_boots",
     "item_veil_of_discord",
-    "item_eternal_shroud",--
+    "item_pipe",--
     "item_ultimate_scepter",
     "item_blink",
     "item_shivas_guard",--
@@ -146,7 +146,7 @@ sRoleItemsBuyList['pos_1'] = {
     "item_boots",
     "item_kaya_and_sange",--
     "item_ultimate_scepter",
-    "item_eternal_shroud",--
+    "item_pipe",--
     "item_travel_boots",
     "item_bloodstone",--
     "item_black_king_bar",--

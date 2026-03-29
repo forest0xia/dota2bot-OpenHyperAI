@@ -260,7 +260,7 @@ local ITEMS_BY_POSITION = {
     }},
     pos_4 = {melee = {
         "item_urn_of_shadows",
-        "item_medallion_of_courage",
+        "item_solar_crest",
         "item_glimmer_cape",
         "item_force_staff",
         "item_guardian_greaves",
@@ -272,7 +272,7 @@ local ITEMS_BY_POSITION = {
         "item_ultimate_scepter_2"
     }, ranged = {
         "item_urn_of_shadows",
-        "item_medallion_of_courage",
+        "item_solar_crest",
         "item_glimmer_cape",
         "item_force_staff",
         "item_guardian_greaves",
@@ -285,7 +285,7 @@ local ITEMS_BY_POSITION = {
     }},
     pos_5 = {melee = {
         "item_urn_of_shadows",
-        "item_medallion_of_courage",
+        "item_solar_crest",
         "item_glimmer_cape",
         "item_force_staff",
         "item_boots_of_bearing",
@@ -297,7 +297,7 @@ local ITEMS_BY_POSITION = {
         "item_ultimate_scepter_2"
     }, ranged = {
         "item_urn_of_shadows",
-        "item_medallion_of_courage",
+        "item_solar_crest",
         "item_glimmer_cape",
         "item_force_staff",
         "item_boots_of_bearing",

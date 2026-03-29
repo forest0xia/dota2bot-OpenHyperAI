@@ -46,6 +46,7 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_soul_ring",
 	"item_phase_boots",
 	"item_vladmir",--
+	"item_consecrated_wraps",--
 	"item_blink",
 	"item_aghanims_shard",
 	"item_shivas_guard",--

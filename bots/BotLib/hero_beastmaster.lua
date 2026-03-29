@@ -148,8 +148,8 @@ function X.MinionThink(hMinionUnit)
 end
 
 local WildAxes          = bot:GetAbilityByName('beastmaster_wild_axes')
-local CallOfTheWildBoar = bot:GetAbilityByName('beastmaster_call_of_the_wild_boar')
-local CallOfTheWildHawk = bot:GetAbilityByName('beastmaster_call_of_the_wild_hawk')
+local CallOfTheWildBoar = bot:GetAbilityByName('beastmaster_call_of_the_wild_razorback')
+local CallOfTheWildHawk = bot:GetAbilityByName('beastmaster_call_of_the_wild_raptor')
 local InnerBeast        = bot:GetAbilityByName('beastmaster_inner_beast')
 -- local DrumsOfSlom        = bot:GetAbilityByName('beastmaster_drums_of_slom')
 local PrimalRoar        = bot:GetAbilityByName('beastmaster_primal_roar')
@@ -214,12 +214,13 @@ function X.SkillsComplement()
         return
     end
 
-    InnerBeastDesire = X.ConsiderInnerBeast()
-    if InnerBeastDesire > 0
-    then
-        bot:Action_UseAbility(InnerBeast)
-        return
-    end
+    -- Inner Beast is now innate (passive) as of 7.41, no longer castable
+    -- InnerBeastDesire = X.ConsiderInnerBeast()
+    -- if InnerBeastDesire > 0
+    -- then
+    --     bot:Action_UseAbility(InnerBeast)
+    --     return
+    -- end
 
     WildAxesDesire, WildAxesLocation = X.ConsiderWildAxes()
     if WildAxesDesire > 0
@@ -229,36 +230,8 @@ function X.SkillsComplement()
     end
 end
 
+-- Inner Beast is now innate (passive) as of 7.41, no longer castable
 function X.ConsiderInnerBeast()
-    if not J.CanCastAbility(InnerBeast)
-    then
-        return BOT_ACTION_DESIRE_NONE, 0
-    end
-
-    local nCastRange = 800
-    if J.IsInTeamFight(bot, nCastRange)
-	then
-        return BOT_ACTION_DESIRE_HIGH
-	end
-
-    if J.IsGoingOnSomeone(bot)
-	then
-        local nInRangeAlly = J.GetNearbyHeroes(bot,1000, false, BOT_MODE_NONE)
-
-		if J.IsValidTarget(botTarget)
-        and J.CanCastOnNonMagicImmune(botTarget)
-        and J.IsInRange(bot, botTarget, nCastRange)
-        and not J.IsSuspiciousIllusion(botTarget)
-		then
-            local nTargetInRangeAlly = J.GetNearbyHeroes(botTarget, 1000, false, BOT_MODE_NONE)
-
-            if nInRangeAlly ~= nil and nTargetInRangeAlly ~= nil
-            and #nInRangeAlly >= #nTargetInRangeAlly
-            then
-                return BOT_ACTION_DESIRE_HIGH
-            end
-		end
-	end
     return BOT_ACTION_DESIRE_NONE, 0
 end
 

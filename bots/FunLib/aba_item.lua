@@ -76,7 +76,7 @@ local sNeedDebugItemList =
 --	"item_magic_wand",
 	"item_manta",
 --	"item_mask_of_madness",
-	"item_medallion_of_courage",
+--	"item_medallion_of_courage", -- removed from game
 	"item_mekansm",
 	"item_meteor_hammer",
 	"item_mjollnir",
@@ -208,15 +208,17 @@ Item['sSeniorItems'] = {
 	'item_dragon_lance',
 	'item_force_staff',
 	'item_headdress',
-	'item_hood_of_defiance',
+--	'item_hood_of_defiance', -- removed from game
 	'item_invis_sword',
 	'item_kaya',
 	'item_lesser_crit',
 	'item_maelstrom',
-	'item_medallion_of_courage',
+--	'item_medallion_of_courage', -- removed from game
 	'item_mekansm',
-	'item_necronomicon',
-	'item_necronomicon_2',
+--	'item_necronomicon', -- removed from game
+--	'item_necronomicon_2', -- removed from game
+	'item_essence_distiller',
+	'item_specialists_array',
 	'item_ring_of_basilius',
 	'item_sange',
 	'item_soul_booster',
@@ -280,7 +282,7 @@ Item['sTopItems'] = {
 	'item_monkey_king_bar',
 	'item_moon_shard',
 	'item_meteor_hammer',
-	'item_necronomicon_3',
+--	'item_necronomicon_3', -- removed from game
 	'item_null_talisman',
 	'item_nullifier',
 	'item_orb_of_frost',
@@ -310,7 +312,13 @@ Item['sTopItems'] = {
 	
 	'item_revenants_brooch',
 	'item_boots_of_bearing',
-	'item_wraith_pact',
+--	'item_wraith_pact', -- removed from game
+
+	'item_essence_distiller',
+	'item_specialists_array',
+	'item_hydras_breath',
+	'item_consecrated_wraps',
+	'item_crellas_crozier',
 }
 
 local tTopItemList = {}
@@ -452,7 +460,6 @@ Item['sSellList'] = {
 local tCanNotSwitchItemList = {}
 for _, sItem in pairs( Item['sCanNotSwitchItems'] )
 do
-	tCanNotSwitchItemList[sItem] = true
 	tCanNotSwitchItemList[sItem] = true
 end
 
@@ -635,7 +642,7 @@ Item['item_heavens_halberd']	= GetItemComponents( 'item_heavens_halberd' )[1]
 
 Item['item_helm_of_the_dominator']	= GetItemComponents( 'item_helm_of_the_dominator' )[1]
 
-Item['item_hood_of_defiance']	= GetItemComponents( 'item_hood_of_defiance' )[1]
+-- Item['item_hood_of_defiance'] removed from game
 
 Item['item_hurricane_pike']		= GetItemComponents( 'item_hurricane_pike' )[1]
 
@@ -659,7 +666,7 @@ Item['item_manta']	= GetItemComponents( 'item_manta' )[1]
 
 Item['item_mask_of_madness']	= GetItemComponents( 'item_mask_of_madness' )[1]
 
-Item['item_medallion_of_courage']	= GetItemComponents( 'item_medallion_of_courage' )[1]
+-- Item['item_medallion_of_courage'] removed from game
 
 Item['item_mekansm']	= GetItemComponents( 'item_mekansm' )[1]
 
@@ -770,7 +777,7 @@ Item['item_gungir']	= GetItemComponents( 'item_gungir' )[1]
 
 Item['item_mage_slayer']	= GetItemComponents( 'item_mage_slayer' )[1]
 
-Item['item_eternal_shroud']	= GetItemComponents( 'item_eternal_shroud' )[1]
+-- Item['item_eternal_shroud'] removed from game in 7.41
 
 Item['item_helm_of_the_overlord']	= GetItemComponents( 'item_helm_of_the_overlord' )[1]
 
@@ -787,7 +794,7 @@ Item['item_revenants_brooch']	= GetItemComponents( 'item_revenants_brooch' )[1]
 
 Item['item_boots_of_bearing']	= GetItemComponents( 'item_boots_of_bearing' )[1]
 
-Item['item_wraith_pact']	= GetItemComponents( 'item_wraith_pact' )[1]
+-- Item['item_wraith_pact'] removed from game
 
 ---------- 7.33 NEW ITEMS ---------------
 Item["item_pavise"] 							= GetItemComponents( 'item_pavise' )[1]
@@ -800,25 +807,12 @@ Item["item_blood_grenade"] 						= GetItemComponents( 'item_blood_grenade' )[1]
 Item["item_angels_demise"] 						= GetItemComponents( 'item_angels_demise' )[1] --绝刃
 Item["item_devastator"] 						= GetItemComponents( 'item_devastator' )[1] --圣斧
 
--- Add these inside the 'if true then' block for component definitions
-
--- New 7.41 Component Definitions
-Item['item_arcane_boots']   = { 'item_boots', 'item_ring_of_basilius', 'item_wizard_hat' }
-Item['item_blade_mail']     = { 'item_splintmail', 'item_robe' }
-Item['item_shivas_guard']   = { 'item_splintmail', 'item_chasm_stone', 'item_platemail' }
-Item['item_bloodstone']     = { 'item_veil_of_discord', 'item_soul_booster' }
-Item['item_glimmer_cape']   = { 'item_shawl', 'item_shadow_amulet' }
-Item['item_pipe']           = { 'item_shawl', 'item_headdress' }
-
--- If Splintmail or Shawl have their own recipes, define them so the recursion 
--- in your GetBasicItems function breaks them down further:
-Item['item_splintmail']     = { 'item_chainmail', 'item_blades_of_attack' }
-Item['item_shawl']          = { 'item_cloak', 'item_ring_of_regen' }
-
--- Ensure base components are recognized as such (sets them to nil so your function 
--- treats them as the final 'v' to add to the list):
-Item['item_chasm_stone']    = nil
-Item['item_wizard_hat']     = nil
+---------- 7.41 NEW ITEMS ---------------
+Item["item_essence_distiller"]				= GetItemComponents( 'item_essence_distiller' )[1]
+Item["item_specialists_array"]				= GetItemComponents( 'item_specialists_array' )[1]
+Item["item_hydras_breath"]					= GetItemComponents( 'item_hydras_breath' )[1]
+Item["item_consecrated_wraps"]				= GetItemComponents( 'item_consecrated_wraps' )[1]
+Item["item_crellas_crozier"]				= GetItemComponents( 'item_crellas_crozier' )[1]
 
 --新自定义物品
 Item['item_new_1']	= GetItemComponents( 'item_new_1' )[1]

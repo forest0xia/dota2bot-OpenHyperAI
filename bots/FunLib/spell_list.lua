@@ -64,9 +64,9 @@ X['spells'] = {
     
     ['npc_dota_hero_beastmaster'] = {
         ['beastmaster_wild_axes'] = {weight = 0.4},
-        ['beastmaster_call_of_the_wild_boar'] = {weight = 1},
+        ['beastmaster_call_of_the_wild_razorback'] = {weight = 1},
         ['beastmaster_inner_beast'] = {weight = 1},
-        ['beastmaster_call_of_the_wild_hawk'] = {weight = 1},
+        ['beastmaster_call_of_the_wild_raptor'] = {weight = 1},
     },
     
     ['npc_dota_hero_bloodseeker'] = {
@@ -863,7 +863,7 @@ X['spells'] = {
         ['tinker_laser'] = {weight = 0.3},
         ['tinker_heat_seeking_missile'] = {weight = 1},
         ['tinker_march_of_the_machines'] = {weight = 0.5},
-        ['tinker_defense_matrix'] = {weight = 0.1},
+        ['tinker_deploy_turrets'] = {weight = 0.1},
         ['tinker_warp_grenade'] = {weight = 0.6},
         ['tinker_keen_teleport'] = {weight = 0.6},
         ['tinker_rearm'] = {weight = 1},

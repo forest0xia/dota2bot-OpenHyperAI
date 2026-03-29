@@ -49,6 +49,7 @@ sRoleItemsBuyList['pos_1'] = {
     "item_force_staff",
 	"item_hurricane_pike",--
 	"item_butterfly",--
+	"item_hydras_breath",--
 	"item_greater_crit",--
 	"item_travel_boots",
 	"item_aghanims_shard",
@@ -72,8 +73,9 @@ sRoleItemsBuyList['pos_2'] = {
 	"item_ultimate_scepter_2",
 	"item_moon_shard",
 	"item_butterfly",--
+	"item_hydras_breath",--
 	"item_travel_boots_2",--
-	
+
 }
 
 sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_2']

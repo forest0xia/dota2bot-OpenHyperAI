@@ -84,6 +84,7 @@ sRoleItemsBuyList['pos_3'] = {
     "item_orb_of_corrosion",
     "item_phase_boots",
     "item_radiance",--
+    "item_consecrated_wraps",--
     "item_crimson_guard",--
     "item_assault",--
     nUtility,--
@@ -100,6 +101,7 @@ sRoleItemsBuyList['pos_4'] = {
 	"item_tank_outfit",
 	"item_echo_sabre",
 	"item_aghanims_shard",
+	"item_consecrated_wraps",--
 	"item_crimson_guard",
 	"item_ultimate_scepter",
 	"item_heavens_halberd",

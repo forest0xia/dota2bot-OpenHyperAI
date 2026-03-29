@@ -38,7 +38,7 @@ sRoleItemsBuyList['pos_3'] = {
     "item_phase_boots",
     "item_veil_of_discord",
     "item_blink",
-    "item_eternal_shroud",--
+    "item_pipe",--
     "item_shivas_guard",--
     sCrimsonPipeLotus,
     "item_aghanims_shard",

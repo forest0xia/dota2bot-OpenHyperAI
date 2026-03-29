@@ -130,7 +130,7 @@ sRoleItemsBuyList['pos_3'] = {
     "item_magic_wand",
     "item_phase_boots",
     "item_veil_of_discord",
-    "item_eternal_shroud",--
+    "item_glimmer_cape",--
     "item_ultimate_scepter",
     "item_blink",
     "item_shivas_guard",--

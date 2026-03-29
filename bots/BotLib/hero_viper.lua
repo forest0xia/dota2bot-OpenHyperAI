@@ -65,6 +65,7 @@ sRoleItemsBuyList['pos_1'] = {
 	sRandomItem_1,
 	"item_hurricane_pike",
 	sRandomItem_2,
+	"item_hydras_breath",--
 	"item_moon_shard",
 	"item_travel_boots_2",
 
@@ -81,6 +82,7 @@ sRoleItemsBuyList['pos_2'] = {
 	sRandomItem_1,
 	"item_hurricane_pike",
 	sRandomItem_2,
+	"item_hydras_breath",--
 	"item_moon_shard",
 	"item_travel_boots_2",
 }

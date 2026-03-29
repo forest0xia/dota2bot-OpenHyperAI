@@ -49,6 +49,7 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_soul_ring",
 	"item_echo_sabre",
 	"item_aghanims_shard",
+	"item_consecrated_wraps",--
 	"item_harpoon",--
 	"item_blink",
 	sCrimsonPipeHalberd,--
@@ -69,6 +70,7 @@ sRoleItemsBuyList['pos_4'] = {
 	"item_mekansm",
 	"item_glimmer_cape",
 	"item_aghanims_shard",
+	"item_consecrated_wraps",--
 	"item_guardian_greaves",
 	"item_spirit_vessel",
 --	"item_wraith_pact",
@@ -84,6 +86,7 @@ sRoleItemsBuyList['pos_5'] = {
 	"item_mage_outfit",
 	"item_ancient_janggo",
 	"item_glimmer_cape",
+	"item_consecrated_wraps",--
 	"item_boots_of_bearing",
 	"item_pipe",
     "item_ultimate_scepter",

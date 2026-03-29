@@ -129,7 +129,8 @@ local botTarget
 local botHP, botMP
 local nAllyHeroes, nEnemyHeroes
 
-local bFlowFacet = false
+-- Detect if Morphling is in STR-heavy form (was facet check, now just attribute check)
+local bStrengthForm = false
 
 if bot.IsMorphling == nil then bot.IsMorphling = true end
 
@@ -174,7 +175,7 @@ function X.SkillsComplement()
     botHP = J.GetHP(bot)
     botMP = J.GetMP(bot)
 
-    bFlowFacet = bot:GetPrimaryAttribute() == ATTRIBUTE_STRENGTH and true or false
+    bStrengthForm = bot:GetPrimaryAttribute() == ATTRIBUTE_STRENGTH and true or false
 
     if bot:GetAbilityInSlot(0) == Waveform then bot.IsMorphling = true else bot.IsMorphling = false end
 
@@ -540,7 +541,7 @@ function X.ConsiderAdaptiveStrikeAGI()
         end
 	end
 
-    if J.IsFarming(bot) and nManaAfter > nManaThreshold and (bFlowFacet or bUsingMax) then
+    if J.IsFarming(bot) and nManaAfter > nManaThreshold and (bStrengthForm or bUsingMax) then
         local nNeutralCreeps = bot:GetNearbyNeutralCreeps(nCastRange)
         local creepTarget = nil
         local creepTargetDamage = 0
@@ -568,7 +569,7 @@ function X.ConsiderAdaptiveStrikeAGI()
 		for _, creep in pairs(nEnemyLaneCreeps) do
 			if  J.IsValid(creep)
             and J.CanBeAttacked(creep)
-			and (not bFlowFacet and (J.IsKeyWordUnit('ranged', creep)
+			and (not bStrengthForm and (J.IsKeyWordUnit('ranged', creep)
                     or J.IsKeyWordUnit('siege', creep)
                     or J.IsKeyWordUnit('flagbearer', creep))
                 or nManaAfter > 0.5)
@@ -720,7 +721,7 @@ function X.ConsiderAtttributeShift()
         return BOT_ACTION_DESIRE_NONE, ''
     end
 
-    if bFlowFacet then
+    if bStrengthForm then
         -- balance ratio to do some right-click damage
         -- challenging to play around his ult (use spells), so can't take advantage of the spell amp
 
@@ -1039,10 +1040,10 @@ end
 
 -- set builds
 function X.SetItemBuild()
-    bFlowFacet = bot:GetPrimaryAttribute() == ATTRIBUTE_STRENGTH and true or false
+    bStrengthForm = bot:GetPrimaryAttribute() == ATTRIBUTE_STRENGTH and true or false
 
     local index = 1
-    if bFlowFacet then index = 2 end
+    if bStrengthForm then index = 2 end
 
     sSelectedBuild = HeroBuild[sRole][index]
 
@@ -1051,10 +1052,10 @@ function X.SetItemBuild()
 end
 
 function X.SetAbilityBuild()
-    bFlowFacet = bot:GetPrimaryAttribute() == ATTRIBUTE_STRENGTH and true or false
+    bStrengthForm = bot:GetPrimaryAttribute() == ATTRIBUTE_STRENGTH and true or false
 
     local index = 1
-    if bFlowFacet then index = 2 end
+    if bStrengthForm then index = 2 end
 
     sSelectedBuild = HeroBuild[sRole][index]
 
