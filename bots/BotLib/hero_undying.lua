@@ -31,6 +31,7 @@ sRoleItemsBuyList['pos_4'] = {
     "item_blood_grenade",
 	"item_tank_outfit",
     "item_arcane_boots",
+	"item_essence_distiller",--
 	"item_crimson_guard",--
     "item_guardian_greaves",--
 	"item_aghanims_shard",

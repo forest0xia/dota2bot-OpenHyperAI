@@ -148,9 +148,14 @@ function X.MinionThink(hMinionUnit)
 end
 
 local WildAxes          = bot:GetAbilityByName('beastmaster_wild_axes')
+-- 7.41: Boar→Razorback, Hawk→Raptor. Use sAbilityList for resilience to name changes.
 local CallOfTheWildBoar = bot:GetAbilityByName('beastmaster_call_of_the_wild_razorback')
+                          or bot:GetAbilityByName('beastmaster_summon_razorback')
+                          or (sAbilityList[2] and bot:GetAbilityByName(sAbilityList[2]))
 local CallOfTheWildHawk = bot:GetAbilityByName('beastmaster_call_of_the_wild_raptor')
-local InnerBeast        = bot:GetAbilityByName('beastmaster_inner_beast')
+                          or bot:GetAbilityByName('beastmaster_summon_raptors')
+                          or (sAbilityList[3] and bot:GetAbilityByName(sAbilityList[3]))
+-- local InnerBeast     -- 7.41: now innate, cannot be cast
 -- local DrumsOfSlom        = bot:GetAbilityByName('beastmaster_drums_of_slom')
 local PrimalRoar        = bot:GetAbilityByName('beastmaster_primal_roar')
 

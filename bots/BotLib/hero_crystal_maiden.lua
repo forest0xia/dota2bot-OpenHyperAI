@@ -27,7 +27,7 @@ local sRoleItemsBuyList = {}
 
 sRoleItemsBuyList['pos_4'] = {
 	"item_priest_outfit",
-	"item_urn_of_shadows",
+	"item_urn_of_shadows", -- Alternative: item_essence_distiller (if not going spirit_vessel)
 	"item_mekansm",
 	"item_glimmer_cape",
 	"item_guardian_greaves",

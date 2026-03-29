@@ -96,7 +96,7 @@ sRoleItemsBuyList['pos_5'] = {
     "item_blood_grenade",
 
     "item_boots",
-    "item_urn_of_shadows",
+    "item_urn_of_shadows", -- Alternative: item_essence_distiller (if not going spirit_vessel)
     "item_tranquil_boots",
 	"item_pipe",
     "item_spirit_vessel",--
@@ -136,7 +136,10 @@ end
 local Laser                 = bot:GetAbilityByName('tinker_laser')
 -- local HeatSeekingMissile    = bot:GetAbilityByName('tinker_heat_seeking_missile')
 local MarchOfTheMachines    = bot:GetAbilityByName('tinker_march_of_the_machines')
+-- 7.41: Defense Matrix may have been replaced by Deploy Turrets. Try both names.
 local DeployTurrets         = bot:GetAbilityByName('tinker_deploy_turrets')
+                              or bot:GetAbilityByName('tinker_defense_matrix')
+                              or (sAbilityList[3] and bot:GetAbilityByName(sAbilityList[3]))
 local WarpFlare             = bot:GetAbilityByName('tinker_warp_grenade')
 local KeenConveyance        = bot:GetAbilityByName('tinker_keen_teleport')
 local Rearm                 = bot:GetAbilityByName('tinker_rearm')

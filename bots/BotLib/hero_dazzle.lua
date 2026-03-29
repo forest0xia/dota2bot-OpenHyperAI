@@ -81,6 +81,7 @@ sRoleItemsBuyList['pos_2'] = {
 sRoleItemsBuyList['pos_4'] = {
 	'item_priest_outfit',
 	"item_mekansm",
+	"item_essence_distiller",--
 	"item_glimmer_cape",
 	"item_aghanims_shard",
 	"item_guardian_greaves",

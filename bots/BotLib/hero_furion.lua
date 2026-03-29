@@ -113,7 +113,7 @@ sRoleItemsBuyList['pos_4'] = {
 
     "item_boots",
     "item_magic_wand",
-    "item_urn_of_shadows",
+    "item_urn_of_shadows", -- Alternative: item_essence_distiller (if not going spirit_vessel)
     "item_solar_crest",--
     "item_aghanims_shard",
     "item_ancient_janggo",
@@ -137,7 +137,7 @@ sRoleItemsBuyList['pos_5'] = {
 
     "item_boots",
     "item_magic_wand",
-    "item_urn_of_shadows",
+    "item_urn_of_shadows", -- Alternative: item_essence_distiller (if not going spirit_vessel)
     "item_solar_crest",--
     "item_aghanims_shard",
     "item_mekansm",

@@ -43,6 +43,7 @@ sRoleItemsBuyList['pos_4'] = {
 	"item_magic_wand",
 	"item_boots",
 	"item_arcane_boots",
+	"item_essence_distiller",--
 	"item_glimmer_cape",--
 	"item_aether_lens",--
 	"item_aghanims_shard",

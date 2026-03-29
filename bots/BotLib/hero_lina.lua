@@ -32,8 +32,8 @@ local tTalentTreeList = {
 }
 
 local tAllAbilityBuildList = {
-						{2,1,2,1,2,6,2,1,1,1,6,2,2,2,6},--pos1 (7.41: Fiery Soul now innate, only Dragon Slave + Light Strike Array learnable)
-						{1,2,1,2,1,6,1,2,2,2,6,1,1,1,6},--pos2 (7.41: Fiery Soul now innate)
+						{2,3,3,1,3,6,3,2,2,2,6,1,1,1,6},--pos1
+						{1,3,1,2,1,6,1,2,2,2,6,3,3,3,6},--pos2
 }
 
 local nAbilityBuildList

@@ -68,7 +68,7 @@ sRoleItemsBuyList['pos_5'] = {
     "item_blood_grenade",
 
     "item_boots",
-    "item_urn_of_shadows",
+    "item_urn_of_shadows", -- Alternative: item_essence_distiller (if not going spirit_vessel)
     "item_tranquil_boots",
 	"item_pipe",
     "item_spirit_vessel",--

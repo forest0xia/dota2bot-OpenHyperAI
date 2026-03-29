@@ -77,7 +77,7 @@ sRoleItemsBuyList['pos_4'] = {
     "item_blood_grenade",
 
     "item_boots",
-    "item_urn_of_shadows",
+    "item_urn_of_shadows", -- Alternative: item_essence_distiller (if not going spirit_vessel)
     "item_arcane_boots",
     "item_glimmer_cape",--
     "item_spirit_vessel",--

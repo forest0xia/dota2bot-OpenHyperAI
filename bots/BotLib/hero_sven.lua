@@ -24,7 +24,7 @@ local tTalentTreeList = {
 }
 
 local tAllAbilityBuildList = {
-						{1,2,1,2,2,6,2,1,1,1,6,2,2,2,6},--pos1 (7.41: Warcry now innate, only Storm Hammer + Great Cleave learnable)
+						{1,3,2,2,2,6,2,3,3,3,6,1,1,1,6},--pos1
 }
 
 local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
@@ -127,7 +127,7 @@ modifier_sven_gods_strength_child
 
 
 local abilityQ = bot:GetAbilityByName( sAbilityList[1] )
-local abilityE = sAbilityList[3] and bot:GetAbilityByName( sAbilityList[3] ) or nil -- 7.41: Warcry now innate, may not be in sAbilityList
+local abilityE = bot:GetAbilityByName( sAbilityList[3] )
 local abilityR = bot:GetAbilityByName( sAbilityList[6] )
 
 
@@ -177,18 +177,15 @@ function X.SkillsComplement()
 
 	end
 
-	-- 7.41: Warcry is now innate, only try to cast if ability exists and is castable
-	if abilityE ~= nil then
-		castEDesire = X.ConsiderE()
-		if ( castEDesire > 0 )
-		then
+	castEDesire = X.ConsiderE()
+	if ( castEDesire > 0 )
+	then
 
-			J.SetQueuePtToINT( bot, false )
+		J.SetQueuePtToINT( bot, false )
 
-			bot:ActionQueue_UseAbility( abilityE )
-			return
+		bot:ActionQueue_UseAbility( abilityE )
+		return
 
-		end
 	end
 
 end
@@ -478,7 +475,7 @@ end
 
 function X.ConsiderE()
 
-	if abilityE == nil or not abilityE:IsFullyCastable()
+	if not abilityE:IsFullyCastable()
 		or ( #hEnemyHeroList == 0 and nHP > 0.2 )
 	then
 		return 0

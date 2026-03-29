@@ -51,7 +51,7 @@ sRoleItemsBuyList['pos_4'] = {
     "item_boots",
     "item_magic_wand",
     "item_arcane_boots",
-    "item_urn_of_shadows",
+    "item_urn_of_shadows", -- Alternative: item_essence_distiller (if not going spirit_vessel)
     "item_force_staff",--
     "item_spirit_vessel",--
     sGlimmerSolarCrest,--
@@ -73,7 +73,7 @@ sRoleItemsBuyList['pos_5'] = {
     "item_boots",
     "item_magic_wand",
     "item_tranquil_boots",
-    "item_urn_of_shadows",
+    "item_urn_of_shadows", -- Alternative: item_essence_distiller (if not going spirit_vessel)
 	"item_pipe",
     "item_force_staff",--
     "item_spirit_vessel",--
