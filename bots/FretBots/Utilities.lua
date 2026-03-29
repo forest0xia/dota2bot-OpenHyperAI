@@ -197,11 +197,20 @@ function Utilities:AnnounceNeutral(bot, item, msgType)
 	if msgType == MSG_NEUTRAL_FIND then
 		msg = msg..Utilities:ColorString(Localization.Get('fret_found_netural_item'), awardColors.neutral)
 	elseif msgType == MSG_NEUTRAL_TAKE then
-		msg = msg..Utilities:ColorString('Took Neutral Item from Stash: ', awardColors.neutral)
+		msg = msg..Utilities:ColorString(Localization.Get('fret_took_neutral_item'), awardColors.neutral)
 	elseif msgType == MSG_NEUTRAL_RETURN then
-		msg = msg..Utilities:ColorString('Returned Neutral Item to Stash: ', awardColors.neutral)
+		msg = msg..Utilities:ColorString(Localization.Get('fret_returned_neutral_item'), awardColors.neutral)
 	end
-	msg = msg..Utilities:ColorString(item.realName, neutralColors[item.tier])
+	-- Localize item name based on language setting
+	local itemDisplayName = item.realName
+	if Customize.Localization == 'zh' then
+		local Chat = require('bots.FunLib.aba_chat')
+		local cnName = Chat.GetItemCnName(item.name)
+		if cnName and not string.find(cnName, '未定义') then
+			itemDisplayName = cnName
+		end
+	end
+	msg = msg..Utilities:ColorString(itemDisplayName, neutralColors[item.tier])
 	-- print the message, maybe
 	if msgType <= maxNeutralMessage then
 		GameRules:SendCustomMessage(msg, 0, 0)
