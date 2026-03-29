@@ -190,6 +190,10 @@ Item['sBasicItems'] = {
 	'item_voodoo_mask', --巫毒面具
 	'item_fluffy_hat', --毛毛帽
 	'item_blood_grenade',
+	'item_wizard_hat',
+	'item_chasm_stone',
+	'item_splintmail',
+	'item_shawl',
 }
 
 Item['sSeniorItems'] = {
@@ -438,11 +442,17 @@ Item['sSellList'] = {
 
 	"item_magic_wand",
 	"item_recipe_magic_wand",
+	
+	-- ... existing entries ...
+    'item_splintmail', 'item_chainmail',
+    'item_shawl', 'item_cloak',
+    'item_wizard_hat', 'item_circlet',
 }
 
 local tCanNotSwitchItemList = {}
 for _, sItem in pairs( Item['sCanNotSwitchItems'] )
 do
+	tCanNotSwitchItemList[sItem] = true
 	tCanNotSwitchItemList[sItem] = true
 end
 
@@ -789,6 +799,26 @@ Item["item_blood_grenade"] 						= GetItemComponents( 'item_blood_grenade' )[1]
 ---------- 7.35 NEW ITEMS ---------------
 Item["item_angels_demise"] 						= GetItemComponents( 'item_angels_demise' )[1] --绝刃
 Item["item_devastator"] 						= GetItemComponents( 'item_devastator' )[1] --圣斧
+
+-- Add these inside the 'if true then' block for component definitions
+
+-- New 7.41 Component Definitions
+Item['item_arcane_boots']   = { 'item_boots', 'item_ring_of_basilius', 'item_wizard_hat' }
+Item['item_blade_mail']     = { 'item_splintmail', 'item_robe' }
+Item['item_shivas_guard']   = { 'item_splintmail', 'item_chasm_stone', 'item_platemail' }
+Item['item_bloodstone']     = { 'item_veil_of_discord', 'item_soul_booster' }
+Item['item_glimmer_cape']   = { 'item_shawl', 'item_shadow_amulet' }
+Item['item_pipe']           = { 'item_shawl', 'item_headdress' }
+
+-- If Splintmail or Shawl have their own recipes, define them so the recursion 
+-- in your GetBasicItems function breaks them down further:
+Item['item_splintmail']     = { 'item_chainmail', 'item_blades_of_attack' }
+Item['item_shawl']          = { 'item_cloak', 'item_ring_of_regen' }
+
+-- Ensure base components are recognized as such (sets them to nil so your function 
+-- treats them as the final 'v' to add to the list):
+Item['item_chasm_stone']    = nil
+Item['item_wizard_hat']     = nil
 
 --新自定义物品
 Item['item_new_1']	= GetItemComponents( 'item_new_1' )[1]
