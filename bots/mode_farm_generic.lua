@@ -114,23 +114,12 @@ function GetDesireHelper()
 	local LoneDruid = J.CheckLoneDruid()
     local botActiveMode = bot:GetActiveMode()
 	local botActiveModeDesire = bot:GetActiveModeDesire()
-    local botLevel = bot:GetLevel()
     local bAlive = bot:IsAlive()
-	local bCore = J.IsCore(bot)
-	local bWeAreStronger = J.WeAreStronger(bot, 1600)
-
-    local vTormentorLocation = J.GetTormentorLocation(GetTeam())
-	local nInRangeAlly_tormentor = J.GetAlliesNearLoc(vTormentorLocation, 1600)
-	local nInRangeAlly_roshan = J.GetAlliesNearLoc(J.GetCurrentRoshanLocation(), 1200)
-    local bRoshanAlive = J.IsRoshanAlive()
-    local teamNetworth, enemyNetworth = J.GetInventoryNetworth()
-    local networthAdvantage = teamNetworth - enemyNetworth
-
-    local nAliveEnemyCount = J.GetNumOfAliveHeroes(true)
-	local nAliveAllyCount  = J.GetNumOfAliveHeroes(false)
 	local bNotClone = not bot:HasModifier('modifier_arc_warden_tempest_double') and not J.IsMeepoClone(bot)
 
-    if J.IsInLaningPhase()
+	-- Early exits first (cheap checks before expensive queries)
+    if not bAlive
+	or J.IsInLaningPhase()
 	or (J.IsDoingRoshan(bot) and bNotClone)
 	or (J.IsDoingTormentor(bot) and bNotClone)
     or DotaTime() < 50
@@ -139,11 +128,27 @@ function GetDesireHelper()
 		or botActiveMode == BOT_MODE_WARD
 		or botActiveMode == BOT_MODE_RETREAT
 		or botActiveMode == BOT_MODE_OUTPOST) and botActiveModeDesire > 0)
-	or (#nInRangeAlly_tormentor >= 2 and bot.tormentor_state == true)
+    then
+        return BOT_MODE_DESIRE_NONE
+    end
+
+	-- Expensive queries (only after early exits)
+    local botLevel = bot:GetLevel()
+	local bCore = J.IsCore(bot)
+	local bWeAreStronger = J.WeAreStronger(bot, 1600)
+    local vTormentorLocation = J.GetTormentorLocation(GetTeam())
+	local nInRangeAlly_tormentor = J.GetAlliesNearLoc(vTormentorLocation, 1600)
+	local nInRangeAlly_roshan = J.GetAlliesNearLoc(J.GetCurrentRoshanLocation(), 1200)
+    local bRoshanAlive = J.IsRoshanAlive()
+    local teamNetworth, enemyNetworth = J.GetInventoryNetworth()
+    local networthAdvantage = teamNetworth - enemyNetworth
+    local nAliveEnemyCount = J.GetNumOfAliveHeroes(true)
+	local nAliveAllyCount  = J.GetNumOfAliveHeroes(false)
+
+	if (#nInRangeAlly_tormentor >= 2 and bot.tormentor_state == true)
     or (#nInRangeAlly_roshan >= 2 and bRoshanAlive and bNotClone)
     or (nAliveEnemyCount <= 1 and nAliveAllyCount >= 2)
     or (J.DoesTeamHaveAegis() and J.IsLateGame() and nAliveAllyCount >= 4)
-    or not bAlive
     then
         return BOT_MODE_DESIRE_NONE
     end
@@ -430,6 +435,7 @@ end
 function Think()
 	if J.CanNotUseAction(bot) then return end
 	if J.Utils.IsBotThinkingMeaningfulAction(bot, Customize.ThinkLess, "farm") then return end
+	sec = math.floor(DotaTime()) % 60 -- refresh for stacking timing accuracy
 	if runMode
 	then
 		if not bot:IsInvisible() and bot:GetLevel() >= 15
@@ -501,9 +507,7 @@ function Think()
 		nEffectiveRange = InnerFire:GetSpecialValueInt('radius')
 	end
 
-	if hLaneCreepList == nil then
-		hLaneCreepList = bot:GetNearbyLaneCreeps(900, true)
-	end
+	hLaneCreepList = bot:GetNearbyLaneCreeps(900, true) -- always refresh to avoid stale data
 	if hLaneCreepList ~= nil and #hLaneCreepList > 0 and J.IsValid(hLaneCreepList[1]) then
 		local farmTarget = J.Site.GetFarmLaneTarget(hLaneCreepList);
 		local nSearchRange = bot:GetAttackRange() + 180
