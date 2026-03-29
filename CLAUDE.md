@@ -13,14 +13,24 @@ This is the **dota2bot-OpenHyperAI** project -- Lua bot scripts for Dota 2 that 
 
 ## Common Tasks
 
+### Check for New Patches
+
+To check if there are patches we haven't updated for:
+1. Fetch `https://www.dota2.com/datafeed/patchnoteslist?language=english`
+2. Compare latest version against "Last updated for" in `docs/PATCH_UPDATE_GUIDE.md`
+3. If newer patch exists, follow the update process below
+
 ### Patch Update (most common)
 
 When user says "update for patch X.XX" or provides patch notes:
 
 1. Read `docs/PATCH_UPDATE_GUIDE.md` for the step-by-step process
-2. Fetch d2vpkr data (shops.txt, neutral_items.txt) for authoritative item/ability names
-3. **Always verify ability names on Liquipedia** -- patch note summaries can be wrong
-4. Follow the checklist in order: items -> hero builds -> abilities -> neutrals -> actives
+2. Fetch patch data: `https://www.dota2.com/datafeed/patchnotes?version=X.XX&language=english`
+3. Fetch d2vpkr data (shops.txt, neutral_items.txt) for authoritative item/ability names
+4. **Categorize changes**: STRUCTURAL (need code) vs NUMBER-ONLY (game API handles) vs TALENT SWAPS
+5. **Always verify ability names on Liquipedia** -- patch note summaries can be wrong
+6. Follow the checklist in order: items -> hero builds -> abilities -> neutrals -> actives -> map changes
+7. **Always update TS sources** for any TS-generated Lua files changed (see ARCHITECTURE.md Section 13)
 
 ### Add a New Hero
 

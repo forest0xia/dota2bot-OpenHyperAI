@@ -2,6 +2,58 @@
 
 This is a step-by-step runbook for quickly updating the bot scripts when Valve releases a new Dota 2 patch. Designed to be followed by a developer or AI assistant without needing to re-read the entire codebase.
 
+**Last updated for:** Patch 7.41a (March 2026)
+
+---
+
+## How to Check for New Patches
+
+### Data Sources for Patch Detection
+
+| Source | URL | What It Tells You |
+|--------|-----|-------------------|
+| **Valve Patch List API** | `https://www.dota2.com/datafeed/patchnoteslist?language=english` | Lists all patches with timestamps -- compare latest against what we've updated |
+| **Valve Patch Notes API** | `https://www.dota2.com/datafeed/patchnotes?version=X.XX&language=english` | Machine-readable patch data (hero IDs, ability IDs, exact changes) |
+| **d2vpkr shops.txt** | `https://raw.githubusercontent.com/dotabuff/d2vpkr/master/dota/scripts/shops.txt` | Current item pool -- diff against aba_item.lua |
+| **d2vpkr neutral_items.txt** | `https://raw.githubusercontent.com/dotabuff/d2vpkr/master/dota/scripts/npc/neutral_items.txt` | Current neutral item tiers |
+| **Liquipedia** | `https://liquipedia.net/dota2/HERO_NAME` | Ability details, targeting types (verify before trusting patch summaries) |
+| **Official patch page** | `https://www.dota2.com/patches/X.XX` | Human-readable notes (JS-rendered, use datafeed API instead for programmatic access) |
+
+### Quick Check: Are We Up to Date?
+
+```
+1. Fetch https://www.dota2.com/datafeed/patchnoteslist?language=english
+2. Compare latest patch version against "Last updated for" at the top of this file
+3. If there's a newer patch, fetch its notes and start the update process below
+```
+
+### Processing a New Patch (AI Agent Workflow)
+
+To process a new patch, give an AI assistant this prompt:
+
+```
+Read docs/PATCH_UPDATE_GUIDE.md and docs/ARCHITECTURE.md first.
+Then fetch the patch notes from:
+  https://www.dota2.com/datafeed/patchnotes?version=X.XX&language=english
+
+Categorize all changes into:
+1. STRUCTURAL (renames, new/removed abilities, targeting changes, new/removed items) → need code changes
+2. NUMBER-ONLY (damage/cooldown/duration/cost tweaks) → game API handles automatically, no code changes needed
+3. TALENT SWAPS (talents moved between levels) → check hero tTalentTreeList preferences
+
+Then apply the STRUCTURAL changes following the phase-by-phase guide.
+For TALENT SWAPS, check BotLib/hero_*.lua talent preferences and swap if needed.
+```
+
+### Major vs Minor Patches
+
+- **Major patches (7.41, 7.42)**: Full update needed -- items, abilities, neutrals, map changes. Follow all phases.
+- **Minor patches (7.41a, 7.41b)**: Mostly number changes. Focus on:
+  - Talent swaps between levels (check `tTalentTreeList`)
+  - Ability behavior changes (rare but possible)
+  - Item active behavior changes (rare but possible)
+  - Number changes are handled automatically by the game API
+
 ---
 
 ## Quick Start

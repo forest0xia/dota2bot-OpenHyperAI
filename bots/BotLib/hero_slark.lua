@@ -17,8 +17,8 @@ local sAbilityList = J.Skill.GetAbilityList( bot )
 local sRole = J.Item.GetRoleItemsBuyList( bot )
 
 local tTalentTreeList = {
-						['t25'] = {10, 0},
-						['t20'] = {0, 10},
+						['t25'] = {0, 10}, -- 7.41a: Essence Shift agi/stack swapped from L20 to L25
+						['t20'] = {10, 0}, -- 7.41a: Essence Shift duration swapped from L25 to L20
 						['t15'] = {0, 10},
 						['t10'] = {0, 10},
 }
