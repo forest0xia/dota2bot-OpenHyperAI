@@ -221,7 +221,7 @@ ____exports.nShopList = {
 }
 ____exports.top_power_rune = Vector(-1767, 1233, 0)
 ____exports.bot_power_rune = Vector(2597, -2014, 0)
-____exports.roshan = Vector(-2862, 2260, 0)
+____exports.roshan = Vector(2980, -2816, 0) -- 7.41: Roshan's pit preference switched, default (day) is now Dire side
 ____exports.dire_ancient = Vector(5517, 4981, 0)
 ____exports.radiant_ancient = Vector(-5860, -5328, 0)
 ____exports.radiant_base = Vector(-7200, -6666, 0)

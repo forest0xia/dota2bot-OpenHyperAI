@@ -5802,29 +5802,32 @@ function J.IsHumanInLoc(vLoc, nRadius)
 end
 
 function J.GetCurrentRoshanLocation()
+	-- 7.41: Roshan's pit preference switched (day/night swap)
 	if J.CheckTimeOfDay() == 'day'
 	then
-		return J.Utils.RadiantRoshanLoc
-	else
 		return J.Utils.DireRoshanLoc
+	else
+		return J.Utils.RadiantRoshanLoc
 	end
 end
 
 function J.GetTormentorLocation(team)
+	-- 7.41: Tormentor's spawn preference switched (day/night swap)
 	if J.CheckTimeOfDay() == 'day'
 	then
-		return DireTormentorLoc
-	else
 		return RadiantTormentorLoc
+	else
+		return DireTormentorLoc
 	end
 end
 
 function J.GetTormentorWaitingLocation(team)
+	-- 7.41: Tormentor's spawn preference switched (day/night swap)
 	local timeOfday = J.CheckTimeOfDay()
 	if timeOfday == 'day' then
-		return Vector(-7041, 6796, 256)
-	else
 		return Vector(6792, -6815, 256)
+	else
+		return Vector(-7041, 6796, 256)
 	end
 end
 
