@@ -246,6 +246,32 @@ npc_dota_hero_[name] = 'Display Name',
 
 ---
 
+## Phase 6: Map / Mechanic Changes
+
+Some patches change map positions or game mechanics. Watch for:
+
+### Roshan / Tormentor Position Swaps
+Patch notes like "Roshan's pit preference has switched" or "Tormentor's spawn preference has switched" mean the **day/night position mapping** inverted.
+
+Files to update:
+- **`FunLib/jmz_func.lua`**: `GetCurrentRoshanLocation()`, `GetTormentorLocation()`, `GetTormentorWaitingLocation()` -- swap the day/night return values
+- **`FunLib/aba_site.lua`**: Static `roshan` vector (~line 224) -- update to new default position
+
+The coordinate vectors themselves don't change, only which time-of-day maps to which location.
+
+### Other Map Changes
+- Rune positions: `FunLib/aba_site.lua` `top_power_rune` / `bot_power_rune`
+- Wisdom rune positions: `FunLib/utils.lua` `WisdomRunes`
+- Fountain positions: `FunLib/jmz_func.lua` `RadiantFountain` / `DireFountain`
+- Watchtower positions: `FunLib/aba_site.lua` `nWatchTower_1` / `nWatchTower_2`
+
+### Timing Changes
+- Neutral item tier timings: `Buff/NeutralItems.lua` and `FretBots/NeutralItems.lua`
+- Siege creep timing: `mode_laning_generic.lua` or push modes
+- Roshan respawn timing: `mode_roshan_generic.lua`
+
+---
+
 ## Verification Checklist
 
 Before committing:
