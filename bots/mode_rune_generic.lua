@@ -719,14 +719,18 @@ function X.GetWisdomDesire(vWisdomLoc)
 	local nDesire = 0
 	local botLevel = bot:GetLevel()
 	local distFromLoc = GetUnitToLocationDistance(bot, vWisdomLoc)
+
+	-- 7.41: Wisdom Rune XP changed from flat 280/interval to 200 base + 300 per subsequent
+	-- (200/500/800/1100...). Late-game runes are MUCH more valuable now.
+	-- Increase desire for higher-level bots to reflect this scaling.
 	if botLevel < 12 then
 		nDesire = RemapValClamped(distFromLoc, 6400, 3200, 0.75, 0.95)
 	elseif botLevel < 18 then
-		nDesire = RemapValClamped(distFromLoc, 6400, 3200, 0.5, 0.95)
+		nDesire = RemapValClamped(distFromLoc, 6400, 3200, 0.65, 0.95)
 	elseif botLevel < 25 then
-		nDesire = RemapValClamped(distFromLoc, 5800, 1600, 0.25, 0.95)
+		nDesire = RemapValClamped(distFromLoc, 6400, 2400, 0.55, 0.95)
 	elseif botLevel < 30 then
-		nDesire = RemapValClamped(distFromLoc, 5800, 1600, 0.1, 0.95)
+		nDesire = RemapValClamped(distFromLoc, 6400, 2400, 0.45, 0.95)
 	end
 
 	return nDesire

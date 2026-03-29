@@ -231,6 +231,32 @@ If ability changed from unit-target to point-target (or vice versa):
 
 Rewrite the corresponding `Consider` function to return the correct target type.
 
+### 3I. Audit Existing Item Actives for CHANGED Behavior
+
+When a patch modifies item actives, there are two distinct cases that require different responses:
+
+**When an item active is REMOVED** (item becomes passive-only):
+```lua
+-- Set ConsiderItemDesire to return DESIRE_NONE so the bot never tries to cast it
+X.ConsiderItemDesire["item_xxx"] = function(hItem)
+    return BOT_ACTION_DESIRE_NONE  -- 7.XX: active ability removed
+end
+```
+
+**When an item active CHANGED behavior** (still has an active, but it works differently):
+- Do NOT disable it by returning DESIRE_NONE
+- UPDATE the casting logic to match the new behavior
+- Check if targeting changed (unit-target to self-cast, etc.)
+- Check if conditions changed (new cooldown, new resource cost, new effect)
+
+**Example: Bloodstone Bloodpact in 7.41**
+Bloodstone's Blood Pact active was CHANGED (not removed) in 7.41 -- it went from a self-damage-for-mana active to a different mechanic. We incorrectly treated it as "active removed" and set it to DESIRE_NONE, which meant bots never used Bloodstone's active at all. The correct fix was to update the casting logic to match the new behavior.
+
+**How to distinguish:**
+1. Read the patch notes carefully: "removed" vs "reworked" vs "now does X instead of Y"
+2. Check Liquipedia for the item -- if it still lists an active ability, it was CHANGED not removed
+3. Check d2vpkr `items.txt` for the item's `AbilityBehavior` field
+
 ---
 
 ## Phase 4: Neutral Item Updates
@@ -381,6 +407,11 @@ Before committing:
 - [ ] Neutral item tier timings updated if changed
 - [ ] Map position changes (Roshan/Tormentor pit swaps) applied
 - [ ] TS source files updated for any TS-generated Lua files that were changed
+- [ ] Item active CHANGED vs REMOVED: if active changed behavior, update logic -- don't disable it
+- [ ] Enchantment system: check if selection rules changed (random vs attribute-based, tier assignments)
+- [ ] Shop location changes: check if items moved between shops (main/secret/side)
+- [ ] Neutral crafting costs: check if madstone/token costs changed
+- [ ] Map objective mechanics: check Wisdom Rune/Lotus Pool timing/value changes
 
 ---
 

@@ -1535,9 +1535,50 @@ end
 
 
 --血精石
--- 7.41: Bloodstone no longer has an active ability (Blood Pact removed, now passive Spell Weakness aura)
+-- 7.41: Bloodstone active (Blood Pact) - increases spell lifesteal to 60% for the duration, self-cast
 X.ConsiderItemDesire["item_bloodstone"] = function( hItem )
+
+	local sCastType = 'none'
+	local hEffectTarget = nil
+	local sCastMotive = nil
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, 1200, true, BOT_MODE_NONE )
+
+	-- Don't use when silenced or mana too low
+	if bot:IsSilenced() or bot:GetMana() < hItem:GetManaCost() then
+		return BOT_ACTION_DESIRE_NONE
+	end
+
+	-- Don't use when no enemies nearby (wasted)
+	if #nInRangeEnmyList == 0 and not J.IsDoingRoshan(bot) and not J.IsDoingTormentor(bot) then
+		return BOT_ACTION_DESIRE_NONE
+	end
+
+	-- Use in teamfights with enemies nearby
+	if J.IsInTeamFight( bot, 1200 ) and #nInRangeEnmyList >= 2
+	then
+		hEffectTarget = bot
+		sCastMotive = 'Bloodstone: teamfight spell lifesteal'
+		return BOT_ACTION_DESIRE_HIGH, hEffectTarget, sCastType, sCastMotive
+	end
+
+	-- Use when going on someone and enemies within 1200
+	if J.IsGoingOnSomeone( bot ) and #nInRangeEnmyList >= 1
+	then
+		hEffectTarget = bot
+		sCastMotive = 'Bloodstone: going on target with spell lifesteal'
+		return BOT_ACTION_DESIRE_HIGH, hEffectTarget, sCastType, sCastMotive
+	end
+
+	-- Use when doing Roshan/Tormentor for sustain
+	if J.IsDoingRoshan(bot) or J.IsDoingTormentor(bot)
+	then
+		hEffectTarget = bot
+		sCastMotive = 'Bloodstone: Roshan/Tormentor sustain'
+		return BOT_ACTION_DESIRE_HIGH, hEffectTarget, sCastType, sCastMotive
+	end
+
 	return BOT_ACTION_DESIRE_NONE
+
 end
 
 
