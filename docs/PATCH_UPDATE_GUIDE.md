@@ -178,7 +178,50 @@ function X.ConsiderE()
 end
 ```
 
-### 3D. Handle Targeting Changes
+### 3D. Handle Targeting Type Changes (unit→self, unit→no-target, etc.)
+
+Some patches change HOW an ability is cast without renaming it. These are easy to miss.
+
+**Scan for:** patch notes mentioning "now affects self only", "no longer targets allies/enemies", "now a no-target ability", "now an aura"
+
+Examples from 7.41:
+- Bloodseeker Bloodrage: was unit-target (ally/enemy), became self-only no-target
+- Magnus Empower: was unit-target (self/ally), can no longer target self
+- Omniknight Guardian Angel: was point-target, became no-target aura
+
+**How to fix:**
+```lua
+-- Before (unit-target):
+bot:Action_UseAbilityOnEntity(ability, target)
+-- After (no-target / self-cast):
+bot:Action_UseAbility(ability)
+```
+
+Also update the Consider function to stop returning a target if the ability is now self-only.
+
+### 3E. Handle Target Restriction Changes
+
+**Scan for:** "can no longer target self", "can now be used during X", "now allows ability usage"
+
+Examples:
+- Magnus Empower: can't target self → remove `bot` from valid targets
+- Legion Commander Duel: now allows abilities → remove restrictions on casting during Duel
+
+### 3F. Handle New Abilities Replacing Old Ones (same slot)
+
+When an ability becomes innate AND a new ability takes its learnable slot, you need BOTH:
+1. Update the build order (indices shift)
+2. Add casting logic for the new ability
+
+Example from 7.41: OD's Essence Flux → innate, new Objurgation ability added.
+
+### 3G. Handle Special Skill Progression Heroes
+
+Some heroes have non-standard skill progression (Meepo, Invoker). Check if ult level requirements changed.
+
+Example: Meepo Divided We Stand levels changed from 3 to 4 max levels.
+
+### 3H. Handle Targeting Changes (generic)
 
 If ability changed from unit-target to point-target (or vice versa):
 ```lua
@@ -215,7 +258,30 @@ Role weight guidelines:
 - Tank/offlane item: `ranged=0, melee=2, roles={1,1,3,1,1}`
 - Universal: `ranged=1, melee=1, roles={1,1,1,1,1}`
 
-### 4C. Add Active-Use Logic (`bots/ability_item_usage_generic.lua`)
+### 4C. Audit EXISTING Item Active Logic for Changed/Removed Actives
+
+**This is commonly missed!** When an item's active ability is REMOVED or fundamentally changed, the existing `ConsiderItemDesire` function will try to cast a non-existent ability.
+
+```bash
+# List all items with ConsiderItemDesire functions:
+grep -o 'ConsiderItemDesire\["item_[^"]*"\]' bots/ability_item_usage_generic.lua | sort
+
+# Cross-reference with patch notes for items whose active was removed/changed
+```
+
+For each item whose active was removed:
+```lua
+-- Replace with a no-op:
+X.ConsiderItemDesire["item_xxx"] = function(hItem)
+    return BOT_ACTION_DESIRE_NONE  -- 7.XX: active ability removed
+end
+```
+
+Examples from 7.41:
+- Bloodstone: Blood Pact active removed → passive aura only
+- Refresher Orb: still has active but no longer refreshes items (logic OK but add warning comment)
+
+### 4D. Add Active-Use Logic (`bots/ability_item_usage_generic.lua`)
 
 Only for neutral items with ACTIVE abilities. Check Liquipedia for each new neutral item.
 
@@ -295,12 +361,26 @@ See `docs/ARCHITECTURE.md` Section 13 for the complete mapping table.
 
 Before committing:
 
-- [ ] `grep` for any remaining references to removed items/abilities
+**Items:**
+- [ ] `grep` for any remaining references to removed items
 - [ ] Every new item in `sTopItems` has a `GetItemComponents` entry
 - [ ] Every new neutral item is in BOTH Buff and FretBots files
-- [ ] Ability builds only reference indices that exist in the filtered `sAbilityList`
 - [ ] No hardcoded component arrays for basic shop items
-- [ ] Active items have `ConsiderItemDesire` functions
+- [ ] New active items have `ConsiderItemDesire` functions
+- [ ] **EXISTING ConsiderItemDesire functions audited** for items whose active was removed/changed
+
+**Abilities:**
+- [ ] `grep` for old ability names that were renamed
+- [ ] Ability builds only reference indices that exist in the filtered `sAbilityList`
+- [ ] **Targeting type changes** checked (unit→self, unit→no-target, etc.)
+- [ ] **Target restriction changes** checked (can't self-target, can use during X)
+- [ ] **New abilities replacing innate slots** have casting logic added
+- [ ] **Special heroes** checked (Meepo ult levels, Invoker, etc.)
+
+**Game mechanics:**
+- [ ] Neutral item tier timings updated if changed
+- [ ] Map position changes (Roshan/Tormentor pit swaps) applied
+- [ ] TS source files updated for any TS-generated Lua files that were changed
 
 ---
 
@@ -310,6 +390,16 @@ Patch note summaries (from any source, including AI) can be wrong about:
 - Whether an ability is learnable vs. innate
 - Exact internal ability names
 - Whether items have actives or are passive-only
+- Whether an ability's targeting type changed
 
 **Always cross-reference with Liquipedia and d2vpkr before making changes.**
 When uncertain, use dynamic `sAbilityList[N]` references with name fallback chains.
+
+## Lessons Learned (7.41)
+
+Things we missed on the first pass and had to fix later:
+1. **Ability targeting changes** (Bloodrage self-only, Empower can't self-target) -- we only scanned for renames/innates, not behavior changes
+2. **Existing item active logic for changed items** (Bloodstone active removed) -- we added new items but didn't audit old ConsiderItemDesire functions
+3. **New abilities replacing old slots** (OD's Objurgation) -- we checked some heroes but not all
+4. **Special skill progression** (Meepo ult levels) -- we didn't check non-standard heroes
+5. **Patch note inaccuracy** -- issue #129's AI-generated list had wrong info (Lina/Sven innates, "Snakebite", "Reprimand" name). Always verify on Liquipedia.
