@@ -82,14 +82,17 @@ end
 
 if CDOTA_BaseNPC_Hero ~= nil then
 	CDOTA_BaseNPC_Hero.AddExperience_Engine = CDOTA_BaseNPC_Hero.AddExperience
-	CDOTA_BaseNPC_Hero.AddExperience = function( self, flXP, nReason, bApplyBotDifficultyScaling, bIncrementTotal )
+	CDOTA_BaseNPC_Hero.AddExperience = function( self, flXP, nReason, bApplyBotDifficultyScaling, bIncrementTotal, nCloneCount )
 		if bIncrementTotal == nil then
 			-- Argument added in the middle of the parameters.
 			bIncrementTotal = bApplyBotDifficultyScaling
 			bApplyBotDifficultyScaling = nReason
 			nReason = DOTA_ModifyXP_Unspecified
 		end
-		return CDOTA_BaseNPC_Hero.AddExperience_Engine( self, flXP, nReason, bApplyBotDifficultyScaling, bIncrementTotal )
+		if nCloneCount == nil then
+			nCloneCount = 0
+		end
+		return CDOTA_BaseNPC_Hero.AddExperience_Engine( self, flXP, nReason, bApplyBotDifficultyScaling, bIncrementTotal, nCloneCount )
 	end
 
 	CDOTA_BaseNPC_Hero.IncrementDeaths_Engine = CDOTA_BaseNPC_Hero.IncrementDeaths

@@ -272,6 +272,25 @@ The coordinate vectors themselves don't change, only which time-of-day maps to w
 
 ---
 
+## CRITICAL: TypeScript Sources
+
+Some Lua files are **generated from TypeScript** via TSTL. If you edit the Lua output without also editing the `.ts` source, your changes will be **overwritten** on the next TS build.
+
+**Always check:** Does a `.ts` file exist at the same relative path under `typescript/bots/`?
+
+Key TS-generated files that commonly need patch updates:
+- `aba_site.ts` → `aba_site.lua` (map positions like Roshan location)
+- `advanced_item_strategy.ts` → `advanced_item_strategy.lua` (fallback item builds)
+- `spell_prob_list.ts` → `spell_prob_list.lua` (ability cast probabilities)
+- `utils.ts` → `utils.lua` (Roshan/fountain coordinates)
+- `aba_hero_roles_map.ts` → `aba_hero_roles_map.lua` (hero role scores for new heroes)
+
+**Pure Lua files** (no TS source, edit directly): `jmz_func.lua`, `aba_item.lua`, `aba_skill.lua`, `spell_list.lua`, `ability_item_usage_generic.lua`, all `BotLib/hero_*.lua`, all `Buff/*.lua`, all `FretBots/*.lua`.
+
+See `docs/ARCHITECTURE.md` Section 13 for the complete mapping table.
+
+---
+
 ## Verification Checklist
 
 Before committing:

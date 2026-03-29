@@ -150,7 +150,7 @@ const ITEMS_BY_POSITION: Record<Position, Record<RangeType, string[]>> = {
         // Support (pos 4) - Utility support
         melee: [
             "item_urn_of_shadows",
-            "item_medallion_of_courage",
+            "item_solar_crest",
             "item_glimmer_cape",
             "item_force_staff",
             "item_guardian_greaves",
@@ -163,7 +163,7 @@ const ITEMS_BY_POSITION: Record<Position, Record<RangeType, string[]>> = {
         ],
         ranged: [
             "item_urn_of_shadows",
-            "item_medallion_of_courage",
+            "item_solar_crest",
             "item_glimmer_cape",
             "item_force_staff",
             "item_guardian_greaves",
@@ -179,7 +179,7 @@ const ITEMS_BY_POSITION: Record<Position, Record<RangeType, string[]>> = {
         // Hard Support (pos 5) - Pure support
         melee: [
             "item_urn_of_shadows",
-            "item_medallion_of_courage",
+            "item_solar_crest",
             "item_glimmer_cape",
             "item_force_staff",
             "item_boots_of_bearing",
@@ -192,7 +192,7 @@ const ITEMS_BY_POSITION: Record<Position, Record<RangeType, string[]>> = {
         ],
         ranged: [
             "item_urn_of_shadows",
-            "item_medallion_of_courage",
+            "item_solar_crest",
             "item_glimmer_cape",
             "item_force_staff",
             "item_boots_of_bearing",

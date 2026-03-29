@@ -133,7 +133,7 @@ export const nShopList = [
 export const top_power_rune = Vector(-1767, 1233, 0);
 export const bot_power_rune = Vector(2597, -2014, 0);
 
-export const roshan = Vector(-2862, 2260, 0);
+export const roshan = Vector(2980, -2816, 0); // 7.41: Roshan's pit preference switched, default (day) is now Dire side
 
 export const dire_ancient = Vector(5517, 4981, 0);
 export const radiant_ancient = Vector(-5860, -5328, 0);
@@ -1343,10 +1343,7 @@ ConsiderIsTimeToFarm["npc_dota_hero_centaur"] = function () {
         return true;
     }
 
-    if (!HasItem(bot, "item_hood_of_defiance") && botNetWorth < 10000) {
-        return true;
-    }
-
+    // item_hood_of_defiance removed from game in 7.41
     if (!HasItem(bot, "item_pipe") && botNetWorth < 14000) {
         return true;
     }
