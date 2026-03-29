@@ -22,8 +22,8 @@ Thanks and kudos to everyone who contributed to making bot games fun and excitin
 
 ## Why It’s Enjoyable
 
-* ✅ Supports Dota 2 **Patch 7.40**.
-* ✅ Supports **all 127 heroes** (Kez, Ringmaster, Invoker, Techies, Meepo, Lone Druid, Muerta, Primal Beast, etc.). Some new heroes are still being tuned.
+* ✅ Supports Dota 2 **Patch 7.41/7.41a**.
+* ✅ Supports **all 127 heroes** (Largo, Kez, Ringmaster, Invoker, Techies, Meepo, Lone Druid, Muerta, Primal Beast, etc.). Some new heroes are still being tuned.
 * ✅ **Customizable bots**: ban/picks, names, item builds, skill upgrades, etc.
 
   * [Customize/general.lua](bots/Customize/general.lua) – general settings.
@@ -127,6 +127,16 @@ root: <Steam\steamapps\common\dota 2 beta\game\dota\scripts\vscripts>
 │   ...
 ---
 ```
+---
+
+## Developer Documentation
+
+For contributors and developers, see **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** for:
+* Complete codebase architecture and file map
+* Naming conventions for heroes, items, and abilities
+* How the skill system, item purchase, and neutral item systems work
+* Step-by-step patch update guide (how to update when a new Dota 2 patch drops)
+
 ---
 
 ## What’s Next
