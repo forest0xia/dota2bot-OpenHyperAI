@@ -1535,39 +1535,9 @@ end
 
 
 --血精石
+-- 7.41: Bloodstone no longer has an active ability (Blood Pact removed, now passive Spell Weakness aura)
 X.ConsiderItemDesire["item_bloodstone"] = function( hItem )
-
-	if bot:DistanceFromFountain() < 1200 then return BOT_ACTION_DESIRE_NONE end
-
-	local nCastRange = 800
-	local sCastType = 'none'
-	local hEffectTarget = nil
-	local sCastMotive = nil
-	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
-
-	if bot:WasRecentlyDamagedByAnyHero(2.0)
-	and J.GetHP(bot) < 0.3
-	then
-		hEffectTarget = bot
-		sCastMotive = "开启血精石" --"亡魂胸针进攻:"..J.Chat.GetNormName( botTarget )
-		return BOT_ACTION_DESIRE_HIGH, hEffectTarget, sCastType, sCastMotive
-	end
-
-
-	if J.IsGoingOnSomeone( bot )
-	and (#nInRangeEnmyList >= 2 or J.GetHP(bot) < 0.3)
-	then
-		if bot:WasRecentlyDamagedByAnyHero( 2.0 )
-		then
-			hEffectTarget = bot
-			sCastMotive = "开启血精石" --"亡魂胸针进攻:"..J.Chat.GetNormName( botTarget )
-			return BOT_ACTION_DESIRE_HIGH, hEffectTarget, sCastType, sCastMotive
-		end
-	end
-	
-
 	return BOT_ACTION_DESIRE_NONE
-
 end
 
 
@@ -1847,6 +1817,8 @@ end
 
 
 --大根
+-- 7.41: Dagon no longer instakills non-ancient creeps and no longer heals the user.
+-- Only target heroes with Dagon.
 X.ConsiderItemDesire["item_dagon"] = function( hItem )
 
 	local nCastRange = hItem:GetCastRange() + aetherRange
@@ -3799,6 +3771,8 @@ X.ConsiderItemDesire["item_quelling_blade"] = function( hItem )
 end
 
 --刷新球
+-- 7.41: Refresher Orb only refreshes ABILITIES, not items.
+-- Do not add logic that chains Refresher with item re-use (e.g. BKB).
 X.ConsiderItemDesire["item_refresher"] = function( hItem )
 
 	local nCastRange = 1000

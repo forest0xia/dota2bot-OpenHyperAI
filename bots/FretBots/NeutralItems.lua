@@ -389,28 +389,21 @@ end
 -- Computes the neutral item timing offset using the difficulty scale
 -- The value is a linear interpolation of target value at baseline difficulty of 1.0 vs. game default value
 --[[ At baseline of 0 seconds for tier 1 and...
--            difficulty 0, we'd have (420-0)*(1-0) resulting in a shift of 420 seconds (neutral matching game default)
-			difficulty 0.7, we'd have (420-0)*(1-0.7) resulting in a shift of 126 seconds (first neutral at 2 minutes)
-			difficulty 1.0, we'd have (420-0)*(1-1) resulting in a shift of 0 seconds
+	(7.41: Tier 1 neutrals now available from 0:00, timingsDefault[1] = 0)
+-            difficulty 0, we'd have (0-0)*(1-0) resulting in a shift of 0 seconds (neutral matching game default)
+			difficulty 1.0, we'd have (0-0)*(1-1) resulting in a shift of 0 seconds
 		At baseline of 3600 for tier 3 and ...
 -            difficulty 0, we'd have (1620-1020)*(1-0) resulting in a shift of 600 seconds (600+1020=1620=game default)
 			difficulty 0.7, we'd have (1620-1020)*(1-0.7) resulting in a shift of 180 seconds (180+1020=1200)
 
 	Rough reference using timings = {0, 420, 1020, 2020, 3600}:
-	| Tier          | 1         | 2    | 3    | 4    | 5    |
-	|---------------|-----------|------|------|------|------|
-	| 0 (base game) | 420       | 1020 | 1620 | 2020 | 3600 |
-	| 0.5           | 210       | 720  | 1320 | 2020 | 3600 |
-	| 0.7           | 126       | 600  | 1200 | 2020 | 3600 |
-	| 1             | 0         | 420  | 1020 | 2020 | 3600 |
-	| 1.5           | 0 (clamp) | 120  | 720  | 2020 | 3600 |
-
-	If we made the timing even more lenient than game default (e.g. tier 1 at 600 seconds), then the scaling
-	becomes inverted where higher difficulty the closer we are to our target timing.
-		at difficulty 0 we'd have (420-600)*(1-0) = -180 second shift resulting in tier 1 at 420 seconds
-		at difficulty 0.7 we'd have -180*0.3 = -54 seconds resulting in tier 1 at 546 seconds
-		at difficulty 1.0 we'd have -180*0 = 0 seconds resulting in tier 1 at 600 seconds
-		at difficulty 1.5 we'd have -180*-0.5 = 90 seconds resulting in tier 1 at 690 seconds
+	| Tier          | 1    | 2    | 3    | 4    | 5    |
+	|---------------|------|------|------|------|------|
+	| 0 (base game) | 0    | 1020 | 1620 | 2020 | 3600 |
+	| 0.5           | 0    | 720  | 1320 | 2020 | 3600 |
+	| 0.7           | 0    | 600  | 1200 | 2020 | 3600 |
+	| 1             | 0    | 420  | 1020 | 2020 | 3600 |
+	| 1.5           | 0    | 120  | 720  | 2020 | 3600 |
 --]]
 function NeutralItems:GetTimingDifficultyScaleShift(tier)
 	local timingDifficultyShift = (Settings.neutralItems.timingsDefault[tier] - Settings.neutralItems.timings[tier]) * (1 - math.min(Settings.difficultyScale, 2))

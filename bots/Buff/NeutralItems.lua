@@ -220,7 +220,7 @@ function NeutralItems.GiveNeutralItems(TeamRadiant, TeamDire)
     local isTurboMode = Helper.IsTurboMode()
 
     -- Tier 1 Neutral Items
-    if (isTurboMode and Helper.DotaTime() >= 3.5 * 60 or Helper.DotaTime() >= 7 * 60)
+    if (isTurboMode and Helper.DotaTime() >= 0 or Helper.DotaTime() >= 0)
     and not isTierOneDone
     then
         GameRules:SendCustomMessage('Bots receiving Tier 1 Neutral Items...', 0, 0)

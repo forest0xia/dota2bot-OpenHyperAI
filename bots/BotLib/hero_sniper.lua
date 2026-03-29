@@ -427,6 +427,8 @@ function X.ConsiderQ()
 	return 0
 end
 
+-- 7.41: Take Aim now has passive attack range (160/240/320/400)
+-- plus an active component that grants bonus range (75/150/225/300) for a duration.
 function X.ConsiderE()
 
 	if not abilityE:IsFullyCastable()

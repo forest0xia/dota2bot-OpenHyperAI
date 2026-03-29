@@ -158,7 +158,7 @@ local abilityR = bot:GetAbilityByName( sAbilityList[6] )
 local BloodMist = bot:GetAbilityByName( 'bloodseeker_blood_mist' )
 local Thirst = bot:GetAbilityByName("bloodseeker_thirst")
 
-local castQDesire, castQTarget = 0
+local castQDesire = 0
 local castWDesire, castWLocation = 0
 local castRDesire, castRTarget = 0
 local BloodMistDesire, ThirstDesire
@@ -204,13 +204,13 @@ function X.SkillsComplement()
 
 	end
 
-	castQDesire, castQTarget = X.ConsiderQ()
+	castQDesire = X.ConsiderQ()
 	if ( castQDesire > 0 )
 	then
 
 		bot:Action_ClearActions( false )
 
-		bot:ActionQueue_UseAbilityOnEntity( abilityQ, castQTarget )
+		bot:ActionQueue_UseAbility( abilityQ )
 		return
 
 	end
@@ -288,44 +288,20 @@ end
 
 function X.ConsiderQ()
 
+	-- 7.41: Bloodrage is now a no-target self-buff (no longer unit-target)
 	if not abilityQ:IsFullyCastable() then return 0 end
 
-	local nCastRange = abilityQ:GetCastRange()
-	local nCastPoint = abilityQ:GetCastPoint()
-	local nManaCost = abilityQ:GetManaCost()
+	if bot:HasModifier( 'modifier_bloodseeker_bloodrage' ) then return 0 end
+
 	local nDamage = bot:GetAttackDamage()
 
-	--团战时辅助
+	--团战
 	if J.IsInTeamFight( bot, 1200 ) or J.IsPushing( bot ) or J.IsDefending( bot )
 	then
 		local tableNearbyEnemyHeroes = J.GetNearbyHeroes(bot, 1200, true, BOT_MODE_NONE )
-
 		if #tableNearbyEnemyHeroes >= 1 then
-			local tableNearbyAllyHeroes = J.GetNearbyHeroes(bot, nCastRange + 200, false, BOT_MODE_NONE )
-			local highesAD = 0
-			local highesADUnit = nil
-
-			for _, npcAlly in pairs( tableNearbyAllyHeroes )
-			do
-				local AllyAD = npcAlly:GetAttackDamage()
-				if ( J.IsValid( npcAlly )
-					and npcAlly:GetAttackTarget() ~= nil
-					and J.CanCastOnNonMagicImmune( npcAlly )
-					and ( J.GetHP( npcAlly ) > 0.18 or J.GetHP( npcAlly:GetAttackTarget() ) < 0.18 )
-					and not npcAlly:HasModifier( 'modifier_bloodseeker_bloodrage' )
-					and AllyAD > highesAD )
-				then
-					highesAD = AllyAD
-					highesADUnit = npcAlly
-				end
-			end
-
-			if highesADUnit ~= nil then
-				return BOT_ACTION_DESIRE_HIGH, highesADUnit
-			end
-
+			return BOT_ACTION_DESIRE_HIGH
 		end
-
 	end
 
 	if J.IsGoingOnSomeone( bot )
@@ -334,36 +310,30 @@ function X.ConsiderQ()
 			and J.CanCastOnMagicImmune( botTarget )
 			and J.IsInRange( botTarget, bot, 600 )
 		then
-			if not bot:HasModifier( 'modifier_bloodseeker_bloodrage' )
-			then
-				return BOT_ACTION_DESIRE_HIGH, bot
-			end
+			return BOT_ACTION_DESIRE_HIGH
 		end
 	end
-	
+
 	--打野时加速
 	if J.IsValid( botTarget ) and botTarget:GetTeam() == TEAM_NEUTRAL
-		and not bot:HasModifier( 'modifier_bloodseeker_bloodrage' )
 	then
 		local tableNearbyCreeps = bot:GetNearbyCreeps( 1000, true )
 		for _, ECreep in pairs( tableNearbyCreeps )
 		do
-			if J.IsValid( ECreep ) and not J.CanKillTarget( ECreep, nDamage, DAMAGE_TYPE_PHYSICAL ) 
+			if J.IsValid( ECreep ) and not J.CanKillTarget( ECreep, nDamage, DAMAGE_TYPE_PHYSICAL )
 			then
-				return BOT_ACTION_DESIRE_HIGH, bot
+				return BOT_ACTION_DESIRE_HIGH
 			end
 		end
 	end
-
 
 	if J.IsDoingRoshan(bot)
 	then
 		if J.IsRoshan(botTarget)
         and J.IsInRange(bot, botTarget, bot:GetAttackRange())
         and J.IsAttacking(bot)
-        and not bot:HasModifier('modifier_bloodseeker_bloodrage')
 		then
-			return BOT_ACTION_DESIRE_HIGH, bot
+			return BOT_ACTION_DESIRE_HIGH
 		end
 	end
 
@@ -372,14 +342,12 @@ function X.ConsiderQ()
 		if J.IsTormentor(botTarget)
         and J.IsInRange(bot, botTarget, bot:GetAttackRange())
         and J.IsAttacking(bot)
-        and not bot:HasModifier('modifier_bloodseeker_bloodrage')
 		then
-			return BOT_ACTION_DESIRE_HIGH, bot
+			return BOT_ACTION_DESIRE_HIGH
 		end
 	end
 
-
-	return BOT_ACTION_DESIRE_NONE, 0
+	return BOT_ACTION_DESIRE_NONE
 
 end
 

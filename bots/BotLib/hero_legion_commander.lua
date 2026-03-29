@@ -156,8 +156,8 @@ function X.SkillsComplement()
 
 		--J.SetQueuePtToINT( bot, true )
 		
-		--释放强攻给自己
-		if abilityW:IsTrained() and false
+		--释放强攻给自己 (7.41: abilities can now be used during Duel)
+		if abilityW:IsTrained()
 			and abilityW:IsFullyCastable()
 			and bot:GetMana() > abilityW:GetManaCost() + abilityR:GetManaCost()
 		then
@@ -166,7 +166,7 @@ function X.SkillsComplement()
 				bot:ActionQueue_UseAbilityOnLocation( abilityW, bot:GetLocation() )
 			else
 				bot:ActionQueue_UseAbilityOnEntity( abilityW, bot )
-			end		
+			end
 		end
 			
 		--释放刃甲

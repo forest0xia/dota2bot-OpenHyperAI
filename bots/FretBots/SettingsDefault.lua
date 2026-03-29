@@ -67,7 +67,7 @@
 			-- game time (seconds) at which awards are given.
 			timings = {0, 420, 1020, 2020, 3600},
 			-- default dota values, see NeutralItems:GetTimingDifficultyScaleShift()
-			timingsDefault = {420, 1020, 1620, 2020, 3600},
+			timingsDefault = {0, 1020, 1620, 2020, 3600},
 			-- variance for timings (this number of seconds added to base timing per bot)
 			variance = {30, 240},
 			-- if true, announce awards to chat

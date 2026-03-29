@@ -615,6 +615,8 @@ function J.GetUltimateAbility( bot )
 end
 
 
+-- 7.41: Refresher Orb/Shard only refreshes ABILITIES, not items.
+-- This function checks if ult is on cooldown and we have enough mana for a double-cast.
 function J.CanUseRefresherShard( bot )
 
 	local ult = J.GetUltimateAbility( bot )

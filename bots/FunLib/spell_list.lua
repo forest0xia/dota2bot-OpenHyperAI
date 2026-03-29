@@ -554,7 +554,8 @@ X['spells'] = {
     ['npc_dota_hero_obsidian_destroyer'] = {
         ['obsidian_destroyer_arcane_orb'] = {weight = 1},
         ['obsidian_destroyer_astral_imprisonment'] = {weight = 0.2},
-        ['obsidian_destroyer_equilibrium'] = {weight = 1},
+        ['obsidian_destroyer_essence_aura'] = {weight = 1},
+        ['obsidian_destroyer_objurgation'] = {weight = 0.8},
         ['obsidian_destroyer_sanity_eclipse'] = {weight = 0.5},
     },
 

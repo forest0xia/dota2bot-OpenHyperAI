@@ -458,12 +458,14 @@ function X.ConsiderEmpower()
 	local nAttackRange = bot:GetAttackRange()
     local botTarget = J.GetProperTarget(bot)
 
+    -- 7.41: Empower can no longer target self (Magnus always has 30% bonus passively)
     local buffAllyUnit = nil
 	local nMaxDamage = 0
     local nAllyHeroes = J.GetNearbyHeroes(bot,nCastRange, false, BOT_MODE_NONE)
 	for _, allyHero in pairs(nAllyHeroes)
 	do
 		if J.IsValidHero(allyHero)
+        and allyHero ~= bot
         and J.IsCore(allyHero)
         and not allyHero:IsIllusion()
         and not J.IsDisabled(allyHero)
@@ -491,43 +493,7 @@ function X.ConsiderEmpower()
         and #nInRangeAlly >= #nInRangeEnemy
 		then
             if buffAllyUnit ~= nil
-            then
-                if buffAllyUnit == bot
-                and J.IsInRange(bot, botTarget, 500)
-                then
-                    return BOT_ACTION_DESIRE_HIGH, buffAllyUnit
-                end
-
-                if buffAllyUnit ~= bot
-                and J.IsInRange(buffAllyUnit, botTarget, buffAllyUnit:GetAttackRange() + 100)
-                and J.IsInRange(bot, buffAllyUnit, nCastRange)
-                then
-                    return BOT_ACTION_DESIRE_HIGH, buffAllyUnit
-                end
-            end
-		end
-	end
-
-	if (J.IsPushing(bot) or J.IsDefending(bot))
-    and not bot:HasModifier('modifier_magnataur_empower')
-	then
-		local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(600, true)
-		if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 4
-        then
-			return BOT_ACTION_DESIRE_HIGH, bot
-		end
-
-		local nEnemyTowers = bot:GetNearbyTowers(700, true)
-		if nEnemyTowers ~= nil and #nEnemyTowers > 0
-        and buffAllyUnit ~= nil
-        then
-            if buffAllyUnit == bot
-            then
-                return BOT_ACTION_DESIRE_HIGH, buffAllyUnit
-            end
-
-            if buffAllyUnit ~= bot
-            and J.IsInRange(buffAllyUnit, nEnemyTowers[1], buffAllyUnit:GetAttackRange() + 100)
+            and J.IsInRange(buffAllyUnit, botTarget, buffAllyUnit:GetAttackRange() + 100)
             and J.IsInRange(bot, buffAllyUnit, nCastRange)
             then
                 return BOT_ACTION_DESIRE_HIGH, buffAllyUnit
@@ -535,28 +501,26 @@ function X.ConsiderEmpower()
 		end
 	end
 
-    if J.IsFarming(bot)
-    then
-        local nNeutralCreeps = bot:GetNearbyNeutralCreeps(nAttackRange)
-
-        if nNeutralCreeps ~= nil
-            and (#nNeutralCreeps >= 3
-                or (#nNeutralCreeps >= 2 and nNeutralCreeps[1]:IsAncientCreep()))
+	if (J.IsPushing(bot) or J.IsDefending(bot))
+	then
+		local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(600, true)
+		if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 4
+        and buffAllyUnit ~= nil
         then
-            return BOT_ACTION_DESIRE_HIGH, bot
-        end
-    end
+			return BOT_ACTION_DESIRE_HIGH, buffAllyUnit
+		end
 
-    if J.IsLaning(bot)
-    then
-        local nEnemyLaneCreeps = bot:GetNearbyLaneCreeps(600, true)
-
-        if nEnemyLaneCreeps ~= nil and #nEnemyLaneCreeps >= 3
-        and J.IsAttacking(bot)
+		local nEnemyTowers = bot:GetNearbyTowers(700, true)
+		if nEnemyTowers ~= nil and #nEnemyTowers > 0
+        and buffAllyUnit ~= nil
+        and J.IsInRange(buffAllyUnit, nEnemyTowers[1], buffAllyUnit:GetAttackRange() + 100)
+        and J.IsInRange(bot, buffAllyUnit, nCastRange)
         then
-            return BOT_ACTION_DESIRE_HIGH, bot
-        end
-    end
+            return BOT_ACTION_DESIRE_HIGH, buffAllyUnit
+		end
+	end
+
+    -- 7.41: Removed farming/laning self-cast (Magnus has passive 30% bonus)
 
 	if J.IsDoingRoshan(bot)
     and buffAllyUnit ~= nil

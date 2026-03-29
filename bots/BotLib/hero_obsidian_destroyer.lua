@@ -15,7 +15,7 @@ local tTalentTreeList = {
 }
 
 local tAllAbilityBuildList = {
-						{2,1,3,2,2,6,2,1,1,1,6,3,3,3,6},--pos2
+						{2,1,4,2,2,6,2,1,1,1,6,4,4,4,6},--pos2
 }
 
 local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
@@ -82,22 +82,31 @@ end
 
 local ArcaneOrb             = bot:GetAbilityByName('obsidian_destroyer_arcane_orb')
 local AstralImprisonment    = bot:GetAbilityByName('obsidian_destroyer_astral_imprisonment')
-local EssenceFlux           = bot:GetAbilityByName('obsidian_destroyer_equilibrium')
+local EssenceAura           = bot:GetAbilityByName('obsidian_destroyer_essence_aura')
 local SanitysEclipse        = bot:GetAbilityByName('obsidian_destroyer_sanity_eclipse')
+local Objurgation           = bot:GetAbilityByName('obsidian_destroyer_objurgation')
 
 local ArcaneOrbDesire, ArcaneOrbTarget
 local AstralImprisonmentDesire, AstralImprisonmentTarget
 local SanitysEclipseDesire, SanitysEclipseLocation
+local ObjurgationDesire
 
 function X.SkillsComplement()
     if J.CanNotUseAbility(bot) then return end
 
 	if ArcaneOrb:IsTrained()
 	and ArcaneOrb:GetAutoCastState( ) == false
-	and EssenceFlux:GetLevel() >= 3
+	and bot:GetLevel() >= 9
 	then
 		ArcaneOrb:ToggleAutoCast()
 	end
+
+    ObjurgationDesire = X.ConsiderObjurgation()
+    if ObjurgationDesire > 0
+    then
+        bot:Action_UseAbility(Objurgation)
+        return
+    end
 
     SanitysEclipseDesire, SanitysEclipseLocation = X.ConsiderSanitysEclipse()
     if SanitysEclipseDesire > 0
@@ -473,6 +482,56 @@ function X.ConsiderSanitysEclipse()
 	end
 
     return BOT_ACTION_DESIRE_NONE, 0
+end
+
+function X.ConsiderObjurgation()
+    if not Objurgation:IsFullyCastable()
+    then
+        return BOT_ACTION_DESIRE_NONE
+    end
+
+    local nBarrierPct = Objurgation:GetSpecialValueFloat('mana_pool_to_barrier_pct') / 100
+    local nBarrierFlat = Objurgation:GetSpecialValueFloat('barrier')
+    local nBarrier = nBarrierFlat + bot:GetMana() * nBarrierPct
+
+    if J.IsInTeamFight(bot, 1200)
+    then
+        if J.GetHP(bot) < 0.7
+        and bot:WasRecentlyDamagedByAnyHero(2)
+        then
+            return BOT_ACTION_DESIRE_HIGH
+        end
+
+        local nInRangeEnemy = J.GetNearbyHeroes(bot, 800, true, BOT_MODE_NONE)
+        if nInRangeEnemy ~= nil and #nInRangeEnemy >= 2
+        then
+            return BOT_ACTION_DESIRE_HIGH
+        end
+    end
+
+    if J.IsGoingOnSomeone(bot)
+    then
+        local botTarget = J.GetProperTarget(bot)
+        local nInRangeEnemy = J.GetNearbyHeroes(bot, 800, true, BOT_MODE_NONE)
+
+        if J.IsValidTarget(botTarget)
+        and nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
+        and J.IsInRange(bot, botTarget, bot:GetAttackRange() + 200)
+        then
+            return BOT_ACTION_DESIRE_HIGH
+        end
+    end
+
+    if J.IsRetreating(bot)
+    then
+        if J.GetHP(bot) < 0.5
+        and bot:WasRecentlyDamagedByAnyHero(2)
+        then
+            return BOT_ACTION_DESIRE_HIGH
+        end
+    end
+
+    return BOT_ACTION_DESIRE_NONE
 end
 
 return X
