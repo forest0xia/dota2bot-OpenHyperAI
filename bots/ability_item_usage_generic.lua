@@ -6930,6 +6930,63 @@ X.ConsiderItemDesire["item_seeds_of_serenity"] = function(hItem)
 	return BOT_ACTION_DESIRE_NONE
 end
 
+-- 7.41 Neutral Items
+
+-- Dagger of Ristul: self-cast, consume 100 HP for +25 damage for 8s, 30s CD
+X.ConsiderItemDesire["item_dagger_of_ristul"] = function(hItem)
+	local sCastType = 'none'
+
+	-- Don't use when low HP (costs 100 HP)
+	if J.GetHP(bot) < 0.4 then return BOT_ACTION_DESIRE_NONE end
+
+	-- Use when going on someone and have enough HP
+	if J.IsGoingOnSomeone(bot)
+	then
+		if J.IsValidTarget(botTarget)
+		and J.IsInRange(bot, botTarget, 800)
+		and J.GetHP(bot) > 0.5
+		then
+			return BOT_ACTION_DESIRE_HIGH, bot, sCastType, nil
+		end
+	end
+
+	-- Use when farming neutrals and healthy
+	if J.IsFarming(bot) and J.IsAttacking(bot)
+	and J.GetHP(bot) > 0.7
+	then
+		local nNeutralCreeps = bot:GetNearbyNeutralCreeps(600)
+		if nNeutralCreeps ~= nil and #nNeutralCreeps >= 2
+		then
+			return BOT_ACTION_DESIRE_HIGH, bot, sCastType, nil
+		end
+	end
+
+	return BOT_ACTION_DESIRE_NONE
+end
+
+-- Stonefeather Satchel: toggle between Feathers (MS) and Rocks (armor), 6s CD
+X.ConsiderItemDesire["item_stonefeather_satchel"] = function(hItem)
+	local sCastType = 'none'
+	local nEnemyHeroes = J.GetNearbyHeroes(bot, 1200, true, BOT_MODE_NONE)
+
+	-- Toggle to Rocks (armor) mode when in danger
+	if #nEnemyHeroes >= 1
+	and (J.IsRetreating(bot) or J.GetHP(bot) < 0.5)
+	and not bot:HasModifier('modifier_item_stonefeather_satchel_rocks')
+	then
+		return BOT_ACTION_DESIRE_HIGH, bot, sCastType, nil
+	end
+
+	-- Toggle to Feathers (MS) mode when safe
+	if #nEnemyHeroes == 0
+	and not bot:HasModifier('modifier_item_stonefeather_satchel_feathers')
+	then
+		return BOT_ACTION_DESIRE_MODERATE, bot, sCastType, nil
+	end
+
+	return BOT_ACTION_DESIRE_NONE
+end
+
 -- Royal Jelly
 local royalJellyTime = nil
 X.ConsiderItemDesire["item_royal_jelly"] = function(hItem)
