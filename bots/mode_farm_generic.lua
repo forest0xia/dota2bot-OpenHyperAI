@@ -19,6 +19,10 @@ local preferedCamp = nil;
 local availableCamp = {};
 local hLaneCreepList = {};
 local farmState = 0;
+local FARM_STATE_NONE = 0;
+local FARM_STATE_FARM = 1;
+local FARM_STATE_STACK = 2;
+local bStackAggroChecked = false;
 local teamPlayers = nil;
 local nLaneList = {LANE_TOP, LANE_MID, LANE_BOT};
 local assembleTime = 0;
@@ -52,7 +56,7 @@ local runMode = false;
 
 if bot.farmLocation == nil then bot.farmLocation = bot:GetLocation() end
 
-function GetDesie()
+function GetDesire()
 	-- local cacheKey = 'GetFarmDesire'..tostring(bot:GetPlayerID())
 	-- local cachedVar = J.Utils.GetCachedVars(cacheKey, 0.4)
 	-- if DotaTime() > 30 and cachedVar ~= nil then return cachedVar end
@@ -387,7 +391,7 @@ function GetDesireHelper()
 					then 
 						teamTime = DotaTime();
 						return BOT_MODE_DESIRE_VERYLOW;
-				elseif farmState == 1
+				elseif farmState == FARM_STATE_FARM
 					then 
 						return BOT_MODE_DESIRE_ABSOLUTE *0.89;
 				else
@@ -415,14 +419,15 @@ end
 
 function OnEnd()
 	preferedCamp = nil;
-	farmState = 0;
+	farmState = FARM_STATE_NONE;
+	bStackAggroChecked = false;
 	hLaneCreepList  = {};
 	runMode = false;
 	runTime = 0;
 	bot:SetTarget(nil);
 end
 
-function Thnk()
+function Think()
 	if J.CanNotUseAction(bot) then return end
 	if J.Utils.IsBotThinkingMeaningfulAction(bot, Customize.ThinkLess, "farm") then return end
 	if runMode
@@ -480,6 +485,22 @@ function Thnk()
 		end
 	end
 
+	-- Ability-specific farm range detection
+	local nEffectiveRange = bot:GetAttackRange()
+	local StaticRemnant = bot:GetAbilityByName('storm_spirit_static_remnant')
+	local Firefly = bot:GetAbilityByName('batrider_firefly')
+	local ShadowWave = bot:GetAbilityByName('dazzle_shadow_wave')
+	local InnerFire = bot:GetAbilityByName('huskar_inner_fire')
+	if J.CanCastAbility(StaticRemnant) then
+		nEffectiveRange = StaticRemnant:GetSpecialValueInt('static_remnant_radius')
+	elseif J.CanCastAbility(Firefly) or bot:HasModifier('modifier_batrider_firefly') then
+		nEffectiveRange = Firefly:GetSpecialValueInt('radius')
+	elseif J.CanCastAbility(ShadowWave) then
+		nEffectiveRange = ShadowWave:GetSpecialValueInt('damage_radius')
+	elseif J.CanCastAbility(InnerFire) then
+		nEffectiveRange = InnerFire:GetSpecialValueInt('radius')
+	end
+
 	if hLaneCreepList == nil then
 		hLaneCreepList = bot:GetNearbyLaneCreeps(900, true)
 	end
@@ -497,27 +518,14 @@ function Thnk()
 						return
 					end
 				end
-			
-				if bot:GetAttackRange() > 310 
-				then
-					if GetUnitToUnitDistance(bot,farmTarget) > bot:GetAttackRange()
-					then
-						bot:Action_MoveToLocation(farmTarget:GetLocation());
-						return
-					else
-						bot:Action_AttackUnit(farmTarget, true);
-						return
-					end
+
+				local nFarmRange = math.max(nEffectiveRange, bot:GetAttackRange())
+				if GetUnitToUnitDistance(bot, farmTarget) > nFarmRange then
+					bot:Action_MoveToLocation(farmTarget:GetLocation());
+					return
 				else
-					if ( GetUnitToUnitDistance(bot,farmTarget) > bot:GetAttackRange() )
-						or bot:GetAttackDamage() > 200
-					then
-						bot:Action_AttackUnit(hLaneCreepList[1], true);
-						return
-					else
-						bot:Action_AttackUnit(farmTarget, true);
-						return
-					end
+					bot:Action_AttackUnit(farmTarget, true);
+					return
 				end
 			end
 		end
@@ -552,22 +560,64 @@ function Thnk()
 		local targetFarmLoc = preferedCamp.cattr.location;
 		local cDist = GetUnitToLocationDistance(bot, targetFarmLoc);
 		local nNeutrals = bot:GetNearbyCreeps(900, true);
+
+		-- Camp stacking logic: at seconds 54-56, pull creeps away to stack
+		local nStackTime = J.Site.GetCampStackTime(preferedCamp)
+		if sec >= nStackTime and sec <= 58
+		   and cDist < 800
+		   and #nNeutrals >= 1
+		   and farmState ~= FARM_STATE_STACK
+		   and not J.IsCore(bot) -- primarily supports stack
+		then
+			farmState = FARM_STATE_STACK
+			bStackAggroChecked = false
+		end
+
+		if farmState == FARM_STATE_STACK then
+			if sec < nStackTime or sec > 58 then
+				-- Stack window over, return to normal farming
+				farmState = FARM_STATE_NONE
+				bStackAggroChecked = false
+			else
+				-- Check if creeps need aggro first
+				if not bStackAggroChecked then
+					bStackAggroChecked = true
+					local bHasAggro = X.IsThereCreepAggro(nNeutrals)
+					if not bHasAggro and J.IsValid(nNeutrals[1]) then
+						bot:Action_AttackUnit(nNeutrals[1], true)
+						return
+					end
+				end
+
+				-- Move away from camp to pull creeps out for stacking
+				local vStackDir = J.VectorAway(targetFarmLoc, (J.GetTeamFountain() + J.GetEnemyFountain()) / 2, 1200)
+				if GetUnitToLocationDistance(bot, vStackDir) + 200 < J.Site.GetDistance(targetFarmLoc, vStackDir) then
+					bot:Action_MoveToLocation(vStackDir)
+				else
+					bot:Action_MoveToLocation(J.VectorAway(bot:GetLocation(), targetFarmLoc, 1200))
+				end
+				return
+			end
+		end
+
 		if #nNeutrals >= 3 and cDist <= 600 and cDist > 240
 		   and ( bot:GetLevel() >= 10 or not nNeutrals[1]:IsAncientCreep())
-		then farmState = 1 end;
-		
-		if farmState == 0 
+		then farmState = FARM_STATE_FARM end;
+
+		if farmState == FARM_STATE_NONE
 		   and ( J.IsValid(nNeutrals[1]) or #nNeutrals > 1)
 		   and not J.IsRoshan(nNeutrals[1])
 		   and ( bot:GetLevel() >= 10 or not nNeutrals[1]:IsAncientCreep())
 		then
-		
+
 			if GetUnitToUnitDistance(bot,nNeutrals[1]) < bot:GetAttackRange() + 150
 				and J.HasNotActionLast(4.0,'creep')
 			then
 				J.Role['availableCampTable'] = J.Site.UpdateCommonCamp(nNeutrals[1],J.Role['availableCampTable']);
 			end
 
+			-- Use ability-specific range for neutral farming too
+			local nFarmRange = math.max(nEffectiveRange, bot:GetAttackRange())
 			local farmTarget = J.Site.FindFarmNeutralTarget(nNeutrals)
 			if J.IsValid(farmTarget)
 			then
@@ -580,7 +630,7 @@ function Thnk()
 				return;
 			end
 			
-		elseif  farmState == 0 
+		elseif  farmState == FARM_STATE_NONE
 				and (#nNeutrals == 0 and GetUnitToLocationDistance(bot, targetFarmLoc) < 600)
 		        and cDist > 240
 		        and ( not X.IsLocCanBeSeen(targetFarmLoc) or cDist > 600 )
@@ -601,8 +651,8 @@ function Thnk()
 			local neutralCreeps = bot:GetNearbyCreeps(1000, true); 
 			
 			if #neutralCreeps >= 2 then
-				
-				farmState = 1;
+
+				farmState = FARM_STATE_FARM;
 				
 				local farmTarget = J.Site.FindFarmNeutralTarget(neutralCreeps)
 				if J.IsValid(farmTarget)
@@ -615,7 +665,7 @@ function Thnk()
 			elseif ( X.IsLocCanBeSeen(targetFarmLoc) and cDist <= 600 ) or cDist <= 240
 				then
 					
-					farmState = 0;
+					farmState = FARM_STATE_NONE;
 					J.Role['availableCampTable'], preferedCamp = J.Site.UpdateAvailableCamp(bot, preferedCamp, J.Role['availableCampTable']);
 					availableCamp = J.Role['availableCampTable'];	
 					preferedCamp  = J.Site.GetClosestNeutralSpwan(bot, availableCamp);
@@ -645,6 +695,15 @@ function Thnk()
 	
 	bot:Action_MoveToLocation( ( RB + DB )/2 );
 	return;
+end
+
+function X.IsThereCreepAggro(hCreepList)
+	for _, creep in pairs(hCreepList) do
+		if J.IsValid(creep) and creep:GetAttackTarget() == bot then
+			return true
+		end
+	end
+	return false
 end
 
 function X.IsNearLaneFront( bot )
