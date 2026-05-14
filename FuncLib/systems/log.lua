@@ -1,0 +1,1 @@
+local a=print;function _G.log(b,...)if not IsDebug then return end;if select('#',...)==0 then a(b)else a(string.format(b,...))end end;return{log=_G.log}
