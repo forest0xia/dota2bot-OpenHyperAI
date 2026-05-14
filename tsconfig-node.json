@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "ES6",
+    "module": "NodeNext",           // or "NodeNext", depending on Node version
+    "moduleResolution": "NodeNext",
+    "outDir": "./dist",          // JavaScript output folder
+    "rootDir": "./typescript",
+    "esModuleInterop": true,
+    "strict": true
+  },
+  "include": [ "./typescript/post-process" ],
+  "exclude": [ "node_modules", "game", "./typescript/bots" ],
+}
