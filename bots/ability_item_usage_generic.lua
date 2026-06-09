@@ -6653,6 +6653,49 @@ X.ConsiderItemDesire['item_soul_ring'] = function(item)
 	return BOT_ACTION_DESIRE_NONE
 end
 
+-- 7.41b/c/d New Items
+X.ConsiderItemDesire["item_consecrated_wraps"] = function( hItem )
+
+	if hItem:GetCurrentCharges() == 0 then return BOT_ACTION_DESIRE_NONE end
+
+	local nCastRange = 1000 + aetherRange
+	local sCastType = 'unit'
+	local hEffectTarget = nil
+	local sCastMotive = nil
+	local nNearAllyList = J.GetNearbyHeroes(bot, nCastRange, false, BOT_MODE_NONE )
+
+	-- Cast on ally who is low on health or has incoming projectile
+	for _, npcAlly in pairs( nNearAllyList )
+	do
+		if J.IsValidHero( npcAlly )
+			and not npcAlly:IsMagicImmune()
+			and not npcAlly:IsInvulnerable()
+			and not npcAlly:IsIllusion()
+			and not npcAlly:HasModifier( "modifier_item_consecrated_wraps_barrier" )
+			and ( J.IsUnitTargetProjectileIncoming( npcAlly, 800 )
+				 or J.IsWillBeCastUnitTargetSpell( npcAlly, 1200 )
+				 or J.GetHP( npcAlly ) < 0.45 )
+		then
+			hEffectTarget = npcAlly
+			sCastMotive = 'Wraps-帮助队友:'..J.Chat.GetNormName( hEffectTarget )
+			return BOT_ACTION_DESIRE_HIGH, hEffectTarget, sCastType, sCastMotive
+		end
+	end
+
+	-- Also check self
+	if J.GetHP(bot) < 0.45
+		and not bot:HasModifier( "modifier_item_consecrated_wraps_barrier" )
+		and bot:WasRecentlyDamagedByAnyHero(3.0)
+	then
+		hEffectTarget = bot
+		sCastMotive = 'Wraps-救自己'
+		return BOT_ACTION_DESIRE_HIGH, hEffectTarget, sCastType, sCastMotive
+	end
+
+	return BOT_ACTION_DESIRE_NONE
+
+end
+
 -- 7.33 New Items
 X.ConsiderItemDesire['item_pavise'] = function(item)
 	local nCastRange = 1000 + aetherRange

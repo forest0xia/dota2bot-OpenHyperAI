@@ -99,6 +99,7 @@ type CachedDefendUnitState = {
     alliedCreeps: Unit[];
     enemyCreeps: Unit[];
     teamMembers: Unit[];
+    enemies: Unit[];
 };
 
 const DEFEND_CACHE_TTL = 0.5; // 500ms cache TTL - increased for better performance
@@ -198,6 +199,7 @@ function updateDefendUnitStateCache(): CachedDefendUnitState {
         alliedCreeps: GetUnitList(UnitType.AlliedCreeps),
         enemyCreeps: GetUnitList(UnitType.Enemies).filter(u => u.IsCreep() || u.IsAncientCreep()),
         teamMembers,
+        enemies: GetUnitList(UnitType.Enemies),
     };
 
     return defendUnitStateCache;
@@ -242,7 +244,7 @@ function WeightedEnemiesAroundLocation(vLoc: Vector, nRadius: number): number {
 
     const unitState = updateDefendUnitStateCache();
     let count = 0;
-    for (const unit of unitState.enemyHeroes) {
+    for (const unit of unitState.enemies) {
         if (jmz.IsValid(unit) && GetUnitToLocationDistance(unit, vLoc) <= nRadius) {
             const name = unit.GetUnitName();
             if (jmz.IsValidHero(unit) && !jmz.IsSuspiciousIllusion(unit)) {
@@ -621,7 +623,7 @@ export function GetDefendDesireHelper(bot: Unit, lane: Lane): BotModeDesire {
     // Update caches
     const gameState = updateDefendGameStateCache();
     const locationState = updateDefendLocationStateCache();
-    // const unitState = updateDefendUnitStateCache(); // Not used in this function
+    const unitState = updateDefendUnitStateCache();
 
     // currentTime = gameState.currentTime; // Using cached value directly
     const team = gameState.team;
@@ -796,13 +798,16 @@ export function GetDefendDesireHelper(bot: Unit, lane: Lane): BotModeDesire {
 
     // Use ShouldDefend to gate/dampen
     const shouldDef = ShouldDefend(bot, furthestBuilding, 1600);
+    const isBaseBuilding = buildingTier >= 3;
+    const creepsNearBase = isBaseBuilding && unitState.enemyCreeps.some(u => jmz.IsValid(u) && GetUnitToUnitDistance(furthestBuilding, u) <= 1200);
+
     if (!shouldDef) {
         const dist = ds.distanceToLane[lane];
         const tp = jmz.Utils.GetItemFromFullInventory(bot, "item_tpscroll");
         const nearEnemiesAtBuilding = jmz.GetLastSeenEnemiesNearLoc(furthestBuilding.GetLocation(), 1200);
         if (
             (!jmz.CanCastAbility(tp) && dist && dist > 4000 && nearEnemiesAtBuilding.length === 0) ||
-            (nearEnemiesAtBuilding.length === 0 && jmz.GetAlliesNearLoc(furthestBuilding.GetLocation(), 1600).length >= 1)
+            (nearEnemiesAtBuilding.length === 0 && (!isBaseBuilding || !creepsNearBase) && jmz.GetAlliesNearLoc(furthestBuilding.GetLocation(), 1600).length >= 1)
         ) {
             return BotModeDesire.VeryLow;
         }
@@ -818,7 +823,7 @@ export function GetDefendDesireHelper(bot: Unit, lane: Lane): BotModeDesire {
     const nDefendAllies = jmz.GetAlliesNearLoc(hub, 2500);
     const nEffAllies = nDefendAllies.length + jmz.Utils.GetAllyIdsInTpToLocation(hub, 2500).length;
 
-    if (lEnemies.length === 0 && (jmz.IsAnyAllyDefending(bot, lane) || jmz.IsCore(bot))) {
+    if (lEnemies.length === 0 && (!isBaseBuilding || !creepsNearBase) && (jmz.IsAnyAllyDefending(bot, lane) || jmz.IsCore(bot))) {
         return BotModeDesire.VeryLow;
     }
     if (lEnemies.length === 1 && (nEffAllies > lEnemies.length || (jmz.IsAnyAllyDefending(bot, lane) && jmz.GetAverageLevel(false) >= jmz.GetAverageLevel(true)))) {

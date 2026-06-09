@@ -312,7 +312,8 @@ function updateDefendUnitStateCache()
             GetUnitList(UnitType.Enemies),
             function(____, u) return u:IsCreep() or u:IsAncientCreep() end
         ),
-        teamMembers = teamMembers
+        teamMembers = teamMembers,
+        enemies = GetUnitList(UnitType.Enemies)
     }
     return defendUnitStateCache
 end
@@ -364,7 +365,7 @@ function WeightedEnemiesAroundLocation(vLoc, nRadius)
     end
     local unitState = updateDefendUnitStateCache()
     local count = 0
-    for ____, unit in ipairs(unitState.enemyHeroes) do
+    for ____, unit in ipairs(unitState.enemies) do
         if jmz.IsValid(unit) and GetUnitToLocationDistance(unit, vLoc) <= nRadius then
             local name = unit:GetUnitName()
             if jmz.IsValidHero(unit) and not jmz.IsSuspiciousIllusion(unit) then
@@ -889,6 +890,7 @@ function ____exports.GetDefendDesireHelper(bot, lane)
     end
     local gameState = updateDefendGameStateCache()
     local locationState = updateDefendLocationStateCache()
+    local unitState = updateDefendUnitStateCache()
     local team = gameState.team
     local ancient = gameState.ourAncient
     local ds = getDefendState(bot)
@@ -1068,6 +1070,11 @@ function ____exports.GetDefendDesireHelper(bot, lane)
         return BotModeDesire.None
     end
     local shouldDef = ____exports.ShouldDefend(bot, furthestBuilding, 1600)
+    local isBaseBuilding = buildingTier >= 3
+    local creepsNearBase = isBaseBuilding and __TS__ArraySome(
+        unitState.enemyCreeps,
+        function(____, u) return jmz.IsValid(u) and GetUnitToUnitDistance(furthestBuilding, u) <= 1200 end
+    )
     if not shouldDef then
         local dist = ds.distanceToLane[lane]
         local tp = jmz.Utils.GetItemFromFullInventory(bot, "item_tpscroll")
@@ -1075,7 +1082,7 @@ function ____exports.GetDefendDesireHelper(bot, lane)
             furthestBuilding:GetLocation(),
             1200
         )
-        if not jmz.CanCastAbility(tp) and dist and dist > 4000 and #nearEnemiesAtBuilding == 0 or #nearEnemiesAtBuilding == 0 and #jmz.GetAlliesNearLoc(
+        if not jmz.CanCastAbility(tp) and dist and dist > 4000 and #nearEnemiesAtBuilding == 0 or #nearEnemiesAtBuilding == 0 and (not isBaseBuilding or not creepsNearBase) and #jmz.GetAlliesNearLoc(
             furthestBuilding:GetLocation(),
             1600
         ) >= 1 then
@@ -1087,7 +1094,7 @@ function ____exports.GetDefendDesireHelper(bot, lane)
     local lEnemies = jmz.GetLastSeenEnemiesNearLoc(hub, 2500)
     local nDefendAllies = jmz.GetAlliesNearLoc(hub, 2500)
     local nEffAllies = #nDefendAllies + #jmz.Utils.GetAllyIdsInTpToLocation(hub, 2500)
-    if #lEnemies == 0 and (jmz.IsAnyAllyDefending(bot, lane) or jmz.IsCore(bot)) then
+    if #lEnemies == 0 and (not isBaseBuilding or not creepsNearBase) and (jmz.IsAnyAllyDefending(bot, lane) or jmz.IsCore(bot)) then
         return BotModeDesire.VeryLow
     end
     if #lEnemies == 1 and (nEffAllies > #lEnemies or jmz.IsAnyAllyDefending(bot, lane) and jmz.GetAverageLevel(false) >= jmz.GetAverageLevel(true)) then

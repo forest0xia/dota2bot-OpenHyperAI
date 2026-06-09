@@ -2,7 +2,7 @@
 
 This document is the single source of truth for understanding, maintaining, and updating the dota2bot-OpenHyperAI codebase. It is designed so that a developer (or AI assistant) can quickly make targeted updates without re-scanning the entire repository.
 
-Last verified against: **Patch 7.41a** (March 2026)
+Last verified against: **Patch 7.41d** (March 2026)
 
 ---
 
