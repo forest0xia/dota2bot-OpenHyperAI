@@ -12,7 +12,7 @@ Customize.ThinkLess = Customize.Enable ? Customize.ThinkLess : 1;
  * (kept from Lua; comments preserved)
  */
 const pingTimeDelta = 5;
-const StartToPushTime = 16 * 60; // after X mins, start considering to push.
+const StartToPushTime = 10 * 60; // after X mins, start considering to push.
 const BOT_MODE_DESIRE_EXTRA_LOW = 0.02;
 
 /** Module-scoped state (cache-ish). Keep small and intentional. */
@@ -286,8 +286,8 @@ export function GetPushDesireHelper(bot: Unit, lane: Lane): BotModeDesire {
     if (enemiesAtAncient >= 1) return BotModeDesire.ExtraLow;
 
     // --- Push safety gates ---
-    // Never push alone when 3+ enemies alive
-    if (alliesHere.length <= 1 && gameState.aliveEnemyCount >= 3) {
+    // Never push alone when 3+ enemies alive, unless we are in a powerplay window (2+ enemies dead)
+    if (alliesHere.length <= 1 && gameState.aliveEnemyCount >= 3 && (5 - gameState.aliveEnemyCount) < 2) {
         return BotModeDesire.None;
     }
     // Never push with 2+ hero count disadvantage
@@ -407,6 +407,14 @@ export function GetPushDesireHelper(bot: Unit, lane: Lane): BotModeDesire {
     const levelAdvantage = gameState.averageLevel - enemyAverageLevel;
     const hasSignificantAdvantage = networthAdvantage > 15000 || levelAdvantage > 2;
 
+    // POWERPLAY: jika >=2 enemy dead, boost desire + unlock cap
+    const enemyDeadCount = 5 - gameState.aliveEnemyCount;
+    let powerplayBonus = 0;
+    if (enemyDeadCount >= 2) {
+        powerplayBonus = RemapValClamped(enemyDeadCount, 2, 4, 0.4, 1.0);
+        nMaxDesire = 0.95; // override cap saat powerplay
+    }
+
     // If outnumbered in *local* area, desire is very low (avoid feed)
     // But be more lenient when team has significant advantages
     if (alliesHere.length < enemiesHere.length && alliesHere.length <= eAliveCount - 1 && aAliveCount < eAliveCount) {
@@ -458,6 +466,7 @@ export function GetPushDesireHelper(bot: Unit, lane: Lane): BotModeDesire {
         // Allow pushes more easily when we have significant advantages
         const allowNumbers =
             eAliveCount === 0 ||
+            enemyDeadCount >= 2 || // Powerplay override
             aAliveCoreCount >= eAliveCoreCount ||
             (aAliveCoreCount >= 1 && aAliveCount >= eAliveCount + 2) ||
             // New: Allow pushes with networth advantage even if slightly outnumbered
@@ -490,7 +499,7 @@ export function GetPushDesireHelper(bot: Unit, lane: Lane): BotModeDesire {
                 nPushDesire = nPushDesire + groupBonus;
             }
 
-            return RemapValClamped(nPushDesire * jmz.GetHP(bot), 0, 1, 0, nMaxDesire) as BotModeDesire;
+            return RemapValClamped((nPushDesire + powerplayBonus) * jmz.GetHP(bot), 0, 2, 0, nMaxDesire) as BotModeDesire;
         }
     }
 

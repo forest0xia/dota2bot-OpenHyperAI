@@ -105,6 +105,32 @@ function GetDesireHelper()
         IsSupport  = not IsHeroCore
     end
 
+    -- Success/failure tracking for Help Ally
+    if bot.helpAllyActive then
+        if DotaTime() - bot.helpAllyStartTime > 20.0 then
+            bot.helpAllyActive = false
+            bot.lastHelpAllyTime = DotaTime()
+            bot.helpAllyCooldown = 90.0
+        else
+            local targetDead = false
+            if bot.helpAllyTargetUnit ~= nil and (not J.IsValidHero(bot.helpAllyTargetUnit) or not bot.helpAllyTargetUnit:IsAlive()) then
+                targetDead = true
+            end
+            if targetDead then
+                bot.helpAllyActive = false
+                bot.lastHelpAllyTime = DotaTime()
+                bot.helpAllyCooldown = 30.0
+            end
+        end
+    end
+
+    local onCooldown = false
+    if bot.lastHelpAllyTime ~= nil and bot.helpAllyCooldown ~= nil then
+        if DotaTime() - bot.lastHelpAllyTime < bot.helpAllyCooldown then
+            onCooldown = true
+        end
+    end
+
     ItemOpsDesire()
 
     local target
@@ -118,8 +144,15 @@ function GetDesireHelper()
     nearbyAllies = J.GetAlliesNearLoc(bot:GetLocation(), 2200)
     nearbyEnemies = J.GetEnemiesNearLoc(bot:GetLocation(), 2000)
 
-    target, ShouldHelpAlly = ConsiderHelpAlly()
+    target, ShouldHelpAlly = nil, false
+    if not onCooldown then
+        target, ShouldHelpAlly = ConsiderHelpAlly()
+    end
     if ShouldHelpAlly then
+        bot.helpAllyActive = true
+        bot.helpAllyStartTime = DotaTime()
+        bot.helpAllyTargetUnit = target
+        bot.helpAllyCooldown = nil
         SetStickyTarget(target)
         targetUnit = target
         return RemapValClamped(J.GetHP(bot), 0, 0.6, BOT_MODE_DESIRE_NONE, 0.98)
@@ -287,6 +320,8 @@ function OnEnd()
     towerTime = 0
     towerCreepMode = false
     PickedItem = nil
+    targetUnit = nil
+    bot.helpAllyActive = false
 end
 
 -- ==============================

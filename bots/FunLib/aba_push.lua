@@ -155,7 +155,7 @@ function ____exports.GetPushDesireHelper(bot, lane)
     if enemiesAtAncient >= 1 then
         return BotModeDesire.ExtraLow
     end
-    if #alliesHere <= 1 and gameState.aliveEnemyCount >= 3 then
+    if #alliesHere <= 1 and gameState.aliveEnemyCount >= 3 and 5 - gameState.aliveEnemyCount < 2 then
         return BotModeDesire.None
     end
     if gameState.aliveAllyCount <= gameState.aliveEnemyCount - 2 then
@@ -247,6 +247,18 @@ function ____exports.GetPushDesireHelper(bot, lane)
     local enemyAverageLevel = jmz.GetAverageLevel(true)
     local levelAdvantage = gameState.averageLevel - enemyAverageLevel
     local hasSignificantAdvantage = networthAdvantage > 15000 or levelAdvantage > 2
+    local enemyDeadCount = 5 - gameState.aliveEnemyCount
+    local powerplayBonus = 0
+    if enemyDeadCount >= 2 then
+        powerplayBonus = RemapValClamped(
+            enemyDeadCount,
+            2,
+            4,
+            0.4,
+            1
+        )
+        nMaxDesire = 0.95
+    end
     if #alliesHere < #enemiesHere and #alliesHere <= eAliveCount - 1 and aAliveCount < eAliveCount then
         if hasSignificantAdvantage and #alliesHere >= #enemiesHere - 1 then
             nMaxDesire = math.min(nMaxDesire, 0.6)
@@ -285,7 +297,7 @@ function ____exports.GetPushDesireHelper(bot, lane)
     local pushLane = ____exports.WhichLaneToPush(bot, lane)
     local isCurrentLanePushLane = pushLane == lane
     if not jmz.IsCore(bot) and isCurrentLanePushLane or jmz.IsCore(bot) and (jmz.IsLateGame() and isCurrentLanePushLane or isMidOrEarlyGame) then
-        local allowNumbers = eAliveCount == 0 or aAliveCoreCount >= eAliveCoreCount or aAliveCoreCount >= 1 and aAliveCount >= eAliveCount + 2 or networthAdvantage > 8000 and aAliveCount >= eAliveCount - 1 or levelAdvantage > 2 and aAliveCount >= eAliveCount - 1
+        local allowNumbers = eAliveCount == 0 or enemyDeadCount >= 2 or aAliveCoreCount >= eAliveCoreCount or aAliveCoreCount >= 1 and aAliveCount >= eAliveCount + 2 or networthAdvantage > 8000 and aAliveCount >= eAliveCount - 1 or levelAdvantage > 2 and aAliveCount >= eAliveCount - 1
         if allowNumbers then
             if gameState.hasAegis then
                 nPushDesire = nPushDesire + 0.3
@@ -321,9 +333,9 @@ function ____exports.GetPushDesireHelper(bot, lane)
                 nPushDesire = nPushDesire + groupBonus
             end
             return RemapValClamped(
-                nPushDesire * jmz.GetHP(bot),
+                (nPushDesire + powerplayBonus) * jmz.GetHP(bot),
                 0,
-                1,
+                2,
                 0,
                 nMaxDesire
             )
@@ -556,7 +568,7 @@ else
 end
 ____Customize_1.ThinkLess = ____Customize_Enable_0
 pingTimeDelta = 5
-StartToPushTime = 16 * 60
+StartToPushTime = 10 * 60
 BOT_MODE_DESIRE_EXTRA_LOW = 0.02
 hEnemyAncient = nil
 PUSH_CACHE_TTL = 0.5
@@ -814,24 +826,24 @@ function ____exports.PushThink(bot, lane)
     local towerDistanceToFountain = bTowerNearby and GetUnitToLocationDistance(nEnemyTowers[1], vTeamFountain) or 0
     for ____, creep in ipairs(nCreeps) do
         do
-            local __continue120
+            local __continue121
             repeat
                 if not jmz.IsValid(creep) or not jmz.CanBeAttacked(creep) then
-                    __continue120 = true
+                    __continue121 = true
                     break
                 end
                 if jmz.IsTormentor(creep) or jmz.IsRoshan(creep) then
-                    __continue120 = true
+                    __continue121 = true
                     break
                 end
                 if bTowerNearby and GetUnitToLocationDistance(creep, vTeamFountain) >= towerDistanceToFountain then
-                    __continue120 = true
+                    __continue121 = true
                     break
                 end
                 bot:Action_AttackUnit(creep, true)
                 return
             until true
-            if not __continue120 then
+            if not __continue121 then
                 break
             end
         end
