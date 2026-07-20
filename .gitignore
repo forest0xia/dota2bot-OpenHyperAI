@@ -50,6 +50,7 @@ temp_build/
 !.vscode/launch.json
 !.vscode/extensions.json
 !.vscode/*.code-snippets
+.codeartsdoer
 
 # Local History for Visual Studio Code
 .history/
