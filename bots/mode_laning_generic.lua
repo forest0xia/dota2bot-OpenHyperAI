@@ -172,11 +172,20 @@ function GetBestDenyCreep(hCreepList)
 	return nil
 end
 
-if local_mode_laning_generic or (J.GetPosition(bot) == 1 and J.IsPosxHuman(5)) then
-	function Think()
+function Think()
 		local hitCreep, moveToCreep = GetBestLastHitCreep(nEnemyCreeps)
 		if J.IsValid(hitCreep) then
-			if J.GetPosition(bot) <= 2 or not J.IsThereNonSelfCoreNearby(700)
+			-- 让刀：旁边有己方真人玩家时不补刀（真人优先吃线，不看 bot 自己是什么角色）
+			-- 用 GetUnitList 遍历（与作者 J.IsPosxHuman 同款），不用 GetNearbyHeroes（其 botMode 参数语义不可靠）
+			-- 关键：没有真人时（对面/纯 bot 局）无条件补刀，避免影响 bot 之间正常对线
+			local bHumanNearby = false
+			for _, ally in ipairs(GetUnitList(UNIT_LIST_ALLIED_HEROES)) do
+				if J.IsValidHero(ally) and not ally:IsBot() and GetUnitToUnitDistance(bot, ally) <= 700 then
+					bHumanNearby = true
+					break
+				end
+			end
+			if not bHumanNearby or J.GetPosition(bot) <= 2 or not J.IsThereNonSelfCoreNearby(700)
 			then
 				if GetUnitToUnitDistance(bot, hitCreep) > botAttackRange
 				or (moveToCreep and GetUnitToUnitDistance(bot, hitCreep) > botAttackRange * 0.8) then
@@ -197,6 +206,24 @@ if local_mode_laning_generic or (J.GetPosition(bot) == 1 and J.IsPosxHuman(5)) t
 			return
 		end
 
+		-- OHA MOD 2026/08/13: 没刀没反补 → 打附近野（800 内）——治"无事可做=站桩挂机"
+		local nNeutrals = bot:GetNearbyNeutralCreeps(800)
+		-- 真人玩家在刷这组野（【野怪】700 码内有真人，不是 bot 距离！）→ 不抢
+		local bHumanFarmingHere = false
+		for _, ally2 in ipairs(GetUnitList(UNIT_LIST_ALLIED_HEROES)) do
+			if J.IsValidHero(ally2) and not ally2:IsBot()
+			and #nNeutrals > 0
+			and GetUnitToUnitDistance(ally2, nNeutrals[1]) <= 700 then
+				bHumanFarmingHere = true
+				break
+			end
+		end
+		if not bHumanFarmingHere and #nNeutrals > 0 then
+			bot:SetTarget(nNeutrals[1])
+			bot:Action_AttackUnit(nNeutrals[1], true)
+			return
+		end
+
 		if local_mode_laning_generic then
 			local_mode_laning_generic.Think()
 		end
@@ -213,7 +240,6 @@ if local_mode_laning_generic or (J.GetPosition(bot) == 1 and J.IsPosxHuman(5)) t
 
 		bot:Action_MoveToLocation(target_loc + RandomVector(50))
 	end
-end
 
 
 function PickOneAnnouncer()
