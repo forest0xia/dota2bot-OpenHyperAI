@@ -2,7 +2,7 @@ import * as jmz from "bots/FunLib/jmz_func";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 import Customize = require("bots/Customize/general");
 import { Barracks, BotMode, BotModeDesire, DamageType, Lane, Team, Tower, Unit, UnitType, Vector } from "bots/ts_libs/dota";
-import { IsValidUnit, GetLocationToLocationDistance, RadiantFountainTpPoint, DireFountainTpPoint } from "./utils";
+import { IsValidUnit, GetLocationToLocationDistance, RadiantFountainTpPoint, DireFountainTpPoint, NonTier1Towers } from "./utils";
 import { getGlobalGameState, getGlobalLocationState, getCachedAlliesNearLoc, getCachedEnemiesNearLoc, autoCleanupCache, getCachedData } from "./global_cache";
 
 Customize.ThinkLess = Customize.Enable ? Customize.ThinkLess : 1;
@@ -12,7 +12,7 @@ Customize.ThinkLess = Customize.Enable ? Customize.ThinkLess : 1;
  * (kept from Lua; comments preserved)
  */
 const pingTimeDelta = 5;
-const StartToPushTime = 16 * 60; // after X mins, start considering to push.
+const StartToPushTime = 10 * 60; // after X mins, start considering to push.
 const BOT_MODE_DESIRE_EXTRA_LOW = 0.02;
 
 /** Module-scoped state (cache-ish). Keep small and intentional. */
@@ -285,9 +285,22 @@ export function GetPushDesireHelper(bot: Unit, lane: Lane): BotModeDesire {
     // If Ancient under direct pressure → strongly deprioritize pushes
     if (enemiesAtAncient >= 1) return BotModeDesire.ExtraLow;
 
+    // 自定义：己方塔被推（tier≥2 塔血量不满 + 附近有敌人）→ 同样放弃推塔，优先回防
+    // 修复：对面 3 人推中二塔时 2 号位带线不 TP 回防（push 渴望度压过 defend）
+    // 不跨模块调用 aba_defend 的函数（TS 模块作用域），用 NonTier1Towers 枚举逐塔查
+    for (const slot of NonTier1Towers) {
+        const tw = GetTower(team, slot);
+        if (!tw || !IsValidUnit(tw) || !tw.IsAlive()) continue;
+        if (tw.GetHealth() >= tw.GetMaxHealth()) continue; // 塔满血不算被推
+        const enemiesAtTower = jmz.GetLastSeenEnemiesNearLoc(tw.GetLocation(), 1400);
+        if (enemiesAtTower.length >= 2) {
+            return BotModeDesire.ExtraLow;
+        }
+    }
+
     // --- Push safety gates ---
-    // Never push alone when 3+ enemies alive
-    if (alliesHere.length <= 1 && gameState.aliveEnemyCount >= 3) {
+    // Never push alone when 3+ enemies alive, unless we are in a powerplay window (2+ enemies dead)
+    if (alliesHere.length <= 1 && gameState.aliveEnemyCount >= 3 && (5 - gameState.aliveEnemyCount) < 2) {
         return BotModeDesire.None;
     }
     // Never push with 2+ hero count disadvantage
@@ -407,6 +420,14 @@ export function GetPushDesireHelper(bot: Unit, lane: Lane): BotModeDesire {
     const levelAdvantage = gameState.averageLevel - enemyAverageLevel;
     const hasSignificantAdvantage = networthAdvantage > 15000 || levelAdvantage > 2;
 
+    // POWERPLAY: jika >=2 enemy dead, boost desire + unlock cap
+    const enemyDeadCount = 5 - gameState.aliveEnemyCount;
+    let powerplayBonus = 0;
+    if (enemyDeadCount >= 2) {
+        powerplayBonus = RemapValClamped(enemyDeadCount, 2, 4, 0.4, 1.0);
+        nMaxDesire = 0.95; // override cap saat powerplay
+    }
+
     // If outnumbered in *local* area, desire is very low (avoid feed)
     // But be more lenient when team has significant advantages
     if (alliesHere.length < enemiesHere.length && alliesHere.length <= eAliveCount - 1 && aAliveCount < eAliveCount) {
@@ -458,6 +479,7 @@ export function GetPushDesireHelper(bot: Unit, lane: Lane): BotModeDesire {
         // Allow pushes more easily when we have significant advantages
         const allowNumbers =
             eAliveCount === 0 ||
+            enemyDeadCount >= 2 || // Powerplay override
             aAliveCoreCount >= eAliveCoreCount ||
             (aAliveCoreCount >= 1 && aAliveCount >= eAliveCount + 2) ||
             // New: Allow pushes with networth advantage even if slightly outnumbered
@@ -490,7 +512,7 @@ export function GetPushDesireHelper(bot: Unit, lane: Lane): BotModeDesire {
                 nPushDesire = nPushDesire + groupBonus;
             }
 
-            return RemapValClamped(nPushDesire * jmz.GetHP(bot), 0, 1, 0, nMaxDesire) as BotModeDesire;
+            return RemapValClamped((nPushDesire + powerplayBonus) * jmz.GetHP(bot), 0, 2, 0, nMaxDesire) as BotModeDesire;
         }
     }
 
@@ -710,11 +732,23 @@ export function WhichLaneToPush(_bot: Unit, _lane: Lane): Lane {
     midLaneScore = presence_adjust(midLaneScore, vMid);
     botLaneScore = presence_adjust(botLaneScore, vBot);
 
+    // 自定义：中路权重——中路还有塔（tier<4）→ 优先推中路（/=1.2）
+    // 中路全破（tier>=4，塔+兵营都没了）→ 反而避开中路（废墟没价值，转推其他路）
+    const midFullyGone = midTier >= 4;
+    if (!midFullyGone) {
+        midLaneScore /= 1.2;
+    } else {
+        midLaneScore *= 2;
+    }
+
     if (topLaneScore < midLaneScore && topLaneScore < botLaneScore) return Lane.Top;
     if (midLaneScore < topLaneScore && midLaneScore < botLaneScore) return Lane.Mid;
     if (botLaneScore < topLaneScore && botLaneScore < midLaneScore) return Lane.Bot;
 
-    return Lane.Mid;
+    // 兜底：分数打平时选"还有塔的路"（tier 最低 = 最值得推），不再死磕中路
+    if (topTier <= midTier && topTier <= botTier) return Lane.Top;
+    if (midTier <= topTier && midTier <= botTier) return Lane.Mid;
+    return Lane.Bot;
 }
 
 /* -----------------------------------------------------------------------------

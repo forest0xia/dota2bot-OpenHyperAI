@@ -312,7 +312,8 @@ function updateDefendUnitStateCache()
             GetUnitList(UnitType.Enemies),
             function(____, u) return u:IsCreep() or u:IsAncientCreep() end
         ),
-        teamMembers = teamMembers
+        teamMembers = teamMembers,
+        enemies = GetUnitList(UnitType.Enemies)
     }
     return defendUnitStateCache
 end
@@ -364,7 +365,7 @@ function WeightedEnemiesAroundLocation(vLoc, nRadius)
     end
     local unitState = updateDefendUnitStateCache()
     local count = 0
-    for ____, unit in ipairs(unitState.enemyHeroes) do
+    for ____, unit in ipairs(unitState.enemies) do
         if jmz.IsValid(unit) and GetUnitToLocationDistance(unit, vLoc) <= nRadius then
             local name = unit:GetUnitName()
             if jmz.IsValidHero(unit) and not jmz.IsSuspiciousIllusion(unit) then
@@ -395,12 +396,26 @@ function GetThreatenedLane()
         local anchor = IsValidBuildingTarget(bld) and tier < 3 and bld:GetLocation() or GetHighGroundEdgeWaitPoint(nTeam, ln)
         local enemyHeroCnt = _recentHeroCountNear(anchor, 1800)
         local score = enemyHeroCnt * 10
+        local hgEdge = GetHighGroundEdgeWaitPoint(nTeam, ln)
+        local enemiesAtHGBuilding = jmz.GetLastSeenEnemiesNearLoc(hgEdge, 2000)
+        local ourAncient = GetAncient(nTeam)
+        local enemiesAtBase = ourAncient and jmz.GetLastSeenEnemiesNearLoc(
+            ourAncient:GetLocation(),
+            2600
+        ) or ({})
+        local threatCount = #enemiesAtHGBuilding + #enemiesAtBase
+        if threatCount >= 1 then
+            score = 999 + threatCount
+        end
         if enemyHeroCnt == 0 then
             local creepEq = math.min(
                 WeightedEnemiesAroundLocation(anchor, 1200) * 0.4,
                 0.9
             )
             score = score + creepEq
+        end
+        if ln == Lane.Mid and threatCount == 0 then
+            score = score * 1.2
         end
         if score > bestScore then
             bestScore = score
@@ -889,6 +904,7 @@ function ____exports.GetDefendDesireHelper(bot, lane)
     end
     local gameState = updateDefendGameStateCache()
     local locationState = updateDefendLocationStateCache()
+    local unitState = updateDefendUnitStateCache()
     local team = gameState.team
     local ancient = gameState.ourAncient
     local ds = getDefendState(bot)
@@ -958,6 +974,24 @@ function ____exports.GetDefendDesireHelper(bot, lane)
             ) or ds.defendLoc
         }
         bot.laneToDefend = lane
+        local enemyTeamIds = GetTeamPlayers(gameState.enemyTeam)
+        local incoming = __TS__ArrayFilter(
+            GetIncomingTeleports(),
+            function(____, tp)
+                if not tp then
+                    return false
+                end
+                local isEnemy = __TS__ArraySome(
+                    enemyTeamIds,
+                    function(____, id) return id == tp.playerid end
+                )
+                local tpLaneLoc = threatenedLane == Lane.Top and GetLaneFrontLocation(nTeam, Lane.Top, 0) or (threatenedLane == Lane.Bot and GetLaneFrontLocation(nTeam, Lane.Bot, 0) or GetLaneFrontLocation(nTeam, Lane.Mid, 0))
+                return not isEnemy and jmz.GetDistance(tp.location, tpLaneLoc) <= 3000
+            end
+        )
+        if #incoming >= 1 then
+            baseThreatUntil = DotaTime() + BASE_THREAT_HOLD + 4
+        end
     end
     if enemiesAtAncient >= 1 then
         if lane ~= threatenedLane then
@@ -1068,6 +1102,11 @@ function ____exports.GetDefendDesireHelper(bot, lane)
         return BotModeDesire.None
     end
     local shouldDef = ____exports.ShouldDefend(bot, furthestBuilding, 1600)
+    local isBaseBuilding = buildingTier >= 3
+    local creepsNearBase = isBaseBuilding and __TS__ArraySome(
+        unitState.enemyCreeps,
+        function(____, u) return jmz.IsValid(u) and GetUnitToUnitDistance(furthestBuilding, u) <= 1200 end
+    )
     if not shouldDef then
         local dist = ds.distanceToLane[lane]
         local tp = jmz.Utils.GetItemFromFullInventory(bot, "item_tpscroll")
@@ -1075,7 +1114,8 @@ function ____exports.GetDefendDesireHelper(bot, lane)
             furthestBuilding:GetLocation(),
             1200
         )
-        if not jmz.CanCastAbility(tp) and dist and dist > 4000 and #nearEnemiesAtBuilding == 0 or #nearEnemiesAtBuilding == 0 and #jmz.GetAlliesNearLoc(
+        local buildingUnderAttack = furthestBuilding:GetHealth() < furthestBuilding:GetMaxHealth()
+        if not jmz.CanCastAbility(tp) and dist and dist > 4000 and #nearEnemiesAtBuilding == 0 and not buildingUnderAttack or #nearEnemiesAtBuilding == 0 and (not isBaseBuilding or not creepsNearBase) and not buildingUnderAttack and #jmz.GetAlliesNearLoc(
             furthestBuilding:GetLocation(),
             1600
         ) >= 1 then
@@ -1087,10 +1127,11 @@ function ____exports.GetDefendDesireHelper(bot, lane)
     local lEnemies = jmz.GetLastSeenEnemiesNearLoc(hub, 2500)
     local nDefendAllies = jmz.GetAlliesNearLoc(hub, 2500)
     local nEffAllies = #nDefendAllies + #jmz.Utils.GetAllyIdsInTpToLocation(hub, 2500)
-    if #lEnemies == 0 and (jmz.IsAnyAllyDefending(bot, lane) or jmz.IsCore(bot)) then
+    local buildingDamaged = furthestBuilding:GetHealth() < furthestBuilding:GetMaxHealth()
+    if #lEnemies == 0 and (not isBaseBuilding or not creepsNearBase) and not buildingDamaged and (#jmz.GetAlliesNearLoc(hub, 1600) >= 2 or jmz.IsCore(bot)) then
         return BotModeDesire.VeryLow
     end
-    if #lEnemies == 1 and (nEffAllies > #lEnemies or jmz.IsAnyAllyDefending(bot, lane) and jmz.GetAverageLevel(false) >= jmz.GetAverageLevel(true)) then
+    if #lEnemies == 1 and not buildingDamaged and (nEffAllies > #lEnemies or #jmz.GetAlliesNearLoc(hub, 1600) >= 2 and jmz.GetAverageLevel(false) >= jmz.GetAverageLevel(true)) then
         return BotModeDesire.VeryLow
     end
     local capBoost = shouldDef and 0.1 or 0
@@ -1201,7 +1242,7 @@ local SEARCH_RANGE_DEFAULT = 1600
 MAX_DESIRE_CAP = 0.98
 BASE_THREAT_RADIUS = 2600
 local BASE_LEASH_OUTBOUND = 1200
-BASE_THREAT_HOLD = 4
+BASE_THREAT_HOLD = 8
 CACHE_ENEMY_AROUND_LOC_HZ = 0.35
 CACHE_LASTSEEN_WINDOW = 5
 nTeam = GetTeam()

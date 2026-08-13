@@ -33,7 +33,8 @@ Customize.Localization = "en"
 -- Please note that it is not 100% guaranteed that the banned hero will not be picked; for example if you banned too many heroes 
 -- like near 100% of the heroes, bots will need to randomly pick heroes regardless of the ban list to continue the game.
 Customize.Ban = {
-    'example_npc_dota_hero_internal_name_to_ban',
+    'npc_dota_hero_oracle',      -- 神谕者（薄葬/否决系太恶心）
+    'npc_dota_hero_grimstroke',  -- 天涯墨客（墨笔连体婴）
 }
 
 --[[
