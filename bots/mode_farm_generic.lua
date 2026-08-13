@@ -360,11 +360,26 @@ function GetDesireHelper()
 		end
 	end
 
-	-- Gradual farm desire cap: ramps from 0.3 during laning to 0.6 by 20min (turbo: 14min)
-	-- Keeps jungle farming as a secondary priority — never dominant over teamfight/push/defend
+	-- Gradual farm desire cap: ramps from 0.35 during laning to 0.5 by 20min (turbo: 14min)
+	-- OHA MOD 2026/08/12: 0.25→0.35 / 0.45→0.5，拉开与 laning 渴望度(0.268)的差距，避免模式横跳发呆；
+	-- 抬幅保守（仅超出 laning 一点），不改变辅助让资源闸门(468 行)，辅助不会抢野吃线
 	local nFarmRampStart = J.IsModeTurbo() and 8 * 60 or 10 * 60
 	local nFarmRampEnd   = J.IsModeTurbo() and 14 * 60 or 20 * 60
-	local nFarmCap = RemapValClamped(DotaTime(), nFarmRampStart, nFarmRampEnd, 0.3, 0.6)
+	local nFarmCap = RemapValClamped(DotaTime(), nFarmRampStart, nFarmRampEnd, 0.35, 0.5)
+
+	-- 自定义：己方二塔+被推（血量不满 + 附近≥2敌人）→ farm 让位防守（修复"对面推塔 bot 还在打钱"）
+	-- 与 aba_push 的塔威胁感知同款逻辑（手写 Lua 直接用引擎 API）
+	local team = GetTeam()
+	local towerSlots = { TOWER_TOP_2, TOWER_TOP_3, TOWER_MID_2, TOWER_MID_3, TOWER_BOT_2, TOWER_BOT_3, TOWER_BASE_1, TOWER_BASE_2 }
+	for _, slot in pairs(towerSlots) do
+		local tw = GetTower(team, slot)
+		if tw ~= nil and tw:IsAlive() and tw:GetHealth() < tw:GetMaxHealth() then
+			local nEnemiesAtTower = J.GetLastSeenEnemiesNearLoc(tw:GetLocation(), 1400)
+			if #nEnemiesAtTower >= 2 then
+				return BOT_MODE_DESIRE_NONE
+			end
+		end
+	end
 
 	if GetGameMode() ~= GAMEMODE_MO
 	and J.Site.IsTimeToFarm(bot)
@@ -551,6 +566,52 @@ function Think()
 
 	hLaneCreepList = bot:GetNearbyLaneCreeps(900, true) -- always refresh to avoid stale data
 	if hLaneCreepList ~= nil and #hLaneCreepList > 0 and J.IsValid(hLaneCreepList[1]) then
+		-- 让刀（与 laning 同款）：附近 700 码有己方真人玩家时不 A 线上小兵
+		-- 3号位是核心：仅当附近还有别的核心时才让（对齐 laning 原版 J.IsThereNonSelfCoreNearby）；
+		-- 4/5号位辅助无条件让真人补刀；没有真人时正常打（bot 对 bot 局不受影响）
+		local bHumanNearby = false
+		for _, ally in ipairs(GetUnitList(UNIT_LIST_ALLIED_HEROES)) do
+			if J.IsValidHero(ally) and not ally:IsBot() and GetUnitToUnitDistance(bot, ally) <= 700 then
+				bHumanNearby = true
+				break
+			end
+		end
+		if bHumanNearby and J.GetPosition(bot) > 2 and (J.GetPosition(bot) >= 4 or J.IsThereNonSelfCoreNearby(700)) then
+			-- 让刀：不 A 线上小兵，转而反补己方小兵（如果有）
+			local allyCreeps = bot:GetNearbyLaneCreeps(900, false)
+			local denyTarget = nil
+			for _, c in ipairs(allyCreeps) do
+				if J.IsValid(c) and c:GetHealth() < 0.5 * c:GetMaxHealth() and c:GetTeam() == bot:GetTeam() then
+					if denyTarget == nil or c:GetHealth() < denyTarget:GetHealth() then
+						denyTarget = c
+					end
+				end
+			end
+			if J.IsValid(denyTarget) then
+				bot:SetTarget(denyTarget)
+				bot:Action_AttackUnit(denyTarget, true)
+				return
+			end
+			-- 没有可反补的 → 打野（如果附近有野）
+			local nNeutrals = bot:GetNearbyNeutralCreeps(800)
+			-- OHA MOD 2026/08/13: 真人玩家在刷这组野（【野怪】700 码内有真人）→ 不抢
+			local bHumanFarmingHere = false
+			for _, ally2 in ipairs(GetUnitList(UNIT_LIST_ALLIED_HEROES)) do
+				if J.IsValidHero(ally2) and not ally2:IsBot()
+				and #nNeutrals > 0
+				and GetUnitToUnitDistance(ally2, nNeutrals[1]) <= 700 then
+					bHumanFarmingHere = true
+					break
+				end
+			end
+			if #nNeutrals > 0 and not bHumanFarmingHere then
+				bot:Action_AttackUnit(nNeutrals[1], true)
+				return
+			end
+			-- 实在没活干 → 站到兵线后面等（不抢刀）
+			bot:Action_MoveToLocation(GetLaneFrontLocation(GetTeam(), bot:GetAssignedLane(), -400))
+			return
+		end
 		local farmTarget = J.Site.GetFarmLaneTarget(hLaneCreepList);
 		local nSearchRange = bot:GetAttackRange() + 180
 		if nSearchRange > 1600 then nSearchRange = 1600 end
@@ -627,6 +688,31 @@ function Think()
 			cDist = GetUnitToLocationDistance(bot, targetFarmLoc)
 			nNeutrals = bot:GetNearbyCreeps(900, true)
 		end
+
+		-- OHA MOD 2026/08/13: 真人玩家在刷这组野 → 不抢（宁让勿抢版）
+		-- 基准=【野怪】700 码内有真人（nNeutrals 可能混入兵线小兵，先筛出最近的纯中立）
+		local nearestNeutral = nil
+		local nearestDist = 99999
+		for _, neutral in ipairs(nNeutrals) do
+			if J.IsValid(neutral) and neutral:GetTeam() == TEAM_NEUTRAL then
+				local d = GetUnitToUnitDistance(bot, neutral)
+				if d < nearestDist then
+					nearestDist = d
+					nearestNeutral = neutral
+				end
+			end
+		end
+		local bHumanFarmingNear = false
+		if nearestNeutral ~= nil then
+			for _, ally in ipairs(GetUnitList(UNIT_LIST_ALLIED_HEROES)) do
+				if J.IsValidHero(ally) and not ally:IsBot()
+				and GetUnitToUnitDistance(ally, nearestNeutral) <= 700 then
+					bHumanFarmingNear = true
+					break
+				end
+			end
+		end
+		if bHumanFarmingNear then return end
 
 		if #nNeutrals >= 3 and cDist <= 600 and cDist > 240
 		   and ( bot:GetLevel() >= 10 or not nNeutrals[1]:IsAncientCreep())
