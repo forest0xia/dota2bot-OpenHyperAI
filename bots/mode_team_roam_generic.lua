@@ -1820,9 +1820,11 @@ function TrySellOrDropItem()
 					local distance = bot:DistanceFromFountain()
 					if distance <= 300 then
 						bot:ActionImmediate_SellItem( bot:GetItemInSlot( itemSlot ))
-					elseif distance >= 3000 then
-						bot:Action_DropItem( bot:GetItemInSlot( itemSlot ), bot:GetLocation() )
 					end
+					-- OHA MOD 2026/08/15: 删除"离家远丢地上"分支——
+					-- 满包时新装备自动进 stash（引擎机制）不会卡格子；
+					-- 丢地上=垃圾满地（用户实测反馈：补刀斧/吃树/雾满地+误拾取提示）。
+					-- 背包小件留着，回泉水再卖。
 				end
 			end
 		end
