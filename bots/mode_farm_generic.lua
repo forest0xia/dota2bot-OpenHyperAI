@@ -576,7 +576,14 @@ function Think()
 				break
 			end
 		end
-		if bHumanNearby and J.GetPosition(bot) > 2 and (J.GetPosition(bot) >= 4 or J.IsThereNonSelfCoreNearby(700)) then
+		-- OHA MOD 2026/08/15: 让刀条件重写（治"4 抢 3"）——
+		-- ① 4/5 号位：真人在旁(700) 或 旁有核心(bot 间秩序) → 让刀
+		-- ② 3 号位：只有旁有【别的核心】才让（单线劣势路正常补刀）
+		-- ③ 只认己方（ALLIED_HEROES / 己方核心）——对面敌人绝不会触发让刀
+		-- 旧逻辑只认真人（纯 bot 局 4 抢 3 依旧）；现在 bot 间也恢复秩序
+		if ( J.GetPosition(bot) >= 4 and ( bHumanNearby or J.IsThereNonSelfCoreNearby(700) ) )
+		or ( J.GetPosition(bot) == 3 and J.IsThereNonSelfCoreNearby(700) )
+		then
 			-- 让刀：不 A 线上小兵，转而反补己方小兵（如果有）
 			local allyCreeps = bot:GetNearbyLaneCreeps(900, false)
 			local denyTarget = nil
