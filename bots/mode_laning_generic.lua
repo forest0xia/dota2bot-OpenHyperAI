@@ -174,12 +174,6 @@ function GetBestDenyCreep(hCreepList)
 end
 
 function Think()
-		-- OHA MOD 2026/08/15: 恢复原版启用条件（守卫方式）——
-		-- 原版 laning Think 仅对 1 号位+真人5 启用，3/4/5 号位对线期走 farm 逻辑；
-		-- 我们之前删掉条件导致 3/4/5 脱离 farm 进 laning → 站线抢刀/挂机（用户实测回归发现）。
-		if not ( local_mode_laning_generic or (J.GetPosition(bot) == 1 and J.IsPosxHuman(5)) ) then
-			return
-		end
 		local hitCreep, moveToCreep = GetBestLastHitCreep(nEnemyCreeps)
 		if J.IsValid(hitCreep) then
 			-- 让刀：旁边有己方真人玩家时不补刀（真人优先吃线，不看 bot 自己是什么角色）
