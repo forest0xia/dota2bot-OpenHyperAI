@@ -105,6 +105,116 @@ function GetDesireHelper()
         IsSupport  = not IsHeroCore
     end
 
+    -- ===== 自定义：敌方入侵我方区域 → 守家特判 + 就近支援 =====
+    -- 半场判断用"己方远古距离+768 < 敌方远古距离"（J.IsInAllyArea 同款逻辑）
+    -- 守家特判：逼近高地/基地 → 全员回防（大后期 4+ 人压基地 = 绝对优先）
+    -- 就近支援：辅助先动（0.65），核心只在"有健康辅助会跟"时才去（0.85），避免单人送头
+    if DotaTime() > 0 then
+        local hAllyAncient   = GetAncient(GetTeam())
+        local hEnemyAncient  = GetAncient(GetOpposingTeam())
+        local nEnemiesInOurHalf = 0
+        local nEnemiesNearBase  = 0
+        local nEnemiesInOurHalfTotal = 0
+        local vInvasionCenter = nil
+
+        for _, enemy in pairs(GetUnitList(UNIT_LIST_ENEMY_HEROES)) do
+            if J.IsValidHero(enemy) and not J.IsSuspiciousIllusion(enemy) then
+                local distAlly  = GetUnitToUnitDistance(enemy, hAllyAncient)
+                local distEnemy = GetUnitToUnitDistance(enemy, hEnemyAncient)
+                -- OHA MOD 2026/08/13: 768→1200，敌方需深入我方半场 430+ 码才算"入侵"
+                -- （原 768 让"刚过河/中路河道摩擦"就触发支援 → 20 分钟中路大乱斗）
+                if distAlly + 1200 < distEnemy then
+                    nEnemiesInOurHalf = nEnemiesInOurHalf + 1
+                    nEnemiesInOurHalfTotal = nEnemiesInOurHalfTotal + 1
+                    if vInvasionCenter == nil then
+                        vInvasionCenter = enemy:GetLocation()
+                    else
+                        vInvasionCenter = vInvasionCenter + enemy:GetLocation()
+                    end
+                end
+                if distAlly < 4000 then
+                    nEnemiesNearBase = nEnemiesNearBase + 1
+                end
+            end
+        end
+
+        if nEnemiesInOurHalfTotal > 0 and vInvasionCenter ~= nil then
+            vInvasionCenter = vInvasionCenter / nEnemiesInOurHalfTotal
+        end
+
+        -- 守家特判：基地被 4+ 人压（大后期）→ 绝对回防；2+ 人逼近高地 → 紧急集合
+        if nEnemiesNearBase >= 4 and J.IsLateGame() then
+            return 1.0
+        elseif nEnemiesNearBase >= 2 then
+            return 0.95
+        end
+
+        -- 就近支援：有入侵时才触发（我方半场 ≥2 敌人）
+        if nEnemiesInOurHalf >= 2 and vInvasionCenter ~= nil then
+            local botDist = GetUnitToLocationDistance(bot, vInvasionCenter)
+
+            -- 辅助先动：事发地 3500 码内 + 血量健康 → 0.65
+            if IsSupport and botDist <= 3500 and J.GetHP(bot) > 0.5 then
+                bot.teamRoamTPLocation = vInvasionCenter  -- 供 TP 逻辑读取
+                bot.teamRoamTPTime = GameTime()  -- 时间戳：5 秒内有效，防过期乱 TP
+                return 0.65
+            end
+
+            -- 核心看辅助：我是离事发地最近的核心 + 有健康辅助会跟 → 0.85
+            if IsHeroCore and J.GetPosition(bot) <= 3 and botDist <= 5000 then
+                local bIsNearestCore = true
+                local nAllySupportNear = 0
+                for _, ally in pairs(GetUnitList(UNIT_LIST_ALLIED_HEROES)) do
+                    if ally ~= bot and J.IsValidHero(ally) and not ally:IsIllusion() then
+                        local allyDist = GetUnitToLocationDistance(ally, vInvasionCenter)
+                        if J.IsCore(ally) and allyDist < botDist then
+                            bIsNearestCore = false
+                        end
+                        if not J.IsCore(ally) and allyDist <= 3500 and J.GetHP(ally) > 0.5 then
+                            nAllySupportNear = nAllySupportNear + 1
+                        end
+                    end
+                end
+                if bIsNearestCore then
+                    if nAllySupportNear >= 1 then
+                        bot.teamRoamTPLocation = vInvasionCenter  -- 供 TP 逻辑读取
+                        bot.teamRoamTPTime = GameTime()  -- 时间戳：5 秒内有效，防过期乱 TP
+                        return 0.85
+                    else
+                        return 0.3  -- 没辅助会跟 → 观望，不深入送头
+                    end
+                end
+            end
+        end
+    end
+    -- ===== 自定义结束 =====
+
+    -- Success/failure tracking for Help Ally
+    if bot.helpAllyActive then
+        if DotaTime() - bot.helpAllyStartTime > 20.0 then
+            bot.helpAllyActive = false
+            bot.lastHelpAllyTime = DotaTime()
+            bot.helpAllyCooldown = 90.0
+        else
+            local targetDead = false
+            if bot.helpAllyTargetUnit ~= nil and (not J.IsValidHero(bot.helpAllyTargetUnit) or not bot.helpAllyTargetUnit:IsAlive()) then
+                targetDead = true
+            end
+            if targetDead then
+                bot.helpAllyActive = false
+                bot.lastHelpAllyTime = DotaTime()
+                bot.helpAllyCooldown = 30.0
+            end
+        end
+    end
+
+    local onCooldown = false
+    if bot.lastHelpAllyTime ~= nil and bot.helpAllyCooldown ~= nil then
+        if DotaTime() - bot.lastHelpAllyTime < bot.helpAllyCooldown then
+            onCooldown = true
+        end
+    end
+
     ItemOpsDesire()
 
     local target
@@ -118,8 +228,15 @@ function GetDesireHelper()
     nearbyAllies = J.GetAlliesNearLoc(bot:GetLocation(), 2200)
     nearbyEnemies = J.GetEnemiesNearLoc(bot:GetLocation(), 2000)
 
-    target, ShouldHelpAlly = ConsiderHelpAlly()
+    target, ShouldHelpAlly = nil, false
+    if not onCooldown then
+        target, ShouldHelpAlly = ConsiderHelpAlly()
+    end
     if ShouldHelpAlly then
+        bot.helpAllyActive = true
+        bot.helpAllyStartTime = DotaTime()
+        bot.helpAllyTargetUnit = target
+        bot.helpAllyCooldown = nil
         SetStickyTarget(target)
         targetUnit = target
         return RemapValClamped(J.GetHP(bot), 0, 0.6, BOT_MODE_DESIRE_NONE, 0.98)
@@ -287,6 +404,8 @@ function OnEnd()
     towerTime = 0
     towerCreepMode = false
     PickedItem = nil
+    targetUnit = nil
+    bot.helpAllyActive = false
 end
 
 -- ==============================
@@ -414,6 +533,17 @@ function X.SupportFindTarget()
         local nAllies = J.GetNearbyHeroes(bot, 1300, false, BOT_MODE_NONE)
         if J.IsWithoutTarget(bot) and botMode ~= BOT_MODE_FARM and #nNeutrals > 0 and #nAllies <= 1 then
             for i = 1, #nNeutrals do
+                -- OHA MOD 2026/08/13: 真人玩家在野怪 700 码内 → 不抢（宁让勿抢版）
+                local bHumanFarming = false
+                for _, ally in ipairs(GetUnitList(UNIT_LIST_ALLIED_HEROES)) do
+                	if J.IsValidHero(ally) and not ally:IsBot()
+                	and GetUnitToUnitDistance(ally, nNeutrals[i]) <= 700 then
+                		bHumanFarming = true
+                		break
+                	end
+                end
+                if bHumanFarming then break end
+
                 if X.CanBeAttacked(nNeutrals[i]) and not X.IsAllysTarget(nNeutrals[i])
                 and not J.IsTormentor(nNeutrals[i]) and not J.IsRoshan(nNeutrals[i])
                 and X.IsLastHitCreep(nNeutrals[i], attackDamage) then
@@ -645,9 +775,10 @@ function X.CarryFindTarget()
 					if X.CanBeAttacked(creep)
 					and creep:GetHealth()/creep:GetMaxHealth() < 0.5
 					and not X.IsLastHitCreep(creep,denyDamage)
-					and not J.IsTormentor(creep)
-					and not J.IsRoshan(creep)
-					then
+				and not J.IsTormentor(creep)
+				and not J.IsRoshan(creep)
+				and string.find(creep:GetUnitName(), 'npc_dota_creep_')
+				then
 						local togetherDamage = 0;
 						local togetherCount = 0;
 						for _,ally in pairs(nAllies)
@@ -714,14 +845,15 @@ function X.CarryFindTarget()
 			local nTwoHitDenyCreeps = bot:GetNearbyCreeps(nAttackRange +120, false);
 			for _,creep in pairs(nTwoHitDenyCreeps)
 			do
-				if X.CanBeAttacked(creep)
-				and creep:GetHealth()/creep:GetMaxHealth() < 0.5
-				and X.IsLastHitCreep(creep,denyDamage *2)
-				and ( not X.IsLastHitCreep(creep,denyDamage *1.2) or #nEnemyLaneCreep == 0 )
-				and not X.IsOthersTarget(creep)
-				and not J.IsTormentor(creep)
-				and not J.IsRoshan(creep)
-				then
+			if X.CanBeAttacked(creep)
+			and creep:GetHealth()/creep:GetMaxHealth() < 0.5
+			and X.IsLastHitCreep(creep,denyDamage *2)
+			and ( not X.IsLastHitCreep(creep,denyDamage *1.2) or #nEnemyLaneCreep == 0 )
+			and not X.IsOthersTarget(creep)
+			and not J.IsTormentor(creep)
+			and not J.IsRoshan(creep)
+			and string.find(creep:GetUnitName(), 'npc_dota_creep_')
+			then
 					return creep,BOT_MODE_DESIRE_ABSOLUTE;
 				end
 			end
@@ -776,6 +908,17 @@ function X.CarryFindTarget()
 			then
 				for i = 1,#nNeutrals
 				do
+					-- OHA MOD 2026/08/13: 真人玩家在野怪 700 码内 → 不抢（宁让勿抢版）
+					local bHumanFarming = false
+					for _, ally in ipairs(GetUnitList(UNIT_LIST_ALLIED_HEROES)) do
+						if J.IsValidHero(ally) and not ally:IsBot()
+						and GetUnitToUnitDistance(ally, nNeutrals[i]) <= 700 then
+							bHumanFarming = true
+							break
+						end
+					end
+					if bHumanFarming then break end
+
 					if X.CanBeAttacked(nNeutrals[i])
 						and not X.IsAllysTarget(nNeutrals[i])
 						and not J.IsTormentor(nNeutrals[i])
@@ -978,6 +1121,7 @@ function X.GetNearbyLastHitCreep(ignorAlly, bEnemy, nDamage, nRadius, bot)
 	do
 		if X.CanBeAttacked(nCreep) and nCreep:GetHealth() < ( nDamage + 256 )
 		and ( ignorAlly or not X.IsAllysTarget(nCreep) )
+		and ( bEnemy or string.find(nCreep:GetUnitName(), 'npc_dota_creep_') )
 		then
 		
 			local nAttackProDelayTime = J.GetAttackProDelayTime(bot,nCreep) ;
@@ -1676,9 +1820,11 @@ function TrySellOrDropItem()
 					local distance = bot:DistanceFromFountain()
 					if distance <= 300 then
 						bot:ActionImmediate_SellItem( bot:GetItemInSlot( itemSlot ))
-					elseif distance >= 3000 then
-						bot:Action_DropItem( bot:GetItemInSlot( itemSlot ), bot:GetLocation() )
 					end
+					-- OHA MOD 2026/08/15: 删除"离家远丢地上"分支——
+					-- 满包时新装备自动进 stash（引擎机制）不会卡格子；
+					-- 丢地上=垃圾满地（用户实测反馈：补刀斧/吃树/雾满地+误拾取提示）。
+					-- 背包小件留着，回泉水再卖。
 				end
 			end
 		end

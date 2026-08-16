@@ -94,7 +94,7 @@ b4a@^1.6.4:
   resolved "https://registry.npmjs.org/b4a/-/b4a-1.6.7.tgz"
   integrity sha512-OnAYlL5b7LEkALw87fUVafQw5rVR9RjwGd4KUwNQ6DrrNmaVaUCgLipfVlzrPQ4tWOR9P0IXGNOx50jYCCdSJg==
 
-bare-events@*, bare-events@^2.2.0, bare-events@^2.5.4:
+bare-events@^2.2.0, bare-events@^2.5.4:
   version "2.6.1"
   resolved "https://registry.npmjs.org/bare-events/-/bare-events-2.6.1.tgz"
   integrity sha512-AuTJkq9XmE6Vk0FJVNq5QxETrSA/vKHarWVBG5l/JbdCL1prJemiyJqUS0jrlXO0MftuPq4m3YVYhoNc5+aE/g==
@@ -252,7 +252,7 @@ degenerator@^5.0.0:
     escodegen "^2.1.0"
     esprima "^4.0.1"
 
-devtools-protocol@*, devtools-protocol@0.0.1475386:
+devtools-protocol@0.0.1475386:
   version "0.0.1475386"
   resolved "https://registry.npmjs.org/devtools-protocol/-/devtools-protocol-0.0.1475386.tgz"
   integrity sha512-RQ809ykTfJ+dgj9bftdeL2vRVxASAuGU+I9LEx9Ij5TXU5HrgAQVmzi72VA+mkzscE12uzlRv5/tWWv9R9J1SA==
@@ -840,7 +840,7 @@ typescript-to-lua@^1.26.2:
     resolve "^1.15.1"
     source-map "^0.7.3"
 
-typescript@^5.5.4, typescript@>=4.9.5, typescript@5.5.2:
+typescript@^5.5.4:
   version "5.5.4"
   resolved "https://registry.npmjs.org/typescript/-/typescript-5.5.4.tgz"
   integrity sha512-Mtq29sKDAEYP7aljRgtPOpTvOfbwRWlS6dPRzwjdE+C0R4brX/GUyhHSecbHMFLNBLcJIPt9nl9yG5TZ1weH+Q==

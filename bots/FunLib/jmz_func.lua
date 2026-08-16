@@ -4724,6 +4724,17 @@ function J.WeAreStronger(bot, nRadius)
 		end
 	end
 
+	local nEnemyTowers = bot:GetNearbyTowers(600, true)
+	if J.IsValidBuilding(nEnemyTowers[1]) then
+		if nEnemyTowers[1]:HasModifier('modifier_fountain_glyph') then
+			local power = #nEnemyTowers * (math.sqrt(Max(0, nEnemyTowers[1]:GetAttackDamage() * nEnemyTowers[1]:GetAttackSpeed() * 5.0 * 2)))
+			enemyPower = enemyPower + power
+		else
+			local power = #nEnemyTowers * (math.sqrt(Max(0, nEnemyTowers[1]:GetAttackDamage() * nEnemyTowers[1]:GetAttackSpeed() * 5.0)))
+			enemyPower = enemyPower + power
+		end
+	end
+
 	if not J.IsEarlyGame() and J.IsInTeamFight(bot, 1600) and #tAllyHeroes >= #tEnemyHeroes then
 		local vTeamFightLocation = J.GetTeamFightLocation(bot)
 		if vTeamFightLocation ~= nil and (J.IsHumanInLoc(vTeamFightLocation, 1200) or #tAllyHeroes > #tEnemyHeroes) then
@@ -6541,9 +6552,19 @@ function J.CheckBotIdleState()
 					bot:Action_ClearActions(true);
 
 					-- Should send it to most desire farming lane, if in laning or send it to desire push lane.
-					local frontLoc = GetLaneFrontLocation(GetTeam(), bot:GetAssignedLane(), 0);
+					local pushLane, pushDesire = J.GetMostPushLaneDesire()
+					local defendLane, defendDesire = J.GetMostDefendLaneDesire()
+					local targetLane = bot:GetAssignedLane()
+
+					if defendLane ~= nil and defendDesire ~= nil and defendDesire > 0.4 then
+						targetLane = defendLane
+					elseif pushLane ~= nil and pushDesire ~= nil and pushDesire > 0.4 then
+						targetLane = pushLane
+					end
+
+					local frontLoc = GetLaneFrontLocation(GetTeam(), targetLane, 0)
 					bot:ActionQueue_AttackMove(frontLoc)
-					print('[ERROR] Relocating the idle bot: '..botName..'. Sending it to the lane# it was originally assigned: '..tostring(bot:GetAssignedLane()))
+					print('[ERROR] Relocating the idle bot: '..botName..'. Sending it to target lane: '..tostring(targetLane))
 				else
 					print('Bot '..botName..' is in idle state for unknown reasons. N/A.')
 				end

@@ -191,6 +191,7 @@ function GetBestDenyCreep(hCreepList)
 		and J.GetHP(creep) < 0.49
 		and J.CanBeAttacked(creep)
 		and creep:GetHealth() <= bot:GetAttackDamage()
+		and string.find(creep:GetUnitName(), 'npc_dota_creep_')
 		then
 			return creep
 		end
