@@ -207,11 +207,7 @@ function ____exports.GetPushDesireHelper(bot, lane)
             i = i + 1
         end
     end
-    local nH = jmz.Utils.NumHumanBotPlayersInTeam(GetOpposingTeam())
-    if nH > 0 and currentTime <= StartToPushTime then
-        return BOT_MODE_DESIRE_EXTRA_LOW
-    end
-    if jmz.IsDefending(bot) and nModeDesire >= 0.8 then
+if jmz.IsDefending(bot) and nModeDesire >= 0.8 then
         nMaxDesire = 0.75
     end
     local human, humanPing = jmz.GetHumanPing()

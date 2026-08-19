@@ -353,12 +353,6 @@ export function GetPushDesireHelper(bot: Unit, lane: Lane): BotModeDesire {
         }
     }
 
-    // Human opponents → delay high-commit pushes before a certain time
-    const [nH] = jmz.Utils.NumHumanBotPlayersInTeam(GetOpposingTeam());
-    if (nH > 0 && currentTime <= StartToPushTime) {
-        return BOT_MODE_DESIRE_EXTRA_LOW as BotModeDesire;
-    }
-
     // If we are actively defending, cap the max desire slightly lower
     if (jmz.IsDefending(bot) && nModeDesire >= 0.8) {
         nMaxDesire = 0.75;
