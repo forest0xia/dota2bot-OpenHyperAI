@@ -145,6 +145,16 @@ function ____exports.GetPushDesireHelper(bot, lane)
             return BotModeDesire.VeryLow
         end
     end
+    if not gameState.isLaningPhase and gameState.aliveEnemyCount <= gameState.aliveAllyCount then
+        local alliesNearMid = #getCachedAlliesNearLoc(locationState.laneFronts[Lane.Mid], 2000)
+        if alliesNearMid >= 2 then
+            if lane == Lane.Mid then
+                return 0.82
+            else
+                return BotModeDesire.VeryLow
+            end
+        end
+    end
     local alliesHere = getCachedAlliesNearLoc(
         bot:GetLocation(),
         1600

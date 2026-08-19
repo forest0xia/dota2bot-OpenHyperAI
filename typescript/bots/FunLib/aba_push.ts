@@ -279,6 +279,14 @@ export function GetPushDesireHelper(bot: Unit, lane: Lane): BotModeDesire {
         return (lane === Lane.Mid ? 0.9 : BotModeDesire.VeryLow) as BotModeDesire;
     }
 
+    // 2+ allies already pushing mid → help converge
+    if (!gameState.isLaningPhase && gameState.aliveEnemyCount <= gameState.aliveAllyCount) {
+        const alliesNearMid = getCachedAlliesNearLoc(locationState.laneFronts[Lane.Mid], 2000).length;
+        if (alliesNearMid >= 2) {
+            return (lane === Lane.Mid ? 0.82 : BotModeDesire.VeryLow) as BotModeDesire;
+        }
+    }
+
     // Current, LOCAL threat picture around the bot (not reused across Think)
     const alliesHere = getCachedAlliesNearLoc(bot.GetLocation(), 1600);
     const enemiesHere = getCachedEnemiesNearLoc(bot.GetLocation(), 1600);
