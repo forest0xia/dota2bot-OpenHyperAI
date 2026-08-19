@@ -1915,6 +1915,50 @@ function J.IsWillBeCastPointSpell( bot, nRadius )
 end
 
 
+local sDangerousChanneledAbilities = {
+    enigma_black_hole = true,
+    bane_fiends_grip = true,
+    crystal_maiden_freezing_field = true,
+    witch_doctor_death_ward = true,
+    sandking_epicenter = true,
+    faceless_void_chronosphere = true,
+    magnataur_reverse_polarity = true,
+    warlock_rain_of_chaos = true,
+    phoenix_supernova = true,
+}
+
+-- Returns true when a nearby enemy is channeling or casting a dangerous teamfight ability.
+-- Use this to pre-activate BKB before the ability hits.
+function J.ShouldPreActivateBKB(bot)
+    if bot:IsMagicImmune() or bot:IsInvulnerable() then return false end
+    local nearbyEnemies = J.GetNearbyHeroes(bot, 1000, true, BOT_MODE_NONE)
+    for _, enemy in ipairs(nearbyEnemies) do
+        if J.IsValidHero(enemy) and (enemy:IsUsingAbility() or enemy:IsCastingAbility()) then
+            local ability = enemy:GetCurrentActiveAbility()
+            if ability ~= nil and sDangerousChanneledAbilities[ability:GetName()] then
+                return true
+            end
+        end
+    end
+    return false
+end
+
+
+-- Sets a shared kill-commit signal: ally just stunned/rooted an enemy below 30% HP.
+function J.SetKillTarget(unit)
+    J.Utils.GameStates.killTarget = { unit = unit, expiresAt = GameTime() + 3 }
+end
+
+-- Returns the current kill-commit target, or nil if expired/dead/invalid.
+function J.GetKillTarget()
+    local kt = J.Utils.GameStates.killTarget
+    if kt == nil then return nil end
+    if GameTime() > kt.expiresAt then J.Utils.GameStates.killTarget = nil; return nil end
+    if not J.IsValidHero(kt.unit) or not kt.unit:IsAlive() then J.Utils.GameStates.killTarget = nil; return nil end
+    return kt.unit
+end
+
+
 --可躲避敌方非攻击弹道
 function J.IsProjectileIncoming( bot, range )
 

@@ -37,6 +37,16 @@ function Generic.GetDesire()
 
 	if bClearMode then bClearMode = false return 0 end
 
+	-- Kill commitment: if a teammate signalled a stunned/low-HP target, commit to it
+	local hKillTarget = J.GetKillTarget()
+	if hKillTarget ~= nil and J.IsInRange(bot, hKillTarget, 1200) then
+		local nEnemyTowersNear = bot:GetNearbyTowers(800, true)
+		local bUnderTower = J.IsValidBuilding(nEnemyTowersNear[1]) and nEnemyTowersNear[1]:GetAttackTarget() == bot
+		if not bUnderTower then
+			return GetActualDesire(BOT_MODE_DESIRE_ABSOLUTE)
+		end
+	end
+
 	botAttackRange = bot:GetAttackRange() + bot:GetBoundingRadius()
 	botHP = J.GetHP(bot)
 	botMP = J.GetMP(bot)
@@ -136,6 +146,11 @@ function Generic.GetDesire()
 			local nEnemyTowersNear = bot:GetNearbyTowers(1200, true)
 			if J.IsValidBuilding(nEnemyTowersNear[1]) then
 				fEnemyDamage = fEnemyDamage + #nEnemyTowersNear * nEnemyTowersNear[1]:GetAttackDamage()
+			end
+
+			-- Signal kill commitment when enemy is disabled and nearly dead
+			if (enemyHero:IsStunned() or enemyHero:IsRooted()) and J.GetHP(enemyHero) < 0.3 then
+				J.SetKillTarget(enemyHero)
 			end
 
 			local b1 = (bWeAreStronger and fAllyDamage >= enemyHero:GetHealth() * 0.2 and botHealth > fEnemyDamage * 1.15)

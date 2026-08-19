@@ -35,6 +35,7 @@ export interface GameState {
     recentDefendTime: number;
     cachedVars: any;
     twinGates: Unit[];
+    killTarget: { unit: Unit; expiresAt: number } | null;
 }
 
 export interface AvoidanceZone {

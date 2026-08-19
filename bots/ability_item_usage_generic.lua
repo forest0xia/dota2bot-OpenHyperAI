@@ -1369,6 +1369,10 @@ X.ConsiderItemDesire["item_black_king_bar"] = function( hItem )
 		and ( J.IsGoingOnSomeone( bot ) or J.IsRetreating( bot ) )
 	then
 		local nearEnemyCount = J.GetEnemyCount( bot, 600 )
+		if J.ShouldPreActivateBKB( bot ) then
+			sCastMotive = '预防性BKB'
+			return BOT_ACTION_DESIRE_HIGH, bot, sCastType, sCastMotive
+		end
 		if bot:IsRooted()
 		then
 			sCastMotive = '解缠绕'

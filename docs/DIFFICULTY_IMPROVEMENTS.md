@@ -131,7 +131,7 @@ Keep it gated behind a gold threshold (e.g. don't buy sentries if core items are
 
 ---
 
-## 7. Active BKB / Linken timing improvement
+## 7. Active BKB / Linken timing improvement ✓ DONE
 **Risk: Medium** | **Impact: High**
 
 Bots currently activate BKB reactively (after a spell hits them). Better behavior: track
@@ -152,7 +152,7 @@ bot's decision doesn't cascade. Well isolated.
 
 ---
 
-## 8. Kill commitment coordination ("we have them stunned — finish it")
+## 8. Kill commitment coordination ("we have them stunned — finish it") ✓ DONE
 **Risk: Medium-High** | **Impact: High**
 
 Currently each bot independently evaluates whether to chase a kill. This means bots
@@ -235,7 +235,7 @@ fight/farm/push behaviors after integration.
 | 4 | Enemy ult cooldown → push window | utils.lua, aba_push.ts | Low | High | ✓ |
 | 5 | Observer wards on enemy territory | mode_ward_generic.lua | Low-Med | High | ✓ |
 | 6 | Sentry wards before HG push | aba_ward_utility.lua, item_purchase_generic.lua | Low-Med | Medium | |
-| 7 | BKB/Linken pre-activation | aba_skill.lua, ability_item_usage_generic.lua | Medium | High | |
-| 8 | Kill commitment coordination | jmz_func.lua (GameStates) | Med-High | High | |
+| 7 | BKB/Linken pre-activation | jmz_func.lua, ability_item_usage_generic.lua | Medium | High | ✓ |
+| 8 | Kill commitment coordination | jmz_func.lua, mode_attack_generic.lua | Med-High | High | ✓ |
 | 9 | Split push + TP threat | jmz_func.lua (new coordinator) | High | High | |
 | 10 | Coordinated smoke ganks | new aba_smoke_gank.lua + registration | Very High | Very High | |

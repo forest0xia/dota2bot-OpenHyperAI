@@ -868,7 +868,7 @@ ____exports.ImportantSpells = {
 }
 ____exports.ImportantItems = {"item_black_king_bar", "item_refresher"}
 avoidanceZones = {}
-____exports.GameStates = {defendPings = nil, recentDefendTime = -200, cachedVars = nil, twinGates = {}}
+____exports.GameStates = {defendPings = nil, recentDefendTime = -200, cachedVars = nil, twinGates = {}, killTarget = nil}
 ____exports.LoneDruid = {}
 ____exports.FrameProcessTime = 0.06
 ____exports.EstimatedEnemyRoles = {npc_dota_hero_any = {lane = Lane.Mid, role = 2}}
