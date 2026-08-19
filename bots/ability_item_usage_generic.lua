@@ -579,6 +579,17 @@ local function BuybackUsageComplement()
 		return
 	end
 
+	-- Buyback when enemies are sieging our base and allies are outnumbered
+	if (J.IsMidGame() or J.IsLateGame()) and ancient ~= nil then
+		local nEnemiesInBase = J.GetEnemiesAroundLoc(ancient:GetLocation(), 3000)
+		local nAliveAllies   = J.GetNumOfAliveHeroes(false)
+		if nEnemiesInBase > 0 and nAliveAllies <= 2 and nRemainingRespawnTime > 45 then
+			J.Role['lastbbtime'] = DotaTime()
+			bot:ActionImmediate_Buyback()
+			return
+		end
+	end
+
 	if bot:GetLevel() > 24
 		and nRemainingRespawnTime > 80
 	then

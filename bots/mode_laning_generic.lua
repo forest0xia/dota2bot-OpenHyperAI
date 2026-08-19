@@ -27,6 +27,11 @@ local numberAnnouncePrinted      = 1
 local announcementGapSeconds     = 6
 local isChangePosMessageDone     = false
 
+-- Level power spike tracking
+local nSpikeLevels   = { [2] = true, [3] = true, [6] = true }
+local nSpikeLastLevel = 0
+local nSpikeStartTime = 0
+
 if Utils.BuggyHeroesDueToValveTooLazy[botName] then local_mode_laning_generic = dofile( GetScriptDirectory().."/FunLib/override_generic/mode_laning_generic" ) end
 
 function GetDesire()
@@ -110,6 +115,19 @@ function GetDesire()
 
 	if GetGameMode() == GAMEMODE_1V1MID or GetGameMode() == GAMEMODE_MO then
 		return 1
+	end
+
+	-- Level power spike: boost laning aggression for 45s at levels 2, 3, 6
+	if nSpikeLevels[botLV] and botLV ~= nSpikeLastLevel then
+		nSpikeLastLevel = botLV
+		nSpikeStartTime = DotaTime()
+	end
+	if nSpikeStartTime > 0
+		and DotaTime() - nSpikeStartTime <= 45
+		and #nInRangeEnemy > 0
+		and J.GetHP(bot) > 0.4
+	then
+		return 0.6
 	end
 
 	if currentTime <= 10 then return 0.268 end
