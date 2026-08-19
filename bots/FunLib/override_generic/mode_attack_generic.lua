@@ -113,8 +113,8 @@ function Generic.GetDesire()
 				end
 			end
 
-			-- Laning: allow hero attacks if not recently damaged and numbers ok
-			if J.IsInLaningPhase() and not bot:WasRecentlyDamagedByAnyHero(3.0) and not bot:WasRecentlyDamagedByCreep(2.0) and #nInRangeAlly >= #nInRangeEnemy then
+			-- Laning: allow hero attacks if not recently damaged, numbers ok, and healthy enough
+			if J.IsInLaningPhase() and not bot:WasRecentlyDamagedByAnyHero(3.0) and not bot:WasRecentlyDamagedByCreep(2.0) and #nInRangeAlly >= #nInRangeEnemy and botHP >= 0.55 then
 				if not J.IsRetreating(bot) and GetUnitToUnitDistance(bot, enemyHero) < botAttackRange then
 					return GetActualDesire(BOT_MODE_DESIRE_VERYHIGH)
 				end

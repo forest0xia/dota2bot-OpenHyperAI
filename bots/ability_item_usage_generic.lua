@@ -1781,7 +1781,7 @@ X.ConsiderItemDesire["item_bottle"] = function( hItem )
 			return BOT_ACTION_DESIRE_HIGH, hEffectTarget, sCastType, sCastMotive
 		end
 
-		if nLostHealth > 500 and J.GetHP( bot ) < 0.5
+		if nLostHealth > math.min(500, math.floor(bot:OriginalGetMaxHealth() * 0.2)) and J.GetHP( bot ) < 0.8
 		then
 			hEffectTarget = bot
 			sCastMotive = "只补血"
@@ -4662,7 +4662,11 @@ X.ConsiderItemDesire["item_tango_single"] = function( hItem )
 	local sCastType = 'tree'
 	local hEffectTarget = nil
 	local sCastMotive = nil
-	local nUseTangoLostHealth = ( hItem:GetName() == 'item_tango' ) and 200 or 160
+	-- scale trigger with max HP so bots heal at ~85% in early game, not just after a fixed 200 HP loss
+	local nUseTangoLostHealth = math.min(
+		( hItem:GetName() == 'item_tango' ) and 200 or 160,
+		math.floor( bot:OriginalGetMaxHealth() * 0.15 )
+	)
 	local nLostHealth = bot:OriginalGetMaxHealth() - bot:OriginalGetHealth()
 
 	-- 解开先知的树框。bug: 因为先知的树不是正常的树。GetNearbyTrees 不会返回先知的树，此方式行不通

@@ -770,7 +770,7 @@ function ItemPurchaseThink()
 	-- Init Healing Items in Lane; works for now
 	if J.IsInLaningPhase()
 	then
-		if botLevel < 6
+		if botLevel < 12
 		and bot:IsAlive()
 		and botCourierValue == 0
 		and bot:FindItemSlot('item_flask') < 0
@@ -785,7 +785,7 @@ function ItemPurchaseThink()
 		and not bot:HasModifier('modifier_warlock_shadow_word')
 		and not IsThereHealingInStash(bot)
 		and Item.GetEmptyInventoryAmount(bot) >= 1
-		and J.GetHP(bot) < 0.5
+		and J.GetHP(bot) < 0.85
 		then
 			local partner = J.GetLanePartner(bot)
 

@@ -385,12 +385,16 @@ function GetDesireHelper()
     end
 
     if bot:DistanceFromFountain() > 4000 then
-        if (nEnemyNearbyCount == 0 and unseenCount == 0) and #nEnemyTowers == 0 then nDesire = nDesire - 0.25 end
+        -- only reduce desire when reasonably healthy; low-HP bots should keep retreating to heal
+        if (nEnemyNearbyCount == 0 and unseenCount == 0) and #nEnemyTowers == 0 and botHP >= 0.5 then nDesire = nDesire - 0.25 end
     end
 
     if J.IsInLaningPhase() then
+        -- don't return to lane until 75% HP; below that keep retreating to heal up
+        local bActivelyHealing = bot:HasModifier('modifier_tango_heal') or bot:HasModifier('modifier_flask_healing') or bot:HasModifier('modifier_filler_heal')
+        local nReengageHP = bActivelyHealing and 0.6 or 0.75
         if not bot:WasRecentlyDamagedByAnyHero(3.0)
-            and botHP > 0.25
+            and botHP > nReengageHP
             and bot:DistanceFromFountain() > 4000
             and (#J.GetHeroesTargetingUnit(nEnemyHeroes, bot) == 0)
         then
