@@ -6739,5 +6739,46 @@ function J.GetUltLoc(bot, target, nManaCost, nCastRange, s)
 	return dest
 end
 
+-- Known dangerous enemy AoE zones: thinker modifier (on the placed entity), effect radius, and
+-- the debuff applied to units inside (used as a fallback when the thinker entity is not visible).
+local DANGER_AOE_ZONES = {
+    { thinker = 'modifier_sniper_shrapnel_thinker',   radius = 500, debuff = 'modifier_sniper_shrapnel_slow' },
+    { thinker = 'modifier_riki_smoke_screen_thinker', radius = 425, debuff = 'modifier_riki_smoke_screen' },
+    -- Upheaval: thinker modifier uncertain; scan UNIT_LIST_ALL and debuff fallback both use the same name
+    { thinker = 'modifier_warlock_upheaval',           radius = 650, debuff = 'modifier_warlock_upheaval' },
+    -- Macropyre moves slowly; no confirmed thinker name, rely on debuff
+    { debuff = 'modifier_jakiro_macropyre_burn', radius = 300 },
+}
+
+-- Returns true if the given location overlaps a known dangerous enemy AoE zone.
+-- Primary: scan UNIT_LIST_ALL for thinker entities carrying a known thinker modifier.
+-- Fallback: check allied units near the location for the zone's debuff modifier.
+function J.IsLocationInDangerousAoe(loc)
+    for _, unit in pairs(GetUnitList(UNIT_LIST_ALL)) do
+        if not unit:IsNull() and unit:IsAlive() and unit:GetTeam() ~= GetTeam() then
+            for _, spec in ipairs(DANGER_AOE_ZONES) do
+                if spec.thinker
+                   and unit:HasModifier(spec.thinker)
+                   and GetUnitToLocationDistance(unit, loc) < spec.radius
+                then
+                    return true
+                end
+            end
+        end
+    end
+    for _, unit in pairs(GetUnitList(UNIT_LIST_ALLIES)) do
+        if J.IsValid(unit) then
+            for _, spec in ipairs(DANGER_AOE_ZONES) do
+                if spec.debuff
+                   and unit:HasModifier(spec.debuff)
+                   and GetUnitToLocationDistance(unit, loc) < spec.radius
+                then
+                    return true
+                end
+            end
+        end
+    end
+    return false
+end
 
 return J

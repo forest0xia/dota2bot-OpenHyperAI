@@ -140,7 +140,7 @@ function GetDesireHelper()
         return RemapValClamped(J.GetHP(bot), 0.1, 0.8, BOT_MODE_DESIRE_NONE, nDesire)
     end
 
-    if J.IsInLaningPhase() and bot:HasModifier('modifier_warlock_upheaval') then
+    if J.IsLocationInDangerousAoe(bot:GetLocation()) then
         IsAvoidingAbilityZone = true
         return BOT_ACTION_DESIRE_VERYHIGH + 0.1
     end

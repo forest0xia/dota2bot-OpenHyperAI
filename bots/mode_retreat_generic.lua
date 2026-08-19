@@ -169,6 +169,12 @@ function GetDesireHelper()
     local bWeAreStronger = J.WeAreStronger(bot, 1600)
     local bTeamFight     = J.IsInTeamFight(bot, 1200)
 
+    -- Standing in a dangerous enemy AoE (shrapnel, upheaval, smoke screen, macropyre, etc.)
+    if J.IsLocationInDangerousAoe(botLocation) then
+        if #nEnemyHeroes >= 1 then return BOT_MODE_DESIRE_HIGH end
+        if botHP < 0.6 then return BOT_MODE_DESIRE_MODERATE end
+    end
+
     if bTeamFight and botName == "npc_dota_hero_skeleton_king"
         and bot:GetLevel() >= 6
     then
