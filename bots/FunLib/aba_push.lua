@@ -421,6 +421,10 @@ function ____exports.WhichLaneToPush(_bot, _lane)
     topLaneScore = presence_adjust(topLaneScore, vTop)
     midLaneScore = presence_adjust(midLaneScore, vMid)
     botLaneScore = presence_adjust(botLaneScore, vBot)
+    -- Bias toward mid in mid/late game — the primary win condition lane
+    if not gameState.isEarlyGame then
+        midLaneScore = midLaneScore * 0.7
+    end
     if topLaneScore < midLaneScore and topLaneScore < botLaneScore then
         return Lane.Top
     end

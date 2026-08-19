@@ -3,7 +3,7 @@ local Utils = require( GetScriptDirectory()..'/FunLib/utils' )
 
 local Dota2Teams = { }
 
-Dota2Teams.defaultPostfix = 'OHA' -- Open Hyper AI.
+Dota2Teams.defaultPostfix = 'EHA' -- Open Hyper AI.
 Dota2Teams.maxTeamSize = 12 -- e.g. for 12 v 12
 
 -- List should have a least 4 teams for better performance.
@@ -40,61 +40,6 @@ local defaultTeams = {
         "Inferno", "Darkfire", "Shadow", "Nightmare", "Doom", "Soul", "Death", "Light", "Seraph", "Radiant", "Divine", "Angel"
     }}
 }
-
--- 古代神话故事主题 Teams
-local ancientChineseStoryTeams = {
-    -- 阴司鬼神
-    {name = "阴司", players = {
-        "钟馗", "阎罗", "孟婆", "判官", "黑无常", "白无常", "牛头", "马面"
-    }},
-
-    -- 天宫神将
-    {name = "天宫", players = {
-        "哪吒", "杨戬", "雷震", "李靖", "巨灵", "托塔", "哮天", "哪父"
-    }},
-
-    -- 妖魔鬼怪
-    {name = "妖魔", players = {
-        "饕餮", "穷奇", "梼杌", "混沌", "九婴", "无支祁", "相柳", "猰貐"
-    }},
-
-    -- 海川水灵
-    {name = "水神", players = {
-        "河伯", "海若", "风伯", "雨师", "水德", "洛神", "共工", "玄冥"
-    }},
-
-    -- 烈火雷霆
-    {name = "火雷", players = {
-        "祝融", "火神", "雷公", "电母", "赤焰", "炎帝", "火德", "金乌"
-    }},
-
-    -- 英魂战将
-    {name = "英魂", players = {
-        "刑天", "后羿", "夸父", "精卫", "黄帝", "炎帝", "神农", "蚩尤"
-    }},
-    -- 四象 Four Symbols
-    {name = "灵兽", players = {"青龙", "白虎", "朱雀", "玄武", "腾蛇"}},
-    -- 封神演义 Investiture of the Gods
-    {name = "封神", players = {"姜子牙", "哪吒", "杨戬", "雷震子", "托塔天王"}},
-    -- 三十六天罡 Heavenly Stars (sample)
-    {name = "天罡", players = {"天勇", "天雄", "天猛", "天伤", "天英"}},
-    -- 七十二地煞 Earthly Stars (sample)
-    {name = "地煞", players = {"地勇", "地煞", "地俊", "地雄", "地恶"}},
-    -- 山海经 Mythical figures
-    {name = "山海", players = {"夸父", "共工", "精卫", "女娲", "伏羲"}},
-    -- 上古异兽 Mythic Beasts
-    {name = "异兽", players = {"饕餮", "烛龙", "穷奇", "梼杌", "狻猊"}},
-    -- 风雷雨电 Weather Deities
-    {name = "天象", players = {"雷公", "电母", "风伯", "雨师", "云华"}},
-    -- 异世 Extra Pool (20 mythic characters)
-    {name = "上古", players = {
-        "蚩尤", "黄帝", "炎帝", "盘古", "女娲", "伏羲", "神农", "祝融", "共工", "刑天",
-        "夸父", "后羿", "嫦娥", "西王母", "东皇太一", "玄冥", "羲和", "强良", "句芒", "应龙"
-    }}
-}
-
--- 随机使用古代神话故事主题 Teams
-defaultTeams = RandomInt(1, 2) >= 2 and ancientChineseStoryTeams or defaultTeams
 
 local function generateTeam(overrides)
     local playerList = { }

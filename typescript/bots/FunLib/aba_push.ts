@@ -710,6 +710,11 @@ export function WhichLaneToPush(_bot: Unit, _lane: Lane): Lane {
     midLaneScore = presence_adjust(midLaneScore, vMid);
     botLaneScore = presence_adjust(botLaneScore, vBot);
 
+    // Bias toward mid in mid/late game — the primary win condition lane
+    if (!gameState.isEarlyGame) {
+        midLaneScore *= 0.7;
+    }
+
     if (topLaneScore < midLaneScore && topLaneScore < botLaneScore) return Lane.Top;
     if (midLaneScore < topLaneScore && midLaneScore < botLaneScore) return Lane.Mid;
     if (botLaneScore < topLaneScore && botLaneScore < midLaneScore) return Lane.Bot;

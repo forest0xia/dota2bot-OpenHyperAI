@@ -332,23 +332,12 @@ function Think()
 			return
 		end
 
-		if GetTeam() == TEAM_RADIANT then
-			if botAssignedLane == LANE_BOT then
-				bot:Action_MoveToLocation(GetRuneSpawnLocation(RUNE_BOUNTY_2) + RandomVector(50))
-				return
-			else
-				bot:Action_MoveToLocation(GetRuneSpawnLocation(RUNE_POWERUP_1) + RandomVector(50))
-				return
-			end
-		else
-			if botAssignedLane == LANE_TOP then
-				bot:Action_MoveToLocation(GetRuneSpawnLocation(RUNE_BOUNTY_1) + RandomVector(50))
-				return
-			else
-				bot:Action_MoveToLocation(GetRuneSpawnLocation(RUNE_POWERUP_2) + RandomVector(50))
-				return
-			end
-		end
+		-- All bots chase the nearest bounty rune at game start
+		local dist1 = GetUnitToLocationDistance(bot, GetRuneSpawnLocation(RUNE_BOUNTY_1))
+		local dist2 = GetUnitToLocationDistance(bot, GetRuneSpawnLocation(RUNE_BOUNTY_2))
+		local targetBounty = (dist1 < dist2) and RUNE_BOUNTY_1 or RUNE_BOUNTY_2
+		bot:Action_MoveToLocation(GetRuneSpawnLocation(targetBounty) + RandomVector(50))
+		return
 	end
 
 	-- Post-horn rune pickup (reference pattern using bot.rune state)

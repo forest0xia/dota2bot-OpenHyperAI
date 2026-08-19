@@ -235,7 +235,12 @@ function X.GetDesire(bot__)
                 end
 
                 if string.find(unitName, 'lone_druid_bear')
-                or string.find(unitName, 'npc_dota_brewmaster')
+                then
+                    -- Dangerous with no kill reward; never engage
+                    return BOT_ACTION_DESIRE_NONE
+                end
+
+                if string.find(unitName, 'npc_dota_brewmaster')
                 then
                     if #tAllyHeroes >= 2 and #tAllyHeroes_all > #tEnemyHeroes_all
                     then
@@ -339,31 +344,8 @@ function X.GetDesire(bot__)
 
                 if string.find(unitName, 'warlock_golem')
                 then
-                    botAttackDamage = X.GetUnitAttackDamageWithinTime(bot, 5)
-                    local unitAttackDamage = X.GetUnitAttackDamageWithinTime(unit, 5)
-
-                    if not J.IsInTeamFight(bot, 1600)
-                    and #tAllyHeroes_all >= #tEnemyHeroes_all
-                    then
-                        local canKillGolem = botAttackDamage > unitHP and unitAttackDamage * 1.2 < botHP
-
-                        if J.IsInRange(bot, unit, botAttackRange + 300)
-                        then
-                            if not X.IsUnitAfterUnit(unit, bot)
-                            or (X.IsUnitAfterUnit(unit, bot) and canKillGolem)
-                            then
-                                return 0.35
-                            else
-                                return 0.25
-                            end
-                        else
-                            if not X.IsUnitAfterUnit(unit, bot)
-                            or (X.IsUnitAfterUnit(unit, bot) and canKillGolem)
-                            then
-                                return 0.25
-                            end
-                        end
-                    end
+                    -- Dangerous with no kill reward; never engage
+                    return BOT_ACTION_DESIRE_NONE
                 end
             end
 		end
