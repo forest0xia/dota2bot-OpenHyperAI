@@ -193,6 +193,14 @@ function GetDesireHelper()
 		end
     end
 
+    -- Neutral camp stacking: give a free support a reason to peel off and stack a
+    -- nearby own-jungle camp at the minute boundary. Placed after the safety gates
+    -- above so it only fires when the support is not needed for defense/roshan/etc.
+    local nStackDesire = J.Site.GetStackDesire(bot)
+    if nStackDesire > 0 and J.Site.GetStackableCamp(bot) ~= nil then
+        return nStackDesire
+    end
+
     local nAllyHeroes_attacking = {}
 	for i = 1, #GetTeamPlayers( GetTeam() ) do
 		local member = GetTeamMember(i)
@@ -529,6 +537,28 @@ function Think()
 			    local mLoc = J.GetLocationTowardDistanceLocation(bot,RB,-700);
 				bot:Action_MoveToLocation(mLoc);
 				return;
+			end
+		end
+	end
+
+	-- Neutral camp stacking execution: approach the camp, aggro the neutrals, then
+	-- at the end of the minute drag them out of the spawn box toward our ancient so
+	-- a fresh camp spawns stacked on top. sec is (game seconds % 60), set above.
+	if J.Site.GetStackDesire(bot) > 0 then
+		local stack = J.Site.GetStackableCamp(bot)
+		if stack ~= nil then
+			if sec >= 57 then
+				bot:Action_MoveToLocation(stack.pullLoc)
+				return
+			end
+			if GetUnitToLocationDistance(bot, stack.loc) > 250 then
+				bot:Action_MoveToLocation(stack.loc)
+				return
+			end
+			local nStackNeutrals = bot:GetNearbyNeutralCreeps(600)
+			if nStackNeutrals ~= nil and #nStackNeutrals > 0 and J.IsValid(nStackNeutrals[1]) then
+				bot:Action_AttackUnit(nStackNeutrals[1], true)
+				return
 			end
 		end
 	end

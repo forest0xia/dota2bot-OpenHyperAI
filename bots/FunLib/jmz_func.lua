@@ -3585,32 +3585,61 @@ end
 -- NOTE: Each bot runs in its own Lua sandbox, so module-level state is per-bot only.
 -- Cross-bot coordination uses Valve API (GetAttackTarget, GetActiveMode) not shared Lua state.
 
+-- Hero-specific target priority multipliers (folded in from the attack-mode override).
+-- >1 = focus harder (squishy/high-threat backline), <1 = deprioritize (tanky/slippery).
+-- Conditional heroes (Bristleback facing, Enchantress ult) are handled in ScoreEnemyTarget.
+J.HeroTargetPriority = {
+	['npc_dota_hero_sniper']        = 4,
+	['npc_dota_hero_lina']          = 3,
+	['npc_dota_hero_nevermore']     = 3,
+	['npc_dota_hero_jakiro']        = 2.5,
+	['npc_dota_hero_drow_ranger']   = 2,
+	['npc_dota_hero_crystal_maiden'] = 2,
+}
+
 -- Score an enemy for target prioritization. Higher score = better target.
 -- Uses Valve API for cross-bot coordination (ally:GetAttackTarget()).
 -- Per-bot state (chase fatigue) stored on bot handle to survive across ticks.
+-- Sentinel returned for enemies that must never be selected as a target.
+-- Kept below GetBestTeamTarget's initial bestScore so an all-invalid enemy list
+-- correctly yields nil (falling through to the weakest-unit fallback).
+J.SCORE_INVALID_TARGET = -1000
 function J.ScoreEnemyTarget(bot, enemy, alliesNearby)
 	if not J.IsValidHero(enemy) or not J.CanBeAttacked(enemy) or J.IsSuspiciousIllusion(enemy) then
-		return -1
+		return J.SCORE_INVALID_TARGET
 	end
-	if J.CannotBeKilled(bot, enemy) then return -1 end
-	if J.HasForbiddenModifier(enemy) then return -1 end
+	if J.CannotBeKilled(bot, enemy) then return J.SCORE_INVALID_TARGET end
+	if J.HasForbiddenModifier(enemy) then return J.SCORE_INVALID_TARGET end
 
-	-- Skip enemies in dangerous defensive states
+	-- Skip enemies in dangerous defensive / untargetable-value states
 	if enemy:HasModifier('modifier_abaddon_borrowed_time')
 	or enemy:HasModifier('modifier_item_aeon_disk_buff')
 	or enemy:HasModifier('modifier_ursa_enrage')
 	or enemy:HasModifier('modifier_troll_warlord_battle_trance')
 	or enemy:HasModifier('modifier_winter_wyvern_cold_embrace')
+	or enemy:HasModifier('modifier_necrolyte_reapers_scythe')
+	or enemy:HasModifier('modifier_skeleton_king_reincarnation_scepter_active')
 	then
-		return -1
+		return J.SCORE_INVALID_TARGET
 	end
 
 	local score = 0
 	local dist = GetUnitToUnitDistance(bot, enemy)
 	local enemyHP = J.GetHP(enemy)
+	local enemyName = enemy:GetUnitName()
 
-	-- 1. Killability: low HP enemies are highest priority
-	score = score + (1 - enemyHP) * 50
+	-- Hero priority multiplier (with conditional overrides)
+	local prio = J.HeroTargetPriority[enemyName] or 1
+	if enemyName == 'npc_dota_hero_bristleback' then
+		prio = enemy:IsFacingLocation(bot:GetLocation(), 90) and 1 or 0.5
+	elseif enemyName == 'npc_dota_hero_enchantress' and enemy:GetLevel() >= 6 then
+		prio = 0.5
+	end
+
+	-- 1. Killability: low HP enemies are highest priority (scaled by hero priority)
+	score = score + (1 - enemyHP) * 50 * prio
+	-- baseline priority so high-value targets are still preferred at full HP
+	score = score + (prio - 1) * 8
 
 	-- 2. Offensive threat: dangerous enemies should be dealt with
 	local offPower = enemy:GetRawOffensivePower()
@@ -3639,6 +3668,14 @@ function J.ScoreEnemyTarget(bot, enemy, alliesNearby)
 		score = score + 5  -- slight bonus for removing core damage
 	else
 		score = score + 8  -- supports are easier kills, remove their disables
+	end
+
+	-- 5b. Tower hugging: deprioritize enemies sitting under their tower in early/mid game
+	if J.IsEarlyGame() or J.IsMidGame() then
+		local nEnemyTowers = bot:GetNearbyTowers(1600, true)
+		if J.IsValidBuilding(nEnemyTowers[1]) and J.IsInRange(enemy, nEnemyTowers[1], 800) then
+			score = score - 15
+		end
 	end
 
 	-- 6. Chase fatigue: per-bot tracking stored on bot handle
@@ -3677,7 +3714,9 @@ function J.GetBestTeamTarget(bot, enemyHeroes, allyHeroes)
 	if not enemyHeroes or #enemyHeroes == 0 then return nil end
 
 	local bestTarget = nil
-	local bestScore = -999
+	-- Start at the invalid sentinel so untargetable enemies (which score the sentinel)
+	-- are never selected; only a strictly-better real score wins.
+	local bestScore = J.SCORE_INVALID_TARGET
 
 	for _, enemy in pairs(enemyHeroes) do
 		local score = J.ScoreEnemyTarget(bot, enemy, allyHeroes)

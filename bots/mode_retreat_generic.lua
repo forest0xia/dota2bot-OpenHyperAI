@@ -284,6 +284,29 @@ function GetDesireHelper()
         end
     end
 
+    -- Anti-juke: break off a solo over-chase we can't finish.
+    -- Reuses the per-bot chase-fatigue tracking populated by the focus-fire system
+    -- (J.GetBestTeamTarget). Only fires when we're not in a team fight, not clearly
+    -- stronger, the target has been chased 5s+, is still above half HP, has slipped
+    -- past 900 units, and no ally is near it (i.e. we alone are tunnel-visioning it).
+    if not bTeamFight
+        and not bWeAreStronger
+        and bot._chaseFatigue ~= nil
+        and J.IsValidHero(botTarget)
+    then
+        local fatigue = bot._chaseFatigue[botTarget:GetPlayerID()]
+        if fatigue ~= nil
+            and (DotaTime() - fatigue.startTime) > 5.0
+            and J.GetHP(botTarget) > 0.5
+            and GetUnitToUnitDistance(bot, botTarget) > 900
+        then
+            local nAlliesNearTarget = J.GetAlliesNearLoc(botTarget:GetLocation(), 600)
+            if #nAlliesNearTarget == 0 then
+                return BOT_MODE_DESIRE_HIGH
+            end
+        end
+    end
+
     -- should directly run
     if bot:IsAlive() then
         if fCurrentRunTime ~= 0 and DotaTime() < fCurrentRunTime + fShouldRunTime then

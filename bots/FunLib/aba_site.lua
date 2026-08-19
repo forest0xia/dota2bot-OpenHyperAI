@@ -1538,4 +1538,57 @@ ____exports.ConsiderIsTimeToFarm.npc_dota_hero_ringmaster = function()
     end
     return false
 end
+-- Neutral camp stacking: a designated support pulls a nearby own-jungle camp out
+-- of its spawn box just before the minute mark so a fresh camp spawns stacked on
+-- top. Box-geometry-free: we drag the aggroed creeps toward our own ancient, a
+-- safe direction that reliably clears the small / medium / large camps.
+____exports.GetStackDesire = function(bot)
+    if not bot:IsAlive() then
+        return 0
+    end
+    local pos = ____exports.GetPosition(bot)
+    if pos ~= 4 and pos ~= 5 then
+        return 0
+    end
+    if DotaTime() < 90 then
+        return 0
+    end
+    local sec = DotaTime() % 60
+    if sec < 48 then
+        return 0
+    end
+    if bot:GetHealth() / bot:GetMaxHealth() < 0.5 then
+        return 0
+    end
+    local enemies = bot:GetNearbyHeroes(1400, true, BotMode.None)
+    if #enemies > 0 then
+        return 0
+    end
+    return BotModeDesire.Moderate
+end
+____exports.GetStackableCamp = function(bot)
+    local camps = GetNeutralSpawners()
+    local ownAncient = GetAncient(GetTeam())
+    if not ownAncient then
+        return nil
+    end
+    local ownAncientLoc = ownAncient:GetLocation()
+    local bestLoc = nil
+    local bestDist = 2000
+    for ____, aCamp in ipairs(__TS__ObjectValues(camps)) do
+        local camp = aCamp
+        if camp.team == GetTeam() and camp.type ~= "ancient" then
+            local dist = GetUnitToLocationDistance(bot, camp.location)
+            if dist < bestDist and ____exports.IsTheClosestOne(bot, camp.location) then
+                bestDist = dist
+                bestLoc = camp.location
+            end
+        end
+    end
+    if bestLoc == nil then
+        return nil
+    end
+    local pullLoc = GetOffsetLocationTowardsTargetLocation(bestLoc, ownAncientLoc, 450)
+    return {loc = bestLoc, pullLoc = pullLoc}
+end
 return ____exports

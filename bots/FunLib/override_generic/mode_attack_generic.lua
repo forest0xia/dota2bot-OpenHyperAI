@@ -294,59 +294,11 @@ function Generic.Think()
 		end
 	end
 
-	-- Target selection with hero-specific multipliers
-	local __target = nil
-	local targetScore = 0
-	for _, enemy in pairs(nEnemyHeroes) do
-		if J.IsValidHero(enemy)
-		and J.IsInRange(bot, enemy, 1200)
-		and not J.IsSuspiciousIllusion(enemy)
-		and not enemy:HasModifier('modifier_abaddon_borrowed_time')
-		and not enemy:HasModifier('modifier_necrolyte_reapers_scythe')
-		and not enemy:HasModifier('modifier_skeleton_king_reincarnation_scepter_active')
-		and not enemy:HasModifier('modifier_troll_warlord_battle_trance')
-		and not enemy:HasModifier('modifier_ursa_enrage')
-		and not enemy:HasModifier('modifier_winter_wyvern_cold_embrace')
-		and not enemy:HasModifier('modifier_item_blade_mail_reflect')
-		and not enemy:HasModifier('modifier_item_aeon_disk_buff')
-		and J.CanBeAttacked(enemy)
-		then
-			local enemyName = enemy:GetUnitName()
-			local mul = 1
-
-			if enemyName == 'npc_dota_hero_sniper' then mul = 4
-			elseif enemyName == 'npc_dota_hero_drow_ranger' then mul = 2
-			elseif enemyName == 'npc_dota_hero_crystal_maiden' then mul = 2
-			elseif enemyName == 'npc_dota_hero_jakiro' then mul = 2.5
-			elseif enemyName == 'npc_dota_hero_lina' then mul = 3
-			elseif enemyName == 'npc_dota_hero_nevermore' then mul = 3
-			elseif enemyName == 'npc_dota_hero_bristleback' and not enemy:IsFacingLocation(botLocation, 90) then mul = 0.5
-			elseif enemyName == 'npc_dota_hero_enchantress' and enemy:GetLevel() >= 6 then mul = 0.5
-			end
-
-			if enemyName ~= 'npc_dota_hero_bristleback' then
-				if J.IsCore(enemy) then mul = mul * 1.5 else mul = mul * 0.5 end
-			end
-
-			if (J.IsEarlyGame() or J.IsMidGame()) and J.IsValidBuilding(nEnemyTowers[1]) and J.IsInRange(enemy, nEnemyTowers[1], 800) then
-				mul = mul * 0.5
-			end
-
-			local nAllyHeroes_Attacking = J.GetSpecialModeAllies(enemy, 1200, BOT_MODE_ATTACK)
-			local nInRangeAlly = J.GetAlliesNearLoc(enemy:GetLocation(), 900)
-			local nInRangeEnemy = J.GetEnemiesNearLoc(enemy:GetLocation(), 900)
-
-			local enemyScore = (math.min(1, bot:GetAttackRange() / GetUnitToUnitDistance(bot, enemy)))
-				* ((1 - J.GetHP(enemy)) * J.GetTotalEstimatedDamageToTarget(nAllyHeroes_Attacking, enemy, 5.0))
-				* mul
-				* (math.exp(RemapValClamped(#nInRangeAlly - #nInRangeEnemy, -4, 4, 0, 1.6)) - 1)
-
-			if enemyScore > targetScore then
-				targetScore = enemyScore
-				__target = enemy
-			end
-		end
-	end
+	-- Coordinated focus-fire target selection. All bots share the same scoring
+	-- algorithm (J.ScoreEnemyTarget) and read ally attack targets via the Valve API,
+	-- so they converge on the same enemy without any shared Lua state.
+	local tAllyHeroes = bot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
+	local __target = J.GetBestTeamTarget(bot, nEnemyHeroes, tAllyHeroes)
 
 	if __target == nil then
 		__target = J.GetAttackableWeakestUnit(bot, 1200, true, true)

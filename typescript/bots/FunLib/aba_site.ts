@@ -1882,3 +1882,69 @@ ConsiderIsTimeToFarm["npc_dota_hero_ringmaster"] = function () {
 
     return false;
 };
+
+// Neutral camp stacking: a designated support pulls a nearby own-jungle camp out
+// of its spawn box just before the minute mark so a fresh camp spawns stacked on
+// top. Box-geometry-free: we drag the aggroed creeps toward our own ancient, a
+// safe direction that reliably clears the small / medium / large camps.
+export const GetStackDesire = function (bot: Unit): number {
+    if (!bot.IsAlive()) {
+        return 0;
+    }
+
+    const pos = GetPosition(bot);
+    if (pos !== 4 && pos !== 5) {
+        return 0; // only hard/soft supports stack
+    }
+
+    if (DotaTime() < 90) {
+        return 0; // not before ~1:30
+    }
+
+    const sec = DotaTime() % 60;
+    if (sec < 48) {
+        return 0; // only within the pre-minute stacking window
+    }
+
+    if (bot.GetHealth() / bot.GetMaxHealth() < 0.5) {
+        return 0;
+    }
+
+    const enemies = bot.GetNearbyHeroes(1400, true, BotMode.None);
+    if (enemies.length > 0) {
+        return 0; // don't stack into danger
+    }
+
+    return BotModeDesire.Moderate;
+};
+
+export const GetStackableCamp = function (bot: Unit): { loc: Vector; pullLoc: Vector } | undefined {
+    const camps = GetNeutralSpawners();
+    const ownAncient = GetAncient(GetTeam());
+    if (!ownAncient) {
+        return undefined;
+    }
+    const ownAncientLoc = ownAncient.GetLocation();
+
+    let bestLoc: Vector | undefined = undefined;
+    let bestDist = 2000; // must be close enough to reach before the pull
+
+    for (const aCamp of Object.values(camps)) {
+        const camp = aCamp as any;
+        if (camp.team === GetTeam() && camp.type !== "ancient") {
+            const dist = GetUnitToLocationDistance(bot, camp.location);
+            if (dist < bestDist && IsTheClosestOne(bot, camp.location)) {
+                bestDist = dist;
+                bestLoc = camp.location;
+            }
+        }
+    }
+
+    if (bestLoc === undefined) {
+        return undefined;
+    }
+
+    // Drag the aggroed creeps toward our own ancient to clear the spawn box.
+    const pullLoc = GetOffsetLocationTowardsTargetLocation(bestLoc, ownAncientLoc, 450);
+    return { loc: bestLoc, pullLoc: pullLoc };
+};

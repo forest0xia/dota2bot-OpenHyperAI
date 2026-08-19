@@ -372,8 +372,85 @@ function X.GetGameStartWardSpots()
 	return GetTeam() == TEAM_RADIANT and WardSpotRadiant or WardSpotDire
 end
 
+-- Assess whether our team is winning, losing, or even, to steer warding between
+-- aggressive (enemy territory) and defensive (our territory). Signals: enemy heroes
+-- roaming our side, lane-push state, and critical-tower control. Cached ~2s per bot.
+function X.GetTeamAdvantageState(bot)
+	if bot._wardAdvState ~= nil and DotaTime() < (bot._wardAdvStateTime or 0) + 2.0 then
+		return bot._wardAdvState
+	end
+
+	local allyTeam = GetTeam()
+	local enemyTeam = GetOpposingTeam()
+
+	-- 1) Enemy heroes roaming deep on our side -> immediate defensive posture.
+	local enemyInOurArea = 0
+	for _, e in pairs(GetUnitList(UNIT_LIST_ENEMY_HEROES)) do
+		if J.IsValidHero(e) and not J.IsSuspiciousIllusion(e) and e:CanBeSeen() and J.IsInAllyArea(e) then
+			enemyInOurArea = enemyInOurArea + 1
+		end
+	end
+
+	if enemyInOurArea > 2 then
+		bot._wardAdvState = 'losing'
+		bot._wardAdvStateTime = DotaTime()
+		return 'losing'
+	end
+
+	-- 2) Lane push: is our lane front deeper into enemy territory than ours?
+	local pushScore = 0
+	local hAllyAncient = GetAncient(allyTeam)
+	local hEnemyAncient = GetAncient(enemyTeam)
+	if hAllyAncient ~= nil and hEnemyAncient ~= nil then
+		local ourAncientLoc = hAllyAncient:GetLocation()
+		local enemyAncientLoc = hEnemyAncient:GetLocation()
+		for _, lane in pairs({LANE_TOP, LANE_MID, LANE_BOT}) do
+			local front = GetLaneFrontLocation(allyTeam, lane, 0)
+			if front ~= nil then
+				local dToEnemy = J.GetDistance(front, enemyAncientLoc)
+				local dToOurs = J.GetDistance(front, ourAncientLoc)
+				if dToEnemy < dToOurs - 1500 then
+					pushScore = pushScore + 1
+				elseif dToOurs < dToEnemy - 1500 then
+					pushScore = pushScore - 1
+				end
+			end
+		end
+	end
+
+	-- 3) Critical-tower control (T2/T3 count double).
+	local function towerScore(team)
+		local s = 0
+		for _, id in pairs(nTowerList) do
+			if GetTower(team, id) ~= nil then
+				if id == TOWER_TOP_1 or id == TOWER_MID_1 or id == TOWER_BOT_1 then
+					s = s + 1
+				else
+					s = s + 2
+				end
+			end
+		end
+		return s
+	end
+	local towerDiff = towerScore(allyTeam) - towerScore(enemyTeam)
+
+	local score = pushScore + (towerDiff >= 2 and 1 or 0) - (towerDiff <= -2 and 1 or 0)
+
+	local result = 'even'
+	if score >= 2 then
+		result = 'winning'
+	elseif score <= -2 then
+		result = 'losing'
+	end
+
+	bot._wardAdvState = result
+	bot._wardAdvStateTime = DotaTime()
+	return result
+end
+
 function X.GetAvailabeObserverWardSpots(bot)
 	local availableSpots = {}
+	local advState = X.GetTeamAdvantageState(bot)
 
 	if DotaTime() < 0 then
 		for _, spot in pairs(X.GetGameStartWardSpots()) do
@@ -445,6 +522,8 @@ function X.GetAvailabeObserverWardSpots(bot)
 		end
 	end
 
+	-- Aggressive (enemy-territory) observer spots: only when we are not losing.
+	if advState ~= 'losing' then
 	for i = 1, #nTowerList do
 		local t = GetTower(GetOpposingTeam(),  nTowerList[i])
 		if t == nil then
@@ -489,22 +568,43 @@ function X.GetAvailabeObserverWardSpots(bot)
 			end
 		end
 	end
+	end -- advState ~= 'losing'
 
 	return availableSpots
+end
+
+-- Classify a ward location by map half (mirror of J.IsInAllyArea, but for a location).
+local function IsLocInEnemyArea(loc)
+	local hAlly = GetAncient(GetTeam())
+	local hEnemy = GetAncient(GetOpposingTeam())
+	if hAlly == nil or hEnemy == nil then return false end
+	return J.GetDistance(loc, hEnemy:GetLocation()) + 768 < J.GetDistance(loc, hAlly:GetLocation())
 end
 
 function X.GetClosestObserverWardSpot(bot, spots)
 	local cDist = 100000
 	local cTarget = nil
 	local isPushing = J.Utils.IsTeamPushingSecondTierOrHighGround(bot)
+	local advState = X.GetTeamAdvantageState(bot)
 
 	for _, spot in pairs(spots) do
-		local dist = GetUnitToLocationDistance(bot, spot.location)
-		if isPushing and dist > 1500 then
+		local realDist = GetUnitToLocationDistance(bot, spot.location)
+		if isPushing and realDist > 1500 then
 			-- skip far spots during a push so the support stays with the group
-		elseif dist < cDist then
-			cDist = dist
-			cTarget = spot
+		else
+			-- Bias toward the strategically correct half: enemy side when winning,
+			-- our side when losing. Ward cliffs (the curated spots) are used either way.
+			local weighted = realDist
+			local enemySide = IsLocInEnemyArea(spot.location)
+			if advState == 'winning' and enemySide then
+				weighted = weighted * 0.5
+			elseif advState == 'losing' and not enemySide then
+				weighted = weighted * 0.5
+			end
+			if weighted < cDist then
+				cDist = weighted
+				cTarget = spot
+			end
 		end
 	end
 
@@ -688,6 +788,63 @@ function X.IsThereEnemySentry(vLocation, nRadius)
 	end
 
 	return false
+end
+
+-- Flatten a nested ward-location table ({[tower] = {[i] = {location=...}}}) into a
+-- flat list of spot entries.
+local function FlattenWardSpots(tWardTable)
+	local out = {}
+	if tWardTable == nil then return out end
+	for _, group in pairs(tWardTable) do
+		for _, spot in pairs(group) do
+			if spot ~= nil and spot.location ~= nil then
+				out[#out + 1] = spot
+			end
+		end
+	end
+	return out
+end
+
+-- Suspected enemy ward spots: the enemy team wards their own territory to watch us
+-- as we push in, so their spots are the mirror of ours. Returns a flat list.
+function X.GetSuspectedEnemyWardSpots()
+	if GetTeam() == TEAM_RADIANT then
+		return FlattenWardSpots(WardLocationsBeforeAllyTowerFall__Dire)
+	end
+	return FlattenWardSpots(WardLocationsBeforeAllyTowerFall__Radiant)
+end
+
+-- Nearest suspected enemy ward spot within nMaxDist (for a blind sentry drop that
+-- reveals whatever observer is planted there).
+function X.GetClosestDewardSpot(bot, nMaxDist)
+	local best, bestDist = nil, nMaxDist
+	for _, spot in pairs(X.GetSuspectedEnemyWardSpots()) do
+		local d = GetUnitToLocationDistance(bot, spot.location)
+		if d < bestDist then
+			bestDist = d
+			best = spot
+		end
+	end
+	return best
+end
+
+-- Nearest currently-visible enemy ward (revealed by our detection) within nRadius,
+-- which we can walk up to and attack down.
+function X.GetNearbyEnemyWard(bot, nRadius)
+	local best, bestDist = nil, nRadius
+	for _, ward in pairs(GetUnitList(UNIT_LIST_ENEMY_WARDS)) do
+		if J.IsValid(ward)
+		and not ward:IsInvulnerable()
+		and (string.find(ward:GetUnitName(), 'observer') or string.find(ward:GetUnitName(), 'sentry'))
+		then
+			local d = GetUnitToUnitDistance(bot, ward)
+			if d < bestDist then
+				bestDist = d
+				best = ward
+			end
+		end
+	end
+	return best
 end
 
 return X
