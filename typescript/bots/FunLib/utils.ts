@@ -1818,6 +1818,29 @@ export function HasTeamMemberWithCriticalSpellInCooldown(targetLoc: Vector): boo
 }
 
 /**
+ * Returns true if any visible enemy hero has their key teamfight ability on cooldown.
+ * Signals that the enemy just used their ult — a window to push.
+ */
+export function HasEnemyKeyAbilityOnCooldown(): boolean {
+    for (const playerId of GetTeamPlayers(GetOpposingTeam())) {
+        const enemy = GetTeamMember(playerId);
+        if (enemy !== null && enemy.IsAlive()) {
+            const heroName = enemy.GetUnitName();
+            const spells = ImportantSpells[heroName];
+            if (spells) {
+                for (const abilityName of spells) {
+                    const ability = enemy.GetAbilityByName(abilityName);
+                    if (IsValidAbility(ability) && ability!.GetCooldownTimeRemaining() > 3) {
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+    return false;
+}
+
+/**
  * Check if the team has a member with a critical item in cooldown when the bot walks & arrives to the location.
  * @param bot - The bot to check.
  * @param targetLoc - The location to check.

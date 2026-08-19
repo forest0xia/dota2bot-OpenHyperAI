@@ -138,6 +138,13 @@ function ____exports.GetPushDesireHelper(bot, lane)
     local bMyLane = bot:GetAssignedLane() == lane
     local isMidOrEarlyGame = gameState.isEarlyGame or gameState.isMidGame
     hEnemyAncient = gameState.enemyAncient
+    if gameState.aliveEnemyCount == 0 and gameState.aliveAllyCount >= 4 and gameState.averageLevel >= 4 then
+        if lane == Lane.Mid then
+            return 0.9
+        else
+            return BotModeDesire.VeryLow
+        end
+    end
     local alliesHere = getCachedAlliesNearLoc(
         bot:GetLocation(),
         1600
@@ -315,6 +322,9 @@ if jmz.IsDefending(bot) and nModeDesire >= 0.8 then
                     0.4
                 )
                 nPushDesire = nPushDesire + groupBonus
+            end
+            if jmz.Utils.HasEnemyKeyAbilityOnCooldown() and #alliesHere >= 3 then
+                nPushDesire = nPushDesire + 0.2
             end
             return RemapValClamped(
                 nPushDesire * jmz.GetHP(bot),

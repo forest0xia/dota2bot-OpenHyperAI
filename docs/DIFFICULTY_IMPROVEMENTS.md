@@ -5,7 +5,7 @@ and what could break.
 
 ---
 
-## 1. Laning aggression at level power spikes
+## 1. Laning aggression at level power spikes ✓ DONE
 **Risk: Very Low** | **Impact: Medium**
 
 Bots play the same passive desire value throughout laning regardless of their level. At
@@ -22,7 +22,7 @@ during the spike window.
 
 ---
 
-## 2. Buyback on high-ground defense (not just ancient)
+## 2. Buyback on high-ground defense (not just ancient) ✓ DONE
 **Risk: Low** | **Impact: Medium**
 
 Current logic in `ability_item_usage_generic.lua:BuybackUsageComplement()` only triggers
@@ -39,7 +39,7 @@ tune with a higher respawn-time threshold.
 
 ---
 
-## 3. Force mid push when entire enemy team is dead
+## 3. Force mid push when entire enemy team is dead ✓ DONE
 **Risk: Low** | **Impact: High**
 
 When all 5 enemies are dead simultaneously, bots have a free window to march mid and
@@ -64,7 +64,7 @@ self-cancels the moment the first enemy respawns.
 
 ---
 
-## 4. Wait for enemy key cooldowns before pushing
+## 4. Wait for enemy key cooldowns before pushing ✓ DONE
 **Risk: Low** | **Impact: High**
 
 `utils.lua` already has `HasTeamMemberWithCriticalSpellInCooldown` and
@@ -85,7 +85,32 @@ needs to be maintained when new heroes are added. No existing logic is touched.
 
 ---
 
-## 5. Purchase and place sentries before a high-ground push
+## 5. Observer wards on enemy territory during pushes ✓ DONE
+**Risk: Low-Medium** | **Impact: High**
+
+The spot database (`WardLocationsAfterEnemyTowerFall__Radiant/Dire`) already contains
+observer ward locations deep in enemy territory, including the two classic mid spots
+(enemy river rune and enemy jungle entry). The ward placement system in
+`mode_ward_generic.lua` is already fully functional with safety checks. The only thing
+blocking it is one gate that kills warding during high-ground pushes — exactly when
+those spots are most needed.
+
+**What to change:**
+- `bots/mode_ward_generic.lua:37` — remove or invert the
+  `IsTeamPushingSecondTierOrHighGround` early return so supports actively look for ward
+  spots *during* a push rather than suppressing warding entirely.
+- Add a distance cap in `GetClosestObserverWardSpot`: when the team is pushing, skip
+  spots farther than ~1500 units from the bot so the support doesn't detach from the
+  group to make a solo trip deep into enemy territory.
+
+**What could break:** A support may occasionally slow down the push by ~3-5 seconds to
+place a nearby ward. The existing `IsEnemyCloserToWardLocation` and
+`WasRecentlyDamagedByAnyHero` guards already prevent dangerous placements. No new spot
+data needed — the mid spots and push spots are already in the tables.
+
+---
+
+## 6. Purchase and place sentries before a high-ground push
 **Risk: Low-Medium** | **Impact: Medium**
 
 Bots currently commit to high-ground pushes without vision of the enemy high ground.
@@ -106,7 +131,7 @@ Keep it gated behind a gold threshold (e.g. don't buy sentries if core items are
 
 ---
 
-## 6. Active BKB / Linken timing improvement
+## 7. Active BKB / Linken timing improvement
 **Risk: Medium** | **Impact: High**
 
 Bots currently activate BKB reactively (after a spell hits them). Better behavior: track
@@ -127,7 +152,7 @@ bot's decision doesn't cascade. Well isolated.
 
 ---
 
-## 7. Kill commitment coordination ("we have them stunned — finish it")
+## 8. Kill commitment coordination ("we have them stunned — finish it")
 **Risk: Medium-High** | **Impact: High**
 
 Currently each bot independently evaluates whether to chase a kill. This means bots
@@ -149,7 +174,7 @@ retreat/attack desire balance.
 
 ---
 
-## 8. Split push with TP back threat
+## 9. Split push with TP back threat
 **Risk: High** | **Impact: High**
 
 One sidelane bot pushes while 4 others group mid. If enemies send 2+ heroes to stop the
@@ -172,7 +197,7 @@ modes don't correctly yield to the coordinator, it can get stuck. Extensive guar
 
 ---
 
-## 9. Coordinated smoke ganks
+## 10. Coordinated smoke ganks
 **Risk: Very High** | **Impact: Very High**
 
 This is the most impactful and the most complex. Requires a new mode, group formation,
@@ -202,14 +227,15 @@ fight/farm/push behaviors after integration.
 
 ## Summary table
 
-| # | Feature | Files touched | Risk | Impact |
-|---|---------|--------------|------|--------|
-| 1 | Level spike laning aggression | mode_laning_generic.lua | Very Low | Medium |
-| 2 | Buyback on barracks siege | ability_item_usage_generic.lua | Low | Medium |
-| 3 | Force mid push on full enemy wipe | aba_push.ts + aba_push.lua | Low | High |
-| 4 | Enemy ult cooldown → push window | utils.lua, aba_push.ts | Low | High |
-| 5 | Sentry wards before HG push | aba_ward_utility.lua, item_purchase_generic.lua | Low-Med | Medium |
-| 6 | BKB/Linken pre-activation | aba_skill.lua, ability_item_usage_generic.lua | Medium | High |
-| 7 | Kill commitment coordination | jmz_func.lua (GameStates) | Med-High | High |
-| 8 | Split push + TP threat | jmz_func.lua (new coordinator) | High | High |
-| 9 | Coordinated smoke ganks | new aba_smoke_gank.lua + registration | Very High | Very High |
+| # | Feature | Files touched | Risk | Impact | Done |
+|---|---------|--------------|------|--------|------|
+| 1 | Level spike laning aggression | mode_laning_generic.lua | Very Low | Medium | ✓ |
+| 2 | Buyback on barracks siege | ability_item_usage_generic.lua | Low | Medium | ✓ |
+| 3 | Force mid push on full enemy wipe | aba_push.ts + aba_push.lua | Low | High | ✓ |
+| 4 | Enemy ult cooldown → push window | utils.lua, aba_push.ts | Low | High | ✓ |
+| 5 | Observer wards on enemy territory | mode_ward_generic.lua | Low-Med | High | ✓ |
+| 6 | Sentry wards before HG push | aba_ward_utility.lua, item_purchase_generic.lua | Low-Med | Medium | |
+| 7 | BKB/Linken pre-activation | aba_skill.lua, ability_item_usage_generic.lua | Medium | High | |
+| 8 | Kill commitment coordination | jmz_func.lua (GameStates) | Med-High | High | |
+| 9 | Split push + TP threat | jmz_func.lua (new coordinator) | High | High | |
+| 10 | Coordinated smoke ganks | new aba_smoke_gank.lua + registration | Very High | Very High | |

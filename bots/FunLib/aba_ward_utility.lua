@@ -496,10 +496,13 @@ end
 function X.GetClosestObserverWardSpot(bot, spots)
 	local cDist = 100000
 	local cTarget = nil
+	local isPushing = J.Utils.IsTeamPushingSecondTierOrHighGround(bot)
 
 	for _, spot in pairs(spots) do
 		local dist = GetUnitToLocationDistance(bot, spot.location)
-		if dist < cDist then
+		if isPushing and dist > 1500 then
+			-- skip far spots during a push so the support stays with the group
+		elseif dist < cDist then
 			cDist = dist
 			cTarget = spot
 		end

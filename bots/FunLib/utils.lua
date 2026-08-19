@@ -2094,8 +2094,26 @@ function ____exports.HasTeamMemberWithCriticalSpellInCooldown(targetLoc)
     end
     return false
 end
+function ____exports.HasEnemyKeyAbilityOnCooldown()
+    for ____, playerId in ipairs(GetTeamPlayers(GetOpposingTeam())) do
+        local enemy = GetTeamMember(playerId)
+        if enemy ~= nil and enemy:IsAlive() then
+            local heroName = enemy:GetUnitName()
+            local spells = ____exports.ImportantSpells[heroName]
+            if spells ~= nil then
+                for ____, abilityName in ipairs(spells) do
+                    local ability = enemy:GetAbilityByName(abilityName)
+                    if ____exports.IsValidAbility(ability) and ability:GetCooldownTimeRemaining() > 3 then
+                        return true
+                    end
+                end
+            end
+        end
+    end
+    return false
+end
 --- Check if the team has a member with a critical item in cooldown when the bot walks & arrives to the location.
--- 
+--
 -- @param bot - The bot to check.
 -- @param targetLoc - The location to check.
 -- @returns True if the team has a member with a critical item in cooldown, false otherwise.

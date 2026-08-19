@@ -274,6 +274,11 @@ export function GetPushDesireHelper(bot: Unit, lane: Lane): BotModeDesire {
 
     hEnemyAncient = gameState.enemyAncient;
 
+    // All enemies dead → free push window: force mid, deprioritize sidelanes
+    if (gameState.aliveEnemyCount === 0 && gameState.aliveAllyCount >= 4 && gameState.averageLevel >= 4) {
+        return (lane === Lane.Mid ? 0.9 : BotModeDesire.VeryLow) as BotModeDesire;
+    }
+
     // Current, LOCAL threat picture around the bot (not reused across Think)
     const alliesHere = getCachedAlliesNearLoc(bot.GetLocation(), 1600);
     const enemiesHere = getCachedEnemiesNearLoc(bot.GetLocation(), 1600);
@@ -482,6 +487,11 @@ export function GetPushDesireHelper(bot: Unit, lane: Lane): BotModeDesire {
             if (aAliveCount > eAliveCount) {
                 const groupBonus = RemapValClamped(aAliveCount - eAliveCount, 1, 3, 0.1, 0.4);
                 nPushDesire = nPushDesire + groupBonus;
+            }
+
+            // Enemy key ult on cooldown → push window bonus
+            if (jmz.Utils.HasEnemyKeyAbilityOnCooldown() && alliesHere.length >= 3) {
+                nPushDesire = nPushDesire + 0.2;
             }
 
             return RemapValClamped(nPushDesire * jmz.GetHP(bot), 0, 1, 0, nMaxDesire) as BotModeDesire;

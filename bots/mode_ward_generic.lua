@@ -33,10 +33,6 @@ function GetDesireHelper()
         return BOT_MODE_DESIRE_NONE
     end
 
-	-- 如果在打高地 就别撤退去干别的
-	if J.Utils.IsTeamPushingSecondTierOrHighGround(bot) then
-		return BOT_MODE_DESIRE_NONE
-	end
 	local enemiesAtAncient = J.Utils.CountEnemyHeroesNear(GetAncient(GetTeam()):GetLocation(), 3200)
     if enemiesAtAncient >= 1 then
         return BOT_MODE_DESIRE_NONE
