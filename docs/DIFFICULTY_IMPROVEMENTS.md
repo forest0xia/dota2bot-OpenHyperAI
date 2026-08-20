@@ -22,6 +22,7 @@ behavior, or a reactive-only system. Sorted by **development risk** (ascending),
 | 5 | Proactive Roshan coordination | Medium | High | Pending |
 | 6 | Creep pulling for lane control | Medium | Medium | Pending |
 | 7 | Proactive ally-saving | Med-High | High | Pending |
+| 8 | Late-game priority ladder (>30 min) | Low | High | ✓ Done |
 
 ---
 
@@ -239,3 +240,42 @@ risk rating.
 - **#3 and #4** are self-contained farm/ward-mode additions with no cross-mode coupling.
 - **#5, #6, #7** touch objective timing, laning equilibrium, and the shared item auction
   respectively — each needs a dedicated test lobby and regression of the mode it lives in.
+
+---
+
+## 8. Late-game priority ladder (>30 min)
+**Risk: Low** | **Impact: High** | ✓ **Done**
+
+After 30 min (`J.IsLateGame()`; turbo 18 min) the team should follow a strict ladder
+rather than keep farming: **#1** protect the Ancient (from heroes *and* creeps), **#2**
+protect towers (T2+) if the Ancient is safe, **#3** group-push the weakest lane (mid on a
+tie), **#4** kill the enemy Ancient once that lane's rax falls, **#5** otherwise cycle to
+the next weakest lane. Implemented as an additive layer over the existing push/defend
+desire auction (reuses `WhichLaneToPush` and `GetDefendDesire`), so all current safety
+tuning still applies.
+
+**What changed:**
+- **Farm suppressed to near-zero** (`mode_farm_generic.lua`): in late game `nFarmCap` is
+  clamped to `0.03` so farm always loses to the defend/push floors below. A tiny non-zero
+  value is kept so a bot with nothing else to do still clears a nearby wave.
+- **Ancient creep-defense with a defender cap** (`aba_defend.ts` → `.lua`): the old base
+  threat was hero-started (creeps could only *extend* it), so a pure mega-creep siege with
+  no heroes never raised defense. New late-game block: if weighted creep pressure at the
+  Ancient ≥ 2 and no enemy heroes are near, only the **1-2 closest heroes**
+  (`IsAmongClosestAlliesTo`, deterministic/tie-broken by player id; 2 defenders once the
+  wave is very large) peel off to hold it at a `0.9` desire floor. Every other hero returns
+  `VeryLow` here and falls through to pushing — realising "1-2 stand in the Ancient, 3-4
+  push the enemy line to recover the creep equilibrium." Tower (T2+) creep-defense is still
+  covered by the existing `ShouldDefend` creep-weight path (priority #2).
+- **Weakest-lane push floor** (`aba_push.ts` → `.lua`): in late game the lane chosen by
+  `WhichLaneToPush` (already biased toward the lowest enemy tier, mid on a tie) gets a real
+  desire floor (`0.3–0.7` by HP, capped by `nMaxDesire`) instead of the tiny mid fallback,
+  so the team groups and commits. Because `nMaxDesire` already folds in every safety gate
+  (deep-push, low-HP, outnumbered) and the unsafe cases return earlier, the floor can never
+  push the bot into a losing fight. #4/#5 (kill Ancient / cycle lanes) are handled by the
+  existing `PushThink` Ancient-endgame logic plus `WhichLaneToPush` re-selection.
+
+**What could break:** In late game bots will nearly stop jungling — intended, but verify a
+fed core isn't pulled off a won lane by a single small creep wave at base (the ≥2 creep
+weight gate and 1-defender cap are tuned to avoid this). Pure-creep Ancient defense and the
+push floor share the desire auction, so regression-test a mega-creep game in a lobby.

@@ -328,6 +328,22 @@ function GetClosestAllyPos(tPosList: number[], vLocation: Vector): number {
     return bestPos ?? tPosList[0];
 }
 
+// Is this bot among the `n` closest alive ally heroes to a location?
+// Deterministic per-bot (tie-broken by player id) so exactly `n` bots qualify.
+// Used to cap how many heroes peel off to hold the Ancient against a creep siege.
+function IsAmongClosestAlliesTo(bot: Unit, loc: Vector, n: number): boolean {
+    const unitState = updateDefendUnitStateCache();
+    const myDist = GetUnitToLocationDistance(bot, loc);
+    const myId = bot.GetPlayerID();
+    let rank = 0;
+    for (const ally of unitState.alliedHeroes) {
+        if (ally === bot || !jmz.IsValidHero(ally) || jmz.IsSuspiciousIllusion(ally) || !ally.IsAlive()) continue;
+        const d = GetUnitToLocationDistance(ally, loc);
+        if (d < myDist || (d === myDist && ally.GetPlayerID() < myId)) rank += 1;
+    }
+    return rank < n;
+}
+
 // == Core building selection ==
 // Returns: furthestBuilding, urgencyMultiplier, tier (1..4)
 export function GetFurthestBuildingOnLane(lane: Lane): [Unit | any, number, number] {
@@ -713,6 +729,30 @@ export function GetDefendDesireHelper(bot: Unit, lane: Lane): BotModeDesire {
                     panic = { active: true, floor: math.max(panic.floor, 0.94), forceLoc: jmz.AdjustLocationWithOffsetTowardsFountain(ancient.GetLocation(), 300) };
                     (bot as any).laneToDefend = lane;
                 }
+            }
+        }
+    }
+
+    // Late game (>30 min): hold the Ancient against a pure creep siege (mega
+    // creeps) even with no enemy heroes present — priority #1. Only the 1-2
+    // closest heroes peel off to defend; every other hero returns VeryLow here
+    // and falls through to pushing the weakest lane, which recovers the creep
+    // equilibrium ("1-2 stand in ancient, 3-4 push the enemy line").
+    if (gameState.isLateGame && ancient && enemiesAtAncient === 0) {
+        const creepWeightAtAncient = WeightedEnemiesAroundLocation(ancient.GetLocation(), BASE_THREAT_RADIUS);
+        if (creepWeightAtAncient >= 2) {
+            if (lane !== threatenedLane) return BotModeDesire.VeryLow;
+            const defendersWanted = creepWeightAtAncient >= 5 ? 2 : 1;
+            if (IsAmongClosestAlliesTo(bot, ancient.GetLocation(), defendersWanted)) {
+                baseThreatUntil = DotaTime() + BASE_THREAT_HOLD;
+                panic = {
+                    active: true,
+                    floor: math.max(panic.floor, 0.9),
+                    forceLoc: jmz.AdjustLocationWithOffsetTowardsFountain(ancient.GetLocation(), 300),
+                };
+                (bot as any).laneToDefend = lane;
+            } else {
+                return BotModeDesire.VeryLow;
             }
         }
     }

@@ -345,6 +345,18 @@ if jmz.IsDefending(bot) and nModeDesire >= 0.8 then
             )
         end
     end
+    if gameState.isLateGame and isCurrentLanePushLane then
+        return math.min(
+            RemapValClamped(
+                jmz.GetHP(bot),
+                0.35,
+                0.7,
+                0.3,
+                0.7
+            ),
+            nMaxDesire
+        )
+    end
     return lane == Lane.Mid and BotModeDesire.VeryLow or BOT_MODE_DESIRE_EXTRA_LOW
 end
 function presence_adjust(score, loc)

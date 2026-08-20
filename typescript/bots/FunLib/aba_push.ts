@@ -506,6 +506,17 @@ export function GetPushDesireHelper(bot: Unit, lane: Lane): BotModeDesire {
         }
     }
 
+    // Late game (>30 min): farm is suppressed to near-zero, so commit the whole
+    // team to the weakest lane (WhichLaneToPush already biases toward the lowest
+    // enemy tier, falling back to mid). Give the chosen push lane a real desire
+    // floor so bots group and push instead of idling. All the safety gates above
+    // already fold their reductions into nMaxDesire (deep-push, low-HP,
+    // outnumbered, ancient-under-hero-pressure), and the truly unsafe cases have
+    // already returned None/VeryLow — so this floor stays capped by nMaxDesire.
+    if (gameState.isLateGame && isCurrentLanePushLane) {
+        return math.min(RemapValClamped(jmz.GetHP(bot), 0.35, 0.7, 0.3, 0.7), nMaxDesire) as BotModeDesire;
+    }
+
     // Default: prefer mid as the soft fallback
     return lane === Lane.Mid ? BotModeDesire.VeryLow : (BOT_MODE_DESIRE_EXTRA_LOW as BotModeDesire);
 }

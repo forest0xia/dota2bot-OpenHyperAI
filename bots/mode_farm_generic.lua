@@ -374,6 +374,14 @@ function GetDesireHelper()
 	local nFarmRampEnd   = J.IsModeTurbo() and 14 * 60 or 20 * 60
 	local nFarmCap = RemapValClamped(DotaTime(), nFarmRampStart, nFarmRampEnd, 0.3, 0.6)
 
+	-- Late game (>30 min / turbo 18): stop farming almost completely. The team
+	-- must protect the ancient/towers (defend) and group-push the weakest lane
+	-- (push floor) instead, so farm desire has to lose to both. A tiny non-zero
+	-- cap is kept so a bot with genuinely nothing else to do still clears a wave.
+	if J.IsLateGame() then
+		nFarmCap = Min(nFarmCap, 0.03)
+	end
+
 	if GetGameMode() ~= GAMEMODE_MO
 	and J.Site.IsTimeToFarm(bot)
 	and not J.IsDefending(bot)

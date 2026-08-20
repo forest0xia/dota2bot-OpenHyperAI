@@ -201,7 +201,7 @@ local function __TS__ArrayForEach(self, callbackFn, thisArg)
 end
 -- End of Lua Library inline imports
 local ____exports = {}
-local getDefendState, updateDefendGameStateCache, updateDefendLocationStateCache, updateDefendUnitStateCache, _q, _keyLoc, _recentHeroCountNear, IsValidBuildingTarget, IsBaseThreatActive, WeightedEnemiesAroundLocation, GetThreatenedLane, GetClosestAllyPos, IsThereNoTeammateTravelBootsDefender, GetHighGroundEdgeWaitPoint, ConsiderPingedDefend, okLoc, Localization, PING_DELTA, MAX_DESIRE_CAP, BASE_THREAT_RADIUS, BASE_THREAT_HOLD, CACHE_ENEMY_AROUND_LOC_HZ, CACHE_LASTSEEN_WINDOW, nTeam, _threatLaneSticky, baseThreatUntil, fTraveBootsDefendTime, _cacheEnemyAroundLoc, DEFEND_CACHE_TTL, defendGameStateCache, defendLocationStateCache, defendUnitStateCache
+local getDefendState, updateDefendGameStateCache, updateDefendLocationStateCache, updateDefendUnitStateCache, _q, _keyLoc, _recentHeroCountNear, IsValidBuildingTarget, IsBaseThreatActive, WeightedEnemiesAroundLocation, GetThreatenedLane, GetClosestAllyPos, IsAmongClosestAlliesTo, IsThereNoTeammateTravelBootsDefender, GetHighGroundEdgeWaitPoint, ConsiderPingedDefend, okLoc, Localization, PING_DELTA, MAX_DESIRE_CAP, BASE_THREAT_RADIUS, BASE_THREAT_HOLD, CACHE_ENEMY_AROUND_LOC_HZ, CACHE_LASTSEEN_WINDOW, nTeam, _threatLaneSticky, baseThreatUntil, fTraveBootsDefendTime, _cacheEnemyAroundLoc, DEFEND_CACHE_TTL, defendGameStateCache, defendLocationStateCache, defendUnitStateCache
 local jmz = require(GetScriptDirectory().."/FunLib/jmz_func")
 local ____dota = require(GetScriptDirectory().."/ts_libs/dota/index")
 local Barracks = ____dota.Barracks
@@ -443,6 +443,21 @@ function GetClosestAllyPos(tPosList, vLocation)
         end
     end
     return bestPos or tPosList[1]
+end
+function IsAmongClosestAlliesTo(bot, loc, n)
+    local unitState = updateDefendUnitStateCache()
+    local myDist = GetUnitToLocationDistance(bot, loc)
+    local myId = bot:GetPlayerID()
+    local rank = 0
+    for ____, ally in ipairs(unitState.alliedHeroes) do
+        if not (ally == bot or not jmz.IsValidHero(ally) or jmz.IsSuspiciousIllusion(ally) or not ally:IsAlive()) then
+            local d = GetUnitToLocationDistance(ally, loc)
+            if d < myDist or (d == myDist and ally:GetPlayerID() < myId) then
+                rank = rank + 1
+            end
+        end
+    end
+    return rank < n
 end
 function ____exports.GetFurthestBuildingOnLane(lane)
     local cacheKey = (("FurthestBuildingOnLane:" .. tostring(nTeam)) .. ":") .. tostring(lane or -1)
@@ -990,6 +1005,32 @@ function ____exports.GetDefendDesireHelper(bot, lane)
                     }
                     bot.laneToDefend = lane
                 end
+            end
+        end
+    end
+    if gameState.isLateGame and ancient and enemiesAtAncient == 0 then
+        local creepWeightAtAncient = WeightedEnemiesAroundLocation(
+            ancient:GetLocation(),
+            BASE_THREAT_RADIUS
+        )
+        if creepWeightAtAncient >= 2 then
+            if lane ~= threatenedLane then
+                return BotModeDesire.VeryLow
+            end
+            local defendersWanted = creepWeightAtAncient >= 5 and 2 or 1
+            if IsAmongClosestAlliesTo(bot, ancient:GetLocation(), defendersWanted) then
+                baseThreatUntil = DotaTime() + BASE_THREAT_HOLD
+                panic = {
+                    active = true,
+                    floor = math.max(panic.floor, 0.9),
+                    forceLoc = jmz.AdjustLocationWithOffsetTowardsFountain(
+                        ancient:GetLocation(),
+                        300
+                    )
+                }
+                bot.laneToDefend = lane
+            else
+                return BotModeDesire.VeryLow
             end
         end
     end
