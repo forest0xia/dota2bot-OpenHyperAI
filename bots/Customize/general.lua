@@ -26,7 +26,7 @@ Customize.Enable = true
 -- Set the localization code to make bots speak the specific language when possible (not guaranteed to 100% localized). 
 -- Currently supprot: "en" for "English", "zh" for "中文", "ru" for Russian, "ja" for Japanese
 -- https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes
-Customize.Localization = "ru"
+Customize.Localization = "en"
 
 -- To ban some heroes for bots - Set the heroes you DO NOT want the bots to pick. Use hero internal names.
 -- Hero name ref: https://github.com/forest0xia/dota2bot-OpenHyperAI/discussions/71
@@ -47,10 +47,17 @@ Customize.Ban = {
 Customize.Radiant_Heros = {
     'Random',
     'Random',
+    'Random',
+    'Random',
+    'Random',
 }
 
 -- Same notes as above for picking heroes but for the Dire side.
 Customize.Dire_Heros = {
+    'npc_dota_hero_shadow_shaman',
+    'Random',
+    'Random',
+    'Random',
     'Random',
 }
 

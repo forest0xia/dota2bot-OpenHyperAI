@@ -136,6 +136,42 @@ local WeakHeroes = {
     'npc_dota_hero_dark_willow',
     'npc_dota_hero_hoodwink',
     'npc_dota_hero_wisp',
+
+    -- Ed's choice:
+    'npc_dota_hero_ancient_apparition',
+    'npc_dota_hero_bane',
+    'npc_dota_hero_crystal_maiden',
+    'npc_dota_hero_dark_seer',
+    'npc_dota_hero_dazzle',
+    'npc_dota_hero_death_prophet',
+    'npc_dota_hero_enchantress',
+    'npc_dota_hero_grimstroke',
+    'npc_dota_hero_invoker',
+    'npc_dota_hero_keeper_of_the_light',
+    'npc_dota_hero_leshrac',
+    'npc_dota_hero_lich',
+    'npc_dota_hero_muerta',
+    'npc_dota_hero_oracle',
+    'npc_dota_hero_pugna',
+    'npc_dota_hero_shadow_demon',
+    -- 'npc_dota_hero_shadow_shaman',
+    'npc_dota_hero_storm_spirit',
+    'npc_dota_hero_warlock',
+    'npc_dota_hero_witch_doctor',
+    'npc_dota_hero_winter_wyvern',
+    'npc_dota_hero_techies',
+    'npc_dota_hero_sand_king',
+    'npc_dota_hero_centaur',
+    'npc_dota_hero_weaver',
+    'npc_dota_hero_templar_assassin',
+    'npc_dota_hero_slark',
+    'npc_dota_hero_riki',
+    'npc_dota_hero_kez',
+    'npc_dota_hero_hoodwink',
+    'npc_dota_hero_clinkz',
+    'npc_dota_hero_bounty_hunter',
+    'npc_dota_hero_chen',
+    'npc_dota_hero_ringmaster',
 }
 
 --==============================================================================
@@ -915,9 +951,9 @@ local function InitPickScheduleOnce()
 	end
 
 	-- Tweak these three to taste:
-	local base  = GameTime() + 3          -- when the *first* bot may pick
-	local step  = GetTeam() * 3           -- spacing between slots
-	local jitter_min, jitter_max = 1, 3   -- small variability per slot
+	local base  = GameTime() + 2          -- when the *first* bot may pick
+	local step  = GetTeam() * 2           -- spacing between slots
+	local jitter_min, jitter_max = 0, 0   -- small variability per slot
 
 	local teamPlayers = GetTeamPlayers(GetTeam(), true)
 	for slot = 1, #teamPlayers do

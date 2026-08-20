@@ -112,9 +112,10 @@ end
 
 local originalGetNearbyTowers = CDOTA_Bot_Script.GetNearbyTowers
 function CDOTA_Bot_Script:GetNearbyTowers(nRadius, bEnemies)
-    if not self:IsHero() then
-		-- print("GetNearbyTowers has been called on non hero")
-		-- print("Stack Trace:", debug.traceback())
+	-- Gate on CanBeSeen (like GetNearbyHeroes), NOT IsHero: attacking wards
+	-- (serpent/plague/death ward) are non-hero units that must query towers to
+	-- push. The old IsHero gate returned nil for them, so they never attacked towers.
+    if not self:CanBeSeen() then
 		return nil
 	end
     return originalGetNearbyTowers(self, math.min(nRadius, 1600), bEnemies)

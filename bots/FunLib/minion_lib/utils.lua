@@ -127,7 +127,12 @@ function U.GetWeakest(unitList)
 			if U.IsValidTarget(unit)
 			and not U.IsNotAllowedToAttack(unit)
 			then
-				local killUnitTime = unit:GetHealth() / unit:GetActualIncomingDamage( 3000, DAMAGE_TYPE_PHYSICAL )
+				-- GetActualIncomingDamage() reports 0 for buildings (towers/rax/ancient),
+				-- which would make killUnitTime = inf and silently drop the target.
+				-- Clamp to a small positive value so buildings stay selectable.
+				local incomingDamage = unit:GetActualIncomingDamage( 3000, DAMAGE_TYPE_PHYSICAL )
+				if incomingDamage == nil or incomingDamage <= 0 then incomingDamage = 1 end
+				local killUnitTime = unit:GetHealth() / incomingDamage
 				if killUnitTime < minKillTime
 				then
 					target = unit
