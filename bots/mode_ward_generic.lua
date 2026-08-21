@@ -22,6 +22,10 @@ local SentryWard = nil
 local hTargetSpot = nil
 local fLastWardPlantTime = -math.huge
 
+-- Which ward type the current hTargetSpot was selected for, so Think plants the matching
+-- type instead of letting the observer branch hijack a sentry target (or vice versa).
+local bTargetIsSentry = false
+
 function GetDesire()
 	-- Every bot (cores included) can ward now, not just supports.
 	-- local cacheKey = 'GetWardDesire'..tostring(bot:GetPlayerID())
@@ -66,6 +70,7 @@ function GetDesireHelper()
         if spot and (not X.IsEnemyCloserToWardLocation(spot.location) or J.IsRealInvisible(bot)) then
             if DotaTime() > fLastWardPlantTime + 1.0 and GetUnitToLocationDistance(bot, spot.location) <= nMaxDistanceToGoPlaceWard then
                 hTargetSpot = spot
+                bTargetIsSentry = false
                 return BOT_MODE_DESIRE_VERYHIGH
             end
         end
@@ -77,6 +82,7 @@ function GetDesireHelper()
         if spot and (not X.IsEnemyCloserToWardLocation(spot.location) or J.IsRealInvisible(bot)) then
             if DotaTime() > fLastWardPlantTime + 1.0 and GetUnitToLocationDistance(bot, spot.location) <= nMaxDistanceToGoPlaceWard then
                 hTargetSpot = spot
+                bTargetIsSentry = true
                 return BOT_MODE_DESIRE_VERYHIGH
             end
         end
@@ -89,7 +95,7 @@ function Think()
 	if J.CanNotUseAction(bot) then return end
 	if J.Utils.IsBotThinkingMeaningfulAction(bot, Customize.ThinkLess, "ward") then return end
 	if hTargetSpot then
-		if ObserverWard and J.CanCastAbility(ObserverWard) then
+		if not bTargetIsSentry and ObserverWard and J.CanCastAbility(ObserverWard) then
 			if GetUnitToLocationDistance(bot, hTargetSpot.location) <= nObserverWardCastRange then
 				if W.IsOtherWardClose(hTargetSpot.location, 'npc_dota_observer_wards', nMinObserverSeparation, true, false) then
 					hTargetSpot = nil
@@ -115,7 +121,7 @@ function Think()
 			end
 		end
 
-		if SentryWard and J.CanCastAbility(SentryWard) then
+		if bTargetIsSentry and SentryWard and J.CanCastAbility(SentryWard) then
 			if GetUnitToLocationDistance(bot, hTargetSpot.location) <= nSentryWardCastRange then
 				if W.IsOtherWardClose(hTargetSpot.location, 'npc_dota_sentry_wards', nMinSentrySeparation, true, false) then
 					hTargetSpot = nil

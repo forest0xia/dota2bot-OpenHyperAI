@@ -1288,12 +1288,16 @@ end
 -- they auto-combine into 'item_ward_dispenser', which stores observer charges in
 -- GetCurrentCharges() and sentry charges in GetSecondaryCharges(). Plain GetItemCharges
 -- misses those. sWardType is 'item_ward_observer' or 'item_ward_sentry'.
-function Item.GetWardCharges( bot, sWardType )
+-- Count ward charges of sWardType carried by a single unit (bot or courier), across its item
+-- slots. A dispenser holds observer charges (primary) and sentry charges (secondary).
+local function CountWardChargesOnUnit( unit, sWardType )
+
+	if unit == nil then return 0 end
 
 	local charges = 0
 	for i = 0, 16
 	do
-		local item = bot:GetItemInSlot( i )
+		local item = unit:GetItemInSlot( i )
 		if item ~= nil
 		then
 			local sName = item:GetName()
@@ -1312,6 +1316,32 @@ function Item.GetWardCharges( bot, sWardType )
 	end
 
 	return charges
+
+end
+
+-- The bot's own courier (nil if none). Couriers are per-player since 7.23; match by player id.
+local function GetOwnCourier( bot )
+
+	local nPlayerID = bot:GetPlayerID()
+	for nCourierID = 0, 4
+	do
+		local courier = GetCourier( nCourierID )
+		if courier ~= nil and courier:GetPlayerID() == nPlayerID
+		then
+			return courier
+		end
+	end
+
+	return nil
+
+end
+
+function Item.GetWardCharges( bot, sWardType )
+
+	-- Count wards the bot holds AND wards sitting on its courier, so freshly-bought wards
+	-- being delivered by the donkey aren't missed (which would cause over-buying).
+	return CountWardChargesOnUnit( bot, sWardType )
+		+ CountWardChargesOnUnit( GetOwnCourier( bot ), sWardType )
 
 end
 

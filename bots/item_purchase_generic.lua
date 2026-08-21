@@ -863,7 +863,7 @@ function ItemPurchaseThink()
 		local isObserverBought = false
 		local hasObserver = Item.GetWardCharges(bot, wardType) > 0
 
-		if GetItemStockCount(wardType) > 0
+		if GetItemStockCount(wardType) > 2
 		and botGold >= GetItemCost(wardType)
 		and Item.GetEmptyInventoryAmount(bot) >= 2
 		and not hasObserver
@@ -874,7 +874,7 @@ function ItemPurchaseThink()
 		end
 
 		local sentryType = 'item_ward_sentry'
-		if GetItemStockCount(sentryType) > 0
+		if GetItemStockCount(sentryType) > 3
 		and botGold >= GetItemCost(sentryType)
 		and ( isObserverBought or hasObserver )
 		and Item.GetWardCharges(bot, sentryType) < 1
