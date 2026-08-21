@@ -860,20 +860,24 @@ function ItemPurchaseThink()
 	if botWorth < 25000
 	then
 		local wardType = 'item_ward_observer'
-		if GetItemStockCount(wardType) > 2
+		local isObserverBought = false
+		local hasObserver = Item.GetWardCharges(bot, wardType) > 0
+
+		if GetItemStockCount(wardType) > 0
 		and botGold >= GetItemCost(wardType)
 		and Item.GetEmptyInventoryAmount(bot) >= 2
-		and Item.GetWardCharges(bot, wardType) < 2
+		and not hasObserver
 		and botCourierValue == 0
 		then
+            isObserverBought = true
 			bot:ActionImmediate_PurchaseItem(wardType)
 		end
 
 		local sentryType = 'item_ward_sentry'
-		if GetItemStockCount(sentryType) > 3
+		if GetItemStockCount(sentryType) > 0
 		and botGold >= GetItemCost(sentryType)
-		and Item.GetEmptyInventoryAmount(bot) >= 1
-		and Item.GetWardCharges(bot, sentryType) < 2
+		and ( isObserverBought or hasObserver )
+		and Item.GetWardCharges(bot, sentryType) < 1
 		then
 			bot:ActionImmediate_PurchaseItem(sentryType)
 		end

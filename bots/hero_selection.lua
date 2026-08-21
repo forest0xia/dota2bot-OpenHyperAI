@@ -939,7 +939,7 @@ function HandleLocaleSetting(locale)
 end
 
 -- Initialize a clean, staggered per-slot schedule once we’re allowed to pick.
--- Slots pick at: base + (slot-1)*step + jitter
+-- Slots pick at: base + (slot-1) * step
 local function InitPickScheduleOnce()
 	if PickSchedule.initialized then return end
 
@@ -951,15 +951,12 @@ local function InitPickScheduleOnce()
 	end
 
 	-- Tweak these three to taste:
-	local base  = GameTime() + 2          -- when the *first* bot may pick
-	local step  = GetTeam() * 2           -- spacing between slots
-	local jitter_min, jitter_max = 0, 0   -- small variability per slot
+	local base  = GameTime() + 5          -- when the *first* bot may pick
+	local step  = GetTeam() * 0           -- spacing between slots
 
 	local teamPlayers = GetTeamPlayers(GetTeam(), true)
 	for slot = 1, #teamPlayers do
-		-- tiny jitter per-slot for a more organic feel
-		local jitter = RandomFloat(jitter_min, jitter_max)
-		PickSchedule.NextPickAt[slot] = base + (slot - 1) * step + jitter
+		PickSchedule.NextPickAt[slot] = base + (slot - 1) * step
 	end
 
 	PickSchedule.initialized = true
