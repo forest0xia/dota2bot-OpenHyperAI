@@ -33,7 +33,7 @@ Commits included: `d822633 danger aoe zones`, `ea38b84 excessive healing`,
 | 14 | Ward overhaul: dewarding + territory-aware placement | `mode_ward_generic.lua`, `aba_ward_utility.lua` | 🟢 Stronger |
 | 15 | Better lane sustain: buy regen longer, use tango/bottle earlier | `item_purchase_generic.lua`, `ability_item_usage_generic.lua` | 🟢 Stronger (minor gold cost) |
 | 16 | Heal to higher HP before re-engaging lane | `mode_retreat_generic.lua` | 🟡 Trade-off |
-| 17 | Ignore Lone Druid bear & Warlock golem | `aba_special_units.lua` | 🟡 Mixed |
+| 17 | Ignore dangerous no-bounty summons (bear, golem, tombstone, brewlings); prioritize Undying zombies | `aba_special_units.lua` | 🟡 Mixed |
 | 18 | All bots grab nearest bounty rune at start | `mode_rune_generic.lua` | 🟡 Mild regression risk |
 | 19 | Default locale → Russian, English flavor/info text removed | `Customize/general.lua`, `localization.lua`, `aba_team_names.lua` | ⚪ Cosmetic (English chat regressed) |
 
@@ -190,14 +190,20 @@ healing**, which can cost last-hits/XP and cede lane pressure. Net effect depend
 matchup. **Verdict: 🟡 Trade-off — safer but less lane uptime.** Watch that bots don't
 yo-yo out of a winning lane.
 
-### 17. Ignore Lone Druid bear & Warlock golem
-`aba_special_units.lua`: both now return `BOT_ACTION_DESIRE_NONE` ("dangerous with no kill
-reward; never engage"), removing the previous engage logic for the golem.
+### 17. Ignore dangerous no-bounty summons; prioritize Undying zombies
+`aba_special_units.lua`: dangerous, tanky, temporary summons with no good kill reward now
+all return `BOT_ACTION_DESIRE_NONE` ("never engage") — **Lone Druid bear**, **Warlock
+golem**, **Undying Tombstone**, and **Brewmaster Primal Split brewlings**. Conversely,
+**Undying zombies** (weak, they slow and drain the bot) are now a high-priority kill when
+not retreating: `0.9` in attack range, `0.8` within +200, `0.5` otherwise (previously
+gated at `0.6/0.25` and only when allies weren't outnumbered).
 
-**Impact:** Avoids wasting time/HP on tanky summons — **good for the Warlock golem**
-(temporary, high HP). **Questionable for the Lone Druid bear**, where killing the bear is a
-real tempo/gold objective; blanket-ignoring it may let it free-farm/hit. **Verdict: 🟡
-Mixed** — likely positive overall, mild negative vs Lone Druid.
+**Impact:** Bots stop wasting time/HP on tanky summons that expire on their own and instead
+clear the cheap, annoying zombies. **Good** for golem / tombstone / brewlings (temporary,
+high HP). **Questionable for the Lone Druid bear**, where killing the bear is a real
+tempo/gold objective; blanket-ignoring it may let it free-farm/hit. *Note:* ignoring
+brewlings forgoes ending Primal Split early by killing one. **Verdict: 🟡 Mixed** — likely
+positive overall, mild negative vs Lone Druid.
 
 ### 18. All bots grab the nearest bounty rune at start
 `mode_rune_generic.lua`: replaced the lane-based split (some to bounty, some to

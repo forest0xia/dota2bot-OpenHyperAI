@@ -242,25 +242,9 @@ function X.GetDesire(bot__)
 
                 if string.find(unitName, 'npc_dota_brewmaster')
                 then
-                    if #tAllyHeroes >= 2 and #tAllyHeroes_all > #tEnemyHeroes_all
-                    then
-                        return 0.45
-                    end
-
-                    if not X.IsUnitAfterUnit(unit, bot)
-                    then
-                        return BOT_ACTION_DESIRE_HIGH
-                    end
-
-                    if unitHP < 0.25
-                    then
-                        if X.IsUnitAfterUnit(unit, bot)
-                        then
-                            return RemapValClamped(botHP, 0.25, 0.9, 0.2, 0.9)
-                        else
-                            return 0.45
-                        end
-                    end
+                    -- Primal Split brewlings: dangerous, tanky, temporary summons with
+                    -- no good kill reward; never engage (they expire on their own).
+                    return BOT_ACTION_DESIRE_NONE
                 end
 
                 if unit:HasModifier('modifier_dominated')
@@ -326,19 +310,18 @@ function X.GetDesire(bot__)
 
                 if string.find(unitName, 'tombstone')
                 then
-                    if #tAllyHeroes_all >= #tEnemyHeroes_all and not J.IsRetreating(bot)
-                    then
-                        if J.IsInRange(bot, unit, botAttackRange + 200) then return RemapValClamped(J.GetHP(bot), 0.25, 0.9, 0.4, 0.96) end
-                        return 0.56
-                    end
+                    -- Tanky, temporary summon with no kill reward; never engage.
+                    -- Kill the zombies it spawns instead (handled below).
+                    return BOT_ACTION_DESIRE_NONE
                 end
 
                 if string.find(unitName, 'undying_zombie')
                 then
-                    if #tAllyHeroes_all >= #tEnemyHeroes_all and not J.IsRetreating(bot)
-                    then
-                        if withinAttackRange then return 0.6 end
-                        return 0.25
+                    -- Weak, slow us and drain HP; kill on sight (high priority) unless retreating.
+                    if not J.IsRetreating(bot) then
+                        if withinAttackRange then return 0.9 end
+                        if J.IsInRange(bot, unit, botAttackRange + 200) then return 0.8 end
+                        return 0.5
                     end
                 end
 
