@@ -1284,6 +1284,38 @@ function Item.GetItemCharges( bot, itemName )
 end
 
 
+-- Dispenser-aware ward charge count. When a bot carries both an observer and a sentry ward
+-- they auto-combine into 'item_ward_dispenser', which stores observer charges in
+-- GetCurrentCharges() and sentry charges in GetSecondaryCharges(). Plain GetItemCharges
+-- misses those. sWardType is 'item_ward_observer' or 'item_ward_sentry'.
+function Item.GetWardCharges( bot, sWardType )
+
+	local charges = 0
+	for i = 0, 16
+	do
+		local item = bot:GetItemInSlot( i )
+		if item ~= nil
+		then
+			local sName = item:GetName()
+			if sName == sWardType
+			then
+				charges = charges + item:GetCurrentCharges()
+			elseif sName == 'item_ward_dispenser'
+			then
+				if sWardType == 'item_ward_observer' then
+					charges = charges + item:GetCurrentCharges()
+				elseif sWardType == 'item_ward_sentry' then
+					charges = charges + item:GetSecondaryCharges()
+				end
+			end
+		end
+	end
+
+	return charges
+
+end
+
+
 function Item.GetNeutralItemCount( bot )
 
 	local amount = 0

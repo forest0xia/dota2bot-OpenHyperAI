@@ -4,6 +4,12 @@ local J = require(GetScriptDirectory()..'/FunLib/jmz_func')
 
 local nVisionRadius = 1600
 
+-- Minimum separation between wards of the SAME type, so vision/detection spreads across
+-- the map instead of clustering. Observers use 2x their vision radius (circles touch but
+-- don't overlap = maximum coverage). Raise these to spread wards further apart.
+local nMinObserverSeparation = nVisionRadius * 2
+local nMinSentrySeparation = 1200 * 2
+
 -- Radiant Warding Spots
 -- Game Start
 local RADIANT_GAME_START_MID_1 = Vector(-249.706375, -1046.293945)
@@ -33,6 +39,17 @@ local DIRE_LANE_PHASE_3 = Vector(-2159.649414, 1987.394531)
 local DIRE_LANE_PHASE_4 = Vector(1141.866211, -458.288147)
 local DIRE_LANE_PHASE_5 = Vector(3810.311523, -4562.782227)
 local DIRE_LANE_PHASE_6 = Vector(7512.600586, -4630.147461)
+
+local RADIANT_CLIFF_LEFT = Vector(-4347, -1555)
+local RADIANT_CLIFF_RIGHT = Vector(-1313, -4867)
+local DIRE_CLIFF_LEFT = Vector(1064, 2975)
+local DIRE_CLIFF_RIGHT = Vector(4613, 300)
+local WARD_POSITION = {
+    [1] = { location = RADIANT_CLIFF_LEFT, plant_time_obs = 0, plant_time_sentry = 0, },
+    [2] = { location = RADIANT_CLIFF_RIGHT, plant_time_obs = 0, plant_time_sentry = 0, },
+    [3] = { location = DIRE_CLIFF_LEFT, plant_time_obs = 0, plant_time_sentry = 0, },
+    [4] = { location = DIRE_CLIFF_RIGHT, plant_time_obs = 0, plant_time_sentry = 0, },
+}
 
 local nTowerList = {
 	TOWER_TOP_1,
@@ -454,7 +471,7 @@ function X.GetAvailabeObserverWardSpots(bot)
 
 	if DotaTime() < 0 then
 		for _, spot in pairs(X.GetGameStartWardSpots()) do
-			if not X.IsOtherWardClose(spot.location, 'npc_dota_observer_wards', nVisionRadius * 2, true, false) and not X.IsThereEnemySentry(spot.location, 1100) then
+			if not X.IsOtherWardClose(spot.location, 'npc_dota_observer_wards', nMinObserverSeparation, true, false) and not X.IsThereEnemySentry(spot.location, 1100) then
 				table.insert(availableSpots, spot)
 			end
 		end
@@ -464,7 +481,7 @@ function X.GetAvailabeObserverWardSpots(bot)
 
 	if J.IsEarlyGame() then
 		for _, spot in pairs(X.GetEarlyGameWardSpots()) do
-			if not X.IsOtherWardClose(spot.location, 'npc_dota_observer_wards', nVisionRadius * 2, true, false)
+			if not X.IsOtherWardClose(spot.location, 'npc_dota_observer_wards', nMinObserverSeparation, true, false)
 			and not X.IsThereEnemySentry(spot.location, 1100)
 			and (spot.plant_time_obs == 0 or (DotaTime() > spot.plant_time_obs + 360))
 			then
@@ -494,7 +511,7 @@ function X.GetAvailabeObserverWardSpots(bot)
 						if tower == nTowerList[i] then
 							for _, spot in pairs(spots) do
 								if IsLocationPassable(spot.location)
-								and not X.IsOtherWardClose(spot.location, 'npc_dota_observer_wards', nVisionRadius * 2, true, false)
+								and not X.IsOtherWardClose(spot.location, 'npc_dota_observer_wards', nMinObserverSeparation, true, false)
 								and not X.IsThereEnemySentry(spot.location, 1100)
 								and (spot.plant_time_obs == 0 or (DotaTime() > spot.plant_time_obs + 360))
 								then
@@ -508,7 +525,7 @@ function X.GetAvailabeObserverWardSpots(bot)
 						if tower == nTowerList[i] then
 							for _, spot in pairs(spots) do
 								if IsLocationPassable(spot.location)
-								and not X.IsOtherWardClose(spot.location, 'npc_dota_observer_wards', nVisionRadius * 2, true, false)
+								and not X.IsOtherWardClose(spot.location, 'npc_dota_observer_wards', nMinObserverSeparation, true, false)
 								and not X.IsThereEnemySentry(spot.location, 1100)
 								and (spot.plant_time_obs == 0 or (DotaTime() > spot.plant_time_obs + 360))
 								then
@@ -541,7 +558,7 @@ function X.GetAvailabeObserverWardSpots(bot)
 						if tower == nTowerList[i] then
 							for _, spot in pairs(spots) do
 								if IsLocationPassable(spot.location)
-								and not X.IsOtherWardClose(spot.location, 'npc_dota_observer_wards', nVisionRadius * 2, true, false)
+								and not X.IsOtherWardClose(spot.location, 'npc_dota_observer_wards', nMinObserverSeparation, true, false)
 								and not X.IsThereEnemySentry(spot.location, 1100)
 								and (spot.plant_time_obs == 0 or (DotaTime() > spot.plant_time_obs + 360))
 								then
@@ -555,7 +572,7 @@ function X.GetAvailabeObserverWardSpots(bot)
 						if tower == nTowerList[i] then
 							for _, spot in pairs(spots) do
 								if IsLocationPassable(spot.location)
-								and not X.IsOtherWardClose(spot.location, 'npc_dota_observer_wards', nVisionRadius * 2, true, false)
+								and not X.IsOtherWardClose(spot.location, 'npc_dota_observer_wards', nMinObserverSeparation, true, false)
 								and not X.IsThereEnemySentry(spot.location, 1100)
 								and (spot.plant_time_obs == 0 or (DotaTime() > spot.plant_time_obs + 360))
 								then
@@ -616,7 +633,7 @@ function X.GetPossibleSentryWardSpots(bot)
 
 	if J.IsEarlyGame() then
 		for _, spot in pairs(X.GetEarlyGameWardSpots()) do
-			if not X.IsOtherWardClose(spot.location, 'npc_dota_sentry_wards', 1200, true, false)
+			if not X.IsOtherWardClose(spot.location, 'npc_dota_sentry_wards', nMinSentrySeparation, true, false)
 			and not J.Site.IsLocationHaveTrueSight(spot.location)
 			then
 				if (spot.plant_time_obs > 0 and DotaTime() - spot.plant_time_obs < 360) -- got "dewarded"
@@ -650,7 +667,7 @@ function X.GetPossibleSentryWardSpots(bot)
 							if tower == nTowerList[i] then
 								for _, spot in pairs(spots) do
 									if IsLocationPassable(spot.location)
-									and not X.IsOtherWardClose(spot.location, 'npc_dota_sentry_wards', 1200, true, false)
+									and not X.IsOtherWardClose(spot.location, 'npc_dota_sentry_wards', nMinSentrySeparation, true, false)
 									and not J.Site.IsLocationHaveTrueSight(spot.location)
 									then
 										if (spot.plant_time_obs > 0 and DotaTime() - spot.plant_time_obs < 360) -- got "dewarded"
@@ -667,7 +684,7 @@ function X.GetPossibleSentryWardSpots(bot)
 							if tower == nTowerList[i] then
 								for _, spot in pairs(spots) do
 									if IsLocationPassable(spot.location)
-									and not X.IsOtherWardClose(spot.location, 'npc_dota_sentry_wards', 1200, true, false)
+									and not X.IsOtherWardClose(spot.location, 'npc_dota_sentry_wards', nMinSentrySeparation, true, false)
 									and not J.Site.IsLocationHaveTrueSight(spot.location)
 									then
 										if (spot.plant_time_obs > 0 and DotaTime() - spot.plant_time_obs < 360) -- got "dewarded"
@@ -701,7 +718,7 @@ function X.GetPossibleSentryWardSpots(bot)
 							if tower == nTowerList[i] then
 								for _, spot in pairs(spots) do
 									if IsLocationPassable(spot.location)
-									and not X.IsOtherWardClose(spot.location, 'npc_dota_sentry_wards', 1200, true, false)
+									and not X.IsOtherWardClose(spot.location, 'npc_dota_sentry_wards', nMinSentrySeparation, true, false)
 									and not J.Site.IsLocationHaveTrueSight(spot.location)
 									then
 										if (spot.plant_time_obs > 0 and DotaTime() - spot.plant_time_obs < 360) -- got "dewarded"
@@ -718,7 +735,7 @@ function X.GetPossibleSentryWardSpots(bot)
 							if tower == nTowerList[i] then
 								for _, spot in pairs(spots) do
 									if IsLocationPassable(spot.location)
-									and not X.IsOtherWardClose(spot.location, 'npc_dota_sentry_wards', 1200, true, false)
+									and not X.IsOtherWardClose(spot.location, 'npc_dota_sentry_wards', nMinSentrySeparation, true, false)
 									and not J.Site.IsLocationHaveTrueSight(spot.location)
 									then
 										if (spot.plant_time_obs > 0 and DotaTime() - spot.plant_time_obs < 360) -- got "dewarded"

@@ -157,17 +157,38 @@ Effects:
 
 ---
 
-## Sentry wards (`X.GetPossibleSentryWardSpots`)
+## Observer + sentry pairing
 
-Sentries are **not** placed everywhere observers can go. A tower/lane spot becomes a sentry
-candidate only when **either**:
+**Every observer the bots plant is paired with a sentry at the same spot.** This is enforced
+in `mode_ward_generic.lua`:
+
+- **If the bot carries both** (or a combined `item_ward_dispenser`): it plants the observer,
+  then immediately drops a sentry at the same location (small random offset). The pending
+  sentry is tracked in `hPendingSentryLoc` and completed at top priority on the next tick(s),
+  so an observer is never left uncovered.
+- **If the bot has both, it never drops a lone sentry** at a "sentry spot" — the standalone
+  sentry-spot placement only runs when the bot has **no** observer (`ObserverWard == nil`).
+- **Observer-only** (somehow holding an observer but no sentry): the bot **holds** the
+  observer and waits — it will not place it until a sentry is also available.
+- **Sentry-only**: placing a lone sentry at sentry spots is allowed (see below).
+- **Dewarding is exempt** (a blind sentry drop to reveal an enemy ward is still allowed).
+
+**Purchasing** (`item_purchase_generic.lua`, pos 5): whenever the observer carrier buys
+observers it also tops up **sentries** (kept up to 2 charges, dispenser-aware via
+`Item.GetWardCharges`) so it always has a sentry to pair. There is no rush — wards are bought
+to stash / delivered by courier.
+
+## Sentry wards (`X.GetPossibleSentryWardSpots`) — lone-sentry carriers
+
+Used only by bots carrying sentries **without** an observer (e.g. pos 4). Sentries are **not**
+placed everywhere observers can go. A tower/lane spot becomes a sentry candidate only when
+**either**:
 
 - that spot was **recently dewarded** (`plant_time_obs` set within the last 360s), **or**
 - there is an **allied observer within 400 units** (protect / extend our own obs).
 
-…and the spot has **no allied sentry within 1200**, **no existing true-sight**, and (early
-game) is passable. In short: sentries defend our own observers and re-contest spots the
-enemy just dewarded, rather than blanket-covering the map.
+…and the spot has **no allied sentry within `nMinSentrySeparation`** (2400), **no existing
+true-sight**, and (early game) is passable.
 
 ---
 
@@ -188,13 +209,16 @@ Three helpers drive active deward behavior:
 Every candidate observer spot must pass:
 
 - `IsLocationPassable(spot.location)` — valid ground.
-- **No allied observer** within `nVisionRadius * 2` (= 3200) — avoids overlapping vision.
+- **No allied observer** within `nMinObserverSeparation` (= `nVisionRadius * 2` = 3200) —
+  keeps observers from clustering so vision spreads across the map (circles touch, no
+  overlap). Raise this constant to spread observers further apart.
 - **No enemy sentry** within 1100 — don't plant into detection.
 - **Replant cooldown**: `plant_time_obs == 0` or `DotaTime() > plant_time_obs + 360`
   (6 min) — a spot isn't reused for 6 minutes after it was last warded.
 
-Sentry candidates: no allied sentry within 1200, no existing true sight, plus the
-observer-adjacency / recently-dewarded condition above.
+Sentry candidates: no allied sentry within `nMinSentrySeparation` (= 2400), no existing true
+sight, plus the observer-adjacency / recently-dewarded condition above. Both separation
+constants live at the top of `aba_ward_utility.lua`.
 
 ---
 

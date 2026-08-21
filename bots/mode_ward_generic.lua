@@ -29,8 +29,13 @@ local fLastDewardPlantTime = -math.huge
 -- Think plants the matching ward type when the bot carries both.
 local bTargetIsSentry = false
 
+-- A location where we still owe a paired sentry: set right after planting an observer so
+-- every observer we place is covered by a sentry at the same spot. Persists across ticks
+-- (like fLastWardPlantTime) until the sentry is dropped or we no longer carry one.
+local hPendingSentryLoc = nil
+
 function GetDesire()
-	if J.GetPosition(bot) <= 3 then return false end
+	-- Every bot (cores included) can ward now, not just supports.
 	-- local cacheKey = 'GetWardDesire'..tostring(bot:GetPlayerID())
 	-- local cachedVar = J.Utils.GetCachedVars(cacheKey, 0.6 * (1 + Customize.ThinkLess))
 	-- if DotaTime() > 30 and cachedVar ~= nil then return cachedVar end
@@ -68,6 +73,16 @@ function GetDesireHelper()
 
     local bSafe = #bot:GetNearbyHeroes(1000, true, BOT_MODE_NONE) == 0
 
+    -- 0) Finish the paired sentry for an observer we just planted -- top priority so we
+    --    never leave an observer uncovered. Drops when the sentry is gone.
+    if hPendingSentryLoc ~= nil then
+        if SentryWard ~= nil and J.CanCastAbility(SentryWard) then
+            bDewarding = false
+            return BOT_MODE_DESIRE_VERYHIGH
+        end
+        hPendingSentryLoc = nil
+    end
+
     -- 1) TOP PRIORITY: destroy a visible enemy ward (revealed by our detection).
     if bSafe then
         local hVisibleWard = W.GetNearbyEnemyWard(bot, 1200)
@@ -82,7 +97,9 @@ function GetDesireHelper()
 
     -- 2) Observer placement -- primary vision, territory-aware (aggressive when
     --    winning, defensive when losing); GetClosestObserverWardSpot biases the side.
-    if J.CanCastAbility(ObserverWard) then
+    --    Only place an observer if we also carry a sentry to pair with it (dispenser
+    --    counts as both). With observers but no sentry we hold and wait for one.
+    if J.CanCastAbility(ObserverWard) and SentryWard ~= nil then
         local spot = W.GetClosestObserverWardSpot(bot, W.GetAvailabeObserverWardSpots(bot))
         if spot and (not X.IsEnemyCloserToWardLocation(spot.location) or J.IsRealInvisible(bot)) then
             if DotaTime() < 0 and DotaTime() > (J.IsModeTurbo() and -45 or -60) then
@@ -115,13 +132,18 @@ function GetDesireHelper()
             end
         end
 
-        local spot = W.GetClosestSentryWardSpot(bot, W.GetPossibleSentryWardSpots(bot))
-        if spot and (not X.IsEnemyCloserToWardLocation(spot.location) or J.IsRealInvisible(bot)) then
-            if DotaTime() > fLastWardPlantTime + 1.0 and GetUnitToLocationDistance(bot, spot.location) <= 3200 then
-                hTargetSpot = spot
-                bDewarding = false
-                bTargetIsSentry = true
-                return BOT_MODE_DESIRE_VERYHIGH
+        -- Lone sentry placement only when we do NOT carry an observer. If we have both,
+        -- sentries are paired with observers (step 0 / observer placement) instead of
+        -- being dropped on their own.
+        if ObserverWard == nil then
+            local spot = W.GetClosestSentryWardSpot(bot, W.GetPossibleSentryWardSpots(bot))
+            if spot and (not X.IsEnemyCloserToWardLocation(spot.location) or J.IsRealInvisible(bot)) then
+                if DotaTime() > fLastWardPlantTime + 1.0 and GetUnitToLocationDistance(bot, spot.location) <= 3200 then
+                    hTargetSpot = spot
+                    bDewarding = false
+                    bTargetIsSentry = true
+                    return BOT_MODE_DESIRE_VERYHIGH
+                end
             end
         end
     end
@@ -138,6 +160,33 @@ end
 function Think()
 	if J.CanNotUseAction(bot) then return end
 	if J.Utils.IsBotThinkingMeaningfulAction(bot, Customize.ThinkLess, "ward") then return end
+
+	-- Drop the paired sentry for an observer we just planted, at the same spot.
+	if hPendingSentryLoc ~= nil then
+		if SentryWard and J.CanCastAbility(SentryWard) then
+			if GetUnitToLocationDistance(bot, hPendingSentryLoc) <= nSentryWardCastRange then
+				local vLoc = hPendingSentryLoc + RandomVector(60)
+				if SentryWard:GetName() == 'item_ward_sentry' then
+					bot:Action_UseAbilityOnLocation(SentryWard, vLoc)
+				else
+					if SentryWard:GetToggleState() == true then
+						bot:Action_UseAbilityOnEntity(SentryWard, bot)
+						return
+					else
+						bot:Action_UseAbilityOnLocation(SentryWard, vLoc)
+					end
+				end
+				if hTargetSpot then hTargetSpot.plant_time_sentry = DotaTime() end
+				fLastWardPlantTime = DotaTime()
+				hPendingSentryLoc = nil
+			else
+				bot:Action_MoveToLocation(hPendingSentryLoc)
+			end
+		else
+			hPendingSentryLoc = nil
+		end
+		return
+	end
 
 	if bDewarding then
 		-- Prefer attacking a revealed enemy ward; re-acquire in case a fresh one showed.
@@ -191,6 +240,11 @@ function Think()
 				end
 
 				hTargetSpot.plant_time_obs = DotaTime()
+				fLastWardPlantTime = DotaTime()
+				-- Queue a paired sentry at the same spot so this observer is covered.
+				if SentryWard ~= nil then
+					hPendingSentryLoc = hTargetSpot.location
+				end
 				return
 			else
 				bot:Action_MoveToLocation(hTargetSpot.location)
@@ -198,7 +252,7 @@ function Think()
 			end
 		end
 
-		if SentryWard and J.CanCastAbility(SentryWard) then
+		if bTargetIsSentry and SentryWard and J.CanCastAbility(SentryWard) then
 			if GetUnitToLocationDistance(bot, hTargetSpot.location) <= nSentryWardCastRange then
 				local fLength = 0
 				if W.IsOtherWardClose(hTargetSpot.location, 'npc_dota_observer_wards', 300, true, false) then

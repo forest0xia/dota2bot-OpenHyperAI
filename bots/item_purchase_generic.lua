@@ -857,31 +857,25 @@ function ItemPurchaseThink()
 	end
 
 	-- Observer and Sentry Wards
-	if J.GetPosition(bot) == 4 and DotaTime() > 300 and botWorth < 25000
+	if botWorth < 25000
 	then
-		local wardType = 'item_ward_sentry'
-
-		if GetItemStockCount(wardType) > 1
+		local wardType = 'item_ward_observer'
+		if GetItemStockCount(wardType) > 2
 		and botGold >= GetItemCost(wardType)
 		and Item.GetEmptyInventoryAmount(bot) >= 2
-		and Item.GetItemCharges(bot, wardType) < 1
+		and Item.GetWardCharges(bot, wardType) < 2
 		and botCourierValue == 0
 		then
 			bot:ActionImmediate_PurchaseItem(wardType)
 		end
-	end
 
-	if J.GetPosition(bot) == 5 and botWorth < 25000
-	then
-		local wardType = 'item_ward_observer'
-
-		if GetItemStockCount(wardType) > 1
-		and botGold >= GetItemCost(wardType)
-		and Item.GetEmptyInventoryAmount(bot) >= 2
-		and Item.GetItemCharges(bot, wardType) < 2
-		and botCourierValue == 0
+		local sentryType = 'item_ward_sentry'
+		if GetItemStockCount(sentryType) > 3
+		and botGold >= GetItemCost(sentryType)
+		and Item.GetEmptyInventoryAmount(bot) >= 1
+		and Item.GetWardCharges(bot, sentryType) < 2
 		then
-			bot:ActionImmediate_PurchaseItem(wardType)
+			bot:ActionImmediate_PurchaseItem(sentryType)
 		end
 	end
 
