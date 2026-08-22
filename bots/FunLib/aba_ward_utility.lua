@@ -17,7 +17,7 @@ local WARD_POSITION = {
     [1] = { location = Vector(-4347, -1055), plant_time_obs = 0, plant_time_sentry = 0, }, -- RADIANT_CLIFF_LEFT
     [2] = { location = Vector(-1313, -4367), plant_time_obs = 0, plant_time_sentry = 0, }, -- RADIANT_CLIFF_RIGHT
     [3] = { location = Vector(1034, 3600), plant_time_obs = 0, plant_time_sentry = 0, }, -- DIRE_CLIFF_LEFT
-    [4] = { location = Vector(4613, 850), plant_time_obs = 0, plant_time_sentry = 0, }, -- DIRE_CLIFF_RIGHT
+    [4] = { location = Vector(4635, 780), plant_time_obs = 0, plant_time_sentry = 0, }, -- DIRE_CLIFF_RIGHT
     [5] = { location = Vector(-4550, 4867), plant_time_obs = 0, plant_time_sentry = 0, }, -- DIRE_EASY_LINE
     [6] = { location = Vector(4558, -4900), plant_time_obs = 0, plant_time_sentry = 0, }, -- RADIANT_EASY_LINE
 }

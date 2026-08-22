@@ -332,11 +332,8 @@ function Think()
 			return
 		end
 
-		-- All bots chase the nearest bounty rune at game start
-		local dist1 = GetUnitToLocationDistance(bot, GetRuneSpawnLocation(RUNE_BOUNTY_1))
-		local dist2 = GetUnitToLocationDistance(bot, GetRuneSpawnLocation(RUNE_BOUNTY_2))
-		local targetBounty = (dist1 < dist2) and RUNE_BOUNTY_1 or RUNE_BOUNTY_2
-		bot:Action_MoveToLocation(GetRuneSpawnLocation(targetBounty) + RandomVector(50))
+		-- All bots head to their randomly chosen rune at game start
+		bot:Action_MoveToLocation(GetRuneSpawnLocation(X.GetChosenRune()) + RandomVector(50))
 		return
 	end
 
@@ -639,25 +636,45 @@ function X.GetScaledDesire(nBase, nCurrDist, nMaxDist)
 	return resDesire
 end
 
+-- Each bot randomly commits to one of the four rune spots at game start.
+local nChosenRune = nil
+function X.GetChosenRune()
+	if nChosenRune == nil then
+		nChosenRune = nRuneList[RandomInt(1, #nRuneList)]
+	end
+	return nChosenRune
+end
+
 local vGoOutLoc = nil
 function X.GetGoOutLocation()
 	if vGoOutLoc then return vGoOutLoc end
 
+	local nOutLocations
 	if GetTeam() == TEAM_RADIANT then
-		if botPos == 1 or botPos == 5 then
-			local locs = { Vector(526.370239, -3893.405762, 256.000000), Vector(1999.415894, -4838.790039, 256.000000) }
-			vGoOutLoc = locs[RandomInt(1, #locs)]
-		elseif botPos == 2 or botPos == 3 or botPos == 4 then
-			local locs = { Vector(-3456.702637, 649.725403, 256.000000), Vector(-1945.830322, 60.404663, 128.000000) }
-			vGoOutLoc = locs[RandomInt(1, #locs)]
-		end
-	elseif GetTeam() == TEAM_DIRE then
-		if botPos == 1 or botPos == 5 then
-			local locs = { Vector(-1051.021973, 3384.059082, 256.000000), Vector(-2415.422119, 4641.448242, 256.000000) }
-			vGoOutLoc = locs[RandomInt(1, #locs)]
-		elseif botPos == 2 or botPos == 3 or botPos == 4 then
-			local locs = { Vector(2734.819580, -1155.105225, 256.000000), Vector(1142.979614, -337.891663, 128.000000) }
-			vGoOutLoc = locs[RandomInt(1, #locs)]
+		nOutLocations = {
+			Vector(526.370239, -3893.405762, 256.000000),
+			Vector(1999.415894, -4838.790039, 256.000000),
+			Vector(-3456.702637, 649.725403, 256.000000),
+			Vector(-1945.830322, 60.404663, 128.000000),
+		}
+	else
+		nOutLocations = {
+			Vector(-1051.021973, 3384.059082, 256.000000),
+			Vector(-2415.422119, 4641.448242, 256.000000),
+			Vector(2734.819580, -1155.105225, 256.000000),
+			Vector(1142.979614, -337.891663, 128.000000),
+		}
+	end
+
+	-- Stage at the go-out spot closest to this bot's chosen rune.
+	local vRuneLocation = GetRuneSpawnLocation(X.GetChosenRune())
+	vGoOutLoc = nOutLocations[1]
+	local nBestDist = J.GetDistance(vGoOutLoc, vRuneLocation)
+	for i = 2, #nOutLocations do
+		local nDist = J.GetDistance(nOutLocations[i], vRuneLocation)
+		if nDist < nBestDist then
+			vGoOutLoc = nOutLocations[i]
+			nBestDist = nDist
 		end
 	end
 
