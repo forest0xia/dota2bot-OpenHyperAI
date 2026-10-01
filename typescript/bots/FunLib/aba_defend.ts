@@ -24,7 +24,7 @@ const MAX_DESIRE_CAP = 0.98;
 // Base threat (Ancient defense)
 const BASE_THREAT_RADIUS = 2600;
 const BASE_LEASH_OUTBOUND = 1200;
-const BASE_THREAT_HOLD = 4.0;
+const BASE_THREAT_HOLD = 8.0; // 自定义：4→8 秒，给队友 TP/走路到场时间（防"人来不齐就散"）
 
 // Perf: cache intervals (seconds)
 const CACHE_ENEMY_AROUND_LOC_HZ = 0.35; // cache for weighted enemy scans around a location
@@ -99,6 +99,7 @@ type CachedDefendUnitState = {
     alliedCreeps: Unit[];
     enemyCreeps: Unit[];
     teamMembers: Unit[];
+    enemies: Unit[];
 };
 
 const DEFEND_CACHE_TTL = 0.5; // 500ms cache TTL - increased for better performance
@@ -198,6 +199,7 @@ function updateDefendUnitStateCache(): CachedDefendUnitState {
         alliedCreeps: GetUnitList(UnitType.AlliedCreeps),
         enemyCreeps: GetUnitList(UnitType.Enemies).filter(u => u.IsCreep() || u.IsAncientCreep()),
         teamMembers,
+        enemies: GetUnitList(UnitType.Enemies),
     };
 
     return defendUnitStateCache;
@@ -242,7 +244,7 @@ function WeightedEnemiesAroundLocation(vLoc: Vector, nRadius: number): number {
 
     const unitState = updateDefendUnitStateCache();
     let count = 0;
-    for (const unit of unitState.enemyHeroes) {
+    for (const unit of unitState.enemies) {
         if (jmz.IsValid(unit) && GetUnitToLocationDistance(unit, vLoc) <= nRadius) {
             const name = unit.GetUnitName();
             if (jmz.IsValidHero(unit) && !jmz.IsSuspiciousIllusion(unit)) {
@@ -286,11 +288,28 @@ function GetThreatenedLane(): Lane {
         const enemyHeroCnt = _recentHeroCountNear(anchor, 1800);
         let score = enemyHeroCnt * 10; // heroes dominate the score
 
+        // 自定义：高地/基地威胁直接拉满——敌方在我方高地/基地附近时该路必选
+        // （修复：敌方上高但不在 anchor 1800 内时原逻辑选错路，bot 去守兵线路）
+        const hgEdge = GetHighGroundEdgeWaitPoint(nTeam, ln);
+        const enemiesAtHGBuilding = jmz.GetLastSeenEnemiesNearLoc(hgEdge, 2000);
+        const ourAncient = GetAncient(nTeam);
+        const enemiesAtBase = ourAncient ? jmz.GetLastSeenEnemiesNearLoc(ourAncient.GetLocation(), 2600) : [];
+        // 修复平局：威胁人数多的路分数更高（999 + 人数），两条路同时有威胁时不随机取第一条
+        const threatCount = enemiesAtHGBuilding.length + enemiesAtBase.length;
+        if (threatCount >= 1) {
+            score = 999 + threatCount; // 高地/基地有敌人 → 必守此路，且人多者优先
+        }
+
         if (enemyHeroCnt === 0) {
             // don’t let creeps fully tie heroes; smaller radius + cap
             const creepEq = math.min(WeightedEnemiesAroundLocation(anchor, 1200) * 0.4, 0.9);
             score += creepEq;
         }
+
+        // 自定义：中路权重 1.2（中塔战略价值高：视野/兵线/野区入口）
+        // 注意：仅当"无高地威胁"时乘权重——威胁短路分（999+人数）不能被 ×1.2，
+        // 否则中路 1 人威胁 (999+1)×1.2=1200 会压过其他路 5 人威胁 999+5=1004（平局修复被抵消）
+        if (ln === Lane.Mid && threatCount === 0) score *= 1.2;
 
         if (score > bestScore) {
             bestScore = score;
@@ -621,7 +640,7 @@ export function GetDefendDesireHelper(bot: Unit, lane: Lane): BotModeDesire {
     // Update caches
     const gameState = updateDefendGameStateCache();
     const locationState = updateDefendLocationStateCache();
-    // const unitState = updateDefendUnitStateCache(); // Not used in this function
+    const unitState = updateDefendUnitStateCache();
 
     // currentTime = gameState.currentTime; // Using cached value directly
     const team = gameState.team;
@@ -696,6 +715,17 @@ export function GetDefendDesireHelper(bot: Unit, lane: Lane): BotModeDesire {
         baseThreatUntil = DotaTime() + BASE_THREAT_HOLD;
         panic = { active: true, floor: 0.96, forceLoc: ancient ? jmz.AdjustLocationWithOffsetTowardsFountain(ancient.GetLocation(), 300) : ds.defendLoc };
         (bot as any).laneToDefend = lane;
+        // 自定义：有队友正在 TP 到威胁路附近 → 延长威胁保持（等人齐再打，防散伙/葫芦娃）
+        const enemyTeamIds = GetTeamPlayers(gameState.enemyTeam);
+        const incoming = GetIncomingTeleports().filter(tp => {
+            if (!tp) return false;
+            const isEnemy = enemyTeamIds.some(id => id === tp.playerid);
+            const tpLaneLoc = threatenedLane === Lane.Top ? GetLaneFrontLocation(nTeam, Lane.Top, 0) : threatenedLane === Lane.Bot ? GetLaneFrontLocation(nTeam, Lane.Bot, 0) : GetLaneFrontLocation(nTeam, Lane.Mid, 0);
+            return !isEnemy && jmz.GetDistance(tp.location, tpLaneLoc) <= 3000;
+        });
+        if (incoming.length >= 1) {
+            baseThreatUntil = DotaTime() + BASE_THREAT_HOLD + 4; // 队友在路上，多等 4 秒
+        }
     }
 
     // If Ancient under attack → ensure at least one support goes (lane-gated)
@@ -796,13 +826,18 @@ export function GetDefendDesireHelper(bot: Unit, lane: Lane): BotModeDesire {
 
     // Use ShouldDefend to gate/dampen
     const shouldDef = ShouldDefend(bot, furthestBuilding, 1600);
+    const isBaseBuilding = buildingTier >= 3;
+    const creepsNearBase = isBaseBuilding && unitState.enemyCreeps.some(u => jmz.IsValid(u) && GetUnitToUnitDistance(furthestBuilding, u) <= 1200);
+
     if (!shouldDef) {
         const dist = ds.distanceToLane[lane];
         const tp = jmz.Utils.GetItemFromFullInventory(bot, "item_tpscroll");
         const nearEnemiesAtBuilding = jmz.GetLastSeenEnemiesNearLoc(furthestBuilding.GetLocation(), 1200);
+        // 自定义：建筑正在被攻击（血量不满）时不因"没看到英雄"就退出——兵线磨塔也要守
+        const buildingUnderAttack = furthestBuilding.GetHealth() < furthestBuilding.GetMaxHealth();
         if (
-            (!jmz.CanCastAbility(tp) && dist && dist > 4000 && nearEnemiesAtBuilding.length === 0) ||
-            (nearEnemiesAtBuilding.length === 0 && jmz.GetAlliesNearLoc(furthestBuilding.GetLocation(), 1600).length >= 1)
+            (!jmz.CanCastAbility(tp) && dist && dist > 4000 && nearEnemiesAtBuilding.length === 0 && !buildingUnderAttack) ||
+            (nearEnemiesAtBuilding.length === 0 && (!isBaseBuilding || !creepsNearBase) && !buildingUnderAttack && jmz.GetAlliesNearLoc(furthestBuilding.GetLocation(), 1600).length >= 1)
         ) {
             return BotModeDesire.VeryLow;
         }
@@ -818,10 +853,13 @@ export function GetDefendDesireHelper(bot: Unit, lane: Lane): BotModeDesire {
     const nDefendAllies = jmz.GetAlliesNearLoc(hub, 2500);
     const nEffAllies = nDefendAllies.length + jmz.Utils.GetAllyIdsInTpToLocation(hub, 2500).length;
 
-    if (lEnemies.length === 0 && (jmz.IsAnyAllyDefending(bot, lane) || jmz.IsCore(bot))) {
+    // 自定义：建筑正在被攻击（血量不满）时不因"没看到英雄"就退出——兵线磨塔也要守
+    const buildingDamaged = furthestBuilding.GetHealth() < furthestBuilding.GetMaxHealth();
+    // 自定义：防堆叠——有 2+ 队友已在守时才退出（保证至少 1-2 人在守，又不 5 人挤一路）
+    if (lEnemies.length === 0 && (!isBaseBuilding || !creepsNearBase) && !buildingDamaged && (jmz.GetAlliesNearLoc(hub, 1600).length >= 2 || jmz.IsCore(bot))) {
         return BotModeDesire.VeryLow;
     }
-    if (lEnemies.length === 1 && (nEffAllies > lEnemies.length || (jmz.IsAnyAllyDefending(bot, lane) && jmz.GetAverageLevel(false) >= jmz.GetAverageLevel(true)))) {
+    if (lEnemies.length === 1 && !buildingDamaged && (nEffAllies > lEnemies.length || (jmz.GetAlliesNearLoc(hub, 1600).length >= 2 && jmz.GetAverageLevel(false) >= jmz.GetAverageLevel(true)))) {
         return BotModeDesire.VeryLow;
     }
 

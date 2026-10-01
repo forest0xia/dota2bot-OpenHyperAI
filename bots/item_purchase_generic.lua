@@ -656,9 +656,14 @@ function ItemPurchaseThink()
 	botDistanceFromFountain = bot:DistanceFromFountain()
 
 	-- try to recover own dropped items (generic, not only for bear)
+	-- OHA MOD 2026/08/13: 排除 tEarlyConsumableItem——TrySellOrDropItem 主动丢的
+	-- 消耗品/小件（补刀斧/魔棒等）不该被捡回，否则"丢→捡回→又满→再丢"无限循环
+	-- （熊德给熊的物品由下方 IsBear 分支处理，不依赖这里的 recover）
 	local dropped = GetDroppedItemList()
 	for _, d in pairs(dropped) do
-		if d ~= nil and d.owner == bot and d.item ~= nil and not string.find(d.item:GetName(), 'token') then
+		if d ~= nil and d.owner == bot and d.item ~= nil
+		and not string.find(d.item:GetName(), 'token')
+		and not Utils.HasValue(Item['tEarlyConsumableItem'], d.item:GetName()) then
 			local dist = GetUnitToLocationDistance(bot, d.location)
 			if dist > 200 and dist < 1000 then
 				bot:Action_MoveToLocation(d.location)

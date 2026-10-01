@@ -252,7 +252,9 @@ function Think()
 		return
 	end
 
-	if J.CanNotUseAction(bot)
+	-- OHA MOD 2026/08/27: 全量版→窄版（不含 HasQueuedAction）——同 attack 模式 8/13 的修复：
+	-- 排队中的移动指令应能被攻击/新行为打断，全量版在队列未消化时整帧跳过 Think = 挂机
+	if J.CanNotUseActionExceptQueue(bot)
 	or bot:GetCurrentActionType() == BOT_ACTION_TYPE_PICK_UP_RUNE
 	then
 		return

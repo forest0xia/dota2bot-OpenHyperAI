@@ -164,6 +164,7 @@ function GetBestDenyCreep(hCreepList)
 		and J.GetHP(creep) < 0.49
 		and J.CanBeAttacked(creep)
 		and creep:GetHealth() <= attackDamage
+		and string.find(creep:GetUnitName(), 'npc_dota_creep_')
 		then
 			return creep
 		end
@@ -172,11 +173,20 @@ function GetBestDenyCreep(hCreepList)
 	return nil
 end
 
-if local_mode_laning_generic or (J.GetPosition(bot) == 1 and J.IsPosxHuman(5)) then
-	function Think()
+function Think()
 		local hitCreep, moveToCreep = GetBestLastHitCreep(nEnemyCreeps)
 		if J.IsValid(hitCreep) then
-			if J.GetPosition(bot) <= 2 or not J.IsThereNonSelfCoreNearby(700)
+			-- 让刀：旁边有己方真人玩家时不补刀（真人优先吃线，不看 bot 自己是什么角色）
+			-- 用 GetUnitList 遍历（与作者 J.IsPosxHuman 同款），不用 GetNearbyHeroes（其 botMode 参数语义不可靠）
+			-- 关键：没有真人时（对面/纯 bot 局）无条件补刀，避免影响 bot 之间正常对线
+			local bHumanNearby = false
+			for _, ally in ipairs(GetUnitList(UNIT_LIST_ALLIED_HEROES)) do
+				if J.IsValidHero(ally) and not ally:IsBot() and GetUnitToUnitDistance(bot, ally) <= 700 then
+					bHumanNearby = true
+					break
+				end
+			end
+			if not bHumanNearby or J.GetPosition(bot) <= 2 or not J.IsThereNonSelfCoreNearby(700)
 			then
 				if GetUnitToUnitDistance(bot, hitCreep) > botAttackRange
 				or (moveToCreep and GetUnitToUnitDistance(bot, hitCreep) > botAttackRange * 0.8) then
@@ -188,12 +198,72 @@ if local_mode_laning_generic or (J.GetPosition(bot) == 1 and J.IsPosxHuman(5)) t
 					return
 				end
 			end
-		end
 
-		local denyCreep = GetBestDenyCreep(nAllyCreeps)
+			-- OHA MOD 2026/08/27: 让刀后压人——让刀真空是"4 号位呆呆不帮忙"的根因：
+			-- 让刀后没刀补、反补苛刻、线上没野 → 兜底 ±50 站位 = 站真人身后发呆。
+			-- 改为让刀时压制对线敌人（600 码内最近的有效敌人），血量健康才压（>0.55），
+			-- 有保命状态的跳过。attack 模式的骚扰打分（0.42）负责模式级压制，
+			-- 这里只在 laning Think 内部兜住"让刀瞬间"的空档。
+			if bHumanNearby and J.GetPosition(bot) > 2 then
+				local pressTarget = nil
+				local pressRange = math.max(botAttackRange + 150, 500)
+				for _, enemy in ipairs(nInRangeEnemy) do
+					if J.IsValidHero(enemy)
+					and not J.IsSuspiciousIllusion(enemy)
+					and J.CanBeAttacked(enemy)
+					and not enemy:HasModifier('modifier_abaddon_borrowed_time')
+					and not enemy:HasModifier('modifier_necrolyte_reapers_scythe')
+					and not enemy:HasModifier('modifier_skeleton_king_reincarnation_scepter_active')
+					and not enemy:HasModifier('modifier_ursa_enrage')
+					and not enemy:HasModifier('modifier_item_aeon_disk_buff')
+					and J.IsInRange(bot, enemy, pressRange)
+					then
+						pressTarget = enemy
+						break
+					end
+				end
+				if pressTarget ~= nil and J.GetHP(bot) > 0.55 then
+					if GetUnitToUnitDistance(bot, pressTarget) > botAttackRange then
+						bot:Action_MoveToLocation(pressTarget:GetLocation() + RandomVector(100))
+					else
+						bot:SetTarget(pressTarget)
+						bot:Action_AttackUnit(pressTarget, true)
+					end
+					return
+					end
+					end
+					end
+
+					local denyCreep = GetBestDenyCreep(nAllyCreeps)
 		if J.IsValid(denyCreep) then
 			bot:SetTarget(denyCreep)
 			bot:Action_AttackUnit(denyCreep, true)
+			return
+		end
+
+		-- OHA MOD 2026/08/13: 没刀没反补 → 打附近野（800 内）——治"无事可做=站桩挂机"
+		local nNeutrals = bot:GetNearbyNeutralCreeps(800)
+		-- 真人玩家在刷这组野（【野怪】700 码内有真人，不是 bot 距离！）→ 不抢
+		-- OHA MOD 2026/08/28: 辅助让核心野（bot 间秩序）——4/5 号位 + 野 700 码内有
+		-- 本方核心（不查攻击状态）→ 不打，走让刀兜底（兵线后站位）
+		local bHumanFarmingHere = false
+		local bCoreFarmingHere = false
+		for _, ally2 in ipairs(GetUnitList(UNIT_LIST_ALLIED_HEROES)) do
+			if J.IsValidHero(ally2) and #nNeutrals > 0 then
+				local dToCamp = GetUnitToUnitDistance(ally2, nNeutrals[1])
+				if not ally2:IsBot() and dToCamp <= 700 then
+					bHumanFarmingHere = true
+					break
+				end
+				if ally2 ~= bot and J.IsCore(ally2) and dToCamp <= 700 then
+					bCoreFarmingHere = true
+				end
+			end
+		end
+		if not bHumanFarmingHere and #nNeutrals > 0
+		and not (J.GetPosition(bot) >= 4 and bCoreFarmingHere) then
+			bot:SetTarget(nNeutrals[1])
+			bot:Action_AttackUnit(nNeutrals[1], true)
 			return
 		end
 
@@ -211,9 +281,9 @@ if local_mode_laning_generic or (J.GetPosition(bot) == 1 and J.IsPosxHuman(5)) t
 			target_loc = GetLaneFrontLocation(GetOpposingTeam(), botAssignedLane, -nLongestAttackRange)
 		end
 
-		bot:Action_MoveToLocation(target_loc + RandomVector(50))
+		-- OHA MOD 2026/08/27: 50→150——50 码抖动=钉在原地（观感站桩），150 让 bot 有实际走位
+		bot:Action_MoveToLocation(target_loc + RandomVector(150))
 	end
-end
 
 
 function PickOneAnnouncer()

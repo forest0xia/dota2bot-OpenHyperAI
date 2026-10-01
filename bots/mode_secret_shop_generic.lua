@@ -86,7 +86,8 @@ function OnEnd()
 end
 
 function Think()
-	if J.CanNotUseAction(bot) then return end
+	-- OHA MOD 2026/08/27: 全量版→窄版（不含 HasQueuedAction），同 attack 8/13 修复
+	if J.CanNotUseActionExceptQueue(bot) then return end
 	if bot:IsChanneling() 
 		or bot:NumQueuedActions() > 0
 		or bot:IsCastingAbility()
