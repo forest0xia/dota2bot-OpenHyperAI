@@ -105,16 +105,36 @@ function X.Think()
 		end
 	end
 
+	local bSupport = J.GetPosition(bot) >= 4
+
+	-- Supports deny first and leave the last hits to their core.
+	if bSupport then
+		local denyCreep = GetBestDenyCreep(nAllyCreeps)
+		if J.IsValid(denyCreep) then
+			bot:Action_AttackUnit(denyCreep, true)
+			return
+		end
+	end
+
 	-- Last-hit with support suppression (reference: lane partner check)
 	local hitCreep = GetBestLastHitCreep(nEnemyCreeps)
 	if J.IsValid(hitCreep) then
-		local nLanePartner = J.GetLanePartner(bot)
-		-- Support defers to core lane partner if partner is alive and nearby
-		if nLanePartner == nil
-		or J.IsCore(bot)
-		or (not J.IsCore(bot) and J.IsCore(nLanePartner)
-			and (not nLanePartner:IsAlive() or not J.IsInRange(bot, nLanePartner, 800)))
-		then
+		local bCanLastHit
+		if bSupport then
+			-- Supports only farm when no core is nearby to take the creep.
+			bCanLastHit = not J.IsThereNonSelfCoreNearby(1000)
+		else
+			local nLanePartner = J.GetLanePartner(bot)
+			-- Support defers to core lane partner if partner is alive and nearby
+			bCanLastHit = (
+				nLanePartner == nil
+				or J.IsCore(bot)
+				or (not J.IsCore(bot) and J.IsCore(nLanePartner)
+					and (not nLanePartner:IsAlive() or not J.IsInRange(bot, nLanePartner, 800)))
+			)
+		end
+
+		if bCanLastHit then
 			if GetUnitToUnitDistance(bot, hitCreep) > botAttackRange then
 				bot:Action_MoveToUnit(hitCreep)
 			else
@@ -124,11 +144,13 @@ function X.Think()
 		end
 	end
 
-	-- Deny
-	local denyCreep = GetBestDenyCreep(nAllyCreeps)
-	if J.IsValid(denyCreep) then
-		bot:Action_AttackUnit(denyCreep, true)
-		return
+	-- Deny (cores; supports already checked above)
+	if not bSupport then
+		local denyCreep = GetBestDenyCreep(nAllyCreeps)
+		if J.IsValid(denyCreep) then
+			bot:Action_AttackUnit(denyCreep, true)
+			return
+		end
 	end
 
 	-- Support harass: only when few enemy creeps nearby (low aggro risk)
@@ -186,16 +208,22 @@ function GetBestLastHitCreep(hCreepList)
 end
 
 function GetBestDenyCreep(hCreepList)
+	local fallbackCreep = nil
 	for _, creep in pairs(hCreepList) do
 		if J.IsValid(creep)
 		and J.GetHP(creep) < 0.49
 		and J.CanBeAttacked(creep)
 		and creep:GetHealth() <= bot:GetAttackDamage()
 		then
-			return creep
+			-- Prefer a deny that can be executed immediately; otherwise keep
+			-- the first valid creep as a fallback.
+			if GetUnitToUnitDistance(bot, creep) <= bot:GetAttackRange() + 100 then
+				return creep
+			end
+			if fallbackCreep == nil then fallbackCreep = creep end
 		end
 	end
-	return nil
+	return fallbackCreep
 end
 
 function GetHarassTarget(hEnemyList)
