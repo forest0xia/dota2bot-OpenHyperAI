@@ -17,6 +17,23 @@ local nInRangeEnemy = nil
 local botAssignedLane = nil
 local botAttackRange = bot:GetAttackRange()
 local attackDamage = bot:GetAttackDamage()
+
+-- Positions 1-3 are cores (the carry and solo laners).
+local function IsCoreRole()
+	return J.GetPosition(bot) <= 3
+end
+
+-- Positions 4 and 5 are supports. They should deny creeps for their core
+-- instead of competing with the core for last hits.
+local function IsSupportRole()
+	return J.GetPosition(bot) >= 4
+end
+
+-- When a human player is supporting, the AI cores in the lane should farm
+-- more actively (both last hits and denies).
+local function IsHumanSupportOnTeam()
+	return J.IsPosxHuman(4) or J.IsPosxHuman(5)
+end
 local nH, enemyBots = J.Utils.NumHumanBotPlayersInTeam(GetOpposingTeam())
 local teamHumans, teamBots = J.Utils.NumHumanBotPlayersInTeam(GetTeam())
 
@@ -94,12 +111,22 @@ function GetDesire()
 	-- 	return 0.2
 	-- end
 
-	if local_mode_laning_generic or (J.GetPosition(bot) == 1 and J.IsPosxHuman(5)) then
-		-- last hit
+	-- AI cores should contest both last hits and denies when a human player
+	-- is supporting them.
+	local bHumanSupport = IsHumanSupportOnTeam()
+	if local_mode_laning_generic or (IsCoreRole() and bHumanSupport) then
 		if J.IsInLaningPhase() then
 			local hitCreep, _ = GetBestLastHitCreep(nEnemyCreeps)
-			if J.IsValid(hitCreep) then
-				if J.GetPosition(bot) <= 2 or not J.IsThereNonSelfCoreNearby(700) -- this is for e.g lone druid bear as pos1-2 with core LD nearby to do last hit.
+			local denyCreep = nil
+			if IsCoreRole() and bHumanSupport then
+				denyCreep = GetBestDenyCreep(nAllyCreeps)
+			end
+
+			if J.IsValid(hitCreep) or J.IsValid(denyCreep) then
+				-- this is for e.g lone druid bear as pos1-2 with core LD nearby to do last hit.
+				-- Supports only get the last-hit desire boost when no core is around.
+				local nCoreRadius = IsSupportRole() and 1000 or 700
+				if J.GetPosition(bot) <= 2 or not J.IsThereNonSelfCoreNearby(nCoreRadius)
 				then
 					return 0.9
 				end
@@ -158,6 +185,7 @@ function GetBestLastHitCreep(hCreepList)
 end
 
 function GetBestDenyCreep(hCreepList)
+	local fallbackCreep = nil
 	for _, creep in pairs(hCreepList)
 	do
 		if J.IsValid(creep)
@@ -165,19 +193,45 @@ function GetBestDenyCreep(hCreepList)
 		and J.CanBeAttacked(creep)
 		and creep:GetHealth() <= attackDamage
 		then
-			return creep
+			-- Prefer a deny that can be executed immediately; otherwise keep
+			-- the first valid creep as a fallback.
+			if GetUnitToUnitDistance(bot, creep) <= botAttackRange + 100 then
+				return creep
+			end
+			if fallbackCreep == nil then fallbackCreep = creep end
 		end
 	end
 
-	return nil
+	return fallbackCreep
 end
 
-if local_mode_laning_generic or (J.GetPosition(bot) == 1 and J.IsPosxHuman(5)) then
+if local_mode_laning_generic or (IsCoreRole() and IsHumanSupportOnTeam()) or IsSupportRole() then
 	function Think()
+		local bSupport = IsSupportRole()
+
+		-- Supports prioritize denies over last hits. The core gets the farm,
+		-- while the support makes sure the allied creep is denied.
+		if bSupport then
+			local denyCreep = GetBestDenyCreep(nAllyCreeps)
+			if J.IsValid(denyCreep) then
+				bot:SetTarget(denyCreep)
+				bot:Action_AttackUnit(denyCreep, true)
+				return
+			end
+		end
+
 		local hitCreep, moveToCreep = GetBestLastHitCreep(nEnemyCreeps)
 		if J.IsValid(hitCreep) then
-			if J.GetPosition(bot) <= 2 or not J.IsThereNonSelfCoreNearby(700)
-			then
+			local bCanLastHit
+			if bSupport then
+				-- Do not compete with a core for last hits. Only take the
+				-- creep when no core is around to farm it.
+				bCanLastHit = not J.IsThereNonSelfCoreNearby(1000)
+			else
+				bCanLastHit = J.GetPosition(bot) <= 2 or not J.IsThereNonSelfCoreNearby(700)
+			end
+
+			if bCanLastHit then
 				if GetUnitToUnitDistance(bot, hitCreep) > botAttackRange
 				or (moveToCreep and GetUnitToUnitDistance(bot, hitCreep) > botAttackRange * 0.8) then
 					bot:Action_MoveToUnit(hitCreep)
@@ -190,15 +244,34 @@ if local_mode_laning_generic or (J.GetPosition(bot) == 1 and J.IsPosxHuman(5)) t
 			end
 		end
 
-		local denyCreep = GetBestDenyCreep(nAllyCreeps)
-		if J.IsValid(denyCreep) then
-			bot:SetTarget(denyCreep)
-			bot:Action_AttackUnit(denyCreep, true)
-			return
+		if not bSupport then
+			local denyCreep = GetBestDenyCreep(nAllyCreeps)
+			if J.IsValid(denyCreep) then
+				bot:SetTarget(denyCreep)
+				bot:Action_AttackUnit(denyCreep, true)
+				return
+			end
 		end
 
 		if local_mode_laning_generic then
 			local_mode_laning_generic.Think()
+		end
+
+		-- Supports: harass an enemy hero only when creep aggro is low.
+		if bSupport and J.GetHP(bot) > 0.5 then
+			local nCloseEnemyCreeps = bot:GetNearbyLaneCreeps(600, true)
+			if #nCloseEnemyCreeps <= 1 then
+				for _, enemy in pairs(nInRangeEnemy) do
+					if J.IsValidHero(enemy)
+					and J.CanBeAttacked(enemy)
+					and not J.IsSuspiciousIllusion(enemy)
+					and J.IsInRange(bot, enemy, botAttackRange + 150)
+					then
+						bot:Action_AttackUnit(enemy, true)
+						return
+					end
+				end
+			end
 		end
 
 		local fLaneFrontAmount = GetLaneFrontAmount(GetTeam(), botAssignedLane, false)
