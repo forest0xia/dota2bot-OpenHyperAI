@@ -155,7 +155,7 @@ export function schedule(i, variants) {
 // pre-game; that the bots apply it was checked once with the "sonda" variant (bench/README.md) and each match logs
 // casts per team. (The bots' print does reach the log, but only in observer mode: OHA silences it otherwise.)
 export function validity({ outcome, roster, variant, loggedVariant, version, firstVersion, modo = "normal", loggedModo,
-  espejo = "", start, codigo, firstCodigo, couriers, intrusos, tardios, esperado }) {
+  espejo = "", start, codigo, firstCodigo, couriers, intrusos, tardios, esperado, killsAtStart = null }) {
   // A match stopped at the cap counts, as a match dota-bot did not win (Pedro, 2026-10-31): dropping it would drop
   // exactly the matches an arm cannot close, a different number per arm.
   if (outcome !== "final" && outcome !== "tope") return "sin final";
@@ -185,7 +185,16 @@ export function validity({ outcome, roster, variant, loggedVariant, version, fir
   if (modo === "turbo" && Math.min(couriers.slowRadiant, couriers.slowDire) < 1100) {
     return `couriers lentos ${couriers.slowRadiant}-${couriers.slowDire}`;
   }
-  if (Math.abs(start.nwRadiant - start.nwDire) > START_NW_GAP) return `patrimonio inicial ${start.nwRadiant}-${start.nwDire}`;
+  // A kill before the horn is play, not a bias (90 s of pre-game, as in Dota; seen 2026-10-31 in 3 matches): the
+  // gold gap it makes is not checked.
+  // Bounded: each kill is worth about KILL_NW_GAP to the killer's side, so only the gap beyond that counts (review
+  // 2026-11-01: a bias that happens to coincide with a kill must not slip through).
+  const kills = killsAtStart ?? { radiant: 0, dire: 0 };
+  const expected = ((kills.radiant ?? 0) - (kills.dire ?? 0)) * KILL_NW_GAP;
+  const gap = start.nwRadiant - start.nwDire - expected;
+  if (!Number.isFinite(gap) || Math.abs(gap) > START_NW_GAP) {
+    return `patrimonio inicial ${start.nwRadiant}-${start.nwDire}`;
+  }
   if (roster.humano !== "fuera" && roster.humano !== "heroe-quitado") return `humano ${roster.humano || "?"}`;
   if (loggedVariant === null || loggedVariant === undefined) return "variante sin registro en el log";
   if ((variant || "") !== loggedVariant) return `variante ${loggedVariant || "ninguna"} en el log`;
@@ -303,6 +312,15 @@ export function readGsi(payload) {
 }
 
 // The custom game logs "[dotabench] timeline event=minute|end min=.. rk=.. ..." lines (addon_game_mode.lua).
+// Kills already made at the horn, per team: the timeline's minute-0 line ("timeline event=minute min=0 rk=1 dk=0").
+export function killsBeforeHorn(rows) {
+  const first = rows.find((r) => r.event === "minute" && r.min === 0);
+  return { radiant: first?.rk ?? 0, dire: first?.dk ?? 0 };
+}
+
+// Net worth one kill before the horn puts between the teams (measured in series aa: 641, 671; Turbo gold x2).
+export const KILL_NW_GAP = 650;
+
 export function parseTimeline(text) {
   const rows = [];
   for (const line of text.split(/\r?\n/)) {
@@ -727,7 +745,8 @@ async function main(argv) {
       const codigo = codigoAntes.endsWith("+cambios") || codeTree(codigoAntes) !== codeTree(codigoDespues)
         ? `${codigoDespues.replace("+cambios", "")}+cambios` : codigoDespues;
       const motivo = validity({ outcome, roster, variant, loggedVariant, version, firstVersion, modo: opt.modo, loggedModo,
-        espejo: opt.espejo ?? "", start, codigo, firstCodigo, couriers, intrusos, tardios, esperado });
+        espejo: opt.espejo ?? "", start, codigo, firstCodigo, couriers, intrusos, tardios, esperado,
+        killsAtStart: killsBeforeHorn(timeline) });
       if (timeline.length) {
         mkdirSync(TIMELINES, { recursive: true });
         writeFileSync(join(TIMELINES, `${opt.etiqueta}-${fecha.replace(/[-:T]/g, "")}-${i + 1}.csv`), timelineCsv(timeline));

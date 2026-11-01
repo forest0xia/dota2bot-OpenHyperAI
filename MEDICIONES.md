@@ -146,3 +146,47 @@ se vieron, y por eso **ninguna sirve para elegir entre variantes**:
 - Qué se espera: brazos parecidos. Una diferencia grande entre brazos idénticos mide el ruido que tendrá cualquier
   comparación de 12 partidas.
 - Sin comprobar que puede pesar: la velocidad real variable (×1,6 a ×3,4); la lista de héroes del sorteo, recordada.
+
+### 2026-11-01 · `aa` — resultado (11 de 12 jugadas, parada sola por >20 % inválidas)
+- Máquina: libre en las partidas 1-3 (CPU media 32-46 %); saturada en las 4-11 (76-98 %, Unreal, python y sumo;
+  Pedro decidió seguir, DECISIONES 2026-10-31). Código `349e8da` (árboles iguales en toda la serie).
+- Inválidas: 3 (partidas 7, 10 y 11), todas por patrimonio inicial con ~850 de diferencia, y las tres con una baja
+  antes del inicio (minuto 0 con kills); las 8 válidas, ninguna. Es juego, no sesgo: el control se corrige (rama
+  `claude/banco-nw`).
+- Resultado de las 8 válidas:
+
+  | Métrica | base (5) | base_b (3) | Juntas (8) |
+  |---|---|---|---|
+  | dota-bot ganó | 3 | 2 | 5 de 8 |
+  | Minutos de partida | 38, 40, 31, 31, 31 | 29, 35, 22 | media 32 |
+  | Minuto en que llegó a +10.000 | 10, 12, 8, 12, 11 | 9, 11, 10 | media 10,4 (dispersión ~1,4) |
+
+  - Lado: dota-bot ganó 3 de 4 en Radiant y 2 de 4 en Dire; Radiant ganó 5 de 8 partidas.
+  - Carga: con la máquina libre, 2 de 3; con la máquina saturada, 3 de 5. Duración media 35,7 frente a 30 min.
+    Con estos números ninguna diferencia se distingue del azar.
+- Lectura:
+  - los dos brazos idénticos quedan en 3 de 5 y 2 de 3: compatibles con ninguna diferencia, como debe ser;
+  - **el porcentaje de victorias es demasiado ruidoso para el nivel 2**: con victorias en torno al 60 %, distinguir
+    20 puntos entre dos variantes pide del orden de 90 partidas por brazo (unas 50 horas);
+  - el minuto en que se llega a +10.000 varía poco (~1,4 min): es una métrica mucho más sensible, igual que el tiempo
+    de cierre desde +10.000;
+  - ni el lado ni la carga muestran efecto con 8 partidas; no se descarta uno pequeño.
+- Decisión: corregir el control de patrimonio inicial; para el nivel 2, métricas principales sensibles (minuto de
+  +10.000, cierre desde +10.000, ventaja máxima, muertes) con victorias como métrica secundaria. Tamaño y pregunta, en
+  su entrada antes de lanzar.
+
+### 2026-11-01 · `humo-n1` (nivel 1, variante `nivel1`, 2 partidas con observador, commit `39f4b1d`)
+- Pregunta: ¿se mueven las métricas de los dos arreglos (filtro de ultis y defensa de T1/T2) sin romper nada?
+- Máquina: CPU 15-23 %, memoria libre 54 %.
+- Resultado:
+  - variante aplicada en las dos (`filtro_ultis=true defensa_t12=true` en el log), ningún `ult_gate error`;
+  - ultis de dota-bot: 40, ninguna sin un enemigo a 1.200 (antes, el 10 %); el filtro no tuvo que rechazar ninguna
+    con estos héroes (Chaos Knight, Necrophos, Kunkka, Lion, Witch Doctor), así que el rechazo y que el héroe no se
+    quede quieto **siguen sin comprobarse en partida**;
+  - defensa: 45 y 51 decisiones; con 1-2 atacantes y aliados a tiempo, «defiende», y los elegidos pasan a
+    `DEFEND_TOWER_*` con deseo 0,95; cuando los defensores mueren y no llegan bastantes, «concede». Las torres que
+    cayeron sin defensores cayeron tras peleas perdidas, no por abandono;
+  - las dos partidas las ganó Valve (2 partidas no dicen nada).
+- Validez: puerta del nivel 1, no comparación.
+- Decisión: el nivel 1 pasa; el rechazo de ultis se comprobará cuando salgan héroes con ultis de riesgo (Skywrath,
+  DK). Fusionar y pasar al nivel 2.
