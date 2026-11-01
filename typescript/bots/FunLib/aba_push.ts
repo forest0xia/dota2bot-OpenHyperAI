@@ -321,8 +321,11 @@ export function GetPushDesireHelper(bot: Unit, lane: Lane): BotModeDesire {
     // If Ancient under direct pressure → strongly deprioritize pushes
     if (enemiesAtAncient >= 1) return BotModeDesire.ExtraLow;
 
-    // "remate" (see TeamGroupLane): is this lane the team's push lane?
-    const groupPush = Customize.BenchVariant.grupo === true && gameState.teamNetworth - gameState.enemyNetworth >= 5000;
+    // "remate" (see TeamGroupLane): is this lane the team's push lane? The lead that starts it is the benchmark's
+    // "grupo_umbral" (the sweet spot, Pedro 2026-10-31), 5000 by default.
+    const groupThreshold = (Customize.BenchVariant.grupo_umbral as number | undefined) ?? 5000;
+    const groupPush =
+        Customize.BenchVariant.grupo === true && gameState.teamNetworth - gameState.enemyNetworth >= groupThreshold;
     const groupLane = groupPush && TeamGroupLane(bot, lane) === lane;
     // The safety gates below relax for the group only at even numbers, never when a hero down
     const groupLaneEven = groupLane && gameState.aliveAllyCount >= gameState.aliveEnemyCount;

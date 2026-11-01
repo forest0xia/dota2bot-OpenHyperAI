@@ -92,6 +92,9 @@ export const VARIANTS = {
   // "remate" (Pedro, 2026-10-30): the whole team pushes one lane with a 5k lead; grupo_farm also keeps farming at 6k+.
   grupo: { grupo: true, thinkless: 1 },
   grupo_farm: { grupo: true, farm: true, thinkless: 1 },
+  // Level 2, the sweet spot of the group push (Pedro, 2026-10-31): the same group push from different leads.
+  grupo_5k: { grupo: true, grupo_umbral: 5000, thinkless: 1 },
+  grupo_15k: { grupo: true, grupo_umbral: 15000, thinkless: 1 },
   // Team brain (Pedro, 2026-10-30; trabajo/cerebro-equipo.md): team_desires.lua + FunLib/team_brain.lua.
   cerebro: { cerebro: true, thinkless: 1 },
   // Team brain v2 and builds from data together (Pedro, 2026-10-30: «son dos cambios no tan grandes que podrian ir

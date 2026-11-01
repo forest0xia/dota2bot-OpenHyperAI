@@ -184,7 +184,12 @@ function ____exports.GetPushDesireHelper(bot, lane)
     if enemiesAtAncient >= 1 then
         return BotModeDesire.ExtraLow
     end
-    local groupPush = Customize.BenchVariant.grupo == true and gameState.teamNetworth - gameState.enemyNetworth >= 5000
+    local ____temp_groupThreshold = Customize.BenchVariant.grupo_umbral
+    if ____temp_groupThreshold == nil then
+        ____temp_groupThreshold = 5000
+    end
+    local groupThreshold = ____temp_groupThreshold
+    local groupPush = Customize.BenchVariant.grupo == true and gameState.teamNetworth - gameState.enemyNetworth >= groupThreshold
     local groupLane = groupPush and TeamGroupLane(bot, lane) == lane
     local groupLaneEven = groupLane and gameState.aliveAllyCount >= gameState.aliveEnemyCount
     if #alliesHere <= 1 and gameState.aliveEnemyCount >= 3 and not groupLaneEven then
