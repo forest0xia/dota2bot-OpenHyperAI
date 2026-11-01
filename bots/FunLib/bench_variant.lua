@@ -5,6 +5,7 @@
 --   empuje    true: PR #11, relaxed push caps with a 10k net worth lead (off by default), FunLib/aba_push.lua
 --   grupo     true: with a 5k lead the whole team pushes one lane together, FunLib/aba_push.lua
 --   grupo_umbral number: the lead that starts that group push (default 5000)
+--   retirada_temprana true: retreat when the enemies near can kill the hero in 5 s, FunLib/retreat_early.lua
 --   farm      true: keep farming with a 6k+ lead, mode_farm_generic.lua
 --   cerebro   true: the team brain plans for the five, team_desires.lua and FunLib/team_brain.lua
 --   builds    true: cores buy what high-level players buy (FunLib/data_builds.lua), item_purchase_generic.lua

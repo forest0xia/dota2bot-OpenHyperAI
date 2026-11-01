@@ -8411,9 +8411,17 @@ function BuybackUsageThink()
 	if benchObserve and DotaTime() - (bot.benchObserveTime or -1000) >= 2 then
 		bot.benchObserveTime = DotaTime()
 		local mode = bot:GetActiveMode()
-		print(string.format('[bench] mode t=%d pid=%d %s %s %.2f alive=%d', math.floor(DotaTime()), bot:GetPlayerID(),
-			string.gsub(botName, 'npc_dota_hero_', ''), benchModeNames[mode] or tostring(mode), bot:GetActiveModeDesire(),
-			bot:IsAlive() and 1 or 0))
+		-- hp: health fraction; amenaza: the damage the visible enemy heroes within 1200 can deal in 5 s (OHA's estimate)
+		-- over the health left, so a death can be read against what the bot was doing when it was already in danger
+		-- (Pedro, 2026-11-01: two thirds of dota-bot's deaths happen while retreating).
+		local threat = 0
+		if bot:IsAlive() then
+			local ok, dmg = pcall(J.GetTotalEstimatedDamageToTarget, J.GetEnemiesNearLoc(bot:GetLocation(), 1200), bot)
+			if ok and dmg then threat = dmg / math.max(bot:GetHealth(), 1) end
+		end
+		print(string.format('[bench] mode t=%d pid=%d %s %s %.2f alive=%d hp=%.2f amenaza=%.2f', math.floor(DotaTime()),
+			bot:GetPlayerID(), string.gsub(botName, 'npc_dota_hero_', ''), benchModeNames[mode] or tostring(mode),
+			bot:GetActiveModeDesire(), bot:IsAlive() and 1 or 0, bot:IsAlive() and J.GetHP(bot) or 0, threat))
 		-- Which way the API's lane geometry counts for this team (one bot, once a minute): is a negative offset of
 		-- GetLaneFrontLocation toward our base, and does GetAmountAlongLane count from our side? (Pedro, 2026-10-31:
 		-- dota-bot plays worse as Dire in every variant.)

@@ -287,3 +287,17 @@ se vieron, y por eso **ninguna sirve para elegir entre variantes**:
     en los primeros 4 s, la palanca está en no regalar las ventajas, no en cuándo empujar.
 - Decisión: no se elige umbral; el punto dulce queda sin respuesta con este tamaño. Prioridad a la retirada (nivel 1,
   DECISIONES 2026-11-01).
+
+### 2026-11-01 · Retirada, nivel 1: `humo-ret`, `humo-rt`, `humo-rt2` (2 partidas cada uno, con observador)
+- Pregunta: ¿cuándo debió huir cada bot que murió, y adelanta la huida la variante `retirada_temprana`?
+- `humo-ret` (sin variante, registro nuevo de vida y amenaza = daño enemigo estimado en 5 s / vida): las 14 muertes
+  tuvieron amenaza ≥ 1 entre 1 y 10 s antes (la mitad, 7 s o más); en ese momento 6 seguían atacando. Lectura previa
+  con 714 muertes de series anteriores: el 70 % de las muertes en retirada ocurre en los primeros 4 s.
+- `humo-rt` (v1: amenaza ≥ 1,5 y más enemigos que aliados o vida < 50 %): no adelantó la huida (mediana 4 s desde la
+  amenaza ≥ 1 hasta huir, igual que sin variante) y 9 héroes murieron sin huir. No pasa la puerta.
+- `humo-rt2` (v2: amenaza ≥ 1,0; también con igualdad si recibe daño de héroes y tiene < 60 %; se mantiene 2,5 s):
+  la regla se disparó 90 veces, sin errores; mediana 2 s desde la amenaza ≥ 1 hasta huir, ninguna muerte sin haber
+  huido, solo 5 casos de amenaza ≥ 1 sin huir antes de morir. Sigue igual la proporción de muertes en los 2 primeros
+  segundos de huida (44 %): parte de los héroes está condenada aunque huya antes.
+- Validez: puerta del nivel 1, no comparación (los sorteos cambian mucho las muertes: 14, 71 y 18 en cada par).
+- Decisión: la v2 pasa la puerta; serie `retirada_temprana` frente a `base`, con su pregunta antes.
