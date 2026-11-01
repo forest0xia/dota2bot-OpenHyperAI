@@ -258,3 +258,32 @@ se vieron, y por eso **ninguna sirve para elegir entre variantes**:
   +5.000» con «esperar a +15.000».
 - Análisis fijo: por brazo, solo partidas válidas de bloques completos; las 24 aparte como sensibilidad.
 - Sin comprobar que puede pesar: velocidad real variable; lista de héroes del sorteo.
+
+### 2026-11-01 · `n2-pd` — resultado (24 de 24 jugadas)
+- Máquina: CPU media 27-59 % (Dota incluido); código `ceea03e`.
+- Inválidas: 1 (partida 17, `grupo_5k`): un héroe apareció 7 s después del inicio pese a los 90 s de fase previa. El
+  control lo detectó; el bloque 3 queda fuera del análisis principal.
+- Resultado, regla fijada (bloques 1, 2 y 4; 6 partidas por brazo):
+
+  | Métrica | base | grupo_5k | grupo_15k |
+  |---|---|---|---|
+  | Ganó | 3 | 1 | 1 |
+  | Llegó a +10.000 | 6 | 5 | 4 |
+  | Perdió tras ir +10.000 | 3 | 4 | 3 |
+  | Cierre desde +10.000 en las ganadas (min) | 22, 9, 37 | 19 | 12 |
+  | Topes | 0 | 0 | 0 |
+  | Ventaja máxima media | 35.916 | 30.880 | 22.921 |
+  | Momentos con 4-5 empujando, media | 42 | 51 | 71 |
+
+- Sensibilidad (todas las válidas): base 4 de 8, grupo_5k 2 de 7, grupo_15k 2 de 8; perdió tras +10.000: 4, 4 y 3.
+- Lectura:
+  - el empuje en grupo se activa (más momentos con 4-5 empujando) pero **no hay señal de que ayude**: los dos brazos
+    de grupo ganan menos que `base`, con tamaños muy pequeños (6 por brazo), así que tampoco se puede afirmar que
+    empeore;
+  - el cierre en las ganadas parece más rápido con grupo (12-19 min frente a 9-37), pero con 1 partida ganada por brazo
+    no dice nada;
+  - **el problema de fondo no es el umbral: dota-bot pierde la mitad de las partidas en las que llega a ir +10.000**
+    (10 de 15 en los brazos de la regla fijada). Junto con que dos tercios de sus muertes son en retirada y casi todas
+    en los primeros 4 s, la palanca está en no regalar las ventajas, no en cuándo empujar.
+- Decisión: no se elige umbral; el punto dulce queda sin respuesta con este tamaño. Prioridad a la retirada (nivel 1,
+  DECISIONES 2026-11-01).
