@@ -35,9 +35,12 @@ once it exists.
   - Se avanza en tres niveles (banco, mecanismo, resultado) con su puerta cada uno, tamaño de serie decidido antes y
     análisis fijo; por qué: series pequeñas sin medir el ruido no distinguen nada (DECISIONES.md, 2026-10-31;
     `bench/README.md`, «Cómo se avanza»).
-  - Cada avance que se le reporta a Pedro termina con una lista de tareas: lo hecho y lo pendiente; por qué: con tantos
-    pasos se pierde de vista dónde estamos (Pedro, 2026-10-31: «en cada avance presentame un to-do list por favor de
-    lo hecho y los pendientes»).
+  - La lista de tareas (lo hecho y lo pendiente) va al reportar un avance terminado o cuando conviene ver todo el
+    mapa, no al responder preguntas sobre el proceso en curso; por qué: con tantos pasos se pierde de vista dónde
+    estamos, pero repetirla en cada respuesta estorba (Pedro, 2026-10-31: «en cada avance presentame un to-do list
+    por favor de lo hecho y los pendientes»; acotado el 2026-11-01: «cuando te haga preguntas sobre el proceso en curso
+    no hace falta que incluya el todo list, solo traelo a colación cuando haya un avance terminado o tenga sentido ver
+    todo el mapa de tareas»).
   - Una rama y un PR por tarea; mientras corre una serie, el trabajo paralelo va en otro worktree (DECISIONES.md,
     2026-10-31).
 - Operation: no hay despliegue; se juega copiando `bots/` a la carpeta de Dota (ver «Este repositorio»).
