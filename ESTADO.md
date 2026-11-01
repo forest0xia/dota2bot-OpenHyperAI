@@ -10,11 +10,11 @@
 - **Nivel 2, serie 1 hecha** (MEDICIONES, `n2-nivel1`): `nivel1` no mejora y no se activa. Los datos señalan dos
   palancas: dos tercios de las muertes de dota-bot ocurren en RETIRADA, y `base` no cierra con ventajas enormes (dos
   topes con +94.000 y +52.000).
-- Rama `claude/n2-resultado` (sin PR): margen por bajas antes del inicio de 0 a 1.100 y el resultado de la serie; en
-  revisión.
+- **Corriendo: nivel 2, serie 2, punto dulce** (`n2-pd`, `base`, `grupo_5k`, `grupo_15k`, 24 partidas, unas 12 h;
+  pregunta y métricas en MEDICIONES). No tocar `bots/` ni `tools/bench/` mientras corre.
 - **Espera a Pedro:** añadir la retirada como siguiente arreglo del nivel 1 (recomendado).
-- Siguiente, ya aprobado: nivel 2, serie 2, punto dulce del empuje (variantes con varios umbrales, humo, pregunta y
-  tamaño antes); serie 3, elegir entre base, fases por estado y cerebro.
+- Después: analizar `n2-pd`; serie 3, elegir entre base, fases por estado y cerebro; que la línea `start` registre las
+  bajas para estrechar el margen de patrimonio inicial.
 
 ## Madurez
 Prototipo: OHA 7.41a (127 héroes) con limpieza de seguridad, al día con 7.41f. Sin cambios de juego activos por
