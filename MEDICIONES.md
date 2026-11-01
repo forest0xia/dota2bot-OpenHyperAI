@@ -301,3 +301,17 @@ se vieron, y por eso **ninguna sirve para elegir entre variantes**:
   segundos de huida (44 %): parte de los héroes está condenada aunque huya antes.
 - Validez: puerta del nivel 1, no comparación (los sorteos cambian mucho las muertes: 14, 71 y 18 en cada par).
 - Decisión: la v2 pasa la puerta; serie `retirada_temprana` frente a `base`, con su pregunta antes.
+
+### 2026-11-01 · `n2-rt` (nivel 2: `retirada_temprana` frente a `base`) — pregunta escrita antes de lanzarla
+- Pregunta: ¿muere menos dota-bot y regala menos ventajas si huye cuando los enemigos cercanos pueden matarlo?
+- Qué cambió: la variante (#36, v2 con la huida que se renueva); el banco, nada desde `n2-pd`.
+- Configuración: `--variantes retirada_temprana,base --partidas 16 --modo turbo --observar`, Valve en Injusto, ×4;
+  4 bloques de 4.
+- Tamaño: 16 partidas, unas 8 horas; 8 por brazo.
+- Métricas, fijadas antes:
+  - principales: muertes de dota-bot por partida; derrotas tras haber ido +10.000; ventaja máxima; muertes en
+    retirada en los 2 primeros segundos de huida;
+  - secundarias: victorias, minuto de +10.000.
+- Análisis fijo: por brazo, solo partidas válidas de bloques completos; todas las válidas aparte como sensibilidad.
+- Cómo leerlo (de las revisiones): con 4 contra 3 o más, héroes sanos pueden salir de la pelea si la amenaza sumada
+  pasa de 1; el ATTACK de OHA a 0,95 (objetivo a punto de caer) sigue ganando a la huida, a propósito.
