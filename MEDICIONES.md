@@ -190,3 +190,19 @@ se vieron, y por eso **ninguna sirve para elegir entre variantes**:
 - Validez: puerta del nivel 1, no comparación.
 - Decisión: el nivel 1 pasa; el rechazo de ultis se comprobará cuando salgan héroes con ultis de riesgo (Skywrath,
   DK). Fusionar y pasar al nivel 2.
+
+### 2026-11-01 · `n2-nivel1` (nivel 2: `nivel1` frente a `base`) — pregunta escrita antes de lanzarla
+- Pregunta: ¿juega mejor dota-bot con el filtro de ultis y la defensa de T1/T2 que sin ellos?
+- Qué cambió: el nivel 1 (#26); el banco, solo el control de patrimonio inicial (#25), comprobado sobre los datos de
+  `aa`.
+- Configuración: `--variantes nivel1,base --partidas 16 --modo turbo --observar`, Valve en Injusto, ×4; 4 bloques de 4
+  (cada variante en los dos lados, mismo enfrentamiento). El observador va en los dos brazos por igual.
+- Tamaño: 16 partidas, unas 8 horas. Con la dispersión de `aa` (~1,4 min en el minuto de +10.000), 8 por brazo
+  distinguen unos 2 min de diferencia; en victorias solo una diferencia enorme.
+- Métricas, fijadas antes:
+  - principales, del mecanismo: torres T1/T2 perdidas sin defensores ante 1-2 atacantes, por partida; ultis de dota-bot
+    sin enemigos a 1.200; muertes de dota-bot por 10 min;
+  - principales, de resultado: minuto de +10.000, cierre desde +10.000, ventaja máxima;
+  - secundaria: victorias.
+- Análisis fijo: por brazo, solo partidas válidas de bloques completos; sin cortar por lado o héroe después.
+- Sin comprobar que puede pesar: velocidad real variable; lista de héroes del sorteo.
