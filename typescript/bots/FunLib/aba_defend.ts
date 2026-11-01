@@ -9,6 +9,7 @@ if (!okLoc) Localization = { Get: (_: string) => "Defend here!" };
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 import Customize = require("bots/Customize/general");
 import * as TeamBrain from "bots/FunLib/team_brain";
+import * as TowerDefense from "bots/FunLib/tower_defense";
 
 import { Barracks, BotActionDesire, BotMode, BotModeDesire, Lane, Team, Tower, Unit, UnitType, Vector } from "bots/ts_libs/dota";
 import { add } from "bots/ts_libs/utils/native-operators";
@@ -617,6 +618,12 @@ export function GetDefendDesire(bot: Unit, lane: Lane): BotModeDesire {
     if (TeamBrain.Enabled()) {
         const planned = TeamBrain.DefendDesire(bot, lane);
         if (planned !== undefined) res = planned as BotModeDesire;
+    }
+    // Variant "defensa_t12": an attacked tier 1/2 tower is defended only by enough allies arriving in time, and
+    // conceded otherwise (bots/FunLib/tower_defense.lua).
+    if (TowerDefense.Enabled()) {
+        const judged = TowerDefense.DefendDesire(bot, lane);
+        if (judged !== undefined) res = judged as BotModeDesire;
     }
     // jmz.Utils.SetCachedVars(cacheKey, res);
     (bot as any).defendDesire = res;

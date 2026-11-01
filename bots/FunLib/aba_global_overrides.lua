@@ -468,6 +468,9 @@ function CDOTA_Bot_Script:GetMaxMana()
     return originalGetMaxMana(self)
 end
 
+-- Benchmark variant filtro_ultis: wraps the cast orders so ultimates need a reason (FunLib/ult_gate.lua; no-op off).
+dofile(GetScriptDirectory()..'/FunLib/ult_gate')
+
 local X = {
 	orig_GetTeamPlayers = orig_GetTeamPlayers,
 	GetTeamPlayers = GetTeamPlayers

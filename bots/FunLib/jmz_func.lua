@@ -2883,6 +2883,18 @@ end
 
 function J.SetQueuePtToINT( bot, bSoulRingUsed )
 
+	-- Benchmark variant filtro_ultis (FunLib/ult_gate.lua): the clear waits for the cast it prepares, so a refused
+	-- ultimate does not wipe the mode's orders and freeze the hero.
+	if UltGateDeferPt then
+		bot.__ultGatePt = { soul = bSoulRingUsed, at = DotaTime() }
+		return
+	end
+	J.SetQueuePtToINTNow( bot, bSoulRingUsed )
+
+end
+
+function J.SetQueuePtToINTNow( bot, bSoulRingUsed )
+
 	bot:Action_ClearActions(false)
 
 	if bSoulRingUsed then J.SetQueueUseSoulRing( bot ) end

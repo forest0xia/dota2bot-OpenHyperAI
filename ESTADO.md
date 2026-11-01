@@ -2,19 +2,18 @@
 
 <!-- pic-method: next-session -->
 ## Próxima sesión
-- **2026-10-31. Todo lo medido hasta hoy está contaminado** (MEDICIONES.md, sesgos S1-S6). Se construye el nivel 0
-  del protocolo nuevo (DECISIONES 2026-10-31: puerta de medición y avance en tres niveles).
-- En `main` (#22): commit por partida, tope de 60 min, parada con más del 20 % inválidas, junctions comprobadas,
-  couriers, `rojas` en `.fabrica.json`, MEDICIONES.md.
-- Rama `claude/banco-s6` (revisada, falta humo y PR):
-  - S6 corregido: el archivo de equipo dura toda la partida y una línea de carga por bot lo comprueba;
-  - fase previa de 90 s: todos los héroes antes del inicio;
-  - una partida que llega al tope es válida, sin ganador;
-  - **mismo enfrentamiento en los dos lados** (decisión de Pedro): dos sorteos sin héroes en común, dota-bot siempre
-    el primero, y la validez exige a cada equipo su grupo. El espejo y la creación de héroes, que cerraban Dota, se
-    quitaron.
-- Siguiente: dos partidas de humo válidas, PR y fusión; la pregunta en MEDICIONES.md y la serie A contra A
-  (`--variantes base,base_b`, 12 partidas).
+- **2026-11-01.** Banco completo en `main` (#22, #24). Serie A contra A hecha (MEDICIONES, `aa`): brazos parejos;
+  las victorias son demasiado ruidosas para el nivel 2 (~90 partidas por brazo para 20 puntos), el minuto de +10.000
+  apenas varía (~1,4 min): métricas principales del nivel 2, las sensibles.
+- Ramas abiertas, sin PR:
+  - `claude/banco-nw`: una baja antes del inicio no invalida por patrimonio inicial (las 3 inválidas de `aa`), con el
+    análisis de `aa` y sus datos; en revisión.
+  - `claude/nivel1` (el clon principal está en ella): `filtro_ultis` y `defensa_t12`, revisadas dos veces; **corre su
+    humo** (`humo-n1`, variante `nivel1`, observador).
+  - `claude/preferencia-todo`: lista de hecho y pendiente en cada avance (AGENTS.md) y decisiones del 2026-10-31.
+- Siguiente: leer el humo del nivel 1 (ultis rechazadas, ningún héroe quieto, decisiones de defensa, sin `ult_gate
+  error`), PR de las tres ramas; nivel 2 con tamaño calculado y pregunta escrita (DECISIONES 2026-10-31: hasta el
+  nivel 2).
 
 ## Madurez
 Prototipo: OHA 7.41a (127 héroes) con limpieza de seguridad, al día con 7.41f. Sin cambios de juego activos por
