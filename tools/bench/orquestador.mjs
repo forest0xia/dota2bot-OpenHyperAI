@@ -193,14 +193,15 @@ export function validity({ outcome, roster, variant, loggedVariant, version, fir
   if (modo === "turbo" && Math.min(couriers.slowRadiant, couriers.slowDire) < 1100) {
     return `couriers lentos ${couriers.slowRadiant}-${couriers.slowDire}`;
   }
-  // A kill before the horn is play, not a bias (90 s of pre-game, as in Dota; seen 2026-10-31 in 3 matches): the
-  // gold gap it makes is not checked.
-  // Bounded: each kill is worth about KILL_NW_GAP to the killer's side, so only the gap beyond that counts (review
-  // 2026-11-01: a bias that happens to coincide with a kill must not slip through).
+  // A kill before the horn is play, not a bias (90 s of pre-game, as in Dota): each one may move the gap toward the
+  // killer's side by anything from 0 (the start snapshot was taken just before it, series n2-nivel1 match 12) to
+  // KILL_NW_GAP (assist gold and the victim's loss: 641-955 measured), never more, so a bias that coincides with a
+  // kill is still bounded (review 2026-11-01).
   const kills = killsAtStart ?? { radiant: 0, dire: 0 };
-  const expected = ((kills.radiant ?? 0) - (kills.dire ?? 0)) * KILL_NW_GAP;
-  const gap = start.nwRadiant - start.nwDire - expected;
-  if (!Number.isFinite(gap) || Math.abs(gap) > START_NW_GAP) {
+  const gap = start.nwRadiant - start.nwDire;
+  const low = -START_NW_GAP - (kills.dire ?? 0) * KILL_NW_GAP;
+  const high = START_NW_GAP + (kills.radiant ?? 0) * KILL_NW_GAP;
+  if (!Number.isFinite(gap) || gap < low || gap > high) {
     return `patrimonio inicial ${start.nwRadiant}-${start.nwDire}`;
   }
   if (roster.humano !== "fuera" && roster.humano !== "heroe-quitado") return `humano ${roster.humano || "?"}`;
@@ -326,8 +327,8 @@ export function killsBeforeHorn(rows) {
   return { radiant: first?.rk ?? 0, dire: first?.dk ?? 0 };
 }
 
-// Net worth one kill before the horn puts between the teams (measured in series aa: 641, 671; Turbo gold x2).
-export const KILL_NW_GAP = 650;
+// The most net worth one kill before the horn puts between the teams (measured 641 to 955, Turbo gold x2).
+export const KILL_NW_GAP = 1100;
 
 export function parseTimeline(text) {
   const rows = [];

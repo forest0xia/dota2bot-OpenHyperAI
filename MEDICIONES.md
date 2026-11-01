@@ -206,3 +206,33 @@ se vieron, y por eso **ninguna sirve para elegir entre variantes**:
   - secundaria: victorias.
 - Análisis fijo: por brazo, solo partidas válidas de bloques completos; sin cortar por lado o héroe después.
 - Sin comprobar que puede pesar: velocidad real variable; lista de héroes del sorteo.
+
+### 2026-11-01 · `n2-nivel1` — resultado (16 de 16 jugadas)
+- Máquina: CPU media 32-59 % (Dota incluido); código `6632fb7`.
+- Inválidas: 2 (partidas 5 y 12, las dos de `base`), por patrimonio inicial con una baja antes del inicio: una valió
+  955 (más que los 650 supuestos) y otra ocurrió justo después de la foto del patrimonio. Falsos rechazos; el control
+  se corrige (margen de 0 a 1.100 por baja, hacia el bando que mata). Con eso, solo 2 bloques completos de 4.
+- Resultado, regla fijada (bloques 1 y 4, 4 partidas por brazo):
+
+  | Métrica | nivel1 | base |
+  |---|---|---|
+  | Ganó | 1 de 4 | 2 de 4 (1 tope) |
+  | Llegó a +10.000 | 3 de 4, minuto medio 16 | 4 de 4, minuto medio 12,5 |
+  | Ventaja máxima media | 18.566 | 62.382 |
+  | Muertes de dota-bot por 10 min | 9,1 | 5,0 |
+  | Ultis sin enemigo a 1.200 | 9 de 101 | 12 de 220 |
+  | T1/T2 perdidas sin defensa ante 1-2 atacantes | 2 | 1 |
+
+- Sensibilidad (las 16, marcado aparte, no es la regla fijada): nivel1 ganó 2 de 8 y base 2 de 8 (2 topes con +94.000
+  y +52.000 sin cerrar); muertes por 10 min 9,4 frente a 7,0; T1/T2 perdidas sin defensa ante 1-2: 5 frente a 2.
+- Mecanismo:
+  - el filtro rechazó 1 ulti en 16 partidas: las ultis sin enemigo de `base` (8 %) eran casi todas legítimas; con
+    estos héroes apenas había qué filtrar;
+  - la defensa decidió (25-44 veces por partida) pero no redujo las torres perdidas sin defensa;
+  - las muertes por partida son iguales (252 frente a 255): la tasa por minuto sube en `nivel1` porque sus derrotas
+    fueron más cortas, no por morir defendiendo (9 muertes en modo defensa frente a 4);
+  - **dos tercios de las muertes de dota-bot ocurren en modo RETIRADA** (172 de 252 y 170 de 255, en los dos brazos).
+- Lectura: no hay señal de que `nivel1` mejore; los indicadores van en contra o empatan, con mucho ruido (4 partidas
+  por brazo). `base` llegó dos veces al tope con ventajas enormes sin cerrar.
+- Decisión: `nivel1` no se activa. Lo que los datos señalan como palancas de verdad: la retirada (dos tercios de las
+  muertes) y el cierre con ventaja grande (el punto dulce del empuje).

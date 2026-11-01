@@ -7,12 +7,14 @@
     (~90 partidas por brazo para 20 puntos) y el minuto de +10.000 apenas varía (~1,4 min);
   - nivel 1: variantes `filtro_ultis`, `defensa_t12` y `nivel1`; su humo pasó (MEDICIONES, `humo-n1`). Falta ver en
     partida un rechazo de ulti (héroes con ultis de riesgo: Skywrath, DK).
-- **Siguiente: nivel 2** (DECISIONES 2026-10-31: hasta el nivel 2), cada serie con su pregunta, tamaño y métricas
-  escritos antes en MEDICIONES; métricas principales las sensibles (minuto de +10.000, cierre, ventaja máxima, muertes,
-  torres perdidas sin defensa), victorias como secundaria:
-  1. `nivel1` frente a `base`;
-  2. punto dulce del empuje en grupo;
-  3. elegir entre base, fases por estado y cerebro.
+- **Nivel 2, serie 1 hecha** (MEDICIONES, `n2-nivel1`): `nivel1` no mejora y no se activa. Los datos señalan dos
+  palancas: dos tercios de las muertes de dota-bot ocurren en RETIRADA, y `base` no cierra con ventajas enormes (dos
+  topes con +94.000 y +52.000).
+- Rama `claude/n2-resultado` (sin PR): margen por bajas antes del inicio de 0 a 1.100 y el resultado de la serie; en
+  revisión.
+- **Espera a Pedro:** añadir la retirada como siguiente arreglo del nivel 1 (recomendado).
+- Siguiente, ya aprobado: nivel 2, serie 2, punto dulce del empuje (variantes con varios umbrales, humo, pregunta y
+  tamaño antes); serie 3, elegir entre base, fases por estado y cerebro.
 
 ## Madurez
 Prototipo: OHA 7.41a (127 héroes) con limpieza de seguridad, al día con 7.41f. Sin cambios de juego activos por

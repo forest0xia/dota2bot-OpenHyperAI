@@ -87,6 +87,10 @@ test("a match counts only if it ended, 5v5 bots, human out, the right variant an
   assert.equal(validity({ ...ok, start: { ...start, nwRadiant: 3616, nwDire: 3755 }, killsAtStart: { radiant: 1, dire: 1 } }), "");
   assert.match(validity({ ...ok, start: { ...start, nwRadiant: 13005 }, killsAtStart: { radiant: 1, dire: 0 } }), /patrimonio inicial/);
   assert.match(validity({ ...ok, start: { ...start, nwRadiant: 3781 }, killsAtStart: { radiant: 0, dire: 1 } }), /patrimonio inicial/);
+  // Series n2-nivel1: a kill worth 955 (match 5), and a kill after the start snapshot, gap ~0 (match 12).
+  assert.equal(validity({ ...ok, start: { ...start, nwRadiant: 3767, nwDire: 2812 }, killsAtStart: { radiant: 1, dire: 0 } }), "");
+  assert.equal(validity({ ...ok, start: { ...start, nwRadiant: 3001, nwDire: 2836 }, killsAtStart: { radiant: 1, dire: 0 } }), "");
+  assert.match(validity({ ...ok, start: { ...start, nwRadiant: 4500, nwDire: 3005 }, killsAtStart: { radiant: 1, dire: 0 } }), /patrimonio inicial/);
   assert.match(validity({ ...ok, start: { ...start, nwRadiant: NaN } }), /patrimonio inicial/);
   assert.deepEqual(killsBeforeHorn([{ event: "minute", min: 0, rk: 1, dk: 0 }, { event: "minute", min: 1, rk: 3, dk: 2 }]),
     { radiant: 1, dire: 0 });
