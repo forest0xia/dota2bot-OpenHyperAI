@@ -2,18 +2,17 @@
 
 <!-- pic-method: next-session -->
 ## Próxima sesión
-- **2026-11-01.** Banco completo en `main` (#22, #24). Serie A contra A hecha (MEDICIONES, `aa`): brazos parejos;
-  las victorias son demasiado ruidosas para el nivel 2 (~90 partidas por brazo para 20 puntos), el minuto de +10.000
-  apenas varía (~1,4 min): métricas principales del nivel 2, las sensibles.
-- Ramas abiertas, sin PR:
-  - `claude/banco-nw`: una baja antes del inicio no invalida por patrimonio inicial (las 3 inválidas de `aa`), con el
-    análisis de `aa` y sus datos; en revisión.
-  - `claude/nivel1` (el clon principal está en ella): `filtro_ultis` y `defensa_t12`, revisadas dos veces; **corre su
-    humo** (`humo-n1`, variante `nivel1`, observador).
-  - `claude/preferencia-todo`: lista de hecho y pendiente en cada avance (AGENTS.md) y decisiones del 2026-10-31.
-- Siguiente: leer el humo del nivel 1 (ultis rechazadas, ningún héroe quieto, decisiones de defensa, sin `ult_gate
-  error`), PR de las tres ramas; nivel 2 con tamaño calculado y pregunta escrita (DECISIONES 2026-10-31: hasta el
-  nivel 2).
+- **2026-11-01. Niveles 0 y 1 hechos y en `main`** (#22-#26):
+  - banco completo; serie A contra A (`aa`): brazos parejos, las victorias son demasiado ruidosas para el nivel 2
+    (~90 partidas por brazo para 20 puntos) y el minuto de +10.000 apenas varía (~1,4 min);
+  - nivel 1: variantes `filtro_ultis`, `defensa_t12` y `nivel1`; su humo pasó (MEDICIONES, `humo-n1`). Falta ver en
+    partida un rechazo de ulti (héroes con ultis de riesgo: Skywrath, DK).
+- **Siguiente: nivel 2** (DECISIONES 2026-10-31: hasta el nivel 2), cada serie con su pregunta, tamaño y métricas
+  escritos antes en MEDICIONES; métricas principales las sensibles (minuto de +10.000, cierre, ventaja máxima, muertes,
+  torres perdidas sin defensa), victorias como secundaria:
+  1. `nivel1` frente a `base`;
+  2. punto dulce del empuje en grupo;
+  3. elegir entre base, fases por estado y cerebro.
 
 ## Madurez
 Prototipo: OHA 7.41a (127 héroes) con limpieza de seguridad, al día con 7.41f. Sin cambios de juego activos por
@@ -24,13 +23,13 @@ archivo de variante. Ninguna medida aún sin contaminación.
 - 2026-10-28/29 · Investigación, fork limpio, junctions, orquestador con GSI, custom game dotabench, series A/B con
   validez, Turbo imitado con courier y espectador (PR #1-#17).
 - 2026-10-30 · Mapa, modo observador y analizador (#18); variantes de remate (#19); diseño y cerebro v1 (#20, #21).
-- 2026-10-31 (rama, sin fusionar) · Cerebro v2, builds con datos, fases por estado de partida, espejo de héroes, rival
-  dota-bot, `mecanismo.mjs`, registro de ultis y torres, protocolo de medición, MEDICIONES.md.
+- 2026-10-31/11-01 · Banco de medición fiable y protocolo (#22, #24, #25), cerebro v2, builds y fases por estado (#23),
+  nivel 1 (#26), MEDICIONES.md.
 
 ## Siguientes pasos
-1. Nivel 0: humo, revisor adversarial y serie A contra A.
-2. Nivel 1, mecanismo: el filtro de ultis (que no se lancen sin enemigos cerca) y la defensa de T1/T2 «con cabeza».
-3. Nivel 2: el punto dulce del empuje en grupo, y elegir entre base, fases por estado y cerebro.
+1. Nivel 2 (arriba).
+2. Contar cuántas veces piensa un bot por segundo de juego, con y sin carga.
+3. Verificar la lista de héroes del sorteo contra el juego.
 4. Una prueba en el entorno real: lobby Local Host con amigos, Turbo real.
 
 ## Problemas conocidos
@@ -48,7 +47,8 @@ Defectos sin resolver. Mientras sigan abiertos, no se mide sobre los del banco.
 - **Bot:**
   - la defensa se apaga cuando 3 aliados empujan (`FunLib/aba_defend.lua:~915-937`);
   - la recompra por el Ancient está rota (`ability_item_usage_generic.lua:569`);
-  - torres sin defender y ultis lanzadas a creeps o a la nada en la base propia (vistas por Pedro);
+  - torres sin defender y ultis lanzadas a creeps o a la nada en la base propia (vistas por Pedro): corregido como
+    variante `nivel1`, sin medir aún contra `base`;
   - más en docs/mapa.md §8.
 - ~10 «error in error handling» por partida, sin origen.
 - Saludos con promoción del Workshop.
