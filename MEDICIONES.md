@@ -236,3 +236,25 @@ se vieron, y por eso **ninguna sirve para elegir entre variantes**:
   por brazo). `base` llegó dos veces al tope con ventajas enormes sin cerrar.
 - Decisión: `nivel1` no se activa. Lo que los datos señalan como palancas de verdad: la retirada (dos tercios de las
   muertes) y el cierre con ventaja grande (el punto dulce del empuje).
+
+### 2026-11-01 · `humo-pd` (humo del punto dulce, 4 partidas con observador, commit `f74e25b`)
+- Resultado: 4 de 4 válidas; el empuje en grupo se activa (4 o más bots empujando juntos en 33 y 91 momentos con
+  `grupo_5k`; 17 con `grupo_15k` en la partida que llegó a esa ventaja, 0 en la que no). Valve ganó las 4 (mismo
+  sorteo en las 4; no dice nada).
+
+### 2026-11-01 · `n2-pd` (nivel 2: punto dulce del empuje) — pregunta escrita antes de lanzarla
+- Pregunta: ¿desde qué ventaja conviene que los cinco empujen juntos una línea: nunca (`base`), desde +5.000
+  (`grupo_5k`) o desde +15.000 (`grupo_15k`)?
+- Qué cambió: el umbral parametrizado (#30); el banco, el margen por bajas antes del inicio (#29).
+- Configuración: `--variantes base,grupo_5k,grupo_15k --partidas 24 --modo turbo --observar`, Valve en Injusto, ×4;
+  4 bloques de 6 (cada variante en los dos lados, mismo enfrentamiento).
+- Tamaño: 24 partidas, unas 12 horas; 8 por brazo.
+- Métricas, fijadas antes:
+  - principales: cierre desde +10.000 (minutos desde que se llega a +10.000 hasta ganar), partidas que llegan al tope,
+    derrotas tras haber ido +10.000, ventaja máxima, y momentos con 4-5 bots empujando juntos;
+  - secundaria: victorias.
+- Cómo leerlo (de la revisión): la ventaja que usan los bots es su estimación por objetos visibles, no la real de GSI;
+  entre +6.000 y +15.000, `grupo_15k` juega como `base` sin farmear (regla de OHA). Compara «empujar en grupo desde
+  +5.000» con «esperar a +15.000».
+- Análisis fijo: por brazo, solo partidas válidas de bloques completos; las 24 aparte como sensibilidad.
+- Sin comprobar que puede pesar: velocidad real variable; lista de héroes del sorteo.
