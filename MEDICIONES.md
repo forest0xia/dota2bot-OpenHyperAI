@@ -315,3 +315,9 @@ se vieron, y por eso **ninguna sirve para elegir entre variantes**:
 - Análisis fijo: por brazo, solo partidas válidas de bloques completos; todas las válidas aparte como sensibilidad.
 - Cómo leerlo (de las revisiones): con 4 contra 3 o más, héroes sanos pueden salir de la pelea si la amenaza sumada
   pasa de 1; el ATTACK de OHA a 0,95 (objetivo a punto de caer) sigue ganando a la huida, a propósito.
+
+### 2026-11-01 · `n2-rt` — cortada en la partida 7 de 16
+- Pedro decidió cortarla al terminar la partida en curso para pasar al cerebro v3 (DECISIONES 2026-11-01). Jugadas 7,
+  las 7 válidas, con la máquina cargada en parte (CPU media 29-85 %).
+- Sin conclusión: menos de dos bloques completos. Los datos (`series.csv`, `lineas/`, `observaciones/n2-rt-*`) quedan
+  para la capa 2 del cerebro v3 (retirada).

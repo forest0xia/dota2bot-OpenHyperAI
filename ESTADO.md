@@ -2,6 +2,15 @@
 
 <!-- pic-method: next-session -->
 ## Próxima sesión
+- **PRÓXIMA SESIÓN (fresca): revisión adversarial del cerebro v3 para la firma de Pedro** (DECISIONES 2026-11-01).
+  - Lanzar 2-3 revisores Opus con `trabajo/cerebro-v3-revision.md` **entero** más `trabajo/cerebro-v3.md`: la
+    propuesta como un todo, sin proponer reglas sueltas ni series por detalle (la regla de Pedro está en ese encargo).
+  - Con sus informes, presentar a Pedro la versión final con recomendación; con su firma, construir por capas (cada
+    una comprobada en una partida observada y revisada contra la API) y medir **una vez** al final contra `base`.
+  - `n2-rt` (retirada temprana) se cortó al terminar su 7.ª partida por orden de Pedro: anotar en MEDICIONES lo
+    jugado como serie incompleta, sin conclusión de victorias; sirve de dato para la capa 2.
+  - Pedro critica, con razón, que en 4 días el bot por defecto sigue igual: se dedicó casi todo a hacer fiable el banco
+    y luego a reglas sueltas, contra su regla del 2026-10-30. No repetirlo.
 - **2026-11-01. Niveles 0 y 1 hechos y en `main`** (#22-#26):
   - banco completo; serie A contra A (`aa`): brazos parejos, las victorias son demasiado ruidosas para el nivel 2
     (~90 partidas por brazo para 20 puntos) y el minuto de +10.000 apenas varía (~1,4 min);
@@ -14,9 +23,8 @@
   las partidas en que llega a ir +10.000. Prioridad: la retirada (Pedro: «si, agrega la retirada al nivel 1»).
 - **Retirada, nivel 1 hecho** (#36, MEDICIONES): `retirada_temprana` v2 adelanta la huida (2 s desde la amenaza ≥ 1,
   antes 4) y ningún bot muere sin huir.
-- **Corriendo: `n2-rt`** (`retirada_temprana` frente a `base`, 16 partidas, unas 8 h, con la máquina cargada por
-  decisión de Pedro; pregunta y métricas en MEDICIONES). No tocar `bots/` ni `tools/bench/` mientras corre.
-- Siguiente: analizar `n2-rt`; serie 3 (base, fases por estado, cerebro); que la línea `start` registre las bajas.
+- Pendientes del banco, menores: que la línea `start` registre las bajas (estrechar el margen de patrimonio inicial);
+  contar cuántas veces piensa un bot por segundo de juego; verificar la lista de héroes del sorteo.
 
 ## Madurez
 Prototipo: OHA 7.41a (127 héroes) con limpieza de seguridad, al día con 7.41f. Sin cambios de juego activos por
