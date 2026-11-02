@@ -114,3 +114,60 @@ capas. Cada línea dice de qué conclusión sale.
   histéresis en cada decisión, tiempos límite en cada fase y comprobación de cada capa en partida antes de la siguiente.
 - Riesgo de pasividad (esperar demasiado): cada estado de espera tiene duración máxima y no se activa con ventaja de
   vivos.
+
+## Versión final tras la revisión adversarial (2026-11-01, pendiente de la firma de Pedro)
+Tres revisores Opus (criterio, API, construcción y medición) con `trabajo/cerebro-v3-revision.md` entero. Lo que
+cambia respecto a lo de arriba; lo marcado [V] lo comprobé yo en el código.
+
+### Diagnóstico nuevo, de los logs ya existentes (revisor A, 21 partidas tiradas de `n2-nivel1`, `n2-pd`, `n2-rt`)
+- Patrón A, la ventaja se evapora: pico en el min 14-18 con 6-9 torres de Valve en pie; desde el min 18 el patrimonio
+  por minuto de dota-bot cae de ~3.250 a ~2.830 mientras Valve sube a ~3.880; en las victorias sigue subiendo.
+- Patrón B, pierde la base yendo muy por delante (+25.000 a +94.000, 0-1 torres propias en pie).
+- Valve no gana las peleas: dota-bot deja de generar oro y de tirar torres desde el min 18 y deja la base sola.
+
+### Defectos de base que v3 debe arreglar o no hará nada en silencio
+- [V] **El farm se apaga en el min 18 de Turbo:** `mode_farm_generic.lua:382-383` exige `not J.IsLateGame()` después de
+  `TeamBrain.FarmAllowed()`, y `IsLateGame` es verdad desde el min 18 en Turbo (`jmz_func.lua:4424-4430`). El «farm
+  desbloqueado» y el PREPARAR no actuarían. v3: el plan manda sobre el farm; entre objetivos se farmea el mapa que se
+  controla.
+- [V] **El ataque es de Valve** para casi todos: `mode_attack_generic.lua` solo define `GetDesire` para los héroes
+  «buggy». v3: un `GetDesire` de ataque para todos que devuelva 0 cuando el plan prohíbe pelear (FORMAR, «con ventaja
+  no arriesgar», retirada) y `nil` en lo demás (por comprobar que `nil` devuelve el control a Valve).
+- [V] **La pelea de v2 no existe en línea:** el `engage` solo se activa fuera de LINEA y con el centro de los cinco
+  (`team_brain.lua:368-379`). v3: un objeto «pelea» por cada grupo enemigo cerca de un aliado (evaluación, foco,
+  iniciador, fase), calculado en `Update`.
+- **La ventaja es una estimación** del patrimonio enemigo, con umbrales en una economía de oro ×2 (`addon_game_mode.lua:28`
+  [V]). v3: calibrar contra la cifra real de GSI y usar umbrales relativos (ventaja / patrimonio total).
+- **`InEngage` dentro de `J.IsInTeamFight`** (300 usos, incluida la retirada) cambia todos los hechizos; se saca y se
+  consulta solo desde las ultis de iniciación.
+- **Un error del plan deja a los cinco con el último plan:** ante un error, vuelta a LINEA y ganchos de pelea apagados 10 s.
+- **Rendimiento:** la evaluación se calcula en `Update` y `J.WeAreStronger` solo la lee.
+- Funciones a cotejar con la referencia **y** con el uso de OHA: cooldown de ultis enemigas (`GetCooldownTimeRemaining`
+  da 0 en enemigos; detectar el lanzamiento), reaparición enemiga (estimar por nivel), última posición vista
+  (OHA indexa `info[1]`), radios recortados a 1.600 por OHA (usar `GetUnitList`).
+
+### Capas, reordenadas y con su peso
+0. Partida de API y ganchos: modificadores en enemigos, TP enemigos, `GetCooldown` de ulti enemiga, `nil` en el ataque,
+   farm del plan después del min 18.
+1. Capa 5, la base intocable (explica el patrón B; parte ya existe).
+2. Capa 1, evaluación por pelea, primero en sombra junto a `WeAreStronger` para fijar umbrales con lo visto.
+3. Capa 3 con economía: farm del mapa controlado, tomar torres en la ventana de ventaja (no solo tras una pelea
+   ganada), Roshan, asaltos; con ventaja la alternativa a pelear es farm u objetivo, nunca esperar.
+4. Capa 2, retirada coherente con la evaluación (con evaluación < 0,8 y amenaza ≥ 1 gana al ataque). Pesa menos: la
+   huida la ejecuta Valve.
+5. Capa 4 recortada: FORMAR/INICIAR con el mando del ataque, contrainiciación, retener daño de área 1,5 s solo en los
+   archivos de iniciadores, no Chrono sobre aliados. Fuera: coordinación de salvadas y BKB, aturdimiento reservado.
+Lados alternados entre capas; la última, doble, sirve de humo de la puerta de medición. Cada capa con su línea de
+registro y su criterio de paso (informe del revisor C).
+
+### Medición final única
+- Pregunta: ¿deja `cerebro_v3` (paquete con v2 y `builds`) de regalar ventajas y gana más que `base`?
+- Principal: victorias (el tope cuenta como no ganada), por bloques del mismo sorteo, Cochran-Mantel-Haenszel a una cola.
+- Secundarias de mecanismo, fijadas antes: patrimonio por minuto propio menos el de Valve en el min 18-26; estructuras
+  propias perdidas yendo por encima de +5.000; torres enemigas en pie al llegar a +10.000; derrotas tras +10.000;
+  muertes por partida; llamadas a Think por segundo de juego en los dos brazos.
+- Tamaño: 16 por brazo solo ve unos 38-40 puntos. Recomendado: una serie secuencial, máximo 40 por brazo, miradas a 16 y
+  28 con fronteras O'Brien-Fleming fijadas antes; parada por inutilidad en la 2.ª. Unos 30 min reales por partida:
+  ~16 h a la primera mirada, ~40 h el máximo.
+- Antes: el orquestador repite una partida inválida con el mismo sorteo, lado y variante (cambio de un control:
+  revisado antes de usarlo).
