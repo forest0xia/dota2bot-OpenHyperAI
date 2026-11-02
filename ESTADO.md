@@ -28,6 +28,7 @@
   antes 4) y ningún bot muere sin huir.
 - Pendientes del banco, menores: que la línea `start` registre las bajas (estrechar el margen de patrimonio inicial);
   contar cuántas veces piensa un bot por segundo de juego; verificar la lista de héroes del sorteo.
+- Espera a Pedro: nada.
 
 ## Madurez
 Prototipo: OHA 7.41a (127 héroes) con limpieza de seguridad, al día con 7.41f. Sin cambios de juego activos por
