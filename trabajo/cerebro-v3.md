@@ -130,6 +130,22 @@ cambia respecto a lo de arriba; lo marcado [V] lo comprobé yo en el código.
   `TeamBrain.FarmAllowed()`, y `IsLateGame` es verdad desde el min 18 en Turbo (`jmz_func.lua:4424-4430`). El «farm
   desbloqueado» y el PREPARAR no actuarían. v3: el plan manda sobre el farm; entre objetivos se farmea el mapa que se
   controla.
+- **Farm situacional, sin reloj** (observación de Pedro al firmar, DECISIONES 2026-11-01). El corte del min 18 es de
+  OHA y falla en los dos sentidos: corta el farm en una partida lenta en la que los núcleos aún no tienen sus objetos
+  y lo deja seguir en una rápida en la que ya sobran. Además el banco da oro ×2, y el reloj de Turbo no dice nada de
+  cómo va la partida. En el brazo v3:
+  - el farm no lleva ninguna puerta de fase; lo decide el plan cada 0,2 s según la situación:
+    - lo que le falta a cada núcleo (pos 1-3) para su próximo pico de poder (BKB, Blink, objeto clave de su build,
+      `builds`), en oro;
+    - si hay un objetivo que tomar ahora (ventana de reaparición, Aegis, torre sin defender): el objetivo gana;
+    - los enemigos que faltan del mapa: con 3 o más sin ver, solo el mapa propio o en grupo;
+  - los apoyos (pos 4-5) farmean solo si no hay nada mejor que hacer; los núcleos con lo que necesitan dejan de farmear
+    y van a presionar;
+  - las otras 16 reglas de OHA que miden la partida en minutos (`IsEarly/Mid/LateGame` en empuje, defensa, runas y
+    héroes) usan la fase por estado de la partida (variante `fase_estado`: nivel medio de los diez), que va en el
+    paquete v3;
+  - la partida observada de la capa 3 registra por núcleo el oro que le falta, el farm y las decisiones del plan. Pasa
+    si ningún núcleo deja de farmear por el reloj y si los núcleos ya completos dejan de farmear.
 - [V] **El ataque es de Valve** para casi todos: `mode_attack_generic.lua` solo define `GetDesire` para los héroes
   «buggy». v3: un `GetDesire` de ataque para todos que devuelva 0 cuando el plan prohíbe pelear (FORMAR, «con ventaja
   no arriesgar», retirada) y `nil` en lo demás (por comprobar que `nil` devuelve el control a Valve).

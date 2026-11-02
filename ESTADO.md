@@ -2,11 +2,11 @@
 
 <!-- pic-method: next-session -->
 ## Próxima sesión
-- **Espera la firma de Pedro sobre la versión final del cerebro v3** (`trabajo/cerebro-v3.md`, sección «Versión final
+- **Cerebro v3 FIRMADO (2026-11-01), en construcción** (`trabajo/cerebro-v3.md`, sección «Versión final
   tras la revisión adversarial»). Revisión hecha el 2026-11-01 con tres revisores Opus; hallazgo mayor, comprobado en
   el código: el farm se apaga en el min 18 de Turbo (`mode_farm_generic.lua:382-383`) y el ataque es de Valve, así que
   partes de v2/v3 no actuarían. Con la firma: partida 0 de API, luego capas 5 → 1 → 3 → 2 → 4, y una serie final
-  secuencial (decidir con Pedro el tamaño: recomendado máx. 40 por brazo con miradas a 16 y 28).
+  secuencial firmada (hasta 40 por brazo, miradas a 16 y 28). Farm y fases sin reloj, por situación (DECISIONES 2026-11-01).
   - Pedro critica, con razón, que en 4 días el bot por defecto sigue igual: se dedicó casi todo a hacer fiable el banco
     y luego a reglas sueltas, contra su regla del 2026-10-30. No repetirlo.
 - **2026-11-01. Niveles 0 y 1 hechos y en `main`** (#22-#26):
