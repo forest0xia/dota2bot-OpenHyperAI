@@ -321,3 +321,29 @@ se vieron, y por eso **ninguna sirve para elegir entre variantes**:
   las 7 válidas, con la máquina cargada en parte (CPU media 29-85 %).
 - Sin conclusión: menos de dos bloques completos. Los datos (`series.csv`, `lineas/`, `observaciones/n2-rt-*`) quedan
   para la capa 2 del cerebro v3 (retirada).
+
+### 2026-11-02 · `v3-partida0` (cerebro v3, partida 0: qué responde la API sobre los enemigos)
+- Pregunta: ¿qué funciones de la API dan datos de héroes enemigos, se puede prohibir el ataque con `GetDesire` y
+  devolverlo a Valve con `nil`, y sigue el farm pasado el min 18 sin el corte de OHA?
+- Qué cambió: variante `sonda_api` (`FunLib/api_probe.lua`, gancho en `mode_attack_generic.lua`, `farm_sin_reloj`).
+- Configuración: `--variantes sonda_api --partidas 2 --modo turbo --observar`, Valve en Injusto, ×4; código
+  `f1b9d61d95bb`; CPU de la máquina al 81 % al lanzar (mecanismo, no tiempos).
+- Resultado (líneas `[bench] api` de las dos partidas):
+  - **`nil` en `GetDesire` del ataque NO cae en el deseo de Valve: vale 0.** Ningún bot entró en ATTACK en toda la
+    partida (0 de ~5.000 registros de modo; 580 en `n2-rt` #7). La referencia de la API (línea 51) está mal. Las dos
+    partidas se perdieron por eso: no cuentan para nada más. El ataque de Valve pide casi siempre 0,95 (383 de 497 en
+    `n2-rt` #7): el plan «prohíbe» atacar dando a otro modo más de 0,95, no anulando el ataque.
+  - Ulti enemiga: `GetCooldown` y `GetCooldownTimeRemaining` dan -1; **`IsFullyCastable` sí responde** (pasa a
+    falso tras verla lanzar: Lich a los 273 s, falso a los 285 s). `GetCurrentActiveAbility` e `IsUltimate` en
+    enemigos funcionan (lanzamientos de ulti vistos).
+  - `GetModifierSourceAbility` no existe (error en cada llamada); `NumModifiers`/`GetModifierName`/
+    `GetModifierRemainingDuration` se llaman sin error (su valor ya se usaba en `J.GetDisableRemaining`).
+  - TP: `GetIncomingTeleports` lista también los de enemigos (con `playerid`).
+  - Reaparición: un enemigo muerto no está en `GetUnitList`, así que `GetRespawnTime` no se puede pedir; se estima.
+  - `GetHeroLastSeenInfo` devuelve una lista (`info[1].location`), como la usa OHA, no la tabla de la referencia.
+  - Farm después del min 18: 14 % y 12 % de los registros en FARM, como en `n2-rt` (11 % y 17 %); sin conclusión,
+    porque sin ataque la partida no es normal y quedan otras puertas de OHA (`IsTimeToFarm`). Lo comprueba la capa 3
+    con sus líneas `[bench] farm`.
+- Validez: partida de mecanismo, no comparación.
+- Decisión: el gancho del ataque se quita; la capa 4 forma e inicia con deseos de otros modos por encima de 0,95. La
+  capa 1 usa `IsFullyCastable` de la ulti enemiga visible y cuenta los TP enemigos hacia la pelea.

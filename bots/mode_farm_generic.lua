@@ -380,7 +380,9 @@ function GetDesireHelper()
 	-- dota-bot "remate" (Pedro, 2026-10-30): the benchmark variant "farm = true" keeps farming with a 6k+ lead, and so
 	-- does the team brain (variant "cerebro") when its plan is to farm (FunLib/team_brain.lua).
 	and (networthAdvantage < 6000 or Customize.BenchVariant.farm == true or (TeamBrain.Enabled() and TeamBrain.FarmAllowed()))
-	and not J.IsLateGame()
+	-- brain v3 (Pedro, 2026-11-01): farming is decided by the situation, not the clock; "farm_sin_reloj" drops OHA's
+	-- late-game cut (minute 18 of Turbo).
+	and (not J.IsLateGame() or Customize.BenchVariant.farm_sin_reloj == true)
 	then
 		if J.GetDistanceFromEnemyFountain(bot) > 4000
 		then

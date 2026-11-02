@@ -7,6 +7,11 @@
   el código: el farm se apaga en el min 18 de Turbo (`mode_farm_generic.lua:382-383`) y el ataque es de Valve, así que
   partes de v2/v3 no actuarían. Con la firma: partida 0 de API, luego capas 5 → 1 → 3 → 2 → 4, y una serie final
   secuencial firmada (hasta 40 por brazo, miradas a 16 y 28). Farm y fases sin reloj, por situación (DECISIONES 2026-11-01).
+  - En curso (2026-11-01): partida 0 (`sonda_api`, rama `claude/cerebro-v3-partida0`, 2 partidas `v3-partida0`
+    corriendo; revisión de la sonda sin bloqueos: falta que la ulti enemiga se lea tras verla lanzar, que los
+    modificadores con tiempo se impriman y que `AttackDesire` vaya en pcall). Capas 5, 1, 3 y 2 escritas en el worktree
+    `../dota-bot-v3` (rama `claude/cerebro-v3-capas`, variantes `cerebro_v3` y `cerebro_v3_sombra`), en revisión Opus.
+    Siguiente: leer la partida 0, arreglar la sonda, capa 4 con el gancho del ataque, partida observada en sombra.
   - Pedro critica, con razón, que en 4 días el bot por defecto sigue igual: se dedicó casi todo a hacer fiable el banco
     y luego a reglas sueltas, contra su regla del 2026-10-30. No repetirlo.
 - **2026-11-01. Niveles 0 y 1 hechos y en `main`** (#22-#26):

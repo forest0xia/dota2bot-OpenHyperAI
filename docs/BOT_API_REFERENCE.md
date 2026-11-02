@@ -49,6 +49,8 @@ function Think()       -- Called every frame ONLY while this mode IS the active 
 > **Important:** `GetDesire()` is called **every frame for ALL modes simultaneously**. The mode returning the highest desire value wins and becomes the active mode. Only that mode's `Think()` is then called.
 
 > **Returning nil from `GetDesire()`** causes the engine to fall through to Valve's built-in desire calculation for that mode. This lets you selectively override desire only when you want to.
+>
+> **dota-bot, checked in game 2026-11-02 (MEDICIONES, `v3-partida0`): false for `mode_attack_generic`.** A `GetDesire` that returned nil kept every bot out of ATTACK for the whole match (nil counts as 0). Defining `GetDesire` in a mode file replaces Valve's desire for that mode entirely. Also wrong in this reference, from the same games: `GetModifierSourceAbility` does not exist; `GetHeroLastSeenInfo` returns a list (`info[1].location`); an enemy ability's `GetCooldown`/`GetCooldownTimeRemaining` give -1 (its `IsFullyCastable` does answer).
 
 ```lua
 -- Example: Override push desire only when we have a numbers advantage
