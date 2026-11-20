@@ -252,7 +252,7 @@ function Think()
 		return
 	end
 
-	if J.CanNotUseAction(bot)
+	if J.CanNotUseActionExceptQueue(bot)
 	or bot:GetCurrentActionType() == BOT_ACTION_TYPE_PICK_UP_RUNE
 	then
 		return

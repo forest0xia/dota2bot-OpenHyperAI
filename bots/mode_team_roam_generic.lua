@@ -105,6 +105,121 @@ function GetDesireHelper()
         IsSupport  = not IsHeroCore
     end
 
+    -- Defend against enemy base/half-map invasions
+    if DotaTime() > 0 then
+        local hAllyAncient   = GetAncient(GetTeam())
+        local hEnemyAncient  = GetAncient(GetOpposingTeam())
+        local nEnemiesInOurHalf = 0
+        local nEnemiesNearBase  = 0
+        local nEnemiesInOurHalfTotal = 0
+        local vInvasionCenter = nil
+
+        for _, enemy in pairs(GetUnitList(UNIT_LIST_ENEMY_HEROES)) do
+            if J.IsValidHero(enemy) and not J.IsSuspiciousIllusion(enemy) and hAllyAncient ~= nil and hEnemyAncient ~= nil then
+                local distAlly  = GetUnitToUnitDistance(enemy, hAllyAncient)
+                local distEnemy = GetUnitToUnitDistance(enemy, hEnemyAncient)
+                if distAlly + 1200 < distEnemy then
+                    nEnemiesInOurHalf = nEnemiesInOurHalf + 1
+                    nEnemiesInOurHalfTotal = nEnemiesInOurHalfTotal + 1
+                    if vInvasionCenter == nil then
+                        vInvasionCenter = enemy:GetLocation()
+                    else
+                        vInvasionCenter = vInvasionCenter + enemy:GetLocation()
+                    end
+                end
+                if distAlly < 4000 then
+                    nEnemiesNearBase = nEnemiesNearBase + 1
+                end
+            end
+        end
+
+        if nEnemiesInOurHalfTotal > 0 and vInvasionCenter ~= nil then
+            vInvasionCenter = vInvasionCenter / nEnemiesInOurHalfTotal
+        end
+
+        if nEnemiesNearBase >= 4 and J.IsLateGame() then
+            if hAllyAncient then
+                bot.ohaInvasionUntil = GameTime() + 6
+                bot.ohaInvasionLoc = hAllyAncient:GetLocation()
+            end
+            return 1.0
+        elseif nEnemiesNearBase >= 2 then
+            if hAllyAncient then
+                bot.ohaInvasionUntil = GameTime() + 6
+                bot.ohaInvasionLoc = hAllyAncient:GetLocation()
+            end
+            return 0.95
+        end
+
+        if GameTime() < (bot.ohaInvasionUntil or -1) and bot.ohaInvasionLoc ~= nil then
+            return 0.65
+        end
+        if nEnemiesInOurHalf >= 2 and vInvasionCenter ~= nil then
+            local botDist = GetUnitToLocationDistance(bot, vInvasionCenter)
+
+            if IsSupport and botDist <= 3500 and J.GetHP(bot) > 0.5 then
+                bot.teamRoamTPLocation = vInvasionCenter
+                bot.teamRoamTPTime = GameTime()
+                bot.ohaInvasionUntil = GameTime() + 6
+                bot.ohaInvasionLoc = vInvasionCenter
+                return 0.65
+            end
+
+            if IsHeroCore and J.GetPosition(bot) <= 3 and botDist <= 5000 then
+                local bIsNearestCore = true
+                local nAllySupportNear = 0
+                for _, ally in pairs(GetUnitList(UNIT_LIST_ALLIED_HEROES)) do
+                    if ally ~= bot and J.IsValidHero(ally) and not ally:IsIllusion() then
+                        local allyDist = GetUnitToLocationDistance(ally, vInvasionCenter)
+                        if J.IsCore(ally) and allyDist < botDist then
+                            bIsNearestCore = false
+                        end
+                        if not J.IsCore(ally) and allyDist <= 3500 and J.GetHP(ally) > 0.5 then
+                            nAllySupportNear = nAllySupportNear + 1
+                        end
+                    end
+                end
+                if bIsNearestCore then
+                    if nAllySupportNear >= 1 then
+                        bot.teamRoamTPLocation = vInvasionCenter
+                        bot.teamRoamTPTime = GameTime()
+                        bot.ohaInvasionUntil = GameTime() + 6
+                        bot.ohaInvasionLoc = vInvasionCenter
+                        return 0.85
+                    else
+                        return 0.3
+                    end
+                end
+            end
+        end
+    end
+
+    -- Success/failure tracking for Help Ally
+    if bot.helpAllyActive then
+        if DotaTime() - bot.helpAllyStartTime > 20.0 then
+            bot.helpAllyActive = false
+            bot.lastHelpAllyTime = DotaTime()
+            bot.helpAllyCooldown = 90.0
+        else
+            local targetDead = false
+            if bot.helpAllyTargetUnit ~= nil and (not J.IsValidHero(bot.helpAllyTargetUnit) or not bot.helpAllyTargetUnit:IsAlive()) then
+                targetDead = true
+            end
+            if targetDead then
+                bot.helpAllyActive = false
+                bot.lastHelpAllyTime = DotaTime()
+                bot.helpAllyCooldown = 30.0
+            end
+        end
+    end
+
+    local onCooldown = false
+    if bot.lastHelpAllyTime ~= nil and bot.helpAllyCooldown ~= nil then
+        if DotaTime() - bot.lastHelpAllyTime < bot.helpAllyCooldown then
+            onCooldown = true
+        end
+    end
+
     ItemOpsDesire()
 
     local target
@@ -118,8 +233,15 @@ function GetDesireHelper()
     nearbyAllies = J.GetAlliesNearLoc(bot:GetLocation(), 2200)
     nearbyEnemies = J.GetEnemiesNearLoc(bot:GetLocation(), 2000)
 
-    target, ShouldHelpAlly = ConsiderHelpAlly()
+    target, ShouldHelpAlly = nil, false
+    if not onCooldown then
+        target, ShouldHelpAlly = ConsiderHelpAlly()
+    end
     if ShouldHelpAlly then
+        bot.helpAllyActive = true
+        bot.helpAllyStartTime = DotaTime()
+        bot.helpAllyTargetUnit = target
+        bot.helpAllyCooldown = nil
         SetStickyTarget(target)
         targetUnit = target
         return RemapValClamped(J.GetHP(bot), 0, 0.6, BOT_MODE_DESIRE_NONE, 0.98)
@@ -287,13 +409,15 @@ function OnEnd()
     towerTime = 0
     towerCreepMode = false
     PickedItem = nil
+    targetUnit = nil
+    bot.helpAllyActive = false
 end
 
 -- ==============================
 -- Think
 -- ==============================
 function Think()
-    if J.CanNotUseAction(bot) then return end
+    if J.CanNotUseActionExceptQueue(bot) then return end
 	-- diabled think less to avoid failing to last hit
     -- if J.Utils.IsBotThinkingMeaningfulAction(bot, Customize.ThinkLess, "team_roam") then return end
 
@@ -331,6 +455,27 @@ function Think()
 
     if isInIdleState then
         isInIdleState = J.CheckBotIdleState()
+    end
+
+    if GameTime() < (bot.ohaInvasionUntil or -1) and bot.ohaInvasionLoc ~= nil then
+        local nInvasionEnemies = J.GetEnemiesNearLoc(bot.ohaInvasionLoc, 1600)
+        local hInvTarget = nil
+        for _, enemy in ipairs(nInvasionEnemies) do
+            if J.IsValidHero(enemy) and not J.IsSuspiciousIllusion(enemy) and X.CanBeAttacked(enemy) then
+                hInvTarget = enemy
+                break
+            end
+        end
+        if hInvTarget ~= nil then
+            targetUnit = hInvTarget
+            bot:SetTarget(hInvTarget)
+            bot:Action_AttackUnit(hInvTarget, true)
+            return
+        end
+        if GetUnitToLocationDistance(bot, bot.ohaInvasionLoc) > 600 then
+            bot:Action_MoveToLocation(bot.ohaInvasionLoc + RandomVector(200))
+            return
+        end
     end
 
     if ShouldHelpAlly and J.Utils.IsValidUnit(targetUnit) then
@@ -412,8 +557,26 @@ function X.SupportFindTarget()
 
         local nNeutrals = bot:GetNearbyNeutralCreeps(nAttackRange + 150)
         local nAllies = J.GetNearbyHeroes(bot, 1300, false, BOT_MODE_NONE)
+        local bSupportYield = J.GetPosition(bot) >= 4
         if J.IsWithoutTarget(bot) and botMode ~= BOT_MODE_FARM and #nNeutrals > 0 and #nAllies <= 1 then
             for i = 1, #nNeutrals do
+                local bHumanFarming = false
+                local bCoreFarming = false
+                for _, ally in ipairs(GetUnitList(UNIT_LIST_ALLIED_HEROES)) do
+                    if J.IsValidHero(ally) then
+                        local dToNeutral = GetUnitToUnitDistance(ally, nNeutrals[i])
+                        if not ally:IsBot() and dToNeutral <= 700 then
+                            bHumanFarming = true
+                            break
+                        end
+                        if ally ~= bot and J.IsCore(ally) and dToNeutral <= 700 then
+                            bCoreFarming = true
+                        end
+                    end
+                end
+                if bHumanFarming then break end
+                if bSupportYield and bCoreFarming then break end
+
                 if X.CanBeAttacked(nNeutrals[i]) and not X.IsAllysTarget(nNeutrals[i])
                 and not J.IsTormentor(nNeutrals[i]) and not J.IsRoshan(nNeutrals[i])
                 and X.IsLastHitCreep(nNeutrals[i], attackDamage) then
@@ -647,6 +810,7 @@ function X.CarryFindTarget()
 					and not X.IsLastHitCreep(creep,denyDamage)
 					and not J.IsTormentor(creep)
 					and not J.IsRoshan(creep)
+					and string.find(creep:GetUnitName(), 'npc_dota_creep_')
 					then
 						local togetherDamage = 0;
 						local togetherCount = 0;
@@ -721,6 +885,7 @@ function X.CarryFindTarget()
 				and not X.IsOthersTarget(creep)
 				and not J.IsTormentor(creep)
 				and not J.IsRoshan(creep)
+				and string.find(creep:GetUnitName(), 'npc_dota_creep_')
 				then
 					return creep,BOT_MODE_DESIRE_ABSOLUTE;
 				end
@@ -776,6 +941,23 @@ function X.CarryFindTarget()
 			then
 				for i = 1,#nNeutrals
 				do
+					local bHumanFarming = false
+					local bCoreFarming = false
+					for _, ally in ipairs(GetUnitList(UNIT_LIST_ALLIED_HEROES)) do
+						if J.IsValidHero(ally) then
+							local dToNeutral = GetUnitToUnitDistance(ally, nNeutrals[i])
+							if not ally:IsBot() and dToNeutral <= 700 then
+								bHumanFarming = true
+								break
+							end
+							if ally ~= bot and J.IsCore(ally) and dToNeutral <= 700 then
+								bCoreFarming = true
+							end
+						end
+					end
+					if bHumanFarming then break end
+					if J.GetPosition(bot) >= 4 and bCoreFarming then break end
+
 					if X.CanBeAttacked(nNeutrals[i])
 						and not X.IsAllysTarget(nNeutrals[i])
 						and not J.IsTormentor(nNeutrals[i])
@@ -978,6 +1160,7 @@ function X.GetNearbyLastHitCreep(ignorAlly, bEnemy, nDamage, nRadius, bot)
 	do
 		if X.CanBeAttacked(nCreep) and nCreep:GetHealth() < ( nDamage + 256 )
 		and ( ignorAlly or not X.IsAllysTarget(nCreep) )
+		and ( bEnemy or string.find(nCreep:GetUnitName(), 'npc_dota_creep_') )
 		then
 		
 			local nAttackProDelayTime = J.GetAttackProDelayTime(bot,nCreep) ;
@@ -1676,8 +1859,6 @@ function TrySellOrDropItem()
 					local distance = bot:DistanceFromFountain()
 					if distance <= 300 then
 						bot:ActionImmediate_SellItem( bot:GetItemInSlot( itemSlot ))
-					elseif distance >= 3000 then
-						bot:Action_DropItem( bot:GetItemInSlot( itemSlot ), bot:GetLocation() )
 					end
 				end
 			end

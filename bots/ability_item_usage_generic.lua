@@ -5069,7 +5069,7 @@ X.ConsiderItemDesire["item_tpscroll"] = function( hItem )
 
 	if bot:GetLevel() > 12 and bot:DistanceFromFountain() < 600 then nMinTPDistance = nMinTPDistance + 600 end
 
-	if nMode == BOT_MODE_LANING
+	if nMode == BOT_MODE_LANING and not J.IsInLaningPhase()
 	then
 		hEffectTarget, shouldTp = X.GetLaningTPLocation(bot, nMinTPDistance, botLocation)
 		sCastMotive = '出去发育'
@@ -5279,6 +5279,42 @@ X.ConsiderItemDesire["item_tpscroll"] = function( hItem )
 		then
 			hEffectTarget = tpLoc
 			sCastMotive = '支援队友:'..J.Chat.GetNormName( target )
+
+			if botName == 'npc_dota_hero_furion'
+			then
+				local Teleportation = bot:GetAbilityByName('furion_teleportation')
+				if Teleportation:IsTrained()
+				and Teleportation:IsFullyCastable()
+				then
+					bot.useProphetTP = true
+					bot.ProphetTPLocation = hEffectTarget
+					return BOT_ACTION_DESIRE_NONE
+				end
+			end
+
+			return BOT_ACTION_DESIRE_HIGH, hEffectTarget, sCastType, sCastMotive
+		end
+	end
+
+	-- Support team_roam invasion responses over long distances via TP
+	if nMode == BOT_MODE_TEAM_ROAM
+		and nModeDesire >= BOT_MODE_DESIRE_MODERATE
+		and nEnemyCount == 0
+		and bot.teamRoamTPLocation ~= nil
+		and bot.teamRoamTPTime ~= nil
+		and GameTime() - bot.teamRoamTPTime <= 5
+	then
+		local bestTpLoc = J.GetNearbyLocationToTp( bot.teamRoamTPLocation )
+		if bestTpLoc ~= nil
+			and GetUnitToLocationDistance( bot, bestTpLoc ) > nMinTPDistance
+		then
+			tpLoc = bestTpLoc
+		end
+
+		if tpLoc ~= nil
+		then
+			hEffectTarget = tpLoc
+			sCastMotive = '支援入侵:团队游走TP'
 
 			if botName == 'npc_dota_hero_furion'
 			then

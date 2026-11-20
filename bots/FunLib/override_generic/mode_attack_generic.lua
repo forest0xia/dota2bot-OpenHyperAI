@@ -23,6 +23,9 @@ local Generic = BotsInit.CreateGeneric()
 
 function Generic.OnStart() end
 function Generic.OnEnd()
+	botTarget.unit = nil
+	botTarget.location = 0
+	botTarget.id = -1
 	botTarget.fogChase = false
 	helpAlly.should = false
 end
@@ -33,6 +36,14 @@ function Generic.GetDesire()
 	or bot:HasModifier('modifier_fountain_fury_swipes_damage_increase')
 	then
 		return BOT_MODE_DESIRE_NONE
+	end
+
+	if botTarget.unit ~= nil then
+		if not IsValid(botTarget.unit) or not botTarget.unit:IsAlive() then
+			bot.lastKillTime = DotaTime()
+			botTarget.unit = nil
+			botTarget.id = -1
+		end
 	end
 
 	if bClearMode then bClearMode = false return 0 end
@@ -135,12 +146,16 @@ function Generic.GetDesire()
 			end
 			local nEnemyTowersNear = bot:GetNearbyTowers(1200, true)
 			if J.IsValidBuilding(nEnemyTowersNear[1]) then
-				fEnemyDamage = fEnemyDamage + #nEnemyTowersNear * nEnemyTowersNear[1]:GetAttackDamage()
+				local towerAS = nEnemyTowersNear[1]:GetAttackSpeed() or 1.0
+				fEnemyDamage = fEnemyDamage + #nEnemyTowersNear * nEnemyTowersNear[1]:GetAttackDamage() * towerAS * 3.0
 			end
 
 			local b1 = (bWeAreStronger and fAllyDamage >= enemyHero:GetHealth() * 0.2 and botHealth > fEnemyDamage * 1.15)
 			local b2 = (#nInRangeAlly >= #nInRangeEnemy and fAllyDamage >= enemyHero:GetHealth() * 0.3 and botHealth > fEnemyDamage * 1.15)
 			local b3 = (vTeamFightLocation ~= nil and (((GetUnitToLocationDistance(bot, vTeamFightLocation) - botAttackRange) / bot:GetCurrentMovementSpeed()) <= 10.0))
+			if b3 and bot.lastKillTime ~= nil and DotaTime() - bot.lastKillTime < 8.0 then
+				b3 = false
+			end
 
 			if b1 or b2 or b3 then
 				local dist = GetUnitToUnitDistance(bot, enemyHero)
@@ -209,6 +224,7 @@ function Generic.GetDesire()
 						if #tAllyHeroes_real >= #tEnemyHeroes_real2 or bWeAreStronger then
 							botTarget.fogChase = true
 							botTarget.location = dInfo.location
+							botTarget.time_since_seen = dInfo.time_since_seen
 							return GetActualDesire(BOT_MODE_DESIRE_VERYHIGH)
 						end
 					end
@@ -386,12 +402,14 @@ function Generic.Think()
 	-- Fog-of-war chase
 	if botTarget.fogChase then
 		local vLastSeen = botTarget.location
+		local timeSeen = botTarget.time_since_seen or 1.0
+		local offset = 500 + (timeSeen - 0.5) * 500
 		local vDirs = {
-			vLastSeen + Vector(700, 0),
-			vLastSeen + Vector(-700, 0),
-			vLastSeen + Vector(0, 700),
-			vLastSeen + Vector(0, -700),
-			vLastSeen + Vector(700, 700),
+			vLastSeen + Vector(offset, 0),
+			vLastSeen + Vector(-offset, 0),
+			vLastSeen + Vector(0, offset),
+			vLastSeen + Vector(0, -offset),
+			vLastSeen + Vector(offset, offset),
 		}
 		local vBest, vBestScore = nil, 0
 		for _, loc in ipairs(vDirs) do

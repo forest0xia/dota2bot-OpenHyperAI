@@ -289,7 +289,7 @@ local fNextMovementTime = 0
 local fStillAlive = 0
 local bTormentorAlive = false
 function Think()
-    if J.CanNotUseAction(bot) then return end
+    if J.CanNotUseActionExceptQueue(bot) then return end
     if J.Utils.IsBotThinkingMeaningfulAction(bot, Customize.ThinkLess, "side_shop") then return end
     if DotaTime() - bot.tormentor_kill_time <= nRestForSeconds then
         bot:Action_MoveToLocation(TormentorLocation + RandomVector(50))

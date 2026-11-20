@@ -52,7 +52,7 @@ function OnEnd()
 end
 
 function Think()
-	if J.CanNotUseAction(bot) then return end
+	if J.CanNotUseActionExceptQueue(bot) then return end
 	if assembleLoc == nil then return end
 
 	local dist = GetUnitToLocationDistance(bot, assembleLoc)
