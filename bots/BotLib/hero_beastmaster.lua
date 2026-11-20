@@ -73,7 +73,7 @@ sRoleItemsBuyList['pos_2'] = {
 sRoleItemsBuyList['pos_3'] = {
 	"item_tank_outfit",
     "item_helm_of_the_dominator",
-    "item_helm_of_the_overlord",--
+    "item_ristuls_devotion",--
     "item_ultimate_scepter",
 	"item_blink",
 	"item_heavens_halberd",
@@ -155,20 +155,18 @@ end
 
 -- Ability handles initialized at load time; re-fetched each tick in SkillsComplement for Aghs safety
 local WildAxes          = bot:GetAbilityByName('beastmaster_wild_axes')
--- 7.41: Boar→Razorback, Hawk→Raptor. Use sAbilityList for resilience to name changes.
-local CallOfTheWildBoar = bot:GetAbilityByName('beastmaster_call_of_the_wild_razorback')
-                          or bot:GetAbilityByName('beastmaster_summon_razorback')
+-- 7.42: Boar -> beastmaster_summon_razorback, Hawk -> beastmaster_summon_raptor, Scepter -> beastmaster_summon_thunderhide
+local CallOfTheWildBoar = bot:GetAbilityByName('beastmaster_summon_razorback')
                           or (sAbilityList[2] and bot:GetAbilityByName(sAbilityList[2]))
-local CallOfTheWildHawk = bot:GetAbilityByName('beastmaster_call_of_the_wild_raptor')
-                          or bot:GetAbilityByName('beastmaster_summon_raptors')
+local CallOfTheWildHawk = bot:GetAbilityByName('beastmaster_summon_raptor')
                           or (sAbilityList[3] and bot:GetAbilityByName(sAbilityList[3]))
--- local InnerBeast     -- 7.41: now innate, cannot be cast
--- local DrumsOfSlom        = bot:GetAbilityByName('beastmaster_drums_of_slom')
+local SummonThunderhide = bot:GetAbilityByName('beastmaster_summon_thunderhide')
 local PrimalRoar        = bot:GetAbilityByName('beastmaster_primal_roar')
 
 local WildAxesDesire, WildAxesLocation
 local CallOfTheWildBoarDesire
 local CallOfTheWildHawkDesire
+local SummonThunderhideDesire
 local PrimalRoarDesire, PrimalRoarTarget
 local InnerBeastDesire
 local BlackKingBar
@@ -194,12 +192,11 @@ function X.SkillsComplement()
 
     -- Re-fetch ability handles each tick for safety against Aghs upgrades
     WildAxes = bot:GetAbilityByName('beastmaster_wild_axes')
-    CallOfTheWildBoar = bot:GetAbilityByName('beastmaster_call_of_the_wild_razorback')
-                        or bot:GetAbilityByName('beastmaster_summon_razorback')
+    CallOfTheWildBoar = bot:GetAbilityByName('beastmaster_summon_razorback')
                         or (sAbilityList[2] and bot:GetAbilityByName(sAbilityList[2]))
-    CallOfTheWildHawk = bot:GetAbilityByName('beastmaster_call_of_the_wild_raptor')
-                        or bot:GetAbilityByName('beastmaster_summon_raptors')
+    CallOfTheWildHawk = bot:GetAbilityByName('beastmaster_summon_raptor')
                         or (sAbilityList[3] and bot:GetAbilityByName(sAbilityList[3]))
+    SummonThunderhide = bot:GetAbilityByName('beastmaster_summon_thunderhide')
     PrimalRoar = bot:GetAbilityByName('beastmaster_primal_roar')
 
     -- Cache per-tick variables
@@ -243,6 +240,13 @@ function X.SkillsComplement()
     if CallOfTheWildHawkDesire > 0
     then
         bot:Action_UseAbility(CallOfTheWildHawk)
+        return
+    end
+
+    SummonThunderhideDesire = X.ConsiderSummonThunderhide()
+    if SummonThunderhideDesire > 0
+    then
+        bot:Action_UseAbility(SummonThunderhide)
         return
     end
 
@@ -627,6 +631,41 @@ function X.ConsiderCallOfTheWildHawk()
     end
 
 	return BOT_ACTION_DESIRE_NONE
+end
+
+function X.ConsiderSummonThunderhide()
+    if not J.CanCastAbility(SummonThunderhide)
+    or bot:WasRecentlyDamagedByAnyHero(3.0)
+    then
+        return BOT_ACTION_DESIRE_NONE
+    end
+
+    if J.IsGoingOnSomeone(bot)
+    then
+        if J.IsValidTarget(botTarget)
+        and J.IsInRange(bot, botTarget, 900)
+        then
+            return BOT_ACTION_DESIRE_HIGH
+        end
+    end
+
+    if J.IsInTeamFight(bot, 1200)
+    or ((J.IsPushing(bot) or J.IsDefending(bot) or J.IsFarming(bot)) and J.IsAttacking(bot))
+    then
+        return BOT_ACTION_DESIRE_HIGH
+    end
+
+    if J.IsDoingRoshan(bot) or J.IsDoingTormentor(bot)
+    then
+        if (J.IsRoshan(botTarget) or J.IsTormentor(botTarget))
+        and J.IsInRange(bot, botTarget, 500)
+        and J.IsAttacking(bot)
+        then
+            return BOT_ACTION_DESIRE_HIGH
+        end
+    end
+
+    return BOT_ACTION_DESIRE_NONE
 end
 
 function X.ConsiderPrimalRoar()

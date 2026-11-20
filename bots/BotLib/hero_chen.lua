@@ -84,8 +84,10 @@ sRoleItemsBuyList['pos_4'] = {
     "item_blood_grenade",
 
 	"item_priest_outfit",
+	"item_bloodslinger",
 	"item_mekansm",
     "item_vladmir",--
+    "item_ristuls_devotion",--
 	"item_glimmer_cape",--
 	"item_aghanims_shard",
 	"item_guardian_greaves",--
@@ -146,13 +148,13 @@ end
 local Penitence         = bot:GetAbilityByName('chen_penitence')
 local HolyPersuasion    = bot:GetAbilityByName('chen_holy_persuasion')
 local DivineFavor       = bot:GetAbilityByName('chen_divine_favor')
-local SummonConvert     = bot:GetAbilityByName('chen_summon_convert')
+local Zealot            = bot:GetAbilityByName('chen_zealot')
 local HandOfGod         = bot:GetAbilityByName('chen_hand_of_god')
 
 local PenitenceDesire, PenitenceTarget
 local HolyPersuasionDesire, HolyPersuasionTarget
 local DivineFavorDesire, DivineFavorTarget
-local SummonConvertDesire
+local ZealotDesire
 local HandOfGodDesire
 
 local nChenCreeps = {}
@@ -178,10 +180,10 @@ function X.SkillsComplement()
         return
     end
 
-    SummonConvertDesire = X.ConsiderSummonConvert()
-    if SummonConvertDesire > 0
+    ZealotDesire = X.ConsiderZealot()
+    if ZealotDesire > 0
     then
-        bot:Action_UseAbility(SummonConvert)
+        bot:Action_UseAbility(Zealot)
         return
     end
 
@@ -488,9 +490,8 @@ function X.ConsiderDivineFavor()
     return BOT_ACTION_DESIRE_NONE, nil
 end
 
-function X.ConsiderSummonConvert()
-    if not SummonConvert:IsFullyCastable()
-    or X.IsThereChenCreepAlive()
+function X.ConsiderZealot()
+    if not J.CanCastAbility(Zealot)
     then
         return BOT_ACTION_DESIRE_NONE
     end

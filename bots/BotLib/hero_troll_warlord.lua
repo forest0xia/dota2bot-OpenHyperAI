@@ -76,7 +76,7 @@ function X.MinionThink(hMinionUnit)
     Minion.MinionThink(hMinionUnit)
 end
 
-local BattleStance          = bot:GetAbilityInSlot(0)
+local SwitchStance          = bot:GetAbilityByName('troll_warlord_switch_stance') or bot:GetAbilityInSlot(0)
 local BerserkersRage        = bot:GetAbilityByName('troll_warlord_berserkers_rage')
 local WhirlingAxesRanged    = bot:GetAbilityByName('troll_warlord_whirling_axes_ranged')
 local WhirlingAxesMelee     = bot:GetAbilityByName('troll_warlord_whirling_axes_melee')
@@ -94,6 +94,7 @@ function X.SkillsComplement()
     if J.CanNotUseAbility(bot) then return end
 
     botTarget = J.GetProperTarget(bot)
+    SwitchStance = bot:GetAbilityByName('troll_warlord_switch_stance') or bot:GetAbilityInSlot(0)
 
     BattleTranceDesire = X.ConsiderBattleTrance()
     if BattleTranceDesire > 0
@@ -102,14 +103,10 @@ function X.SkillsComplement()
         return
     end
 
-    if BattleStance:IsFullyCastable() and BattleStance:IsTrained() then
-        BerserkersRage = BattleStance
-    end
-
-    BerserkersRageDesire = X.ConsiderBerserkersRage(BerserkersRage)
+    BerserkersRageDesire = X.ConsiderBerserkersRage(SwitchStance)
     if BerserkersRageDesire > 0
     then
-        bot:Action_UseAbility(BerserkersRage)
+        bot:Action_UseAbility(SwitchStance)
         return
     end
 
@@ -129,7 +126,7 @@ function X.SkillsComplement()
 end
 
 function X.ConsiderBerserkersRage(BerserkersRage)
-    if not BerserkersRage:IsFullyCastable()
+    if not J.CanCastAbility(BerserkersRage)
     then
         return BOT_ACTION_DESIRE_NONE
     end

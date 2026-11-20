@@ -175,6 +175,7 @@ local abilityF = bot:GetAbilityByName( sAbilityList[5] )
 local abilityR = bot:GetAbilityByName( sAbilityList[6] )
 local NothlProjection = bot:GetAbilityByName("dazzle_nothl_projection")
 local NothlProjectionEnd = bot:GetAbilityByName("dazzle_nothl_projection_end")
+local ThroughTheRealm = bot:GetAbilityByName("dazzle_through_the_realm")
 
 local talent3 = bot:GetAbilityByName( sTalentList[3] )
 local talent4 = bot:GetAbilityByName( sTalentList[4] )
@@ -185,7 +186,7 @@ local castWDesire, castWTarget
 local castEDesire, castETarget
 local castFDesire, castFTarget
 local castRDesire, castRTarget
-local NothlProjectionDesire, NothlProjectionLocation, NothlProjectionEndDesire
+local NothlProjectionDesire, NothlProjectionLocation, NothlProjectionEndDesire, ThroughTheRealmDesire
 
 local nKeepMana, nMP, nHP, nLV, hEnemyList, hAllyList, botTarget, sMotive
 local aetherRange = 0
@@ -206,6 +207,7 @@ function X.SkillsComplement()
 	abilityR = bot:GetAbilityByName( sAbilityList[6] )
 	NothlProjection = bot:GetAbilityByName("dazzle_nothl_projection")
 	NothlProjectionEnd = bot:GetAbilityByName("dazzle_nothl_projection_end")
+	ThroughTheRealm = bot:GetAbilityByName("dazzle_through_the_realm")
 
 	-- Cache per-tick variables
 	nKeepMana = 400
@@ -243,6 +245,12 @@ function X.SkillsComplement()
 	NothlProjectionEndDesire = X.ConsiderNothlProjectionEnd()
 	if NothlProjectionEndDesire > 0 then
 		bot:ActionQueue_UseAbility( NothlProjectionEnd )
+		return
+	end
+
+	ThroughTheRealmDesire = X.ConsiderThroughTheRealm()
+	if ThroughTheRealmDesire > 0 then
+		bot:ActionQueue_UseAbility( ThroughTheRealm )
 		return
 	end
 
@@ -358,6 +366,17 @@ function X.ConsiderNothlProjectionEnd()
 		end
 	end
 	return BOT_ACTION_DESIRE_NONE, nil
+end
+
+function X.ConsiderThroughTheRealm()
+	if not J.CanCastAbility(ThroughTheRealm) then
+		return BOT_ACTION_DESIRE_NONE
+	end
+	local _bot = J.Utils.GameStates.dazzleNothl[bot:GetPlayerID()] and J.Utils.GameStates.dazzleNothl[bot:GetPlayerID()].body
+	if J.IsValid(_bot) and J.GetHP(_bot) < 0.35 and J.IsRetreating(_bot) and #hEnemyList >= 1 then
+		return BOT_ACTION_DESIRE_HIGH
+	end
+	return BOT_ACTION_DESIRE_NONE
 end
 
 function X.ConsiderR()

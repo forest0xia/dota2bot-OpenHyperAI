@@ -187,13 +187,12 @@ function X.MinionThink(hMinionUnit)
 end
 
 -- Re-fetch ability handles each tick for safety (Aghs upgrades, etc.)
-local Sprout, Teleportation, NaturesCall, CurseOfTheOldGrowth, WrathOfNature
+local Sprout, Teleportation, NaturesCall, WrathOfNature
 
 local function RefreshAbilities()
     Sprout              = bot:GetAbilityByName('furion_sprout')
     Teleportation       = bot:GetAbilityByName('furion_teleportation')
     NaturesCall         = bot:GetAbilityByName('furion_force_of_nature')
-    CurseOfTheOldGrowth = bot:GetAbilityByName('furion_curse_of_the_forest')
     WrathOfNature       = bot:GetAbilityByName('furion_wrath_of_nature')
 end
 
@@ -249,13 +248,6 @@ function X.SkillsComplement()
     if ncDesire > 0 then
         J.SetQueuePtToINT(bot, false)
         bot:ActionQueue_UseAbilityOnLocation(NaturesCall, GetTreeLocation(ncLoc))
-        return
-    end
-
-    local curseDesire = X.ConsiderCurseOfTheOldGrowth()
-    if curseDesire > 0 then
-        J.SetQueuePtToINT(bot, false)
-        bot:ActionQueue_UseAbility(CurseOfTheOldGrowth)
         return
     end
 
@@ -589,21 +581,6 @@ function X.ConsiderWrathOfNature()
     end
 
     return BOT_ACTION_DESIRE_NONE, nil
-end
-
-function X.ConsiderCurseOfTheOldGrowth()
-    if not J.CanCastAbility(CurseOfTheOldGrowth) then return BOT_ACTION_DESIRE_NONE end
-
-    local nRadius = CurseOfTheOldGrowth:GetSpecialValueInt('range')
-    local nInRangeEnemy = J.GetEnemiesNearLoc(bot:GetLocation(), nRadius)
-
-    -- Teamfight or going on someone with 2+ enemies
-    if (J.IsInTeamFight(bot, 1200) or J.IsGoingOnSomeone(bot))
-    and #nInRangeEnemy >= 2 then
-        return BOT_ACTION_DESIRE_HIGH
-    end
-
-    return BOT_ACTION_DESIRE_NONE
 end
 
 -- Sprout + Nature's Call combo: create trees then convert to treants

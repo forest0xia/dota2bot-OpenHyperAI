@@ -84,6 +84,7 @@ sRoleItemsBuyList['pos_3'] = {
     "item_black_king_bar",--
     "item_octarine_core",--
     nUtility,--
+    "item_skypiercer",--
     "item_aghanims_shard",
     "item_overwhelming_blink",--
     "item_refresher",--
@@ -126,8 +127,6 @@ local Doom          = bot:GetAbilityByName('doom_bringer_doom')
 
 local DevourAbility1 = bot:GetAbilityByName('doom_bringer_empty1')
 local DevourAbility2 = bot:GetAbilityByName('doom_bringer_empty2')
-
-local DevourAncientTalent = bot:GetAbilityByName('special_bonus_unique_doom_2')
 
 local DevourDesire, DevourTarget
 local ScorchedEarthDesire
@@ -308,7 +307,7 @@ function X.ConsiderDevour()
                 if nCreepTarget ~= nil
                 then
                     if nCreepTarget:IsAncientCreep()
-                    and DevourAncientTalent:IsTrained()
+                    and nMaxLevel >= 6
                     then
                         return BOT_ACTION_DESIRE_HIGH, nCreepTarget
                     end

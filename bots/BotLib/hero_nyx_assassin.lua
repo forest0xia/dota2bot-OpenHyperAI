@@ -53,6 +53,8 @@ sRoleItemsBuyList['pos_5'] = {
     "item_magic_wand",
     "item_arcane_boots",
     "item_dagon_2",
+    "item_meteor_hammer",
+    "item_starforge",--
     "item_pipe",
     "item_aghanims_shard",
     "item_blink",

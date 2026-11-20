@@ -130,7 +130,6 @@ local abilityQ = bot:GetAbilityByName( sAbilityList[1] )
 local abilityW = bot:GetAbilityByName( sAbilityList[2] )
 local abilityE = bot:GetAbilityByName( sAbilityList[3] )
 local abilityR = bot:GetAbilityByName( sAbilityList[6] )
-local abilityD = bot:GetAbilityByName( sAbilityList[4] )
 local talent2 = bot:GetAbilityByName( sTalentList[2] )
 local talent6 = bot:GetAbilityByName( sTalentList[6] )
 
@@ -138,7 +137,6 @@ local castQDesire, castQTarget
 local castWDesire, castWTarget
 local castEDesire, castETarget
 local castRDesire, castRTarget
-local castDDesire, castDTarget
 
 local nKeepMana, nMP, nHP, nLV, hEnemyList, hAllyList, botTarget, sMotive
 local aetherRange = 0
@@ -161,18 +159,6 @@ function X.SkillsComplement()
 	--计算天赋可能带来的通用变化
 	local aether = J.IsItemAvailable( "item_aether_lens" )
 	if aether ~= nil then aetherRange = 250 end
-
-
-	castDDesire, castDTarget, sMotive = X.ConsiderD()
-	if castDDesire > 0
-	then
-		J.SetReportMotive( bDebugMode, sMotive )
-
-		J.SetQueuePtToINT( bot, true )
-
-		bot:ActionQueue_UseAbilityOnEntity( abilityD, castDTarget )
-		return
-	end
 
 	castRDesire, castRTarget, sMotive = X.ConsiderR()
 	if castRDesire > 0
@@ -500,73 +486,6 @@ function X.ConsiderR()
 		end
 	end
 
-
-
-	return BOT_ACTION_DESIRE_NONE
-
-
-end
-
-function X.ConsiderD()
-
-
-	if	not bot:HasScepter()
-		or not abilityD:IsFullyCastable() 
-		or bot:HasModifier('modifier_juggernaut_blade_fury')
-		or bot:HasModifier('modifier_juggernaut_omnislash')
-	then return 0 end
-
-	local nSkillLV = abilityD:GetLevel()
-	local nCastRange = abilityD:GetCastRange()
-	local nRadius = 600
-	local nCastPoint = abilityD:GetCastPoint()
-	local nManaCost = abilityD:GetManaCost()
-	local nDamage = 0
-	local nDamageType = DAMAGE_TYPE_MAGICAL
-	local nInRangeEnemyList = J.GetAroundEnemyHeroList( nCastRange )
-	local nInBonusEnemyList = J.GetAroundEnemyHeroList( nCastRange + 200 )
-	local hCastTarget = nil
-	local sCastMotive = nil
-
-	
-	--攻击敌人时
-	if J.IsGoingOnSomeone( bot )
-	then
-		if J.IsValidHero( botTarget )
-			and J.IsInRange( botTarget, bot, 1400 )
-		then
-			for _, npcEnemy in pairs( nInRangeEnemyList )
-			do
-				if J.IsValid( npcEnemy )
-					and J.IsInRange( botTarget, npcEnemy, 425 )
-					and J.CanCastOnNonMagicImmune( npcEnemy )
-					and J.CanCastOnTargetAdvanced( npcEnemy )
-				then
-					hCastTarget = npcEnemy
-					sCastMotive = 'D-攻击:'..J.Chat.GetNormName( hCastTarget )
-					return BOT_ACTION_DESIRE_HIGH, hCastTarget, sCastMotive
-				end
-			end
-		end
-	end
-	
-	
-	--撤退时保护自己
-	if J.IsRetreating( bot )
-	then
-		for _, npcEnemy in pairs( nInRangeEnemyList )
-		do
-			if J.IsValid( npcEnemy )
-				and bot:WasRecentlyDamagedByHero( npcEnemy, 2.0 )
-				and J.CanCastOnNonMagicImmune( npcEnemy )
-				and J.CanCastOnTargetAdvanced( npcEnemy )
-			then
-				hCastTarget = npcEnemy
-				sCastMotive = 'D-撤退'..J.Chat.GetNormName( hCastTarget )
-				return BOT_ACTION_DESIRE_HIGH, hCastTarget, sCastMotive
-			end
-		end
-	end
 
 
 	return BOT_ACTION_DESIRE_NONE

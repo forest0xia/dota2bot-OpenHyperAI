@@ -64,6 +64,7 @@ end
 -- Ability usage logic
 local abilityQ = bear:GetAbilityByName(sAbilityList[1])
 local SavageRoar = bear:GetAbilityByName('lone_druid_savage_roar_bear')
+local SummonDruid = bear:GetAbilityByName('lone_druid_spirit_bear_summon_druid')
 
 local castQDesire
 local castSavageRoarDesire
@@ -73,6 +74,12 @@ local hEnemyList, hAllyList, botTarget, distanceFromHero
 function X.SkillsComplement()
 
     if J.CanNotUseAbility(bear) or bear:IsInvisible() then return end
+
+    SummonDruid = bear:GetAbilityByName('lone_druid_spirit_bear_summon_druid')
+    if J.CanCastAbility(SummonDruid) then
+        bear:Action_UseAbility(SummonDruid)
+        return
+    end
 
     botTarget = J.GetProperTarget(Utils.GetLoneDruid(bear).hero)
     if botTarget ~= nil then bear:SetTarget(botTarget) end

@@ -57,6 +57,7 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_blink",
 	"item_aghanims_shard",
 	"item_heavens_halberd",--
+	"item_skypiercer",--
 	"item_travel_boots",
 	"item_assault",--
 	"item_ultimate_scepter_2",

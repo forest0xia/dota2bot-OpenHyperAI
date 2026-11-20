@@ -35,7 +35,7 @@ sRoleItemsBuyList['pos_2'] = {
     "item_magic_wand",
     "item_blink",
 	"item_kaya_and_sange",--
-	"item_angels_demise",--
+	"item_caduceus",--
     "item_shivas_guard",--
 	"item_ultimate_scepter",
     "item_ultimate_scepter_2",
@@ -55,7 +55,7 @@ sRoleItemsBuyList['pos_3'] = {
     "item_soul_ring",
     "item_blink",
 	"item_kaya_and_sange",--
-	"item_angels_demise",--
+	"item_caduceus",--
     "item_shivas_guard",--
 	"item_ultimate_scepter",
     "item_ultimate_scepter_2",

@@ -88,9 +88,8 @@ sRoleItemsBuyList['pos_3'] = {
 
     "item_magic_wand",
     "item_helm_of_the_dominator",
-    "item_ring_of_basilius",
-    "item_helm_of_the_overlord",--
     "item_vladmir",--
+    "item_ristuls_devotion",--
     "item_ancient_janggo",
     "item_aghanims_shard",
     "item_assault",--

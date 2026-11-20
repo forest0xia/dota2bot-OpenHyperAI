@@ -64,7 +64,7 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_ultimate_scepter",
 	"item_octarine_core",--
 	"item_black_king_bar",--
-	"item_angels_demise",--
+	"item_caduceus",--
 	"item_assault",--
 	"item_travel_boots",
 	"item_monkey_king_bar",--
@@ -87,7 +87,7 @@ sRoleItemsBuyList['pos_2'] = {
 	"item_ultimate_scepter",
 	"item_octarine_core",--
 	"item_black_king_bar",--
-	"item_angels_demise",--
+	"item_caduceus",--
 	"item_assault",--
 	"item_travel_boots",
 	"item_moon_shard",
@@ -110,7 +110,7 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_pipe",
 	"item_black_king_bar",--
 	sUtilityItem,--
-	"item_angels_demise",--
+	"item_caduceus",--
 	"item_assault",--
 	"item_travel_boots",
 	"item_monkey_king_bar",--
