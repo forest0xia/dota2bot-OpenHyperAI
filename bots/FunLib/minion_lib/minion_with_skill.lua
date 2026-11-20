@@ -444,6 +444,128 @@ X.ConsiderSpellUsage['big_thunder_lizard_frenzy'] = function (hMinionUnit, abili
     return BOT_ACTION_DESIRE_NONE, nil, ''
 end
 
+-- Forest Troll High Priest Heal (7.42 active unit-target)
+X.ConsiderSpellUsage['forest_troll_high_priest_heal'] = function (hMinionUnit, ability)
+    local nCastRange = ability:GetCastRange()
+    local bestTarget = nil
+    local lowestHP = 0.85
+
+    for _, allyHero in pairs(nAllyHeroes) do
+        if J.IsValidHero(allyHero)
+        and not allyHero:IsIllusion()
+        and J.IsInRange(hMinionUnit, allyHero, nCastRange + 150)
+        then
+            local hp = J.GetHP(allyHero)
+            if hp < lowestHP then
+                lowestHP = hp
+                bestTarget = allyHero
+            end
+        end
+    end
+
+    if bestTarget ~= nil then
+        return BOT_ACTION_DESIRE_HIGH, bestTarget, 'unit'
+    end
+
+    return BOT_ACTION_DESIRE_NONE, nil, ''
+end
+
+-- Beastmaster Hawk Dive (7.42)
+X.ConsiderSpellUsage['beastmaster_hawk_dive'] = function (hMinionUnit, ability)
+    local nCastRange = ability:GetCastRange()
+    if nCastRange <= 0 then nCastRange = 500 end
+
+    for _, enemyHero in pairs(nEnemyHeroes) do
+        if J.IsValidHero(enemyHero)
+        and J.IsInRange(hMinionUnit, enemyHero, nCastRange)
+        and J.CanCastOnNonMagicImmune(enemyHero)
+        and (enemyHero:IsChanneling() or J.IsGoingOnSomeone(bot))
+        then
+            return BOT_ACTION_DESIRE_HIGH, enemyHero, 'unit'
+        end
+    end
+
+    if J.IsGoingOnSomeone(bot) and J.IsValidTarget(botTarget)
+    and J.IsInRange(hMinionUnit, botTarget, nCastRange)
+    and J.CanCastOnNonMagicImmune(botTarget)
+    then
+        return BOT_ACTION_DESIRE_HIGH, botTarget, 'unit'
+    end
+
+    return BOT_ACTION_DESIRE_NONE, nil, ''
+end
+
+-- Frogmen Arm / Tendrils of the Deep (7.42 point-targeted stun)
+local function ConsiderFrogmenLineStun(hMinionUnit, ability)
+    local nCastRange = ability:GetCastRange()
+    if nCastRange <= 0 then nCastRange = 275 end
+
+    if J.IsGoingOnSomeone(bot) and J.IsValidTarget(botTarget)
+    and J.IsInRange(hMinionUnit, botTarget, nCastRange + 50)
+    and J.CanCastOnNonMagicImmune(botTarget)
+    and not J.IsDisabled(botTarget)
+    then
+        return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation(), 'point'
+    end
+
+    for _, enemyHero in pairs(nEnemyHeroes) do
+        if J.IsValidHero(enemyHero)
+        and J.IsInRange(hMinionUnit, enemyHero, nCastRange)
+        and J.CanCastOnNonMagicImmune(enemyHero)
+        and not J.IsDisabled(enemyHero)
+        then
+            return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation(), 'point'
+        end
+    end
+
+    return BOT_ACTION_DESIRE_NONE, nil, ''
+end
+
+X.ConsiderSpellUsage['frogmen_arm_of_the_deep'] = ConsiderFrogmenLineStun
+X.ConsiderSpellUsage['frogmen_tendrils_of_the_deep'] = ConsiderFrogmenLineStun
+
+-- Ancient Frog Congregation of the Deep (7.42 no-target AoE stun)
+X.ConsiderSpellUsage['frogmen_congregation_of_the_deep'] = function (hMinionUnit, ability)
+    local nRadius = ability:GetSpecialValueInt('range')
+    if nRadius <= 0 then nRadius = 350 end
+
+    for _, enemyHero in pairs(nEnemyHeroes) do
+        if J.IsValidHero(enemyHero)
+        and J.IsInRange(hMinionUnit, enemyHero, nRadius)
+        and J.CanCastOnNonMagicImmune(enemyHero)
+        and not J.IsDisabled(enemyHero)
+        then
+            return BOT_ACTION_DESIRE_HIGH, nil, 'none'
+        end
+    end
+
+    return BOT_ACTION_DESIRE_NONE, nil, ''
+end
+
+-- Frogmen Mage Water Bubble (7.42 friendly magic-barrier / burst heal)
+local function ConsiderFrogmenWaterBubble(hMinionUnit, ability)
+    local nCastRange = ability:GetCastRange()
+    if nCastRange <= 0 then nCastRange = 550 end
+
+    for _, allyHero in pairs(nAllyHeroes) do
+        if J.IsValidHero(allyHero)
+        and not allyHero:IsIllusion()
+        and not allyHero:IsMagicImmune()
+        and J.IsInRange(hMinionUnit, allyHero, nCastRange + 100)
+        and not allyHero:HasModifier('modifier_frogmen_water_bubble')
+        and (J.GetHP(allyHero) < 0.75 or allyHero:WasRecentlyDamagedByAnyHero(2.5) or J.IsInTeamFight(allyHero, 900))
+        then
+            return BOT_ACTION_DESIRE_HIGH, allyHero, 'unit'
+        end
+    end
+
+    return BOT_ACTION_DESIRE_NONE, nil, ''
+end
+
+X.ConsiderSpellUsage['frogmen_water_bubble_small'] = ConsiderFrogmenWaterBubble
+X.ConsiderSpellUsage['frogmen_water_bubble_medium'] = ConsiderFrogmenWaterBubble
+X.ConsiderSpellUsage['frogmen_water_bubble_large'] = ConsiderFrogmenWaterBubble
+
 -- Incendiary Bomb
 X.ConsiderSpellUsage['ice_shaman_incendiary_bomb'] = function (hMinionUnit, ability)
     local nCastRange = ability:GetCastRange()

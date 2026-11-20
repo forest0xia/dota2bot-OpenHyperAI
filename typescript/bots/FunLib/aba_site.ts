@@ -32,7 +32,7 @@ const DIRE_T2TOPFALL = Vector(514, 4107, 655); //--夜魇上路野区高台
 const DIRE_T2MIDFALL = Vector(2047, -769, 655); //--夜魇中路河道野区入口
 const DIRE_T2BOTFALL = Vector(4620, 788, 655); //--夜魇下路高台
 
-const DIRE_T1TOPFALL = Vector(-2815, 3565, 256); //--夜魇上路野区河道路口
+const DIRE_T1TOPFALL = Vector(-3180, 3260, 256); //--夜魇上路野区河道路口(avoid 7.42 camp box near -2596,3850)
 const DIRE_T1MIDFALL = Vector(-760, 2053, 655); //--夜魇中路一塔野区入口高台
 const DIRE_T1BOTFALL = Vector(5122, -1930, 527); //--夜魇下路一塔高台
 
@@ -75,21 +75,21 @@ const WardSpotTowerFallDire = [
 
 const CStackLoc = [
     Vector(1854, -4469, 0),
-    Vector(1249, -2416, 0),
+    Vector(-720, -8040, 0),
     Vector(3471, -5841, 0),
     Vector(5153, -3620, 0),
     Vector(-1846, -2996, 0),
     Vector(-4961, 559, 0),
-    Vector(-3873, -833, 0),
+    Vector(-7950, -2180, 0),
     Vector(-3146, 702, 0),
-    Vector(1141, -3111, 0),
+    Vector(-2415, -8050, 0),
     Vector(660, 2300, 0),
-    Vector(3666, 1836, 0),
+    Vector(7580, -120, 0),
     Vector(482, 4723, 0),
     Vector(3173, -861, 0),
-    Vector(-3443, 6098, 0),
+    Vector(-4228, 7790, 0),
     Vector(-4353, 4842, 0),
-    Vector(-1083, 3385, 0),
+    Vector(2016, 7550, 0),
     Vector(-922, 4299, 0),
     Vector(4136, -1753, 0),
 ];
@@ -1616,7 +1616,7 @@ ConsiderIsTimeToFarm["npc_dota_hero_hoodwink"] = function () {
         return true;
     }
 
-    if (!HasItem(bot, "item_gleipnir") && botNetWorth < 18000) {
+    if (!HasItem(bot, "item_gungir") && botNetWorth < 18000) {
         return true;
     }
 

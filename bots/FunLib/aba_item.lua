@@ -478,7 +478,7 @@ Item['sSellList'] = {
 	"item_pavise",
 
 	"item_boots_of_bearing",
-	"item_drum_of_endurance",
+	"item_ancient_janggo",
 
 	"item_spirit_vessel",
 	"item_urn_of_shadows",
@@ -1059,6 +1059,61 @@ function Item.IsSmallItem( sItemName )
 
 end
 
+
+local tNeutralItemLevelList = {
+	-- Tier 1
+	["item_chipped_vest"] = 1,
+	["item_ash_legion_shield"] = 1,
+	["item_possessed_mask"] = 1,
+	["item_dormant_curio"] = 1,
+	["item_red_ledger"] = 1,
+	["item_weighted_dice"] = 1,
+	["item_polliwog_charm"] = 1,
+	["item_seeds_of_serenity"] = 1,
+	["item_foragers_kit"] = 1,
+	["item_kobold_cup"] = 1,
+	["item_stonefeather_satchel"] = 1,
+	["item_pogo_stick"] = 1,
+	-- Tier 2
+	["item_psychic_headband"] = 2,
+	["item_safety_bubble"] = 2,
+	["item_metamorphic_mandible"] = 2,
+	["item_jidi_pollen_bag"] = 2,
+	["item_brick"] = 2,
+	["item_crippling_crossbow"] = 2,
+	["item_imp_claw"] = 2,
+	["item_gunpowder_gauntlets"] = 2,
+	["item_defiant_shell"] = 2,
+	["item_partisans_brand"] = 2,
+	["item_spellslinger"] = 2,
+	["item_mana_draught"] = 2,
+	-- Tier 3
+	["item_prophets_pendulum"] = 3,
+	["item_dandelion_amulet"] = 3,
+	["item_idol_of_screeauk"] = 3,
+	["item_balmhook"] = 3,
+	["item_rattlecage"] = 3,
+	["item_stormcrafter"] = 3,
+	["item_enchanters_bauble"] = 3,
+	["item_ceremonial_robe"] = 3,
+	["item_harmonizer"] = 3,
+	["item_vile_phial"] = 3,
+	["item_serrated_shiv"] = 3,
+	["item_revenants_brooch"] = 3,
+	-- Tier 4
+	["item_fallen_sky"] = 4,
+	["item_flicker"] = 4,
+	["item_minotaur_horn"] = 4,
+	["item_mind_breaker"] = 4,
+	["item_divine_regalia"] = 4,
+	["item_heavy_blade"] = 4,
+	["item_helm_of_the_hivemind"] = 4,
+	["item_dezun_bloodrite"] = 4,
+	["item_conjurers_catalyst"] = 4,
+	["item_giants_ring"] = 4,
+	["item_demonicon"] = 4,
+	["item_riftshadow_prism"] = 4,
+}
 
 function Item.IsNeutralItem( sItemName )
 

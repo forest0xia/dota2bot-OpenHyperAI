@@ -70,7 +70,7 @@ local WardLocationsBeforeAllyTowerFall__Radiant = {
 
 	[TOWER_TOP_2] = {
 		[1] = { location = Vector(-7923.261719, 1820.198730), plant_time_obs = 0, plant_time_sentry = 0, },
-		[2] = { location = Vector(-4199.289062, 1328.263062), plant_time_obs = 0, plant_time_sentry = 0, },
+		[2] = { location = Vector(-4480.000000, 1460.000000), plant_time_obs = 0, plant_time_sentry = 0, },
 		[3] = { location = Vector(-4334.572266, -1036.464844), plant_time_obs = 0, plant_time_sentry = 0, },
 		[4] = { location = Vector(-4562.793457, 1873.175537), plant_time_obs = 0, plant_time_sentry = 0, },
 		[5] = { location = Vector(-7579.524902, 493.309631), plant_time_obs = 0, plant_time_sentry = 0, },

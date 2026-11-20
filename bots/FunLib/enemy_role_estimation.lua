@@ -170,7 +170,6 @@ ItemOffensiveness = {
     item_orchid = 25,
     item_dagon_5 = 50,
     item_fallen_sky = 25,
-    item_pirate_hat = 80,
     item_stormcrafter = 20,
     item_berserkers_sabatons = 55,
     item_skypiercer = 30,

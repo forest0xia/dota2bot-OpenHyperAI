@@ -188,7 +188,7 @@ function X.SkillsComplement()
 	hEnemyList = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 	hAllyList = J.GetAlliesNearLoc( bot:GetLocation(), 1600 )
 	local aether = J.IsItemAvailable( "item_aether_lens" )
-	if aether ~= nil then aetherRange = 250 end
+	if aether ~= nil then aetherRange = 200 end
 	if #hEnemyList <= 1 then aetherRange = aetherRange + 200 end
 
 

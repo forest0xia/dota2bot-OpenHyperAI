@@ -210,7 +210,7 @@ function X.SkillsComplement()
 	hAllyList = J.GetAlliesNearLoc(bot:GetLocation(), 1600);
 	
 	local aether = J.IsItemAvailable("item_aether_lens");
-	if aether ~= nil then aetherRange = 250 end	
+	if aether ~= nil then aetherRange = 200 end
 	
 	castWDesire, castWTarget, sMotive = X.ConsiderW();
 	if ( castWDesire > 0 ) 

@@ -223,7 +223,7 @@ function U.InitiateAbility(unit)
 		do
 			local ability = unit:GetAbilityInSlot(i)
 			if ability and not ability:IsHidden() and not ability:IsPassive() then
-				unit.abilities[i+1] = ability
+				table.insert(unit.abilities, ability)
 			end
 		end
     end
@@ -352,6 +352,7 @@ function U.IsMinionWithSkill(unit)
 		or unit_name == "npc_dota_neutral_grown_frog"
 		or unit_name == "npc_dota_neutral_ancient_frog_mage"
 		or unit_name == "npc_dota_neutral_ancient_frog"
+		or string.find(unit_name, 'npc_dota_beastmaster_thunderhide')
 		or string.find(unit_name, 'npc_dota_necronomicon_archer')
 end
 

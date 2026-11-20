@@ -212,10 +212,10 @@ const COUNTER_ITEMS = {
     evasion: ["item_monkey_king_bar", "item_bloodthorn"],
 
     // Against magic damage
-    magic_heavy: ["item_black_king_bar", "item_pipe_of_insight", "item_lotus_orb"],
+    magic_heavy: ["item_black_king_bar", "item_pipe", "item_lotus_orb"],
 
     // Against illusions
-    illusion_heavy: ["item_maelstrom", "item_mjollnir", "item_radiance", "item_battlefury"],
+    illusion_heavy: ["item_maelstrom", "item_mjollnir", "item_radiance", "item_bfury"],
 
     // Against invisibility
     invisibility: ["item_dust", "item_gem", "item_ward_sentry"],

@@ -298,7 +298,7 @@ function X.ConsiderStrafe()
 end
 
 function X.ConsiderTarBomb()
-    if not TarBomb:IsFullyCastable()
+    if not J.CanCastAbility(TarBomb)
     then
 		return BOT_ACTION_DESIRE_NONE, nil
 	end
@@ -399,7 +399,7 @@ function X.ConsiderTarBomb()
             then
                 if SkeletonWalk:IsTrained()
                 then
-                    if J.GetManaAfter(TarBomb:GetManaCost()) * bot:GetMana() > SkeletonWalk:GetManaCost()
+                    if J.GetManaAfter((TarBomb ~= nil and TarBomb:GetManaCost() or 0)) * bot:GetMana() > SkeletonWalk:GetManaCost()
                     then
                         return BOT_ACTION_DESIRE_HIGH, nNeutralCreeps[1]
                     end
@@ -417,7 +417,7 @@ function X.ConsiderTarBomb()
             then
                 if SkeletonWalk:IsTrained()
                 then
-                    if J.GetManaAfter(TarBomb:GetManaCost()) * bot:GetMana() > SkeletonWalk:GetManaCost()
+                    if J.GetManaAfter((TarBomb ~= nil and TarBomb:GetManaCost() or 0)) * bot:GetMana() > SkeletonWalk:GetManaCost()
                     then
                         return BOT_ACTION_DESIRE_HIGH, nEnemyLaneCreeps[1]
                     end
@@ -464,7 +464,7 @@ function X.ConsiderTarBomb()
 		then
             if SkeletonWalk:IsTrained()
             then
-                if J.GetManaAfter(TarBomb:GetManaCost()) * bot:GetMana() > SkeletonWalk:GetManaCost()
+                if J.GetManaAfter((TarBomb ~= nil and TarBomb:GetManaCost() or 0)) * bot:GetMana() > SkeletonWalk:GetManaCost()
                 then
                     return BOT_ACTION_DESIRE_HIGH, botTarget
                 end
@@ -521,7 +521,7 @@ function X.ConsiderDeathPact()
             do
                 if J.IsValid(creep)
                 and J.CanBeAttacked(creep)
-                and J.IsKeyWordUnit('ranged', creep) or J.IsKeyWordUnit('siege', creep)
+                and (J.IsKeyWordUnit('ranged', creep) or J.IsKeyWordUnit('siege', creep))
                 and creep:GetLevel() <= nMaxLevel
                 then
                     local nCreepInRangeHero = J.GetNearbyHeroes(bot,1600, false, BOT_MODE_NONE)
@@ -735,7 +735,7 @@ function X.ConsiderSearingArrows()
         and J.IsInRange(bot, botTarget, nCastRange)
         then
             if fManaAfter > fManaThreshold1 + 0.15 then
-                if not bIsAutoCasted and bAttacking then
+                if not bIsAutoCasted and J.IsAttacking(bot) then
                     SearingArrows:ToggleAutoCast()
                 end
 
@@ -749,7 +749,7 @@ function X.ConsiderSearingArrows()
         and J.IsInRange(bot, botTarget, nCastRange)
         then
             if fManaAfter > fManaThreshold1 + 0.15 then
-                if not bIsAutoCasted and bAttacking then
+                if not bIsAutoCasted and J.IsAttacking(bot) then
                     SearingArrows:ToggleAutoCast()
                 end
 

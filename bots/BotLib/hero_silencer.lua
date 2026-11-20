@@ -217,7 +217,7 @@ function X.SkillsComplement()
 
 	--计算天赋可能带来的变化
 	local aether = J.IsItemAvailable( "item_aether_lens" )
-	if aether ~= nil then aetherRange = 250 end
+	if aether ~= nil then aetherRange = 200 end
 
 
 	castRDesire			 = X.ConsiderR()

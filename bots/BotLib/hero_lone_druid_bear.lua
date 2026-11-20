@@ -76,9 +76,37 @@ function X.SkillsComplement()
     if J.CanNotUseAbility(bear) or bear:IsInvisible() then return end
 
     SummonDruid = bear:GetAbilityByName('lone_druid_spirit_bear_summon_druid')
-    if J.CanCastAbility(SummonDruid) then
+    if SummonDruid ~= nil
+    and not SummonDruid:IsNull()
+    and not SummonDruid:IsHidden()
+    and SummonDruid:IsActivated()
+    and SummonDruid:IsFullyCastable()
+    then
         bear:Action_UseAbility(SummonDruid)
         return
+    end
+
+    local Fetch = bear:GetAbilityByName('lone_druid_spirit_bear_fetch')
+    if J.CanCastAbility(Fetch)
+    and not Fetch:IsHidden()
+    then
+        local nFetchRange = J.GetProperCastRange(false, bear, Fetch:GetCastRange())
+        if nFetchRange <= 0 then nFetchRange = 300 end
+        local nEnemies = J.GetNearbyHeroes(bear, nFetchRange, true, BOT_MODE_NONE)
+        if nEnemies ~= nil and #nEnemies >= 1 then
+            for _, enemyHero in pairs(nEnemies) do
+                if J.IsValidHero(enemyHero)
+                and J.CanCastOnNonMagicImmune(enemyHero)
+                and J.CanCastOnTargetAdvanced(enemyHero)
+                and not J.IsDisabled(enemyHero)
+                and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
+                and not enemyHero:HasModifier('modifier_necrolyte_reapers_scythe')
+                then
+                    bear:Action_UseAbilityOnEntity(Fetch, enemyHero)
+                    return
+                end
+            end
+        end
     end
 
     botTarget = J.GetProperTarget(Utils.GetLoneDruid(bear).hero)

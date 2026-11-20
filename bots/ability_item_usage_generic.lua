@@ -990,7 +990,7 @@ local function ItemUsageComplement()
 	nMode = bot:GetActiveMode()
 
 	local aether = J.IsItemAvailable( "item_aether_lens" )
-	if aether ~= nil then aetherRange = 250 else aetherRange = 0 end
+	if aether ~= nil then aetherRange = 200 else aetherRange = 0 end
 
 	local nItemSlot = { 5, 4, 3, 2, 1, 0, 15, 16 }
 
@@ -3108,26 +3108,8 @@ X.ConsiderItemDesire["item_skypiercer"] = function( hItem )
 end
 
 
---挑战
+--挑战 (removed in 7.33)
 X.ConsiderItemDesire["item_hood_of_defiance"] = function( hItem )
-
-	if bot:HasModifier( 'modifier_item_pipe_barrier' )
-		or J.GetHP( bot ) > 0.88
-	then return BOT_ACTION_DESIRE_NONE end
-
-	local nCastRange = 1000
-	local sCastType = 'none'
-	local hEffectTarget = nil
-	local sCastMotive = nil
-	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
-
-
-	if #nInRangeEnmyList > 0
-	then
-		hEffectTarget = bot
-		sCastMotive = '套盾'
-		return BOT_ACTION_DESIRE_HIGH, hEffectTarget, sCastType, sCastMotive
-	end
 
 	return BOT_ACTION_DESIRE_NONE
 
@@ -3825,23 +3807,8 @@ X.ConsiderItemDesire["item_moon_shard"] = function( hItem )
 
 end
 
---死灵书
+--死灵书 (removed)
 X.ConsiderItemDesire["item_necronomicon"] = function( hItem )
-
-	local nCastRange = 750
-	local sCastType = 'none'
-	local hEffectTarget = nil
-	local sCastMotive = nil
-	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
-
-
-	if botTarget ~= nil and botTarget:IsAlive()
-		and J.IsInRange( bot, botTarget, 1000 )
-	then
-		hEffectTarget = botTarget
-		sCastMotive = "进攻"
-		return BOT_ACTION_DESIRE_HIGH, hEffectTarget, sCastType, sCastMotive
-	end
 
 	return BOT_ACTION_DESIRE_NONE
 
@@ -3849,13 +3816,13 @@ end
 
 X.ConsiderItemDesire["item_necronomicon_2"] = function( hItem )
 
-	return X.ConsiderItemDesire["item_necronomicon"]( hItem )
+	return BOT_ACTION_DESIRE_NONE
 
 end
 
 X.ConsiderItemDesire["item_necronomicon_3"] = function( hItem )
 
-	return X.ConsiderItemDesire["item_necronomicon"]( hItem )
+	return BOT_ACTION_DESIRE_NONE
 
 end
 
@@ -4921,21 +4888,8 @@ X.ConsiderItemDesire["item_tango_single"] = function( hItem )
 
 end
 
---经验书
+--经验书 (removed)
 X.ConsiderItemDesire["item_tome_of_knowledge"] = function( hItem )
-
-	local nCastRange = 300
-	local sCastType = 'none'
-	local hEffectTarget = nil
-	local sCastMotive = nil
-	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
-
-	if hItem:IsFullyCastable()
-	then
-		hEffectTarget = bot
-		sCastMotive = '读书'
-		return BOT_ACTION_DESIRE_HIGH, hEffectTarget, sCastType, sCastMotive
-	end
 
 	return BOT_ACTION_DESIRE_NONE
 
@@ -6682,28 +6636,8 @@ X.ConsiderItemDesire["item_revenants_brooch"] = function( hItem )
 end
 
 
---怨灵之契
+--怨灵之契 (removed)
 X.ConsiderItemDesire["item_wraith_pact"] = function( hItem )
-
-	local nCastRange = 200 + aetherRange
-	local sCastType = 'ground'
-	local hEffectTarget = nil
-	local sCastMotive = nil
-	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
-
-
-	if J.IsGoingOnSomeone( bot )
-	then
-		if J.IsValidHero( botTarget )
-			and botTarget:GetAttackTarget() ~= nil
-			and J.IsInRange( bot, botTarget, 900 )
-			and J.CanCastOnNonMagicImmune( botTarget )
-		then
-			hEffectTarget = J.GetFaceTowardDistanceLocation( bot, 200 )
-			sCastMotive = "怨灵之契进攻:"..J.Chat.GetNormName( botTarget )
-			return BOT_ACTION_DESIRE_HIGH, hEffectTarget, sCastType, sCastMotive
-		end
-	end
 
 	return BOT_ACTION_DESIRE_NONE
 
@@ -6718,25 +6652,8 @@ X.ConsiderItemDesire["item_boots_of_bearing"] = function( hItem )
 end
 
 
---新物品
+--新物品 (placeholder)
 X.ConsiderItemDesire["item_new"] = function( hItem )
-
-	local nCastRange = 300 + aetherRange
-	local sCastType = 'unit'
-	local hEffectTarget = nil
-	local sCastMotive = nil
-	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
-
-
-	if J.IsGoingOnSomeone( bot )
-	then
-		if J.IsValidHero( botTarget )
-		then
-			hEffectTarget = botTarget
-			sCastMotive = "进攻:"..J.Chat.GetNormName( botTarget )
-			return BOT_ACTION_DESIRE_HIGH, hEffectTarget, sCastType, sCastMotive
-		end
-	end
 
 	return BOT_ACTION_DESIRE_NONE
 
@@ -7520,24 +7437,8 @@ X.ConsiderItemDesire["item_light_collector"] = function(hItem)
 	return BOT_ACTION_DESIRE_NONE
 end
 
--- Iron Talon
+-- Iron Talon (removed in 7.42)
 X.ConsiderItemDesire["item_iron_talon"] = function(hItem)
-	local nCastRange = 350
-
-	-- Only use it for creeps
-	if J.IsFarming(bot)
-	then
-		local nCreep = bot:GetNearbyNeutralCreeps(nCastRange)
-		if #nCreep <= 0 then return 0 end
-
-		local creepTarget = J.GetMostHpUnit(nCreep)
-		if J.CanBeAttacked(creepTarget)
-		and J.GetHP(creepTarget) > 0.5
-		then
-			return BOT_ACTION_DESIRE_HIGH, creepTarget, 'unit', nil
-		end
-	end
-
 	return BOT_ACTION_DESIRE_NONE
 end
 
@@ -8116,9 +8017,9 @@ X.ConsiderItemDesire["item_force_field"] = function(hItem)
 	return BOT_ACTION_DESIRE_NONE
 end
 
--- Pirate Hat
+-- Pirate Hat (removed in 7.42)
 X.ConsiderItemDesire['item_pirate_hat'] = function(hItem)
-	return X.ConsiderItemDesire["item_trusty_shovel"](hItem)
+	return BOT_ACTION_DESIRE_NONE
 end
 
 -- Mana Draught
@@ -8534,13 +8435,15 @@ X.ConsiderItemDesire["item_brick"] = function( hItem )
 			and J.CanBeAttacked( npcEnemy )
 			and ( npcEnemy:HasModifier( 'modifier_abaddon_aphotic_shield' )
 				or npcEnemy:HasModifier( 'modifier_item_pipe_barrier' )
-				or npcEnemy:HasModifier( 'modifier_item_crimson_guard_extra' )
-				or npcEnemy:HasModifier( 'modifier_item_solar_crest_armor_addition' )
-				or npcEnemy:HasModifier( 'modifier_item_pavise_barrier' )
+				or npcEnemy:HasModifier( 'modifier_item_pavise_shield' )
 				or npcEnemy:HasModifier( 'modifier_item_glimmer_cape_fade' )
 				or npcEnemy:HasModifier( 'modifier_ember_spirit_flame_guard' )
 				or npcEnemy:HasModifier( 'modifier_tinker_defense_matrix' )
-				or npcEnemy:HasModifier( 'modifier_item_consecrated_wraps_barrier' ) )
+				or npcEnemy:HasModifier( 'modifier_item_consecrated_wraps_auto_barrier' )
+				or npcEnemy:HasModifier( 'modifier_item_ash_legion_shield' )
+				or npcEnemy:HasModifier( 'modifier_frogmen_water_bubble' )
+				or npcEnemy:HasModifier( 'modifier_obsidian_destroyer_equilibrium_barrier' )
+				or npcEnemy:HasModifier( 'modifier_crystal_maiden_crystal_nova_barrier' ) )
 		then
 			return BOT_ACTION_DESIRE_HIGH, npcEnemy, 'unit', 'Brick破盾:'..J.Chat.GetNormName( npcEnemy )
 		end

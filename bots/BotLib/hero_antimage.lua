@@ -488,8 +488,7 @@ function X.ConsiderManaVoid()
 end
 
 function X.ConsiderCounterSpellAlly()
-	if not CounterSpellAlly:IsTrained()
-	or not CounterSpellAlly:IsFullyCastable()
+	if not J.CanCastAbility(CounterSpellAlly)
 	then
 		return BOT_ACTION_DESIRE_NONE, nil
 	end

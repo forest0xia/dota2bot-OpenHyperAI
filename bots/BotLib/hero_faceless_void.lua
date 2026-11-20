@@ -424,7 +424,7 @@ function X.ConsiderTimeDilation()
 end
 
 function X.ConsiderChronosphere()
-	if not Chronosphere:IsFullyCastable()
+	if not J.CanCastAbility(Chronosphere)
 	then
 		return BOT_ACTION_DESIRE_NONE, 0
 	end

@@ -400,7 +400,7 @@ function X.ConsiderTelekinesisLand()
 
     local nDistance = TelekinesisLand:GetSpecialValueInt('radius')
     local nTalent8 = bot:GetAbilityByName('special_bonus_unique_rubick_8')
-    if nTalent8:IsTrained()
+    if nTalent8 ~= nil and nTalent8:IsTrained()
     then
         nDistance = nDistance + nTalent8:GetSpecialValueInt('value')
     end

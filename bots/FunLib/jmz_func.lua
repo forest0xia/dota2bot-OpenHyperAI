@@ -101,6 +101,7 @@ function J.CanNotUseAction( bot )
 			or bot:IsCastingAbility()
 			or bot:IsUsingAbility()
 			or bot:IsChanneling()
+			or bot:HasModifier('modifier_chaos_knight_armageddon_charge')
 			or (bot:IsStunned() and not bot:HasModifier('modifier_dazzle_nothl_projection_soul_debuff'))
 			or bot:IsNightmared()
 			or bot:HasModifier( 'modifier_ringmaster_the_box_buff' )
@@ -139,6 +140,7 @@ function J.CanNotUseAbility( bot )
 			or bot:HasModifier( 'modifier_ringmaster_the_box_buff' )
 			or bot:HasModifier( "modifier_doom_bringer_doom" )
 			or bot:HasModifier( 'modifier_item_forcestaff_active' )
+			or bot:HasModifier( 'modifier_chaos_knight_armageddon_charge' )
 
 end
 
