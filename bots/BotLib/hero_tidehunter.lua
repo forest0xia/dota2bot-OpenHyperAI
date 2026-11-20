@@ -74,7 +74,6 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_harpoon",--
 	"item_aghanims_shard",
 	"item_assault",--
-	"item_great_scepter",--
 	"item_ultimate_scepter",
 	"item_overwhelming_blink",--
 	"item_ultimate_scepter_2",
