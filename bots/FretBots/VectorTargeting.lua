@@ -14,6 +14,8 @@
 --==============================================================================
 
 local VectorTargeting = {}
+VectorTargeting.appliedCount = 0
+VectorTargeting.lastAbility = nil
 
 local ORDER_CAST_POSITION = DOTA_UNIT_ORDER_CAST_POSITION or 5
 local ORDER_CAST_TARGET = DOTA_UNIT_ORDER_CAST_TARGET or 6
@@ -480,15 +482,19 @@ function VectorTargeting:OrderFilter(filterTable)
             OrderType = ORDER_VECTOR_TARGET_POSITION,
             AbilityIndex = abilityIndex,
             Position = endPos,
-            Queue = false,
+            Queue = (filterTable.queue == 1),
         }
         if orderType == ORDER_CAST_TARGET and filterTable.entindex_target and filterTable.entindex_target > 0 then
             vectorOrder.TargetIndex = filterTable.entindex_target
         end
         local okExec, errExec = pcall(ExecuteOrderFromTable, vectorOrder)
         dispatching[dispatchKey] = nil
-        if not okExec then
-            print('[VectorTargeting] ExecuteOrderFromTable error (' .. tostring(abilityName) .. '): ' .. tostring(errExec))
+        if okExec then
+            VectorTargeting.appliedCount = VectorTargeting.appliedCount + 1
+            VectorTargeting.lastAbility = abilityName
+        else
+            local errLog = (Debug and Debug.orig_print) or print
+            errLog('[VectorTargeting] ExecuteOrderFromTable error (' .. tostring(abilityName) .. '): ' .. tostring(errExec))
         end
     end
 
@@ -496,17 +502,47 @@ function VectorTargeting:OrderFilter(filterTable)
 end
 
 function VectorTargeting:Initialize()
-    if _G.__OHA_VECTOR_FILTER_REGISTERED then
-        return
+    if rawget(_G, '__OHA_VECTOR_FILTER_REGISTERED') then
+        return true
     end
-    if GameRules and GameRules.GetGameModeEntity then
-        local mode = GameRules:GetGameModeEntity()
-        if mode and mode.SetExecuteOrderFilter and Dynamic_Wrap then
-            mode:SetExecuteOrderFilter(Dynamic_Wrap(VectorTargeting, 'OrderFilter'), VectorTargeting)
-            _G.__OHA_VECTOR_FILTER_REGISTERED = true
-            print('[VectorTargeting] Server ExecuteOrderFilter registered for bot vector-targeted abilities.')
+    local logFn = (Debug and Debug.orig_print) or print
+    if not GameRules or not GameRules.GetGameModeEntity then
+        logFn('[VectorTargeting] GameRules.GetGameModeEntity unavailable.')
+        return false
+    end
+    local mode = GameRules:GetGameModeEntity()
+    if not mode and Entities and Entities.FindByClassname then
+        mode = Entities:FindByClassname(nil, 'dota_base_game_mode')
+    end
+    -- Standard 'dota' Practice/local lobbies do not spawn dota_base_game_mode by default;
+    -- spawning it registers CDOTABaseGameMode with GameRules so SetExecuteOrderFilter works.
+    if not mode and SpawnEntityFromTableSynchronous then
+        local okSpawn, spawned = pcall(SpawnEntityFromTableSynchronous, 'dota_base_game_mode', { targetname = 'dota_base_game_mode' })
+        if okSpawn then
+            mode = GameRules:GetGameModeEntity() or spawned
+        else
+            logFn('[VectorTargeting] Failed to spawn dota_base_game_mode: ' .. tostring(spawned))
         end
     end
+    if not mode then
+        logFn('[VectorTargeting] GameRules:GetGameModeEntity() unavailable.')
+        return false
+    end
+    if not mode.SetExecuteOrderFilter then
+        logFn('[VectorTargeting] mode.SetExecuteOrderFilter unavailable on ' .. tostring(mode))
+        return false
+    end
+    local callback = Dynamic_Wrap and Dynamic_Wrap(VectorTargeting, 'OrderFilter')
+        or function(ctx, filterTable) return VectorTargeting:OrderFilter(filterTable) end
+    local ok, err = pcall(mode.SetExecuteOrderFilter, mode, callback, VectorTargeting)
+    if not ok then
+        logFn('[VectorTargeting] SetExecuteOrderFilter failed: ' .. tostring(err))
+        return false
+    end
+    rawset(_G, '__OHA_VECTOR_FILTER_REGISTERED', true)
+    rawset(_G, 'OHA_VectorTargeting', VectorTargeting)
+    logFn('[VectorTargeting] Server ExecuteOrderFilter registered for bot vector-targeted abilities.')
+    return true
 end
 
 return VectorTargeting

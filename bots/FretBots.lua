@@ -106,6 +106,8 @@ function FretBots:PlayersLoadedTimer()
 		-- Register EntityHurt Listener
 		EntityHurt:RegisterEvents()
 		Modifier:Initialize()
+		-- Ensure vector-target order filter is registered even if GameModeEntity was unavailable earlier
+		VectorTargeting:Initialize()
 		-- Hero Specific extensions - these will stop themselves if they
 		-- determine that they are not enabled
 		-- Disabled until this works

@@ -26,10 +26,12 @@ function Chat:SendMessageToBackend(inputText, playerInfo)
 end
 
 function Chat:SendHttpRequest(api, inputData, callback)
+    if not CreateHTTPRequest then return end
     local jsonString = json.encode(inputData)
 
     -- local request = CreateHTTPRequest("POST", "http://127.0.0.1:5000/"..api)
     local request = CreateHTTPRequest("POST", "https://chatgpt-with-dota2bot.onrender.com/"..api)
+    if not request then return end
     request:SetHTTPRequestHeaderValue("Content-Type", "application/json")
     request:SetHTTPRequestRawPostBody("application/json", jsonString)
     request:SetHTTPRequestHeaderValue("Authorization", API_KEY)

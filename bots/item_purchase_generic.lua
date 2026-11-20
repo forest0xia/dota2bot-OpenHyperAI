@@ -40,7 +40,7 @@ local sItemSellList = BotBuild['sSellList']
 
 if sPurchaseList == nil then
 	print("[ERROR] Can't load purchase list for: " .. botName)
-	print("Stack Trace:", debug.traceback())
+	if debug and debug.traceback then print("Stack Trace:", debug.traceback()) end
 	return
 end
 

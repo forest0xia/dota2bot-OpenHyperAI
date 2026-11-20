@@ -7,6 +7,7 @@ if Debug == nil then
 end
 
 local orig_print = print
+Debug.orig_print = orig_print
 function print(...)
 	if not isDebug then return end
 	local args = {...}

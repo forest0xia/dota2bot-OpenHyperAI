@@ -735,7 +735,7 @@ function X.CastInvokerSpell(ability, target)
                 bot:ActionQueue_UseAbilityOnEntity(ability, target)
         else
             print(DotaTime()..' - [ERROR] Tried to cast unsupported spell: '..sAbility)
-            print("Stack Trace:", debug.traceback())
+            if debug and debug.traceback then print("Stack Trace:", debug.traceback()) end
         end
         print(DotaTime()..' - Invoker tried to cast '..sAbility)
     else
@@ -1826,7 +1826,7 @@ function X.InvokeActualSpell(ability)
         X.InvokeSpell(Quas, Quas, Quas)
     else
         print('[ERROR] Tried to invoke unsupported ability: '..abilityName)
-		print("Stack Trace:", debug.traceback())
+		if debug and debug.traceback then print("Stack Trace:", debug.traceback()) end
     end
     print(DotaTime()..' - Invoker tried to invoke '..abilityName)
 end
@@ -1891,7 +1891,7 @@ function X.HaveElementsTrainedToInvokeAbility(ability)
         return Quas:IsTrained()
     else
         print('[ERROR] Checks invokability on an unsupported ability')
-		print("Stack Trace:", debug.traceback())
+		if debug and debug.traceback then print("Stack Trace:", debug.traceback()) end
     end
     
     return nil

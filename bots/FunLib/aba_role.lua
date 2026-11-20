@@ -403,10 +403,12 @@ ____exports.GetPosition = function(bot)
         end
         role = ____exports.HeroPositions[playerId] ~= nil and ____exports.HeroPositions[playerId] or ____exports.GetPositionForCM(bot)
         print((((("[ERROR] Failed to match bot role for bot: " .. unitName) .. ", PlayerID: ") .. tostring(playerId)) .. ", set it to play pos: ") .. tostring(role))
-        print(
-            "Stack Trace:",
-            debug.traceback()
-        )
+        if debug ~= nil and debug.traceback ~= nil then
+            print(
+                "Stack Trace:",
+                debug.traceback()
+            )
+        end
         bot.assignedRole = role
     end
     if role == nil then

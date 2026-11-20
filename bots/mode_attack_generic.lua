@@ -14,8 +14,7 @@ if Utils.BuggyHeroesDueToValveTooLazy[botName] then
 	local_mode_attack_generic = dofile( GetScriptDirectory().."/FunLib/override_generic/mode_attack_generic" )
 end
 
-BotsInit = require("game/botsinit")
-local Generic = BotsInit.CreateGeneric()
+local Generic = {}
 
 local fLastAttackDesire = 0
 local botAttackRange, botHP, botLocation

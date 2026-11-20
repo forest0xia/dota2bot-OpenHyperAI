@@ -59,11 +59,13 @@ if Timers == nil then
         local status, nextCall
         if v.context then
           status, nextCall = xpcall(function() return v.callback(v.context, v) end, function (msg)
-                                      return msg..'\n'..debug.traceback()..'\n'
+                                      local tb = (debug and debug.traceback) and ('\n'..debug.traceback()) or ''
+                                      return tostring(msg)..tb..'\n'
                                     end)
         else
           status, nextCall = xpcall(function() return v.callback(v) end, function (msg)
-                                      return msg..'\n'..debug.traceback()..'\n'
+                                      local tb = (debug and debug.traceback) and ('\n'..debug.traceback()) or ''
+                                      return tostring(msg)..tb..'\n'
                                     end)
         end
 

@@ -87,13 +87,13 @@ local original_GetUnitToUnitDistance = GetUnitToUnitDistance
 function GetUnitToUnitDistance(unit1, unit2)
 	if not unit1 then
 		print("[Error] GetUnitToUnitDistance called with invalid unit 1")
-		print("Stack Trace:", debug.traceback())
+		if debug and debug.traceback then print("Stack Trace:", debug.traceback()) end
 		return 1000
 	end
 	if unit2 == nil or unit2:GetLocation() == nil then
 		if unit1 then
 			print("[Error] GetUnitToUnitDistance called with invalid unit 2, the unit 1 is: " .. unit1:GetUnitName())
-			print("Stack Trace:", debug.traceback())
+			if debug and debug.traceback then print("Stack Trace:", debug.traceback()) end
 		end
 		return 1000
 	end
@@ -301,7 +301,7 @@ local originalAction_UseAbility = CDOTA_Bot_Script.Action_UseAbility
 function CDOTA_Bot_Script:Action_UseAbility(hAbility)
     if hAbility == nil or hAbility:IsHidden() then
 		print("Action_UseAbility has been called on ability that's hidden")
-		print("Stack Trace:", debug.traceback())
+		if debug and debug.traceback then print("Stack Trace:", debug.traceback()) end
 		return nil
 	end
     return originalAction_UseAbility(self, hAbility)
@@ -311,7 +311,7 @@ local originalActionPush_UseAbility = CDOTA_Bot_Script.ActionPush_UseAbility
 function CDOTA_Bot_Script:ActionPush_UseAbility(hAbility)
     if hAbility == nil or hAbility:IsHidden() then
 		print("ActionPush_UseAbility has been called on ability that's hidden")
-		print("Stack Trace:", debug.traceback())
+		if debug and debug.traceback then print("Stack Trace:", debug.traceback()) end
 		return nil
 	end
     return originalActionPush_UseAbility(self, hAbility)
@@ -399,7 +399,7 @@ local originalGetUnitToLocationDistance = CDOTA_Bot_Script.GetUnitToLocationDist
 function CDOTA_Bot_Script:GetUnitToLocationDistance(unit, location)
     if location == nil then
 		print("GetUnitToLocationDistance error arg.")
-		print("Stack Trace:", debug.traceback())
+		if debug and debug.traceback then print("Stack Trace:", debug.traceback()) end
 		return 200
 	end
     return originalGetUnitToLocationDistance(self, unit, location)
