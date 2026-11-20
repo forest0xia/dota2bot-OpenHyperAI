@@ -1001,7 +1001,7 @@ local function ItemUsageComplement()
 		then
 			local sItemName = hItem:GetName()
 			if	X.ConsiderItemDesire[sItemName] ~= nil
-				and not X.IsItemInStash( sItemName )
+				and ( not X.IsItemInStash( sItemName ) or sItemName == 'item_horn_of_battle_greater' )
 			then
 				local nItemDesire, hItemTarget, sCastType, sMotive = X.ConsiderItemDesire[sItemName]( hItem )
 
@@ -1020,6 +1020,24 @@ local function ItemUsageComplement()
 
 					return nSlot + 1
 				end
+			end
+		end
+	end
+
+	-- Backpack-usable drop items (7.42 Greater Horn of Battle)
+	for _, nSlot in pairs( { 6, 7, 8 } )
+	do
+		local hItem = bot:GetItemInSlot( nSlot )
+		if hItem ~= nil
+			and hItem:GetName() == 'item_horn_of_battle_greater'
+			and J.CanCastAbility( hItem )
+			and X.ConsiderItemDesire['item_horn_of_battle_greater'] ~= nil
+		then
+			local nItemDesire, hItemTarget, sCastType, sMotive = X.ConsiderItemDesire['item_horn_of_battle_greater']( hItem )
+			if nItemDesire > 0
+			then
+				X.SetUseItem( hItem, hItemTarget, sCastType )
+				return nSlot + 1
 			end
 		end
 	end
@@ -1131,7 +1149,7 @@ X.ConsiderItemDesire = {}
 --深渊
 X.ConsiderItemDesire["item_abyssal_blade"] = function( hItem )
 
-	local nCastRange = 620 + aetherRange
+	local nCastRange = 175 + aetherRange + 50
 	local sCastType = 'unit'
 	local hEffectTarget = nil
 	local sCastMotive = nil
@@ -1322,6 +1340,55 @@ X.ConsiderItemDesire["item_armlet"] = function( hItem )
 		hEffectTarget = bot
 		sCastMotive = '关闭臂章'
 		return BOT_ACTION_DESIRE_HIGH, hEffectTarget, sCastType --, '关闭臂章'
+	end
+
+	return BOT_ACTION_DESIRE_NONE
+
+end
+
+
+-- 7.42: Sabatons of Mordiggian (Phase Boots + Armlet toggle)
+X.ConsiderItemDesire["item_berserkers_sabatons"] = function( hItem )
+
+	if bDeafaultItemHero then return BOT_ACTION_DESIRE_NONE end
+
+	local nCastRange = 1000
+	local sCastType = 'none'
+	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
+	local bActive = hItem:GetToggleState()
+
+	if ( J.IsValid( botTarget ) or J.IsValidBuilding( botTarget ) )
+		and not botTarget:IsAttackImmune()
+		and not botTarget:IsInvulnerable()
+		and ( not botTarget:IsBuilding() or not J.IsKeyWordUnit( "OutpostName", botTarget ) )
+		and not J.HasForbiddenModifier( botTarget )
+		and J.IsInRange( bot, botTarget, bot:GetAttackRange() + 300 )
+		and not bot:IsDisarmed()
+	then
+		nLastActiveArmletTime = DotaTime()
+		if not bActive
+		then
+			return BOT_ACTION_DESIRE_HIGH, botTarget, sCastType, '激活护足攻击'
+		end
+	end
+
+	if ( bot:OriginalGetHealth() <= 700 or J.IsRetreating( bot ) )
+		and bot:OriginalGetHealth() > 220
+		and ( bot:WasRecentlyDamagedByAnyHero( 2.0 ) or J.IsAttackProjectileIncoming( bot, 1600 ) )
+	then
+		nLastActiveArmletTime = DotaTime()
+		if not bActive
+		then
+			return BOT_ACTION_DESIRE_HIGH, bot, sCastType, '激活护足保命加速'
+		end
+	end
+
+	if bActive
+		and DotaTime() > nLastActiveArmletTime + 0.9
+		and ( #nInRangeEnmyList == 0 or bot:OriginalGetHealth() > 1100 )
+		and not J.IsRetreating( bot )
+	then
+		return BOT_ACTION_DESIRE_HIGH, bot, sCastType, '关闭护足'
 	end
 
 	return BOT_ACTION_DESIRE_NONE
@@ -2528,6 +2595,47 @@ X.ConsiderItemDesire["item_force_staff"] = function( hItem )
 
 end
 
+-- 7.42: Caduceus (Force Staff + Phylactery)
+X.ConsiderItemDesire["item_caduceus"] = function( hItem )
+
+	if bot:GetMana() < hItem:GetManaCost() then return BOT_ACTION_DESIRE_NONE end
+
+	local d, t, st, m = X.ConsiderItemDesire["item_force_staff"]( hItem )
+	if d > 0 then
+		return d, t, st, m
+	end
+
+	-- Enemy-targeted Empower Spell + Push has 850 base cast range in 7.42
+	local nEnemyCastRange = 850 + aetherRange
+	local nInRangeEnmyList = J.GetNearbyHeroes( bot, nEnemyCastRange, true, BOT_MODE_NONE )
+	local hAllyList = J.GetAlliesNearLoc( bot:GetLocation(), 900 )
+
+	for _, npcEnemy in pairs( nInRangeEnmyList )
+	do
+		if J.IsValidHero( npcEnemy )
+			and not J.IsSuspiciousIllusion( npcEnemy )
+			and J.CanCastOnNonMagicImmune( npcEnemy )
+			and X.IsWithoutSpellShield( npcEnemy )
+		then
+			if J.CanKillTarget( npcEnemy, 175, DAMAGE_TYPE_MAGICAL )
+			then
+				return BOT_ACTION_DESIRE_HIGH, npcEnemy, 'unit', 'Caduceus斩杀:'..J.Chat.GetNormName( npcEnemy )
+			end
+
+			if J.IsGoingOnSomeone( bot )
+				and #hAllyList >= 1
+				and npcEnemy:IsFacingLocation( J.GetCenterOfUnits( hAllyList ), 40 )
+				and GetUnitToLocationDistance( npcEnemy, bot:GetLocation() ) > 350
+			then
+				return BOT_ACTION_DESIRE_HIGH, npcEnemy, 'unit', 'Caduceus拉回:'..J.Chat.GetNormName( npcEnemy )
+			end
+		end
+	end
+
+	return BOT_ACTION_DESIRE_NONE
+
+end
+
 --绿杖
 X.ConsiderItemDesire["item_ghost"] = function( hItem )
 
@@ -2879,7 +2987,9 @@ end
 --天堂
 X.ConsiderItemDesire["item_heavens_halberd"] = function( hItem )
 
-	local nCastRange = 700 + aetherRange
+	if bot:GetMana() < hItem:GetManaCost() then return BOT_ACTION_DESIRE_NONE end
+
+	local nCastRange = 500 + aetherRange
 	local sCastType = 'unit'
 	local hEffectTarget = nil
 	local sCastMotive = nil
@@ -2982,10 +3092,18 @@ X.ConsiderItemDesire["item_helm_of_the_dominator"] = function( hItem )
 end
 
 
---大支配
+--大支配 (removed in 7.42)
 X.ConsiderItemDesire["item_helm_of_the_overlord"] = function( hItem )
 
-	return X.ConsiderItemDesire["item_helm_of_the_dominator"]( hItem )
+	return BOT_ACTION_DESIRE_NONE
+
+end
+
+
+-- 7.42: Skypiercer (Heaven's Halberd + Sange + Talisman)
+X.ConsiderItemDesire["item_skypiercer"] = function( hItem )
+
+	return X.ConsiderItemDesire["item_heavens_halberd"]( hItem )
 
 end
 
@@ -4539,7 +4657,7 @@ X.ConsiderItemDesire["item_essence_distiller"] = function( hItem )
 
 	if hItem:GetCurrentCharges() == 0 then return BOT_ACTION_DESIRE_NONE end
 
-	local nCastRange = 950 + aetherRange
+	local nCastRange = 850 + aetherRange
 	local sCastType = 'unit'
 	local hEffectTarget = nil
 	local sCastMotive = nil
@@ -6235,18 +6353,19 @@ X.ConsiderItemDesire["item_flicker"] = function( hItem )
 	if J.IsGoingOnSomeone( bot )
 	then
 		if J.IsValidHero( botTarget )
-			and ( bot:IsSilenced() or bot:IsRooted() )
+			and bot:IsSilenced()
 		then
 			hEffectTarget = bot
-			sCastMotive = '驱散沉默或缠绕'
+			sCastMotive = '驱散沉默'
 			return BOT_ACTION_DESIRE_HIGH, hEffectTarget, sCastType, sCastMotive
 		end
 	end
 
 
+	-- Only use Flicker to blink while escaping if not hit by a player in last 3s (otherwise 7.42 blinks in place)
 	if J.IsRetreating( bot )
-		and bot:WasRecentlyDamagedByAnyHero( 3.0 )
 		and #nInRangeEnmyList >= 1
+		and ( not bot:WasRecentlyDamagedByAnyHero( 3.0 ) or bot:IsSilenced() )
 	then
 		hEffectTarget = bot
 		sCastMotive = "撤退"
@@ -6402,34 +6521,8 @@ X.ConsiderItemDesire["item_ex_machina"] = function( hItem )
 
 end
 
---风暴宝器
+--风暴宝器 (passive in 7.42)
 X.ConsiderItemDesire["item_stormcrafter"] = function( hItem )
-
-	local nCastRange = 300 + aetherRange
-	local sCastType = 'unit'
-	local hEffectTarget = nil
-	local sCastMotive = nil
-	local nInRangeEnmyList = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
-
-
-	if J.CanCastOnNonMagicImmune( bot )
-		and #nInRangeEnmyList > 0
-	then
-		if bot:IsRooted()
-			or ( bot:GetPrimaryAttribute() == ATTRIBUTE_INTELLECT and bot:IsSilenced() )
-		then
-			hEffectTarget = bot
-			sCastMotive = '解缠绕:'..J.Chat.GetNormName( hEffectTarget )
-			return BOT_ACTION_DESIRE_HIGH, hEffectTarget, sCastType, sCastMotive
-		end
-
-		if J.IsUnitTargetProjectileIncoming( bot, 400 )
-		then
-			hEffectTarget = bot
-			sCastMotive = '防御弹道:'..J.Chat.GetNormName( hEffectTarget )
-			return BOT_ACTION_DESIRE_HIGH, hEffectTarget, sCastType, sCastMotive
-		end
-	end
 
 	return BOT_ACTION_DESIRE_NONE
 
@@ -6581,26 +6674,8 @@ X.ConsiderItemDesire["item_heavy_blade"] = function( hItem )
 
 end
 
---亡魂胸针
+--亡魂胸针 (passive Tier 3 neutral in 7.42)
 X.ConsiderItemDesire["item_revenants_brooch"] = function( hItem )
-
-	local nCastRange = bot:GetAttackRange() + 100
-	local sCastType = 'none'
-	local hEffectTarget = nil
-	local sCastMotive = nil
-	local nInRangeEnmyList = J.GetNearbyHeroes(bot, nCastRange, true, BOT_MODE_NONE )
-
-
-	if J.IsGoingOnSomeone( bot )
-	then
-		if J.IsValidHero( botTarget )
-			and J.IsInRange( bot, botTarget, nCastRange )
-		then
-			hEffectTarget = bot
-			sCastMotive = "亡魂胸针进攻:"..J.Chat.GetNormName( botTarget )
-			return BOT_ACTION_DESIRE_HIGH, hEffectTarget, sCastType, sCastMotive
-		end
-	end
 
 	return BOT_ACTION_DESIRE_NONE
 
@@ -6953,6 +7028,65 @@ X.ConsiderItemDesire['item_blood_grenade'] = function(item)
 	end
 
 	return BOT_ACTION_DESIRE_NONE, 0
+end
+
+-- 7.42: Bloodslinger (upgrade of Blood Grenade: 1200 range, 0 health cost, 30s CD)
+X.ConsiderItemDesire['item_bloodslinger'] = function( hItem )
+	local nCastRange = 1200 + aetherRange
+	local nRadius = 300
+	local nEnemyHeroes = J.GetNearbyHeroes( bot, nCastRange, true, BOT_MODE_NONE )
+	local totalDmg = 50 + ( 15 * 5 )
+
+	for _, enemyHero in pairs( nEnemyHeroes )
+	do
+		if J.IsValidHero( enemyHero )
+			and J.CanCastOnNonMagicImmune( enemyHero )
+			and not J.IsSuspiciousIllusion( enemyHero )
+			and J.CanKillTarget( enemyHero, totalDmg, DAMAGE_TYPE_MAGICAL )
+		then
+			local nInRangeEnemy = J.GetEnemiesNearLoc( enemyHero:GetLocation(), nRadius )
+			if nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
+			then
+				return BOT_ACTION_DESIRE_HIGH, J.GetCenterOfUnits( nInRangeEnemy ), 'ground', 'Bloodslinger斩杀'
+			end
+			return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation(), 'ground', 'Bloodslinger斩杀'
+		end
+	end
+
+	if J.IsGoingOnSomeone( bot )
+	then
+		for _, enemyHero in pairs( nEnemyHeroes )
+		do
+			if J.IsValidHero( enemyHero )
+				and J.CanCastOnNonMagicImmune( enemyHero )
+				and not J.IsSuspiciousIllusion( enemyHero )
+				and ( enemyHero == botTarget or J.IsChasingTarget( bot, enemyHero ) )
+			then
+				local nInRangeEnemy = J.GetEnemiesNearLoc( enemyHero:GetLocation(), nRadius )
+				if nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
+				then
+					return BOT_ACTION_DESIRE_HIGH, J.GetCenterOfUnits( nInRangeEnemy ), 'ground', 'Bloodslinger追击'
+				end
+				return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation(), 'ground', 'Bloodslinger追击'
+			end
+		end
+	end
+
+	if J.IsRetreating( bot )
+	then
+		for _, enemyHero in pairs( nEnemyHeroes )
+		do
+			if J.IsValidHero( enemyHero )
+				and J.CanCastOnNonMagicImmune( enemyHero )
+				and not J.IsSuspiciousIllusion( enemyHero )
+				and J.IsInRange( bot, enemyHero, 700 )
+			then
+				return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation(), 'ground', 'Bloodslinger撤退减速'
+			end
+		end
+	end
+
+	return BOT_ACTION_DESIRE_NONE
 end
 
 local roshDeathTime = 0
@@ -8319,6 +8453,155 @@ X.ConsiderItemDesire["item_book_of_shadows"] = function( hItem )
 	end
 
 	return BOT_ACTION_DESIRE_NONE
+end
+
+-- Meteor Hammer & 7.42 Starforge (channeled AoE stun/building siege)
+X.ConsiderItemDesire["item_meteor_hammer"] = function( hItem )
+
+	if bot:GetMana() < hItem:GetManaCost()
+		or bot:WasRecentlyDamagedByAnyHero( 1.5 )
+		or J.IsRetreating( bot )
+	then
+		return BOT_ACTION_DESIRE_NONE
+	end
+
+	local nCastRange = 600 + aetherRange
+	local nInRangeEnmyList = J.GetNearbyHeroes( bot, nCastRange, true, BOT_MODE_NONE )
+
+	-- Channel onto already-disabled enemy heroes when team is unlikely to get interrupted
+	if #hNearbyEnemyHeroList <= 2
+	then
+		for _, npcEnemy in pairs( nInRangeEnmyList )
+		do
+			if J.IsValidHero( npcEnemy )
+				and not J.IsSuspiciousIllusion( npcEnemy )
+				and J.CanCastOnNonMagicImmune( npcEnemy )
+				and J.IsDisabled( npcEnemy )
+			then
+				return BOT_ACTION_DESIRE_HIGH, npcEnemy:GetLocation(), 'ground', '砸陨星控制:'..J.Chat.GetNormName( npcEnemy )
+			end
+		end
+	end
+
+	-- Channel onto enemy structures when safely pushing with no nearby enemy heroes
+	if #hNearbyEnemyHeroList == 0
+		and ( J.IsPushing( bot ) or nMode == BOT_MODE_ATTACK )
+	then
+		local nEnemyTowers = bot:GetNearbyTowers( nCastRange, true )
+		if J.IsValidBuilding( nEnemyTowers[1] ) and J.CanBeAttacked( nEnemyTowers[1] )
+		then
+			return BOT_ACTION_DESIRE_HIGH, nEnemyTowers[1]:GetLocation(), 'ground', '砸塔'
+		end
+		local nEnemyBarracks = bot:GetNearbyBarracks( nCastRange, true )
+		if J.IsValidBuilding( nEnemyBarracks[1] ) and J.CanBeAttacked( nEnemyBarracks[1] )
+		then
+			return BOT_ACTION_DESIRE_HIGH, nEnemyBarracks[1]:GetLocation(), 'ground', '砸兵营'
+		end
+	end
+
+	return BOT_ACTION_DESIRE_NONE
+
+end
+
+X.ConsiderItemDesire["item_starforge"] = function( hItem )
+
+	return X.ConsiderItemDesire["item_meteor_hammer"]( hItem )
+
+end
+
+-- 7.42: Greater Horn of Battle (Tormentor drop, usable from backpack, summons Mega Creep wave in every lane)
+X.ConsiderItemDesire["item_horn_of_battle_greater"] = function( hItem )
+
+	if bot:IsAlive() then
+		return BOT_ACTION_DESIRE_HIGH, bot, 'none', '召唤超级兵波次'
+	end
+
+	return BOT_ACTION_DESIRE_NONE
+
+end
+
+-- 7.42: Brick (Tier 2 neutral: destroys barriers and deals physical damage)
+X.ConsiderItemDesire["item_brick"] = function( hItem )
+
+	local nCastRange = 600 + aetherRange
+	local nInRangeEnmyList = J.GetNearbyHeroes( bot, nCastRange, true, BOT_MODE_NONE )
+
+	-- Prioritize enemy with active damage barriers
+	for _, npcEnemy in pairs( nInRangeEnmyList )
+	do
+		if J.IsValidHero( npcEnemy )
+			and not J.IsSuspiciousIllusion( npcEnemy )
+			and J.CanBeAttacked( npcEnemy )
+			and ( npcEnemy:HasModifier( 'modifier_abaddon_aphotic_shield' )
+				or npcEnemy:HasModifier( 'modifier_item_pipe_barrier' )
+				or npcEnemy:HasModifier( 'modifier_item_crimson_guard_extra' )
+				or npcEnemy:HasModifier( 'modifier_item_solar_crest_armor_addition' )
+				or npcEnemy:HasModifier( 'modifier_item_pavise_barrier' )
+				or npcEnemy:HasModifier( 'modifier_item_glimmer_cape_fade' )
+				or npcEnemy:HasModifier( 'modifier_ember_spirit_flame_guard' )
+				or npcEnemy:HasModifier( 'modifier_tinker_defense_matrix' )
+				or npcEnemy:HasModifier( 'modifier_item_consecrated_wraps_barrier' ) )
+		then
+			return BOT_ACTION_DESIRE_HIGH, npcEnemy, 'unit', 'Brick破盾:'..J.Chat.GetNormName( npcEnemy )
+		end
+	end
+
+	if J.IsGoingOnSomeone( bot )
+		and J.IsValidHero( botTarget )
+		and J.IsInRange( bot, botTarget, nCastRange )
+		and J.CanBeAttacked( botTarget )
+		and not J.IsSuspiciousIllusion( botTarget )
+	then
+		return BOT_ACTION_DESIRE_HIGH, botTarget, 'unit', 'Brick进攻:'..J.Chat.GetNormName( botTarget )
+	end
+
+	return BOT_ACTION_DESIRE_NONE
+
+end
+
+-- 7.42: Kobold Cup (Tier 1 neutral: +10% MS aura 1000u for 8s)
+X.ConsiderItemDesire["item_kobold_cup"] = function( hItem )
+
+	if bot:GetMana() < hItem:GetManaCost() then return BOT_ACTION_DESIRE_NONE end
+
+	if J.IsRetreating( bot ) and #hNearbyEnemyHeroList >= 1
+	then
+		return BOT_ACTION_DESIRE_HIGH, bot, 'none', 'KoboldCup撤退加速'
+	end
+
+	if J.IsGoingOnSomeone( bot )
+		and J.IsValidHero( botTarget )
+		and J.IsInRange( bot, botTarget, 1200 )
+	then
+		return BOT_ACTION_DESIRE_HIGH, bot, 'none', 'KoboldCup追击加速'
+	end
+
+	if J.GetMP( bot ) > 0.55
+		and ( J.IsPushing( bot ) or J.IsDefending( bot ) or J.IsInTeamFight( bot, 1200 ) )
+	then
+		local nAllies = J.GetAlliesNearLoc( bot:GetLocation(), 950 )
+		if #nAllies >= 2 then
+			return BOT_ACTION_DESIRE_MODERATE, bot, 'none', 'KoboldCup团队加速'
+		end
+	end
+
+	return BOT_ACTION_DESIRE_NONE
+
+end
+
+-- 7.42: Red Ledger (Tier 1 neutral: refresh bounty hit list out of combat)
+X.ConsiderItemDesire["item_red_ledger"] = function( hItem )
+
+	if DotaTime() > 90
+		and #hNearbyEnemyHeroList == 0
+		and not J.IsRetreating( bot )
+		and not J.IsGoingOnSomeone( bot )
+	then
+		return BOT_ACTION_DESIRE_LOW, bot, 'none', 'RedLedger刷新悬赏名单'
+	end
+
+	return BOT_ACTION_DESIRE_NONE
+
 end
 
 function X.IsTargetedByEnemy( building )

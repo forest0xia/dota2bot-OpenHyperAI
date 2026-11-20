@@ -41,6 +41,13 @@ const ItemOffensiveness: { [itemName: string]: number } = {
     item_fallen_sky: 25,
     item_pirate_hat: 80,
     item_stormcrafter: 20,
+    item_berserkers_sabatons: 55,
+    item_skypiercer: 30,
+    item_caduceus: 28,
+    item_starforge: 35,
+    item_ristuls_devotion: 25,
+    item_bloodslinger: 12,
+    item_horn_of_battle_greater: 30,
     // Add more items
 };
 

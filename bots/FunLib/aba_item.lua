@@ -138,6 +138,7 @@ Item['sBasicItems'] = {
 	'item_cloak',
 	'item_crown',
 	'item_demon_edge',
+	'item_diadem',
 	'item_dust',
 	'item_eagle',
 	'item_enchanted_mango',
@@ -148,10 +149,11 @@ Item['sBasicItems'] = {
 	'item_gem',
 	'item_ghost',
 	'item_gloves',
+	'item_helm_of_iron_will',
 	'item_holy_locket',
 	'item_hyperstone',
 	'item_infused_raindrop',
-	'item_javelin',
+--	'item_javelin', -- removed from game in 7.42
 	'item_lifesteal',
 	'item_magic_stick',
 	'item_mantle',
@@ -159,6 +161,7 @@ Item['sBasicItems'] = {
 	'item_mystic_staff',
 	'item_ogre_axe',
 	'item_orb_of_frost',
+	'item_orb_of_venom',
 	'item_platemail',
 	'item_point_booster',
 	'item_quarterstaff',
@@ -168,6 +171,7 @@ Item['sBasicItems'] = {
 	'item_ring_of_health',
 	'item_ring_of_protection',
 	'item_ring_of_regen',
+	'item_ring_of_tarrasque',
 	'item_robe',
 	'item_relic',
 	'item_sobi_mask',
@@ -175,9 +179,11 @@ Item['sBasicItems'] = {
 	'item_slippers',
 	'item_smoke_of_deceit',
 	'item_staff_of_wizardry',
+	'item_stout_shield',
 	'item_talisman_of_evasion',
 	'item_tango',
 	'item_tango_single',
+	'item_tiara_of_selemene',
 	'item_tome_of_knowledge',
 	'item_tpscroll',
 	'item_ultimate_orb',
@@ -199,6 +205,7 @@ Item['sBasicItems'] = {
 Item['sSeniorItems'] = {
 
 	'item_arcane_boots',
+	'item_bloodslinger',
 	'item_buckler',
 	'item_basher',
 	'item_dagon',
@@ -219,6 +226,11 @@ Item['sSeniorItems'] = {
 --	'item_necronomicon_2', -- removed from game
 	'item_essence_distiller',
 	'item_specialists_array',
+	'item_oblivion_staff',
+	'item_orb_of_corrosion',
+	'item_pavise',
+	'item_pers',
+	'item_phylactery',
 	'item_ring_of_basilius',
 	'item_sange',
 	'item_soul_booster',
@@ -231,7 +243,6 @@ Item['sSeniorItems'] = {
 	'item_blink',
 	'item_cyclone',
 	'item_helm_of_the_dominator',
-	'item_rod_of_atos',
 
 }
 
@@ -310,15 +321,36 @@ Item['sTopItems'] = {
 	'item_wraith_band',
 	'item_yasha_and_kaya',
 	
-	'item_revenants_brooch',
+--	'item_revenants_brooch', -- moved to Tier 3 neutral in 7.42
 	'item_boots_of_bearing',
 --	'item_wraith_pact', -- removed from game
+
+	'item_arcane_blink',
+	'item_overwhelming_blink',
+	'item_swift_blink',
+	'item_devastator',
+	'item_disperser',
+	'item_falcon_blade',
+	'item_gungir',
+	'item_harpoon',
+	'item_mage_slayer',
+	'item_octarine_core',
+	'item_orchid',
+	'item_wind_waker',
+	'item_witch_blade',
 
 	'item_essence_distiller',
 	'item_specialists_array',
 	'item_hydras_breath',
 	'item_consecrated_wraps',
 	'item_crellas_crozier',
+
+	-- 7.42 new shop items
+	'item_berserkers_sabatons',
+	'item_caduceus',
+	'item_ristuls_devotion',
+	'item_skypiercer',
+	'item_starforge',
 }
 
 local tTopItemList = {}
@@ -782,7 +814,7 @@ Item['item_mage_slayer']	= GetItemComponents( 'item_mage_slayer' )[1]
 
 -- Item['item_eternal_shroud'] removed from game in 7.41
 
-Item['item_helm_of_the_overlord']	= GetItemComponents( 'item_helm_of_the_overlord' )[1]
+-- Item['item_helm_of_the_overlord'] removed from game in 7.42
 
 Item['item_overwhelming_blink']	= GetItemComponents( 'item_overwhelming_blink' )[1]
 
@@ -793,7 +825,7 @@ Item['item_arcane_blink']	= GetItemComponents( 'item_arcane_blink' )[1]
 Item['item_wind_waker']	= GetItemComponents( 'item_wind_waker' )[1]
 
 --7.31
-Item['item_revenants_brooch']	= GetItemComponents( 'item_revenants_brooch' )[1]
+-- Item['item_revenants_brooch'] moved to Tier 3 neutral in 7.42
 
 Item['item_boots_of_bearing']	= GetItemComponents( 'item_boots_of_bearing' )[1]
 
@@ -807,7 +839,7 @@ Item["item_disperser"] 							= GetItemComponents( 'item_disperser' )[1]
 Item["item_blood_grenade"] 						= GetItemComponents( 'item_blood_grenade' )[1]
 
 ---------- 7.35 NEW ITEMS ---------------
-Item["item_angels_demise"] 						= GetItemComponents( 'item_angels_demise' )[1] --绝刃
+-- Item["item_angels_demise"] removed from game in 7.42
 Item["item_devastator"] 						= GetItemComponents( 'item_devastator' )[1] --圣斧
 
 ---------- 7.41 NEW ITEMS ---------------
@@ -816,6 +848,14 @@ Item["item_specialists_array"]				= GetItemComponents( 'item_specialists_array' 
 Item["item_hydras_breath"]					= GetItemComponents( 'item_hydras_breath' )[1]
 Item["item_consecrated_wraps"]				= GetItemComponents( 'item_consecrated_wraps' )[1]
 Item["item_crellas_crozier"]				= GetItemComponents( 'item_crellas_crozier' )[1]
+
+---------- 7.42 NEW ITEMS ---------------
+Item["item_bloodslinger"]					= GetItemComponents( 'item_bloodslinger' )[1]
+Item["item_caduceus"]						= GetItemComponents( 'item_caduceus' )[1]
+Item["item_ristuls_devotion"]				= GetItemComponents( 'item_ristuls_devotion' )[1]
+Item["item_berserkers_sabatons"]			= GetItemComponents( 'item_berserkers_sabatons' )[1]
+Item["item_skypiercer"]						= GetItemComponents( 'item_skypiercer' )[1]
+Item["item_starforge"]						= GetItemComponents( 'item_starforge' )[1]
 
 --新自定义物品
 Item['item_new_1']	= GetItemComponents( 'item_new_1' )[1]
@@ -909,9 +949,9 @@ Item['item_double_crown']			= { 'item_crown', 'item_crown', }
 
 Item['item_broken_hurricane_pike']	= { 'item_force_staff', 'item_recipe_hurricane_pike' }
 
-Item['item_broken_silver_edge']		= { 'item_blitz_knuckles', 'item_broadsword', 'item_recipe_silver_edge'}
+Item['item_broken_silver_edge']		= { 'item_demon_edge', 'item_recipe_silver_edge' }
 
-Item['item_broken_bfury']			= { 'item_ring_of_health', 'item_void_stone', 'item_broadsword', 'item_claymore' }
+Item['item_broken_bfury']			= { 'item_ring_of_health', 'item_void_stone', 'item_broadsword', 'item_broadsword', 'item_recipe_bfury' }
 
 Item['item_broken_satanic']			= { 'item_reaver', 'item_claymore' }
 

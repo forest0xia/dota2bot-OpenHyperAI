@@ -47,26 +47,26 @@ local inits =
 
 -- Internal flags for flagging if stuff has been done
 -- set to true if any given tier has been awarded
-local tiersAwarded = {false,false,false,false,false}
+local tiersAwarded = {false,false,false,false}
 -- current award instance (irrespective of offset). used to index timings
 local award = 1
 -- default neutral timer find interval
 local neutralFindInterval = 1
 -- default neutral timer dole interval
 local neutralDolenterval = 10
--- max tier
-local maxTier = 5
+-- max tier (4 tiers in 7.42)
+local maxTier = 4
 -- Per Minute Timer Interval
 local perMinuteTimerInterval = 60
 -- amount of neutrals found per tier
 local tierAwards = {
-	[2] = {0,0,0,0,0},
-	[3] = {0,0,0,0,0}
+	[2] = {0,0,0,0},
+	[3] = {0,0,0,0}
 }
 -- current neutral items available to dole
 NeutralStash = {
-	[2] = {{},{},{},{},{}},
-	[3] = {{},{},{},{},{}},
+	[2] = {{},{},{},{}},
+	[3] = {{},{},{},{}},
 }
 -- all items ever found
 AwardedNeutrals = {}

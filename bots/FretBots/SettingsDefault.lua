@@ -60,14 +60,14 @@
 			-- Max neutrals awarded per tier. You might be tempted to make this less than 5 to hinder the bots
 			-- a bit, but note that the award method doesn't prioritize bot roles, so you might end up with a
 			-- carry that doesn't have an item.
-			maxPerTier = {5,5,5,5,5},
+			maxPerTier = {5,5,5,5},
 			-- adds this number to the awards as they come out (make this positive to give better items early
 			-- make it negative to cause errors, probably.  If you want slower items just change the timings)
 			tierOffset = 0,
-			-- game time (seconds) at which awards are given.
-			timings = {0, 420, 1020, 2020, 3600},
-			-- default dota values, see NeutralItems:GetTimingDifficultyScaleShift()
-			timingsDefault = {0, 1020, 1620, 2020, 3600},
+			-- game time (seconds) at which awards are given (baseline difficulty 1.0)
+			timings = {0, 420, 1080, 2100},
+			-- default dota 7.42 values (0:00, 15:00, 30:00, 50:00), see NeutralItems:GetTimingDifficultyScaleShift()
+			timingsDefault = {0, 900, 1800, 3000},
 			-- variance for timings (this number of seconds added to base timing per bot)
 			variance = {30, 240},
 			-- if true, announce awards to chat

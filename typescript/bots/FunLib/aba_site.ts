@@ -1247,7 +1247,7 @@ ConsiderIsTimeToFarm["npc_dota_hero_beastmaster"] = function () {
     const bot = GetBot();
     const botNetWorth = bot.GetNetWorth();
 
-    if (!HasItem(bot, "item_helm_of_the_overlord") && botNetWorth < 14000) {
+    if (!HasItem(bot, "item_ristuls_devotion") && !HasItem(bot, "item_helm_of_the_dominator") && botNetWorth < 14000) {
         return true;
     }
 

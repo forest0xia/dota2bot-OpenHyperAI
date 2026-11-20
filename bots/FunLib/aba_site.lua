@@ -1101,7 +1101,7 @@ end
 ____exports.ConsiderIsTimeToFarm.npc_dota_hero_beastmaster = function()
     local bot = GetBot()
     local botNetWorth = bot:GetNetWorth()
-    if not HasItem(bot, "item_helm_of_the_overlord") and botNetWorth < 14000 then
+    if not HasItem(bot, "item_ristuls_devotion") and not HasItem(bot, "item_helm_of_the_dominator") and botNetWorth < 14000 then
         return true
     end
     if not HasItem(bot, "item_black_king_bar") and botNetWorth < 18000 then
