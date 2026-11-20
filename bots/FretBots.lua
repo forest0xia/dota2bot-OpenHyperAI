@@ -36,6 +36,7 @@ require 'bots.FretBots.RoleDetermination'
 -- Neutral items
 require 'bots.FretBots.NeutralItems'
 require 'bots.FretBots.modifiers.Modifier'
+local VectorTargeting = require 'bots.FretBots.VectorTargeting'
 
 -- Instantiate ourself
 if FretBots == nil then
@@ -60,6 +61,8 @@ function FretBots:Initialize()
 		Debug:Print('Initializing FretBots')
 		-- Randomize!
 		FretBots:SetRandomSeed()
+		-- Register server-side vector-target order filter for bots
+		VectorTargeting:Initialize()
 		-- Register the listener that will check for all players spawning and then init datatables
 		ListenToGameEvent('dota_on_hero_finish_spawn', Dynamic_Wrap(FretBots, 'OnPlayerSpawned'), FretBots)
 		Timers:CreateTimer(playersLoadedTimerName, {endTime = 1, callback = FretBots['PlayersLoadedTimer']} )

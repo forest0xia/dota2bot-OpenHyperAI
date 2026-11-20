@@ -171,7 +171,12 @@ function X.SkillsComplement()
         return
     end
 
-    -- WalrusKickDesire, WalrusKickTarget = X.ConsiderWalrusKick()
+    WalrusKickDesire, WalrusKickTarget = X.ConsiderWalrusKick()
+    if WalrusKickDesire > 0
+    then
+        bot:Action_UseAbilityOnEntity(WalrusKick, WalrusKickTarget)
+        return
+    end
 
     WalrusPunchDesire, WalrusPunchTarget = X.ConsiderWalrusPunch()
     if WalrusPunchDesire > 0
@@ -678,6 +683,56 @@ function X.ConsiderWalrusPunch()
         and J.IsAttacking(bot)
         then
             return BOT_ACTION_DESIRE_HIGH, botTarget
+        end
+    end
+
+    return BOT_ACTION_DESIRE_NONE, nil
+end
+
+function X.ConsiderWalrusKick()
+    if not J.CanCastAbility(WalrusKick)
+    then
+        return BOT_ACTION_DESIRE_NONE, nil
+    end
+
+    local nCastRange = J.GetProperCastRange(false, bot, WalrusKick:GetCastRange())
+
+    if J.IsRetreating(bot)
+    and bot:GetActiveModeDesire() > 0.5
+    and not J.IsRealInvisible(bot)
+    then
+        local nInRangeEnemy = J.GetNearbyHeroes(bot, nCastRange + 75, true, BOT_MODE_NONE)
+        for _, enemyHero in pairs(nInRangeEnemy)
+        do
+            if J.IsValidHero(enemyHero)
+            and J.CanCastOnMagicImmune(enemyHero)
+            and not J.IsSuspiciousIllusion(enemyHero)
+            and not J.IsDisabled(enemyHero)
+            and not enemyHero:HasModifier('modifier_necrolyte_reapers_scythe')
+            then
+                return BOT_ACTION_DESIRE_HIGH, enemyHero
+            end
+        end
+    end
+
+    if J.IsGoingOnSomeone(bot)
+    then
+        if J.IsValidHero(botTarget)
+        and J.IsInRange(bot, botTarget, nCastRange + 75)
+        and J.CanCastOnMagicImmune(botTarget)
+        and not J.IsSuspiciousIllusion(botTarget)
+        and not botTarget:HasModifier('modifier_abaddon_borrowed_time')
+        and not botTarget:HasModifier('modifier_dazzle_shallow_grave')
+        and not botTarget:HasModifier('modifier_enigma_black_hole_pull')
+        and not botTarget:HasModifier('modifier_faceless_void_chronosphere_freeze')
+        and not botTarget:HasModifier('modifier_legion_commander_duel')
+        and not botTarget:HasModifier('modifier_necrolyte_reapers_scythe')
+        then
+            local nAllyHeroes = J.GetNearbyHeroes(bot, 1000, false, BOT_MODE_NONE)
+            if nAllyHeroes ~= nil and #nAllyHeroes >= 2
+            then
+                return BOT_ACTION_DESIRE_HIGH, botTarget
+            end
         end
     end
 

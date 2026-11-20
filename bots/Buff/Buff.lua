@@ -10,6 +10,7 @@ dofile('bots/Buff/GPM')
 dofile('bots/Buff/NeutralItems')
 dofile('bots/Buff/Helper')
 local Chat = require('bots.FretBots.Chat')
+local VectorTargeting = require('bots.FretBots.VectorTargeting')
 
 local InitTimerName = 'InitTimer'
 local initDelay = 0
@@ -74,6 +75,7 @@ function Buff:Init()
     print('[Buff] Initing Buff...')
 
     Buff:AddBotsToTable()
+    VectorTargeting:Initialize()
     local TeamRadiant = botTable[DOTA_TEAM_GOODGUYS]
     local TeamDire = botTable[DOTA_TEAM_BADGUYS]
     print('[Buff] Number of bots in TeamRadiant: ' .. #TeamRadiant)

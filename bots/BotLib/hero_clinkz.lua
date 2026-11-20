@@ -856,8 +856,7 @@ end
 
 --Aghanim's Scepter
 function X.ConsiderBurningArmy()
-    if not BurningBarrage:IsTrained()
-    or not BurningBarrage:IsFullyCastable()
+    if not J.CanCastAbility(BurningArmy)
     then
         return BOT_ACTION_DESIRE_NONE, 0
     end
