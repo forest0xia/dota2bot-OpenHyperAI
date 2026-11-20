@@ -103,7 +103,7 @@ local WardLocationsBeforeAllyTowerFall__Radiant = {
 	[TOWER_MID_3] = {
 		[1] = { location = Vector(-4377.171387, -3911.893555), plant_time_obs = 0, plant_time_sentry = 0, },
 		[2] = { location = Vector(-3888.701904, -1594.625244), plant_time_obs = 0, plant_time_sentry = 0, },
-		[3] = { location = Vector(-2414.402100 -3802.327637), plant_time_obs = 0, plant_time_sentry = 0, },
+		[3] = { location = Vector(-2414.402100, -3802.327637), plant_time_obs = 0, plant_time_sentry = 0, },
 		[4] = { location = Vector(-4334.572266, -1036.464844), plant_time_obs = 0, plant_time_sentry = 0, },
 		[5] = { location = Vector(-2706.345459, -1664.330566), plant_time_obs = 0, plant_time_sentry = 0, },
 		[6] = { location = Vector(-1288.418091, -4359.833496), plant_time_obs = 0, plant_time_sentry = 0, },
@@ -119,7 +119,7 @@ local WardLocationsBeforeAllyTowerFall__Radiant = {
 
 local WardLocationsAfterEnemyTowerFall__Radiant = {
 	[TOWER_TOP_1] = {
-		[1] = { location = Vector(-6141.217773, 7387.221680), plant_time_obs = 0, plant_time_sentry = 0, },
+		[1] = { location = Vector(-6141.217773, 7250.000000), plant_time_obs = 0, plant_time_sentry = 0, },
 		[2] = { location = Vector(-1520.533691, 7675.010742), plant_time_obs = 0, plant_time_sentry = 0, },
 		[3] = { location = Vector(-2108.795898, 4265.250000), plant_time_obs = 0, plant_time_sentry = 0, },
 		[4] = { location = Vector(-4082.341309, 7135.104492), plant_time_obs = 0, plant_time_sentry = 0, },

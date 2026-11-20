@@ -305,6 +305,26 @@ function X.GetDesire(bot__)
                     end
                 end
 
+                if string.find(unitName, 'radigull_egg')
+                then
+                    if not J.IsRetreating(bot)
+                    and (withinAttackRange or J.IsInRange(bot, unit, botAttackRange + 250))
+                    then
+                        return 0.65
+                    end
+                end
+
+                if string.find(unitName, 'roshans_banner')
+                then
+                    if not J.IsInTeamFight(bot, 1200)
+                    and not J.IsRetreating(bot)
+                    and J.IsInRange(bot, unit, botAttackRange + 350)
+                    and (#tAllyHeroes >= #tEnemyHeroes or #tEnemyHeroes == 0)
+                    then
+                        return 0.55
+                    end
+                end
+
                 if string.find(unitName, 'phoenix_sun')
                 then
                     if (#tAllyHeroes >= #tEnemyHeroes or J.WeAreStronger(bot, 1600))

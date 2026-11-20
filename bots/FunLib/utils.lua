@@ -705,9 +705,9 @@ require(GetScriptDirectory().."/ts_libs/utils/json")
 ____exports.DebugMode = false
 ____exports.ScriptID = 3246316298
 ____exports.RadiantFountainTpPoint = Vector(-7172, -6652, 384)
-____exports.DireFountainTpPoint = Vector(6982, 6422, 392)
-____exports.RadiantRoshanLoc = Vector(-2984, 2349, 1092)
-____exports.DireRoshanLoc = Vector(2980, -2816, 1107)
+____exports.DireFountainTpPoint = Vector(6868, 6306, 384)
+____exports.RadiantRoshanLoc = Vector(-3194, 2395, 102)
+____exports.DireRoshanLoc = Vector(2860, -2765, 64)
 ____exports.BarrackList = {
     Barracks.TopMelee,
     Barracks.TopRanged,
@@ -717,8 +717,8 @@ ____exports.BarrackList = {
     Barracks.BotRanged
 }
 ____exports.WisdomRunes = {
-    [Team.Radiant] = Vector(-8126, -320, 256),
-    [Team.Dire] = Vector(8319, 266, 256)
+    [Team.Radiant] = Vector(-8088, 768, 39),
+    [Team.Dire] = Vector(8167, -1142, 38)
 }
 ____exports.BuggyHeroesDueToValveTooLazy = {
     [HeroName.Muerta] = true,

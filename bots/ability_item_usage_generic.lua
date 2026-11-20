@@ -23,7 +23,7 @@ local bDeafaultItemHero = BotBuild['bDeafaultItem']
 local sAbilityLevelUpList = BotBuild['sSkillList']
 
 local RadiantFountain = Vector(-6619, -6336, 384)
-local DireFountain = Vector(6928, 6372, 392)
+local DireFountain = Vector(6710, 6160, 384)
 
 local bNeedARDMReload = false
 local nLastKnownPosition = nil  -- tracks bot's position for !pos swap detection

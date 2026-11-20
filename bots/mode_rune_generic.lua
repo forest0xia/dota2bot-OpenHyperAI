@@ -46,9 +46,9 @@ local function IsHumanClaimingRune(nRune)
 	return false
 end
 
--- Wisdom rune state
-local radiantWRLocation = Vector(-7948.152344, 768.207825, 256.000000)
-local direWRLocation = Vector(8029.234375, -1125.811768, 256.000000)
+-- Wisdom rune state (7.42 VPK npc_dota_xp_fountain)
+local radiantWRLocation = Vector(-8088.0, 768.0, 39.0)
+local direWRLocation = Vector(8167.4, -1142.1, 37.8)
 local wisdomRuneSpots = { [TEAM_RADIANT] = radiantWRLocation, [TEAM_DIRE] = direWRLocation }
 local nShrineOfWisdomTime = 0
 local nShrineOfWisdomTeam = TEAM_RADIANT

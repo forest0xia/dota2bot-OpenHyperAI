@@ -6,9 +6,9 @@ local tAllyHeroList = {}
 local tAllyHumanList = {}
 
 local RadiantFountain = Vector( -6619, -6336, 384 )
-local DireFountain = Vector( 6928, 6372, 392 )
-local RadiantTormentorLoc = Vector(7499, -7847, 256)
-local DireTormentorLoc = Vector(-7229, 7933, 256)
+local DireFountain = Vector( 6710, 6160, 384 )
+local RadiantTormentorLoc = Vector(7744, -6208, 64)
+local DireTormentorLoc = Vector(-7680, 6336, 128)
 
 local fKeepManaPercent = 0.39
 
@@ -6036,12 +6036,12 @@ function J.GetTormentorLocation(team)
 end
 
 function J.GetTormentorWaitingLocation(team)
-	-- 7.41: Tormentor's spawn preference switched (day/night swap)
+	-- 7.42: Tormentor pit coordinates (day Radiant / night Dire)
 	local timeOfday = J.CheckTimeOfDay()
 	if timeOfday == 'day' then
-		return Vector(6792, -6815, 256)
+		return Vector(6960, -6050, 128)
 	else
-		return Vector(-7041, 6796, 256)
+		return Vector(-6920, 6160, 128)
 	end
 end
 

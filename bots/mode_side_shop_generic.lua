@@ -62,7 +62,7 @@ function GetDesireHelper()
     local nAliveAlly = 0
 
     local nTormentorSpawnInterval = J.IsModeTurbo() and 5 or 10
-    local nTormentorSpawnTime = J.IsModeTurbo() and 10 or 20
+    local nTormentorSpawnTime = J.IsModeTurbo() and 7.5 or 15
 
     local nHumanCountInLoc = 0
     local nAttackingTormentorCount = 0

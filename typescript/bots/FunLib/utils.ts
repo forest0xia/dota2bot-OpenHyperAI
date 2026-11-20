@@ -23,13 +23,13 @@ export const DebugMode = false;
 export const ScriptID = 3246316298;
 
 export const RadiantFountainTpPoint = Vector(-7172, -6652, 384);
-export const DireFountainTpPoint = Vector(6982, 6422, 392);
-export const RadiantRoshanLoc = Vector(-2984, 2349, 1092);
-export const DireRoshanLoc = Vector(2980, -2816, 1107);
+export const DireFountainTpPoint = Vector(6868, 6306, 384);
+export const RadiantRoshanLoc = Vector(-3194, 2395, 102);
+export const DireRoshanLoc = Vector(2860, -2765, 64);
 export const BarrackList: Barracks[] = [Barracks.TopMelee, Barracks.TopRanged, Barracks.MidMelee, Barracks.MidRanged, Barracks.BotMelee, Barracks.BotRanged];
 export const WisdomRunes = {
-    [Team.Radiant]: Vector(-8126, -320, 256),
-    [Team.Dire]: Vector(8319, 266, 256),
+    [Team.Radiant]: Vector(-8088, 768, 39),
+    [Team.Dire]: Vector(8167, -1142, 38),
 };
 
 // Bugged heroes, see: https://www.reddit.com/r/DotA2/comments/1ezxpav

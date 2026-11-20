@@ -130,16 +130,16 @@ export const nShopList = [
     Shop.Secret2, //--夜魇下路神秘
 ];
 
-export const top_power_rune = Vector(-1767, 1233, 0);
-export const bot_power_rune = Vector(2597, -2014, 0);
+export const top_power_rune = Vector(-1640, 1112, 41);
+export const bot_power_rune = Vector(1180, -1216, 57);
 
-export const roshan = Vector(2980, -2816, 0); // 7.41: Roshan's pit preference switched, default (day) is now Dire side
+export const roshan = Vector(2860, -2765, 64); // 7.42: Roshan default (day) pit is Dire side
 
-export const dire_ancient = Vector(5517, 4981, 0);
-export const radiant_ancient = Vector(-5860, -5328, 0);
+export const dire_ancient = Vector(5528, 5000, 248);
+export const radiant_ancient = Vector(-5920, -5352, 240);
 
 export const radiant_base = Vector(-7200, -6666, 0);
-export const dire_base = Vector(7137, 6548, 0);
+export const dire_base = Vector(6868, 6306, 377);
 
 export const GetDistance = function (s: Vector, t: Vector): number {
     return GetLocationToLocationDistance(s, t);
