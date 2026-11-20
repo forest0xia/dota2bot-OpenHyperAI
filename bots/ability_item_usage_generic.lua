@@ -229,8 +229,8 @@ local function AbilityLevelUpComplement()
 			if bot.kez_mode == 'sai' then
 				for i = 0, 6 do
 					local hAbility = bot:GetAbilityInSlot(i)
-					local sAbilityName = hAbility:GetName()
 					if hAbility ~= nil then
+						local sAbilityName = hAbility:GetName()
 						if sAbilityLevelUpList[1] == 'kez_echo_slash' and sAbilityName == 'kez_falcon_rush'
 						then
 							abilityToLevelup = hAbility
@@ -253,8 +253,8 @@ local function AbilityLevelUpComplement()
 			else
 				for i = 0, 6 do
 					local hAbility = bot:GetAbilityInSlot(i)
-					local sAbilityName = hAbility:GetName()
 					if hAbility ~= nil then
+						local sAbilityName = hAbility:GetName()
 						if sAbilityLevelUpList[1] == 'kez_falcon_rush' and sAbilityName == 'kez_echo_slash'
 						then
 							abilityToLevelup = hAbility

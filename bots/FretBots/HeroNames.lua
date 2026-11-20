@@ -387,7 +387,7 @@ local NamesWithLocale = {
 		npc_dota_hero_zuus = 'Зевс',
         npc_dota_hero_ringmaster = 'Кольцмейстер',
         npc_dota_hero_kez = 'Кез',
-		npc_dota_hero_largo = 'Large',
+		npc_dota_hero_largo = 'Ларго',
 	},
 	ja = {
         npc_dota_hero_abaddon = 'アバドン',
@@ -517,7 +517,7 @@ local NamesWithLocale = {
         npc_dota_hero_zuus = 'ゼウス',
         npc_dota_hero_ringmaster = 'リングマスター',
         npc_dota_hero_kez = 'ケズ',
-		npc_dota_hero_largo = 'Large',
+		npc_dota_hero_largo = 'ラルゴ',
     }
 }
 

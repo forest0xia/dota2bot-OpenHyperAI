@@ -15,7 +15,7 @@ local tTalentTreeList = {
 }
 
 local tAllAbilityBuildList = {
-						{2,1,4,2,2,6,2,1,1,1,6,4,4,4,6},--pos2
+						{2,1,3,2,2,6,2,1,1,1,6,3,3,3,6},--pos2
 }
 
 local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
@@ -82,7 +82,6 @@ end
 
 local ArcaneOrb             = bot:GetAbilityByName('obsidian_destroyer_arcane_orb')
 local AstralImprisonment    = bot:GetAbilityByName('obsidian_destroyer_astral_imprisonment')
-local EssenceAura           = bot:GetAbilityByName('obsidian_destroyer_essence_aura')
 local SanitysEclipse        = bot:GetAbilityByName('obsidian_destroyer_sanity_eclipse')
 local Objurgation           = bot:GetAbilityByName('obsidian_destroyer_objurgation')
 
@@ -94,7 +93,7 @@ local ObjurgationDesire
 function X.SkillsComplement()
     if J.CanNotUseAbility(bot) then return end
 
-	if ArcaneOrb:IsTrained()
+	if ArcaneOrb ~= nil and ArcaneOrb:IsTrained()
 	and ArcaneOrb:GetAutoCastState( ) == false
 	and bot:GetLevel() >= 9
 	then
@@ -131,7 +130,7 @@ function X.SkillsComplement()
 end
 
 function X.ConsiderArcaneOrb()
-    if not ArcaneOrb:IsFullyCastable()
+    if ArcaneOrb == nil or not ArcaneOrb:IsFullyCastable()
     or ArcaneOrb:GetAutoCastState()
     then
         return BOT_ACTION_DESIRE_NONE, nil
@@ -208,7 +207,7 @@ function X.ConsiderArcaneOrb()
 end
 
 function X.ConsiderAstralImprisonment()
-    if not AstralImprisonment:IsFullyCastable()
+    if AstralImprisonment == nil or not AstralImprisonment:IsFullyCastable()
     then
         return BOT_ACTION_DESIRE_NONE, nil
     end
@@ -440,7 +439,7 @@ function X.ConsiderAstralImprisonment()
 end
 
 function X.ConsiderSanitysEclipse()
-    if not SanitysEclipse:IsFullyCastable()
+    if SanitysEclipse == nil or not SanitysEclipse:IsFullyCastable()
     then
         return BOT_ACTION_DESIRE_NONE, 0
     end
@@ -485,7 +484,7 @@ function X.ConsiderSanitysEclipse()
 end
 
 function X.ConsiderObjurgation()
-    if not Objurgation:IsFullyCastable()
+    if Objurgation == nil or not Objurgation:IsFullyCastable()
     then
         return BOT_ACTION_DESIRE_NONE
     end

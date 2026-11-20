@@ -133,7 +133,7 @@ function X.SkillsComplement()
 end
 
 function X.ConsiderQ()
-    if not abilityQ:IsFullyCastable() then return 0 end
+    if abilityQ == nil or not abilityQ:IsFullyCastable() then return 0 end
     if not Utils.GetLoneDruid(bear).hero:IsAlive() then return 0 end
 
     if J.GetHP(bear) < 0.9 and bear:DistanceFromFountain() < 450 then return 0 end
@@ -162,7 +162,7 @@ function X.ConsiderQ()
 end
 
 function X.ConsiderSavageRoar()
-    if not SavageRoar:IsFullyCastable() then return 0 end
+    if SavageRoar == nil or not SavageRoar:IsFullyCastable() then return 0 end
 
     local nRadius = SavageRoar:GetSpecialValueInt('radius')
     local nInRangeEnemy = J.GetNearbyHeroes(bear, nRadius, true, BOT_MODE_NONE)

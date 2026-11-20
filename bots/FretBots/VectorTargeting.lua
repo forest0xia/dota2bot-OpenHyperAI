@@ -81,7 +81,7 @@ local function GetTeamFountainPos(team)
         end
     end
     if team == TEAM_RADIANT then
-        cachedFountains[team] = Vector(-7168, -6656, 384)
+        cachedFountains[team] = Vector(-7456, -6938, 393)
     elseif team == TEAM_DIRE then
         cachedFountains[team] = Vector(7152, 6592, 384)
     else
@@ -286,7 +286,7 @@ end
 VECTOR_HANDLERS['dark_seer_wall_of_replica'] = function(unit, ability, startPos)
     local team = unit:GetTeamNumber()
     local enemies = FindNearbyUnits(startPos, team, DOTA_UNIT_TARGET_TEAM_ENEMY, 800, DOTA_UNIT_TARGET_HERO)
-    if #enemies >= 2 then
+    if #enemies >= 2 and not enemies[1]:IsNull() and not enemies[#enemies]:IsNull() then
         -- Span along the spread between the two farthest enemy heroes if possible
         local p1 = enemies[1]:GetAbsOrigin()
         local p2 = enemies[#enemies]:GetAbsOrigin()
