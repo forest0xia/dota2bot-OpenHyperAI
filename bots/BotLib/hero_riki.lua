@@ -146,14 +146,14 @@ modifier_riki_tricks_of_the_trade_phase
 
 --]]
 
-local abilityQ = bot:GetAbilityByName( sAbilityList[1] )
-local abilityW = bot:GetAbilityByName( sAbilityList[2] )
-local abilityE = bot:GetAbilityByName( sAbilityList[3] )
-local abilityAS = bot:GetAbilityByName( sAbilityList[4] )
-local abilityR = bot:GetAbilityByName( sAbilityList[6] )
-local talent5 = bot:GetAbilityByName( sTalentList[5] )
-local talent6 = bot:GetAbilityByName( sTalentList[6] )
-local talent8 = bot:GetAbilityByName( sTalentList[8] )
+local abilityQ = sAbilityList[1] and bot:GetAbilityByName( sAbilityList[1] ) or nil
+local abilityW = sAbilityList[2] and bot:GetAbilityByName( sAbilityList[2] ) or nil
+local abilityE = sAbilityList[3] and bot:GetAbilityByName( sAbilityList[3] ) or nil
+local abilityAS = sAbilityList[4] and bot:GetAbilityByName( sAbilityList[4] ) or nil
+local abilityR = sAbilityList[6] and bot:GetAbilityByName( sAbilityList[6] ) or nil
+local talent5 = sTalentList[5] and bot:GetAbilityByName( sTalentList[5] ) or nil
+local talent6 = sTalentList[6] and bot:GetAbilityByName( sTalentList[6] ) or nil
+local talent8 = sTalentList[8] and bot:GetAbilityByName( sTalentList[8] ) or nil
 
 local castQDesire, castQTarget
 local castWDesire, castWTarget
@@ -228,7 +228,7 @@ end
 function X.ConsiderQ()
 
 
-	if not abilityQ:IsFullyCastable() then return 0 end
+	if abilityQ == nil or not abilityQ:IsFullyCastable() then return 0 end
 
 	local nSkillLV = abilityQ:GetLevel()
 	local nCastRange = abilityQ:GetCastRange() + aetherRange
@@ -240,7 +240,7 @@ function X.ConsiderQ()
 	local nInRangeEnemyList = J.GetAroundEnemyHeroList( nCastRange )
 
 	local nRadius = abilityQ:GetSpecialValueInt( "radius" )
-	if talent8:IsTrained() then nRadius = nRadius + talent8:GetSpecialValueInt( "value" ) end
+	if talent8 ~= nil and talent8:IsTrained() then nRadius = nRadius + talent8:GetSpecialValueInt( "value" ) end
 	local nCastTarget = nil
 
 	--打断
@@ -337,23 +337,23 @@ end
 function X.ConsiderW()
 
 
-	if not abilityW:IsFullyCastable()
+	if abilityW == nil or not abilityW:IsFullyCastable()
 		or bot:IsRooted()
 	then return 0 end
 
 	local nSkillLV = abilityW:GetLevel()
 	local nCastRange = abilityW:GetCastRange() + aetherRange
 
-	if talent6:IsTrained() then nCastRange = nCastRange + talent6:GetSpecialValueInt( "value" )	end
+	if talent6 ~= nil and talent6:IsTrained() then nCastRange = nCastRange + talent6:GetSpecialValueInt( "value" )	end
 
 	local nCastPoint = abilityW:GetCastPoint()
 	local nManaCost = abilityW:GetManaCost()
 
 	local nPhysicalDamge = bot:GetAttackDamage()
-	if abilityR:IsTrained()
+	if abilityR ~= nil and abilityR:IsTrained()
 	then
 		local nBonusRate = abilityR:GetSpecialValueFloat( "damage_multiplier" )
-		if talent5:IsTrained() then nBonusRate = nBonusRate + talent5:GetSpecialValueFloat( "value" ) end
+		if talent5 ~= nil and talent5:IsTrained() then nBonusRate = nBonusRate + talent5:GetSpecialValueFloat( "value" ) end
 		nPhysicalDamge = nPhysicalDamge + bot:GetAttributeValue( ATTRIBUTE_AGILITY ) * nBonusRate
 	end
 
@@ -572,7 +572,7 @@ end
 function X.ConsiderE()
 
 
-	if not abilityE:IsFullyCastable() then return 0 end
+	if abilityE == nil or not abilityE:IsFullyCastable() then return 0 end
 
 	local nSkillLV = abilityE:GetLevel()
 	local nCastRange = abilityE:GetCastRange() + aetherRange
@@ -649,7 +649,7 @@ end
 
 function X.ConsiderAS()
 
-	if not abilityAS:IsTrained()
+	if abilityAS == nil or not abilityAS:IsTrained()
 		or not abilityAS:IsFullyCastable() 
 	then
 		return BOT_ACTION_DESIRE_NONE, 0

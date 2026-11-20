@@ -172,12 +172,12 @@ modifier_omniknight_degen_aura_effect
 
 --]]
 
-local abilityQ = bot:GetAbilityByName( sAbilityList[1] )
-local abilityW = bot:GetAbilityByName( sAbilityList[2] )
-local abilityE = bot:GetAbilityByName( sAbilityList[3] )
-local abilityR = bot:GetAbilityByName( sAbilityList[6] )
-local abilityAS = bot:GetAbilityByName( sAbilityList[4] )
-local talent7 = bot:GetAbilityByName( sTalentList[7] )
+local abilityQ = sAbilityList[1] and bot:GetAbilityByName( sAbilityList[1] ) or nil
+local abilityW = sAbilityList[2] and bot:GetAbilityByName( sAbilityList[2] ) or nil
+local abilityE = sAbilityList[3] and bot:GetAbilityByName( sAbilityList[3] ) or nil
+local abilityR = sAbilityList[6] and bot:GetAbilityByName( sAbilityList[6] ) or nil
+local abilityAS = sAbilityList[4] and bot:GetAbilityByName( sAbilityList[4] ) or nil
+local talent7 = sTalentList[7] and bot:GetAbilityByName( sTalentList[7] ) or nil
 
 local castQDesire, castQTarget
 local castWDesire, castWTarget
@@ -194,10 +194,10 @@ function X.SkillsComplement()
 	if J.CanNotUseAbility( bot ) or bot:IsInvisible() then return end
 
 	-- Re-fetch ability handles each tick for safety
-	abilityQ = bot:GetAbilityByName( sAbilityList[1] )
-	abilityW = bot:GetAbilityByName( sAbilityList[2] )
-	abilityE = bot:GetAbilityByName( sAbilityList[3] )
-	abilityR = bot:GetAbilityByName( sAbilityList[6] )
+	abilityQ = sAbilityList[1] and bot:GetAbilityByName( sAbilityList[1] ) or nil
+	abilityW = sAbilityList[2] and bot:GetAbilityByName( sAbilityList[2] ) or nil
+	abilityE = sAbilityList[3] and bot:GetAbilityByName( sAbilityList[3] ) or nil
+	abilityR = sAbilityList[6] and bot:GetAbilityByName( sAbilityList[6] ) or nil
 
 	-- Cache per-tick variables
 	nKeepMana = 400
@@ -266,7 +266,7 @@ end
 function X.ConsiderQ()
 
 
-	if not abilityQ:IsFullyCastable() then return 0 end
+	if abilityQ == nil or not abilityQ:IsFullyCastable() then return 0 end
 
 	local nSkillLV = abilityQ:GetLevel()
 	local nCastRange = abilityQ:GetCastRange() + aetherRange
@@ -275,7 +275,7 @@ function X.ConsiderQ()
 	local nManaCost = abilityQ:GetManaCost()
 	local nDamage = abilityQ:GetSpecialValueInt( 'heal' )
 
-	if talent7:IsTrained() then nDamage = nDamage + talent7:GetSpecialValueInt( 'value' ) end
+	if talent7 ~= nil and talent7:IsTrained() then nDamage = nDamage + talent7:GetSpecialValueInt( 'value' ) end
 
 	local nDamageType = DAMAGE_TYPE_PURE
 	local nInRangeEnemyList = J.GetAroundEnemyHeroList( nCastRange + nRadius )
@@ -544,7 +544,7 @@ end
 function X.ConsiderW()
 
 
-	if not abilityW:IsFullyCastable() then return 0 end
+	if abilityW == nil or not abilityW:IsFullyCastable() then return 0 end
 
 	local nSkillLV = abilityW:GetLevel()
 	local nCastRange = abilityW:GetCastRange() + aetherRange
@@ -641,7 +641,7 @@ end
 function X.ConsiderE()
 
 
-	if not abilityE:IsFullyCastable() then return 0 end
+	if abilityE == nil or not abilityE:IsFullyCastable() then return 0 end
 
 	local nCastRange = abilityE:GetCastRange()
 	local nCastPoint = abilityE:GetCastPoint()
@@ -811,7 +811,7 @@ end
 function X.ConsiderR()
 
 
-	if not abilityR:IsFullyCastable() then return 0 end
+	if abilityR == nil or not abilityR:IsFullyCastable() then return 0 end
 
 	local nRadius = abilityR:GetSpecialValueInt( 'radius' )
 	local nCastRange = nRadius

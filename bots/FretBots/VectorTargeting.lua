@@ -81,9 +81,9 @@ local function GetTeamFountainPos(team)
         end
     end
     if team == TEAM_RADIANT then
-        cachedFountains[team] = Vector(-7200, -6700, 384)
+        cachedFountains[team] = Vector(-7168, -6656, 384)
     elseif team == TEAM_DIRE then
-        cachedFountains[team] = Vector(6868, 6306, 384)
+        cachedFountains[team] = Vector(7152, 6592, 384)
     else
         cachedFountains[team] = Vector(0, 0, 128)
     end
@@ -355,7 +355,6 @@ VECTOR_HANDLERS['windrunner_gale_force'] = function(unit, ability, startPos)
     return MakeEndpoint(startPos, allyFountain - startPos, 500, unit)
 end
 
--- Tinker Deploy Turrets (POINT): aim cone toward nearest enemy cluster
 -- Clinkz Burning Army / Broodmother Sticky Snare / Magnus Greater Shockwave / Shadow Shaman Serpentine
 VECTOR_HANDLERS['clinkz_burning_army'] = function(unit, ability, startPos)
     local axis = startPos - unit:GetAbsOrigin()
