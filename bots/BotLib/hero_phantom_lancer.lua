@@ -170,7 +170,7 @@ function X.SkillsComplement()
 --	if talent4:IsTrained() then talent4Damage = talent4:GetSpecialValueInt( "value" ) end
 	if talent5:IsTrained() then boostRange = boostRange + talent5:GetSpecialValueInt( "value" ) end
 	local aether = J.IsItemAvailable( "item_aether_lens" )
-	if aether ~= nil then aetherRange = 250 end
+	if aether ~= nil then aetherRange = 200 end
 
 
 	castQDesire, castQTarget, sMotive = X.ConsiderQ()

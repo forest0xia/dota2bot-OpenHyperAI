@@ -223,7 +223,7 @@ function U.InitiateAbility(unit)
 		do
 			local ability = unit:GetAbilityInSlot(i)
 			if ability and not ability:IsHidden() and not ability:IsPassive() then
-				unit.abilities[i+1] = ability
+				table.insert(unit.abilities, ability)
 			end
 		end
     end
@@ -284,7 +284,8 @@ function U.IsMinionWithNoSkill(unit)
 		or string.find(unit_name, 'npc_dota_warlock')
 		or string.find(unit_name, 'npc_dota_beastmaster_boar')
 		or string.find(unit_name, 'npc_dota_lycan_wolf')
-		or string.find(unit_name, 'npc_dota_neutral_kobold')
+		or unit_name == "npc_dota_neutral_kobold"
+		or unit_name == "npc_dota_neutral_kobold_taskmaster"
 		or string.find(unit_name, 'npc_dota_creep_goodguys')
 		or string.find(unit_name, 'npc_dota_goodguys_siege')
 		or string.find(unit_name, 'npc_dota_creep_badguys')
@@ -313,6 +314,10 @@ function U.IsMinionWithNoSkill(unit)
 		or unit_name == "npc_dota_neutral_harpy_scout"
 		or unit_name == "npc_dota_neutral_black_drake"
 		or unit_name == "npc_dota_neutral_tadpole"
+		or unit_name == "npc_dota_neutral_frostbitten_golem"
+		or unit_name == "npc_dota_neutral_odobenus_footman"
+		or unit_name == "npc_dota_neutral_eimermole"
+		or unit_name == "npc_dota_neutral_ogre_seal_pup"
 end
 
 function U.IsMinionWithSkill(unit)
@@ -334,12 +339,20 @@ function U.IsMinionWithSkill(unit)
 		or unit_name == "npc_dota_neutral_harpy_storm"
 		or unit_name == "npc_dota_neutral_black_dragon"
 		or unit_name == "npc_dota_neutral_warpine_raider"
+		or unit_name == "npc_dota_neutral_ice_shaman"
+		or unit_name == "npc_dota_neutral_kobold_tunneler"
+		or unit_name == "npc_dota_neutral_kobold_tunneler_gold"
+		or unit_name == "npc_dota_neutral_radigull"
+		or unit_name == "npc_dota_neutral_odobenus_frostmage"
+		or unit_name == "npc_dota_neutral_eimermole_foreman"
+		or unit_name == "npc_dota_neutral_ogre_seal"
 		or unit_name == "npc_dota_neutral_froglet_mage"
 		or unit_name == "npc_dota_neutral_froglet"
 		or unit_name == "npc_dota_neutral_grown_frog_mage"
 		or unit_name == "npc_dota_neutral_grown_frog"
 		or unit_name == "npc_dota_neutral_ancient_frog_mage"
 		or unit_name == "npc_dota_neutral_ancient_frog"
+		or string.find(unit_name, 'npc_dota_beastmaster_thunderhide')
 		or string.find(unit_name, 'npc_dota_necronomicon_archer')
 end
 

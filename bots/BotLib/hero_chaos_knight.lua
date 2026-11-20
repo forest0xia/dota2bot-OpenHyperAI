@@ -161,12 +161,14 @@ modifier_chaos_knight_phantasm_illusion
 
 local abilityQ = bot:GetAbilityByName( sAbilityList[1] )
 local abilityW = bot:GetAbilityByName( sAbilityList[2] )
+local abilityD = bot:GetAbilityByName( 'chaos_knight_armageddon' )
 local abilityR = bot:GetAbilityByName( sAbilityList[6] )
 local talent6 = bot:GetAbilityByName( sTalentList[6] )
 local abilityArmlet = nil
 
 local castQDesire, castQTarget = 0
 local castWDesire, castWTarget = 0
+local castDDesire, castDLocation = 0, nil
 local castRDesire = 0
 local botTarget
 
@@ -197,6 +199,14 @@ function X.SkillsComplement()
 		end
 
 		bot:ActionQueue_UseAbility( abilityR )
+		return
+	end
+
+	castDDesire, castDLocation = X.ConsiderD()
+	if ( castDDesire > 0 )
+	then
+		J.SetQueuePtToINT( bot, false )
+		bot:ActionQueue_UseAbilityOnLocation( abilityD, castDLocation )
 		return
 	end
 
@@ -503,6 +513,31 @@ function X.ConsiderR()
 	return BOT_ACTION_DESIRE_NONE
 end
 
+function X.ConsiderD()
+	if not J.CanCastAbility(abilityD) then
+		return BOT_ACTION_DESIRE_NONE, nil
+	end
+
+	if J.IsGoingOnSomeone(bot) then
+		if J.IsValidHero(botTarget)
+		and J.IsInRange(bot, botTarget, 900)
+		and not J.IsSuspiciousIllusion(botTarget)
+		and not botTarget:HasModifier('modifier_abaddon_borrowed_time')
+		and not botTarget:HasModifier('modifier_dazzle_shallow_grave')
+		then
+			return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
+		end
+	end
+
+	if J.IsInTeamFight(bot, 1200) then
+		local nLocationAoE = bot:FindAoELocation(true, true, bot:GetLocation(), 800, 350, 0, 0)
+		if nLocationAoE.count >= 2 then
+			return BOT_ACTION_DESIRE_HIGH, nLocationAoE.targetloc
+		end
+	end
+
+	return BOT_ACTION_DESIRE_NONE, nil
+end
 
 return X
 -- dota2jmz@163.com QQ:2462331592..

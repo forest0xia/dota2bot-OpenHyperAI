@@ -40,7 +40,7 @@ local sItemSellList = BotBuild['sSellList']
 
 if sPurchaseList == nil then
 	print("[ERROR] Can't load purchase list for: " .. botName)
-	print("Stack Trace:", debug.traceback())
+	if debug and debug.traceback then print("Stack Trace:", debug.traceback()) end
 	return
 end
 
@@ -655,10 +655,12 @@ function ItemPurchaseThink()
 	botStashValue = bot:GetStashValue()
 	botDistanceFromFountain = bot:DistanceFromFountain()
 
-	-- try to recover own dropped items (generic, not only for bear)
+	-- try to recover own dropped items (excluding tEarlyConsumableItem so bots don't re-loot intentionally discarded early items)
 	local dropped = GetDroppedItemList()
 	for _, d in pairs(dropped) do
-		if d ~= nil and d.owner == bot and d.item ~= nil and not string.find(d.item:GetName(), 'token') then
+		if d ~= nil and d.owner == bot and d.item ~= nil
+		and not string.find(d.item:GetName(), 'token')
+		and not Utils.HasValue(Item['tEarlyConsumableItem'], d.item:GetName()) then
 			local dist = GetUnitToLocationDistance(bot, d.location)
 			if dist > 200 and dist < 1000 then
 				bot:Action_MoveToLocation(d.location)

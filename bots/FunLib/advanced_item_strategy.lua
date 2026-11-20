@@ -311,8 +311,8 @@ local ITEMS_BY_POSITION = {
 }
 local COUNTER_ITEMS = {
     evasion = {"item_monkey_king_bar", "item_bloodthorn"},
-    magic_heavy = {"item_black_king_bar", "item_pipe_of_insight", "item_lotus_orb"},
-    illusion_heavy = {"item_maelstrom", "item_mjollnir", "item_radiance", "item_battlefury"},
+    magic_heavy = {"item_black_king_bar", "item_pipe", "item_lotus_orb"},
+    illusion_heavy = {"item_maelstrom", "item_mjollnir", "item_radiance", "item_bfury"},
     invisibility = {"item_dust", "item_gem", "item_ward_sentry"},
     heroes = {[HeroName.PhantomAssassin] = {"item_monkey_king_bar", "item_bloodthorn"}, [HeroName.Riki] = {"item_dust", "item_gem", "item_ward_sentry"}, [HeroName.Antimage] = {"item_cyclone", "item_black_king_bar"}}
 }

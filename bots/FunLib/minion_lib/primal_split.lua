@@ -2,7 +2,7 @@ local J = require(GetScriptDirectory() ..  "/FunLib/jmz_func")
 local U = require(GetScriptDirectory()..'/FunLib/minion_lib/utils')
 local X = {}
 local bot = GetBot()
-local DispelMagicDesire, CycloneDesire, WindWalkDesire, HurlBoulderDesire = 0, 0, 0, 0
+local DispelMagicDesire, CycloneDesire, WindWalkDesire, HurlBoulderDesire, FirePullDesire = 0, 0, 0, 0, 0
 local nAllyHeroes, nEnemyHeroes, botTarget
 
 function X.MinionThink(aBot, hMinionUnit)
@@ -50,16 +50,16 @@ function X.MinionThink(aBot, hMinionUnit)
 		end
 
 		if string.find(hMinionUnit:GetUnitName(), "npc_dota_brewmaster_fire") then
+			if (hMinionUnit:IsUsingAbility()) then return end
+			FirePull = hMinionUnit:GetAbilityByName("brewmaster_fire_pull")
+			FirePullDesire, FirePullTarget = UseFirePull(hMinionUnit)
+			if FirePullDesire > 0 then
+				hMinionUnit:Action_UseAbilityOnEntity(FirePull, FirePullTarget)
+				return
+			end
 		end
 
 		if string.find(hMinionUnit:GetUnitName(), "npc_dota_brewmaster_void") then
-			if (hMinionUnit:IsUsingAbility()) then return end
-			AstralPull = hMinionUnit:GetAbilityByName("brewmaster_void_astral_pull")
-			AstralPullDesire, AstralPullTarget = UseAstralPull(hMinionUnit)
-			if AstralPullDesire > 0 then
-				hMinionUnit:Action_UseAbility(AstralPull)
-				return
-			end
 		end
 
         local target = AttackUnits(hMinionUnit)
@@ -181,20 +181,29 @@ function UseHurlBoulder(hMinionUnit)
 	return 0, nil
 end
 
-function UseAstralPull(hMinionUnit)
-	if not AstralPull:IsFullyCastable() then return 0, nil end
+function UseFirePull(hMinionUnit)
+	if not J.CanCastAbility(FirePull) then return 0, nil end
 	if J.CanNotUseAbility(hMinionUnit) then return 0, nil end
-	
-	local SearchRange = 800
-	
-	local enemies = hMinionUnit:GetNearbyHeroes(SearchRange, true, BOT_MODE_NONE)
-    if enemies ~= nil and #enemies >= 1 then
-        for v, enemy in pairs(enemies) do
-            if enemy:IsChanneling() then
-                return BOT_ACTION_DESIRE_HIGH, enemy
-            end
-        end
-    end
+
+	local CastRange = FirePull:GetCastRange()
+	if CastRange <= 0 then CastRange = 150 end
+
+	local enemies = hMinionUnit:GetNearbyHeroes(CastRange + 450, true, BOT_MODE_NONE)
+	if enemies ~= nil and #enemies >= 1 then
+		for _, enemy in pairs(enemies) do
+			if J.IsValidHero(enemy)
+			and J.CanCastOnNonMagicImmune(enemy)
+			and (enemy:IsChanneling() or J.IsCastingUltimateAbility(enemy))
+			then
+				return BOT_ACTION_DESIRE_HIGH, enemy
+			end
+		end
+		local weakTarget = J.GetWeakestUnit(enemies)
+		if J.IsValidHero(weakTarget) and J.CanCastOnNonMagicImmune(weakTarget) then
+			return BOT_ACTION_DESIRE_HIGH, weakTarget
+		end
+	end
+
 	return 0, nil
 end
 

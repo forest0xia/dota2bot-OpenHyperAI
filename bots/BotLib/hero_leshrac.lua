@@ -941,19 +941,30 @@ function X.ConsiderPulseNova()
 end
 
 function X.ConsiderNihilism()
-    if not Nihilism:IsTrained()
+    if Nihilism == nil
+    or not Nihilism:IsTrained()
     or not Nihilism:IsFullyCastable()
     then
         return BOT_ACTION_DESIRE_NONE
     end
 
     local nRadius = Nihilism:GetSpecialValueInt('radius')
+    if nRadius <= 0 then nRadius = 550 end
 
     if J.IsWithoutTarget(bot)
     and J.GetAttackProjectileDamageByRange(bot, 1200) >= bot:GetHealth()
 	then
 		return BOT_ACTION_DESIRE_HIGH
 	end
+
+    if J.IsInTeamFight(bot, 1200)
+    then
+        local nInRangeEnemy = J.GetEnemiesNearLoc(bot:GetLocation(), nRadius)
+        if nInRangeEnemy ~= nil and #nInRangeEnemy >= 2
+        then
+            return BOT_ACTION_DESIRE_HIGH
+        end
+    end
 
 	if J.IsRetreating(bot)
 	then

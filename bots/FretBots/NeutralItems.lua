@@ -100,12 +100,11 @@ function NeutralItems:GiveToUnit(unit, item)
 end
 
 function NeutralItems:RemoveEnhancement(unit)
-	for idx = 1, 20 do
+	for idx = 0, 20 do
 		local currentItem = unit:GetItemInSlot(idx)
 		if currentItem ~= nil then
 			if string.find(currentItem:GetName(), "item_enhancement") then
 				unit:RemoveItem(currentItem)
-				return
 			end
 		end
 	end
@@ -138,6 +137,9 @@ function NeutralItems:CreateAndInsert(bot, itemName, tier)
 		if enhancement then
 			local enha = CreateItem(enhancement.name, bot, bot)
 			enha:SetPurchaseTime(0)
+			if enhancement.level and enhancement.level > 1 and enha.SetLevel then
+				pcall(function() enha:SetLevel(enhancement.level) end)
+			end
 			bot:AddItem(enha)
 		end
 		bot.stats.neutralTier = tier
@@ -422,22 +424,8 @@ end
 
 -- Computes the neutral item timing offset using the difficulty scale
 -- The value is a linear interpolation of target value at baseline difficulty of 1.0 vs. game default value
---[[ At baseline of 0 seconds for tier 1 and...
-	(7.41: Tier 1 neutrals now available from 0:00, timingsDefault[1] = 0)
--            difficulty 0, we'd have (0-0)*(1-0) resulting in a shift of 0 seconds (neutral matching game default)
-			difficulty 1.0, we'd have (0-0)*(1-1) resulting in a shift of 0 seconds
-		At baseline of 3600 for tier 3 and ...
--            difficulty 0, we'd have (1620-1020)*(1-0) resulting in a shift of 600 seconds (600+1020=1620=game default)
-			difficulty 0.7, we'd have (1620-1020)*(1-0.7) resulting in a shift of 180 seconds (180+1020=1200)
-
-	Rough reference using timings = {0, 420, 1020, 2020, 3600}:
-	| Tier          | 1    | 2    | 3    | 4    | 5    |
-	|---------------|------|------|------|------|------|
-	| 0 (base game) | 0    | 1020 | 1620 | 2020 | 3600 |
-	| 0.5           | 0    | 720  | 1320 | 2020 | 3600 |
-	| 0.7           | 0    | 600  | 1200 | 2020 | 3600 |
-	| 1             | 0    | 420  | 1020 | 2020 | 3600 |
-	| 1.5           | 0    | 120  | 720  | 2020 | 3600 |
+--[[ 7.42: 4-tier neutral items (0:00 / 15:00 / 30:00 / 50:00 game default)
+	timings = {0, 420, 1080, 2100}, timingsDefault = {0, 900, 1800, 3000}
 --]]
 function NeutralItems:GetTimingDifficultyScaleShift(tier)
 	local timingDifficultyShift = (Settings.neutralItems.timingsDefault[tier] - Settings.neutralItems.timings[tier]) * (1 - math.min(Settings.difficultyScale, 2))

@@ -32,6 +32,9 @@ local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList[1] )
 
 local sRoleItemsBuyList = { }
 
+-- 7.41+: Invoker's Aghanim's Scepter and Shard stay inert until an upgrade is
+-- manually chosen. Bot scripts cannot send that selection, so skip buying them
+-- instead of spending gold on items the bot can never activate.
 -- 冰雷核
 sRoleItemsBuyList['pos_2'] = {
 	"item_ranged_carry_outfit",
@@ -43,14 +46,11 @@ sRoleItemsBuyList['pos_2'] = {
     "item_black_king_bar",--6
 	"item_dragon_lance",
 	"item_hurricane_pike",--3
-    "item_aghanims_shard",
-    "item_ultimate_scepter",
     "item_travel_boots",
     "item_bloodthorn",--5
     -- "item_devastator",--4
     "item_sheepstick",--2
     "item_moon_shard",
-    "item_ultimate_scepter_2",
     "item_travel_boots_2",--1
 }
 
@@ -69,15 +69,12 @@ sRoleItemsBuyList['pos_2_qe'] = {
     "item_sphere",--
     "item_black_king_bar",--
     "item_travel_boots",
-    "item_ultimate_scepter",
     "item_bloodthorn",--
 	-- "item_hurricane_pike",--
     "item_sheepstick",--
-    "item_aghanims_shard",
     -- "item_octarine_core",--
     "item_refresher",--
     "item_moon_shard",
-    "item_ultimate_scepter_2",
     -- "item_wind_waker",--
     "item_travel_boots_2",--
 }
@@ -738,7 +735,7 @@ function X.CastInvokerSpell(ability, target)
                 bot:ActionQueue_UseAbilityOnEntity(ability, target)
         else
             print(DotaTime()..' - [ERROR] Tried to cast unsupported spell: '..sAbility)
-            print("Stack Trace:", debug.traceback())
+            if debug and debug.traceback then print("Stack Trace:", debug.traceback()) end
         end
         print(DotaTime()..' - Invoker tried to cast '..sAbility)
     else
@@ -1829,7 +1826,7 @@ function X.InvokeActualSpell(ability)
         X.InvokeSpell(Quas, Quas, Quas)
     else
         print('[ERROR] Tried to invoke unsupported ability: '..abilityName)
-		print("Stack Trace:", debug.traceback())
+		if debug and debug.traceback then print("Stack Trace:", debug.traceback()) end
     end
     print(DotaTime()..' - Invoker tried to invoke '..abilityName)
 end
@@ -1894,7 +1891,7 @@ function X.HaveElementsTrainedToInvokeAbility(ability)
         return Quas:IsTrained()
     else
         print('[ERROR] Checks invokability on an unsupported ability')
-		print("Stack Trace:", debug.traceback())
+		if debug and debug.traceback then print("Stack Trace:", debug.traceback()) end
     end
     
     return nil

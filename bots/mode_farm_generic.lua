@@ -360,11 +360,23 @@ function GetDesireHelper()
 		end
 	end
 
-	-- Gradual farm desire cap: ramps from 0.3 during laning to 0.6 by 20min (turbo: 14min)
-	-- Keeps jungle farming as a secondary priority — never dominant over teamfight/push/defend
+	-- Gradual farm desire cap: ramps from 0.35 during laning to 0.5 by 20min (turbo: 14min)
 	local nFarmRampStart = J.IsModeTurbo() and 8 * 60 or 10 * 60
 	local nFarmRampEnd   = J.IsModeTurbo() and 14 * 60 or 20 * 60
-	local nFarmCap = RemapValClamped(DotaTime(), nFarmRampStart, nFarmRampEnd, 0.3, 0.6)
+	local nFarmCap = RemapValClamped(DotaTime(), nFarmRampStart, nFarmRampEnd, 0.35, 0.5)
+
+	-- Pause farming to defend threatened Tier 2+ towers under multi-hero pressure
+	local team = GetTeam()
+	local towerSlots = { TOWER_TOP_2, TOWER_TOP_3, TOWER_MID_2, TOWER_MID_3, TOWER_BOT_2, TOWER_BOT_3, TOWER_BASE_1, TOWER_BASE_2 }
+	for _, slot in pairs(towerSlots) do
+		local tw = GetTower(team, slot)
+		if tw ~= nil and tw:IsAlive() and tw:GetHealth() < tw:GetMaxHealth() then
+			local nEnemiesAtTower = J.GetLastSeenEnemiesNearLoc(tw:GetLocation(), 1400)
+			if #nEnemiesAtTower >= 2 then
+				return BOT_MODE_DESIRE_NONE
+			end
+		end
+	end
 
 	if GetGameMode() ~= GAMEMODE_MO
 	and J.Site.IsTimeToFarm(bot)
@@ -475,7 +487,7 @@ function OnEnd()
 end
 
 function Think()
-	if J.CanNotUseAction(bot) then return end
+	if J.CanNotUseActionExceptQueue(bot) then return end
 	if J.Utils.IsBotThinkingMeaningfulAction(bot, Customize.ThinkLess, "farm") then return end
 	sec = math.floor(DotaTime()) % 60
 	if runMode
@@ -551,6 +563,50 @@ function Think()
 
 	hLaneCreepList = bot:GetNearbyLaneCreeps(900, true) -- always refresh to avoid stale data
 	if hLaneCreepList ~= nil and #hLaneCreepList > 0 and J.IsValid(hLaneCreepList[1]) then
+		-- Yield lane creeps to nearby human allies (pos 3+ unless no other core nearby)
+		local bHumanNearby = false
+		for _, ally in ipairs(GetUnitList(UNIT_LIST_ALLIED_HEROES)) do
+			if J.IsValidHero(ally) and not ally:IsBot() and GetUnitToUnitDistance(bot, ally) <= 700 then
+				bHumanNearby = true
+				break
+			end
+		end
+		if bHumanNearby and J.GetPosition(bot) > 2 and (J.GetPosition(bot) >= 4 or J.IsThereNonSelfCoreNearby(700)) then
+			local allyCreeps = bot:GetNearbyLaneCreeps(900, false)
+			local denyTarget = nil
+			for _, c in ipairs(allyCreeps) do
+				if J.IsValid(c)
+				and c:GetHealth() < 0.5 * c:GetMaxHealth()
+				and c:GetTeam() == bot:GetTeam()
+				and string.find(c:GetUnitName(), 'npc_dota_creep_')
+				then
+					if denyTarget == nil or c:GetHealth() < denyTarget:GetHealth() then
+						denyTarget = c
+					end
+				end
+			end
+			if J.IsValid(denyTarget) then
+				bot:SetTarget(denyTarget)
+				bot:Action_AttackUnit(denyTarget, true)
+				return
+			end
+			local nNeutrals = bot:GetNearbyNeutralCreeps(800)
+			local bHumanFarmingHere = false
+			for _, ally2 in ipairs(GetUnitList(UNIT_LIST_ALLIED_HEROES)) do
+				if J.IsValidHero(ally2) and not ally2:IsBot()
+				and #nNeutrals > 0
+				and GetUnitToUnitDistance(ally2, nNeutrals[1]) <= 700 then
+					bHumanFarmingHere = true
+					break
+				end
+			end
+			if #nNeutrals > 0 and not bHumanFarmingHere then
+				bot:Action_AttackUnit(nNeutrals[1], true)
+				return
+			end
+			bot:Action_MoveToLocation(GetLaneFrontLocation(GetTeam(), bot:GetAssignedLane(), -400))
+			return
+		end
 		local farmTarget = J.Site.GetFarmLaneTarget(hLaneCreepList);
 		local nSearchRange = bot:GetAttackRange() + 180
 		if nSearchRange > 1600 then nSearchRange = 1600 end
@@ -617,6 +673,15 @@ function Think()
 				break
 			end
 		end
+		-- Supports always yield camps near allied cores regardless of momentary attack state
+		if not bAllyFarming and J.GetPosition(bot) >= 4 then
+			for _, ally in pairs(nAllyNearCamp) do
+				if ally ~= bot and J.IsValidHero(ally) and not ally:IsIllusion() and J.IsCore(ally) then
+					bAllyFarming = true
+					break
+				end
+			end
+		end
 		if bAllyFarming and cDist > 400 then
 			-- Pick a different camp instead
 			J.Role['availableCampTable'], preferedCamp = J.Site.UpdateAvailableCamp(bot, preferedCamp, J.Role['availableCampTable']);
@@ -626,6 +691,27 @@ function Think()
 			targetFarmLoc = preferedCamp.cattr.location
 			cDist = GetUnitToLocationDistance(bot, targetFarmLoc)
 			nNeutrals = bot:GetNearbyCreeps(900, true)
+		end
+
+		-- Do not steal camps that a human ally is actively farming
+		local nearestNeutral = nil
+		local nearestDist = 99999
+		for _, neutral in ipairs(nNeutrals) do
+			if J.IsValid(neutral) and neutral:GetTeam() == TEAM_NEUTRAL then
+				local d = GetUnitToUnitDistance(bot, neutral)
+				if d < nearestDist then
+					nearestDist = d
+					nearestNeutral = neutral
+				end
+			end
+		end
+		if nearestNeutral ~= nil then
+			for _, ally in ipairs(GetUnitList(UNIT_LIST_ALLIED_HEROES)) do
+				if J.IsValidHero(ally) and not ally:IsBot()
+				and GetUnitToUnitDistance(ally, nearestNeutral) <= 700 then
+					return
+				end
+			end
 		end
 
 		if #nNeutrals >= 3 and cDist <= 600 and cDist > 240

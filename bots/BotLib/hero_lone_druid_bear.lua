@@ -64,6 +64,7 @@ end
 -- Ability usage logic
 local abilityQ = bear:GetAbilityByName(sAbilityList[1])
 local SavageRoar = bear:GetAbilityByName('lone_druid_savage_roar_bear')
+local SummonDruid = bear:GetAbilityByName('lone_druid_spirit_bear_summon_druid')
 
 local castQDesire
 local castSavageRoarDesire
@@ -73,6 +74,40 @@ local hEnemyList, hAllyList, botTarget, distanceFromHero
 function X.SkillsComplement()
 
     if J.CanNotUseAbility(bear) or bear:IsInvisible() then return end
+
+    SummonDruid = bear:GetAbilityByName('lone_druid_spirit_bear_summon_druid')
+    if SummonDruid ~= nil
+    and not SummonDruid:IsNull()
+    and not SummonDruid:IsHidden()
+    and SummonDruid:IsActivated()
+    and SummonDruid:IsFullyCastable()
+    then
+        bear:Action_UseAbility(SummonDruid)
+        return
+    end
+
+    local Fetch = bear:GetAbilityByName('lone_druid_spirit_bear_fetch')
+    if J.CanCastAbility(Fetch)
+    and not Fetch:IsHidden()
+    then
+        local nFetchRange = J.GetProperCastRange(false, bear, Fetch:GetCastRange())
+        if nFetchRange <= 0 then nFetchRange = 300 end
+        local nEnemies = J.GetNearbyHeroes(bear, nFetchRange, true, BOT_MODE_NONE)
+        if nEnemies ~= nil and #nEnemies >= 1 then
+            for _, enemyHero in pairs(nEnemies) do
+                if J.IsValidHero(enemyHero)
+                and J.CanCastOnNonMagicImmune(enemyHero)
+                and J.CanCastOnTargetAdvanced(enemyHero)
+                and not J.IsDisabled(enemyHero)
+                and not enemyHero:HasModifier('modifier_abaddon_borrowed_time')
+                and not enemyHero:HasModifier('modifier_necrolyte_reapers_scythe')
+                then
+                    bear:Action_UseAbilityOnEntity(Fetch, enemyHero)
+                    return
+                end
+            end
+        end
+    end
 
     botTarget = J.GetProperTarget(Utils.GetLoneDruid(bear).hero)
     if botTarget ~= nil then bear:SetTarget(botTarget) end
@@ -98,7 +133,7 @@ function X.SkillsComplement()
 end
 
 function X.ConsiderQ()
-    if not abilityQ:IsFullyCastable() then return 0 end
+    if abilityQ == nil or not abilityQ:IsFullyCastable() then return 0 end
     if not Utils.GetLoneDruid(bear).hero:IsAlive() then return 0 end
 
     if J.GetHP(bear) < 0.9 and bear:DistanceFromFountain() < 450 then return 0 end
@@ -127,7 +162,7 @@ function X.ConsiderQ()
 end
 
 function X.ConsiderSavageRoar()
-    if not SavageRoar:IsFullyCastable() then return 0 end
+    if SavageRoar == nil or not SavageRoar:IsFullyCastable() then return 0 end
 
     local nRadius = SavageRoar:GetSpecialValueInt('radius')
     local nInRangeEnemy = J.GetNearbyHeroes(bear, nRadius, true, BOT_MODE_NONE)

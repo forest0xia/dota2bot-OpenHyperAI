@@ -98,7 +98,7 @@ function GetDesireHelper()
 end
 
 function Think()
-	if J.CanNotUseAction(bot) then return end
+	if J.CanNotUseActionExceptQueue(bot) then return end
 	if J.Utils.IsBotThinkingMeaningfulAction(bot, Customize.ThinkLess, "ward") then return end
 	if hTargetSpot then
 		if ObserverWard and J.CanCastAbility(ObserverWard) then

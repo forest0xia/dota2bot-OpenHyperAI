@@ -232,7 +232,7 @@ function X.SkillsComplement()
 
 
 	local aether = J.IsItemAvailable( "item_aether_lens" )
-	if aether ~= nil then aetherRange = 250 end
+	if aether ~= nil then aetherRange = 200 end
 --	if talent1:IsTrained() then aetherRange = aetherRange + talent1:GetSpecialValueInt( "value" ) end
 
 

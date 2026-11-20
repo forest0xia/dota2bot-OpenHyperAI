@@ -1,60 +1,56 @@
-# Dota 2 Bot Scripts - Claude Code Guide
+# Dota 2 Bot Scripts - Project Guide
 
 ## Project Overview
 
-This is the **dota2bot-OpenHyperAI** project -- Lua bot scripts for Dota 2 that run in custom lobbies. Currently supports Patch 7.41/7.41a with 127 heroes.
+This is **dota2bot-OpenHyperAI** -- Lua/TypeScript bot scripts for Dota 2 custom lobbies, supporting **Patch 7.42** and **127 heroes**.
 
 ## Key Documentation
 
-- **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** -- Complete codebase architecture, file map, naming conventions, all systems explained
-- **[docs/PATCH_UPDATE_GUIDE.md](docs/PATCH_UPDATE_GUIDE.md)** -- Step-by-step runbook for updating when a new Dota 2 patch drops
+- **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** -- Codebase architecture, file map, TypeScript-to-Lua pipeline, neutral/item/skill systems, common pitfalls
+- **[docs/PATCH_UPDATE_GUIDE.md](docs/PATCH_UPDATE_GUIDE.md)** -- Step-by-step runbook for updating when a new Dota 2 patch releases
+- **[docs/DOTA2_BOT_API_INTERNALS.md](docs/DOTA2_BOT_API_INTERNALS.md)** -- Undocumented `CDOTA_Bot_Script` Bot VM & Server VScript internals (all 32 `EDOTABotMode` slots, `VectorTargeting` `OrderType = 30`, `ALT_CASTABLE` traps, missing `ATTRIBUTE_ALL`)
 
-**Read these docs FIRST before making any changes.** They contain everything needed to make targeted updates without scanning the entire repo.
+**Read these docs first before making changes.**
 
 ## Common Tasks
 
 ### Check for New Patches
 
-To check if there are patches we haven't updated for:
 1. Fetch `https://www.dota2.com/datafeed/patchnoteslist?language=english`
 2. Compare latest version against "Last updated for" in `docs/PATCH_UPDATE_GUIDE.md`
 3. If newer patch exists, follow the update process below
 
-### Patch Update (most common)
+### Patch Update Workflow
 
-When user says "update for patch X.XX" or provides patch notes:
+1. Read `docs/PATCH_UPDATE_GUIDE.md` first
+2. Extract authoritative KV data directly from the local Dota 2 VPK (`pak01_dir.vpk` via `Source2Viewer-CLI`) when `d2vpkr` lags behind live patches, and fetch `https://www.dota2.com/datafeed/patchnotes?version=X.XX&language=english`
+3. **Categorize changes**: STRUCTURAL (code changes) vs NUMBER-ONLY (game API handles) vs TALENT SWAPS
+4. **Always verify ability/item internal names against VPK (`npc_abilities.txt`, `items.txt`, `neutral_items.txt`, `shops.txt`, `npc_heroes.txt`, `npc_units.txt`)** or Liquipedia -- patch note summaries alone omit/alter internal names
+5. Update in order: shop items -> neutrals (4 tiers + enchantments) & XP table -> map coordinates/entities -> hero builds/abilities/minions -> `ConsiderItemDesire` item actives -> TypeScript build
+6. **Always update `.ts` sources** for TS-generated Lua files, run `npm run build:lua`, and restore untouched `.lua` files if TSTL only changed CRLF/LF line endings
 
-1. Read `docs/PATCH_UPDATE_GUIDE.md` for the step-by-step process
-2. Fetch patch data: `https://www.dota2.com/datafeed/patchnotes?version=X.XX&language=english`
-3. Fetch d2vpkr data (shops.txt, neutral_items.txt) for authoritative item/ability names
-4. **Categorize changes**: STRUCTURAL (need code) vs NUMBER-ONLY (game API handles) vs TALENT SWAPS
-5. **Always verify ability names on Liquipedia** -- patch note summaries can be wrong
-6. Follow the checklist in order: items -> hero builds -> abilities -> neutrals -> actives -> map changes
-7. **Always update TS sources** for any TS-generated Lua files changed (see ARCHITECTURE.md Section 13)
+### Vector-Targeted Abilities
+
+- Bot VM cannot issue vector endpoints natively. `bots/FretBots/VectorTargeting.lua` (loaded in Server VScript by `bots/FretBots.lua` and `bots/Buff/Buff.lua`) intercepts fake-client casts via `SetExecuteOrderFilter` and injects `DOTA_UNIT_ORDER_VECTOR_TARGET_POSITION` (`30`) before cast execution.
+- See `docs/DOTA2_BOT_API_INTERNALS.md` Section 3 before adding or modifying vector-targeted abilities.
 
 ### Add a New Hero
 
 1. Copy a similar existing hero from `bots/BotLib/` as template
-2. Add to `FretBots/HeroNames.lua`, `FunLib/aba_hero_roles_map.lua`, `FunLib/spell_list.lua`
+2. Add to `bots/FretBots/HeroNames.lua`, `typescript/bots/FunLib/aba_hero_roles_map.ts` -> `.lua`, `bots/FunLib/spell_list.lua`, `typescript/bots/FunLib/spell_prob_list.ts` -> `.lua`
 3. See "New Heroes" section in `docs/PATCH_UPDATE_GUIDE.md`
 
-### Fix a Hero's Item Build
+### Verification Before Committing
 
-1. Read `bots/BotLib/hero_[name].lua`
-2. Edit the `sRoleItemsBuyList['pos_N']` arrays
-3. Items use `item_[internal_name]` format -- check `FunLib/aba_item.lua` for valid names
-
-### Fix a Hero's Ability Logic
-
-1. Read `bots/BotLib/hero_[name].lua`
-2. The `SkillsComplement()` function controls ability casting priority
-3. Each ability has a `ConsiderX()` function returning desire + target
-4. See "Skill / Ability System" in `docs/ARCHITECTURE.md`
+1. Run `npm run build:lua` cleanly (0 TypeScript errors) and verify `git diff` touches only intended files
+2. Validate all modified `.lua` files for syntax errors, dead/removed item/ability references, and localization parity
+3. Smoke-test in local `dota2.exe` (`-novid -nosound`) AI vs AI match and check console output/logs for zero Lua script errors
 
 ## Important Rules
 
-- **Use `GetItemComponents()` for item recipes** -- don't hardcode component arrays
-- **Use `sAbilityList[N]` references** when possible -- resilient to ability renames
-- **Always update BOTH neutral item files** (Buff/ AND FretBots/)
-- **Verify on Liquipedia** before trusting patch note summaries about ability names
-- **Test in-game** after changes -- some things can only be verified at runtime
+- **Use `GetItemComponents()` for upgrade item recipes** -- don't hardcode component arrays unless Valve's API returns wrong data
+- **Use `sAbilityList[N]` references** when possible -- resilient to ability renames, and nil-guard optional abilities
+- **Always update BOTH neutral item files** (`bots/Buff/NeutralItems.lua` AND `bots/FretBots/SettingsNeutralItemTable.lua`, 4 tiers in 7.42) and keep XP tables synchronized (`bots/Buff/Experience.lua` AND `bots/FretBots/AwardBonus.lua`, 66,600 XP at lvl 30 in 7.42)
+- **Guard `ATTRIBUTE_ALL` numerically (`== 3`)** in Bot VM -- the global constant `ATTRIBUTE_ALL` does not exist
+- **Never commit release version bumps (`version.ts`)** unless publishing a Workshop release (maintainer updates version via `npm run release`)
+- **Test in-game** after structural/map/vector changes

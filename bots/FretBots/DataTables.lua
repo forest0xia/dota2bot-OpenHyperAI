@@ -715,6 +715,8 @@ end
 -- Returns true if the unit is an actual hero and not a hero-like unit
 function DataTables:IsRealHero(unit)
 	return unit:IsHero() and unit:IsRealHero() and not unit:IsIllusion() and not unit:IsClone()
+		and (not unit.IsCreepHero or not unit:IsCreepHero())
+		and (not unit.IsTempestDouble or not unit:IsTempestDouble())
 end
 
 -- Assigns role positions to bots

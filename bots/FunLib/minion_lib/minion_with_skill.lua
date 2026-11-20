@@ -444,6 +444,128 @@ X.ConsiderSpellUsage['big_thunder_lizard_frenzy'] = function (hMinionUnit, abili
     return BOT_ACTION_DESIRE_NONE, nil, ''
 end
 
+-- Forest Troll High Priest Heal (7.42 active unit-target)
+X.ConsiderSpellUsage['forest_troll_high_priest_heal'] = function (hMinionUnit, ability)
+    local nCastRange = ability:GetCastRange()
+    local bestTarget = nil
+    local lowestHP = 0.85
+
+    for _, allyHero in pairs(nAllyHeroes) do
+        if J.IsValidHero(allyHero)
+        and not allyHero:IsIllusion()
+        and J.IsInRange(hMinionUnit, allyHero, nCastRange + 150)
+        then
+            local hp = J.GetHP(allyHero)
+            if hp < lowestHP then
+                lowestHP = hp
+                bestTarget = allyHero
+            end
+        end
+    end
+
+    if bestTarget ~= nil then
+        return BOT_ACTION_DESIRE_HIGH, bestTarget, 'unit'
+    end
+
+    return BOT_ACTION_DESIRE_NONE, nil, ''
+end
+
+-- Beastmaster Hawk Dive (7.42)
+X.ConsiderSpellUsage['beastmaster_hawk_dive'] = function (hMinionUnit, ability)
+    local nCastRange = ability:GetCastRange()
+    if nCastRange <= 0 then nCastRange = 500 end
+
+    for _, enemyHero in pairs(nEnemyHeroes) do
+        if J.IsValidHero(enemyHero)
+        and J.IsInRange(hMinionUnit, enemyHero, nCastRange)
+        and J.CanCastOnNonMagicImmune(enemyHero)
+        and (enemyHero:IsChanneling() or J.IsGoingOnSomeone(bot))
+        then
+            return BOT_ACTION_DESIRE_HIGH, enemyHero, 'unit'
+        end
+    end
+
+    if J.IsGoingOnSomeone(bot) and J.IsValidTarget(botTarget)
+    and J.IsInRange(hMinionUnit, botTarget, nCastRange)
+    and J.CanCastOnNonMagicImmune(botTarget)
+    then
+        return BOT_ACTION_DESIRE_HIGH, botTarget, 'unit'
+    end
+
+    return BOT_ACTION_DESIRE_NONE, nil, ''
+end
+
+-- Frogmen Arm / Tendrils of the Deep (7.42 point-targeted stun)
+local function ConsiderFrogmenLineStun(hMinionUnit, ability)
+    local nCastRange = ability:GetCastRange()
+    if nCastRange <= 0 then nCastRange = 275 end
+
+    if J.IsGoingOnSomeone(bot) and J.IsValidTarget(botTarget)
+    and J.IsInRange(hMinionUnit, botTarget, nCastRange + 50)
+    and J.CanCastOnNonMagicImmune(botTarget)
+    and not J.IsDisabled(botTarget)
+    then
+        return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation(), 'point'
+    end
+
+    for _, enemyHero in pairs(nEnemyHeroes) do
+        if J.IsValidHero(enemyHero)
+        and J.IsInRange(hMinionUnit, enemyHero, nCastRange)
+        and J.CanCastOnNonMagicImmune(enemyHero)
+        and not J.IsDisabled(enemyHero)
+        then
+            return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation(), 'point'
+        end
+    end
+
+    return BOT_ACTION_DESIRE_NONE, nil, ''
+end
+
+X.ConsiderSpellUsage['frogmen_arm_of_the_deep'] = ConsiderFrogmenLineStun
+X.ConsiderSpellUsage['frogmen_tendrils_of_the_deep'] = ConsiderFrogmenLineStun
+
+-- Ancient Frog Congregation of the Deep (7.42 no-target AoE stun)
+X.ConsiderSpellUsage['frogmen_congregation_of_the_deep'] = function (hMinionUnit, ability)
+    local nRadius = ability:GetSpecialValueInt('range')
+    if nRadius <= 0 then nRadius = 350 end
+
+    for _, enemyHero in pairs(nEnemyHeroes) do
+        if J.IsValidHero(enemyHero)
+        and J.IsInRange(hMinionUnit, enemyHero, nRadius)
+        and J.CanCastOnNonMagicImmune(enemyHero)
+        and not J.IsDisabled(enemyHero)
+        then
+            return BOT_ACTION_DESIRE_HIGH, nil, 'none'
+        end
+    end
+
+    return BOT_ACTION_DESIRE_NONE, nil, ''
+end
+
+-- Frogmen Mage Water Bubble (7.42 friendly magic-barrier / burst heal)
+local function ConsiderFrogmenWaterBubble(hMinionUnit, ability)
+    local nCastRange = ability:GetCastRange()
+    if nCastRange <= 0 then nCastRange = 550 end
+
+    for _, allyHero in pairs(nAllyHeroes) do
+        if J.IsValidHero(allyHero)
+        and not allyHero:IsIllusion()
+        and not allyHero:IsMagicImmune()
+        and J.IsInRange(hMinionUnit, allyHero, nCastRange + 100)
+        and not allyHero:HasModifier('modifier_frogmen_water_bubble')
+        and (J.GetHP(allyHero) < 0.75 or allyHero:WasRecentlyDamagedByAnyHero(2.5) or J.IsInTeamFight(allyHero, 900))
+        then
+            return BOT_ACTION_DESIRE_HIGH, allyHero, 'unit'
+        end
+    end
+
+    return BOT_ACTION_DESIRE_NONE, nil, ''
+end
+
+X.ConsiderSpellUsage['frogmen_water_bubble_small'] = ConsiderFrogmenWaterBubble
+X.ConsiderSpellUsage['frogmen_water_bubble_medium'] = ConsiderFrogmenWaterBubble
+X.ConsiderSpellUsage['frogmen_water_bubble_large'] = ConsiderFrogmenWaterBubble
+
 -- Incendiary Bomb
 X.ConsiderSpellUsage['ice_shaman_incendiary_bomb'] = function (hMinionUnit, ability)
     local nCastRange = ability:GetCastRange()
@@ -909,6 +1031,157 @@ X.ConsiderSpellUsage['centaur_khan_war_stomp'] = function (hMinionUnit, ability)
             then
                 return BOT_ACTION_DESIRE_HIGH, nil, 'none'
             end
+        end
+    end
+
+    local nInRangeEnemy = J.GetEnemiesNearLoc(hMinionUnit:GetLocation(), nRadius)
+    if #nInRangeEnemy >= 2 then
+        return BOT_ACTION_DESIRE_HIGH, nil, 'none'
+    end
+
+    return BOT_ACTION_DESIRE_NONE, nil, ''
+end
+
+-- Mud Golem: Hurl Big Boulder (7.42: POINT | AOE, range 800)
+X.ConsiderSpellUsage['mud_golem_hurl_big_boulder'] = function (hMinionUnit, ability)
+    local nCastRange = ability:GetCastRange()
+    local nRadius = ability:GetSpecialValueInt('impact_radius')
+    if nRadius <= 0 then nRadius = 175 end
+
+    for _, enemyHero in pairs(nEnemyHeroes) do
+        if  J.IsValidHero(enemyHero)
+        and J.IsInRange(hMinionUnit, enemyHero, nCastRange)
+        and not J.IsSuspiciousIllusion(enemyHero)
+        and (enemyHero:IsChanneling() or J.IsCastingUltimateAbility(enemyHero))
+        then
+            return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation(), 'point'
+        end
+    end
+
+    if J.IsGoingOnSomeone(bot) then
+        if  J.IsValidTarget(botTarget)
+        and J.IsInRange(hMinionUnit, botTarget, nCastRange)
+        and not J.IsSuspiciousIllusion(botTarget)
+        and not J.IsDisabled(botTarget)
+        and not botTarget:HasModifier('modifier_abaddon_borrowed_time')
+        and not botTarget:HasModifier('modifier_necrolyte_reapers_scythe')
+        then
+            local nLocationAoE = hMinionUnit:FindAoELocation(true, true, botTarget:GetLocation(), 0, nRadius, 0, 0)
+            if nLocationAoE.count >= 1 then
+                return BOT_ACTION_DESIRE_HIGH, nLocationAoE.targetloc, 'point'
+            end
+            return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation(), 'point'
+        end
+    end
+
+    if J.IsRetreating(bot) and not J.IsRealInvisible(bot) and bot:WasRecentlyDamagedByAnyHero(3.0) then
+        for _, enemy in pairs(nEnemyHeroes) do
+            if J.IsValidHero(enemy)
+            and J.IsChasingTarget(enemy, bot)
+            and J.IsInRange(hMinionUnit, enemy, nCastRange)
+            and not J.IsDisabled(enemy)
+            then
+                return BOT_ACTION_DESIRE_HIGH, enemy:GetLocation(), 'point'
+            end
+        end
+    end
+
+    return BOT_ACTION_DESIRE_NONE, nil, ''
+end
+
+-- Kobold Tunneler: Pilfer Weapons / kobold_disarm (7.42: POINT linear Break, range 500)
+X.ConsiderSpellUsage['kobold_disarm'] = function (hMinionUnit, ability)
+    local nCastRange = ability:GetCastRange()
+    if nCastRange <= 0 then nCastRange = 500 end
+
+    if J.IsGoingOnSomeone(bot) then
+        if  J.IsValidTarget(botTarget)
+        and J.CanCastOnNonMagicImmune(botTarget)
+        and J.IsInRange(hMinionUnit, botTarget, nCastRange)
+        and not J.IsSuspiciousIllusion(botTarget)
+        and not botTarget:HasModifier('modifier_break')
+        then
+            return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation(), 'point'
+        end
+    end
+
+    for _, enemyHero in pairs(nEnemyHeroes) do
+        if  J.IsValidHero(enemyHero)
+        and J.CanCastOnNonMagicImmune(enemyHero)
+        and J.IsInRange(hMinionUnit, enemyHero, nCastRange)
+        and not J.IsSuspiciousIllusion(enemyHero)
+        then
+            return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation(), 'point'
+        end
+    end
+
+    return BOT_ACTION_DESIRE_NONE, nil, ''
+end
+
+-- Radigull: Eggstremism (7.42: POINT | UNIT_TARGET, range 400)
+X.ConsiderSpellUsage['radigull_eggstremism'] = function (hMinionUnit, ability)
+    local nCastRange = ability:GetCastRange()
+    if nCastRange <= 0 then nCastRange = 400 end
+
+    if J.IsGoingOnSomeone(bot) then
+        if  J.IsValidTarget(botTarget)
+        and J.CanCastOnNonMagicImmune(botTarget)
+        and J.IsInRange(hMinionUnit, botTarget, nCastRange)
+        and not botTarget:HasModifier('modifier_abaddon_borrowed_time')
+        then
+            return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation(), 'point'
+        end
+    end
+
+    for _, enemyHero in pairs(nEnemyHeroes) do
+        if  J.IsValidHero(enemyHero)
+        and J.CanCastOnNonMagicImmune(enemyHero)
+        and J.IsInRange(hMinionUnit, enemyHero, nCastRange)
+        and not J.IsSuspiciousIllusion(enemyHero)
+        then
+            return BOT_ACTION_DESIRE_HIGH, enemyHero:GetLocation(), 'point'
+        end
+    end
+
+    return BOT_ACTION_DESIRE_NONE, nil, ''
+end
+
+-- Eimermole Foreman: Miner's Slam (7.42: POINT | CAN_SELF_CAST, radius 300)
+X.ConsiderSpellUsage['eimermole_miners_slam'] = function (hMinionUnit, ability)
+    local nRadius = ability:GetSpecialValueInt('radius')
+    if nRadius <= 0 then nRadius = 300 end
+
+    if J.IsGoingOnSomeone(bot) then
+        if  J.IsValidTarget(botTarget)
+        and J.CanCastOnNonMagicImmune(botTarget)
+        and J.IsInRange(hMinionUnit, botTarget, nRadius)
+        then
+            return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation(), 'point'
+        end
+    end
+
+    local nInRangeEnemy = J.GetEnemiesNearLoc(hMinionUnit:GetLocation(), nRadius)
+    if #nInRangeEnemy >= 1 then
+        return BOT_ACTION_DESIRE_HIGH, nInRangeEnemy[1]:GetLocation(), 'point'
+    end
+
+    return BOT_ACTION_DESIRE_NONE, nil, ''
+end
+
+-- Ancient Ogre Seal: Ogre Seal Flop (7.42: NO_TARGET, leap 400, radius 275)
+X.ConsiderSpellUsage['ogre_seal_flop'] = function (hMinionUnit, ability)
+    local nLeapDist = ability:GetSpecialValueInt('leap_distance')
+    if nLeapDist <= 0 then nLeapDist = 400 end
+    local nRadius = ability:GetSpecialValueInt('radius')
+    if nRadius <= 0 then nRadius = 275 end
+
+    if J.IsGoingOnSomeone(bot) then
+        if  J.IsValidTarget(botTarget)
+        and J.CanCastOnNonMagicImmune(botTarget)
+        and J.IsInRange(hMinionUnit, botTarget, nLeapDist + nRadius)
+        and hMinionUnit:IsFacingLocation(botTarget:GetLocation(), 35)
+        then
+            return BOT_ACTION_DESIRE_HIGH, nil, 'none'
         end
     end
 

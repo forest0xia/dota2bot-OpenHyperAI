@@ -70,14 +70,13 @@ local WardLocationsBeforeAllyTowerFall__Radiant = {
 
 	[TOWER_TOP_2] = {
 		[1] = { location = Vector(-7923.261719, 1820.198730), plant_time_obs = 0, plant_time_sentry = 0, },
-		[2] = { location = Vector(-4199.289062, 1328.263062), plant_time_obs = 0, plant_time_sentry = 0, },
+		[2] = { location = Vector(-4480.000000, 1460.000000), plant_time_obs = 0, plant_time_sentry = 0, },
 		[3] = { location = Vector(-4334.572266, -1036.464844), plant_time_obs = 0, plant_time_sentry = 0, },
-		[4] = { location = Vector(-4245.528320, 357.413574), plant_time_obs = 0, plant_time_sentry = 0, },
-		[5] = { location = Vector(-4562.793457, 1873.175537), plant_time_obs = 0, plant_time_sentry = 0, },
-		[6] = { location = Vector(-7579.524902, 493.309631), plant_time_obs = 0, plant_time_sentry = 0, },
-		[7] = { location = Vector(-3380.673828, 672.909180), plant_time_obs = 0, plant_time_sentry = 0, },
-		[8] = { location = Vector(-8416.000000, 2272.000000), plant_time_obs = 0, plant_time_sentry = 0, },
-		[9] = { location = Vector(-5152.000000, 2336.000000), plant_time_obs = 0, plant_time_sentry = 0, },
+		[4] = { location = Vector(-4562.793457, 1873.175537), plant_time_obs = 0, plant_time_sentry = 0, },
+		[5] = { location = Vector(-7579.524902, 493.309631), plant_time_obs = 0, plant_time_sentry = 0, },
+		[6] = { location = Vector(-3380.673828, 672.909180), plant_time_obs = 0, plant_time_sentry = 0, },
+		[7] = { location = Vector(-8416.000000, 2272.000000), plant_time_obs = 0, plant_time_sentry = 0, },
+		[8] = { location = Vector(-5152.000000, 2336.000000), plant_time_obs = 0, plant_time_sentry = 0, },
 	},
 	[TOWER_MID_2] = {
 		[1] = { location = Vector(-1288.532471, -4351.110352), plant_time_obs = 0, plant_time_sentry = 0, },
@@ -86,14 +85,12 @@ local WardLocationsBeforeAllyTowerFall__Radiant = {
 		[4] = { location = Vector(104.285484, -3576.448242), plant_time_obs = 0, plant_time_sentry = 0, },
 		[5] = { location = Vector(-3322.988037, -200.036987), plant_time_obs = 0, plant_time_sentry = 0, },
 		[6] = { location = Vector(-2458.159668, -1210.825439), plant_time_obs = 0, plant_time_sentry = 0, },
-		[7] = { location = Vector(-4245.528320, 357.413574), plant_time_obs = 0, plant_time_sentry = 0, },
 	},
 	[TOWER_BOT_2] = {
 		[1] = { location = Vector(2258.137207, -7110.736328), plant_time_obs = 0, plant_time_sentry = 0, },
 		[2] = { location = Vector(2049.426514, -8427.432617), plant_time_obs = 0, plant_time_sentry = 0, },
 		[3] = { location = Vector(2033.350830, -4917.041992), plant_time_obs = 0, plant_time_sentry = 0, },
-		[4] = { location = Vector(-682.876953, -7909.373047), plant_time_obs = 0, plant_time_sentry = 0, },
-		[5] = { location = Vector(361.339355, -4027.959473), plant_time_obs = 0, plant_time_sentry = 0, },
+		[4] = { location = Vector(361.339355, -4027.959473), plant_time_obs = 0, plant_time_sentry = 0, },
 	},
 
 	[TOWER_TOP_3] = {
@@ -106,7 +103,7 @@ local WardLocationsBeforeAllyTowerFall__Radiant = {
 	[TOWER_MID_3] = {
 		[1] = { location = Vector(-4377.171387, -3911.893555), plant_time_obs = 0, plant_time_sentry = 0, },
 		[2] = { location = Vector(-3888.701904, -1594.625244), plant_time_obs = 0, plant_time_sentry = 0, },
-		[3] = { location = Vector(-2414.402100 -3802.327637), plant_time_obs = 0, plant_time_sentry = 0, },
+		[3] = { location = Vector(-2414.402100, -3802.327637), plant_time_obs = 0, plant_time_sentry = 0, },
 		[4] = { location = Vector(-4334.572266, -1036.464844), plant_time_obs = 0, plant_time_sentry = 0, },
 		[5] = { location = Vector(-2706.345459, -1664.330566), plant_time_obs = 0, plant_time_sentry = 0, },
 		[6] = { location = Vector(-1288.418091, -4359.833496), plant_time_obs = 0, plant_time_sentry = 0, },
@@ -122,7 +119,7 @@ local WardLocationsBeforeAllyTowerFall__Radiant = {
 
 local WardLocationsAfterEnemyTowerFall__Radiant = {
 	[TOWER_TOP_1] = {
-		[1] = { location = Vector(-6141.217773, 7387.221680), plant_time_obs = 0, plant_time_sentry = 0, },
+		[1] = { location = Vector(-6141.217773, 7250.000000), plant_time_obs = 0, plant_time_sentry = 0, },
 		[2] = { location = Vector(-1520.533691, 7675.010742), plant_time_obs = 0, plant_time_sentry = 0, },
 		[3] = { location = Vector(-2108.795898, 4265.250000), plant_time_obs = 0, plant_time_sentry = 0, },
 		[4] = { location = Vector(-4082.341309, 7135.104492), plant_time_obs = 0, plant_time_sentry = 0, },

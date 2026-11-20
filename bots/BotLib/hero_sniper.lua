@@ -620,7 +620,7 @@ function X.ShouldUseR( nAttackTarget, nEnemy, nDamage )
 				and not J.CanNotUseAbility( member )
 			then
 				local zAbility = member:GetAbilityByName( "zuus_thundergods_wrath" )
-				if zAbility:IsFullyCastable()
+				if zAbility ~= nil and zAbility:IsFullyCastable()
 				then
 					local zAbilityDamage = zAbility:GetAbilityDamage()
 					if nEnemy:GetHealth() + 66 < nEnemy:GetActualIncomingDamage( zAbilityDamage + nDamage, DAMAGE_TYPE_MAGICAL )

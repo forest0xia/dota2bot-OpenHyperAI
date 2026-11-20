@@ -2,7 +2,7 @@
 
 This is a step-by-step runbook for quickly updating the bot scripts when Valve releases a new Dota 2 patch. Designed to be followed by a developer or AI assistant without needing to re-read the entire codebase.
 
-**Last updated for:** Patch 7.41a (March 2026)
+**Last updated for:** Patch 7.42
 
 ---
 
@@ -12,12 +12,13 @@ This is a step-by-step runbook for quickly updating the bot scripts when Valve r
 
 | Source | URL | What It Tells You |
 |--------|-----|-------------------|
+| **Local Dota 2 VPK** (`pak01_dir.vpk` + map `.vpk` via `Source2Viewer-CLI`) | Local game install (`game/dota/pak01_dir.vpk`) | Ground-truth `shops.txt`, `neutral_items.txt`, `items.txt`, `npc_abilities.txt`, `npc_heroes.txt`, `npc_units.txt`, `default_ents.vents`, and `.vmdl_c` camp hulls on day 0 |
 | **Valve Patch List API** | `https://www.dota2.com/datafeed/patchnoteslist?language=english` | Lists all patches with timestamps -- compare latest against what we've updated |
 | **Valve Patch Notes API** | `https://www.dota2.com/datafeed/patchnotes?version=X.XX&language=english` | Machine-readable patch data (hero IDs, ability IDs, exact changes) |
-| **d2vpkr shops.txt** | `https://raw.githubusercontent.com/dotabuff/d2vpkr/master/dota/scripts/shops.txt` | Current item pool -- diff against aba_item.lua |
-| **d2vpkr neutral_items.txt** | `https://raw.githubusercontent.com/dotabuff/d2vpkr/master/dota/scripts/npc/neutral_items.txt` | Current neutral item tiers |
+| **d2vpkr shops.txt** | `https://raw.githubusercontent.com/dotabuff/d2vpkr/master/dota/scripts/shops.txt` | Community mirror of shop items (may lag live patches by days/weeks) |
+| **d2vpkr neutral_items.txt** | `https://raw.githubusercontent.com/dotabuff/d2vpkr/master/dota/scripts/npc/neutral_items.txt` | Community mirror of neutral item tiers |
 | **Liquipedia** | `https://liquipedia.net/dota2/HERO_NAME` | Ability details, targeting types (verify before trusting patch summaries) |
-| **Liquipedia Cheats (Internal Names)** | `https://liquipedia.net/dota2/Cheats` | Authoritative `item_*` internal names for all items, neutral items, and hero code names. Essential for item builds and ability references |
+| **Liquipedia Cheats (Internal Names)** | `https://liquipedia.net/dota2/Cheats` | Authoritative `item_*` internal names for all items, neutral items, and hero code names |
 | **Official patch page** | `https://www.dota2.com/patches/X.XX` | Human-readable notes (JS-rendered, use datafeed API instead for programmatic access) |
 
 ### Quick Check: Are We Up to Date?
@@ -316,13 +317,14 @@ Bloodstone's Blood Pact active was CHANGED (not removed) in 7.41 -- it went from
 
 ### 4A. Update Buff Mode (`bots/Buff/NeutralItems.lua`)
 
-Replace the 5 tier arrays to match d2vpkr `neutral_items.txt`:
+Replace the tier arrays (4 tiers since Patch 7.42) and enchantments to match `neutral_items.txt`:
 ```lua
 local Tier1NeutralItems = {
     --[[Display Name]]  "item_internal_name",
     ...
 }
 ```
+Also check `bots/Buff/Experience.lua` and `bots/FretBots/AwardBonus.lua` whenever hero level XP totals change.
 
 ### 4B. Update FretBots Mode (`bots/FretBots/SettingsNeutralItemTable.lua`)
 
@@ -457,33 +459,28 @@ Before committing:
 - [ ] **Special heroes** checked (Meepo ult levels, Invoker, etc.)
 
 **Game mechanics:**
-- [ ] Neutral item tier timings updated if changed
-- [ ] Map position changes (Roshan/Tormentor pit swaps) applied
-- [ ] TS source files updated for any TS-generated Lua files that were changed
-- [ ] Item active CHANGED vs REMOVED: if active changed behavior, update logic -- don't disable it
-- [ ] Enchantment system: check if selection rules changed (random vs attribute-based, tier assignments)
-- [ ] Shop location changes: check if items moved between shops (main/secret/side)
-- [ ] Neutral crafting costs: check if madstone/token costs changed
-- [ ] Map objective mechanics: check Wisdom Rune/Lotus Pool timing/value changes
-
----
+- [ ] `Buff/NeutralItems.lua` and `FretBots/SettingsNeutralItemTable.lua`: Update all tier arrays & enchantments (4 tiers in 7.42)
+- [ ] `Buff/Experience.lua` and `FretBots/AwardBonus.lua`: Sync level XP table if hero XP thresholds changed
+- [ ] Vector-targeted abilities (`VECTOR_TARGETING`): Update `bots/FretBots/VectorTargeting.lua` if new vector abilities are added or reworked (see `docs/DOTA2_BOT_API_INTERNALS.md`)
+- [ ] **Targeting type & modal selection changes** checked (unit→self, `ALT_CASTABLE`, Scepter/Shard selection dialogs like Invoker)
+- [ ] `npm run build:lua` run cleanly (restore untouched LF/CRLF diffs in git) + static Lua/VPK validation + local `dota2.exe` AI vs AI smoke test
 
 ## Key Principle: Verify Before You Trust
 
 Patch note summaries (from any source, including AI) can be wrong about:
 - Whether an ability is learnable vs. innate
 - Exact internal ability names
-- Whether items have actives or are passive-only
+- Whether items have actives or are passive-only (e.g., 7.42 Consecrated Wraps is passive-only)
 - Whether an ability's targeting type changed
 
-**Always cross-reference with Liquipedia and d2vpkr before making changes.**
+**Always cross-reference with extracted local VPK KV files (`pak01_dir.vpk`), d2vpkr, or Liquipedia before making changes.**
 When uncertain, use dynamic `sAbilityList[N]` references with name fallback chains.
 
-## Lessons Learned (7.41)
+## Lessons Learned (7.41–7.42)
 
-Things we missed on the first pass and had to fix later:
-1. **Ability targeting changes** (Bloodrage self-only, Empower can't self-target) -- we only scanned for renames/innates, not behavior changes
-2. **Existing item active logic for changed items** (Bloodstone active removed) -- we added new items but didn't audit old ConsiderItemDesire functions
-3. **New abilities replacing old slots** (OD's Objurgation) -- we checked some heroes but not all
-4. **Special skill progression** (Meepo ult levels) -- we didn't check non-standard heroes
-5. **Patch note inaccuracy** -- issue #129's AI-generated list had wrong info (Lina/Sven innates, "Snakebite", "Reprimand" name). Always verify on Liquipedia.
+Things caught across 7.41–7.42 updates:
+1. **Local VPK before d2vpkr**: `d2vpkr` can lag major patches; extracting `scripts/npc/*`, `scripts/shops.txt`, and `default_ents.vents` + `neutralcamp_*.vmdl_c` directly from Dota 2's VPK avoids stale names and prevents ward spots falling inside shifted neutral camp bounding hulls.
+2. **Vector-targeted abilities require Server VScript**: Bot VM has no vector-endpoint action; `bots/FretBots/VectorTargeting.lua` bridges this cleanly via `SetExecuteOrderFilter` (`OrderType = 30`), while keeping human vector input untouched.
+3. **Modal Aghanim upgrades freeze bots**: Abilities gated behind `ChooseAghanimUpgrade` UI dialogs (Invoker 7.41+ Scepter/Shard) leave bots holding wait modifiers; exclude them from bot buy lists unless selectable.
+4. **Ability & item behavior audits**: Verify `AbilityBehavior` flags (passive vs active, removed actives, changed targeting like Lich/Razor/Leshrac Nihilism) directly in VPK rather than assuming old actives still exist.
+5. **Patch note inaccuracy**: Always cross-check exact KV internal names rather than guessing display names.

@@ -248,7 +248,7 @@ function X.SkillsComplement()
 	abilityRef = J.IsItemAvailable( "item_refresher" )
 
 	local aether = J.IsItemAvailable( "item_aether_lens" )
-	if aether ~= nil then aetherRange = 250 end
+	if aether ~= nil then aetherRange = 200 end
 
 
 	castRFRDesire, castRFRLocation = X.ConsiderRFR()

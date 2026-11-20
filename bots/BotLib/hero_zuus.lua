@@ -46,7 +46,7 @@ sRoleItemsBuyList['pos_2'] = {
 	"item_travel_boots",
 	"item_black_king_bar",--
 	"item_ultimate_scepter",
-	"item_angels_demise",--
+	"item_caduceus",--
 	"item_octarine_core",--
 	"item_moon_shard",
 	"item_ultimate_scepter_2",
@@ -82,7 +82,7 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_travel_boots",
 	"item_black_king_bar",--
 	"item_ultimate_scepter",
-	"item_angels_demise",--
+	"item_caduceus",--
 	"item_octarine_core",--
 	"item_moon_shard",
 	"item_ultimate_scepter_2",
@@ -194,7 +194,7 @@ function X.SkillsComplement()
 	hEnemyHeroList = J.GetNearbyHeroes(bot, 1600, true, BOT_MODE_NONE )
 
 	local aether = J.IsItemAvailable( "item_aether_lens" )
-	if aether ~= nil then aetherRange = 250 end
+	if aether ~= nil then aetherRange = 200 end
 	if abilityAS:IsTrained() then abilityASBonus = 0.09 end
 	if talent8:IsTrained() then talentDamage = talentDamage + talent8:GetSpecialValueInt( "value" ) end
 

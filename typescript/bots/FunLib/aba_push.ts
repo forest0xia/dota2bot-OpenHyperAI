@@ -2,7 +2,7 @@ import * as jmz from "bots/FunLib/jmz_func";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 import Customize = require("bots/Customize/general");
 import { Barracks, BotMode, BotModeDesire, DamageType, Lane, Team, Tower, Unit, UnitType, Vector } from "bots/ts_libs/dota";
-import { IsValidUnit, GetLocationToLocationDistance, RadiantFountainTpPoint, DireFountainTpPoint } from "./utils";
+import { IsValidUnit, GetLocationToLocationDistance, RadiantFountainTpPoint, DireFountainTpPoint, NonTier1Towers } from "./utils";
 import { getGlobalGameState, getGlobalLocationState, getCachedAlliesNearLoc, getCachedEnemiesNearLoc, autoCleanupCache, getCachedData } from "./global_cache";
 
 Customize.ThinkLess = Customize.Enable ? Customize.ThinkLess : 1;
@@ -12,7 +12,7 @@ Customize.ThinkLess = Customize.Enable ? Customize.ThinkLess : 1;
  * (kept from Lua; comments preserved)
  */
 const pingTimeDelta = 5;
-const StartToPushTime = 16 * 60; // after X mins, start considering to push.
+const StartToPushTime = 10 * 60; // after X mins, start considering to push.
 const BOT_MODE_DESIRE_EXTRA_LOW = 0.02;
 
 /** Module-scoped state (cache-ish). Keep small and intentional. */
@@ -285,6 +285,17 @@ export function GetPushDesireHelper(bot: Unit, lane: Lane): BotModeDesire {
     // If Ancient under direct pressure → strongly deprioritize pushes
     if (enemiesAtAncient >= 1) return BotModeDesire.ExtraLow;
 
+    // If any Tier 2+ friendly tower is under pressure from 2+ enemy heroes, yield to defense
+    for (const slot of NonTier1Towers) {
+        const tw = GetTower(team, slot);
+        if (!tw || !IsValidUnit(tw) || !tw.IsAlive()) continue;
+        if (tw.GetHealth() >= tw.GetMaxHealth()) continue;
+        const enemiesAtTower = jmz.GetLastSeenEnemiesNearLoc(tw.GetLocation(), 1400);
+        if (enemiesAtTower.length >= 2) {
+            return BotModeDesire.ExtraLow;
+        }
+    }
+
     // --- Push safety gates ---
     // Never push alone when 3+ enemies alive
     if (alliesHere.length <= 1 && gameState.aliveEnemyCount >= 3) {
@@ -407,6 +418,14 @@ export function GetPushDesireHelper(bot: Unit, lane: Lane): BotModeDesire {
     const levelAdvantage = gameState.averageLevel - enemyAverageLevel;
     const hasSignificantAdvantage = networthAdvantage > 15000 || levelAdvantage > 2;
 
+    // Powerplay boost when 2+ enemy heroes are dead
+    const enemyDeadCount = 5 - gameState.aliveEnemyCount;
+    let powerplayBonus = 0;
+    if (enemyDeadCount >= 2) {
+        powerplayBonus = RemapValClamped(enemyDeadCount, 2, 4, 0.4, 1.0);
+        nMaxDesire = 0.95;
+    }
+
     // If outnumbered in *local* area, desire is very low (avoid feed)
     // But be more lenient when team has significant advantages
     if (alliesHere.length < enemiesHere.length && alliesHere.length <= eAliveCount - 1 && aAliveCount < eAliveCount) {
@@ -458,6 +477,7 @@ export function GetPushDesireHelper(bot: Unit, lane: Lane): BotModeDesire {
         // Allow pushes more easily when we have significant advantages
         const allowNumbers =
             eAliveCount === 0 ||
+            enemyDeadCount >= 2 ||
             aAliveCoreCount >= eAliveCoreCount ||
             (aAliveCoreCount >= 1 && aAliveCount >= eAliveCount + 2) ||
             // New: Allow pushes with networth advantage even if slightly outnumbered
@@ -490,7 +510,8 @@ export function GetPushDesireHelper(bot: Unit, lane: Lane): BotModeDesire {
                 nPushDesire = nPushDesire + groupBonus;
             }
 
-            return RemapValClamped(nPushDesire * jmz.GetHP(bot), 0, 1, 0, nMaxDesire) as BotModeDesire;
+            const maxPushScale = powerplayBonus > 0 ? 1.5 : 1;
+            return RemapValClamped((nPushDesire + powerplayBonus) * jmz.GetHP(bot), 0, maxPushScale, 0, nMaxDesire) as BotModeDesire;
         }
     }
 
@@ -710,11 +731,21 @@ export function WhichLaneToPush(_bot: Unit, _lane: Lane): Lane {
     midLaneScore = presence_adjust(midLaneScore, vMid);
     botLaneScore = presence_adjust(botLaneScore, vBot);
 
+    // Prefer mid while mid structures stand; deprioritize mid once fully razed
+    if (midTier < 4) {
+        midLaneScore /= 1.2;
+    } else {
+        midLaneScore *= 2;
+    }
+
     if (topLaneScore < midLaneScore && topLaneScore < botLaneScore) return Lane.Top;
     if (midLaneScore < topLaneScore && midLaneScore < botLaneScore) return Lane.Mid;
     if (botLaneScore < topLaneScore && botLaneScore < midLaneScore) return Lane.Bot;
 
-    return Lane.Mid;
+    // Tie-break on lowest tier (intact objectives first) instead of defaulting to Mid
+    if (topTier <= midTier && topTier <= botTier) return Lane.Top;
+    if (midTier <= topTier && midTier <= botTier) return Lane.Mid;
+    return Lane.Bot;
 }
 
 /* -----------------------------------------------------------------------------

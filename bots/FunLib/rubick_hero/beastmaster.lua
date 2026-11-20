@@ -5,6 +5,7 @@ local J = require(GetScriptDirectory()..'/FunLib/jmz_func')
 local WildAxes
 local CallOfTheWildBoar
 local CallOfTheWildHawk
+local SummonThunderhide
 local PrimalRoar
 
 local botTarget
@@ -53,7 +54,7 @@ function X.ConsiderStolenSpell(ability)
         end
     end
 
-    if abilityName == 'beastmaster_call_of_the_wild_razorback'
+    if abilityName == 'beastmaster_summon_razorback'
     then
         CallOfTheWildBoar = ability
         CallOfTheWildBoarDesire = X.ConsiderCallOfTheWildBoar()
@@ -64,13 +65,24 @@ function X.ConsiderStolenSpell(ability)
         end
     end
 
-    if abilityName == 'beastmaster_call_of_the_wild_raptor'
+    if abilityName == 'beastmaster_summon_raptor'
     then
         CallOfTheWildHawk = ability
         CallOfTheWildHawkDesire = X.ConsiderCallOfTheWildHawk()
         if CallOfTheWildHawkDesire > 0
         then
             bot:Action_UseAbility(CallOfTheWildHawk)
+            return
+        end
+    end
+
+    if abilityName == 'beastmaster_summon_thunderhide'
+    then
+        SummonThunderhide = ability
+        if SummonThunderhide:IsFullyCastable()
+        and (J.IsGoingOnSomeone(bot) or J.IsInTeamFight(bot, 1200) or ((J.IsPushing(bot) or J.IsFarming(bot)) and J.IsAttacking(bot)))
+        then
+            bot:Action_UseAbility(SummonThunderhide)
             return
         end
     end

@@ -124,11 +124,13 @@ end
 local Decay         = bot:GetAbilityByName('undying_decay')
 local SoulRip       = bot:GetAbilityByName('undying_soul_rip')
 local Tombstone     = bot:GetAbilityByName('undying_tombstone')
+local ZombieBite    = bot:GetAbilityByName('undying_bite')
 local FleshGolem    = bot:GetAbilityByName('undying_flesh_golem')
 
 local DecayDesire, DecayLocation
 local SoulRipDesire, SoulRipTarget
 local TombstoneDesire, TombstoneLocation
+local ZombieBiteDesire, ZombieBiteTarget
 local FleshGolemDesire
 
 local botTarget
@@ -136,6 +138,7 @@ local botTarget
 function X.SkillsComplement()
 	if J.CanNotUseAbility(bot) then return end
 
+    ZombieBite = bot:GetAbilityByName('undying_bite')
     botTarget = J.GetProperTarget(bot)
 
     FleshGolemDesire = X.ConsiderFleshGolem()
@@ -149,6 +152,13 @@ function X.SkillsComplement()
     if TombstoneDesire > 0
     then
         bot:Action_UseAbilityOnLocation(Tombstone, TombstoneLocation)
+        return
+    end
+
+    ZombieBiteDesire, ZombieBiteTarget = X.ConsiderZombieBite()
+    if ZombieBiteDesire > 0
+    then
+        bot:Action_UseAbilityOnEntity(ZombieBite, ZombieBiteTarget)
         return
     end
 
@@ -571,6 +581,54 @@ function X.ConsiderFleshGolem()
     end
 
     return BOT_ACTION_DESIRE_NONE
+end
+
+function X.ConsiderZombieBite()
+    if not J.CanCastAbility(ZombieBite) then
+        return BOT_ACTION_DESIRE_NONE, nil
+    end
+
+    local nCastRange = J.GetProperCastRange(false, bot, ZombieBite:GetCastRange())
+    if nCastRange <= 0 then nCastRange = 400 end
+
+    if J.IsGoingOnSomeone(bot) then
+        if J.IsValidTarget(botTarget)
+        and J.CanBeAttacked(botTarget)
+        and J.CanCastOnNonMagicImmune(botTarget)
+        and J.IsInRange(bot, botTarget, nCastRange + 75)
+        and not botTarget:HasModifier('modifier_abaddon_borrowed_time')
+        then
+            return BOT_ACTION_DESIRE_HIGH, botTarget
+        end
+    end
+
+    if J.IsRetreating(bot) then
+        local nInRangeEnemy = bot:GetNearbyHeroes(nCastRange + 50, true, BOT_MODE_NONE)
+        if nInRangeEnemy ~= nil and #nInRangeEnemy >= 1
+        and J.IsValidHero(nInRangeEnemy[1])
+        and J.CanBeAttacked(nInRangeEnemy[1])
+        and J.CanCastOnNonMagicImmune(nInRangeEnemy[1])
+        then
+            return BOT_ACTION_DESIRE_HIGH, nInRangeEnemy[1]
+        end
+    end
+
+    local nEnemyCreeps = bot:GetNearbyCreeps(nCastRange, true)
+    if nEnemyCreeps ~= nil and #nEnemyCreeps >= 1 then
+        for _, creep in pairs(nEnemyCreeps) do
+            if J.IsValid(creep)
+            and J.CanBeAttacked(creep)
+            and not creep:IsAncientCreep()
+            and not J.IsRoshan(creep)
+            and not J.IsTormentor(creep)
+            and (J.IsFarming(bot) or J.IsPushing(bot) or J.GetHP(bot) < 0.75)
+            then
+                return BOT_ACTION_DESIRE_MODERATE, creep
+            end
+        end
+    end
+
+    return BOT_ACTION_DESIRE_NONE, nil
 end
 
 return X

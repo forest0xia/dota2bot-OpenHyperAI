@@ -138,7 +138,7 @@ function X.SkillsComplement()
         local nSpeed = CelestialHammer:GetSpecialValueInt('projectile_speed')
         ConvergeHammerLocation = CelestialHammerLocation
 
-        if CelestialHammerCastRangeTalent:IsTrained()
+        if CelestialHammerCastRangeTalent ~= nil and CelestialHammerCastRangeTalent:IsTrained()
         then
             nSpeed = nSpeed * (1 + (CelestialHammerCastRangeTalent:GetSpecialValueInt('value') / 100))
         end
@@ -333,7 +333,7 @@ function X.ConsiderCelestialHammer()
     local nDamage = CelestialHammer:GetSpecialValueInt('hammer_damage')
     local nMana = bot:GetMana() / bot:GetMaxMana()
 
-    if CelestialHammerCastRangeTalent:IsTrained()
+    if CelestialHammerCastRangeTalent ~= nil and CelestialHammerCastRangeTalent:IsTrained()
     then
         nCastRange = nCastRange * (1 + (CelestialHammerCastRangeTalent:GetSpecialValueInt('value') / 100))
         nSpeed = nSpeed * (1 + (CelestialHammerCastRangeTalent:GetSpecialValueInt('value') / 100))
@@ -439,7 +439,7 @@ function X.ConsiderConverge()
     local nSpeed = CelestialHammer:GetSpecialValueInt('projectile_speed')
     local botTarget = J.GetProperTarget(bot)
 
-    if CelestialHammerCastRangeTalent:IsTrained()
+    if CelestialHammerCastRangeTalent ~= nil and CelestialHammerCastRangeTalent:IsTrained()
     then
         nCastRange = nCastRange * (1 + (CelestialHammerCastRangeTalent:GetSpecialValueInt('value') / 100))
         nSpeed = nSpeed * (1 + (CelestialHammerCastRangeTalent:GetSpecialValueInt('value') / 100))

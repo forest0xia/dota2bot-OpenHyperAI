@@ -168,24 +168,25 @@ modifier_dazzle_bad_juju_armor
 
 --]]
 
-local abilityQ = bot:GetAbilityByName( sAbilityList[1] )
-local abilityW = bot:GetAbilityByName( sAbilityList[2] )
-local abilityE = bot:GetAbilityByName( sAbilityList[3] )
-local abilityF = bot:GetAbilityByName( sAbilityList[5] )
-local abilityR = bot:GetAbilityByName( sAbilityList[6] )
+local abilityQ = sAbilityList[1] and bot:GetAbilityByName( sAbilityList[1] ) or nil
+local abilityW = sAbilityList[2] and bot:GetAbilityByName( sAbilityList[2] ) or nil
+local abilityE = sAbilityList[3] and bot:GetAbilityByName( sAbilityList[3] ) or nil
+local abilityF = sAbilityList[5] and bot:GetAbilityByName( sAbilityList[5] ) or nil
+local abilityR = sAbilityList[6] and bot:GetAbilityByName( sAbilityList[6] ) or nil
 local NothlProjection = bot:GetAbilityByName("dazzle_nothl_projection")
 local NothlProjectionEnd = bot:GetAbilityByName("dazzle_nothl_projection_end")
+local ThroughTheRealm = bot:GetAbilityByName("dazzle_through_the_realm")
 
-local talent3 = bot:GetAbilityByName( sTalentList[3] )
-local talent4 = bot:GetAbilityByName( sTalentList[4] )
-local talent6 = bot:GetAbilityByName( sTalentList[6] )
+local talent3 = sTalentList[3] and bot:GetAbilityByName( sTalentList[3] ) or nil
+local talent4 = sTalentList[4] and bot:GetAbilityByName( sTalentList[4] ) or nil
+local talent6 = sTalentList[6] and bot:GetAbilityByName( sTalentList[6] ) or nil
 
 local castQDesire, castQTarget
 local castWDesire, castWTarget
 local castEDesire, castETarget
 local castFDesire, castFTarget
 local castRDesire, castRTarget
-local NothlProjectionDesire, NothlProjectionLocation, NothlProjectionEndDesire
+local NothlProjectionDesire, NothlProjectionLocation, NothlProjectionEndDesire, ThroughTheRealmDesire
 
 local nKeepMana, nMP, nHP, nLV, hEnemyList, hAllyList, botTarget, sMotive
 local aetherRange = 0
@@ -199,13 +200,14 @@ function X.SkillsComplement()
 	if J.CanNotUseAbility( bot ) or bot:IsInvisible() or isPhysicalBody then return end
 
 	-- Re-fetch ability handles each tick
-	abilityQ = bot:GetAbilityByName( sAbilityList[1] )
-	abilityW = bot:GetAbilityByName( sAbilityList[2] )
-	abilityE = bot:GetAbilityByName( sAbilityList[3] )
-	abilityF = bot:GetAbilityByName( sAbilityList[5] )
-	abilityR = bot:GetAbilityByName( sAbilityList[6] )
+	abilityQ = sAbilityList[1] and bot:GetAbilityByName( sAbilityList[1] ) or nil
+	abilityW = sAbilityList[2] and bot:GetAbilityByName( sAbilityList[2] ) or nil
+	abilityE = sAbilityList[3] and bot:GetAbilityByName( sAbilityList[3] ) or nil
+	abilityF = sAbilityList[5] and bot:GetAbilityByName( sAbilityList[5] ) or nil
+	abilityR = sAbilityList[6] and bot:GetAbilityByName( sAbilityList[6] ) or nil
 	NothlProjection = bot:GetAbilityByName("dazzle_nothl_projection")
 	NothlProjectionEnd = bot:GetAbilityByName("dazzle_nothl_projection_end")
+	ThroughTheRealm = bot:GetAbilityByName("dazzle_through_the_realm")
 
 	-- Cache per-tick variables
 	nKeepMana = 400
@@ -219,7 +221,7 @@ function X.SkillsComplement()
 
 
 	local aether = J.IsItemAvailable( "item_aether_lens" )
-	if aether ~= nil then aetherRange = 225 end
+	if aether ~= nil then aetherRange = 200 end
 
 	castWDesire, castWTarget, sMotive = X.ConsiderW()
 	if ( castWDesire > 0 )
@@ -243,6 +245,12 @@ function X.SkillsComplement()
 	NothlProjectionEndDesire = X.ConsiderNothlProjectionEnd()
 	if NothlProjectionEndDesire > 0 then
 		bot:ActionQueue_UseAbility( NothlProjectionEnd )
+		return
+	end
+
+	ThroughTheRealmDesire = X.ConsiderThroughTheRealm()
+	if ThroughTheRealmDesire > 0 then
+		bot:ActionQueue_UseAbility( ThroughTheRealm )
 		return
 	end
 
@@ -360,11 +368,22 @@ function X.ConsiderNothlProjectionEnd()
 	return BOT_ACTION_DESIRE_NONE, nil
 end
 
+function X.ConsiderThroughTheRealm()
+	if not J.CanCastAbility(ThroughTheRealm) then
+		return BOT_ACTION_DESIRE_NONE
+	end
+	local _bot = J.Utils.GameStates.dazzleNothl[bot:GetPlayerID()] and J.Utils.GameStates.dazzleNothl[bot:GetPlayerID()].body
+	if J.IsValid(_bot) and J.GetHP(_bot) < 0.35 and J.IsRetreating(_bot) and #hEnemyList >= 1 then
+		return BOT_ACTION_DESIRE_HIGH
+	end
+	return BOT_ACTION_DESIRE_NONE
+end
+
 function X.ConsiderR()
-	if not abilityR:IsFullyCastable() then return 0 end
-	if not abilityQ:IsFullyCastable()
-		and not abilityW:IsFullyCastable()
-		and not abilityE:IsFullyCastable()
+	if abilityR == nil or not abilityR:IsFullyCastable() then return 0 end
+	if (abilityQ == nil or not abilityQ:IsFullyCastable())
+		and (abilityW == nil or not abilityW:IsFullyCastable())
+		and (abilityE == nil or not abilityE:IsFullyCastable())
 	then
 		local enemyList = J.GetNearbyHeroes(bot, 900, true, BOT_MODE_NONE )
 		if #enemyList >= 1
@@ -377,7 +396,7 @@ end
 
 function X.ConsiderQ()
 
-	if not abilityQ:IsFullyCastable() then return 0 end
+	if abilityQ == nil or not abilityQ:IsFullyCastable() then return 0 end
 
 	local nSkillLV = abilityQ:GetLevel()
 	local nCastRange = abilityQ:GetCastRange()
@@ -386,7 +405,7 @@ function X.ConsiderQ()
 	local nManaCost = abilityQ:GetManaCost()
 	local nPerDamage = abilityQ:GetSpecialValueInt( "damage" )
 
-	if talent6:IsTrained() then nPerDamage = nPerDamage + talent6:GetSpecialValueInt( "value" ) end
+	if talent6 ~= nil and talent6:IsTrained() then nPerDamage = nPerDamage + talent6:GetSpecialValueInt( "value" ) end
 
 	local nDuration = abilityQ:GetSpecialValueInt( "duration" )
 
@@ -595,7 +614,7 @@ end
 function X.ConsiderW()
 
 
-	if not abilityW:IsFullyCastable() then return 0 end
+	if abilityW == nil or not abilityW:IsFullyCastable() then return 0 end
 
 	local nSkillLV = abilityW:GetLevel()
 	local nCastRange = abilityW:GetCastRange() + aetherRange
@@ -691,7 +710,7 @@ end
 function X.ConsiderE()
 
 
-	if not abilityE:IsFullyCastable() then return 0 end
+	if abilityE == nil or not abilityE:IsFullyCastable() then return 0 end
 
 	local nSkillLV = abilityE:GetLevel()
 	local nCastRange = abilityE:GetCastRange() + aetherRange
@@ -883,13 +902,14 @@ end
 
 function X.GetAbilityEMaxDamage( npcEnemy )
 
+	if abilityE == nil then return 0 end
 	local nRadius = abilityE:GetSpecialValueInt( 'damage_radius' )
 
 	local allyUnitCount = J.GetUnitAllyCountAroundEnemyTarget( npcEnemy, nRadius )
 
 	local abilityEDamge = abilityE:GetSpecialValueInt( 'damage' ) + talent4Damage
 
-	return allyUnitCount * nDamage
+	return allyUnitCount * abilityEDamge
 
 end
 

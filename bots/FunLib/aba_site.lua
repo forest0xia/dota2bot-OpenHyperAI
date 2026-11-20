@@ -130,7 +130,7 @@ local DIRE_T3BOTFALL = Vector(6354, 2606, 0)
 local DIRE_T2TOPFALL = Vector(514, 4107, 655)
 local DIRE_T2MIDFALL = Vector(2047, -769, 655)
 local DIRE_T2BOTFALL = Vector(4620, 788, 655)
-local DIRE_T1TOPFALL = Vector(-2815, 3565, 256)
+local DIRE_T1TOPFALL = Vector(-3180, 3260, 256)
 local DIRE_T1MIDFALL = Vector(-760, 2053, 655)
 local DIRE_T1BOTFALL = Vector(5122, -1930, 527)
 local DIRE_MANDATE1 = DIRE_RUNE_WARD
@@ -167,21 +167,21 @@ local WardSpotTowerFallDire = {
 }
 local CStackLoc = {
     Vector(1854, -4469, 0),
-    Vector(1249, -2416, 0),
+    Vector(-720, -8040, 0),
     Vector(3471, -5841, 0),
     Vector(5153, -3620, 0),
     Vector(-1846, -2996, 0),
     Vector(-4961, 559, 0),
-    Vector(-3873, -833, 0),
+    Vector(-7950, -2180, 0),
     Vector(-3146, 702, 0),
-    Vector(1141, -3111, 0),
+    Vector(-2415, -8050, 0),
     Vector(660, 2300, 0),
-    Vector(3666, 1836, 0),
+    Vector(7580, -120, 0),
     Vector(482, 4723, 0),
     Vector(3173, -861, 0),
-    Vector(-3443, 6098, 0),
+    Vector(-4228, 7790, 0),
     Vector(-4353, 4842, 0),
-    Vector(-1083, 3385, 0),
+    Vector(2016, 7550, 0),
     Vector(-922, 4299, 0),
     Vector(4136, -1753, 0)
 }
@@ -219,13 +219,13 @@ ____exports.nShopList = {
     Shop.Secret,
     Shop.Secret2
 }
-____exports.top_power_rune = Vector(-1767, 1233, 0)
-____exports.bot_power_rune = Vector(2597, -2014, 0)
-____exports.roshan = Vector(2980, -2816, 0)
-____exports.dire_ancient = Vector(5517, 4981, 0)
-____exports.radiant_ancient = Vector(-5860, -5328, 0)
+____exports.top_power_rune = Vector(-1640, 1112, 41)
+____exports.bot_power_rune = Vector(1180, -1216, 57)
+____exports.roshan = Vector(2860, -2765, 64)
+____exports.dire_ancient = Vector(5528, 5000, 248)
+____exports.radiant_ancient = Vector(-5920, -5352, 240)
 ____exports.radiant_base = Vector(-7200, -6666, 0)
-____exports.dire_base = Vector(7137, 6548, 0)
+____exports.dire_base = Vector(6868, 6306, 377)
 ____exports.GetDistance = function(s, t)
     return GetLocationToLocationDistance(s, t)
 end
@@ -1101,7 +1101,7 @@ end
 ____exports.ConsiderIsTimeToFarm.npc_dota_hero_beastmaster = function()
     local bot = GetBot()
     local botNetWorth = bot:GetNetWorth()
-    if not HasItem(bot, "item_helm_of_the_overlord") and botNetWorth < 14000 then
+    if not HasItem(bot, "item_ristuls_devotion") and not HasItem(bot, "item_helm_of_the_dominator") and botNetWorth < 14000 then
         return true
     end
     if not HasItem(bot, "item_black_king_bar") and botNetWorth < 18000 then
@@ -1354,7 +1354,7 @@ ____exports.ConsiderIsTimeToFarm.npc_dota_hero_hoodwink = function()
     if not HasItem(bot, "item_maelstrom") and botNetWorth < 12000 then
         return true
     end
-    if not HasItem(bot, "item_gleipnir") and botNetWorth < 18000 then
+    if not HasItem(bot, "item_gungir") and botNetWorth < 18000 then
         return true
     end
     return false

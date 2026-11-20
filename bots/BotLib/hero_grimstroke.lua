@@ -583,8 +583,9 @@ function X.ConsiderInkSwell()
 end
 
 function X.ConsiderInkExplosion()
-    if InkExplosion:IsHidden()
-    or not InkExplosion:IsFullyCastable()
+    InkExplosion = bot:GetAbilityByName('grimstroke_return')
+    if not J.CanCastAbility(InkExplosion)
+    or InkExplosion:IsHidden()
     then
         return BOT_ACTION_DESIRE_NONE
     end

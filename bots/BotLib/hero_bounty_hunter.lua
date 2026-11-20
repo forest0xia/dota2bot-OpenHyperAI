@@ -64,7 +64,7 @@ sRoleItemsBuyList['pos_1'] = {
 	"item_ultimate_scepter",
 	"item_octarine_core",--
 	"item_black_king_bar",--
-	"item_angels_demise",--
+	"item_caduceus",--
 	"item_assault",--
 	"item_travel_boots",
 	"item_monkey_king_bar",--
@@ -87,7 +87,7 @@ sRoleItemsBuyList['pos_2'] = {
 	"item_ultimate_scepter",
 	"item_octarine_core",--
 	"item_black_king_bar",--
-	"item_angels_demise",--
+	"item_caduceus",--
 	"item_assault",--
 	"item_travel_boots",
 	"item_moon_shard",
@@ -110,7 +110,7 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_pipe",
 	"item_black_king_bar",--
 	sUtilityItem,--
-	"item_angels_demise",--
+	"item_caduceus",--
 	"item_assault",--
 	"item_travel_boots",
 	"item_monkey_king_bar",--
@@ -254,7 +254,7 @@ function X.SkillsComplement()
 	hAllyList = J.GetAlliesNearLoc( bot:GetLocation(), 1600 )
 
 	local aether = J.IsItemAvailable( "item_aether_lens" )
-	if aether ~= nil then aetherRange = 250 end
+	if aether ~= nil then aetherRange = 200 end
 	if talent3:IsTrained() then talent3Damage = talent3:GetSpecialValueInt( "value" ) end
 
 

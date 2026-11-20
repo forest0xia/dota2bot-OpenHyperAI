@@ -86,7 +86,7 @@ function OnEnd()
 end
 
 function Think()
-	if J.CanNotUseAction(bot) then return end
+	if J.CanNotUseActionExceptQueue(bot) then return end
 	if bot:IsChanneling() 
 		or bot:NumQueuedActions() > 0
 		or bot:IsCastingAbility()

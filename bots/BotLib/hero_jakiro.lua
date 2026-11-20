@@ -177,7 +177,7 @@ modifier_jakiro_macropyre_burn
 local abilityQ = bot:GetAbilityByName('jakiro_dual_breath')
 local abilityW = bot:GetAbilityByName('jakiro_ice_path')
 local abilityE = bot:GetAbilityByName('jakiro_liquid_fire')
-local abilityAS = bot:GetAbilityByName('jakiro_liquid_frost')
+local abilityAS = bot:GetAbilityByName('jakiro_liquid_ice')
 local abilityR = bot:GetAbilityByName('jakiro_macropyre')
 
 local castQDesire, castQTarget

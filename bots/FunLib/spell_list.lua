@@ -64,9 +64,11 @@ X['spells'] = {
     
     ['npc_dota_hero_beastmaster'] = {
         ['beastmaster_wild_axes'] = {weight = 0.4},
-        ['beastmaster_call_of_the_wild_razorback'] = {weight = 1},
+        ['beastmaster_summon_razorback'] = {weight = 1},
         ['beastmaster_inner_beast'] = {weight = 1},
-        ['beastmaster_call_of_the_wild_raptor'] = {weight = 1},
+        ['beastmaster_summon_raptor'] = {weight = 1},
+        ['beastmaster_summon_thunderhide'] = {weight = 1},
+        ['beastmaster_primal_roar'] = {weight = 0},
     },
     
     ['npc_dota_hero_bloodseeker'] = {
@@ -120,6 +122,7 @@ X['spells'] = {
     ['npc_dota_hero_chaos_knight'] = {
         ['chaos_knight_chaos_bolt'] = {weight = 0.4},
         ['chaos_knight_reality_rift'] = {weight = 0.8},
+        ['chaos_knight_armageddon'] = {weight = 0.7},
         ['chaos_knight_phantasm'] = {weight = 1},
     },
     
@@ -127,7 +130,7 @@ X['spells'] = {
         ['chen_penitence'] = {weight = 0.1},
         ['chen_holy_persuasion'] = {weight = 1},
         ['chen_divine_favor'] = {weight = 0.1},
-        ['chen_summon_convert'] = {weight = 1},
+        ['chen_zealot'] = {weight = 1},
         ['chen_hand_of_god'] = {weight = 0.2},
     },
     
@@ -330,7 +333,7 @@ X['spells'] = {
         ['jakiro_dual_breath'] = {weight = 0.8},
         ['jakiro_ice_path'] = {weight = 0.1},
         ['jakiro_liquid_fire'] = {weight = 1},
-        ['jakiro_liquid_frost'] = {weight = 1},
+        ['jakiro_liquid_ice'] = {weight = 1},
         ['jakiro_macropyre'] = {weight = 0.1},
     },
     
@@ -338,7 +341,6 @@ X['spells'] = {
         ['juggernaut_blade_fury'] = {weight = 0.3},
         ['juggernaut_healing_ward'] = {weight = 0.3},
         ['juggernaut_blade_dance'] = {weight = 1},
-        ['juggernaut_swift_slash'] = {weight = 1},
         ['juggernaut_omni_slash'] = {weight = 1},
     },
     
@@ -474,8 +476,7 @@ X['spells'] = {
         ['meepo_poof'] = {weight = 1},
         ['meepo_ransack'] = {weight = 1},
         ['meepo_petrify'] = {weight = 0.3},
-        ['meepo_megameepo'] = {weight = 1},
-        ['meepo_megameepo_fling'] = {weight = 1},
+        ['meepo_fling_release'] = {weight = 0.8},
         ['meepo_divided_we_stand'] = {weight = 1},
     },
 
@@ -586,7 +587,6 @@ X['spells'] = {
     ['npc_dota_hero_pangolier'] = {
         ['pangolier_swashbuckle'] = {weight = 0.5},
         ['pangolier_shield_crash'] = {weight = 0.5},
-        ['pangolier_luckyshot'] = {weight = 1},
         ['pangolier_rollup'] = {weight = 0.2},
         ['pangolier_rollup_stop'] = {weight = 1},
         ['pangolier_gyroshell'] = {weight = 0.1},
@@ -911,6 +911,7 @@ X['spells'] = {
         ['undying_decay'] = {weight = 0.2},
         ['undying_soul_rip'] = {weight = 0.2},
         ['undying_tombstone'] = {weight = 0.1},
+        ['undying_bite'] = {weight = 0.5},
         ['undying_flesh_golem'] = {weight = 1},
     },
 
@@ -971,6 +972,7 @@ X['spells'] = {
         ['weaver_the_swarm'] = {weight = 0.4},
         ['weaver_shukuchi'] = {weight = 0.2},
         ['weaver_geminate_attack'] = {weight = 1},
+        ['weaver_time_lapse_ally'] = {weight = 0.6},
         ['weaver_time_lapse'] = {weight = 0.6},
     },
 

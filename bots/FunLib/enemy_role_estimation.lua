@@ -170,8 +170,14 @@ ItemOffensiveness = {
     item_orchid = 25,
     item_dagon_5 = 50,
     item_fallen_sky = 25,
-    item_pirate_hat = 80,
-    item_stormcrafter = 20
+    item_stormcrafter = 20,
+    item_berserkers_sabatons = 55,
+    item_skypiercer = 30,
+    item_caduceus = 28,
+    item_starforge = 35,
+    item_ristuls_devotion = 25,
+    item_bloodslinger = 12,
+    item_horn_of_battle_greater = 30
 }
 NET_WORTH_WEIGHT = 0.3
 OFFENSIVE_POWER_WEIGHT = 0.3

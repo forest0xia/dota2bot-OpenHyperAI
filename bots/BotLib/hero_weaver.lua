@@ -84,6 +84,7 @@ local TheSwarm          = bot:GetAbilityByName('weaver_the_swarm')
 local Shukuchi          = bot:GetAbilityByName('weaver_shukuchi')
 -- local GeminateAttack    = bot:GetAbilityByName('weaver_geminate_attack')
 local TimeLapse         = bot:GetAbilityByName('weaver_time_lapse')
+local TimeLapseAlly     = bot:GetAbilityByName('weaver_time_lapse_ally')
 
 local TheSwarmDesire, TheSwarmLocation
 local ShukuchiDesire
@@ -96,6 +97,7 @@ if bot.ShukuchiKillTarget == nil then bot.ShukuchiKillTarget = nil end
 function X.SkillsComplement()
     if J.CanNotUseAbility(bot) then return end
 
+    TimeLapseAlly = bot:GetAbilityByName('weaver_time_lapse_ally')
     botTarget = J.GetProperTarget(bot)
     if not bot:HasModifier("modifier_weaver_shukuchi")
     then
@@ -108,11 +110,9 @@ function X.SkillsComplement()
         if Target == 'self'
         then
             bot:Action_UseAbility(TimeLapse)
-        else
-            if bot:HasScepter()
-            then
-                bot:Action_UseAbilityOnEntity(TimeLapse, Target)
-            end
+        elseif J.CanCastAbility(TimeLapseAlly)
+        then
+            bot:Action_UseAbilityOnEntity(TimeLapseAlly, Target)
         end
 
         return

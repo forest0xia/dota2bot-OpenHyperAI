@@ -272,7 +272,7 @@ function X.ConsiderBloodMist()
 		end
 	end
 
-	if not BloodMist:GetToggleState() == false
+	if BloodMist:GetToggleState() == false
 	and nHP > 0.5
 	then
 		if J.IsValidHero(botTarget)

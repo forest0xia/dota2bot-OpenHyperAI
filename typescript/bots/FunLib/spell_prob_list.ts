@@ -42,8 +42,9 @@ const SpellList: { [key: string]: number } = {
     batrider_flaming_lasso: 0.1,
 
     beastmaster_wild_axes: 0.4,
-    beastmaster_call_of_the_wild_razorback: 1, // 7.41: renamed from boar
-    beastmaster_call_of_the_wild_raptor: 1, // 7.41: renamed from hawk
+    beastmaster_summon_razorback: 1, // 7.42: renamed from call_of_the_wild_razorback
+    beastmaster_summon_raptor: 1, // 7.42: renamed from call_of_the_wild_raptor
+    beastmaster_summon_thunderhide: 1,
     beastmaster_primal_roar: 0,
 
     bloodseeker_bloodrage: 1,
@@ -81,11 +82,13 @@ const SpellList: { [key: string]: number } = {
 
     chaos_knight_chaos_bolt: 0.4,
     chaos_knight_reality_rift: 0.8,
+    chaos_knight_armageddon: 0.7,
     chaos_knight_phantasm: 1,
 
     chen_penitence: 0.1,
     chen_holy_persuasion: 1,
     chen_divine_favor: 0.1,
+    chen_zealot: 1,
     chen_hand_of_god: 0.2,
 
     clinkz_strafe: 0.8,
@@ -106,6 +109,10 @@ const SpellList: { [key: string]: number } = {
     crystal_maiden_frostbite: 0.5,
     crystal_maiden_crystal_clone: 1,
     crystal_maiden_freezing_field: 0.1,
+
+    jakiro_liquid_ice: 1,
+    undying_bite: 0.5,
+    weaver_time_lapse_ally: 0.6,
 
     rubick_empty1: 1,
     rubick_empty2: 1,

@@ -35,7 +35,7 @@ sRoleItemsBuyList['pos_2'] = {
     "item_magic_wand",
     "item_blink",
 	"item_kaya_and_sange",--
-	"item_angels_demise",--
+	"item_caduceus",--
     "item_shivas_guard",--
 	"item_ultimate_scepter",
     "item_ultimate_scepter_2",
@@ -55,7 +55,7 @@ sRoleItemsBuyList['pos_3'] = {
     "item_soul_ring",
     "item_blink",
 	"item_kaya_and_sange",--
-	"item_angels_demise",--
+	"item_caduceus",--
     "item_shivas_guard",--
 	"item_ultimate_scepter",
     "item_ultimate_scepter_2",
@@ -1205,10 +1205,8 @@ end
 function CanDoCombo1()
     if HasBlink()
     and Laser:IsFullyCastable()
-    and HeatSeekingMissile:IsFullyCastable()
     then
         local nManaCost = Laser:GetManaCost()
-                        + HeatSeekingMissile:GetManaCost()
                         + Rearm:GetManaCost()
 
         if bot:GetMana() >= nManaCost
@@ -1225,13 +1223,11 @@ end
 function CanDoCombo2()
     if HasBlink()
     and Laser:IsFullyCastable()
-    and HeatSeekingMissile:IsFullyCastable()
     then
         ShivasGuard = J.Utils.GetItem('item_shivas_guard')
         if ShivasGuard ~= nil and ShivasGuard:IsFullyCastable()
         then
             local nManaCost = Laser:GetManaCost()
-                            + HeatSeekingMissile:GetManaCost()
                             + Rearm:GetManaCost()
                             + 75
 
@@ -1250,13 +1246,11 @@ end
 function CanDoCombo3()
     if HasBlink()
     and Laser:IsFullyCastable()
-    and HeatSeekingMissile:IsFullyCastable()
     then
         ScytheOfVyse = J.Utils.GetItem('item_sheepstick')
         if ScytheOfVyse ~= nil and ScytheOfVyse:IsFullyCastable()
         then
             local nManaCost = Laser:GetManaCost()
-                            + HeatSeekingMissile:GetManaCost()
                             + Rearm:GetManaCost()
                             + 250
 
@@ -1275,13 +1269,11 @@ end
 function CanDoCombo4()
     if HasBlink()
     and Laser:IsFullyCastable()
-    and HeatSeekingMissile:IsFullyCastable()
     then
         EtherealBlade = J.Utils.GetItem('item_ethereal_blade')
         if EtherealBlade ~= nil and EtherealBlade:IsFullyCastable()
         then
             local nManaCost = Laser:GetManaCost()
-                            + HeatSeekingMissile:GetManaCost()
                             + Rearm:GetManaCost()
                             + 100
 
@@ -1300,7 +1292,6 @@ end
 function CanDoCombo5()
     if HasBlink()
     and Laser:IsFullyCastable()
-    and HeatSeekingMissile:IsFullyCastable()
     then
         ScytheOfVyse = J.Utils.GetItem('item_sheepstick')
         EtherealBlade = J.Utils.GetItem('item_ethereal_blade')
@@ -1308,7 +1299,6 @@ function CanDoCombo5()
         and ScytheOfVyse ~= nil and ScytheOfVyse:IsFullyCastable()
         then
             local nManaCost = Laser:GetManaCost()
-                            + HeatSeekingMissile:GetManaCost()
                             + Rearm:GetManaCost()
                             + 250
                             + 100

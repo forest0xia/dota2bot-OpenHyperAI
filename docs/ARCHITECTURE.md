@@ -1,8 +1,8 @@
 # Dota 2 Bot Architecture Guide
 
-This document is the single source of truth for understanding, maintaining, and updating the dota2bot-OpenHyperAI codebase. It is designed so that a developer (or AI assistant) can quickly make targeted updates without re-scanning the entire repository.
+This document is the single source of truth for understanding, maintaining, and updating the dota2bot-OpenHyperAI codebase. It is designed so that a developer (or AI assistant) can quickly make targeted updates without re-scanning the entire repository. See [docs/DOTA2_BOT_API_INTERNALS.md](DOTA2_BOT_API_INTERNALS.md) for undocumented engine/API details.
 
-Last verified against: **Patch 7.41a** (March 2026)
+Last verified against: **Patch 7.42**
 
 ---
 
@@ -58,12 +58,16 @@ vscripts/
 │   │       ├── beastmaster.lua
 │   │       └── ...
 │   │
-│   ├── Buff/                          # Buff mode (enhanced neutral items)
-│   │   └── NeutralItems.lua           # Neutral item tier lists + distribution logic
+│   ├── Buff/                          # Buff mode (Server VScript bonuses & neutrals)
+│   │   ├── Buff.lua                   # Standalone Server VScript entry point
+│   │   ├── Experience.lua             # Level 1-30 XP threshold table
+│   │   └── NeutralItems.lua           # Neutral item tier lists (Tier 1-4) + enchantments
 │   │
-│   ├── FretBots/                      # Enhanced difficulty mode
+│   ├── FretBots/                      # Enhanced difficulty mode (Server VScript)
 │   │   ├── SettingsDefault.lua        # Default difficulty settings
-│   │   ├── SettingsNeutralItemTable.lua # Neutral item configs with role weights
+│   │   ├── SettingsNeutralItemTable.lua # Neutral item configs with role weights (Tier 1-4)
+│   │   ├── VectorTargeting.lua        # Server OrderFilter bridge for bot vector casts
+│   │   ├── AwardBonus.lua             # Level XP thresholds + gold/stat bonus grants
 │   │   ├── HeroNames.lua             # Hero name localizations (en/zh/ru/ja)
 │   │   ├── NeutralItems.lua          # Neutral item distribution timing/logic
 │   │   └── matchups_data.lua         # Hero matchup database
@@ -74,11 +78,12 @@ vscripts/
 │   │       └── viper.lua             # Example
 │   │
 │   └── ts_libs/                       # TypeScript-generated constants
+│       ├── dota/enums.lua             # Dota enum types
 │       └── dota/heroes.lua           # HeroName enum
 │
 ├── typescript/                        # TypeScript source (compiles to Lua)
 ├── game/                              # Valve default setup + permanent customization
-└── docs/                              # Developer documentation (this file)
+└── docs/                              # Developer documentation (this file + API internals)
 ```
 
 ---
@@ -241,10 +246,11 @@ Neutral items are handled by **two separate systems** depending on the game mode
 
 ### Buff Mode (`Buff/NeutralItems.lua`)
 
-- Defines `Tier1NeutralItems` through `Tier5NeutralItems` arrays
+- Defines `Tier1NeutralItems` through `Tier4NeutralItems` arrays (consolidated from 5 tiers to 4 tiers in Patch 7.42)
 - Items are distributed to bots based on game time
 - Simple random selection from the tier pool
-- Includes enhancement items (enchantments) per tier
+- Includes enhancement items (`Tier1Enhancements`–`Tier4Enhancements`) per tier
+- Sync level XP thresholds in `Buff/Experience.lua` alongside `FretBots/AwardBonus.lua` (66,600 total XP at level 30 in 7.42)
 
 ### FretBots Mode (`FretBots/SettingsNeutralItemTable.lua` + `FretBots/NeutralItems.lua`)
 
@@ -322,20 +328,23 @@ Located in `mode_*_generic.lua` files:
 | `mode_defend_tower_*.lua`    | Tower defense (top/mid/bot)    |
 | `mode_push_tower_*.lua`      | Tower pushing                  |
 | `mode_roshan_generic.lua`    | Roshan hunt                    |
-| `mode_rune_generic.lua`      | Rune pickup                    |
+| `mode_rune_generic.lua`      | Rune & Wisdom Shrine pickup    |
+| `mode_side_shop_generic.lua` | Repurposed for Tormentor hunt  |
 | `mode_ward_generic.lua`      | Ward placement                 |
 | `mode_outpost_generic.lua`   | Outpost control                |
 
-These files generally don't need updating for item/ability patches, only for game mechanic changes (e.g., timing changes, map changes).
+These files generally don't need updating for item/ability patches, only for game mechanic changes (e.g., timing changes, map changes). See [docs/DOTA2_BOT_API_INTERNALS.md](DOTA2_BOT_API_INTERNALS.md#2-all-32-edotabotmode-override-slots) for all 32 `EDOTABotMode` engine hook slots.
 
 ---
 
 ## 9. FretBots (Enhanced Difficulty)
 
-FretBots mode gives bots unfair advantages (extra gold, XP, stats) for challenging gameplay.
+FretBots mode runs in the **Server VScript** context (`sv_cheats 1; script_reload_code bots/FretBots`), giving bots scaled bonuses and bridging engine features unavailable inside the Bot VM.
 
 Key files:
+- `FretBots/VectorTargeting.lua` -- Server `ExecuteOrderFilter` injecting `DOTA_UNIT_ORDER_VECTOR_TARGET_POSITION` (`30`) before bot vector casts (also loaded by `Buff/Buff.lua`)
 - `FretBots/SettingsDefault.lua` -- Bonus values (gold, XP multipliers)
+- `FretBots/AwardBonus.lua` -- Level 1–30 XP table + stat/gold bonus distribution
 - `FretBots/HeroNames.lua` -- Hero name localizations for chat
 - `FretBots/matchups_data.lua` -- Hero matchup database (14876 lines)
 - `FretBots/NeutralItems.lua` -- Item distribution with timing/difficulty scaling
@@ -415,10 +424,11 @@ When a new Dota 2 patch drops, follow these steps in order:
 - [ ] Copy a similar existing item as a template
 - [ ] Passive-only items don't need logic here
 
-### Step 6: Update Neutral Items
+### Step 6: Update Neutral Items & XP
 
-- [ ] `Buff/NeutralItems.lua`: Update all 5 tier arrays
-- [ ] `FretBots/SettingsNeutralItemTable.lua`: Update with role weights
+- [ ] `Buff/NeutralItems.lua`: Update all 4 tier arrays + enchantments
+- [ ] `FretBots/SettingsNeutralItemTable.lua`: Update with role weights (`tier = 1..4`)
+- [ ] `Buff/Experience.lua` & `FretBots/AwardBonus.lua`: Sync XP table if level totals changed
 - [ ] Add `ConsiderItemDesire` for new neutral items with active abilities
 - [ ] Comment out removed neutrals, add new ones, move items between tiers
 
@@ -440,18 +450,19 @@ When a new Dota 2 patch drops, follow these steps in order:
 
 ## 12. External Data Sources
 
-| Source | URL | Purpose |
-|--------|-----|---------|
-| **d2vpkr shops.txt** | `https://raw.githubusercontent.com/dotabuff/d2vpkr/master/dota/scripts/shops.txt` | Authoritative item internal names |
+| Source | Location / URL | Purpose |
+|--------|----------------|---------|
+| **Local Dota 2 VPK** (`Source2Viewer-CLI`) | `game/dota/pak01_dir.vpk` + map `.vpk` | Ground-truth `shops.txt`, `neutral_items.txt`, `items.txt`, `npc_abilities.txt`, `npc_heroes.txt`, `npc_units.txt`, `default_ents.vents`, and `.vmdl_c` hulls |
+| **d2vpkr shops.txt** | `https://raw.githubusercontent.com/dotabuff/d2vpkr/master/dota/scripts/shops.txt` | Authoritative item internal names (community mirror) |
 | **d2vpkr neutral_items.txt** | `https://raw.githubusercontent.com/dotabuff/d2vpkr/master/dota/scripts/npc/neutral_items.txt` | Current neutral item pool by tier |
 | **d2vpkr npc_heroes.txt** | `https://raw.githubusercontent.com/dotabuff/d2vpkr/master/dota/scripts/npc/npc_heroes.txt` | Hero ability slot definitions |
 | **Liquipedia** | `https://liquipedia.net/dota2/HERO_NAME` | Ability details, targeting, descriptions |
 | **Official patch notes** | `https://www.dota2.com/patches/X.XX` | Patch change summary |
-| **Valve Bot API docs** | `https://docs.moddota.com/lua_bots/` | Bot scripting API reference |
+| **Valve Bot API docs & internals** | `https://docs.moddota.com/lua_bots/` + [docs/DOTA2_BOT_API_INTERNALS.md](DOTA2_BOT_API_INTERNALS.md) | Bot scripting API + undocumented engine behavior |
 
 ### Trust Hierarchy
 
-1. **d2vpkr** (extracted game data) > **Liquipedia** (community-maintained) > **patch notes** (summaries, can have errors)
+1. **Local Dota 2 VPK extraction** > **d2vpkr** (community mirror) > **Liquipedia** (community-maintained) > **patch notes** (summaries, can have errors)
 2. **Always verify ability names** before editing code. Patch note summaries (even AI-generated ones) can be wrong about whether an ability is innate vs. learnable, or about exact internal names.
 3. When in doubt, use **dynamic `sAbilityList[N]` references** instead of hardcoded ability names.
 

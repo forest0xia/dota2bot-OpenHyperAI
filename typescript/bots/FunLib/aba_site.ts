@@ -32,7 +32,7 @@ const DIRE_T2TOPFALL = Vector(514, 4107, 655); //--夜魇上路野区高台
 const DIRE_T2MIDFALL = Vector(2047, -769, 655); //--夜魇中路河道野区入口
 const DIRE_T2BOTFALL = Vector(4620, 788, 655); //--夜魇下路高台
 
-const DIRE_T1TOPFALL = Vector(-2815, 3565, 256); //--夜魇上路野区河道路口
+const DIRE_T1TOPFALL = Vector(-3180, 3260, 256); //--夜魇上路野区河道路口(avoid 7.42 camp box near -2596,3850)
 const DIRE_T1MIDFALL = Vector(-760, 2053, 655); //--夜魇中路一塔野区入口高台
 const DIRE_T1BOTFALL = Vector(5122, -1930, 527); //--夜魇下路一塔高台
 
@@ -75,21 +75,21 @@ const WardSpotTowerFallDire = [
 
 const CStackLoc = [
     Vector(1854, -4469, 0),
-    Vector(1249, -2416, 0),
+    Vector(-720, -8040, 0),
     Vector(3471, -5841, 0),
     Vector(5153, -3620, 0),
     Vector(-1846, -2996, 0),
     Vector(-4961, 559, 0),
-    Vector(-3873, -833, 0),
+    Vector(-7950, -2180, 0),
     Vector(-3146, 702, 0),
-    Vector(1141, -3111, 0),
+    Vector(-2415, -8050, 0),
     Vector(660, 2300, 0),
-    Vector(3666, 1836, 0),
+    Vector(7580, -120, 0),
     Vector(482, 4723, 0),
     Vector(3173, -861, 0),
-    Vector(-3443, 6098, 0),
+    Vector(-4228, 7790, 0),
     Vector(-4353, 4842, 0),
-    Vector(-1083, 3385, 0),
+    Vector(2016, 7550, 0),
     Vector(-922, 4299, 0),
     Vector(4136, -1753, 0),
 ];
@@ -130,16 +130,16 @@ export const nShopList = [
     Shop.Secret2, //--夜魇下路神秘
 ];
 
-export const top_power_rune = Vector(-1767, 1233, 0);
-export const bot_power_rune = Vector(2597, -2014, 0);
+export const top_power_rune = Vector(-1640, 1112, 41);
+export const bot_power_rune = Vector(1180, -1216, 57);
 
-export const roshan = Vector(2980, -2816, 0); // 7.41: Roshan's pit preference switched, default (day) is now Dire side
+export const roshan = Vector(2860, -2765, 64); // 7.42: Roshan default (day) pit is Dire side
 
-export const dire_ancient = Vector(5517, 4981, 0);
-export const radiant_ancient = Vector(-5860, -5328, 0);
+export const dire_ancient = Vector(5528, 5000, 248);
+export const radiant_ancient = Vector(-5920, -5352, 240);
 
 export const radiant_base = Vector(-7200, -6666, 0);
-export const dire_base = Vector(7137, 6548, 0);
+export const dire_base = Vector(6868, 6306, 377);
 
 export const GetDistance = function (s: Vector, t: Vector): number {
     return GetLocationToLocationDistance(s, t);
@@ -1247,7 +1247,7 @@ ConsiderIsTimeToFarm["npc_dota_hero_beastmaster"] = function () {
     const bot = GetBot();
     const botNetWorth = bot.GetNetWorth();
 
-    if (!HasItem(bot, "item_helm_of_the_overlord") && botNetWorth < 14000) {
+    if (!HasItem(bot, "item_ristuls_devotion") && !HasItem(bot, "item_helm_of_the_dominator") && botNetWorth < 14000) {
         return true;
     }
 
@@ -1616,7 +1616,7 @@ ConsiderIsTimeToFarm["npc_dota_hero_hoodwink"] = function () {
         return true;
     }
 
-    if (!HasItem(bot, "item_gleipnir") && botNetWorth < 18000) {
+    if (!HasItem(bot, "item_gungir") && botNetWorth < 18000) {
         return true;
     }
 

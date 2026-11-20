@@ -57,6 +57,7 @@ sRoleItemsBuyList['pos_3'] = {
 	"item_blink",
 	"item_aghanims_shard",
 	"item_heavens_halberd",--
+	"item_skypiercer",--
 	"item_travel_boots",
 	"item_assault",--
 	"item_ultimate_scepter_2",
@@ -164,7 +165,7 @@ function X.SkillsComplement()
 
 	--计算天赋可能带来的通用变化
 	local aether = J.IsItemAvailable( "item_aether_lens" )
-	if aether ~= nil then aetherRange = 225 end
+	if aether ~= nil then aetherRange = 200 end
 	
 	castRDesire, castRTarget, sMotive = X.ConsiderR()
 	if castRDesire > 0
