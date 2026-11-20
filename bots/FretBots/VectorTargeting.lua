@@ -356,16 +356,6 @@ VECTOR_HANDLERS['windrunner_gale_force'] = function(unit, ability, startPos)
 end
 
 -- Tinker Deploy Turrets (POINT): aim cone toward nearest enemy cluster
-VECTOR_HANDLERS['tinker_deploy_turrets'] = function(unit, ability, startPos)
-    local team = unit:GetTeamNumber()
-    local enemies = FindNearbyUnits(startPos, team, DOTA_UNIT_TARGET_TEAM_ENEMY, 900, DOTA_UNIT_TARGET_HERO)
-    local targetCenter = GetUnitsCentroid(enemies)
-    if targetCenter and Dist2D(targetCenter, startPos) > 35 then
-        return MakeEndpoint(startPos, targetCenter - startPos, 400, unit)
-    end
-    return MakeEndpoint(startPos, startPos - unit:GetAbsOrigin(), 400, unit)
-end
-
 -- Clinkz Burning Army / Broodmother Sticky Snare / Magnus Greater Shockwave / Shadow Shaman Serpentine
 VECTOR_HANDLERS['clinkz_burning_army'] = function(unit, ability, startPos)
     local axis = startPos - unit:GetAbsOrigin()
@@ -477,12 +467,17 @@ function VectorTargeting:OrderFilter(filterTable)
 
     if ExecuteOrderFromTable then
         dispatching[dispatchKey] = true
+        -- OrderType 30 (DOTA_UNIT_ORDER_VECTOR_TARGET_POSITION) validates TargetIndex == 0 or
+        -- 1..0x3FFF in server.dll; omitting TargetIndex defaults to -1 and triggers Error 7
+        -- ("Target entity index is out of range"). Keep Queue = false so OrderType 30 binds
+        -- SetVectorTargetPosition on the ability without stalling queued (ActionQueue_*) casts.
         local vectorOrder = {
             UnitIndex = unitIndex,
             OrderType = ORDER_VECTOR_TARGET_POSITION,
             AbilityIndex = abilityIndex,
+            TargetIndex = 0,
             Position = endPos,
-            Queue = (filterTable.queue == 1),
+            Queue = false,
         }
         if orderType == ORDER_CAST_TARGET and filterTable.entindex_target and filterTable.entindex_target > 0 then
             vectorOrder.TargetIndex = filterTable.entindex_target
